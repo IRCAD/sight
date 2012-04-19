@@ -234,11 +234,14 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkP
         colors->SetNumberOfComponents(nbComponents);
         colors->SetName("Colors");
 
-        ::fwData::Array::IndexType colorIndex(1);
-        for (size_t i = 0; i != nbPoints; ++i)
+        ::fwTools::BufferObject::Lock lock = pointColorArray->getBufferObject()->lock();
+        unsigned char *pointColor = pointColorArray->begin< unsigned char >();
+        unsigned char *pointColorEnd = pointColorArray->end< unsigned char >();
+
+        size_t nbElements =  pointColorArray->getNumberOfElements();
+        for (; pointColor != pointColorEnd; pointColor+=nbComponents)
         {
-            colorIndex[0] = i;
-            colors->InsertNextTupleValue(pointColorArray->getItem<unsigned char>(colorIndex));
+            colors->InsertNextTupleValue(pointColor);
         }
         polyDataDst->GetPointData()->SetScalars(colors);
         polyDataDst->Modified();
@@ -270,12 +273,16 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPo
         colors->SetNumberOfComponents(nbComponents);
         colors->SetName("Colors");
 
-        ::fwData::Array::IndexType colorIndex(1);
-        for (size_t i = 0; i != nbCells; ++i)
+        ::fwTools::BufferObject::Lock lock = cellColorArray->getBufferObject()->lock();
+        unsigned char *cellColor = cellColorArray->begin< unsigned char >();
+        unsigned char *cellColorEnd = cellColorArray->end< unsigned char >();
+
+        size_t nbElements =  cellColorArray->getNumberOfElements();
+        for (; cellColor != cellColorEnd; cellColor+=nbComponents)
         {
-            colorIndex[0] = i;
-            colors->InsertNextTupleValue(cellColorArray->getItem<unsigned char>(colorIndex));
+            colors->InsertNextTupleValue(cellColor);
         }
+
         polyDataDst->GetCellData()->SetScalars(colors);
         polyDataDst->Modified();
     }
@@ -306,12 +313,17 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointNormals(vtkSmartPointer<vt
         size_t nbComponents = pointNormalsArray->getNumberOfComponents();
         normals->SetNumberOfComponents(nbComponents);
 
-        ::fwData::Array::IndexType normalIndex(1);
-        for (size_t i = 0; i != nbPoints; ++i)
+        ::fwTools::BufferObject::Lock lock = pointNormalsArray->getBufferObject()->lock();
+        float *pointNormal = pointNormalsArray->begin< float >();
+        float *pointNormalEnd = pointNormalsArray->end< float >();
+
+        size_t nbElements =  pointNormalsArray->getNumberOfElements();
+        for (; pointNormal != pointNormalEnd; pointNormal+=nbComponents)
         {
-            normalIndex[0] = i;
-            normals->InsertNextTupleValue(pointNormalsArray->getItem< float >(normalIndex));
+            normals->InsertNextTupleValue(pointNormal);
         }
+
+
         polyDataDst->GetPointData()->SetNormals(normals);
         polyDataDst->Modified();
     }
@@ -342,12 +354,16 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
         size_t nbComponents = cellNormalsArray->getNumberOfComponents();
         normals->SetNumberOfComponents(nbComponents);
 
-        ::fwData::Array::IndexType normalIndex(1);
-        for (size_t i = 0; i != nbCells; ++i)
+        ::fwTools::BufferObject::Lock lock = cellNormalsArray->getBufferObject()->lock();
+        float *cellNormal = cellNormalsArray->begin< float >();
+        float *cellNormalEnd = cellNormalsArray->end< float >();
+
+        size_t nbElements =  cellNormalsArray->getNumberOfElements();
+        for (; cellNormal != cellNormalEnd; cellNormal+=nbComponents)
         {
-            normalIndex[0] = i;
-            normals->InsertNextTupleValue(cellNormalsArray->getItem< float >(normalIndex));
+            normals->InsertNextTupleValue(cellNormal);
         }
+
         polyDataDst->GetCellData()->SetNormals(normals);
         polyDataDst->Modified();
     }
