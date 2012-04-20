@@ -31,30 +31,30 @@ public :
 
     typedef SPTR(BarrierDump) sptr;
 
-    static sptr New();
+    FWMEMORY_API static sptr New();
 
-    BarrierDump();
+    FWMEMORY_API BarrierDump();
 
-    virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
-    virtual void setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
-    virtual void reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize ) ;
-    virtual void destroyRequest( BufferInfo &info, void **buffer ) ;
-    virtual void lockRequest( BufferInfo &info, void **buffer ) ;
-    virtual void unlockRequest( BufferInfo &info, void **buffer ) ;
+    FWMEMORY_API virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize ) ;
+    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, void **buffer ) ;
+    FWMEMORY_API virtual void lockRequest( BufferInfo &info, void **buffer ) ;
+    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, void **buffer ) ;
 
-    virtual void dumpSuccess( BufferInfo &info, void **buffer );
-    virtual void restoreSuccess( BufferInfo &info, void **buffer );
+    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, void **buffer );
+    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, void **buffer );
 
-    void setManager(::fwTools::IBufferManager::sptr manager);
+    FWMEMORY_API void setManager(::fwTools::IBufferManager::sptr manager);
 
 protected :
 
-    size_t getTotalAlive();
-    bool isBarrierCrossed();
+    FWMEMORY_API size_t getTotalAlive();
+    FWMEMORY_API bool isBarrierCrossed();
 
-    size_t dump(size_t nbOfBytes);
+    FWMEMORY_API size_t dump(size_t nbOfBytes);
 
-    void apply();
+    FWMEMORY_API void apply();
 
     size_t m_totalAllocated;
     size_t m_totalDumped;

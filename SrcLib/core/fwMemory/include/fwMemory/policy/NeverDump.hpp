@@ -28,21 +28,21 @@ class FWMEMORY_CLASS_API NeverDump : public fwMemory::IPolicy
 {
 public :
 
-    typedef SPTR(NeverDump) sptr;
+    FWMEMORY_API typedef SPTR(NeverDump) sptr;
 
-    static sptr New();
+    FWMEMORY_API static sptr New();
 
-    virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
-    virtual void setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
-    virtual void reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize ) ;
-    virtual void destroyRequest( BufferInfo &info, void **buffer ) ;
-    virtual void lockRequest( BufferInfo &info, void **buffer ) ;
-    virtual void unlockRequest( BufferInfo &info, void **buffer ) ;
+    FWMEMORY_API virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize ) ;
+    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, void **buffer ) ;
+    FWMEMORY_API virtual void lockRequest( BufferInfo &info, void **buffer ) ;
+    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, void **buffer ) ;
 
-    virtual void dumpSuccess( BufferInfo &info, void **buffer );
-    virtual void restoreSuccess( BufferInfo &info, void **buffer );
+    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, void **buffer );
+    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, void **buffer );
 
-    void setManager(::fwTools::IBufferManager::sptr manager);
+    FWMEMORY_API void setManager(::fwTools::IBufferManager::sptr manager);
 
 };
 
