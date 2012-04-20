@@ -279,9 +279,14 @@ void ImagesBlend::addImageAdaptors()
                 imageAdaptor->start();
             }
 
-            info->m_comChannel = ::fwServices::registerCommunicationChannel(img, this->getSptr());
-            ::fwServices::ComChannelService::dynamicCast(info->m_comChannel.lock())->setPriority(0.56);
-            info->m_comChannel.lock()->start();
+            ::fwServices::ComChannelService::sptr comChannel;
+            comChannel = ::fwServices::getCommunicationChannel(img, this->getSptr());
+            if (!comChannel)
+            {
+                info->m_comChannel = ::fwServices::registerCommunicationChannel(img, this->getSptr());
+                ::fwServices::ComChannelService::dynamicCast(info->m_comChannel.lock())->setPriority(0.56);
+                info->m_comChannel.lock()->start();
+            }
         }
     }
 }
