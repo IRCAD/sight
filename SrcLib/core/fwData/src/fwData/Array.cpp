@@ -152,7 +152,7 @@ void Array::setBuffer(void *buf, bool takeOwnership)
     {
         m_attrBufferObject->destroy();
     }
-    m_attrBufferObject->setBuffer(buf, this->getSizeInBytes());
+    m_attrBufferObject->setBuffer(buf, (buf == NULL) ? 0 : this->getSizeInBytes());
     m_isBufferOwner = !m_attrBufferObject->isEmpty() && takeOwnership;
 }
 
