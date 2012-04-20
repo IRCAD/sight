@@ -40,10 +40,11 @@ namespace boost
 #endif
 
 #include <fwCore/base.hpp>
-#include <fwCore/LogicStamp.hpp>
 
 #include <fwTools/IBufferManager.hpp>
 
+#include "fwMemory/BufferInfo.hpp"
+#include "fwMemory/IPolicy.hpp"
 #include "fwMemory/config.hpp"
 
 namespace fwMemory
@@ -57,26 +58,8 @@ public:
     typedef ::fwTools::IBufferManager::SizeType SizeType;
 
     typedef ::boost::signal<void ()> UpdatedSignalType;
-
-    struct FWMEMORY_CLASS_API DumpedBufferInfo
-    {
-        FWMEMORY_API DumpedBufferInfo()
-        {
-            this->size = 0;
-            this->lockCount = NULL;
-            this->isDumped = false;
-            this->lastAccess.modified();
-        }
-
-        SizeType size;
-        bool     isDumped;
-        ::boost::filesystem::path dumpedFile;
-        long * lockCount;
-        ::fwCore::LogicStamp lastAccess;
-        ::fwTools::BufferAllocationPolicy::sptr bufferPolicy;
-    };
-
-    typedef std::map< void **,  DumpedBufferInfo > DumpedBufferInfoMapType;
+    typedef ::fwMemory::BufferInfo BufferInfo;
+    typedef BufferInfo::MapType BufferInfoMapType;
 
     fwCoreClassDefinitionsWithFactoryMacro((BufferManager), (()), new BufferManager );
     fwCoreAllowSharedFromThis();
@@ -95,8 +78,10 @@ public:
 
     FWMEMORY_API virtual std::string toString() const;
 
-    FWMEMORY_API bool dumpBuffer(void ** buffer);
-    FWMEMORY_API bool restoreBuffer(void ** buffer, SizeType size = 0);
+
+    FWMEMORY_API bool dumpBuffer(const void * const *  buffer);
+    FWMEMORY_API bool restoreBuffer(const void * const *  buffer);
+
 
     FWMEMORY_API bool writeBuffer(const void * buffer, SizeType size, ::boost::filesystem::path &path);
     FWMEMORY_API bool readBuffer(void * buffer, SizeType size, ::boost::filesystem::path &path);
@@ -105,21 +90,28 @@ public:
     FWMEMORY_API UpdatedSignalType &getUpdatedSignal(){return m_updated;};
 
 
-    const DumpedBufferInfoMapType& getDumpedBufferInfoMap() const
+    const BufferInfoMapType & getBufferInfos() const
     {
-        return m_dumpedBufferInfos;
+        return m_bufferInfos;
     }
+
+    FWMEMORY_API void setDumpPolicy( ::fwMemory::IPolicy::sptr policy );
 
 protected:
 
     FWMEMORY_API BufferManager();
     FWMEMORY_API virtual ~BufferManager();
 
+    FWMEMORY_API bool dumpBuffer(BufferInfo & info, void ** buffer);
+    FWMEMORY_API bool restoreBuffer(BufferInfo & info, void ** buffer, SizeType size = 0);
+
 
     UpdatedSignalType m_updated;
 
     ::fwCore::LogicStamp m_lastAccess;
-    DumpedBufferInfoMapType m_dumpedBufferInfos;
+    BufferInfoMapType m_bufferInfos;
+
+    ::fwMemory::IPolicy::sptr m_dumpPolicy;
 };
 
 

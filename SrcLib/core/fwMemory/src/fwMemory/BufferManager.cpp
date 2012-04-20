@@ -14,6 +14,7 @@
 
 #include <fwTools/System.hpp>
 
+#include "fwMemory/policy/NeverDump.hpp"
 #include "fwMemory/BufferManager.hpp"
 
 namespace fwMemory
@@ -22,7 +23,9 @@ namespace fwMemory
 //-----------------------------------------------------------------------------
 
 BufferManager::BufferManager()
-{}
+{
+    m_dumpPolicy = ::fwMemory::policy::NeverDump::New();
+}
 
 //-----------------------------------------------------------------------------
 
@@ -36,7 +39,7 @@ BufferManager::~BufferManager()
 bool BufferManager::registerBuffer(void ** buffer, long * lockCount)
 {
     SLM_TRACE_FUNC();
-    DumpedBufferInfo & info = m_dumpedBufferInfos[buffer];
+    BufferInfo & info = m_bufferInfos[buffer];
     info.lockCount = lockCount;
     m_updated();
     return false;
@@ -49,7 +52,7 @@ bool BufferManager::unregisterBuffer(void ** buffer)
     SLM_TRACE_FUNC();
 
     {
-        DumpedBufferInfo & info = m_dumpedBufferInfos[buffer];
+        BufferInfo & info = m_bufferInfos[buffer];
 
         if(info.isDumped)
         {
@@ -57,7 +60,7 @@ bool BufferManager::unregisterBuffer(void ** buffer)
         }
     }
 
-    m_dumpedBufferInfos.erase(buffer);
+    m_bufferInfos.erase(buffer);
     m_updated();
     return false;
 }
@@ -67,7 +70,7 @@ bool BufferManager::unregisterBuffer(void ** buffer)
 bool BufferManager::allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
     SLM_TRACE_FUNC();
-    DumpedBufferInfo & info = m_dumpedBufferInfos[buffer];
+    BufferInfo & info = m_bufferInfos[buffer];
 
     SLM_ASSERT("Unable to allocate a dumped buffer", !info.isDumped);
 
@@ -75,9 +78,12 @@ bool BufferManager::allocateBuffer(void ** buffer, SizeType size, ::fwTools::Buf
     {
         ::boost::filesystem::remove( info.dumpedFile );
         info.dumpedFile = "";
+        info.size = 0;
         info.isDumped = false;
         SLM_ASSERT("requested an allocation of a dumped buffer", 0);
     }
+
+    m_dumpPolicy->allocationRequest( info, buffer, size );
 
     info.lastAccess.modified();
     info.size = size;
@@ -91,14 +97,17 @@ bool BufferManager::allocateBuffer(void ** buffer, SizeType size, ::fwTools::Buf
 bool BufferManager::setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
     SLM_TRACE_FUNC();
-    DumpedBufferInfo & info = m_dumpedBufferInfos[buffer];
+    BufferInfo & info = m_bufferInfos[buffer];
 
     SLM_ASSERT("Unable to overwrite a dumped buffer", !info.isDumped);
+
+    m_dumpPolicy->setRequest( info, buffer, size );
 
     if(info.isDumped)
     {
         ::boost::filesystem::remove( info.dumpedFile );
         info.dumpedFile = "";
+        info.size = 0;
         info.isDumped = false;
         SLM_ASSERT("requested a replacement of a dumped buffer", 0);
     }
@@ -116,16 +125,18 @@ bool BufferManager::reallocateBuffer(void ** buffer, SizeType newSize)
 {
     SLM_TRACE_FUNC();
 
-    DumpedBufferInfo & info = m_dumpedBufferInfos[buffer];
+    BufferInfo & info = m_bufferInfos[buffer];
 
     SLM_ASSERT("Unable to reallocate a dumped buffer", !info.isDumped);
+
+    m_dumpPolicy->reallocateRequest( info, buffer, newSize );
 
     info.lastAccess.modified();
     info.size = newSize;
 
     if(info.isDumped)
     {
-        this->restoreBuffer( buffer, newSize );
+        this->restoreBuffer( info, buffer, newSize );
         return false;
     }
 
@@ -138,11 +149,14 @@ bool BufferManager::reallocateBuffer(void ** buffer, SizeType newSize)
 bool BufferManager::destroyBuffer(void ** buffer)
 {
     SLM_TRACE_FUNC();
-    DumpedBufferInfo & info = m_dumpedBufferInfos[buffer];
+    BufferInfo & info = m_bufferInfos[buffer];
+
+    m_dumpPolicy->destroyRequest( info, buffer );
+
     info.lastAccess.modified();
     info.size = 0;
-
     info.bufferPolicy.reset();
+
 
     if(info.isDumped)
     {
@@ -161,64 +175,52 @@ bool BufferManager::destroyBuffer(void ** buffer)
 bool BufferManager::lockBuffer(const void * const * buffer)
 {
     SLM_TRACE_FUNC();
+
     void **castedBuffer = const_cast<void **>(buffer);
-    bool restored = this->restoreBuffer( castedBuffer );
-    OSLM_ASSERT( "restore not OK ( "<< *castedBuffer <<" ).", !restored || *castedBuffer != 0 );
+    BufferInfo & info = m_bufferInfos[castedBuffer];
+
+    m_dumpPolicy->lockRequest( info, castedBuffer );
+
+    bool restored = this->restoreBuffer( info, castedBuffer );
+    OSLM_ASSERT( "restore not OK ( "<< *buffer <<" ).", !restored || *buffer != 0 );
     m_lastAccess.modified();
-    if(!restored)
-    {
-        m_updated();
-    }
+
+    m_updated();
     return true;
 }
 
 //-----------------------------------------------------------------------------
-
-struct info_cmp
-{
-    template <typename T>
-    bool operator()(T a, T b)
-    {
-        return a.second.lastAccess > b.second.lastAccess;
-    }
-};
 
 bool BufferManager::unlockBuffer(const void * const * buffer)
 {
     SLM_TRACE_FUNC();
 
-    bool dumpedSomething;
+    void **castedBuffer = const_cast<void **>(buffer);
+    BufferInfo & info = m_bufferInfos[castedBuffer];
 
-    int count = 10;
-    if(m_dumpedBufferInfos.size() > count)
-    {
-        typedef std::vector< std::pair<void **,  DumpedBufferInfo> > InfoVector;
+    m_dumpPolicy->unlockRequest( info, castedBuffer );
 
-        InfoVector buffers(m_dumpedBufferInfos.begin(), m_dumpedBufferInfos.end());
-        std::sort(buffers.begin(), buffers.end(), info_cmp());
-        InfoVector::iterator iter = buffers.begin() + count;
-        for ( ; iter < buffers.end(); ++iter )
-        {
-            void **castedBuffer = const_cast<void **>(iter->first);
-            dumpedSomething = this->dumpBuffer( castedBuffer ) && dumpedSomething;
-        }
-    }
-
-    if (!dumpedSomething)
-    {
-        m_updated();
-    }
+    m_updated();
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::dumpBuffer(void ** buffer)
+bool BufferManager::dumpBuffer(const void * const *  buffer)
+{
+
+    void **castedBuffer = const_cast<void **>(buffer);
+    BufferInfo & info = m_bufferInfos[castedBuffer];
+
+    return this->dumpBuffer(info, castedBuffer);
+}
+
+
+//-----------------------------------------------------------------------------
+
+bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, void ** buffer)
 {
     SLM_TRACE_FUNC();
-    DumpedBufferInfoMapType::iterator item = m_dumpedBufferInfos.find(buffer);
-    OSLM_ASSERT( "Sorry, try dumping a unreferenced buffer ( "<< buffer <<" ).",item != m_dumpedBufferInfos.end() );
-    DumpedBufferInfo & info = item->second;
     if ( info.isDumped || *(info.lockCount) > 0 || info.size == 0 )
     {
         return false;
@@ -235,6 +237,8 @@ bool BufferManager::dumpBuffer(void ** buffer)
         *buffer = NULL;
         info.isDumped = true;
 
+        m_dumpPolicy->dumpSuccess( info, buffer );
+
         m_updated();
     }
 
@@ -243,12 +247,20 @@ bool BufferManager::dumpBuffer(void ** buffer)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::restoreBuffer(void ** buffer, BufferManager::SizeType allocSize)
+bool BufferManager::restoreBuffer(const void * const *  buffer)
+{
+    void **castedBuffer = const_cast<void **>(buffer);
+    BufferInfo & info = m_bufferInfos[castedBuffer];
+
+    return this->restoreBuffer(info, castedBuffer);
+}
+
+
+//-----------------------------------------------------------------------------
+
+bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info, void ** buffer, BufferManager::SizeType allocSize)
 {
     SLM_TRACE_FUNC();
-    DumpedBufferInfoMapType::iterator item = m_dumpedBufferInfos.find(buffer);
-    OSLM_ASSERT( "Unable to dump a unreferenced buffer ( "<< buffer <<" ).",item != m_dumpedBufferInfos.end() );
-    DumpedBufferInfo & info = item->second;
 
     allocSize = ((allocSize) ? allocSize : info.size);
     if ( info.isDumped )
@@ -263,6 +275,8 @@ bool BufferManager::restoreBuffer(void ** buffer, BufferManager::SizeType allocS
             ::boost::filesystem::remove( info.dumpedFile );
             info.dumpedFile = "";
             info.lastAccess.modified();
+
+            m_dumpPolicy->restoreSuccess( info, buffer );
 
             m_updated();
             return true;
@@ -311,7 +325,7 @@ bool BufferManager::readBuffer(void * buffer, SizeType size, ::boost::filesystem
 std::string BufferManager::toString() const
 {
     std::stringstream sstr ("");
-    sstr << "nb Elem = " << m_dumpedBufferInfos.size() << std::endl;
+    sstr << "nb Elem = " << m_bufferInfos.size() << std::endl;
     sstr    << std::setw(18) << "Buffer" << "->" << std::setw(18) << "Address" << " "
             << std::setw(10) << "Size" << " "
             << std::setw(18) << "Policy" << " "
@@ -320,9 +334,9 @@ std::string BufferManager::toString() const
             << "DumpStatus" << " "
             << "DumpedFile" << " "
             << std::endl;
-    BOOST_FOREACH( DumpedBufferInfoMapType::value_type item, m_dumpedBufferInfos )
+    BOOST_FOREACH( BufferInfoMapType::value_type item, m_bufferInfos )
     {
-        DumpedBufferInfo & info = item.second;
+        BufferInfo & info = item.second;
         sstr    << std::setw(18) << item.first << "->" << std::setw(18) << *(item.first) << " "
                 << std::setw(10) << info.size << " "
                 << std::setw(18) << info.bufferPolicy << " "
@@ -336,6 +350,13 @@ std::string BufferManager::toString() const
 }
 
 //-----------------------------------------------------------------------------
+
+
+void BufferManager::setDumpPolicy( ::fwMemory::IPolicy::sptr policy )
+{
+    m_dumpPolicy = policy;
+    policy->setManager(this->getSptr());
+}
 
 } //namespace fwMemory
 
