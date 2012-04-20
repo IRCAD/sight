@@ -608,12 +608,16 @@ void TransferFunctionEditor::updateTransferFunctionPreset()
     }
 
     int index = m_pTransferFunctionPreset->findText( QString::fromStdString(defaultTFName) );
+    index = std::max(index, 0);
     ::fwData::TransferFunction::sptr selectedTF = this->getSelectedTransferFunction();
     if(selectedTF)
     {
         std::string tfName = selectedTF->getName();
         int tmpIdx = m_pTransferFunctionPreset->findText(QString::fromStdString(tfName));
-        index = std::max(index, tmpIdx);
+        if(tmpIdx >= 0)
+        {
+            index = tmpIdx;
+        }
     }
     this->presetChoice(index);
 }
