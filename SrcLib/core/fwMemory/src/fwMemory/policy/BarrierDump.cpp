@@ -35,7 +35,12 @@ BarrierDump::BarrierDump() :
 
 void BarrierDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
 {
+    m_totalAllocated -= info.size;
     m_totalAllocated += size;
+    if(info.isDumped)
+    {
+        m_totalDumped -= info.size;
+    }
     this->apply();
 }
 
@@ -46,6 +51,10 @@ void BarrierDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeT
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
+    if(info.isDumped)
+    {
+        m_totalDumped -= info.size;
+    }
     this->apply();
 }
 
@@ -56,6 +65,10 @@ void BarrierDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += newSize;
+    if(info.isDumped)
+    {
+        m_totalDumped -= info.size;
+    }
     this->apply();
 }
 
@@ -64,6 +77,10 @@ void BarrierDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo
 
 void BarrierDump::destroyRequest( BufferInfo &info, void **buffer )
 {
+    if(info.isDumped)
+    {
+        m_totalDumped -= info.size;
+    }
     m_totalAllocated -= info.size;
 }
 
@@ -72,6 +89,13 @@ void BarrierDump::destroyRequest( BufferInfo &info, void **buffer )
 
 void BarrierDump::lockRequest( BufferInfo &info, void **buffer )
 {
+
+    ::fwMemory::BufferManager::sptr manager = m_manager.lock();
+    if(manager)
+    {
+        bool restored = manager->restoreBuffer( buffer );
+        OSLM_ASSERT( "restore not OK ( "<< *buffer <<" ).", !restored || *buffer != 0 );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -79,11 +103,6 @@ void BarrierDump::lockRequest( BufferInfo &info, void **buffer )
 
 void BarrierDump::unlockRequest( BufferInfo &info, void **buffer )
 {
-    OSLM_WARN(
-            " total : " << m_totalAllocated
-            << " dumped : " << m_totalDumped
-            << " Alive : " << this->getTotalAlive()
-            );
     this->apply();
 }
 
@@ -174,7 +193,6 @@ size_t BarrierDump::dump(size_t nbOfBytes)
         }
     }
 
-    OSLM_WARN("Dumped " << dumped << " bytes");
     return dumped;
 }
 
