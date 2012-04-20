@@ -13,6 +13,8 @@
 #include <fwTools/System.hpp>
 
 #include <fwMemory/BufferManager.hpp>
+#include <fwMemory/policy/NeverDump.hpp>
+#include <fwMemory/policy/BarrierDump.hpp>
 
 #include "memory/Plugin.hpp"
 
@@ -28,8 +30,11 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-    ::fwTools::IBufferManager::setCurrent( ::fwMemory::BufferManager::New() );
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
+    // manager->setDumpPolicy( ::fwMemory::policy::NeverDump::New() );
+    manager->setDumpPolicy( ::fwMemory::policy::BarrierDump::New() );
 
+    ::fwTools::IBufferManager::setCurrent( manager );
 }
 
 //------------------------------------------------------------------------------
