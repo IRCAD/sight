@@ -6,7 +6,7 @@
 
 
 #include <boost/foreach.hpp>
-#include <fwMemory/policy/BarrierDump.hpp>
+#include "fwMemory/policy/BarrierDump.hpp"
 
 
 namespace fwMemory

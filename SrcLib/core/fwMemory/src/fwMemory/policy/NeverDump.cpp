@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <fwMemory/policy/NeverDump.hpp>
+#include "fwMemory/policy/NeverDump.hpp"
 
 
 namespace fwMemory
