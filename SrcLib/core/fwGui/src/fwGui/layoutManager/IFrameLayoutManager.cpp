@@ -172,9 +172,11 @@ void IFrameLayoutManager::writeConfig()
     ::fwData::Composite::sptr prefUI = this->getPreferenceUI();
     if(prefUI)
     {
-        ::fwData::Integer::NewSptr state;
-        state->value() = m_frameInfo.m_state;
-        (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] = state;
+        if(m_frameInfo.m_state != ICONIZED)
+        {
+            ::fwData::Integer::NewSptr state(m_frameInfo.m_state);
+            (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] = state;
+        }
 
         ::fwData::Integer::NewSptr sizew(m_frameInfo.m_size.first);
         (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_W_UI ] = sizew;
