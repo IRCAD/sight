@@ -28,7 +28,7 @@ class FWMEMORY_CLASS_API NeverDump : public fwMemory::IPolicy
 {
 public :
 
-    FWMEMORY_API typedef SPTR(NeverDump) sptr;
+    typedef SPTR(NeverDump) sptr;
 
     FWMEMORY_API static sptr New();
 
