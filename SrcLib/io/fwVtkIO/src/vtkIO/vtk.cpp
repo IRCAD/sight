@@ -41,6 +41,9 @@
 
 #include <fwMath/MeshFunctions.hpp>
 
+#include <fwData/Image.hpp>
+#include <fwData/ObjectLock.hpp>
+
 #include "vtkIO/vtk.hpp"
 
 
@@ -227,6 +230,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
 
+
     destination->setSize( ::fwData::Image::SizeType(source->GetDimensions(), source->GetDimensions()+dim) );
     destination->setSpacing( ::fwData::Image::SpacingType(source->GetSpacing(), source->GetSpacing()+dim) );
     destination->setOrigin( ::fwData::Image::OriginType(source->GetOrigin(), source->GetOrigin()+dim) );
@@ -248,6 +252,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
             destination->setType( "uint16" );
             destination->allocate();
+            ::fwData::ObjectLock lock(destination);
             destBuffer = destination->getBuffer();
             SLM_ASSERT("Image allocation error", destBuffer != NULL);
             fromRGBBuffer< unsigned short >(input, size, destBuffer);
@@ -258,6 +263,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
             destination->setType( "uint8" );
             destination->allocate();
+            ::fwData::ObjectLock lock(destination);
             destBuffer = destination->getBuffer();
             SLM_ASSERT("Image allocation error", destBuffer != NULL);
             fromRGBBuffer< unsigned char >(input, size, destBuffer);
@@ -267,6 +273,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
             SLM_TRACE ("Luminance image");
             destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
             destination->allocate();
+            ::fwData::ObjectLock lock(destination);
             destBuffer = destination->getBuffer();
             size_t sizeInBytes = destination->getSizeInBytes();
             std::memcpy(destBuffer, input, sizeInBytes);
