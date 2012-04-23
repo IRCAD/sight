@@ -48,6 +48,8 @@ protected:
 
     FWMEMORY_API size_t dump();
     FWMEMORY_API void apply();
+
+    ::fwMemory::BufferManager::wptr m_manager;
 };
 
 

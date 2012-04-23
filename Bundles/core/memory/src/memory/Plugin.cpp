@@ -13,8 +13,9 @@
 #include <fwTools/System.hpp>
 
 #include <fwMemory/BufferManager.hpp>
-#include <fwMemory/policy/NeverDump.hpp>
+#include <fwMemory/policy/AlwaysDump.hpp>
 #include <fwMemory/policy/BarrierDump.hpp>
+#include <fwMemory/policy/NeverDump.hpp>
 #include <fwMemory/policy/ValveDump.hpp>
 
 #include "memory/Plugin.hpp"
@@ -33,7 +34,8 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
     // manager->setDumpPolicy( ::fwMemory::policy::NeverDump::New() );
-    manager->setDumpPolicy( ::fwMemory::policy::ValveDump::New() );
+    // manager->setDumpPolicy( ::fwMemory::policy::ValveDump::New() );
+    manager->setDumpPolicy( ::fwMemory::policy::AlwaysDump::New() );
 
     ::fwTools::IBufferManager::setCurrent( manager );
 }

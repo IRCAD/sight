@@ -5,6 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 
+#include <boost/foreach.hpp>
+
+#include "fwMemory/policy/BarrierDump.hpp"
 #include "fwMemory/policy/AlwaysDump.hpp"
 
 
@@ -81,11 +84,12 @@ void AlwaysDump::restoreSuccess( BufferInfo &info, void **buffer )
 
 void AlwaysDump::setManager(::fwTools::IBufferManager::sptr manager)
 {
+    m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
 }
 
 //------------------------------------------------------------------------------
 
-size_t AlwaysDump::dump(size_t nbOfBytes)
+size_t AlwaysDump::dump()
 {
     size_t dumped = 0;
 
