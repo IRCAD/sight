@@ -89,13 +89,6 @@ void BarrierDump::destroyRequest( BufferInfo &info, void **buffer )
 
 void BarrierDump::lockRequest( BufferInfo &info, void **buffer )
 {
-
-    ::fwMemory::BufferManager::sptr manager = m_manager.lock();
-    if(manager)
-    {
-        bool restored = manager->restoreBuffer( buffer );
-        OSLM_ASSERT( "restore not OK ( "<< *buffer <<" ).", !restored || *buffer != 0 );
-    }
 }
 
 //------------------------------------------------------------------------------

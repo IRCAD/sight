@@ -79,12 +79,6 @@ void ValveDump::destroyRequest( BufferInfo &info, void **buffer )
 
 void ValveDump::lockRequest( BufferInfo &info, void **buffer )
 {
-    ::fwMemory::BufferManager::sptr manager = m_manager.lock();
-    if(manager)
-    {
-        bool restored = manager->restoreBuffer( buffer );
-        OSLM_ASSERT( "restore not OK ( "<< *buffer <<" ).", !restored || *buffer != 0 );
-    }
 }
 
 //------------------------------------------------------------------------------
