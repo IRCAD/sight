@@ -73,7 +73,7 @@ public:
     /**
      * @brief return a pointer to the buffer
      */
-    //FWDATA_API void * getBuffer() const;
+    FWDATA_API void * getBuffer() const;
 
     /// Number of dimension of the image (3 for 3D image)
     FWDATA_API size_t getNumberOfDimensions() const;
