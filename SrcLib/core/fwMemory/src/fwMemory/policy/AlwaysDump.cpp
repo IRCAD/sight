@@ -27,6 +27,7 @@ AlwaysDump::sptr AlwaysDump::New()
 
 void AlwaysDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
 {
+    this->apply();
 }
 
 //------------------------------------------------------------------------------
@@ -34,6 +35,7 @@ void AlwaysDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo:
 
 void AlwaysDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
 {
+    this->apply();
 }
 
 //------------------------------------------------------------------------------
@@ -41,6 +43,7 @@ void AlwaysDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeTy
 
 void AlwaysDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize )
 {
+    this->apply();
 }
 
 //------------------------------------------------------------------------------
@@ -48,6 +51,7 @@ void AlwaysDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo:
 
 void AlwaysDump::destroyRequest( BufferInfo &info, void **buffer )
 {
+    this->apply();
 }
 
 //------------------------------------------------------------------------------
@@ -55,6 +59,7 @@ void AlwaysDump::destroyRequest( BufferInfo &info, void **buffer )
 
 void AlwaysDump::lockRequest( BufferInfo &info, void **buffer )
 {
+    this->apply();
 }
 
 //------------------------------------------------------------------------------
@@ -62,6 +67,7 @@ void AlwaysDump::lockRequest( BufferInfo &info, void **buffer )
 
 void AlwaysDump::unlockRequest( BufferInfo &info, void **buffer )
 {
+    this->apply();
 }
 
 //------------------------------------------------------------------------------
@@ -69,6 +75,7 @@ void AlwaysDump::unlockRequest( BufferInfo &info, void **buffer )
 
 void AlwaysDump::dumpSuccess( BufferInfo &info, void **buffer )
 {
+    this->apply();
 }
 
 //------------------------------------------------------------------------------
@@ -76,6 +83,7 @@ void AlwaysDump::dumpSuccess( BufferInfo &info, void **buffer )
 
 void AlwaysDump::restoreSuccess( BufferInfo &info, void **buffer )
 {
+    this->apply();
 }
 
 //------------------------------------------------------------------------------
