@@ -75,7 +75,6 @@ void AlwaysDump::unlockRequest( BufferInfo &info, void **buffer )
 
 void AlwaysDump::dumpSuccess( BufferInfo &info, void **buffer )
 {
-    this->apply();
 }
 
 //------------------------------------------------------------------------------
@@ -83,12 +82,9 @@ void AlwaysDump::dumpSuccess( BufferInfo &info, void **buffer )
 
 void AlwaysDump::restoreSuccess( BufferInfo &info, void **buffer )
 {
-    this->apply();
 }
 
 //------------------------------------------------------------------------------
-
-
 
 void AlwaysDump::setManager(::fwTools::IBufferManager::sptr manager)
 {
