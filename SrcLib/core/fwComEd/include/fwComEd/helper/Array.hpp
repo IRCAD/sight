@@ -46,10 +46,10 @@ public :
 
 
     /// Returns the begining/end of the buffer interpreted as a char buffer
-    virtual char* begin();
-    virtual char* end();
-    virtual const char* begin() const;
-    virtual const char* end() const;
+    FWCOMED_API virtual char* begin();
+    FWCOMED_API virtual char* end();
+    FWCOMED_API virtual const char* begin() const;
+    FWCOMED_API virtual const char* end() const;
 
 
     /// Returns the begining/end of the buffer, casted to T
