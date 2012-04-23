@@ -40,6 +40,12 @@ public:
 
         typedef typename ::boost::conditional< ::boost::is_const< T >::value, const void*, void* >::type BufferType;
 
+
+        LockBase() :
+            m_count(0)
+        {
+        }
+
         LockBase( SPTR(T) bo ) :
             m_bufferObject(bo),
             m_count(0)
@@ -54,31 +60,39 @@ public:
         LockBase( const LockBase &other ):
             m_count(0)
         {
-            SLM_ASSERT("Can't lock NULL object", other.m_bufferObject.lock());
             m_count = other.m_count;
-            SLM_ASSERT("Count pointer is NULL", m_count != 0);
-            ++(*m_count);
-            m_bufferObject = other.m_bufferObject;
-            this->lock();
+            if (m_count)
+            {
+                SLM_ASSERT("Can't lock NULL object", other.m_bufferObject.lock());
+                ++(*m_count);
+                m_bufferObject = other.m_bufferObject;
+                this->lock();
+            }
         }
 
         ~LockBase()
         {
-            SLM_ASSERT("Count pointer is NULL", m_count != 0);
-            --(*m_count);
-            this->unlock();
+            if (m_count)
+            {
+                --(*m_count);
+                this->unlock();
+            }
         }
 
         LockBase & operator= (const LockBase & other)
         {
-            SLM_ASSERT("Count pointer is NULL", m_count != 0);
-            --(*m_count);
-            this->unlock();
+            if (m_count)
+            {
+                --(*m_count);
+                this->unlock();
+            }
             m_count = other.m_count;
-            SLM_ASSERT("Count pointer is NULL", m_count != 0);
-            ++(*m_count);
-            m_bufferObject = other.m_bufferObject;
-            this->lock();
+            if (m_count)
+            {
+                ++(*m_count);
+                m_bufferObject = other.m_bufferObject;
+                this->lock();
+            }
             return *this;
         }
 
@@ -89,11 +103,22 @@ public:
             return buffer;
         };
 
+        void reset()
+        {
+            if (m_count)
+            {
+                --(*m_count);
+                this->unlock();
+            }
+            m_count = 0;
+            m_bufferObject.reset();
+        }
 
     protected:
 
         void lock()
         {
+            SLM_ASSERT("Count pointer is NULL", m_count != 0);
             if( SPTR(T) bufferObject = m_bufferObject.lock() )
             {
                 if (fwTools::IBufferManager::sptr manager = bufferObject->m_bufferManager)
@@ -105,6 +130,7 @@ public:
 
         void unlock()
         {
+            SLM_ASSERT("Count pointer is NULL", m_count != 0);
             if( SPTR(T) bufferObject = m_bufferObject.lock() )
             {
                 if (fwTools::IBufferManager::sptr manager = bufferObject->m_bufferManager)
