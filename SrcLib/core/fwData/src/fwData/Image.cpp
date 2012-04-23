@@ -41,7 +41,7 @@ Image::Image() :
         m_type(),
         m_dWindowCenter(0),
         m_dWindowWidth(0),
-        m_dataArray()
+        m_dataArray( ::fwData::Array::New() )
 {}
 
 //------------------------------------------------------------------------------
@@ -90,8 +90,12 @@ void Image::deepCopy( Image::csptr _source )
 
 void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 {
+    if( ! array )
+    {
+        array = ::fwData::Array::New();
+    }
     m_dataArray = array;
-    if (copyArrayInfo && array)
+    if (copyArrayInfo)
     {
         m_size = array->getSize();
         m_type = array->getType();
