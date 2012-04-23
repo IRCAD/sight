@@ -31,6 +31,11 @@ class FWCOMED_CLASS_API Image
 
 public :
 
+    typedef ::fwData::Image::SizeType SizeType;
+    typedef ::fwData::Image::IndexType IndexType;
+    typedef ::fwData::Image::BufferType BufferType;
+    typedef ::fwData::Image::BufferIndexType BufferIndexType;
+
     /// Constructor. Initialize parameters.
     FWCOMED_API Image( ::fwData::Image::sptr image );
 
@@ -67,13 +72,18 @@ public :
     FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource );
 
     /// Returns image buffer
-    void * getBuffer();
+    FWCOMED_API void * getBuffer();
+
+    /// Helpers for 3D images
+    FWCOMED_API void* getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z );
+
+    FWCOMED_API void* getPixelBuffer( IndexType index );
 
 private :
 
     ::fwComEd::ImageMsg::sptr m_imageMsg;
 
-    ::fwData::Image::wptr m_image;
+    ::fwData::Image::sptr m_image;
 
     ::fwTools::BufferObject::Lock m_lock;
 };

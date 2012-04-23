@@ -24,7 +24,7 @@
 #include <fwServices/IService.hpp>
 
 #include "fwComEd/export.hpp"
-
+#include "fwComEd/helper/Image.hpp"
 
 namespace fwComEd
 {
@@ -330,8 +330,9 @@ public:
 template < typename INT_INDEX>
 bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX &point)
 {
+    ::fwComEd::helper::Image imageLock ( image );
     const unsigned char imageTypeSize = image->getPixelType().sizeOf();
-    ::fwData::Image::BufferType *buf = static_cast< ::fwData::Image::BufferType *> (image->getPixelBuffer(point[0], point[1], point[2]));
+    ::fwData::Image::BufferType *buf = static_cast< ::fwData::Image::BufferType *> (imageLock.getPixelBuffer(point[0], point[1], point[2]));
 
     return isBufNull(buf, imageTypeSize);
 }
@@ -358,7 +359,8 @@ public:
     template < typename IMAGE >
     void operator()( Param &param )
     {
-        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        ::fwComEd::helper::Image imageLock ( param.image );
+        IMAGE * buffer = static_cast < IMAGE* > (imageLock.getBuffer());
         const ::fwData::Image::SizeType &size = param.image->getSize();
         ::fwData::Image::SizeType::value_type len = size[0]*size[1]*size[2];
 
