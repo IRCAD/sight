@@ -32,7 +32,7 @@ class FWCOMED_CLASS_API Image
 public :
 
     /// Constructor. Initialize parameters.
-    FWCOMED_API Image( ::fwData::Image::wptr image );
+    FWCOMED_API Image( ::fwData::Image::sptr image );
 
     /// Destrucotr. Do nothing.
     FWCOMED_API ~Image();
@@ -66,11 +66,16 @@ public :
     /// Send the message of modification
     FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource );
 
+    /// Returns image buffer
+    void * getBuffer();
+
 private :
 
     ::fwComEd::ImageMsg::sptr m_imageMsg;
 
     ::fwData::Image::wptr m_image;
+
+    ::fwTools::BufferObject::Lock m_lock;
 };
 
 } // helper

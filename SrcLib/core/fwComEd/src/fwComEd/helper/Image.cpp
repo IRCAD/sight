@@ -24,15 +24,27 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Image::Image( ::fwData::Image::wptr image )
+Image::Image( ::fwData::Image::sptr image )
     : m_image(image),
       m_imageMsg ( new ::fwComEd::ImageMsg() )
-{}
+{
+    if ( image )
+    {
+        m_lock = image->getDataArray()->getBufferObject()->lock();
+    }
+}
 
 //-----------------------------------------------------------------------------
 
 Image::~Image()
 {}
+
+//-----------------------------------------------------------------------------
+
+void * Image::getBuffer()
+{
+    return m_lock.getBuffer();
+}
 
 //-----------------------------------------------------------------------------
 
