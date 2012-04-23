@@ -181,6 +181,12 @@ bool BufferManager::lockBuffer(const void * const * buffer)
 
     m_dumpPolicy->lockRequest( info, castedBuffer );
 
+    if ( info.isDumped )
+    {
+        bool restored = this->restoreBuffer( buffer );
+        OSLM_ASSERT( "restore not OK ( "<< restored << " && " << *buffer <<" != 0 ).", restored && *buffer != 0 );
+    }
+
     m_lastAccess.modified();
 
     m_updated();
@@ -197,12 +203,6 @@ bool BufferManager::unlockBuffer(const void * const * buffer)
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     m_dumpPolicy->unlockRequest( info, castedBuffer );
-
-    if ( info.isDumped )
-    {
-        bool restored = this->restoreBuffer( buffer );
-        OSLM_ASSERT( "restore not OK ( "<< restored << " && " << *buffer <<" != 0 ).", restored && *buffer != 0 );
-    }
 
     m_updated();
     return true;
