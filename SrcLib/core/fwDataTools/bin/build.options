@@ -1,5 +1,9 @@
 TYPE    = 'shared'
 VERSION = '0-1'
-LIB = ['fwCore_0-1','fwData_0-1']
+LIB = [
+      'fwCore_0-1',
+      'fwData_0-1',
+      'fwComEd_0-1'
+      ]
 USE = ['boost', 'boostThread']
 

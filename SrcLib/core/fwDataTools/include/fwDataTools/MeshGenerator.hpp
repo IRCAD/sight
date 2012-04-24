@@ -13,6 +13,8 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Mesh.hpp>
 
+#include <fwComEd/helper/Mesh.hpp>
+
 #include "fwDataTools/Vector.hxx"
 #include "fwDataTools/export.hpp"
 
