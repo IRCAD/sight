@@ -79,6 +79,9 @@ public :
 
     FWCOMED_API void* getPixelBuffer( IndexType index );
 
+    /// Returns a copy of current lock on image
+    FWCOMED_API ::fwTools::BufferObject::Lock getLock() const;
+
 private :
 
     ::fwComEd::ImageMsg::sptr m_imageMsg;

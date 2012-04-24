@@ -138,6 +138,9 @@ public :
     FWCOMED_API const char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
     ///@}
 
+    /// Returns a copy of current lock on array
+    FWCOMED_API ::fwTools::BufferObject::Lock getLock() const;
+
 protected:
 
     /**

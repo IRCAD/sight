@@ -165,6 +165,13 @@ void Array::getItem(const ::fwData::Array::IndexType &id, const size_t component
 
 //------------------------------------------------------------------------------
 
+::fwTools::BufferObject::Lock Array::getLock() const
+{
+    return m_lock;
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace helper
 
 } // namespace fwComEd

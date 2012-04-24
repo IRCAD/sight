@@ -201,5 +201,15 @@ void* Image::getPixelBuffer( IndexType index )
     BufferIndexType bufIndex = index * imagePixelSize;
     return buf + bufIndex;
 }
+
+//------------------------------------------------------------------------------
+
+::fwTools::BufferObject::Lock Image::getLock() const
+{
+    return m_lock;
+}
+
+//------------------------------------------------------------------------------
+
 } // helper
 } // fwComEd

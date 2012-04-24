@@ -148,6 +148,7 @@ const void *Array::getBuffer() const
 }
 
 //------------------------------------------------------------------------------
+
 void Array::setBuffer(void *buf, bool takeOwnership)
 {
     if(!m_attrBufferObject->isEmpty() && m_isBufferOwner)
