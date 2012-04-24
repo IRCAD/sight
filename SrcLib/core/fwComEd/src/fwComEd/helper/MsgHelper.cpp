@@ -18,7 +18,7 @@ namespace helper
 
 ::fwServices::ObjectMsg::sptr MsgHelper::createAssociatedMsg( ::fwData::Object::csptr _obj)
 {
-    SLM_ASSERT("Object is NULL", _obj)
+    SLM_ASSERT("Object is NULL", _obj);
     const std::string msgType = MsgHelper::getAssociatedMsgType(_obj);
 
     ::fwTools::Object::sptr obj = ::fwTools::Factory::New(msgType);

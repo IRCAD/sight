@@ -12,10 +12,9 @@ namespace fwComEd
 namespace helper
 {
 
-Array::Array( ::fwData::Array::sptr array ) :
-        m_array (array)
+Array::Array( ::fwData::Array::sptr array ) : m_array (array)
 {
-    OSLM_ASSERT("Array ptr is null.", array);
+    SLM_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }
 
@@ -38,6 +37,32 @@ void *Array::getBuffer()
 const void *Array::getBuffer() const
 {
     return m_lock.getBuffer();
+}
+
+//------------------------------------------------------------------------------
+
+void Array::setBuffer(void *buf, bool takeOwnership)
+{
+    ::fwTools::BufferObject::sptr attrBufferObject = m_array->getBufferObject();
+    if(!attrBufferObject->isEmpty() && m_array->getIsBufferOwner())
+    {
+        attrBufferObject->destroy();
+    }
+    attrBufferObject->setBuffer(buf, (buf == NULL) ? 0 : m_array->getSizeInBytes());
+    m_array->setIsBufferOwner(!attrBufferObject->isEmpty() && takeOwnership);
+}
+
+//------------------------------------------------------------------------------
+
+void Array::setBuffer(
+        void *buf,
+        bool takeOwnership,
+        const ::fwTools::Type &type,
+        const  ::fwData::Array::SizeType &size,
+        size_t nbOfComponents )
+{
+    m_array->resize( type, size, nbOfComponents, false);
+    this->setBuffer(buf, takeOwnership);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,6 +95,75 @@ const char *Array::end() const
 
 //-----------------------------------------------------------------------------
 
+char *Array::getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType )
+{
+    size_t sizeOf = m_array->getType().sizeOf();
+    size_t offset = m_array->getBufferOffset(id, component, sizeOf);
+    char *item = static_cast<char*>(this->getBuffer()) + offset;
+    return item;
+}
+
+//------------------------------------------------------------------------------
+
+const char *Array::getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const
+{
+    size_t sizeOf = m_array->getType().sizeOf();
+    size_t offset = m_array->getBufferOffset(id, component, sizeOf);
+    const char *item = static_cast<const char*>(this->getBuffer()) + offset;
+    return item;
+}
+
+//------------------------------------------------------------------------------
+
+void Array::setItem(const ::fwData::Array::IndexType &id, const void *value)
+{
+    size_t sizeOf = m_array->getType().sizeOf();
+    const char *val  = static_cast<const char*>(value);
+    char *item = this->getBufferPtr(id, 0, sizeOf);
+    std::copy(val, val + m_array->getNumberOfComponents()*sizeOf, item);
+}
+//------------------------------------------------------------------------------
+
+
+void Array::setItem(const ::fwData::Array::IndexType &id, const size_t component, const void *value)
+{
+    size_t sizeOf = m_array->getType().sizeOf();
+    const char *val  = static_cast<const char*>(value);
+    char *item = this->getBufferPtr(id, component, sizeOf);
+    std::copy(val, val + sizeOf, item);
+}
+
+
+//------------------------------------------------------------------------------
+
+void *Array::getItem(const ::fwData::Array::IndexType &id, const size_t component)
+{
+    size_t sizeOf = m_array->getType().sizeOf();
+    char *item = this->getBufferPtr(id, component, sizeOf);
+    return item;
+}
+
+//------------------------------------------------------------------------------
+
+void Array::getItem(const ::fwData::Array::IndexType &id, void *value) const
+{
+    size_t sizeOf = m_array->getType().sizeOf();
+    const char *item = this->getBufferPtr(id, 0, sizeOf);
+    char *val  = static_cast<char*>(value);
+    std::copy(item, item + m_array->getNumberOfComponents()*sizeOf, val);
+}
+
+//------------------------------------------------------------------------------
+
+void Array::getItem(const ::fwData::Array::IndexType &id, const size_t component, void *value) const
+{
+    size_t sizeOf = m_array->getType().sizeOf();
+    const char *item = this->getBufferPtr(id, component, sizeOf);
+    char *val  = static_cast<char*>(value);
+    std::copy(item, item + m_array->getNumberOfComponents()*sizeOf, val);
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace helper
 
