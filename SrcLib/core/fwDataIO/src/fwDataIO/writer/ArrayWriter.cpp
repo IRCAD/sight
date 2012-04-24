@@ -12,6 +12,8 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "fwDataIO/writer/ArrayWriter.hpp"
 
 
@@ -42,7 +44,8 @@ void ArrayWriter::write()
 
     ::fwData::Array::sptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->getSizeInBytes();
-    char* buff = array->begin();
+    ::fwComEd::helper::Array arrayHelper(array);
+    char* buff = arrayHelper.begin();
 
     std::ofstream fs(file.string().c_str(), std::ios::binary|std::ios::trunc);
 
