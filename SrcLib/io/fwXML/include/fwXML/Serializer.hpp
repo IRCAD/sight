@@ -16,6 +16,8 @@
 #include <fwTools/Failed.hpp>
 #include <fwTools/ProgressAdviser.hpp>
 
+#include <fwMemory/IPolicy.hpp>
+
 #include "fwXML/config.hpp"
 #include "fwXML/policy/ISplitPolicy.hpp"
 #include "fwXML/policy/IPathPolicy.hpp"
@@ -79,6 +81,9 @@ protected :
 
     /// here rootFolder is mandatory *static* because sub classes processing serialization must k,ow the basename of patient Folder
     FWXML_API static ::boost::filesystem::path m_rootFolder;
+
+    /// Dump policy
+    ::fwMemory::IPolicy::sptr m_oldPolicy;
 
 };
 

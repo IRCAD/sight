@@ -24,6 +24,11 @@
 #include <fwTools/Factory.hpp>
 #include <fwTools/Failed.hpp>
 #include <fwCore/Demangler.hpp>
+
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/policy/NeverDump.hpp>
+#include <fwMemory/policy/BarrierDump.hpp>
+
 #include <fwXML/visitor/accept.hpp>
 
 #include "fwXML/visitor/Serialize.hpp"
@@ -118,12 +123,38 @@ void Serializer::IOforExtraXML( ::fwData::Object::sptr object , bool savingMode)
 //------------------------------------------------------------------------------
 
 Serializer::Serializer()
-{}
+{
+    ::fwMemory::BufferManager::sptr manager =
+            ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+
+    if( manager )
+    {
+        ::fwMemory::IPolicy::sptr policy = manager->getDumpPolicy();
+        if( ::boost::dynamic_pointer_cast< ::fwMemory::policy::NeverDump >( policy ) )
+        {
+            ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
+            size_t aliveMemory = manager->getManagedBufferSize() - manager->getDumpedBufferSize();
+            size_t barrier = std::max( aliveMemory, static_cast<size_t>(500L * 1024 * 1024) );
+            newDumpPolicy->setBarrier( manager->getManagedBufferSize() - manager->getDumpedBufferSize() );
+            manager->setDumpPolicy( newDumpPolicy );
+            m_oldPolicy = policy;
+        }
+    }
+}
 
 //------------------------------------------------------------------------------
 
 Serializer::~Serializer()
-{}
+{
+    ::fwMemory::BufferManager::sptr manager =
+            ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+
+    if( manager && m_oldPolicy )
+    {
+        manager->setDumpPolicy( m_oldPolicy );
+        m_oldPolicy.reset();
+    }
+}
 
 //------------------------------------------------------------------------------
 
