@@ -23,6 +23,21 @@ namespace fwTools
  * @class   BufferObject
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
+ *
+ * Keep a pointer to a buffer and it's allocation policy (new malloc) without
+ * any cleverness about allocating/destroying the buffer. Users of this class
+ * needs to take care about allocation and destruction by themselves.
+ *
+ * BufferObject class has a BufferManager and Locks mechanism, Allowing to
+ * trigger special treatements on various events on BufferObjects (allocation,
+ * reallocation, destruction, locking, unlocking) and allowing to give some
+ * guarantees.
+ *
+ * Users of buffer have to keep a lock on a BufferObject when dealing with the
+ * buffers content. Keeping a lock on a BufferObject garantees that the buffer
+ * will not be changed or modified by the BufferManager mechanism. A lock *DO
+ * NOT GARANTEE* that an other user of this buffer object are not
+ * changing/modifying the buffer.
  */
 class FWTOOLS_CLASS_API BufferObject : public ::fwCore::BaseObject
 {
@@ -33,6 +48,10 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro((BufferObject), (()), new BufferObject );
     fwCoreAllowSharedFromThis();
 
+    /**
+     * @brief base class for BufferObject Lock
+     *
+     */
     template <typename T>
     class LockBase
     {
@@ -41,11 +60,21 @@ public:
         typedef typename ::boost::conditional< ::boost::is_const< T >::value, const void*, void* >::type BufferType;
 
 
+        /**
+         * @brief Build an empty lock.
+         */
         LockBase() :
             m_count(0)
         {
         }
 
+        /**
+         * @brief Build a lock on object 'bo'
+         *
+         * Increments BufferObject's lock counts.
+         *
+         * @param bo BufferObject to lock
+         */
         LockBase( SPTR(T) bo ) :
             m_bufferObject(bo),
             m_count(0)
@@ -57,6 +86,13 @@ public:
             this->lock();
         }
 
+        /**
+         * @brief Copy contructor
+         *
+         * If the copyed lock has a lock count, increment it.
+         *
+         * @param other Lock to copy
+         */
         LockBase( const LockBase &other ):
             m_count(0)
         {
@@ -70,6 +106,11 @@ public:
             }
         }
 
+        /**
+         * @brief Lock destructor
+         *
+         * Decrement a lock count if any.
+         */
         ~LockBase()
         {
             if (m_count)
@@ -79,6 +120,16 @@ public:
             }
         }
 
+        /**
+         * @brief copy operator
+         *
+         * Decrement count if has any, and if the copyed lock has a lock count,
+         * increment it.
+         *
+         * @param other lock to copy
+         *
+         * @return the lock itself
+         */
         LockBase & operator= (const LockBase & other)
         {
             if (m_count)
@@ -96,6 +147,11 @@ public:
             return *this;
         }
 
+        /**
+         * @brief Returns BufferObject's buffer pointer
+         *
+         * @return
+         */
         BufferType getBuffer() const
         {
             SPTR(T) bufferObject = m_bufferObject.lock();
@@ -103,6 +159,9 @@ public:
             return buffer;
         };
 
+        /**
+         * @brief Release any count on any BufferType the lock may have.
+         */
         void reset()
         {
             if (m_count)
@@ -116,6 +175,9 @@ public:
 
     protected:
 
+        /**
+         * @brief If any instance of BufferManager is active, triggers t's lockBuffer event.
+         */
         void lock()
         {
             SLM_ASSERT("Count pointer is NULL", m_count != 0);
@@ -128,6 +190,9 @@ public:
             }
         }
 
+        /**
+         * @brief If any instance of BufferManager is active, triggers t's unlockBuffer event.
+         */
         void unlock()
         {
             SLM_ASSERT("Count pointer is NULL", m_count != 0);
@@ -139,6 +204,8 @@ public:
                 }
             }
         }
+
+
 
         long *m_count;
         WPTR(T) m_bufferObject;
