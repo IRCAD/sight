@@ -82,7 +82,7 @@ void Reconstruction::shallowCopy( Reconstruction::csptr _source )
     m_attrMaterial = _source->m_attrMaterial;
     m_attrImage    = _source->m_attrImage;
     m_attrMesh     = _source->m_attrMesh;
-    }
+}
 
 //------------------------------------------------------------------------------
 
@@ -111,9 +111,7 @@ void Reconstruction::deepCopy( Reconstruction::csptr _source )
     m_attrMaterial = ::fwData::Object::copy(_source->m_attrMaterial);
     m_attrImage    = ::fwData::Object::copy(_source->m_attrImage);
     m_attrMesh     = ::fwData::Object::copy(_source->m_attrMesh);
-    }
-
-
+}
 
 //------------------------------------------------------------------------------
 
@@ -135,14 +133,20 @@ bool Reconstruction::getIsClosed()
 
 bool Reconstruction::isClosed(Reconstruction::csptr reconstruction)
 {
-
     bool isClosed = false;
     ::fwData::Mesh::csptr mesh = reconstruction->getMesh();
+
     ::fwData::Array::sptr cellData = mesh->getCellDataArray();
     ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
     ::fwData::Array::sptr cellTypes = mesh->getCellTypesArray();
+
+    ::fwTools::BufferObject::Lock lockCellData(cellData->getBufferObject());
+    ::fwTools::BufferObject::Lock lockCellDataOffsets(cellDataOffsets->getBufferObject());
+    ::fwTools::BufferObject::Lock lockCellTypes(cellTypes->getBufferObject());
+
     ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
     ::fwData::Mesh::Id nbOfCells = mesh->getNumberOfCells();
+
     ::fwData::Mesh::CellValueType* cellDataBegin = cellData->begin< ::fwData::Mesh::CellValueType >();
     ::fwData::Mesh::CellValueType* cellDataEnd = cellDataBegin + cellDataSize;
     ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin = cellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
