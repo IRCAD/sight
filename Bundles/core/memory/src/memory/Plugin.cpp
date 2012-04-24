@@ -33,9 +33,10 @@ Plugin::~Plugin() throw()
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
-    // manager->setDumpPolicy( ::fwMemory::policy::NeverDump::New() );
+    manager->setDumpPolicy( ::fwMemory::policy::NeverDump::New() );
     // manager->setDumpPolicy( ::fwMemory::policy::ValveDump::New() );
-    manager->setDumpPolicy( ::fwMemory::policy::AlwaysDump::New() );
+    // manager->setDumpPolicy( ::fwMemory::policy::AlwaysDump::New() );
+    // manager->setDumpPolicy( ::fwMemory::policy::BarrierDump::New() );
 
     ::fwTools::IBufferManager::setCurrent( manager );
 }
