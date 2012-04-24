@@ -116,7 +116,7 @@ void DicomSurface::setNormalCoordSize(const unsigned long a_size)
 void DicomSurface::setFromData(fwData::Reconstruction::csptr a_reconstruction)
 {
     // Get mesh
-    ::fwData::Mesh::csptr mesh = a_reconstruction->getMesh();
+    ::fwData::Mesh::sptr mesh = a_reconstruction->getMesh();
     FW_RAISE_IF("Can't save this Mesh. It must contain only triangle!", !::fwDataTools::MeshGenerator::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
     ::fwData::Array::sptr pointArray = mesh->getPointsArray();

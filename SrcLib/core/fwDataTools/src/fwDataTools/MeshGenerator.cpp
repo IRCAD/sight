@@ -300,10 +300,11 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
 
 //------------------------------------------------------------------------------
 
-bool MeshGenerator::hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell)
+bool MeshGenerator::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell)
 {
     bool res = true;
-    ::fwData::Mesh::CellTypesMultiArrayType cellTypes = mesh->getCellTypes();
+    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwData::Mesh::CellTypesMultiArrayType cellTypes = meshHelper.getCellTypes();
 
     BOOST_FOREACH(::fwData::Mesh::CellTypes type, cellTypes)
     {

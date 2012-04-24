@@ -174,7 +174,7 @@ public :
      * @param[in]  mesh fwData::Mesh mesh structure to find cell type.
      * @param[in]  cell CellTypes to find in mesh.
      */
-    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell);
+    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell);
 
     /// Applied a transformation 4x4 on mesh
     FWDATATOOLS_API static void transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::sptr t );
