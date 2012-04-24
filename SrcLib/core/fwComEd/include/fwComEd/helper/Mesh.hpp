@@ -30,6 +30,7 @@ namespace helper
 class FWCOMED_CLASS_API Mesh
 {
 public :
+    fwCoreClassDefinitionsWithFactoryMacro((Mesh), (((::fwData::Mesh::sptr))), new Mesh );
 
     FWCOMED_API Mesh( ::fwData::Mesh::sptr mesh );
 
@@ -193,6 +194,8 @@ public :
      /// Returns the internal corresponding array as a boost::multi_array_ref
      FWCOMED_API ::fwData::Mesh::CellNormalsMultiArrayType     getCellNormals() const;
 
+     /// Returns the internal ::fwData::Mesh
+     FWCOMED_API ::fwData::Mesh::csptr getMesh() const;
 
 protected:
 

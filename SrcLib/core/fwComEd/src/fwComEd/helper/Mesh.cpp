@@ -316,6 +316,14 @@ void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValu
             );
 }
 
+//------------------------------------------------------------------------------
+
+::fwData::Mesh::csptr Mesh::getMesh() const
+{
+    return m_mesh;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace helper
 
