@@ -135,7 +135,7 @@ Serializer::Serializer()
             ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
             size_t aliveMemory = manager->getManagedBufferSize() - manager->getDumpedBufferSize();
             size_t barrier = std::max( aliveMemory, static_cast<size_t>(500L * 1024 * 1024) );
-            newDumpPolicy->setBarrier( manager->getManagedBufferSize() - manager->getDumpedBufferSize() );
+            newDumpPolicy->setBarrier( barrier );
             manager->setDumpPolicy( newDumpPolicy );
             m_oldPolicy = policy;
         }
