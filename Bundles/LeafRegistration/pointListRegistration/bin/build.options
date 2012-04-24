@@ -1,0 +1,5 @@
+TYPE = 'bundle'
+VERSION = '0.1'
+#USE = []
+LIB = ['fwCore_0-1','fwRuntime_0-3','fwData_0-1','fwServices_0-1','fwComEd_0-1','ARLcore_0-1','fwDataTools_0-1', 'fwGuiQt_0-1']
+#BUNDLES = []

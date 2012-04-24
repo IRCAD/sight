@@ -59,4 +59,11 @@
         <service>::uiMeasurement::action::ShowLandmark</service>
         <object>::fwData::Image</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiMeasurement::action::SAddLabeledPoint</service>
+        <object>::fwData::PointList</object>
+    </extension>
+    
 </plugin>

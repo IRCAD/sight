@@ -1,0 +1,20 @@
+<plugin id="pointListRegistration" class="::pointListRegistration::Plugin">
+    
+    <library name="pointListRegistration" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::pointListRegistration::SPointListRegistration</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::pointListRegistration::STransformMesh</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+</plugin>

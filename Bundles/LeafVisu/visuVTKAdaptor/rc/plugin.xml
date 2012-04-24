@@ -313,7 +313,14 @@
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::MeshNormals</service>
         <object>::fwData::Mesh</object>
-    </extension> 
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::LabeledPointList</service>
+        <object>::fwData::PointList</object>
+    </extension>
+     
 </plugin>
 
 

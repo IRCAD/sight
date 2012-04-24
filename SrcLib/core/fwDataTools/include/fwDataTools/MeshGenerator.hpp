@@ -10,6 +10,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Mesh.hpp>
 
 #include "fwDataTools/Vector.hxx"
@@ -172,6 +173,9 @@ public :
      * @param[in]  cell CellTypes to find in mesh.
      */
     FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell);
+
+    /// Applied a transformation 4x4 on mesh
+    FWDATATOOLS_API static void transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::sptr t );
 
 protected:
 

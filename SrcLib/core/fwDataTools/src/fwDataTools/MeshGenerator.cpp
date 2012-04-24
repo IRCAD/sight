@@ -719,4 +719,27 @@ void MeshGenerator::shakePoint(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
+void MeshGenerator::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::sptr t )
+ {
+    size_t nbPts = mesh->getNumberOfPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
+    RandFloat randFloat;
+    for(size_t i=0 ; i<nbPts ; ++i )
+    {
+        float x = points[i][0];
+        float y = points[i][1];
+        float z = points[i][2];
+        float xp,yp,zp,factor = 1;
+        xp      = t->getCoefficient(0,0) * x + t->getCoefficient(0,1) * y + t->getCoefficient(0,2) * z + t->getCoefficient(0,3);
+        yp      = t->getCoefficient(1,0) * x + t->getCoefficient(1,1) * y + t->getCoefficient(1,2) * z + t->getCoefficient(1,3);
+        zp      = t->getCoefficient(2,0) * x + t->getCoefficient(2,1) * y + t->getCoefficient(2,2) * z + t->getCoefficient(2,3);
+        factor  = t->getCoefficient(3,0) * x + t->getCoefficient(3,1) * y + t->getCoefficient(3,2) * z + t->getCoefficient(3,3);
+        points[i][0] = xp/factor;
+        points[i][1] = yp/factor;
+        points[i][2] = zp/factor;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace fwDataTools

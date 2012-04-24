@@ -1,0 +1,393 @@
+<!--
+             graphical application overview for each tab.
+
+
+Point list 1 Tab selected
+=======================================================================
+|                   toolBar                                            |
+|======================================================================|
+|| Point list 1 Tab ||  Point list 2 Tab| Registration Tab|            |
+|======================================================================|
+|                                                                      |
+|                                                                      |
+|                    multiView_negato1                                 |
+|                                                                      |
+========================================================================
+
+Point list 2 Tab selected
+
+=======================================================================
+|                   toolBar                                            |
+|======================================================================|
+| Point list 1 Tab ||  Point list 2 Tab || Registration Tab|           |
+|======================================================================|                                                                      |
+|                                                                      |
+|                    negato2                                           |
+|                                                                      |
+========================================================================
+
+Regsitration Tab selected
+
+=======================================================================
+|                   toolBar                                            |
+|======================================================================|
+| Point list 1 Tab |  Point list 2 Tab || Registration Tab||           |
+|======================================================================|                                                                      |
+|                                                                      |
+|                                                                      |
+|                    negato3                                           |
+|                                                                      |
+========================================================================
+
+Detail of the ToolBar
+=======================================================================================================================================
+| actionOpenFile | actionOpenMesh1 | actionOpenMesh2 | ActionNewLandmarkPL1 | ActionNewLandmarkPL2 | TransformAction | RegisterAction |                                                               |
+=======================================================================================================================================
+
+
+ This application allows to do registration from two meshes or from an image and a mesh.
+ Step 1 : The user loads a mesh or/and image in the first tab by using the button (actionOpenFile)
+          The first button is for loading an image (actionOpenFile) and the second is for loading a mesh (actionOpenMesh1).
+ Step 2 : The user loads a mesh in the second Tab by using the button with a face and a two on the icon (actionOpenMesh2).
+ Step 3 : The user put at least 3 points in the first tab named Point list 1 (ActionNewLandmarkPL1).
+ Step 4 : The user put at least 3 points in the second tab named Point list 2 (The numeber of points must be the same in the two Tabs) (ActionNewLandmarkPL2).
+ Step 5 : The user click on the register button (Yin_Yang symbol) to do the registration and visualize the result on the third tab (RegisterAction).
+
+ Nota : The button with a blue point on it is for doing a fixed rotation and a translation on the mesh loaded in second tab (TransformAction).
+ -->
+<plugin id="Ex03Registration">
+
+    <requirement id="servicesReg" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>Ex03RegistrationConfig</id>
+        <type>standard</type>
+       <config>
+           <object type="::fwData::Composite">
+
+            <service uid="MyMainFrame" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+                <gui>
+                    <frame>
+                        <name>Ex03Registration</name>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="Negato1" align="center" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <toolBar sid="toolBar" start="yes" />
+                    <view sid="multiView" start="yes" />
+                </registry>
+            </service>
+            <!-- service which create a toolbar -->
+            <service uid="toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Load Image" icon="Bundles/Ex03Registration_0-1/icons/icon-load1.png" />
+                        <menuItem name="Load Mesh1" icon="Bundles/Ex03Registration_0-1/icons/icon-load1.png" />
+                        <separator />
+                        <menuItem name="Load Mesh2" icon="Bundles/Ex03Registration_0-1/icons/icon-load2.png" />
+                        <separator />
+                        <menuItem name="New landmark PL1" icon="Bundles/Ex03Registration_0-1/icons/Add-landmark.png" />
+                        <menuItem name="New landmark PL2" icon="Bundles/Ex03Registration_0-1/icons/Add-landmark.png" />
+                        <separator />
+                        <menuItem name="Move" icon="Bundles/Ex03Registration_0-1/icons/View-landmark.png" />
+                        <menuItem name="Register" icon="Bundles/Ex03Registration_0-1/icons/Fusion-tmp.png" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionOpenFile" start="yes" />
+                    <menuItem sid="actionOpenMesh1" start="yes" />
+                    <menuItem sid="actionOpenMesh2" start="yes" />
+                    <menuItem sid="ActionNewLandmarkPL1" start="yes" />
+                    <menuItem sid="ActionNewLandmarkPL2" start="yes" />
+                    <menuItem sid="TransformAction" start="yes" />
+                    <menuItem sid="RegisterAction" start="yes" />
+                </registry>
+            </service>
+
+            <!-- service which create the three tabs of the application -->
+            <service uid="multiView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::TabLayoutManager" >
+                        <view caption="Point List 1" selected="yes" />
+                        <view caption="Point List 2" />
+                        <view caption="Registration" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <view sid="multiView_negato1" start="yes" />
+                    <view sid="negato2" start="yes" />
+                    <view sid="negato3" start="yes" />
+                </registry>
+            </service>
+
+            <!-- NEGATO 1 VIEW  (Content of the first Tab)-->
+            <service uid="multiView_negato1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="negato1" start="yes" />
+                    <view sid="multiView_negato1_bottom" start="yes" />
+                </registry>
+            </service>
+            <service uid="multiView_negato1_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="snapshotNegato1Editor" start="yes" />
+                    <view sid="slider_negato1" start="no" />
+                    <view sid="distanceNegato1Editor" start="yes" />
+                </registry>
+            </service>
+            <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+                <snap>
+                    <scene uid="negato1" />
+                </snap>
+            </service>
+
+            <!-- Action to load an image in the Tab 1 (Point list 1)-->
+            <service uid="actionOpenFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <start uid="readerPathFile" />
+            </service>
+
+            <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
+            <service uid="actionOpenMesh1" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <start uid="meshReader1" />
+            </service>
+            <!-- Action to load a mesh in the Tab 2 (Point list 2)  -->
+            <service uid="actionOpenMesh2" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <start uid="meshReader2" />
+            </service>
+
+            <!-- Action to do a fixed translation/rotation on mesh in Point list 2 -->
+            <service uid="TransformAction" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <start uid="TransformMesh" />
+            </service>
+
+            <!-- Action to do the registration -->
+            <service uid="RegisterAction" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <start uid="PLRegistration" />
+            </service>
+
+            <!-- GENERIC SCENE DEFINITION -->
+            <item key="visuConfig">
+                <object uid="VisuComposite" type="::fwData::Composite">
+
+                    <!-- Service which compute the registration -->
+                    <service uid="PLRegistration" type="::fwServices::IController" implementation="::pointListRegistration::SPointListRegistration" autoComChannel="no">
+                        <registeredPoints compositeKey="pointList2" />
+                        <referencePoints compositeKey="pointList1" />
+                        <matrix compositeKey="registrationMatrix" />
+                    </service>
+
+                    <service uid="TransformMesh" type="::fwServices::IController" implementation="::pointListRegistration::STransformMesh" autoComChannel="no"/>
+
+                    <!-- Generic Scene (Negato) for the first tab -->
+                    <service uid="negato1" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+                            <picker id="negato1default" vtkclass="fwVtkCellPicker" />
+
+                            <renderer id="default" background="0.0" />
+
+                            <adaptor id="renderNegato1" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+
+                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+
+                            <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle3DForNegato" />
+                            </adaptor>
+
+                            <adaptor id="MPRNegato1" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                                <config renderer="default" picker="negato1default" slices="3" sliceIndex="axial" useColorTF="no" />
+                            </adaptor>
+
+                            <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
+                                <config renderer="default" picker="negato1default" text="" />
+                            </adaptor>
+
+                            <adaptor id="MeshOnNegato1" class="::visuVTKAdaptor::Mesh" objectId="meshOnNegato1">
+                                <config renderer="default" picker="negato1default" />
+                            </adaptor>
+
+                            <adaptor id="pl1" class="::visuVTKAdaptor::LabeledPointList" objectId="pointList1">
+                                <config renderer="default" picker="negato1default" />
+                            </adaptor>
+
+                        </scene>
+                    </service>
+
+                    <!-- Generic Scene (Negato) for the second tab -->
+                    <service uid="negato2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+                            <picker id="negato2default" vtkclass="fwVtkCellPicker" />
+
+                            <renderer id="default" background="0.0" />
+
+                            <adaptor id="renderNegato2" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+
+                            <adaptor id="Interactor2" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle3DForNegato" />
+                            </adaptor>
+
+                            <adaptor id="Tool" class="::visuVTKAdaptor::Mesh" objectId="meshOnNegato2">
+                                <config renderer="default" picker="negato2default" />
+                            </adaptor>
+
+                            <adaptor id="pl2" class="::visuVTKAdaptor::LabeledPointList" objectId="pointList2">
+                                <config renderer="default" picker="negato2default" />
+                            </adaptor>
+
+                        </scene>
+                    </service>
+
+                    <!-- Generic Scene (Negato) for the Third tab -->
+                    <service uid="negato3" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <scene>
+
+                            <picker id="negato3default" vtkclass="fwVtkCellPicker" />
+
+                            <renderer id="default" background="0.0" />
+
+                            <vtkObject id="vtkRegisterMatrix" class="vtkTransform" />
+
+                            <adaptor id="renderNegato3" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+
+                            <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle3DForNegato" />
+                            </adaptor>
+
+                            <adaptor id="Tool" class="::visuVTKAdaptor::Mesh" objectId="meshOnNegato2">
+                                <config renderer="default" transform="vtkRegisterMatrix" />
+                            </adaptor>
+
+                            <adaptor id="Tool2" class="::visuVTKAdaptor::Mesh" objectId="meshOnNegato1">
+                                <config renderer="default" transform="vtkRegisterMatrix" />
+                            </adaptor>
+
+                            <adaptor id="MPRNegato3" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                                <config renderer="default" picker="negato3default" slices="3" sliceIndex="axial" useColorTF="no" />
+                            </adaptor>
+
+                            <adaptor id="MatrixAdaptor" class="::visuVTKAdaptor::Transform" objectId="registrationMatrix">
+                                <config renderer="default" picker="" transform="vtkRegisterMatrix" />
+                            </adaptor>
+
+                        </scene>
+                    </service>
+
+                    <item key="myImage">
+                       <!-- Object to store the image loading in the first tab -->
+                        <object uid="myImage" type="::fwData::Image">
+
+                            <service uid="MedicalImageSrv" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="no" />
+
+                            <service uid="readerPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                                <type mode="reader" />
+                                <selection mode="exclude" />
+                                <addSelection service="::ioXML::FwXMLGenericReaderService" />
+                            </service>
+
+                            <!-- Editors for Negato1 -->
+                            <service uid="slider_negato1" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                                <sliceIndex>axial</sliceIndex>
+                            </service>
+
+                            <service uid="distanceNegato1Editor" type="::gui::editor::IEditor" implementation="::uiMeasurement::editor::Distance" autoComChannel="no">
+                                <placeInScene uid="negato1" />
+                            </service>
+
+                        </object>
+                    </item>
+
+                    <item key="meshOnNegato1">
+                         <!-- Object to store the mesh loading in the first tab -->
+                        <object uid="meshOnNegato1" type="::fwData::Mesh">
+                            <service uid="meshReader1" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" >
+                                <type mode="reader" />
+                                <selection mode="exclude" />
+                                <addSelection service="::ioXML::FwXMLGenericReaderService" />
+                            </service>
+                        </object>
+                    </item>
+
+                    <item key="meshOnNegato2">
+                        <!-- Object to store the mesh loading in the second tab -->
+                        <object uid="myToolMesh" type="::fwData::Mesh">
+                            <service uid="meshReader2" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" >
+                                <type mode="reader" />
+                                <selection mode="exclude" />
+                                <addSelection service="::ioXML::FwXMLGenericReaderService" />
+                            </service>
+                        </object>
+                    </item>
+
+                    <item key="pointList1">
+                        <!-- Object to store the point put in the first tab -->
+                        <object type="::fwData::PointList">
+                            <service uid="ActionNewLandmarkPL1" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::SAddLabeledPoint" autoComChannel="no" />
+                        </object>
+                    </item>
+
+                    <item key="pointList2">
+                        <!-- Object to store the point put in the first tab -->
+                        <object type="::fwData::PointList">
+                            <service uid="ActionNewLandmarkPL2" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::SAddLabeledPoint" autoComChannel="no" />
+                        </object>
+                    </item>
+
+                    <item key="registrationMatrix">
+                        <!-- Object to store the registration matrix -->
+                        <object type="::fwData::TransformationMatrix3D">
+                            <matrix>
+                                1 0 0 0
+                                0 1 0 0
+                                0 0 1 0
+                                0 0 0 1
+                            </matrix>
+                        </object>
+                    </item>
+
+                </object>
+            </item>
+
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="MyMainFrame" />
+            <start uid="MedicalImageSrv" />
+            <start uid="slider_negato1" />
+
+        </object>
+    </config>
+    </extension>
+</plugin>

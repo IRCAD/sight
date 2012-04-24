@@ -1,0 +1,30 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+BUNDLES = [
+    'servicesReg_0-1'          ,
+    'dataReg_0-1'              ,
+    'gui_0-1'                  ,
+    'guiQt_0-1'                ,
+    'io_0-1'                   ,
+    'launcher_0-1'             ,
+    'uiIO_0-1'                 ,
+    'visuVTK_0-1'              ,
+    'visuVTKQt_0-1'            ,
+    'visuVTKAdaptor_0-1'       ,
+    'visuVTKVRAdaptor_0-1'     ,
+    'visu_0-1'                 ,
+    'ioVTK_0-1'                ,
+    'ioITK_0-1'                ,
+    'ioXML_0-1'                ,
+    'ioData_0-1'               ,
+    'uiGenericQt_0-1'          ,
+    'uiImageQt_0-1'            ,
+    'uiVisu_0-1'               ,
+    'uiVisuQt_0-1'             ,
+    'ctrlSelection_0-1'        ,
+    'uiMeasurement_0-1'        ,
+    'uiMeasurementQt_0-1'      ,
+    'appXml_0-1'               ,
+    'pointListRegistration_0-1',
+ ]
+
