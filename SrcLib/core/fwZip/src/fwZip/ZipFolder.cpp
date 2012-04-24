@@ -67,9 +67,13 @@ bool ZipFolder::packFolder( const ::boost::filesystem::path & _srcFolderName, co
 #endif
                 if( ::boost::ends_with(filename, ".inr.gz") ||
                     ::boost::ends_with(filename, ".raw.gz") ||
-                        ::boost::ends_with(filename, ".vtk") )
+                    ::boost::ends_with(filename, ".vtk") )
                 {
                     compressLevel = Z_NO_COMPRESSION;
+                }
+                else if ( ::boost::ends_with(filename, ".raw") )
+                {
+                    compressLevel = 1;
                 }
                 else
                 {
