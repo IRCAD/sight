@@ -17,6 +17,8 @@
 #include <vtkFillHolesFilter.h>
 
 #include <fwData/Array.hpp>
+#include <fwComed/helper/Mesh.hpp>
+#include <fwComed/helper/Array.hpp>
 
 #include "vtkIO/helper/Mesh.hpp"
 
@@ -36,42 +38,44 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
         vtkIdType numberOfPoints = points->GetNumberOfPoints();
         vtkIdType numberOfCells = polyData->GetNumberOfCells();
 
-        mesh->allocate(numberOfPoints, numberOfCells, numberOfCells*3);
-
-        double* point;
-        ::fwData::Mesh::Id idx;
-        for (vtkIdType i = 0; i < numberOfPoints; ++i)
         {
-            point = points->GetPoint(i);
-            idx = mesh->insertNextPoint(point[0], point[1], point[2]);
-            SLM_ASSERT("Mesh index not correspond to VTK index point", idx == i);
+            mesh->allocate(numberOfPoints, numberOfCells, numberOfCells*3);
+            ::fwComEd::helper::Mesh meshHelper(mesh);
+
+            double* point;
+            ::fwData::Mesh::Id idx;
+            for (vtkIdType i = 0; i < numberOfPoints; ++i)
+            {
+                point = points->GetPoint(i);
+                idx = meshHelper.insertNextPoint(point[0], point[1], point[2]);
+                SLM_ASSERT("Mesh index not correspond to VTK index point", idx == i);
+            }
+
+            vtkCell* cell;
+            vtkIdList* idList;
+            int cellType;
+            for (vtkIdType i = 0 ; i < numberOfCells ; ++i)
+            {
+                cell = polyData->GetCell(i);
+                idList = cell->GetPointIds();
+                cellType = cell->GetCellType();
+
+                if(cellType == VTK_TRIANGLE)
+                {
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==3);
+                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2));
+                }
+                else if(cellType == VTK_QUAD)
+                {
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
+                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
+                }
+                else
+                {
+                    FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
+                }
+            }
         }
-
-        vtkCell* cell;
-        vtkIdList* idList;
-        int cellType;
-        for (vtkIdType i = 0 ; i < numberOfCells ; ++i)
-        {
-            cell = polyData->GetCell(i);
-            idList = cell->GetPointIds();
-            cellType = cell->GetCellType();
-
-            if(cellType == VTK_TRIANGLE)
-            {
-                SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==3);
-                mesh->insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2));
-            }
-            else if(cellType == VTK_QUAD)
-            {
-                SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
-                mesh->insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
-            }
-            else
-            {
-                FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
-            }
-        }
-
 
         if(polyData->GetPointData()->HasArray("Colors"))
         {
@@ -83,10 +87,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")",
                     nbComponents == 3 || nbComponents == 4);
             mesh->allocatePointColors((::fwData::Mesh::ColorArrayTypes)nbComponents);
+            ::fwComEd::helper::Mesh pointColorMeshHelper(mesh);
+
             ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
             for (size_t i = 0; i != nbPoints; ++i)
             {
-                mesh->setPointColor(i, colors->GetPointer(i*nbComponents));
+                pointColorMeshHelper.setPointColor(i, colors->GetPointer(i*nbComponents));
             }
         }
 
@@ -100,10 +106,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")",
                     nbComponents == 3 || nbComponents == 4);
             mesh->allocateCellColors((::fwData::Mesh::ColorArrayTypes)nbComponents);
+            ::fwComEd::helper::Mesh cellColorMeshHelper(mesh);
+
             ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells() ;
             for (size_t i = 0; i != nbCells; ++i)
             {
-                mesh->setCellColor(i, colors->GetPointer(i*nbComponents));
+                cellColorMeshHelper.setCellColor(i, colors->GetPointer(i*nbComponents));
             }
         }
 
@@ -117,10 +125,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 3);
 
             mesh->allocatePointNormals();
+            ::fwComEd::helper::Mesh pointNormalMeshHelper(mesh);
+
             ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
             for (size_t i = 0; i != nbPoints; ++i)
             {
-                mesh->setPointNormal(i, normals->GetPointer(i*nbComponents));
+                pointNormalMeshHelper.setPointNormal(i, normals->GetPointer(i*nbComponents));
             }
         }
 
@@ -134,10 +144,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 3);
 
             mesh->allocateCellNormals();
+            ::fwComEd::helper::Mesh cellNormalMeshHelper(mesh);
+
             ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells() ;
             for (size_t i = 0; i != nbCells; ++i)
             {
-                mesh->setCellNormal(i, normals->GetPointer(i*nbComponents));
+                cellNormalMeshHelper.setCellNormal(i, normals->GetPointer(i*nbComponents));
             }
         }
 
@@ -153,11 +165,12 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> po
     polyData->SetPoints(pts);
     Mesh::updatePolyDataPoints(polyData, mesh);
 
+    ::fwComEd::helper::Mesh meshHelper(mesh);
     unsigned int nbCells = mesh->getNumberOfCells() ;
 
-    ::fwData::Mesh::CellTypesMultiArrayType cellTypes = mesh->getCellTypes();
-    ::fwData::Mesh::CellDataMultiArrayType cellData = mesh->getCellData();
-    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = mesh->getCellDataOffsets();
+    ::fwData::Mesh::CellTypesMultiArrayType cellTypes = meshHelper.getCellTypes();
+    ::fwData::Mesh::CellDataMultiArrayType cellData = meshHelper.getCellData();
+    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = meshHelper.getCellDataOffsets();
 
     polyData->Allocate(4, nbCells);
 
@@ -198,10 +211,11 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> po
 vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc )
 {
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    ::fwComEd::helper::Mesh meshHelper(meshSrc);
 
     vtkPoints *polyDataPoints = polyDataDst->GetPoints();
     ::fwData::Mesh::Id nbPoints = meshSrc->getNumberOfPoints() ;
-    ::fwData::Mesh::PointsMultiArrayType points = meshSrc->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
 
     if (nbPoints != polyDataPoints->GetNumberOfPoints())
     {
@@ -228,15 +242,16 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkP
     ::fwData::Array::sptr pointColorArray = meshSrc->getPointColorsArray();
     if(pointColorArray)
     {
+        ::fwComEd::helper::Array arrayHelper(pointColorArray);
+
         ::fwData::Mesh::Id nbPoints = meshSrc->getNumberOfPoints() ;
         vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         size_t nbComponents = pointColorArray->getNumberOfComponents();
         colors->SetNumberOfComponents(nbComponents);
         colors->SetName("Colors");
 
-        ::fwTools::BufferObject::Lock lock = pointColorArray->getBufferObject()->lock();
-        unsigned char *pointColor = pointColorArray->begin< unsigned char >();
-        unsigned char *pointColorEnd = pointColorArray->end< unsigned char >();
+        unsigned char *pointColor = arrayHelper.begin< unsigned char >();
+        unsigned char *pointColorEnd = arrayHelper.end< unsigned char >();
 
         size_t nbElements =  pointColorArray->getNumberOfElements();
         for (; pointColor != pointColorEnd; pointColor+=nbComponents)
@@ -267,6 +282,8 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPo
     ::fwData::Array::sptr cellColorArray = meshSrc->getCellColorsArray();
     if(cellColorArray)
     {
+        ::fwComEd::helper::Array arrayHelper(cellColorArray);
+
         ::fwData::Mesh::Id nbCells = meshSrc->getNumberOfCells() ;
         vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         size_t nbComponents = cellColorArray->getNumberOfComponents();
@@ -274,8 +291,8 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPo
         colors->SetName("Colors");
 
         ::fwTools::BufferObject::Lock lock = cellColorArray->getBufferObject()->lock();
-        unsigned char *cellColor = cellColorArray->begin< unsigned char >();
-        unsigned char *cellColorEnd = cellColorArray->end< unsigned char >();
+        unsigned char *cellColor = arrayHelper.begin< unsigned char >();
+        unsigned char *cellColorEnd = arrayHelper.end< unsigned char >();
 
         size_t nbElements =  cellColorArray->getNumberOfElements();
         for (; cellColor != cellColorEnd; cellColor+=nbComponents)
@@ -305,17 +322,17 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointNormals(vtkSmartPointer<vt
     SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     ::fwData::Array::sptr pointNormalsArray = meshSrc->getPointNormalsArray();
-
     if(pointNormalsArray)
     {
+        ::fwComEd::helper::Array arrayHelper(pointNormalsArray);
+
         ::fwData::Mesh::Id nbPoints = meshSrc->getNumberOfPoints();
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         size_t nbComponents = pointNormalsArray->getNumberOfComponents();
         normals->SetNumberOfComponents(nbComponents);
 
-        ::fwTools::BufferObject::Lock lock = pointNormalsArray->getBufferObject()->lock();
-        float *pointNormal = pointNormalsArray->begin< float >();
-        float *pointNormalEnd = pointNormalsArray->end< float >();
+        float *pointNormal = arrayHelper.begin< float >();
+        float *pointNormalEnd = arrayHelper.end< float >();
 
         size_t nbElements =  pointNormalsArray->getNumberOfElements();
         for (; pointNormal != pointNormalEnd; pointNormal+=nbComponents)
@@ -349,14 +366,15 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
 
     if(cellNormalsArray)
     {
+        ::fwComEd::helper::Array arrayHelper(cellNormalsArray);
+
         ::fwData::Mesh::Id nbCells = meshSrc->getNumberOfCells();
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         size_t nbComponents = cellNormalsArray->getNumberOfComponents();
         normals->SetNumberOfComponents(nbComponents);
 
-        ::fwTools::BufferObject::Lock lock = cellNormalsArray->getBufferObject()->lock();
-        float *cellNormal = cellNormalsArray->begin< float >();
-        float *cellNormalEnd = cellNormalsArray->end< float >();
+        float *cellNormal = arrayHelper.begin< float >();
+        float *cellNormalEnd = arrayHelper.end< float >();
 
         size_t nbElements =  cellNormalsArray->getNumberOfElements();
         for (; cellNormal != cellNormalEnd; cellNormal+=nbComponents)
