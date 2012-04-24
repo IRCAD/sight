@@ -103,6 +103,7 @@ Detail of the ToolBar
                         <separator />
                         <menuItem name="Move" icon="Bundles/Ex03Registration_0-1/icons/View-landmark.png" />
                         <menuItem name="Register" icon="Bundles/Ex03Registration_0-1/icons/Fusion-tmp.png" />
+                        <menuItem name="Quit" icon="Bundles/Ex03Registration_0-1/icons/unreadable.png"/>
                     </layout>
                 </gui>
                 <registry>
@@ -113,6 +114,7 @@ Detail of the ToolBar
                     <menuItem sid="ActionNewLandmarkPL2" start="yes" />
                     <menuItem sid="TransformAction" start="yes" />
                     <menuItem sid="RegisterAction" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
 
@@ -124,7 +126,6 @@ Detail of the ToolBar
                         <view caption="Point List 2" />
                         <view caption="Registration" />
                     </layout>
-                    <toolBar />
                 </gui>
                 <registry>
                     <view sid="multiView_negato1" start="yes" />
@@ -191,6 +192,10 @@ Detail of the ToolBar
             <service uid="RegisterAction" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
                 <start uid="PLRegistration" />
             </service>
+
+            <!-- Action to do Quit -->
+            <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
 
             <!-- GENERIC SCENE DEFINITION -->
             <item key="visuConfig">
