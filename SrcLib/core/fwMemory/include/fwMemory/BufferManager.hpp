@@ -97,6 +97,12 @@ public:
 
     FWMEMORY_API void setDumpPolicy( ::fwMemory::IPolicy::sptr policy );
 
+    FWMEMORY_API SizeType getDumpedBufferSize() const;
+
+    FWMEMORY_API SizeType getManagedBufferSize() const;
+
+    FWMEMORY_API ::fwMemory::IPolicy::sptr getDumpPolicy() const;
+
 protected:
 
     FWMEMORY_API BufferManager();

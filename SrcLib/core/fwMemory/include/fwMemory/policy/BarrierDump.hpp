@@ -47,6 +47,11 @@ public :
 
     FWMEMORY_API void setManager(::fwTools::IBufferManager::sptr manager);
 
+    FWMEMORY_API virtual void refresh();
+
+    FWMEMORY_API void setBarrier( size_t barrier ) { m_barrier = barrier; }
+    FWMEMORY_API size_t getBarrier() const { return m_barrier; }
+
 protected :
 
     FWMEMORY_API size_t getTotalAlive();

@@ -41,6 +41,8 @@ public :
     virtual void restoreSuccess( BufferInfo &info, void **buffer ) = 0 ;
 
     virtual void setManager(::fwTools::IBufferManager::sptr manager) = 0;
+
+    virtual void refresh() = 0;
 };
 
 } // namespace fwMemory

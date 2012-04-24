@@ -85,6 +85,11 @@ void NeverDump::setManager(::fwTools::IBufferManager::sptr manager)
 
 //------------------------------------------------------------------------------
 
+void NeverDump::refresh()
+{}
+
+//------------------------------------------------------------------------------
+
 
 } // namespace policy
 

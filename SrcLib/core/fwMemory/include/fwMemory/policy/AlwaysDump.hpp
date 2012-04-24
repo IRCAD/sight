@@ -44,6 +44,8 @@ public :
 
     FWMEMORY_API virtual void setManager(::fwTools::IBufferManager::sptr manager);
 
+    FWMEMORY_API virtual void refresh();
+
 protected:
 
     FWMEMORY_API size_t dump();

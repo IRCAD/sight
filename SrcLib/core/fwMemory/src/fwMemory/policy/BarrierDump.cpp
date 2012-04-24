@@ -117,8 +117,6 @@ void BarrierDump::restoreSuccess( BufferInfo &info, void **buffer )
 
 //------------------------------------------------------------------------------
 
-
-
 void BarrierDump::setManager(::fwTools::IBufferManager::sptr manager)
 {
     m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
@@ -200,6 +198,14 @@ void BarrierDump::apply()
 }
 
 //------------------------------------------------------------------------------
+
+void BarrierDump::refresh()
+{
+    ::fwMemory::BufferManager::sptr manager = m_manager.lock();
+    m_totalAllocated = manager->getManagedBufferSize();
+    m_totalDumped = manager->getDumpedBufferSize();
+    this->apply();
+}
 
 } // namespace policy
 

@@ -180,6 +180,13 @@ void ValveDump::apply(size_t supplement)
 
 //------------------------------------------------------------------------------
 
+void ValveDump::refresh()
+{
+    this->apply();
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace policy
 
 } //namespace fwMemory

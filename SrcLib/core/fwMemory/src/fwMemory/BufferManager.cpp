@@ -355,12 +355,50 @@ std::string BufferManager::toString() const
 
 //-----------------------------------------------------------------------------
 
-
 void BufferManager::setDumpPolicy( ::fwMemory::IPolicy::sptr policy )
 {
     m_dumpPolicy = policy;
     policy->setManager(this->getSptr());
+    policy->refresh();
 }
+
+//-----------------------------------------------------------------------------
+
+::fwMemory::IPolicy::sptr BufferManager::getDumpPolicy() const
+{
+    return m_dumpPolicy;
+}
+
+//-----------------------------------------------------------------------------
+
+BufferManager::SizeType BufferManager::getDumpedBufferSize() const
+{
+    SizeType dumpedBufferSize = 0;
+    BOOST_FOREACH( BufferInfoMapType::value_type item, m_bufferInfos )
+    {
+        BufferInfo & info = item.second;
+        if ( info.isDumped )
+        {
+            dumpedBufferSize += info.size;
+        }
+    }
+    return dumpedBufferSize;
+}
+
+//-----------------------------------------------------------------------------
+
+BufferManager::SizeType BufferManager::getManagedBufferSize() const
+{
+    SizeType managedBufferSize = 0;
+    BOOST_FOREACH( BufferInfoMapType::value_type item, m_bufferInfos )
+    {
+        BufferInfo & info = item.second;
+        managedBufferSize += info.size;
+    }
+    return managedBufferSize;
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace fwMemory
 
