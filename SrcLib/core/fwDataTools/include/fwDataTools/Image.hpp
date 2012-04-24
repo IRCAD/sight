@@ -13,6 +13,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwMath/Compare.hpp>
+
 #include "fwDataTools/export.hpp"
 
 namespace fwDataTools
@@ -135,8 +137,10 @@ void Image::mergeMask(::fwData::Image::sptr imgDest, ::fwData::Image::sptr mask,
     SLM_ASSERT( "Image mask has not correct type", mask->getType().isOfType< MaskType >());
 
     SLM_ASSERT( "Images have not the same size", imgDest->getSize() == mask->getSize() );
-    SLM_ASSERT( "Images have not the same spacing", imgDest->getSpacing() == mask->getSpacing() );
-    SLM_ASSERT( "Images have not the same origin", imgDest->getOrigin() == mask->getOrigin() );
+    SLM_ASSERT( "Images have not the same spacing",
+            ::fwMath::isContainerEqual(imgDest->getSpacing(), mask->getSpacing()) );
+    SLM_ASSERT( "Images have not the same origin",
+            ::fwMath::isContainerEqual(imgDest->getOrigin(), mask->getOrigin()) );
 
     ::fwData::Array::sptr imgData;
     ::fwData::Array::sptr maskData;
