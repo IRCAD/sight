@@ -17,8 +17,8 @@
 #include <vtkFillHolesFilter.h>
 
 #include <fwData/Array.hpp>
-#include <fwComed/helper/Mesh.hpp>
-#include <fwComed/helper/Array.hpp>
+#include <fwComEd/helper/Mesh.hpp>
+#include <fwComEd/helper/Array.hpp>
 
 #include "vtkIO/helper/Mesh.hpp"
 
