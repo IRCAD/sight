@@ -127,8 +127,6 @@ bool BufferManager::reallocateBuffer(void ** buffer, SizeType newSize)
 
     BufferInfo & info = m_bufferInfos[buffer];
 
-    SLM_ASSERT("Unable to reallocate a dumped buffer", !info.isDumped);
-
     m_dumpPolicy->reallocateRequest( info, buffer, newSize );
 
     info.lastAccess.modified();
