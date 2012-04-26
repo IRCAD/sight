@@ -36,6 +36,9 @@ public :
 
     FWCOMED_API virtual ~Mesh();
 
+    /// Updates locks on all internal data Array of Mesh
+    FWCOMED_API void updateLock();
+
     /**
      * @brief Insert a point into the mesh.
      * Reallocates the point array if needed.

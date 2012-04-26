@@ -23,15 +23,28 @@ namespace helper
 Mesh::Mesh( ::fwData::Mesh::sptr mesh ) : m_mesh (mesh)
 {
     SLM_ASSERT("Mesh ptr is null.", mesh);
-    m_helperPoints          = ::fwComEd::helper::Array::New(mesh->getPointsArray());
-    m_helperCellTypes       = ::fwComEd::helper::Array::New(mesh->getCellTypesArray());
-    m_helperCellData        = ::fwComEd::helper::Array::New(mesh->getCellDataArray());
-    m_helperCellDataOffsets = ::fwComEd::helper::Array::New(mesh->getCellDataOffsetsArray());
+    this->updateLock();
+}
 
-    ::fwData::Array::sptr pointColors  =  mesh->getPointColorsArray();
-    ::fwData::Array::sptr cellColors   =  mesh->getCellColorsArray();
-    ::fwData::Array::sptr pointNormals =  mesh->getPointNormalsArray();
-    ::fwData::Array::sptr cellNormals  =  mesh->getCellNormalsArray();
+//-----------------------------------------------------------------------------
+
+Mesh::~Mesh()
+{}
+
+//-----------------------------------------------------------------------------
+
+void Mesh::updateLock()
+{
+    SLM_ASSERT("Mesh ptr is null.", m_mesh);
+    m_helperPoints          = ::fwComEd::helper::Array::New(m_mesh->getPointsArray());
+    m_helperCellTypes       = ::fwComEd::helper::Array::New(m_mesh->getCellTypesArray());
+    m_helperCellData        = ::fwComEd::helper::Array::New(m_mesh->getCellDataArray());
+    m_helperCellDataOffsets = ::fwComEd::helper::Array::New(m_mesh->getCellDataOffsetsArray());
+
+    ::fwData::Array::sptr pointColors  =  m_mesh->getPointColorsArray();
+    ::fwData::Array::sptr cellColors   =  m_mesh->getCellColorsArray();
+    ::fwData::Array::sptr pointNormals =  m_mesh->getPointNormalsArray();
+    ::fwData::Array::sptr cellNormals  =  m_mesh->getCellNormalsArray();
 
     if(pointColors)
     {
@@ -50,11 +63,6 @@ Mesh::Mesh( ::fwData::Mesh::sptr mesh ) : m_mesh (mesh)
         m_helperCellNormals = ::fwComEd::helper::Array::New(cellNormals);
     }
 }
-
-//-----------------------------------------------------------------------------
-
-Mesh::~Mesh()
-{}
 
 //-----------------------------------------------------------------------------
 
