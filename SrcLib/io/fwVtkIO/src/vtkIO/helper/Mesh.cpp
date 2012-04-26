@@ -38,44 +38,43 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
         vtkIdType numberOfPoints = points->GetNumberOfPoints();
         vtkIdType numberOfCells = polyData->GetNumberOfCells();
 
+        mesh->allocate(numberOfPoints, numberOfCells, numberOfCells*3);
+        ::fwComEd::helper::Mesh meshHelper(mesh);
+
+        double* point;
+        ::fwData::Mesh::Id idx;
+        for (vtkIdType i = 0; i < numberOfPoints; ++i)
         {
-            mesh->allocate(numberOfPoints, numberOfCells, numberOfCells*3);
-            ::fwComEd::helper::Mesh meshHelper(mesh);
+            point = points->GetPoint(i);
+            idx = meshHelper.insertNextPoint(point[0], point[1], point[2]);
+            SLM_ASSERT("Mesh index not correspond to VTK index point", idx == i);
+        }
 
-            double* point;
-            ::fwData::Mesh::Id idx;
-            for (vtkIdType i = 0; i < numberOfPoints; ++i)
+        vtkCell* cell;
+        vtkIdList* idList;
+        int cellType;
+        for (vtkIdType i = 0 ; i < numberOfCells ; ++i)
+        {
+            cell = polyData->GetCell(i);
+            idList = cell->GetPointIds();
+            cellType = cell->GetCellType();
+
+            if(cellType == VTK_TRIANGLE)
             {
-                point = points->GetPoint(i);
-                idx = meshHelper.insertNextPoint(point[0], point[1], point[2]);
-                SLM_ASSERT("Mesh index not correspond to VTK index point", idx == i);
+                SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==3);
+                meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2));
             }
-
-            vtkCell* cell;
-            vtkIdList* idList;
-            int cellType;
-            for (vtkIdType i = 0 ; i < numberOfCells ; ++i)
+            else if(cellType == VTK_QUAD)
             {
-                cell = polyData->GetCell(i);
-                idList = cell->GetPointIds();
-                cellType = cell->GetCellType();
-
-                if(cellType == VTK_TRIANGLE)
-                {
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==3);
-                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2));
-                }
-                else if(cellType == VTK_QUAD)
-                {
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
-                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
-                }
-                else
-                {
-                    FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
-                }
+                SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
+                meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
+            }
+            else
+            {
+                FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
             }
         }
+
 
         if(polyData->GetPointData()->HasArray("Colors"))
         {
@@ -87,12 +86,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")",
                     nbComponents == 3 || nbComponents == 4);
             mesh->allocatePointColors((::fwData::Mesh::ColorArrayTypes)nbComponents);
-            ::fwComEd::helper::Mesh pointColorMeshHelper(mesh);
+            meshHelper.updateLock();
 
             ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
             for (size_t i = 0; i != nbPoints; ++i)
             {
-                pointColorMeshHelper.setPointColor(i, colors->GetPointer(i*nbComponents));
+                meshHelper.setPointColor(i, colors->GetPointer(i*nbComponents));
             }
         }
 
@@ -106,12 +105,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")",
                     nbComponents == 3 || nbComponents == 4);
             mesh->allocateCellColors((::fwData::Mesh::ColorArrayTypes)nbComponents);
-            ::fwComEd::helper::Mesh cellColorMeshHelper(mesh);
+            meshHelper.updateLock();
 
             ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells() ;
             for (size_t i = 0; i != nbCells; ++i)
             {
-                cellColorMeshHelper.setCellColor(i, colors->GetPointer(i*nbComponents));
+                meshHelper.setCellColor(i, colors->GetPointer(i*nbComponents));
             }
         }
 
@@ -125,12 +124,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 3);
 
             mesh->allocatePointNormals();
-            ::fwComEd::helper::Mesh pointNormalMeshHelper(mesh);
+            meshHelper.updateLock();
 
             ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
             for (size_t i = 0; i != nbPoints; ++i)
             {
-                pointNormalMeshHelper.setPointNormal(i, normals->GetPointer(i*nbComponents));
+                meshHelper.setPointNormal(i, normals->GetPointer(i*nbComponents));
             }
         }
 
@@ -144,12 +143,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 3);
 
             mesh->allocateCellNormals();
-            ::fwComEd::helper::Mesh cellNormalMeshHelper(mesh);
+            meshHelper.updateLock();
 
             ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells() ;
             for (size_t i = 0; i != nbCells; ++i)
             {
-                cellNormalMeshHelper.setCellNormal(i, normals->GetPointer(i*nbComponents));
+                meshHelper.setCellNormal(i, normals->GetPointer(i*nbComponents));
             }
         }
 
