@@ -40,7 +40,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
 
     typedef typename ITKIMAGE::PixelType PixelType;
     _dataImage->setType( ::fwTools::Type::create<PixelType>() );
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = _dataImage->getDataArray();
     if( bufferManagerIsDataImage )
     {
         SLM_ASSERT("Sorry, this method requires that itkImage manages its buffer.",  itkImage->GetPixelContainer()->GetContainerManageMemory() );
@@ -52,7 +52,6 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
     {
         array->setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), false, _dataImage->getType(), _vSize, 1 );
     }
-    _dataImage->setDataArray( array );
 
 
     // Post Condition correct PixelType
