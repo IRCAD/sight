@@ -76,8 +76,7 @@ void Mesh::updateLock()
         points->resize(list_of(allocatedPts + POINT_REALLOC_STEP), true);
     }
     m_helperPoints->setItem(list_of(nbPoints), p);
-    nbPoints++;
-    m_mesh->setNumberOfPoints(nbPoints);
+    m_mesh->setNumberOfPoints(nbPoints+1);
     return nbPoints;
 }
 
@@ -197,8 +196,7 @@ void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValu
 
     cellsDataSize += nb;
     m_mesh->setCellDataSize(cellsDataSize);
-    nbCells++;
-    m_mesh->setNumberOfCells(nbCells);
+    m_mesh->setNumberOfCells(nbCells + 1);
     return nbCells;
 }
 
