@@ -56,6 +56,9 @@ public:
 
 //------------------------------------------------------------------------------
 
+namespace TMCommand
+{
+
 class PlaneShifterCallback : public TriangularMeshVtkCommand
 {
     public:
@@ -343,6 +346,7 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
         double    m_factor;
 };
 
+}
 
 //------------------------------------------------------------------------------
 
@@ -880,7 +884,7 @@ vtkActor *TriangularMesh::newActor()
         removePlaneCollectionShifterCommand();
 
         m_planeCollectionShifterCallback =
-            PlaneCollectionShifterCallback::New(m_clippingPlanes, newClippingPlanes, 2.);
+                TMCommand::PlaneCollectionShifterCallback::New(m_clippingPlanes, newClippingPlanes, 2.);
 
         m_mapper->SetClippingPlanes(newClippingPlanes);
         newClippingPlanes->Delete();
@@ -956,7 +960,7 @@ void TriangularMesh::createServicesStarterCommand()
             ::visuVTKAdaptor::TriangularMesh::dynamicCast(
                     this->getSptr()
                     );
-        m_servicesStarterCallback = PlaneCollectionAdaptorStarter::New( srv, m_clippingPlanes, -1. );
+        m_servicesStarterCallback = TMCommand::PlaneCollectionAdaptorStarter::New( srv, m_clippingPlanes, -1. );
     }
 }
 
