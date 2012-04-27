@@ -25,6 +25,6 @@ BUNDLES = [
     'uiMeasurement_0-1'        ,
     'uiMeasurementQt_0-1'      ,
     'appXml_0-1'               ,
-    'pointListRegistration_0-1',
+    'basicRegistration_0-1'    ,
  ]
 

@@ -202,13 +202,13 @@ Detail of the ToolBar
                 <object uid="VisuComposite" type="::fwData::Composite">
 
                     <!-- Service which compute the registration -->
-                    <service uid="PLRegistration" type="::fwServices::IController" implementation="::pointListRegistration::SPointListRegistration" autoComChannel="no">
+                    <service uid="PLRegistration" type="::fwServices::IController" implementation="::basicRegistration::SPointListRegistration" autoComChannel="no">
                         <registeredPoints compositeKey="pointList2" />
                         <referencePoints compositeKey="pointList1" />
                         <matrix compositeKey="registrationMatrix" />
                     </service>
 
-                    <service uid="TransformMesh" type="::fwServices::IController" implementation="::pointListRegistration::STransformMesh" autoComChannel="no"/>
+                    <service uid="TransformMesh" type="::fwServices::IController" implementation="::basicRegistration::STransformMesh" autoComChannel="no"/>
 
                     <!-- Generic Scene (Negato) for the first tab -->
                     <service uid="negato1" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">

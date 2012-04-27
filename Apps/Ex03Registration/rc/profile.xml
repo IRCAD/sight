@@ -33,7 +33,7 @@
         <param id="defaultImageWriter" value="::itkIO::ImageWriter" />
     </activate>
 
-    <activate id="pointListRegistration" version="0-1" />
+    <activate id="basicRegistration" version="0-1" />
 
     <start id="ioITK" />
     <start id="ioVTK" />
