@@ -6,14 +6,14 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include "pointListRegistration/Plugin.hpp"
+#include "basicRegistration/Plugin.hpp"
 
-namespace pointListRegistration
+namespace basicRegistration
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::pointListRegistration::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::basicRegistration::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -32,4 +32,4 @@ void Plugin::stop() throw()
 
 //-----------------------------------------------------------------------------
 
-} // namespace pointListRegistration
+} // namespace basicRegistration

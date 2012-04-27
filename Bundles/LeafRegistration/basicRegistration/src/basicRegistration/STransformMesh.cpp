@@ -26,7 +26,7 @@
 // Services tools
 #include <fwServices/Base.hpp>
 
-#include "pointListRegistration/STransformMesh.hpp"
+#include "basicRegistration/STransformMesh.hpp"
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
@@ -34,10 +34,10 @@
 
 using fwTools::fwID;
 
-REGISTER_SERVICE( ::fwServices::IController, ::pointListRegistration::STransformMesh, ::fwData::Composite );
+REGISTER_SERVICE( ::fwServices::IController, ::basicRegistration::STransformMesh, ::fwData::Composite );
 
 
-namespace pointListRegistration
+namespace basicRegistration
 {
 
 STransformMesh::STransformMesh()
@@ -91,6 +91,6 @@ void STransformMesh::swapping() throw ( ::fwTools::Failed )
     this->starting();
 }
 
-} // namespace pointListRegistration
+} // namespace basicRegistration
 
 

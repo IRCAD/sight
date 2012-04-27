@@ -8,10 +8,10 @@
 * @date
 **/
 
-namespace pointListRegistration
+namespace basicRegistration
 {
 
-} // namespace pointListRegistration
+} // namespace basicRegistration
 
 
 

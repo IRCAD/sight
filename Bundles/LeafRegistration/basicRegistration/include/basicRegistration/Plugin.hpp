@@ -5,14 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
  
-#ifndef _POINTLISTREGISTRATION_PLUGIN_HPP_
-#define _POINTLISTREGISTRATION_PLUGIN_HPP_
+#ifndef _BASICREGISTRATION_PLUGIN_HPP_
+#define _BASICREGISTRATION_PLUGIN_HPP_
 
 #include <fwRuntime/Plugin.hpp>
 
-#include "pointListRegistration/config.hpp"
+#include "basicRegistration/config.hpp"
 
-namespace pointListRegistration
+namespace basicRegistration
 {
 
 /**
@@ -21,22 +21,22 @@ namespace pointListRegistration
 * @author  IRCAD (Research and Development Team).
 * @date    2012.
 */
-struct POINTLISTREGISTRATION_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct BASICREGISTRATION_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    POINTLISTREGISTRATION_API ~Plugin() throw();
+    BASICREGISTRATION_API ~Plugin() throw();
 
     /// Overrides
-    POINTLISTREGISTRATION_API void start() throw(::fwRuntime::RuntimeException);
+    BASICREGISTRATION_API void start() throw(::fwRuntime::RuntimeException);
 
     /// Overrides
-    POINTLISTREGISTRATION_API void stop() throw();
+    BASICREGISTRATION_API void stop() throw();
 
 };
 
 
-} // namespace pointListRegistration
+} // namespace basicRegistration
 
 
-#endif //_POINTLISTREGISTRATION_PLUGIN_HPP_
+#endif //_BASICREGISTRATION_PLUGIN_HPP_

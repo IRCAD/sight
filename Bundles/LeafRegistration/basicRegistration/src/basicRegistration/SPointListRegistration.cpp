@@ -28,7 +28,7 @@
 // Services tools
 #include <fwServices/Base.hpp>
 
-#include "pointListRegistration/SPointListRegistration.hpp"
+#include "basicRegistration/SPointListRegistration.hpp"
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
@@ -36,10 +36,10 @@
 
 using fwTools::fwID;
 
-REGISTER_SERVICE( ::fwServices::IController, ::pointListRegistration::SPointListRegistration, ::fwData::Composite );
+REGISTER_SERVICE( ::fwServices::IController, ::basicRegistration::SPointListRegistration, ::fwData::Composite );
 
 
-namespace pointListRegistration
+namespace basicRegistration
 {
 
 SPointListRegistration::SPointListRegistration()
@@ -143,6 +143,6 @@ void SPointListRegistration::swapping() throw ( ::fwTools::Failed )
     this->starting();
 }
 
-} // namespace pointListRegistration
+} // namespace basicRegistration
 
 
