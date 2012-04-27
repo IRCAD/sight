@@ -88,10 +88,6 @@ void Array::deepCopy( Array::csptr _source )
 {
     this->fieldDeepCopy( _source );
 
-    m_strides        = _source->m_strides;
-    m_type           = _source->m_type;
-    m_size           = _source->m_size;
-    m_nbOfComponents = _source->m_nbOfComponents;
 
     this->clear();
 
@@ -101,6 +97,13 @@ void Array::deepCopy( Array::csptr _source )
         ::fwTools::BufferObject::Lock lockerSource(_source->m_attrBufferObject);
         this->resize(_source->m_type, _source->m_size, _source->m_nbOfComponents, true);
         std::copy(_source->begin(), _source->end(), this->begin());
+    }
+    else
+    {
+        m_strides        = _source->m_strides;
+        m_type           = _source->m_type;
+        m_size           = _source->m_size;
+        m_nbOfComponents = _source->m_nbOfComponents;
     }
 }
 
