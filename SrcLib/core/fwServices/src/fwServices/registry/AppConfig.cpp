@@ -241,22 +241,23 @@ std::string AppConfig::getUniqueIdentifier( std::string _serviceUid, bool _useCp
 std::string AppConfig::adaptField( const std::string & _str, const FieldAdaptorType & fieldAdaptors ) const
 {
     std::string newStr = _str;
-
-    for (   std::map< std::string, std::string >::const_iterator fieldAdaptor = fieldAdaptors.begin();
-            fieldAdaptor != fieldAdaptors.end();
-            ++fieldAdaptor )
+    if(!_str.empty())
     {
-        std::stringstream sstr;
-        sstr << "(.*)" << fieldAdaptor->first << "(.*)";
-        ::boost::regex machine_regex ( sstr.str() );
-        if ( ::boost::regex_match( _str, machine_regex ) )
+        BOOST_FOREACH(FieldAdaptorType::value_type fieldAdaptor, fieldAdaptors)
         {
-            std::stringstream machine_format;
-            machine_format << "\\1" << fieldAdaptor->second << "\\2";
-            newStr = ::boost::regex_replace( newStr, machine_regex, machine_format.str(), ::boost::match_default | ::boost::format_sed );
+            std::stringstream sstr;
+            sstr << "(.*)" << fieldAdaptor.first << "(.*)";
+            ::boost::regex machine_regex ( sstr.str() );
+            if ( ::boost::regex_match( _str, machine_regex ) )
+            {
+                std::stringstream machine_format;
+                machine_format << "\\1" << fieldAdaptor.second << "\\2";
+                newStr = ::boost::regex_replace( newStr,
+                                machine_regex, machine_format.str(),
+                                ::boost::match_default | ::boost::format_sed );
+            }
         }
     }
-
     return newStr;
 }
 
