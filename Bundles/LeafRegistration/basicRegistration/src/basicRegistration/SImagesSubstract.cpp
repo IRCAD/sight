@@ -1,0 +1,141 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#include <QVBoxLayout>
+#include <QPushButton>
+
+#include <fwCore/spyLog.hpp>
+
+// Service associated data
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+#include <fwData/Image.hpp>
+
+#include <fwServices/IEditionService.hpp>
+
+#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/Dictionary.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+// Services tools
+#include <fwServices/Base.hpp>
+
+#include "basicRegistration/SImagesSubstract.hpp"
+
+#ifndef M_PI
+#define M_PI           3.14159265358979323846
+#endif
+
+using fwTools::fwID;
+
+REGISTER_SERVICE( ::gui::editor::IEditor, ::basicRegistration::SImagesSubstract, ::fwData::Composite );
+
+
+namespace basicRegistration
+{
+
+SImagesSubstract::SImagesSubstract()
+: ::gui::editor::IEditor(),
+  mpComputeButton(0)
+{
+
+}
+
+SImagesSubstract::~SImagesSubstract()
+{}
+
+void SImagesSubstract::configuring() throw ( ::fwTools::Failed )
+{
+    this->initialize();
+}
+
+void SImagesSubstract::starting() throw ( ::fwTools::Failed )
+{
+    this->create();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget* const container = qtContainer->getQtContainer();
+    SLM_ASSERT("container not instanced", container);
+
+    QVBoxLayout* layout = new QVBoxLayout(container);
+    mpComputeButton           = new QPushButton(tr("Compute"), container );
+    QObject::connect(mpComputeButton, SIGNAL(clicked( )), this, SLOT(OnCompute()));
+
+    layout->addWidget(mpComputeButton, 0);
+    container->setLayout( layout );
+}
+
+void SImagesSubstract::stopping() throw ( ::fwTools::Failed )
+{
+    QObject::disconnect(mpComputeButton, SIGNAL(clicked( )), this, SLOT(OnCompute()));
+    this->getContainer()->clean();
+    this->destroy();
+
+}
+
+void SImagesSubstract::updating() throw ( ::fwTools::Failed )
+{
+    ::fwTools::Type REQUESTED_TYPE = ::fwTools::Type::create("int16");
+
+    const std::string image1Name("image1");
+    const std::string image2Name("image2");
+    ::fwData::Composite::sptr composite =  this->getObject< ::fwData::Composite >();
+    ::fwData::Image::sptr image1 = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image1Name));
+    ::fwData::Image::sptr image2 = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image2Name));
+    OSLM_ASSERT("Sorry, " << image1Name << " object is not an image", image1);
+    OSLM_ASSERT("Sorry, " << image2Name << " object is not an image", image2);
+
+    // Test if the both images have the same type and it is signed short.
+    bool isSameType =( ((image1->getDataArray())->getType() == (image1->getDataArray())->getType())&& ((image1->getDataArray())->getType() == REQUESTED_TYPE));
+
+    if(isSameType)
+    {
+        // test if the both images have the same size.
+        bool isSameSize = (image1->getSize() == image2->getSize());
+        if(isSameSize)
+        {
+//            ::fwData::Image::NewSptr imageResult;
+            // Notify reading
+            //    ::fwComEd::ImageMsg::NewSptr msg;
+            //    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+            //    ::fwServices::IEditionService::notify( this->getSptr(), imageResult, msg );
+        }
+        else
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                                                              "Sorry, Image have the same size.",
+                                                              ::fwGui::dialog::IMessageDialog::WARNING);
+        }
+    }
+    else
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                                                          "Sorry, Image have a signed short type.",
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+    }
+}
+
+void SImagesSubstract::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+{}
+
+void SImagesSubstract::swapping() throw ( ::fwTools::Failed )
+{
+    // Classic default approach to update service when oject change
+//    this->stopping();
+//    this->starting();
+    this->updating();
+
+}
+
+void SImagesSubstract::OnCompute()
+{
+    this->updating();
+}
+
+} // namespace basicRegistration
+
+
