@@ -403,9 +403,8 @@ void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
     a_dest->setSize( dataSize );
 
     // Set Array
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = a_dest->getDataArray();
     array->setBuffer( destBuffer, true, a_dest->getType(), a_dest->getSize(), 1 );
-    a_dest->setDataArray( array );
 }
 
 //------------------------------------------------------------------------------

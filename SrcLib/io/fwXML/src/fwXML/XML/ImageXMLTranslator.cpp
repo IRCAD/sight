@@ -73,9 +73,15 @@ void ImageXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
     ::fwData::Composite::sptr arrays = ::fwData::Composite::dynamicCast(obj);
     SLM_ASSERT("composite not instanced", arrays);
 
-    if(arrays->find("DataArray")!=arrays->end())
+    ::fwData::Composite::iterator iterDataArray = arrays->find("DataArray");
+    if(iterDataArray != arrays->end())
     {
-        pImage->setDataArray(::fwData::Array::dynamicCast((*arrays)["DataArray"]));
+        ::fwData::Array::sptr arraySource = ::fwData::Array::dynamicCast(iterDataArray->second);
+        if(arraySource)
+        {
+            ::fwData::Array::sptr array = pImage->getDataArray();
+            array->deepCopy(arraySource);
+        }
     }
 
 }

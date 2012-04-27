@@ -477,9 +477,8 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
          imgSize[2] = this->getFileNames().size();
          img->setSize( imgSize );
 
-        ::fwData::Array::NewSptr array;
+        ::fwData::Array::sptr array = img->getDataArray();
         array->setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
-        img->setDataArray( array );
 
         // Update gdcm::Image.
         gImg.SetNumberOfDimensions(3);
@@ -513,9 +512,8 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
                 throw ::fwTools::Failed("Image could not be rescale.");
             }
 
-           ::fwData::Array::NewSptr array;
+            ::fwData::Array::sptr array = img->getDataArray();
            array->setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
-           img->setDataArray( array );
         }
         else
         {
