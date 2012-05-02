@@ -123,7 +123,7 @@ public:
         /**
          * @brief copy operator
          *
-         * Decrement count if has any, and if the copyed lock has a lock count,
+         * Decrement count if has any, and if the copied lock has a lock count,
          * increment it.
          *
          * @param other lock to copy
@@ -241,8 +241,10 @@ public:
     FWTOOLS_API long lockCount() const { return *m_count; };
     FWTOOLS_API long isLocked() const { return lockCount() != 0; };
 
-protected :
+    /// Exchanges the content of the BufferObject with the content of _source.
+    FWTOOLS_API void swap( BufferObject::sptr _source );
 
+protected :
 
     void *m_buffer;
 
