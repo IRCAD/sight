@@ -1,6 +1,6 @@
 TYPE = 'bundle'
 VERSION = '0.1'
-USE = ['qtCore']
+USE = ['qtCore', 'itkCommon']
 
 LIB = ['fwCore_0-1',
        'fwRuntime_0-3',
@@ -9,6 +9,8 @@ LIB = ['fwCore_0-1',
        'fwComEd_0-1',
        'ARLcore_0-1',
        'fwDataTools_0-1',
-       'fwGuiQt_0-1']
+       'fwGuiQt_0-1',
+       'fwItkIO_0-1'
+       ]
 
 BUNDLES = ['gui_0-1']

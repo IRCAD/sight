@@ -7,6 +7,10 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
+#include <itkSubtractImageFilter.h>
+
+#include <itkIO/itk.hpp>
+
 #include <fwCore/spyLog.hpp>
 
 // Service associated data
@@ -18,6 +22,8 @@
 
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
+#include <fwComEd/helper/Composite.hpp>
+
 
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -83,11 +89,15 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
 
     const std::string image1Name("image1");
     const std::string image2Name("image2");
-    ::fwData::Composite::sptr composite =  this->getObject< ::fwData::Composite >();
+    const std::string imageResultName("imageResult");
+    ::fwData::Composite::sptr compositeVisu =  this->getObject< ::fwData::Composite >();
     ::fwData::Image::sptr image1 = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image1Name));
     ::fwData::Image::sptr image2 = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image2Name));
+    ::fwData::Image::NewSptr imageResult;
+
     OSLM_ASSERT("Sorry, " << image1Name << " object is not an image", image1);
     OSLM_ASSERT("Sorry, " << image2Name << " object is not an image", image2);
+//    OSLM_ASSERT("Sorry, " << imageResultName << " object is not an image", imageResult);
 
     // Test if the both images have the same type and it is signed short.
     bool isSameType =( ((image1->getDataArray())->getType() == (image1->getDataArray())->getType())&& ((image1->getDataArray())->getType() == REQUESTED_TYPE));
@@ -98,11 +108,39 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
         bool isSameSize = (image1->getSize() == image2->getSize());
         if(isSameSize)
         {
-//            ::fwData::Image::NewSptr imageResult;
-            // Notify reading
-            //    ::fwComEd::ImageMsg::NewSptr msg;
-            //    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-            //    ::fwServices::IEditionService::notify( this->getSptr(), imageResult, msg );
+            typedef itk::Image<::boost::int16_t, 3 > ImageType;
+
+            ImageType::Pointer  itkImage1 = ::itkIO::itkImageFactory< ImageType >( image1 ) ;
+            SLM_ASSERT("Unable to convert fwData::Image to itkImage", itkImage1);
+
+            ImageType::Pointer  itkImage2 = ::itkIO::itkImageFactory< ImageType >( image2 ) ;
+            SLM_ASSERT("Unable to convert fwData::Image to itkImage", itkImage2);
+
+            ImageType::Pointer output;
+
+            //Create filter
+            typedef ::itk::SubtractImageFilter< ImageType, ImageType, ImageType > SubtractImageFilterType;
+            SubtractImageFilterType::Pointer filter;
+            filter = SubtractImageFilterType::New() ;
+            assert(filter);
+
+            filter->SetInput1( itkImage1 );
+            filter->SetInput2( itkImage2 );
+            filter->Update();
+            output = filter->GetOutput();
+            assert(output->GetSource());
+            ::itkIO::dataImageFactory< ImageType >( output, imageResult, true );
+
+            ::fwComEd::helper::Composite compositeHelper(compositeVisu);
+            if ( compositeVisu->find(imageResultName) != compositeVisu->end() )
+            {
+                compositeHelper.swap(imageResultName, imageResult);
+            }
+            else
+            {
+                compositeHelper.add(imageResultName, imageResult);
+            }
+            compositeHelper.notify(this->getSptr());
         }
         else
         {
