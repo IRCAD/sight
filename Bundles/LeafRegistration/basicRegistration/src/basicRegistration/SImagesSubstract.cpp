@@ -90,6 +90,7 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
     const std::string image1Name("image1");
     const std::string image2Name("image2");
     const std::string imageResultName("imageResult");
+
     ::fwData::Composite::sptr compositeVisu =  this->getObject< ::fwData::Composite >();
     ::fwData::Image::sptr image1 = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image1Name));
     ::fwData::Image::sptr image2 = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image2Name));
@@ -97,7 +98,6 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
 
     OSLM_ASSERT("Sorry, " << image1Name << " object is not an image", image1);
     OSLM_ASSERT("Sorry, " << image2Name << " object is not an image", image2);
-//    OSLM_ASSERT("Sorry, " << imageResultName << " object is not an image", imageResult);
 
     // Test if the both images have the same type and it is signed short.
     bool isSameType =( ((image1->getDataArray())->getType() == (image1->getDataArray())->getType())&& ((image1->getDataArray())->getType() == REQUESTED_TYPE));

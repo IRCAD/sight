@@ -49,7 +49,7 @@ Detail of the ToolBar
  This application allows to do registration from image and an image.
  Step 1 : The user loads an image in the first tab by using the button (openFile).
  Step 2 : The user loads an image in the second Tab by using the button (openFile2).
- Step 3 : The user goes to the thirs tab and click on compute to see the result of the registration.
+ Step 3 : The user goes to the third tab and click on compute to see the result of the subtract between the two images.
  -->
 <plugin id="Ex04ImagesRegistration">
 
@@ -93,7 +93,7 @@ Detail of the ToolBar
                         <separator />
                         <menuItem name="Load Image2" icon="Bundles/Ex04ImagesRegistration_0-1/icons/icon-load2.png" />
                         <separator />
-                        <menuItem name="Save Image" icon="Bundles/Ex04ImagesRegistration_0-1/icons/icon-load2.png" />
+                        <menuItem name="Save Image" icon="Bundles/Ex04ImagesRegistration_0-1/icons/save.png" />
                         <menuItem name="Quit" icon="Bundles/Ex04ImagesRegistration_0-1/icons/unreadable.png"/>
                     </layout>
                 </gui>
@@ -399,7 +399,7 @@ Detail of the ToolBar
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
                             </service>
 
-                            <!-- Editors for Negato1 -->
+                            <!-- Editors for Negato2 -->
                             <service uid="slider_negato2" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
                                 <sliceIndex>axial</sliceIndex>
                             </service>
