@@ -16,6 +16,8 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "fwDataTools/Image.hpp"
 
 
@@ -226,11 +228,11 @@ bool Image::compareArray(::fwData::Array::sptr array1, ::fwData::Array::sptr arr
         compare &= array1->getNumberOfComponents() ==  array2->getNumberOfComponents();
         OSLM_ERROR_IF(errorPrefix <<  "Arrays have not same number of components", array1->getNumberOfComponents() !=  array2->getNumberOfComponents());
 
-        /*
-    compare &= array1->getIsBufferOwner() ==  array2->getIsBufferOwner();
-    OSLM_ERROR_IF("Arrays have not same buffer owner : " << array1->getIsBufferOwner() << " != " << array2->getIsBufferOwner(),
+
+        //compare &= array1->getIsBufferOwner() ==  array2->getIsBufferOwner();
+        OSLM_WARN_IF("Arrays have not same buffer owner state: " << array1->getIsBufferOwner() << " != " << array2->getIsBufferOwner(),
             array1->getIsBufferOwner() !=  array2->getIsBufferOwner());
-         */
+
 
         compare &= array1->getStrides() == array2->getStrides();
         OSLM_ERROR_IF( errorPrefix << "Arrays have not same strides", array1->getStrides() != array2->getStrides());
@@ -243,10 +245,12 @@ bool Image::compareArray(::fwData::Array::sptr array1, ::fwData::Array::sptr arr
 
         if(array1)
         {
-            char *iter1 = array1->begin<char>();
-            char *iter2 = array2->begin<char>();
+            ::fwComEd::helper::Array helper1(array1);
+            ::fwComEd::helper::Array helper2(array2);
+            char *iter1 = helper1.begin<char>();
+            char *iter2 = helper2.begin<char>();
 
-            for (; iter1 != array1->end<char>() ; ++iter1, ++iter2)
+            for (; iter1 != helper1.end<char>() ; ++iter1, ++iter2)
             {
                 if ((*iter1 != *iter2))
                 {
