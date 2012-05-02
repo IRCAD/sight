@@ -36,7 +36,7 @@ ImageXMLTranslator::~ImageXMLTranslator() {};
 
 xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
-    // call default xmtl representation
+    // call default xml representation
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
     xmlNodePtr node = img2xmlbase.getXMLFrom(obj);
 
@@ -61,9 +61,8 @@ void ImageXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
     ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast(toUpdate);
     SLM_ASSERT("Object is not an image", pImage);
 
-    OSLM_DEBUG("ImageXMLTranslator::updateDataFromXML( obj " << toUpdate->className() << " XMLNode source " << source->name << "calling Generic" );
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
-    img2xmlbase.updateDataFromXML(toUpdate,source);
+    img2xmlbase.updateDataFromXML(toUpdate, source);
 
     xmlNodePtr compositeNode = XMLParser::findChildNamed( source, std::string("Composite") );
 
@@ -80,7 +79,7 @@ void ImageXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
         if(arraySource)
         {
             ::fwData::Array::sptr array = pImage->getDataArray();
-            array->deepCopy(arraySource);
+            array->swap(arraySource);
         }
     }
 
