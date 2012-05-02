@@ -36,9 +36,15 @@ public :
 
     FWDATA_API ObjectLock( ::fwData::Object::sptr obj );
 
+    FWDATA_API ~ObjectLock();
+
 private :
 
+    ObjectLock( const ObjectLock & );
+    ObjectLock & operator=(const ObjectLock & );
+
     typedef std::vector< ::fwTools::BufferObject::Lock > LocksType;
+    typedef std::vector< ::fwData::Object::sptr > ObjectsType;
 
     void lock( ::fwData::Array::sptr array, LocksType & locks );
     void lock( ::fwData::Image::sptr image, LocksType & locks );
@@ -47,6 +53,7 @@ private :
     void lock( ::fwData::Acquisition::sptr acq, LocksType & locks );
 
     LocksType m_locks;
+    ObjectsType m_objects;
 };
 
 } // fwData

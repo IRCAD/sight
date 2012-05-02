@@ -13,11 +13,20 @@ namespace fwData
 
 //-----------------------------------------------------------------------------
 
+ObjectLock::~ObjectLock()
+{
+    m_locks.clear();
+    m_objects.clear();
+}
+
+//-----------------------------------------------------------------------------
+
 void ObjectLock::lock( ::fwData::Array::sptr array, LocksType & locks )
 {
     if ( array )
     {
         locks.push_back( array->getBufferObject()->lock() ) ;
+        m_objects.push_back(array);
     }
 }
 
