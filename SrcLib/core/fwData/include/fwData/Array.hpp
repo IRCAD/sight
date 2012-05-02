@@ -319,11 +319,12 @@ public :
      *
      * @return
      */
-    static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
-
-
+    FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
     fwDataGetSetSptrMacro(BufferObject, ::fwTools::BufferObject::sptr);
+
+    /// Exchanges the content of the Array with the content of _source.
+    FWDATA_API void swap( Array::sptr _source );
 
 protected:
     FWDATA_API Array();

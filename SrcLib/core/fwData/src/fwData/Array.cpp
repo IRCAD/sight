@@ -84,10 +84,23 @@ void Array::shallowCopy( Array::csptr _source )
 
 //------------------------------------------------------------------------------
 
+void Array::swap( Array::sptr _source )
+{
+    m_fields.swap(_source->m_fields);
+    m_strides.swap(_source->m_strides);
+    m_size.swap(_source->m_size);
+    m_attrBufferObject->swap(_source->m_attrBufferObject);
+
+    std::swap(m_type, _source->m_type);
+    std::swap(m_nbOfComponents, _source->m_nbOfComponents);
+    std::swap(m_isBufferOwner, _source->m_isBufferOwner);
+}
+
+//------------------------------------------------------------------------------
+
 void Array::deepCopy( Array::csptr _source )
 {
     this->fieldDeepCopy( _source );
-
 
     this->clear();
 
@@ -154,9 +167,16 @@ const void *Array::getBuffer() const
 
 void Array::setBuffer(void *buf, bool takeOwnership)
 {
-    if(!m_attrBufferObject->isEmpty() && m_isBufferOwner)
+    if(m_isBufferOwner)
     {
-        m_attrBufferObject->destroy();
+        if(!m_attrBufferObject->isEmpty())
+        {
+            m_attrBufferObject->destroy();
+        }
+    }
+    else
+    {
+        m_attrBufferObject = ::fwTools::BufferObject::New();
     }
     m_attrBufferObject->setBuffer(buf, (buf == NULL) ? 0 : this->getSizeInBytes());
     m_isBufferOwner = !m_attrBufferObject->isEmpty() && takeOwnership;
@@ -213,7 +233,6 @@ size_t Array::resize(
 
     return bufSize;
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -381,7 +400,6 @@ size_t Array::getBufferOffset( const ::fwData::Array::IndexType &id, size_t comp
     offset += component*sizeOfType;
 
     return offset;
-
 }
 
 //------------------------------------------------------------------------------
