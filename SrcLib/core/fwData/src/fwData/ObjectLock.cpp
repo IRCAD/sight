@@ -30,13 +30,15 @@ ObjectLock::ObjectLock(const ObjectLock & objectLock)
 
 //-----------------------------------------------------------------------------
 
-ObjectLock::ObjectLock & ObjectLock::operator=(const ObjectLock & objectLock)
+ObjectLock & ObjectLock::operator=(const ObjectLock & objectLock)
 {
     m_locks.clear();
     m_objects.clear();
 
     m_objects = objectLock.m_objects;
     m_locks = objectLock.m_locks;
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
