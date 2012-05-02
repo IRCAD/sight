@@ -87,18 +87,23 @@ void Serializer::IOforExtraXML( ::fwData::Object::sptr object , bool savingMode)
         BOOST_FOREACH(::visitor::CollectFileFormatService::MapObjectFileFormatService::value_type elem, collector.m_objWithFileFormatService)
         {
             ::fwXML::IFileFormatService::sptr filedata = elem.second;
-            OSLM_ASSERT("No IFileFormatService found for Object "<<elem.first->getID(), ::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"));
-            filedata->rootFolder() = this->rootFolder();
-            ::boost::filesystem::path filePath =  filedata->getFullPath() ;
-            std::string msg = savingMode?"saving":"loading";
-            OSLM_DEBUG( msg<< " extraXML for " << elem.first->className() << "-" << object.get() << "filename=" << filePath.string() << std::endl );
+            if(filedata)
+            {
+                OSLM_ASSERT("No IFileFormatService found for Object "<<elem.first->getID(), ::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"));
+                filedata->rootFolder() = this->rootFolder();
+                ::boost::filesystem::path filePath =  filedata->getFullPath() ;
+                std::string msg = savingMode?"saving":"loading";
+                OSLM_DEBUG( msg<< " extraXML for " << elem.first->className() << "-" << object.get() << "filename=" << filePath.string() << std::endl );
 
-            //notifyProgress( currentStep*1.0/nbSteps,  filePath.string() );
-
-            filedata->addHandler( handlerHelper );
-            savingMode ? filedata->save() : filedata->load() ;
-            // remove IFileFormatService in OSR
-            ::fwServices::OSR::unregisterService(filedata);
+                //notifyProgress( currentStep*1.0/nbSteps,  filePath.string() );
+                filedata->addHandler( handlerHelper );
+                if(savingMode)
+                {
+                    filedata->save() ;
+                }
+                // remove IFileFormatService in OSR
+                ::fwServices::OSR::unregisterService(filedata);
+            }
             handlerHelper.m_currentStep++;
         }
     }
@@ -124,8 +129,8 @@ void Serializer::IOforExtraXML( ::fwData::Object::sptr object , bool savingMode)
 
 Serializer::Serializer()
 {
-    ::fwMemory::BufferManager::sptr manager =
-            ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+    ::fwMemory::BufferManager::sptr manager;
+    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
 
     if( manager )
     {
@@ -146,8 +151,8 @@ Serializer::Serializer()
 
 Serializer::~Serializer()
 {
-    ::fwMemory::BufferManager::sptr manager =
-            ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+    ::fwMemory::BufferManager::sptr manager;
+    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
 
     if( manager && m_oldPolicy )
     {
@@ -281,8 +286,6 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
     }
 
      ::fwData::Object::sptr newObject = ObjectTracker::buildObject( className , idXML  );
-//    // warning do not duplicate FIELDS
-//    newObject->children().clear();
 
     assert( newObject.get() );
 
@@ -295,15 +298,6 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
         if ( child->type == XML_ELEMENT_NODE )
         {
             std::string nodeName((const char*)child->name );
-//           // normal parent object ignore chlidren which are not Field
-//            OSLM_DEBUG_IF( "ObjectsFromXml : " << xmlNode->name << " ignoring " << child->name, classicObject &&  nodeName != "Field" );
-//            if (!classicObject || nodeName == "Field")
-//            {
-//                OSLM_DEBUG( "ObjectsFromXml : " <<  xmlNode->name << " accept " << child->name );
-//                ::fwData::Object::sptr newChild = this->ObjectsFromXml( child, loadExtraXML );
-//                assert (newChild);
-//                newObject->children().push_back( newChild );
-//            }
 
             if ( nodeName == "Attributes" )
             {

@@ -21,6 +21,7 @@
 #include "fwXML/ArrayFileFormatService.hpp"
 #include "fwXML/IFileFormatService.hpp"
 #include "fwXML/boostSerializer/Array.hpp"
+#include "fwXML/Serializer.hpp"
 
 namespace fwXML
 {
@@ -92,6 +93,7 @@ void ArrayXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwDat
         binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
         binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
         binLoader->localFolder() = fileLocation.parent_path();
+        binLoader->rootFolder() = ::fwXML::Serializer::rootFolder();
 
         std::string pseudoReader = protocol;
         if (  protocol.find("Writer") != std::string::npos )
@@ -112,6 +114,8 @@ void ArrayXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwDat
 
         // assign to FileFormatService
         binLoader->setReader( reader );
+        binLoader->load();
+        ::fwServices::OSR::unregisterService(binLoader);
     }
 }
 
