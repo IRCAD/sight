@@ -96,7 +96,6 @@ BufferObject::ConstLock BufferObject::lock() const
 void BufferObject::swap( BufferObject::sptr _source )
 {
     std::swap(m_buffer, _source->m_buffer);
-    std::swap(m_count, _source->m_count);
     std::swap(m_size, _source->m_size);
     m_bufferManager.swap(_source->m_bufferManager);
     m_allocPolicy.swap(_source->m_allocPolicy);
