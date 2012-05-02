@@ -19,6 +19,26 @@ ObjectLock::~ObjectLock()
     m_objects.clear();
 }
 
+
+//-----------------------------------------------------------------------------
+
+ObjectLock::ObjectLock(const ObjectLock & objectLock)
+{
+    m_objects = objectLock.m_objects;
+    m_locks = objectLock.m_locks;
+}
+
+//-----------------------------------------------------------------------------
+
+ObjectLock::ObjectLock & ObjectLock::operator=(const ObjectLock & objectLock)
+{
+    m_locks.clear();
+    m_objects.clear();
+
+    m_objects = objectLock.m_objects;
+    m_locks = objectLock.m_locks;
+}
+
 //-----------------------------------------------------------------------------
 
 void ObjectLock::lock( ::fwData::Array::sptr array, LocksType & locks )

@@ -34,14 +34,14 @@ public :
 
     FWDATA_API ObjectLock(){}
 
+    FWDATA_API ObjectLock( const ObjectLock & );
     FWDATA_API ObjectLock( ::fwData::Object::sptr obj );
 
     FWDATA_API ~ObjectLock();
 
+    FWDATA_API ObjectLock & operator=(const ObjectLock & );
 private :
 
-    ObjectLock( const ObjectLock & );
-    ObjectLock & operator=(const ObjectLock & );
 
     typedef std::vector< ::fwTools::BufferObject::Lock > LocksType;
     typedef std::vector< ::fwData::Object::sptr > ObjectsType;
