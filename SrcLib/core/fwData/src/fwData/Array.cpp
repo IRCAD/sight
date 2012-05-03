@@ -57,7 +57,7 @@ Array::Array():
     m_attrBufferObject(::fwTools::BufferObject::New()),
     m_size(0),
     m_nbOfComponents(0),
-    m_isBufferOwner(false)
+    m_isBufferOwner(true)
 {
 }
 
