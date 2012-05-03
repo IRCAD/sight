@@ -73,6 +73,8 @@ public:
     FWMEMORY_API virtual bool reallocateBuffer(void ** buffer, SizeType newSize);
     FWMEMORY_API virtual bool destroyBuffer(void ** buffer);
 
+    FWMEMORY_API virtual bool swapBuffer(void ** bufA, void ** bufB);
+
     FWMEMORY_API virtual bool lockBuffer(const void * const * buffer);
     FWMEMORY_API virtual bool unlockBuffer(const void * const * buffer);
 

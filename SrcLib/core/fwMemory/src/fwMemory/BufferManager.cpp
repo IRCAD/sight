@@ -170,6 +170,23 @@ bool BufferManager::destroyBuffer(void ** buffer)
 
 //-----------------------------------------------------------------------------
 
+bool BufferManager::swapBuffer(void ** bufA, void ** bufB)
+{
+    SLM_TRACE_FUNC();
+    BufferInfo & infoA = m_bufferInfos[bufA];
+    BufferInfo & infoB = m_bufferInfos[bufB];
+
+    std::swap(bufA, bufB);
+    std::swap(infoA.size, infoB.size);
+    std::swap(infoA.isDumped, infoB.isDumped);
+    std::swap(infoA.dumpedFile, infoB.dumpedFile);
+    std::swap(infoA.bufferPolicy, infoB.bufferPolicy);
+    infoA.lastAccess.modified();
+    infoB.lastAccess.modified();
+    return false;
+}
+//-----------------------------------------------------------------------------
+
 bool BufferManager::lockBuffer(const void * const * buffer)
 {
     SLM_TRACE_FUNC();

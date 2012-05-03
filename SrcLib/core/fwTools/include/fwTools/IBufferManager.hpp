@@ -32,6 +32,8 @@ public:
     FWTOOLS_API virtual bool reallocateBuffer(void ** buffer, SizeType newSize){return true;}
     FWTOOLS_API virtual bool destroyBuffer(void ** buffer){return true;}
 
+    FWTOOLS_API virtual bool swapBuffer(void ** bufA, void ** bufB){return true;}
+
     FWTOOLS_API virtual bool lockBuffer(const void * const * buffer){return true;}
     FWTOOLS_API virtual bool unlockBuffer(const void * const * buffer){return true;}
 

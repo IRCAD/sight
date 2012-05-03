@@ -95,14 +95,12 @@ BufferObject::ConstLock BufferObject::lock() const
 
 void BufferObject::swap( BufferObject::sptr _source )
 {
-    ::fwTools::BufferObject::Lock lockerDest(this->getSptr());
-    ::fwTools::BufferObject::Lock lockerSource(_source);
+    if (m_bufferManager->swapBuffer(&m_buffer, &(_source->m_buffer)))
+    {
+        std::swap(m_buffer, _source->m_buffer);
+    }
 
-    void * tmpBuffer = m_buffer;
-    SizeType tmpSize = m_size;
-    this->setBuffer( _source->m_buffer, _source->m_size);
-    _source->setBuffer(tmpBuffer, tmpSize);
-
+    std::swap(m_size, _source->m_size);
     m_bufferManager.swap(_source->m_bufferManager);
     m_allocPolicy.swap(_source->m_allocPolicy);
 }
