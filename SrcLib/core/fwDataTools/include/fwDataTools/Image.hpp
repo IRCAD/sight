@@ -15,6 +15,8 @@
 
 #include <fwMath/Compare.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "fwDataTools/export.hpp"
 
 namespace fwDataTools
@@ -147,8 +149,11 @@ void Image::mergeMask(::fwData::Image::sptr imgDest, ::fwData::Image::sptr mask,
     imgData = imgDest->getDataArray();
     maskData = mask->getDataArray();
 
-    ImgDestType *imgIt = imgData->begin<ImgDestType>();
-    MaskType *maskIt = maskData->begin<MaskType>();
+    ::fwComEd::helper::Array imgHelper(imgData);
+    ::fwComEd::helper::Array maskHelper(maskData);
+
+    ImgDestType *imgIt = imgHelper.begin<ImgDestType>();
+    MaskType *maskIt = maskHelper.begin<MaskType>();
 
     const ImgDestType *imgEnd = imgIt + maskData->getNumberOfElements();
 

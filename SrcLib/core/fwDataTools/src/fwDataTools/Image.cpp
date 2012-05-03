@@ -57,7 +57,8 @@ void Image::generateImage(::fwData::Image::sptr image,
     image->allocate();
 
     ::fwData::Array::sptr array = image->getDataArray();
-    std::fill(array->begin(), array->end(), 0);
+    ::fwComEd::helper::Array helper(array);
+    std::fill(helper.begin(), helper.end(), 0);
 }
 
 //------------------------------------------------------------------------------
@@ -95,9 +96,10 @@ void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type typ
 
 void Image::randomizeArray(::fwData::Array::sptr array)
 {
-    char *iter = array->begin< char >();
+    ::fwComEd::helper::Array helper(array);
+    char *iter = helper.begin< char >();
 
-    for (; iter != array->end< char >() ; ++iter)
+    for (; iter != helper.end< char >() ; ++iter)
     {
         *iter = rand()%256;
     }
@@ -109,7 +111,7 @@ bool Image::compareImage(::fwData::Image::sptr image1, ::fwData::Image::sptr ima
 {
     bool compare = true;
 
-    if ( ! image1 && image2 || image1 && ! image2 )
+    if ( (!image1 && image2) || (image1 && !image2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Images are not equivalent (one image has a null sptr)");
@@ -206,7 +208,7 @@ bool Image::compareArray(::fwData::Array::sptr array1, ::fwData::Array::sptr arr
 {
     bool compare = true;
 
-    if ( ! array1 && array2 || array1 && ! array2 )
+    if ( (!array1 && array2) || (array1 && !array2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Arrays are not equivalent (one array has a null sptr)");
@@ -276,34 +278,36 @@ template<typename IMAGE_TYPE>
 struct RoiApplyer
 {
     template<typename ROI_TYPE>
-        void operator()( RoiApplyerParam & p )
+    void operator()( RoiApplyerParam & p )
+    {
+        typedef IMAGE_TYPE ImgType;
+        typedef ROI_TYPE   RoiType;
+
+        SLM_ASSERT( "Null image pointer" , p.img && p.roi);
+
+        ::fwData::Array::sptr imgData;
+        ::fwData::Array::sptr roiData;
+        imgData = p.img->getDataArray();
+        roiData = p.roi->getDataArray();
+
+        SLM_ASSERT( "Null data array pointer" , imgData && roiData);
+        SLM_ASSERT( "Null data buffers" , imgData->getBuffer() && roiData->getBuffer());
+
+        ::fwComEd::helper::Array imgHelper(imgData);
+        ::fwComEd::helper::Array roiHelper(roiData);
+        ImgType *imIt = imgHelper.begin<ImgType>();
+        RoiType *roiIt = roiHelper.begin<RoiType>();
+
+        const ImgType *imEnd = imIt + imgData->getNumberOfElements();
+
+        for ( ; imIt != imEnd ; ++imIt, ++roiIt)
         {
-            typedef IMAGE_TYPE ImgType;
-            typedef ROI_TYPE   RoiType;
-
-            SLM_ASSERT( "Null image pointer" , p.img && p.roi);
-
-            ::fwData::Array::sptr imgData;
-            ::fwData::Array::sptr roiData;
-            imgData = p.img->getDataArray();
-            roiData = p.roi->getDataArray();
-
-            SLM_ASSERT( "Null data array pointer" , imgData && roiData);
-            SLM_ASSERT( "Null data buffers" , imgData->getBuffer() && roiData->getBuffer());
-
-            ImgType *imIt = imgData->begin<ImgType>();
-            RoiType *roiIt = roiData->begin<RoiType>();
-
-            const ImgType *imEnd = imIt + imgData->getNumberOfElements();
-
-            for ( ; imIt != imEnd ; ++imIt, ++roiIt)
+            if (*roiIt == 0)
             {
-                if (*roiIt == 0)
-                {
-                    *imIt = 0;
-                }
+                *imIt = 0;
             }
         }
+    }
 };
 
 struct RoiApplyerCaller
@@ -347,36 +351,39 @@ struct RoiTester
 {
 
     template<typename ROI_TYPE>
-        void operator()( RoiTesterParam & p )
+    void operator()( RoiTesterParam & p )
+    {
+        bool &result = p.result;
+        result = true;
+
+        typedef IMAGE_TYPE ImgType;
+        typedef ROI_TYPE RoiType;
+
+        ::fwData::Array::sptr imgData;
+        ::fwData::Array::sptr imgRoiApplyedData;
+        ::fwData::Array::sptr roiData;
+
+        imgData = p.img->getDataArray();
+        imgRoiApplyedData = p.imgRoiApplyed->getDataArray();
+        roiData = p.roi->getDataArray();
+
+        SLM_ASSERT( "Null data array pointer", imgData && roiData && imgRoiApplyedData);
+        SLM_ASSERT( "Null data buffers", imgData->getBuffer() && roiData->getBuffer() && imgRoiApplyedData->getBuffer() );
+
+        ::fwComEd::helper::Array imgHelper(imgData);
+        ::fwComEd::helper::Array roiHelper(roiData);
+        ::fwComEd::helper::Array imgRoiApplyedHelper(imgRoiApplyedData);
+        ImgType *imIt     = imgHelper.begin<ImgType>();
+        ImgType *imRoiIt  = imgRoiApplyedHelper.begin<ImgType>();
+        RoiType *roiIt    = roiHelper.begin<RoiType>();
+
+        const ImgType *imEnd = imIt + imgData->getNumberOfElements();
+
+        for ( ; result && imIt != imEnd ; ++imIt, ++roiIt, ++imRoiIt)
         {
-            bool &result = p.result;
-            result = true;
-
-            typedef IMAGE_TYPE ImgType;
-            typedef ROI_TYPE RoiType;
-
-            ::fwData::Array::sptr imgData;
-            ::fwData::Array::sptr imgRoiApplyedData;
-            ::fwData::Array::sptr roiData;
-
-            imgData = p.img->getDataArray();
-            imgRoiApplyedData = p.imgRoiApplyed->getDataArray();
-            roiData = p.roi->getDataArray();
-
-            SLM_ASSERT( "Null data array pointer", imgData && roiData && imgRoiApplyedData);
-            SLM_ASSERT( "Null data buffers", imgData->getBuffer() && roiData->getBuffer() && imgRoiApplyedData->getBuffer() );
-
-            ImgType *imIt     = imgData->begin<ImgType>();
-            ImgType *imRoiIt  = imgRoiApplyedData->begin<ImgType>();
-            RoiType *roiIt    = roiData->begin<RoiType>();
-
-            const ImgType *imEnd = imIt + imgData->getNumberOfElements();
-
-            for ( ; result && imIt != imEnd ; ++imIt, ++roiIt, ++imRoiIt)
-            {
-                result = result && ( (*roiIt == 0) ? (*imRoiIt == 0) : (*imIt == *imRoiIt) );
-            }
+            result = result && ( (*roiIt == 0) ? (*imRoiIt == 0) : (*imIt == *imRoiIt) );
         }
+    }
 };
 
 
@@ -392,7 +399,8 @@ struct RoiTesterCaller
 bool Image::isRoiApplyed( ::fwData::Image::sptr image, ::fwData::Image::sptr roi, ::fwData::Image::sptr imgRoiApplyed )
 {
     SLM_ASSERT( "Null image pointers", image && imgRoiApplyed && roi);
-    SLM_ASSERT( "Images have different size", image->getSize() == imgRoiApplyed->getSize() && image->getSize() == roi->getSize());
+    SLM_ASSERT( "Images have different size",
+            image->getSize() == imgRoiApplyed->getSize() && image->getSize() == roi->getSize());
 
     RoiTesterParam param;
     param.img = image;
