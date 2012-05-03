@@ -8,6 +8,7 @@
 
 #include "fwDataTools/AlgoMeshDeformation.hpp"
 #include "fwDataTools/MeshGenerator.hpp"
+#include <fwComEd/helper/Array.hpp>
 
 namespace fwDataTools
 {
@@ -75,10 +76,12 @@ void AlgoMeshDeformation::initSimu()
     m_originPoints->deepCopy( m_mesh.lock()->getPointsArray() );
     m_step = 0;
 
+    m_meshHelper = ::fwComEd::helper::Mesh::New(m_mesh.lock());
+
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
 
-    ::fwData::Mesh::PointsMultiArrayType points = m_mesh.lock()->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = m_meshHelper->getPoints();
     float coord;
     for(unsigned int i = 0; i < m_nbPoints; ++i)
     {
@@ -112,12 +115,14 @@ void AlgoMeshDeformation::computeSimu()
 
     const float scale = m_step / (float) m_nbStep;
 
-    ::fwData::Mesh::PointsMultiArrayType points = m_mesh.lock()->getPoints();
-    ::fwData::Mesh::PointColorsMultiArrayType colors = m_mesh.lock()->getPointColors();
+    ::fwComEd::helper::Array originPointsHelper(m_originPoints);
+
+    ::fwData::Mesh::PointsMultiArrayType points = m_meshHelper->getPoints();
+    ::fwData::Mesh::PointColorsMultiArrayType colors = m_meshHelper->getPointColors();
 
     ::fwData::Mesh::PointsMultiArrayType opoints =
             ::fwData::Mesh::PointsMultiArrayType(
-            static_cast< ::fwData::Mesh::PointsMultiArrayType::element* >(m_originPoints->getBuffer()),
+            static_cast< ::fwData::Mesh::PointsMultiArrayType::element* >(originPointsHelper.getBuffer()),
             boost::extents[m_nbPoints][3] );
 
     for(unsigned int i = 0; i < m_nbPoints; ++i)

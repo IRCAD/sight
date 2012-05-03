@@ -290,11 +290,12 @@ struct RoiApplyer
         imgData = p.img->getDataArray();
         roiData = p.roi->getDataArray();
 
-        SLM_ASSERT( "Null data array pointer" , imgData && roiData);
-        SLM_ASSERT( "Null data buffers" , imgData->getBuffer() && roiData->getBuffer());
 
         ::fwComEd::helper::Array imgHelper(imgData);
         ::fwComEd::helper::Array roiHelper(roiData);
+        SLM_ASSERT( "Null data array pointer" , imgData && roiData);
+        SLM_ASSERT( "Null data buffers" , imgHelper.getBuffer() && roiHelper.getBuffer());
+
         ImgType *imIt = imgHelper.begin<ImgType>();
         RoiType *roiIt = roiHelper.begin<RoiType>();
 
@@ -367,12 +368,13 @@ struct RoiTester
         imgRoiApplyedData = p.imgRoiApplyed->getDataArray();
         roiData = p.roi->getDataArray();
 
-        SLM_ASSERT( "Null data array pointer", imgData && roiData && imgRoiApplyedData);
-        SLM_ASSERT( "Null data buffers", imgData->getBuffer() && roiData->getBuffer() && imgRoiApplyedData->getBuffer() );
-
         ::fwComEd::helper::Array imgHelper(imgData);
         ::fwComEd::helper::Array roiHelper(roiData);
         ::fwComEd::helper::Array imgRoiApplyedHelper(imgRoiApplyedData);
+
+        SLM_ASSERT( "Null data array pointer", imgData && roiData && imgRoiApplyedData);
+        SLM_ASSERT( "Null data buffers", imgHelper.getBuffer() && roiHelper.getBuffer() && imgRoiApplyedHelper.getBuffer() );
+
         ImgType *imIt     = imgHelper.begin<ImgType>();
         ImgType *imRoiIt  = imgRoiApplyedHelper.begin<ImgType>();
         RoiType *roiIt    = roiHelper.begin<RoiType>();

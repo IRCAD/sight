@@ -12,6 +12,8 @@
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
 
+#include <fwComEd/helper/Mesh.hpp>
+
 #include "fwDataTools/export.hpp"
 
 
@@ -58,6 +60,7 @@ public:
 private:
 
     ::fwData::Mesh::wptr m_mesh;
+    ::fwComEd::helper::Mesh::sptr m_meshHelper;
     ::fwData::Array::sptr m_originPoints;
 
     unsigned int m_amplitude;

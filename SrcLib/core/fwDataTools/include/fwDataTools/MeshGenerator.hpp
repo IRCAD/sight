@@ -181,7 +181,9 @@ public :
 
 protected:
 
-    FWDATATOOLS_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt, ::fwData::Mesh::sptr mesh, PointsMapType& points);
+    FWDATATOOLS_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt,
+                                                       ::fwComEd::helper::Mesh::sptr meshHelper,
+                                                       PointsMapType& points);
 
     //! @brief Constructor.
     FWDATATOOLS_API MeshGenerator();
