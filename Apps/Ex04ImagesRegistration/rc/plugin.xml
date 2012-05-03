@@ -76,7 +76,7 @@ Detail of the ToolBar
             <service uid="mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
-                        <view caption="Negato1" align="center" />
+                        <view caption="Main view" align="center" />
                     </layout>
                     <toolBar />
                 </gui>
