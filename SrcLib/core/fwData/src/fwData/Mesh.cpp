@@ -49,10 +49,22 @@ Mesh::~Mesh()
 //------------------------------------------------------------------------------
 void Mesh::initArrays()
 {
-    m_points          = ::fwData::Array::New();
-    m_cellTypes       = ::fwData::Array::New();
-    m_cellData        = ::fwData::Array::New();
-    m_cellDataOffsets = ::fwData::Array::New();
+    if (!m_points)
+    {
+        m_points          = ::fwData::Array::New();
+    }
+    if (!m_cellTypes)
+    {
+        m_cellTypes       = ::fwData::Array::New();
+    }
+    if (!m_cellData)
+    {
+        m_cellData        = ::fwData::Array::New();
+    }
+    if (!m_cellDataOffsets)
+    {
+        m_cellDataOffsets = ::fwData::Array::New();
+    }
 
     m_points->setType(::fwTools::Type::create<PointValueType>());
     m_points->setNumberOfComponents(3);
@@ -594,6 +606,10 @@ void Mesh::clear()
     this->clearCellNormals();
     this->clearCellColors();
 
+    m_points->clear();
+    m_cellData->clear();
+    m_cellDataOffsets->clear();
+    m_cellTypes->clear();
     this->initArrays();
 
     this->clearPoints();

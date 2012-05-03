@@ -74,7 +74,6 @@ void Image::deepCopy( Image::csptr _source )
 
     if( _source->m_dataArray )
     {
-        m_dataArray = ::fwData::Array::New();
         m_dataArray->deepCopy( _source->m_dataArray );
     }
 }
