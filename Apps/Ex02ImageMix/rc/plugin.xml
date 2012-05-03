@@ -219,7 +219,9 @@
                                     
                                     <!-- Editors of background image -->
                                     <service uid="imageInfo" type="::gui::editor::IEditor" implementation="::uiImage::ImageInfo" autoComChannel="yes" />
-                                    <service uid="windowLevel" type="::gui::editor::IEditor" implementation="::uiImage::WindowLevel" autoComChannel="yes" />
+                                    <service uid="windowLevel" type="::gui::editor::IEditor" implementation="::uiImage::WindowLevel" autoComChannel="yes">
+                                        <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                    </service>
                                 </object>
 
                                 <object id="myFrontImage" type="::fwData::Image">
@@ -246,7 +248,9 @@
                                     <service uid="imageTransparency2" type="::gui::editor::IEditor" implementation="::uiImage::ImageTransparency" autoComChannel="yes">
                                         <shortcut value="V" />
                                     </service>
-                                    <service uid="windowLevel2" type="::gui::editor::IEditor" implementation="::uiImage::WindowLevel" autoComChannel="yes" />
+                                    <service uid="windowLevel2" type="::gui::editor::IEditor" implementation="::uiImage::WindowLevel" autoComChannel="yes" >
+                                         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                    </service>
                                 </object>
 
                             </config>
@@ -281,8 +285,10 @@
                                 <!-- Adaptor to show background and front image merge in the same view. -->
                                 <adaptor id="myImagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
                                     <config vtkimageregister="imageBlend">
-                                        <image objectId="myBackgroundImage" tfalpha="no" />
-                                        <image objectId="myFrontImage" tfalpha="no" />
+                                        <image objectId="myBackgroundImage" opacity="1.0" tfalpha="no"
+                                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                        <image objectId="myFrontImage" opacity="1.0" tfalpha="yes"
+                                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                     </config>
                                 </adaptor>
                                 
@@ -337,7 +343,9 @@
                                 </adaptor>
                             </scene>
                         </service>
-                        
+                        <item key="TFSelectionsKey">
+                            <object uid="TFSelections" type="::fwData::Composite" />
+                        </item>
                     </object>
                 </item>
 
