@@ -408,19 +408,17 @@ namespace fwDataTools
     planeList->setPlanes(planes);
 
     return resection;
-
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::ResectionDB::sptr ObjectGenerator::generateResectionDB()
 {
-
     ::fwData::ResectionDB::NewSptr resectionDB;
     resectionDB->addResection(generateResection());
     return resectionDB;
-
 }
+
 //------------------------------------------------------------------------------
 
 ::fwData::DictionaryOrgan::sptr ObjectGenerator::createDictionaryOrgan()

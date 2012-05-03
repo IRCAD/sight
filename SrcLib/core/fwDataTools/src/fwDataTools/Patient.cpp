@@ -182,7 +182,7 @@ void Patient::generateStudy(::fwData::Study::sptr study,
                             const unsigned char nbReconstruction)
 {
     // studies informations
-    const std::string STUDY_HOSPITAL       = "hopital" ;
+    const std::string STUDY_HOSPITAL       = "hospital" ;
     const std::string STUDY_MODALITY       = "modality" ;
     const std::string STUDY_ZONE           = "IDDICOM" ;
     const std::string STUDY_RISID          = "risid569" ;
@@ -216,7 +216,7 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
     OSLM_ERROR_IF("Studies not initialized", !study1 || !study2);
 
     compare &= (study1->getHospital() == study2->getHospital());
-    OSLM_ERROR_IF("Studies have not same hopital  : " << study1->getHospital() << " != " << study2->getHospital(),
+    OSLM_ERROR_IF("Studies have not same hospital  : " << study1->getHospital() << " != " << study2->getHospital(),
                   study1->getHospital() != study2->getHospital());
 
 
@@ -254,8 +254,6 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
     {
         compare &= Patient::compareAcquisition(*iter1, *iter2);
     }
-
-
 
     return compare;
 }
@@ -597,7 +595,7 @@ bool Patient::compareMesh( ::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh
 {
     bool compare = true;
 
-    if ( ! mesh1 && mesh2 || mesh1 && ! mesh2 )
+    if ( (!mesh1 && mesh2) || (mesh1 && !mesh2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Meshes are not equivalent (one mesh has a null sptr)");

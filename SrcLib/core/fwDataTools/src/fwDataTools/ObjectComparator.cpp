@@ -45,7 +45,7 @@ bool ObjectComparator::compareStructureTraitsDictionary(::fwData::StructureTrait
         else
         {
             compare &=false;
-            OSLM_ERROR( "Structure type names are differents" );
+            OSLM_ERROR( "Structure type names are different" );
         }
     }
     else
@@ -404,12 +404,15 @@ bool ObjectComparator::compareArray(::fwData::Array::sptr array1, ::fwData::Arra
 
     if(array1)
     {
+        ::fwComEd::helper::Array array1Helper(array1);
+        ::fwComEd::helper::Array array2Helper(array2);
+
         compare &= (array1->getSize() == array2->getSize());
 
-        char *iter1 = array1->begin<char>();
-        char *iter2 = array2->begin<char>();
+        char *iter1 = array1Helper.begin<char>();
+        char *iter2 = array2Helper.begin<char>();
 
-        for (; iter1 != array1->end<char>() ; ++iter1, ++iter2)
+        for (; iter1 != array1Helper.end<char>() &&  compare; ++iter1, ++iter2)
         {
             compare &= (*iter1 == *iter2);
         }
