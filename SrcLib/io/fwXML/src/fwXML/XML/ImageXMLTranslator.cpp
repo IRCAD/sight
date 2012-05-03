@@ -67,7 +67,7 @@ void ImageXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
     xmlNodePtr compositeNode = XMLParser::findChildNamed( source, std::string("Composite") );
 
     ::fwData::Object::sptr obj;
-    obj = Serializer().ObjectsFromXml( compositeNode, true );
+    obj = Serializer().ObjectsFromXml( compositeNode );
     SLM_ASSERT("obj not instanced", obj);
     ::fwData::Composite::sptr arrays = ::fwData::Composite::dynamicCast(obj);
     SLM_ASSERT("composite not instanced", arrays);

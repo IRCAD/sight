@@ -13,6 +13,7 @@
 #include <fwData/Graph.hpp>
 #include <fwData/Node.hpp>
 
+#include "fwXML/ObjectTracker.hpp"
 #include "fwXML/XML/GraphXMLTranslator.hpp"
 #include "fwXML/XML/EdgeXMLTranslator.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"

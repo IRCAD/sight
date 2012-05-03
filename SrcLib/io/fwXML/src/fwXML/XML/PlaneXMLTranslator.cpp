@@ -75,7 +75,7 @@ void PlaneXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
                     {
                         // Load Point
                         ::fwData::Object::sptr valueObj;
-                        valueObj = Serializer().ObjectsFromXml( pointsNode, true );
+                        valueObj = Serializer().ObjectsFromXml( pointsNode );
 
                         // Add point in the vector
                         SLM_ASSERT("valueObj not instanced", valueObj);

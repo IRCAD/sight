@@ -69,7 +69,7 @@ void PlaneListXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
             {
                 // Load Plane
                 ::fwData::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( planeNode, true );
+                valueObj = Serializer().ObjectsFromXml( planeNode );
 
                 // Add plane in the vector
                 SLM_ASSERT("valueObj not instanced", valueObj);

@@ -98,7 +98,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
                     {
                         // Load Reconstruction
                         ::fwData::Object::sptr valueObj;
-                        valueObj = Serializer().ObjectsFromXml( inputsNode, true );
+                        valueObj = Serializer().ObjectsFromXml( inputsNode );
 
                         // Add reconstruction in the vector
                         SLM_ASSERT("valueObj not instanced", valueObj);
@@ -118,7 +118,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
                     {
                         // Load Reconstruction
                         ::fwData::Object::sptr valueObj;
-                        valueObj = Serializer().ObjectsFromXml( outputsNode, true );
+                        valueObj = Serializer().ObjectsFromXml( outputsNode );
 
                         // Add reconstruction in the vector
                         SLM_ASSERT("valueObj not instanced", valueObj);
@@ -132,7 +132,7 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
             else if ( nodeName == "PlaneList" )
             {
                 ::fwData::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( elementNode, true );
+                valueObj = Serializer().ObjectsFromXml( elementNode );
 
                 // Add PlaneList in the vector
                 SLM_ASSERT("valueObj not instanced", valueObj);

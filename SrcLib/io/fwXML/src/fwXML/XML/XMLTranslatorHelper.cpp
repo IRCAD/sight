@@ -8,6 +8,7 @@
 #include <fwData/Object.hpp>
 #include <fwXML/visitor/accept.hpp>
 
+#include "fwXML/ObjectTracker.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
 #include "fwXML/XML/TrivialXMLTranslator.hpp"
 #include "fwXML/visitor/SerializeXML.hpp"
@@ -16,16 +17,12 @@ namespace fwXML
 {
 
 XMLTranslatorHelper::XMLTranslatorHelper()
-{
-    // TODO Auto-generated constructor stub
-}
+{}
 
 //------------------------------------------------------------------------------
 
 XMLTranslatorHelper::~XMLTranslatorHelper()
-{
-    // TODO Auto-generated destructor stub
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -42,23 +39,6 @@ xmlNodePtr XMLTranslatorHelper::MasterNode( ::fwData::Object::sptr obj )
 
     return node;
 }
-
-////------------------------------------------------------------------------------
-//
-//xmlNodePtr XMLTranslatorHelper::toXML( ::fwData::Object::sptr obj )
-//{
-//    ::fwXML::XMLTranslator::sptr translator;
-//    translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  obj->getRootedClassname() );
-//
-//    if (translator)
-//    {
-//        return translator->getXMLFrom(obj);
-//    }
-//    else
-//    {
-//        return TrivialXMLTranslator().getXMLFrom(obj);
-//    }
-//}
 
 //------------------------------------------------------------------------------
 
@@ -87,36 +67,6 @@ void XMLTranslatorHelper::fromXML( ::fwData::Object::sptr toUpdate, xmlNodePtr s
     {
         OSLM_WARN("No XML Translator for " << toUpdate->getLeafClassname() << " Object UnModified");
     }
-
-//    if (translator.get() )
-//    {
-//        translator->updateDataFromXML(toUpdate,source);
-//        xmlNodePtr child = source->children;
-//        bool classicObject = ( xmlStrcmp( source->name, BAD_CAST "Field" ) != 0 ) ;
-//        while ( child!=NULL )
-//        {
-//            if ( child->type == XML_ELEMENT_NODE )
-//            {
-//                // normal parent object ignore children which are not Field
-//                if ( classicObject &&  xmlStrcmp( child->name, BAD_CAST "Field" ) )
-//                {
-//                    OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " << source->name << " ignoring " << child->name );
-//                }
-//                else
-//                {
-//                    OSLM_DEBUG( "XMLTranslatorHelper::fromXML : " <<  source->name << " accept " << child->name );
-//                    ::fwData::Object::sptr newChild = XMLTranslatorHelper::fromXML( child );
-//                    assert (newChild);
-//                    toUpdate->children().push_back( newChild );
-//                }
-//            }
-//            child = child->next;
-//        }
-//    }
-//    else
-//    {
-//        OSLM_WARN("No XML Translator for " << toUpdate->getLeafClassname() << " Object UnModified");
-//    }
 }
 
 //------------------------------------------------------------------------------

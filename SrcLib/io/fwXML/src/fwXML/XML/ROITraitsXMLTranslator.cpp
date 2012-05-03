@@ -83,7 +83,7 @@ void ROITraitsXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
             else if ( nodeName == "Composite" )
             {
                 ::fwData::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( elementNode, true );
+                valueObj = Serializer().ObjectsFromXml( elementNode );
                 SLM_ASSERT("valueObj not instanced", valueObj);
                 ::fwData::Composite::sptr compo = ::fwData::Composite::dynamicCast(valueObj);
                 SLM_ASSERT("composite not instanced", compo);

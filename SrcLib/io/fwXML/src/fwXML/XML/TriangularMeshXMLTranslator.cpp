@@ -6,8 +6,9 @@
 
 #include <boost/filesystem/convenience.hpp>
 
-#include <stdio.h>
 #include <string.h>
+
+#include <fwTools/UUID.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwDataIO/writer/IObjectWriter.hpp>
@@ -33,51 +34,44 @@ TriangularMeshXMLTranslator::~TriangularMeshXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer /* FIXMEXPATH*/ , ::fwData::TriangularMesh::sptr mesh )
+void TriangularMeshXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::TriangularMesh::sptr mesh )
 {
-    // get XML node related to Buffer //FIXMEXPATH
-    std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(mesh);
+    // get XML node related to Buffer
     ::fwXML::IFileFormatService::sptr binSaver;
-    if( filesSrv.empty() )
-    {
-        binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::TriangularMeshFileFormatService");
-    }
-    else
-    {
-        binSaver = filesSrv.at(0);
-    }
-    std::string path;
-    path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
+    binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::TriangularMeshFileFormatService");
+    SLM_ASSERT("TriangularMeshFileFormatService not found", binSaver);
 
+    binSaver->filename() = mesh->getLeafClassname() + "_" + ::fwTools::UUID::get(mesh);
+    binSaver->extension() = binSaver->getWriter()->extension();
+    binSaver->rootFolder() = ::fwXML::Serializer::rootFolder();
+
+    ::boost::filesystem::path fileLocation = binSaver->localFolder() / binSaver->getFullFilename();
+    std::string path = fileLocation.string();
     XMLTH::addProp( boostXMLBuffer, "filename",  path );
     XMLTH::addProp( boostXMLBuffer, "protocol",  binSaver->getWriter()->getClassname() );
+
+    binSaver->save();
+    ::fwServices::OSR::unregisterService(binSaver);
 }
 
 //------------------------------------------------------------------------------
 
 void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::TriangularMesh::sptr mesh )
 {
-    // get XML node related to Buffer //FIXMEXPATH
-    std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(mesh);
+    // get XML node related to Buffer
     ::fwXML::IFileFormatService::sptr binLoader;
-    if( filesSrv.empty() )
-    {
-        binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::TriangularMeshFileFormatService");
-    }
-    else
-    {
-        binLoader = filesSrv.at(0);
-    }
-    OSLM_TRACE("READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename"));
+    binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(mesh, "::fwXML::TriangularMeshFileFormatService");
+    SLM_ASSERT("TriangularMeshFileFormatService not found", binLoader);
+
     ::boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
     binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
     binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
     binLoader->localFolder() = fileLocation.parent_path();
+    binLoader->rootFolder() = ::fwXML::Serializer::rootFolder();
 
     // find and update IO Protocol
     std::string protocol = XMLTH::getProp<std::string>(boostXMLBuffer,"protocol");
     std::string pseudoReader = protocol;
-
     if (  protocol.find("Writer") != std::string::npos )
     {
         pseudoReader.replace(  protocol.find("Writer"), strlen("Writer") ,"Reader");
@@ -95,6 +89,8 @@ void TriangularMeshXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer
 
     // assign to FileFormatService
     binLoader->setReader( reader );
+    binLoader->load();
+    ::fwServices::OSR::unregisterService(binLoader);
 }
 
 //------------------------------------------------------------------------------

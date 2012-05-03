@@ -29,10 +29,6 @@ public:
     // override call CollectFileFormatService service for object
     FWXML_API virtual void visit( ::fwData::Object::sptr obj);
 
-    typedef  std::map< ::fwData::Object::sptr , ::fwXML::IFileFormatService::sptr > MapObjectFileFormatService;
-    MapObjectFileFormatService m_objWithFileFormatService;
-
-
 };
 
 }

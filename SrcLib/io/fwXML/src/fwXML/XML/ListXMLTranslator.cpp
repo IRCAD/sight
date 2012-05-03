@@ -64,7 +64,7 @@ void ListXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xml
                     while ( containerNode )
                     {
                         // Load Object
-                        ::fwData::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true );
+                        ::fwData::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode );
                         SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
                         myList->getContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );

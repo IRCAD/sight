@@ -13,7 +13,6 @@
 
 #include "fwXML/XML/XMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"
-#include "fwXML/ObjectTracker.hpp"
 #include "fwXML/Serializer.hpp"
 
 #include <fwCore/Demangler.hpp>
@@ -260,7 +259,7 @@ public:
             xmlNodePtr node = ::fwXML::XMLParser::getChildrenXMLElement( fatherNode );
             OSLM_ASSERT("Sorry, child node of '"<< name <<"' node not instanced", node);
             ::fwData::Object::sptr obj;
-            obj = Serializer().ObjectsFromXml( node, true );
+            obj = Serializer().ObjectsFromXml( node );
 
             castedData = ::boost::dynamic_pointer_cast<DATATYPE>( obj );
             OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);

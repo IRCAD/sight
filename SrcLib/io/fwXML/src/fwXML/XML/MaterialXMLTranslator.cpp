@@ -76,9 +76,9 @@ void MaterialXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate, 
     SLM_ASSERT("cDiffuseNode not instanced", cDiffuseNode);
 
     ::fwData::Object::sptr valueObj;
-    valueObj = Serializer().ObjectsFromXml( cAmbientNode, true );
+    valueObj = Serializer().ObjectsFromXml( cAmbientNode );
     mat->setAmbient(::fwData::Color::dynamicCast(valueObj));
-    valueObj = Serializer().ObjectsFromXml( cDiffuseNode, true );
+    valueObj = Serializer().ObjectsFromXml( cDiffuseNode );
     mat->setDiffuse(::fwData::Color::dynamicCast(valueObj));
 }
 

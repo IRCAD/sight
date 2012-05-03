@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef TRIANGULARMESHXMLTRANSLATOR_HPP_
-#define TRIANGULARMESHXMLTRANSLATOR_HPP_
+#ifndef __FWXML_XML_TRIANGULARMESHXMLTRANSLATOR_HPP__
+#define __FWXML_XML_TRIANGULARMESHXMLTRANSLATOR_HPP__
 
 #include <boost/lexical_cast.hpp>
 
@@ -44,4 +44,4 @@ protected :
 
 }
 
-#endif /*TRIANGULARMESHXMLTRANSLATOR_HPP_*/
+#endif /*__FWXML_XML_TRIANGULARMESHXMLTRANSLATOR_HPP__*/

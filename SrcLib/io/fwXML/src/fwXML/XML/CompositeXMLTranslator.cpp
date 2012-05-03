@@ -79,7 +79,7 @@ void CompositeXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
             SLM_ASSERT("concreteValueNode not instanced", concreteValueNode);
 
             ::fwData::Object::sptr valueObj;
-            valueObj = Serializer().ObjectsFromXml( concreteValueNode, true );
+            valueObj = Serializer().ObjectsFromXml( concreteValueNode );
 
             SLM_ASSERT("valueObj not instanced", valueObj);
             assert( ::fwData::Object::dynamicCast( valueObj ));

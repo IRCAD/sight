@@ -41,17 +41,11 @@ void CollectFileFormatService::visit( ::fwData::Object::sptr obj)
 {
     OSLM_TRACE( "CollectFileFormatService Visitor Visiting : Class " << obj->className() <<
             "(" <<  ::fwTools::UUID::get(obj)    <<
-            ") HAS<FileFormatService>" <<  (::fwServices::OSR::has(obj, "::fwXML::IFileFormatService")?"yes":"no") <<
-            "ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
+            ") ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
             "(" << (m_source ? ::fwTools::UUID::get(m_source):"NoSOURCENOUUID") << ")"
     );
 
     SLM_ASSERT("Object is null",obj);
-    if ( ::fwServices::OSR::has(obj, "::fwXML::IFileFormatService") )
-    {
-        m_objWithFileFormatService[obj] = ::fwServices::get< ::fwXML::IFileFormatService >( obj );
-    }
-
 
     // VISIT FIELDS
     BOOST_FOREACH( ::fwData::Object::FieldMapType::value_type item, obj->getFields() )

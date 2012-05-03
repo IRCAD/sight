@@ -73,7 +73,7 @@ void PointListXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
 
                 // Load Point
                 ::fwData::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true );
+                valueObj = Serializer().ObjectsFromXml( ConcretevalueNode );
 
                 // Add point in the vector
                 SLM_ASSERT("valueObj not instanced", valueObj);

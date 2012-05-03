@@ -78,7 +78,7 @@ void ObjectTest::tearDown()
     CPPUNIT_ASSERT(::boost::filesystem::exists(testFile));
 
     // load object
-    ::fwData::Object::sptr obj2 = ::fwData::Object::dynamicCast(serializer.deSerialize(testFile, true));
+    ::fwData::Object::sptr obj2 = ::fwData::Object::dynamicCast(serializer.deSerialize(testFile));
 
     // check object
     CPPUNIT_ASSERT(obj2);

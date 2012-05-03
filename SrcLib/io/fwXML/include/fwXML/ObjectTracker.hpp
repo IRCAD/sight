@@ -55,7 +55,7 @@ public:
 
     static std::string getClassname( xmlNodePtr xmlNode );
 
-    /// return the UUID generated at runtime for the  object instanciated from XML node with attribute id="<xmlID>"
+    /// return the UUID generated at runtime for the  object instantiated from XML node with attribute id="<xmlID>"
     static std::string  xmlID2RuntimeID( const std::string &xmlID );
 
     /**

@@ -50,9 +50,10 @@ bool ObjectTracker::isAlreadyInstanciated( const std::string &uniqueID  )
 
 std::string  ObjectTracker::xmlID2RuntimeID( const std::string &xmlID )
 {
-   assert(  m_oldNewUUIDTranslation.find(xmlID)  != m_oldNewUUIDTranslation.end() );
+    OSLM_ASSERT(xmlID<<" not found in map oldNewUUIDTranslation",
+            m_oldNewUUIDTranslation.find(xmlID) != m_oldNewUUIDTranslation.end() );
 
-   return m_oldNewUUIDTranslation[xmlID];
+    return m_oldNewUUIDTranslation[xmlID];
 }
 
 //------------------------------------------------------------------------------
@@ -66,7 +67,7 @@ std::string ObjectTracker::getID( xmlNodePtr xmlNode )
     }
     catch (...)
     {
-    OSLM_WARN("No tracking id for " << xmlNode->name );
+        OSLM_WARN("No tracking id for " << xmlNode->name );
     }
 
     return id;
@@ -83,7 +84,7 @@ std::string ObjectTracker::getClassname( xmlNodePtr xmlNode )
     }
     catch (...)
     {
-    OSLM_WARN("No className for " << xmlNode->name );
+        OSLM_WARN("No className for " << xmlNode->name );
     }
 
     return className;

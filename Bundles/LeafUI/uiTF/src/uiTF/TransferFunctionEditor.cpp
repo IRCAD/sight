@@ -577,7 +577,7 @@ void TransferFunctionEditor::initTransferFunctions()
 
         BOOST_FOREACH( ::boost::filesystem::path file, paths )
         {
-            ::fwTools::Object::sptr pObject = serializer.deSerialize( file, false , false /*NO schema verification*/ );
+            ::fwTools::Object::sptr pObject = serializer.deSerialize( file, false /*NO schema verification*/ );
             ::fwData::TransferFunction::sptr pTf =  ::fwData::TransferFunction::dynamicCast(pObject);
             SLM_ASSERT( "Sorry, loaded object is not a TF object.", pTf );
 

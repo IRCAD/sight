@@ -21,7 +21,6 @@
 #include "fwXML/visitor/SerializeXML.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
 #include "fwXML/XML/TrivialXMLTranslator.hpp"
-#include "fwXML/IFileFormatService.hpp"
 
 namespace visitor
 {
@@ -39,11 +38,9 @@ SerializeXML::~SerializeXML()
 void SerializeXML::visit( ::fwData::Object::sptr obj)
 {
     SLM_ASSERT("Object is null", obj);
-    bool supportFileFormatSrv =  ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService");
     OSLM_DEBUG( "SerializeXML Visitor Visiting : Class " << obj->className() <<
             "(" <<  ::fwTools::UUID::get(obj)    <<
-            ") Support<FileFormatService>" <<  (supportFileFormatSrv?"yes":"no") <<
-            "ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
+            ") ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
             "(" << (m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID") << ")"
     );
 
@@ -53,23 +50,6 @@ void SerializeXML::visit( ::fwData::Object::sptr obj)
     if (!translator)
     {
         translator = ::fwXML::TrivialXMLTranslator::New();
-    }
-
-    if ( supportFileFormatSrv )
-    {
-        ::fwXML::IFileFormatService::sptr  saver;
-        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(obj);
-        if( filesSrv.empty() )
-        {
-            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(obj->getClassname(), "::fwXML::IFileFormatService");
-            saver = ::fwServices::add< ::fwXML::IFileFormatService >(obj, defaultImpl);
-        }
-        else
-        {
-            saver = filesSrv.at(0);
-        }
-        saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
-        saver->extension() = saver->getWriter()->extension();
     }
 
     // update XML
@@ -131,7 +111,7 @@ void SerializeXML::visit( ::fwData::Object::sptr obj)
     {
         xmlAddChild(m_correspondance[m_source] , objectXMLNode );
     }
-    // keep correspondance
+    // keep correspondence
     m_correspondance[obj] = objectXMLNode;
 }
 

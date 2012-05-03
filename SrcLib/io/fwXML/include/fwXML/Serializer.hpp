@@ -49,7 +49,7 @@ public:
     FWXML_API void serialize(::fwData::Object::sptr object,bool saveSchema = true) throw (::fwTools::Failed);
 
     /// deserialize to the given object, UPDATE rootFolde static ivar
-    FWXML_API ::fwData::Object::sptr deSerialize(boost::filesystem::path filePath, bool loadExtraXml=false, bool validateWithSchema = true) throw (::fwTools::Failed);
+    FWXML_API ::fwData::Object::sptr deSerialize(boost::filesystem::path filePath, bool validateWithSchema = true) throw (::fwTools::Failed);
 
     /// allow to change Path policy : by default use "ClassName-PTRADDR.xml"
     FWXML_API void setPathPolicy( IPathPolicy::sptr newPathPolicy);
@@ -64,7 +64,7 @@ public:
      * \li xmlNodePtr child for fwTools::Object information
      * @param loadExtraXML : if true extra XML information (exple image buffer are also loaded)
      */
-    ::fwData::Object::sptr ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML );
+    ::fwData::Object::sptr ObjectsFromXml( xmlNodePtr xmlNode );
 
 protected :
 
@@ -75,9 +75,6 @@ protected :
     FWXML_API static std::string getClassNameFromXML( xmlNodePtr xmlNode);
 
     FWXML_API static std::string translateID( bool xmlid, bool generateNewUUID);
-
-    // load/save extra xml information form obj and its children
-    void IOforExtraXML( ::fwData::Object::sptr object , bool savingMode);
 
     /// here rootFolder is mandatory *static* because sub classes processing serialization must k,ow the basename of patient Folder
     FWXML_API static ::boost::filesystem::path m_rootFolder;
