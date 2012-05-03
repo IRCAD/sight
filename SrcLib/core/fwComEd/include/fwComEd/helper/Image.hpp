@@ -30,6 +30,7 @@ class FWCOMED_CLASS_API Image
 {
 
 public :
+    fwCoreClassDefinitionsWithFactoryMacro((Image), (((::fwData::Image::sptr))), new Image );
 
     typedef ::fwData::Image::SizeType SizeType;
     typedef ::fwData::Image::IndexType IndexType;
