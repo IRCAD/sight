@@ -228,11 +228,13 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
     // Clear the container points and set its capacity to 0
     trian->clearPoints();
 
+    ::fwComEd::helper::Mesh meshHelper(mesh);
+
     size_t numberOfPoints = mesh->getNumberOfPoints();
     std::vector<float> vPoint(3, 0.0);
     trian->points().resize(numberOfPoints, vPoint);
 
-    ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     typedef boost::make_unsigned< ::fwData::Mesh::PointsMultiArrayType::index >::type PointTypesIndex;
     for (PointTypesIndex i = 0; i != numberOfPoints; ++i)
     {
@@ -247,7 +249,7 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
     std::vector<int> vCell(3, 0);
     trian->cells().resize(numberOfCells, vCell);
 
-    ::fwData::Mesh::CellDataMultiArrayType cells = mesh->getCellData();
+    ::fwData::Mesh::CellDataMultiArrayType cells = meshHelper.getCellData();
     typedef boost::make_unsigned< ::fwData::Mesh::CellDataMultiArrayType::index >::type CellTypesIndex;
     size_t cellsSize = numberOfCells*3;
     SLM_ASSERT("Wrong CellDataMultiArray size", cells.size() == cellsSize);
@@ -270,6 +272,8 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
     mesh->clear();
     mesh->allocate(vPoints.size(), vCells.size(), vCells.size()*3);
 
+    ::fwComEd::helper::Mesh meshHelper(mesh);
+
     ::fwData::Array::sptr pointsArray = mesh->getPointsArray();
     ::fwData::Array::sptr cellsArray = mesh->getCellDataArray();
     ::fwData::Array::sptr cellDataOffsetArray = mesh->getCellDataOffsetsArray();
@@ -287,13 +291,13 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
     //Initialized pointsArray
     for(size_t i=0; i<vPoints.size(); i++)
     {
-        mesh->insertNextPoint(vPoints[i][0], vPoints[i][1], vPoints[i][2]);
+        meshHelper.insertNextPoint(vPoints[i][0], vPoints[i][1], vPoints[i][2]);
     }
 
     //Initialized cellsArray
     for(size_t i=0; i<vCells.size(); i++)
     {
-        mesh->insertNextCell(vCells[i][0], vCells[i][1], vCells[i][2]);
+        meshHelper.insertNextCell(vCells[i][0], vCells[i][1], vCells[i][2]);
     }
     mesh->adjustAllocatedMemory();
 }
