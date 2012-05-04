@@ -12,6 +12,8 @@
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Factory.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 namespace itkIO
 {
 
@@ -84,6 +86,8 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
     // Pre Condition
     SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image", imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
 
+    ::fwComEd::helper::Image imageHelper(imageData);
+
     typename ITKIMAGE::Pointer itkImage=ITKIMAGE::New();
 
     // update spacing information ; workaround due to GetSpacing const
@@ -114,12 +118,12 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
 
     if( bufferManagerIsDataImage )
     {
-        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageData->getBuffer() ) , nbpixels , false );
+        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageHelper.getBuffer() ) , nbpixels , false );
     }
     else
     {
         SLM_ASSERT("Sorry, this method requires that imageData manages its buffer.",   imageData->getDataArray()->getIsBufferOwner() );
-        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageData->getBuffer() ) , nbpixels , true );
+        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageHelper.getBuffer() ) , nbpixels , true );
         imageData->getDataArray()->setIsBufferOwner( false );
     }
 
