@@ -45,14 +45,14 @@ REGISTER_SERVICE( ::gui::editor::IEditor, ::basicRegistration::SImagesSubstract,
 namespace basicRegistration
 {
 
-SImagesSubstract::SImagesSubstract()
+SImagesSubstract::SImagesSubstract()  throw()
 : ::gui::editor::IEditor(),
   mpComputeButton(0)
 {
 
 }
 
-SImagesSubstract::~SImagesSubstract()
+SImagesSubstract::~SImagesSubstract()  throw()
 {}
 
 void SImagesSubstract::configuring() throw ( ::fwTools::Failed )
