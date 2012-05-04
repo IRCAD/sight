@@ -15,6 +15,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/location/SingleFile.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include "fwDataIO/reader/GzBufferImageReader.hpp"
 
 
@@ -50,7 +52,8 @@ void GzBufferImageReader::read()
     size_t imageSizeInBytes = image->getSizeInBytes();
 
     image->allocate();
-    char *ptr = static_cast<char*>(image->getBuffer());
+    ::fwComEd::helper::Image helper(image);
+    char *ptr = static_cast<char*>(helper.getBuffer());
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
 

@@ -16,6 +16,8 @@
 #include <fwDataIO/reader/MeshReader.hpp>
 #include <fwDataIO/writer/MeshWriter.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "MeshTrianTest.hpp"
 
 // Registers the fixture into the 'registry'
@@ -103,21 +105,23 @@ void MeshTrianTest::testMeshWithCellNormals()
 
 //------------------------------------------------------------------------------
 
-#define COMPAREBUFFER(type, buff1, buff2)                            \
-{                                                                    \
-    CPPUNIT_ASSERT( (!buff1 && !buff2) || (buff1 && buff2));         \
-    if(buff1)                                                        \
-    {                                                                \
-        CPPUNIT_ASSERT(buff1->getSize() == buff2->getSize());        \
-                                                                     \
-        type *iter1 = buff1->begin<type>();                          \
-        type *iter2 = buff2->begin<type>();                          \
-                                                                     \
-        for (; iter1 != buff1->end<type>() ; ++iter1, ++iter2)       \
-        {                                                            \
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(*iter1, *iter2, 0.000001);  \
-        }                                                            \
-    }                                                                \
+#define COMPAREBUFFER(type, buff1, buff2)                             \
+{                                                                     \
+    CPPUNIT_ASSERT( (!buff1 && !buff2) || (buff1 && buff2));          \
+    if(buff1)                                                         \
+    {                                                                 \
+        CPPUNIT_ASSERT(buff1->getSize() == buff2->getSize());         \
+        ::fwComEd::helper::Array helper1(buff1);                      \
+        ::fwComEd::helper::Array helper2(buff2);                      \
+                                                                      \
+        type *iter1 = helper1.begin<type>();                          \
+        type *iter2 = helper2.begin<type>();                          \
+                                                                      \
+        for (; iter1 != helper1.end<type>() ; ++iter1, ++iter2)       \
+        {                                                             \
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(*iter1, *iter2, 0.000001);   \
+        }                                                             \
+    }                                                                 \
 }
 
 //------------------------------------------------------------------------------

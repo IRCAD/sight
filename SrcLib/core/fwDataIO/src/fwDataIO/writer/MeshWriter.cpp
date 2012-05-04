@@ -86,16 +86,16 @@ void MeshWriter::write()
     file << nbCells << std::endl;
 
     ::fwData::Array::sptr normals = mesh->getCellNormalsArray();
-    ::fwComEd::helper::Array normalsArrayHelper(normals);
 
     if(normals
-            && normalsArrayHelper.getBuffer() != NULL
+            && !normals->empty()
             && normals->getType() == ::fwTools::Type::create<float>()
             && normals->getNumberOfComponents() == 3
             && normals->getNumberOfDimensions() == 1
             && nbCells == normals->getSize().at(0)
             )
     {
+        ::fwComEd::helper::Array normalsArrayHelper(normals);
         float *normalBuf = normalsArrayHelper.begin< float >();
 
         while (cellBuf != cellBufEnd)
