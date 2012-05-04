@@ -6,7 +6,11 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/vector.hpp>
+
 #include <fwData/Array.hpp>
+
+#include <fwComEd/helper/Array.hpp>
+
 #include "ArrayTest.hpp"
 
 
@@ -40,8 +44,10 @@ void ArrayTest::tearDown()
 void ArrayTest::allocation()
 {
     ::fwData::Array::NewSptr array;
+    ::fwComEd::helper::Array arrayHelper(array);
 
-    CPPUNIT_ASSERT(array->getBuffer() == NULL);
+    CPPUNIT_ASSERT(array->empty());
+    CPPUNIT_ASSERT(arrayHelper.getBuffer() == NULL);
     CPPUNIT_ASSERT(array->getSize().empty());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(0), array->getSizeInBytes());
 
@@ -50,7 +56,8 @@ void ArrayTest::allocation()
     size += 10,100;
 
     array->resize("uint32", size, NB_COMPONENT, true);
-    CPPUNIT_ASSERT(array->getBuffer() != NULL);
+    CPPUNIT_ASSERT(arrayHelper.getBuffer() != NULL);
+    CPPUNIT_ASSERT(!array->empty());
 
     CPPUNIT_ASSERT_EQUAL(size.size(), array->getNumberOfDimensions());
     CPPUNIT_ASSERT_EQUAL(size[0], array->getSize()[0]);
@@ -65,7 +72,7 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT_EQUAL(  (size_t)0, array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)0, array->getNumberOfComponents());
     CPPUNIT_ASSERT(  array->empty() );
-    CPPUNIT_ASSERT(  array->getBuffer() == NULL );
+    CPPUNIT_ASSERT(  arrayHelper.getBuffer() == NULL );
 
     char *buffer = new char[1000];
 
@@ -77,22 +84,21 @@ void ArrayTest::allocation()
     // array->resize(::fwTools::Type::create("uint8"), size, 1);
     // array->setBuffer(buffer);
 
-    array->setBuffer(buffer, false, ::fwTools::Type::create("uint8"), size, 1);
+    arrayHelper.setBuffer(buffer, false, ::fwTools::Type::create("uint8"), size, 1);
 
     CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getBufferOffset(list_of(1)(0), 0, 4));
     CPPUNIT_ASSERT_EQUAL(  (size_t)1, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)1*10*100, array->getSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == list_of(1)(10));
-    CPPUNIT_ASSERT_EQUAL(  buffer[0], *(array->getItem< char >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  buffer[10], *(array->getItem< char >(list_of(0)(1))));
-    CPPUNIT_ASSERT_EQUAL(  buffer[999], *(array->getItem< char >(list_of(9)(99))));
-    CPPUNIT_ASSERT_EQUAL(  buffer[326], *(array->getItem< char >(list_of(6)(32))));
-    CPPUNIT_ASSERT_EQUAL(  buffer[947], *(array->getItem< char >(list_of(7)(94))));
-    CPPUNIT_ASSERT_EQUAL(  buffer[238], *(array->getItem< char >(list_of(8)(23))));
+    CPPUNIT_ASSERT_EQUAL(  buffer[0], *(arrayHelper.getItem< char >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  buffer[10], *(arrayHelper.getItem< char >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL(  buffer[999], *(arrayHelper.getItem< char >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL(  buffer[326], *(arrayHelper.getItem< char >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL(  buffer[947], *(arrayHelper.getItem< char >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL(  buffer[238], *(arrayHelper.getItem< char >(list_of(8)(23))));
     CPPUNIT_ASSERT_EQUAL(false, array->getIsBufferOwner());
 
     array->clear();
-
 
     delete[] buffer;
 }
@@ -102,6 +108,8 @@ void ArrayTest::allocation()
 void ArrayTest::resize()
 {
     ::fwData::Array::NewSptr array;
+    ::fwComEd::helper::Array arrayHelper(array);
+
     const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size;
     size += 10,100;
@@ -112,10 +120,10 @@ void ArrayTest::resize()
     // CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
 
     unsigned int count = 0;
-    unsigned int *iter = array->begin<unsigned int>();
+    unsigned int *iter = arrayHelper.begin<unsigned int>();
 
     // CPPUNIT_ASSERT(iter != NULL);
-    for (; iter != array->end<unsigned int>() ; ++iter)
+    for (; iter != arrayHelper.end<unsigned int>() ; ++iter)
     {
         *iter = count++;
     }
@@ -124,12 +132,12 @@ void ArrayTest::resize()
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100, array->getSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == list_of(4)(40));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(0)(1))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(9)(99))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(6)(32))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(7)(94))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(8)(23))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(8)(23))));
 
     ::fwData::Array::SizeType newSize;
     newSize += 100,10;
@@ -139,12 +147,12 @@ void ArrayTest::resize()
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getBufferOffset(list_of(1)(0), 0, 4));
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == list_of(4)(400));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(10)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(99)(9))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(26)(3))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(47)(9))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(38)(2))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(10)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(99)(9))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(26)(3))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(47)(9))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(38)(2))));
 
     newSize.clear();
     newSize += 25,40;
@@ -153,12 +161,12 @@ void ArrayTest::resize()
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == list_of(4)(100));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(10)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(24)(39))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(1)(13))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(22)(37))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(13)(9))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(10)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(24)(39))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(1)(13))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(22)(37))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(13)(9))));
 
     newSize.clear();
     newSize += 100;
@@ -168,12 +176,12 @@ void ArrayTest::resize()
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)40, array->getElementSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == list_of(40));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0), 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(0), 10)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(99), 9)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(32), 6)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(94), 7)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(23), 8)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0), 0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(0), 10)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(99), 9)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(32), 6)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(94), 7)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(23), 8)));
 
     newSize.clear();
     newSize += 10, 100;
@@ -183,12 +191,12 @@ void ArrayTest::resize()
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)2*100*10*2, array->getSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == list_of(4)(40) );
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(0)(1))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(9)(99))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(6)(32))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(7)(94))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(8)(23))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(8)(23))));
 }
 
 //-----------------------------------------------------------------------------
@@ -196,6 +204,8 @@ void ArrayTest::resize()
 void ArrayTest::reallocate()
 {
     ::fwData::Array::NewSptr array;
+    ::fwComEd::helper::Array arrayHelper(array);
+
     const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size;
     size += 10,100;
@@ -205,18 +215,18 @@ void ArrayTest::reallocate()
     // CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
 
     unsigned int count = 0;
-    unsigned int *iter = array->begin<unsigned int>();
-    for (; iter != array->end<unsigned int>() ; ++iter)
+    unsigned int *iter = arrayHelper.begin<unsigned int>();
+    for (; iter != arrayHelper.end<unsigned int>() ; ++iter)
     {
         *iter = count++;
     }
     CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(0)(1))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(9)(99))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(6)(32))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(7)(94))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(8)(23))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(8)(23))));
 
     ::fwData::Array::SizeType newSize;
     newSize += 100,100;
@@ -224,42 +234,42 @@ void ArrayTest::reallocate()
     array->resize(newSize, NB_COMPONENT, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4*100*100, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(10)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(99)(9))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(26)(3))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(47)(9))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(38)(2))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(10)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(99)(9))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(26)(3))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(47)(9))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(38)(2))));
 
     unsigned int value = 1859;
-    array->setItem(list_of(50)(90), &value);
-    CPPUNIT_ASSERT_EQUAL(  value, *(array->getItem< unsigned int >(list_of(50)(90))));
+    arrayHelper.setItem(list_of(50)(90), &value);
+    CPPUNIT_ASSERT_EQUAL(  value, *(arrayHelper.getItem< unsigned int >(list_of(50)(90))));
 
     unsigned int value2 = 25464;
-    array->setItem(list_of(99)(99), &value2);
-    CPPUNIT_ASSERT_EQUAL(  value2, *(array->getItem< unsigned int >(list_of(99)(99))));
+    arrayHelper.setItem(list_of(99)(99), &value2);
+    CPPUNIT_ASSERT_EQUAL(  value2, *(arrayHelper.getItem< unsigned int >(list_of(99)(99))));
 
     array->resize("uint32", newSize, 2, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4*100*100*2, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0), 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(5)(0), 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(99)(4), 1)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(63)(1), 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(73)(4), 1)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(19)(1), 0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0), 0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(5)(0), 0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(99)(4), 1)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(63)(1), 0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(73)(4), 1)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(19)(1), 0)));
 
-    CPPUNIT_ASSERT_EQUAL(  value, *(array->getItem< unsigned int >(list_of(25)(45), 0)));
+    CPPUNIT_ASSERT_EQUAL(  value, *(arrayHelper.getItem< unsigned int >(list_of(25)(45), 0)));
 
-    CPPUNIT_ASSERT_EQUAL(  value2, *(array->getItem< unsigned int >(list_of(99)(49), 1)));
+    CPPUNIT_ASSERT_EQUAL(  value2, *(arrayHelper.getItem< unsigned int >(list_of(99)(49), 1)));
 
     unsigned int value3 = 45643;
-    array->setItem(list_of(35)(48), 0, &value3);
-    CPPUNIT_ASSERT_EQUAL(  value3, *(array->getItem< unsigned int >(list_of(35)(48), 0)));
+    arrayHelper.setItem(list_of(35)(48), 0, &value3);
+    CPPUNIT_ASSERT_EQUAL(  value3, *(arrayHelper.getItem< unsigned int >(list_of(35)(48), 0)));
 
     unsigned int value4 = 16165;
-    array->setItem(list_of(99)(99), 1, &value4);
-    CPPUNIT_ASSERT_EQUAL(  value4, *(array->getItem< unsigned int >(list_of(99)(99), 1)));
+    arrayHelper.setItem(list_of(99)(99), 1, &value4);
+    CPPUNIT_ASSERT_EQUAL(  value4, *(arrayHelper.getItem< unsigned int >(list_of(99)(99), 1)));
 
 
     newSize.clear();
@@ -269,48 +279,48 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(0)(1))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(9)(99))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(6)(32))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(7)(94))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(8)(23))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(8)(23))));
 
     array->setNumberOfComponents(2);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)8, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100*2, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(5)(0),0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(array->getItem< unsigned int >(list_of(9)(49), 1)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(3)(16), 0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(array->getItem< unsigned int >(list_of(3)(47), 1)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(9)(11), 0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(5)(0),0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >(list_of(9)(49), 1)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(3)(16), 0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >(list_of(3)(47), 1)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(9)(11), 0)));
 
     array->setType(::fwTools::Type::create("uint16"));
     CPPUNIT_ASSERT_EQUAL(  (size_t)2*2, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)2*10*100*2, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)0, *(array->getItem< ::boost::uint16_t >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)10, *(array->getItem< ::boost::uint16_t >(list_of(0)(1))));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)999, *(array->getItem< ::boost::uint16_t >(list_of(9)(99))));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)326, *(array->getItem< ::boost::uint16_t >(list_of(6)(32))));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)947, *(array->getItem< ::boost::uint16_t >(list_of(7)(94))));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)238, *(array->getItem< ::boost::uint16_t >(list_of(8)(23))));
+    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)0, *(arrayHelper.getItem< ::boost::uint16_t >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)10, *(arrayHelper.getItem< ::boost::uint16_t >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)999, *(arrayHelper.getItem< ::boost::uint16_t >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)326, *(arrayHelper.getItem< ::boost::uint16_t >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)947, *(arrayHelper.getItem< ::boost::uint16_t >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)238, *(arrayHelper.getItem< ::boost::uint16_t >(list_of(8)(23))));
 
     array->setNumberOfComponents(1);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)2, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)2*10*100, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(array->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(array->getItem< unsigned int >(list_of(0)(2),0)));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(array->getItem< unsigned int >(list_of(2)(65))));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(array->getItem< unsigned int >(list_of(6)(47), 0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >(list_of(0)(2),0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >(list_of(2)(65))));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >(list_of(6)(47), 0)));
 
     ::boost::uint16_t val;
-    array->getItem(list_of(2)(65), &val);
+    arrayHelper.getItem(list_of(2)(65), &val);
     CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)326, val);
 
-    char * charValue = array->getBufferPtr(list_of(6)(47), 0, array->getType().sizeOf());
+    char * charValue = arrayHelper.getBufferPtr(list_of(6)(47), 0, array->getType().sizeOf());
     CPPUNIT_ASSERT_EQUAL( (unsigned int)238, *(reinterpret_cast<unsigned int*>(charValue)));
 
     array->clear();
@@ -323,18 +333,20 @@ void ArrayTest::copy()
 {
     ::fwData::Array::NewSptr array;
     ::fwData::Array::NewSptr deepCopyArray;
-    ::fwData::Array::NewSptr shallowCopyArray;
+    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwComEd::helper::Array deepCopyArrayHelper(deepCopyArray);
+
     const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size;
     size += 10,100;
 
     array->resize("uint32", size, NB_COMPONENT, true);
-    CPPUNIT_ASSERT(array->getBuffer() != NULL);
-    CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
+    CPPUNIT_ASSERT(arrayHelper.getBuffer() != NULL);
+    CPPUNIT_ASSERT(arrayHelper.begin<unsigned int>() != NULL);
 
     unsigned int count = 0;
-    unsigned int *iter = array->begin<unsigned int>();
-    for (; iter != array->end<unsigned int>() ; ++iter)
+    unsigned int *iter = arrayHelper.begin<unsigned int>();
+    for (; iter != arrayHelper.end<unsigned int>() ; ++iter)
     {
         *iter = count++;
     }
@@ -346,23 +358,13 @@ void ArrayTest::copy()
     CPPUNIT_ASSERT_EQUAL(  array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == deepCopyArray->getStrides());
     CPPUNIT_ASSERT(array->getSize() == deepCopyArray->getSize());
-    CPPUNIT_ASSERT_EQUAL( *(array->getItem< unsigned int >(list_of(0)(0))) , *(deepCopyArray->getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL( *(array->getItem< unsigned int >(list_of(0)(1))) , *(deepCopyArray->getItem< unsigned int >(list_of(0)(1))));
-    CPPUNIT_ASSERT_EQUAL( *(array->getItem< unsigned int >(list_of(9)(99))), *(deepCopyArray->getItem< unsigned int >(list_of(9)(99))));
-    CPPUNIT_ASSERT_EQUAL( *(array->getItem< unsigned int >(list_of(6)(32))), *(deepCopyArray->getItem< unsigned int >(list_of(6)(32))));
-    CPPUNIT_ASSERT_EQUAL( *(array->getItem< unsigned int >(list_of(7)(94))), *(deepCopyArray->getItem< unsigned int >(list_of(7)(94))));
-    CPPUNIT_ASSERT_EQUAL( *(array->getItem< unsigned int >(list_of(8)(23))), *(deepCopyArray->getItem< unsigned int >(list_of(8)(23))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(0)(0))) , *(deepCopyArrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(0)(1))) , *(deepCopyArrayHelper.getItem< unsigned int >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(9)(99))), *(deepCopyArrayHelper.getItem< unsigned int >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(6)(32))), *(deepCopyArrayHelper.getItem< unsigned int >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(7)(94))), *(deepCopyArrayHelper.getItem< unsigned int >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(8)(23))), *(deepCopyArrayHelper.getItem< unsigned int >(list_of(8)(23))));
     CPPUNIT_ASSERT_EQUAL( true , deepCopyArray->getIsBufferOwner());
-
-    //check shallowCopy
-    shallowCopyArray->shallowCopy(array);
-    CPPUNIT_ASSERT_EQUAL(  array->getBufferOffset(list_of(1)(0), 0, 4), shallowCopyArray->getBufferOffset(list_of(1)(0), 0, 4));
-    CPPUNIT_ASSERT_EQUAL(  array->getElementSizeInBytes(), shallowCopyArray->getElementSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  array->getSizeInBytes(), shallowCopyArray->getSizeInBytes());
-    CPPUNIT_ASSERT(array->getStrides() == shallowCopyArray->getStrides());
-    CPPUNIT_ASSERT(array->getSize() == shallowCopyArray->getSize());
-    CPPUNIT_ASSERT_EQUAL( array->getBuffer(), shallowCopyArray->getBuffer());
-    CPPUNIT_ASSERT_EQUAL( false , shallowCopyArray->getIsBufferOwner());
 }
 
 //-----------------------------------------------------------------------------

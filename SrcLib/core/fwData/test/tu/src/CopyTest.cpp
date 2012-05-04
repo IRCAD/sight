@@ -90,7 +90,7 @@ void CopyTest::tearDown()
 void CopyTest::fieldCopyTest()
 {
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Acquisition);
-    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Array);
+    __FWDATA_UT_FIELD_DEEP_COPY_MACRO(::fwData::Array);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Boolean);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Color);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Composite);

@@ -36,5 +36,5 @@ CLASSTEST=[
 ]
 
 USE = ['boost','boostDateTime', 'boostRegex']
-LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1']
+LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1','fwComEd_0-1']
 CONSOLE = 'yes'
