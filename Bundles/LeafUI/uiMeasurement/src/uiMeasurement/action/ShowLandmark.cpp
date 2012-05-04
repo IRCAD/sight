@@ -21,6 +21,7 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 
 #include "uiMeasurement/action/ShowLandmark.hpp"
@@ -61,7 +62,7 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (    image->getBuffer()==NULL ||
+    if (   !::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) ||
             ! image->getField( ::fwComEd::Dictionary::m_imageLandmarksId ))
     {
         this->::fwGui::IActionSrv::setIsActive(false);

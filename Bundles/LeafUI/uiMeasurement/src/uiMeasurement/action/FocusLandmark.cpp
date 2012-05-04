@@ -87,7 +87,7 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
-    if ( pImage->getBuffer()==NULL )
+    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(pImage))
     {
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Add landmarks");

@@ -64,7 +64,7 @@ void SaveLandmark::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
-    if (image->getBuffer()==NULL)
+    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Save landmarks",
