@@ -39,7 +39,8 @@ ValveDump::sptr ValveDump::New()
 //------------------------------------------------------------------------------
 
 ValveDump::ValveDump() :
-    m_minFreeMem(1024*1024*500LL)
+    m_minFreeMem(1024*1024*500LL),
+    m_hysteresisOffset(1024*1024*100LL)
 {
 
 }
@@ -174,7 +175,7 @@ void ValveDump::apply(size_t supplement)
 {
     if(this->needDump(supplement))
     {
-        this->dump( (m_minFreeMem + supplement) - ::fwMemory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() );
+        this->dump( (m_minFreeMem + m_hysteresisOffset + supplement) - ::fwMemory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() );
     }
 }
 

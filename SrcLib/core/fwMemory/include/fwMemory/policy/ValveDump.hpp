@@ -58,6 +58,7 @@ protected :
     FWMEMORY_API void apply(size_t supplement = 0);
 
     size_t m_minFreeMem;
+    size_t m_hysteresisOffset;
 
     ::fwMemory::BufferManager::wptr m_manager;
 
