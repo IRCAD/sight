@@ -30,8 +30,8 @@ namespace fwTools
  *
  * BufferObject class has a BufferManager and Locks mechanism, Allowing to
  * trigger special treatements on various events on BufferObjects (allocation,
- * reallocation, destruction, locking, unlocking) and allowing to give some
- * guarantees.
+ * reallocation, destruction, swapping, locking, unlocking) and allowing to
+ * give some guarantees.
  *
  * Users of buffer have to keep a lock on a BufferObject when dealing with the
  * buffers content. Keeping a lock on a BufferObject garantees that the buffer
@@ -50,6 +50,12 @@ public:
 
     /**
      * @brief base class for BufferObject Lock
+     *
+     * This class purpose is to provide a way to count buffer uses, to prevent
+     * BufferManager changes on buffer if nb uses > 0
+     *
+     * The count is shared with the associated BufferObject. Be aware that this
+     * mechanism is actually not thread-safe.
      *
      */
     template <typename T>
@@ -212,34 +218,118 @@ public:
     };
 
 
+    /**
+     * @name Locks
+     * @brief Locks types
+     * @{ */
+     */
     typedef LockBase<BufferObject> Lock;
     typedef LockBase<const BufferObject> ConstLock;
+    /**  @} */
 
 
+    /**
+     * @brief BufferObject constructor
+     *
+     * Register the buffer to an existing buffer manager.
+     */
     FWTOOLS_API BufferObject();
 
+    /**
+     * @brief BufferObject destructor
+     *
+     * unregister the buffer from the buffer manager.
+     */
     FWTOOLS_API virtual ~BufferObject();
 
 
+    /**
+     * @brief Buffer allocation
+     *
+     * Allocate a buffer using given policy.
+     * The allocation may have been hooked by the buffer manager.
+     *
+     * @param size number of bytes to allocate
+     * @param policy Buffer allocation policy, default is Malloc policy
+     *
+     */
     FWTOOLS_API virtual void allocate(SizeType size,
             ::fwTools::BufferAllocationPolicy::sptr policy = ::fwTools::BufferMallocPolicy::New());
 
+    /**
+     * @brief Buffer reallocation
+     *
+     * Reallocate the buffer using the associated policy. A policy may not
+     * handle reallocation.
+     * The reallocation may have been hooked by the buffer manager.
+     *
+     * @param size New buffer size
+     *
+     */
     FWTOOLS_API virtual void reallocate(SizeType size);
+
+    /**
+     * @brief Buffer deallocation
+     *
+     * Destroy the buffer using the associated policy.
+     * The destruction may have been hooked by the buffer manager.
+     *
+     */
     FWTOOLS_API virtual void destroy();
 
 
+    /**
+     * @brief Buffer setter
+     *
+     * Set the buffer from an existing one.
+     *
+     * @param buffer External Buffer
+     * @param size Buffer's size
+     * @param policy External buffer allocation policy, default is Malloc policy
+     *
+     */
     FWTOOLS_API virtual void setBuffer(void *buffer, SizeType size,
             ::fwTools::BufferAllocationPolicy::sptr policy = ::fwTools::BufferMallocPolicy::New());
 
 
+    /**
+     * @brief Return a lock on the BufferObject
+     *
+     * @return Lock on the BufferObject
+     */
     FWTOOLS_API virtual Lock lock();
+
+    /**
+     * @brief Return a const lock on the BufferObject
+     *
+     * @return ConstLock on the BufferObject
+     */
     FWTOOLS_API virtual ConstLock lock() const;
 
+    /**
+     * @brief Returns the buffer's size
+     */
     FWTOOLS_API SizeType getSize() const { return m_size; };
+
+    /**
+     * @brief Returns true if the buffer is empty
+     */
     FWTOOLS_API bool isEmpty() const { return m_size == 0; };
 
+    /**
+     * @brief Returns the number of locks on the BufferObject
+     */
     FWTOOLS_API long lockCount() const { return *m_count; };
+
+    /**
+     * @brief Returns true if the buffer has any lock
+     */
     FWTOOLS_API long isLocked() const { return lockCount() != 0; };
+
+    /**
+     * @brief Returns poitner on BufferObject's buffer
+     */
+    FWTOOLS_API const void * const getBufferPointer() const {return &m_buffer;};
 
     /// Exchanges the content of the BufferObject with the content of _source.
     FWTOOLS_API void swap( BufferObject::sptr _source );
