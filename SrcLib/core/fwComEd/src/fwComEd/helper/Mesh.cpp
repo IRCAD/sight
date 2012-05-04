@@ -6,6 +6,8 @@
 
 #include <boost/assign/list_of.hpp>
 
+#include <fwMath/MeshFunctions.hpp>
+
 #include "fwComEd/helper/Mesh.hpp"
 
 using namespace boost::assign;
@@ -327,6 +329,27 @@ void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValu
 ::fwData::Mesh::csptr Mesh::getMesh() const
 {
     return m_mesh;
+}
+
+//------------------------------------------------------------------------------
+
+bool Mesh::isClosed()
+{
+    bool isClosed = false;
+
+    ::fwData::Mesh::Id cellDataSize = m_mesh->getCellDataSize();
+    ::fwData::Mesh::Id nbOfCells = m_mesh->getNumberOfCells();
+
+    ::fwData::Mesh::CellValueType* cellDataBegin = m_helperCellData->begin< ::fwData::Mesh::CellValueType >();
+    ::fwData::Mesh::CellValueType* cellDataEnd = cellDataBegin + cellDataSize;
+    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin = m_helperCellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
+    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
+    ::fwData::Mesh::CellTypes* cellTypesBegin = m_helperCellTypes->begin< ::fwData::Mesh::CellTypes >();
+
+    isClosed = ::fwMath::isBorderlessSurface(cellDataBegin,
+                                             cellDataEnd, cellDataOffsetsBegin,
+                                             cellDataOffsetsEnd, cellTypesBegin );
+    return isClosed;
 }
 
 //------------------------------------------------------------------------------

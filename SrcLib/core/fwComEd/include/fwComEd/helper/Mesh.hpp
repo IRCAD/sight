@@ -200,6 +200,12 @@ public :
      /// Returns the internal ::fwData::Mesh
      FWCOMED_API ::fwData::Mesh::csptr getMesh() const;
 
+     /*!
+      * @brief Return true if the mesh is closed.
+      * The result is computed for each call.
+      */
+     FWCOMED_API bool isClosed();
+
 protected:
 
     ::fwData::Mesh::sptr m_mesh;
