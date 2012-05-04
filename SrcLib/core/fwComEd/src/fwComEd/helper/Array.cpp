@@ -43,13 +43,21 @@ const void *Array::getBuffer() const
 
 void Array::setBuffer(void *buf, bool takeOwnership)
 {
-    ::fwTools::BufferObject::sptr attrBufferObject = m_array->getBufferObject();
-    if(!attrBufferObject->isEmpty() && m_array->getIsBufferOwner())
+    if(m_array->getIsBufferOwner())
     {
-        attrBufferObject->destroy();
+        if(!m_array->getBufferObject()->isEmpty())
+        {
+            m_array->getBufferObject()->destroy();
+        }
     }
-    attrBufferObject->setBuffer(buf, (buf == NULL) ? 0 : m_array->getSizeInBytes());
-    m_array->setIsBufferOwner(!attrBufferObject->isEmpty() && takeOwnership);
+    else
+    {
+        ::fwTools::BufferObject::NewSptr newBufferObject;
+        ::fwTools::BufferObject::sptr oldBufferObject = m_array->getBufferObject();
+        oldBufferObject->swap(newBufferObject);
+    }
+    m_array->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_array->getSizeInBytes());
+    m_array->setIsBufferOwner(takeOwnership);
 }
 
 //------------------------------------------------------------------------------
