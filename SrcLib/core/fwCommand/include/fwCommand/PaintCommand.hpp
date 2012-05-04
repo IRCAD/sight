@@ -14,6 +14,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include "fwCommand/ICommand.hpp"
 
 namespace fwCommand
@@ -80,7 +82,8 @@ private :
 
     /// Working image
     ::fwData::Image::wptr         m_image;
-    ::fwData::Image::BufferType * m_buffer;
+    /// Helper on Working image
+    ::fwComEd::helper::Image::sptr m_imageHelper;
 
     ::fwData::Image::IndexType m_currentPrepaintIndex;
     std::vector< ::fwData::Image::BufferType > m_currentPrepaintBuff;
