@@ -221,7 +221,7 @@ public:
     /**
      * @name Locks
      * @brief Locks types
-     * @{ */
+     * @{
      */
     typedef LockBase<BufferObject> Lock;
     typedef LockBase<const BufferObject> ConstLock;
