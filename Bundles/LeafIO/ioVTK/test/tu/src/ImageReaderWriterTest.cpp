@@ -17,6 +17,8 @@
 #include <fwData/Image.hpp>
 #include <fwDataTools/Image.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include <fwTest/Data.hpp>
 
 #include "ImageReaderWriterTest.hpp"
@@ -288,9 +290,11 @@ void ImageReaderWriterTest::testVtkImageWriter()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
 
+    ::fwComEd::helper::Image imageHelper(image);
+    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
 
-    char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
+    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -350,9 +354,10 @@ void ImageReaderWriterTest::testVtiImageWriter()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
 
-
-    char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
+    ::fwComEd::helper::Image imageHelper(image);
+    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
+    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -413,8 +418,10 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
 
 
-    char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
+    ::fwComEd::helper::Image imageHelper(image);
+    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
+    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
