@@ -15,6 +15,7 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -336,7 +337,9 @@ void ProbeCursor::updateView( double world[3] )
     }
     else
     {
-        std::string greyLevel = image->getPixelAsString(index[0], index[1], index[2] );
+        ::fwComEd::helper::Image imageHelper(image);
+
+        std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
         txt = (::boost::format("(% 4li,% 4li, % 4li) : %s ") % index[0] % index[1] % index[2] % greyLevel ).str();
 
         m_textMapper->SetInput(txt.c_str());

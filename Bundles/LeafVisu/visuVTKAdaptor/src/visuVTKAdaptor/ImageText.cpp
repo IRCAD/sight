@@ -15,6 +15,7 @@
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
@@ -84,6 +85,7 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 
     if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
+        ::fwComEd::helper::Image imageHelper(image);
         unsigned int axialIndex    = m_axialIndex->value();
         unsigned int frontalIndex  = m_frontalIndex->value();
         unsigned int sagittalIndex = m_sagittalIndex->value();
@@ -96,7 +98,8 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 
         ss <<  ( ::boost::format("[% 3li,% 3li]") % min % max ) << std::endl;
         ss <<  ( ::boost::format("W:% 3lg L:% 3lg") % window % level ) << std::endl;
-        ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex % image->getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
+        ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex %
+                imageHelper.getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
     }
 
     setText(ss.str());

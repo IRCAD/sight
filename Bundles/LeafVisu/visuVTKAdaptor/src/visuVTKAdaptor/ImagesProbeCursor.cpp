@@ -13,6 +13,7 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/Factory.hpp>
@@ -37,9 +38,10 @@
 #include <vtkCellData.h>
 #include <vtkTransform.h>
 
-#include "fwRenderVTK/vtk/Helpers.hpp"
-#include "visuVTKAdaptor/ImageText.hpp"
 
+#include <fwRenderVTK/vtk/Helpers.hpp>
+
+#include "visuVTKAdaptor/ImageText.hpp"
 #include "visuVTKAdaptor/ImagesProbeCursor.hpp"
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesProbeCursor, ::fwData::Composite ) ;
@@ -342,7 +344,8 @@ void ImagesProbeCursor::updateView( double world[3] )
             }
             else
             {
-                std::string greyLevel = image->getPixelAsString(index[0], index[1], index[2] );
+                ::fwComEd::helper::Image imageHelper(image);
+                std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
                 txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
 
                 // update polyData
@@ -369,6 +372,7 @@ void ImagesProbeCursor::updateView( double world[3] )
 
             if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
             {
+                ::fwComEd::helper::Image imageHelper(image);
                 this->updateImageInfos(image);
 
                 int index[3];
@@ -384,7 +388,7 @@ void ImagesProbeCursor::updateView( double world[3] )
                         index[2]>= image->getSize()[2])
                 )
                 {
-                    std::string greyLevel = image->getPixelAsString(index[0], index[1], index[2] );
+                    std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
                     txt << element.second << " : " << greyLevel << std::endl;
                 }
             }
