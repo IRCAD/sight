@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwComEd/helper/Array.hpp>
+
 #include <fwDataTools/MeshGenerator.hpp>
 
 #include "MeshGeneratorTest.hpp"
@@ -71,10 +73,13 @@ void MeshGeneratorTest::compareBuffer(::fwData::Array::sptr buff1, ::fwData::Arr
     {
         CPPUNIT_ASSERT(buff1->getSize() == buff2->getSize());
 
-        char *iter1 = buff1->begin<char>();
-        char *iter2 = buff2->begin<char>();
+        ::fwComEd::helper::Array buff1Helper(buff1);
+        ::fwComEd::helper::Array buff2Helper(buff2);
 
-        for (; iter1 != buff1->end<char>() ; ++iter1, ++iter2)
+        char *iter1 = buff1Helper.begin<char>();
+        char *iter2 = buff2Helper.begin<char>();
+
+        for (; iter1 != buff1Helper.end<char>() ; ++iter1, ++iter2)
         {
             CPPUNIT_ASSERT_EQUAL(*iter1, *iter2);
         }
