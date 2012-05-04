@@ -13,7 +13,10 @@
 
 #include <fwTools/System.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/ObjectComparator.hpp>
 
 #include <vtkIO/MeshWriter.hpp>
 #include <vtkIO/MeshReader.hpp>
@@ -74,7 +77,7 @@ void MeshTest::testMeshToVtk()
     CPPUNIT_ASSERT( mesh2 );
     ::vtkIO::helper::Mesh::fromVTKMesh(vtkMesh, mesh2);
 
-    MeshTest::compareMesh(mesh1, mesh2);
+    CPPUNIT_ASSERT( ::fwDataTools::ObjectComparator::compareMesh(mesh1, mesh2));
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +96,7 @@ void MeshTest::testSyntheticMesh()
     ::fwData::Mesh::NewSptr mesh2;
     ::vtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
 
-    MeshTest::compareMesh(mesh1, mesh2);
+    CPPUNIT_ASSERT( ::fwDataTools::ObjectComparator::compareMesh(mesh1, mesh2));
 }
 
 //------------------------------------------------------------------------------
@@ -124,45 +127,8 @@ void MeshTest::testExportImportSyntheticMesh()
     reader->setFile(testFile);
     reader->read();
 
-    MeshTest::compareMesh(mesh1, mesh2);
+    CPPUNIT_ASSERT( ::fwDataTools::ObjectComparator::compareMesh(mesh1, mesh2));
 
     bool suppr = ::boost::filesystem::remove(testFile);
     CPPUNIT_ASSERT(suppr);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2)
-{
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), mesh2->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells() , mesh2->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(mesh1->getCellDataSize()  , mesh2->getCellDataSize());
-
-    MeshTest::compareBuffer(mesh1->getPointsArray(), mesh2->getPointsArray());
-    MeshTest::compareBuffer(mesh1->getCellTypesArray(), mesh2->getCellTypesArray());
-    MeshTest::compareBuffer(mesh1->getCellDataOffsetsArray(), mesh2->getCellDataOffsetsArray());
-    MeshTest::compareBuffer(mesh1->getCellDataArray(), mesh2->getCellDataArray());
-    MeshTest::compareBuffer(mesh1->getPointColorsArray(), mesh2->getPointColorsArray());
-    MeshTest::compareBuffer(mesh1->getCellColorsArray(), mesh2->getCellColorsArray());
-    MeshTest::compareBuffer(mesh1->getPointNormalsArray(), mesh2->getPointNormalsArray());
-    MeshTest::compareBuffer(mesh1->getCellNormalsArray(), mesh2->getCellNormalsArray());
-}
-
-//------------------------------------------------------------------------------
-
-void MeshTest::compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2)
-{
-    CPPUNIT_ASSERT( (!buff1 && !buff2) || (buff1 && buff2));
-    if(buff1)
-    {
-        CPPUNIT_ASSERT(buff1->getSize() == buff2->getSize());
-
-        char *iter1 = buff1->begin<char>();
-        char *iter2 = buff2->begin<char>();
-
-        for (; iter1 != buff1->end<char>() ; ++iter1, ++iter2)
-        {
-            CPPUNIT_ASSERT_EQUAL(*iter1, *iter2);
-        }
-    }
 }

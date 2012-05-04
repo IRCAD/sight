@@ -44,6 +44,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/ObjectLock.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include "vtkIO/vtk.hpp"
 
 
@@ -139,6 +141,8 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = boost::assign:
 
 void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
 {
+    ::fwComEd::helper::Image imageHelper(data);
+
     vtkSmartPointer< vtkImageImport > importer = vtkSmartPointer< vtkImageImport >::New();
     importer->SetDataSpacing( data->getSpacing().at(0),
                               data->getSpacing().at(1),
@@ -160,7 +164,7 @@ void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
     importer->SetDataExtentToWholeExtent();
 
     // no copy, no buffer destruction/management
-    importer->SetImportVoidPointer( data->getBuffer() );
+    importer->SetImportVoidPointer( imageHelper.getBuffer() );
     importer->SetCallbackUserData( data.get() );
     // used to set correct pixeltype to VtkImage
     importer->SetDataScalarType( TypeTranslator::translate(data->getType()) );
@@ -219,7 +223,9 @@ void fromRGBBuffer( void *input, size_t size, void *&destBuffer)
 
 void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
-    assert(destination && source );
+    SLM_ASSERT("vtkImageData source and/or ::fwData::Image destination are not correct", destination && source );
+
+    ::fwComEd::helper::Image imageHelper(destination);
 
     // ensure image size correct
     source->UpdateInformation();
@@ -253,7 +259,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
             destination->setType( "uint16" );
             destination->allocate();
             ::fwData::ObjectLock lock(destination);
-            destBuffer = destination->getBuffer();
+            destBuffer = imageHelper.getBuffer();
             SLM_ASSERT("Image allocation error", destBuffer != NULL);
             fromRGBBuffer< unsigned short >(input, size, destBuffer);
         }
@@ -264,7 +270,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
             destination->setType( "uint8" );
             destination->allocate();
             ::fwData::ObjectLock lock(destination);
-            destBuffer = destination->getBuffer();
+            destBuffer = imageHelper.getBuffer();
             SLM_ASSERT("Image allocation error", destBuffer != NULL);
             fromRGBBuffer< unsigned char >(input, size, destBuffer);
         }
@@ -274,7 +280,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
             destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
             destination->allocate();
             ::fwData::ObjectLock lock(destination);
-            destBuffer = destination->getBuffer();
+            destBuffer = imageHelper.getBuffer();
             size_t sizeInBytes = destination->getSizeInBytes();
             std::memcpy(destBuffer, input, sizeInBytes);
         }
@@ -290,6 +296,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
 void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage )
 {
+    ::fwComEd::helper::Image imageHelper(_pDataImage);
 
     _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
                                     _pDataImage->getSpacing().at(1),
@@ -309,7 +316,7 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
     // copy WholeExtent to DataExtent
     _pImageImport->SetDataExtentToWholeExtent();
     // no copy, no buffer destruction/management
-    _pImageImport->SetImportVoidPointer( _pDataImage->getBuffer() );
+    _pImageImport->SetImportVoidPointer( imageHelper.getBuffer() );
     _pImageImport->SetCallbackUserData( _pDataImage.get() );
     // used to set correct pixeltype to VtkImage
     _pImageImport->SetDataScalarType( TypeTranslator::translate(_pDataImage->getType()) );
