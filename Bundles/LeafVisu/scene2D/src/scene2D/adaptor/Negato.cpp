@@ -20,6 +20,7 @@
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include "scene2D/adaptor/Negato.hpp"
 
@@ -156,8 +157,8 @@ void Negato::updateFromImage( QImage * qimg )
 
     // Window max
     const double wlMax = tf->getWLMinMax().second;
-
-    signed short * imgBuff = (signed short *) ( image->getBuffer() );
+    ::fwComEd::helper::Image imgHelper(image);
+    signed short * imgBuff = (signed short *) imgHelper.getBuffer();
     const double window = tf->getWindow();
     const unsigned int imageZOffset = size[0] * size[1];
 
