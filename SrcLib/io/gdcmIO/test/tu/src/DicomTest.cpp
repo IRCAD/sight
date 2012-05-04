@@ -19,6 +19,7 @@
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
+#include <fwComEd/helper/Array.hpp>
 
 #include <gdcmIO/writer/DicomPatientDBWriterManager.hpp>
 #include <gdcmIO/reader/DicomPatientDBReader.hpp>
@@ -349,7 +350,8 @@ void DicomTest::checkDistance()
     pImage1->setSpacing( IMG1_VSPACING );
     pImage1->setType( IMG1_PIXELTYPE );
     ::fwData::Array::NewSptr array1;
-    array1->setBuffer( static_cast<void *>(buffer1), true, IMG1_PIXELTYPE, IMG1_VSIZE, 1 );
+    ::fwComEd::helper::Array arrayHelper1(array1);
+    arrayHelper1.setBuffer( static_cast<void *>(buffer1), true, IMG1_PIXELTYPE, IMG1_VSIZE, 1 );
     pImage1->setDataArray( array1 );
     pImage1->setWindowCenter(IMG1_WINDOWCENTER);
     pImage1->setWindowWidth(IMG1_WINDOWWIDTH );
@@ -403,7 +405,8 @@ void DicomTest::checkDistance()
     pImage2->setSpacing( IMG1_VSPACING );
     pImage2->setType(IMG2_PIXELTYPE);
     ::fwData::Array::NewSptr array2;
-    array2->setBuffer( static_cast<void *>(buffer2), true, IMG2_PIXELTYPE, IMG1_VSIZE, 1 );
+    ::fwComEd::helper::Array arrayHelper2(array2);
+    arrayHelper2.setBuffer( static_cast<void *>(buffer2), true, IMG2_PIXELTYPE, IMG1_VSIZE, 1 );
     pImage2->setDataArray( array2 );
     pImage2->setWindowCenter(IMG1_WINDOWCENTER);
     pImage2->setWindowWidth(IMG1_WINDOWWIDTH);
