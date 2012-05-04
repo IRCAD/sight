@@ -18,16 +18,13 @@ namespace fwMemory
 {
 
 /**
- * @brief Define the memory dump policy interface
+ * @brief Defines the memory dump policy interface
  */
 class FWMEMORY_CLASS_API IPolicy
 {
 public :
 
     typedef SPTR(IPolicy) sptr;
-
-    // FWMEMORY_API IPolicy() ;
-    // FWMEMORY_API virtual ~IPolicy() ;
 
 
     virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) = 0 ;

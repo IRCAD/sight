@@ -22,7 +22,11 @@ namespace policy
 {
 
 /**
- * @brief Define the memory dump policy interface
+ * @brief Never dump policy
+ *
+ * This policy will never take the initiative to free memory. This is the policy
+ * used when no automatic memory management is wanted. Memory will be dumped on
+ * demand.
  */
 class FWMEMORY_CLASS_API NeverDump : public fwMemory::IPolicy
 {

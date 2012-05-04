@@ -23,7 +23,15 @@ namespace policy
 {
 
 /**
- * @brief Define the memory dump policy interface
+ * @brief Valve dump policy
+ *
+ * This policy is monitoring system memory usage and will trigger memory dump
+ * when the amount of system free memory is lower than the minFreeMem parameter.
+ *
+ * An hysteresis parameter exists to free more memory when the process is
+ * triggered. If the free system memory amount is lower than the minFreeMem,
+ * this policy will try to reach minFreeMem + hysteresisOffset bytes of free
+ * memory.
  */
 class FWMEMORY_CLASS_API ValveDump : public fwMemory::IPolicy
 {

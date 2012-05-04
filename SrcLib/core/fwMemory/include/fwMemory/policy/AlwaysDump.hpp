@@ -22,7 +22,10 @@ namespace policy
 {
 
 /**
- * @brief Define the memory dump policy interface
+ * @brief Always dump policy
+ *
+ * This policy will dump buffers as often as possible. As soon as a buffer is
+ * released (ie the lock count become zero), it will be dumped.
  */
 class FWMEMORY_CLASS_API AlwaysDump : public fwMemory::IPolicy
 {

@@ -23,7 +23,10 @@ namespace policy
 {
 
 /**
- * @brief Define the memory dump policy interface
+ * @brief Barrier dump policy
+ *
+ * This policy defines a memory usage barrier and will try to keep the managed
+ * buffers memory usage under this barrier.
  */
 class FWMEMORY_CLASS_API BarrierDump : public fwMemory::IPolicy
 {
