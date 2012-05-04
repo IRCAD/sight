@@ -189,7 +189,7 @@ void* Image::getPixelBuffer( SizeType::value_type x, SizeType::value_type y, Siz
 {
     SizeType size = m_image->getSize();
     IndexType offset = x + size[0]*y + z*size[0]*size[1];
-    return getPixelBuffer(offset);
+    return this->getPixelBuffer(offset);
 }
 
 //------------------------------------------------------------------------------
@@ -200,6 +200,25 @@ void* Image::getPixelBuffer( IndexType index )
     BufferType * buf = static_cast < BufferType * > (this->getBuffer());
     BufferIndexType bufIndex = index * imagePixelSize;
     return buf + bufIndex;
+}
+
+//------------------------------------------------------------------------------
+
+void Image::setPixelBuffer( IndexType index , Image::BufferType * pixBuf)
+{
+    ::boost::uint8_t imagePixelSize = m_image->getType().sizeOf();
+    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
+
+    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
+}
+
+//------------------------------------------------------------------------------
+
+const std::string Image::getPixelAsString(SizeType::value_type x,
+                                          SizeType::value_type y,
+                                          SizeType::value_type z )
+{
+    return m_image->getType().toString(this->getPixelBuffer(x,y,z));
 }
 
 //------------------------------------------------------------------------------

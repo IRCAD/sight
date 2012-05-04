@@ -75,10 +75,19 @@ public :
     /// Returns image buffer
     FWCOMED_API void * getBuffer();
 
-    /// Helpers for 3D images
+    /** @{
+     * @brief Helpers for 3D images
+     */
     FWCOMED_API void* getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z );
 
     FWCOMED_API void* getPixelBuffer( IndexType index );
+
+    FWCOMED_API void setPixelBuffer( IndexType index , Image::BufferType * pixBuf);
+
+    FWCOMED_API const std::string getPixelAsString(SizeType::value_type x,
+                                                   SizeType::value_type y,
+                                                   SizeType::value_type z );
+    // @}
 
     /// Returns a copy of current lock on image
     FWCOMED_API ::fwTools::BufferObject::Lock getLock() const;
