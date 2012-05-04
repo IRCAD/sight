@@ -13,6 +13,7 @@
 #include <fwTools/Factory.hpp>
 
 #include <fwComEd/helper/Image.hpp>
+#include <fwComEd/helper/Array.hpp>
 
 namespace itkIO
 {
@@ -21,6 +22,7 @@ template< class ITKIMAGE>
 void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sptr _dataImage, bool bufferManagerIsDataImage )
 {
     SLM_ASSERT("_dataImage not instanced", _dataImage);
+
 
     // Add by arnaud
     ::boost::uint8_t  dim = ITKIMAGE::ImageDimension;
@@ -43,16 +45,17 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
     typedef typename ITKIMAGE::PixelType PixelType;
     _dataImage->setType( ::fwTools::Type::create<PixelType>() );
     ::fwData::Array::sptr array = _dataImage->getDataArray();
+    ::fwComEd::helper::Array arrayHelper(array);
     if( bufferManagerIsDataImage )
     {
         SLM_ASSERT("Sorry, this method requires that itkImage manages its buffer.",  itkImage->GetPixelContainer()->GetContainerManageMemory() );
-        array->setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), true, _dataImage->getType(), _vSize, 1 );
+        arrayHelper.setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), true, _dataImage->getType(), _vSize, 1 );
         /// itk image release its management buffer. dataImage must now deal memory
         itkImage->GetPixelContainer()->SetContainerManageMemory( false );
     }
     else
     {
-        array->setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), false, _dataImage->getType(), _vSize, 1 );
+        arrayHelper.setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), false, _dataImage->getType(), _vSize, 1 );
     }
 
 
