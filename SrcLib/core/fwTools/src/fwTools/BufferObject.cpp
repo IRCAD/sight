@@ -26,7 +26,7 @@ BufferObject::BufferObject():
 
 BufferObject::~BufferObject()
 {
-    OSLM_ASSERT("There is still " << m_count << " locks on this BufferObject (" << this << ")", m_count > 0);
+    OSLM_ASSERT("There is still " << *m_count << " locks on this BufferObject (" << this << ")", *m_count == 0);
     m_bufferManager->unregisterBuffer(&m_buffer);
     delete m_count;
 }
