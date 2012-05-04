@@ -11,6 +11,9 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include <fwComEd/helper/Mesh.hpp>
+#include <fwComEd/helper/Array.hpp>
+
 #include <fwDataTools/MeshGenerator.hpp>
 
 #include "fwDataIO/writer/MeshWriter.hpp"
@@ -57,9 +60,11 @@ void MeshWriter::write()
         throw std::ios_base::failure(str);
     }
 
+    ::fwComEd::helper::Mesh meshHelper(mesh);
+
     size_t i, nbPts, nbCells;
     nbPts = mesh->getNumberOfPoints();
-    ::fwData::Mesh::PointsMultiArrayType points = mesh->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     file<<nbPts<<std::endl;
     for( i=0 ; i<nbPts ; ++i )
     {
@@ -69,25 +74,29 @@ void MeshWriter::write()
     nbCells = mesh->getNumberOfCells();
     ::fwData::Array::sptr cells = mesh->getCellDataArray();
 
+    ::fwComEd::helper::Array cellsArrayHelper(cells);
+
     FW_RAISE_IF("Not able to write " << cells->getType().string() << " cell type in trian file.",
             cells->getType() != ::fwTools::Type::create< ::boost::uint64_t >());
 
-    ::boost::uint64_t *cellBuf = cells->begin< ::boost::uint64_t >();
+    ::boost::uint64_t *cellBuf = cellsArrayHelper.begin< ::boost::uint64_t >();
     ::boost::uint64_t *cellBufEnd = cellBuf + 3*nbCells;
 
     SLM_ASSERT("Wrong CellDataMultiArray size", cells->getNumberOfElements() >= nbCells*3);
     file << nbCells << std::endl;
 
     ::fwData::Array::sptr normals = mesh->getCellNormalsArray();
+    ::fwComEd::helper::Array normalsArrayHelper(normals);
+
     if(normals
-            && normals->getBuffer() != NULL
+            && normalsArrayHelper.getBuffer() != NULL
             && normals->getType() == ::fwTools::Type::create<float>()
             && normals->getNumberOfComponents() == 3
             && normals->getNumberOfDimensions() == 1
             && nbCells == normals->getSize().at(0)
             )
     {
-        float *normalBuf = normals->begin< float >();
+        float *normalBuf = normalsArrayHelper.begin< float >();
 
         while (cellBuf != cellBufEnd)
         {

@@ -12,6 +12,8 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "fwDataIO/writer/GzArrayWriter.hpp"
 
 
@@ -51,10 +53,11 @@ void GzArrayWriter::write()
         throw std::ios_base::failure(str);
     }
 
+    ::fwComEd::helper::Array arrayHelper(array);
     // file is OK : process now
     size_t arraySizeInBytes = array->getSizeInBytes();
 
-    unsigned int uncompressedbyteswrited = gzwrite(rawFile, array->getBuffer(), arraySizeInBytes);
+    unsigned int uncompressedbyteswrited = gzwrite(rawFile, arrayHelper.getBuffer(), arraySizeInBytes);
     gzclose(rawFile);
     if ( uncompressedbyteswrited != arraySizeInBytes )
     {
