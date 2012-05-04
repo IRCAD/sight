@@ -166,7 +166,7 @@ void DicomSurfaceReader::readSurfaceMesh( ::gdcm::SmartPointer< ::gdcm::Segment 
 
     // Finite Volume
     reconstruction->setIsClosed( (surface->GetFiniteVolume() == ::gdcm::Surface::YES)?true:false );
-    OSLM_TRACE("Reconstruction is closed : " << reconstruction->getIsClosed());
+    OSLM_TRACE("Reconstruction is closed : " << reconstruction->getCRefIsClosed());
 
     // Manifold
     if (surface->GetManifold() == ::gdcm::Surface::YES)

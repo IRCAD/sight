@@ -17,6 +17,8 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/fromIsoExtendedString.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "gdcmIO/reader/DicomImageReader.hpp"
 #include "gdcmIO/helper/GdcmHelper.hpp"
 
@@ -473,12 +475,13 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
             return;
         }
 
-         ::fwData::Image::SizeType imgSize = img->getSize();
-         imgSize[2] = this->getFileNames().size();
-         img->setSize( imgSize );
+        ::fwData::Image::SizeType imgSize = img->getSize();
+        imgSize[2] = this->getFileNames().size();
+        img->setSize( imgSize );
 
         ::fwData::Array::sptr array = img->getDataArray();
-        array->setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
+        ::fwComEd::helper::Array helper(array);
+        helper.setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
 
         // Update gdcm::Image.
         gImg.SetNumberOfDimensions(3);
@@ -513,7 +516,8 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
             }
 
             ::fwData::Array::sptr array = img->getDataArray();
-           array->setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
+            ::fwComEd::helper::Array helper(array);
+            helper.setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
         }
         else
         {

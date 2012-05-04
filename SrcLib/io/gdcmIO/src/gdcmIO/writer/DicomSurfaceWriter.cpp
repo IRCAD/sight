@@ -12,6 +12,8 @@
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
+#include <fwComEd/helper/Mesh.hpp>
+
 #include "gdcmIO/writer/DicomSurfaceWriter.hpp"
 #include "gdcmIO/helper/GdcmHelper.hpp"
 #include "gdcmIO/writer/DicomEquipmentWriter.hpp"
@@ -178,7 +180,7 @@ void DicomSurfaceWriter::writeSurfaceMesh(const unsigned int a_idx)
     segment->AddSurface(surface);
 
     ::fwData::Acquisition::sptr acq = this->getConcreteObject();
-    ::fwData::Reconstruction::csptr reconstruction = acq->getReconstructions()[a_idx];
+    ::fwData::Reconstruction::sptr reconstruction = acq->getReconstructions()[a_idx];
     ::fwData::Material::csptr material = reconstruction->getMaterial();
 
     // Set DicomSurface data
@@ -228,7 +230,9 @@ void DicomSurfaceWriter::writeSurfaceMesh(const unsigned int a_idx)
         bool _bIsClosed;
         if (::boost::logic::indeterminate(reconstruction->getCRefIsClosed()))
         {
-            _bIsClosed = fwData::Reconstruction::isClosed(reconstruction);
+            ::fwComEd::helper::Mesh helperMesh(reconstruction->getMesh());
+            _bIsClosed = helperMesh.isClosed();
+            reconstruction->setIsClosed(_bIsClosed);
         }
         else
         {
