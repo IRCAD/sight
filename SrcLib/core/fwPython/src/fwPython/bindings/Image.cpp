@@ -8,6 +8,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include "fwPython/bindings/Image.hpp"
 
 
@@ -36,11 +38,13 @@ namespace bindings
 ::boost::python::object getImageBuffer (::fwData::Image::sptr image)
 {
     using namespace ::boost::python;
-    if ( image->getBuffer() )
+
+    ::fwComEd::helper::Image imageHelper(image);
+    if ( imageHelper.getBuffer() )
     {
         Py_buffer *pybuf = new Py_buffer;
         pybuf->obj = NULL;
-        pybuf->buf = image->getBuffer();
+        pybuf->buf = imageHelper.getBuffer();
         pybuf->readonly= 0;
         pybuf->len = image->getSizeInBytes();
         pybuf->format =  (char *)typeCPP2Python[ image->getType() ];
