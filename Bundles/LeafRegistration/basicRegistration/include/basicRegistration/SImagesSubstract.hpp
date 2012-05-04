@@ -47,10 +47,10 @@ public:
 protected :
 
     /// Constructor
-    BASICREGISTRATION_API SImagesSubstract();
+    BASICREGISTRATION_API SImagesSubstract() throw();
 
     /// Destructor
-    BASICREGISTRATION_API virtual ~SImagesSubstract();
+    BASICREGISTRATION_API virtual ~SImagesSubstract() throw();
 
 private slots :
 
