@@ -241,7 +241,8 @@ public:
     template < typename IMAGE >
     void operator()( Param &param )
     {
-        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        ::fwComEd::helper::Image imagehelper(param.image);
+        IMAGE * buffer = static_cast < IMAGE* > (imagehelper.getBuffer());
         const INT_INDEX &p = param.point;
         const ::fwData::Image::SizeType &size = param.image->getSize();
         const int &sx = size[0];
@@ -314,7 +315,8 @@ public:
     template < typename IMAGE >
     void operator()( Param &param )
     {
-        IMAGE * buffer = static_cast < IMAGE* > (param.image->getBuffer());
+        ::fwComEd::helper::Image imagehelper(param.image);
+        IMAGE * buffer = static_cast < IMAGE* > (imagehelper.getBuffer());
         const INT_INDEX &p = param.point;
         const std::vector<boost::int32_t> &size = param.image->getCRefSize();
         const int &sx = size[0];
