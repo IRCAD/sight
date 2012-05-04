@@ -17,6 +17,7 @@
 #include <fwData/ResectionDB.hpp>
 #include <fwData/Dictionary.hpp>
 
+#include "fwDataTools/Image.hpp"
 #include "fwDataTools/ObjectComparator.hpp"
 
 namespace fwDataTools
@@ -330,14 +331,14 @@ bool ObjectComparator::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::s
     compare &= (mesh1->getCellDataSize() == mesh2->getCellDataSize());
     OSLM_ERROR_IF( "Number of cell data are different.", mesh1->getCellDataSize() != mesh2->getCellDataSize());
 
-    compare &= ObjectComparator::compareArray(mesh1->getPointsArray(), mesh2->getPointsArray());
-    compare &= ObjectComparator::compareArray(mesh1->getCellTypesArray(), mesh2->getCellTypesArray());
-    compare &= ObjectComparator::compareArray(mesh1->getCellDataOffsetsArray(), mesh2->getCellDataOffsetsArray());
-    compare &= ObjectComparator::compareArray(mesh1->getCellDataArray(), mesh2->getCellDataArray());
-    compare &= ObjectComparator::compareArray(mesh1->getPointColorsArray(), mesh2->getPointColorsArray());
-    compare &= ObjectComparator::compareArray(mesh1->getCellColorsArray(), mesh2->getCellColorsArray());
-    compare &= ObjectComparator::compareArray(mesh1->getPointNormalsArray(), mesh2->getPointNormalsArray());
-    compare &= ObjectComparator::compareArray(mesh1->getCellNormalsArray(), mesh2->getCellNormalsArray());
+    compare &= Image::compareArray(mesh1->getPointsArray(), mesh2->getPointsArray());
+    compare &= Image::compareArray(mesh1->getCellTypesArray(), mesh2->getCellTypesArray());
+    compare &= Image::compareArray(mesh1->getCellDataOffsetsArray(), mesh2->getCellDataOffsetsArray());
+    compare &= Image::compareArray(mesh1->getCellDataArray(), mesh2->getCellDataArray());
+    compare &= Image::compareArray(mesh1->getPointColorsArray(), mesh2->getPointColorsArray());
+    compare &= Image::compareArray(mesh1->getCellColorsArray(), mesh2->getCellColorsArray());
+    compare &= Image::compareArray(mesh1->getPointNormalsArray(), mesh2->getPointNormalsArray());
+    compare &= Image::compareArray(mesh1->getCellNormalsArray(), mesh2->getCellNormalsArray());
 
     compare &= ObjectComparator::compareDataArrayMesh(mesh1, mesh2);
     return compare;
@@ -359,63 +360,7 @@ bool  ObjectComparator::compareDataArrayMesh(::fwData::Mesh::sptr mesh1, ::fwDat
     {
         ::fwData::Array::sptr array1 = mesh1->getDataArray(name);
         ::fwData::Array::sptr array2 = mesh2->getDataArray(name);
-        compare &= ObjectComparator::compareArray(array1, array2);
-    }
-    return compare;
-}
-
-//------------------------------------------------------------------------------
-
-bool ObjectComparator::compareArray(::fwData::Array::sptr array1, ::fwData::Array::sptr array2)
-{
-    SLM_ASSERT( "Null array1 pointers", array1);
-    SLM_ASSERT( "Null array2 pointers", array2);
-
-    bool compare = true;
-
-    compare &= ( (!array1 && !array2) || (array1 && array2));
-
-    compare &= (array1->getSizeInBytes() == array2->getSizeInBytes());
-    OSLM_ERROR_IF( "Array size in bytes are different.", array1->getSizeInBytes() != array2->getSizeInBytes());
-
-    compare &= (array1->getElementSizeInBytes() == array2->getElementSizeInBytes());
-    OSLM_ERROR_IF( "Element size in bytes are different.", array1->getElementSizeInBytes() != array2->getElementSizeInBytes());
-
-    compare &= (array1->getNumberOfDimensions() == array2->getNumberOfDimensions());
-    OSLM_ERROR_IF( "Number of dimensions are different.", array1->getNumberOfDimensions() != array2->getNumberOfDimensions());
-
-    compare &= (array1->getSize() == array2->getSize());
-    OSLM_ERROR_IF( "Array size are different.", array1->getSize() != array2->getSize());
-
-    compare &= (array1->getNumberOfComponents() == array2->getNumberOfComponents());
-    OSLM_ERROR_IF( "Number of components are different.", array1->getNumberOfComponents() != array2->getNumberOfComponents());
-
-    compare &= (array1->getIsBufferOwner() == array2->getIsBufferOwner());
-    OSLM_ERROR_IF( "Buffer owner are different.", array1->getIsBufferOwner() != array2->getIsBufferOwner());
-
-    compare &= (array1->getStrides() == array2->getStrides());
-    OSLM_ERROR_IF( "Strides are different.", array1->getStrides() != array2->getStrides());
-
-    compare &= (array1->getType().string() == array2->getType().string());
-    OSLM_ERROR_IF( "Array type are different.", array1->getType().string() != array2->getType().string());
-
-    compare &= (array1->getType().sizeOf() == array2->getType().sizeOf());
-    OSLM_ERROR_IF( "Array type (sizeOf) are different.", array1->getType().sizeOf() != array2->getType().sizeOf());
-
-    if(array1)
-    {
-        ::fwComEd::helper::Array array1Helper(array1);
-        ::fwComEd::helper::Array array2Helper(array2);
-
-        compare &= (array1->getSize() == array2->getSize());
-
-        char *iter1 = array1Helper.begin<char>();
-        char *iter2 = array2Helper.begin<char>();
-
-        for (; iter1 != array1Helper.end<char>() &&  compare; ++iter1, ++iter2)
-        {
-            compare &= (*iter1 == *iter2);
-        }
+        compare &= Image::compareArray(array1, array2);
     }
     return compare;
 }

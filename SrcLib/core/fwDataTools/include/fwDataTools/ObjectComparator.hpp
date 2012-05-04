@@ -18,8 +18,16 @@
 #include <fwData/StructureTraits.hpp>
 #include <fwData/ROITraits.hpp>
 #include <fwData/ReconstructionTraits.hpp>
+#include <fwData/DictionaryOrgan.hpp>
+#include <fwData/Dictionary.hpp>
 #include <fwData/Node.hpp>
 #include <fwData/Port.hpp>
+#include <fwData/ProcessObject.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/Plane.hpp>
+#include <fwData/PlaneList.hpp>
+#include <fwData/Resection.hpp>
+#include <fwData/ResectionDB.hpp>
 
 
 #include "fwDataTools/export.hpp"
@@ -32,7 +40,6 @@ class ObjectComparator
 public:
     FWDATATOOLS_API static bool comparePatientDB(::fwData::PatientDB::sptr patientDB1, ::fwData::PatientDB::sptr patientDB2);
     FWDATATOOLS_API static bool compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
-    FWDATATOOLS_API static bool compareArray(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2);
     FWDATATOOLS_API static bool compareDataArrayMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
     FWDATATOOLS_API static bool compareMaterial(::fwData::Material::sptr mat1, ::fwData::Material::sptr mat2);
     FWDATATOOLS_API static bool compareTransfertFunction(::fwData::TransferFunction::sptr tf1, ::fwData::TransferFunction::sptr tf2);
