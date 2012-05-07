@@ -253,7 +253,6 @@ void Volume::doUpdate() throw(::fwTools::Failed)
         this->buildPipeline();
         this->updateImage(image);
         this->updateVolumeTransferFunction(image);
-        this->updateWindowing(image);
     }
 }
 
@@ -279,7 +278,6 @@ void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
         if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
         {
             this->updateVolumeTransferFunction(image);
-            this->updateWindowing(image);
         }
 
         if ( msg->hasEvent( "SHOWHIDE_BOX_WIDGET" ) )
@@ -353,12 +351,6 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
-void Volume::updateWindowing( ::fwData::Image::sptr image )
-{
-}
-
-//------------------------------------------------------------------------------
-
 void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
 {
     this->updateTransferFunction(image, this->getSptr());
@@ -378,7 +370,6 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
         m_colorTransferFunction->AddRGBPoint( value , color.r, color.g, color.b );
         m_opacityTransferFunction->AddPoint(  value , color.a );
     }
-    ::fwData::TransferFunction::TFValuePairType minMax = pTF->getMinMaxTFValues();
 
     m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
     m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());

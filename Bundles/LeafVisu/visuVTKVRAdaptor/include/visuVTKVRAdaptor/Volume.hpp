@@ -69,8 +69,6 @@ protected :
 
     void updateImage( ::fwData::Image::sptr image  );
 
-    void updateWindowing( ::fwData::Image::sptr image );
-
     void updateVolumeTransferFunction( ::fwData::Image::sptr image );
 
     vtkPlaneCollection *m_clippingPlanes;
