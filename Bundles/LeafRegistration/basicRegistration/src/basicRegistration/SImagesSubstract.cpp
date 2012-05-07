@@ -145,14 +145,14 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                              "Sorry, Image have the same size.",
+                                                              "Sorry, Image must have the same size.",
                                                               ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          "Sorry, Image have a signed short type.",
+                                                          "Sorry, Image must have a signed short type.",
                                                           ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
