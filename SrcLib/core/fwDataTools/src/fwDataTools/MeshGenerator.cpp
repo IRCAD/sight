@@ -642,18 +642,18 @@ void regionShakeNormals(T normals, const ::fwData::Mesh::Id regionMin, const ::f
 
 void MeshGenerator::shakeNormals(::fwData::Array::sptr array)
 {
-    ::fwComEd::helper::Array arrayHelper(array);
 
-    void *buf;
     if(array
             && array->getType() == ::fwTools::Type::create<float>()
-            && (buf = arrayHelper.getBuffer())
+            && !array->empty()
             && array->getNumberOfComponents() == 3
             && array->getNumberOfDimensions() == 1
             )
     {
-
-        const ::fwData::Mesh::Id nbOfNormals = array->getSize().at(0);
+        ::fwComEd::helper::Array arrayHelper(array);
+        void *buf;
+        buf = arrayHelper.getBuffer();
+                const ::fwData::Mesh::Id nbOfNormals = array->getSize().at(0);
         typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
         NormalsMultiArrayType normals = NormalsMultiArrayType(
                 static_cast<NormalsMultiArrayType::element*>(buf),
