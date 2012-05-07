@@ -220,7 +220,7 @@
                                     <!-- Editors of background image -->
                                     <service uid="imageInfo" type="::gui::editor::IEditor" implementation="::uiImage::ImageInfo" autoComChannel="yes" />
                                     <service uid="windowLevel" type="::gui::editor::IEditor" implementation="::uiImage::WindowLevel" autoComChannel="yes">
-                                        <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                        <config selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
                                 </object>
 
@@ -249,7 +249,7 @@
                                         <shortcut value="V" />
                                     </service>
                                     <service uid="windowLevel2" type="::gui::editor::IEditor" implementation="::uiImage::WindowLevel" autoComChannel="yes" >
-                                         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                         <config selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
                                 </object>
 
@@ -286,9 +286,9 @@
                                 <adaptor id="myImagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
                                     <config vtkimageregister="imageBlend">
                                         <image objectId="myBackgroundImage" opacity="1.0" tfalpha="no"
-                                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                            selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
                                         <image objectId="myFrontImage" opacity="1.0" tfalpha="yes"
-                                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                            selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
                                     </config>
                                 </adaptor>
                                 
@@ -312,7 +312,8 @@
                                     <config renderer="default" picker="" />
                                 </adaptor>
                                 <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myBackgroundImage">
-                                    <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" />
+                                    <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial"
+                                            selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
                                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                     <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -333,7 +334,8 @@
                                     <config renderer="default" picker="" />
                                 </adaptor>
                                 <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myFrontImage">
-                                    <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" />
+                                    <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial"
+                                            selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
                                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                     <config renderer="default" style="InteractorStyle2DForNegato" />
