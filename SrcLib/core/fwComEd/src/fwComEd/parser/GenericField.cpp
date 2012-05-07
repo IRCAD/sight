@@ -47,14 +47,14 @@ void GenericField::createConfig( ::fwTools::Object::sptr _obj )
     ::fwData::GenericFieldBase::sptr field = ::fwData::GenericFieldBase::dynamicCast( _obj );
     SLM_ASSERT("GenericField not instanced", field);
 
-    SLM_ASSERT("GenericField config must contain at most one tag <value>...</value>", m_cfg->getElements().size() <= 1);
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
+    ::fwRuntime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement("value");
+    SLM_ASSERT("GenericField config must contain at most one tag <value>...</value>", configs.size() <= 1);
+
+    if ( configs.size() >= 1 )
     {
-        if ( elem->getName() == "value" )
-        {
-            std::string input = elem->getValue();
-            field->fromString(input);
-        }
+        ::fwRuntime::ConfigurationElement::sptr config = *configs.begin();
+        std::string input = config->getValue();
+        field->fromString(input);
     }
 }
 
