@@ -3,8 +3,8 @@
   <protocol version="4" />
   <content>
     <TransferFunction id="4ac5e060-8713-446e-a224-faafcb4e94f2" class="::fwData::TransferFunction">
-      <level>50</level>
-      <window>500</window>
+      <level>-625</level>
+      <window>650</window>
       <name>CT-Lungs</name>
       <isClamped>0</isClamped>
       <interpolationMode>0</interpolationMode>

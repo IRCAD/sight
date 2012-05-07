@@ -3,8 +3,8 @@
   <protocol version="4" />
   <content>
     <TransferFunction id="c0998c2f-edfc-46bd-bf03-8d5f926f7fae" class="::fwData::TransferFunction">
-      <level>50</level>
-      <window>500</window>
+      <level>573</level>
+      <window>283</window>
       <name>MRI-T2-kidneys</name>
       <isClamped>0</isClamped>
       <interpolationMode>0</interpolationMode>

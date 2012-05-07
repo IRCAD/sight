@@ -3,8 +3,8 @@
   <protocol version="4" />
   <content>
     <TransferFunction id="077dcd94-05f5-4630-a8ff-8c7a021bf516" class="::fwData::TransferFunction">
-      <level>50</level>
-      <window>500</window>
+      <level>73</level>
+      <window>346</window>
       <name>CT-Muscles</name>
       <isClamped>0</isClamped>
       <interpolationMode>0</interpolationMode>

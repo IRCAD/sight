@@ -3,8 +3,8 @@
   <protocol version="4" />
   <content>
     <TransferFunction id="462d2ffd-bd50-4812-bc02-6c9254a59e3b" class="::fwData::TransferFunction">
-      <level>50</level>
-      <window>500</window>
+      <level>-258</level>
+      <window>1157</window>
       <name>CT-Skin</name>
       <isClamped>0</isClamped>
       <interpolationMode>0</interpolationMode>

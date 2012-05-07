@@ -3,8 +3,8 @@
   <protocol version="4" />
   <content>
     <TransferFunction id="6081ec6d-6f13-4bcb-bfe7-2d713b3e7706" class="::fwData::TransferFunction">
-      <level>50</level>
-      <window>500</window>
+      <level>216</level>
+      <window>176</window>
       <name>CT-Vessels</name>
       <isClamped>0</isClamped>
       <interpolationMode>0</interpolationMode>
