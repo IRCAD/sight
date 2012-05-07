@@ -20,6 +20,9 @@
 // Services tools
 #include <fwServices/Base.hpp>
 
+// Helper to manipulate buffer image
+#include <fwComEd/helper/Image.hpp>
+
 // vtkIO lib : intern lib used to convert image between vtk and fw4spl
 #include <vtkIO/vtk.hpp>
 
@@ -188,8 +191,9 @@ void ImageViewerService::createSyntheticImage( ::fwData::Image::sptr _pImage )
     _pImage->setWindowWidth(100);
     _pImage->allocate();
 
+    ::fwComEd::helper::Image imageHelper(_pImage);
     // Build the buffer of a synthetic image grey level which represents a sphere
-    unsigned char * buffer = static_cast< unsigned char* >(_pImage->getBuffer());
+    unsigned char * buffer = static_cast< unsigned char* >(imageHelper.getBuffer());
     for ( int z = 0; z < 100; z++ )
     {
         for ( int y = 0; y < 100; y++ )
