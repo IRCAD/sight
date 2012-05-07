@@ -189,17 +189,6 @@ void Image::setType(const std::string &type)
 
 //------------------------------------------------------------------------------
 
-void * Image::getBuffer() const
-{
-    if (m_dataArray)
-    {
-        return m_dataArray->getBuffer();
-    }
-    return NULL;
-}
-
-//------------------------------------------------------------------------------
-
 void Image::copyInformation( Image::csptr _source )
 {
     m_size                = _source->m_size;
@@ -263,88 +252,13 @@ void Image::setSize(const SizeType &size)
 
 //------------------------------------------------------------------------------
 
-void* Image::getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z ) const
-{
-    SizeType size = this->getSize();
-    IndexType offset = x + size[0]*y + z*size[0]*size[1];
-    return getPixelBuffer(offset);
-}
-
-//------------------------------------------------------------------------------
-
-void* Image::getPixelBuffer( IndexType index ) const
-{
-    ::boost::uint8_t imagePixelSize = this->getType().sizeOf();
-    BufferType * buf = static_cast < BufferType * > (this->getBuffer());
-    BufferIndexType bufIndex = index * imagePixelSize;
-    return buf + bufIndex;
-}
-
-//------------------------------------------------------------------------------
-
-Image::SharedArray Image::getPixelBufferCopy( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z ) const
-{
-    SizeType size = this->getSize();
-    IndexType offset = x + size[0]*y + z*size[0]*size[1];
-    return getPixelBufferCopy(offset);
-}
-
-//------------------------------------------------------------------------------
-
-Image::SharedArray Image::getPixelBufferCopy( IndexType index ) const
-{
-    ::boost::uint8_t imagePixelSize = this->getType().sizeOf();
-    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
-    SharedArray res(new BufferType[imagePixelSize]);
-    std::copy(buf, buf+imagePixelSize, res.get());
-    return res;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setPixelBuffer( IndexType index , Image::BufferType * pixBuf)
-{
-    ::boost::uint8_t imagePixelSize = this->getType().sizeOf();
-    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
-
-    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
-}
-
-//------------------------------------------------------------------------------
-
-Image::BufferType* Image::getPixelBuffer( Image::BufferType *buffer, IndexType offset, ::boost::uint8_t imagePixelSize )
-{
-    BufferIndexType bufIndex = offset * imagePixelSize;
-    return buffer + bufIndex;
-}
-
-//------------------------------------------------------------------------------
-
-Image::SharedArray Image::getPixelBufferCopy( Image::BufferType *buffer, IndexType offset, ::boost::uint8_t imagePixelSize )
-{
-    Image::BufferType* buf = getPixelBuffer(buffer, offset, imagePixelSize);
-    SharedArray res(new BufferType[imagePixelSize]);
-    std::copy(buf, buf+imagePixelSize, res.get());
-    return res;
-}
-
-//------------------------------------------------------------------------------
-
-void Image::setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, IndexType offset, ::boost::uint8_t imagePixelSize )
-{
-    BufferType * buf = static_cast < BufferType * > (getPixelBuffer(destBuffer, offset, imagePixelSize));
-    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
-}
-
-//------------------------------------------------------------------------------
-
 size_t Image::getSizeInBytes() const
 {
     SLM_TRACE_FUNC();
 
     size_t size = std::accumulate( m_size.begin(), m_size.end(), static_cast<size_t>(m_type.sizeOf()), std::multiplies< size_t > () );
     return size;
- }
+}
 
 
 //------------------------------------------------------------------------------
@@ -358,15 +272,8 @@ size_t Image::getAllocatedSizeInBytes() const
         size = m_dataArray->getSizeInBytes();
     }
     return size;
- }
-
+}
 
 //------------------------------------------------------------------------------
-
-std::string  Image::getPixelAsString( unsigned int x, unsigned int y, unsigned int z ) const
-{
-    ::fwTools::BufferObject::Lock lock = m_dataArray->getBufferObject()->lock();
-    return this->getType().toString(this->getPixelBuffer(x,y,z));
-}
 
 } // namespace fwData

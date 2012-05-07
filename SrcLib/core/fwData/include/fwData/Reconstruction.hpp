@@ -79,19 +79,6 @@ public:
 
     fwGettersSettersDocMacro(DbID, i32DbID, ::boost::int32_t, the database indentifier);
 
-    /*!
-     * @brief Return true if the reconstruction is closed.
-     * The result is computed if m_bIsClosed is undefined
-     * This method will be removed, avoid using it.
-     */
-    FWDATA_API bool getIsClosed();
-
-    /*!
-     * @brief Return true if the reconstruction is closed.
-     * The result is computed for each call.
-     */
-    static FWDATA_API bool isClosed(Reconstruction::csptr);
-
     //! Get/Set if the reconstruction is closed
     FWDATA_API ::boost::logic::tribool& getRefIsClosed();
     FWDATA_API const ::boost::logic::tribool& getCRefIsClosed() const;
@@ -177,7 +164,7 @@ protected :
     //! Reconstruction path
     ::boost::filesystem::path m_fsPath;
 
-    //! Database indentifier
+    //! Database identifier
     ::boost::int32_t  m_i32DbID;
 
     //@}
@@ -189,7 +176,6 @@ protected :
     ::fwData::Image::sptr m_attrImage;
     ::fwData::Mesh::sptr m_attrMesh;
 
-    ::fwData::Mesh::wptr m_meshForWhichISCompoutedIsClosed;
 };
 
 } // namespace fwData

@@ -8,9 +8,6 @@
 
 #include "fwData/registry/macros.hpp"
 
-
-#include <fwMath/MeshFunctions.hpp>
-
 #include "fwData/Image.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
@@ -20,7 +17,6 @@
 fwDataRegisterMacro( ::fwData::Reconstruction );
 namespace fwData
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -45,7 +41,6 @@ Reconstruction::Reconstruction() :
     m_i32DbID(0)
 {
     SLM_TRACE_FUNC();
-
 }
 
 //------------------------------------------------------------------------------
@@ -111,50 +106,6 @@ void Reconstruction::deepCopy( Reconstruction::csptr _source )
     m_attrMaterial = ::fwData::Object::copy(_source->m_attrMaterial);
     m_attrImage    = ::fwData::Object::copy(_source->m_attrImage);
     m_attrMesh     = ::fwData::Object::copy(_source->m_attrMesh);
-}
-
-//------------------------------------------------------------------------------
-
-bool Reconstruction::getIsClosed()
-{
-    bool isClosed = false;
-    // Hack until 'is closed' computation stays here
-    ::fwData::Mesh::sptr mesh = m_meshForWhichISCompoutedIsClosed.lock();
-    if ( mesh != this->getMesh() || ::boost::logic::indeterminate(m_bIsClosed))
-    {
-        m_bIsClosed = Reconstruction::isClosed(this->getSptr());
-        m_meshForWhichISCompoutedIsClosed = this->getMesh();
-    }
-    isClosed = m_bIsClosed;
-    return isClosed;
-}
-
-//------------------------------------------------------------------------------
-
-bool Reconstruction::isClosed(Reconstruction::csptr reconstruction)
-{
-    bool isClosed = false;
-    ::fwData::Mesh::csptr mesh = reconstruction->getMesh();
-
-    ::fwData::Array::sptr cellData = mesh->getCellDataArray();
-    ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
-    ::fwData::Array::sptr cellTypes = mesh->getCellTypesArray();
-
-    ::fwTools::BufferObject::Lock lockCellData(cellData->getBufferObject());
-    ::fwTools::BufferObject::Lock lockCellDataOffsets(cellDataOffsets->getBufferObject());
-    ::fwTools::BufferObject::Lock lockCellTypes(cellTypes->getBufferObject());
-
-    ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
-    ::fwData::Mesh::Id nbOfCells = mesh->getNumberOfCells();
-
-    ::fwData::Mesh::CellValueType* cellDataBegin = cellData->begin< ::fwData::Mesh::CellValueType >();
-    ::fwData::Mesh::CellValueType* cellDataEnd = cellDataBegin + cellDataSize;
-    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin = cellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
-    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
-    ::fwData::Mesh::CellTypes* cellTypesBegin = cellTypes->begin< ::fwData::Mesh::CellTypes >();
-
-    isClosed = ::fwMath::isBorderlessSurface(cellDataBegin, cellDataEnd, cellDataOffsetsBegin, cellDataOffsetsEnd, cellTypesBegin );
-    return isClosed;
 }
 
 //------------------------------------------------------------------------------
