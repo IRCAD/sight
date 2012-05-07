@@ -360,16 +360,51 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
     m_colorTransferFunction->RemoveAllPoints();
     m_opacityTransferFunction->RemoveAllPoints();
 
-    const ::fwData::TransferFunction::TFValueVectorType values = pTF->getScaledValues();
-    ::fwData::TransferFunction::TFValueVectorType::const_iterator valueIter = values.begin();
-    BOOST_FOREACH(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint, pTF->getTFData())
+    ::fwData::TransferFunction::TFValueVectorType values = pTF->getScaledValues();
+    ::fwData::TransferFunction::TFValueVectorType::iterator valueIter = values.begin();
+    if(pTF->getInterpolationMode() == ::fwData::TransferFunction::NEAREST)
     {
-        const ::fwData::TransferFunction::TFValueType &value = *(valueIter++);
-        const ::fwData::TransferFunction::TFColor &color = tfPoint.second;
+        m_colorTransferFunction->AllowDuplicateScalarsOn();
+        m_opacityTransferFunction->AllowDuplicateScalarsOn();
 
-        m_colorTransferFunction->AddRGBPoint( value , color.r, color.g, color.b );
-        m_opacityTransferFunction->AddPoint(  value , color.a );
+        BOOST_FOREACH(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint, pTF->getTFData())
+        {
+            const ::fwData::TransferFunction::TFValueType &value = *valueIter;
+            ::fwData::TransferFunction::TFValueType valuePrevious = *valueIter;
+            ::fwData::TransferFunction::TFValueType valueNext = *valueIter;
+            if(valueIter != values.begin())
+            {
+                valuePrevious = *(valueIter - 1);
+            }
+            if(valueIter != (values.end()-1))
+            {
+                valueNext = *(valueIter + 1);
+            }
+
+            const ::fwData::TransferFunction::TFColor &color = tfPoint.second;
+
+            m_colorTransferFunction->AddRGBPoint(valuePrevious + (value - valuePrevious) / 2. , color.r, color.g, color.b );
+            m_colorTransferFunction->AddRGBPoint(value + (valueNext - value) / 2., color.r, color.g, color.b );
+
+            m_opacityTransferFunction->AddPoint(valuePrevious + (value -valuePrevious) / 2. , color.a );
+            m_opacityTransferFunction->AddPoint(value + (valueNext - value) / 2., color.a );
+
+            ++valueIter;
+         }
     }
+    else
+    {
+        BOOST_FOREACH(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint, pTF->getTFData())
+        {
+            const ::fwData::TransferFunction::TFValueType &value = *(valueIter++);
+            const ::fwData::TransferFunction::TFColor &color = tfPoint.second;
+
+            m_colorTransferFunction->AddRGBPoint( value , color.r, color.g, color.b );
+            m_opacityTransferFunction->AddPoint(  value , color.a );
+        }
+    }
+
+    ::fwData::TransferFunction::TFValuePairType minMax = pTF->getMinMaxTFValues();
 
     m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
     m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());
