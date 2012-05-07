@@ -232,7 +232,7 @@ void RendererService::createAndAddActorToRender()
 
 
             OSLM_INFO("Mesh found: " << it->first);
-            if (myMesh->getField( "MaterialMesh" ))
+            if (!myMesh->getField( "MaterialMesh" ))
             {
                 // No Material data then default
                 if(elementNumber == 0)
