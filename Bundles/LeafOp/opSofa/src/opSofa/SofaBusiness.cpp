@@ -1,5 +1,7 @@
 #include <boost/foreach.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "opSofa/SofaBusiness.hpp"
 #include "opSofa/SofaThread.hpp"
 #include "opSofa/sofa/OglModelF4S.hpp"
@@ -370,7 +372,8 @@ void SofaBusiness::translationPointer(OglModel *visual, ::fwData::Mesh::sptr pMe
     // Change pointer vertices
     float *verticesSofa = (float*) visual->getVertices()->getData()->data();
     ::fwData::Array::sptr pointArray = pMesh->getPointsArray();
-    pointArray->setBuffer(
+    ::fwComEd::helper::Array arrayHelper(pointArray);
+    arrayHelper.setBuffer(
             verticesSofa,
             false,
             pointArray->getType(),
