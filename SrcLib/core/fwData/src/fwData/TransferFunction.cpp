@@ -85,12 +85,12 @@ TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
     TFValuePairType minMax = this->getMinMaxTFValues();
     TFValuePairType windowMinMax = this->getWLMinMax();
 
-    const double shift =  windowMinMax.first - minMax.first;
     const double scale = m_attrWindow / (minMax.second - minMax.first);
 
     BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
     {
-        values.push_back( (data.first * scale) + shift );
+        const double value = (data.first - minMax.first) * scale + windowMinMax.first;
+        values.push_back(value);
     }
 
     return values;
