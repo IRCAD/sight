@@ -29,12 +29,12 @@ namespace fwTools
  * needs to take care about allocation and destruction by themselves.
  *
  * BufferObject class has a BufferManager and Locks mechanism, Allowing to
- * trigger special treatements on various events on BufferObjects (allocation,
+ * trigger special treatments on various events on BufferObjects (allocation,
  * reallocation, destruction, swapping, locking, unlocking) and allowing to
  * give some guarantees.
  *
  * Users of buffer have to keep a lock on a BufferObject when dealing with the
- * buffers content. Keeping a lock on a BufferObject garantees that the buffer
+ * buffers content. Keeping a lock on a BufferObject guarantees that the buffer
  * will not be changed or modified by the BufferManager mechanism. A lock *DO
  * NOT GARANTEE* that an other user of this buffer object are not
  * changing/modifying the buffer.
@@ -93,9 +93,9 @@ public:
         }
 
         /**
-         * @brief Copy contructor
+         * @brief Copy constructor
          *
-         * If the copyed lock has a lock count, increment it.
+         * If the copied lock has a lock count, increment it.
          *
          * @param other Lock to copy
          */
@@ -327,7 +327,7 @@ public:
     FWTOOLS_API long isLocked() const { return lockCount() != 0; };
 
     /**
-     * @brief Returns poitner on BufferObject's buffer
+     * @brief Returns pointer on BufferObject's buffer
      */
     FWTOOLS_API const void * const getBufferPointer() const {return &m_buffer;};
 

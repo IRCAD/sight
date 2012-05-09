@@ -19,7 +19,7 @@ namespace fwTools
  * @brief IBufferManager Interface
  *
  * Provides interface for a buffer manager. A BufferManager is able to hook
- * BufferObjects actions an to change it's behaviours. Especially, a
+ * BufferObjects actions an to change it's behaviors. Especially, a
  * BufferObjects can delegate allocation, reallocation and destruction to a
  * BufferManager.
  *

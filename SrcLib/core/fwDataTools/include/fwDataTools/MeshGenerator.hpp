@@ -99,7 +99,7 @@ public :
     FWDATATOOLS_API static void generateCellNormals(::fwData::Mesh::sptr mesh);
 
     /**
-     * @brief Generate cell normals for the mesh.
+     * @brief Generate point normals for the mesh.
      *
      * @param[out]  mesh fwData::Mesh structure to fill with cell normals.
      */
@@ -108,7 +108,7 @@ public :
     /**
      * @brief Shake Array of Normals.
      *
-     * Array must have 3 float components, 1 dimention. Otherwise, shakeNormals
+     * Array must have 3 float components, 1 dimension. Otherwise, shakeNormals
      * will do nothing.
      *
      * @param[out]  mesh fwData::Array structure to shake normals.
