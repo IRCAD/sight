@@ -176,7 +176,7 @@ bool BufferManager::swapBuffer(void ** bufA, void ** bufB)
     BufferInfo & infoA = m_bufferInfos[bufA];
     BufferInfo & infoB = m_bufferInfos[bufB];
 
-    std::swap(bufA, bufB);
+    std::swap(*bufA, *bufB);
     std::swap(infoA.size, infoB.size);
     std::swap(infoA.isDumped, infoB.isDumped);
     std::swap(infoA.dumpedFile, infoB.dumpedFile);
