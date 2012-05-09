@@ -9,20 +9,25 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwData/StructureTraits.hpp>
-#include <fwData/ROITraits.hpp>
-#include <fwData/ReconstructionTraits.hpp>
-#include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/Node.hpp>
-#include <fwData/Port.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/PatientDB.hpp>
 #include <fwData/Array.hpp>
-#include <fwData/Material.hpp>
 #include <fwData/Color.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <fwData/Composite.hpp>
 #include <fwData/Dictionary.hpp>
 #include <fwData/DictionaryOrgan.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Node.hpp>
+#include <fwData/PatientDB.hpp>
+#include <fwData/Plane.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/Port.hpp>
+#include <fwData/ProcessObject.hpp>
+#include <fwData/ReconstructionTraits.hpp>
+#include <fwData/Resection.hpp>
+#include <fwData/ResectionDB.hpp>
+#include <fwData/ROITraits.hpp>
+#include <fwData/StructureTraits.hpp>
+#include <fwData/StructureTraitsDictionary.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include "fwDataTools/export.hpp"
 
