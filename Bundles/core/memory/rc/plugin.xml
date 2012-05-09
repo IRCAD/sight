@@ -1,5 +1,12 @@
 <plugin id="memory" class="memory::Plugin">
 
     <library name="memory"/>
-    
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::memory::SDumpPolicy</service>
+        <object>::fwTools::Object</object>
+    </extension>
+
 </plugin>
