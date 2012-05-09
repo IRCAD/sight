@@ -9,6 +9,7 @@
 
 #include <fwCore/base.hpp>
 
+#include "fwTools/Exception.hpp"
 #include "fwTools/config.hpp"
 
 namespace fwTools
@@ -20,8 +21,8 @@ public:
     typedef SPTR(BufferAllocationPolicy) sptr;
     typedef size_t SizeType;
 
-    FWTOOLS_API virtual void allocate(void *&buffer, SizeType size) = 0;
-    FWTOOLS_API virtual void reallocate(void *&buffer, SizeType size) = 0;
+    FWTOOLS_API virtual void allocate(void *&buffer, SizeType size) throw( ::fwTools::Exception ) = 0;
+    FWTOOLS_API virtual void reallocate(void *&buffer, SizeType size) throw( ::fwTools::Exception ) = 0;
     FWTOOLS_API virtual void destroy(void *&buffer) = 0;
 };
 
@@ -29,8 +30,8 @@ public:
 class FWTOOLS_CLASS_API BufferMallocPolicy : public BufferAllocationPolicy
 {
 public:
-    FWTOOLS_API void allocate(void *&buffer, BufferAllocationPolicy::SizeType size);
-    FWTOOLS_API void reallocate(void *&buffer, BufferAllocationPolicy::SizeType size);
+    FWTOOLS_API void allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception );
+    FWTOOLS_API void reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception );
     FWTOOLS_API void destroy(void *&buffer);
 
     FWTOOLS_API static BufferAllocationPolicy::sptr New();
@@ -40,8 +41,8 @@ public:
 class FWTOOLS_CLASS_API BufferNewPolicy : public BufferAllocationPolicy
 {
 public:
-    FWTOOLS_API void allocate(void *&buffer, BufferAllocationPolicy::SizeType size);
-    FWTOOLS_API void reallocate(void *&buffer, BufferAllocationPolicy::SizeType size);
+    FWTOOLS_API void allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception );
+    FWTOOLS_API void reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception );
     FWTOOLS_API void destroy(void *&buffer);
 
     FWTOOLS_API static BufferAllocationPolicy::sptr New();
@@ -50,8 +51,8 @@ public:
 class FWTOOLS_CLASS_API BufferNoAllocPolicy : public BufferAllocationPolicy
 {
 public:
-    FWTOOLS_API void allocate(void *&buffer, BufferAllocationPolicy::SizeType size);
-    FWTOOLS_API void reallocate(void *&buffer, BufferAllocationPolicy::SizeType size);
+    FWTOOLS_API void allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception );
+    FWTOOLS_API void reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception );
     FWTOOLS_API void destroy(void *&buffer);
 
     FWTOOLS_API static BufferAllocationPolicy::sptr New();

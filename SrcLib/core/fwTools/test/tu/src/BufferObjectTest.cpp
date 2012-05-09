@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <limits>
+
 #include <fwTools/BufferObject.hpp>
 #include <fwTools/BufferAllocationPolicy.hpp>
 #include <fwTools/Exception.hpp>
@@ -75,12 +77,6 @@ void BufferObjectTest::allocateTest()
         ::fwTools::BufferObject::csptr cbo = bo;
         ::fwTools::BufferObject::ConstLock clock(cbo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(3), bo->lockCount() );
-
-        CPPUNIT_ASSERT_THROW( bo->allocate(150), ::fwTools::Exception);
-        CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwTools::Exception);
-        CPPUNIT_ASSERT_THROW( bo->destroy(), ::fwTools::Exception);
-        CPPUNIT_ASSERT_THROW( bo->setBuffer(0,0), ::fwTools::Exception);
-
     }
 
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
@@ -123,14 +119,15 @@ void BufferObjectTest::allocateTest()
         }
     }
 
-
-
     bo->destroy();
-
     CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
+    CPPUNIT_ASSERT_THROW( bo->allocate(std::numeric_limits<size_t>::max()/2), ::fwTools::Exception);
+    CPPUNIT_ASSERT_THROW( bo->reallocate(std::numeric_limits<size_t>::max()/2), ::fwTools::Exception);
 
+    CPPUNIT_ASSERT_THROW( bo->allocate(150, ::fwTools::BufferNoAllocPolicy::New()), ::fwTools::Exception);
+    CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwTools::Exception);
 }
 
 } // namespace ut

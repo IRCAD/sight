@@ -4,22 +4,34 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwCore/Exception.hpp>
+
 #include "fwTools/BufferAllocationPolicy.hpp"
 
 namespace fwTools
 {
 
 
-void BufferMallocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size)
+void BufferMallocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
     buffer = malloc( size );
+    if (buffer == NULL && size > 0)
+    {
+        FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+                        "Cannot allocate memory ("<<size/(1024*1024)<<" MiB).");
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void BufferMallocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size)
+void BufferMallocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
     buffer = realloc( buffer, size );
+    if (buffer == NULL && size > 0)
+    {
+        FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+                                "Cannot allocate memory ("<<size/(1024*1024)<<" MiB).");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -44,16 +56,25 @@ BufferAllocationPolicy::sptr BufferMallocPolicy::New()
 
 
 
-void BufferNewPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size)
+void BufferNewPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
-    buffer = new char[size];
+    try
+    {
+        buffer = new char[size];
+    }
+    catch (std::bad_alloc& ba)
+    {
+        FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+                                "bad_alloc caught: " << ba.what());
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void BufferNewPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size)
+void BufferNewPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
-    SLM_ASSERT("reallocation not managed for buffer allocated with 'new'", 0);
+    FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+                            "Reallocation not managed for buffer allocated with 'new' operator.");
 }
 
 //------------------------------------------------------------------------------
@@ -78,16 +99,18 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 
 
 
-void BufferNoAllocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size)
+void BufferNoAllocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
-    SLM_ASSERT("No Alloc Policy should not be called", 0);
+    FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+                            "No Allocation Policy should not be called.");
 }
 
 //------------------------------------------------------------------------------
 
-void BufferNoAllocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size)
+void BufferNoAllocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
-    SLM_ASSERT("No Alloc Policy should not be called", 0);
+    FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+                            "No Allocation Policy should not be called.");
 }
 
 //------------------------------------------------------------------------------
