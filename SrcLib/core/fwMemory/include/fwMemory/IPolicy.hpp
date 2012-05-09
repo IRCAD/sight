@@ -47,7 +47,7 @@ public :
     virtual bool setParam(const std::string &name, const std::string &value) = 0;
     virtual ParamNamesType getParamNames() const = 0;
 
-    static IPolicy::sptr createPolicy(std::string name);
+    FWMEMORY_API static IPolicy::sptr createPolicy(std::string name);
 
     template< typename POLICY >
     struct Register
