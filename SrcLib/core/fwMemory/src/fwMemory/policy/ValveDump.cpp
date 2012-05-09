@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 
+#include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 
 
@@ -30,6 +31,7 @@ namespace fwMemory
 namespace policy
 {
 
+static IPolicy::Register<ValveDump> registerFactory("ValveDump");
 
 ValveDump::sptr ValveDump::New()
 {
@@ -40,7 +42,7 @@ ValveDump::sptr ValveDump::New()
 
 ValveDump::ValveDump() :
     m_minFreeMem(1024*1024*500LL),
-    m_hysteresisOffset(1024*1024*100LL)
+    m_hysteresisOffset(0)
 {
 
 }
@@ -187,6 +189,44 @@ void ValveDump::refresh()
 }
 
 //------------------------------------------------------------------------------
+
+bool ValveDump::setParam(const std::string &name, const std::string &value)
+{
+    OSLM_INFO("Set " << name << " to " << value);
+    try
+    {
+        if(name == "min_free_mem")
+        {
+            m_minFreeMem = ::boost::lexical_cast< size_t >(value);
+            return true;
+
+        }
+        else if(name == "hysteresis_offet")
+        {
+            m_hysteresisOffset = ::boost::lexical_cast< size_t >(value);
+            return true;
+        }
+    }
+    catch( boost::bad_lexical_cast const& )
+    {
+        OSLM_ERROR("Bad value for " << name << " : " << value);
+        return false;
+    }
+    OSLM_ERROR("Bad parameter name " << name );
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+fwMemory::IPolicy::ParamNamesType ValveDump::getParamNames() const
+{
+    fwMemory::IPolicy::ParamNamesType params;
+    params.push_back("min_free_mem");
+    params.push_back("hysteresis_offet");
+    return params;
+}
+
+
 
 } // namespace policy
 

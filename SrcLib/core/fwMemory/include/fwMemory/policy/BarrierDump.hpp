@@ -55,6 +55,9 @@ public :
     FWMEMORY_API void setBarrier( size_t barrier ) { m_barrier = barrier; }
     FWMEMORY_API size_t getBarrier() const { return m_barrier; }
 
+    FWMEMORY_API bool setParam(const std::string &name, const std::string &value);
+    FWMEMORY_API fwMemory::IPolicy::ParamNamesType getParamNames() const;
+
 protected :
 
     FWMEMORY_API size_t getTotalAlive();

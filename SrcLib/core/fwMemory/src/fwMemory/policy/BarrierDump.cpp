@@ -5,7 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 
+#include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
+
 #include "fwMemory/policy/BarrierDump.hpp"
 
 
@@ -15,6 +17,7 @@ namespace fwMemory
 namespace policy
 {
 
+static IPolicy::Register<BarrierDump> registerFactory("BarrierDump");
 
 BarrierDump::sptr BarrierDump::New()
 {
@@ -205,6 +208,37 @@ void BarrierDump::refresh()
     m_totalAllocated = manager->getManagedBufferSize();
     m_totalDumped = manager->getDumpedBufferSize();
     this->apply();
+}
+
+//------------------------------------------------------------------------------
+
+bool BarrierDump::setParam(const std::string &name, const std::string &value)
+{
+    try
+    {
+        if(name == "barrier")
+        {
+            m_barrier = ::boost::lexical_cast< size_t >(value);
+            return true;
+        }
+    }
+    catch( boost::bad_lexical_cast const& )
+    {
+        OSLM_ERROR("Bad value for " << name << " : " << value);
+        return false;
+    }
+
+    OSLM_ERROR("Bad parameter name " << name );
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+fwMemory::IPolicy::ParamNamesType BarrierDump::getParamNames() const
+{
+    fwMemory::IPolicy::ParamNamesType params;
+    params.push_back("barrier");
+    return params;
 }
 
 } // namespace policy

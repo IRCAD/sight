@@ -8,6 +8,7 @@
 #define FWMEMORY_IPOLICY_HPP_
 
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 
 #include <fwTools/IBufferManager.hpp>
 
@@ -25,6 +26,8 @@ class FWMEMORY_CLASS_API IPolicy
 public :
 
     typedef SPTR(IPolicy) sptr;
+    typedef std::vector<std::string> ParamNamesType;
+
 
 
     virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) = 0 ;
@@ -40,6 +43,27 @@ public :
     virtual void setManager(::fwTools::IBufferManager::sptr manager) = 0;
 
     virtual void refresh() = 0;
+
+    virtual bool setParam(const std::string &name, const std::string &value) = 0;
+    virtual ParamNamesType getParamNames() const = 0;
+
+    static IPolicy::sptr createPolicy(std::string name);
+
+    template< typename POLICY >
+    struct Register
+    {
+        Register(const std::string &name)
+        {
+            s_factories[name] = &POLICY::New;
+        }
+    };
+
+protected:
+    typedef boost::function< IPolicy::sptr () > PolicyFactoryType;
+
+    typedef std::map<std::string, PolicyFactoryType> FactoriesMap;
+    static FactoriesMap s_factories;
+
 };
 
 } // namespace fwMemory

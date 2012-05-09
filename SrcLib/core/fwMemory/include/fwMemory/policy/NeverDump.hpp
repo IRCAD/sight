@@ -49,6 +49,10 @@ public :
     FWMEMORY_API void setManager(::fwTools::IBufferManager::sptr manager);
 
     FWMEMORY_API virtual void refresh();
+
+    FWMEMORY_API bool setParam(const std::string &name, const std::string &value) {return false;};
+    FWMEMORY_API fwMemory::IPolicy::ParamNamesType getParamNames() const {return fwMemory::IPolicy::ParamNamesType();};
+
 };
 
 

@@ -57,6 +57,9 @@ public :
 
     FWMEMORY_API virtual void refresh();
 
+    FWMEMORY_API bool setParam(const std::string &name, const std::string &value);
+    FWMEMORY_API fwMemory::IPolicy::ParamNamesType getParamNames() const;
+
 protected :
 
     FWMEMORY_API bool needDump(size_t supplement);

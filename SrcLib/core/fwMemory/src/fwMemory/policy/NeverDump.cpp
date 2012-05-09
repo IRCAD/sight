@@ -14,6 +14,7 @@ namespace fwMemory
 namespace policy
 {
 
+static IPolicy::Register<NeverDump> registerFactory("NeverDump");
 
 NeverDump::sptr NeverDump::New()
 {

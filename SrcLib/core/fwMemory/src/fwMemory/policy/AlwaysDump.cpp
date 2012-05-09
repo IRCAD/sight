@@ -17,6 +17,7 @@ namespace fwMemory
 namespace policy
 {
 
+static IPolicy::Register<AlwaysDump> registerFactory("AlwaysDump");
 
 AlwaysDump::sptr AlwaysDump::New()
 {
