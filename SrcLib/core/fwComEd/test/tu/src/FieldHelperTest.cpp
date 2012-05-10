@@ -22,7 +22,12 @@
 #include "FieldHelperTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( FieldHelperTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwComEd::ut::FieldHelperTest );
+
+namespace fwComEd
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -93,3 +98,6 @@ void FieldHelperTest::testHelper()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwComEd

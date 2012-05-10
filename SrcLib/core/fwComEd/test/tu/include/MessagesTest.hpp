@@ -4,12 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_TEST_TU_MESSAGESTEST_HPP_
-#define _FWCOMED_TEST_TU_MESSAGESTEST_HPP_
+#ifndef _FWCOMED_TU_MESSAGESTEST_HPP_
+#define _FWCOMED_TU_MESSAGESTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwCore/base.hpp>
+
+namespace fwComEd
+{
+namespace ut
+{
 
 /**
  * @brief   Test specified object messages.
@@ -39,5 +44,7 @@ public:
     void testPatientDBMsg();
 };
 
+} //namespace ut
+} //namespace fwComEd
 
-#endif // _FWCOMED_TEST_TU_MESSAGESTEST_HPP_
+#endif // _FWCOMED_TU_MESSAGESTEST_HPP_

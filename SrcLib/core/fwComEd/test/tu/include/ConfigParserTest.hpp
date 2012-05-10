@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_TEST_TU_CONFIGPARSERTEST_HPP_
-#define _FWCOMED_TEST_TU_CONFIGPARSERTEST_HPP_
+#ifndef _FWCOMED_TU_CONFIGPARSERTEST_HPP_
+#define _FWCOMED_TU_CONFIGPARSERTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -19,6 +19,11 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+
+namespace fwComEd
+{
+namespace ut
+{
 
 /**
  * @brief   Test ProcessObject building from a ConfigurationElement and composite message.
@@ -95,7 +100,7 @@ class TestServiceImplementationComposite : public TestService
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationComposite)(::TestService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationComposite)(::fwComEd::ut::TestService) ) ;
     TestServiceImplementationComposite() throw() {};
     virtual ~TestServiceImplementationComposite() throw() {};
 
@@ -124,7 +129,7 @@ class TestServiceImplementationImage : public TestService
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::TestService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::fwComEd::ut::TestService) ) ;
     TestServiceImplementationImage() throw() {};
     virtual ~TestServiceImplementationImage() throw() {};
 
@@ -144,4 +149,7 @@ public :
     };
 };
 
-#endif // _FWCOMED_TEST_TU_CONFIGPARSERTEST_HPP_
+} //namespace ut
+} //namespace fwComEd
+
+#endif // _FWCOMED_TU_CONFIGPARSERTEST_HPP_

@@ -19,7 +19,12 @@
 #include "MessagesTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MessagesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwComEd::ut::MessagesTest );
+
+namespace fwComEd
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -97,3 +102,6 @@ void MessagesTest::testPatientDBMsg()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwComEd
