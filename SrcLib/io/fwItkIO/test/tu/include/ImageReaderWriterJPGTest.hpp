@@ -4,14 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWITKIO_TEST_TU_IMAGEREADERWRITERJPGTEST_HPP_
-#define _FWITKIO_TEST_TU_IMAGEREADERWRITERJPGTEST_HPP_
+#ifndef _FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP_
+#define _FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwData/Image.hpp>
+
+namespace fwItkIO
+{
+namespace ut
+{
 
 class ImageReaderWriterJPGTest : public CPPUNIT_NS::TestFixture
 {
@@ -33,5 +38,7 @@ public:
 
 };
 
+} //namespace ut
+} //namespace fwItkIO
 
-#endif // _FWITKIO_TEST_TU_IMAGEREADERWRITERJPGTEST_HPP_
+#endif // _FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP_

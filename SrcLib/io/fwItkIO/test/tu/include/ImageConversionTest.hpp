@@ -4,14 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWITKIO_TEST_TU_IMAGECONVERSIONTEST_HPP_
-#define _FWITKIO_TEST_TU_IMAGECONVERSIONTEST_HPP_
+#ifndef _FWITKIO_UT_IMAGECONVERSIONTEST_HPP_
+#define _FWITKIO_UT_IMAGECONVERSIONTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwData/Image.hpp>
+
+
+namespace fwItkIO
+{
+namespace ut
+{
 
 class ImageConversionTest : public CPPUNIT_NS::TestFixture
 {
@@ -35,6 +41,9 @@ public:
 
 };
 
+} //namespace ut
+} //namespace fwItkIO
+
 #include "ImageConversionTest.hxx"
 
-#endif // _FWITKIO_TEST_TU_IMAGECONVERSIONTEST_HPP_
+#endif // _FWITKIO_UT_IMAGECONVERSIONTEST_HPP_

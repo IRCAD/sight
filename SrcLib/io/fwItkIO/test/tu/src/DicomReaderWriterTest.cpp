@@ -29,7 +29,12 @@
 #include "DicomReaderWriterTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( DicomReaderWriterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::DicomReaderWriterTest );
+
+namespace fwItkIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -263,3 +268,6 @@ void DicomReaderWriterTest::testReadWritePatientDB()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwItkIO

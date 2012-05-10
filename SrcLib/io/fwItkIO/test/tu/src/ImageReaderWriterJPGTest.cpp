@@ -25,7 +25,12 @@
 #include "ImageReaderWriterJPGTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ImageReaderWriterJPGTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageReaderWriterJPGTest );
+
+namespace fwItkIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -105,3 +110,6 @@ void ImageReaderWriterJPGTest::testPatientDBReader()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwItkIO
