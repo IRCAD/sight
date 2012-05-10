@@ -22,7 +22,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( InterpreterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwPython::ut::InterpreterTest );
+
+namespace fwPython
+{
+namespace ut
+{
 
 InterpreterTest::InterpreterTest()
 {
@@ -158,5 +163,7 @@ void InterpreterTest::changeValue()
 
     CPPUNIT_ASSERT_EQUAL( succes , 0 );
     CPPUNIT_ASSERT_EQUAL( str->value() , std::string("changed value in python") );
-
 }
+
+} // namespace ut
+} // namespace fwPython
