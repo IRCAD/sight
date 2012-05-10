@@ -22,7 +22,12 @@
 #include "GuiQtTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( GuiQtTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::guiQt::ut::GuiQtTest );
+
+namespace guiQt
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -61,7 +66,8 @@ void GuiQtTest::testDefaultFrame()
     frameCfg->addConfigurationElement(guiCfg);
 
 
-    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create(  "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame" );
+    ::fwServices::IService::sptr srv;
+    srv = ::fwServices::registry::ServiceFactory::getDefault()->create(  "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame" );
     CPPUNIT_ASSERT(srv);
 
     ::fwServices::OSR::registerService( object , srv );
@@ -104,3 +110,6 @@ void GuiQtTest::testTuto02()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace guiQt
