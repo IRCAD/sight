@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOXML_TEST_TU_READERWRITERTEST_HPP_
-#define _IOXML_TEST_TU_READERWRITERTEST_HPP_
+#ifndef _IOXML_TU_READERWRITERTEST_HPP_
+#define _IOXML_TU_READERWRITERTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace ioXML
+{
+namespace ut
+{
 
 /**
  * @brief Test fwXML reader/writer.
@@ -26,8 +31,9 @@ public:
 
     void testReader();
     void testWriter();
-
-
 };
 
-#endif //_IOXML_TEST_TU_READERWRITERTEST_HPP_
+} //namespace ut
+} //namespace ioXML
+
+#endif //_IOXML_TU_READERWRITERTEST_HPP_
