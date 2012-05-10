@@ -23,7 +23,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( IoItkTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::ioITK::ut::IoItkTest );
+
+namespace ioITK
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -296,3 +301,5 @@ void IoItkTest::testDicomPatientDBWriter()
 
 //------------------------------------------------------------------------------
 
+} //namespace ut
+} //namespace ioITK

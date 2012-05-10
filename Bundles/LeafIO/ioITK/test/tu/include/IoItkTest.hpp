@@ -8,6 +8,11 @@
 
 #include <fwData/Patient.hpp>
 
+namespace ioITK
+{
+namespace ut
+{
+
 /**
  * @brief Test many methods to create mesh.
  */
@@ -45,5 +50,9 @@ private :
     void executeService( ::fwTools::Object::sptr obj, std::string srvType, std::string srvImpl, ::fwRuntime::EConfigurationElement::sptr cfg );
 
 };
+
+} //namespace ut
+} //namespace ioITK
+
 
 #endif //_IOITK_TEST_TU_IOITKTEST_HPP_
