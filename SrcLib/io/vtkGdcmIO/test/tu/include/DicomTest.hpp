@@ -13,6 +13,11 @@
 
 #include <fwData/PatientDB.hpp>
 
+namespace vtkGdcmIO
+{
+namespace ut
+{
+
 class DicomTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DicomTest );
@@ -30,5 +35,8 @@ private:
     ::fwData::PatientDB::sptr createPatientDB();
 
 };
+
+} // namespace ut
+} // namespace vtkGdcmIO
 
 #endif // _FWVTKGDCMIO_TEST_TU_DICOMTEST_HPP_

@@ -22,7 +22,12 @@
 #include "DicomTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( DicomTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::vtkGdcmIO::ut::DicomTest );
+
+namespace vtkGdcmIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -76,3 +81,6 @@ void DicomTest::methode1()
 }
 
 //------------------------------------------------------------------------------
+
+} // namespace ut
+} // namespace vtkGdcmIO
