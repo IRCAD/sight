@@ -4,12 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWXML_TEST_TU_OBJECTTEST_HPP_
-#define _FWXML_TEST_TU_OBJECTTEST_HPP_
+#ifndef _FWXML_UT_OBJECTTEST_HPP_
+#define _FWXML_UT_OBJECTTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwData/Object.hpp>
+
+namespace fwXML
+{
+namespace ut
+{
 
 class ObjectTest : public CPPUNIT_NS::TestFixture
 {
@@ -68,4 +73,7 @@ public:
     void processObjectSerializationTest();
 };
 
-#endif // _FWXML_TEST_TU_OBJECTTEST_HPP_
+} //namespace ut
+} //namespace fwXML
+
+#endif // _FWXML_UT_OBJECTTEST_HPP_

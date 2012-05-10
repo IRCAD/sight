@@ -36,7 +36,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwXML::ut::ObjectTest );
+
+namespace fwXML
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -395,3 +400,6 @@ void ObjectTest::processObjectSerializationTest()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwXML
