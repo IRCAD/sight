@@ -26,7 +26,13 @@
 #include "IoVtkGdcmTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( IoVtkGdcmTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVtkGdcm::ut::IoVtkGdcmTest );
+
+
+namespace ioVtkGdcm
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -236,3 +242,6 @@ void IoVtkGdcmTest::testWriter()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace ioVtkGdcm
