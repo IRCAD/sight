@@ -36,7 +36,12 @@
 #include "ImageTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ImageTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::ImageTest );
+
+namespace fwVtkIO
+{
+namespace ut
+{
 
 using namespace boost::assign;
 
@@ -439,4 +444,6 @@ void ImageTest::vtkWriterTest()
 
 //------------------------------------------------------------------------------
 
+} // namespace ut
+} // namespace fwVtkIO
 

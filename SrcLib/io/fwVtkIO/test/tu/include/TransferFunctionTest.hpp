@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWVTKIO_UT_TRANSFERTFUNCTIONTEST_HPP_
-#define _FWVTKIO_UT_TRANSFERTFUNCTIONTEST_HPP_
+#ifndef _FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP_
+#define _FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -17,11 +17,11 @@ namespace ut
 {
 
 /**
- * @brief Test few methods to create transfert function for VTK.
+ * @brief Test few methods to create transfer function for VTK.
  */
-class TransfertFunctionTest : public CPPUNIT_NS::TestFixture
+class TransferFunctionTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( TransfertFunctionTest );
+    CPPUNIT_TEST_SUITE( TransferFunctionTest );
     CPPUNIT_TEST( toVtkLookupTableTest );
     CPPUNIT_TEST( toBWVtkLookupTableTest );
     CPPUNIT_TEST_SUITE_END();
@@ -44,4 +44,4 @@ private :
 } // end namespace ut
 } // end namespace fwVtkIO
 
-#endif //_FWVTKIO_UT_TRANSFERTFUNCTIONTEST_HPP_
+#endif //_FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP_

@@ -25,7 +25,12 @@
 #include "MeshTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MeshTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::MeshTest );
+
+namespace fwVtkIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -132,3 +137,6 @@ void MeshTest::testExportImportSyntheticMesh()
     bool suppr = ::boost::filesystem::remove(testFile);
     CPPUNIT_ASSERT(suppr);
 }
+
+} // namespace ut
+} // namespace fwVtkIO
