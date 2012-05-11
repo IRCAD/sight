@@ -22,7 +22,7 @@ namespace fwTools
  * Converts string to number of bytes and vice-versa. This class is also able to
  * manage convertions between units standards (IEC, SI)
  */
-class ByteSize
+class FWTOOLS_CLASS_API ByteSize
 {
 public:
 
@@ -53,23 +53,23 @@ public:
     /**
      * @brief Default constructor
      */
-    ByteSize ();
+    FWTOOLS_API ByteSize ();
 
     /**
      * @brief Build a ByteSize object from given size and unit
      */
-    ByteSize ( SizeType size, UnitType unit = Bytes );
+    FWTOOLS_API ByteSize ( SizeType size, UnitType unit = Bytes );
 
 
     /**
      * @brief Build a ByteSize object from given size and unit
      */
-    ByteSize ( double size, UnitType unit = Bytes );
+    FWTOOLS_API ByteSize ( double size, UnitType unit = Bytes );
 
     /**
      * @brief Build a ByteSize object from given string
      */
-    ByteSize ( const std::string &size );
+    FWTOOLS_API ByteSize ( const std::string &size );
 
     /**
      * @brief Convert this size to a string with specified unit
@@ -78,7 +78,7 @@ public:
      *
      * @return std::string representing the size
      */
-    std::string getSizeAsString( UnitType unit = Bytes );
+    FWTOOLS_API std::string getSizeAsString( UnitType unit = Bytes );
     /**
      * @brief Convert this size to a human readable string in the required
      * Convert this size to a human readable string in the required standard.
@@ -89,35 +89,35 @@ public:
      *
      * @return std::string representing the size
      */
-    std::string getHumanReadableSize( StandardType standard = IEC );
+    FWTOOLS_API std::string getHumanReadableSize( StandardType standard = IEC );
 
     /**
      * @brief Returns size in bytes.
      */
-    SizeType getSize(){ return m_size; }
+    FWTOOLS_API SizeType getSize(){ return m_size; }
 
     /**
      * @brief Build a ByteSize object from given size and unit
      */
-    void setSize( SizeType size, UnitType unit = Bytes );
+    FWTOOLS_API void setSize( SizeType size, UnitType unit = Bytes );
     /**
      * @brief Build a ByteSize object from given size and unit
      */
-    void setSize( double size, UnitType unit = Bytes );
+    FWTOOLS_API void setSize( double size, UnitType unit = Bytes );
     /**
      * @brief Build a ByteSize object from given string
      */
-    void setSize( const std::string& size );
+    FWTOOLS_API void setSize( const std::string& size );
 
-    ByteSize& operator= ( SizeType size );
-    ByteSize& operator= ( double size );
-    ByteSize& operator= ( const std::string &size );
+    FWTOOLS_API ByteSize& operator= ( SizeType size );
+    FWTOOLS_API ByteSize& operator= ( double size );
+    FWTOOLS_API ByteSize& operator= ( const std::string &size );
 
-    operator SizeType () { return m_size; }
-    operator std::string () { return getHumanReadableSize(); }
+    FWTOOLS_API operator SizeType () { return m_size; }
+    FWTOOLS_API operator std::string () { return getHumanReadableSize(); }
 
-    static bool parseSize(const std::string &s, boost::uint64_t& size);
-    static std::string unitToString( UnitType unit );
+    FWTOOLS_API static bool parseSize(const std::string &s, boost::uint64_t& size);
+    FWTOOLS_API static std::string unitToString( UnitType unit );
 
 protected:
     SizeType m_size;
