@@ -9,6 +9,7 @@ CLASSTEST=[
     'StringizerTest'          ,
     'UUIDTEST'                ,
     'BufferObjectTest'        ,
+    'ByteSizeTest'            ,
     ]
 
 USE = ['boost']
