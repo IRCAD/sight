@@ -365,9 +365,8 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::removeDistance(  ::fwData::PointList::sptr plToRemove ) throw(::fwTools::Failed)
+void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove ) throw(::fwTools::Failed)
 {
-
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->unregisterServices();
 
@@ -380,7 +379,7 @@ void ImageMultiDistances::removeDistance(  ::fwData::PointList::sptr plToRemove 
         distanceField->getContainer().erase(iter);
     }
 
-    doUpdate();
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -390,15 +389,13 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwData::PointList::NewSptr newPL;
 
-    newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( sceneId ) );
+    newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId, ::fwData::String::NewSptr( sceneId ) );
 
     ::fwData::Vector::sptr distanceField;
-    distanceField = image->getField< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
+    distanceField = image->setDefaultField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
     distanceField->getContainer().push_back(newPL);
 
-    OSLM_INFO("distanceField->size() " << distanceField->size() );
-    assert( image->getField( ::fwComEd::Dictionary::m_imageDistancesId ) );
-
+    OSLM_INFO("DistanceField size: " << distanceField->size() );
 
     int sizeX = this->getRenderer()->GetRenderWindow()->GetSize()[0];
     int sizeY = this->getRenderer()->GetRenderWindow()->GetSize()[1];
@@ -425,8 +422,10 @@ void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(:
 
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::NEW_DISTANCE ) )
     {
-        ::fwData::String::csptr dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::NEW_DISTANCE));
-        OSLM_FATAL_IF(" ImageMultiDistances::doUpdate with RenderService "<<  sceneId << "missing sceneId dataInfo !!!", !dataInfo);
+        ::fwData::String::csptr dataInfo;
+        dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::NEW_DISTANCE));
+        OSLM_FATAL_IF(" ImageMultiDistances::doUpdate with RenderService "
+                     <<  sceneId << "missing sceneId dataInfo !!!", !dataInfo);
         if ( dataInfo->value() == sceneId )
         {
             this->createNewDistance( sceneId );
@@ -438,20 +437,22 @@ void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(:
 
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
     {
-        ::fwData::String::csptr dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DISTANCE));
+        ::fwData::String::csptr dataInfo;
+        dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DISTANCE));
         // update only if the distance is added in this scene
         // or if the service is not filtered
-        if ( !dataInfo || dataInfo->value() ==  getRenderService()->getID()
+        if ( !dataInfo || dataInfo->value() ==  this->getRenderService()->getID()
                 || m_configuration->getAttributeValue("filter") == "false")
         {
-            doUpdate();
+            this->doUpdate();
         }
     }
 
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE ) )
     {
-        ::fwData::PointList::csptr plToRemove = ::fwData::PointList::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DELETE_DISTANCE));
-        SLM_ASSERT( " ImageMsg::DELETE_DISTANCE , no dataInfo for the PointList ",plToRemove );
+        ::fwData::PointList::csptr plToRemove;
+        plToRemove = ::fwData::PointList::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DELETE_DISTANCE));
+        SLM_ASSERT( "No dataInfo for the PointList ",plToRemove );
         this->removeDistance( ::boost::const_pointer_cast< ::fwData::PointList>(plToRemove) );
     }
 }
@@ -467,7 +468,7 @@ void ImageMultiDistances::setNeedSubservicesDeletion( bool _needSubservicesDelet
 
 void ImageMultiDistances::doStop() throw(fwTools::Failed)
 {
-    if ( m_rightButtonCommand ) // can be not instanciated (use of ImageMultiDistances::show() )
+    if ( m_rightButtonCommand ) // can be not instantiated (use of ImageMultiDistances::show() )
     {
         this->getInteractor()->RemoveObserver(m_rightButtonCommand);
         m_rightButtonCommand->Delete();
@@ -479,9 +480,16 @@ void ImageMultiDistances::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::show(bool b)
+void ImageMultiDistances::show(bool showDistances)
 {
-    b?doStart():doStop();
+    if(showDistances)
+    {
+        this->doStart();
+    }
+    else
+    {
+        this->doStop();
+    }
 }
 
 

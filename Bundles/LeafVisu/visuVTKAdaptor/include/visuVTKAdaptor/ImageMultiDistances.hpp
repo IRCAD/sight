@@ -34,7 +34,7 @@ public:
 
     VISUVTKADAPTOR_API void setNeedSubservicesDeletion( bool _needSubservicesDeletion );
 
-    VISUVTKADAPTOR_API virtual void show(bool b = true);
+    VISUVTKADAPTOR_API virtual void show(bool showDistances = true);
 
 protected :
 
