@@ -89,6 +89,11 @@ void ResectionXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,
                 std::string litteralValue = XMLParser::getTextValue(elementNode);
                 pResection->setIsVisible( ::boost::lexical_cast< bool >(  litteralValue ) );
             }
+            else if ( nodeName == "isValid" )
+            {
+                std::string litteralValue = XMLParser::getTextValue(elementNode);
+                pResection->setIsValid( ::boost::lexical_cast< bool >(  litteralValue ) );
+            }
             else if ( nodeName == "inputs" )
             {
                 if ( elementNode->children != NULL )
