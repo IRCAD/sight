@@ -6,6 +6,7 @@
 
 #include <fwCore/Exception.hpp>
 
+#include "fwTools/ByteSize.hpp"
 #include "fwTools/BufferAllocationPolicy.hpp"
 
 namespace fwTools
@@ -18,7 +19,7 @@ void BufferMallocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeTyp
     if (buffer == NULL && size > 0)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
-                        "Cannot allocate memory ("<<size/(1024*1024)<<" MiB).");
+                                "Cannot allocate memory ("<< ::fwTools::ByteSize(size) <<").");
     }
 }
 
@@ -30,7 +31,7 @@ void BufferMallocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeT
     if (buffer == NULL && size > 0)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
-                                "Cannot allocate memory ("<<size/(1024*1024)<<" MiB).");
+                                "Cannot allocate memory ("<< ::fwTools::ByteSize(size) <<").");
     }
 }
 
