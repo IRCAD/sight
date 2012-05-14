@@ -86,6 +86,7 @@ void PlaneXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
                     }
                     pointsNode = XMLParser::nextXMLElement( pointsNode->next );
                 }
+                pPlane->computePlaneFromPoints();
             }
 
             // Element ++
