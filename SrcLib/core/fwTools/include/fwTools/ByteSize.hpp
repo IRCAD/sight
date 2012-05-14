@@ -68,7 +68,11 @@ public:
      * @{
      */
     FWTOOLS_API ByteSize ( SizeType size, UnitType unit = Bytes );
-    FWTOOLS_API ByteSize ( size_t size, UnitType unit = Bytes );
+    template <typename T>
+    ByteSize ( T size, UnitType unit = Bytes ) : m_size(0)
+    {
+        this->setSize( SizeType(size), unit);
+    }
     ///@}
 
 
@@ -112,7 +116,11 @@ public:
      * @{
      */
     FWTOOLS_API void setSize( SizeType size, UnitType unit = Bytes );
-    FWTOOLS_API void setSize( size_t size, UnitType unit = Bytes );
+    template <typename T>
+    void setSize( T size, UnitType unit = Bytes )
+    {
+        this->setSize(SizeType(size), unit);
+    }
     ///@}
 
     /**
@@ -125,9 +133,13 @@ public:
     FWTOOLS_API void setSize( const std::string& size );
 
     FWTOOLS_API ByteSize& operator= ( SizeType size );
-    FWTOOLS_API ByteSize& operator= ( size_t size );
     FWTOOLS_API ByteSize& operator= ( double size );
     FWTOOLS_API ByteSize& operator= ( const std::string &size );
+    template <typename T>
+    ByteSize& operator= ( T size )
+    {
+        return this->operator=( SizeType(size) );
+    }
 
     FWTOOLS_API operator SizeType () { return m_size; }
     FWTOOLS_API operator std::string () { return getHumanReadableSize(); }

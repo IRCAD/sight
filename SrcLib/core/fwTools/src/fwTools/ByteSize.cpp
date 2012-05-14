@@ -48,15 +48,6 @@ ByteSize::ByteSize ( SizeType size, UnitType unit ) : m_size(0)
 }
 //------------------------------------------------------------------------------
 
-ByteSize::ByteSize ( size_t size, UnitType unit ) : m_size(0)
-{
-    SLM_ASSERT("Bad Unit",
-               (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
-               || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
-    this->setSize( SizeType(size), unit);
-}
-//------------------------------------------------------------------------------
-
 ByteSize::ByteSize ( double size, UnitType unit ) : m_size(0)
 {
     SLM_ASSERT("Bad Unit",
@@ -81,13 +72,7 @@ ByteSize& ByteSize::operator= ( SizeType size )
     this->setSize(size);
     return *this;
 }
-//------------------------------------------------------------------------------
 
-ByteSize& ByteSize::operator= ( size_t size )
-{
-    this->setSize(size);
-    return *this;
-}
 //------------------------------------------------------------------------------
 
 ByteSize& ByteSize::operator= ( double size )
@@ -116,12 +101,7 @@ void ByteSize::setSize ( SizeType size, UnitType unit )
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     m_size = size*unit;
 }
-//------------------------------------------------------------------------------
 
-void ByteSize::setSize ( size_t size, UnitType unit )
-{
-    this->setSize(SizeType(size), unit);
-}
 //------------------------------------------------------------------------------
 
 void ByteSize::setSize ( double size, UnitType unit )
