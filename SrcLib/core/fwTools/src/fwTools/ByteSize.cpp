@@ -15,6 +15,25 @@
 namespace fwTools
 {
 
+
+const boost::uint64_t ByteSize::Bytes = 1 ;
+
+// SI units
+const boost::uint64_t ByteSize::KB = 1000LL ;
+const boost::uint64_t ByteSize::MB = 1000000LL;
+const boost::uint64_t ByteSize::GB = 1000000000LL;
+const boost::uint64_t ByteSize::TB = 1000000000000LL;
+const boost::uint64_t ByteSize::PB = 1000000000000000LL;
+
+// IEC units
+const boost::uint64_t ByteSize::KiB = 1LL << 10;
+const boost::uint64_t ByteSize::MiB = 1LL << 20;
+const boost::uint64_t ByteSize::GiB = 1LL << 30;
+const boost::uint64_t ByteSize::TiB = 1LL << 40;
+const boost::uint64_t ByteSize::PiB = 1LL << 50;
+
+
+
 ByteSize::ByteSize () : m_size(0)
 {
 }

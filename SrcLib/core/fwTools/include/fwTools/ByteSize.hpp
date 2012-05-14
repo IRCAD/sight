@@ -31,25 +31,24 @@ public:
         SI, IEC
     } StandardType ;
 
-    typedef enum {
-        Bytes = 1 ,
+    static const boost::uint64_t Bytes;
 
-        // SI units
-        KB    = 1000LL ,
-        MB    = 1000000LL,
-        GB    = 1000000000LL,
-        TB    = 1000000000000LL,
-        PB    = 1000000000000000LL,
+    // SI units
+    static const boost::uint64_t KB;
+    static const boost::uint64_t MB;
+    static const boost::uint64_t GB;
+    static const boost::uint64_t TB;
+    static const boost::uint64_t PB;
 
-        // IEC units
-        KiB   = 1LL << 10,
-        MiB   = 1LL << 20,
-        GiB   = 1LL << 30,
-        TiB   = 1LL << 40,
-        PiB   = 1LL << 50
-    } UnitType ;
+    // IEC units
+    static const boost::uint64_t KiB;
+    static const boost::uint64_t MiB;
+    static const boost::uint64_t GiB;
+    static const boost::uint64_t TiB;
+    static const boost::uint64_t PiB;
 
     typedef ::boost::uint64_t SizeType;
+    typedef ::boost::uint64_t UnitType;
 
     /**
      * @brief Default constructor
