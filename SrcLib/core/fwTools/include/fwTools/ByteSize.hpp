@@ -19,9 +19,9 @@ namespace fwTools
 {
 
 /**
- * @brief Convertion helper for size in bytes
+ * @brief Conversion helper for size in bytes
  * Converts string to number of bytes and vice-versa. This class is also able to
- * manage convertions between units standards (IEC, SI)
+ * manage conversions between units standards (IEC, SI)
  */
 class FWTOOLS_CLASS_API ByteSize
 {
@@ -31,21 +31,21 @@ public:
         SI, IEC
     } StandardType ;
 
-    static const boost::uint64_t Bytes;
+    FWTOOLS_API static const boost::uint64_t Bytes;
 
     // SI units
-    static const boost::uint64_t KB;
-    static const boost::uint64_t MB;
-    static const boost::uint64_t GB;
-    static const boost::uint64_t TB;
-    static const boost::uint64_t PB;
+    FWTOOLS_API static const boost::uint64_t KB;
+    FWTOOLS_API static const boost::uint64_t MB;
+    FWTOOLS_API static const boost::uint64_t GB;
+    FWTOOLS_API static const boost::uint64_t TB;
+    FWTOOLS_API static const boost::uint64_t PB;
 
     // IEC units
-    static const boost::uint64_t KiB;
-    static const boost::uint64_t MiB;
-    static const boost::uint64_t GiB;
-    static const boost::uint64_t TiB;
-    static const boost::uint64_t PiB;
+    FWTOOLS_API static const boost::uint64_t KiB;
+    FWTOOLS_API static const boost::uint64_t MiB;
+    FWTOOLS_API static const boost::uint64_t GiB;
+    FWTOOLS_API static const boost::uint64_t TiB;
+    FWTOOLS_API static const boost::uint64_t PiB;
 
     typedef ::boost::uint64_t SizeType;
     typedef ::boost::uint64_t UnitType;
@@ -82,7 +82,7 @@ public:
     /**
      * @brief Convert this size to a human readable string in the required
      * Convert this size to a human readable string in the required standard.
-     * The unit will be choosen to make the numeric value fit in [0; 1024[ when
+     * The unit will be chosen to make the numeric value fit in [0; 1024[ when
      * possible.
      *
      * @param standard Wanted set of unit
