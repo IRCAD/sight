@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <boost/lexical_cast.hpp>
+#include <boost/assign.hpp>
 #include <boost/foreach.hpp>
 
 
@@ -20,6 +20,7 @@
 #include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
 #endif
 
+#include <fwTools/ByteSize.hpp>
 
 
 #include "fwMemory/policy/ValveDump.hpp"
@@ -31,12 +32,7 @@ namespace fwMemory
 namespace policy
 {
 
-static IPolicy::Register<ValveDump> registerFactory("ValveDump");
-
-ValveDump::sptr ValveDump::New()
-{
-    return ValveDump::sptr(new ValveDump());
-}
+static IPolicy::Register<ValveDump> registerFactory(ValveDump::leafClassname());
 
 //------------------------------------------------------------------------------
 
@@ -197,17 +193,17 @@ bool ValveDump::setParam(const std::string &name, const std::string &value)
     {
         if(name == "min_free_mem")
         {
-            m_minFreeMem = ::boost::lexical_cast< size_t >(value);
+            m_minFreeMem = ::fwTools::ByteSize(value).getSize();
             return true;
 
         }
         else if(name == "hysteresis_offet")
         {
-            m_hysteresisOffset = ::boost::lexical_cast< size_t >(value);
+            m_hysteresisOffset = ::fwTools::ByteSize(value).getSize();
             return true;
         }
     }
-    catch( boost::bad_lexical_cast const& )
+    catch( ::fwTools::ByteSize::Exception const& )
     {
         OSLM_ERROR("Bad value for " << name << " : " << value);
         return false;
@@ -218,14 +214,40 @@ bool ValveDump::setParam(const std::string &name, const std::string &value)
 
 //------------------------------------------------------------------------------
 
-fwMemory::IPolicy::ParamNamesType ValveDump::getParamNames() const
+const fwMemory::IPolicy::ParamNamesType &ValveDump::getParamNames() const
 {
-    fwMemory::IPolicy::ParamNamesType params;
-    params.push_back("min_free_mem");
-    params.push_back("hysteresis_offet");
+    static const fwMemory::IPolicy::ParamNamesType params
+        = ::boost::assign::list_of ("min_free_mem")
+                                   ("hysteresis_offet");
     return params;
 }
 
+//------------------------------------------------------------------------------
+
+std::string ValveDump::getParam(const std::string &name, bool *ok )
+{
+    bool isOk;
+    std::string value;
+    if (NULL == ok)
+    {
+        ok = &isOk;
+    }
+    *ok = false;
+    if(name == "min_free_mem")
+    {
+        value = std::string(::fwTools::ByteSize( ::fwTools::ByteSize::SizeType(m_minFreeMem) ));
+        *ok = true;
+
+    }
+    else if(name == "hysteresis_offet")
+    {
+        value = std::string(::fwTools::ByteSize( ::fwTools::ByteSize::SizeType(m_hysteresisOffset) ));
+        *ok = true;
+    }
+    return value;
+}
+
+//------------------------------------------------------------------------------
 
 
 } // namespace policy

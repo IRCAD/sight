@@ -30,10 +30,7 @@ namespace policy
 class FWMEMORY_CLASS_API AlwaysDump : public fwMemory::IPolicy
 {
 public :
-
-    typedef SPTR(AlwaysDump) sptr;
-
-    FWMEMORY_API static sptr New();
+    fwCoreClassDefinitionsWithFactoryMacro((AlwaysDump)(fwMemory::IPolicy), (()), new AlwaysDump );
 
     FWMEMORY_API virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
     FWMEMORY_API virtual void setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
@@ -50,7 +47,9 @@ public :
     FWMEMORY_API virtual void refresh();
 
     FWMEMORY_API bool setParam(const std::string &name, const std::string &value) {return false;};
-    FWMEMORY_API fwMemory::IPolicy::ParamNamesType getParamNames() const {return fwMemory::IPolicy::ParamNamesType();};
+    FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL );
+    FWMEMORY_API const fwMemory::IPolicy::ParamNamesType &getParamNames() const
+    {static fwMemory::IPolicy::ParamNamesType names; return names;}
 
 protected:
 

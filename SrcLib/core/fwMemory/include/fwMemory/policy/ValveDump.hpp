@@ -36,10 +36,7 @@ namespace policy
 class FWMEMORY_CLASS_API ValveDump : public fwMemory::IPolicy
 {
 public :
-
-    typedef SPTR(ValveDump) sptr;
-
-    FWMEMORY_API static sptr New();
+    fwCoreClassDefinitionsWithFactoryMacro((ValveDump)(fwMemory::IPolicy), (()), new ValveDump );
 
     FWMEMORY_API ValveDump();
 
@@ -58,7 +55,8 @@ public :
     FWMEMORY_API virtual void refresh();
 
     FWMEMORY_API bool setParam(const std::string &name, const std::string &value);
-    FWMEMORY_API fwMemory::IPolicy::ParamNamesType getParamNames() const;
+    FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL );
+    FWMEMORY_API const fwMemory::IPolicy::ParamNamesType &getParamNames() const;
 
 protected :
 

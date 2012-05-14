@@ -17,12 +17,8 @@ namespace fwMemory
 namespace policy
 {
 
-static IPolicy::Register<AlwaysDump> registerFactory("AlwaysDump");
+static IPolicy::Register<AlwaysDump> registerFactory(AlwaysDump::leafClassname());
 
-AlwaysDump::sptr AlwaysDump::New()
-{
-    return AlwaysDump::sptr(new AlwaysDump());
-}
 
 //------------------------------------------------------------------------------
 
@@ -133,6 +129,17 @@ void AlwaysDump::apply()
 void AlwaysDump::refresh()
 {
     this->apply();
+}
+
+//------------------------------------------------------------------------------
+
+std::string AlwaysDump::getParam(const std::string &name, bool *ok  )
+{
+    if (ok)
+    {
+        *ok = false;
+    }
+    return "";
 }
 
 //------------------------------------------------------------------------------

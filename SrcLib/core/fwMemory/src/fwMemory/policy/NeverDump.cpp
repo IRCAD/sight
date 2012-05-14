@@ -14,12 +14,7 @@ namespace fwMemory
 namespace policy
 {
 
-static IPolicy::Register<NeverDump> registerFactory("NeverDump");
-
-NeverDump::sptr NeverDump::New()
-{
-    return NeverDump::sptr(new NeverDump());
-}
+static IPolicy::Register<NeverDump> registerFactory(NeverDump::leafClassname());
 
 //------------------------------------------------------------------------------
 
@@ -90,6 +85,18 @@ void NeverDump::refresh()
 {}
 
 //------------------------------------------------------------------------------
+
+std::string NeverDump::getParam(const std::string &name, bool *ok  )
+{
+    if (ok)
+    {
+        *ok = false;
+    }
+    return "";
+}
+
+//------------------------------------------------------------------------------
+
 
 
 } // namespace policy

@@ -31,10 +31,7 @@ namespace policy
 class FWMEMORY_CLASS_API BarrierDump : public fwMemory::IPolicy
 {
 public :
-
-    typedef SPTR(BarrierDump) sptr;
-
-    FWMEMORY_API static sptr New();
+    fwCoreClassDefinitionsWithFactoryMacro((BarrierDump)(fwMemory::IPolicy), (()), new BarrierDump );
 
     FWMEMORY_API BarrierDump();
 
@@ -55,8 +52,9 @@ public :
     FWMEMORY_API void setBarrier( size_t barrier ) { m_barrier = barrier; }
     FWMEMORY_API size_t getBarrier() const { return m_barrier; }
 
+    FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL );
     FWMEMORY_API bool setParam(const std::string &name, const std::string &value);
-    FWMEMORY_API fwMemory::IPolicy::ParamNamesType getParamNames() const;
+    FWMEMORY_API const fwMemory::IPolicy::ParamNamesType &getParamNames() const;
 
 protected :
 

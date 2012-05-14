@@ -5,8 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <boost/lexical_cast.hpp>
+#include <boost/assign.hpp>
 #include <boost/foreach.hpp>
+
+#include <fwTools/ByteSize.hpp>
 
 #include "fwMemory/policy/BarrierDump.hpp"
 
@@ -17,12 +19,7 @@ namespace fwMemory
 namespace policy
 {
 
-static IPolicy::Register<BarrierDump> registerFactory("BarrierDump");
-
-BarrierDump::sptr BarrierDump::New()
-{
-    return BarrierDump::sptr(new BarrierDump());
-}
+static IPolicy::Register<BarrierDump> registerFactory(BarrierDump::leafClassname());
 
 //------------------------------------------------------------------------------
 
@@ -218,11 +215,11 @@ bool BarrierDump::setParam(const std::string &name, const std::string &value)
     {
         if(name == "barrier")
         {
-            m_barrier = ::boost::lexical_cast< size_t >(value);
+            m_barrier = ::fwTools::ByteSize(value).getSize();
             return true;
         }
     }
-    catch( boost::bad_lexical_cast const& )
+    catch( ::fwTools::ByteSize::Exception const& )
     {
         OSLM_ERROR("Bad value for " << name << " : " << value);
         return false;
@@ -234,12 +231,34 @@ bool BarrierDump::setParam(const std::string &name, const std::string &value)
 
 //------------------------------------------------------------------------------
 
-fwMemory::IPolicy::ParamNamesType BarrierDump::getParamNames() const
+const fwMemory::IPolicy::ParamNamesType &BarrierDump::getParamNames() const
 {
-    fwMemory::IPolicy::ParamNamesType params;
-    params.push_back("barrier");
+    static const fwMemory::IPolicy::ParamNamesType params = ::boost::assign::list_of("barrier");
     return params;
 }
+
+//------------------------------------------------------------------------------
+
+std::string BarrierDump::getParam(const std::string &name, bool *ok )
+{
+    bool isOk;
+    std::string value;
+    if (NULL == ok)
+    {
+        ok = &isOk;
+    }
+    *ok = false;
+    if(name == "barrier")
+    {
+        value = std::string(::fwTools::ByteSize( ::fwTools::ByteSize::SizeType(m_barrier) ));
+        *ok = true;
+    }
+    return value;
+}
+
+//------------------------------------------------------------------------------
+
+
 
 } // namespace policy
 
