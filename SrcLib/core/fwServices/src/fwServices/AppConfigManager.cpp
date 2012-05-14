@@ -106,7 +106,7 @@ namespace fwServices
 
     OSLM_ASSERT("Service already has an UID.", !srv->hasID());
 
-    OSLM_FATAL_IF("UID " << ::boost::get<1>(uid) << " already exists.", ::fwTools::fwID::exist(::boost::get<0>(uid)));
+    OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.", ::fwTools::fwID::exist(::boost::get<0>(uid)));
     if (::boost::get<1>(uid))
     {
         srv->setID(::boost::get<0>(uid));
