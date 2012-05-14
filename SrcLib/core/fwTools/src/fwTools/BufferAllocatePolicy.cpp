@@ -19,7 +19,8 @@ void BufferMallocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeTyp
     if (buffer == NULL && size > 0)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
-                                "Cannot allocate memory ("<< ::fwTools::ByteSize(size) <<").");
+                                "Cannot allocate memory ("
+                                << ::fwTools::ByteSize(::fwTools::ByteSize::SizeType(size)) <<").");
     }
 }
 
@@ -31,7 +32,8 @@ void BufferMallocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeT
     if (buffer == NULL && size > 0)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
-                                "Cannot allocate memory ("<< ::fwTools::ByteSize(size) <<").");
+                                "Cannot allocate memory ("
+                                << ::fwTools::ByteSize(::fwTools::ByteSize::SizeType(size)) <<").");
     }
 }
 
