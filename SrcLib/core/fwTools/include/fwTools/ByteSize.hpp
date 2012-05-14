@@ -13,7 +13,7 @@
 
 #include <fwCore/base.hpp>
 
-#include "config.hpp"
+#include "fwTools/config.hpp"
 
 namespace fwTools
 {
