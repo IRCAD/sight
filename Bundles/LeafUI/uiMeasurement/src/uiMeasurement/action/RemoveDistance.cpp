@@ -4,10 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
-#include <fwCore/base.hpp>
-
+#include <sstream>
 #include <exception>
+#include <boost/lexical_cast.hpp>
+
+#include <fwCore/base.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -27,16 +28,12 @@
 
 #include "uiMeasurement/action/RemoveDistance.hpp"
 
-#include <sstream>
-
-
 namespace uiMeasurement
 {
 namespace action
 {
 
 REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::RemoveDistance , ::fwData::Image ) ;
-
 
 //------------------------------------------------------------------------------
 
@@ -125,7 +122,16 @@ std::string distanceToStr(double dist)
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::notifyNewDistance( ::fwData::Image::sptr image , ::fwData::Object::sptr backup)
+void RemoveDistance::notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::Object::sptr distance)
+{
+    ::fwComEd::ImageMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, distance );
+    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+}
+
+//------------------------------------------------------------------------------
+
+void RemoveDistance::notifyNewDistance(::fwData::Image::sptr image, ::fwData::Object::sptr backup)
 {
     ::fwComEd::ImageMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::ImageMsg::DISTANCE, backup );
@@ -137,37 +143,33 @@ void RemoveDistance::notifyNewDistance( ::fwData::Image::sptr image , ::fwData::
 void RemoveDistance::updating( ) throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)) {return;}
 
-    if ( image->getField(::fwComEd::Dictionary::m_imageDistancesId) )
+    ::fwData::Vector::sptr vectDist;
+    vectDist = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+
+    if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
+        && vectDist)
     {
-        return;
-    }
+        bool requestAll;
+        ::fwData::PointList::sptr distToRemove = getDistanceToRemove(image, requestAll );
 
-    bool requestAll;
-    ::fwData::PointList::sptr distToRemove = getDistanceToRemove(image, requestAll );
+        // perform action only available distance
+        if ( distToRemove )
+        {
+            SLM_ASSERT("No Field ImageDistancesId",vectDist);
+            ::fwData::Vector::IteratorType newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
+            vectDist->getContainer().erase(newEnd, vectDist->end());
 
-    // perform action only available distance
-    if ( distToRemove )
-    {
-        ::fwData::Vector::sptr vectDist;
-        vectDist = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
-        SLM_ASSERT("No Field ImageDistancesId",vectDist);
+            this->notifyDeleteDistance(image, distToRemove);
+        }
+        if ( requestAll )
+        {
+            // backup
+            ::fwData::Object::sptr backupDistance = image->getField( ::fwComEd::Dictionary::m_imageDistancesId );
 
-        ::fwData::Vector::IteratorType newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
-        vectDist->getContainer().erase(newEnd, vectDist->end());
-
-        this->notifyNewDistance(image, distToRemove);
-    }
-    if ( requestAll )
-    {
-        // backup
-        ::fwData::Object::sptr imageOldLandMaskField = image->getField( ::fwComEd::Dictionary::m_imageDistancesId );
-        ::fwData::Object::NewSptr dummy;
-        dummy->setField(::fwComEd::Dictionary::m_imageDistancesId, imageOldLandMaskField);
-
-        image->removeField( ::fwComEd::Dictionary::m_imageDistancesId );
-        this->notifyNewDistance(image, dummy);
+            image->removeField( ::fwComEd::Dictionary::m_imageDistancesId );
+            this->notifyNewDistance(image, backupDistance);
+        }
     }
 }
 
