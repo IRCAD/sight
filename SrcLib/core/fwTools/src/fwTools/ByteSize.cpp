@@ -48,12 +48,24 @@ ByteSize::ByteSize ( SizeType size, UnitType unit ) : m_size(0)
 }
 //------------------------------------------------------------------------------
 
+ByteSize::ByteSize ( size_t size, UnitType unit ) : m_size(0)
+{
+    SLM_ASSERT("Bad Unit",
+               (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
+               || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
+    this->setSize( SizeType(size), unit);
+}
+//------------------------------------------------------------------------------
+
 ByteSize::ByteSize ( double size, UnitType unit ) : m_size(0)
 {
     SLM_ASSERT("Bad Unit",
                (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
-    FW_RAISE_IF("Bad size : " << size << " < 0", size < 0);
+    if(size < 0)
+    {
+        FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << size << " < 0");
+    }
     this->setSize(size, unit);
 }
 //------------------------------------------------------------------------------
@@ -71,9 +83,20 @@ ByteSize& ByteSize::operator= ( SizeType size )
 }
 //------------------------------------------------------------------------------
 
+ByteSize& ByteSize::operator= ( size_t size )
+{
+    this->setSize(size);
+    return *this;
+}
+//------------------------------------------------------------------------------
+
 ByteSize& ByteSize::operator= ( double size )
 {
-    FW_RAISE_IF("Bad size : " << size << " < 0", size < 0);
+    if(size < 0)
+    {
+        FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << size << " < 0");
+    }
+
     this->setSize(size);
     return *this;
 }
@@ -95,9 +118,19 @@ void ByteSize::setSize ( SizeType size, UnitType unit )
 }
 //------------------------------------------------------------------------------
 
+void ByteSize::setSize ( size_t size, UnitType unit )
+{
+    this->setSize(SizeType(size), unit);
+}
+//------------------------------------------------------------------------------
+
 void ByteSize::setSize ( double size, UnitType unit )
 {
-    FW_RAISE_IF("Bad size : " << size << " < 0", size < 0);
+    if(size < 0)
+    {
+        FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << size << " < 0");
+    }
+
     SLM_ASSERT("Bad Unit",
                (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
@@ -115,7 +148,7 @@ void ByteSize::setSize ( const std::string &size )
     }
     else
     {
-        FW_RAISE("Bad Size : " << size);
+        FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << size );
     }
 }
 //------------------------------------------------------------------------------
@@ -174,17 +207,17 @@ bool ByteSize::parseSize(const std::string &s, SizeType& size)
     symbols<char, ByteSize::SizeType> unit;
 
     unit.add
-        ( "b"    , ByteSize::Bytes ) ( "byte", ByteSize::Bytes ) ( "ByteSize::bytes", ByteSize::Bytes )
+        ( "b"    , ByteSize::Bytes ) ( "byte", ByteSize::Bytes ) ( "bytes", ByteSize::Bytes )
         ( "kb"   , ByteSize::KB  )
         ( "mb"   , ByteSize::MB  )
         ( "gb"   , ByteSize::GB  )
         ( "tb"   , ByteSize::TB  )
         ( "pb"   , ByteSize::PB  )
-        ( "kib"  , ByteSize::KiB )
-        ( "mib"  , ByteSize::MiB )
-        ( "gib"  , ByteSize::GiB )
-        ( "tib"  , ByteSize::TiB )
-        ( "pib"  , ByteSize::PiB )
+        ( "k"  , ByteSize::KiB ) ( "kib"  , ByteSize::KiB )
+        ( "m"  , ByteSize::MiB ) ( "mib"  , ByteSize::MiB )
+        ( "g"  , ByteSize::GiB ) ( "gib"  , ByteSize::GiB )
+        ( "t"  , ByteSize::TiB ) ( "tib"  , ByteSize::TiB )
+        ( "p"  , ByteSize::PiB ) ( "pib"  , ByteSize::PiB )
         ;
 
 
@@ -216,7 +249,11 @@ bool ByteSize::parseSize(const std::string &s, SizeType& size)
     }
     else if (floatSize != 0)
     {
-        FW_RAISE_IF("Bad size : " << floatSize << " < 0", floatSize < 0);
+        if(floatSize < 0)
+        {
+            FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << floatSize << " < 0");
+        }
+
         size = static_cast< ByteSize::SizeType >(floatSize * multiplier);
     }
     else

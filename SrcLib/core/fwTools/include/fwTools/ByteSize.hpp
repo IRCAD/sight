@@ -13,6 +13,7 @@
 
 #include <fwCore/base.hpp>
 
+#include "fwTools/Exception.hpp"
 #include "fwTools/config.hpp"
 
 namespace fwTools
@@ -26,6 +27,13 @@ namespace fwTools
 class FWTOOLS_CLASS_API ByteSize
 {
 public:
+
+    class FWTOOLS_CLASS_API Exception : public ::fwTools::Exception
+    {
+    public:
+        FWTOOLS_API Exception(const std::string &message) throw() : ::fwTools::Exception(message)
+        {}
+    };
 
     typedef enum {
         SI, IEC
@@ -57,8 +65,11 @@ public:
 
     /**
      * @brief Build a ByteSize object from given size and unit
+     * @{
      */
     FWTOOLS_API ByteSize ( SizeType size, UnitType unit = Bytes );
+    FWTOOLS_API ByteSize ( size_t size, UnitType unit = Bytes );
+    ///@}
 
 
     /**
@@ -98,8 +109,12 @@ public:
 
     /**
      * @brief Build a ByteSize object from given size and unit
+     * @{
      */
     FWTOOLS_API void setSize( SizeType size, UnitType unit = Bytes );
+    FWTOOLS_API void setSize( size_t size, UnitType unit = Bytes );
+    ///@}
+
     /**
      * @brief Build a ByteSize object from given size and unit
      */
@@ -110,6 +125,7 @@ public:
     FWTOOLS_API void setSize( const std::string& size );
 
     FWTOOLS_API ByteSize& operator= ( SizeType size );
+    FWTOOLS_API ByteSize& operator= ( size_t size );
     FWTOOLS_API ByteSize& operator= ( double size );
     FWTOOLS_API ByteSize& operator= ( const std::string &size );
 
