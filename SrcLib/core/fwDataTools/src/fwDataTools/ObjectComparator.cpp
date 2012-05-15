@@ -261,7 +261,7 @@ bool ObjectComparator::compareMaterial(::fwData::Material::sptr mat1, ::fwData::
 
 //------------------------------------------------------------------------------
 
-bool ObjectComparator::compareTransfertFunction(::fwData::TransferFunction::sptr tf1, ::fwData::TransferFunction::sptr tf2)
+bool ObjectComparator::compareTransferFunction(::fwData::TransferFunction::sptr tf1, ::fwData::TransferFunction::sptr tf2)
 {
 
     SLM_ASSERT( "Null tf1 pointers", tf1);

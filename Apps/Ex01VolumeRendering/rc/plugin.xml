@@ -272,11 +272,11 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                     <sliceIndex>axial</sliceIndex>
                                 </service>
 
-                                <!-- This manager adds/removes a field (m_transfertFunctionCompositeId) on Image (myImage) -->
+                                <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (myImage) -->
                                 <service implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
                                     <mode type="stop" />
                                     <config>
-                                        <field id="m_transfertFunctionCompositeId" type="::fwData::Composite">
+                                        <field id="m_transferFunctionCompositeId" type="::fwData::Composite">
                                             <service uid="TFEditor" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes">
                                                 <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                             </service>

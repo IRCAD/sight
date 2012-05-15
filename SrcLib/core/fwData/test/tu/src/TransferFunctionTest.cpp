@@ -16,30 +16,30 @@
 #include <fwData/String.hpp>
 #include <fwData/Color.hpp>
 
-#include "TransfertFunctionTest.hpp"
+#include "TransferFunctionTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::TransfertFunctionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::TransferFunctionTest );
 
 namespace fwData
 {
 namespace ut
 {
 
-void TransfertFunctionTest::setUp()
+void TransferFunctionTest::setUp()
 {
     // Set up context before running a test.
 
 }
-void TransfertFunctionTest::tearDown()
+void TransferFunctionTest::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::constructorTest()
+void TransferFunctionTest::constructorTest()
 {
     // Expected value.
     double expectedLevel = 0.0;
@@ -65,7 +65,7 @@ void TransfertFunctionTest::constructorTest()
 }
 
 //------------------------------------------------------------------------------
-void TransfertFunctionTest::defaultTfTest()
+void TransferFunctionTest::defaultTfTest()
 {
     // Expected default value.
     double expectedLevel = 0.0;
@@ -92,7 +92,7 @@ void TransfertFunctionTest::defaultTfTest()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::classicGetSetTest()
+void TransferFunctionTest::classicGetSetTest()
 {
     TransferFunction::TFColor expectedColor1(0.0, 0.0, 0.0, 0.0);
     TransferFunction::TFColor expectedColor2(1.0, 1.0, 1.0, 1.0);
@@ -147,7 +147,7 @@ void TransfertFunctionTest::classicGetSetTest()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::usingTfTest()
+void TransferFunctionTest::usingTfTest()
 {
     ::fwData::TransferFunction::sptr tf = this->createTFColor();
 
@@ -168,7 +168,7 @@ void TransfertFunctionTest::usingTfTest()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::shallowAndDeepCopyTest()
+void TransferFunctionTest::shallowAndDeepCopyTest()
 {
     ::fwData::TransferFunction::sptr tf = this->createTFColor();
     this->checkTFColor(tf);
@@ -185,7 +185,7 @@ void TransfertFunctionTest::shallowAndDeepCopyTest()
 
 //------------------------------------------------------------------------------
 
-::fwData::TransferFunction::sptr TransfertFunctionTest::createTFColor()
+::fwData::TransferFunction::sptr TransferFunctionTest::createTFColor()
 {
     ::fwData::TransferFunction::NewSptr tf;
 
@@ -209,7 +209,7 @@ void TransfertFunctionTest::shallowAndDeepCopyTest()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::checkTFColor( ::fwData::TransferFunction::sptr tf )
+void TransferFunctionTest::checkTFColor( ::fwData::TransferFunction::sptr tf )
 {
 
     CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 1.0, 0.3, 0.6, 0.1) == tf->getBackgroundColor() );
@@ -241,7 +241,7 @@ void TransfertFunctionTest::checkTFColor( ::fwData::TransferFunction::sptr tf )
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::setTFDataTest()
+void TransferFunctionTest::setTFDataTest()
 {
     ::fwData::TransferFunction::sptr tf = this->createTFColor();
 
@@ -258,7 +258,7 @@ void TransfertFunctionTest::setTFDataTest()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::linearColorTest()
+void TransferFunctionTest::linearColorTest()
 {
     ::fwData::TransferFunction::sptr tf = this->createTFColor();
 
@@ -302,7 +302,7 @@ void TransfertFunctionTest::linearColorTest()
 
 //------------------------------------------------------------------------------
 
-void TransfertFunctionTest::nearestColorTest()
+void TransferFunctionTest::nearestColorTest()
 {
     ::fwData::TransferFunction::sptr tf = this->createTFColor();
 

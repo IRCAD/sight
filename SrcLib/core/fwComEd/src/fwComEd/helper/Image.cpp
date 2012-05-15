@@ -73,7 +73,7 @@ bool Image::createLandmarks()
 bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSource)
 {
     bool fieldIsCreated = false;
-    const std::string poolFieldName = ::fwComEd::Dictionary::m_transfertFunctionCompositeId;
+    const std::string poolFieldName = ::fwComEd::Dictionary::m_transferFunctionCompositeId;
     ::fwData::Composite::sptr tfPool;
 
     tfPool = m_image->getField< ::fwData::Composite >(poolFieldName);

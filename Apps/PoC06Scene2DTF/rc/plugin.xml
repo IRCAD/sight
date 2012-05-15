@@ -380,7 +380,7 @@
                             <service implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
                                 <mode type="stop" />
                                 <config>
-                                    <field id="m_transfertFunctionCompositeId" type="::fwData::Composite">
+                                    <field id="m_transferFunctionCompositeId" type="::fwData::Composite">
                                         <service uid="GENERIC_UID_TFEditor" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes">
                                             <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                         </service>

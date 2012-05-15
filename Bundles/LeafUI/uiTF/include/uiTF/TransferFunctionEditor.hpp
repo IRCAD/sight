@@ -72,7 +72,7 @@ protected:
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
     UITF_API virtual void stopping() throw( ::fwTools::Failed );
 
-    /// Initialize the transfer functions, get fields m_transfertFunctionCompositeId and m_transfertFunctionId associated to the related image, add their names to the ComboBox. If the image does not contain any TF, the create a few from the ressources of the Bundle.
+    /// Initialize the transfer functions, get fields m_transferFunctionCompositeId and m_transferFunctionId associated to the related image, add their names to the ComboBox. If the image does not contain any TF, the create a few from the ressources of the Bundle.
     UITF_API void initTransferFunctions();
 
     /// Check if the image contain the specified TF.

@@ -99,7 +99,7 @@ struct JpgITKSaverFunctor
 
         double min, max;
         ::fwData::Composite::sptr poolTF;
-        poolTF = image->getField< ::fwData::Composite>( ::fwComEd::Dictionary::m_transfertFunctionCompositeId );
+        poolTF = image->getField< ::fwData::Composite>( ::fwComEd::Dictionary::m_transferFunctionCompositeId );
         if(poolTF)
         {
             ::fwData::Composite::iterator iter = poolTF->find(::fwData::TransferFunction::s_DEFAULT_TF_NAME);

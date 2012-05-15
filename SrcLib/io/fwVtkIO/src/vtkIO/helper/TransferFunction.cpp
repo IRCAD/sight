@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "vtkIO/helper/TransfertFunction.hpp"
+#include "vtkIO/helper/TransferFunction.hpp"
 
 namespace vtkIO
 {
@@ -13,7 +13,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-void TransfertFunction::toVtkLookupTable(
+void TransferFunction::toVtkLookupTable(
         ::fwData::TransferFunction::sptr tf,
          vtkSmartPointer<vtkLookupTable> lt,
         bool allowTransparency,
@@ -55,7 +55,7 @@ void TransfertFunction::toVtkLookupTable(
 
 //------------------------------------------------------------------------------
 
-void TransfertFunction::toBWVtkLookupTable(
+void TransferFunction::toBWVtkLookupTable(
          double rangeMin,
          double rangeMax,
          vtkSmartPointer<vtkLookupTable> lt,

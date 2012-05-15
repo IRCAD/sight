@@ -20,7 +20,7 @@ const std::string Dictionary::m_sagittalSliceCountId         ( "Sagittal Slice C
 const std::string Dictionary::m_axialSliceIndexId            ( "Axial Slice Index" );
 const std::string Dictionary::m_frontalSliceIndexId          ( "Frontal Slice Index" );
 const std::string Dictionary::m_sagittalSliceIndexId         ( "Sagittal Slice Index" );
-const std::string Dictionary::m_transfertFunctionCompositeId ( "m_transfertFunctionCompositeId" );
+const std::string Dictionary::m_transferFunctionCompositeId  ( "m_transferFunctionCompositeId" );
 const std::string Dictionary::m_imageLandmarksId             ("m_imageLandmarksId");
 const std::string Dictionary::m_imageDistancesId             ("m_imageDistancesId");
 const std::string Dictionary::m_commentId                    ("m_commentId");

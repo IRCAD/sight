@@ -149,7 +149,7 @@ private:
     bool m_isNotifying;
     bool m_autoWindowing;
 
-    /// Identifier of the field containing the specific selection of TransfertFunction
+    /// Identifier of the field containing the specific selection of TransferFunction
     /// if m_tfSelection is empty => use default TF selection
     std::string m_tfSelection;
 

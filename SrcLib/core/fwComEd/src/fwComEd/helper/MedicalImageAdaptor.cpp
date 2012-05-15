@@ -279,7 +279,7 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, :
     }
     else
     {
-        const std::string poolFieldName = ::fwComEd::Dictionary::m_transfertFunctionCompositeId;
+        const std::string poolFieldName = ::fwComEd::Dictionary::m_transferFunctionCompositeId;
         ::fwData::Composite::sptr tfSelection = image->getField< ::fwData::Composite >(poolFieldName);
 
         if ( m_tfSelection.expired() || m_tfSelection.lock() != tfSelection )

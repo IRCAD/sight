@@ -32,7 +32,7 @@ public:
       DOTTED
    };
 
-    /// Constructor, add handle events TRANSFERTFUNCTION and WINDOWING.
+    /// Constructor, add handle events TRANSFERFUNCTION and WINDOWING.
     SCENE2D_API TransferFunction() throw();
 
     /// Basic destructor, do nothing.
@@ -70,7 +70,7 @@ protected:
     ///  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
-    /// If the message is TRANSFERTFUNCTION or WINDOWING, call DoUpdate().
+    /// If the message is TRANSFERFUNCTION or WINDOWING, call DoUpdate().
     SCENE2D_API void doUpdate( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// @todo
@@ -119,8 +119,8 @@ private:
     /// it to the scene.
     SCENE2D_API void buildLayer();
 
-    /// Clear the selected tf, rebuilt it from m_TFPoints (building TransfertFunctionPoints and inserting'em),
-    ///  update image min and max, and notify the image with a TRANSFERTFUNCTION message.
+    /// Clear the selected tf, rebuilt it from m_TFPoints (building TransferFunctionPoints and inserting'em),
+    ///  update image min and max, and notify the image with a TRANSFERFUNCTION message.
     SCENE2D_API void updateImageTF();
 
     /// Open a color dialog and change the selected tf point color

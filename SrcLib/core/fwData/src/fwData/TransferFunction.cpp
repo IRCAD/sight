@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-//#include <cmath>
 #include <boost/bind.hpp>
 
 #include <fwCore/base.hpp>

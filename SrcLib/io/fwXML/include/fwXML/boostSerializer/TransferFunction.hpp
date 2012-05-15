@@ -58,7 +58,7 @@ void serialize(Archive & ar, ::fwData::TransferFunction::TFColor & _tfColor, con
  * @author IRCAD (Research and Development Team).
  */
 template<class Archive>
-void load(Archive & ar, ::fwData::TransferFunction & _transfertFunction, const unsigned int version)
+void load(Archive & ar, ::fwData::TransferFunction & _transferFunction, const unsigned int version)
 {
     double attrLevel;
     double attrWindow;
@@ -76,29 +76,29 @@ void load(Archive & ar, ::fwData::TransferFunction & _transfertFunction, const u
     ar &  ::boost::serialization::make_nvp( "backgroundColor"   , attrBackgroundColor );
     ar &  ::boost::serialization::make_nvp( "tfData"            , tfData );
 
-    _transfertFunction.setLevel(attrLevel);
-    _transfertFunction.setWindow(attrWindow);
-    _transfertFunction.setName(attrName);
-    _transfertFunction.setIsClamped(attrIsClamped);
-    _transfertFunction.setInterpolationMode( static_cast< ::fwData::TransferFunction::InterpolationMode >(attrInterpolationMode) );
-    _transfertFunction.setBackgroundColor( attrBackgroundColor );
-    _transfertFunction.setTFData( tfData );
+    _transferFunction.setLevel(attrLevel);
+    _transferFunction.setWindow(attrWindow);
+    _transferFunction.setName(attrName);
+    _transferFunction.setIsClamped(attrIsClamped);
+    _transferFunction.setInterpolationMode( static_cast< ::fwData::TransferFunction::InterpolationMode >(attrInterpolationMode) );
+    _transferFunction.setBackgroundColor( attrBackgroundColor );
+    _transferFunction.setTFData( tfData );
 }
 
 //-----------------------------------------------------------------------------
 
 template<class Archive>
-void save(Archive & ar, const ::fwData::TransferFunction & _transfertFunction, const unsigned int version)
+void save(Archive & ar, const ::fwData::TransferFunction & _transferFunction, const unsigned int version)
 {
     std::string newStr;
 
-    double attrLevel = _transfertFunction.getLevel();
-    double attrWindow = _transfertFunction.getWindow();
-    std::string attrName = _transfertFunction.getName();
-    bool attrIsClamped = _transfertFunction.getIsClamped();
-    int attrInterpolationMode = _transfertFunction.getInterpolationMode();
-    ::fwData::TransferFunction::TFColor attrBackgroundColor = _transfertFunction.getBackgroundColor();
-    ::fwData::TransferFunction::TFDataType tfData = _transfertFunction.getTFData();
+    double attrLevel = _transferFunction.getLevel();
+    double attrWindow = _transferFunction.getWindow();
+    std::string attrName = _transferFunction.getName();
+    bool attrIsClamped = _transferFunction.getIsClamped();
+    int attrInterpolationMode = _transferFunction.getInterpolationMode();
+    ::fwData::TransferFunction::TFColor attrBackgroundColor = _transferFunction.getBackgroundColor();
+    ::fwData::TransferFunction::TFDataType tfData = _transferFunction.getTFData();
 
     ar &  ::boost::serialization::make_nvp( "level"             , attrLevel );
     ar &  ::boost::serialization::make_nvp( "window"            , attrWindow );
@@ -114,14 +114,14 @@ void save(Archive & ar, const ::fwData::TransferFunction & _transfertFunction, c
 
 /// serialize image via boost.org serialization framework (split load/save)
 template<class Archive>
-void serialize(Archive & ar, ::fwData::TransferFunction & _transfertFunction, const unsigned int version)
+void serialize(Archive & ar, ::fwData::TransferFunction & _transferFunction, const unsigned int version)
 {
 
     // inform for serializer that this class is a subclass of a polymorphic one. Hence ptr serialisation of the base one
     // can be well casted to the derivated one during the deserialisation
      ::boost::serialization::void_cast_register<  ::fwData::TransferFunction, fwTools::Object>(NULL,NULL);
 
-    split_free(ar,_transfertFunction,version); // call load or save depending of archive type
+    split_free(ar,_transferFunction,version); // call load or save depending of archive type
 }
 
 

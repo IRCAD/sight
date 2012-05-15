@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_UT_TRANSFERTFUNCTIONTEST_HPP__
-#define __FWDATA_UT_TRANSFERTFUNCTIONTEST_HPP__
+#ifndef __FWDATA_UT_TRANSFERFUNCTIONTEST_HPP__
+#define __FWDATA_UT_TRANSFERFUNCTIONTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -16,9 +16,9 @@ namespace fwData
 namespace ut
 {
 
-class TransfertFunctionTest : public CPPUNIT_NS::TestFixture
+class TransferFunctionTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( TransfertFunctionTest );
+    CPPUNIT_TEST_SUITE( TransferFunctionTest );
     CPPUNIT_TEST( constructorTest );
     CPPUNIT_TEST( defaultTfTest );
     CPPUNIT_TEST( classicGetSetTest );
@@ -49,4 +49,4 @@ public:
 };
 } //namespace ut
 } //namespace fwData
-#endif //__FWDATA_UT_TRANSFERTFUNCTIONTEST_HPP__
+#endif //__FWDATA_UT_TRANSFERFUNCTIONTEST_HPP__

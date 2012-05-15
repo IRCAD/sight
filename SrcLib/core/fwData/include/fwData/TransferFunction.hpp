@@ -19,10 +19,10 @@
 namespace fwData
 {
 /**
- * @class   TransfertFunction
- * @brief   This class defines a transfert function.
+ * @class   TransferFunction
+ * @brief   This class defines a transfer function.
  *
- * A transfert function is composed of some points which have a color and a value.
+ * A transfer function is composed of some points which have a color and a value.
  *
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
@@ -182,19 +182,19 @@ protected :
 
 private :
 
-    /// Current visualisation level
+    /// Current visualization level
     double m_attrLevel;
 
-    /// Current visualisation window
+    /// Current visualization window
     double m_attrWindow;
 
-    ///  Funtion transfert name.
+    ///  Function transfer name.
     std::string m_attrName;
 
     /// The recommended background color to use this TF.
     TFColor m_attrBackgroundColor;
 
-    /// The Transfert function data.
+    /// The Transfer function data.
     TFDataType m_tfData;
 
     /// The current interpolation mode.

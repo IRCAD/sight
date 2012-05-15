@@ -34,7 +34,7 @@ struct FWCOMED_CLASS_API Dictionary
     FWCOMED_API static const std::string m_axialSliceIndexId;
     FWCOMED_API static const std::string m_frontalSliceIndexId;
     FWCOMED_API static const std::string m_sagittalSliceIndexId;
-    FWCOMED_API static const std::string m_transfertFunctionCompositeId;
+    FWCOMED_API static const std::string m_transferFunctionCompositeId;
     FWCOMED_API static const std::string m_globalMatrixId;
     FWCOMED_API static const std::string m_errorId;
     FWCOMED_API static const std::string m_imageLandmarksId;

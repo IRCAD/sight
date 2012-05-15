@@ -57,8 +57,8 @@ public:
 
 
     /**
-     * @brief Set the tf pool and the key that represents the current selection of TransfertFunction.
-     * By defaults use ::fwComEd::Dictionary::m_transfertFunctionId
+     * @brief Set the tf pool and the key that represents the current selection of TransferFunction.
+     * By defaults use ::fwComEd::Dictionary::m_transferFunctionId
      */
     FWCOMED_API void setTFParameters( ::fwData::Composite::sptr tfPool, std::string tfSelectionId );
 
@@ -258,7 +258,7 @@ private :
     /// fwID of tf selections ( used during configuration )
     std::string m_tfSelectionFwID;
 
-    /// Identifier of the key containing the current selection of TransfertFunction in TFSelection
+    /// Identifier of the key containing the current selection of TransferFunction in TFSelection
     std::string m_selectedTFKey;
 
 };

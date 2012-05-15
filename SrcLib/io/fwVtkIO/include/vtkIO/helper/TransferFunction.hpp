@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_HELPER_TRANSFERTFUNCTION_HPP_
-#define _VTKIO_HELPER_TRANSFERTFUNCTION_HPP_
+#ifndef _VTKIO_HELPER_TRANSFERFUNCTION_HPP_
+#define _VTKIO_HELPER_TRANSFERFUNCTION_HPP_
 
 #include <vtkSmartPointer.h>
 #include <vtkLogLookupTable.h>
@@ -21,22 +21,22 @@ namespace helper
 {
 
 /**
- * @brief   Helper to manage vtk data from ::fwData::TransfertFunction.
- * @class   TransfertFunction.
+ * @brief   Helper to manage vtk data from ::fwData::TransferFunction.
+ * @class   TransferFunction.
  * @author  IRCAD (Research and Development Team).
  * @date    2012.
  *
  */
-class VTKIO_CLASS_API TransfertFunction
+class VTKIO_CLASS_API TransferFunction
 {
 
 public :
 
     /*!
-     * @brief Convert a ::fwData::TransfertFunction to a vtkLookupTable.
+     * @brief Convert a ::fwData::TransferFunction to a vtkLookupTable.
      *
-     * @param[in] tf ::fwData::TransfertFunction
-     * @param[in] allow_transparency Enable convertion of ::fwData::TransfertFunction alpha channel
+     * @param[in] tf ::fwData::TransferFunction
+     * @param[in] allow_transparency Enable conversion of ::fwData::TransferFunction alpha channel
      * @param[in] size lookup table size
      * @param[out] lt vtkLookupTable
      */
@@ -47,7 +47,7 @@ public :
             unsigned int size = 256 );
 
     /*!
-     * @brief Convert the range of an Image or a TransfertFunction to a black and white vtkLookupTable.
+     * @brief Convert the range of an Image or a TransferFunction to a black and white vtkLookupTable.
      *
      * @param[in] rangeMin
      * @param[in] rangeMax
@@ -64,4 +64,4 @@ public :
 } // namespace helper
 } // namespace vtkIO
 
-#endif // _VTKIO_HELPER_TRANSFERTFUNCTION_HPP_
+#endif // _VTKIO_HELPER_TRANSFERFUNCTION_HPP_

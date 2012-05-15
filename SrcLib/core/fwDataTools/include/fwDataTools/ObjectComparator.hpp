@@ -42,7 +42,7 @@ public:
     FWDATATOOLS_API static bool compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
     FWDATATOOLS_API static bool compareDataArrayMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
     FWDATATOOLS_API static bool compareMaterial(::fwData::Material::sptr mat1, ::fwData::Material::sptr mat2);
-    FWDATATOOLS_API static bool compareTransfertFunction(::fwData::TransferFunction::sptr tf1, ::fwData::TransferFunction::sptr tf2);
+    FWDATATOOLS_API static bool compareTransferFunction(::fwData::TransferFunction::sptr tf1, ::fwData::TransferFunction::sptr tf2);
     FWDATATOOLS_API static bool compareStructureTraitsDictionary(::fwData::StructureTraitsDictionary::sptr structureDico1, ::fwData::StructureTraitsDictionary::sptr structureDico2);
     FWDATATOOLS_API static bool compareStructureTraits(::fwData::StructureTraits::sptr structure1, ::fwData::StructureTraits::sptr structure2);
     FWDATATOOLS_API static bool compareROITraits(::fwData::ROITraits::sptr roi1, ::fwData::ROITraits::sptr roi2);
