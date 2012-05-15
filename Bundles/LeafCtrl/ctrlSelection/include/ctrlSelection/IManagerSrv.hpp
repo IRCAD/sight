@@ -35,6 +35,13 @@ public:
     ///@brief IManagerSrv destructor. Do nothing.
     CTRLSELECTION_API virtual ~IManagerSrv();
 
+protected:
+
+    /**
+     * @brief Swap the service from associated object to another object. Stops and starts service.
+     */
+    CTRLSELECTION_API virtual void swapping() throw ( ::fwTools::Failed );
+
 };
 
 }
