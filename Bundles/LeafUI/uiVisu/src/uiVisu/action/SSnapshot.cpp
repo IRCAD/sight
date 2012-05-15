@@ -27,7 +27,7 @@ namespace uiVisu
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiVisu::action::SSnapshot , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiVisu::action::SSnapshot , ::fwData::Object ) ;
 
 
 SSnapshot::SSnapshot() throw()

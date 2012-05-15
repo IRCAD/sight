@@ -27,7 +27,7 @@ class Object;
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  * @note    To be specialized to extend object destruction procedure.
- * @note    Typical use: for service unregistration while keeping data independant with respect to fwServices library and keeping the benefits of smart pointers use.
+ * @note    Typical use: for service unregistration while keeping data independent with respect to fwServices library and keeping the benefits of smart pointers use.
  */
 class FWTOOLS_CLASS_API fwID
 {

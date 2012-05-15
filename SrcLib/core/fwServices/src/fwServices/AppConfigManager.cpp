@@ -10,6 +10,8 @@
 
 #include <fwRuntime/operations.hpp>
 
+#include <fwData/Object.hpp>
+
 #include "fwServices/Base.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
@@ -20,7 +22,7 @@ namespace fwServices
 {
 // Private methods
 
-::fwTools::Object::sptr AppConfigManager::getNewObject(
+::fwData::Object::sptr AppConfigManager::getNewObject(
         ConfigAttribute type,
         ConfigAttribute uid,
         ConfigAttribute id)
@@ -29,7 +31,7 @@ namespace fwServices
     SPTR(::fwRuntime::Extension) ext = ::fwRuntime::findExtension(::boost::get<0>(type));
     if (ext)
     {
-        std::string className = ::fwCore::getClassname< ::fwTools::Object >();
+        std::string className = ::fwCore::getClassname< ::fwData::Object >();
         SLM_ASSERT("Extension and classname are different.",
                    ext->getPoint() == className);
 
@@ -37,7 +39,8 @@ namespace fwServices
         ext->getBundle()->start();
     }
 
-    ::fwTools::Object::sptr obj = ::fwTools::Factory::New(::boost::get<0>(type));
+    ::fwData::Object::sptr obj;
+    obj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(::boost::get<0>(type)));
     OSLM_ASSERT("Factory failed to build object : " <<  ::boost::get<0>(type), obj);
 
     if (::boost::get<1>(uid))
@@ -58,7 +61,7 @@ namespace fwServices
 
 // ------------------------------------------------------------------------
 
-::fwTools::Object::sptr AppConfigManager::getNewObject(
+::fwData::Object::sptr AppConfigManager::getNewObject(
         ConfigAttribute type,
         const std::string& uid,
         ConfigAttribute id)
@@ -68,13 +71,14 @@ namespace fwServices
 
 // ------------------------------------------------------------------------
 
-::fwTools::Object::sptr AppConfigManager::getRefObject(
+::fwData::Object::sptr AppConfigManager::getRefObject(
         ConfigAttribute type,
         const std::string& uid,
         ConfigAttribute id)
 {
     OSLM_ASSERT("Object with UID \"" << uid << "\" doesn't exist.", ::fwTools::fwID::exist(uid));
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+    ::fwData::Object::sptr obj;
+    obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
 
     if (::boost::get<1>(type))
     {
@@ -118,7 +122,7 @@ namespace fwServices
 // ------------------------------------------------------------------------
 
 ::fwServices::ComChannelService::sptr AppConfigManager::connectComChannel(
-        ::fwTools::Object::sptr obj,
+        ::fwData::Object::sptr obj,
         ::fwServices::IService::sptr srv,
         ConfigAttribute priority)
 {
@@ -263,7 +267,7 @@ void AppConfigManager::processUpdateItems()
 
 // ------------------------------------------------------------------------
 
-::fwTools::Object::sptr AppConfigManager::createObject()
+::fwData::Object::sptr AppConfigManager::createObject()
 {
     OSLM_ASSERT("Bad configuration element.", m_cfgElem->getName() == "object");
 
@@ -313,7 +317,7 @@ void AppConfigManager::processUpdateItems()
     }
 
     // Creation of a new object
-    ::fwTools::Object::sptr obj;
+    ::fwData::Object::sptr obj;
 
     // Create new or get the referenced object
     if (::boost::get<1>(buildMode) && ::boost::get<0>(buildMode) == "ref")

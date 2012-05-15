@@ -27,13 +27,13 @@ namespace fwServices
  * @return the requested service, null if not
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API ::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed );
+FWSERVICES_API ::fwServices::IService::sptr get( ::fwData::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed );
 
 template<class SERVICE>
-SPTR(SERVICE) get( ::fwTools::Object::sptr obj) throw(fwTools::Failed );
+SPTR(SERVICE) get( ::fwData::Object::sptr obj) throw(fwTools::Failed );
 
 /**
- * @brief Return a registered IService having uid as unique universal identifier , its an alias on fwTools::Object::getID(...) method
+ * @brief Return a registered IService having uid as unique universal identifier , its an alias on fwData::Object::getID(...) method
  * @author IRCAD (Research and Development Team).
 
  */

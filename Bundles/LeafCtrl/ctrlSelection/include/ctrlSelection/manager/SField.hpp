@@ -111,7 +111,7 @@ protected:
         SPTR (::fwServices::IService) getComChannel()
                             { return m_comChannel.lock(); }
 
-        ::fwTools::Object::sptr m_dummy;
+        ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
         WPTR(::fwServices::ComChannelService) m_comChannel;
@@ -126,11 +126,11 @@ protected:
     void addFields( const ModifiedFieldsContainerType& fields );
     void addField( const FieldNameType& fieldName, ::fwData::Object::sptr field );
     void swapFields( const ModifiedFieldsContainerType& fields );
-    void swapField(const FieldNameType& fieldName, ::fwTools::Object::sptr field);
+    void swapField(const FieldNameType& fieldName, ::fwData::Object::sptr field);
     void removeFields( const ModifiedFieldsContainerType& fields );
     void removeField( const FieldNameType& fieldName );
 
-    ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+    ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
 
 private:
 

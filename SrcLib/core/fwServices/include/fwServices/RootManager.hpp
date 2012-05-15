@@ -38,11 +38,11 @@ public:
     FWSERVICES_API static void setRootObjectConfigurationFile(std::string _rootObjectConfigurationFile) ;
 
     /**
-     * @brief Return true if the root object is initialized (i.e. instanciated with attached services, appropriately configured and started and updated)
+     * @brief Return true if the root object is initialized (i.e. instantiated with attached services, appropriately configured and started and updated)
      */
     FWSERVICES_API static bool isRootObjectInitialized() ;
     /**
-     * @brief Trigger root object instanciation, configuration, service attachment, starting and updating
+     * @brief Trigger root object instantiation, configuration, service attachment, starting and updating
      */
     FWSERVICES_API static void initializeRootObject() ;
 
@@ -56,7 +56,7 @@ public:
     /**
      * @brief Return the root object
      */
-    FWSERVICES_API static ::fwTools::Object::sptr getRootObject() ;
+    FWSERVICES_API static ::fwData::Object::sptr getRootObject() ;
 
 protected :
 

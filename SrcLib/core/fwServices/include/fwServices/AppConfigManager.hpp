@@ -68,7 +68,7 @@ public:
     }
 
     /// Get config root
-    ::fwTools::Object::sptr getConfigRoot() const
+    ::fwData::Object::sptr getConfigRoot() const
     {
         return m_configuredObject;
     }
@@ -100,7 +100,7 @@ public:
 
 protected:
 
-    ::fwTools::Object::sptr m_configuredObject;
+    ::fwData::Object::sptr m_configuredObject;
     ::fwServices::IXMLParser::sptr m_objectParser;
     ::fwRuntime::ConfigurationElement::csptr m_cfgElem;
 
@@ -110,17 +110,17 @@ protected:
     ServiceContainer m_startedSrv;
     ServiceContainer m_startedComChannels;
 
-    FWSERVICES_API ::fwTools::Object::sptr getNewObject(
+    FWSERVICES_API ::fwData::Object::sptr getNewObject(
             ConfigAttribute type,
             const std::string& uid,
             ConfigAttribute id=ConfigAttribute("", false));
 
-    FWSERVICES_API ::fwTools::Object::sptr getNewObject(
+    FWSERVICES_API ::fwData::Object::sptr getNewObject(
             ConfigAttribute type,
             ConfigAttribute uid=ConfigAttribute("", false),
             ConfigAttribute id=ConfigAttribute("", false));
 
-    FWSERVICES_API ::fwTools::Object::sptr getRefObject(
+    FWSERVICES_API ::fwData::Object::sptr getRefObject(
             ConfigAttribute type,
             const std::string& uid,
             ConfigAttribute id=ConfigAttribute("", false));
@@ -131,7 +131,7 @@ protected:
             ConfigAttribute implType);
 
     FWSERVICES_API ::fwServices::ComChannelService::sptr connectComChannel(
-            ::fwTools::Object::sptr obj,
+            ::fwData::Object::sptr obj,
             ::fwServices::IService::sptr srv,
             ConfigAttribute priority);
 
@@ -144,7 +144,7 @@ protected:
     FWSERVICES_API void processStartItems();
     FWSERVICES_API void processUpdateItems();
 
-    FWSERVICES_API virtual ::fwTools::Object::sptr createObject();
+    FWSERVICES_API virtual ::fwData::Object::sptr createObject();
     FWSERVICES_API virtual void createServices();
     FWSERVICES_API virtual void createServices(::fwRuntime::ConfigurationElement::csptr cfgElem);
 

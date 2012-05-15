@@ -153,14 +153,14 @@ void VtkRenderService::configureObject( ConfigurationType conf )
                   ! (compositeObjectCount == 1 || objectId == compositeName) );
 
 
-    ::fwTools::Object::sptr object;
+    ::fwData::Object::sptr object;
     if (compositeObjectCount)
     {
-        object = ::fwTools::Object::dynamicCast(composite->getContainer()[objectId]);
+        object = ::fwData::Object::dynamicCast(composite->getContainer()[objectId]);
     }
     else if (objectId == compositeName)
     {
-        object = ::fwTools::Object::dynamicCast(composite);
+        object = ::fwData::Object::dynamicCast(composite);
     }
 
     if ( m_sceneAdaptors.count(id) == 0 && object )

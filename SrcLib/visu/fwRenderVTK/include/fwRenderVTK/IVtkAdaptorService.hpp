@@ -58,7 +58,7 @@ public :
     FWRENDERVTK_API vtkRenderWindowInteractor* getInteractor();
 
 
-    FWRENDERVTK_API virtual ::fwTools::Object::sptr getAssociatedObject(vtkProp *prop, int depth=0);
+    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp *prop, int depth=0);
 
     FWRENDERVTK_API void getAllSubProps(vtkPropCollection *propc, int depth = -1);
 

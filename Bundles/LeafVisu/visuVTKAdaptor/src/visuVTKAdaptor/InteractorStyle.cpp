@@ -19,7 +19,7 @@
 
 #include "visuVTKAdaptor/InteractorStyle.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwData::Object ) ;
 
 namespace visuVTKAdaptor
 {

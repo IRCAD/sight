@@ -26,7 +26,7 @@ namespace gui
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::StarterActionService , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::StarterActionService , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

@@ -10,7 +10,7 @@
 
 #include "fwComEd/parser/Object.hpp"
 
-REGISTER_SERVICE( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwData::Object ) ;
 
 namespace fwComEd
 {

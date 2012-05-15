@@ -154,7 +154,7 @@ public :
      * @author IRCAD (Research and Development Team).
      * @author  IRCAD (Research and Development Team).
      */
-    FWSERVICES_API void swap( ::fwTools::Object::sptr _obj ) throw( ::fwTools::Failed );
+    FWSERVICES_API void swap( ::fwData::Object::sptr _obj ) throw( ::fwTools::Failed );
 
     //@}
 
@@ -279,7 +279,7 @@ public :
      * @pre the service must have an associated object set
      * @pre associated object does not be expired
      */
-    FWSERVICES_API ::fwTools::Object::sptr getObject();
+    FWSERVICES_API ::fwData::Object::sptr getObject();
 
     /**
      * @brief Return the object associated to service. The object is casted.
@@ -409,7 +409,7 @@ protected :
      * @brief associated object of service
      * @todo this field must be private
      */
-    ::fwTools::Object::wptr m_associatedObject;
+    ::fwData::Object::wptr m_associatedObject;
 
 private :
 

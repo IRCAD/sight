@@ -184,7 +184,7 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::sptr SwapperSrv::add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt )
+::fwServices::IService::sptr SwapperSrv::add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt )
 {
     OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(), _elt->getName() == "service" ) ;
     SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") ) ;
@@ -244,7 +244,7 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::addObject( const std::string objectId, ::fwTools::Object::sptr object )
+void SwapperSrv::addObject( const std::string objectId, ::fwData::Object::sptr object )
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {
@@ -296,7 +296,7 @@ void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::swapObject(const std::string objectId, ::fwTools::Object::sptr object)
+void SwapperSrv::swapObject(const std::string objectId, ::fwData::Object::sptr object)
 {
     if(m_objectsSubServices.find(objectId) != m_objectsSubServices.end())
     {
@@ -351,7 +351,8 @@ void SwapperSrv::removeObject( const std::string objectId )
         const std::string objectType   = conf->getAttributeValue("type");
 
         SubServicesVecType subServices = m_objectsSubServices[objectId];
-        ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
+        ::fwData::Object::sptr dummyObj;
+        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(objectType));
         BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
             OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
@@ -404,7 +405,8 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
     {
         OSLM_TRACE ( "'"<< objectId << "' nonexistent'");
 
-        ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(objectType);
+        ::fwData::Object::sptr dummyObj;
+        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(objectType));
         SubServicesVecType subVecSrv;
         std::vector < ConfigurationType > confVec = conf->find("service");
         BOOST_FOREACH( ConfigurationType cfg, confVec )

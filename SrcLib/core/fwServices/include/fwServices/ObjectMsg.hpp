@@ -125,10 +125,10 @@ public:
     FWSERVICES_API WPTR(::fwServices::IService) getSource() const;
 
     /// Set message subject (object observed)
-    FWSERVICES_API void setSubject( ::fwTools::Object::wptr _subject );
+    FWSERVICES_API void setSubject( ::fwData::Object::wptr _subject );
 
     /// Get message subject (object observed)
-    FWSERVICES_API ::fwTools::Object::wptr getSubject() const;
+    FWSERVICES_API ::fwData::Object::wptr getSubject() const;
 
     //@}
 
@@ -223,7 +223,7 @@ private :
     WPTR(::fwServices::IService) m_source;
 
     /// Message subject. All subject observers will be notified.
-    ::fwTools::Object::wptr m_subject;
+    ::fwData::Object::wptr m_subject;
 
     /// Helper to convert string UUID/Classname in pretty string
     static std::string convertToLightString( std::string _initialString );

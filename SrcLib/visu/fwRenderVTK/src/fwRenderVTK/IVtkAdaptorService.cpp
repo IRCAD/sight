@@ -243,9 +243,9 @@ vtkRenderWindowInteractor* IVtkAdaptorService::getInteractor()
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr IVtkAdaptorService::getAssociatedObject(vtkProp *prop, int depth)
+::fwData::Object::sptr IVtkAdaptorService::getAssociatedObject(vtkProp *prop, int depth)
 {
-    ::fwTools::Object::sptr obj;
+    ::fwData::Object::sptr obj;
 
     if (prop)
     {
@@ -255,7 +255,7 @@ vtkRenderWindowInteractor* IVtkAdaptorService::getInteractor()
         }
         else
         {
-            ::fwTools::Object::sptr res;
+            ::fwData::Object::sptr res;
             BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
             {
                 if(!service.expired())

@@ -5,21 +5,18 @@
     <requirement id="servicesReg"/>
     <requirement id="gui"/>
     
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwTools::Object ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::SnapshotEditor</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
     
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::TransformationMatrixEditor , ::fwData::TransformationMatrix3D ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::TransformationMatrixEditor</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
 
-    <!-- REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::PointEditor, ::fwData::Composite ); -->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::PointEditor</service>

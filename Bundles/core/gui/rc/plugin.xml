@@ -8,55 +8,55 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IFrameSrv</type>
         <service>::gui::frame::DefaultFrame</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IMenuSrv</type>
         <service>::gui::aspect::DefaultMenuSrv</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IMenuBarSrv</type>
         <service>::gui::aspect::DefaultMenuBarSrv</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::view::IView</type>
         <service>::gui::view::DefaultView</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::NothingActionSrv</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::QuitAction</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::StarterActionService</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IToolBarSrv</type>
         <service>::gui::aspect::DefaultToolBarSrv</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ConfigActionSrv</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -74,19 +74,19 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ModifyLayoutActionSrv</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IDeliveryDelegate</type>
         <service>::fwGui::MessageHandler</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ActionNotifyService</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

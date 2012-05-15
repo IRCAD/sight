@@ -29,7 +29,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ServiceTest );
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwServices::ut::TestService , ::fwServices::ut::TestServiceImplementation , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwServices::ut::TestService , ::fwServices::ut::TestServiceImplementation , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 

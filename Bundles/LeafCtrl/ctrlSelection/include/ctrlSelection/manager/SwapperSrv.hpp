@@ -108,7 +108,7 @@ protected:
         SPTR (::fwServices::IService) getComChannel()
                             { return m_comChannel.lock(); }
 
-        ::fwTools::Object::sptr m_dummy;
+        ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
         WPTR(::fwServices::ComChannelService) m_comChannel;
@@ -121,13 +121,13 @@ protected:
 
     void initOnDummyObject( std::string objectId );
     void addObjects( ::fwData::Composite::sptr _composite );
-    void addObject( const std::string objectId, ::fwTools::Object::sptr object );
+    void addObject( const std::string objectId, ::fwData::Object::sptr object );
     void swapObjects( ::fwData::Composite::sptr _composite );
-    void swapObject(const std::string objectId, ::fwTools::Object::sptr object);
+    void swapObject(const std::string objectId, ::fwData::Object::sptr object);
     void removeObjects( ::fwData::Composite::sptr _composite );
     void removeObject( const std::string objectId );
 
-    ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+    ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
 
 private:
 

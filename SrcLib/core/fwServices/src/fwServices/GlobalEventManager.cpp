@@ -77,7 +77,7 @@ void GlobalEventManager::dispatch()
     {
         SLM_INFO_IF( "Message's source expired", pMsg->getSource().expired());
         OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
-        ::fwTools::Object::sptr pSubject = pMsg->getSubject().lock();
+        ::fwData::Object::sptr pSubject = pMsg->getSubject().lock();
         if( ::fwServices::OSR::has(pSubject, "::fwServices::IEditionService") )
         {
             ::fwServices::IEditionService::sptr srv;
@@ -123,7 +123,7 @@ void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServic
     else if ( m_deliveryType == DEPTH_FIRST )
     {
         ::fwServices::IService::sptr pSource = _pMsg->getSource().lock();
-        ::fwTools::Object::sptr pSubject = _pMsg->getSubject().lock();
+        ::fwData::Object::sptr pSubject = _pMsg->getSubject().lock();
 
         OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
         ::fwServices::IEditionService::sptr srv;

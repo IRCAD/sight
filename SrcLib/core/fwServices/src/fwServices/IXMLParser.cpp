@@ -31,18 +31,10 @@ void IXMLParser::updating( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::
 
 void IXMLParser::updating() throw(::fwTools::Failed)
 {
-    for( ::fwRuntime::ConfigurationElement::Iterator configEltIter = this->m_configuration->begin() ; !(configEltIter == this->m_configuration->end()) ; ++configEltIter)
+    ::fwRuntime::ConfigurationElement::Iterator configEltIter;
+    for(configEltIter = this->m_configuration->begin() ; !(configEltIter == this->m_configuration->end()) ; ++configEltIter)
     {
         SLM_ASSERT("ACH => still used ?", (*configEltIter)->getName() != "object" );
-//        if( (*configEltIter)->getName() == "object" )
-//        {
-//            fwTools::Object::sptr localObj = fwServices::New( (*configEltIter) ) ;
-//            SLM_ASSERT("localObj not instanced", localObj);
-//            assert( (*configEltIter)->hasAttribute("id") ) ;
-//            std::string _id = (*configEltIter)->getExistingAttributeValue("id") ;
-//            assert( !this->getObject()->getField(_id) );
-//            this->getObject()->setField(_id,localObj);
-//        }
     }
 }
 

@@ -15,7 +15,7 @@
 #include "gui/aspect/DefaultMenuSrv.hpp"
 
 
-REGISTER_SERVICE( ::fwGui::IMenuSrv , ::gui::aspect::DefaultMenuSrv , ::fwTools::Object );
+REGISTER_SERVICE( ::fwGui::IMenuSrv , ::gui::aspect::DefaultMenuSrv , ::fwData::Object );
 
 namespace gui
 {

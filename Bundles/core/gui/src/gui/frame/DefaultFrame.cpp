@@ -16,7 +16,7 @@ namespace gui
 namespace frame
 {
 
-REGISTER_SERVICE( ::fwGui::IFrameSrv , ::gui::frame::DefaultFrame , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IFrameSrv , ::gui::frame::DefaultFrame , ::fwData::Object ) ;
 
 
 DefaultFrame::DefaultFrame() throw()

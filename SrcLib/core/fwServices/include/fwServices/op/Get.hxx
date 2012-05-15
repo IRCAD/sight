@@ -7,7 +7,7 @@
 #ifndef _FWSERVICES_GET_HXX_
 #define _FWSERVICES_GET_HXX_
 
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/IService.hpp"
@@ -19,7 +19,7 @@ namespace fwServices
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) get( ::fwTools::Object::sptr obj ) throw(fwTools::Failed )
+SPTR(SERVICE) get( ::fwData::Object::sptr obj ) throw(fwTools::Failed )
 {
     std::vector< typename SPTR(SERVICE) > services = ::fwServices::OSR::getServices< SERVICE >( obj );
     std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;

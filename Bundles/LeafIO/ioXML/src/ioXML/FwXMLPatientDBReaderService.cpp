@@ -254,7 +254,7 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
     {
         std::stringstream stream;
         stream << "Sorry, "<<_pArchivePath<< " is not a valid " FWXML_ARCHIVE_EXTENSION " file."
-               << this->getObject< ::fwTools::Object >()->getRootedClassname();
+               << this->getObject()->getRootedClassname();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                         stream.str(),
                         ::fwGui::dialog::IMessageDialog::WARNING);

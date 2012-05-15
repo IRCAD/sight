@@ -153,14 +153,14 @@ void ObjectMsg::setSource(::fwServices::IService::wptr _source)
 
 //-----------------------------------------------------------------------------
 
-void ObjectMsg::setSubject( ::fwTools::Object::wptr _subject)
+void ObjectMsg::setSubject( ::fwData::Object::wptr _subject)
 {
     m_subject = _subject;
 }
 
 //-----------------------------------------------------------------------------
 
-::fwTools::Object::wptr ObjectMsg::getSubject() const
+::fwData::Object::wptr ObjectMsg::getSubject() const
 {
     return m_subject;
 }

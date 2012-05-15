@@ -17,7 +17,7 @@
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::io::IWriter, ::uiPatientDB::SPatientDBInserter, ::fwTools::Object );
+REGISTER_SERVICE( ::io::IWriter, ::uiPatientDB::SPatientDBInserter, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
@@ -53,8 +53,8 @@ void SPatientDBInserter::configureWithIHM()
     if(m_patientDBfwID.empty())
     {
         std::vector< std::string > availablePatientDB;
-        std::vector<  ::fwTools::Object::sptr > allObjs =  ::fwServices::OSR::getObjects();
-        BOOST_FOREACH(::fwTools::Object::sptr obj, allObjs)
+        std::vector<  ::fwData::Object::sptr > allObjs =  ::fwServices::OSR::getObjects();
+        BOOST_FOREACH(::fwData::Object::sptr obj, allObjs)
         {
             ::fwData::PatientDB::sptr pdb = ::fwData::PatientDB::dynamicCast(obj);
             if( pdb )
@@ -62,7 +62,7 @@ void SPatientDBInserter::configureWithIHM()
                 availablePatientDB.push_back(pdb->getID());
             }
         }
-        ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
+        ::fwData::Object::sptr object = this->getObject();
 
         ::fwGui::dialog::SelectorDialog::NewSptr selector;
         selector->setSelections(availablePatientDB);
@@ -98,7 +98,7 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
     }
     else
     {
-        ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
+        ::fwData::Object::sptr object = this->getObject();
 
         ::fwData::PatientDB::sptr pdb   = ::fwData::PatientDB::dynamicCast(object);
         ::fwData::Patient::sptr patient = ::fwData::Patient::dynamicCast(object);

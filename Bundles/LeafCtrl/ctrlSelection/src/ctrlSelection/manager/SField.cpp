@@ -23,7 +23,7 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwTools::Object ) ;
+REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ void SField::starting()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Object::sptr object = this->getObject< ::fwData::Object >() ;
+    ::fwData::Object::sptr object = this->getObject() ;
     const ::fwData::Object::FieldMapType& fieldsMap = object->getFields();
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
@@ -178,7 +178,7 @@ void SField::addFields( const ModifiedFieldsContainerType& fields )
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::sptr SField::add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt )
+::fwServices::IService::sptr SField::add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt )
 {
     OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(), _elt->getName() == "service" ) ;
     SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") ) ;
@@ -289,7 +289,7 @@ void SField::swapFields( const ModifiedFieldsContainerType& fields )
 
 //-----------------------------------------------------------------------------
 
-void SField::swapField(const FieldNameType& fieldName, ::fwTools::Object::sptr field)
+void SField::swapField(const FieldNameType& fieldName, ::fwData::Object::sptr field)
 {
     if(m_fieldsSubServices.find(fieldName) != m_fieldsSubServices.end())
     {
@@ -343,7 +343,8 @@ void SField::removeField( const FieldNameType& fieldName )
         const std::string fieldType   = conf->getAttributeValue("type");
 
         SubServicesVecType subServices = m_fieldsSubServices[fieldName];
-        ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(fieldType);
+        ::fwData::Object::sptr dummyObj;
+        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(fieldType));
         BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
             OSLM_ASSERT("SubService on " << fieldName <<" expired !", subSrv->getService() );
@@ -384,7 +385,7 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
 {
     SLM_ASSERT( "'fieldName' required attribute missing or empty", !fieldName.empty() );
 
-    ::fwData::Object::sptr object = this->getObject< ::fwData::Object >() ;
+    ::fwData::Object::sptr object = this->getObject() ;
 
     OSLM_ASSERT(fieldName << " not found in object.",
             object->getFields().find(fieldName) == object->getFields().end());
@@ -398,7 +399,8 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
     {
         OSLM_TRACE ( "'"<< fieldName << "' nonexistent'");
 
-        ::fwTools::Object::sptr dummyObj = ::fwTools::Factory::New(fieldType);
+        ::fwData::Object::sptr dummyObj;
+        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(fieldType));
         SubServicesVecType subVecSrv;
         BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
         {

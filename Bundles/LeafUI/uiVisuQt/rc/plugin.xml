@@ -5,11 +5,11 @@
     <requirement id="servicesReg"/>
     <requirement id="gui"/>
     
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwTools::Object ) ;-->
+    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwData::Object ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::SnapshotEditor</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::TransformationMatrixEditor , ::fwData::TransformationMatrix3D ) ;-->

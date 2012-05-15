@@ -123,7 +123,7 @@ struct SetLess
 
 void IEditionService::notify(
         ::fwServices::IService::sptr _pSource,
-        ::fwTools::Object::sptr _pSubject,
+        ::fwData::Object::sptr _pSubject,
         ::fwServices::ObjectMsg::sptr _pMsg,
         ::fwServices::ComChannelService::MsgOptionsType options )
 {

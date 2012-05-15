@@ -16,7 +16,7 @@
 #include "visuVTKAdaptor/Text.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Text, ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Text, ::fwData::Object ) ;
 
 namespace visuVTKAdaptor
 {

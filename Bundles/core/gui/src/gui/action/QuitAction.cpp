@@ -20,7 +20,7 @@ namespace gui
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::QuitAction , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::QuitAction , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

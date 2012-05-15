@@ -44,7 +44,7 @@
 namespace ioXML
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwTools::Object );
+REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -221,7 +221,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
         if (obj)
         {
             // Retrieve dataStruct associated with this service
-            ::fwData::Object::sptr associatedObject = this->getObject< ::fwData::Object >();
+            ::fwData::Object::sptr associatedObject = this->getObject();
             SLM_ASSERT("associatedObject not instanced", associatedObject);
 
             if(obj->getClassname() != associatedObject->getClassname())
@@ -258,7 +258,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 void FwXMLGenericReaderService::notificationOfUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
+    ::fwData::Object::sptr object = this->getObject();
     SLM_ASSERT("object not instanced", object);
     ::fwServices::ObjectMsg::NewSptr msg;
     msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
@@ -305,7 +305,7 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
     {
         std::stringstream stream;
         stream << "Sorry, "<<_pArchivePath<< " is not valid a valid " FWXML_ARCHIVE_EXTENSION " file."
-               << this->getObject< ::fwData::Object >()->getRootedClassname();
+               << this->getObject()->getRootedClassname();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                         stream.str(),
                         ::fwGui::dialog::IMessageDialog::WARNING);
