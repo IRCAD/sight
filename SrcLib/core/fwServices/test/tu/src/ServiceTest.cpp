@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwTools/Factory.hpp>
 
@@ -54,7 +54,7 @@ void ServiceTest::tearDown()
 
 void ServiceTest::testServiceCreation()
 {
-    ::fwTools::Object::sptr obj = ::fwTools::Object::New();
+    ::fwData::Object::sptr obj = ::fwData::Object::New();
     ::fwServices::IService::sptr service;
 
     // Test if the object support the service
@@ -67,7 +67,7 @@ void ServiceTest::testServiceCreation()
     // Test getting the service its object
     service = ::fwServices::get(obj, "::fwServices::ut::TestService");
     CPPUNIT_ASSERT(service);
-    CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwTools::Object >());
+    CPPUNIT_ASSERT_EQUAL(obj, service->getObject());
 
     // Test erasing service
     ::fwServices::OSR::unregisterService(service);
@@ -78,7 +78,7 @@ void ServiceTest::testServiceCreation()
 
 void ServiceTest::testServiceCreationWithTemplateMethods()
 {
-    ::fwTools::Object::sptr obj = ::fwTools::Object::New();
+    ::fwData::Object::sptr obj = ::fwData::Object::New();
     ::fwServices::ut::TestService::sptr service;
 
     // Test if the object support the service
@@ -91,7 +91,7 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     // Test getting the service its object
     service = ::fwServices::get< ::fwServices::ut::TestService >(obj);
     CPPUNIT_ASSERT(service);
-    CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwTools::Object >());
+    CPPUNIT_ASSERT_EQUAL(obj, service->getObject());
 
     // Test erasing service
     ::fwServices::OSR::unregisterService(service);
@@ -107,7 +107,7 @@ void ServiceTest::testServiceCreationWithUUID()
     const std::string myUUID3 = "myUUID3";
     size_t nbServices = 0;
 
-    ::fwTools::Object::sptr obj = ::fwTools::Object::New();
+    ::fwData::Object::sptr obj = ::fwData::Object::New();
     ::fwServices::IService::sptr service;
     ::fwServices::IService::sptr service2;
 
@@ -126,7 +126,7 @@ void ServiceTest::testServiceCreationWithUUID()
     service2 = ::fwServices::get(myUUID2);
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT(service2);
-    CPPUNIT_ASSERT_EQUAL(obj, service2->getObject< ::fwTools::Object >());
+    CPPUNIT_ASSERT_EQUAL(obj, service2->getObject());
     CPPUNIT_ASSERT_EQUAL(myUUID2, service2 ->getID());
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(myUUID3) == NULL );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::fwServices::ut::TestService").size() );
@@ -144,7 +144,7 @@ void ServiceTest::testStartStopUpdate()
 {
     const std::string myUUID = "myUUID";
 
-    ::fwTools::Object::sptr obj = ::fwTools::Object::New();
+    ::fwData::Object::NewSptr obj;
     ::fwServices::ut::TestService::sptr service;
 
     // Add service
