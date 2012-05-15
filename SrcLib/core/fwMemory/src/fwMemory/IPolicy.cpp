@@ -10,15 +10,23 @@
 namespace fwMemory
 {
 
-IPolicy::FactoryMap IPolicy::s_factories;
+
+//------------------------------------------------------------------------------
+
+IPolicy::FactoryMap &IPolicy::getDefaultPolicyFactories()
+{
+    static IPolicy::FactoryMap factories;
+    return factories;
+}
 
 //------------------------------------------------------------------------------
 
 IPolicy::sptr IPolicy::createPolicy(std::string name)
 {
     IPolicy::sptr policy;
-    FactoryMap::iterator iter = s_factories.find(name);
-    if ( iter != s_factories.end())
+    IPolicy::FactoryMap &factories = IPolicy::getDefaultPolicyFactories();
+    FactoryMap::iterator iter = factories.find(name);
+    if ( iter != factories.end())
     {
         PolicyFactoryType &pf = iter->second;
         policy = pf();
@@ -30,9 +38,8 @@ IPolicy::sptr IPolicy::createPolicy(std::string name)
 
 const IPolicy::FactoryMap &IPolicy::getPolicyFactories()
 {
-    return s_factories;
+    return IPolicy::getDefaultPolicyFactories();
 }
-
 
 
 } // namespace fwMemory

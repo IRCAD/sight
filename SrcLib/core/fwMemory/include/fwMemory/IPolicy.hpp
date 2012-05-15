@@ -59,13 +59,12 @@ public :
     {
         Register(const std::string &name)
         {
-            s_factories[name] = &POLICY::New;
+            IPolicy::getDefaultPolicyFactories()[name] = &POLICY::New;
         }
     };
 
 protected:
-
-    static FactoryMap s_factories;
+    static FactoryMap &getDefaultPolicyFactories();
 
 };
 
