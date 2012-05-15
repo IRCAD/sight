@@ -265,6 +265,7 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
+    this->setVisibility(false);
 }
 
 //------------------------------------------------------------------------------
@@ -299,6 +300,7 @@ void ProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
         this->updateImageInfos(image);
+        this->setVisibility(false);
     }
 
     if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
