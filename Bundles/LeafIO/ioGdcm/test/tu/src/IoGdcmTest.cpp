@@ -45,7 +45,7 @@ void IoGdcmTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void IoGdcmTest::executeService( ::fwTools::Object::sptr obj, std::string srvType, std::string srvImpl, ::fwRuntime::EConfigurationElement::sptr cfg )
+void IoGdcmTest::executeService( ::fwData::Object::sptr obj, std::string srvType, std::string srvImpl, ::fwRuntime::EConfigurationElement::sptr cfg )
 {
     ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImpl );
     CPPUNIT_ASSERT(srv);
