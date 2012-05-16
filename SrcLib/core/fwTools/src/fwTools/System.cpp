@@ -4,15 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/version.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/exception.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/regex.hpp>
+#include <boost/foreach.hpp>
 
 #include <boost/lexical_cast.hpp>
-#include <string>
-#include <iostream>
 
 // for PID
 #ifdef WIN32
@@ -29,40 +27,43 @@
 
 #include "fwTools/System.hpp"
 
-#include <boost/functional/hash.hpp>
+
+#define F4S_TMP_EXT "fw4spl-tmp"
 
 namespace fwTools
 {
 
-//------------------------------------------------------------------------------
+std::string System::s_tempPrefix;
 
-System::~System()
+struct RemoveTemporaryFolder
 {
-    if ( ! m_dumpFolder.empty() && ::boost::filesystem::exists(m_dumpFolder) )
+    typedef ::boost::shared_ptr< RemoveTemporaryFolder > sptr;
+
+    RemoveTemporaryFolder(const ::boost::filesystem::path &path) : m_path(path)
+    {}
+
+    ~RemoveTemporaryFolder()
     {
-        ::boost::filesystem::remove_all(m_dumpFolder);
+        ::boost::filesystem::remove_all(m_path);
     }
-//    eraseDumpFolderOfZombies();
-}
+    ::boost::filesystem::path m_path;
+};
+static RemoveTemporaryFolder::sptr autoRemoveTempFolder;
 
-//------------------------------------------------------------------------------
 
-const ::boost::shared_ptr<System> System::getDefault() throw()
+
+static struct CleanZombies
 {
-    /// A shared pointer to the kernel instance
-    static ::boost::shared_ptr< System > instance;
-
-    if ( instance.get() == 0 )
+    CleanZombies()
     {
-        instance = ::boost::shared_ptr<System>(new System());
+        System::cleanZombies(System::getTempPath());
     }
+} autoCleanZombies;
 
-    return instance;
-}
 
 //------------------------------------------------------------------------------
 
-int System::getPID() const
+int System::getPID() throw()
 {
     int pid=0;
 #ifdef WIN32
@@ -76,206 +77,90 @@ int System::getPID() const
 
 //------------------------------------------------------------------------------
 
-std::string getUserTmp()
+const ::boost::filesystem::path &System::getTempPath() throw()
 {
+    static ::boost::filesystem::path sysTmp;
+
+    if(!sysTmp.empty())
+    {
+        return sysTmp;
+    }
+
+    ::boost::system::error_code err;
+    sysTmp = ::boost::filesystem::temp_directory_path(err);
+
+    if(err.value() != 0)
+    {
 #ifdef WIN32
-    char *userEnv = getenv("USERNAME"); // warning cygwin create USER env. var
+        ::boost::filesystem::path fallback("C:\\");
 #else
-    char *userEnv = getenv("USER");
+        ::boost::filesystem::path fallback("/tmp");
 #endif
+        OSLM_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
 
-    SLM_ASSERT("UserEnv not found", userEnv);
+        sysTmp = fallback;
+    }
 
-    ::boost::hash<std::string> string_hash;
-    std::size_t hashValue = string_hash(userEnv);
-
-    std::ostringstream path;
-    path << "fwDumpFolder-" << hashValue;
-
-    return path.str();
+    return sysTmp;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path System::getTemporaryFolder() throw()
-{
-    static ::boost::filesystem::path tmpdir;
-
-    if ( tmpdir != ::boost::filesystem::path() )
-    {
-        return tmpdir; // path already setted
-    }
-
-#ifdef WIN32
-    char *userEnvTmp = getenv("TMP") ;
-    char *userEnvTemp = getenv("TEMP") ;
-
-    std::string EnvTmpStr(userEnvTmp);
-    std::string EnvTempStr(userEnvTemp);
-
-    if ((EnvTmpStr.find("'")!= std::string::npos) || (EnvTempStr.find("'")!= std::string::npos))
-    {
-        std::string str = "An apostrophe causes problem to the XML library. One is in the user name, change your TMP environment variable.";
-        OSLM_ERROR("PROBLEM : " << str );
-    }
-    if( userEnvTmp )
-    {
-        tmpdir = ::boost::filesystem::path(userEnvTmp) / getUserTmp() ;
-        OSLM_INFO("Temp Folder : " << tmpdir.string() );
-        ::boost::filesystem::create_directories(tmpdir);
-        return tmpdir ;
-    }
-
-    if( userEnvTemp )
-    {
-        tmpdir = ::boost::filesystem::path(userEnvTemp) / getUserTmp() ;
-        OSLM_INFO("Temp Folder : " << tmpdir.string() );
-        ::boost::filesystem::create_directories(tmpdir);
-        return tmpdir ;
-    }
-    // FIXME allow a more configurable choice for DumpFolder
-    ::boost::filesystem::path DriveD("D:\\");
-    ::boost::filesystem::path DriveC("C:\\");
-
-    if ( ::boost::filesystem::exists( DriveD ) )
-    {
-        tmpdir = DriveD / getUserTmp();
-
-        try
-        {
-            ::boost::filesystem::create_directory( tmpdir );
-            ::boost::filesystem::create_directory( tmpdir / "writabletest" );
-            ::boost::filesystem::remove( tmpdir / "writabletest" );
-            return tmpdir;
-        }
-        catch(...)
-        {
-            // OK attempt fail use default behavior
-        }
-    }
-
-    // default behavior
-    tmpdir = DriveC / ::boost::filesystem::path(getUserTmp());
-
-#else
-    tmpdir = ::boost::filesystem::path("/tmp") /  ::boost::filesystem::path( getUserTmp() );
-#endif
-
-    ::boost::filesystem::create_directories(tmpdir);
-    return tmpdir;
-}
-
-//------------------------------------------------------------------------------
-
-System::System()
-{
-    int pid=getPID();
-    SLM_ASSERT("Process "<< pid << " is not started", isProcessRunning(pid) );
-    m_dumpFolder = System::getTemporaryFolder() / boost::lexical_cast<std::string>(pid);
-
-    // create TemporaryFolder if necessary
-    if (!::boost::filesystem::exists(System::getTemporaryFolder()))
-    {
-        ::boost::filesystem::create_directory(System::getTemporaryFolder());
-    }
-
-    // create dumpFolder if necessary
-    if (!::boost::filesystem::exists(m_dumpFolder))
-    {
-        ::boost::filesystem::create_directory(m_dumpFolder);
-    }
-
-    if (!::boost::filesystem::exists(m_dumpFolder))
-    {
-        std::string str = "DumpableDataBuffer unable to use";
-        str+= m_dumpFolder.string() + " directory to dump Image memory buffer";
-        throw std::ios_base::failure(str);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-::boost::filesystem::path System::getDumpFolder() throw()
-{
-    return m_dumpFolder;
-}
-
-//------------------------------------------------------------------------------
-
-void System::eraseDumpFolderOfZombies() const
+const ::boost::filesystem::path &System::getTemporaryFolder() throw()
 {
     namespace fs = ::boost::filesystem;
-    fs::directory_iterator end_itr; // default  construction yields past-the-end
-    fs::directory_iterator iter_dir( getTemporaryFolder() );
-    for ( ; iter_dir != end_itr; ++iter_dir )
+    static fs::path tmpDirPath;
+
+    if(!tmpDirPath.empty() && fs::exists(tmpDirPath))
     {
-#if BOOST_VERSION < 103600
-        std::string pidStr = (*iter_dir).leaf();
-#else
-    #if BOOST_FILESYSTEM_VERSION > 2
-        std::string pidStr = (*iter_dir).path().filename().string();
-    #else
-        std::string pidStr = (*iter_dir).filename();
-    #endif
-#endif
-        try
-        {
-            int pid = boost::lexical_cast<int>(pidStr);
-            if (!isProcessRunning(pid))
-            {
-                eraseDumpFolder(pid);
-            }
-        }
-        catch (...)
-        {
-            // nothing to do ignore this directory
-        }
+        return tmpDirPath;
     }
-}
 
-//------------------------------------------------------------------------------
+    const fs::path &sysTmp = getTempPath();
 
-void System::cleanDumpFolder() const
-{
-    // remove all files in subfolder
-    ::boost::filesystem::directory_iterator end_itr; // default  construction yields past-the-end
-    ::boost::filesystem::directory_iterator iter_dir( m_dumpFolder );
-    for ( ; iter_dir != end_itr; ++iter_dir )
+    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." F4S_TMP_EXT;
+
+    fs::path tmpDir;
+
+    bool created = false;
+
+    do
     {
-        ::boost::filesystem::remove_all(*iter_dir);
+        tmpDir = fs::unique_path(sysTmp/tmpDirName);
+
+        if(! fs::exists(tmpDir))
+        {
+            fs::create_directories(tmpDir);
+            tmpDirPath = tmpDir;
+            created = true;
+        }
+
     }
+    while ( !created );
+
+
+    fs::path pidFile = tmpDir / (::boost::lexical_cast<std::string>(getPID()) + ".pid");
+    fs::fstream( pidFile, std::ios::out ).close();
+
+    autoRemoveTempFolder = ::boost::make_shared<RemoveTemporaryFolder>(tmpDirPath);
+
+    OSLM_INFO("Temporary folder is : " << tmpDirPath);
+    return tmpDirPath;
 }
 
 //------------------------------------------------------------------------------
 
-void System::eraseDumpFolder(int pid) const
-{
-    SLM_ASSERT("Process "<< pid << " must be stopped before EraseDumpFolder", !isProcessRunning(pid) );
-    namespace fs = ::boost::filesystem;
-    fs::path dumpFolderPID= System::getTemporaryFolder() / ::boost::lexical_cast<std::string>(pid);
-    fs::remove_all(dumpFolderPID);
-}
-
-//------------------------------------------------------------------------------
-
-bool System::isProcessRunning(int pid)
+bool System::isProcessRunning(int pid) throw()
 {
 #ifdef WIN32
-    HANDLE hProcess;
-    //hProcess = OpenProcess( PROCESS_ALL_ACCESS, FALSE, pid);hProcess==INVALID_HANDLE_VALUE
-    hProcess = OpenProcess( PROCESS_QUERY_INFORMATION, FALSE, pid);
-    if ( hProcess==INVALID_HANDLE_VALUE ) // FIXME find the correct windows value
-    {
-        CloseHandle( hProcess );
-        return false;
-    }
-    else if ( hProcess==0 )
+    HANDLE hProcess = OpenProcess(SYNCHRONIZE, FALSE, pid);
+    if (!hProcess)
     {
         return false;
     }
     else
     {
-        CloseHandle( hProcess );
+        CloseHandle(hProcess);
         return true;
     }
 #else
@@ -287,5 +172,93 @@ bool System::isProcessRunning(int pid)
 
 //------------------------------------------------------------------------------
 
+int System::tempFolderPID(const ::boost::filesystem::path &dir) throw()
+{
+    namespace fs = ::boost::filesystem;
+
+    const ::boost::regex pidFilter( "([[:digit:]]+)\\.pid" );
+
+    ::boost::filesystem::directory_iterator i( dir );
+    ::boost::filesystem::directory_iterator endIter;
+
+    int pid = 0;
+
+    for( ; i != endIter; ++i )
+    {
+        // Skip if not a dir
+        if( !::boost::filesystem::is_regular_file( i->status() ) )
+        {
+            continue;
+        }
+
+        ::boost::smatch what;
+
+        // Skip if no match
+        std::string s = i->path().filename().string();
+        if( !::boost::regex_match( s, what, pidFilter ) )
+        {
+            continue;
+        }
+
+        try
+        {
+            pid = ::boost::lexical_cast< int >(what.str(1));
+            break;
+        }
+        catch (boost::bad_lexical_cast&)
+        {}
+
+    }
+    return pid;
+}
+
+//------------------------------------------------------------------------------
+
+void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
+{
+    namespace fs = ::boost::filesystem;
+
+    const ::boost::regex tmpFolderFilter( ".*\\." F4S_TMP_EXT );
+
+    std::vector< ::boost::filesystem::path > allTempFolders;
+
+    ::boost::filesystem::directory_iterator i( dir );
+    ::boost::filesystem::directory_iterator endIter;
+
+    for( ; i != endIter; ++i )
+    {
+        // Skip if not a dir
+        if( !::boost::filesystem::is_directory( i->status() ) )
+        {
+            continue;
+        }
+
+        ::boost::smatch what;
+
+        // Skip if no match
+        if( !::boost::regex_match( i->path().filename().string(), what, tmpFolderFilter ) )
+        {
+            continue;
+        }
+
+        allTempFolders.push_back( i->path() );
+    }
+
+
+    BOOST_FOREACH( const fs::path &foundTmpDir, allTempFolders)
+    {
+        int pid = tempFolderPID(foundTmpDir);
+
+        if(pid && !isProcessRunning(pid))
+        {
+            OSLM_INFO("Removing old temp dir : " << foundTmpDir);
+            ::boost::filesystem::remove_all(foundTmpDir);
+        }
+    }
+
+
+}
+
+//------------------------------------------------------------------------------
 
 } //end namespace fwTools

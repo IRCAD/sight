@@ -7,8 +7,8 @@
 #ifndef _FWTOOLS_SYSTEM_HPP_
 #define _FWTOOLS_SYSTEM_HPP_
 
-#include <exception>
 #include <string>
+
 #include <boost/filesystem/path.hpp>
 
 #include "fwTools/config.hpp"
@@ -28,69 +28,48 @@ class FWTOOLS_CLASS_API System
 public:
 
     /**
-     * @brief   Return the unique instance of the class
+     * @brief   Returns the system's temporary folder.
+     * Returns the value returned by boost::filesystem::temp_directory_path, or
+     * if boost returns no valid dir, c:\\ on windows, /tmp on other systems
      */
-    FWTOOLS_API static const ::boost::shared_ptr< System > getDefault() throw();
+    FWTOOLS_API static const ::boost::filesystem::path &getTempPath() throw();
 
     /**
-     * @brief   Return the folder where are dumped data = TempFolder / PIDOFTPROCESS ...
-     * The Dump folder change to each new instance of the application
-     * @return path equal to getTemporaryFolder()/getPID()
+     * @brief   Returns a unique per-process temporary folder.
+     * The returned folder will be automatically destroyed if the process ends
+     * properly
      */
-    FWTOOLS_API ::boost::filesystem::path getDumpFolder() throw();
-
+    FWTOOLS_API static const ::boost::filesystem::path &getTemporaryFolder() throw();
 
     /**
-     * @brief   Return <b>the temporary folder</b> containing all DumpFolder
-     * The Folder used look like <tt>ROOT/fwDumpFolder-USERNAME</tt> directory. The USERNAME is get from our
-     * variable environement
-     * \li Under Linux ROOT is <tt>/tmp</tt> directory.
-     * \li Under Windows ROOT is obtain form \%TMP% or \%TEMP% env. if they do not exist then it will try ROOT=D:\\ then ROOT=C:\\
+     * @brief   Returns the pid of a temporary folder
+     * If the given folder contains a file matching *.pid and the first part of
+     * the file name is a integer, this method will return this number.
+     * Otherwise, zero will be returned
      */
-    FWTOOLS_API static ::boost::filesystem::path getTemporaryFolder() throw();
+    FWTOOLS_API static int tempFolderPID(const ::boost::filesystem::path &dir) throw();
 
     /**
-     * @brief   Erase all files in the DumpFolder (but not itself) of the current process
+     * @brief   Clean the zombie folders of old processes in given directory
      */
-    FWTOOLS_API void cleanDumpFolder() const;
+    FWTOOLS_API static void cleanZombies(const ::boost::filesystem::path &dir) throw();
 
     /**
-     * @brief   Recursively erase the DumpFolder for the process given by its pid
-     * @note no existing pid are ignored
+     *  @brief  Returns the pid of the current process
      */
-    FWTOOLS_API void eraseDumpFolder(int pid) const;
-
-    /**
-     * @brief   Recursively erase the DumpFolder of zombies process
-     */
-    FWTOOLS_API void eraseDumpFolderOfZombies() const;
-
-
-    /**
-     * @brief  Destructor will recursively erase dump folder if any
-     */
-    virtual ~System();
-
-    /**
-     *  @brief  Return the pid of the current Processus
-     *  @return The pid of the current Processus
-     */
-    FWTOOLS_API int getPID() const;
+    FWTOOLS_API static int getPID() throw();
 
     /**
      * @brief   Test if process is Active
      * @return  true iff the process is running
      */
-    FWTOOLS_API static bool isProcessRunning(int pid);
+    FWTOOLS_API static bool isProcessRunning(int pid) throw();
+
+
 
 protected:
 
-    System();
-
-    /**
-     * @brief   The path to the document's dump folder
-     */
-    ::boost::filesystem::path m_dumpFolder;
+    static std::string s_tempPrefix;
 
 };
 
