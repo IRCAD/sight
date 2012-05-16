@@ -15,6 +15,8 @@
 #include <fwDataIO/writer/IObjectWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
 
+#include <fwMemory/BufferManager.hpp>
+
 #include "fwXML/XML/ArrayXMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/XML/GenericXMLTranslator.hpp"
@@ -57,7 +59,29 @@ void ArrayXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer, ::fwData
         XMLTH::addProp( boostXMLBuffer, "filename",  path );
         XMLTH::addProp( boostXMLBuffer, "protocol",  binSaver->getWriter()->getClassname() );
 
-        binSaver->save();
+
+        bool saveIsRequired = true;
+
+        // Test if buffer is not already dumped
+        ::fwMemory::BufferManager::sptr manager;
+        manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+        if( manager )
+        {
+            if( manager->isDumped( (void ** ) array->getBufferObject()->getBufferPointer() ) )
+            {
+                saveIsRequired = false;
+
+                ::boost::filesystem::path fileDest = binSaver->getFullPath();
+                ::boost::filesystem::path fileSrc = manager->getDumpedFilePath( (void ** ) array->getBufferObject()->getBufferPointer() );
+                ::boost::filesystem::copy_file( fileSrc, fileDest );
+            }
+        }
+
+        if( saveIsRequired )
+        {
+            binSaver->save();
+        }
+
         ::fwServices::OSR::unregisterService(binSaver);
     }
     else

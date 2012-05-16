@@ -415,6 +415,26 @@ BufferManager::SizeType BufferManager::getManagedBufferSize() const
 
 //-----------------------------------------------------------------------------
 
+bool BufferManager::isDumped(const void * const * const  buffer) const
+{
+    void **castedBuffer = const_cast<void **>(buffer);
+    BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
+    FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
+    return iterInfo->second.isDumped;
+}
+
+//-----------------------------------------------------------------------------
+
+::boost::filesystem::path BufferManager::getDumpedFilePath(const void * const * const  buffer) const
+{
+    void **castedBuffer = const_cast<void **>(buffer);
+    BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
+    FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
+    return iterInfo->second.dumpedFile;
+}
+
+//-----------------------------------------------------------------------------
+
 } //namespace fwMemory
 
 

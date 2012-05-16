@@ -171,7 +171,7 @@ public:
     /**
      * @brief Returns the path of the file containing the dumped buffer
      */
-    ::boost::filesystem::path getDumpedFilePath(const void * const * const  buffer) const;
+    FWMEMORY_API ::boost::filesystem::path getDumpedFilePath(const void * const * const  buffer) const;
 
 protected:
 
