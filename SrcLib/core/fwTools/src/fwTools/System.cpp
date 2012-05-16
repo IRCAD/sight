@@ -79,7 +79,8 @@ int System::getPID() throw()
 
 const ::boost::filesystem::path &System::getTempPath() throw()
 {
-    static ::boost::filesystem::path sysTmp;
+    namespace fs = ::boost::filesystem;
+    static fs::path sysTmp;
 
     if(!sysTmp.empty())
     {
@@ -87,14 +88,14 @@ const ::boost::filesystem::path &System::getTempPath() throw()
     }
 
     ::boost::system::error_code err;
-    sysTmp = ::boost::filesystem::temp_directory_path(err);
+    sysTmp = fs::temp_directory_path(err);
 
     if(err.value() != 0)
     {
 #ifdef WIN32
-        ::boost::filesystem::path fallback("C:\\");
+        fs::path fallback("C:\\");
 #else
-        ::boost::filesystem::path fallback("/tmp");
+        fs::path fallback("/tmp");
 #endif
         OSLM_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
 
@@ -178,15 +179,15 @@ int System::tempFolderPID(const ::boost::filesystem::path &dir) throw()
 
     const ::boost::regex pidFilter( "([[:digit:]]+)\\.pid" );
 
-    ::boost::filesystem::directory_iterator i( dir );
-    ::boost::filesystem::directory_iterator endIter;
+    fs::directory_iterator i( dir );
+    fs::directory_iterator endIter;
 
     int pid = 0;
 
     for( ; i != endIter; ++i )
     {
         // Skip if not a dir
-        if( !::boost::filesystem::is_regular_file( i->status() ) )
+        if( !fs::is_regular_file( i->status() ) )
         {
             continue;
         }
@@ -220,15 +221,15 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
 
     const ::boost::regex tmpFolderFilter( ".*\\." F4S_TMP_EXT );
 
-    std::vector< ::boost::filesystem::path > allTempFolders;
+    std::vector< fs::path > allTempFolders;
 
-    ::boost::filesystem::directory_iterator i( dir );
-    ::boost::filesystem::directory_iterator endIter;
+    fs::directory_iterator i( dir );
+    fs::directory_iterator endIter;
 
     for( ; i != endIter; ++i )
     {
         // Skip if not a dir
-        if( !::boost::filesystem::is_directory( i->status() ) )
+        if( !fs::is_directory( i->status() ) )
         {
             continue;
         }
@@ -252,7 +253,7 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
         if(pid && !isProcessRunning(pid))
         {
             OSLM_INFO("Removing old temp dir : " << foundTmpDir);
-            ::boost::filesystem::remove_all(foundTmpDir);
+            fs::remove_all(foundTmpDir);
         }
     }
 

@@ -65,7 +65,15 @@ public:
      */
     FWTOOLS_API static bool isProcessRunning(int pid) throw();
 
-
+    /**
+     * @brief Sets the temporary folder prefix.
+     * The prefix must be set before the first call to getTemporaryFolder,
+     * otherwise, it won't be used.
+     */
+    static void setTempPrefix(const std::string &prefix)
+    {
+        s_tempPrefix = prefix;
+    };
 
 protected:
 
