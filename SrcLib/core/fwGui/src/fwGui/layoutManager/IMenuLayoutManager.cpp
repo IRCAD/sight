@@ -63,6 +63,11 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
                 info.m_shortcut = menuItem->getExistingAttributeValue("shortcut") ;
             }
 
+            if( menuItem->hasAttribute("icon") )
+            {
+                info.m_icon = menuItem->getExistingAttributeValue("icon") ;
+            }
+
             if( menuItem->hasAttribute("style") )
             {
                 std::string style = menuItem->getExistingAttributeValue("style") ;
