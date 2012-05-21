@@ -72,8 +72,11 @@ void ArrayXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer, ::fwData
                 saveIsRequired = false;
 
                 ::boost::filesystem::path fileDest = binSaver->getFullPath();
-                ::boost::filesystem::path fileSrc = manager->getDumpedFilePath( (void ** ) array->getBufferObject()->getBufferPointer() );
-                ::boost::filesystem::copy_file( fileSrc, fileDest );
+                if (! ::boost::filesystem::exists(fileDest))
+                {
+                    ::boost::filesystem::path fileSrc = manager->getDumpedFilePath( (void ** ) array->getBufferObject()->getBufferPointer() );
+                    ::boost::filesystem::copy_file( fileSrc, fileDest );
+                }
             }
         }
 
