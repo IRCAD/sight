@@ -27,7 +27,12 @@
 #include "DicomTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( DicomTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::gdcmIO::ut::DicomTest );
+
+namespace gdcmIO
+{
+namespace ut
+{
 
 const unsigned int NBPTS   = 100;
 const unsigned int NBCELLS = 100;
@@ -428,3 +433,7 @@ void DicomTest::checkDistance()
 }
 
 //------------------------------------------------------------------------------
+
+} // namespace ut
+} // namespace gdcmIO
+

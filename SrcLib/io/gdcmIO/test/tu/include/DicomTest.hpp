@@ -14,6 +14,11 @@
 #include <fwData/PatientDB.hpp>
 #include <fwData/Mesh.hpp>
 
+namespace gdcmIO
+{
+namespace ut
+{
+
 class DicomTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DicomTest );
@@ -43,5 +48,8 @@ private:
     ::fwData::PatientDB::sptr m_readedPatientDB;
 
 };
+
+} // namespace ut
+} // namespace gdcmIO
 
 #endif // _FWVTKGDCMIO_TEST_TU_DICOMTEST_HPP_

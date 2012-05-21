@@ -29,7 +29,12 @@
 #include "RealDataDicomTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( RealDataDicomTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::gdcmIO::ut::RealDataDicomTest );
+
+namespace gdcmIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -276,3 +281,6 @@ void RealDataDicomTest::testReadWritePatientDB()
 }
 
 //------------------------------------------------------------------------------
+
+} // namespace ut
+} // namespace gdcmIO
