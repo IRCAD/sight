@@ -42,13 +42,6 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
-
-
-
-
 };
-
-
-
 
 } //namespace visuVTKAdaptor

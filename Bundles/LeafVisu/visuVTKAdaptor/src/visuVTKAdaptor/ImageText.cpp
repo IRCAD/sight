@@ -54,6 +54,7 @@ void ImageText::doStart() throw(::fwTools::Failed)
     this->updateImageInfos(image);
     this->updateTransferFunction(image, this->getSptr());
     this->installTFObserver( this->getSptr() );
+    this->doUpdate();
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +103,7 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
                 imageHelper.getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
     }
 
-    setText(ss.str());
+    this->setText(ss.str());
 
     this->setVtkPipelineModified();
 }

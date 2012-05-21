@@ -27,7 +27,7 @@ Text::Text() throw()
 //    m_mapper->GetTextProperty()->SetFontFamilyToArial();
     m_mapper->GetTextProperty()->SetFontFamilyToCourier(); // Fixed-width font
     m_mapper->GetTextProperty()->SetFontSize(20);
-    m_mapper->GetTextProperty()->ShadowOn(); // better constast
+    m_mapper->GetTextProperty()->ShadowOn(); // better contrast
     m_mapper->GetTextProperty()->BoldOn();
 //    m_mapper->GetTextProperty()->ItalicOn();
 
