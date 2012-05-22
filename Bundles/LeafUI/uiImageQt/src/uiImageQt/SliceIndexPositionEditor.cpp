@@ -252,7 +252,6 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
     msg->setSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    SliceIndexPositionEditor::SLICE_INDEX_FIELDID[m_orientation];
     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< ::fwData::Integer >( fieldID )->value() = index;

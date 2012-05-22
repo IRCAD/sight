@@ -62,8 +62,9 @@ public:
     static ImagesProbingCallback *New()
     { return new ImagesProbingCallback(); }
 
-    ImagesProbingCallback() : m_mouseMoveObserved(false),
-                              m_priority(-1)
+    ImagesProbingCallback()
+        : m_priority(-1),
+          m_mouseMoveObserved(false)
     {
         m_picker = NULL;
         this->PassiveObserverOff();

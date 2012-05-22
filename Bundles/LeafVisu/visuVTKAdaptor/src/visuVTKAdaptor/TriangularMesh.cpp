@@ -854,13 +854,13 @@ void TriangularMesh::updateMapper()
 
     SLM_ASSERT("Bad vtkPolyData", m_polyData);
 
-    if( algo = vtkPolyDataAlgorithm::SafeDownCast(m_pipelineInput) )
+    if( (algo = vtkPolyDataAlgorithm::SafeDownCast(m_pipelineInput)) )
     {
         algo->SetInput( m_polyData );
         SLM_ASSERT ("missing mapper input", m_mapperInput);
         m_mapper->SetInputConnection(m_mapperInput);
     }
-    else if (mapper = vtkPolyDataMapper::SafeDownCast(m_pipelineInput) )
+    else if ( (mapper = vtkPolyDataMapper::SafeDownCast(m_pipelineInput)) )
     {
         SLM_ASSERT ("mapper input should be 0", m_mapperInput == 0 );
         mapper->SetInput( m_polyData );

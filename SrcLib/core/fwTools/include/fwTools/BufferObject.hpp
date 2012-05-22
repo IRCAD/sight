@@ -82,8 +82,8 @@ public:
          * @param bo BufferObject to lock
          */
         LockBase( SPTR(T) bo ) :
-            m_bufferObject(bo),
-            m_count(0)
+            m_count(0),
+            m_bufferObject(bo)
         {
             SLM_ASSERT("Can't lock NULL object", bo);
             m_count = bo->m_count;

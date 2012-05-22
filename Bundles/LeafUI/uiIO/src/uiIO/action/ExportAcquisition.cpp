@@ -94,7 +94,6 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
         if(!pAcquisition)
         {
             std::string msgInfo = "Sorry, it is impossible to export acquisition. There are not selected patients in the software.";
-            ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Acquisition export");
             messageBox.setMessage( msgInfo );
@@ -123,7 +122,6 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
     {
 
         std::string msgInfo = "Sorry, it is impossible to export acquisition. There are not loaded patients in the software.";
-        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Image export");
         messageBox.setMessage( msgInfo );

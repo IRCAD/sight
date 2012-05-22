@@ -243,7 +243,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                 files->Initialize();
 
                 std::vector< std::string > listOfFiles = iter->second;
-                int nb = listOfFiles.size();
                 if( !b )
                 {
                     SLM_WARN ( "Failed to sort:" );
@@ -387,7 +386,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     double thickness = medprop->GetSliceThicknessAsDouble();//"0018|0050"
                     //std::string interSliceStr= "0018|0088"
                     //std::vector<double> vRescale = gdcm::ImageHelper::GetRescaleInterceptSlopeValue(localReader.GetFile());
-                    double rescale=0.0;//(vRescale.size()>0)?vRescale[0]:0.0;
                     double center=0.0;
                     double width=0.0;
                     if (medprop->GetNumberOfWindowLevelPresets())//FIXME : Multiple preset !!!

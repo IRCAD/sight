@@ -118,7 +118,6 @@ size_t Array::resize(
         ) throw(::fwData::Exception)
 {
     nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
-    size_t oldBufSize = this->getSizeInBytes();
     size_t bufSize = computeSize(type.sizeOf(), size, nbOfComponents);
 
     if(reallocate && (m_isBufferOwner || m_attrBufferObject->isEmpty()))

@@ -65,7 +65,6 @@ std::string arlCore::SmartPointList::getString( void ) const
         for( j=0 ; j<m_listsByCam[i].size() ; ++j )
         {
             s<<m_listsByCam[i][j]->getString();
-            unsigned int h=(unsigned int)m_listsByCam[i].size();
         }
     }
     s<<"\n";
@@ -416,9 +415,9 @@ unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, cons
     // Actuellement inutile car l'algo actuel prend en compte le premier et le second
 
     // On retient que les 'Best'*100% points les plus proches de la droite epipolaire
-    const double Best = 0.1; //]0,1]
+    // const double Best = 0.1; //]0,1]
     // Garde au minimum les BestMin premiers quelque soit le pourcentage
-    const unsigned int BestMin = 100;
+    // const unsigned int BestMin = 100;
 
     // Cas avec 2 cameras - TODO : avec n cameras
     // distanceTab[no point de la cam0][no point de la cam 1]
@@ -483,7 +482,7 @@ unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, cons
 /*                      for( l=0 ; l<distances.size() ; ++l )
                             if(l+1>BestMin && (l+1)/distances.size()>Best)
                                 distances[l].first = DBL_MAX;
-*/                      // Cas avec 2 cameras - TODO : avec n cameras                       
+*/                      // Cas avec 2 cameras - TODO : avec n cameras
                         if(i<2 && j<2)
                         {
                             unsigned int cam0,cam1,index;
@@ -507,7 +506,7 @@ unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, cons
         double maxSecondDistance = 0; // Indice de confiance
         int chosenPoint = -1;
         for( j=0 ; j<distanceTab[i].size() ; ++j )
-        {   
+        {
             double minDistofsecond, meanDistToLine = (distanceTab[i][j](0)+distanceTab[i][j](2))/2;
             if(distanceTab[i][j](1) < distanceTab[i][j](3))
                 minDistofsecond = distanceTab[i][j](1);

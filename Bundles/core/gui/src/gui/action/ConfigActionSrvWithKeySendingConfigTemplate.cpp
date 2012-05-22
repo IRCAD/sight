@@ -33,11 +33,11 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySend
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfigTemplate() throw() :
-        m_fieldAdaptors ( ::fwData::Composite::New() ),
-        m_viewConfigTitlePrefixKey (""),
-        m_iconConfigId(""),
         m_tooltipConfigTitleKey(""),
-        m_isUnique(false)
+        m_iconConfigId(""),
+        m_viewConfigTitlePrefixKey (""),
+        m_isUnique(false),
+        m_fieldAdaptors(::fwData::Composite::New())
 {
     m_closableConfig = true;
     addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );

@@ -128,7 +128,6 @@ void DicomSurface::setFromData(fwData::Reconstruction::csptr a_reconstruction)
 
     ::fwData::Array::sptr cellData = mesh->getCellDataArray();
     ::fwComEd::helper::Array cellDataHelper(cellData);
-    ::fwData::Mesh::Id cellDataSize = mesh->getCellDataSize();
     ::fwData::Mesh::CellValueType* cells = cellDataHelper.begin< ::fwData::Mesh::CellValueType >();
 
     // Initialize members

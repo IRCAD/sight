@@ -196,8 +196,6 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
 
     assert( newObject.get() );
 
-    bool classicObject = ( xmlStrcmp( xmlNode->name, BAD_CAST "Field" ) != 0 ) ;
-
     // classic object ignore all children expect Field
     // labeledObject manage all children
     while ( child!=NULL )

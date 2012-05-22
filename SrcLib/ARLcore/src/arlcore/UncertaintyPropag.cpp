@@ -7,7 +7,7 @@
 #include <arlcore/UncertaintyPropag.h>
 #include <stdlib.h>
 
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <cstdio>
 
 #include <vnl/algo/vnl_matrix_inverse.h>
@@ -29,7 +29,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         for(l=0;l<camsList.size();++l)
             if( list2D[l]->getCovMatrix().is_zero() )
                 perfect_reproj2D_nb++;
-                
+
         if(perfect_reproj2D_nb > 1)// it means that 2 lines are perfect, then the cov matrix is zero
         {
             arlCore::vnl_covariance_matrix &cov_mat = point3D.getCovMatrix();
@@ -50,7 +50,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         for(l=0;l<camsList.size();++l)
             if( list2D[l]->getCovMatrix().is_zero() )
                 perfect_reproj2D_nb++;
-                
+
         if(perfect_reproj2D_nb > 1)// it means that 2 lines are perfect, then the cov matrix is zero
         {
             arlCore::vnl_covariance_matrix &cov_mat = point3D.getCovMatrix();
@@ -65,7 +65,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
     vnl_matrix_fixed<double,3,3> H, Hinv, Gamma, Sigma_Point_Rec;
     H.fill(0.0);
     Gamma.fill(0.0);
-    
+
     vnl_matrix_fixed<double,1,3> mat_Cint;
     vnl_matrix_fixed<double,2,1> tmp_mat_2_1;
     vnl_matrix_fixed<double,1,2> tilde_mi_sous_mi;
@@ -83,14 +83,14 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         mat_Cint.set_row(0,camsList[l]->getCint());
         tmp_mat_2_1.set_column(0,p2D_undistorted.getCoordinates());
         if(verbose){std::cerr<<"mat_Cint= "<<mat_Cint<<std::endl;
-        std::cerr<<"tmp_mat_2_1= "<<tmp_mat_2_1<<std::endl;         
-        std::cerr<<"tmp_arl_pt= "<<tmp_arl_pt.print()<<std::endl;}          
+        std::cerr<<"tmp_mat_2_1= "<<tmp_mat_2_1<<std::endl;
+        std::cerr<<"tmp_arl_pt= "<<tmp_arl_pt.print()<<std::endl;}
         if(verbose){std::cerr<<"Qint = "<<camsList[l]->getQint().as_matrix()<<std::endl;
         std::cerr<<"tmp_mat_2_1 * mat_Cint "<<tmp_mat_2_1 * mat_Cint<<std::endl;}
         //dml_dM[l] = (camsList[l]->getQint().as_matrix() + toto.as_matrix());// * camsList[l]->getExtrinsic().getRotation().as_matrix();
         dml_dM[l] = (camsList[l]->getQint().as_matrix() - tmp_mat_2_1 * mat_Cint) * camsList[l]->getExtrinsic().getRotation();
         dml_dM[l] /= inner_product_Cl_Pil_M;
-        if(verbose){std::cerr<<"dml_dM[l]= "<<dml_dM[l]<<std::endl;}    
+        if(verbose){std::cerr<<"dml_dM[l]= "<<dml_dM[l]<<std::endl;}
 
         vnl_matrix_fixed<double,3,3> U;
         arlCore::Point point3Dreproj(2);
@@ -118,7 +118,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
             H += dml_dM[l].transpose()* sigma2D_inv * dml_dM[l] + 1/inner_product_Cl_Pil_M *(U+U.transpose());
             //std::cerr<<"H^l="<<H<<std::endl;
             Gamma += dPhi_dml[l] * list2D[l]->getCovMatrix() *dPhi_dml[l].transpose();
-        }       
+        }
     }
     if(verbose){std::cerr<< "Hessian matrix ="<< H<<std::endl;}
     Hinv = vnl_matrix_inverse<double>(H);
@@ -148,7 +148,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
             arlCore::Point focal_m1(3), focal_m2(3);
         camsList[0]->pixelPlaneToUnitFocalPlane( *(list2D[0]), focal_m1, false );
         camsList[1]->pixelPlaneToUnitFocalPlane( *(list2D[1]), focal_m2, false );
-    
+
         arlCore::vnl_covariance_matrix &cov_mat_focal_m1 = focal_m1.getCovMatrix();
         arlCore::vnl_covariance_matrix &cov_mat_focal_m2 = focal_m2.getCovMatrix();
         vnl_matrix_fixed<double,3,3> tmp;
@@ -163,16 +163,16 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         tmp.put(0,0,(list2D[1]->getCovMatrix()[0][0]) / (camsList[1]->getfx()*camsList[1]->getfx()));
         tmp.put(1,1,(list2D[1]->getCovMatrix()[1][1]) / (camsList[1]->getfy()*camsList[1]->getfy()));
         if(verbose){std::cerr<<"tmp ="<< tmp <<"\n";}
-        
+
 //      tmp = vnl_transpose(P.getRotation()) * tmp * P.getRotation();
         tmp = P.getRotation() * tmp * vnl_transpose(P.getRotation() );
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
                 cov_mat_focal_m2.put(i,j,tmp[i][j]);// = Sigma_Point_Rec;
-        
+
         if(verbose_cov){std::cerr<<"cov_mat_focal_m1 =\n"<<cov_mat_focal_m1<<"\n";
         std::cerr<<"cov_mat_focal_m2 =\n"<<cov_mat_focal_m2<<"\n";}
-        
+
         var.put(0, 0.0); var.put(1, 0.0); var.put(2, 0.0); var.put(3, 1.0);
         C2 = P.as_matrix() * var.as_vector();
         if(verbose){std::cerr<<"C2 ="<<C2<<"\n";}
@@ -190,9 +190,9 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
                 cov_mat_m1C1.put(i,j,cov_mat_focal_m1[i][j]);
-                
+
         if(verbose_cov){std::cerr<<"cov_mat_focal_m1C1 =\n"<<cov_mat_m1C1<<"\n";}
-                
+
         var  = C2 - m2;
         arlCore::Point m2C2( C2[0] - m2[0], C2[1] - m2[1], C2[2] - m2[2]);
         if(verbose){std::cerr<<"m2C2 ="<<m2C2.print()<<"\n";}
@@ -232,22 +232,22 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         //landa1 = num/denom;
         arlCore::Point landa1(1);
         landa1.divide(dot1,dot2);
-        
+
         arlCore::Point I(3),J(3), int_I(3), int_J(3);
         int_I.multiply(landa1, m2C2);
 
-        I.set(0, C2(0) - landa1[0]* m2C2[0] );  
+        I.set(0, C2(0) - landa1[0]* m2C2[0] );
         I.set(1, C2(1) - landa1[0]* m2C2[1] );
         I.set(2, C2(2) - landa1[0]* m2C2[2] );
         arlCore::vnl_covariance_matrix &cov_mat_I = I.getCovMatrix();
-        
+
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
                 cov_mat_I.put(i,j, int_I.getCovMatrix()[i][j]);
 //      for(i=0;i<3;++i)
 //          for(j=0;j<3;++j)
 //              cov_mat_I.put(i,j, landa1[0]*landa1[0]*m2C2.getCovMatrix()[i][j]);
-        
+
         if(verbose_cov){std::cerr<<"cov_mat_int_I =\n"<<int_I.getCovMatrix()<<"\n";
         std::cerr<<"cov_mat_I =\n"<<I.getCovMatrix()<<"\n";}
         // Determination du deuxieme point J sur la droite de reprojection
@@ -261,7 +261,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
 //          dot2 +=  m1C1(i) * n2(i);
 //      }
         dot1.dotProduct(C1C2, n2);
-        dot2.dotProduct(m1C1, n2);  
+        dot2.dotProduct(m1C1, n2);
         //dot2.set(0, -1*dot2[0]);
         if(verbose){std::cerr<<"dot1="<<dot1[0]<<"\n";
         std::cerr<<"dot2="<<dot2[0]<<"\n";}
@@ -271,8 +271,8 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         landa2.divide(dot1,dot2);
         if(verbose){std::cerr<<"landa2="<<landa2[0]<<"\n";}
         int_J.multiply(landa2, m1C1);
-        
-        J.set(0,  landa2[0]* m1C1[0] );  
+
+        J.set(0,  landa2[0]* m1C1[0] );
         J.set(1,  landa2[0]* m1C1[1] );
         J.set(2,  landa2[0]* m1C1[2] );
         arlCore::vnl_covariance_matrix &cov_mat_J = J.getCovMatrix();
@@ -282,7 +282,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
 //      for(i=0;i<3;++i)
 //          for(j=0;j<3;++j)
 //              cov_mat_J.put(i,j, landa2[0]*landa2[0]*m1C1.getCovMatrix()[i][j]);
-                
+
         if(verbose_cov){std::cerr<<"cov_mat_J_int =\n"<<int_J.getCovMatrix()<<"\n";
         std::cerr<<"cov_mat_J =\n"<<J.getCovMatrix()<<"\n";}
         // On prend le barycentre de I et J comme estimation de la reconstruction
@@ -290,35 +290,35 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         point3D_rep_cam.x(0.5*I[0] + 0.5*J[0]);
         point3D_rep_cam.y(0.5*I[1] + 0.5*J[1]);
         point3D_rep_cam.z(0.5*I[2] + 0.5*J[2]);
-        
+
         if(verbose){std::cerr<<"point3D_rep_cam="<<point3D_rep_cam.print()<<"\n";}
-        
+
         arlCore::vnl_covariance_matrix &cov_mat_point3D = point3D.getCovMatrix();
         vnl_matrix<double> toto(3,3);
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
                 toto.put(i,j, 0.5*0.5*I.getCovMatrix()[i][j] +  0.5*0.5*J.getCovMatrix()[i][j] );
-    
+
         if(verbose_cov){std::cerr<<"cov_mat_toto =\n"<< toto <<"\n";}
 
         toto = camsList[0]->getInvExtrinsic().getRotation() * toto * camsList[0]->getExtrinsic().getRotation();
 //      toto = camsList[0]->getInvExtrinsic().getRotation() * toto;
-    
+
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
                 cov_mat_point3D.put(i,j, toto[i][j]);
         if(verbose_cov){std::cerr<<"cov_mat_point3D =\n"<< cov_mat_point3D <<"\n";}
-        
+
         if( cov_mat_point3D[0][0] < 0.0 || cov_mat_point3D[1][1] < 0.0 || cov_mat_point3D[2][2] < 0.0)
             {std::cerr<<"Covariance Matrix has negative values "<<std::endl;assert(true);}
     }
-    return true;    
+    return true;
 }
 
-void arlCore::WriteTableau ( char *nom, std::vector<double> tab, unsigned int n)
+void arlCore::WriteTableau ( const char *nom, std::vector<double> tab, unsigned int n)
 {
     unsigned int  i;
-    FILE *f = fopen (nom, "w"); 
+    FILE *f = fopen (nom, "w");
     for( i=0 ; i<n ; ++i )
         if(tab[i] != 0)
     fprintf (f,"%1.8f\n", tab[i]);
@@ -330,7 +330,7 @@ double arlCore::CumulativeChi2_3(double mu2)
     return arlCore::IncompleteGammaP(3.0/2., mu2/2.);
 }
 
-double* arlCore::KSValidation3D(char* index_file)
+double* arlCore::KSValidation3D(const char* index_file)
 {
     double I,*Itab,I2,ksp,ksdiff;
     int N, i;
@@ -410,7 +410,7 @@ double arlCore::LnGamma( double xx )
     static double cof[6]=
         {76.18009172947146, -86.50532032941677, 24.01409824083091,
         -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5};
-    unsigned int i;  
+    unsigned int i;
     y=x=xx;
     tmp=x+5.5;
     tmp -= (x+0.5)*log(tmp);
@@ -455,7 +455,7 @@ double IGammaSeries(double a, double x)
     const unsigned int ITMAX = 100;
     unsigned int i;
     double sum,del,ap, gamser;
-    if( x<=0.0 ) 
+    if( x<=0.0 )
     {
         std::cerr<<"Error in IGammaSeries : x==0.0\n";
         return 0.0;
@@ -464,7 +464,7 @@ double IGammaSeries(double a, double x)
     //       E_ERR(x < 0.0, E_ERRNULL, -2.0,"IGammaSeries",
     //      "x less than 0 in routine gser");
     //       return 0.0;
-    //     } 
+    //     }
     else
     {
         const double gln = arlCore::LnGamma(a);
@@ -490,7 +490,7 @@ double IGammaSeries(double a, double x)
 double arlCore::IncompleteGammaP(double a, double x)
 {   // Incomplete Gamma Function P(a,x)
     // Cumulative pdf of chi^2_d : IncompleteGammaP(d/2, mu2/2)
-//   E_ERR (x < 0.0 || a <= 0.0, E_ERRNULL,-1., 
+//   E_ERR (x < 0.0 || a <= 0.0, E_ERRNULL,-1.,
 //   "IncompleteGammaP", "Invalid arguments (must be positive)");
     if(x < (a+1.0)) return IGammaSeries(a,x);
     else return 1.0-IGammaCFraction(a,x);
@@ -547,7 +547,7 @@ double arlCore::IncompleteBetaI(register double a, register double b,register  d
   register double bt;
 //   E_ERR (x < 0.0 || x > 1, E_ERRNULL,-1.,
 //   "IncompleteBetaI","Invalid x argument (must be between 0 and 1)");
-  if(x == 0.0 || x == 1.0) 
+  if(x == 0.0 || x == 1.0)
     bt=0.0;
   else
     bt=exp(LnGamma(a+b)-LnGamma(a)-LnGamma(b)+a*log(x)+b*log(1.0-x));
@@ -570,7 +570,7 @@ double CumulativeHotelling(double p, double n, double x)
 int dcmp(double *a, double *b)
 {
     if( *a<*b ) return(-1);
-    else if(*a > *b) return(+1); 
+    else if(*a > *b) return(+1);
         else return(0);
 }
 
@@ -616,9 +616,9 @@ double arlCore::DoubleKSTest( double *data1, int n1, double *data2, int n2, doub
 /*----------------------------------------------------------------------*/
     int j1=0,j2=0;
     double d1,d2,dt,en1,en2,en,fn1=0.0,fn2=0.0;
-    qsort( (void *) data1,  n1, sizeof(double),  
+    qsort( (void *) data1,  n1, sizeof(double),
         (int(*)(const void *, const void *)) dcmp);
-    qsort( (void *) data2,  n2, sizeof(double),  
+    qsort( (void *) data2,  n2, sizeof(double),
         (int(*)(const void *, const void *)) dcmp);
     en1=n1;
     en2=n2;

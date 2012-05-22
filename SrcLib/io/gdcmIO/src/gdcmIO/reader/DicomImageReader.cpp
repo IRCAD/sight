@@ -388,6 +388,9 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
     case ::gdcm::PixelFormat::FLOAT32:
         gdcmGlobalBuffer = new float[allImagesSize];
         break;
+    default:
+        // ignore
+        break;
     }
     OSLM_TRACE("Global buffer size : " << allImagesSize);
 
@@ -457,6 +460,9 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
                 case ::gdcm::PixelFormat::FLOAT32:
                     destBufferImg = new float[size];
                     bufferSize = size*sizeof(float);
+                    break;
+                default:
+                    // Ignore
                     break;
                 }
                 if(!r.Rescale((char*)destBufferImg, inBuffer, size))

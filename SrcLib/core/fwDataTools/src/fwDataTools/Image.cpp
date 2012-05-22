@@ -65,7 +65,6 @@ void Image::generateImage(::fwData::Image::sptr image,
 
 void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type type)
 {
-    ::boost::uint8_t dim = 3;
     image->setType(type);
 
     ::fwData::Image::SizeType size(3);

@@ -12,15 +12,15 @@
 #include <arlcore/vnl_rotation3d_vector.h>
 
 arlCore::Scene::Scene( PlaneSystem &universe ):
-m_universe(universe),
 m_tags(new Tags(universe)),
-m_cameras(universe)
+m_cameras(universe),
+m_universe(universe)
 {}
 
 arlCore::Scene::Scene( PlaneSystem &universe, Tags* tags ):
-m_universe(universe),
 m_tags(tags),
-m_cameras(universe)
+m_cameras(universe),
+m_universe(universe)
 {}
 
 arlCore::Scene::~Scene( void )
@@ -70,7 +70,7 @@ bool arlCore::Scene::plot( void ) const
     f2<<"pause -1 \"Hit return to continue\"\n";
     f2.close();
     system(GNUPLOT_EXE );
-    //exec("d:/gnuplot/bin/wgnuplot", "c:/000000.dem" ); 
+    //exec("d:/gnuplot/bin/wgnuplot", "c:/000000.dem" );
     return true;
 }
 
@@ -122,13 +122,13 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
     {
         dist = CameraPOV[i]->distance(centre);
         scalar = (dist+distMin)/dist;
-        for( j=0 ; j<3 ; ++j )            
+        for( j=0 ; j<3 ; ++j )
             CameraPOV[i]->set(j,((*CameraPOV[i])[j]-centre[j])*scalar + centre[j] );
     }
     //for( j=0 ; j<nb_camera ; ++j )
         //cerr<< "CameraPOV 2= " << CameraPOV[j]->getString() << endl;
     // tirage des parametres intrinseques
-    Point tmp_intrinsic((unsigned int)intrinsic_param.size()), 
+    Point tmp_intrinsic((unsigned int)intrinsic_param.size()),
     tmp_intrinsic_var((unsigned int)intrinsic_param.size());
     std::vector<Point> tirage_intrinsic;
     for( i=0 ; i<intrinsic_param.size() ; ++i )
@@ -139,7 +139,7 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
         for( j=0 ; j<intrinsic_param.size() ; ++j )
             tmp_intrinsic_var.addUniformNoise(j, intrinsic_range[j]);
         tirage_intrinsic.push_back(tmp_intrinsic_var);
-        tmp_intrinsic_var = tmp_intrinsic;           
+        tmp_intrinsic_var = tmp_intrinsic;
         //cerr<< "tirage_intrinsic = " << tirage_intrinsic[j].getString() << endl;
     }
     // construction des cameras synthetiques
@@ -177,25 +177,25 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
     CameraPOV_before.shapeRandom(nbCameras,ARLCORE_SHAPE_SOLIDANGLE, centre, sphereRadius, angleMin);
     //for(j=0; j<nb_camera; j++)
         //cerr<< "CameraPOV 1= " << CameraPOV[j]->getString() << endl;
-        
+
     // choose a random direction for the solid angle
     vnl_vector_fixed<double,3> t_null(0,0,0);
     vnl_rotation3d_vector random_vector;
     random_vector.uniform_random();// a random rotation is created
     vnl_rigid_matrix mat( (vnl_rotation3d_matrix) random_vector, t_null);//this rigid matrix with the random rotation is applied to CameraPOV_before
     mat.trf(CameraPOV_before, CameraPOV);
-    
+
     for( i=0 ; i<nbCameras ; ++i )
     {
         dist = CameraPOV[i]->distance(centre);
         scalar = (dist+distMin)/dist;
-        for( j=0 ; j<3 ; ++j )            
+        for( j=0 ; j<3 ; ++j )
             CameraPOV[i]->set(j,((*CameraPOV[i])[j]-centre[j])*scalar + centre[j] );
     }
     //for(j=0; j<nb_camera; j++)
         //cerr<< "CameraPOV 2= " << CameraPOV[j]->getString() << endl;
     // tirage des parametres intrinseques
-    Point tmp_intrinsic((unsigned int)intrinsic_param.size()), 
+    Point tmp_intrinsic((unsigned int)intrinsic_param.size()),
     tmp_intrinsic_var((unsigned int)intrinsic_param.size());
     std::vector<Point> tirage_intrinsic;
     for( i=0 ; i<intrinsic_param.size() ; ++i )
@@ -206,7 +206,7 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
         for( j=0 ; j<intrinsic_param.size() ; ++j )
             tmp_intrinsic_var.addUniformNoise(j, intrinsic_range[j]);
         tirage_intrinsic.push_back(tmp_intrinsic_var);
-        tmp_intrinsic_var = tmp_intrinsic;           
+        tmp_intrinsic_var = tmp_intrinsic;
         //cerr<< "tirage_intrinsic = " << tirage_intrinsic[j].getString() << endl;
     }
     // construction des cameras synthetiques
@@ -260,7 +260,6 @@ unsigned int arlCore::Scene::detection( unsigned int camNo, unsigned int tagNo, 
     assert(m_tags->getTag(tagNo)!=0);
     PointList &tagPoints=m_tags->getTag(tagNo)->getGeometry();
     vnl_rigid_matrix T;
-    const bool Transfo = m_universe.getTrf( m_tags->getTag(tagNo)->getPlane(), m_cameras[camNo-1].getPlane(), T );
     //T.invert();
     for( i=0 ; i<tagPoints.size() ; ++i )
     {

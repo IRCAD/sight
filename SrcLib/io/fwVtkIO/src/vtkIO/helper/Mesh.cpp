@@ -243,7 +243,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkP
     {
         ::fwComEd::helper::Array arrayHelper(pointColorArray);
 
-        ::fwData::Mesh::Id nbPoints = meshSrc->getNumberOfPoints() ;
         vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         size_t nbComponents = pointColorArray->getNumberOfComponents();
         colors->SetNumberOfComponents(nbComponents);
@@ -252,7 +251,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkP
         unsigned char *pointColor = arrayHelper.begin< unsigned char >();
         unsigned char *pointColorEnd = arrayHelper.end< unsigned char >();
 
-        size_t nbElements =  pointColorArray->getNumberOfElements();
         for (; pointColor != pointColorEnd; pointColor+=nbComponents)
         {
             colors->InsertNextTupleValue(pointColor);
@@ -283,7 +281,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPo
     {
         ::fwComEd::helper::Array arrayHelper(cellColorArray);
 
-        ::fwData::Mesh::Id nbCells = meshSrc->getNumberOfCells() ;
         vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
         size_t nbComponents = cellColorArray->getNumberOfComponents();
         colors->SetNumberOfComponents(nbComponents);
@@ -293,7 +290,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPo
         unsigned char *cellColor = arrayHelper.begin< unsigned char >();
         unsigned char *cellColorEnd = arrayHelper.end< unsigned char >();
 
-        size_t nbElements =  cellColorArray->getNumberOfElements();
         for (; cellColor != cellColorEnd; cellColor+=nbComponents)
         {
             colors->InsertNextTupleValue(cellColor);
@@ -325,7 +321,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointNormals(vtkSmartPointer<vt
     {
         ::fwComEd::helper::Array arrayHelper(pointNormalsArray);
 
-        ::fwData::Mesh::Id nbPoints = meshSrc->getNumberOfPoints();
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         size_t nbComponents = pointNormalsArray->getNumberOfComponents();
         normals->SetNumberOfComponents(nbComponents);
@@ -333,7 +328,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointNormals(vtkSmartPointer<vt
         float *pointNormal = arrayHelper.begin< float >();
         float *pointNormalEnd = arrayHelper.end< float >();
 
-        size_t nbElements =  pointNormalsArray->getNumberOfElements();
         for (; pointNormal != pointNormalEnd; pointNormal+=nbComponents)
         {
             normals->InsertNextTupleValue(pointNormal);
@@ -367,7 +361,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
     {
         ::fwComEd::helper::Array arrayHelper(cellNormalsArray);
 
-        ::fwData::Mesh::Id nbCells = meshSrc->getNumberOfCells();
         vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
         size_t nbComponents = cellNormalsArray->getNumberOfComponents();
         normals->SetNumberOfComponents(nbComponents);
@@ -375,7 +368,6 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
         float *cellNormal = arrayHelper.begin< float >();
         float *cellNormalEnd = arrayHelper.end< float >();
 
-        size_t nbElements =  cellNormalsArray->getNumberOfElements();
         for (; cellNormal != cellNormalEnd; cellNormal+=nbComponents)
         {
             normals->InsertNextTupleValue(cellNormal);

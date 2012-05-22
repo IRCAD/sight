@@ -24,9 +24,9 @@ m_type(type),
 m_confidence(0),
 m_visibility(true),
 m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+m_scalar(-1.0),
 m_isColored(false),
 m_colour(0,0,0),
-m_scalar(-1.0),
 m_ponderation(1.0),
 m_error(-1.0)
 {
@@ -47,9 +47,9 @@ m_type(type),
 m_confidence(0),
 m_visibility(true),
 m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+m_scalar(-1.0),
 m_isColored(false),
 m_colour(0,0,0),
-m_scalar(-1.0),
 m_ponderation(1.0),
 m_error(-1.0)
 {
@@ -71,9 +71,9 @@ m_type(type),
 m_confidence(0),
 m_visibility(true),
 m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+m_scalar(-1.0),
 m_isColored(false),
 m_colour(0,0,0),
-m_scalar(-1.0),
 m_ponderation(1.0),
 m_error(-1.0)
 {
@@ -100,9 +100,9 @@ void arlCore::Point::init( unsigned int dim )
     m_confidence=0;
     m_visibility=true;
     m_status=ARLCORE_POINT_STATUS_UNKNOWN;
+    m_scalar=-1.0;
     m_isColored=false;
     m_colour.setColour(0,0,0);
-    m_scalar=-1.0;
     m_coordinates.set_size(dim);
     m_coordinates.fill(0.0);
     m_covMatrix.set_size(dim,dim);
@@ -161,7 +161,7 @@ void arlCore::Point::copy(const Point& p)
 arlCore::Point::~Point( void )
 {}
 
-std::string arlCore::Point::getString( void ) const 
+std::string arlCore::Point::getString( void ) const
 {
     std::string t;
     switch(m_type)
@@ -175,7 +175,8 @@ std::string arlCore::Point::getString( void ) const
     case ARLCORE_POINT_TYPE_TIP : t="TIP";break;
     case ARLCORE_POINT_TYPE_LINE : t="LINE";break;
     case ARLCORE_POINT_TYPE_SIFT : t="SIFT";break;
-    }   
+    default: break;
+    }
     unsigned int i;
     std::stringstream s;
     s<<std::fixed<<std::setprecision(2);
@@ -195,6 +196,7 @@ std::string arlCore::Point::getString( void ) const
     case ARLCORE_POINT_STATUS_ESTIMATE : s<<" (Estimate)";break;
     case ARLCORE_POINT_STATUS_CLOUD : s<<" (Cloud)";break;
     case ARLCORE_POINT_REPROJECTION : s<<" (Reproj)";break;
+    default: break;
     }
     s<<" Error="<<m_error<<"\n";
     //TODO Display m_covMatrix
@@ -352,7 +354,7 @@ bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, void* &tag, int 
         {
             unsigned int R,G,B;
             f>>R>>G>>B;
-            m_colour.setColour(R,G,B);          
+            m_colour.setColour(R,G,B);
             m_isColored=true;
         }
         if(token=="Coordinates" && dim>0)
@@ -545,7 +547,7 @@ bool arlCore::Point::pond( const Point& p )
         m_coordinates.put(i,m_coordinates.get(i)+p.get(i));
         arlCore::addValue(m_stat[i], p.get(i));
     }
-    m_ponderation /= 1.0 + m_ponderation;       
+    m_ponderation /= 1.0 + m_ponderation;
     return true;
 }
 
@@ -667,7 +669,7 @@ bool arlCore::Point::addGaussianNoise( const double std )
 
 void arlCore::Point::addUniformNoise( const unsigned int index, const double range )
 {
-    set(index, get(index)+arlRandom::Random::uniformDoubleRnd(-range, range));  
+    set(index, get(index)+arlRandom::Random::uniformDoubleRnd(-range, range));
 }
 /*
 void arlCore::Point::cubicRandom( const double side )
@@ -732,7 +734,7 @@ bool arlCore::Point::shapeRandom( arlCore::ARLCORE_SHAPE type, const double size
         set(1, get(1) + size/2*sin(phi)*sin(theta) );
         set(2, get(2) + size/2*cos(phi));
         return true;
-    case arlCore::ARLCORE_SHAPE_DISC : 
+    case arlCore::ARLCORE_SHAPE_DISC :
         vec[Dim-1]=0.0;
         do //le point tire appartient au plan xOy i.e. point.z() = 0.O
         { //on ne boucle pas sur la derniere coordonnee
@@ -760,12 +762,12 @@ bool arlCore::Point::shapeRandom( arlCore::ARLCORE_SHAPE type, const double size
             vec[i] = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
         if(vec[1]<0.0) a=-1; else a=1;
         if(vec[2] < 0.0)
-        {   
+        {
             set(0, get(0) + a*size/2 );
             set(1, get(1) + vec[0] );
         }
         else
-        {   
+        {
             set(0, get(0) + vec[0] );
             set(1, get(1) + a*size/2 );
         }
@@ -805,6 +807,7 @@ bool arlCore::Point::shapeRandom( arlCore::ARLCORE_SHAPE type, const double size
         set(1, get(1) + yy);
         set(2, get(2) + zz);
         return true;
+    default: break;
     }
     return false;
 }
@@ -833,7 +836,7 @@ bool arlCore::Point::mult( double scalaire )
 }
 
 bool arlCore::Point::cross_3D(const Point &vec1, const Point &vec2 )
-{   
+{
     unsigned int i,j;
     assert(this->size()==3 && vec1.size()==3 && vec2.size()==3);
     vnl_vector_fixed<double,3> vnl_vec1(vec1[0], vec1[1],vec1[2]), vnl_vec2(vec2[0], vec2[1],vec2[2]), cross_prod;
@@ -852,7 +855,7 @@ bool arlCore::Point::cross_3D(const Point &vec1, const Point &vec2 )
 
 bool arlCore::Point::dotProduct(const Point& vec1, const Point& vec2)
 {
-    assert(this->size()==1);    
+    assert(this->size()==1);
     assert(vec1.size()== vec2.size());
     vnl_matrix<double> vnl_vec1(vec1.size(),1), vnl_vec2(vec1.size(),1);
     vnl_matrix<double> res(1,1);
@@ -873,7 +876,7 @@ bool arlCore::Point::dotProduct(const Point& vec1, const Point& vec2)
 
 bool arlCore::Point::divide(const Point& var1, const Point& var2)
 {
-    assert(this->size()==1 && var1.size() ==1 && var2.size() ==1);  
+    assert(this->size()==1 && var1.size() ==1 && var2.size() ==1);
     vnl_matrix<double> res(1,1);
     //res = [1/y -x/y^2] * [sigma_x^2        0 ] * [  1/y ] = sigma_x^2 / y^2 + x^2/y^4 *sigma_y^2
     //                     [0         sigma_y^2]   [-x/y^2]
@@ -886,7 +889,7 @@ bool arlCore::Point::divide(const Point& var1, const Point& var2)
 bool arlCore::Point::multiply(const Point& scalar, const Point& vec)
 {
     assert( this->size()== vec.size() );
-    assert( scalar.size()==1 ); 
+    assert( scalar.size()==1 );
     vnl_matrix<double> res(vec.size(),vec.size()), jacobien(vec.size(),vec.size()+1), sigma(vec.size()+1,vec.size()+1);
     unsigned int i,j;
     for( i=0 ; i<vec.size() ; ++i )

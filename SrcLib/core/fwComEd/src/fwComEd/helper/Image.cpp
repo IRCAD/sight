@@ -25,8 +25,8 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 Image::Image( ::fwData::Image::sptr image )
-    : m_image(image),
-      m_imageMsg ( new ::fwComEd::ImageMsg() )
+    : m_imageMsg(new ::fwComEd::ImageMsg()),
+      m_image(image)
 {
     if ( image )
     {

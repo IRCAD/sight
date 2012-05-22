@@ -255,6 +255,8 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
         compare &= Patient::compareAcquisition(*iter1, *iter2);
     }
 
+
+
     return compare;
 }
 
@@ -595,7 +597,7 @@ bool Patient::compareMesh( ::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh
 {
     bool compare = true;
 
-    if ( (!mesh1 && mesh2) || (mesh1 && !mesh2) )
+    if ( (! mesh1 && mesh2) || (mesh1 && ! mesh2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Meshes are not equivalent (one mesh has a null sptr)");
@@ -652,7 +654,7 @@ bool Patient::compareMaterial(::fwData::Material::sptr mat1, ::fwData::Material:
 {
     bool compare = true;
 
-    if ( ! mat1 && mat2 || mat1 && ! mat2 )
+    if ( (! mat1 && mat2) || (mat1 && ! mat2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Materials are not equivalent (one Material has a null sptr)");
@@ -683,7 +685,7 @@ bool Patient::compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr co
 {
     bool compare = true;
 
-    if ( ! col1 && col2 || col1 && ! col2 )
+    if ( (! col1 && col2) || (col1 && ! col2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Colors are not equivalent (one Color has a null sptr)");

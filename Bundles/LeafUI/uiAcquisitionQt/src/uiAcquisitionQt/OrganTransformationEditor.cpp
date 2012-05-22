@@ -44,10 +44,10 @@ OrganTransformationEditor::OrganTransformationEditor() throw()
 :   ::gui::editor::IEditor(),
     mReconstructionMap(),
     mTMSUid(),
-    mpReconstructionListBox( 0 ),
-    mpResetButton( 0 ),
     mpSaveButton( 0 ),
     mpLoadButton( 0 ),
+    mpResetButton( 0 ),
+    mpReconstructionListBox( 0 ),
     mpTestButton( 0 )
 {
     addNewHandledEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION );

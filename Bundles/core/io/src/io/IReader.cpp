@@ -116,11 +116,11 @@ void IReader::configuring() throw (fwTools::Failed)
 
     SLM_ASSERT("Sorry, you not manage folder and a folder path is given in the configuration",
             ( this->getIOPathType() & ::io::FOLDER ) ||
-            (! (this->getIOPathType() & ::io::FOLDER)) && (m_configuration->find("folder").size() == 0) );
+               ((! (this->getIOPathType() & ::io::FOLDER)) && (m_configuration->find("folder").size() == 0)) );
 
     SLM_ASSERT("Sorry, you not manage file and a file path is given in the configuration",
             ( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES ) ||
-            (!( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES )) && (m_configuration->find("file").size() == 0) );
+               ((!( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES )) && (m_configuration->find("file").size() == 0)) );
 
     if ( this->getIOPathType() & ::io::FILE )
     {

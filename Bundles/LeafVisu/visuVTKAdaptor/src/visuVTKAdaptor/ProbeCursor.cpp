@@ -63,8 +63,9 @@ public:
     static ProbingCallback *New()
     { return new ProbingCallback(); }
 
-    ProbingCallback() : m_mouseMoveObserved(false),
-                        m_priority(-1)
+    ProbingCallback()
+        : m_priority(-1),
+          m_mouseMoveObserved(false)
     {
         m_picker = NULL;
         this->PassiveObserverOff();

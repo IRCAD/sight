@@ -132,8 +132,8 @@ private:
 //------------------------------------------------------------------------------
 
 Volume::Volume() throw() :
-    ::fwRenderVTK::IVtkAdaptorService(),
     ::fwComEd::helper::MedicalImageAdaptor(),
+    ::fwRenderVTK::IVtkAdaptorService(),
      m_bClippingBoxIsActivate(false),
      m_autoResetCamera(true)
 {
@@ -323,7 +323,6 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     m_volumeMapper->RemoveAllClippingPlanes();
     if (m_clippingPlanes)
     {
-        vtkPlaneCollection *newClippingPlanes = vtkPlaneCollection::New();
         m_volumeMapper->SetClippingPlanes(m_clippingPlanes);
     }
 

@@ -51,7 +51,7 @@ void TransformationMatrix3D::deepCopy( TransformationMatrix3D::csptr _source )
 
 //------------------------------------------------------------------------------
 
-double TransformationMatrix3D::getCoefficient(int l, int c)
+double TransformationMatrix3D::getCoefficient(int l, int c) const
 {
     unsigned int pos = l * MATRIX_SIZE + c;
     assert(pos < m_vCoefficients.size());
