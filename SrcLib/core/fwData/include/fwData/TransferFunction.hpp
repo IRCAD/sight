@@ -41,14 +41,16 @@ public :
     /// Defines color structure for TF
     struct TFColor
     {
+        typedef double ColorType;
+
         /// red color (value [0,1])
-        float r;
+        ColorType r;
         /// green color (value [0,1])
-        float g;
+        ColorType g;
         /// blue color (value [0,1])
-        float b;
+        ColorType b;
         /// alpha (value [0,1])
-        float a;
+        ColorType a;
 
         // Default constructor
         TFColor()
@@ -59,7 +61,7 @@ public :
             a = 0.0;
         };
 
-        TFColor( float _r, float _g, float _b, float _a )
+        TFColor( ColorType _r, ColorType _g, ColorType _b, ColorType _a )
         {
             r = _r;
             g = _g;

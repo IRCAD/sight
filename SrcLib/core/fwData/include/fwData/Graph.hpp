@@ -172,12 +172,12 @@ public:
     /**
      * @return Number of nodes
      */
-    FWDATA_API unsigned int getNbNodes() const;
+    FWDATA_API size_t getNbNodes() const;
 
     /**
      * @return Number of edges
      */
-    FWDATA_API unsigned int getNbEdges() const;
+    FWDATA_API size_t getNbEdges() const;
 
     FWDATA_API void shallowCopy( Graph::csptr _source );
 

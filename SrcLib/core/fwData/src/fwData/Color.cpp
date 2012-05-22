@@ -114,7 +114,7 @@ void Color::setRGBA( std::string  hexaColor )
         iss >> std::hex >> a;
     }
 
-    this->setRGBA(r/255.0, g/255.0, b/255.0, a/255.0);
+    this->setRGBA(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
 
 }
 

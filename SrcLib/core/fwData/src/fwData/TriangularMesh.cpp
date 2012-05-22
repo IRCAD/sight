@@ -70,7 +70,7 @@ TriangularMesh::ConstCellContainer &TriangularMesh::cells() const
 
 //-----------------------------------------------------------------------------
 
-void TriangularMesh::setOneVectorInPointList(int _iIndex, double _fX, double _fY, double _fZ)
+void TriangularMesh::setOneVectorInPointList(int _iIndex, float _fX, float _fY, float _fZ)
 {
     assert( (0 <= _iIndex) );
     if ( ((PointContainer::size_type)_iIndex) >= m_points.size() )// Resize if necessary
@@ -81,6 +81,8 @@ void TriangularMesh::setOneVectorInPointList(int _iIndex, double _fX, double _fY
     m_points[_iIndex][1] = _fY;
     m_points[_iIndex][2] = _fZ;
 }
+
+//-----------------------------------------------------------------------------
 
 void TriangularMesh::setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _p3)
 {
@@ -94,6 +96,8 @@ void TriangularMesh::setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _
     m_cells[_iIndex][2] = _p3;
 }
 
+//-----------------------------------------------------------------------------
+
 double* TriangularMesh::getOneVectorFromPointList(int _pt) const
 {
     double *vec  = new double[3];
@@ -103,21 +107,29 @@ double* TriangularMesh::getOneVectorFromPointList(int _pt) const
     return vec;
 }
 
+//-----------------------------------------------------------------------------
+
 const int TriangularMesh::getOneIndexFromIndexList(void) const { return 0; } //FIXME
 
-void TriangularMesh::setOneVectorInNormalList(int x, double, double, double) { x = 0; } //FIXME
+void TriangularMesh::setOneVectorInNormalList(int x, float, float, float) { x = 0; } //FIXME
 
 const int TriangularMesh::getOneIndexFromNormalList(void) const { return 1; } //FIXME
 
-const int TriangularMesh::getNumPoints() const
+//-----------------------------------------------------------------------------
+
+const size_t TriangularMesh::getNumPoints() const
 {
-    return ( (int)m_points.size() );
+    return m_points.size();
 }
 
-const int TriangularMesh::getNumCells() const
+//-----------------------------------------------------------------------------
+
+const size_t TriangularMesh::getNumCells() const
 {
-    return ( (int)m_cells.size() );
+    return m_cells.size();
 }
+
+//-----------------------------------------------------------------------------
 
 void TriangularMesh::clearPoints()
 {
@@ -126,6 +138,8 @@ void TriangularMesh::clearPoints()
     // The swap reinitialize the size value and capacity to 0
     m_points.swap(emptyVector);
 }
+
+//-----------------------------------------------------------------------------
 
 void TriangularMesh::clearCells()
 {

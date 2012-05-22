@@ -265,14 +265,14 @@ Graph::getNodes(
 
 //------------------------------------------------------------------------------
 
-unsigned int Graph::getNbNodes() const
+size_t Graph::getNbNodes() const
 {
     return m_nodes.size();
 }
 
 //------------------------------------------------------------------------------
 
-unsigned int Graph::getNbEdges() const
+size_t Graph::getNbEdges() const
 {
     return m_connections.size();
 }

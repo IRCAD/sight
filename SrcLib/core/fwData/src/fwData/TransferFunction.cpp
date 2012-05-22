@@ -369,7 +369,7 @@ TransferFunction::TFColor TransferFunction::getInterpolatedColor( TFValueType va
 const TransferFunction::TFColor& TransferFunction::getTFColor( TFValueType value ) const
 {
     TFDataType::const_iterator itr = m_tfData.find(value);
-    SLM_ASSERT("Sorry not defined in th TF.", itr != m_tfData.end());
+    SLM_ASSERT("Sorry not defined in the TF.", itr != m_tfData.end());
     return itr->second;
 }
 //------------------------------------------------------------------------------

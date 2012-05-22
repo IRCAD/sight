@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -15,6 +14,7 @@
 #include "fwData/registry/macros.hpp"
 
 #include "fwData/Array.hpp"
+
 
 namespace fwData
 {
@@ -310,7 +310,7 @@ size_t Array::getBufferOffset( const ::fwData::Array::IndexType &id, size_t comp
     std::transform(id.begin(), id.end(), m_strides.begin(), offsets.begin(), std::multiplies<OffsetType::value_type>() );
 
     size_t offset;
-    offset = std::accumulate(offsets.begin(), offsets.end(), 0);
+    offset = std::accumulate(offsets.begin(), offsets.end(), size_t(0));
 
     offset += component*sizeOfType;
 
