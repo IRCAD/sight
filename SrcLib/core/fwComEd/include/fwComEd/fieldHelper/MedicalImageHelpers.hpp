@@ -371,7 +371,7 @@ public:
 
         typedef std::numeric_limits<IMAGE> ImgLimits;
         IMAGE imin = ImgLimits::max();
-        IMAGE imax = (ImgLimits::is_integer) ? ImgLimits::min() : - ImgLimits::max();
+        IMAGE imax = (ImgLimits::is_integer || !ImgLimits::is_signed) ? ImgLimits::min() : - ImgLimits::max();
 
         IMAGE * bufEnd = buffer + len;
         IMAGE currentVoxel;
@@ -391,7 +391,7 @@ public:
         }
 
         typedef std::numeric_limits<T> TLimits;
-        T minT =  (TLimits::is_integer) ? TLimits::min() : - TLimits::max();
+        T minT =  (TLimits::is_integer || !ImgLimits::is_signed) ? TLimits::min() : - TLimits::max();
         T maxT = TLimits::max();
 
         min = ( imin < minT ) ? minT : static_cast< T > (imin) ;

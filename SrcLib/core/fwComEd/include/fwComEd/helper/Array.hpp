@@ -150,7 +150,7 @@ protected:
      * @param buf Buffer to set as Array's buffer
      * @param takeOwnership if true, the Array will manage allocation and destroy the buffer when needed.
      */
-    FWDATA_API virtual void setBuffer(void *buf, bool takeOwnership = false);
+    FWCOMED_API virtual void setBuffer(void *buf, bool takeOwnership = false);
 
 
     ::fwData::Array::sptr m_array;

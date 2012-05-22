@@ -157,19 +157,19 @@ bool Image::createImageSliceIndex()
     // Get value
     if( axialIdx->value() < 0 ||  imageSize[2] < axialIdx->value() )
     {
-        axialIdx->value() = imageSize[2] / 2;
+        axialIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[2] / 2);
         fieldIsCreated = true;
     }
 
     if( frontalIdx->value() < 0 ||  imageSize[1] < frontalIdx->value() )
     {
-        frontalIdx->value() = imageSize[1] / 2;
+        frontalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[1] / 2);
         fieldIsCreated = true;
     }
 
     if( sagittalIdx->value() < 0 ||  imageSize[0] < sagittalIdx->value() )
     {
-        sagittalIdx->value() = imageSize[0] / 2;
+        sagittalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[0] / 2);
         fieldIsCreated = true;
     }
 

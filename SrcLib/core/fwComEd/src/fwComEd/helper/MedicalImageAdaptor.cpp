@@ -65,7 +65,7 @@ void MedicalImageAdaptor::getImageOrigin(double origin[3])
 
 void MedicalImageAdaptor::getImageDataSize(int size[3])
 {
-    ::fwData::Image::sptr image = this->getImage();;
+    ::fwData::Image::sptr image = this->getImage();
 
     const ::fwData::Image::SizeType& imSize = image->getSize();
     std::copy(imSize.begin(), imSize.end(), size);
