@@ -62,7 +62,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     {
         ::boost::filesystem::path entryPath = *currentEntry;
 
-        if(::boost::filesystem::is_directory(entryPath) == true)
+        if(::boost::filesystem::is_directory(entryPath))
         {
             try
             {
@@ -74,7 +74,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
             }
             catch(const RuntimeException& runtimeException)
             {
-                //OSLM_WARN( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
+                OSLM_INFO( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
             }
         }
     }

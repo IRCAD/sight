@@ -106,7 +106,7 @@ ConfigurationElementContainer ConfigurationElementContainer::findAllConfiguratio
 
 //-----------------------------------------------------------------------------
 
-unsigned int ConfigurationElementContainer::size() const
+size_t ConfigurationElementContainer::size() const
 {
     return m_elements.size();
 }
