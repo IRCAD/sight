@@ -101,7 +101,7 @@ protected:
     virtual void setEnabled(bool enable);
 
 
-protected slots :
+protected Q_SLOTS:
 
     void onTextEditingFinished();
     void onToggleTF(bool squareTF);

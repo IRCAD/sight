@@ -52,7 +52,7 @@ protected :
     /// Destructor
     BASICREGISTRATION_API virtual ~SImagesSubstract() throw();
 
-private slots :
+private Q_SLOTS:
 
     /// Compute the subtraction between two images.
     void OnCompute();

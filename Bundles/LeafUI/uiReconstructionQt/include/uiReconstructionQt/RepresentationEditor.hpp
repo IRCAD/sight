@@ -72,7 +72,7 @@ protected:
     void notifyMaterial();
     void notifyMesh();
 
-protected slots:
+protected Q_SLOTS:
 
     void onChangeRepresentation( int id );
     void onChangeShading( int id );

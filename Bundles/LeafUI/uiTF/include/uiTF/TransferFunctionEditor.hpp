@@ -93,7 +93,7 @@ protected:
     /// Get the current transfer function
     UITF_API ::fwData::TransferFunction::sptr getSelectedTransferFunction() const;
 
-private slots:
+private Q_SLOTS:
 
     void deleteTF();
     void newTF();

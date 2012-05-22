@@ -40,7 +40,7 @@ void QtContainer::clean()
     QObjectList list = m_container->children();
     QWidget *w = NULL;
 
-    foreach (QObject *o, list)
+    Q_FOREACH (QObject *o, list)
     {
         w = qobject_cast<QWidget*>(o);
         if (w)

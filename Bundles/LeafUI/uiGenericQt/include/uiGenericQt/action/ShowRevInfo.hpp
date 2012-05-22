@@ -79,7 +79,7 @@ private:
 
     QTextDocument* generateReport();
 
-protected slots:
+protected Q_SLOTS:
 
     void saveReport();
 

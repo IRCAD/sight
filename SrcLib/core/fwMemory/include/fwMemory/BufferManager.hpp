@@ -9,35 +9,7 @@
 
 #include <boost/filesystem/path.hpp>
 
-
-
-// See http://www.boost.org/doc/libs/1_47_0/doc/html/signals/s04.html
-#ifndef SIGNALSLIB_HPP_INCLUDED
-#define SIGNALSLIB_HPP_INCLUDED
-
-#if defined(signals) && defined(QOBJECTDEFS_H) && \
-  !defined(QT_MOC_CPP)
-#  undef signals
-#  define signals signals
-#endif
-
 #include <boost/signal.hpp>
-namespace boost
-{
-  namespace signalslib = signals;
-}
-
-#if defined(signals) && defined(QOBJECTDEFS_H) && \
-  !defined(QT_MOC_CPP)
-#  undef signals
-// Restore the macro definition of "signals", as it was
-// defined by Qt's <qobjectdefs.h>.
-#  define signals protected
-#endif
-
-
-
-#endif
 
 #include <fwCore/base.hpp>
 

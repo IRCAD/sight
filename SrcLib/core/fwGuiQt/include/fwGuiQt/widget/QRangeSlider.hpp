@@ -52,10 +52,10 @@ public:
 
     void setMinimumMinMaxDelta(double d){ m_minimumMinMaxDelta = d;}
 
-public slots:
+public Q_SLOTS:
     FWGUIQT_API void setPos(double _min, double _max);
 
-signals:
+Q_SIGNALS:
     void sliderRangeChanged ( double min, double max);
     void sliderRangeEdited ( double min, double max);
 

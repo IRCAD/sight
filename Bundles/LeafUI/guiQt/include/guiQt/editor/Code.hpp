@@ -66,7 +66,7 @@ protected:
     static const std::string PYTHON;
     static const std::string CPP;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * @brief This method is called when the value change.
      *

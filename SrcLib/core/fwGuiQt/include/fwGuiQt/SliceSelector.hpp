@@ -61,7 +61,7 @@ public:
     typedef ::boost::function1<void, int > ChangeTypeCallback;
     FWGUIQT_API void setChangeTypeCallback(ChangeTypeCallback fct);
 
-protected slots:
+protected Q_SLOT:
 
     /**
      * @brief Event handler for a slice type change.

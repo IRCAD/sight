@@ -68,7 +68,7 @@ protected:
     void refreshMaterial( );
     void materialNotification( );
 
-protected slots:
+protected Q_SLOTS:
 
     void onOpacitySlider( int value);
     void onColorButton();

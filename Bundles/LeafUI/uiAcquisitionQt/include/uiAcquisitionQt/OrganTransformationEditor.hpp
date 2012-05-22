@@ -51,7 +51,7 @@ protected:
 
 
 
-private slots:
+private Q_SLOTS:
     void OnReconstructionCheck(QListWidgetItem *currentItem);
     void OnResetClick         ( );
     void OnSaveClick();
