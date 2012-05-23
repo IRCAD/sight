@@ -1,4 +1,5 @@
 #include <boost/python.hpp>
+#include <boost/python/stl_iterator.hpp>
 
 #include <boost/assign/list_of.hpp>
 
@@ -11,6 +12,8 @@
 #include <fwComEd/helper/Image.hpp>
 
 #include "fwPython/bindings/Image.hpp"
+
+#include "fwPython/bindings/STLContainers.hpp"
 
 
 // transform CPP type description in python buffer-info.format
@@ -85,10 +88,19 @@ void setPixelTypeFromString( ::fwData::Image::sptr image, std::string type)
 
 //------------------------------------------------------------------------------
 
-fwData::Image::SizeType getSize(fwData::Image::sptr image)
+::boost::python::list getSize(fwData::Image::sptr image)
 {
-    return image->getSize();
+    return make_pylist (image->getSize() );
 }
+
+void setSize( fwData::Image::sptr image, ::boost::python::object ob)
+{
+    ::boost::python::stl_input_iterator<fwData::Image::SizeType::value_type> begin(ob), end;
+    fwData::Image::SizeType  value(begin, end);
+    image->setSize( value );
+}
+
+
 
 //------------------------------------------------------------------------------
 
@@ -104,18 +116,24 @@ fwData::Image::OriginType getOrigin(fwData::Image::sptr image)
     return image->getOrigin();
 }
 
+
+
+
+
 //------------------------------------------------------------------------------
 
 void export_image()
 {
     using namespace ::boost::python;
+    size_t (::fwData::Image::*SIMPLEIMAGEALLOCATE)(void) =  &::fwData::Image::allocate;
     class_< ::fwData::Image, bases< ::fwData::Object >, ::fwData::Image::sptr >("Image")
        .add_property("buffer",  &getImageBuffer )
        .add_property("type",  &getPixelTypeAsString, & setPixelTypeFromString )
        .add_property("spacing", &getSpacing,  &::fwData::Image::setSpacing )
-       .add_property("size", &getSize,  &::fwData::Image::setSize )
+       .add_property("size", &getSize,  &setSize )
        .add_property("origin", &getOrigin,  &::fwData::Image::setOrigin )
        .add_property("number_of_dimentions", &::fwData::Image::getNumberOfDimensions )
+       .def("allocate", SIMPLEIMAGEALLOCATE )
        ;
 }
 
