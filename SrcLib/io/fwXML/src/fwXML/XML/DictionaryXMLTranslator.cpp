@@ -7,6 +7,7 @@
 #include <boost/filesystem/convenience.hpp>
 
 #include <fwData/Vector.hpp>
+#include <fwData/Composite.hpp>
 
 #include "fwXML/Serializer.hpp"
 #include "fwXML/XML/XMLParser.hpp"

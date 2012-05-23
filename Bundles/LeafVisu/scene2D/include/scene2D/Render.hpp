@@ -12,15 +12,21 @@
 #include <QGraphicsView>
 #include <QResizeEvent>
 
+
 #include <fwRender/IRender.hpp>
 #include <fwServices/ComChannelService.hpp>
 #include <scene2D/data/Axis.hpp>
 #include <scene2D/data/Viewport.hpp>
-#include <fwData/Composite.hpp>
+
 
 #include "scene2D/config.hpp"
 #include "scene2D/data/Event.hpp"
 #include "scene2D/data/Coord.hpp"
+
+namespace  fwData
+{
+    class Composite;
+} //namespace fwData
 
 namespace scene2D
 {

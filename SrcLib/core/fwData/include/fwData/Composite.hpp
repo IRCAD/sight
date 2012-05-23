@@ -10,17 +10,26 @@
 #include <map>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/version.hpp>
-
-// boost 1.47 issue with FOREACH
-#if ( defined(__clang__) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6) ) && BOOST_VERSION == 104700
-#include <boost/foreach.hpp>
-#endif
 
 #include "fwData/config.hpp"
 
 #include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
+
+
+// boost 1.47 issue with FOREACH
+#include <boost/version.hpp>
+#if BOOST_VERSION == 104700
+#include <boost/foreach.hpp>
+
+namespace fwData
+{ class Composite; }
+
+inline boost::mpl::true_ * boost_foreach_is_noncopyable( ::fwData::Composite *&, BOOST_FOREACH_TAG_DEFAULT )
+{ return 0; }
+
+#endif //BOOST_VERSION == 104700
+
 
 namespace fwData
 {
@@ -137,18 +146,6 @@ protected:
 
 } //namespace fwData
 
-
-// boost 1.47 issue with FOREACH
-#if ( defined(__clang__) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6) ) && BOOST_VERSION == 104700
-namespace boost { namespace foreach
-{
-    template<>
-    struct is_noncopyable<
-        ::fwData::Composite
-    > : mpl::true_
-    {};
-}}
-#endif
 
 
 #endif /* _FWDATA_COMPOSITE_HPP_ */

@@ -248,7 +248,8 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
         OSLM_ASSERT("FieldType "<<fieldType<<" does not match ObjectType in Object "<<field->getClassname(),
                 fieldType == field->getClassname());
         SubServicesVecType subVecSrv;
-        BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
+        std::vector< ConfigurationType > services = conf->find("service");
+        BOOST_FOREACH( ConfigurationType cfg, services)
         {
             ::fwServices::IService::sptr srv = this->add( field, cfg );
             OSLM_ASSERT("Instantiation Service failed on field "<<fieldName, srv);
@@ -293,7 +294,8 @@ void SField::swapField(const FieldNameType& fieldName, ::fwData::Object::sptr fi
 {
     if(m_fieldsSubServices.find(fieldName) != m_fieldsSubServices.end())
     {
-        BOOST_FOREACH( ConfigurationType cfg, m_managerConfiguration->find("field", "id", fieldName))
+        std::vector< ConfigurationType > fields = m_managerConfiguration->find("field", "id", fieldName);
+        BOOST_FOREACH( ConfigurationType cfg, fields)
         {
             SubServicesVecType subServices = m_fieldsSubServices[fieldName];
             BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
@@ -402,7 +404,8 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
         ::fwData::Object::sptr dummyObj;
         dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(fieldType));
         SubServicesVecType subVecSrv;
-        BOOST_FOREACH( ConfigurationType cfg, conf->find("service"))
+        std::vector< ConfigurationType > services = conf->find("service");
+        BOOST_FOREACH( ConfigurationType cfg, services)
         {
             ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed ofieldct "<<fieldName, srv);
