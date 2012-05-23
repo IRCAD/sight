@@ -30,7 +30,7 @@ TYPEOUT numericRoundCast (const TYPEIN & value, const boost::true_type &in_is_fl
 template < typename TYPEOUT, typename TYPEIN>
 TYPEOUT numericRoundCast (const TYPEIN &value)
 {
-    return numericRoundCast< TYPEIN, TYPEOUT >(value, ::boost::is_floating_point<TYPEOUT>(), ::boost::is_integral<TYPEIN>());
+    return numericRoundCast< TYPEOUT, TYPEIN >(value, ::boost::is_floating_point<TYPEIN>(), ::boost::is_integral<TYPEOUT>());
 }
 
 } // namespace fwTools
