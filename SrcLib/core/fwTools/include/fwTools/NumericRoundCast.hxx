@@ -4,35 +4,46 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __NUMERICROUNDCAST_HPP__
-#define __NUMERICROUNDCAST_HPP__
+#ifndef __FWTOOLS_NUMERICROUNDCAST_HPP__
+#define __FWTOOLS_NUMERICROUNDCAST_HPP__
 
-#include <cmath>
-#include <boost/type_traits/is_integral.hpp>
-#include <boost/type_traits/is_floating_point.hpp>
-
+#include <boost/numeric/conversion/converter.hpp>
 
 namespace fwTools
 {
 
-template < typename TYPEOUT, typename TYPEIN, typename T1, typename T2>
-TYPEOUT numericRoundCast (const TYPEIN & value, T1, T2)
-{
-    return static_cast< TYPEOUT >(value);
-}
-
-template < typename TYPEOUT, typename TYPEIN>
-TYPEOUT numericRoundCast (const TYPEIN & value, const boost::true_type &in_is_float, const boost::true_type &out_is_int)
-{
-    return static_cast< TYPEOUT >(std::floor(value + 0.5));
-}
-
+/**
+ * This method converts an value of type TYPEIN to an value of type TYPEOUT.
+ * If TYPEIN is a floating point type and TYPEOUT is a integral type then
+ * it rounds float number to nearest integer (returns 3 for 3.1f, 5 for 4.5f).
+ *
+ * Be careful: there is not range checking, overflow is not detected (silent overflow policy)
+ *
+ * @param value to cast (and rounds if is a floating point type) in TYPEOUT
+ * @return casted and rounded value.
+ */
 template < typename TYPEOUT, typename TYPEIN>
 TYPEOUT numericRoundCast (const TYPEIN &value)
 {
-    return numericRoundCast< TYPEOUT, TYPEIN >(value, ::boost::is_floating_point<TYPEIN>(), ::boost::is_integral<TYPEOUT>());
+    typedef ::boost::numeric::conversion_traits<TYPEOUT, TYPEIN> TraitsType;
+    typedef ::boost::numeric::silent_overflow_handler OverflowHandlerType;
+    typedef ::boost::numeric::RoundEven<typename TraitsType::source_type> RoundEvenType;
+    typedef ::boost::numeric::raw_converter<TraitsType> ConverterType;
+    typedef ::boost::numeric::UseInternalRangeChecker RangeCheckerType;
+
+    typedef ::boost::numeric::converter<
+            TYPEOUT,
+            TYPEIN,
+            TraitsType,
+            OverflowHandlerType,
+            RoundEvenType,
+            ConverterType,
+            RangeCheckerType
+            > RoundCastType;
+
+    return RoundCastType::convert(value);
 }
 
 } // namespace fwTools
 
-#endif //__NUMERICROUNDCAST_HPP__
+#endif //__FWTOOLS_NUMERICROUNDCAST_HPP__
