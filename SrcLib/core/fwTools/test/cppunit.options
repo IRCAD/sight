@@ -10,6 +10,7 @@ CLASSTEST=[
     'UUIDTEST'                ,
     'BufferObjectTest'        ,
     'ByteSizeTest'            ,
+    'NumericRoundCastTest'    ,
     ]
 
 USE = ['boost']
