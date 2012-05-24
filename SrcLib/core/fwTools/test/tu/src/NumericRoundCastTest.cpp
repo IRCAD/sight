@@ -61,7 +61,7 @@ void NumericRoundCastTest::castDoubleToIntTest()
 
     double val3 = 88.9005;
     unsigned short castedVal3 = ::fwTools::numericRoundCast<unsigned short>(val3);
-    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned short>(88), castedVal3);
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned short>(89), castedVal3);
 
 }
 
