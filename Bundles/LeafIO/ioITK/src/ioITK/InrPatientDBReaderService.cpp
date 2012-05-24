@@ -108,7 +108,7 @@ void InrPatientDBReaderService::configureWithIHM()
             if (result)
             {
                 _sDefaultPath = result->getFolder();
-                this->setFile(result->getFolder());
+                this->setFolder(result->getFolder());
                 m_isRecursive = (selection == choices[2]);
                 dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
             }
