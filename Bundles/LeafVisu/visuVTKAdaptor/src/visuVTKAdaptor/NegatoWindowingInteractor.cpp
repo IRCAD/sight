@@ -176,6 +176,8 @@ void NegatoWindowingInteractor::configuring() throw(fwTools::Failed)
     SLM_ASSERT("Tag config is required", m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setPickerId( m_configuration->getAttributeValue("picker") );
+
+    this->parseTFConfig( m_configuration );
 }
 
 //------------------------------------------------------------------------------
