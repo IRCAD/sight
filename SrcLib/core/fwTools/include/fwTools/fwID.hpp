@@ -83,7 +83,7 @@ protected :
      /**
       * @brief   Constructor : does nothing.
       */
-    FWTOOLS_API fwID() {}; // cannot be instantiated
+    fwID() {}; // cannot be instantiated
 
     /// will generate a new ID using the pattern "CLASSNAME-NUM". NUM is always increasing
     IDType generate() const;

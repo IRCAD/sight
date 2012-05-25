@@ -4,14 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef PROGRESSTOLOGGER_HPP_
-#define PROGRESSTOLOGGER_HPP_
+#ifndef __FWTOOLS_PROGRESSTOLOGGER_HPP__
+#define __FWTOOLS_PROGRESSTOLOGGER_HPP__
 
 #include <string>
 #include <fwTools/config.hpp>
 #include <boost/signals/trackable.hpp>
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @brief   Class ProgressToLogger is an ProgressAdviser::ProgressHandler, it receive notification from its ProgressAdviser
@@ -48,4 +49,4 @@ protected :
 
 }
 
-#endif /* PROGRESSTOLOGGER_HPP_ */
+#endif /* __FWTOOLS_PROGRESSTOLOGGER_HPP__ */

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef TYPEINFOGKEYTYPEMAPPING_HPP_
-#define TYPEINFOGKEYTYPEMAPPING_HPP_
+#ifndef __FWTOOLS_TYPEINFOGKEYTYPEMAPPING_HPP__
+#define __FWTOOLS_TYPEINFOGKEYTYPEMAPPING_HPP__
 
 #include <string>
 #include <typeinfo>
@@ -13,7 +13,8 @@
 #include "fwTools/TypeMapping.hpp"
 #include "fwTools/config.hpp"
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @name TypeInfo mapping
@@ -71,6 +72,6 @@ template<> FWTOOLS_API
 bool isMapping<std::string>(const std::type_info &key);
 ///@}
 
-} // namespace fwTools {
+} // namespace fwTools
 
-#endif /*TYPEINFOGKEYTYPEMAPPING_HPP_*/
+#endif /*__FWTOOLS_TYPEINFOGKEYTYPEMAPPING_HPP__*/

@@ -362,7 +362,7 @@ protected :
      * @todo FIXME after code update for all services
      * @todo This method must have in parameter the new object or the old ?
      */
-    FWSERVICES_API virtual void swapping() throw ( ::fwTools::Failed ) {} ;
+    virtual void swapping() throw ( ::fwTools::Failed ) {} ;
 
     /**
      * @brief Configure the service before starting. Apply the configuration to service.

@@ -106,7 +106,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IODATA_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
 
 
     /**

@@ -59,13 +59,13 @@ public:
      * @brief Set a name for an object
      * @deprecated (should use UUID)
      */
-    FWTOOLS_API void setName ( const std::string _strName ) { m_strName = _strName; }
+    void setName ( const std::string _strName ) { m_strName = _strName; }
 
     /**
      * @brief Retrieve the name object
      * @deprecated (should use UUID)
      */
-    FWTOOLS_API const std::string getName() const { return m_strName; }
+    const std::string getName() const { return m_strName; }
 
     //@}
 
@@ -94,10 +94,10 @@ public:
         return m_timeStamp->periodExpired();
     };
 
-    FWTOOLS_API ::fwCore::TimeStamp::sptr  getTimeStamp()  const { return m_timeStamp; }
-    FWTOOLS_API ::fwCore::LogicStamp::sptr getLogicStamp() const { return m_logicStamp; }
+    ::fwCore::TimeStamp::sptr  getTimeStamp()  const { return m_timeStamp; }
+    ::fwCore::LogicStamp::sptr getLogicStamp() const { return m_logicStamp; }
 
-    FWTOOLS_API ::fwCore::LogicStamp::csptr getOSRKey() const { return m_OSRKey; }
+    ::fwCore::LogicStamp::csptr getOSRKey() const { return m_OSRKey; }
 
 protected :
 

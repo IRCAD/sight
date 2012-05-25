@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef CLASSFACTORYREGISTRY_HPP_
-#define CLASSFACTORYREGISTRY_HPP_
+#ifndef __FWTOOLS_CLASSFACTORYREGISTRY_HPP__
+#define __FWTOOLS_CLASSFACTORYREGISTRY_HPP__
 
 #include <map>
 #include <iostream>
@@ -85,4 +85,4 @@ protected :
 
 
 
-#endif /*CLASSFACTORYREGISTRY_HPP_*/
+#endif /*__FWTOOLS_CLASSFACTORYREGISTRY_HPP__*/

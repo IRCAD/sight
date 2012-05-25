@@ -309,27 +309,27 @@ public:
     /**
      * @brief Returns the buffer's size
      */
-    FWTOOLS_API SizeType getSize() const { return m_size; };
+    SizeType getSize() const { return m_size; };
 
     /**
      * @brief Returns true if the buffer is empty
      */
-    FWTOOLS_API bool isEmpty() const { return m_size == 0; };
+    bool isEmpty() const { return m_size == 0; };
 
     /**
      * @brief Returns the number of locks on the BufferObject
      */
-    FWTOOLS_API long lockCount() const { return *m_count; };
+    long lockCount() const { return *m_count; };
 
     /**
      * @brief Returns true if the buffer has any lock
      */
-    FWTOOLS_API long isLocked() const { return lockCount() != 0; };
+    long isLocked() const { return lockCount() != 0; };
 
     /**
      * @brief Returns pointer on BufferObject's buffer
      */
-    FWTOOLS_API const void * const getBufferPointer() const {return &m_buffer;};
+    const void * const getBufferPointer() const {return &m_buffer;};
 
     /// Exchanges the content of the BufferObject with the content of _source.
     FWTOOLS_API void swap( BufferObject::sptr _source );

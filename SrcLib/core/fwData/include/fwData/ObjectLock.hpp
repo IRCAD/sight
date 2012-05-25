@@ -32,7 +32,7 @@ class FWDATA_CLASS_API ObjectLock
 
 public :
 
-    FWDATA_API ObjectLock(){}
+    ObjectLock(){}
 
     FWDATA_API ObjectLock( const ObjectLock & );
     FWDATA_API ObjectLock( ::fwData::Object::sptr obj );

@@ -48,7 +48,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool registerBuffer(void ** buffer, long * lockCount){return true;}
+    virtual bool registerBuffer(void ** buffer, long * lockCount){return true;}
 
     /**
      * @brief Hook called when a BufferObject is destroyed
@@ -57,7 +57,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool unregisterBuffer(void ** buffer){return true;}
+    virtual bool unregisterBuffer(void ** buffer){return true;}
 
     /**
      * @brief Hook called when an allocation is requested from a BufferObject
@@ -68,7 +68,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy){return true;}
+    virtual bool allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy){return true;}
 
     /**
      * @brief Hook called when a request is made to set BufferObject's buffer from an external buffer
@@ -79,7 +79,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy){return true;}
+    virtual bool setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy){return true;}
 
     /**
      * @brief Hook called when a reallocation is requested from a BufferObject
@@ -89,7 +89,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool reallocateBuffer(void ** buffer, SizeType newSize){return true;}
+    virtual bool reallocateBuffer(void ** buffer, SizeType newSize){return true;}
 
     /**
      * @brief Hook called when a destruction is requested from a BufferObject
@@ -98,7 +98,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool destroyBuffer(void ** buffer){return true;}
+    virtual bool destroyBuffer(void ** buffer){return true;}
 
     /**
      * @brief Hook called when a request to swap two BufferObject contents is made
@@ -108,7 +108,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool swapBuffer(void ** bufA, void ** bufB){return true;}
+    virtual bool swapBuffer(void ** bufA, void ** bufB){return true;}
 
     /**
      * @brief Hook called when a BufferObject is locked
@@ -117,7 +117,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool lockBuffer(const void * const * buffer){return true;}
+    virtual bool lockBuffer(const void * const * buffer){return true;}
 
     /**
      * @brief Hook called when a BufferObject lock is released
@@ -126,12 +126,12 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWTOOLS_API virtual bool unlockBuffer(const void * const * buffer){return true;}
+    virtual bool unlockBuffer(const void * const * buffer){return true;}
 
     /**
      * @brief Returns the current BufferManager instance
      */
-    FWTOOLS_API static IBufferManager::sptr getCurrent(){ return s_currentManager; }
+    static IBufferManager::sptr getCurrent(){ return s_currentManager; }
 
     /**
      * @brief sets the current BufferManager instance
@@ -139,20 +139,20 @@ public:
      * @param currentManager BufferManager instance
      *
      */
-    FWTOOLS_API static void setCurrent( IBufferManager::sptr currentManager ){ s_currentManager = currentManager; }
+    static void setCurrent( IBufferManager::sptr currentManager ){ s_currentManager = currentManager; }
 
 
     /**
      * @brief returns an information string about BufferManager state
      */
-    FWTOOLS_API virtual std::string toString() const { return ""; };
+    virtual std::string toString() const { return ""; };
 
 protected:
 
-    FWTOOLS_API IBufferManager(){};
-    FWTOOLS_API virtual ~IBufferManager(){};
+    IBufferManager(){};
+    virtual ~IBufferManager(){};
 
-    static IBufferManager::sptr s_currentManager;
+    FWTOOLS_API static IBufferManager::sptr s_currentManager;
 };
 
 

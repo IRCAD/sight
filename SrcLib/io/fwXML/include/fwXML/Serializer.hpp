@@ -43,7 +43,7 @@ public:
     FWXML_API virtual ~Serializer();
 
     /// set/get rootFolder for serialization
-    static FWXML_API ::boost::filesystem::path &rootFolder() { return m_rootFolder;}
+    static ::boost::filesystem::path &rootFolder() { return m_rootFolder;}
 
     /// serialize the given object in the given rootFolder(), saving schema is changeable
     FWXML_API void serialize(::fwData::Object::sptr object,bool saveSchema = true) throw (::fwTools::Failed);

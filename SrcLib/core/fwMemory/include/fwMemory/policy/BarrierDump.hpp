@@ -49,8 +49,8 @@ public :
 
     FWMEMORY_API virtual void refresh();
 
-    FWMEMORY_API void setBarrier( size_t barrier ) { m_barrier = barrier; }
-    FWMEMORY_API size_t getBarrier() const { return m_barrier; }
+    void setBarrier( size_t barrier ) { m_barrier = barrier; }
+    size_t getBarrier() const { return m_barrier; }
 
     FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL );
     FWMEMORY_API bool setParam(const std::string &name, const std::string &value);

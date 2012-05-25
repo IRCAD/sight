@@ -36,9 +36,9 @@ public:
         THREE_SLICES
     } SliceMode;
 
-    VISUVTKADAPTOR_API void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
-    VISUVTKADAPTOR_API void setInterpolation(bool interpolation){m_interpolation = interpolation;};
-    VISUVTKADAPTOR_API void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
+    void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
+    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
 
 protected :
 

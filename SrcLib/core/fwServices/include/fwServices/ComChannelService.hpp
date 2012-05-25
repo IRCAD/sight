@@ -88,7 +88,7 @@ public:
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void updating( ) throw( ::fwTools::Failed) {};
+    virtual void updating( ) throw( ::fwTools::Failed) {};
 
     FWSERVICES_API virtual void swapping() throw(fwTools::Failed);
 
@@ -118,11 +118,11 @@ public:
     //@}
 
     /// Set the new priority for the ComChannel;
-    FWSERVICES_API void setPriority(double newPriority) {m_priority = newPriority;}
+    void setPriority(double newPriority) {m_priority = newPriority;}
     //@}
 
     /// Return the priority for the ComChannel
-    FWSERVICES_API double getPriority(void) {return(m_priority);}
+    double getPriority(void) {return(m_priority);}
     //@}
 
     /**

@@ -76,10 +76,10 @@ public :
 
     GDCMIO_API Dicomdir();
     GDCMIO_API Dicomdir(const ::boost::filesystem::path dicomDir);
-    GDCMIO_API const PatientListType&  getPatients() {return patientList;}
-    GDCMIO_API const StudyListType&  getStudies(std::string patientID) {return patients[patientID];}
-    GDCMIO_API const SerieListType&  getSeries(std::string studyInstanceUID) {return studies[studyInstanceUID];}
-    GDCMIO_API const ImageListType&  getImages(std::string serieInstanceUID) {return series[serieInstanceUID];}
+    const PatientListType&  getPatients() {return patientList;}
+    const StudyListType&  getStudies(std::string patientID) {return patients[patientID];}
+    const SerieListType&  getSeries(std::string studyInstanceUID) {return studies[studyInstanceUID];}
+    const ImageListType&  getImages(std::string serieInstanceUID) {return series[serieInstanceUID];}
 
 
     GDCMIO_API ~Dicomdir();

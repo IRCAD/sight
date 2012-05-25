@@ -101,9 +101,9 @@ public:
     FWCOMED_API bool getModifiersStatus(Modifiers k) const;
 
     /// Get the control status.
-    FWCOMED_API bool getControlStatus() const {return getModifiersStatus(CTRL);}
+    bool getControlStatus() const {return getModifiersStatus(CTRL);}
     /// Get the shift status.
-    FWCOMED_API bool getShiftStatus() const {return getModifiersStatus(SHIFT);}
+    bool getShiftStatus() const {return getModifiersStatus(SHIFT);}
 
     /**
      * @brief Set the message event

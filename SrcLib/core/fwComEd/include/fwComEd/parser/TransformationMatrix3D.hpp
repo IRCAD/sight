@@ -37,10 +37,10 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3D)(::fwServices::IXMLParser) ) ;
 
     /// Constructor : does nothing.
-    FWCOMED_API TransformationMatrix3D() {};
+    TransformationMatrix3D() {};
 
     /// Destructor : does nothing.
-    FWCOMED_API virtual ~TransformationMatrix3D() {};
+    virtual ~TransformationMatrix3D() {};
 
     FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
 protected:

@@ -36,19 +36,19 @@ public:
     typedef ::boost::uint8_t VideoType;
 
     /// @brief Get the buffer size along X axis
-    FWDATA_API ::boost::uint32_t  getXSize() const { return m_ui32XSize; };
+    ::boost::uint32_t  getXSize() const { return m_ui32XSize; };
 
     /// @brief Get the buffer size along Y axis
-    FWDATA_API ::boost::uint32_t  getYSize() const { return m_ui32YSize; };
+    ::boost::uint32_t  getYSize() const { return m_ui32YSize; };
 
     /// @brief Get the number of bits per pixel
-    FWDATA_API VideoType  getBPP() const { return m_ui8BPP; };
+    VideoType  getBPP() const { return m_ui8BPP; };
 
     /// @brief Get the address of the image buffer
-    FWDATA_API VideoType  * getImageBuffer() const { return m_pImageBuffer; };
+    VideoType  * getImageBuffer() const { return m_pImageBuffer; };
 
     /// @brief Get the camera associated with the video
-    FWDATA_API ::fwData::Camera::sptr getCamera() const { return m_camera; };
+    ::fwData::Camera::sptr getCamera() const { return m_camera; };
 
     /// @brief Return True if the data is available
     FWDATA_API bool &dataAvailable();

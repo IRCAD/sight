@@ -46,7 +46,7 @@ public :
 
     FWMEMORY_API virtual void refresh();
 
-    FWMEMORY_API bool setParam(const std::string &name, const std::string &value) {return false;};
+    bool setParam(const std::string &name, const std::string &value) {return false;};
     FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL );
     FWMEMORY_API const fwMemory::IPolicy::ParamNamesType &getParamNames() const
     {static fwMemory::IPolicy::ParamNamesType names; return names;}

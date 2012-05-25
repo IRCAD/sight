@@ -4,15 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef STRINGKEYTYPEMAPPING_HPP_
-#define STRINGKEYTYPEMAPPING_HPP_
+#ifndef __FWTOOLS_STRINGKEYTYPEMAPPING_HPP__
+#define __FWTOOLS_STRINGKEYTYPEMAPPING_HPP__
 
 #include <string>
 
 #include "fwTools/TypeMapping.hpp"
 #include "fwTools/config.hpp"
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @name    String type mapping
@@ -70,6 +71,6 @@ template<> FWTOOLS_API
 bool isMapping<std::string>(const std::string &key);
 ///@}
 
-} // end namespace fwTools {
+} // end namespace fwTools
 
-#endif /*STRINGKEYTYPEMAPPING_HPP_*/
+#endif /*__FWTOOLS_STRINGKEYTYPEMAPPING_HPP__*/

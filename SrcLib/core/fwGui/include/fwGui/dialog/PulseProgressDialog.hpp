@@ -33,7 +33,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog), (((const std::string))((::fwGui::dialog::IPulseProgressDialog::Stuff))), new PulseProgressDialog );
 
-    /// will instanciate the concrete implementation
+    /// will instantiate the concrete implementation
     FWGUI_API PulseProgressDialog(
             const std::string &title,
             Stuff stuff,

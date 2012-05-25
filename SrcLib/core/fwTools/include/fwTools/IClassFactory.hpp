@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef IFACTORYFACTORY_HPP_
-#define IFACTORYFACTORY_HPP_
+#ifndef __FWTOOLS_ICLASSFACTORY_HPP__
+#define __FWTOOLS_ICLASSFACTORY_HPP__
 
 #include <string.h>
 #include <typeinfo>
@@ -38,21 +38,21 @@ public:
 
 
     /**
-     * @brief   Return the baseclass indentifier.
+     * @brief   Return the baseclass identifier.
      * @note    This pure virtual function do not have to be exported because
      * it was overrided by an sub template class.
      */
      virtual const std::type_info &baseClassId() const = 0;
 
     /**
-     * @brief   Return the derivated (sub) class indentifier.
+     * @brief   Return the derivated (sub) class identifier.
      * @note    This pure virtual function do not have to be exported because
      * it was overrided by an sub template class.
      */
     virtual const std::type_info &subClassId() const = 0;
 
     /**
-     * @brief   Return the key type indentifier.
+     * @brief   Return the key type identifier.
      * @note    This pure virtual function do not have to be exported because
      * it was overrided by an sub template class.
      */
@@ -123,6 +123,6 @@ inline bool keyComparatorLess( const std::type_info &key1, const std::type_info 
 
 
 
-} // end namespace fwTools {
+} // end namespace fwTools
 
-#endif /*IFACTORYFACTORY_HPP_*/
+#endif /*__FWTOOLS_ICLASSFACTORY_HPP__*/

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DYNAMICTYPEKEYTYPEMAPPING_HPP_
-#define DYNAMICTYPEKEYTYPEMAPPING_HPP_
+#ifndef __FWTOOLS_DYNAMICTYPEKEYTYPEMAPPING_HPP__
+#define __FWTOOLS_DYNAMICTYPEKEYTYPEMAPPING_HPP__
 
 #include "fwTools/DynamicType.hpp"
 
@@ -13,7 +13,8 @@
 #include "fwTools/config.hpp"
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 
 /**
@@ -71,7 +72,7 @@ bool isMapping<std::string>(const DynamicType &key);
 ///@}
 
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
 
-#endif /*STRINGKEYTYPEMAPPING_HPP_*/
+#endif /*__FWTOOLS_DYNAMICTYPEKEYTYPEMAPPING_HPP__*/

@@ -340,9 +340,9 @@ void IEditionService::notify( ::fwServices::ObjectMsg::csptr eventMessage, ::fwS
 
 //-----------------------------------------------------------------------------
 
-int IEditionService::getNbObservers() const
+size_t IEditionService::getNbObservers() const
 {
-    int nbObservers = m_globalObservers.size();
+    size_t nbObservers = m_globalObservers.size();
     BOOST_FOREACH(Event2ObserversContainer::value_type eventObservers, m_event2SpecificObservers)
     {
         ObserverContainer & specificObservers = eventObservers.second;

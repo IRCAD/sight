@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DISPATCHER_HPP_
-#define DISPATCHER_HPP_
+#ifndef __FWTOOLS_DISPATCHER_HPP__
+#define __FWTOOLS_DISPATCHER_HPP__
 
 #include <stdexcept>
 #include <boost/mpl/if.hpp>
@@ -17,7 +17,8 @@
 #include "fwTools/Stringizer.hpp"
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 
 /**
@@ -182,6 +183,6 @@ struct Dispatcher
 };
 
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
-#endif /*DISPATCHER_HPP_*/
+#endif /*__FWTOOLS_DISPATCHER_HPP__*/

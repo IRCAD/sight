@@ -166,7 +166,7 @@ public:
     /**
      * @brief Sets callbacks associate with menu items.
      */
-    FWGUI_API virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
+    virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
 
 protected:
 

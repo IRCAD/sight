@@ -43,7 +43,7 @@ public:
 
     VISUVTKADAPTOR_API virtual ~ImagesBlend() throw();
 
-    VISUVTKADAPTOR_API void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
+    void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
 
 protected :
 

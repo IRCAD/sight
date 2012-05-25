@@ -125,7 +125,7 @@ protected:
     /**
      * @brief Destructor.
      */
-    FWDATA_API virtual ~GenericField() throw() {}
+    virtual ~GenericField() throw() {}
 
     virtual std::ostream & toOStream( std::ostream &_os ) const
     {

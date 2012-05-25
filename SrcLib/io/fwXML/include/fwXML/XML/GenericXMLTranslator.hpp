@@ -31,9 +31,9 @@ class FWXML_CLASS_API GenericXMLTranslator : public XMLTranslator
 {
 public:
 
-    FWXML_API GenericXMLTranslator() {};
+    GenericXMLTranslator() {};
 
-    FWXML_API virtual ~GenericXMLTranslator() {};
+    virtual ~GenericXMLTranslator() {};
 
     xmlNodePtr getBoostRootNode( xmlNodePtr xmlFileNodeObject )
     {

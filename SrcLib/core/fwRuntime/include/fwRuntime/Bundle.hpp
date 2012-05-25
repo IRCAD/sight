@@ -384,8 +384,8 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
     //@}
 
 
-    FWRUNTIME_API bool isStarted()     {return m_started;};
-    FWRUNTIME_API bool isInitialized() {return m_initialized;};
+    bool isStarted()     {return m_started;};
+    bool isInitialized() {return m_initialized;};
 
 protected:
 

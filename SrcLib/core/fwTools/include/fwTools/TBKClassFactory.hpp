@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef TBKCLASSFACTORY_H_
-#define TBKCLASSFACTORY_H_
+#ifndef __FWTOOLS_TBKCLASSFACTORY_HPP__
+#define __FWTOOLS_TBKCLASSFACTORY_HPP__
 
 #include "fwTools/TBClassFactory.hpp"
 #include "fwTools/Stringizer.hpp"
@@ -138,4 +138,4 @@ private :
 
 } // end namespace fwTools
 
-#endif /*TBKCLASSFACTORY_H_*/
+#endif /*__FWTOOLS_TBKCLASSFACTORY_HPP__*/

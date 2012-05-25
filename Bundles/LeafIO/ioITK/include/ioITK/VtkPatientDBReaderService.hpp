@@ -40,15 +40,15 @@ protected:
     IOITK_API virtual void configuring() throw(::fwTools::Failed) ;
 
     /// Override
-    IOITK_API virtual void starting() throw(::fwTools::Failed){};
+    virtual void starting() throw(::fwTools::Failed){};
 
     /// Override
-    IOITK_API virtual void stopping() throw(::fwTools::Failed){};
+    virtual void stopping() throw(::fwTools::Failed){};
 
     IOITK_API virtual void updating() throw(::fwTools::Failed) ;
 
     /// Override
-    IOITK_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
+    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOITK_API void info(std::ostream &_sstream ) ;

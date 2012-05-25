@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef PROGRESSADVISER_HPP_
-#define PROGRESSADVISER_HPP_
+#ifndef __FWTOOLS_PROGRESSADVISER_HPP__
+#define __FWTOOLS_PROGRESSADVISER_HPP__
 
 #include <string>
 #include <boost/signal.hpp>
@@ -14,7 +14,8 @@
 #include <fwTools/config.hpp>
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @brief   Subclasses Inherited from  ProgressAdviser can notify progression
@@ -58,4 +59,4 @@ protected :
 
 }
 
-#endif /* PROGRESSADVISER_HPP_ */
+#endif /* __FWTOOLS_PROGRESSADVISER_HPP__ */

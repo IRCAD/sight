@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWTOOLS_STRINGIZER
-#define FWTOOLS_STRINGIZER
+#ifndef __FWTOOLS_STRINGIZER_HPP__
+#define __FWTOOLS_STRINGIZER_HPP__
 
 
 #include <string>
@@ -145,5 +145,5 @@ FWTOOLS_API std::string getString(const std::string &aString);
 
 }
 
-#endif // FWTOOLS_STRINGIZER
+#endif // __FWTOOLS_STRINGIZER_HPP__
 

@@ -53,10 +53,10 @@ public :
         fwCoreNonInstanciableClassDefinitionsMacro((Initializer)(::fwCore::BaseObject));
 
         /// default constructor
-        FWTOOLS_API Initializer() {} ;
+        Initializer() {} ;
 
         /// default destructor
-        FWTOOLS_API virtual ~Initializer() {} ;
+        virtual ~Initializer() {} ;
 
         /**
          * @brief method <b>to implement</b>. When the Object is produced by the Factory.

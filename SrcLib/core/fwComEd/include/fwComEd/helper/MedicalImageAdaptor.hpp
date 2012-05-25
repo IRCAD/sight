@@ -52,7 +52,7 @@ public:
     FWCOMED_API void setOrientation( Orientation orientation );
 
     /// Return the image orientation.
-    FWCOMED_API Orientation getOrientation(){ return m_orientation; }
+    Orientation getOrientation(){ return m_orientation; }
 
 
 

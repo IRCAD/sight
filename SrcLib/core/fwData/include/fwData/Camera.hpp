@@ -36,34 +36,34 @@ public:
     FWDATA_API void setIntrinsicCameraTransformation(::fwData::TransformationMatrix3D::sptr transMat);
 
     /// @brief get the extrinsic transformation matrix
-    FWDATA_API ::fwData::TransformationMatrix3D::sptr getExtrinsicCameraTransformation()const { return m_extrinsicMatrix; };
+    ::fwData::TransformationMatrix3D::sptr getExtrinsicCameraTransformation()const { return m_extrinsicMatrix; };
 
     /// @brief get the intrinsic transformation matrix
-    FWDATA_API ::fwData::TransformationMatrix3D::sptr getIntrinsicCameraTransformation()const { return m_intrinsicMatrix; };
+    ::fwData::TransformationMatrix3D::sptr getIntrinsicCameraTransformation()const { return m_intrinsicMatrix; };
 
     /// @return cx or u0 = x-coordinate of optical center
-    FWDATA_API ::fwData::TransformationMatrix3D::TM3DType getCx()const { return m_intrinsicMatrix->getCoefficient(0,2); };
+    ::fwData::TransformationMatrix3D::TM3DType getCx()const { return m_intrinsicMatrix->getCoefficient(0,2); };
 
     /// @return cy or v0 = y-coordinate of optical center
-    FWDATA_API ::fwData::TransformationMatrix3D::TM3DType getCy()const { return m_intrinsicMatrix->getCoefficient(1,2); };
+    ::fwData::TransformationMatrix3D::TM3DType getCy()const { return m_intrinsicMatrix->getCoefficient(1,2); };
 
     /// @return fx = x-coordinate of optical center
-    FWDATA_API ::fwData::TransformationMatrix3D::TM3DType getFx()const { return m_intrinsicMatrix->getCoefficient(0,0); };
+    ::fwData::TransformationMatrix3D::TM3DType getFx()const { return m_intrinsicMatrix->getCoefficient(0,0); };
 
     /// @return fy = y-coordinate of optical center
-    FWDATA_API ::fwData::TransformationMatrix3D::TM3DType getFy()const { return m_intrinsicMatrix->getCoefficient(1,1); };
+    ::fwData::TransformationMatrix3D::TM3DType getFy()const { return m_intrinsicMatrix->getCoefficient(1,1); };
 
     /// @brief set cx or u0 = x-coordinate of optical center
-    FWDATA_API void setCx(::fwData::TransformationMatrix3D::TM3DType cx) {  m_intrinsicMatrix->setCoefficient(0,2,cx); };
+    void setCx(::fwData::TransformationMatrix3D::TM3DType cx) {  m_intrinsicMatrix->setCoefficient(0,2,cx); };
 
     /// @brief set cy or v0 = y-coordinate of optical center
-    FWDATA_API void setCy(::fwData::TransformationMatrix3D::TM3DType cy) {  m_intrinsicMatrix->setCoefficient(1,2,cy); };
+    void setCy(::fwData::TransformationMatrix3D::TM3DType cy) {  m_intrinsicMatrix->setCoefficient(1,2,cy); };
 
     /// @brief set fx = x-coordinate of optical center
-    FWDATA_API void setFx(::fwData::TransformationMatrix3D::TM3DType fx) {  m_intrinsicMatrix->setCoefficient(0,0,fx); };
+    void setFx(::fwData::TransformationMatrix3D::TM3DType fx) {  m_intrinsicMatrix->setCoefficient(0,0,fx); };
 
     /// @brief set fy = y-coordinate of optical center
-    FWDATA_API void setFy(::fwData::TransformationMatrix3D::TM3DType fy) {  m_intrinsicMatrix->setCoefficient(1,1,fy); };
+    void setFy(::fwData::TransformationMatrix3D::TM3DType fy) {  m_intrinsicMatrix->setCoefficient(1,1,fy); };
 
     /// @brief get flag if data is available
     FWDATA_API bool &dataAvailable();
@@ -71,7 +71,7 @@ public:
     /**
     * @brief get universal ID for the physic's camera
     */
-    FWDATA_API std::pair< bool, uint32HL > getCameraGUID() const { return m_cameraGUID; };
+    std::pair< bool, uint32HL > getCameraGUID() const { return m_cameraGUID; };
 
     /**
      * @brief set universal ID for the physic's camera

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef CLASSREGISTRAR_HPP_
-#define CLASSREGISTRAR_HPP_
+#ifndef __FWTOOLS_CLASSREGISTRAR_HPP__
+#define __FWTOOLS_CLASSREGISTRAR_HPP__
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/stringize.hpp>
@@ -80,4 +80,4 @@ public:
 } //end namespace fwTools
 
 
-#endif /*CLASSREGISTRAR_HPP_*/
+#endif /*__FWTOOLS_CLASSREGISTRAR_HPP__*/

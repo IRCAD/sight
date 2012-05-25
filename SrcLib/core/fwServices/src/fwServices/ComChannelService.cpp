@@ -154,7 +154,7 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             m_source.lock()->detach( this->getSptr() );
 
             /// Remove IEditionService if it is the last comChannel
-            int nbObservers = m_source.lock()->getNbObservers();
+            size_t nbObservers = m_source.lock()->getNbObservers();
             if(nbObservers == 0)
             {
                 if (m_source.lock()->isStarted())

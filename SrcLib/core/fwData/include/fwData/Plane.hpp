@@ -49,7 +49,7 @@ public :
     FWDATA_API bool operator==( const Plane & _plane ) ;
 
     /// get the plane coordinate
-    FWDATA_API fwPlane getPlane() const {return m_plane;};
+    fwPlane getPlane() const {return m_plane;};
 
     /// Re-initialize the plane with 3 points
     FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);

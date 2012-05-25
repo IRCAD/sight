@@ -101,7 +101,7 @@ public:
      *
      * @return
      */
-    FWMEMORY_API UpdatedSignalType &getUpdatedSignal(){return m_updated;};
+    UpdatedSignalType &getUpdatedSignal(){return m_updated;};
 
 
     /**

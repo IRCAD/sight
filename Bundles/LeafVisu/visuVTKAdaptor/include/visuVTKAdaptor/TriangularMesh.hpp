@@ -134,7 +134,7 @@ protected:
 
 public :
 
-   VISUVTKADAPTOR_API vtkActor * getActor(){ return m_actor; }
+   vtkActor * getActor(){ return m_actor; }
 
 };
 

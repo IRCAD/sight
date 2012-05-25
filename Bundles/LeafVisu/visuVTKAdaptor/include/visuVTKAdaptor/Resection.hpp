@@ -29,9 +29,9 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Resection() throw();
 
-    VISUVTKADAPTOR_API void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id){ m_clippingPlanes = id ; }
+    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id){ m_clippingPlanes = id ; }
 
-    VISUVTKADAPTOR_API void setSharpEdgeAngle(double angle){ m_sharpEdgeAngle = angle; }
+    void setSharpEdgeAngle(double angle){ m_sharpEdgeAngle = angle; }
 
 protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);

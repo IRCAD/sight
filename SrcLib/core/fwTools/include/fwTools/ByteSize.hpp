@@ -109,7 +109,7 @@ public:
     /**
      * @brief Returns size in bytes.
      */
-    FWTOOLS_API SizeType getSize(){ return m_size; }
+    SizeType getSize(){ return m_size; }
 
     /**
      * @brief Build a ByteSize object from given size and unit
@@ -141,8 +141,8 @@ public:
         return this->operator=( SizeType(size) );
     }
 
-    FWTOOLS_API operator SizeType () { return m_size; }
-    FWTOOLS_API operator std::string () { return getHumanReadableSize(); }
+    operator SizeType () { return m_size; }
+    operator std::string () { return getHumanReadableSize(); }
 
     FWTOOLS_API static bool parseSize(const std::string &s, boost::uint64_t& size);
     FWTOOLS_API static std::string unitToString( UnitType unit );

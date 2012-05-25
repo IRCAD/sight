@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FROMISOEXTENDEDSTRING_HPP_
-#define FROMISOEXTENDEDSTRING_HPP_
+#ifndef __FWTOOLS_FROMISOEXTENDEDSTRING_HPP__
+#define __FWTOOLS_FROMISOEXTENDEDSTRING_HPP__
 
 #include <string>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -59,4 +59,4 @@ FWTOOLS_API std::string toStringWithoutAccent(const std::string & str);
 
 }//end namespace
 
-#endif /*FROMISOEXTENDEDSTRING_HPP_*/
+#endif /*__FWTOOLS_FROMISOEXTENDEDSTRING_HPP__*/
