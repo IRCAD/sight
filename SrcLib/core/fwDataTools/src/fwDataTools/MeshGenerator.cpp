@@ -13,6 +13,8 @@
 
 #include <boost/foreach.hpp>
 
+#include <fwTools/NumericRoundCast.hxx>
+
 #include "fwDataTools/thread/RegionThreader.hpp"
 #include "fwDataTools/MeshGenerator.hpp"
 
@@ -38,7 +40,7 @@ MeshGenerator::~MeshGenerator()
 //------------------------------------------------------------------------------
 void MeshGenerator::initRand()
 {
-    std::srand(std::time(NULL));
+    std::srand(::fwTools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -262,9 +264,9 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
     for (CellTypesIndex i = 0; i < cellsSize; i+=3)
     {
         ::fwData::TriangularMesh::CellContainer::value_type &vCells = trian->cells()[i/3];
-        vCells[0] = cells[i];
-        vCells[1] = cells[i+1];
-        vCells[2] = cells[i+2];
+        vCells[0] = ::fwTools::numericRoundCast<int>(cells[i]);
+        vCells[1] = ::fwTools::numericRoundCast<int>(cells[i+1]);
+        vCells[2] = ::fwTools::numericRoundCast<int>(cells[i+2]);
     }
 }
 
@@ -370,7 +372,7 @@ Vector<float> &computeCellNormal( const PointsMultiArrayType &points, const ::fw
         n += v;
     }
 
-    n /= cellSize;
+    n /= ::fwTools::numericRoundCast<float>(cellSize);
     n.normalize();
     return n;
 }
@@ -768,10 +770,22 @@ void MeshGenerator::transform( ::fwData::Mesh::sptr mesh, ::fwData::Transformati
         x = points[i][0];
         y = points[i][1];
         z = points[i][2];
-        xp     = t->getCoefficient(0,0) * x + t->getCoefficient(0,1) * y + t->getCoefficient(0,2) * z + t->getCoefficient(0,3);
-        yp     = t->getCoefficient(1,0) * x + t->getCoefficient(1,1) * y + t->getCoefficient(1,2) * z + t->getCoefficient(1,3);
-        zp     = t->getCoefficient(2,0) * x + t->getCoefficient(2,1) * y + t->getCoefficient(2,2) * z + t->getCoefficient(2,3);
-        factor = t->getCoefficient(3,0) * x + t->getCoefficient(3,1) * y + t->getCoefficient(3,2) * z + t->getCoefficient(3,3);
+        xp     = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(0,0) * x
+                                                                               + t->getCoefficient(0,1) * y
+                                                                               + t->getCoefficient(0,2) * z
+                                                                               + t->getCoefficient(0,3));
+        yp     = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(1,0) * x
+                                                                               + t->getCoefficient(1,1) * y
+                                                                               + t->getCoefficient(1,2) * z
+                                                                               + t->getCoefficient(1,3));
+        zp     = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(2,0) * x
+                                                                               + t->getCoefficient(2,1) * y
+                                                                               + t->getCoefficient(2,2) * z
+                                                                               + t->getCoefficient(2,3));
+        factor = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(3,0) * x
+                                                                               + t->getCoefficient(3,1) * y
+                                                                               + t->getCoefficient(3,2) * z
+                                                                               + t->getCoefficient(3,3));
         points[i][0] = xp/factor;
         points[i][1] = yp/factor;
         points[i][2] = zp/factor;

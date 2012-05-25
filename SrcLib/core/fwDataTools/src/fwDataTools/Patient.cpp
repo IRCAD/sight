@@ -13,6 +13,8 @@
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
+#include <fwTools/NumericRoundCast.hxx>
+
 #include "fwDataTools/Patient.hpp"
 #include "fwDataTools/Image.hpp"
 #include "fwDataTools/MeshGenerator.hpp"
@@ -295,7 +297,7 @@ void Patient::generateAcquisition(::fwData::Acquisition::sptr acq,
     acq->setImage(img);
 
     acq->setBitsPerPixel(img->getType().sizeOf()*8);
-    acq->setSliceThickness(img->getSpacing()[2]);
+    acq->setSliceThickness(::fwTools::numericRoundCast< float >(img->getSpacing()[2]));
     acq->setAxe(ACQ_AXE);
     acq->setUnsignedFlag(ACQ_UNSIGNEDFLAG);
     acq->setAcquisitionIndex(ACQ_INDEX);

@@ -15,6 +15,7 @@
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/NumericRoundCast.hxx>
 
 #include <fwComEd/helper/Array.hpp>
 
@@ -38,7 +39,7 @@ Image::~Image()
 
 void Image::initRand()
 {
-    std::srand(std::time(NULL));
+    std::srand(::fwTools::numericRoundCast< unsigned int >(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------

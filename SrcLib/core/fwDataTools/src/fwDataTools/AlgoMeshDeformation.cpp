@@ -6,9 +6,12 @@
 
 #include <boost/foreach.hpp>
 
+#include <fwTools/NumericRoundCast.hxx>
+
+#include <fwComEd/helper/Array.hpp>
+
 #include "fwDataTools/AlgoMeshDeformation.hpp"
 #include "fwDataTools/MeshGenerator.hpp"
-#include <fwComEd/helper/Array.hpp>
 
 namespace fwDataTools
 {
@@ -132,7 +135,7 @@ void AlgoMeshDeformation::computeSimu()
         if( opoints[i][1] - m_yCenter > 0 )
         {
             points[i][1] = opoints[i][1] + (opoints[i][1] - m_yCenter) * scale;
-            colors[i][0] = 255 * scale;
+            colors[i][0] = ::fwTools::numericRoundCast< ::fwData::Mesh::ColorValueType >(255 * scale);
         }
         else
         {
