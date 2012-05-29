@@ -262,7 +262,12 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, :
             if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
             {
                 ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
-                if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+                if (image->getWindowWidth() != 0 )
+                {
+                    tfGreyLevel->setWindow( image->getWindowWidth() );
+                    tfGreyLevel->setLevel( image->getWindowCenter() );
+                }
+                else if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
                 {
                     double min, max;
                     ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);

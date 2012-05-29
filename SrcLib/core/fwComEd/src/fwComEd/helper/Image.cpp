@@ -97,9 +97,12 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
     if(tfPool->find(defaultTFName) == tfPool->end())
     {
         ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
-        tf->setWindow( m_image->getWindowWidth() );
-        tf->setLevel( m_image->getWindowCenter() );
-        if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(m_image))
+        if (m_image->getWindowWidth() != 0 )
+        {
+            tf->setWindow( m_image->getWindowWidth() );
+            tf->setLevel( m_image->getWindowCenter() );
+        }
+        else if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(m_image))
         {
             double min, max;
             ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(m_image, min, max);
