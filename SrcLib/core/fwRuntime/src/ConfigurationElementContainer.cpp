@@ -28,7 +28,7 @@ namespace
         :   m_name( name )
         {}
 
-        const bool operator() ( ConfigurationElement::csptr element ) const
+        bool operator() ( ConfigurationElement::csptr element ) const
         {
             return element->getName() == m_name;
         }

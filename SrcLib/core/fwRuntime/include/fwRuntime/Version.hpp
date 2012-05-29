@@ -52,7 +52,7 @@ struct Version
     /**
      * @brief   Equality test.
      */
-    FWRUNTIME_API const bool operator==(const Version & version) const;
+    FWRUNTIME_API bool operator==(const Version & version) const;
 
 
     /**

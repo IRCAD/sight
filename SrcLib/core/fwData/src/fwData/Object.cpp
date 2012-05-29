@@ -128,6 +128,7 @@ void Object::fieldDeepCopy( ::fwData::Object::csptr source )
 
 void Object::shallowCopy( ::fwData::Object::csptr source )
 {
+    FwCoreNotUsedMacro(source);
     OSLM_FATAL("shallowCopy not implemented for : " << this->getClassname() );
 }
 
@@ -135,6 +136,7 @@ void Object::shallowCopy( ::fwData::Object::csptr source )
 
 void Object::deepCopy( ::fwData::Object::csptr source )
 {
+    FwCoreNotUsedMacro(source);
     OSLM_FATAL("deepCopy not implemented for : " << this->getClassname() );
 }
 

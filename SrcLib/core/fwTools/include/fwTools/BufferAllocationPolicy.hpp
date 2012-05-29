@@ -24,6 +24,8 @@ public:
     FWTOOLS_API virtual void allocate(void *&buffer, SizeType size) throw( ::fwTools::Exception ) = 0;
     FWTOOLS_API virtual void reallocate(void *&buffer, SizeType size) throw( ::fwTools::Exception ) = 0;
     FWTOOLS_API virtual void destroy(void *&buffer) = 0;
+
+    FWTOOLS_API virtual ~BufferAllocationPolicy(){};
 };
 
 

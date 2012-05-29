@@ -69,14 +69,14 @@ xmlNodePtr Extension::getXmlNode() const
 
 //------------------------------------------------------------------------------
 
-const Extension::Validity Extension::getValidity() const
+Extension::Validity Extension::getValidity() const
 {
     return m_validity;
 }
 
 //------------------------------------------------------------------------------
 
-const Extension::Validity Extension::validate()
+Extension::Validity Extension::validate()
 {
     // Skips the validation if already done.
     if( m_validity != UnknownValidity )

@@ -159,9 +159,9 @@ bool DicomReaderTest::checkPatientACHGenou( ::fwData::Patient::sptr patient )
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
     CHECK_VALUE(notReallyCheck,"Image Bits Allocated correspond  :", false, img->getType().isSigned() );
     //(0028,1050) DS [500 ]                                             # 4,1-n Window Center
-    CHECK_VALUE(patientACHGenouIsOk,"Image Window Center correspond  :", 500, img->getCRefWindowCenter() );
+    CHECK_VALUE(patientACHGenouIsOk,"Image Window Center correspond  :", 500, img->getWindowCenter() );
     //(0028,1051) DS [2500]                                             # 4,1-n Window Width
-    CHECK_VALUE(patientACHGenouIsOk,"Image Window Width correspond  :", 2500, img->getCRefWindowWidth() );
+    CHECK_VALUE(patientACHGenouIsOk,"Image Window Width correspond  :", 2500, img->getWindowWidth() );
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length

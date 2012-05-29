@@ -8,7 +8,6 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/StandardBuffer.hpp>
 #include <fwData/ResectionDB.hpp>
 
 #include <fwMath/MeshFunctions.hpp>

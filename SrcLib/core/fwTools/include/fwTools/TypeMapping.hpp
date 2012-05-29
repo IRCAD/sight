@@ -88,6 +88,7 @@ struct isMappingSingleMPLHelper
     /// this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
     static bool evaluate(const KeyType &key)
     {
+        FwCoreNotUsedMacro(key);
         BOOST_STATIC_ASSERT(sizeof(T) == 0);  // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
         // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)

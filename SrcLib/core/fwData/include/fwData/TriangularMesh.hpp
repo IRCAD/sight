@@ -98,15 +98,15 @@ public :
 
     FWDATA_API double* getOneVectorFromPointList(int _pt) const;
 
-    FWDATA_API const int getOneIndexFromIndexList(void) const;
+    FWDATA_API int getOneIndexFromIndexList(void) const;
 
     FWDATA_API void setOneVectorInNormalList(int x, float, float, float);
 
-    FWDATA_API int const getOneIndexFromNormalList(void) const;
+    FWDATA_API int getOneIndexFromNormalList(void) const;
 
-    FWDATA_API size_t const getNumPoints(void) const ;
+    FWDATA_API size_t getNumPoints(void) const ;
 
-    FWDATA_API size_t const getNumCells(void) const ;
+    FWDATA_API size_t getNumCells(void) const ;
 
 protected :
 

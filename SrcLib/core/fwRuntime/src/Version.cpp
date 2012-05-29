@@ -73,7 +73,7 @@ const std::string Version::string() const
 
 
 
-const bool Version::operator==(const Version & version) const
+bool Version::operator==(const Version & version) const
 {
     if( m_defined && version.m_defined )
     {

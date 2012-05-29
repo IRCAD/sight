@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwCore/macros.hpp"
 #include "fwCore/SpyLogger.hpp"
 
 #include <iostream>
@@ -32,14 +33,14 @@ SpyLogger::SpyLogger()
 #ifdef _DEBUG
     std::cout << "SpyLogger::SpyLogger()" << std::endl;
 #endif
-    
+
 #ifdef USE_LOG4CXX
-    
+
     m_logger = log4cxx::Logger::getLogger("SL");
     m_logger->setLevel(log4cxx::Level::getTrace());
-    
+
 #endif
-    
+
 }
 
 //==============================================================================
@@ -50,14 +51,14 @@ SpyLogger::SpyLogger(const std::string & name)
     std::cout << "SpyLogger::SpyLogger(name=" << name << ")" << std::endl;
 #endif
     m_loggerName = name;
-    
+
 #ifdef USE_LOG4CXX
-    
+
     m_logger = log4cxx::Logger::getLogger(name);
     m_logger->setLevel(log4cxx::Level::getTrace());
 
 #endif
-    
+
 }
 
 //==============================================================================
@@ -66,13 +67,13 @@ SpyLogger::SpyLogger (const SpyLogger & logger)
 {
 
     m_loggerName = logger.m_loggerName;
-    
+
 #ifdef USE_LOG4CXX
-        
+
     m_logger = logger.m_logger;
 
 #endif
-    
+
 }
 
 //==============================================================================
@@ -88,7 +89,7 @@ SpyLogger::~SpyLogger()
 
 void SpyLogger::createBasicConfiguration()
 {
-    
+
 #ifdef _WIN32
 
     addFileAppender(m_loggerName + ".log");
@@ -102,16 +103,16 @@ void SpyLogger::createBasicConfiguration()
     addConsoleAppender();
 
 #endif
-    
+
 }
 
 //==============================================================================
 
 void SpyLogger::addConsoleAppender()
 {
-    
+
 #ifdef USE_LOG4CXX
-    
+
     // Default conversion pattern
     log4cxx::LogString defaultConversionPattern (LOG4CXX_STR("[%c] %-5p (%F:%L) - %m%n"));
 
@@ -122,9 +123,9 @@ void SpyLogger::addConsoleAppender()
 
     // Add to the main SpyLogger
     m_logger->addAppender(appender);
-    
+
 #endif
-    
+
 }
 
 //==============================================================================
@@ -134,7 +135,7 @@ void SpyLogger::addSyslogAppender(const std::string & hostName, const std::strin
 {
 
 #ifdef USE_LOG4CXX
-    
+
     // Default conversion pattern
     log4cxx::LogString defaultConversionPattern (LOG4CXX_STR("[%c] %-5p (%F:%L) - %m%n"));
 
@@ -150,8 +151,11 @@ void SpyLogger::addSyslogAppender(const std::string & hostName, const std::strin
     // Add to the main SpyLogger
     m_logger->addAppender(appender);
 
+#else
+    FwCoreNotUsedMacro(hostName);
+    FwCoreNotUsedMacro(facilityName);
 #endif
-    
+
 }
 
 
@@ -161,7 +165,7 @@ void SpyLogger::addFileAppender(const std::string & logFile)
 {
 
 #ifdef USE_LOG4CXX
-    
+
     // Default conversion pattern
     log4cxx::LogString defaultConversionPattern (LOG4CXX_STR("[%c] %-5p (%F:%L) - %m%n"));
 
@@ -176,8 +180,10 @@ void SpyLogger::addFileAppender(const std::string & logFile)
     // Add to the main SpyLogger
     m_logger->addAppender(appender);
 
+#else
+    FwCoreNotUsedMacro(logFile);
 #endif
-    
+
 }
 
 //==============================================================================
@@ -186,7 +192,7 @@ void SpyLogger::setLevel(LevelType level)
 {
 
 #ifdef USE_LOG4CXX
-    
+
     switch (level)
     {
         case SpyLogger::SL_TRACE : m_logger->setLevel(log4cxx::Level::getTrace()); break;
@@ -198,8 +204,10 @@ void SpyLogger::setLevel(LevelType level)
         default : break;
     }
 
+#else
+    FwCoreNotUsedMacro(level);
 #endif
-    
+
 }
 
 
@@ -208,9 +216,9 @@ void SpyLogger::setLevel(LevelType level)
 
 void SpyLogger::trace(const std::string & mes, const char * file, int line)
 {
-        
+
 #ifdef USE_LOG4CXX
-    
+
     if (m_logger->isTraceEnabled()) {
         ::std::stringstream oss;
         oss << mes;
@@ -219,7 +227,7 @@ void SpyLogger::trace(const std::string & mes, const char * file, int line)
 #else
     std::cout << "[TRACE] (" << file << ":" << line << ") : " << mes << std::endl;
 #endif
-    
+
 }
 
 //==============================================================================
@@ -228,7 +236,7 @@ void SpyLogger::debug(const std::string & mes, const char * file, int line)
 {
 
 #ifdef USE_LOG4CXX
-    
+
     if (m_logger->isDebugEnabled()) {
         ::std::stringstream oss;
         oss << mes;
@@ -238,7 +246,7 @@ void SpyLogger::debug(const std::string & mes, const char * file, int line)
 #else
     std::cout << "[DEBUG] (" << file << ":" << line << ") : " << mes << std::endl;
 #endif
-    
+
 }
 
 //==============================================================================
@@ -257,7 +265,7 @@ void SpyLogger::info(const std::string & mes, const char * file, int line)
 #else
     std::cout << "[INFO]  (" << file << ":" << line << ") : " << mes << std::endl;
 #endif
-    
+
 }
 
 //==============================================================================
@@ -276,7 +284,7 @@ void SpyLogger::warn(const std::string & mes, const char * file, int line)
 #else
     std::cout << "[WARN]  (" << file << ":" << line << ") : " << mes << std::endl;
 #endif
-    
+
 }
 
 //==============================================================================
@@ -295,7 +303,7 @@ void SpyLogger::error(const std::string & mes, const char * file, int line)
 #else
     std::cout << "[ERROR] (" << file << ":" << line << ") : " << mes << std::endl;
 #endif
-    
+
 }
 
 //==============================================================================
@@ -314,7 +322,7 @@ void SpyLogger::fatal(const std::string & mes, const char * file, int line)
 #else
     std::cout << "[FATAL] (" << file << ":" << line << ") : " << mes << std::endl;
 #endif
-    
+
 }
 
 //==============================================================================

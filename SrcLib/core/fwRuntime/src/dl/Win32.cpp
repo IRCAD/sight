@@ -28,7 +28,7 @@ Win32::Win32( const boost::filesystem::path & modulePath ) throw()
 
 //------------------------------------------------------------------------------
 
-const bool Win32::isLoaded() const throw()
+bool Win32::isLoaded() const throw()
 {
     return m_handle != 0;
 }

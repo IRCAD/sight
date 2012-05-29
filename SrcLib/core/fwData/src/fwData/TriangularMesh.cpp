@@ -109,22 +109,22 @@ double* TriangularMesh::getOneVectorFromPointList(int _pt) const
 
 //-----------------------------------------------------------------------------
 
-const int TriangularMesh::getOneIndexFromIndexList(void) const { return 0; } //FIXME
+int TriangularMesh::getOneIndexFromIndexList(void) const { return 0; } //FIXME
 
 void TriangularMesh::setOneVectorInNormalList(int x, float, float, float) { x = 0; } //FIXME
 
-const int TriangularMesh::getOneIndexFromNormalList(void) const { return 1; } //FIXME
+int TriangularMesh::getOneIndexFromNormalList(void) const { return 1; } //FIXME
 
 //-----------------------------------------------------------------------------
 
-const size_t TriangularMesh::getNumPoints() const
+ size_t TriangularMesh::getNumPoints() const
 {
     return m_points.size();
 }
 
 //-----------------------------------------------------------------------------
 
-const size_t TriangularMesh::getNumCells() const
+size_t TriangularMesh::getNumCells() const
 {
     return m_cells.size();
 }

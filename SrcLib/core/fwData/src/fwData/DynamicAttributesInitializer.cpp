@@ -35,6 +35,7 @@ void DynamicAttributesInitializer::init( ::fwTools::Object::sptr _obj)
 
 void DynamicAttributesInitializer::uninit( ::fwCore::LogicStamp::csptr key )
 {
+    FwCoreNotUsedMacro(key);
     //TODO
 }
 

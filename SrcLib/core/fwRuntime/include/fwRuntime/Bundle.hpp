@@ -174,7 +174,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @return      true or false
      */
-    FWRUNTIME_API const bool hasExtension(const std::string & identifier) const;
+    FWRUNTIME_API bool hasExtension(const std::string & identifier) const;
 
     /**
      * @brief       Search a specific extension in the bundle to enable or
@@ -232,7 +232,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @return      true or false
      */
-    FWRUNTIME_API const bool hasExtensionPoint(const std::string & identifier) const;
+    FWRUNTIME_API bool hasExtensionPoint(const std::string & identifier) const;
 
     /**
      * @brief       Search a specific extension point in the bundle to enable or
@@ -318,7 +318,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
     /**
      * @brief   Tells if the bundle is enable.
      */
-    FWRUNTIME_API const bool isEnable() const;
+    FWRUNTIME_API bool isEnable() const;
 
     /**
      * @brief   Changes the enable state of the bundle.
@@ -380,7 +380,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
      *
      * @return  true or false
      */
-    FWRUNTIME_API const bool hasParameter( const std::string & name ) const;
+    FWRUNTIME_API bool hasParameter( const std::string & name ) const;
     //@}
 
 

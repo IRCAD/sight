@@ -76,6 +76,8 @@ void BufferNewPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType s
 
 void BufferNewPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
+    FwCoreNotUsedMacro(buffer);
+    FwCoreNotUsedMacro(size);
     FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
                             "Reallocation not managed for buffer allocated with 'new' operator.");
 }
@@ -104,6 +106,8 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 
 void BufferNoAllocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
+    FwCoreNotUsedMacro(buffer);
+    FwCoreNotUsedMacro(size);
     FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
                             "No Allocation Policy should not be called.");
 }
@@ -112,6 +116,8 @@ void BufferNoAllocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeTy
 
 void BufferNoAllocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
+    FwCoreNotUsedMacro(buffer);
+    FwCoreNotUsedMacro(size);
     FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
                             "No Allocation Policy should not be called.");
 }
@@ -120,6 +126,7 @@ void BufferNoAllocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::Size
 
 void BufferNoAllocPolicy::destroy(void *&buffer)
 {
+    FwCoreNotUsedMacro(buffer);
     SLM_ASSERT("No Alloc Policy should not be called", 0);
 }
 

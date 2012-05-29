@@ -41,7 +41,7 @@ struct IsEnableAndHasType
     :   m_type( type )
     {}
 
-    const bool operator() ( const ::boost::shared_ptr< T > p ) const
+    bool operator() ( const ::boost::shared_ptr< T > p ) const
     {
         return p->getType() == m_type && p->isEnable();
     }
@@ -80,6 +80,7 @@ void Runtime::addBundle( ::boost::shared_ptr< Bundle > bundle ) throw(RuntimeExc
 
 void Runtime::unregisterBundle( ::boost::shared_ptr< Bundle > bundle )
 {
+    FwCoreNotUsedMacro(bundle);
 //    std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(), ::boost::bind(&Runtime::unregisterExtension, this, _1));
 //    std::for_each( bundle->extensionPointsBegin(), bundle->extensionPointsEnd(), ::boost::bind(&Runtime::unregisterExtensionPoint, this, _1));
 //    std::for_each( bundle->executableFactoriesBegin(), bundle->executableFactoriesEnd(), ::boost::bind(&Runtime::unregisterExecutableFactory, this, _1));

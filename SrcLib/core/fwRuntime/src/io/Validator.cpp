@@ -121,7 +121,7 @@ void Validator::initializeContext()
 
 //------------------------------------------------------------------------------
 
-const bool Validator::validate( const boost::filesystem::path & xmlFile )
+bool Validator::validate( const boost::filesystem::path & xmlFile )
 {
     int result;
 
@@ -160,7 +160,7 @@ const bool Validator::validate( const boost::filesystem::path & xmlFile )
 
 //------------------------------------------------------------------------------
 
-const bool Validator::validate( xmlNodePtr node )
+bool Validator::validate( xmlNodePtr node )
 {
     int result;
 

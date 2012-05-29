@@ -29,6 +29,7 @@ Folder::~Folder()
 
 Folder::sptr Folder::FolderFactory(::boost::filesystem::path _path, bool recursive )
 {
+    FwCoreNotUsedMacro(recursive);
     Folder::sptr folder = Folder::New();
     folder->setFolder(_path);
     return folder;

@@ -42,7 +42,7 @@ BundleElement::BundleElement( ::boost::shared_ptr< Bundle > bundle )
 
 //------------------------------------------------------------------------------
 
-const bool BundleElement::isEnable() const
+bool BundleElement::isEnable() const
 {
     // Pre-condition.
     SLM_ASSERT("bundle not initialized", m_bundle != 0 );

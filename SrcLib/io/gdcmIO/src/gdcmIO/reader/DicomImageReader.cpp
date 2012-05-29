@@ -281,7 +281,7 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img ) throw(::fwTools::F
     if ( !windowCenter.empty() )
     {
         ::boost::split( splitedWindows,       windowCenter,      ::boost::is_any_of( "\\" ) );  // Get each windowCenter
-        img->setCRefWindowCenter( atof( splitedWindows[0].c_str() ) );                          // Assign first one
+        img->setWindowCenter( atof( splitedWindows[0].c_str() ) );                          // Assign first one
     }
     OSLM_TRACE("Image's window center : "<<img->getWindowCenter());
 
@@ -290,7 +290,7 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img ) throw(::fwTools::F
     if ( !windowWidth.empty() )
     {
         ::boost::split( splitedWindows,       windowWidth,      ::boost::is_any_of( "\\" ) );  // Get each windowWidth
-        img->setCRefWindowWidth( atof( splitedWindows[0].c_str() ) );                          // Assign first one
+        img->setWindowWidth( atof( splitedWindows[0].c_str() ) );                          // Assign first one
     }
     OSLM_TRACE("Image's window width : "<<img->getWindowWidth());
 

@@ -23,7 +23,6 @@
 
 #include "fwData/registry/macros.hpp"
 
-#include "fwData/StandardBuffer.hpp"
 #include "fwData/Image.hpp"
 
 //------------------------------------------------------------------------------
@@ -39,8 +38,8 @@ namespace fwData
 
 Image::Image() :
         m_type(),
-        m_dWindowCenter(0),
-        m_dWindowWidth(0),
+        m_attrWindowCenter(0),
+        m_attrWindowWidth(0),
         m_dataArray( ::fwData::Array::New() )
 {}
 
@@ -195,8 +194,8 @@ void Image::copyInformation( Image::csptr _source )
     m_type                = _source->m_type;
     m_spacing             = _source->m_spacing;
     m_origin             = _source->m_origin;
-    m_dWindowCenter       = _source->m_dWindowCenter;
-    m_dWindowWidth        = _source->m_dWindowWidth;
+    m_attrWindowCenter       = _source->m_attrWindowCenter;
+    m_attrWindowWidth        = _source->m_attrWindowWidth;
 }
 
 //------------------------------------------------------------------------------

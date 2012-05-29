@@ -48,7 +48,11 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool registerBuffer(void ** buffer, long * lockCount){return true;}
+    virtual bool registerBuffer(void ** buffer, long * lockCount){
+        FwCoreNotUsedMacro(buffer);
+        FwCoreNotUsedMacro(lockCount);
+        return true;
+    }
 
     /**
      * @brief Hook called when a BufferObject is destroyed
@@ -57,7 +61,10 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool unregisterBuffer(void ** buffer){return true;}
+    virtual bool unregisterBuffer(void ** buffer){
+        FwCoreNotUsedMacro(buffer);
+        return true;
+    }
 
     /**
      * @brief Hook called when an allocation is requested from a BufferObject
@@ -68,7 +75,13 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy){return true;}
+    virtual bool allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+    {
+        FwCoreNotUsedMacro(buffer);
+        FwCoreNotUsedMacro(size);
+        FwCoreNotUsedMacro(policy);
+        return true;
+    }
 
     /**
      * @brief Hook called when a request is made to set BufferObject's buffer from an external buffer
@@ -79,7 +92,13 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy){return true;}
+    virtual bool setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+    {
+        FwCoreNotUsedMacro(buffer);
+        FwCoreNotUsedMacro(size);
+        FwCoreNotUsedMacro(policy);
+        return true;
+    }
 
     /**
      * @brief Hook called when a reallocation is requested from a BufferObject
@@ -89,7 +108,13 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool reallocateBuffer(void ** buffer, SizeType newSize){return true;}
+    virtual bool reallocateBuffer(void ** buffer, SizeType newSize)
+    {
+        FwCoreNotUsedMacro(buffer);
+        FwCoreNotUsedMacro(newSize);
+        return true;
+    }
+
 
     /**
      * @brief Hook called when a destruction is requested from a BufferObject
@@ -98,7 +123,12 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool destroyBuffer(void ** buffer){return true;}
+    virtual bool destroyBuffer(void ** buffer)
+    {
+        FwCoreNotUsedMacro(buffer);
+        return true;
+    }
+
 
     /**
      * @brief Hook called when a request to swap two BufferObject contents is made
@@ -108,7 +138,13 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool swapBuffer(void ** bufA, void ** bufB){return true;}
+    virtual bool swapBuffer(void ** bufA, void ** bufB)
+    {
+        FwCoreNotUsedMacro(bufA);
+        FwCoreNotUsedMacro(bufB);
+        return true;
+    }
+
 
     /**
      * @brief Hook called when a BufferObject is locked
@@ -117,7 +153,12 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool lockBuffer(const void * const * buffer){return true;}
+    virtual bool lockBuffer(const void * const * buffer)
+    {
+        FwCoreNotUsedMacro(buffer);
+        return true;
+    }
+
 
     /**
      * @brief Hook called when a BufferObject lock is released
@@ -126,7 +167,12 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool unlockBuffer(const void * const * buffer){return true;}
+    virtual bool unlockBuffer(const void * const * buffer)
+    {
+        FwCoreNotUsedMacro(buffer);
+        return true;
+    }
+
 
     /**
      * @brief Returns the current BufferManager instance

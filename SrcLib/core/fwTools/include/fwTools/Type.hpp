@@ -41,8 +41,9 @@ public:
     struct FWTOOLS_CLASS_API ToolBase
     {
         FWTOOLS_API ToolBase();
+        FWTOOLS_API virtual ~ToolBase(){};
         FWTOOLS_API ToolBase(const std::type_info &typeinfo);
-        FWTOOLS_API  virtual std::string toString( ::boost::any value ) const;
+        FWTOOLS_API virtual std::string toString( ::boost::any value ) const;
         FWTOOLS_API virtual std::string toString( const void * ) const;
 
         const std::type_info &m_typeinfo;
@@ -52,6 +53,7 @@ public:
     struct  Tool : public ToolBase
     {
         Tool();
+        virtual ~Tool(){};
         virtual std::string toString( ::boost::any value ) const;
         virtual std::string toString( const void * ) const;
     };

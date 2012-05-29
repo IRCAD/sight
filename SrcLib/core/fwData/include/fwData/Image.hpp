@@ -94,10 +94,15 @@ public:
     FWDATA_API void setSize(const SizeType &size);
     // @}
 
+    /**
+     * @brief Get/set prefered window center
+     */
+    fwDataGetSetMacro(WindowCenter, double);
 
-    fwGettersSettersDocMacro(WindowCenter, dWindowCenter, double, window level);
-
-    fwGettersSettersDocMacro(WindowWidth, dWindowWidth, double, window width);
+    /**
+     * @brief Get/set prefered window width
+     */
+    fwDataGetSetMacro(WindowWidth , double);
 
     /**
      * @brief set data array
@@ -170,12 +175,11 @@ protected :
     //! Origin of the image in 3D repair
     OriginType m_origin;
 
-    /** @{
-     * @brief Visu control to adjust contrast image (come from dicom image ?)
-     */
-    double m_dWindowCenter;
-    double m_dWindowWidth;
-    // @}
+    //! Prefered window center/with
+    ///@{
+    double m_attrWindowCenter;
+    double m_attrWindowWidth;
+    ///@}
 
     //! image buffer
     ::fwData::Array::sptr m_dataArray;

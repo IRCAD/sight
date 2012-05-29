@@ -99,7 +99,7 @@ const std::string ConfigurationElement::getValue() const throw()
 
 //------------------------------------------------------------------------------
 
-const bool ConfigurationElement::hasAttribute(const std::string& name) const throw()
+bool ConfigurationElement::hasAttribute(const std::string& name) const throw()
 {
     AttributeContainer::const_iterator foundPos = m_attributes.find(name);
     return foundPos != m_attributes.end();

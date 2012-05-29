@@ -329,7 +329,7 @@ public:
     /**
      * @brief Returns pointer on BufferObject's buffer
      */
-    const void * const getBufferPointer() const {return &m_buffer;};
+    const void * getBufferPointer() const {return &m_buffer;};
 
     /// Exchanges the content of the BufferObject with the content of _source.
     FWTOOLS_API void swap( BufferObject::sptr _source );

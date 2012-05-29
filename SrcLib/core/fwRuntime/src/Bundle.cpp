@@ -48,7 +48,7 @@ namespace
         :   m_type( type )
         {}
 
-        const bool operator() ( const SPTR( ExecutableFactory ) factory ) const
+        bool operator() ( const SPTR( ExecutableFactory ) factory ) const
         {
             return factory->getType() == m_type;
         }
@@ -145,7 +145,7 @@ void Bundle::addExtension( SPTR( Extension ) extension )
 
 //------------------------------------------------------------------------------
 
-const bool Bundle::hasExtension(const std::string & identifier) const
+bool Bundle::hasExtension(const std::string & identifier) const
 {
     ExtensionContainer::const_iterator extpt = m_extensions.begin();
     while( extpt != m_extensions.end() )
@@ -209,7 +209,7 @@ SPTR( ExtensionPoint ) Bundle::findExtensionPoint( const std::string & identifie
 
 //------------------------------------------------------------------------------
 
-const bool Bundle::hasExtensionPoint(const std::string & identifier) const
+bool Bundle::hasExtensionPoint(const std::string & identifier) const
 {
     ExtensionPointContainer::const_iterator extpt = m_extensionPoints.begin();
     while( extpt != m_extensionPoints.end() )
@@ -557,7 +557,7 @@ void Bundle::uninitialize() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-const bool Bundle::isEnable() const
+bool Bundle::isEnable() const
 {
     return m_enable;
 }
@@ -587,7 +587,7 @@ const std::string Bundle::getParameterValue( const std::string & identifier ) co
 
 //------------------------------------------------------------------------------
 
-const bool Bundle::hasParameter( const std::string & identifier ) const
+bool Bundle::hasParameter( const std::string & identifier ) const
 {
     return (m_parameters.find(identifier) != m_parameters.end());
 }

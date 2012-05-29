@@ -13,6 +13,8 @@
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/pop_front.hpp>
 
+#include <fwCore/macros.hpp>
+
 #include "fwTools/TypeMapping.hpp"
 #include "fwTools/Stringizer.hpp"
 
@@ -46,6 +48,7 @@ namespace fwTools
     template< class KeyType,class Parameter>
     static void  invoke( const KeyType &keytype,const Parameter &param )
     {
+        FwCoreNotUsedMacro(param);
         std::string msg = ::fwTools::getString(keytype) + " : KeyType value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
     }
