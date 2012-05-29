@@ -123,13 +123,10 @@ void OrganListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwT
     if ( acquisitionMsg )
     {
         if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) ||
-             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) ||
+             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS))
         {
             this->updating();
-        }
-        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS))
-        {
-            m_organChoice->clear();
         }
     }
 }
