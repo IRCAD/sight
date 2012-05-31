@@ -121,8 +121,11 @@ pygGetSetter(Origin)
 #undef pygGetSetter
 
 
-
-
+// use a wrapper because deepCopy is a virtual function
+void deepCopyImageWrapper( fwData::Image::sptr imageSelf, fwData::Image::sptr imageSrc)
+{
+    imageSelf->deepCopy(imageSrc);
+}
 
 //------------------------------------------------------------------------------
 
@@ -138,6 +141,7 @@ void export_image()
        .add_property("origin", &getOrigin,  &setOrigin )
        .add_property("number_of_dimentions", &::fwData::Image::getNumberOfDimensions )
        .def("allocate", SIMPLEIMAGEALLOCATE )
+       .def("deepCopy",  deepCopyImageWrapper )
        ;
 }
 
