@@ -72,16 +72,20 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     m_valueSlider->setMinimumWidth(100);
 
     m_valueCheckBox = new QCheckBox( tr("visible"), container);
+    m_action = new QAction(container);
+    m_action->setCheckable(true);
     if (!m_shortcut.empty())
     {
-        m_valueCheckBox->setShortcut(QKeySequence(QString::fromStdString(m_shortcut)));
+        m_action->setShortcut(QKeySequence(QString::fromStdString(m_shortcut)));
     }
+    m_valueCheckBox->addAction(m_action);
     hLayout->addWidget( m_valueCheckBox, 0, Qt::AlignVCenter );
 
     container->setLayout( hLayout );
 
     QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
     QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+    QObject::connect(m_action, SIGNAL(triggered(bool)), this, SLOT(onModifyVisibility(bool)));
 
     this->updating();
 }
@@ -93,6 +97,7 @@ void ImageTransparency::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
     QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+    QObject::disconnect(m_action, SIGNAL(triggered(bool)), this, SLOT(onModifyVisibility(bool)));
 
     this->getContainer()->clean();
     this->::fwGui::IGuiContainerSrv::destroy();
@@ -128,7 +133,7 @@ void ImageTransparency::updating() throw(::fwTools::Failed)
     {
         QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
         QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
-
+        QObject::disconnect(m_action, SIGNAL(triggered(bool)), this, SLOT(onModifyVisibility(bool)));
 
         if(img->getField( "TRANSPARENCY" ) )
         {
@@ -144,14 +149,17 @@ void ImageTransparency::updating() throw(::fwTools::Failed)
         {
             ::fwData::Boolean::sptr visible = img->getField< ::fwData::Boolean >( "VISIBILITY" );
             m_valueCheckBox->setChecked( *visible );
+            m_action->setChecked(*visible);
         }
         else
         {
             img->setField( "VISIBILITY", ::fwData::Boolean::New(true) );
             m_valueCheckBox->setChecked( true );
+            m_action->setChecked(true);
         }
         QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
         QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
+        QObject::connect(m_action, SIGNAL(triggered(bool)), this, SLOT(onModifyVisibility(bool)));
     }
 }
 
@@ -200,11 +208,29 @@ void ImageTransparency::onModifyTransparency(int value)
 
 //------------------------------------------------------------------------------
 
+void ImageTransparency::onModifyVisibility(bool value)
+{
+    SLM_TRACE_FUNC();
+    m_valueCheckBox->setCheckState(value ? Qt::Checked : Qt::Unchecked);
+    this->notifyVisibility(value);
+}
+
+//------------------------------------------------------------------------------
+
 void ImageTransparency::onModifyVisibility(int value)
 {
     SLM_TRACE_FUNC();
+    m_action->setChecked(value == Qt::Checked);
+
+    this->notifyVisibility(value == Qt::Checked);
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::notifyVisibility(bool isVisible)
+{
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-    img->setField( "VISIBILITY",  ::fwData::Boolean::New(value != Qt::Unchecked) );
+    img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );
     ::fwComEd::ImageMsg::NewSptr imageMsg;
     imageMsg->addEvent( "VISIBILITY" );
     ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
