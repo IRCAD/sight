@@ -60,10 +60,10 @@ namespace bindings
         pybuf->suboffsets =  new Py_ssize_t[image->getNumberOfDimensions()];
         pybuf->internal = NULL;
 
-        std::copy(  image->getSize().rbegin(), image->getSize().rend(), pybuf->shape);
+        std::copy(  image->getSize().begin(), image->getSize().end(), pybuf->shape);
         std::fill(pybuf->suboffsets, pybuf->suboffsets+3, -1);
 
-        PyBuffer_FillContiguousStrides(   pybuf->ndim , pybuf->shape, pybuf->strides, pybuf->itemsize, 'C');
+        PyBuffer_FillContiguousStrides(   pybuf->ndim , pybuf->shape, pybuf->strides, pybuf->itemsize, 'F');
 
         handle<> bufHandle( PyMemoryView_FromBuffer( pybuf ) );
         delete pybuf;
