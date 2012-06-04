@@ -85,13 +85,14 @@ protected:
      * Example of configuration
      * @verbatim
          <service uid="windowLevel" implementation="::uiImage::WindowLevel" type="::gui::editor::IEditor" autoComChannel="yes">
-             <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection" />
+             <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection" useImageGreyLevelTF="yes" />
          </service>
        @endverbatim
      * With :
      *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
      *  intensity when this service receive BUFFER event
      *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use default selection field.
+     *  - \b useImageGreyLevelTF : if 'yes' and if tfSelection is configured, then we use the grey level tf of image
      */
     virtual void configuring() throw(fwTools::Failed);
 
@@ -128,6 +129,12 @@ protected:
     void setWidgetDynamicRange(double min, double max);
     bool getWidgetDoubleValue(QLineEdit *widget, double &val);
 
+    /// Returns the current grey level tf of image
+    ::fwData::TransferFunction::sptr getImageGreyLevelTF();
+
+    /// Swap current tf and notify other services
+    void swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF );
+
 private:
 
     QPointer< QLineEdit >   m_valueTextMin;
@@ -148,6 +155,7 @@ private:
     double m_notifiedImageMax;
     bool m_isNotifying;
     bool m_autoWindowing;
+    bool m_useImageGreyLevelTF;
 
     /// Identifier of the field containing the specific selection of TransferFunction
     /// if m_tfSelection is empty => use default TF selection

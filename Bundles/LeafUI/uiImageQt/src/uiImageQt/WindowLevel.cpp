@@ -57,6 +57,7 @@ WindowLevel::WindowLevel() throw()
     m_imageMin = -200;
     m_imageMax = 300;
     m_isNotifying = false;
+    m_useImageGreyLevelTF = false;
 
     this->installTFSelectionEventHandler(this);
     this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
@@ -195,6 +196,13 @@ void WindowLevel::configuring() throw(fwTools::Failed)
         m_autoWindowing = (autoWindowing == "yes");
     }
 
+    if ( config->hasAttribute("useImageGreyLevelTF") )
+    {
+        std::string useImageGreyLevelTF = config->getExistingAttributeValue("useImageGreyLevelTF");
+        SLM_ASSERT("Bad value for 'useImageGreyLevelTF' attribute. It must be 'yes' or 'no'!", useImageGreyLevelTF == "yes" || useImageGreyLevelTF == "no");
+        m_useImageGreyLevelTF = (useImageGreyLevelTF == "yes");
+    }
+
     this->parseTFConfig(config);
 }
 
@@ -212,6 +220,16 @@ void WindowLevel::updating() throw(::fwTools::Failed)
     if(imageIsValid)
     {
         this->updateImageInfos(image);
+
+        // test if service must use image grey level tf ( when another tf pool is defined )
+        if( m_useImageGreyLevelTF &&
+            ! this->getTFSelectionFwID().empty() )
+        {
+            ::fwData::TransferFunction::sptr newTF = this->getImageGreyLevelTF();
+            this->swapCurrentTFAndNotify( newTF );
+            m_toggleTFButton->setCheckable(true);
+        }
+
         if(m_autoWindowing)
         {
             double min, max;
@@ -248,6 +266,7 @@ void WindowLevel::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools
         this->updateImageInfos(image);
         this->updateTransferFunction(image, this->getSptr());
         this->upadteTFObserver(msg, this->getSptr());
+
         if(m_autoWindowing && msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
         {
             double min, max;
@@ -441,6 +460,8 @@ void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 void  WindowLevel::onToggleTF(bool squareTF)
 {
+    bool usedGreyLevelTF = false;
+
     ::fwData::TransferFunction::sptr oldTF = this->getTransferFunction();
     ::fwData::TransferFunction::sptr newTF;
 
@@ -455,19 +476,28 @@ void  WindowLevel::onToggleTF(bool squareTF)
     }
     else
     {
-        newTF = ::fwData::TransferFunction::createDefaultTF();
+        // test if service must use image grey level tf ( when another tf pool is defined )
+        if(     m_useImageGreyLevelTF &&
+                ! this->getTFSelectionFwID().empty() )
+        {
+            newTF = this->getImageGreyLevelTF();
+            usedGreyLevelTF = true;
+        }
+        else
+        {
+            newTF = ::fwData::TransferFunction::createDefaultTF();
+        }
     }
 
-    newTF->setWindow(oldTF->getWindow());
-    newTF->setLevel(oldTF->getLevel());
+    newTF->setWindow( oldTF->getWindow() );
+    newTF->setLevel( oldTF->getLevel() );
 
-    std::string tfSelectionFwID = this->getTFSelectionFwID();
-    ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfSelectionFwID ) );
-    OSLM_ASSERT( "Sorry, object with fwID " << tfSelectionFwID << " doesn't exist.", pool );
-    ::fwComEd::helper::Composite compositeHelper( pool );
+    this->swapCurrentTFAndNotify( newTF );
 
-    compositeHelper.swap(this->getSelectedTFKey(), newTF);
-    compositeHelper.notify(this->getSptr());
+    if ( usedGreyLevelTF )
+    {
+        this->notifyTFWindowing( this->getSptr() );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -540,6 +570,44 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
     m_widgetDynamicRangeWidth = max - min;
 
     m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(min).arg(max));
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::TransferFunction::sptr WindowLevel::getImageGreyLevelTF()
+{
+    ::fwData::TransferFunction::sptr defaultTF;
+
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+
+    // Create pool
+    ::fwComEd::helper::Image helper(image);
+    helper.createTransferFunctionPool( this->getSptr() ); // do nothing if image tf pool already exist
+
+    // Get pool
+    const std::string poolFieldName = ::fwComEd::Dictionary::m_transferFunctionCompositeId;
+    ::fwData::Composite::sptr pool = image->getField< ::fwData::Composite >(poolFieldName);
+
+    // Get image default image tf
+    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
+    defaultTF = ::fwData::TransferFunction::dynamicCast((*pool)[defaultTFName]);
+
+    return defaultTF;
+}
+
+//------------------------------------------------------------------------------
+
+void WindowLevel::swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF )
+{
+    // Change TF
+    std::string tfSelectionFwID = this->getTFSelectionFwID();
+    ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfSelectionFwID ) );
+    OSLM_ASSERT( "Sorry, object with fwID " << tfSelectionFwID << " doesn't exist.", pool );
+    ::fwComEd::helper::Composite compositeHelper( pool );
+    compositeHelper.swap( this->getSelectedTFKey(), newTF );
+
+    // Notify change
+    compositeHelper.notify( this->getSptr() );
 }
 
 //------------------------------------------------------------------------------
