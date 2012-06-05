@@ -76,7 +76,7 @@ void GlobalEventManager::dispatch()
     if(!pMsg->getSubject().expired())
     {
         SLM_INFO_IF( "Message's source expired", pMsg->getSource().expired());
-        OSLM_TRACE( "dispatching MSG : " << pMsg->getGeneralInfo() );
+        OSLM_INFO( "dispatching MSG : " << pMsg->getGeneralInfo() );
         ::fwData::Object::sptr pSubject = pMsg->getSubject().lock();
         if( ::fwServices::OSR::has(pSubject, "::fwServices::IEditionService") )
         {
@@ -97,7 +97,7 @@ void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServic
 
     if ( m_deliveryType == DELEGATED_BREADTH_FIRST )
     {
-        OSLM_TRACE( "MSG queued : " << _pMsg->getGeneralInfo() );
+        OSLM_INFO( "MSG queued : " << _pMsg->getGeneralInfo() );
         MessageAndOptions msg ( _pMsg, _options );
         m_msgDeque.push_back( msg );
 
@@ -108,7 +108,7 @@ void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServic
     }
     else if ( m_deliveryType == BREADTH_FIRST )
     {
-        OSLM_TRACE( "MSG queued for immediate notification : " << _pMsg->getGeneralInfo() );
+        OSLM_INFO( "MSG queued for immediate notification : " << _pMsg->getGeneralInfo() );
         MessageAndOptions msg ( _pMsg, _options );
         m_msgDeque.push_back( msg );
 
@@ -125,7 +125,7 @@ void GlobalEventManager::notify( ::fwServices::ObjectMsg::sptr _pMsg, ::fwServic
         ::fwServices::IService::sptr pSource = _pMsg->getSource().lock();
         ::fwData::Object::sptr pSubject = _pMsg->getSubject().lock();
 
-        OSLM_TRACE( "MSG Notification : " << _pMsg->getGeneralInfo() );
+        OSLM_INFO( "MSG Notification : " << _pMsg->getGeneralInfo() );
         ::fwServices::IEditionService::sptr srv;
         srv = ::fwServices::get< ::fwServices::IEditionService >( pSubject );
         srv->notify( _pMsg, _options ) ;
