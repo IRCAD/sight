@@ -99,7 +99,7 @@ void setPixelTypeFromString( ::fwData::Image::sptr image, std::string type)
 //------------------------------------------------------------------------------
 
 
-#define pygGetSetter( ATTRIB )                                                                       \
+#define __FWPYTHON_pygGetSetter( ATTRIB )                                                                       \
         ::boost::python::list get##ATTRIB(fwData::Image::sptr image)                                 \
         {                                                                                            \
             return make_pylist (image->get##ATTRIB() );                                              \
@@ -114,11 +114,11 @@ void setPixelTypeFromString( ::fwData::Image::sptr image, std::string type)
 
 
 
-pygGetSetter(Size)
-pygGetSetter(Spacing)
-pygGetSetter(Origin)
+__FWPYTHON_pygGetSetter(Size)
+__FWPYTHON_pygGetSetter(Spacing)
+__FWPYTHON_pygGetSetter(Origin)
 
-#undef pygGetSetter
+#undef __FWPYTHON_pygGetSetter
 
 
 // use a wrapper because deepCopy is a virtual function
