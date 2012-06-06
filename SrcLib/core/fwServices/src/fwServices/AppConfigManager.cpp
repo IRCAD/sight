@@ -106,7 +106,16 @@ namespace fwServices
 {
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
 
-    ::fwServices::IService::sptr srv = srvFactory->create(::boost::get<0>(type), ::boost::get<0>(implType));
+    ::fwServices::IService::sptr srv;
+    std::string typestr = ::boost::get<0>(type);
+    if(typestr.empty())
+    {
+        srv = srvFactory->create(::boost::get<0>(implType));
+    }
+    else
+    {
+        srv = srvFactory->create(typestr, ::boost::get<0>(implType));
+    }
 
     OSLM_ASSERT("Service already has an UID.", !srv->hasID());
 
@@ -395,8 +404,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     }
 
     // Type
-    SLM_ASSERT("\"type\" attribute is missing.", srvElem->hasAttribute("type"));
-    std::string type = srvElem->getExistingAttributeValue("type");
+    std::string type = srvElem->getAttributeValue("type");
 
     // Implementation
     ConfigAttribute implType("", false);

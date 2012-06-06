@@ -59,7 +59,7 @@
             <xs:any processContents="skip" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='type' type='xs:string' use="required" />
+        <xs:attribute name='type' type='xs:string' use="optional" />
         <xs:attribute name='implementation' type='xs:string' use="required" />
         <xs:attribute name='autoComChannel' type='ComChannelType' />
         <xs:attribute name='priority' type='xs:string' />

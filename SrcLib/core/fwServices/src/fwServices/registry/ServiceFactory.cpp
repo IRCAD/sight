@@ -145,7 +145,7 @@ void ServiceFactory::parseBundleInformation()
 
 //-----------------------------------------------------------------------------
 
-IService::sptr ServiceFactory::create( const std::string & _srvType, const std::string & _srvImpl )
+IService::sptr ServiceFactory::create( const std::string & _srvImpl )
 {
     IService::sptr service;
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
@@ -153,7 +153,6 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     ServiceFactoryInfo::sptr info = iter->second;
 
     OSLM_DEBUG("SR create a new service ( classname = " << _srvImpl << " )");
-    OSLM_ASSERT("Sorry, type of service must correspond. "<< _srvType << " != " << info->serviceType, _srvType == info->serviceType);
     if ( info->factory )
     {
         service = info->factory->create();
@@ -170,6 +169,19 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     }
 
     this->checkServicesNotDeclaredInPluginXml();
+    return service;
+}
+
+
+//-----------------------------------------------------------------------------
+
+IService::sptr ServiceFactory::create( const std::string & _srvType, const std::string & _srvImpl )
+{
+    IService::sptr service = this->create(_srvImpl);
+    OSLM_ASSERT(
+                "Sorry, type of service must correspond. "
+                << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType,
+                _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType);
     return service;
 }
 

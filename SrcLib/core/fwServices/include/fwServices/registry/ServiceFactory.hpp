@@ -105,6 +105,8 @@ public:
         const std::string & stype,
         const std::string & oimpl);
 
+    FWSERVICES_API IService::sptr create( const std::string & _srvImpl );
+
     FWSERVICES_API IService::sptr create( const std::string & _srvType, const std::string & _srvImpl );
 
     FWSERVICES_API void clearFactory();
