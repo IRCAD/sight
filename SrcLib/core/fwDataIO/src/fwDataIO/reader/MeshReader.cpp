@@ -109,8 +109,8 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
             [
                 ref(nbPoints) = _1,
                 phx::bind(&::fwData::Mesh::setNumberOfPoints, *mesh, _1),
-                phx::push_back(ref(pointArraySize),ref(nbPoints)),
-                phx::bind(&::fwData::Array::resize, *pointArray, ref(pointArraySize), true) ,
+                phx::push_back(phx::ref(pointArraySize),phx::ref(nbPoints)),
+                phx::bind(&::fwData::Array::resize, *pointArray, phx::ref(pointArraySize), true) ,
                 ref(pointArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::PointValueType >, pointHelper )
             ]
 
