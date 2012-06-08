@@ -241,7 +241,7 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
         {
             std::string value((const char*) curChild->content);
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
-            OSLM_WARN_IF("Bundle : " << bundle->getIdentifier() << ", node: " << name << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
+            OSLM_WARN_IF("Bundle : " << ( bundle ? bundle->getIdentifier() : "<None>" ) << ", node: " << name << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
                     (value.find("\n")!=std::string::npos || value.find("\t")!=std::string::npos));
 
             configurationElement->setValue( configurationElement->getValue() + value );

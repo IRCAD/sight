@@ -8,6 +8,8 @@
 #define _FWRUNTIME_CONVERT_HPP_
 
 #include <boost/shared_ptr.hpp>
+#include <boost/property_tree/ptree.hpp>
+
 
 #include <libxml/tree.h>
 
@@ -38,9 +40,19 @@ public:
     FWRUNTIME_API static xmlNodePtr toXml( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement) ;
 
     /**
+     * @brief   Build an std::string from a ConfigurationElement
+     */
+    FWRUNTIME_API std::string static toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgElement);
+
+    /**
      * @brief   Build an xmlNodePtr with all running Bundles
      */
     FWRUNTIME_API static xmlNodePtr runningBundlesToXml( ) ;
+
+
+    FWRUNTIME_API static ::boost::property_tree::ptree toPropertyTree( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+
+    FWRUNTIME_API static ::fwRuntime::ConfigurationElement::sptr fromPropertyTree( ::boost::property_tree::ptree pt );
 
 private :
 
