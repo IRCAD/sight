@@ -123,7 +123,7 @@ void TranslateUpdater::configuring()  throw ( ::fwTools::Failed )
         const ::fwServices::IService::ConfigType &translate = v.second;
         const ::fwServices::IService::ConfigType xmlattr = translate.get_child("<xmlattr>");
 
-        OSLM_FATAL_IF( "Sorry, attribute \"fromKey\" is missing", xmlattr.count("fromKey") != 1 );
+        SLM_FATAL_IF( "Sorry, attribute \"fromKey\" is missing", xmlattr.count("fromKey") != 1 );
         SLM_FATAL_IF( "Sorry, attribute \"toKey\" is missing", xmlattr.count("toKey") != 1 );
         SLM_FATAL_IF( "Sorry, attribute \"fromUID\" is missing", xmlattr.count("fromUID") != 1 );
 
