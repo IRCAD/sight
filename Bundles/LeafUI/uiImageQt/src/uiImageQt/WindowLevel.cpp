@@ -562,7 +562,7 @@ void WindowLevel::setEnabled(bool enable)
 
 void WindowLevel::setWidgetDynamicRange(double min, double max)
 {
-    if(abs(max - min) < 1.e-05)
+    if(fabs(max - min) < 1.e-05)
     {
         max = min + 1.e-05;
     }
