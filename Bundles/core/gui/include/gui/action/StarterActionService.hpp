@@ -20,10 +20,56 @@ namespace action
 {
 
 /**
+ * @brief   Apply an action (start, stop, ...) on a service specify by uid.
  * @class   StarterActionService.
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
+ *
+ * This action works on a ::fwData::Object. It does the action specify by the specify config.
+ * This action can be :
+ *   - Start a service :
+ * @verbatim
+           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+              <start uid="Uid_of_the_service" />
+           </service>
+   @endverbatim
+ * If the service is stopped, the service specified by "Uid_of_the_service" is started and updated. Otherwise it is just updated.
+ *
+ *   - Start a service if exists :
+ * @verbatim
+           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+              <start_if_exists uid="Uid_of_the_service" />
+           </service>
+   @endverbatim
+ * Test if the service specified by "Uid_of_the_service" exists before starting it.
+ *
+ *   - Stop a service :
+ * @verbatim
+           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+              <stop uid="Uid_of_the_service" />
+           </service>
+   @endverbatim
+ *  If the service specified by "Uid_of_the_service" has been started, it is stopped. Otherwise, nothing appends.
+ *
+ *   - Stop a service if exists :  Test if the service exist before stopping it
+ * @verbatim
+           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+              <stop_if_exists uid="Uid_of_the_service" />
+           </service>
+   @endverbatim
+ *  Test if the service specified by "Uid_of_the_service" exists before stopping it.
+ *
+ *   - Start or stop the service:
+ * @verbatim
+           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+              <start_or_stop uid="Uid_of_the_service" />
+           </service>
+   @endverbatim
+ * If the service is stopped, this works as start the service. If the service is started, this works as stop the service.
+ *
+ * To notice : when the starterActionService is stopped, it stops all the associated services which have been started by itself.
  */
+
 class GUI_CLASS_API StarterActionService : public ::fwGui::IActionSrv
 {
 
