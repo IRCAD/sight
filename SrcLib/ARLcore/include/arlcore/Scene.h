@@ -32,12 +32,15 @@ namespace arlCore
      * After setting cameras and tags in the scene, we can simulate the detection of the tag points
      * on the image produced by the cameras.
      * We can also apply a dynamic behavior to the points, as for example collapsing
-     * 
+     *
      * This class contains basic methods to create a virtual world. Practically, you have
-     * to define a new class (see in Scenes.h) that derives from Scene, and to write 
+     * to define a new class (see in Scenes.h) that derives from Scene, and to write
      * the specific methods you need for the virtual world you create for your experiment.
      */
     public:
+
+
+
         //! @brief Constructor of an empty scene in the planesystem
         ARLCORE_API Scene( PlaneSystem& );
 
@@ -49,11 +52,11 @@ namespace arlCore
          * randomly generated from the parameter ARLCORE_SHAPE, centre and size (see the function
          * PointList::shapeRandom() in PointList.h)
          */
-        ARLCORE_API Tag* addTag(unsigned int nbPoints, ARLCORE_SHAPE shapeType, const Point &centre, double size);
+        ARLCORE_API SPTR(Tag) addTag(unsigned int nbPoints, ARLCORE_SHAPE shapeType, CSPTR( Point ) centre, double size);
 
         /**
-         * @brief 
-         * Once a scene is created, this function creates "nbCams" camera in the world. The camera 
+         * @brief
+         * Once a scene is created, this function creates "nbCams" camera in the world. The camera
          * optical centers are randomly created in a sphere of radius "sphereRadius" and of center "centre".
          * All the cameras are looking toward the Point "centre". Their orientation is chosen randomly as well.
          * In order to avoid camera creation too close to "centre". Each camera is moved away from "centre"
@@ -68,13 +71,13 @@ namespace arlCore
          * k3 = intrinsicParam[6] + UniformNoise(intrinsic_range[6])
          * k4 = intrinsicParam[7] + UniformNoise(intrinsic_range[7])
          */
-        ARLCORE_API virtual bool addCameras(unsigned int nbCams, const Point &centre, double sphereRadius, double distMin,
+        ARLCORE_API virtual bool addCameras(unsigned int nbCams, CSPTR( Point ) centre, double sphereRadius, double distMin,
             const std::vector<double> &intrinsicParam, const std::vector<double> &intrinsicRange);
 
         /**
-         * @brief 
-         * Once a scene is created, this function creates "nbCams" camera in the world. The camera 
-         * optical centers are randomly created in a solid angle of angle "angleMin" and 
+         * @brief
+         * Once a scene is created, this function creates "nbCams" camera in the world. The camera
+         * optical centers are randomly created in a solid angle of angle "angleMin" and
          * of radius "sphereRadius" and of center "centre".
          * All the cameras are looking toward the Point "centre". Their orientation is chosen randomly as well.
          * In order to avoid camera creation too close to "centre". Each camera is moved away from "centre"
@@ -89,7 +92,7 @@ namespace arlCore
          * k3 = intrinsicParam[6] + UniformNoise(intrinsic_range[6])
          * k4 = intrinsicParam[7] + UniformNoise(intrinsic_range[7])
          */
-        ARLCORE_API virtual bool addCameras(unsigned int nbCams, const Point &centre, double sphereRadius, double distMin,
+        ARLCORE_API virtual bool addCameras(unsigned int nbCams, CSPTR( Point ) centre, double sphereRadius, double distMin,
             const std::vector<double> &intrinsicParam, const std::vector<double> &intrinsicRange, double angleMin);
 
         //! @brief Visualise la scene avec gnuplot
@@ -108,24 +111,24 @@ namespace arlCore
         ARLCORE_API Tags& getTags( void );
 
         /**
-         * @brief 
+         * @brief
          * This function is fondamental, it provides in a SmartPointList "spl" the point 2D coordinates
-         * that corresponds to the projection of the points belonging to the Tag "tagNo" in the 
+         * that corresponds to the projection of the points belonging to the Tag "tagNo" in the
          * video image of the camera "cam".
-         * 
+         *
          * In case you want to add some noise to the coordinates you get (for evaluation purpose...),
          * you can add it using the variable "gaussianNoise". It will add zero mean gaussian noise
          * with std dev "gaussianNoise" on each point coordinate.
-         * 
+         *
          */
-        ARLCORE_API unsigned int detection( unsigned int cam, unsigned int tagNo, SmartPointList &spl, double gaussianNoise=0 );
+        ARLCORE_API unsigned int detection( unsigned int cam, unsigned int tagNo, SPTR( SmartPointList ) spl, double gaussianNoise=0 );
 
     protected:
-        ARLCORE_API Scene( PlaneSystem&, Tags* );
+        ARLCORE_API Scene( PlaneSystem&, Tags::sptr );
         ARLCORE_API virtual bool dynamicBehavior( unsigned int step );
-        ARLCORE_API virtual unsigned int detectionBehavior( unsigned int cam, SmartPointList &, std::vector< const Tag* > &tags, std::map< const Tag*, unsigned int >& allTags );
+        ARLCORE_API virtual unsigned int detectionBehavior( unsigned int cam, SPTR( SmartPointList ) , std::vector< CSPTR(Tag) > &tags, std::map< CSPTR(Tag), unsigned int >& allTags );
 
-        Tags *m_tags;
+        Tags::sptr m_tags;
 
     private:
         arlCore::CameraList m_cameras;

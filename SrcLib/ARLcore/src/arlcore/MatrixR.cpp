@@ -139,49 +139,48 @@ double arlCore::vnl_rigid_matrix::distance2( const vnl_rigid_matrix &T, ARLCORE_
     const double Unit = 1.0;
     double distance2 = 0.0;
     unsigned int i;
-    arlCore::Point o1(0.0, 0.0, 0.0);
-    arlCore::Point o2(0.0, 0.0, 0.0);
-    arlCore::Point u1(Unit, 0.0, 0.0);
-    arlCore::Point u2(Unit, 0.0, 0.0);
-    arlCore::Point v1(0.0, Unit, 0.0);
-    arlCore::Point v2(0.0, Unit, 0.0);
-    arlCore::Point w1(0.0, 0.0, Unit);
-    arlCore::Point w2(0.0, 0.0, Unit);
+    arlCore::Point::sptr o1 = arlCore::Point::New(0.0, 0.0, 0.0);
+    arlCore::Point::sptr o2 = arlCore::Point::New(0.0, 0.0, 0.0);
+    arlCore::Point::sptr u1 = arlCore::Point::New(Unit, 0.0, 0.0);
+    arlCore::Point::sptr u2 = arlCore::Point::New(Unit, 0.0, 0.0);
+    arlCore::Point::sptr v1 = arlCore::Point::New(0.0, Unit, 0.0);
+    arlCore::Point::sptr v2 = arlCore::Point::New(0.0, Unit, 0.0);
+    arlCore::Point::sptr w1 = arlCore::Point::New(0.0, 0.0, Unit);
+    arlCore::Point::sptr w2 = arlCore::Point::New(0.0, 0.0, Unit);
     T.trf(o1);T.trf(u1);T.trf(v1);T.trf(w1);
     trf(o2);trf(u2);trf(v2);trf(w2);
     switch(method)
     {
     case ARLCORE_VRM_DISTANCE_3AXIS:
         {
-            errors2.push_back(u1.distance2(u2));
-            errors2.push_back(v1.distance2(v2));
-            errors2.push_back(w1.distance2(w2));
+            errors2.push_back(u1->distance2(u2));
+            errors2.push_back(v1->distance2(v2));
+            errors2.push_back(w1->distance2(w2));
             break;
         }
     case ARLCORE_VRM_DISTANCE_TRANSLATION:
         {
-            errors2.push_back(o1.distance2(o2));
+            errors2.push_back(o1->distance2(o2));
             break;
         }
     case ARLCORE_VRM_DISTANCE_OX:
         {
-            errors2.push_back(o1.distance2(o2));
-            errors2.push_back(u1.distance2(u2));
+            errors2.push_back(o1->distance2(o2));
+            errors2.push_back(u1->distance2(u2));
             break;
         }
     case ARLCORE_VRM_DISTANCE_OY:
         {
-            errors2.push_back(o1.distance2(o2));
-            errors2.push_back(v1.distance2(v2));
+            errors2.push_back(o1->distance2(o2));
+            errors2.push_back(v1->distance2(v2));
             break;
         }
     case ARLCORE_VRM_DISTANCE_OZ:
         {
-            errors2.push_back(o1.distance2(o2));
-            errors2.push_back(w1.distance2(w2));
+            errors2.push_back(o1->distance2(o2));
+            errors2.push_back(w1->distance2(w2));
             break;
         }
-    default: break;
     }
     for( i=0 ; i<errors2.size() ; ++i )
         distance2+=errors2[i];
@@ -696,13 +695,13 @@ double arlCore::vnl_rigid_matrix::getAngleOXY( void )
     const vgl_point_3d<double> u( 1.0, 0.0, 0.0 );
     const vgl_point_3d<double> v( 0.0, 1.0, 0.0 );
     const vgl_plane_3d<double> Plane1( o, u, v );
-    arlCore::Point o1( 0.0, 0.0, 0.0 );
-    arlCore::Point u1( 1.0, 0.0, 0.0 );
-    arlCore::Point v1( 0.0, 1.0, 0.0 );
+    arlCore::Point::sptr o1 = arlCore::Point::New( 0.0, 0.0, 0.0 );
+    arlCore::Point::sptr u1 = arlCore::Point::New( 1.0, 0.0, 0.0 );
+    arlCore::Point::sptr v1 = arlCore::Point::New( 0.0, 1.0, 0.0 );
     trf(o1);trf(u1);trf(v1);
-    const vgl_point_3d<double> o2(  o1.x(), o1.y(), o1.z() );
-    const vgl_point_3d<double> u2(  u1.x(), u1.y(), u1.z() );
-    const vgl_point_3d<double> v2(  v1.x(), v1.y(), v1.z() );
+    const vgl_point_3d<double> o2(  o1->x(), o1->y(), o1->z() );
+    const vgl_point_3d<double> u2(  u1->x(), u1->y(), u1->z() );
+    const vgl_point_3d<double> v2(  v1->x(), v1->y(), v1->z() );
     const vgl_plane_3d<double> Plane2( o2, u2, v2 );
     const double Angle = fmod(vgl_homg_operators_3d<double>::plane_plane_angle(Plane1, Plane2), vnl_math::pi/2.0)*arlCore::RadToDeg;
     return Angle;
@@ -714,13 +713,13 @@ double arlCore::vnl_rigid_matrix::getAngleOXZ( void )
     const vgl_point_3d<double> u( 1.0, 0.0, 0.0 );
     const vgl_point_3d<double> w( 0.0, 0.0, 1.0 );
     const vgl_plane_3d<double> Plane1( o, u, w );
-    arlCore::Point o1( 0.0, 0.0, 0.0 );
-    arlCore::Point u1( 1.0, 0.0, 0.0 );
-    arlCore::Point w1( 0.0, 0.0, 1.0 );
+    arlCore::Point::sptr o1 = arlCore::Point::New( 0.0, 0.0, 0.0 );
+    arlCore::Point::sptr u1 = arlCore::Point::New( 1.0, 0.0, 0.0 );
+    arlCore::Point::sptr w1 = arlCore::Point::New( 0.0, 0.0, 1.0 );
     trf(o1);trf(u1);trf(w1);
-    const vgl_point_3d<double> o2(  o1.x(), o1.y(), o1.z() );
-    const vgl_point_3d<double> u2(  u1.x(), u1.y(), u1.z() );
-    const vgl_point_3d<double> w2(  w1.x(), w1.y(), w1.z() );
+    const vgl_point_3d<double> o2(  o1->x(), o1->y(), o1->z() );
+    const vgl_point_3d<double> u2(  u1->x(), u1->y(), u1->z() );
+    const vgl_point_3d<double> w2(  w1->x(), w1->y(), w1->z() );
     const vgl_plane_3d<double> Plane2( o2, u2, w2 );
     const double Angle = fmod(vgl_homg_operators_3d<double>::plane_plane_angle(Plane1, Plane2), vnl_math::pi/2.0)*arlCore::RadToDeg;
     return Angle;
@@ -732,70 +731,71 @@ double arlCore::vnl_rigid_matrix::getAngleOYZ( void )
     const vgl_point_3d<double> v( 0.0, 1.0, 0.0 );
     const vgl_point_3d<double> w( 0.0, 0.0, 1.0 );
     const vgl_plane_3d<double> Plane1( o, v, w );
-    arlCore::Point o1( 0.0, 0.0, 0.0 );
-    arlCore::Point v1( 0.0, 1.0, 0.0 );
-    arlCore::Point w1( 0.0, 0.0, 1.0 );
+    arlCore::Point::sptr o1 = arlCore::Point::New( 0.0, 0.0, 0.0 );
+    arlCore::Point::sptr v1 = arlCore::Point::New( 0.0, 1.0, 0.0 );
+    arlCore::Point::sptr w1 = arlCore::Point::New( 0.0, 0.0, 1.0 );
     trf(o1);trf(v1);trf(w1);
-    const vgl_point_3d<double> o2(  o1.x(), o1.y(), o1.z() );
-    const vgl_point_3d<double> v2(  v1.x(), v1.y(), v1.z() );
-    const vgl_point_3d<double> w2(  w1.x(), w1.y(), w1.z() );
+    const vgl_point_3d<double> o2(  o1->x(), o1->y(), o1->z() );
+    const vgl_point_3d<double> v2(  v1->x(), v1->y(), v1->z() );
+    const vgl_point_3d<double> w2(  w1->x(), w1->y(), w1->z() );
     const vgl_plane_3d<double> Plane2( o2, v2, w2 );
     const double Angle = fmod(vgl_homg_operators_3d<double>::plane_plane_angle(Plane1, Plane2), vnl_math::pi/2.0)*arlCore::RadToDeg;
     return Angle;
 }
 
-bool arlCore::vnl_rigid_matrix::chgPlaneOXZ( const arlCore::Point &O, const arlCore::Point &X, const arlCore::Point &Z )
+bool arlCore::vnl_rigid_matrix::chgPlaneOXZ(  arlCore::Point::csptr O,  arlCore::Point::csptr X,  arlCore::Point::csptr Z )
 {
-    const arlCore::Point Oo(0.0, 0.0, 0.0);
-    const arlCore::Point Xo(1.0, 0.0, 0.0);
-    const arlCore::Point Zo(0.0, 0.0, 1.0);
-    std::vector<const arlCore::Point*> A, B;
-    A.push_back(&Oo);
-    A.push_back(&Xo);
-    A.push_back(&Zo);
-    B.push_back(&O);
-    B.push_back(&X);
-    B.push_back(&Z);
+    const arlCore::Point::csptr Oo = arlCore::Point::New(0.0, 0.0, 0.0);
+    const arlCore::Point::csptr Xo = arlCore::Point::New(1.0, 0.0, 0.0);
+    const arlCore::Point::csptr Zo = arlCore::Point::New(0.0, 0.0, 1.0);
+    PointList::sptr A = PointList::New();
+    PointList::sptr B = PointList::New();
+    A->push_back(Oo);
+    A->push_back(Xo);
+    A->push_back(Zo);
+    B->push_back(O);
+    B->push_back(X);
+    B->push_back(Z);
     return register3D3D( A, B, false);
 }
 
-bool arlCore::vnl_rigid_matrix::trf( const Point &pt1, Point &pt2 ) const
+bool arlCore::vnl_rigid_matrix::trf( Point::csptr pt1, Point::sptr pt2 ) const
 {
-    assert(pt1.size()==3 && pt2.size()==3);
+    assert(pt1->size()==3 && pt2->size()==3);
     vnl_vector_fixed<double,4> p1,p2;
     unsigned int i,j;
     for( i=0 ; i<3 ; ++i )
-        p1.put(i,pt1[i]);
+        p1.put(i,(*pt1)[i]);
     p1.put(3,1.0);
     p2=(*this)*p1;
     for( i=0 ; i<3 ; ++i )
-        pt2.set(i,p2.get(i));
+        pt2->set(i,p2.get(i));
     //compute uncertainty of pt2 wrt to pt1 uncertainty and this
-    vnl_matrix_fixed<double,3,3> C = this->getRotation() *  pt1.getCovMatrix() * vnl_transpose( this->getRotation() );
-    arlCore::vnl_covariance_matrix &cov_mat = pt2.getCovMatrix();
+    vnl_matrix_fixed<double,3,3> C = this->getRotation() *  pt1->getCovMatrix() * vnl_transpose( this->getRotation() );
+    arlCore::vnl_covariance_matrix &cov_mat = pt2->getCovMatrix();
     for( i=0 ; i<3 ; ++i )
         for( j=0 ; j<3 ; ++j )
             cov_mat.put(i,j,C[i][j]);
     return true;
 }
 
-bool arlCore::vnl_rigid_matrix::trf( Point &pt ) const
+bool arlCore::vnl_rigid_matrix::trf( Point::sptr pt ) const
 {
-    assert(pt.size()==3);
+    assert(pt->size()==3);
     vnl_vector_fixed<double,4> p1,p2;
     unsigned int i,j;
     for( i=0 ; i<3 ; ++i )
-        p1.put(i,pt[i]);
+        p1.put(i,(*pt)[i]);
     p1.put(3,1.0);
     p2=(*this)*p1;
     for( i=0 ; i<3 ; ++i )
-        pt.set(i,p2.get(i));
+        pt->set(i,p2.get(i));
 
     //compute uncertainty of pt2 wrt to pt1 uncertainty and this
     vnl_matrix_fixed<double,3,3> res;
-    res = this->getRotation() *  pt.getCovMatrix() * vnl_transpose( this->getRotation() );
+    res = this->getRotation() *  pt->getCovMatrix() * vnl_transpose( this->getRotation() );
 
-    arlCore::vnl_covariance_matrix &cov_mat = pt.getCovMatrix();
+    arlCore::vnl_covariance_matrix &cov_mat = pt->getCovMatrix();
     for(i=0;i<3;++i)
         for(j=0;j<3;++j)
             cov_mat.put(i,j,res[i][j]);
@@ -803,35 +803,39 @@ bool arlCore::vnl_rigid_matrix::trf( Point &pt ) const
     return true;
 }
 
-unsigned int arlCore::vnl_rigid_matrix::trf( const PointList &l1, PointList &l2 ) const
+unsigned int arlCore::vnl_rigid_matrix::trf(PointList::csptr l1, PointList::sptr l2 ) const
 {
-    l2.clear();
-    l2.setDimension(l1.getDimension());
-    Point P(l1.getDimension());
+    l2->clear();
+    l2->setDimension(l2->getDimension());
+
     unsigned int i;
-    for( i=0 ; i<l1.size() ; ++i )
-        if(trf(*l1[i],P))
-            l2.push_back(P);
-    return l2.size();
+    for( i=0 ; i<l1->size() ; ++i )
+    {
+        Point::sptr P = Point::New(l1->getDimension());
+        if(trf( (*l1)[i] ,P))
+        {
+            l2->push_back(P);
+        }
+    }
+    return l2->size();
 }
 
-unsigned int arlCore::vnl_rigid_matrix::trf( PointList &l1 ) const
+unsigned int arlCore::vnl_rigid_matrix::trf( PointList::sptr l1 ) const
 {
     unsigned int i;
-    for( i=0 ; i<l1.size() ; ++i )
-        if(l1[i]!=0) trf(*l1[i]);
-    return l1.size();
+    for( i=0 ; i<l1->size() ; ++i )
+        if( (*l1)[i] ) trf( (*l1)[i] );
+    return l1->size();
 }
 
-unsigned int arlCore::vnl_rigid_matrix::trf( const std::vector< const Point* > &l1, std::vector< const Point* > &l2 ) const
+unsigned int arlCore::vnl_rigid_matrix::trf( const std::vector< Point::csptr > &l1, std::vector< Point::csptr > &l2 ) const
 {
     unsigned int i;
     for( i=0 ; i<l1.size() ; ++i )
     {
-        Point *p=new Point(*l1[i]);
-        if(trf(*l1[i],*p))
-            l2.push_back(p);
-        else delete p;
+        Point::sptr p= Point::New();
+        if(trf( l1[i] ,p))
+            l2.push_back( Point::constCast(p) );
     }
     return (unsigned int)l2.size();
 }
@@ -840,10 +844,11 @@ bool arlCore::vnl_rigid_matrix::trf( const vgl_line_3d_2_points<double> &line1, 
 {
     const vgl_point_3d<double> P1Line = line1.point1();
     const vgl_point_3d<double> P2Line = line1.point2();
-    Point p1(3), p2(3);
-    if(!trf(Point(P1Line.x(), P1Line.y(), P1Line.z()), p1)) return false;
-    if(!trf(Point(P2Line.x(), P2Line.y(), P2Line.z()), p2)) return false;
-    line2.set(vgl_point_3d<double>(p1.x(), p1.y(), p1.z()), vgl_point_3d<double>(p2.x(), p2.y(), p2.z()));
+    Point::sptr p1 = Point::New(3);
+    Point::sptr p2 = Point::New(3);
+    if(!trf(Point::New(P1Line.x(), P1Line.y(), P1Line.z()), p1)) return false;
+    if(!trf(Point::New(P2Line.x(), P2Line.y(), P2Line.z()), p2)) return false;
+    line2.set(vgl_point_3d<double>(p1->x(), p1->y(), p1->z()), vgl_point_3d<double>(p2->x(), p2->y(), p2->z()));
     return true;
 }
 
@@ -851,10 +856,11 @@ bool arlCore::vnl_rigid_matrix::trf( vgl_line_3d_2_points<double> &line ) const
 {
     const vgl_point_3d<double> P1Line = line.point1();
     const vgl_point_3d<double> P2Line = line.point2();
-    Point p1(3), p2(3);
-    if(!trf(Point(P1Line.x(), P1Line.y(), P1Line.z()), p1)) return false;
-    if(!trf(Point(P2Line.x(), P2Line.y(), P2Line.z()), p2)) return false;
-    line.set(vgl_point_3d<double>(p1.x(), p1.y(), p1.z()), vgl_point_3d<double>(p2.x(), p2.y(), p2.z()));
+    Point::sptr p1 = Point::New(3);
+    Point::sptr p2 = Point::New(3);
+    if(!trf(Point::New(P1Line.x(), P1Line.y(), P1Line.z()), p1)) return false;
+    if(!trf(Point::New(P2Line.x(), P2Line.y(), P2Line.z()), p2)) return false;
+    line.set(vgl_point_3d<double>(p1->x(), p1->y(), p1->z()), vgl_point_3d<double>(p2->x(), p2->y(), p2->z()));
     return true;
 }
 
@@ -862,10 +868,11 @@ bool arlCore::vnl_rigid_matrix::trf( const vgl_line_segment_3d<double> &line1, v
 {
     const vgl_point_3d<double> P1Line = line1.point1();
     const vgl_point_3d<double> P2Line = line1.point2();
-    Point p1(3), p2(3);
-    if(!trf(Point(P1Line.x(), P1Line.y(), P1Line.z()), p1)) return false;
-    if(!trf(Point(P2Line.x(), P2Line.y(), P2Line.z()), p2)) return false;
-    line2.set(vgl_point_3d<double>(p1.x(), p1.y(), p1.z()), vgl_point_3d<double>(p2.x(), p2.y(), p2.z()));
+    Point::sptr p1 = Point::New(3);
+    Point::sptr p2 = Point::New(3);
+    if(!trf(Point::New(P1Line.x(), P1Line.y(), P1Line.z()), p1)) return false;
+    if(!trf(Point::New(P2Line.x(), P2Line.y(), P2Line.z()), p2)) return false;
+    line2.set(vgl_point_3d<double>(p1->x(), p1->y(), p1->z()), vgl_point_3d<double>(p2->x(), p2->y(), p2->z()));
     return true;
 }
 
@@ -873,14 +880,15 @@ bool arlCore::vnl_rigid_matrix::trf( vgl_line_segment_3d<double> &line ) const
 {
     const vgl_point_3d<double> P1Line = line.point1();
     const vgl_point_3d<double> P2Line = line.point2();
-    Point p1(3), p2(3);
-    if(!trf(Point(P1Line.x(), P1Line.y(), P1Line.z()), p1)) return false;
-    if(!trf(Point(P2Line.x(), P2Line.y(), P2Line.z()), p2)) return false;
-    line.set(vgl_point_3d<double>(p1.x(), p1.y(), p1.z()), vgl_point_3d<double>(p2.x(), p2.y(), p2.z()));
+    Point::sptr p1 = Point::New(3);
+    Point::sptr p2 = Point::New(3);
+    if(!trf(Point::New(P1Line.x(), P1Line.y(), P1Line.z()), p1)) return false;
+    if(!trf(Point::New(P2Line.x(), P2Line.y(), P2Line.z()), p2)) return false;
+    line.set(vgl_point_3d<double>(p1->x(), p1->y(), p1->z()), vgl_point_3d<double>(p2->x(), p2->y(), p2->z()));
     return true;
 }
 
-bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const PointList &pointsListB, double &firstRMS, double &lastRMS, unsigned int &iterations, bool justVisible, double RMSMax, unsigned int iterationsMax )
+bool arlCore::vnl_rigid_matrix::registerICP(PointList::csptr pointsListA,PointList::csptr pointsListB, double &firstRMS, double &lastRMS, unsigned int &iterations, bool justVisible, double RMSMax, unsigned int iterationsMax )
 {   //Model (scanner) = pointsListA ; Points cloud (Acquisition) = pointsListB
     const bool Verbose = false;
     firstRMS = -1.0;
@@ -892,8 +900,8 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
 //  http://csdl2.computer.org/persagen/DLAbsToc.jsp?resourcePath=/dl/trans/tp/&toc=comp/trans/tp/1992/02/i2toc.xml&DOI=10.1109/34.121791
 //  http://ieeexplore.ieee.org/iel1/34/3469/00121791.pdf?tp=&arnumber=121791&isnumber=3469
     //  To be continued : Automatic initialization or using the current matrix for initialization
-    const unsigned int Dimension = pointsListA.getDimension();
-    assert(Dimension==pointsListB.getDimension());
+    const unsigned int Dimension = pointsListA->getDimension();
+    assert(Dimension==pointsListB->getDimension());
     const int    bs = 1; // Bucket size
     const double tau = 10e-8;
     ANNpointArray modelPoints, dataPoints;
@@ -903,22 +911,22 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
     double eps = 0.0;// Error bound
     unsigned int i,j,k,n;
     unsigned int modelSize;
-    if(justVisible) modelSize = pointsListA.visibleSize();
-    else modelSize = pointsListA.size();
+    if(justVisible) modelSize = pointsListA->visibleSize();
+    else modelSize = pointsListA->size();
     if(modelSize<1) return false;
     modelPoints = annAllocPts( modelSize, Dimension );
     for( i=0, n=0 ; i<modelSize ; ++i )
     {
-        if(!justVisible || (justVisible && pointsListA[i]->isVisible()))
+        if(!justVisible || (justVisible && (*pointsListA)[i]->isVisible()))
         {
             for( j=0 ; j<Dimension ; ++j )
-                modelPoints[n][j]=pointsListA[i]->get(j);
+                modelPoints[n][j]=(*pointsListA)[i]->get(j);
             ++n;
         }
     }
     unsigned int acquisitionSize;
-    if(justVisible) acquisitionSize = pointsListB.visibleSize();
-    else acquisitionSize = pointsListB.size();
+    if(justVisible) acquisitionSize = pointsListB->visibleSize();
+    else acquisitionSize = pointsListB->size();
     if(acquisitionSize<1)
     {
         annDeallocPts( modelPoints );
@@ -927,10 +935,10 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
     dataPoints = annAllocPts( acquisitionSize, Dimension );
     for( i=0, n=0 ; i<acquisitionSize ; ++i )
     {
-        if(!justVisible || (justVisible && pointsListB[i]->isVisible()))
+        if(!justVisible || (justVisible && (*pointsListB)[i]->isVisible()))
         {
             for( j=0 ; j<Dimension ; ++j )
-                dataPoints[n][j]=pointsListB[i]->get(j);
+                dataPoints[n][j]=(*pointsListB)[i]->get(j);
             ++n;
         }
     }
@@ -970,6 +978,7 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
     // ********************** ICP Initialisation ************************
     // ** P={pi} points de données (Np) et X={xi} points de modèle (Nx) *
     vnl_vector<double> gravityY(Dimension);
+    int index = 0;
     double oldRMS = FLT_MAX;
     firstRMS = -1;
     vnl_matrix<double> Id3(3,3);    Id3.set_identity();
@@ -1205,22 +1214,22 @@ void spec( const double m[4][4], double *d, double (*v)[4] )
    return;
 }
 
-bool arlCore::vnl_rigid_matrix::oldRegisterICP( const PointList &pointsListA, const PointList &pointsListB, double &RMS, unsigned int &iterations, double RMSMax, unsigned int iterationsMax )
+bool arlCore::vnl_rigid_matrix::oldRegisterICP(PointList::csptr pointsListA,PointList::csptr pointsListB, double &RMS, unsigned int &iterations, double RMSMax, unsigned int iterationsMax )
 {
     return false;
 #ifdef ANN
 //  To be continued : Automatic initialization or using the current matrix for initialization
     vgl_plane_3d< double >planeA, planeB;
     double rms, min, max;
-    pointsListA.plane(planeA, rms, min, max);
-    pointsListB.plane(planeB, rms, min, max);
+    pointsListA->plane(planeA, rms, min, max);
+    pointsListB->plane(planeB, rms, min, max);
     // Recaler planeA vers planeB et s'en servir comme initialisation
 /*  unsigned int ii;
-    vgl_point_3d< double > pt[3];
+    vgl_point_3d< double > (*pt)[3];
     OptimisePlane SLCalibration;
     for( ii=0 ; ii<pointsListB.size() ; ++ii )
     {
-        vgl_point_3d< double > vglPt(pointsListA[ii]->x(),pointsListA[ii]->y(),pointsListA[ii]->z());
+        vgl_point_3d< double > vglPt((*pointsListA)[ii]->x(),(*pointsListA)[ii]->y(),(*pointsListA)[ii]->z());
         SLCalibration.addData( vglPt);
     }
     if(SLCalibration.size()<3) return false;
@@ -1247,34 +1256,36 @@ bool arlCore::vnl_rigid_matrix::oldRegisterICP( const PointList &pointsListA, co
     return false;*/
 #define  SQR( x ) ((x)*(x))
     const unsigned int dim = 3;
+    const double tau = 0.0;
     //Model (scanner) = pointsListA ; Points cloud (Acquisition) = pointsListB
-    const PointList& plA = pointsListA;
-    const PointList& plB = pointsListB;
+    PointList::csptr plA = pointsListA;
+    PointList::csptr plB = pointsListB;
 /*  // Test with a simple translation
-    std::vector< const Point* > plB;
+    std::vector< Point::csptr > plB;
     setIdentity();
     (*this)[0][3]=0.5;
     trf(plA,plB);
 */
     ANNpointArray modelPoints, dataPoints;
     ANNpointArray Pk,Yk,Pi;
+    double eps = 0.0;// error bound
     unsigned int i,j,k;
     unsigned int modelSize, acquisitionSize;
     ANNpoint gravityA = annAllocPt( dim, 0.0 );
-    modelSize=plA.size();
+    modelSize=plA->size();
     modelPoints = annAllocPts( modelSize, dim );
     for( i=0 ; i<modelSize ; ++i )
-        //if(plA[i]->size()==dim)
+        //if((*plA)[i]->size()==dim)
             for( j=0 ; j<dim ; ++j )
-                modelPoints[i][j]=plA[i]->get(j);
-    acquisitionSize=plB.size();
+                modelPoints[i][j]=(*plA)[i]->get(j);
+    acquisitionSize=plB->size();
     dataPoints = annAllocPts( acquisitionSize, dim );
     for( i=0 ; i<acquisitionSize ; ++i )
     {
-        if(plB[i]->size()==dim)
+        if((*plB)[i]->size()==dim)
             for( j=0 ; j<dim ; ++j )
             {
-                dataPoints[i][j]=plB[i]->get(j);
+                dataPoints[i][j]=(*plB)[i]->get(j);
                 gravityA[j]+= dataPoints[i][j];
             }
     }
@@ -1513,8 +1524,8 @@ void tensorProduct( const arlCore::Point& a, const arlCore::Point& b, vnl_matrix
 template <typename T>
 bool internRegister3D3D( const T &src, const T &dst,  arlCore::vnl_rigid_matrix &mat, bool computeRMS )
 {   // Registration only with the visible points ** NEW METHOD **
-    //assert(src.size()==dst.size() && src.size()>=3);
-    if( src.size()!=dst.size() || src.size()<3 ) return false;
+    //assert(src->size()==dst.size() && src->size()>=3);
+    if( src->size()!=dst->size() || src->size()<3 ) return false;
     unsigned int i, j;
     // Arun et al. direct solution technique
     // Compute matrice H and mean vector
@@ -1522,13 +1533,13 @@ bool internRegister3D3D( const T &src, const T &dst,  arlCore::vnl_rigid_matrix 
     vnl_matrix_fixed<double,3,3> HMat, tempMat;
     HMat.fill(0.0); tempMat.fill(0.0);
     double n=0.0;
-    for( i=0 ; i<src.size() ; ++i )
-        if(dst[i]!=0 && src[i]!=0)
-            if(dst[i]->isVisible() && src[i]->isVisible())
+    for( i=0 ; i<src->size() ; ++i )
+        if((*dst)[i]!=0 && (*src)[i]!=0)
+            if( (*dst)[i]->isVisible() && (*src)[i]->isVisible())
             {
-                meanA.add(*dst[i]);
-                meanB.add(*src[i]);
-                tensorProduct(*dst[i], *src[i], tempMat);
+                meanA.add( (*dst)[i]);
+                meanB.add( (*src)[i]);
+                tensorProduct( (*dst)[i], (*src)[i], tempMat);
                 HMat+=tempMat;
                 ++n;
             }
@@ -1568,23 +1579,23 @@ bool internRegister3D3D( const T &src, const T &dst,  arlCore::vnl_rigid_matrix 
     return true;
 }
 
-bool arlCore::vnl_rigid_matrix::register3D3D( const PointList& a, const PointList& b, bool computeRMS )
+bool arlCore::vnl_rigid_matrix::register3D3D( PointList::csptr a, PointList::csptr b, bool computeRMS )
 {
     m_registerRMS = -1;
     m_registerStdDev = -1;
     Object::update();
-    return internRegister3D3D(a, b, *this, computeRMS);
+    return internRegister3D3D( a, b, *this, computeRMS);
 }
 
-bool arlCore::vnl_rigid_matrix::register3D3D( const std::vector< const Point* >& a, const std::vector< const Point* >& b, bool computeRMS )
-{
-    m_registerRMS = -1;
-    m_registerStdDev = -1;
-    Object::update();
-    return internRegister3D3D(a, b, *this, computeRMS);
-}
+//bool arlCore::vnl_rigid_matrix::register3D3D( const std::vector< Point::csptr >& a, const std::vector< Point::csptr >& b, bool computeRMS )
+//{
+//    m_registerRMS = -1;
+//    m_registerStdDev = -1;
+//    Object::update();
+//    return internRegister3D3D(a, b, *this, computeRMS);
+//}
 
-bool arlCore::vnl_rigid_matrix::register3D3DUncertainty( const PointList & a, const PointList & b, arlCore::ARLCORE_REGISTER3D3D methode, std::vector<double> optimiserParameters, std::vector<double> &log/*, unsigned int numberOfPoints*/ )
+bool arlCore::vnl_rigid_matrix::register3D3DUncertainty(PointList::csptr  a,PointList::csptr  b, arlCore::ARLCORE_REGISTER3D3D methode, std::vector<double> optimiserParameters, std::vector<double> &log/*, unsigned int numberOfPoints*/ )
 {
     bool computeRMS = false;
 //  Object::update();
@@ -1641,22 +1652,23 @@ bool arlCore::vnl_rigid_matrix::register3D3DUncertainty( const PointList & a, co
     return false;
 }
 
-bool arlCore::vnl_rigid_matrix::RMS3D3D( const PointList& src, const PointList& dst, std::vector<double>& errors )
+bool arlCore::vnl_rigid_matrix::RMS3D3D( PointList::csptr src, PointList::csptr dst, std::vector<double>& errors )
 {
     m_registerRMS = 0.0, m_registerStdDev = 0.0;
-    assert(src.size()==dst.size());
-    if(src.size()!=dst.size()) return false;
+    assert(src->size()==dst->size());
+    if(src->size()!=dst->size()) return false;
     errors.clear();
     double err;
     unsigned int i;
-    arlCore::Point A, B;
+    arlCore::Point::sptr A = arlCore::Point::New();
+    arlCore::Point::sptr B = arlCore::Point::New();
     double distance_average = 0;
-    for( i=0 ; i<src.size() ; ++i )
+    for( i=0 ; i<src->size() ; ++i )
     {
-        if(src[i]->isVisible() && dst[i]->isVisible())
+        if( (*src)[i]->isVisible() && (*dst)[i]->isVisible())
         {
-            trf(*(src[i]),B);
-            err = B.distance(*(dst[i]));
+            trf( (*src)[i] ,B );
+            err = B->distance( (*dst)[i] );
             distance_average += err;
             errors.push_back(err);
             m_registerRMS += err*err;
@@ -1675,11 +1687,12 @@ bool arlCore::vnl_rigid_matrix::RMS3D3D( const PointList& src, const PointList& 
     return true;
 }
 
-bool arlCore::vnl_rigid_matrix::register3D3DwithoutMatching( const PointList& a, const PointList& b, bool computeRMS, double gaussianError, double decimage )
+bool arlCore::vnl_rigid_matrix::register3D3DwithoutMatching( PointList::csptr a, PointList::csptr b, bool computeRMS, double gaussianError, double decimage )
 {   // b = T*a ; a=echantillon mesure ; b=modele reel
     const bool Verbose = false;
-    if(a.size()<3 || b.size()<3) return false;
-    std::vector< const Point* > Va, Vb;
+    if(a->size()<3 || b->size()<3) return false;
+    PointList::sptr Va = PointList::New();
+    PointList::sptr Vb = PointList::New();
     const unsigned int NbMatching=arlCore::matching3D3D( a, b, gaussianError, decimage, Va, Vb );
     if(NbMatching>2)
         return register3D3D( Va, Vb, computeRMS );
@@ -1824,7 +1837,6 @@ double getCoeff( double time, arlCore::ARLCORE_TRF_FILTER_TYPE filterType )
     case arlCore::ARLCORE_TRF_FILTER_LOG: return log(1.0+time*LogRange);
     case arlCore::ARLCORE_TRF_FILTER_SQUARE: return time*time;
     case arlCore::ARLCORE_TRF_FILTER_CUBIC: return time*time*time;
-    default: break;
     }
     return 1.0;
 }
@@ -1835,6 +1847,7 @@ unsigned int arlCore::filter( const std::vector<const arlCore::vnl_rigid_matrix*
     if(Size==0) return 0;
     assert(list.back());
     average.setTime(list.back()->getDate(), list.back()->getTime());
+    const double MatrixTime = (double)average.getTime();
     const double CurrentTime = (double)average.getTime(); // FIXME Planesystem time
     assert(list[0]);
     const double LastTime = (double)list[0]->getTime(); // FIXME Planesystem time - duration

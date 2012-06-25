@@ -1,3 +1,4 @@
 TYPE = 'shared'
+LIB     = ['fwTools_0-1' ,'fwCore_0-1' ]
 USE  = ['vxlVcl','vxlVnlAlgo','vxlVglAlgo','ann','boost']
 VERSION = '0-1'

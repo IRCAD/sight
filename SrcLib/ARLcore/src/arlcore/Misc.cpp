@@ -35,7 +35,7 @@
 #include <arlcore/MatrixR.h>
 #include <arlcore/File.h>
 
-unsigned int arlCore::fillGrid( arlCore::PointList &pl, unsigned int nbPointsX, double squareSizeX, unsigned int nbPointsY, double squareSizeY, unsigned int nbPointsZ, double squareSizeZ )
+unsigned int arlCore::fillGrid( arlCore::PointList::sptr pl, unsigned int nbPointsX, double squareSizeX, unsigned int nbPointsY, double squareSizeY, unsigned int nbPointsZ, double squareSizeZ )
 {
 /*  case  72 : chess[0]= 9;chess[1]=10;chess[2]= 4;chess[3]= 4;break;
     case 132 : chess[0]=12;chess[1]=13;chess[2]=10;chess[3]=10;break;
@@ -47,14 +47,14 @@ unsigned int arlCore::fillGrid( arlCore::PointList &pl, unsigned int nbPointsX, 
     // Mires robotique
     case 667 : chess[0]=30;chess[1]=24;chess[2]=5;chess[3]=5;break;
     case 154 : chess[0]=12;chess[1]=15;chess[2]=10;chess[3]=10;break;*/
-    pl.clear();
-    pl.setDimension(3);
+    pl->clear();
+    pl->setDimension(3);
     unsigned int x, y, z;
     for( z=0 ; z<nbPointsZ ; ++z )
         for( y=0 ; y<nbPointsY ; ++y )
             for( x=0 ; x<nbPointsX ; ++x )
-                pl.push_back(x*squareSizeX, y*squareSizeY, z*squareSizeZ);
-    return pl.size();
+                pl->push_back(x*squareSizeX, y*squareSizeY, z*squareSizeZ);
+    return pl->size();
 }
 
 bool arlCore::plot( const std::vector< const arlCore::PointList* > &pl, const std::string &options )
@@ -101,6 +101,7 @@ bool arlCore::computePolynomial( unsigned int degree, const vnl_vector<double> &
     result.set_size(NbEquations);
     result.fill(0.0);
     unsigned int i, j, k, l, m=0;
+    const vnl_vector<double> &C = parameters;
     for( i=0 ; i<=degree ; ++i )
         for( j=0 ; j<=degree ; ++j )
             for( k=0 ; k<=degree ; ++k )
@@ -139,45 +140,45 @@ vgl_line_2d<double> arlCore::vglLine2d( double slope, double rho )
     return vgl_line_2d<double>(p1, p2);
 }
 
-unsigned int arlCore::computeNeedleROI( const Point &Tip, const Point &Top, unsigned int width, std::vector<arlCore::Point> &corners, unsigned int shape )
+unsigned int arlCore::computeNeedleROI( Point::csptr Tip, Point::csptr Top, unsigned int width, std::vector<arlCore::Point::sptr > &corners, unsigned int shape )
 {   // shape 0=Rectangular shape 1=Triangular
-    Point corner;
+    Point::sptr corner = Point::New();
     corners.clear();
-    const arlCore::Point Center((Tip.x()+Top.x())/2.0, (Tip.y()+Top.y())/2.0);
-    vgl_vector_2d<double> tip2top(Top.x()-Tip.x(), Top.y()-Tip.y());
+    arlCore::Point::sptr center =  arlCore::Point::New((Tip->x()+Top->x())/2.0, (Tip->y()+Top->y())/2.0);
+    vgl_vector_2d<double> tip2top(Top->x()-Tip->x(), Top->y()-Tip->y());
     vgl_vector_2d<double> rot = rotated(tip2top, vnl_math::pi/2.0);
     const vgl_vector_2d<double> Tip2corner = width * normalize(rot);
     // First corner, orthogonal with the axis of the needle (Tip Right)
-    corner.x(Tip.x() + Tip2corner.x_);
-    corner.y(Tip.y() + Tip2corner.y_);
+    corner->x(Tip->x() + Tip2corner.x_);
+    corner->y(Tip->y() + Tip2corner.y_);
     corners.push_back(corner);
     // Second corner, central symmetry of first corner with Tip (Tip Left)
-    corner.x(2.0*Tip.x() - corners[0].x());
-    corner.y(2.0*Tip.y() - corners[0].y());
+    corner->x(2.0*Tip->x() - corners[0]->x());
+    corner->y(2.0*Tip->y() - corners[0]->y());
     corners.push_back(corner);
     switch(shape)
     {
         case 0: // Rectangular shape
             // Third corner, central symmetry of first corner with Center of line Tip-Top (Top Left)
-            corner.x(2.0*Center.x() - corners[0].x());
-            corner.y(2.0*Center.y() - corners[0].y());
+            corner->x(2.0*center->x() - corners[0]->x());
+            corner->y(2.0*center->y() - corners[0]->y());
             corners.push_back(corner);
             // Fourth corner, central symmetry of 2st corner with Center of line Tip-Top (Top Right)
-            corner.x(2.0*Center.x() - corners[1].x());
-            corner.y(2.0*Center.y() - corners[1].y());
+            corner->x(2.0*center->x() - corners[1]->x());
+            corner->y(2.0*center->y() - corners[1]->y());
             corners.push_back(corner);
             break;
         case 1: // Triangular shape
             // Third corner, Top (Top Center)
-            corner.x(Top.x());
-            corner.y(Top.y());
+            corner->x(Top->x());
+            corner->y(Top->y());
             corners.push_back(corner);
             break;
     }
     return (unsigned int)corners.size();
 }
 /*
-double arlCore::computeVideo1Robot( const std::vector< arlCore::vnl_rigid_matrix > &M06, const PointList &tip, vnl_rigid_matrix &T, double &distance, double &stdDev )
+double arlCore::computeVideo1Robot( const std::vector< arlCore::vnl_rigid_matrix > &M06, PointList::csptr tip, vnl_rigid_matrix &T, double &distance, double &stdDev )
 {
     OptimiseVideoRobot1 OVR( M06, tip );
     vnl_powell computeT( &OVR );
@@ -195,12 +196,13 @@ double arlCore::computeVideo1Robot( const std::vector< arlCore::vnl_rigid_matrix
     return distance;
 }*/
 
+
 double arlCore::computeVideo2RobotX(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
         const arlCore::vnl_rigid_matrix &Z,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         arlCore::vnl_rigid_matrix &X )
 {
     const bool Verbose = false;
@@ -212,7 +214,7 @@ double arlCore::computeVideo2RobotX(
     unsigned int number_of_residuals = 0;
     for( i=0 ; i<model3D.size() ; ++i )
         for( j=0 ; j<model3D[i].size() ; ++j )
-            number_of_residuals += model3D[i][j].size();
+            number_of_residuals += model3D[i][j]->size();
     arlCore::OptimiseVideoRobotX_LS OVR( M06, Z, model3D, cams, points2DList, number_of_residuals, vnl_least_squares_function::use_gradient );
     vnl_levenberg_marquardt Optimizer( OVR );
     Optimizer.set_trace(true);
@@ -257,9 +259,9 @@ double arlCore::computeVideo2RobotX(
 double arlCore::computeVideo2RobotZ(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
         const arlCore::vnl_rigid_matrix &X,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         arlCore::vnl_rigid_matrix &Z )
 {
     const bool Verbose = false;
@@ -271,7 +273,7 @@ double arlCore::computeVideo2RobotZ(
     unsigned int number_of_residuals = 0;
     for( i=0 ; i<model3D.size() ; ++i )
         for( j=0 ; j<model3D[i].size() ; ++j )
-            number_of_residuals += model3D[i][j].size();
+            number_of_residuals += model3D[i][j]->size();
     arlCore::OptimiseVideoRobotZ_LS OVR( M06, X, model3D, cams, points2DList, number_of_residuals, vnl_least_squares_function::use_gradient );
     vnl_levenberg_marquardt Optimizer( OVR );
     Optimizer.set_trace(true);
@@ -315,9 +317,9 @@ double arlCore::computeVideo2RobotZ(
 
 double arlCore::computeVideo2RobotXZ(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         arlCore::vnl_rigid_matrix &X,
         arlCore::vnl_rigid_matrix &Z )
 {
@@ -331,7 +333,7 @@ double arlCore::computeVideo2RobotXZ(
     unsigned int number_of_residuals = 0;
     for( i=0 ; i<model3D.size() ; ++i )
         for( j=0 ; j<model3D[i].size() ; ++j )
-            number_of_residuals += model3D[i][j].size();
+            number_of_residuals += model3D[i][j]->size();
     arlCore::OptimiseVideoRobotXZ_LS OVR( M06, model3D, cams, points2DList, number_of_residuals, vnl_least_squares_function::use_gradient );
     vnl_levenberg_marquardt Optimizer( OVR );
     Optimizer.set_trace(true);
@@ -380,6 +382,7 @@ double arlCore::computeVideo2RobotXZ(
     }
     return Criterion;
 }
+
 
 // arlRandom
 std::vector< double> arlRandom::Random::m_randomTable;
@@ -1006,8 +1009,8 @@ bool arlCore::load( vnl_matrix<double>& matrix, const std::string &fileName )
 double arlCore::evaluationAXXB( const arlCore::vnl_rigid_matrix &X, const arlCore::vnl_rigid_matrix &Z,
             const std::vector< vnl_rigid_matrix > &M06,
             const std::vector< const Camera* > &videoCams,
-            const std::vector< std::vector<arlCore::PointList> > &models3DList,
-            const std::vector< std::vector<arlCore::PointList> > &points2DList,
+            const std::vector< std::vector<arlCore::PointList::csptr > > &models3DList,
+            const std::vector< std::vector<arlCore::PointList::csptr > > &points2DList,
             std::vector< double > &errors)
 {
 //  for(int i=0 ; i<videoCams.size() ; ++i )
@@ -1019,7 +1022,8 @@ double arlCore::evaluationAXXB( const arlCore::vnl_rigid_matrix &X, const arlCor
     double n=0.0, RMS=0.0;
     assert(models3DList.size()==NbCams);
     const arlCore::vnl_rigid_matrix InvZ = Z.computeInverse();
-    arlCore::Point pt2D(2), pt3D(3);
+    arlCore::Point::sptr pt2D= arlCore::Point::New(2);
+    arlCore::Point::sptr pt3D = arlCore::Point::New(3);
     for( i=0 ; i<NbPoses ; ++i )
     {   // Compute T = inv( X . M06i . inv(Z) )
         arlCore::vnl_rigid_matrix T = X * M06[i] * InvZ;
@@ -1032,15 +1036,15 @@ double arlCore::evaluationAXXB( const arlCore::vnl_rigid_matrix &X, const arlCor
                     assert(points2DList[j].size()==models3DList[j].size());
                     if(points2DList[j].size()!=models3DList[j].size()) std::cerr<<"AxxBReproj_cost_function : assert(points2DList[j].size()==models3DList[j].size());\n";
                 }
-                assert(points2DList[j][i].size()==models3DList[j][i].size());
-                if(points2DList[j][i].size()!=models3DList[j][i].size()) std::cerr<<"AxxBReproj_cost_function : assert(points2DList[j][i].size()==models3DList[j][i].size());\n";
-                for( k=0 ; k<models3DList[j][i].size() ; ++k )
+                assert( (points2DList[j][i])->size()== (models3DList[j][i])->size() );
+                if(  (points2DList[j][i])->size()!= (models3DList[j][i])->size() ) std::cerr<<"AxxBReproj_cost_function : assert(points2DList[j][i].size()==models3DList[j][i].size());\n";
+                for( k=0 ; k<(models3DList[j][i])->size() ; ++k )
                 {
-                    T.trf(*(models3DList[j][i][k]), pt3D);
+                    T.trf( (*(points2DList[j][i]))[k] , pt3D);
                     if(!videoCams[j]->project3DPoint( pt3D, pt2D )) std::cerr<<"AxxBReproj_cost_function : Reprojection Error\n";
                     else
                     {
-                        const double Dist2 = points2DList[j][i][k]->distance2(pt2D);
+                        const double Dist2 = (*(points2DList[j][i]))[k]->distance2(pt2D);
                         errors.push_back(sqrt(Dist2));
                         RMS += Dist2;
                         ++n;
@@ -1191,7 +1195,7 @@ bool arlCore::needleCalibration( const std::vector< arlCore::vnl_rigid_matrix >&
     const bool Verbose = false;
     RMS = -1;
     unsigned int i;
-    Point center(calibration.getX(), calibration.getY(), calibration.getZ());
+    Point::sptr center=Point::New(calibration.getX(), calibration.getY(), calibration.getZ());
     double radius,a,b,c;
     if(tip.size()>3)
     {
@@ -1204,14 +1208,18 @@ bool arlCore::needleCalibration( const std::vector< arlCore::vnl_rigid_matrix >&
         for(i=0 ; i<log.size() ; ++i)
             std::cout<<log[i]<<" ";
         std::cout<<"\n";
-        if(Verbose) std::cout<<"Radius = "<<radius<<" Error = "<<RMS<<" center = "<<center.x()<<" "<<center.y()<<" "<<center.z()<<"\n";
+        if(Verbose) std::cout<<"Radius = "<<radius<<" Error = "<<RMS<<" center = "<<center->x()<<" "<<center->y()<<" "<<center->z()<<"\n";
     }
     // NEEDLE ORIENTATION CALIBRATION
-    double x = center.x(), y = center.y(), z = center.z();
+    double x = center->x(), y = center->y(), z = center->z();
     radius = sqrt(x*x + y*y + z*z);
     if(radius==0) return false;
-    Point ptA1(0,0,0), ptA2(1,0,0), ptA3(0,0,1);
-    Point ptB1(x,y,z), ptB2(x-1,y-1,0), ptB3(x,y,z);
+    Point::sptr  ptA1=Point::New(0,0,0);
+    Point::sptr  ptA2=Point::New(1,0,0);
+    Point::sptr  ptA3=Point::New(0,0,1);
+    Point::sptr  ptB1=Point::New(x,y,z);
+    Point::sptr  ptB2=Point::New(x-1,y-1,0);
+    Point::sptr  ptB3=Point::New(x,y,z);
     // Equation du plan perpendiculaire � l'axe z de l'outil
     // ax + by + cz + d = 0
     if(orientation.size()<2)
@@ -1222,10 +1230,10 @@ bool arlCore::needleCalibration( const std::vector< arlCore::vnl_rigid_matrix >&
         for( i=0 ; i<orientation.size() ; ++i )
         {
             vnl_rigid_matrix M;
-            Point p0(x,y,z);
+            Point::sptr p0 = Point::New(x,y,z);
             M.invert(orientation[i]);
             M.trf(p0);
-            points.push_back(vgl_point_3d<double>(p0.x(),p0.y(),p0.z()));
+            points.push_back(vgl_point_3d<double>(p0->x(),p0->y(),p0->z()));
         }
         double lineRMS;
         vgl_line_3d_2_points<double> line;
@@ -1234,32 +1242,33 @@ bool arlCore::needleCalibration( const std::vector< arlCore::vnl_rigid_matrix >&
             if(Verbose) std::cout<<"RMS line fit = "<<lineRMS<<"\n";
             vgl_point_3d<double> vglp0=line.point1();
             vgl_point_3d<double> vglp1=line.point2();
-            Point p0(vglp0.x(),vglp0.y(),vglp0.z());
-            Point p1(vglp1.x(),vglp1.y(),vglp1.z());
+            Point::sptr p0 = Point::New(vglp0.x(),vglp0.y(),vglp0.z());
+            Point::sptr p1 = Point::New(vglp1.x(),vglp1.y(),vglp1.z());
             orientation[0].trf(p0);
             orientation[0].trf(p1);
-            p0.mult(-1);
-            p1.add(p0);
-            p1.normalize();
-            a=p1.x();
-            b=p1.y();
-            c=p1.z();
-            ptB3.add(p1);
+            p0->mult(-1);
+            p1->add(p0);
+            p1->normalize();
+            a=p1->x();
+            b=p1->y();
+            c=p1->z();
+            ptB3->add(p1);
         }else
         {
             lineRMS = 0.0;
             vnl_rigid_matrix M;
-            Point p0(x,y,z), p1(x,y,z);
+            Point::sptr p0 = Point::New(x,y,z);
+            Point::sptr p1 = Point::New(x,y,z);
             M.invert(orientation[1]);
             M.trf(p1);
             orientation[0].trf(p1);
-            p0.mult(-1);
-            p1.add(p0);
-            p1.normalize();
-            a=p1.x();
-            b=p1.y();
-            c=p1.z();
-            ptB3.add(p1);
+            p0->mult(-1);
+            p1->add(p0);
+            p1->normalize();
+            a=p1->x();
+            b=p1->y();
+            c=p1->z();
+            ptB3->add(p1);
         }
         std::cout<<"Line RMS : "<<lineRMS<<"\n";
     }
@@ -1267,22 +1276,24 @@ bool arlCore::needleCalibration( const std::vector< arlCore::vnl_rigid_matrix >&
     double d = -(a*x + b*y + c*z);
     if(orientation.size()<2)
     {
-        ptB3.normalize();
-        ptB3.mult(radius-1.0);
+        ptB3->normalize();
+        ptB3->mult(radius-1.0);
     }
-    // FIXME cas o� c==0
-    ptB2.z((-a*ptB2.x()-b*ptB2.y()-d)/c);
-    ptA2.x(ptB2.distance(ptB1));
+    // FIXME cas où c==0
+    ptB2->z((-a*ptB2->x()-b*ptB2->y()-d)/c);
+    ptA2->x(ptB2->distance(ptB1));
 
-    std::vector< const Point* > A, B;
+    //std::vector< Point::csptr > A, B;
+    PointList::sptr A = PointList::New();
+    PointList::sptr B = PointList::New();
 //  vgl_point_3d<double> p0(points[0].x(), points[0].y(), points[0].z());
 //  vgl_point_3d<double> p0(points[1].x(), points[1].y(), points[1].z());
-//  std::cout<<ptA1.print()<<" "<<ptA2.print()<<" "<<ptA3.print();
-//  std::cout<<ptB1.print()<<" "<<ptB2.print()<<" "<<ptB3.print();
+//  std::cout<<ptA1.print()<<" "<<ptA2->print()<<" "<<ptA3.print();
+//  std::cout<<ptB1.print()<<" "<<ptB2->print()<<" "<<ptB3.print();
 
-    A.push_back(&ptA1); B.push_back(&ptB1);
-    A.push_back(&ptA2); B.push_back(&ptB2);
-    A.push_back(&ptA3); B.push_back(&ptB3);
+    A->push_back(ptA1); B->push_back(ptB1);
+    A->push_back(ptA2); B->push_back(ptB2);
+    A->push_back(ptA3); B->push_back(ptB3);
 /*  if(!calibration.register3D3D( A, B, true )) return false;
     if(Verbose)
     {

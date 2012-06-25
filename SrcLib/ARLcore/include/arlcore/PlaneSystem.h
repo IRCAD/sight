@@ -118,10 +118,10 @@ namespace arlCore
         ARLCORE_API bool distance( unsigned int Plane1, unsigned int Plane2, double &dist/*, long int &date, long int &time*/ );
 
         //! @brief Set pt2 with the coordinates in Plane2 of pt1 set in Plane1
-        ARLCORE_API bool chgPlane( unsigned int Plane1, const Point &pt1, unsigned int Plane2, Point &pt2);
+        ARLCORE_API bool chgPlane( unsigned int Plane1, CSPTR( Point ) pt1, unsigned int Plane2, SPTR( Point ) pt2);
 
         //! @brief Set pt with the origin of Plane1 in the Plane2
-        ARLCORE_API bool getOrigin( unsigned int Plane1, unsigned int Plane2, Point &pt);
+        ARLCORE_API bool getOrigin( unsigned int Plane1, unsigned int Plane2, SPTR( Point ) pt);
 
     private:
         class Path
@@ -183,7 +183,7 @@ namespace arlCore
         * to solve a problem of cyclic path
         */
         void tag( unsigned int Plane1, unsigned int Plane2 );
-        
+
         //! @brief Untag the transformations Plane1 to Plane2
         void untag( unsigned int Plane1, unsigned int Plane2 );
 
@@ -192,7 +192,7 @@ namespace arlCore
 
         //! @return True if the transformation Plane1 to Plane2 is tagged
         bool isTagged( unsigned int Plane1, unsigned int Plane2 ) const;
-        
+
         //! @brief Untag all transformations of the universe
         void untagAll( void );
 
@@ -204,10 +204,10 @@ namespace arlCore
 
         //! @return True if Plane1 & 2 exist in the universe
         bool outOfRange( unsigned int Plane1, unsigned int Plane2 ) const;
-        
+
         //! @return True if Plane exists in the universe
         bool outOfRange( unsigned int Plane ) const;
-        
+
         //! @return The index in the table for the transformations from Plane1 to Plane2
         unsigned int getIndex( unsigned int Plane1, unsigned int Plane2 ) const;
 
@@ -252,7 +252,7 @@ namespace arlCore
 
         //! @brief Set the transformation at index
         bool setTrf( unsigned int index, const vnl_rigid_matrix& T, long int date, long int time );
-    
+
         //! @brief Compute the transformation between the first and the last of path
         //bool setTrf( const std::vector< unsigned int > &path );
         bool setTrf( const Path &path );

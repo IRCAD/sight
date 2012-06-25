@@ -9,13 +9,13 @@
 
 #include <arlcore/UnitTestArlCore.h>
 //#include <arlcore/PointsList.h>
-#include <arlcore/Mesh.h>
+//VAG #include <arlcore/Mesh.h>
 
 int main( int argc, char** argv )
 {
     arlCore::Mesh mesh;
-    mesh.load("D:/ARLBatch.exe/Mesh/test.msh");
-    mesh.save("D:/ARLBatch.exe/Mesh/test.vtk");
+//VAG    mesh.load("D:/ARLBatch.exe/Mesh/test.msh");
+//VAG    mesh.save("D:/ARLBatch.exe/Mesh/test.vtk");
 //  const arlCore::PointList pl = mesh.getPointList();
 //  pl.save("D:/ARLBatch.exe/Mesh/test.vtk", arlCore::ARLCORE_POINT_SAVE_VTK);
     

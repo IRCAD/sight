@@ -6,13 +6,14 @@
 
 #include <arlcore/Parameters.h>
 
+#include <assert.h>
 #include <sstream>
 #include <fstream>
 #include <iostream>
 
 arlCore::Parameters::Parameters( const std::string &name, const std::string &fileName ):
-m_paramFile(fileName),
-m_name(name)
+m_name(name),
+m_paramFile(fileName)
 {}
 
 arlCore::Parameters::~Parameters( void )

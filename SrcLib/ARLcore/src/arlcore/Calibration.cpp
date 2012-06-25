@@ -23,7 +23,7 @@
  *
  * The notations of the paper have been keeped
  */
-bool arlCore::initIntrinsicCalibration(const std::vector<arlCore::PointList> &model3DList, const std::vector <arlCore::PointList> &points2DList, arlCore::Camera &camera , std::vector< vnl_rigid_matrix> &liste_extrinsic, const std::vector<double> &optimiserParameters, std::vector<double> &log)
+bool arlCore::initIntrinsicCalibration(const std::vector<arlCore::PointList::csptr> &model3DList, const std::vector <arlCore::PointList::csptr> &points2DList, arlCore::Camera &camera , std::vector< vnl_rigid_matrix> &liste_extrinsic, const std::vector<double> &optimiserParameters, std::vector<double> &log)
 {
     assert(model3DList.size()>0 && points2DList.size()>0);
     assert(model3DList.size()==1 || model3DList.size()==points2DList.size());
@@ -44,7 +44,7 @@ bool arlCore::initIntrinsicCalibration(const std::vector<arlCore::PointList> &mo
             std::cerr<<"H["<<i<<"]=" << liste_H[i]/liste_H[i](2,2)<<std::endl;
             std::cerr<<"Homography reprojection error="<< log_tmp[0] <<std::endl;
         }
-        log.push_back(log_tmp[0]/model3DList[i].size()); //log reprojection error after homography computation
+        log.push_back(log_tmp[0]/model3DList[i]->size()); //log reprojection error after homography computation
     }
     ///////////////////////// v_12 , v_11 et v_22 are created /////////////////////////
     std::vector< vnl_vector_fixed<double, 6> > v_12(NbPoses), v_11(NbPoses), v_22(NbPoses);
@@ -88,16 +88,16 @@ bool arlCore::initIntrinsicCalibration(const std::vector<arlCore::PointList> &mo
     assert(fabs(b(0))>NearZero);
     if((fabs(b(0))<=NearZero)) return false;
     const double landa = b(5)-(b(3)*b(3)+cy*( b(1)*b(3)-b(0)*b(4)) )/b(0);
-    assert(landa/b(0)>=0.0);
+    // VAGTMP assert(landa/b(0)>=0.0);
     if(landa/b(0)<0.0) return false;
     const double fx = sqrt(landa/b(0));
-    assert(landa*b(0)/( b(0)*b(2)-b(1)*b(1))>=0.0);
+    // VAGTMP assert(landa*b(0)/( b(0)*b(2)-b(1)*b(1))>=0.0);
     if(landa*b(0)/( b(0)*b(2)-b(1)*b(1))<0.0) return false;
     const double fy = sqrt(landa*b(0)/( b(0)*b(2)-b(1)*b(1)));
-    assert(fabs(landa)>NearZero);
+    // VAGTMP assert(fabs(landa)>NearZero);
     if(fabs(landa)<=NearZero) return false;
     const double skew = -b(1)*fx*fx*fy/landa;
-    assert(fabs(fx)>NearZero);
+    // VAGTMP assert(fabs(fx)>NearZero);
     if(fabs(fx)<=NearZero) return false;
     const double cx = skew*cy/fx - b(3)*fx*fx/landa;
     if(Verbose)
@@ -132,13 +132,12 @@ bool arlCore::initIntrinsicCalibration(const std::vector<arlCore::PointList> &mo
     return true;
 }
 
-bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList> &model3DList, const std::vector <arlCore::PointList> &points2DList, unsigned int nbParameters, arlCore::Camera &camera, std::vector< vnl_rigid_matrix> &liste_extrinsic, const std::vector<double> &optimiserParameters, std::vector<double> &log)
+bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList::csptr> &model3DList, const std::vector <arlCore::PointList::csptr> &points2DList, unsigned int nbParameters, arlCore::Camera &camera, std::vector< vnl_rigid_matrix> &liste_extrinsic, const std::vector<double> &optimiserParameters, std::vector<double> &log)
 {
     assert(liste_extrinsic.size()==(unsigned int)points2DList.size());
     if(liste_extrinsic.size()!=(unsigned int)points2DList.size()) return false;
     bool Verbose_1 = false, Verbose_2 = false; // default
     if(optimiserParameters.size()>1)
-    {
         if(optimiserParameters[1] == 1)
             Verbose_1 = true;
         else if(optimiserParameters[1] == 2)
@@ -146,7 +145,6 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList> &
             Verbose_1 = true;
             Verbose_2 = true;
         }
-    }
     if(Verbose_1) std::cerr<<"debut refineIntrinsicCalibration "<<std::endl;
     double Method = 0; // Default
     if(optimiserParameters.size()>0) Method = optimiserParameters[0];
@@ -166,10 +164,10 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList> &
     init[6] = 0.0;
     init[7] = 0.0;
     for( i=0 ; i<NbPoses ; ++i )
-    {// On considere que le modèle peut avoir un nb de points différents sur chaque pose
+    {// On considere que le modÃ¨le peut avoir un nb de points diffÃ©rents sur chaque pose
         if(model3DList.size()==1) j=0; else j=i;
-        assert(points2DList[i].size()==model3DList[j].size());
-        nbPointsTotal += model3DList[j].size();
+        assert(points2DList[i]->size()==model3DList[j]->size());
+        nbPointsTotal += model3DList[j]->size();
         vnl_rigid_vector tmp(liste_extrinsic[i]);
         for( j=0 ; j<6 ; ++j )
             init[nbParameters + i*6 + j]=tmp[j];
@@ -184,24 +182,20 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList> &
         for( i=0 ; i<NbPoses ; ++i )
         {
             if(model3DList.size()==1) j=0; else j=i;
-            LS_reprojection_f.addPattern( points2DList[i].getList(), model3DList[j].getList() );
+            LS_reprojection_f.addPattern( points2DList[i]->getList(), model3DList[j]->getList() );
         }
         vnl_levenberg_marquardt refineIntrinsic(LS_reprojection_f);
         //LS_reprojection_f.setObserver(true);
         refineIntrinsic.set_trace(true);
         //refineIntrinsic.set_check_derivatives(1);
         if(optimiserParameters.size()>2) refineIntrinsic.set_f_tolerance(optimiserParameters[2]);
-        else refineIntrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) à 1e-3 près
+        else refineIntrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) ï¿½ 1e-3 prï¿½s
         if(optimiserParameters.size()>3)
-        {
             if(optimiserParameters[3] == 0){}//1e-8 default
             else {refineIntrinsic.set_x_tolerance(optimiserParameters[3]);}
-        }
         if(optimiserParameters.size()>4)
-        {
             if(optimiserParameters[4] == 0){}//1e-5 default
             else {refineIntrinsic.set_g_tolerance(optimiserParameters[4]);}
-        }
         if(Verbose_1)
         {
             std::cerr<<"f tolerance ="<<refineIntrinsic.get_f_tolerance()<<std::endl;
@@ -224,7 +218,7 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList> &
         log.push_back(NbPoses);//log
         for( i=0 ; i<NbPoses ; ++i )
         {
-            log.push_back(model3DList[i].size()); //log number of points for each pose
+            log.push_back(model3DList[i]->size()); //log number of points for each pose
             vnl_vector<double> vec(6);
             for( j=0 ; j<6 ; ++j )
                 vec[j] = init[nbParameters + i*6 + j];
@@ -257,21 +251,17 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList> &
         for( i=0 ; i<NbPoses ; ++i )
         {
             if(model3DList.size()==1) j=0; else j=i;
-            reprojection_f.addPattern( points2DList[i].getList(), model3DList[i].getList() );
+            reprojection_f.addPattern( points2DList[i]->getList(), model3DList[i]->getList() );
         }
         vnl_powell refineIntrinsic(&reprojection_f);
         if(optimiserParameters.size()>2) refineIntrinsic.set_f_tolerance(optimiserParameters[2]);
         else refineIntrinsic.set_f_tolerance(1e-10);
         if(optimiserParameters.size()>3)
-        {
             if(optimiserParameters[3] == 0){}//1e-8 default
             else {refineIntrinsic.set_x_tolerance(optimiserParameters[3]);}
-        }
         if(optimiserParameters.size()>4)
-        {
             if(optimiserParameters[4] == 0){}//1e-5 default
             else {refineIntrinsic.set_g_tolerance(optimiserParameters[4]);}
-        }
         if(Verbose_1)
         {
             std::cerr<<"f tolerance ="<<refineIntrinsic.get_f_tolerance()<<std::endl;
@@ -294,7 +284,7 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList> &
         log.push_back(NbPoses);//log
         for( i=0 ; i<NbPoses ; ++i )
         {
-            log.push_back(model3DList[i].size()); //log number of points for each pose
+            log.push_back(model3DList[i]->size()); //log number of points for each pose
             vnl_vector<double> vec(6);
             for( j=0 ; j<6 ; ++j )
                 vec[j] = init[nbParameters + i*6 + j];
@@ -322,7 +312,7 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList> &
     return true;
 }
 
-bool arlCore::intrinsicCalibration(const std::vector<arlCore::PointList> &model3DList, const std::vector <arlCore::PointList> &points2DList, unsigned int nbParameters, arlCore::Camera &camera, std::vector< vnl_rigid_matrix> &liste_extrinsic, const std::vector<double> &optimiserParameters, std::vector<double> &log)
+bool arlCore::intrinsicCalibration(const std::vector<arlCore::PointList::csptr> &model3DList, const std::vector <arlCore::PointList::csptr> &points2DList, unsigned int nbParameters, arlCore::Camera &camera, std::vector< vnl_rigid_matrix> &liste_extrinsic, const std::vector<double> &optimiserParameters, std::vector<double> &log)
 {
     assert(model3DList.size()==points2DList.size());
     //! @todo Assert( Au moins 4 points par pose )
@@ -340,7 +330,7 @@ bool arlCore::intrinsicCalibration(const std::vector<arlCore::PointList> &model3
             return true;
     }else
     {
-        //! @todo Traiter le cas où l'initialisation ne fonctionne pas
+        //! @todo Traiter le cas oÃ¹ l'initialisation ne fonctionne pas
     }
     return false;
 }
@@ -371,7 +361,7 @@ bool arlCore::intrinsicCalibration(const std::vector<arlCore::PointList> &model3
  * system which field of view are not common. Nevertheless, the initilization supposes that 3D models 3D
  * are always visible in the 1st camera. This is a constraint we could remove
  */
-bool arlCore::initExtrinsicCalibration(const std::vector<PointList>& models3D, const std::vector<std::vector<std::vector<arlCore::Point*> > >& liste_points2D, const std::vector<arlCore::Camera> &cameras, std::vector< arlCore::vnl_rigid_matrix> &init_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
+bool arlCore::initExtrinsicCalibration(const std::vector<PointList::csptr>& models3D, const std::vector<std::vector<std::vector<arlCore::Point::csptr > > >& liste_points2D, const std::vector<arlCore::Camera> &cameras, std::vector< arlCore::vnl_rigid_matrix> &init_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
 {
     unsigned int i;
     std::vector<const arlCore::Camera*> cams;
@@ -380,7 +370,12 @@ bool arlCore::initExtrinsicCalibration(const std::vector<PointList>& models3D, c
     return initExtrinsicCalibration( models3D, liste_points2D, cams, init_rigid_trsf, optimiserParameters, log );
 }
 
-bool arlCore::initExtrinsicCalibration(const std::vector<PointList>& models3D, const std::vector<std::vector<std::vector<arlCore::Point*> > >& liste_points2D, const std::vector<const arlCore::Camera*> &cameras, std::vector< arlCore::vnl_rigid_matrix> &init_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
+bool arlCore::initExtrinsicCalibration( const std::vector<PointList::csptr>& models3D,
+                                        const std::vector<std::vector<std::vector<arlCore::Point::csptr > > >& liste_points2D,
+                                        const std::vector<const arlCore::Camera*> &cameras,
+                                        std::vector< arlCore::vnl_rigid_matrix> &init_rigid_trsf,
+                                        const std::vector<double> &optimiserParameters,
+                                        std::vector<double> &log )
 {
     const bool Verbose = false;
     const unsigned int NbPoses = (unsigned int)models3D.size(), NbCameras = (unsigned int)liste_points2D[0].size();
@@ -388,18 +383,18 @@ bool arlCore::initExtrinsicCalibration(const std::vector<PointList>& models3D, c
     std::vector<double> log_homography, log_ISPPC;
     // estimation of Te_i
     std::vector<std::vector<arlCore::Point::csptr> > point_2D_visible_cam0(NbPoses), point_2D_visible_pose0(NbCameras-1);
-    std::vector<std::vector<arlCore::Point*> > point_3D_visible_cam0(NbPoses), point_3D_visible_pose0(NbCameras-1);
+    std::vector<std::vector<arlCore::Point::csptr > > point_3D_visible_cam0(NbPoses), point_3D_visible_pose0(NbCameras-1);
     std::vector<double> optimiserParametersISPPC;//not used here and have to be parameterized in the function (which is not good)
     unsigned int i,j;
     for( i=0 ; i<NbPoses ; ++i )//creation of the 2D point list and 3D point list without the invisible points
-        for( j=0 ; j<models3D[i].size(); j++ )
+        for( j=0 ; j<models3D[i]->size(); j++ )
             if(liste_points2D[i][0][j]!= 0)
             {
-                point_3D_visible_cam0[i].push_back((Point*)models3D[i][j]);
+                point_3D_visible_cam0[i].push_back( (*(models3D[i]))[j] );
                 point_2D_visible_cam0[i].push_back(liste_points2D[i][0][j]);
             }
     for( i=1 ; i<NbCameras ; ++i )
-        for( j=0 ; j<models3D[0].size() ; j++ )
+        for( j=0 ; j<models3D[0]->size() ; j++ )
             if(liste_points2D[0][i][j]!= 0)
             {
                 //std::cerr<<"numero camera "<< i << "   numero point "<<j<<std::endl;
@@ -407,7 +402,7 @@ bool arlCore::initExtrinsicCalibration(const std::vector<PointList>& models3D, c
                 //std::cerr<<"liste_points2D[0][i][j] " << liste_points2D[0][i][j]->getCoordinates() <<std::endl;
                 // point_3D_visible_pose0 contains a list of 3D model for the camera 2 -> N
                 // points that are not visible in the i th camera are not taken into account because of the if test
-                point_3D_visible_pose0[i-1].push_back((Point*)models3D[0][j]);
+                point_3D_visible_pose0[i-1].push_back( (*(models3D[0]))[j]);
                 // point_2D_visible_pose0 contains a list of 2D point reprojection of the model for the camera 2 -> N
                 point_2D_visible_pose0[i-1].push_back(liste_points2D[0][i][j]);
             }
@@ -488,7 +483,7 @@ bool arlCore::initExtrinsicCalibration(const std::vector<PointList>& models3D, c
  * pose 1 camera nb_total pt nbmax of pattern 1 ... etc
  */
 
-bool arlCore::refineExtrinsicCalibration( const std::vector<PointList>& models3D, const std::vector<std::vector<std::vector<arlCore::Point*> > >& liste_points2D, const std::vector<arlCore::Camera> &cameras, std::vector< arlCore::vnl_rigid_matrix> &refine_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
+bool arlCore::refineExtrinsicCalibration( const std::vector<PointList::csptr>& models3D, const std::vector<std::vector<std::vector<arlCore::Point::csptr > > >& liste_points2D, const std::vector<arlCore::Camera> &cameras, std::vector< arlCore::vnl_rigid_matrix> &refine_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
 {
     unsigned int i;
     std::vector<const arlCore::Camera*> cams;
@@ -497,7 +492,7 @@ bool arlCore::refineExtrinsicCalibration( const std::vector<PointList>& models3D
     return refineExtrinsicCalibration( models3D, liste_points2D, cams, refine_rigid_trsf, optimiserParameters, log );
 }
 
-bool arlCore::refineExtrinsicCalibration( const std::vector<PointList>& models3D, const std::vector<std::vector<std::vector<arlCore::Point*> > >& liste_points2D, const std::vector<const arlCore::Camera*> &cameras, std::vector< arlCore::vnl_rigid_matrix> &refine_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
+bool arlCore::refineExtrinsicCalibration( const std::vector<PointList::csptr>& models3D, const std::vector<std::vector<std::vector<arlCore::Point::csptr > > >& liste_points2D, const std::vector<const arlCore::Camera*> &cameras, std::vector< arlCore::vnl_rigid_matrix> &refine_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
 {
     unsigned int method = 0; // Default
     bool Verbose = false, Verbose_optim = false; // default
@@ -512,7 +507,7 @@ bool arlCore::refineExtrinsicCalibration( const std::vector<PointList>& models3D
     std::vector<arlCore::vnl_rigid_matrix> estimation((NbCameras-1)+NbPoses);
     long unsigned int nbTotal2Dpoints = 0;
     for( i=0 ; i<NbPoses ; ++i )
-        nbTotal2Dpoints+=models3D[i].size()*NbCameras;
+        nbTotal2Dpoints+=models3D[i]->size()*NbCameras;
     refine_rigid_trsf.resize(NbCameras-1+NbPoses);
     for( i=0 ; i<NbCameras-1+NbPoses ; ++i )
     {
@@ -525,22 +520,18 @@ bool arlCore::refineExtrinsicCalibration( const std::vector<PointList>& models3D
         arlCore::ExtrinsicLS_cost_function Extrinsic_cost_func(cameras, (NbCameras-1)*6+6*NbPoses, nbTotal2Dpoints, vnl_least_squares_function::use_gradient);
         Extrinsic_cost_func.setVerbose(Verbose_optim);
         for( i=0 ; i<NbPoses ; ++i)
-            Extrinsic_cost_func.addPattern( liste_points2D[i], models3D[i].getList() );
+            Extrinsic_cost_func.addPattern( liste_points2D[i], models3D[i]->getListCopy() ); //VAG FIXME PERF !!!
         vnl_levenberg_marquardt refineExtrinsic(Extrinsic_cost_func);
         refineExtrinsic.set_trace(true);
         //refineExtrinsic.set_check_derivatives(1);
         if(optimiserParameters.size()>2) refineExtrinsic.set_f_tolerance(optimiserParameters[2]);
-        else refineExtrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) à 1e-3 près
+        else refineExtrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) ï¿½ 1e-3 prï¿½s
         if(optimiserParameters.size()>3)
-        {
             if(optimiserParameters[3] == 0){}//1e-8 default
             else {refineExtrinsic.set_x_tolerance(optimiserParameters[3]);}
-        }
         if(optimiserParameters.size()>4)
-        {
             if(optimiserParameters[4] == 0){}//1e-5 default
             else {refineExtrinsic.set_g_tolerance(optimiserParameters[4]);}
-        }
         Extrinsic_cost_func.setObserver(true);
         if(Verbose) std::cerr<<"debut minimize "<<std::endl;
         refineExtrinsic.minimize_using_gradient(init);
@@ -557,20 +548,16 @@ bool arlCore::refineExtrinsicCalibration( const std::vector<PointList>& models3D
         arlCore::Extrinsic_cost_function Extrinsic_cost_func(cameras, (NbCameras-1)*6+6*NbPoses);
         Extrinsic_cost_func.setVerbose(Verbose_optim);
         for( i=0 ; i<NbPoses ; ++i)
-            Extrinsic_cost_func.addPattern( liste_points2D[i], models3D[i].getList() );
+            Extrinsic_cost_func.addPattern( liste_points2D[i], models3D[i]->getListCopy() ); //VAG FIXME PERF !!!
         vnl_powell refineExtrinsic(&Extrinsic_cost_func);
         if(optimiserParameters.size()>2) refineExtrinsic.set_f_tolerance(optimiserParameters[2]);
-        else refineExtrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) à 1e-3 près
+        else refineExtrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) ï¿½ 1e-3 prï¿½s
         if(optimiserParameters.size()>3)
-        {
             if(optimiserParameters[3] == 0){}//1e-8 default
             else {refineExtrinsic.set_x_tolerance(optimiserParameters[3]);}
-        }
         if(optimiserParameters.size()>4)
-        {
             if(optimiserParameters[4] == 0){}//1e-5 default
             else {refineExtrinsic.set_g_tolerance(optimiserParameters[4]);}
-        }
         Extrinsic_cost_func.setObserver(true);
         if(Verbose) std::cerr<<"debut minimize "<<std::endl;
         refineExtrinsic.minimize(init);
@@ -593,7 +580,7 @@ bool arlCore::refineExtrinsicCalibration( const std::vector<PointList>& models3D
     return true;
 }
 
-bool arlCore::extrinsicCalibration( const std::vector<PointList>& models3D, const std::vector<std::vector<std::vector<arlCore::Point*> > >& liste_points2D, const std::vector<arlCore::Camera> &cameras, std::vector< arlCore::vnl_rigid_matrix> &refine_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
+bool arlCore::extrinsicCalibration( const std::vector<PointList::csptr>& models3D, const std::vector<std::vector<std::vector<arlCore::Point::csptr > > >& liste_points2D, const std::vector<arlCore::Camera> &cameras, std::vector< arlCore::vnl_rigid_matrix> &refine_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
 {
     unsigned int i;
     std::vector<const arlCore::Camera*> cams;
@@ -602,7 +589,7 @@ bool arlCore::extrinsicCalibration( const std::vector<PointList>& models3D, cons
     return extrinsicCalibration( models3D, liste_points2D, cams, refine_rigid_trsf, optimiserParameters, log );
 }
 
-bool arlCore::extrinsicCalibration( const std::vector<PointList>& models3D, const std::vector<std::vector<std::vector<arlCore::Point*> > >& liste_points2D, const std::vector<const arlCore::Camera*> &cameras, std::vector< arlCore::vnl_rigid_matrix> &refine_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
+bool arlCore::extrinsicCalibration( const std::vector<PointList::csptr>& models3D, const std::vector<std::vector<std::vector<arlCore::Point::csptr > > >& liste_points2D, const std::vector<const arlCore::Camera*> &cameras, std::vector< arlCore::vnl_rigid_matrix> &refine_rigid_trsf, const std::vector<double> &optimiserParameters, std::vector<double> &log )
 {
     std::vector<double> optimiserParametersInit, optimiserParametersRefine;// TODO the optimiserParameters should be filled independently
     unsigned int i;
@@ -614,7 +601,7 @@ bool arlCore::extrinsicCalibration( const std::vector<PointList>& models3D, cons
             return true;
     }else
     {
-        // TODO : Traiter le cas où l'initialisation ne fonctionne pas
+        // TODO : Traiter le cas oÃ¹ l'initialisation ne fonctionne pas
     }
     return false;
 }
