@@ -193,7 +193,7 @@ void Render::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
     {
-        SPTR(::fwData::Composite) field = compositeMsg->getAddedKeys();
+        SPTR(::fwData::Composite) field = compositeMsg->getRemovedKeys();
         this->stopAdaptorsFromComposite(field);
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
