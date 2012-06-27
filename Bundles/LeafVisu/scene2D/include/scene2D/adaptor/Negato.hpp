@@ -44,7 +44,7 @@ protected:
 private:
 
     QImage * createQImage();
-    void updateFromImage( QImage * qimg );
+    void updateBufferFromImage( QImage * qimg );
     void changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord );
 
     QRgb getQImageVal(const unsigned int index, signed short* buffer,
@@ -56,31 +56,13 @@ private:
     QGraphicsPixmapItem * m_pixmapItem;
     QGraphicsItemGroup* m_layer;
 
-    /**
-     * @brief Reference position when a drag and drop move is performed
-     */
-    QPointF m_pos;
-
-    /**
-     * @brief Zoom ratio applied at each mouse scroll
-     */
-    float m_scaleRatio;
-
-    /**
-     * @brief Indicate if the negato is being moved when pressing mouse's middle button
-     */
-    bool m_negatoIsBeingMoved;
-
     /// The current orientation of the negato
     ::fwComEd::helper::MedicalImageAdaptor::Orientation m_orientation;
 
-    /// Scale ratios (x, y)
-    std::pair<double, double> m_scale;
-
-    /// Tell if the negato is being moved
+    /// Used during negato interaction to manage window/level
     bool m_pointIsCaptured;
 
-    /// Ref. position when changing image min/max
+    /// Ref. position when changing image window/level
     scene2D::data::Coord m_oldCoord;
 
     /// Specify if the negato allow slice type events

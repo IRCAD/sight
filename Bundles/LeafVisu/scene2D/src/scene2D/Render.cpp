@@ -263,6 +263,8 @@ void Render::startContext()
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(m_view);
     qtContainer->getQtContainer()->setLayout(layout);
+
+    m_view->updateFromViewport();
 }
 
 //-----------------------------------------------------------------------------
@@ -524,6 +526,35 @@ void Render::stopAdaptor(AdaptorIDType _adaptorID)
     m_adaptorID2SceneAdaptor2D[_adaptorID].m_service.reset();
     m_adaptorID2SceneAdaptor2D.erase(_adaptorID);
 }
+
+//-----------------------------------------------------------------------------
+
+void Render::updateSceneSize( float ratioPercent )
+{
+    QRectF rec = m_scene->itemsBoundingRect();
+    qreal x,y,w,h;
+    rec.getRect(&x,&y,&w,&h);
+
+    if ( ratioPercent != 0 )
+    {
+        qreal centerX = x + w/2.0;
+        qreal centerY = y + h/2.0;
+        w = w + w * ratioPercent;
+        h = h + h * ratioPercent;
+        x = centerX - w/2.0;
+        y = centerY - h/2.0;
+        rec.setRect(x,y,w,h);
+    }
+    m_sceneStart.setX( x );
+    m_sceneStart.setY( y );
+    m_sceneWidth.setX( w );
+    m_sceneWidth.setY( h );
+
+    m_scene->setSceneRect( rec );
+
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace scene2D
 
