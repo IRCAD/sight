@@ -37,241 +37,267 @@
  */
 
 #ifndef _FWCORE_SPYLOG_HPP_
-#define _FWCORE_SPYLOG_HPP_
+# define _FWCORE_SPYLOG_HPP_
 
+# define SPYLOG_ABORT() std::abort()
 
-#define SPYLOG_ABORT() std::abort()
+# ifdef _DEBUG
 
-#ifdef _DEBUG
-//#define SPYLOG_TIMER
+#  ifdef WIN32
+#   include <windows.h>
+#   define DEBUG_BREAK() DebugBreak()
+#  else
+#   include <csignal>
+#   define DEBUG_BREAK() std::raise(SIGTRAP)
+#  endif
 
-#ifdef WIN32
-#include <windows.h>
-#define DEBUG_BREAK() DebugBreak()
-#else
-#include <csignal>
-#define DEBUG_BREAK() std::raise(SIGTRAP)
-#endif
+#  ifdef SPYLOG_ABORT
+#   undef SPYLOG_ABORT
+#  endif
+#  define SPYLOG_ABORT() DEBUG_BREAK()
 
-#ifdef SPYLOG_ABORT
-#undef SPYLOG_ABORT
-#endif
-#define SPYLOG_ABORT() DEBUG_BREAK()
+# endif
 
-#endif // _DEBUG
+# include <cassert>
+# include <sstream>
 
+# include "fwCore/config.hpp"
 
-#include <cassert>
-#include <sstream>
+# include "fwCore/SpyLogger.hpp"
+# include "fwCore/ScopedMessage.hpp"
+# include "fwCore/SpyLoggerManager.hpp"
 
-#include "fwCore/config.hpp"
-
-#include "fwCore/SpyLogger.hpp"
-#include "fwCore/ScopedMessage.hpp"
-#include "fwCore/SpyLoggerManager.hpp"
-
-
-//==============================================================================
+// -----------------------------------------------------------------------------
 
 /**
  * @cond
  */
-#ifndef SPYLOG_LEVEL
-    #define SPYLOG_LEVEL 3
-#endif
+# ifndef SPYLOG_LEVEL
+#  define SPYLOG_LEVEL 3
+# endif
 
-#ifndef PROJECT_NAME
-    #define PROJECT_NAME "DefaultProjectName"
-#endif
+# ifndef PROJECT_NAME
+#  define PROJECT_NAME "DefaultProjectName"
+# endif
 
-//==============================================================================
+// -----------------------------------------------------------------------------
 
-#define SL_IF(cond, code) if ( cond ) { code }
+# ifndef __FWCORE_EXPR_BLOCK
+#  define __FWCORE_EXPR_BLOCK(expr) do { expr } while (0)
+# endif
 
-#define OSL_LOG(log, loglevel, message) {                                     \
-                                            std::stringstream oslStr;         \
-                                            oslStr << message;                \
-                                            SL_##loglevel(log, oslStr.str()); \
-                                        }
+# define __FWCORE_IF(cond, code) if ( cond ) { code }
 
-//==============================================================================
+# define OSL_LOG(log, loglevel, message) __FWCORE_EXPR_BLOCK(   \
+        std::stringstream oslStr;                               \
+        oslStr << message;                                      \
+        SL_##loglevel(log, oslStr.str());                       \
+        )
 
-#define SL_DISABLE if(0)
+// -----------------------------------------------------------------------------
 
-#define SL_TRACE_DISABLE
-#define SL_DEBUG_DISABLE
-#define SL_INFO_DISABLE
-#define SL_WARN_DISABLE
-#define SL_ERROR_DISABLE
-#define SL_FATAL_DISABLE
+# if (SPYLOG_LEVEL < 6)
+#  define __FWCORE_TRACE_DISABLED
+#  define __FWCORE_TRACE_IF_ENABLED(expr) // nothing
+# else
+#  define __FWCORE_TRACE_IF_ENABLED(expr) __FWCORE_EXPR_BLOCK(expr)
+# endif
 
+# if (SPYLOG_LEVEL < 5)
+#  define __FWCORE_DEBUG_DISABLED
+#  define __FWCORE_DEBUG_IF_ENABLED(expr) // nothing
+# else
+#  define __FWCORE_DEBUG_IF_ENABLED(expr) __FWCORE_EXPR_BLOCK(expr)
+# endif
 
-#if ( SPYLOG_LEVEL < 6 )
-#define __FWCORE_TRACE_DISABLED__
-#endif
+# if (SPYLOG_LEVEL < 4)
+#  define __FWCORE_INFO_DISABLED
+#  define __FWCORE_INFO_IF_ENABLED(expr) // nothing
+# else
+#  define __FWCORE_INFO_IF_ENABLED(expr) __FWCORE_EXPR_BLOCK(expr)
+# endif
 
-#if ( SPYLOG_LEVEL < 5 )
-#define __FWCORE_DEBUG_DISABLED__
-#endif
+# if (SPYLOG_LEVEL < 3)
+#  define __FWCORE_WARN_DISABLED
+#  define __FWCORE_WARN_IF_ENABLED(expr) // nothing
+# else
+#  define __FWCORE_WARN_IF_ENABLED(expr) __FWCORE_EXPR_BLOCK(expr)
+# endif
 
-#if ( SPYLOG_LEVEL < 4 )
-#define __FWCORE_INFO_DISABLED__
-#endif
+# if (SPYLOG_LEVEL < 2)
+#  define __FWCORE_ERROR_DISABLED
+#  define __FWCORE_ERROR_IF_ENABLED(expr) // nothing
+# else
+#  define __FWCORE_ERROR_IF_ENABLED(expr) __FWCORE_EXPR_BLOCK(expr)
+# endif
 
-#if ( SPYLOG_LEVEL < 3 )
-#define __FWCORE_WARN_DISABLED__
-#endif
+# if (SPYLOG_LEVEL < 1)
+#  define __FWCORE_FATAL_DISABLED
+#  define __FWCORE_FATAL_IF_ENABLED(expr) // nothing
+# else
+#  define __FWCORE_FATAL_IF_ENABLED(expr) __FWCORE_EXPR_BLOCK(expr)
+# endif
 
-#if ( SPYLOG_LEVEL < 2 )
-#define __FWCORE_ERROR_DISABLED__
-#endif
+// -----------------------------------------------------------------------------
 
-#if ( SPYLOG_LEVEL < 1 )
-#define __FWCORE_FATAL_DISABLED__
-#endif
+# if (!defined(_DEBUG) && defined(__FWCORE_TRACE_DISABLED))
+#  define SL_TRACE(log, message) // nothing
+#  define OSL_TRACE(log, message) // nothing
+#  define SL_TRACE_IF(log, message, cond) // nothing
+#  define OSL_TRACE_IF(log, message, cond) // nothing
+# else
+#  define SL_TRACE(log, message) __FWCORE_TRACE_IF_ENABLED(     \
+        log.trace(message, __FILE__, __LINE__);                 \
+        )
+#  define OSL_TRACE(log, message) __FWCORE_TRACE_IF_ENABLED(    \
+        OSL_LOG(log, TRACE, message);                           \
+        )
+#  define SL_TRACE_IF(log, message, cond) __FWCORE_TRACE_IF_ENABLED(    \
+        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__);)      \
+        )
+#  define OSL_TRACE_IF(log, message, cond) __FWCORE_TRACE_IF_ENABLED(   \
+        __FWCORE_IF(cond, OSL_LOG(log, TRACE, message);)                \
+        )
+# endif
 
+# if (!defined(_DEBUG) && defined(__FWCORE_DEBUG_DISABLED))
+#  define SL_DEBUG(log, message)           // nothing
+#  define OSL_DEBUG(log, message)          // nothing
+#  define SL_DEBUG_IF(log, message, cond)  // nothing
+#  define OSL_DEBUG_IF(log, message, cond) // nothing
+# else
+#  define SL_DEBUG(log, message) __FWCORE_DEBUG_IF_ENABLED(     \
+        log.debug(message, __FILE__, __LINE__);                 \
+        )
+#  define OSL_DEBUG(log, message) __FWCORE_DEBUG_IF_ENABLED(    \
+        OSL_LOG(log, DEBUG, message);                           \
+        )
+#  define SL_DEBUG_IF(log, message, cond) __FWCORE_DEBUG_IF_ENABLED(    \
+        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__);)      \
+        )
+#  define OSL_DEBUG_IF(log, message, cond) __FWCORE_DEBUG_IF_ENABLED(   \
+        __FWCORE_IF(cond, OSL_LOG(log, DEBUG, message);)                \
+        )
+# endif
 
-#ifdef  __FWCORE_TRACE_DISABLED__
-#undef SL_TRACE_DISABLE
-#define SL_TRACE_DISABLE SL_DISABLE
-#endif
+# if (!defined(_DEBUG) && defined(__FWCORE_INFO_DISABLED))
+#  define SL_INFO(log, message) // nothing
+#  define OSL_INFO(log, message) // nothing
+#  define SL_INFO_IF(log, message, cond) // nothing
+#  define OSL_INFO_IF(log, message, cond) // nothing
+# else
+#  define SL_INFO(log, message) __FWCORE_INFO_IF_ENABLED(       \
+        log.info(message, __FILE__, __LINE__);                  \
+        )
+#  define OSL_INFO(log, message) __FWCORE_INFO_IF_ENABLED(      \
+        OSL_LOG(log, INFO, message);                            \
+        )
+#  define SL_INFO_IF(log, message, cond) __FWCORE_INFO_IF_ENABLED(      \
+        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__);)      \
+        )
+#  define OSL_INFO_IF(log, message, cond) __FWCORE_INFO_IF_ENABLED(     \
+        __FWCORE_IF(cond, OSL_LOG(log, INFO, message);)                 \
+        )
+# endif
 
-#ifdef __FWCORE_DEBUG_DISABLED__
-#undef SL_DEBUG_DISABLE
-#define SL_DEBUG_DISABLE SL_DISABLE
-#endif
+# if (!defined(_WARN) && defined(__FWCORE_WARN_DISABLED))
+#  define SL_WARN(log, message)           // nothing
+#  define OSL_WARN(log, message)          // nothing
+#  define SL_WARN_IF(log, message, cond)  // nothing
+#  define OSL_WARN_IF(log, message, cond) // nothing
+# else
+#  define SL_WARN(log, message) __FWCORE_WARN_IF_ENABLED(       \
+        log.warn(message, __FILE__, __LINE__);                  \
+        )
+#  define OSL_WARN(log, message) __FWCORE_WARN_IF_ENABLED(      \
+        OSL_LOG(log, WARN, message);                            \
+        )
+#  define SL_WARN_IF(log, message, cond) __FWCORE_WARN_IF_ENABLED(      \
+        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__);)      \
+        )
+#  define OSL_WARN_IF(log, message, cond) __FWCORE_WARN_IF_ENABLED(     \
+        __FWCORE_IF(cond, OSL_LOG(log, WARN, message);)                 \
+        )
+# endif
 
-#ifdef __FWCORE_INFO_DISABLED__
-#undef SL_INFO_DISABLE
-#define SL_INFO_DISABLE SL_DISABLE
-#endif
+# if (!defined(_ERROR) && defined(__FWCORE_ERROR_DISABLED))
+#  define SL_ERROR(log, message) // nothing
+#  define OSL_ERROR(log, message) // nothing
+#  define SL_ERROR_IF(log, message, cond) // nothing
+#  define OSL_ERROR_IF(log, message, cond) // nothing
+# else
+#  define SL_ERROR(log, message) __FWCORE_ERROR_IF_ENABLED(     \
+        log.error(message, __FILE__, __LINE__);                 \
+        )
+#  define OSL_ERROR(log, message) __FWCORE_ERROR_IF_ENABLED(    \
+        OSL_LOG(log, ERROR, message);                           \
+        )
+#  define SL_ERROR_IF(log, message, cond) __FWCORE_ERROR_IF_ENABLED(    \
+        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__);)      \
+        )
+#  define OSL_ERROR_IF(log, message, cond) __FWCORE_ERROR_IF_ENABLED(   \
+        __FWCORE_IF(cond, OSL_LOG(log, ERROR, message);)                \
+        )
+# endif
 
-#ifdef __FWCORE_WARN_DISABLED__
-#undef SL_WARN_DISABLE
-#define SL_WARN_DISABLE SL_DISABLE
-#endif
+# if (!defined(_FATAL) && defined(__FWCORE_FATAL_DISABLED))
+#  define SL_FATAL(log, message) // nothing
+#  define OSL_FATAL(log, message) // nothing
+#  define SL_FATAL_IF(log, message, cond) // nothing
+#  define OSL_FATAL_IF(log, message, cond) // nothing
+# else
+#  define SL_FATAL(log, message) __FWCORE_FATAL_IF_ENABLED(     \
+        log.fatal(message, __FILE__, __LINE__);                 \
+        SPYLOG_ABORT();                                         \
+        )
+#  define OSL_FATAL(log, message) __FWCORE_FATAL_IF_ENABLED(    \
+        OSL_LOG(log, FATAL, message);                           \
+        SPYLOG_ABORT();                                         \
+        )
+#  define SL_FATAL_IF(log, message, cond) __FWCORE_FATAL_IF_ENABLED(    \
+        __FWCORE_IF(cond, SL_FATAL(log, message);)                      \
+        )
+#  define OSL_FATAL_IF(log, message, cond) __FWCORE_FATAL_IF_ENABLED(   \
+        __FWCORE_IF(cond, OSL_FATAL(log, message);)                     \
+        )
+# endif
 
-#ifdef __FWCORE_ERROR_DISABLED__
-#undef SL_ERROR_DISABLE
-#define SL_ERROR_DISABLE SL_DISABLE
-#endif
+// -----------------------------------------------------------------------------
 
-#ifdef __FWCORE_FATAL_DISABLED__
-#undef SL_FATAL_DISABLE
-#define SL_FATAL_DISABLE SL_DISABLE
-#endif
+# ifdef _DEBUG
+#  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(            \
+        __FWCORE_IF(!(cond),                                            \
+                    std::stringstream oslStr1;                          \
+                    oslStr1 << "Assertion '" <<                         \
+                    #cond << "' failed: " << message;                   \
+                    log.fatal(oslStr1.str(), __FILE__, __LINE__);       \
+                    SPYLOG_ABORT();                                     \
+            ))
 
-#define __SL_EXPR(expr) do { expr } while (0)
+#  define OSL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(   \
+        __FWCORE_IF(!(cond),                                    \
+                    std::stringstream oslStr;                   \
+                    oslStr << message;                          \
+                    SL_ASSERT(log, oslStr.str(), cond);         \
+            ))
+# else
+#  define SL_ASSERT(log, message, cond) // empty
+#  define OSL_ASSERT(log, message, cond) // empty
+# endif
 
-#if ( !defined(_DEBUG) && defined(__FWCORE_TRACE_DISABLED__)  )
-#define  SL_TRACE(log, message)
-#define OSL_TRACE(log, message)
-#define  SL_TRACE_IF(log, message, cond)
-#define OSL_TRACE_IF(log, message, cond)
-#else
-#define  SL_TRACE(log, message)          __SL_EXPR( SL_TRACE_DISABLE { log.trace(message, __FILE__, __LINE__); } )
-#define OSL_TRACE(log, message)          __SL_EXPR( SL_TRACE_DISABLE { OSL_LOG(log, TRACE, message); } )
-#define  SL_TRACE_IF(log, message, cond) __SL_EXPR( SL_TRACE_DISABLE { SL_IF( cond, SL_TRACE(log, message); ) } )
-#define OSL_TRACE_IF(log, message, cond) __SL_EXPR( SL_TRACE_DISABLE { SL_IF( cond, OSL_TRACE(log, message); ) } )
-#endif
+// -----------------------------------------------------------------------------
 
-#if ( !defined(_DEBUG) && defined(__FWCORE_DEBUG_DISABLED__)  )
-#define  SL_DEBUG(log, message)
-#define OSL_DEBUG(log, message)
-#define  SL_DEBUG_IF(log, message, cond)
-#define OSL_DEBUG_IF(log, message, cond)
-#else
-#define  SL_DEBUG(log, message)          __SL_EXPR( SL_DEBUG_DISABLE { log.debug(message, __FILE__, __LINE__); } )
-#define OSL_DEBUG(log, message)          __SL_EXPR( SL_DEBUG_DISABLE { OSL_LOG(log, DEBUG, message); } )
-#define  SL_DEBUG_IF(log, message, cond) __SL_EXPR( SL_DEBUG_DISABLE { SL_IF( cond, SL_DEBUG(log, message); ) } )
-#define OSL_DEBUG_IF(log, message, cond) __SL_EXPR( SL_DEBUG_DISABLE { SL_IF( cond, OSL_DEBUG(log, message); ) } )
-#endif
+# ifdef SPYLOG_TYPE
+#  define _SPYLOG_SPYLOGGER_                                            \
+    ::spyLog::SpyLoggerManager::getSpyLoggerManager()->getSpyLogger(    \
+        PROJECT_NAME                                                    \
+        )
+# else
+#  define _SPYLOG_SPYLOGGER_                                            \
+    ::spyLog::SpyLoggerManager::getSpyLoggerManager()->getMainSpyLogger()
+# endif
 
-#if ( !defined(_DEBUG) && defined(__FWCORE_INFO_DISABLED__)  )
-#define  SL_INFO(log, message)
-#define OSL_INFO(log, message)
-#define  SL_INFO_IF(log, message, cond)
-#define OSL_INFO_IF(log, message, cond)
-#else
-#define  SL_INFO(log, message)           __SL_EXPR( SL_INFO_DISABLE { log.info(message, __FILE__, __LINE__); } )
-#define OSL_INFO(log, message)           __SL_EXPR( SL_INFO_DISABLE { OSL_LOG(log, INFO, message); } )
-#define  SL_INFO_IF(log, message, cond)  __SL_EXPR( SL_INFO_DISABLE { SL_IF( cond, SL_INFO(log, message); ) } )
-#define OSL_INFO_IF(log, message, cond)  __SL_EXPR( SL_INFO_DISABLE { SL_IF( cond, OSL_INFO(log, message); ) } )
-#endif
-
-#if ( !defined(_DEBUG) && defined(__FWCORE_WARN_DISABLED__)  )
-#define  SL_WARN(log, message)
-#define OSL_WARN(log, message)
-#define  SL_WARN_IF(log, message, cond)
-#define OSL_WARN_IF(log, message, cond)
-#else
-#define  SL_WARN(log, message)           __SL_EXPR( SL_WARN_DISABLE { log.warn(message, __FILE__, __LINE__); } )
-#define OSL_WARN(log, message)           __SL_EXPR( SL_WARN_DISABLE { OSL_LOG(log, WARN, message); } )
-#define  SL_WARN_IF(log, message, cond)  __SL_EXPR( SL_WARN_DISABLE { SL_IF( cond, SL_WARN(log, message); ) } )
-#define OSL_WARN_IF(log, message, cond)  __SL_EXPR( SL_WARN_DISABLE { SL_IF( cond, OSL_WARN(log, message); ) } )
-#endif
-
-#if ( !defined(_DEBUG) && defined(__FWCORE_ERROR_DISABLED__)  )
-#define  SL_ERROR(log, message)
-#define OSL_ERROR(log, message)
-#define  SL_ERROR_IF(log, message, cond)
-#define OSL_ERROR_IF(log, message, cond)
-#else
-#define  SL_ERROR(log, message)          __SL_EXPR( SL_ERROR_DISABLE { log.error(message, __FILE__, __LINE__); } )
-#define OSL_ERROR(log, message)          __SL_EXPR( SL_ERROR_DISABLE { OSL_LOG(log, ERROR, message); } )
-#define  SL_ERROR_IF(log, message, cond) __SL_EXPR( SL_ERROR_DISABLE { SL_IF( cond, SL_ERROR(log, message); ) } )
-#define OSL_ERROR_IF(log, message, cond) __SL_EXPR( SL_ERROR_DISABLE { SL_IF( cond, OSL_ERROR(log, message); ) } )
-#endif
-
-#if ( !defined(_DEBUG) && defined(__FWCORE_FATAL_DISABLED__)  )
-#define  SL_FATAL(log, message)
-#define OSL_FATAL(log, message)
-#define  SL_FATAL_IF(log, message, cond)
-#define OSL_FATAL_IF(log, message, cond)
-#else
-#define  SL_FATAL(log, message)          __SL_EXPR( SL_FATAL_DISABLE { log.fatal(message, __FILE__, __LINE__); SPYLOG_ABORT(); } )
-#define OSL_FATAL(log, message)          __SL_EXPR( SL_FATAL_DISABLE { OSL_LOG(log, FATAL, message); } )
-#define  SL_FATAL_IF(log, message, cond) __SL_EXPR( SL_FATAL_DISABLE { SL_IF( cond, SL_FATAL(log, message); ) } )
-#define OSL_FATAL_IF(log, message, cond) __SL_EXPR( SL_FATAL_DISABLE { SL_IF( cond, OSL_FATAL(log, message); ) } )
-#endif
-
-
-#ifdef _DEBUG
-    #define SL_ASSERT(log, message, cond)                                   \
-    {                                                                       \
-        if( !(cond) )                                                       \
-        {                                                                   \
-            std::stringstream oslStr1;                                      \
-            oslStr1 << "Assertion '" << #cond << "' failed: " << message ;  \
-            log.fatal(oslStr1.str(), __FILE__, __LINE__);                   \
-            SPYLOG_ABORT();                                                 \
-        }                                                                   \
-    }
-
-    #define OSL_ASSERT(log, message, cond)       \
-    {                                            \
-        if( !(cond) )                            \
-        {                                        \
-            std::stringstream oslStr;            \
-            oslStr << message;                   \
-            SL_ASSERT(log, oslStr.str(), cond);  \
-        }                                        \
-    }
-#else
-    #define SL_ASSERT(log, message, cond)
-    #define OSL_ASSERT(log, message, cond)
-#endif // _DEBUG
-
-
-
-
-//==============================================================================
-
-#ifdef SPYLOG_TYPE
-    #define _SPYLOG_SPYLOGGER_ ::spyLog::SpyLoggerManager::getSpyLoggerManager()->getSpyLogger(PROJECT_NAME)
-#else
-    #define _SPYLOG_SPYLOGGER_ ::spyLog::SpyLoggerManager::getSpyLoggerManager()->getMainSpyLogger()
-#endif
+// -----------------------------------------------------------------------------
 
 /**
  * @endcond
@@ -279,68 +305,92 @@
 
 /** @{ */
 /** Trace message macros.  */
-#define SLM_TRACE(message)           SL_TRACE  (_SPYLOG_SPYLOGGER_, message)
+# define SLM_TRACE(message)                     \
+    SL_TRACE(_SPYLOG_SPYLOGGER_, message)
 /** Trace stringstream message macros.  */
-#define OSLM_TRACE(message)          OSL_TRACE (_SPYLOG_SPYLOGGER_, message)
+# define OSLM_TRACE(message)                    \
+    OSL_TRACE(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal trace message macros.  */
-#define SLM_TRACE_IF(message, cond)  SL_TRACE_IF  (_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_TRACE_IF(message, cond)                    \
+    SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** Conditionnal trace stringstream message macros.  */
-#define OSLM_TRACE_IF(message, cond) OSL_TRACE_IF (_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_TRACE_IF(message, cond)                   \
+    OSL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Debug message macros.  */
-#define SLM_DEBUG(message)           SL_DEBUG  (_SPYLOG_SPYLOGGER_, message)
+# define SLM_DEBUG(message)                     \
+    SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
 /** Debug stringstream message macros.  */
-#define OSLM_DEBUG(message)          OSL_DEBUG (_SPYLOG_SPYLOGGER_, message)
+# define OSLM_DEBUG(message)                    \
+    OSL_DEBUG(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal debug message macros.  */
-#define SLM_DEBUG_IF(message, cond)  SL_DEBUG_IF  (_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_DEBUG_IF(message, cond)                    \
+    SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** Conditionnal debug stringstream message macros.  */
-#define OSLM_DEBUG_IF(message, cond) OSL_DEBUG_IF (_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_DEBUG_IF(message, cond)                   \
+    OSL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Info message macros.  */
-#define SLM_INFO(message)            SL_INFO   (_SPYLOG_SPYLOGGER_, message)
+# define SLM_INFO(message)                      \
+    SL_INFO(_SPYLOG_SPYLOGGER_, message)
 /** Info stringstream message macros.  */
-#define OSLM_INFO(message)           OSL_INFO  (_SPYLOG_SPYLOGGER_, message)
+# define OSLM_INFO(message)                     \
+    OSL_INFO(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal info message macros.  */
-#define SLM_INFO_IF(message, cond)   SL_INFO_IF   (_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_INFO_IF(message, cond)                     \
+    SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** Conditionnal info stringstream message macros.  */
-#define OSLM_INFO_IF(message, cond)  OSL_INFO_IF  (_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_INFO_IF(message, cond)                    \
+    OSL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Warning message macros.  */
-#define SLM_WARN(message)            SL_WARN   (_SPYLOG_SPYLOGGER_, message)
+# define SLM_WARN(message)                      \
+    SL_WARN(_SPYLOG_SPYLOGGER_, message)
 /** Warning stringstream message macros.  */
-#define OSLM_WARN(message)           OSL_WARN  (_SPYLOG_SPYLOGGER_, message)
+# define OSLM_WARN(message)                     \
+    OSL_WARN(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal warning message macros.  */
-#define SLM_WARN_IF(message, cond)   SL_WARN_IF   (_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_WARN_IF(message, cond)                     \
+    SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** Conditionnal warning stringstream message macros.  */
-#define OSLM_WARN_IF(message, cond)  OSL_WARN_IF  (_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_WARN_IF(message, cond)                    \
+    OSL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Error message macros.  */
-#define SLM_ERROR(message)           SL_ERROR  (_SPYLOG_SPYLOGGER_, message)
+# define SLM_ERROR(message)                     \
+    SL_ERROR(_SPYLOG_SPYLOGGER_, message)
 /** Error stringstream message macros.  */
-#define OSLM_ERROR(message)          OSL_ERROR (_SPYLOG_SPYLOGGER_, message)
+# define OSLM_ERROR(message)                    \
+    OSL_ERROR(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal error message macros.  */
-#define SLM_ERROR_IF(message, cond)  SL_ERROR_IF  (_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_ERROR_IF(message, cond)                    \
+    SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** Conditionnal error stringstream message macros.  */
-#define OSLM_ERROR_IF(message, cond) OSL_ERROR_IF (_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_ERROR_IF(message, cond)                   \
+    OSL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /** @{ */
 /** Fatal message macros.  */
-#define SLM_FATAL(message)           SL_FATAL  (_SPYLOG_SPYLOGGER_, message)
+# define SLM_FATAL(message)                     \
+    SL_FATAL(_SPYLOG_SPYLOGGER_, message)
 /** Fatal stringstream message macros.  */
-#define OSLM_FATAL(message)          OSL_FATAL (_SPYLOG_SPYLOGGER_, message)
+# define OSLM_FATAL(message)                    \
+    OSL_FATAL(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal fatal message macros.  */
-#define SLM_FATAL_IF(message, cond)  SL_FATAL_IF  (_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_FATAL_IF(message, cond)                    \
+    SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** Conditionnal fatal stringstream message macros.  */
-#define OSLM_FATAL_IF(message, cond) OSL_FATAL_IF (_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_FATAL_IF(message, cond)                   \
+    OSL_FATAL_IF (_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
 /**
@@ -349,56 +399,37 @@
 
 /** @brief work like 'assert' from 'cassert', with in addition a message logged by
  * spylog (with FATAL loglevel)  */
-#define SLM_ASSERT(message, cond)  SL_ASSERT (_SPYLOG_SPYLOGGER_, message, cond)
-#define OSLM_ASSERT(message, cond) OSL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
+# define SLM_ASSERT(message, cond)                      \
+    SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
+# define OSLM_ASSERT(message, cond)                     \
+    OSL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
 
+// -----------------------------------------------------------------------------
 
-//==============================================================================
-
-#ifdef __GNUC__ // with GCC
-    #define SLM_PRETTY_FUNC() __PRETTY_FUNCTION__
-#elif defined(_MSC_VER) // with MSC
-    #define SLM_PRETTY_FUNC() __FUNCSIG__
-#else
-    #define SLM_PRETTY_FUNC() __func__
-#endif
+# ifdef __GNUC__                // with GCC
+#  define SLM_PRETTY_FUNC() __PRETTY_FUNCTION__
+# elif defined(_MSC_VER)        // with MSC
+#  define SLM_PRETTY_FUNC() __FUNCSIG__
+# else
+#  define SLM_PRETTY_FUNC() __func__
+# endif
 
 /**
  * @brief Trace contextual function signature.
  *
  * Generate a log trace message with the (contextual) function signature.
  */
-#ifndef SPYLOG_TIMER
+# ifndef SPYLOG_TIMER
+#  define SLM_TRACE_FUNC() SLM_TRACE(SLM_PRETTY_FUNC())
+# else
 
+# define SLM_TRACE_FUNC() __FWCORE_EXPR_BLOCK(                  \
+        ::spyLog::ScopedMessage __spylog__scoped__msg__(        \
+            __FILE__, __LINE__, SLM_PRETTY_FUNC());             \
+        __spylog__scoped__msg__.use();                          \
+        )
 
-
-//#ifdef __GNUC__ // with GCC
-    //#define SLM_TRACE_FUNC() SLM_TRACE(__PRETTY_FUNCTION__)
-//#elif defined(_MSC_VER) // with MSC
-    //#define SLM_TRACE_FUNC() SLM_TRACE(__FUNCSIG__)
-//#else
-    //#define SLM_TRACE_FUNC() SLM_TRACE(__func__)
-//#endif
-
-#define SLM_TRACE_FUNC() SLM_TRACE(SLM_PRETTY_FUNC())
-
-#else //SPYLOG_TIMER
-
-
-//#ifdef __GNUC__ // with GCC
-    //#define SLM_TRACE_FUNC() ScopedMessage __spylog__scoped__msg__(__FILE__,__LINE__, __PRETTY_FUNCTION__); __spylog__scoped__msg__.use();
-//#elif defined(_MSC_VER) // with MSC
-    //#define SLM_TRACE_FUNC() ScopedMessage __spylog__scoped__msg__(__FILE__,__LINE__, __FUNCSIG__); __spylog__scoped__msg__.use();
-//#else
-    //#define SLM_TRACE_FUNC() ScopedMessage __spylog__scoped__msg__(__FILE__,__LINE__, __func__); __spylog__scoped__msg__.use();
-//#endif
-
-
-#define SLM_TRACE_FUNC() ::spyLog::ScopedMessage __spylog__scoped__msg__(__FILE__,__LINE__, SLM_PRETTY_FUNC()); __spylog__scoped__msg__.use();
-
-
-
-#endif //SPYLOG_TIMER
+# endif
 /**  @} */
 
-#endif /* _FWCORE_SPYLOG_HPP_ */
+#endif  // _FWCORE_SPYLOG_HPP_
