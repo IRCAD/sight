@@ -98,4 +98,10 @@
         <object>::fwData::Composite</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::scene2D::adaptor::IAdaptor</type>
+        <service>::scene2D::adaptor::ViewportInteractor</service>
+        <object>::fwData::Composite</object>
+    </extension>
+    
 </plugin>
