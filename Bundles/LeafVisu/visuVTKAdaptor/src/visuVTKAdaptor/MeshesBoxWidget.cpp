@@ -221,7 +221,7 @@ void MeshesBoxWidget::updateFromVtk()
     {
         ::fwData::Mesh::sptr triangularMesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
-        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", triangularMesh->getField("TransformMatrix"))
+        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", triangularMesh->getField("TransformMatrix"));
         fieldTransform = triangularMesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
         vtkTransform * transform = vtkTransform::New();
@@ -296,7 +296,7 @@ void MeshesBoxWidget::updateMeshTransform()
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
 
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
-        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", mesh->getField("TransformMatrix"))
+        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", mesh->getField("TransformMatrix"));
         fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
         vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();

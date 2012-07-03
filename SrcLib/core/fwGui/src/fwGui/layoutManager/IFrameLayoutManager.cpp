@@ -105,7 +105,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
         }
         else
         {
-            OSLM_FATAL("Sorry, style "<<style<< " is unknown.")
+            OSLM_FATAL("Sorry, style "<<style<< " is unknown.");
         }
     }
     this->readConfig();

@@ -273,7 +273,7 @@ void AcquisitionSelectorPanelDataView::SelectItem( std::vector<int> select)
                 m_wxDataViewCtrl->Select( item );
                 updatePropGrid();
                 itemSelectionNotification();
-                OSLM_INFO("select: "<< select[0]<<" - " << select[1]<<" - "<< select[2]<<" ")
+                OSLM_INFO("select: "<< select[0]<<" - " << select[1]<<" - "<< select[2]<<" ");
             }
         }
     }

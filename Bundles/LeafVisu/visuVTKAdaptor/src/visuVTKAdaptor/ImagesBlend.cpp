@@ -121,7 +121,7 @@ void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
     }
     else if (imageMsg)
     {
-        SLM_ASSERT("msg subject is expired", !imageMsg->getSubject().expired() )
+        SLM_ASSERT("msg subject is expired", !imageMsg->getSubject().expired() );
         ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(imageMsg->getSubject().lock());
 
         if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )

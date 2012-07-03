@@ -500,7 +500,7 @@ void PatientEditorDialog::importPatientData()
 //  }
 //  else
 //  {
-//      OSLM_WARN("PatientEditorDialog::importStudyData : the Sex ( "<< wxStringToString(value) <<" ) is not reconized, and set it to default value.")
+//      OSLM_WARN("PatientEditorDialog::importStudyData : the Sex ( "<< wxStringToString(value) <<" ) is not reconized, and set it to default value.");
 //  }
 
     if (m_pPatient->getIsMale())
@@ -540,7 +540,9 @@ void PatientEditorDialog::importStudyData()
     }
     else
     {
-        OSLM_WARN("PatientEditorDialog::importStudyData : the Modality ( "<< wxStringToString(value) <<" ) is not reconized, and set it to default value.")
+        OSLM_WARN("PatientEditorDialog::importStudyData : the Modality ( "
+                  << wxStringToString(value) <<
+                  " ) is not recognized, and set it to default value.");
     }
 
 

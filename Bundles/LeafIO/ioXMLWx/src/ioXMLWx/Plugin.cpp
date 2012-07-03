@@ -100,7 +100,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     if (frame != NULL)
         frame->Connect( wxIDEventFwOpen, wxEventFwOpen, wxCommandEventHandler(wxEvtHandlerOpenFile::open) );
     else
-        SLM_FATAL ("Window not found !")
+        SLM_FATAL ("Window not found !");
 #endif
 
 }

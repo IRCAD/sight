@@ -274,7 +274,7 @@ void App::eventMac(const wxString & fileName)
     if (frame != NULL)
         frame->GetEventHandler()->ProcessEvent( tEvent );
     else
-        SLM_FATAL ("Window not found !")
+        SLM_FATAL ("Window not found !");
 }
 
 #endif

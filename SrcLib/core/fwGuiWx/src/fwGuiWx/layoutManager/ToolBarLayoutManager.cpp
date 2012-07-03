@@ -122,7 +122,7 @@ void ToolBarLayoutManager::destroyLayout()
 
 void ToolBarLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
-    SLM_FATAL("TODO : ToolBarLayoutManager::actionIsVisible not yet implemented.")
+    SLM_FATAL("TODO : ToolBarLayoutManager::actionIsVisible not yet implemented.");
 }
 
 //-----------------------------------------------------------------------------

@@ -70,7 +70,7 @@ void Code::starting() throw(::fwTools::Failed)
     }
     else
     {
-        OSLM_WARN("Language "<<m_language<<" not yet supported.")
+        OSLM_WARN("Language "<<m_language<<" not yet supported.");
     }
 
     container->setLayout( layout );

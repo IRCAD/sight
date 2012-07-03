@@ -40,7 +40,7 @@ void DicomImageWriterManager::write(::gdcm::DataSet & a_gDs, const ::boost::file
     ::fwData::Acquisition::sptr series = this->getConcreteObject();
     SLM_ASSERT("fwData::Acquisition not instanced", series);
 
-    SLM_ASSERT("gdcmIO::DicomInstance not set",this->getDicomInstance().get())
+    SLM_ASSERT("gdcmIO::DicomInstance not set",this->getDicomInstance().get());
 
     //*****     Handle image writer      *****//
 

@@ -379,7 +379,7 @@ vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr mesh )
     }
     else
     {
-        SLM_INFO("vtkPolyData build from empty mesh.")
+        SLM_INFO("vtkPolyData build from empty mesh.");
     }
 
     return polygonGrid;
