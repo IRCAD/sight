@@ -517,14 +517,19 @@ void Render::stopAdaptor(AdaptorIDType _adaptorID)
 {
     SLM_TRACE_FUNC();
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel.lock()->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel.lock() );
+    SceneAdaptor2D & info = m_adaptorID2SceneAdaptor2D[_adaptorID];
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->stop();
-    SLM_ASSERT("Service is not stopped", m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->isStopped());
-    ::fwServices::OSR::unregisterService(m_adaptorID2SceneAdaptor2D[_adaptorID].getService());
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_service.reset();
-    m_adaptorID2SceneAdaptor2D.erase(_adaptorID);
+    m_zValue2AdaptorID.erase( info.getService()->getZValue() );
+
+    info.m_comChannel.lock()->stop();
+    ::fwServices::registry::ObjectService::unregisterService( info.m_comChannel.lock() );
+    info.m_comChannel.reset();
+
+    info.getService()->stop();
+    SLM_ASSERT("Service is not stopped", info.getService()->isStopped());
+    ::fwServices::OSR::unregisterService(info.getService());
+    info.m_service.reset();
+
 }
 
 //-----------------------------------------------------------------------------
