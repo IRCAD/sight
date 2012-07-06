@@ -5,6 +5,7 @@
     <activate id="io" version="0-1" />
 
     <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
 
     <activate id="gui" version="0-1" />
@@ -15,7 +16,7 @@
         <param id="config" value="config04" />
     </activate>
 
-    <activate id="devForumQt" version="0-1" />
+    <activate id="devForum" version="0-1" />
 
     <start id="visuVTKQt" />
     <start id="appXml" />

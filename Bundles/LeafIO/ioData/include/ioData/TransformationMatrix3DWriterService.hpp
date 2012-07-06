@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_TRANSFORMATIODATANMATRIX3DWRITER_HPP_
-#define _IODATA_TRANSFORMATIODATANMATRIX3DWRITER_HPP_
+#ifndef _IODATA_TRANSFORMATIONMATRIX3DWRITER_HPP_
+#define _IODATA_TRANSFORMATIONMATRIX3DWRITER_HPP_
 
 #include <boost/filesystem/path.hpp>
 
@@ -40,15 +40,6 @@ public:
     /// Super class of writer services
     typedef ::io::IWriter   SuperClass;
 
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API TransformationMatrix3DWriterService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~TransformationMatrix3DWriterService() throw() ;
 
     /** @name Specified writer service methods ( override from ::io::IWriter )
      * @{
@@ -68,26 +59,24 @@ public:
     IODATA_API virtual std::vector< std::string > getSupportedExtensions() ;
     ///@}
 
+    /// Return path type managed by the service, here FILE
+    IODATA_API virtual ::io::IOPathType getIOPathType() const;
 
 protected:
+
+    /**
+     * @brief   Constructor : does nothing
+     */
+    IODATA_API TransformationMatrix3DWriterService() ;
+
+    /**
+     * @brief   Destructor
+     */
+    IODATA_API ~TransformationMatrix3DWriterService() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
      */
-
-    /**
-     * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
-     *
-     * XML configuration sample:
-     * @verbatim
-    <service type="::ioData::TransformationMatrix3DWriterService">
-        <filename>../matrix.trf</filename>
-    </service>
-     @endverbatim
-     *
-     * Configure transformation matrix filename.
-     */
-    IODATA_API virtual void configuring( ) throw(::fwTools::Failed) ;
 
     /**
      * @brief Starting method. This method is called by start() from base service ( ::fwServices::IService )
@@ -133,13 +122,8 @@ protected:
     IODATA_API virtual void info(std::ostream &_sstream ) ;
     /// @}
 
-
-private:
-
-    ::boost::filesystem::path m_filename;
-    bool m_bServiceIsConfigured;
 };
 
 } // namespace ioData
 
-#endif // _IODATA_TRANSFORMATIODATANMATRIX3DWRITER_HPP_
+#endif // _IODATA_TRANSFORMATIONMATRIX3DWRITER_HPP_

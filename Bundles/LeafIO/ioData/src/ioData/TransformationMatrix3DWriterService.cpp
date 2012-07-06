@@ -18,7 +18,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
 
@@ -37,9 +36,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioData::TransformationMatrix3DWriterService 
 
 //-----------------------------------------------------------------------------
 
-TransformationMatrix3DWriterService::TransformationMatrix3DWriterService() :
-    m_filename (""),
-    m_bServiceIsConfigured(false)
+TransformationMatrix3DWriterService::TransformationMatrix3DWriterService()
 {}
 
 //-----------------------------------------------------------------------------
@@ -71,18 +68,11 @@ void TransformationMatrix3DWriterService::starting( ) throw(::fwTools::Failed)
 TransformationMatrix3DWriterService::~TransformationMatrix3DWriterService() throw()
 {}
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::configuring( ) throw(::fwTools::Failed)
+::io::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
 {
-    OSLM_TRACE( "TransformationMatrix3DWriterService::configure : " << *m_configuration );
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-        boost::filesystem::path location = boost::filesystem::path( filename ) ;
-        m_filename = location;
-        m_bServiceIsConfigured = true;
-    }
+    return ::io::FILE;
 }
 
 //-----------------------------------------------------------------------------
@@ -102,10 +92,13 @@ void TransformationMatrix3DWriterService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_filename = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_filename.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 
 }
@@ -122,7 +115,7 @@ void TransformationMatrix3DWriterService::stopping() throw(::fwTools::Failed)
 void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if(m_bServiceIsConfigured)
+    if(this->hasLocationDefined())
     {
         // Retrieve object
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
@@ -130,7 +123,7 @@ void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
 
         ::fwDataIO::writer::TransformationMatrix3DWriter writer;
         writer.setObject( matrix );
-        writer.setFile(m_filename);
+        writer.setFile(this->getFile());
         writer.write();
 
         // Notify writing

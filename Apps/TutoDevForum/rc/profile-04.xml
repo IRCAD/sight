@@ -5,6 +5,7 @@
     <activate id="io" version="0-1" />
 
     <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKWx" version="0-1" />
 
     <activate id="gui" version="0-1" />
@@ -17,6 +18,7 @@
 
     <activate id="devForum" version="0-1" />
 
+    <start id="visuVTKWx" />
     <start id="appXml" />
     <start id="guiWx" />
 

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_MESHWRITER_HPP_
-#define _IODATA_MESHWRITER_HPP_
+#ifndef _IODATA_MESHWRITERSERVICE_HPP_
+#define _IODATA_MESHWRITERSERVICE_HPP_
 
 #include <io/IWriter.hpp>
 #include <boost/filesystem/path.hpp>
@@ -67,6 +67,9 @@ public:
     IODATA_API void configureWithIHM();
     /// @}
 
+    /// Return path type managed by the service, here FILE
+    IODATA_API virtual ::io::IOPathType getIOPathType() const;
+
 protected:
 
     /** @name Service methods ( override from ::fwServices::IService )
@@ -86,21 +89,6 @@ protected:
      * The stopping method is empty for this service.
      */
     IODATA_API virtual void stopping() throw(::fwTools::Failed){};
-
-
-    /**
-     * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
-     *
-     * XML configuration sample:
-     * @verbatim
-    <service implementation="::ioData::MeshWriterService" >
-        <filename>../mesh.trian</filename>
-    </service>
-     @endverbatim
-     *
-     * Configure mesh filename.
-     */
-    IODATA_API virtual void configuring( ) throw(::fwTools::Failed);
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -132,11 +120,8 @@ protected:
     IODATA_API virtual void info(std::ostream &_sstream ) ;
     /// @}
 
-private :
-    ::boost::filesystem::path m_filename;
-    bool m_bServiceIsConfigured;
 };
 
 }
 
-#endif /*_IODATA_MESHWRITER_HPP_*/
+#endif /*_IODATA_MESHWRITERSERVICE_HPP_*/

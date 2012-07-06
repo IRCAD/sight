@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_MESHREADER_HPP_
-#define _IODATA_MESHREADER_HPP_
+#ifndef _IODATA_MESHREADERSERVICE_HPP_
+#define _IODATA_MESHREADERSERVICE_HPP_
 
 #include <io/IReader.hpp>
 #include <boost/filesystem/path.hpp>
@@ -38,15 +38,6 @@ public:
      /// Super class of reader services
     typedef ::io::IReader   SuperClass;
 
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API MeshReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~MeshReaderService() throw() ;
 
     /** @name Specified reader service methods ( override from ::io::IReader )
      * @{
@@ -66,7 +57,21 @@ public:
     IODATA_API void configureWithIHM();
     /// @}
 
+    /// Return path type managed by the service, here FILE
+    IODATA_API virtual ::io::IOPathType getIOPathType() const;
+
 protected:
+
+    /**
+     * @brief   Constructor : does nothing
+     */
+    IODATA_API MeshReaderService() ;
+
+    /**
+     * @brief   Destructor
+     */
+    IODATA_API ~MeshReaderService() throw() ;
+
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -86,20 +91,6 @@ protected:
      */
     IODATA_API virtual void stopping() throw(::fwTools::Failed){};
 
-
-    /**
-     * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
-     *
-     * XML configuration sample:
-     * @verbatim
-    <service implementation="::ioData::MeshReaderService">
-        <filename>../mesh.trian</filename>
-    </service>
-     @endverbatim
-     *
-     * Configure mesh filename.
-     */
-    IODATA_API virtual void configuring( ) throw(::fwTools::Failed);
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -131,12 +122,8 @@ protected:
     IODATA_API virtual void info(std::ostream &_sstream ) ;
     /// @}
 
-private:
-
-    ::boost::filesystem::path m_fsMeshPath;
-    bool m_bServiceIsConfigured;
 };
 
 }
 
-#endif /*_IODATA_MESHREADER_HPP_*/
+#endif /*_IODATA_MESHREADERSERVICE_HPP_*/

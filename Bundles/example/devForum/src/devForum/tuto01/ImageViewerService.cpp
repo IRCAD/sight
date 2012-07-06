@@ -4,10 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// wxWidget
-#include <wx/panel.h>
-#include <wx/window.h>
-
 // vtk
 #include <vtkCellPicker.h>
 #include <vtkCommand.h>
@@ -20,8 +16,6 @@
 
 // Image object
 #include <fwData/Image.hpp>
-
-#include <fwGuiWx/container/WxContainer.hpp>
 
 // Services tools
 #include <fwServices/Base.hpp>
@@ -41,6 +35,7 @@ namespace tuto01
 
 // Declare a new service of type IRender for render Image
 REGISTER_SERVICE( ::fwRender::IRender , ::devForum::tuto01::ImageViewerService , ::fwData::Image ) ;
+
 
 //-----------------------------------------------------------------------------
 
@@ -69,29 +64,16 @@ void ImageViewerService::starting() throw ( ::fwTools::Failed )
     // This panel is used to know where the vtk render must be created
     this->create();
 
-//    this->initRender();
-
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
-
-    // Create a aui manager to manage layout of this container
-    m_wxmanager = new wxAuiManager( container );
-
-    // Create a VTK-compliant window and insert it in m_container
-    m_interactor = new ::wxVTKRenderWindowInteractor( container, -1 );
-    m_wxmanager->AddPane( m_interactor, wxAuiPaneInfo().CentrePane() );
+    m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+    m_interactorManager->installInteractor( this->getContainer() );
 
     // Renderer
     m_render = vtkRenderer::New();
-    m_interactor->GetRenderWindow()->AddRenderer( m_render );
-
-    // Repaint and resize window
-    m_wxmanager->Update();
+    m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(m_render);
 
     // Initialize image associated to this service if it is not allocated.
     ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
-    if ( associatedImage->getCRefSize().empty() || associatedImage->getCRefSize()[0] == 0 )
+    if ( associatedImage->getSize().empty() || associatedImage->getSize()[0] == 0 )
     {
         createSyntheticImage( associatedImage );
     }
@@ -99,48 +81,27 @@ void ImageViewerService::starting() throw ( ::fwTools::Failed )
     // Initialize vtk pipeline image render
     initVTKPipeline();
     alignNegatoOnImageCenter();
-    m_interactor->Render();
+    (m_interactorManager->getInteractor())->Render();
 }
 
 //-----------------------------------------------------------------------------
 
 void ImageViewerService::stopping() throw ( ::fwTools::Failed )
 {
-    assert( m_render );
-    assert( m_wxmanager );
-    assert( m_interactor );
-    ::fwGuiWx::container::WxContainer::sptr wxContainer =  ::fwGuiWx::container::WxContainer::dynamicCast( this->getContainer() );
-    wxWindow* const container = wxContainer->getWxContainer();
-    assert( container ) ;
+    if( m_render == 0 ) return;
 
-    // Delete plane widget
     m_negatoSagittal->Delete();
-    m_negatoSagittal = 0;
     m_negatoFrontal->Delete();
-    m_negatoFrontal = 0;
     m_negatoAxial->Delete();
-    m_negatoAxial = 0;
 
-    // Delete interactor
-    m_interactor->Delete();
-    m_interactor = 0;
-
-    // unitialize layout of the panel associated to this services
-    m_wxmanager->UnInit();
-    delete m_wxmanager;
-    m_wxmanager = 0;
-
-    // Destroy panel content
-    container->DestroyChildren() ;
-
-    // Detroy render
+    assert( m_render );
     m_render->Delete();
     m_render = 0;
 
-    // This method of IRender does nothing in our example.
-//    this->stopRender();
-    this->destroy();
+    m_interactorManager->uninstallInteractor();
+    m_interactorManager.reset();
 
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------
@@ -170,7 +131,7 @@ void ImageViewerService::initVTKPipeline()
 
     // Configures Image Plane widget
     m_negatoSagittal = vtkImagePlaneWidget::New();
-    m_negatoSagittal->SetInteractor( m_interactor );
+    m_negatoSagittal->SetInteractor(m_interactorManager->getInteractor() );
     m_negatoSagittal->SetKeyPressActivationValue('x');
     m_negatoSagittal->SetPicker(picker);
     m_negatoSagittal->GetPlaneProperty()->SetColor(1,0,0);
@@ -182,7 +143,7 @@ void ImageViewerService::initVTKPipeline()
     m_negatoSagittal->InteractionOn();
 
     m_negatoFrontal = vtkImagePlaneWidget::New();
-    m_negatoFrontal->SetInteractor( m_interactor);
+    m_negatoFrontal->SetInteractor( m_interactorManager->getInteractor());
     m_negatoFrontal->SetKeyPressActivationValue('y');
     m_negatoFrontal->SetPicker(picker);
     m_negatoFrontal->GetPlaneProperty()->SetColor(0,1,0);
@@ -195,7 +156,7 @@ void ImageViewerService::initVTKPipeline()
     m_negatoFrontal->On();
 
     m_negatoAxial = vtkImagePlaneWidget::New();
-    m_negatoAxial->SetInteractor( m_interactor);
+    m_negatoAxial->SetInteractor(m_interactorManager->getInteractor());
     m_negatoAxial->SetKeyPressActivationValue('z');
     m_negatoAxial->SetPicker(picker);
     m_negatoAxial->GetPlaneProperty()->SetColor(0,0,1);
@@ -217,8 +178,18 @@ void ImageViewerService::initVTKPipeline()
 
 void ImageViewerService::createSyntheticImage( ::fwData::Image::sptr _pImage )
 {
+    ::fwTools::Type pixelType("uint8");
+    _pImage->setType( pixelType );
+
+    _pImage->setSpacing( ::fwData::Image::SpacingType(3,1.0) );
+    _pImage->setOrigin( ::fwData::Image::OriginType(3,0) );
+    _pImage->setSize( ::fwData::Image::SizeType(3,100) );
+    _pImage->setWindowCenter(0);
+    _pImage->setWindowWidth(100);
+    _pImage->allocate();
+
     // Build the buffer of a synthetic image grey level which represents a sphere
-    unsigned char * buffer = new unsigned char[100*100*100];
+    unsigned char * buffer = static_cast< unsigned char* >(_pImage->getBuffer());
     for ( int z = 0; z < 100; z++ )
     {
         for ( int y = 0; y < 100; y++ )
@@ -230,20 +201,6 @@ void ImageViewerService::createSyntheticImage( ::fwData::Image::sptr _pImage )
             }
         }
     }
-
-    // Replace image by current buffer ( re initialization of image without modify image ptr )
-    ::fwTools::DynamicType pixelType;
-    pixelType.setType<unsigned char>();
-    _pImage->setDimension( 3 );
-    _pImage->setBuffer( buffer );
-    _pImage->setPixelType( pixelType );
-    _pImage->setManagesBuff( true );
-    _pImage->setCRefSpacing( std::vector<double>(3,1.0) );
-    _pImage->setCRefOrigin( std::vector<double>(3,0) );
-    _pImage->setCRefSize( std::vector< ::boost::int32_t >(3,100) );
-    _pImage->setWindowCenter(0);
-    _pImage->setWindowWidth(100);
-    _pImage->setRescaleIntercept(1);
 }
 
 //-----------------------------------------------------------------------------
