@@ -17,8 +17,8 @@
 <xsd:complexType name="HistogramXSDType">
     <xsd:sequence>
         <xsd:element name="BinsWidth"   type="xsd:integer"/>
-        <xsd:element name="MinValue"    type="xsd:float"/>
         <xsd:element name="MaxValue"    type="xsd:float"/>
+        <xsd:element name="MinValue"    type="xsd:float"/>
         <xsd:element name="Values"      type="IntegerContainerXSDType"/>
         <xsd:element name="Field"       type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>

@@ -114,9 +114,10 @@ template< class CLASS >
 typename DynamicAttributes< CLASS >::AttrNameVectorType  DynamicAttributes< CLASS >::getAttributeNames()
 {
     AttrNameVectorType names;
-    BOOST_FOREACH( typename DynamicAttributes::AttrMapType::value_type p , this->__FWTOOLS_ATTRIBUTE_MAP_NAME)
+    typename DynamicAttributes::AttrMapType::const_iterator iter;
+    for ( iter = this->__FWTOOLS_ATTRIBUTE_MAP_NAME.begin(); iter != this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end(); ++iter )
     {
-        names.push_back(p.first);
+        names.push_back((*iter).first);
     }
     return names;
 }
