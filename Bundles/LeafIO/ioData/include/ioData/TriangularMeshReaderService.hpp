@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_TRIANGULARMESHREADER_HPP_
-#define _IODATA_TRIANGULARMESHREADER_HPP_
+#ifndef _IODATA_TRIANGULARMESHREADERSERVICE_HPP_
+#define _IODATA_TRIANGULARMESHREADERSERVICE_HPP_
 
 #include <io/IReader.hpp>
 #include <boost/filesystem/path.hpp>
@@ -38,16 +38,6 @@ public:
      /// Super class of reader services
     typedef ::io::IReader   SuperClass;
 
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API TriangularMeshReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~TriangularMeshReaderService() throw() ;
-
     /** @name Specified reader service methods ( override from ::io::IReader )
      * @{
      */
@@ -58,7 +48,7 @@ public:
     IODATA_API virtual std::vector< std::string > getSupportedExtensions() ;
 
     /**
-     * @brief Configure the image path.
+     * @brief Configure the mesh path.
      *
      * This method is used to find
      * the file path  using a file selector.
@@ -66,7 +56,20 @@ public:
     IODATA_API void configureWithIHM();
     /// @}
 
+    /// Return path type managed by the service, here FILE
+    IODATA_API virtual ::io::IOPathType getIOPathType() const;
+
 protected:
+
+    /**
+     * @brief   Constructor : does nothing
+     */
+    IODATA_API TriangularMeshReaderService() ;
+
+    /**
+     * @brief   Destructor
+     */
+    IODATA_API ~TriangularMeshReaderService() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -77,29 +80,14 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    IODATA_API virtual void starting() throw(::fwTools::Failed){};
+    virtual void starting() throw(::fwTools::Failed){};
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    IODATA_API virtual void stopping() throw(::fwTools::Failed){};
-
-
-    /**
-     * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
-     *
-     * XML configuration sample:
-     * @verbatim
-    <service type="::ioData::TriangularMeshReaderService">
-        <filename>../matrix.trf</filename>
-    </service>
-     @endverbatim
-     *
-     * Configure mesh filename.
-     */
-    IODATA_API virtual void configuring( ) throw(::fwTools::Failed);
+    virtual void stopping() throw(::fwTools::Failed){};
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -117,7 +105,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IODATA_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
 
 
     /**
@@ -131,12 +119,8 @@ protected:
     IODATA_API virtual void info(std::ostream &_sstream ) ;
     /// @}
 
-private:
-
-    ::boost::filesystem::path m_fsMeshPath;
-    bool m_bServiceIsConfigured;
 };
 
 }
 
-#endif /*_IODATA_TRIANGULARMESHREADER_HPP_*/
+#endif /*_IODATA_TRIANGULARMESHREADERSERVICE_HPP_*/

@@ -28,7 +28,7 @@ ReconstructionTraitsXMLTranslator::~ReconstructionTraitsXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ReconstructionTraitsXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ReconstructionTraitsXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::ReconstructionTraits::sptr roi = ::fwData::ReconstructionTraits::dynamicCast(obj);
     SLM_ASSERT("ReconstructionTraits not instanced", roi);
@@ -59,7 +59,7 @@ xmlNodePtr ReconstructionTraitsXMLTranslator::getXMLFrom( ::fwTools::Object::spt
 
 //------------------------------------------------------------------------------
 
-void ReconstructionTraitsXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ReconstructionTraitsXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate);
 
@@ -78,8 +78,8 @@ void ReconstructionTraitsXMLTranslator::updateDataFromXML( ::fwTools::Object::sp
             }
             else if ( nodeName == "Composite" )
             {
-                ::fwTools::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( elementNode, true );
+                ::fwData::Object::sptr valueObj;
+                valueObj = Serializer().ObjectsFromXml( elementNode );
                 SLM_ASSERT("valueObj not instanced", valueObj);
                 ::fwData::Composite::sptr compo = ::fwData::Composite::dynamicCast(valueObj);
                 SLM_ASSERT("composite not instanced", compo);

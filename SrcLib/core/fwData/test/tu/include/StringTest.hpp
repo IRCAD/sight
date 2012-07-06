@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_TU_STRINGTEST_H
-#define DATA_TU_STRINGTEST_H
+#ifndef __FWDATA_UT_STRINGTEST_HPP__
+#define __FWDATA_UT_STRINGTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwData
+{
+namespace ut
+{
 
 class StringTest : public CPPUNIT_NS::TestFixture
 {
@@ -21,8 +26,10 @@ public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
 };
 
-#endif // DATA_TU_STRINGTEST_H
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_STRINGTEST_HPP__

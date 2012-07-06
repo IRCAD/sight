@@ -6,7 +6,7 @@
 
 #include "fwXML/XML/XMLHierarchy.hpp"
 
-::boost::shared_ptr< fwXML::XMLHierarchy > fwXML::XMLHierarchy::m_ClassInstance = ::boost::shared_ptr< ::fwXML::XMLHierarchy >();
+::boost::shared_ptr< ::fwXML::XMLHierarchy > fwXML::XMLHierarchy::m_ClassInstance = ::boost::shared_ptr< ::fwXML::XMLHierarchy >();
 
 namespace fwXML
 {

@@ -9,7 +9,7 @@
 
 #include "fwData/Node.hpp"
 #include "fwData/StructureTraits.hpp"
-#include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -31,7 +31,7 @@ namespace fwData
 class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwTools::Factory::New< ROITraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::Factory::New< ROITraits >) ;
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
 
@@ -74,8 +74,6 @@ private:
 
     /// roi evaluated expression
     StructureTraits::ROIExpression m_evaluatedExp;
-
-
 };
 
 } // namespace fwData

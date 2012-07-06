@@ -47,7 +47,5 @@ void serialize(Archive & ar, ::fwData::PatientDB & _patientDB, const unsigned in
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::PatientDB);
-
 #endif // _FWXML_BOOSTSERIALIZER_PATIENTDB_HPP_
 

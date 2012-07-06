@@ -5,4 +5,5 @@ CLASSTEST=[
 
 USE = ['boost','libxml2']
 LIB = ['fwCore_0-1','fwRuntime_0-3']
+REQUIREMENTS = ['dataReg_0-1', 'servicesReg_0-1']
 CONSOLE='yes'

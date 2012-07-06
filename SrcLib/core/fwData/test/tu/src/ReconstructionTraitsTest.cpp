@@ -11,7 +11,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ReconstructionTraitsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ReconstructionTraitsTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void ReconstructionTraitsTest::setUp()
 {
@@ -46,3 +51,6 @@ void ReconstructionTraitsTest::creation()
     CPPUNIT_ASSERT(opMaskNode == recTraits->getMaskOpNode() );
     CPPUNIT_ASSERT(opMeskNode == recTraits->getMeshOpNode() );
 }
+
+} //namespace ut
+} //namespace fwData

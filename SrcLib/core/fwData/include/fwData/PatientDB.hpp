@@ -14,6 +14,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Patient.hpp"
 
 namespace fwData
@@ -30,7 +31,7 @@ class FWDATA_CLASS_API PatientDB : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwTools::Factory::New< PatientDB >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwData::Factory::New< PatientDB >) ;
 
     fwDataObjectMacro();
 
@@ -40,30 +41,22 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( PatientDB::csptr _source );
 
-    // Patients ----------------------------------------------------------------
-    /// Field identifier for patients
-    FWDATA_API static const Object::FieldID ID_PATIENTS;
+    typedef std::vector< ::fwData::Patient::sptr > PatientContainerType;
 
-    typedef ContainerCaster< Patient >::iterator        PatientIterator;
-    typedef ContainerCaster< Patient >::const_iterator  PatientConstIterator;
+    /**
+     * @brief Get/Set patients
+     */
+    fwDataGetSetCRefMacro(Patients, PatientContainerType);
 
     /**
      * @brief Get the number of patients
      */
-    FWDATA_API ::boost::uint32_t  getPatientSize() const;
+    FWDATA_API PatientContainerType::size_type getNumberOfPatients() const;
 
     /**
      * @brief add patient
      */
     FWDATA_API void addPatient( ::fwData::Patient::sptr _patient );
-
-    /**@{
-     * @brief Get iterator on the first and the last patient. Use it to browse all patients.
-     * @return std::pair( patient.begin(), patient.end() )
-     */
-    FWDATA_API std::pair< PatientIterator, PatientIterator > getPatients();
-    FWDATA_API std::pair< PatientConstIterator, PatientConstIterator > getPatients() const;
-    //@]
 
 protected:
     /// Constructor
@@ -71,6 +64,8 @@ protected:
 
     /// Destructor
     FWDATA_API virtual ~PatientDB ();
+
+    PatientContainerType m_attrPatients;
 };
 
 }//end namespace fwData

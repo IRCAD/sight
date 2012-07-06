@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWRUNTIME_TU_ECONFIGURATIONELEMENTTEST_H
-#define FWRUNTIME_TU_ECONFIGURATIONELEMENTTEST_H
+#ifndef __FWRUNTIME_UT_ECONFIGURATIONELEMENTTEST_HPP_
+#define __FWRUNTIME_UT_ECONFIGURATIONELEMENTTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwRuntime
+{
+namespace ut
+{
 
 /**
  * @brief   Test the creation of EConfigurationElement
@@ -24,8 +29,11 @@ public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void testConfiguration();
 };
 
-#endif
+} // namespace ut
+} // namespace fwTools
+
+#endif //__FWRUNTIME_UT_ECONFIGURATIONELEMENTTEST_HPP_

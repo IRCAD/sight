@@ -4,16 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Object.hpp"
 #include "fwData/GenericField.hpp"
 #include "fwData/Boolean.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Boolean,::fwData::Boolean );
+fwDataRegisterMacro( ::fwData::Boolean );
+
 namespace fwData
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -29,16 +29,16 @@ Boolean::~Boolean() throw()
 //------------------------------------------------------------------------------
 void Boolean::shallowCopy( Boolean::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_value = _source->m_value;
+    this->fieldShallowCopy( _source );
+    m_value = _source->m_value;
 }
 
 //------------------------------------------------------------------------------
 
 void Boolean::deepCopy( Boolean::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    this->m_value = _source->m_value;
+    this->fieldDeepCopy( _source );
+    m_value = _source->m_value;
 }
 
 } // namespace fwData

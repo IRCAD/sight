@@ -35,10 +35,9 @@ public :
     FWGUI_API void actionServiceStopping();
 
     /// Method called when the action service is starting
-
     FWGUI_API void actionServiceStarting();
 
-    /// Set the action service is activated/inactivated.
+    /// Set the action service is active/inactive.
     FWGUI_API virtual void setIsActive(bool isActive);
 
     /// Return action service is active.
@@ -84,16 +83,13 @@ protected :
            </service>
        @endverbatim
      * - <state active="false" executable="false" /> : fix the state of the action in the menu and Toolbar.
-     *
-     * \b executable not mandatory (Default value true ) : allows to enable/disable the execution of the action.
-     * If the action appears in the interface it will be enable/disable.
-     *
-     * \b active not mandatory (Default value false ):
-     *  If the action appears in the interface it will be check/uncheck.
-     *
-     *  - <confirmation value="yes" message="..." /> : configure if the action must be confirm by user before to exeute it
-     *  \b value : if true the action will show a confirmation message before to be executed
-     *  \b message not mandatory : if not empty the message is shown in dialog box.
+     *   - \b executable not mandatory (Default value true ) : allows to enable/disable the execution of the action.
+     *     If the action appears in the interface it will be enable/disable.
+     *   - \b active not mandatory (Default value false ):
+     *     If the action appears in the interface it will be check/uncheck.
+     * - <confirmation value="yes" message="..." /> : configure if the action must be confirm by user before to execute it.
+     *   - \b value : if true the action will show a confirmation message before to be executed.
+     *   - \b message not mandatory : if not empty the message is shown in dialog box.
      */
     FWGUI_API void initialize();
 

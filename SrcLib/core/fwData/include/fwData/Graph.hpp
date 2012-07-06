@@ -12,6 +12,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Edge.hpp"
 #include "fwData/Node.hpp"
 
@@ -31,7 +32,7 @@ namespace fwData {
 class FWDATA_CLASS_API Graph : public ::fwData::Object {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwTools::Factory::New< Graph >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwData::Factory::New< Graph >) ;
 
     fwDataObjectMacro();
 
@@ -171,12 +172,12 @@ public:
     /**
      * @return Number of nodes
      */
-    FWDATA_API unsigned int getNbNodes() const;
+    FWDATA_API size_t getNbNodes() const;
 
     /**
      * @return Number of edges
      */
-    FWDATA_API unsigned int getNbEdges() const;
+    FWDATA_API size_t getNbEdges() const;
 
     FWDATA_API void shallowCopy( Graph::csptr _source );
 

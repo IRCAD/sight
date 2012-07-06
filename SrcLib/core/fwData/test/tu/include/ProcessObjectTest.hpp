@@ -4,23 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_PROCESSOBJECTTEST_H
-#define DATA_PROCESSOBJECTTEST_H
+#ifndef __FWDATA_UT_PROCESSOBJECTTEST_HPP__
+#define __FWDATA_UT_PROCESSOBJECTTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class ProcessObjectTest : public CPPUNIT_NS::TestFixture {
+namespace fwData
+{
+namespace ut
+{
+
+class ProcessObjectTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( ProcessObjectTest );
     CPPUNIT_TEST( constructeur );
     CPPUNIT_TEST_SUITE_END();
-protected:
 
 public:
     // interface
     void setUp(){};
     void tearDown(){};
 
-    // fonctions de tests
     void constructeur();
 };
-#endif // DATA_PROCESSOBJECTTEST_H
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_PROCESSOBJECTTEST_HPP__

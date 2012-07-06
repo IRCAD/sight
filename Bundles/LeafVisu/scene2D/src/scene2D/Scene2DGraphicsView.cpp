@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/Composite.hpp>
 
 #include "scene2D/data/Size.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
@@ -22,12 +23,12 @@ Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget)
     {
         this->setMouseTracking( true );
     }
-    
+
     /* Change the method usedn by the scene to index its items:
-     * 'NoIndex' is better than the default method 'BspTreeIndex' (Binary Space Partioning) 
+     * 'NoIndex' is better than the default method 'BspTreeIndex' (Binary Space Partioning)
      * which consists in dividing the scene into multiple parts and store them into a tree.
      * With 'NoIndex', searching an item is faster, especially for scenes with a lot of items
-     * (Histogram for instance) and for scenes which manage moves (ViewportRangeSelector and 
+     * (Histogram for instance) and for scenes which manage moves (ViewportRangeSelector and
      * ViewportUpdater for instance).
      */
     scene->setItemIndexMethod( QGraphicsScene::NoIndex );
@@ -36,11 +37,11 @@ Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget)
     this->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     this->setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
-    this->setOptimizationFlags( QGraphicsView::DontSavePainterState          // 
+    this->setOptimizationFlags( QGraphicsView::DontSavePainterState          //
                               | QGraphicsView::DontAdjustForAntialiasing );  // Prevent from rendering artifacts
     this->setCacheMode( QGraphicsView::CacheBackground );   // Activates background cache
     this->setAttribute( Qt::WA_TranslucentBackground, false );
-    this->setFrameStyle( 0 ); 
+    this->setFrameStyle( 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +86,7 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent *_event)
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::Resize);
     sceneEvent->setButton( ::scene2D::data::Event::NoButton);
-    sceneEvent->setModifier( ::scene2D::data::Event::NoModifier); 
+    sceneEvent->setModifier( ::scene2D::data::Event::NoModifier);
     sceneEvent->setSize( ::scene2D::data::Size( _event->size().width(), _event->size().height() ) );
     sceneEvent->setOldSize( ::scene2D::data::Size( _event->oldSize().width(), _event->oldSize().height() ) );
 
@@ -98,11 +99,11 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
 
-    OSLM_TRACE("Press in x = " <<  _event->pos().x() << " y = " << _event->pos().y() );
+    OSLM_TRACE("Press in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
 
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonPress );
-    sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
+    sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -121,7 +122,7 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
     }
     else if(_event->modifiers() == Qt::AltModifier)
     {
-        modifier = ::scene2D::data::Event::AltModifier; 
+        modifier = ::scene2D::data::Event::AltModifier;
     }
     else if(_event->modifiers() == Qt::ShiftModifier)
     {
@@ -172,11 +173,11 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
 
-    OSLM_TRACE("DoubleClick in x = " <<  _event->pos().x() << " y = " << _event->pos().y() );
+    OSLM_TRACE("DoubleClick in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
 
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonDoubleClick );
-    sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
+    sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -188,10 +189,10 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
 void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
-    OSLM_TRACE("Release in x = " <<  _event->pos().x() << " y = " << _event->pos().y() );
+    OSLM_TRACE("Release in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonRelease );
-    sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
+    sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -204,10 +205,10 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
 
-    OSLM_TRACE("Move in x = " <<  _event->pos().x() << " y = " << _event->pos().y() );
+    OSLM_TRACE("Move in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( ::scene2D::data::Event::MouseMove );
-    sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
+    sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 

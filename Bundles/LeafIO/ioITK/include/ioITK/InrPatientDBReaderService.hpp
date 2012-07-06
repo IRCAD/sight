@@ -47,9 +47,6 @@ protected:
     IOITK_API virtual ~InrPatientDBReaderService() throw();
 
     /// Override
-    IOITK_API virtual void configuring() throw(::fwTools::Failed) ;
-
-    /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);
 
     /// Override
@@ -59,7 +56,7 @@ protected:
     IOITK_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOITK_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
+    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOITK_API void info(std::ostream &_sstream ) ;
@@ -73,16 +70,15 @@ protected:
     /// Override
     IOITK_API virtual std::string getSelectorDialogTitle();
 
+    /// Return managed file type, here FOLDER and FILES
+    IOITK_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void notificationOfDBUpdate();
 
     ::fwData::PatientDB::sptr createPatientDB();
 
-    bool m_bServiceIsConfigured;
-
-    std::vector< ::boost::filesystem::path> m_files;
-    ::boost::filesystem::path m_folder;
     bool m_isRecursive;
 };
 

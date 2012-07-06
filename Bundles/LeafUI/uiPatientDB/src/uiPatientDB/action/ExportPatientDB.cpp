@@ -78,7 +78,7 @@ void ExportPatientDB::updating( ) throw(::fwTools::Failed)
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
     SLM_ASSERT("pPatientDB not instanced", pPatientDB);
 
-    if ( pPatientDB->getPatientSize() > 0 )
+    if ( pPatientDB->getNumberOfPatients() > 0 )
     {
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Patient anonymisation");
@@ -94,26 +94,24 @@ void ExportPatientDB::updating( ) throw(::fwTools::Failed)
         ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( m_ioSelectorSrvConfig , "::uiIO::editor::IOSelectorService" ) ;
         SLM_ASSERT("Sorry, there is not service configuration " << m_ioSelectorSrvConfig << " for ::uiIO::editor::IOSelectorService", ioCfg ) ;
 
+        ::gui::editor::IDialogEditor::sptr pIOSelectorSrv;
         if ( answer == ::fwGui::dialog::IMessageDialog::YES )
         {
             ::fwData::PatientDB::sptr pAnonymisedPatient = ::fwComEd::fieldHelper::AnonymiseImage::createAnonymisedPatientDB(pPatientDB);
 
             // Init and execute the service
-            ::gui::editor::IDialogEditor::sptr pIOSelectorSrv =
-                    ::fwServices::add< ::gui::editor::IDialogEditor >( pAnonymisedPatient, "::uiIO::editor::IOSelectorService", "IOSelectorServiceWriter" );
+            pIOSelectorSrv = ::fwServices::add< ::gui::editor::IDialogEditor >( pAnonymisedPatient, "::uiIO::editor::IOSelectorService", "IOSelectorServiceWriter" );
             pIOSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) ) ;
             pIOSelectorSrv->configure() ;
             pIOSelectorSrv->start();
             pIOSelectorSrv->update();
             pIOSelectorSrv->stop();
             ::fwServices::OSR::unregisterService( pIOSelectorSrv );
-
         }
         else if ( answer == ::fwGui::dialog::IMessageDialog::NO )
         {
             // Init and execute the service
-            ::gui::editor::IDialogEditor::sptr pIOSelectorSrv =
-                    ::fwServices::add< ::gui::editor::IDialogEditor >( pPatientDB, "::uiIO::editor::IOSelectorService", "IOSelectorServiceWriter" );
+            pIOSelectorSrv = ::fwServices::add< ::gui::editor::IDialogEditor >( pPatientDB, "::uiIO::editor::IOSelectorService", "IOSelectorServiceWriter" );
             pIOSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) ) ;
             pIOSelectorSrv->configure() ;
             pIOSelectorSrv->start();

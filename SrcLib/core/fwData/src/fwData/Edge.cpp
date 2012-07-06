@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Edge.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Edge, ::fwData::Edge );
+fwDataRegisterMacro( ::fwData::Edge );
 namespace fwData {
 std::string Edge::NATURE_FLOW = "flow";
 std::string Edge::NATURE_DATA = "data";
@@ -82,20 +82,20 @@ const std::string &Edge::getNature() const
 void Edge::shallowCopy( Edge::csptr _source )
 {
 
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_fromPortIdentifier = _source->m_fromPortIdentifier;
-    this->m_toPortIdentifier = _source->m_toPortIdentifier;
-    this->m_nature = _source->m_nature;
+    this->fieldShallowCopy( _source );
+    m_fromPortIdentifier = _source->m_fromPortIdentifier;
+    m_toPortIdentifier = _source->m_toPortIdentifier;
+    m_nature = _source->m_nature;
 }
 
 //------------------------------------------------------------------------------
 
 void Edge::deepCopy( Edge::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    this->m_fromPortIdentifier = _source->m_fromPortIdentifier;
-    this->m_toPortIdentifier = _source->m_toPortIdentifier;
-    this->m_nature = _source->m_nature;
+    this->fieldDeepCopy( _source );
+    m_fromPortIdentifier = _source->m_fromPortIdentifier;
+    m_toPortIdentifier = _source->m_toPortIdentifier;
+    m_nature = _source->m_nature;
 
 }
 

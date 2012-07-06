@@ -17,5 +17,5 @@
         <service>::uiPatientDB::PatientDBInfoEditor</service>
         <object>::fwData::PatientDB</object>
     </extension>
-        
+            
 </plugin>

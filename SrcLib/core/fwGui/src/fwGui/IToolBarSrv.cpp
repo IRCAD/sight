@@ -71,6 +71,7 @@ void IToolBarSrv::create()
 
     m_registrar->manage(m_layoutManager->getMenuItems());
     m_registrar->manage(m_layoutManager->getMenus());
+    m_registrar->manage(m_layoutManager->getContainers());
 }
 
 //-----------------------------------------------------------------------------

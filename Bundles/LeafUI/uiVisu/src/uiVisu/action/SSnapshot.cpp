@@ -27,7 +27,7 @@ namespace uiVisu
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiVisu::action::SSnapshot , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiVisu::action::SSnapshot , ::fwData::Object ) ;
 
 
 SSnapshot::SSnapshot() throw()
@@ -99,8 +99,8 @@ void SSnapshot::updating() throw(::fwTools::Failed)
         filename->value() = this->requestFileName();
         if(!filename->value().empty())
         {
-            dataInfo->setFieldSingleElement("sceneID", sceneID);
-            dataInfo->setFieldSingleElement("filename", filename);
+            dataInfo->setField("sceneID", sceneID);
+            dataInfo->setField("filename", filename);
             ::fwComEd::CompositeMsg::NewSptr compositeMsg;
             compositeMsg->addEvent( "SNAP", dataInfo );
             ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);

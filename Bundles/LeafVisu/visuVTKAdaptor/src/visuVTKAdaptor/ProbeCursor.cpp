@@ -10,11 +10,12 @@
 
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -62,8 +63,9 @@ public:
     static ProbingCallback *New()
     { return new ProbingCallback(); }
 
-    ProbingCallback() : m_mouseMoveObserved(false),
-                        m_priority(-1)
+    ProbingCallback()
+        : m_priority(-1),
+          m_mouseMoveObserved(false)
     {
         m_picker = NULL;
         this->PassiveObserverOff();
@@ -239,10 +241,10 @@ void ProbeCursor::buildTextActor()
 
 void ProbeCursor::doStart() throw(fwTools::Failed)
 {
-    buildTextActor();
+    this->buildTextActor();
     this->addToRenderer(m_textActor );
 
-    buildPolyData();
+    this->buildPolyData();
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1,0,0);
@@ -257,7 +259,6 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
     observer->setPicker(this->getPicker());
     observer->setPriority(  m_priority );
 
-
     m_vtkObserver = observer;
 
     this->getInteractor()->AddObserver(START_PROBE_EVENT, m_vtkObserver, m_priority);
@@ -265,8 +266,7 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
-
-
+    this->setVisibility(false);
 }
 
 //------------------------------------------------------------------------------
@@ -279,7 +279,6 @@ void ProbeCursor::doUpdate() throw(fwTools::Failed)
 
 void ProbeCursor::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
 }
@@ -290,7 +289,6 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
-//  delete m_vtkObserver;
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }
@@ -299,12 +297,11 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
 
 void ProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
         this->updateImageInfos(image);
+        this->setVisibility(false);
     }
 
     if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
@@ -331,8 +328,7 @@ void ProbeCursor::updateView( double world[3] )
 
     std::string txt;
 
-    static const double epsilon = -0.00001;
-    if ( world[0]<epsilon  || world[1]<epsilon  || world[2]<epsilon  ||
+    if ( world[0] < image->getOrigin()[0] || world[1] < image->getOrigin()[1] || world[2] < image->getOrigin()[2]  ||
          index[0]< 0 || index[1]< 0 || index[2]< 0 ||
          index[0]>= image->getSize()[0] ||
          index[1]>= image->getSize()[1] ||
@@ -344,7 +340,9 @@ void ProbeCursor::updateView( double world[3] )
     }
     else
     {
-        std::string greyLevel = ::fwData::getPixelAsString(image, index[0], index[1], index[2] );
+        ::fwComEd::helper::Image imageHelper(image);
+
+        std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
         txt = (::boost::format("(% 4li,% 4li, % 4li) : %s ") % index[0] % index[1] % index[2] % greyLevel ).str();
 
         m_textMapper->SetInput(txt.c_str());
@@ -382,10 +380,9 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
     {
         if ( probeSlice[dim]==sliceIndex[dim] ) // FIXME if (sliceIndex==probeWorld)
         {
-            //setOrientation( (dim==2?2:(dim+1)%2) ); // KEEP Z but swap X,Y
             this->setOrientation(dim);
         }
-        probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim];
+        probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
     }
 
     for ( int p=0; p<2; ++p )
@@ -396,10 +393,10 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
             worldCross[p+2][dim] = probeWorld[dim];
             if ( (dim + p + 1)%3 == m_orientation )
             {
-                worldCross[p][dim] = 0;
-                ::boost::int32_t size = image->getSize().at(dim)-1;
-                double spacing = image->getSpacing().at(dim);
-                worldCross[p+2][dim] =  size * spacing;
+                worldCross[p][dim] = image->getOrigin().at(dim);
+                ::fwData::Image::SizeType::value_type size = image->getSize().at(dim)-1;
+                ::fwData::Image::SpacingType::value_type spacing = image->getSpacing().at(dim);
+                worldCross[p+2][dim] =  size * spacing + image->getOrigin().at(dim);
             }
         }
     }

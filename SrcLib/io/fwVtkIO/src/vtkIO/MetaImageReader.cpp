@@ -61,7 +61,7 @@ void MetaImageReader::read()
     }
     catch( std::exception &e)
     {
-        FW_RAISE("MetaImage to fwData::Image failed "<<e.what());
+        FW_RAISE("MetaImage to fwData::Image failed : "<<e.what());
     }
 }
 

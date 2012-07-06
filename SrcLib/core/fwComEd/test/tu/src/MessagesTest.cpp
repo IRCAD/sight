@@ -19,7 +19,12 @@
 #include "MessagesTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MessagesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwComEd::ut::MessagesTest );
+
+namespace fwComEd
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -52,7 +57,7 @@ void MessagesTest::testFloatMsg()
 void MessagesTest::testImageMsg()
 {
     const std::string MYMODIF1 = ::fwComEd::ImageMsg::BUFFER;
-    const std::string MYMODIF2 = ::fwComEd::ImageMsg::WINDOWING;
+    const std::string MYMODIF2 = ::fwComEd::ImageMsg::SLICE_INDEX;
 
     ::fwData::Integer::sptr intField = ::fwData::Integer::New(23);
     ::fwData::Image::NewSptr image;
@@ -97,3 +102,6 @@ void MessagesTest::testPatientDBMsg()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwComEd

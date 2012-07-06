@@ -2,11 +2,10 @@
     <library name="vtkSimpleMesh" />
 
 
-<!--    REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::TriangularMesh) ;  -->
 <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
         <service>::vtkSimpleMesh::RendererService</service>
-        <object>::fwData::TriangularMesh</object>
+        <object>::fwData::Mesh</object>
     </extension>
 
     

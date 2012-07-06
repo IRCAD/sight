@@ -19,10 +19,9 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwComEd/PatientDBMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 
 #include "uiMeasurement/action/ShowLandmark.hpp"
@@ -63,18 +62,18 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (    image->getBuffer()==NULL ||
-            ! image->getFieldSize( ::fwComEd::Dictionary::m_imageLandmarksId ))
+    if (   !::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) ||
+            ! image->getField( ::fwComEd::Dictionary::m_imageLandmarksId ))
     {
         this->::fwGui::IActionSrv::setIsActive(false);
         return;
     }
 
-    bool isShown
-        = (!image->getFieldSize("ShowLandmarks")) ? true : image->getFieldSingleElement< ::fwData::Boolean > ("ShowLandmarks")->value();
+    ::fwData::Boolean::sptr showLandmarks = image->getField< ::fwData::Boolean >("ShowLandmarks", ::fwData::Boolean::New(true));
+    bool isShown = showLandmarks->value();
 
     bool toShow = !isShown;
-    image->setFieldSingleElement("ShowLandmarks",  ::fwData::Boolean::NewSptr(toShow));
+    image->setField("ShowLandmarks",  ::fwData::Boolean::NewSptr(toShow));
 
     std::vector< ::fwServices::IService::sptr > services = ::fwServices::OSR::getServices < ::fwServices::IService > (image);
 
@@ -92,9 +91,10 @@ void ShowLandmark::swapping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::csptr img = this->getObject< ::fwData::Image >();
-    bool showLandmarks = (img->getFieldSize("ShowLandmarks")==0 ) ? true : img->getFieldSingleElement< ::fwData::Boolean > ("ShowLandmarks")->value();
+    ::fwData::Boolean::sptr showLandmarks = img->getField< ::fwData::Boolean >("ShowLandmarks", ::fwData::Boolean::New(true));
+
     // set check correctly
-    this->::fwGui::IActionSrv::setIsActive(!showLandmarks);
+    this->::fwGui::IActionSrv::setIsActive( !(showLandmarks->value()) );
 }
 
 //------------------------------------------------------------------------------

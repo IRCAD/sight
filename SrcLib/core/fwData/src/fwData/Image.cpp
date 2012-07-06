@@ -10,111 +10,37 @@
 #include <sstream>
 
 #include <fwCore/base.hpp>
-#include <boost/lexical_cast.hpp>
 
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/assign/list_of.hpp>
+
+#include <climits>
+#include <fwTools/DynamicType.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
+#include "fwData/registry/macros.hpp"
 
-#include "fwData/StandardBuffer.hpp"
+
+#include "fwData/registry/macros.hpp"
+
 #include "fwData/Image.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Image, ::fwData::Image );
+//------------------------------------------------------------------------------
+
+fwDataRegisterMacro( ::fwData::Image );
+
+//------------------------------------------------------------------------------
+
 namespace fwData
 {
 
 //------------------------------------------------------------------------------
 
-::boost::int32_t  imageSizeInBytes( const ::fwData::Image &image )
-{
-    SLM_TRACE_FUNC();
-    SLM_ASSERT("Image size must be specified", !image.getCRefSize().empty() );
-    SLM_ASSERT("Image must have a valid PixelType", image.getPixelType() != ::fwTools::DynamicType() );
-
-    ::boost::int32_t  size = std::accumulate( image.getCRefSize().begin() ,  image.getCRefSize().end(), 1, std::multiplies< ::boost::int32_t > () );
-    size  *= image.getPixelType().sizeOf();
-    return size;
- }
-
-//------------------------------------------------------------------------------
-
-/**
- * @brief return the pixel value of the image in given coordinates
- */
-template < class T >
-T getPixel( ::fwData::Image::csptr image, unsigned int x, unsigned int y, unsigned int z )
-{
-    std::vector<boost::int32_t> size = image->getSize();
-    int offset = x + size[0]*y + z*size[0]*size[1];
-
-    T * buffer = static_cast < T* > (image->getBuffer());
-
-    return *(buffer+offset);
-}
-
-//------------------------------------------------------------------------------
-
-/**
- * @class StringGetter
- * @brief This class is use to convert a pixel value of an image in a string value
- */
-class StringGetter
-{
-
-public:
-
-    /**
-     * @class Parameter
-     * @brief This class defines the parameter use to get a pixel in an image
-     */
-    class Parameter
-    {
-    public:
-        Parameter(::fwData::Image::csptr _image, unsigned int _x, unsigned int _y, unsigned int _z)
-        : image(_image), x(_x), y(_y), z(_z) {};
-
-        ::fwData::Image::csptr image;
-        unsigned int x;
-        unsigned int y;
-        unsigned int z;
-        std::string output;
-    };
-
-    template < class T >
-    void operator()(Parameter &param)
-    {
-
-        T value = getPixel< T >(param.image, param.x, param.y, param.z);
-        param.output = ::boost::lexical_cast < std::string , double> (value);
-    }
-};
-
-//------------------------------------------------------------------------------
-
-std::string  getPixelAsString( ::fwData::Image::csptr image, unsigned int x, unsigned int y, unsigned int z )
-{
-    StringGetter::Parameter param(image, x,y,z);
-
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, StringGetter>::invoke(image->getPixelType(), param);
-    return param.output;
-}
-
-//------------------------------------------------------------------------------
-
 Image::Image() :
-        m_ui8Dimension(3),
-        m_dtPixelType(),
-        m_vSpacing(m_ui8Dimension,1),
-        m_vOrigin(m_ui8Dimension,0),
-        m_vSize(m_ui8Dimension,0),
-        m_fsFilename(""),
-        m_dWindowCenter(0),
-        m_dWindowWidth(0),
-        m_dRescaleIntercept(0),
-        m_bufferDelegate( StandardBuffer::New() )
+        m_type(),
+        m_attrWindowCenter(0),
+        m_attrWindowWidth(0),
+        m_dataArray( ::fwData::Array::New() )
 {}
 
 //------------------------------------------------------------------------------
@@ -128,175 +54,223 @@ Image::~Image() throw()
 
 void Image::shallowCopy( Image::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
 
     // Assign
-    getInformation(_source );
+    copyInformation(_source );
 
-    this->m_bufferDelegate  = _source->m_bufferDelegate;
+    m_dataArray  = _source->m_dataArray;
 }
 
 //-----------------------------------------------------------------------------
 
 void Image::deepCopy( Image::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
 
     // Assign
-    getInformation(_source );
+    copyInformation(_source );
 
-    if(this->getPixelType() != ::fwTools::DynamicType() && _source->getBufferDelegate() )
+    if( _source->m_dataArray )
     {
-        char * src = static_cast<char *>( _source->getBuffer() );
-        SLM_ASSERT("Image source has not buffer", src);
-        ::boost::int32_t size = imageSizeInBytes( *_source );
-        char * dest = new char[size];
-        ::std::copy( src, src + size , dest );
-        this->setBuffer( dest );
-    }
-    else
-    {
-        this->setBuffer( NULL );
+        m_dataArray->deepCopy( _source->m_dataArray );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void * Image::getBuffer() const
+::fwData::Array::sptr Image::getDataArray() const
 {
-    return m_bufferDelegate->getBuffer();
+    return m_dataArray;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setBuffer(void *_buffer)
+void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 {
-    m_bufferDelegate->setBuffer(_buffer);
+    if( ! array )
+    {
+        array = ::fwData::Array::New();
+    }
+    m_dataArray = array;
+    if (copyArrayInfo)
+    {
+        m_size = array->getSize();
+        m_type = array->getType();
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setManagesBuff( const bool _bManagesBuff )
+
+size_t Image::allocate() throw(::fwData::Exception)
 {
-    this->m_bufferDelegate->setManagesBuff( _bManagesBuff ) ;
+    if (!m_dataArray)
+    {
+        m_dataArray = ::fwData::Array::New();
+    }
+
+    return m_dataArray->resize(m_type, m_size, 1, true);
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setCRefManagesBuff( const bool & _bManagesBuff )
+size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z, const ::fwTools::Type &type) throw(::fwData::Exception)
 {
-    this->m_bufferDelegate->setCRefManagesBuff( _bManagesBuff ) ;
+    m_size = boost::assign::list_of(x)(y)(z);
+    m_type = type;
+    return allocate();
 }
 
 //------------------------------------------------------------------------------
 
-const bool Image::getManagesBuff() const
+size_t Image::allocate(const SizeType &size, const ::fwTools::Type &type) throw(::fwData::Exception)
 {
-    return this->m_bufferDelegate->getManagesBuff() ;
+    m_size = size;
+    m_type = type;
+    return allocate();
 }
 
 //------------------------------------------------------------------------------
 
-const bool & Image::getCRefManagesBuff() const
+::fwTools::DynamicType Image::getPixelType() const
 {
-    return this->m_bufferDelegate->getCRefManagesBuff() ;
+    typedef std::map<std::string, ::fwTools::DynamicType> DynamicTypeMapType;
+
+    static DynamicTypeMapType dynamicTypeMap = ::boost::assign::map_list_of
+        (::fwTools::Type().string() , ::fwTools::DynamicType() )
+        ("uint8" , ::fwTools::makeDynamicType<std::string>("unsigned char")  )
+        ("uint16", ::fwTools::makeDynamicType<std::string>("unsigned short") )
+        ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned int")   )
+        ("int8" ,  ::fwTools::makeDynamicType<std::string>("signed char")    )
+        ("int16",  ::fwTools::makeDynamicType<std::string>("signed short")   )
+        ("int32",  ::fwTools::makeDynamicType<std::string>("signed int")     )
+        ("float",  ::fwTools::makeDynamicType<std::string>("float")          )
+        ("double", ::fwTools::makeDynamicType<std::string>("double")         )
+
+//special case for dynamic type : 64bits integers was not managed by dynamic type.
+#if ( INT_MAX < LONG_MAX )
+        ("uint64", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
+        ("int64",  ::fwTools::makeDynamicType<std::string>("signed long")    )
+#else
+        ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
+        ("int32",  ::fwTools::makeDynamicType<std::string>("signed long")    )
+        ("uint64", ::fwTools::DynamicType() )
+        ("int64",  ::fwTools::DynamicType() )
+#endif
+        ;
+
+    ::fwTools::DynamicType dtype = dynamicTypeMap[getType().string()] ;
+    return dtype;
 }
 
 //------------------------------------------------------------------------------
 
-bool & Image::getRefManagesBuff()
+::fwTools::Type Image::getType() const
 {
-    return this->m_bufferDelegate->getRefManagesBuff() ;
+    return m_type;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::getInformation( Image::csptr _source )
+void Image::setType(::fwTools::Type type)
 {
-    this->m_ui8Dimension        = _source->m_ui8Dimension;
-    this->m_dtPixelType         = _source->m_dtPixelType;
-    this->m_vSpacing            = _source->m_vSpacing;
-    this->m_vOrigin             = _source->m_vOrigin;
-    this->m_vSize               = _source->m_vSize;
-    this->m_fsFilename          = _source->m_fsFilename;
-    this->m_dWindowCenter       = _source->m_dWindowCenter;
-    this->m_dWindowWidth        = _source->m_dWindowWidth;
-    this->m_dRescaleIntercept   = _source->m_dRescaleIntercept;
+    m_type = type;
+}
+
+
+//------------------------------------------------------------------------------
+
+void Image::setType(const std::string &type)
+{
+    m_type = ::fwTools::Type(type);
 }
 
 //------------------------------------------------------------------------------
 
-void* Image::getPixelBuffer( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z )
+void Image::copyInformation( Image::csptr _source )
 {
-    std::vector<boost::int32_t> size = this->getSize();
-    int offset = x + size[0]*y + z*size[0]*size[1];
-    return getPixelBuffer(offset);
+    m_size                = _source->m_size;
+    m_type                = _source->m_type;
+    m_spacing             = _source->m_spacing;
+    m_origin             = _source->m_origin;
+    m_attrWindowCenter       = _source->m_attrWindowCenter;
+    m_attrWindowWidth        = _source->m_attrWindowWidth;
 }
 
 //------------------------------------------------------------------------------
 
-void* Image::getPixelBuffer( VoxelIndexType index )
+size_t Image::getNumberOfDimensions() const
 {
-    unsigned char imagePixelSize = this->getPixelType().sizeOf();
-    BufferType * buf = static_cast < BufferType * > (this->getBuffer());
-    BufferIndexType bufIndex = index * imagePixelSize;
-    return buf + bufIndex;
+    return m_size.size();
+}
+
+
+//------------------------------------------------------------------------------
+
+const Image::SpacingType & Image::getSpacing() const
+{
+    return m_spacing;
+}
+
+
+//------------------------------------------------------------------------------
+
+void Image::setSpacing(const SpacingType &spacing)
+{
+    m_spacing = spacing;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< Image::BufferType > Image::getPixelBufferCopy( ::boost::int32_t x, ::boost::int32_t y, ::boost::int32_t z )
+const Image::OriginType & Image::getOrigin() const
 {
-    std::vector<boost::int32_t> size = this->getSize();
-    int offset = x + size[0]*y + z*size[0]*size[1];
-    return getPixelBufferCopy(offset);
+    return m_origin;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< Image::BufferType > Image::getPixelBufferCopy( VoxelIndexType index )
+void Image::setOrigin(const OriginType &origin)
 {
-    unsigned char imagePixelSize = this->getPixelType().sizeOf();
-    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
-    ::boost::shared_ptr< BufferType > res(new BufferType[imagePixelSize]);
-    std::copy(buf, buf+imagePixelSize, res.get());
-    return res;
+    m_origin = origin;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setPixelBuffer( VoxelIndexType index , Image::BufferType * pixBuf)
+const Image::SizeType & Image::getSize() const
 {
-    unsigned char imagePixelSize = this->getPixelType().sizeOf();
-    BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));
-
-    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
+    return m_size;
 }
 
 //------------------------------------------------------------------------------
 
-Image::BufferType* Image::getPixelBuffer( Image::BufferType *buffer, const ::boost::int32_t offset, const unsigned char imagePixelSize )
+void Image::setSize(const SizeType &size)
 {
-    BufferIndexType bufIndex = offset * imagePixelSize;
-    return buffer + bufIndex;
+    m_size = size;
 }
 
 //------------------------------------------------------------------------------
 
-SPTR( Image::BufferType ) Image::getPixelBufferCopy( Image::BufferType *buffer, const ::boost::int32_t offset, const unsigned char imagePixelSize )
+size_t Image::getSizeInBytes() const
 {
-    Image::BufferType* buf = getPixelBuffer(buffer, offset, imagePixelSize);
-    SPTR( Image::BufferType ) res(new BufferType[imagePixelSize]);
-    std::copy(buf, buf+imagePixelSize, res.get());
-    return res;
+    SLM_TRACE_FUNC();
+
+    size_t size = std::accumulate( m_size.begin(), m_size.end(), static_cast<size_t>(m_type.sizeOf()), std::multiplies< size_t > () );
+    return size;
 }
+
 
 //------------------------------------------------------------------------------
 
-void Image::setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, const ::boost::int32_t offset, const unsigned char imagePixelSize )
+size_t Image::getAllocatedSizeInBytes() const
 {
-    BufferType * buf = static_cast < BufferType * > (getPixelBuffer(destBuffer, offset, imagePixelSize));
-    std::copy(pixBuf, pixBuf+imagePixelSize, buf);
+    SLM_TRACE_FUNC();
+    size_t size = 0;
+    if (m_dataArray)
+    {
+        size = m_dataArray->getSizeInBytes();
+    }
+    return size;
 }
 
 //------------------------------------------------------------------------------

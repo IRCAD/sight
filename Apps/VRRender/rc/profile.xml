@@ -34,6 +34,8 @@
     <activate id="ioITK" version="0-1" />
     <activate id="ioVTK" version="0-1" />
     <activate id="ioVtkGdcm" version="0-1" />
+    <activate id="ioGdcm" version="0-1" />
+    <activate id="ioGdcmQt" version="0-1" />
     <activate id="ioXML" version="0-1" >
         <param id="defaultImageWriter" value="::itkIO::ImageWriter" />
     </activate>

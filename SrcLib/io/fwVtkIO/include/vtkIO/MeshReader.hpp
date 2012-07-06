@@ -9,12 +9,11 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <vtkActor.h>
-
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwTools/ProgressAdviser.hpp>
-#include <fwData/TriangularMesh.hpp>
+
+#include <fwData/Mesh.hpp>
 
 #include "vtkIO/config.hpp"
 
@@ -25,19 +24,19 @@ namespace vtkIO
  * @brief   Read a mesh.
  * @class   MeshReader.
  * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @date    2011.
  *
  * Read a VTK Mesh using the VTK lib
  */
 
-class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >,
+class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
                              public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
                              public ::fwTools::ProgressAdviser
 {
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::TriangularMesh >),
+    fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >),
                                            (()),
                                            new MeshReader
                                           );
@@ -46,7 +45,7 @@ public :
     //! @brief Reading operator.
     VTKIO_API void read();
 
-    /// @return ".trian"
+    /// @return ".vtk"
     VTKIO_API  std::string extension();
 
 protected:

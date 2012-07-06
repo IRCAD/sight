@@ -16,7 +16,7 @@ namespace gui
 {
 namespace action
 {
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::NothingActionSrv , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::NothingActionSrv , ::fwData::Object ) ;
 
 
 NothingActionSrv::NothingActionSrv() throw()

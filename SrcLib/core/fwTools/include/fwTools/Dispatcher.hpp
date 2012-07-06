@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DISPATCHER_HPP_
-#define DISPATCHER_HPP_
+#ifndef __FWTOOLS_DISPATCHER_HPP__
+#define __FWTOOLS_DISPATCHER_HPP__
 
 #include <stdexcept>
 #include <boost/mpl/if.hpp>
@@ -13,10 +13,14 @@
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/pop_front.hpp>
 
+#include <fwCore/macros.hpp>
+
 #include "fwTools/TypeMapping.hpp"
+#include "fwTools/Stringizer.hpp"
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 
 /**
@@ -36,21 +40,25 @@ namespace fwTools {
     template< class KeyType>
     static void  invoke(const KeyType &keytype)
     {
-        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+        std::string msg = ::fwTools::getString(keytype) + " : KeyType value incorrect : no corresponding Type in typelist";
+        throw std::invalid_argument(msg);
     }
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
     template< class KeyType,class Parameter>
     static void  invoke( const KeyType &keytype,const Parameter &param )
     {
-        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+        FwCoreNotUsedMacro(param);
+        std::string msg = ::fwTools::getString(keytype) + " : KeyType value incorrect : no corresponding Type in typelist";
+        throw std::invalid_argument(msg);
     }
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
     template< class BaseClass, class KeyType>
     static BaseClass  *instanciate(const KeyType &keytype)
     {
-        throw std::invalid_argument("KeyType value incorrect : no corresponding Type in typelist");
+        std::string msg = ::fwTools::getString(keytype) + " : KeyType value incorrect : no corresponding Type in typelist";
+        throw std::invalid_argument(msg);
         return NULL;
     }
 
@@ -178,6 +186,6 @@ struct Dispatcher
 };
 
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
-#endif /*DISPATCHER_HPP_*/
+#endif /*__FWTOOLS_DISPATCHER_HPP__*/

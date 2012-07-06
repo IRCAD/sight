@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifdef __MACOSX__
+
 #include <assert.h>
 #include <iomanip>
 #include <iostream>
@@ -15,10 +17,8 @@
 
 #include <fwCore/base.hpp>
 
-#include "fwMemory/MemoryMonitor.hpp"
 #include "fwMemory/tools/DarwinMemoryMonitorTools.hpp"
 
-#ifdef __MACOSX__
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -128,9 +128,10 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
             KERN_SUCCESS == host_statistics(mach_port, HOST_VM_INFO,
                 (host_info_t)&vm_stats, &count))
     {
-        uint64_t used_memory = ((int64_t)vm_stats.active_count +
-                (int64_t)vm_stats.inactive_count +
-                (int64_t)vm_stats.wire_count) *  (int64_t)page_size;
+        uint64_t used_memory = (
+                (int64_t)vm_stats.active_count +
+                (int64_t)vm_stats.wire_count
+                ) *  (int64_t)page_size;
 
         return used_memory;
     }
@@ -153,7 +154,10 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
             KERN_SUCCESS == host_statistics(mach_port, HOST_VM_INFO,
                 (host_info_t)&vm_stats, &count))
     {
-        uint64_t freeMemory = (int64_t)vm_stats.free_count * (int64_t)page_size;
+        uint64_t freeMemory = (
+                (int64_t)vm_stats.free_count +
+                (int64_t)vm_stats.inactive_count
+                ) * (int64_t)page_size;
         return freeMemory;
     }
     SLM_ASSERT("Failed to retrieve free system memory information", 0);

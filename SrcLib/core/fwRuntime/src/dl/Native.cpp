@@ -43,7 +43,7 @@ Native::~Native() throw()
 const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const throw(RuntimeException)
 {
     // Pre-condition
-    assert( m_bundle != 0 );
+    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
 
     ::boost::filesystem::path result = m_bundle->getLocation() / getPath();
 
@@ -76,7 +76,7 @@ const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) c
 const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
 {
     // Pre-condition
-    assert( m_bundle != 0 );
+    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
 
     ::boost::filesystem::path result;
 
@@ -153,10 +153,10 @@ const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
 void Native::setBundle( const Bundle * bundle ) throw()
 {
     // Pre-condition
-    assert( m_bundle == 0 );
+    SLM_ASSERT("bundle already initialized", m_bundle == 0 );
     m_bundle = bundle;
     // Post-condition
-    assert( m_bundle == bundle );
+    SLM_ASSERT("bundle not correctly attached", m_bundle == bundle );
 }
 
 //------------------------------------------------------------------------------

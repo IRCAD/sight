@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Model.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Model, ::fwData::Model );
+fwDataRegisterMacro( ::fwData::Model );
 namespace fwData
 {
 Model::Model()
@@ -39,19 +39,19 @@ const Model::Container &Model::getCRefMap() const
 
 void Model::shallowCopy( Model::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
 
-    this->m_map.clear();
-    this->m_map = _source->m_map;
+    m_map.clear();
+    m_map = _source->m_map;
 }
 
 //------------------------------------------------------------------------------
 
 void Model::deepCopy( Model::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
 
-    this->m_map.clear();
+    m_map.clear();
     for(    Model::Container::const_iterator iter = _source->getCRefMap().begin();
             iter != _source->getCRefMap().end();
             ++iter )
@@ -61,7 +61,7 @@ void Model::deepCopy( Model::csptr _source )
 
         newTrian->deepCopy( iter->first );
         newMaterial->deepCopy( iter->second );
-        this->m_map[newTrian] = newMaterial;
+        m_map[newTrian] = newMaterial;
     }
 }
 

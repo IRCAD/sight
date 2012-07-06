@@ -8,8 +8,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwXML/ImageFileFormatService.hpp>
-
 #include "ioXML/Plugin.hpp"
 
 namespace ioXML
@@ -24,8 +22,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     if ( this->getBundle()->hasParameter("defaultImageWriter") )
     {
-        std::string libwriter(  this->getBundle()->getParameterValue("defaultImageWriter") ) ;
-        ::fwXML::ImageFileFormatService::setPreferedWriter( libwriter );
+        SLM_WARN("defaultImageWriter option is deprecated");
     }
 }
 

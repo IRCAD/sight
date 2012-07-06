@@ -9,15 +9,16 @@
 
 #include <vector>
 
+#include <boost/logic/tribool.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/TriangularMesh.hpp"
+#include "fwData/Factory.hpp"
+#include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
 #include "fwData/Image.hpp"
-
 
 namespace fwData
 {
@@ -27,14 +28,15 @@ namespace fwData
  *
  * A reconstruction is represented by a triangular mesh, a material and an image.
  *
- * @see ::fwData::Image, ::fwData::TriangularMesh, ::fwData::Material
+ * @see ::fwData::Image, ::fwData::Mesh, ::fwData::Material
  */
 
 class FWDATA_CLASS_API Reconstruction : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwTools::Factory::New< Reconstruction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwData::Factory::New< Reconstruction >) ;
 
+    fwCoreAllowSharedFromThis()
     fwDataObjectMacro();
 
     /// Defines shallow copy
@@ -43,43 +45,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Reconstruction::csptr _source );
 
-    // Image -------------------------------------------------------------------
-    /// @name Image accessor
-    /// Field identifier for image
-    static const Object::FieldID ID_IMAGE;
-
-    /**
-     * @brief Set the image associated with the mesh
-     */
-    FWDATA_API void setImage( ::fwData::Image::sptr _pImage );
-
-    /**
-     * @{
-     * @brief Get the image associated with the acquisition
-     */
-    FWDATA_API ::fwData::Image::csptr getImage() const;
-    FWDATA_API ::fwData::Image::sptr getImage();
-    //@}
-
-    // Mesh -------------------------------------------------------------------
-    /// @name Mesh accessor
-    /// Field identifier for mesh
-    static const Object::FieldID ID_MESH;
-    //@{
-    /// Get/Set triangular mesh
-    FWDATA_API void setTriangularMesh( ::fwData::TriangularMesh::sptr _pTriangularMesh );
-    FWDATA_API ::fwData::TriangularMesh::csptr getTriangularMesh() const;
-    FWDATA_API ::fwData::TriangularMesh::sptr getTriangularMesh();
-    //@}
-
-    // Material -------------------------------------------------------------------
-    /// @name Material accessor
-    //@{
-    /// Get/Set material
-    FWDATA_API void setMaterial( ::fwData::Material::sptr _pMaterial );
-    FWDATA_API ::fwData::Material::csptr getMaterial() const;
-    FWDATA_API ::fwData::Material::sptr getMaterial();
-    //@}
 
     // Generator result---------------------------------------------------------
     fwGettersSettersDocMacro(IsVisible, bIsVisible, bool, the visibility of the reconstruction (true if visible));
@@ -89,8 +54,6 @@ public:
     fwGettersSettersDocMacro(OrganName, sOrganName, std::string, organ name);
 
     fwGettersSettersDocMacro(StructureType, sStructureType, std::string, structure type);
-
-    fwGettersSettersDocMacro(IsClosed, bIsClosed, bool, if the reconstruction is closed);
 
     fwGettersSettersDocMacro(IsAutomatic, bIsAutomatic, bool, if the reconstruction is build automatically);
 
@@ -116,6 +79,27 @@ public:
 
     fwGettersSettersDocMacro(DbID, i32DbID, ::boost::int32_t, the database indentifier);
 
+    //! Get/Set if the reconstruction is closed
+    FWDATA_API ::boost::logic::tribool& getRefIsClosed();
+    FWDATA_API const ::boost::logic::tribool& getCRefIsClosed() const;
+    FWDATA_API void setIsClosed(::boost::logic::tribool isClosed);
+
+
+    /**
+     * @brief Get/Set the image associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Image, ::fwData::Image::sptr);
+
+    /**
+     * @brief Get/Set the mesh associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Mesh, ::fwData::Mesh::sptr);
+
+    /**
+     * @brief Get/Set the material associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Material, ::fwData::Material::sptr);
+
 protected :
 
     /// Constructor
@@ -126,8 +110,6 @@ protected :
     //! true if this reconstruction is visible
     bool m_bIsVisible;
 
-    //! Material of reconstruction
-    ::fwData::Material::sptr m_pMaterial;
 
     //! Reconstruction format. eg : TRIAN, TRIAN_GPG
     std::string m_sReconstructionFormat;
@@ -139,7 +121,7 @@ protected :
     std::string m_sStructureType;
 
     //! true if the reconstruction is closed
-    bool m_bIsClosed;
+    ::boost::logic::tribool m_bIsClosed;
 
     //! true if the reconstruction is build automatically
     bool m_bIsAutomatic;
@@ -171,6 +153,7 @@ protected :
     //! The 3D model type
     std::string m_sType3D;
 
+
     //--------------------------------------------------------------------------
 
     /**
@@ -181,10 +164,17 @@ protected :
     //! Reconstruction path
     ::boost::filesystem::path m_fsPath;
 
-    //! Database indentifier
+    //! Database identifier
     ::boost::int32_t  m_i32DbID;
 
     //@}
+
+
+    //! Material of reconstruction
+    ::fwData::Material::sptr m_attrMaterial;
+
+    ::fwData::Image::sptr m_attrImage;
+    ::fwData::Mesh::sptr m_attrMesh;
 
 };
 

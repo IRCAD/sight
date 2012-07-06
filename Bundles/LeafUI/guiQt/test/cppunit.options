@@ -1,0 +1,26 @@
+CLASSTEST=[
+          'GuiQtTest',
+          ]
+
+USE = ['qtCore']
+LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1','fwDataTools_0-1','fwGuiQt_0-1', 'fwTest_0-1']
+
+BUNDLES = []
+
+REQUIREMENTS = [
+                'dataReg_0-1',
+                'servicesReg_0-1',
+                'gui_0-1',
+                'guiQt_0-1',
+                'io_0-1',
+                'ioVTK_0-1',
+                'visu_0-1',
+                'visuVTKQt_0-1',
+                'vtkSimpleNegato_0-1',
+                'Tuto01Basic_0-1',
+                'Tuto02DataServiceBasic_0-1',
+                ] 
+
+CONSOLE = 'yes'
+
+LOGLEVEL='trace'

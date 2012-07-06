@@ -7,7 +7,9 @@
 #ifndef _FWDATA_HISTOGRAM_HPP_
 #define _FWDATA_HISTOGRAM_HPP_
 
-#include <fwData/Object.hpp>
+#include "fwData/Factory.hpp"
+#include "fwData/Object.hpp"
+
 #include "fwData/config.hpp"
 
 #include <boost/shared_ptr.hpp>
@@ -29,7 +31,7 @@ class FWDATA_CLASS_API Histogram : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Histogram)(::fwData::Object), (()), ::fwTools::Factory::New< Histogram > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Histogram)(::fwData::Object), (()), ::fwData::Factory::New< Histogram > );
 
     typedef std::vector< long > fwHistogramValues;
 

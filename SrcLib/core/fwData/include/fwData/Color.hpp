@@ -11,6 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -30,7 +31,7 @@ public :
     typedef ::boost::array<ColorType,4> ColorArray;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object),
-       ((::fwTools::Factory::New< Color > ,() ))
+       ((::fwData::Factory::New< Color > ,() ))
        ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
        );
 

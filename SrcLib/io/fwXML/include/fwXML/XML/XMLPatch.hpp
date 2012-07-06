@@ -27,7 +27,8 @@ class FWXML_CLASS_API XMLPatch
 {
 public:
 
-    FWXML_API static void PatchNoVersionToNewData( xmlNodePtr node );
+    FWXML_API static void PatchNoVersionToVersion1( xmlNodePtr node );
+    FWXML_API static void PatchVersion1ToVersion2( xmlNodePtr node );
 
 };
 

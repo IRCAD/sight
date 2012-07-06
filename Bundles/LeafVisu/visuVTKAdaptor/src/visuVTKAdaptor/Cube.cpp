@@ -16,7 +16,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Cube, ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Cube, ::fwData::Object ) ;
 
 namespace visuVTKAdaptor
 {

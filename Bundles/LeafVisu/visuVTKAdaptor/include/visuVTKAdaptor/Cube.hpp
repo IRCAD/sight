@@ -23,10 +23,10 @@ protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed){};
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed){};
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed){};
+    void doSwap() throw(fwTools::Failed){};
+    void doUpdate() throw(fwTools::Failed){};
+    void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
+    void configuring() throw(fwTools::Failed){};
  
 
 };

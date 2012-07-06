@@ -31,15 +31,10 @@ public:
 
     VISUVTKADAPTOR_API virtual ~NegatoOneSlice() throw();
 
-    VISUVTKADAPTOR_API void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
-    VISUVTKADAPTOR_API void setInterpolation(bool interpolation){m_interpolation = interpolation;};
-    VISUVTKADAPTOR_API void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
-    VISUVTKADAPTOR_API void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
-    VISUVTKADAPTOR_API void setUseImageTF(bool use)             {m_useImageTF = use;};
-
-    /// Set the identifier of the field containing the specific selection of TransfertFunction
-    /// if m_tfSelection is empty => use default TF selection
-    VISUVTKADAPTOR_API void setTFSelection(std::string tfSelection){m_tfSelection = tfSelection;};
+    void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
+    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
+    void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
 
 protected :
 
@@ -57,11 +52,6 @@ protected :
 
     bool m_allowAlphaInTF;
     bool m_interpolation;
-    bool m_useImageTF;
-
-    /// Identifier of the field containing the specific selection of TransfertFunction
-    /// if m_tfSelection is empty => use default TF selection
-    std::string m_tfSelection;
 
     vtkObject* getImageSource();
     void cleanImageSource();

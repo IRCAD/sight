@@ -34,8 +34,8 @@ public :
 
 
     /// To set a representation
-    FWRENDERVTK_API virtual void show(bool b = true) {};
-    FWRENDERVTK_API virtual void hide() {this->show(false);};
+    virtual void show(bool b = true) {};
+    virtual void hide() {this->show(false);};
 
 
     FWRENDERVTK_API void setRenderService( VtkRenderService::sptr service );
@@ -58,7 +58,7 @@ public :
     FWRENDERVTK_API vtkRenderWindowInteractor* getInteractor();
 
 
-    FWRENDERVTK_API virtual ::fwTools::Object::sptr getAssociatedObject(vtkProp *prop, int depth=0);
+    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp *prop, int depth=0);
 
     FWRENDERVTK_API void getAllSubProps(vtkPropCollection *propc, int depth = -1);
 
@@ -119,7 +119,7 @@ protected :
     FWRENDERVTK_API virtual void doUpdate(::fwServices::ObjectMsg::csptr msg) = 0;
 
 
-    FWRENDERVTK_API ServiceVector & getRegisteredServices() {return m_subServices;};
+    ServiceVector & getRegisteredServices() {return m_subServices;};
     FWRENDERVTK_API void registerService( ::fwRenderVTK::IVtkAdaptorService::sptr service );
     FWRENDERVTK_API void unregisterServices();
 

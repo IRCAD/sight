@@ -69,6 +69,10 @@ protected :
                    <separator />
                    <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                    <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                   <separator />
+                   <menu name="My menu" />
+                   <separator />
+                   <editor />
                </layout>
            </gui>
            <registry>
@@ -76,16 +80,21 @@ protected :
                <menuItem sid="item3" />
                <menuItem sid="item4" />
                <menuItem sid="item5" />
+               <menu sid="menu" />
+               <editor sid="editor" />
            </registry>
        </service>
        @endverbatim
-     *  <gui> </gui> : (mandatory) describe the interface of the service.
+     *   - <gui> </gui> : (mandatory) describe the interface of the service.
+     *   - <registry> </registry> : (mandatory) describe the service management.
+     *     - <menuItem> represents IActionSrv
+     *     - <menu> represents IMenuSrv
+     *     - <editor> represents container service (IEditor, IView, ...)
      *
-     *  <registry> </registry> : (mandatory) describe the service management.
      *   @warning
      *   - The number of item in the gui section must be EQUAL to the registry section.
-     *   - The order of the menu item in each section (gui and registry) must be the same.\n
-     *  For example: the menu item named "My item 2" will be connected with the service which have the sid = "item2".
+     *   - The order of the item in each section (gui and registry) must be the same.\n
+     *  For example: the item named "My item 2" will be connected with the service which have the sid = "item2".
      *   - A toolbar can't have the same service connected on two different buttons.
      *  @see ::fwGui::registrar::ToolBarRegistrar::initialize(), ::fwGui::layoutManager::IToolBarLayoutManager::initialize()
      */

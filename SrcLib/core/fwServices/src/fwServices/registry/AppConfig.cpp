@@ -177,11 +177,9 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & gr
 AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
 {
     FieldAdaptorType fields;
-
-    ::fwData::Composite::const_iterator iter;
-    for(iter = fieldAdaptors->begin(); iter != fieldAdaptors->end(); ++iter)
+    BOOST_FOREACH(const ::fwData::Composite::value_type &elem, *fieldAdaptors )
     {
-        fields[(*iter).first] = ::fwData::String::dynamicCast( (*iter).second )->value();
+        fields[elem.first] = ::fwData::String::dynamicCast( elem.second )->value();
     }
 
     return fields;

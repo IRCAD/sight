@@ -10,21 +10,19 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
-#include "fwXML/config.hpp"
-#include <fwData/visitor/BreathFirst.hpp>
+#include <fwXML/visitor/IVisitor.hpp>
 #include <libxml/tree.h>
 
+#include "fwXML/config.hpp"
 
 namespace visitor
 {
-
-
 
 /**
  * @brief visit all objects then call complete an XML tree
  * @author IRCAD (Research and Development Team).
  */
-class FWXML_CLASS_API SerializeXML : public  ::fwData::visitor::BreathFirst
+class FWXML_CLASS_API SerializeXML : public  ::fwData::visitor::IVisitor
 {
 public:
     FWXML_API SerializeXML();
@@ -32,12 +30,10 @@ public:
     FWXML_API virtual ~SerializeXML();
 
     // override call serialize service for object
-    FWXML_API virtual void visit( ::boost::shared_ptr< ::fwTools::Object> obj);
+    FWXML_API virtual void visit( ::fwData::Object::sptr obj);
 
     /// correspondance within node object and xmlNode
-    std::map< ::boost::shared_ptr< ::fwTools::Object> , xmlNodePtr>  m_correspondance;
-
-
+    std::map< ::fwData::Object::sptr , xmlNodePtr>  m_correspondance;
 };
 
 }

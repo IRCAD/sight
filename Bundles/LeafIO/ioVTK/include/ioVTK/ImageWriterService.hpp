@@ -62,18 +62,7 @@ protected:
      */
     IOVTK_API virtual ~ImageWriterService() throw();
 
-    /**
-    * @brief Configuring method.
-    *
-    * XML configuration sample:
-    * @verbatim
-    <service implementation="::ioVTK::ImageWriterService" type="::io::IWriter">
-        <filename id=".../imageTest.vtk"/>
-    </service>
-    @endverbatim
-    * This method is used to configure the service.
-    */
-    IOVTK_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
     /**
     * @brief Starting method.
@@ -104,7 +93,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IOVTK_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
 
     /**
      * @brief Info method.

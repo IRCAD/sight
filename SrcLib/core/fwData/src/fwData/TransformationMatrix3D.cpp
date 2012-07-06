@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/TransformationMatrix3D.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::TransformationMatrix3D, ::fwData::TransformationMatrix3D );
+fwDataRegisterMacro( ::fwData::TransformationMatrix3D );
 
 namespace fwData
 {
@@ -37,7 +37,7 @@ TransformationMatrix3D::~TransformationMatrix3D()
 
 void TransformationMatrix3D::shallowCopy( TransformationMatrix3D::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
     m_vCoefficients = _source->m_vCoefficients;
 }
 
@@ -45,14 +45,13 @@ void TransformationMatrix3D::shallowCopy( TransformationMatrix3D::csptr _source 
 
 void TransformationMatrix3D::deepCopy( TransformationMatrix3D::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
     m_vCoefficients = _source->m_vCoefficients;
 }
 
-
 //------------------------------------------------------------------------------
 
-double TransformationMatrix3D::getCoefficient(int l, int c)
+double TransformationMatrix3D::getCoefficient(int l, int c) const
 {
     unsigned int pos = l * MATRIX_SIZE + c;
     assert(pos < m_vCoefficients.size());

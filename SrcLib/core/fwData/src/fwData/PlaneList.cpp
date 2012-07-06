@@ -5,13 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 
-#include <fwTools/Factory.hpp>
-
+#include "fwData/registry/macros.hpp"
 #include "fwData/PlaneList.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::PlaneList, ::fwData::PlaneList );
+fwDataRegisterMacro( ::fwData::PlaneList );
 
 namespace fwData
 {
@@ -34,7 +32,7 @@ PlaneList::~PlaneList ()
 
 void PlaneList::shallowCopy( PlaneList::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
 
     this->m_vPlanes = _source->m_vPlanes;
 }
@@ -43,7 +41,7 @@ void PlaneList::shallowCopy( PlaneList::csptr _source )
 
 void PlaneList::deepCopy( PlaneList::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
 
     this->m_vPlanes.clear();
     for (   PlaneList::PlaneListContainer::const_iterator iter = _source->m_vPlanes.begin();

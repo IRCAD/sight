@@ -10,8 +10,6 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/IController.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include "ctrlSelection/config.hpp"
 
 namespace ctrlSelection

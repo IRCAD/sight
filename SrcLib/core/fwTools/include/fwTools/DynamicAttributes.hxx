@@ -39,7 +39,11 @@ public:
     virtual AttrType getAttribute( AttrNameType attrName );
     bool        hasAttribute( AttrNameType attrName );
 
-    virtual fwToolsSetAttributeSignatureMacro() {};
+    virtual fwToolsSetAttributeSignatureMacro()
+    {
+        FwCoreNotUsedMacro(attrName);
+        FwCoreNotUsedMacro(_obj);
+    };
 
     virtual AttrNameVectorType getAttributeNames();
 

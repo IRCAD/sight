@@ -38,7 +38,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwTools::Object );
+REGISTER_SERVICE( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -159,8 +159,8 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         // Test if the service is considered here as available by users, if yes push in availableExtensionsSelector
         // excluded mode => add services that are not selected by users
         // included mode => add services selected by users
-        if( m_servicesAreExcluded && ! serviceIsSelectedByUser ||
-            ! m_servicesAreExcluded && serviceIsSelectedByUser )
+        if( (m_servicesAreExcluded && ! serviceIsSelectedByUser) ||
+            (! m_servicesAreExcluded && serviceIsSelectedByUser) )
         {
             // Add this service
             const std::string infoUser = ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);

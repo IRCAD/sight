@@ -89,7 +89,7 @@ struct Validator
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    FWRUNTIME_API const bool validate( const boost::filesystem::path & xmlFile );
+    FWRUNTIME_API bool validate( const boost::filesystem::path & xmlFile );
 
     /**
      * @brief   Validates the given xml node.
@@ -98,7 +98,7 @@ struct Validator
      *
      * @return  true when the validation succeeds, false otherwise
      */
-    FWRUNTIME_API const bool validate( xmlNodePtr node );
+    FWRUNTIME_API bool validate( xmlNodePtr node );
 
     /**
      * @brief   Returns the xsd content in string format

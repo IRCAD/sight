@@ -43,6 +43,8 @@ namespace io
 struct BundleDescriptorReader
 {
     typedef std::vector< ::boost::shared_ptr<Bundle> >  BundleContainer;
+    /// Pair of created extension point associated with extensions
+    typedef std::pair< SPTR(ExtensionPoint), std::vector< SPTR(Extension) > > PointExtensionsPairType;
 
     /**
      * @brief       Look for a descriptor at the specified location,
@@ -62,7 +64,7 @@ struct BundleDescriptorReader
      *
      * @return      a shared pointer to the created bundle
      */
-    FWRUNTIME_API static ::boost::shared_ptr<Bundle> createBundleFromXmlPlugin( const boost::filesystem::path & location ) throw ( RuntimeException );
+    FWRUNTIME_API static ::boost::shared_ptr<Bundle> createBundleFromXmlPlugin( const ::boost::filesystem::path & location ) throw ( RuntimeException );
 
     /**
      * @brief       Creates all bundles that are found at the given location.
@@ -82,7 +84,7 @@ private:
     static std::string ID;              ///< Defines the id XML element name.
     static std::string IMPLEMENTS;      ///< Defines the implements XML element name.
     static std::string NAME;            ///< Defines the name XML element name.
-    static std::string LIBRARY;         ///< Defines the libray XML element name.
+    static std::string LIBRARY;         ///< Defines the library XML element name.
     static std::string PLUGIN;          ///< Defines the plugin XML element name.
     static std::string REQUIREMENT;     ///< Defines the requirement XML element name.
     static std::string SCHEMA;          ///< Defines the schema XML element name.
@@ -110,6 +112,7 @@ private:
      */
     static ::boost::shared_ptr<Extension> processExtension(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
 
+
     /**
      * Processes a node that is a point
      *
@@ -117,7 +120,7 @@ private:
      * @param   bundle  a pointer to the bundle the extension will be attached to
      * @return  a pair with the created extension point and extensions
      */
-    static std::pair< ::boost::shared_ptr<ExtensionPoint> , std::vector< ::boost::shared_ptr<Extension> > > processPoint(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
+    static PointExtensionsPairType processPoint(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
 
     /**
      * @brief   Processes an extension point XML node.

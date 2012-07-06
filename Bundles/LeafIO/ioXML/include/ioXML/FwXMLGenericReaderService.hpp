@@ -23,7 +23,7 @@ namespace ioXML
 
 /**
  * @class FwXMLGenericReaderService
- * @brief A generic reader which can load any kind of object in a fxz archive
+ * @brief A generic reader which can load any kind of object in a fwXML archive
  * after loading data are shallow copied then some notifications are send. configuration
  * of service allow to define what event are send
  * @example :
@@ -54,11 +54,13 @@ protected:
     /** Search if archive extension is changed
      * @verbatim
      <service ... >
-        <archiveExtension>.fxz</archiveExtension>
+        <archiveExtension>.yaf</archiveExtension>
      </service>
      @endverbatim
      */
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOXML_API virtual void configuring() throw(::fwTools::Failed);
+
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);
@@ -70,7 +72,7 @@ protected:
     IOXML_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOXML_API virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOXML_API void info(std::ostream &_sstream ) ;
@@ -89,7 +91,7 @@ private :
 
     void notificationOfUpdate();
 
-    ::fwTools::Object::sptr loadData( const ::boost::filesystem::path inrFileDir );
+    ::fwData::Object::sptr loadData( const ::boost::filesystem::path inrFileDir );
 
     bool isAnFwxmlArchive( const ::boost::filesystem::path filePath );
 
@@ -98,7 +100,7 @@ private :
 
     ::boost::filesystem::path m_fsObjectPath;
 
-    ::fwTools::Object::sptr manageZipAndLoadData( const ::boost::filesystem::path path );
+    ::fwData::Object::sptr manageZipAndLoadData( const ::boost::filesystem::path path );
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
 
     ::fwXML::reader::FwXMLObjectReader m_reader;

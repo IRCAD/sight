@@ -56,6 +56,9 @@ public:
 
 //------------------------------------------------------------------------------
 
+namespace TMCommand
+{
+
 class PlaneShifterCallback : public TriangularMeshVtkCommand
 {
     public:
@@ -343,6 +346,7 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
         double    m_factor;
 };
 
+}
 
 //------------------------------------------------------------------------------
 
@@ -538,15 +542,7 @@ void TriangularMesh::createTransformService()
     }
 
     ::fwData::TransformationMatrix3D::sptr fieldTransform;
-    if (triangularMesh->getFieldSize("TransformMatrix"))
-    {
-        fieldTransform = triangularMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
-    }
-    else
-    {
-        fieldTransform = ::fwData::TransformationMatrix3D::New();
-        triangularMesh->setFieldSingleElement("TransformMatrix", fieldTransform);
-    }
+    fieldTransform = triangularMesh->setDefaultField("TransformMatrix", ::fwData::TransformationMatrix3D::New());
 
     vtkTransform *vtkFieldTransform = vtkTransform::New();
     vtkFieldTransform->Identity();
@@ -858,13 +854,13 @@ void TriangularMesh::updateMapper()
 
     SLM_ASSERT("Bad vtkPolyData", m_polyData);
 
-    if( algo = vtkPolyDataAlgorithm::SafeDownCast(m_pipelineInput) )
+    if( (algo = vtkPolyDataAlgorithm::SafeDownCast(m_pipelineInput)) )
     {
         algo->SetInput( m_polyData );
         SLM_ASSERT ("missing mapper input", m_mapperInput);
         m_mapper->SetInputConnection(m_mapperInput);
     }
-    else if (mapper = vtkPolyDataMapper::SafeDownCast(m_pipelineInput) )
+    else if ( (mapper = vtkPolyDataMapper::SafeDownCast(m_pipelineInput)) )
     {
         SLM_ASSERT ("mapper input should be 0", m_mapperInput == 0 );
         mapper->SetInput( m_polyData );
@@ -888,7 +884,7 @@ vtkActor *TriangularMesh::newActor()
         removePlaneCollectionShifterCommand();
 
         m_planeCollectionShifterCallback =
-            PlaneCollectionShifterCallback::New(m_clippingPlanes, newClippingPlanes, 2.);
+                TMCommand::PlaneCollectionShifterCallback::New(m_clippingPlanes, newClippingPlanes, 2.);
 
         m_mapper->SetClippingPlanes(newClippingPlanes);
         newClippingPlanes->Delete();
@@ -964,7 +960,7 @@ void TriangularMesh::createServicesStarterCommand()
             ::visuVTKAdaptor::TriangularMesh::dynamicCast(
                     this->getSptr()
                     );
-        m_servicesStarterCallback = PlaneCollectionAdaptorStarter::New( srv, m_clippingPlanes, -1. );
+        m_servicesStarterCallback = TMCommand::PlaneCollectionAdaptorStarter::New( srv, m_clippingPlanes, -1. );
     }
 }
 

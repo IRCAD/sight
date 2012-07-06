@@ -23,7 +23,7 @@ namespace dialog
 /**
  * @brief   Defines the generic Progress dialog for IHM.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
- * @class   LocationDialog.
+ * @class   IProgressDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
@@ -56,13 +56,13 @@ public:
 
     FWGUI_API virtual void setCancelCallback(CancelCallbackType callback);
 
-    FWGUI_API virtual void setCancelRaiseException(bool raise){m_raise = raise;};
+    virtual void setCancelRaiseException(bool raise){m_raise = raise;};
 
-    FWGUI_API virtual bool getCanceled(){return m_canceled;};
+    virtual bool getCanceled(){return m_canceled;};
 
-    FWGUI_API virtual void hideCancelButton() {};
+    virtual void hideCancelButton() {};
 
-    FWGUI_API virtual void setProcessUserEvents(bool process){m_processUserEvents = process;}
+    virtual void setProcessUserEvents(bool process){m_processUserEvents = process;}
 
 protected :
 

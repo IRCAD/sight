@@ -10,7 +10,12 @@
 #include "UUIDTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( UUIDTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::UUIDTest );
+
+namespace fwTools
+{
+namespace ut
+{
 
 void UUIDTest::setUp()
 {
@@ -22,7 +27,7 @@ void UUIDTest::tearDown()
     // Clean up after the test run.
 }
 
-void UUIDTest::methode1()
+void UUIDTest::objectIDTest()
 {
     const std::string UUID = "myUUID" ;
 
@@ -37,3 +42,6 @@ void UUIDTest::methode1()
     CPPUNIT_ASSERT_EQUAL( obj->getID(), UUID );
     CPPUNIT_ASSERT_EQUAL( ::fwTools::UUID::get< ::fwTools::Object >(UUID), obj );
 }
+
+} // namespace ut
+} // namespace fwTools

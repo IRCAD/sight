@@ -36,6 +36,18 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (CameraReaderService)( ::io::IReader) ) ;
     /// Super class of reader services
     typedef ::io::IReader   SuperClass;
+
+    /**
+     * @brief Configure the path : default does nothing.
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
+    virtual void configureWithIHM(){};
+
+
+protected:
+
     /**
      * @brief   Constructor : does nothing
      */
@@ -46,16 +58,6 @@ public:
      */
     IODATA_API ~CameraReaderService() throw() ;
 
-    /**
-     * @brief Configure the path : default does nothing.
-     *
-     * This method is used to find
-     * the file path  using a file selector.
-     */
-    IODATA_API virtual void configureWithIHM(){};
-
-
-protected:
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -66,28 +68,14 @@ protected:
     *
     * This method is used to initialize the service.
     */
-    IODATA_API virtual void starting() throw(::fwTools::Failed){};
+    virtual void starting() throw(::fwTools::Failed){};
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    IODATA_API virtual void stopping() throw(::fwTools::Failed){};
-
-    /**
-     * @brief Configuring method. This method is called by configure() from base service ( ::fwServices::IService )
-     *
-     * XML configuration sample:
-     * @verbatim
-    <service type="::ioData::CameraReaderService">
-        <filename>../cam.cal</filename>
-    </service>
-     @endverbatim
-     *
-     * Configure camera calibration filename.
-     */
-    IODATA_API virtual void configuring( ) throw(::fwTools::Failed);
+    virtual void stopping() throw(::fwTools::Failed){};
 
     /**
     * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -105,7 +93,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IODATA_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
 
     /**
      * @brief Info method.
@@ -128,6 +116,9 @@ protected:
     IODATA_API virtual std::vector< std::string > getSupportedExtensions() ;
     /// @}
 
+    /// Return path type managed by the service, here FILE
+    IODATA_API virtual ::io::IOPathType getIOPathType() const;
+
 private:
     /**
      * @brief Load calibration file
@@ -139,7 +130,6 @@ private:
      */
     bool loadCalibration( const std::string &fileName, ::boost::shared_ptr< ::fwData::Camera > cam );
 
-    ::boost::filesystem::path m_fsCameraPath;
 };
 
 }

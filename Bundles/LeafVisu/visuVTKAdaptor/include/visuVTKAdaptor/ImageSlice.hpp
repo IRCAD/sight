@@ -43,7 +43,7 @@ public:
     void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
     void setInterpolation(bool interpolation){m_interpolation = interpolation;};
 
-    VISUVTKADAPTOR_API void setUseImageTF(bool use)               {m_useImageTF = use;};
+    void setUseImageTF(bool use)               {m_useImageTF = use;};
 
 protected :
 

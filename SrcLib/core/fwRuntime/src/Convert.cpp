@@ -33,7 +33,15 @@ void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::C
     xmlNodePtr pNode = xmlNewNode( NULL,  xmlCharStrdup( _cfgElement->getName().c_str() ) ) ;
     xmlAddChild(_node, pNode ) ;
 
+
+    std::string nodeValue = _cfgElement->getValue();
+    if(!nodeValue.empty())
+    {
+        xmlNodeSetContent (pNode, reinterpret_cast<const xmlChar *>(nodeValue.c_str()));
+    }
+
     std::map<std::string, std::string> attr_cfe = _cfgElement->getAttributes() ;
+
 
     for ( std::map<std::string, std::string>::iterator iter_attr_cfe = attr_cfe.begin() ;
         iter_attr_cfe!= attr_cfe.end();
@@ -47,12 +55,18 @@ void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::C
         }
     }
 
+    SLM_ASSERT( "ConfigurationElement should not have children("
+                << _cfgElement->size() <<") and a value ("
+                << nodeValue <<") at the same time.",
+                !(!nodeValue.empty() && _cfgElement->size())  )
+
     for ( std::vector< ::fwRuntime::ConfigurationElement::sptr >::iterator iter_cfeC = _cfgElement->begin() ;
     iter_cfeC != _cfgElement->end() ;
     ++iter_cfeC )
     {
         fromConfigurationElementToXml( (*iter_cfeC), pNode) ;
     }
+
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +196,7 @@ xmlNodePtr Convert::runningBundlesToXml( )
                 xmlFreeNode(bundleNode) ;
             }
             //end cleaning
-        }//boucle for, parcours des bundles
+        }//end bundles iterator
     } while ( enable_Value ) ;
 
     return node_root ;

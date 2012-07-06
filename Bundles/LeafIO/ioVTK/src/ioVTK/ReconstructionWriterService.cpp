@@ -9,8 +9,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
-
 #include <io/IWriter.hpp>
 
 #include <fwCore/base.hpp>
@@ -36,9 +34,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwDat
 
 //------------------------------------------------------------------------------
 
-ReconstructionWriterService::ReconstructionWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsAcqPath("")
+ReconstructionWriterService::ReconstructionWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -48,15 +44,10 @@ ReconstructionWriterService::~ReconstructionWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void ReconstructionWriterService::configuring() throw(::fwTools::Failed)
+
+::io::IOPathType ReconstructionWriterService::getIOPathType() const
 {
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsAcqPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAcqPath);
-        OSLM_TRACE("Filename found" << filename ) ;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -76,10 +67,15 @@ void ReconstructionWriterService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_fsAcqPath = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsAcqPath.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
+    else
+    {
+        this->clearLocations();
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +148,7 @@ void ReconstructionWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Acquisition::sptr pAcquisition = this->getObject< ::fwData::Acquisition >() ;
@@ -161,7 +157,7 @@ void ReconstructionWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        saveReconstruction(m_fsAcqPath,pAcquisition);
+        saveReconstruction( this->getFile() ,pAcquisition);
 
         cursor.setDefaultCursor();
     }

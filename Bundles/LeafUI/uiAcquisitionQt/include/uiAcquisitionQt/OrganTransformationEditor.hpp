@@ -14,7 +14,6 @@
 #include <string>
 
 #include <fwData/Reconstruction.hpp>
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <gui/editor/IEditor.hpp>
 
@@ -52,7 +51,7 @@ protected:
 
 
 
-private slots:
+private Q_SLOTS:
     void OnReconstructionCheck(QListWidgetItem *currentItem);
     void OnResetClick         ( );
     void OnSaveClick();

@@ -10,23 +10,20 @@
 
 #include <exception>
 
-#include <fwData/Boolean.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Acquisition.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include "uiMeasurement/action/ShowDistance.hpp"
 
@@ -65,17 +62,17 @@ void ShowDistance::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (image->getBuffer()==NULL || image->getCRefSize()[0]== 0 )
+    if ( !::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
     {
         this->::fwGui::IActionSrv::setIsActive(false);
     }
     else
     {
-        bool isShown
-        = (!image->getFieldSize("ShowDistances")) ? true : image->getFieldSingleElement< ::fwData::Boolean > ("ShowDistances")->value();
+        ::fwData::Boolean::sptr showDistances = image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+        bool isShown = showDistances->value();
 
         bool toShow = !isShown;
-        image->setFieldSingleElement("ShowDistances", ::fwData::Boolean::NewSptr(toShow));
+        image->setField("ShowDistances", ::fwData::Boolean::NewSptr(toShow));
 
         // auto manage hide/show : use Field Information instead let gui manage checking
         this->::fwGui::IActionSrv::setIsActive(!toShow);
@@ -103,9 +100,9 @@ void ShowDistance::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTool
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
     {
         ::fwData::Image::csptr img = this->getObject< ::fwData::Image >();
-        bool showDistances = (img->getFieldSize("ShowDistances"))==0 ? true : img->getFieldSingleElement< ::fwData::Boolean > ("ShowDistances")->value() ;
-        // set WX check correctly
-        this->::fwGui::IActionSrv::setIsActive( !showDistances);
+        ::fwData::Boolean::sptr showDistances = img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+
+        this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
     }
 }
 

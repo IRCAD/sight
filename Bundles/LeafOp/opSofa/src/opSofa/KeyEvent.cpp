@@ -6,7 +6,7 @@ KeyEvent::KeyEvent() {
 }
 
 void KeyEvent::keyPressEvent(QKeyEvent* event) {
-        emit keyPress(event);
+        Q_EMIT keyPress(event);
 }
 
 void KeyEvent::keyReleaseEvent(QKeyEvent* event) {

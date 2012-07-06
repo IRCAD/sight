@@ -6,6 +6,8 @@
 
 #include <sstream>
 
+#include <boost/algorithm/string/trim.hpp>
+
 #include <itkOrientedImage.h>
 #include <itkGDCMImageIO.h>
 #include <itkGDCMSeriesFileNames.h>
@@ -133,7 +135,7 @@ std::string DicomPatientDBReader::getDicomValue( ::itk::GDCMImageIO::Pointer dic
         SLM_WARN( "Entry was not of string type" );
         return "";
     }
-
+    ::boost::algorithm::trim(value);
     return value;
 }
 
@@ -293,6 +295,10 @@ void DicomPatientDBReader::addPatients
                     std::string id          = getDicomValue(dicomIO , "0010|0020");
                     std::string birthdateStr= getDicomValue(dicomIO , "0010|0030");
                     std::string hospital    = getDicomValue(dicomIO , "0008|0080");
+                    std::string studyDateStr= getDicomValue(dicomIO , "0008|0020");
+                    std::string studyTimeStr= getDicomValue(dicomIO , "0008|0030");
+                    std::string studyUID    = getDicomValue(dicomIO , "0020|000d");
+                    std::string acqUID      = getDicomValue(dicomIO , "0020|000e");
                     std::string acqDateStr  = getDicomValue(dicomIO , "0008|0022");
                     std::string acqTimeStr  = getDicomValue(dicomIO , "0008|0032");
                     std::string spacing     = getDicomValue(dicomIO , "0028|0030");
@@ -369,17 +375,20 @@ void DicomPatientDBReader::addPatients
                     OSLM_DEBUG( "Image Type = " << imageTypeStr);
 
                     // Set field
-                    img->setCRefSpacing(m_vPixelSpacing);
+                    img->setSpacing(m_vPixelSpacing);
                     img->setWindowCenter(center);
                     img->setWindowWidth(width);
-                    img->setRescaleIntercept(rescale);
 
                     acq->setCRefCreationDate(acqDate);
                     acq->setCRefImageType(imageTypeStr);
+                    acq->setUID(acqUID);
 
+                    study->setDate(studyDateStr);
+                    study->setTime(studyTimeStr);
                     study->setCRefModality(modality);
                     study->setCRefHospital(hospital);
                     study->setCRefAcquisitionZone(zone);
+                    study->setUID(studyUID);
 
                     patient->setCRefFirstname(firstname);
                     patient->setCRefName(name);

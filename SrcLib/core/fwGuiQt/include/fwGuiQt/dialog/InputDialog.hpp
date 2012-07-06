@@ -24,6 +24,14 @@ namespace dialog
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
+ * Example of use:
+ * @verbatim
+  ::fwGui::dialog::InputDialog inputDlg;
+  inputDlg.setTitle("Identification dialog");
+  inputDlg.setMessage("Enter Pin Code: ");
+  inputDlg.setInput ("<Enter your code here>");
+  std::string inputText = inputDlg.getInput();
+  @endverbatim
  */
 class FWGUIQT_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 {
@@ -32,16 +40,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), (()), new InputDialog );
 
-    /** @brief Constructor. Do nothing. \n
-     * Example of use: \n
-     * @verbatinm
-          ::fwGui::dialog::InputDialog inputDlg; \n
-          inputDlg.setTitle("Identification dialog"); \n
-          inputDlg.setMessage("Enter Pin Code: "); \n
-          inputDlg.setInput ("<Enter your code here>"); \n
-          std::string inputText = inputDlg.getInput(); \n
-     @endverbatim
-     */
+    /// Constructor. Do nothing.
     FWGUIQT_API InputDialog();
     /// Destructor. Do nothing.
     FWGUIQT_API virtual ~InputDialog();

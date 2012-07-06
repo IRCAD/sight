@@ -47,11 +47,13 @@ protected:
     /** Search if archive extension is changed
      * @verbatim
        <service ... >
-         <archiveExtension>.fxz</archiveExtension>
+         <archiveExtension>.yaf</archiveExtension>
        </service>
        @endverbatim
      */
-    IOXML_API virtual void configuring() throw(::fwTools::Failed) ;
+    IOXML_API virtual void configuring() throw(::fwTools::Failed);
+
+    IOXML_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Override
     IOXML_API virtual void starting() throw(::fwTools::Failed);
@@ -63,7 +65,7 @@ protected:
     IOXML_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOXML_API virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOXML_API void info(std::ostream &_sstream ) ;

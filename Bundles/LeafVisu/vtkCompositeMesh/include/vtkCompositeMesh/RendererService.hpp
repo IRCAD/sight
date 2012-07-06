@@ -33,10 +33,10 @@ namespace vtkCompositeMesh
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
- * Service rendering a ::fwData::TriangularMesh using VTK.
+ * Service rendering ::fwData::Mesh contained in a ::fwData::Composite using VTK.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::TriangularMesh)
+ * REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite)
  */
 class VTKCOMPOSITEMESH_CLASS_API RendererService : public ::fwRender::IRender
 {

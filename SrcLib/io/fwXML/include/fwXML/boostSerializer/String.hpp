@@ -35,6 +35,4 @@ void serialize(Archive & ar, ::fwData::String &_object, const unsigned int versi
 }
 }
 
-INSTANTIATE_SERIALIZER(::fwData::String);
-
 #endif // _STRING_SERIALIZER_HPP

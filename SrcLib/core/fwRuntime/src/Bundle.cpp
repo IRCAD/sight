@@ -10,7 +10,7 @@
 #include <exception>
 #include <memory>
 
-#include "fwCore/base.hpp"
+#include <fwCore/base.hpp>
 
 #include "fwRuntime/EmptyPlugin.hpp"
 #include "fwRuntime/IExecutable.hpp"
@@ -48,7 +48,7 @@ namespace
         :   m_type( type )
         {}
 
-        const bool operator() ( const SPTR( ExecutableFactory ) factory ) const
+        bool operator() ( const SPTR( ExecutableFactory ) factory ) const
         {
             return factory->getType() == m_type;
         }
@@ -133,7 +133,6 @@ Bundle::ExecutableFactoryConstIterator Bundle::executableFactoriesEnd() const
 SPTR( ExecutableFactory ) Bundle::findExecutableFactory( const std::string & type ) const
 {
     ExecutableFactoryConstIterator  found = std::find_if( m_executableFactories.begin(), m_executableFactories.end(), IsOfType(type) );
-
     return found != m_executableFactories.end() ? *found : SPTR( ExecutableFactory )();
 }
 
@@ -146,7 +145,7 @@ void Bundle::addExtension( SPTR( Extension ) extension )
 
 //------------------------------------------------------------------------------
 
-const bool Bundle::hasExtension(const std::string & identifier) const
+bool Bundle::hasExtension(const std::string & identifier) const
 {
     ExtensionContainer::const_iterator extpt = m_extensions.begin();
     while( extpt != m_extensions.end() )
@@ -210,7 +209,7 @@ SPTR( ExtensionPoint ) Bundle::findExtensionPoint( const std::string & identifie
 
 //------------------------------------------------------------------------------
 
-const bool Bundle::hasExtensionPoint(const std::string & identifier) const
+bool Bundle::hasExtensionPoint(const std::string & identifier) const
 {
     ExtensionPointContainer::const_iterator extpt = m_extensionPoints.begin();
     while( extpt != m_extensionPoints.end() )
@@ -449,7 +448,7 @@ void Bundle::startPlugin() throw(RuntimeException)
     // plugin or attempt to instantiate a user defined plugin.
     SPTR( IPlugin ) plugin;
 
-    if( pluginType.empty() == true )
+    if( pluginType.empty() )
     {
         plugin = SPTR( IPlugin )( new EmptyPlugin() );
     }
@@ -501,20 +500,22 @@ void Bundle::stop() throw(RuntimeException)
     }
     catch( std::exception & e )
     {
-        throw RuntimeException( getIdentifier() + ": stop plugin error : " + e.what() );
+        throw RuntimeException( this->getIdentifier() + ": stop plugin error : " + e.what() );
     }
 
+    ::fwRuntime::Runtime::getDefault()->unregisterBundle(this->shared_from_this());
+
     //Unloads all libraries.
-    //LibraryContainer::iterator curEntry;
-    //LibraryContainer::iterator endEntry = m_libraries.end();
-    //for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
-    //{
-        //boost::shared_ptr<dl::Library> library(*curEntry);
-        //if(library->isLoaded() == true)
-        //{
-            //library->unload();
-        //}
-    //}
+//    LibraryContainer::iterator curEntry;
+//    LibraryContainer::iterator endEntry = m_libraries.end();
+//    for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
+//    {
+//        ::boost::shared_ptr<dl::Library> library(*curEntry);
+//        if(library->isLoaded() == true )
+//        {
+//            library->unload();
+//        }
+//    }
 }
 
 //------------------------------------------------------------------------------
@@ -556,7 +557,7 @@ void Bundle::uninitialize() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-const bool Bundle::isEnable() const
+bool Bundle::isEnable() const
 {
     return m_enable;
 }
@@ -586,7 +587,7 @@ const std::string Bundle::getParameterValue( const std::string & identifier ) co
 
 //------------------------------------------------------------------------------
 
-const bool Bundle::hasParameter( const std::string & identifier ) const
+bool Bundle::hasParameter( const std::string & identifier ) const
 {
     return (m_parameters.find(identifier) != m_parameters.end());
 }

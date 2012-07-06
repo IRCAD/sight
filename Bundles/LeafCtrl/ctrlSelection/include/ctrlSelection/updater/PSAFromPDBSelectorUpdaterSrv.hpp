@@ -71,14 +71,6 @@ protected:
 
 private:
 
-    /// Init parameters : patient, study and acquisition to correspond with the current selection
-    void getPSASelection(
-            ::fwData::PatientDB::sptr patientDB,
-            ::fwServices::ObjectMsg::csptr _msg,
-            ::fwData::Patient::sptr & patient,
-            ::fwData::Study::sptr & study,
-            ::fwData::Acquisition::sptr & acquisition );
-
     typedef ::boost::tuple< std::string, std::string, std::string, std::string, std::string, std::string, std::string, ActionType > PSAManagedEvent;
     typedef std::vector < PSAManagedEvent > PSAManagedEvents;
 

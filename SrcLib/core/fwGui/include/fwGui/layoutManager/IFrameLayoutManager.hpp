@@ -125,9 +125,11 @@ public:
      */
     FWGUI_API virtual void destroyFrame() = 0;
 
-    FWGUI_API virtual ::fwGui::container::fwContainer::sptr getFrame(){ return m_frame;};
+    /// Return the frame container
+    virtual ::fwGui::container::fwContainer::sptr getFrame(){ return m_frame;};
 
-    FWGUI_API virtual ::fwGui::container::fwContainer::sptr getContainer(){ return m_container;};
+    /// Return the first container into the frame
+    virtual ::fwGui::container::fwContainer::sptr getContainer(){ return m_container;};
 
 
     typedef ::boost::function0< void > CloseCallback;

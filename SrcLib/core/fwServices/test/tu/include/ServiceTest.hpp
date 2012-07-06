@@ -10,6 +10,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwRuntime/EConfigurationElement.hpp>
 
+namespace fwServices
+{
+namespace ut
+{
 
 /**
  * @brief Test many methods to create service (with uuid, with configuration,...). And test service methods (start, stop and update).
@@ -50,10 +54,10 @@ public:
 
 private:
     // create a configurationElement to build a service
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > buildServiceConfig();
+    ::fwRuntime::EConfigurationElement::sptr buildServiceConfig();
 
     // create a configurationElement to build an object with services
-    ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > buildObjectConfig();
+    ::fwRuntime::ConfigurationElement::sptr buildObjectConfig();
 };
 
 
@@ -98,7 +102,7 @@ class TestServiceImplementation : public TestService
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation)(::TestService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation)(::fwServices::ut::TestService) ) ;
     TestServiceImplementation() throw() {};
     virtual ~TestServiceImplementation() throw() {};
 
@@ -110,12 +114,15 @@ public :
         m_isUpdated = true;
     };
 
-    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
+    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         m_isUpdatedMessage = true;
     };
 
     virtual void info(std::ostream &_sstream ) {_sstream << "TestServiceImplementation" ;};
 };
+
+} //namespace ut
+} //namespace fwServices
 
 #endif

@@ -18,7 +18,7 @@
         In our case, the image must be stored in the MyInstallDir directory, in a sub-directory named TutoData.
 --> 
         <service implementation="::ioVTK::ImageReaderService" type="::io::IReader" uid="myReaderPathFile" autoComChannel="no" >
-            <filename id="./TutoData/patient1.vtk"/>
+            <file>./TutoData/patient1.vtk</file>
         </service>
      
         <!-- Visualization service of a 3D medical image.

@@ -17,9 +17,11 @@ namespace fwGui
 namespace dialog
 {
 /**
- * @brief   Defines the generic file/folder dialog for IHM.
- * Use the Delegate design pattern. The specific implementation selection is ensured by ::fwClassFactoryRegistry
- * The specific implementation are in fwWX and fwQT libraries
+ * @brief   Defines the generic file/folder selector dialog for IHM.
+ *
+ * Use the Delegate design pattern. The specific implementation selection is ensured by ::fwClassFactoryRegistry.
+ * The specific implementation are in fwWX and fwQT libraries.
+ *
  * @class   LocationDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
@@ -32,32 +34,49 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::dialog::ILocationDialog), (()), new LocationDialog );
 
-    /// will instanciate the concrete implementation
+    /// Will instantiate the concrete implementation
     FWGUI_API LocationDialog();
 
-    /// override
-    FWGUI_API void setTitle(const std::string &title);
+    FWGUI_API virtual ~LocationDialog();
 
-    /// override
-    FWGUI_API void setDefaultLocation( ::fwData::location::ILocation::csptr );
-
-    /// override
+    /**
+     * @brief Display the dialog
+     * @return the ILocation selected or null sptr if user cancel the operation
+     */
     FWGUI_API ::fwData::location::ILocation::sptr show();
 
-    /// override
+    /// allow to set option to the file dialog mode=READ/WRITE, check=FILE_MUST_EXIST
     FWGUI_API ::fwGui::dialog::ILocationDialog& setOption( ::fwGui::dialog::ILocationDialog::Options option);
 
-    /// override
+    /// Set the type of location for the dialog (SINGLE_FILE, FORLDER, MULTI_FILES)
     FWGUI_API void setType( ::fwGui::dialog::ILocationDialog::Types type);
 
-
-    /// override
+    /**
+     * @brief specify some filtering when browsing files:
+     * @param[in] filterName a string that will be displayed as filter name
+     * @param[in] wildcardList a string of extension (glob syntax) separated by spaces
+     * example : addFilter("images","*.png *.jpg")
+     */
     FWGUI_API void addFilter(const std::string &filterName, const std::string &wildcardList );
+
+    /// Set the title for the dialog
+    FWGUI_API void setTitle(const std::string& title);
+
+    /// Returns the title for the dialog
+    FWGUI_API const std::string& getTitle();
+
+    /// Set the initial location for the dialog
+    FWGUI_API virtual void setDefaultLocation( ::fwData::location::ILocation::sptr loc);
+
+    /// Gets the default location for the dialog (from preferences or specified by user)
+    FWGUI_API const ::boost::filesystem::path getDefaultLocation();
+
+    /// Save the specified default location for the dialog in preferences (if available)
+    FWGUI_API void saveDefaultLocation(::fwData::location::ILocation::sptr loc);
 
 protected :
 
     ::fwGui::dialog::ILocationDialog::sptr m_implementation;
-
 };
 
 } //namespace dialog

@@ -304,7 +304,7 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( ::boost::shar
 
 
 /**
- * @brief   Retreives a filesystem valid path for a path relative to the specified executable instance.
+ * @brief   Retrieves a filesystem valid path for a path relative to the specified executable instance.
  *
  * @param   executable  a pointer to an executable instance
  * @param   path        a path relative to the bundle

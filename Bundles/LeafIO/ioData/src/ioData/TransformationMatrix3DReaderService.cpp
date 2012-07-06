@@ -39,10 +39,15 @@ REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService 
 
 //-----------------------------------------------------------------------------
 
-TransformationMatrix3DReaderService::TransformationMatrix3DReaderService() :
-    m_filename (""),
-    m_bServiceIsConfigured(false)
+TransformationMatrix3DReaderService::TransformationMatrix3DReaderService()
 {}
+
+//------------------------------------------------------------------------------
+
+::io::IOPathType TransformationMatrix3DReaderService::getIOPathType() const
+{
+    return ::io::FILE;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -75,20 +80,6 @@ TransformationMatrix3DReaderService::~TransformationMatrix3DReaderService() thro
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::configuring( ) throw(::fwTools::Failed)
-{
-    OSLM_TRACE( "TransformationMatrix3DReaderService::configure : " << *m_configuration );
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
-        ::boost::filesystem::path location = ::boost::filesystem::path( filename ) ;
-        m_filename = location;
-        m_bServiceIsConfigured = true;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void TransformationMatrix3DReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
@@ -104,9 +95,13 @@ void TransformationMatrix3DReaderService::configureWithIHM()
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_filename = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_filename.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -122,7 +117,7 @@ void TransformationMatrix3DReaderService::stopping() throw(::fwTools::Failed)
 void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if(m_bServiceIsConfigured)
+    if(this->hasLocationDefined())
     {
         // Retrieve object
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
@@ -130,7 +125,7 @@ void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
 
         ::fwDataIO::reader::TransformationMatrix3DReader reader;
         reader.setObject( matrix );
-        reader.setFile(m_filename);
+        reader.setFile(this->getFile());
         reader.read();
 
         // Notify reading

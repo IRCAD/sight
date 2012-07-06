@@ -9,7 +9,12 @@
 #include "ObjectTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::ObjectTest );
+
+namespace fwTools
+{
+namespace ut
+{
 
 void ObjectTest::setUp()
 {
@@ -21,26 +26,19 @@ void ObjectTest::tearDown()
     // Clean up after the test run.
 }
 
-void ObjectTest::methode1()
+void ObjectTest::idTest()
 {
     const std::string UUID = "uid" ;
-    const std::string FIELDID = "fieldID";
 
     // process
     ::fwTools::Object::NewSptr obj;
-    ::fwTools::Object::NewSptr obj2;
-    ::fwTools::Field::sptr field2;
-    field2 = obj->setFieldSingleElement(FIELDID,  obj2);
 
     obj->setID(UUID);
 
     // check
     CPPUNIT_ASSERT(obj->hasID());
-    CPPUNIT_ASSERT_EQUAL(obj->getID(),    UUID);
-    CPPUNIT_ASSERT(obj->getFieldSize(FIELDID));
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELDID), field2);
-
-    obj->removeField(FIELDID);
-    CPPUNIT_ASSERT(obj->getFieldSize(FIELDID) == false);
-
+    CPPUNIT_ASSERT_EQUAL(obj->getID(), UUID);
 }
+
+} // namespace ut
+} // namespace fwTools

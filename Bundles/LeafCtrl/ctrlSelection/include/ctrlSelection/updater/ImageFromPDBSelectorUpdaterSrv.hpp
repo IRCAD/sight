@@ -70,9 +70,6 @@ protected:
 
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
-private:
-
-    ::fwData::Image::sptr getImage(::fwData::PatientDB::sptr patientDB, ::fwServices::ObjectMsg::csptr _msg);
 };
 
 } // updater

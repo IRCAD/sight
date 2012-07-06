@@ -39,9 +39,6 @@ protected:
     IOITK_API virtual ~DicomImageWriterService() throw();
 
     /// Override
-    IOITK_API virtual void configuring() throw(::fwTools::Failed) ;
-
-    /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);
 
     /// Override
@@ -51,7 +48,7 @@ protected:
     IOITK_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOITK_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
+    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOITK_API void info(std::ostream &_sstream ) ;
@@ -65,13 +62,12 @@ protected:
     /// Override
     IOITK_API virtual void configureWithIHM();
 
+    /// Return managed file type, here FOLDER
+    IOITK_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void saveImage( const ::boost::filesystem::path patientDBPath, ::fwData::Image::sptr _pImage );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsImagePath;
 
 };
 

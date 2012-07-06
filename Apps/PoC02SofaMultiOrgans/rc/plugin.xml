@@ -156,34 +156,30 @@
                                      implementation="::opSofa::SofaCoreSrv"
                                      type="::fwGui::IActionSrv" autoComChannel="yes" >
                               </service>
-                                 <service uid="mySofaWriter"
-                                            implementation="::opSofa::SofaSceneWriterSrv"
-                                          type="::io::IWriter" autoComChannel="no" >
-                                   <writeTrian>no</writeTrian>
-                                 </service>
-
-                                 <service   uid="mySofaWriterAction"
+                              <service   uid="mySofaWriterAction"
                                             implementation="::gui::action::StarterActionService"
                                             type="::fwGui::IActionSrv" autoComChannel="no" >
                                     <start uid="mySofaWriter"/>
-                                 </service>
-
+                              </service>
+                              <service uid="mySofaWriter"
+                                       implementation="::opSofa::SofaSceneWriterSrv"
+                                       type="::io::IWriter" autoComChannel="no" >
+                                  <writeTrian>no</writeTrian>
+                              </service>
+                              <service  uid="mySofaReaderAction"
+                                        implementation="::gui::action::StarterActionService"
+                                        type="::fwGui::IActionSrv" autoComChannel="no" >
+                                  <start uid="mySofaReader"/>
+                              </service>
                               <service uid="mySofaReader"
                                            implementation="::opSofa::SofaSceneReaderSrv"
                                          type="::io::IReader" autoComChannel="no" >
                               </service>
-
-                              <service   uid="mySofaReaderAction"
-                                         implementation="::gui::action::StarterActionService"
-                                         type="::fwGui::IActionSrv" autoComChannel="no" >
-                                <start uid="mySofaReader"/>
-                              </service>
-
-
-                                 <service uid="myUpdaterComCannelReconst2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
+                          
+                              <service uid="myUpdaterComCannelReconst2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no" >
                                      <target>myUpdaterReconst</target>
-                                 </service>
-                                 <service uid="listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                              </service>
+                              <service uid="listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
                                  <!--<service uid="mesher50ServiceUID" implementation="::opVTKMesh::VTKMesherService" type="::opVTKMesh::IMesher" autoComChannel="no" >
                                      <percentReduction value="50"/>
                                  </service>

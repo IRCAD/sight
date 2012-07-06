@@ -22,6 +22,7 @@
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
 #include "fwGuiQt/container/QtMenuContainer.hpp"
 #include "fwGuiQt/container/QtMenuItemContainer.hpp"
+#include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/layoutManager/ToolBarLayoutManager.hpp"
 
 
@@ -108,6 +109,25 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
             }
             toolBar->addWidget(toolButton);
             m_menus.push_back(menu);
+        }
+        else if (actionInfo.m_isEditor)
+        {
+            ::fwGuiQt::container::QtContainer::NewSptr container;
+            QWidget* widget = new QWidget(toolBar);
+            container->setQtContainer(widget);
+
+            if (toolBar->orientation() == Qt::Horizontal)
+            {
+                widget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+            }
+            else
+            {
+                widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            }
+            widget->adjustSize();
+            toolBar->addWidget(widget);
+
+            m_containers.push_back(container);
         }
         else
         {

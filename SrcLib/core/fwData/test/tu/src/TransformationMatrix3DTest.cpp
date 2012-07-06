@@ -9,7 +9,12 @@
 #include "TransformationMatrix3DTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( TransformationMatrix3DTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::TransformationMatrix3DTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void TransformationMatrix3DTest::setUp()
 {
@@ -28,9 +33,7 @@ void TransformationMatrix3DTest::tearDown()
 
 void TransformationMatrix3DTest::methode1()
 {
-
     double COEFFICIENTS = 1 ;
-
     // process
     ::fwData::TransformationMatrix3D::NewSptr p1;
 
@@ -38,7 +41,6 @@ void TransformationMatrix3DTest::methode1()
     CPPUNIT_ASSERT_EQUAL(p1->getCoefficients().back(),  COEFFICIENTS);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefCoefficients().back(),  COEFFICIENTS);
     CPPUNIT_ASSERT_EQUAL(p1->getRefCoefficients().back(),   COEFFICIENTS);
-
 }
 
 //------------------------------------------------------------------------------
@@ -58,3 +60,7 @@ void TransformationMatrix3DTest::methode2()
     CPPUNIT_ASSERT_EQUAL(p1->getCRefCoefficients().back(),  COEFFICIENTS) ;
     CPPUNIT_ASSERT_EQUAL(p1->getRefCoefficients().back(),   COEFFICIENTS) ;
 }
+
+} //namespace ut
+} //namespace fwData
+

@@ -13,6 +13,7 @@
 #include <fwData/Graph.hpp>
 #include <fwData/Node.hpp>
 
+#include "fwXML/ObjectTracker.hpp"
 #include "fwXML/XML/GraphXMLTranslator.hpp"
 #include "fwXML/XML/EdgeXMLTranslator.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
@@ -30,9 +31,9 @@ GraphXMLTranslator::~GraphXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr GraphXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
-    ::boost::shared_ptr< ::fwData::Graph> graph = ::boost::dynamic_pointer_cast< ::fwData::Graph>(obj);
+    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(obj);
     SLM_ASSERT("graph not instanced", graph);
 
     // create master node with className+id
@@ -63,7 +64,7 @@ xmlNodePtr GraphXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> 
 
 //------------------------------------------------------------------------------
 
-void GraphXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void GraphXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     assert( XMLTH::check< ::fwData::Graph >(toUpdate, source) );
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(toUpdate);
@@ -85,7 +86,7 @@ void GraphXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
         {
             assert( strcmp((const char *)connectionNode->name,"Edge") == 0 );
 
-            ::fwTools::Object::sptr obj = XMLTH::fromXML(connectionNode);
+            ::fwData::Object::sptr obj = XMLTH::fromXML(connectionNode);
             ::fwData::Edge::sptr  edge = ::fwData::Edge::dynamicCast( obj );
             assert ( edge );
 

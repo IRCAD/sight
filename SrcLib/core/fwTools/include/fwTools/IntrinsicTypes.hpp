@@ -4,22 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef IntrinsicTypes_hpp
-#define IntrinsicTypes_hpp
+#ifndef __FWTOOLS_INTRINSICTYPES_HPP__
+#define __FWTOOLS_INTRINSICTYPES_HPP__
 
 #include <boost/mpl/push_back.hpp>
 
 #include "fwTools/IntegerTypes.hpp"
 
-
-namespace fwTools {
+namespace fwTools
+{
 
 #ifdef DEBUG
-typedef boost::mpl::push_back< IntegerTypes, float  >::type IntrinsicTypes;
+typedef ::boost::mpl::push_back< IntegerTypes, float  >::type IntrinsicTypes;
 #else
-typedef boost::mpl::push_back< boost::mpl::push_back< IntegerTypes, float >::type, double >::type IntrinsicTypes;
+typedef ::boost::mpl::push_back< ::boost::mpl::push_back< IntegerTypes, float >::type, double >::type IntrinsicTypes;
 #endif
 
-} // end namespace fwTools {
+} // end namespace fwTools
 
-#endif
+#endif //__FWTOOLS_INTRINSICTYPES_HPP__

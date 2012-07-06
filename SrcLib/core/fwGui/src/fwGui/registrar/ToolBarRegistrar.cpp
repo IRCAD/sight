@@ -54,7 +54,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
             configuration->getName() == "registry");
 
     // index represents associated toolBar with position in toolBars vector
-    int index = 0;
+    unsigned int index = 0;
     m_callbacks.clear();
     // initialize m_actionSids map with configuration
     std::vector < ConfigurationType > vectMenuItems = configuration->find("menuItem");
@@ -72,9 +72,8 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
                 start = (startValue=="yes");
             }
             std::string sid = menuItem->getAttributeValue("sid");
-            std::pair<int, bool> indexStart =  std::make_pair( index, start);
             OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_actionSids.find(sid) == m_actionSids.end());
-            m_actionSids[sid] = indexStart;
+            m_actionSids[sid] = SIDToolBarMapType::mapped_type(index, start);
 
             ::fwGui::ActionCallbackBase::sptr callback ;
             callback = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ActionCallbackBase >( ::fwGui::ActionCallbackBase::REGISTRY_KEY );
@@ -86,7 +85,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
         index++;
     }
     index = 0;
-    // initialize m_actionSids map with configuration
+    // initialize m_menuSids map with configuration
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     BOOST_FOREACH( ConfigurationType menu, vectMenus)
     {
@@ -102,9 +101,31 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
                 start = (startValue=="yes");
             }
             std::string sid = menu->getAttributeValue("sid");
-            std::pair<int, bool> indexStart =  std::make_pair( index, start);
-            OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_actionSids.find(sid) == m_actionSids.end());
-            m_menuSids[sid] = indexStart;
+            OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_menuSids.find(sid) == m_menuSids.end());
+            m_menuSids[sid] = SIDToolBarMapType::mapped_type(index, start);
+        }
+        index++;
+    }
+
+    index = 0;
+    // initialize m_menuSids map with configuration
+    std::vector < ConfigurationType > vectEditors = configuration->find("editor");
+    BOOST_FOREACH( ConfigurationType editor, vectEditors)
+    {
+        SLM_ASSERT("<editor> tag must have sid attribute", editor->hasAttribute("sid"));
+        if(editor->hasAttribute("sid"))
+        {
+            bool start = false;
+            if(editor->hasAttribute("start"))
+            {
+                std::string startValue = editor->getAttributeValue("start");
+                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
+                        startValue == "yes" || startValue == "no");
+                start = (startValue=="yes");
+            }
+            std::string sid = editor->getAttributeValue("sid");
+            OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_editorSids.find(sid) == m_editorSids.end());
+            m_editorSids[sid] = SIDToolBarMapType::mapped_type(index, start);
         }
         index++;
     }
@@ -164,6 +185,26 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
 
 //-----------------------------------------------------------------------------
 
+void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > containers )
+{
+    ::fwGui::container::fwContainer::sptr container;
+    BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_editorSids)
+    {
+        OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!", sid.second.first < containers.size());
+        container = containers.at( sid.second.first );
+        ::fwGui::GuiRegistry::registerSIDContainer(sid.first, container);
+        if(sid.second.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
+            service->start();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void ToolBarRegistrar::unmanage()
 {
     BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_actionSids)
@@ -185,6 +226,16 @@ void ToolBarRegistrar::unmanage()
             service->stop();
         }
         ::fwGui::GuiRegistry::unregisterSIDMenu(sid.first);
+    }
+    BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_editorSids)
+    {
+        if(sid.second.second) //service is auto started?
+        {
+            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            service->stop();
+        }
+        ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);
     }
 }
 

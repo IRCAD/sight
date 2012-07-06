@@ -4,12 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef SINGLETON_HPP_
-#define SINGLETON_HPP_
+#ifndef __FWTOOLS_SINGLETON_HPP__
+#define __FWTOOLS_SINGLETON_HPP__
 
 #include <boost/shared_ptr.hpp>
 
-namespace fwTools {
+namespace fwTools
+{
 /**
  * @brief   Stereotype class to define a singleton
  * @class   Singleton
@@ -54,8 +55,6 @@ protected :
     /// Default constructor. Do nothing.
     Singleton() {};
 
-
-
     /// the instance
     static boost::shared_ptr< T > m_ClassInstance;
 };
@@ -65,7 +64,7 @@ protected :
 template <typename T>
 boost::shared_ptr< T > Singleton<T>::m_ClassInstance = boost::shared_ptr< T >();
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
-#endif // SINGLETON_HPP_
+#endif // __FWTOOLS_SINGLETON_HPP__
 

@@ -12,8 +12,6 @@
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/IPlugin.hpp"
 
-
-
 namespace fwRuntime
 {
 
@@ -37,7 +35,7 @@ struct FWRUNTIME_CLASS_API Plugin : public IPlugin
      */
     //@{
     FWRUNTIME_API ::boost::shared_ptr<Bundle> getBundle() const throw();
-    FWRUNTIME_API virtual void setInitializationData(const ::boost::shared_ptr<ConfigurationElement> configuration) throw();
+    FWRUNTIME_API virtual void setInitializationData(const SPTR(ConfigurationElement) configuration) throw();
     //@}
 
 

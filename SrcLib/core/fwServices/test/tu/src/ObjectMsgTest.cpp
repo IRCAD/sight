@@ -11,7 +11,12 @@
 #include "ObjectMsgTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ObjectMsgTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ObjectMsgTest );
+
+namespace fwServices
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -54,3 +59,6 @@ void ObjectMsgTest::testObjectMsg()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwServices

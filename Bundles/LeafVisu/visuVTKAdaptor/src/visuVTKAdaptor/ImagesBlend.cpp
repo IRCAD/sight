@@ -9,8 +9,6 @@
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
 
-#include <fwTools/helpers.hpp>
-
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 
@@ -19,12 +17,17 @@
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Integer.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwMath/Compare.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/CompositeMsg.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <vtkIO/vtk.hpp>
 
@@ -45,16 +48,11 @@ ImagesBlend::ImagesBlend() throw()
     SLM_TRACE_FUNC();
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY      );
-    addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY        );
-    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING         );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS  );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS);
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS);
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS           );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS         );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS         );
 }
 
 //------------------------------------------------------------------------------
@@ -111,11 +109,12 @@ void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
+
     if (compositeMsg)
     {
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_FIELDS)
-                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS)
-                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS)
+                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
+                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
             doUpdate();
         }
@@ -140,8 +139,6 @@ void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
 
 void ImagesBlend::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
 
     if(m_configuration->hasAttribute("vtkimageregister") )
@@ -165,14 +162,13 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
         {
             info->m_useTFAlfa = element->getAttributeValue("tfalpha") == "yes";
         }
-        if(element->hasAttribute("useColorTF") )
+        if(element->hasAttribute("selectedTFKey") )
         {
-            info->m_useImageTF = element->getAttributeValue("useColorTF") == "yes";
+            info->m_selectedTFKey = element->getAttributeValue("selectedTFKey");
         }
-        if ( element->hasAttribute("tfSelection") )
+        if(element->hasAttribute("tfSelectionFwID") )
         {
-            info->m_tfSelection = element->getAttributeValue("tfSelection");
-            SLM_FATAL_IF("'tfSelection' must not be empty", info->m_tfSelection.empty());
+            info->m_tfSelectionFwID = element->getAttributeValue("tfSelectionFwID");
         }
 
         typedef std::pair< std::string, std::string > ImagesIdPair;
@@ -183,9 +179,71 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+bool ImagesBlend::checkImageInformations()
+{
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+
+    ::fwData::Image::SizeType size;
+    ::fwData::Image::SpacingType spacing;
+    ::fwData::Image::OriginType origin;
+
+    bool haveSameInfo = true;
+
+    BOOST_FOREACH(std::string id, m_imageIds)
+    {
+        if (composite->find(id) != composite->end())
+        {
+            ::fwData::Image::sptr img = ::fwData::Image::dynamicCast((*composite)[id]);
+
+            bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+            if (imageIsValid)
+            {
+                if (size.empty() && spacing.empty() && origin.empty())
+                {
+                    size = img->getSize();
+                    spacing = img->getSpacing();
+                    origin = img->getOrigin();
+                }
+                else
+                {
+                    if (  size != img->getSize() ||
+                          !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing, img->getSpacing()) ||
+                          !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin, img->getOrigin()) )
+                    {
+                        OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
+                        OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
+                        OSLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
+
+                        OSLM_ERROR("imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<< img->getSize()[2] );
+                        OSLM_ERROR("imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<< img->getSpacing()[2] );
+                        OSLM_ERROR("imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<< img->getOrigin()[2] );
+
+                        haveSameInfo = false;
+                        std::string errorMsg = "Warning : images in blend have not the same";
+                        errorMsg += (size != img->getSize())?" size":"";
+                        errorMsg += (spacing != img->getSpacing())?" spacing":"";
+                        errorMsg += (origin != img->getOrigin())?" origin":"";
+                        errorMsg += ".\n Background image size, spacing and origin are use.";
+                        ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
+                                errorMsg,
+                                ::fwGui::dialog::MessageDialog::WARNING);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return haveSameInfo;
+}
+
+//------------------------------------------------------------------------------
+
 void ImagesBlend::addImageAdaptors()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+
+    this->checkImageInformations();
 
     BOOST_FOREACH(std::string id, m_imageIds)
     {
@@ -209,11 +267,11 @@ void ImagesBlend::addImageAdaptors()
 
                 ::visuVTKAdaptor::Image::sptr IA;
                 IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
-                IA->setUseImageTF(info->m_useImageTF );
                 IA->setVtkImageRegister(m_imageBlend);
                 IA->setImageOpacity(info->m_imageOpacity);
                 IA->setAllowAlphaInTF(info->m_useTFAlfa);
-                IA->setTFSelectionFieldId(info->m_tfSelection);
+                IA->setSelectedTFKey( info->m_selectedTFKey );
+                IA->setTFSelectionFwID( info->m_tfSelectionFwID );
 
                 m_registeredImages[img->getID()] = imageAdaptor;
                 this->registerService(imageAdaptor);
@@ -221,9 +279,14 @@ void ImagesBlend::addImageAdaptors()
                 imageAdaptor->start();
             }
 
-            info->m_comChannel = ::fwServices::registerCommunicationChannel(img, this->getSptr());
-            ::fwServices::ComChannelService::dynamicCast(info->m_comChannel.lock())->setPriority(0.56);
-            info->m_comChannel.lock()->start();
+            ::fwServices::ComChannelService::sptr comChannel;
+            comChannel = ::fwServices::getCommunicationChannel(img, this->getSptr());
+            if (!comChannel)
+            {
+                info->m_comChannel = ::fwServices::registerCommunicationChannel(img, this->getSptr());
+                ::fwServices::ComChannelService::dynamicCast(info->m_comChannel.lock())->setPriority(0.56);
+                info->m_comChannel.lock()->start();
+            }
         }
     }
 }

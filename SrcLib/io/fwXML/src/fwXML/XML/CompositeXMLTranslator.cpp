@@ -25,7 +25,7 @@ CompositeXMLTranslator::~CompositeXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Object> obj )
+xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Composite::sptr  cmp= ::fwData::Composite::dynamicCast(obj);
     SLM_ASSERT("cmp not instanced", cmp);
@@ -33,8 +33,8 @@ xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Obje
     // create master node with className+id
     xmlNodePtr node = XMLTranslatorHelper::MasterNode( obj );
 
-    ::fwData::Composite::Container::iterator iter;
-    for (iter = cmp->getRefMap().begin() ; iter != cmp->getRefMap().end() ; ++iter)
+    ::fwData::Composite::IteratorType iter;
+    for (iter = cmp->begin() ; iter != cmp->end() ; ++iter)
     {
         xmlNodePtr elementNode = xmlNewNode(NULL, BAD_CAST "element");
         xmlAddChild(node, elementNode);
@@ -55,13 +55,13 @@ xmlNodePtr CompositeXMLTranslator::getXMLFrom( ::boost::shared_ptr<fwTools::Obje
 
 //------------------------------------------------------------------------------
 
-void CompositeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void CompositeXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
     ::fwData::Composite::sptr cmp= ::fwData::Composite::dynamicCast(toUpdate);
 
-    xmlNodePtr elementNode = xmlNextElementSibling(source->children);
+    xmlNodePtr elementNode = ::fwXML::XMLParser::getChildrenXMLElement(source);
     while (elementNode )
     {
         std::string nodeName = (const char *) elementNode->name;
@@ -75,20 +75,17 @@ void CompositeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate
 
             std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
 
-            //xmlNodePtr ConcretevalueNode = XMLParser::nextXMLElement( valueNode->children );
-            xmlNodePtr ConcretevalueNode = xmlNextElementSibling( valueNode->children );
-            SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
+            xmlNodePtr concreteValueNode = ::fwXML::XMLParser::getChildrenXMLElement(valueNode);
+            SLM_ASSERT("concreteValueNode not instanced", concreteValueNode);
 
-            ::fwTools::Object::sptr valueObj;
-            valueObj = Serializer().ObjectsFromXml( ConcretevalueNode, true );
+            ::fwData::Object::sptr valueObj;
+            valueObj = Serializer().ObjectsFromXml( concreteValueNode );
 
             SLM_ASSERT("valueObj not instanced", valueObj);
             assert( ::fwData::Object::dynamicCast( valueObj ));
-            cmp->getRefMap()[key] = ::fwData::Object::dynamicCast( valueObj );
+            cmp->getContainer()[key] = ::fwData::Object::dynamicCast( valueObj );
         }
-
-        //elementNode = XMLParser::nextXMLElement(elementNode->next);
-        elementNode = xmlNextElementSibling(elementNode->next);
+        elementNode = ::fwXML::XMLParser::nextXMLElement(elementNode->next);
     }
 }
 

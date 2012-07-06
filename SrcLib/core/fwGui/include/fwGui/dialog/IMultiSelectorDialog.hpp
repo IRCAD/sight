@@ -20,7 +20,7 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 /**
- * @brief   IMultiSelectorDialog allowing the choice of an element among severals (_selections)
+ * @brief   IMultiSelectorDialog allows the choice of some elements among several (_selections)
  * @class   IMultiSelectorDialog.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.

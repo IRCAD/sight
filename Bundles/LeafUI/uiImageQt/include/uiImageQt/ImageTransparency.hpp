@@ -12,6 +12,7 @@
 #include <QSlider>
 #include <QCheckBox>
 #include <QPointer>
+#include <QAction>
 
 #include <fwTools/Failed.hpp>
 
@@ -64,18 +65,31 @@ protected:
 
     virtual void info( std::ostream &_sstream ) ;
 
-protected slots:
+protected Q_SLOTS:
 
     /**
-     * @brief This method is called when the value change.
+     * @brief This method is called when the visibility value change using action shortcut.
+     */
+    void onModifyVisibility(bool value);
+
+    /**
+     * @brief This method is called when the visibility value change clicking on checkbox.
      */
     void onModifyVisibility(int value);
+
+    /**
+     * @brief This method is called when the transparency value change moving slider.
+     */
     void onModifyTransparency(int value);
 
 private:
 
+    /// Notify VISIBILITY event on image
+    void notifyVisibility(bool isVisible);
+
     QPointer< QSlider >   m_valueSlider;
     QPointer< QCheckBox > m_valueCheckBox;
+    QPointer< QAction >   m_action;
     std::string m_shortcut;
 
 };

@@ -7,15 +7,15 @@
 #include <utility>
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
+#include "fwData/registry/macros.hpp"
+
 
 #include "fwData/Edge.hpp"
 #include "fwData/Port.hpp"
 #include "fwData/Node.hpp"
 #include "fwData/Graph.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Graph,  ::fwData::Graph);
+fwDataRegisterMacro( ::fwData::Graph );
 
 namespace fwData
 {
@@ -265,14 +265,14 @@ Graph::getNodes(
 
 //------------------------------------------------------------------------------
 
-unsigned int Graph::getNbNodes() const
+size_t Graph::getNbNodes() const
 {
     return m_nodes.size();
 }
 
 //------------------------------------------------------------------------------
 
-unsigned int Graph::getNbEdges() const
+size_t Graph::getNbEdges() const
 {
     return m_connections.size();
 }
@@ -295,7 +295,7 @@ Graph::ConnectionContainer &Graph::getRefConnections()
 
 void Graph::shallowCopy( Graph::csptr _source )
 {
-    ::fwData::Object::shallowCopyOfChildren(_source );
+    this->fieldShallowCopy( _source );
     m_nodes = _source->m_nodes;
     m_connections = _source->m_connections;
 }
@@ -304,7 +304,7 @@ void Graph::shallowCopy( Graph::csptr _source )
 
 void Graph::deepCopy( Graph::csptr _source )
 {
-    ::fwData::Object::deepCopyOfChildren(_source );
+    this->fieldDeepCopy( _source );
 
     std::map< ::fwData::Node::sptr, ::fwData::Node::sptr > correspondenceBetweenNodes;
     typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;

@@ -13,6 +13,7 @@
 #include <boost/interprocess/sync/scoped_lock.hpp>
 
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Camera.hpp"
 #include "fwData/TransformationMatrix3D.hpp"
 
@@ -20,9 +21,9 @@ namespace fwData
 {
 
 /**
- * @brief   This class focusses on video
+ * @brief   This class focuses on video
  * @note    This version is done for test purposes (augmented reality and visualization) and will have to be accurately design
- * @note    Information to be stored here does not necessarly concern video buffer.
+ * @note    Information to be stored here does not necessarily concern video buffer.
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  * @todo    implement appropriate API
@@ -30,24 +31,24 @@ namespace fwData
 class FWDATA_CLASS_API Video : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwTools::Factory::New< Video >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwData::Factory::New< Video >) ;
 
     typedef ::boost::uint8_t VideoType;
 
     /// @brief Get the buffer size along X axis
-    FWDATA_API ::boost::uint32_t  getXSize() const { return m_ui32XSize; };
+    ::boost::uint32_t  getXSize() const { return m_ui32XSize; };
 
     /// @brief Get the buffer size along Y axis
-    FWDATA_API ::boost::uint32_t  getYSize() const { return m_ui32YSize; };
+    ::boost::uint32_t  getYSize() const { return m_ui32YSize; };
 
     /// @brief Get the number of bits per pixel
-    FWDATA_API VideoType  getBPP() const { return m_ui8BPP; };
+    VideoType  getBPP() const { return m_ui8BPP; };
 
     /// @brief Get the address of the image buffer
-    FWDATA_API VideoType  * getImageBuffer() const { return m_pImageBuffer; };
+    VideoType  * getImageBuffer() const { return m_pImageBuffer; };
 
     /// @brief Get the camera associated with the video
-    FWDATA_API ::fwData::Camera::sptr getCamera() const { return m_camera; };
+    ::fwData::Camera::sptr getCamera() const { return m_camera; };
 
     /// @brief Return True if the data is available
     FWDATA_API bool &dataAvailable();
@@ -93,7 +94,7 @@ protected :
     /// Value of the last modification (incremented by Modified() method
     ::boost::uint64_t m_lastModified;
 
-    /// %Video mutex
+    /// Video mutex
     ::boost::interprocess::interprocess_mutex m_mutex;
 
     /// Camera

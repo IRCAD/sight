@@ -4,25 +4,31 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWTOOLS_TU_DYNAMICTYPETEST_H
-#define FWTOOLS_TU_DYNAMICTYPETEST_H
+#ifndef __FWTOOLS_UT_DYNAMICTYPETEST_HPP__
+#define __FWTOOLS_UT_DYNAMICTYPETEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwTools
+{
+namespace ut
+{
 
 class DynamicTypeTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DynamicTypeTest );
-    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( typeTest );
     CPPUNIT_TEST_SUITE_END();
-
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
-    void methode1();
+
+    void typeTest();
 };
 
-#endif
+} // namespace ut
+} // namespace fwTools
+
+#endif //__FWTOOLS_UT_DYNAMICTYPETEST_HPP__

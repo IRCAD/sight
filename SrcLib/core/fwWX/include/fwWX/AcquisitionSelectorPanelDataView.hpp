@@ -72,7 +72,6 @@ private :
     void SelectItem( std::vector<int> select);
     void SelectItem( fwDataNode* select);
 
-    void eraseItemSelected( const std::vector<int> & _vItemSelected );
     void updatePropGrid();
 
     std::vector< int > m_vSelectedItem;

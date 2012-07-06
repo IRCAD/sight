@@ -42,11 +42,6 @@ public :
 
 protected:
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    /// Override
-    IOVTKGDCM_API virtual void configuring() throw(::fwTools::Failed) ;
-
     /// Override
     IOVTKGDCM_API virtual void starting() throw(::fwTools::Failed);
 
@@ -57,7 +52,7 @@ protected:
     IOVTKGDCM_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOVTKGDCM_API virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOVTKGDCM_API void info(std::ostream &_sstream ) ;
@@ -71,15 +66,14 @@ protected:
     /// Override
     IOVTKGDCM_API virtual void configureWithIHM();
 
+    /// Return path type managed by the service, here FOLDER
+    IOVTKGDCM_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void notificationOfDBUpdate();
 
     ::boost::shared_ptr< ::fwData::PatientDB > createPatientDB( const ::boost::filesystem::path dicomDir );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsPatientDBPath;
 
 };
 

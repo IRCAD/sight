@@ -50,7 +50,7 @@ void GraphWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw (
     {
         assert( message->getDataInfo( ::fwServices:: ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
         fwComEd::GraphMsg::NewSptr msg;
-        msg->addEvent( fwComEd::GraphMsg::NEW_GRAPH , this->getObject< ::fwData::Object>() );
+        msg->addEvent( fwComEd::GraphMsg::NEW_GRAPH , this->getObject() );
         ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg,::fwServices::ComChannelService::NOTIFY_SOURCE);
     }
     //TODO other event

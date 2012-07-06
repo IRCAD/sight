@@ -4,10 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_GRAPHTEST_H
-#define DATA_GRAPHTEST_H
+#ifndef __FWDATA_UT_GRAPHTEST_HPP__
+#define __FWDATA_UT_GRAPHTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace fwData
+{
+namespace ut
+{
 
 class GraphTest : public CPPUNIT_NS::TestFixture {
 
@@ -23,10 +28,11 @@ public:
     void setUp();
     void tearDown();
 
-    // fonctions de tests
     void normalCase();
     void limitCase1();
     void limitCase2();
 };
 
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_GRAPHTEST_HPP__

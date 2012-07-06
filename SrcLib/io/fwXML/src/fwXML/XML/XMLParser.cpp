@@ -6,19 +6,13 @@
 
 #include <limits>
 
+#include <boost/assign/std/set.hpp>
+
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libxml/xinclude.h>
 #include <libxml/xmlschemas.h>
 #include <libxml/xmlschemastypes.h>
-
-// chdir management
-#ifdef _MSC_VER
-#include <direct.h>
-#else
-#include <sys/types.h>
-#include <sys/stat.h>
-#endif
 
 #include <sstream>
 
@@ -27,6 +21,8 @@
 
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/XML/XMLStream.hpp"
+
+using namespace ::boost::assign;
 
 namespace fwXML
 {
@@ -62,17 +58,29 @@ void XMLParser::validateDoc (xmlDocPtr xmlDoc) throw (::fwTools::Failed)
 
 xmlNodePtr XMLParser::nextXMLElement (xmlNodePtr pNode)
 {
-    SLM_ASSERT("pNode not instanced", pNode);
-    xmlNodePtr pChild;
-
-    for (pChild = pNode; pChild != 0 ; pChild = pChild->next)
+    xmlNodePtr pNextNode;
+    for (pNextNode = pNode; pNextNode != 0 ; pNextNode = pNextNode->next)
     {
-        if ( pChild->type == XML_ELEMENT_NODE )
+        if ( pNextNode->type == XML_ELEMENT_NODE )
         {
-            return pChild;
+            return pNextNode;
         }
     }
     return NULL; // not found !!
+}
+
+//------------------------------------------------------------------------------
+
+xmlNodePtr XMLParser::getChildrenXMLElement (xmlNodePtr pNode)
+{
+    std::set<int> ignoredNodeType;
+    ignoredNodeType += XML_TEXT_NODE, XML_CDATA_SECTION_NODE, XML_COMMENT_NODE;
+    xmlNodePtr childNode = pNode->children;
+    if(!childNode || ignoredNodeType.find(childNode->type) != ignoredNodeType.end())
+    {
+        childNode = xmlNextElementSibling( pNode->children );
+    }
+    return childNode;
 }
 
 //------------------------------------------------------------------------------
@@ -122,37 +130,22 @@ xmlDocPtr XMLParser::getXmlDocFromFile(boost::filesystem::path rootFile) throw (
     xmlDocPtr xmlDoc = NULL;
     xmlNodePtr xmlRoot = NULL;
 
-    // save previous workingDirectory
-    char workingDirectorySaved[1024];
-    getcwd (workingDirectorySaved, 1024);
-
-    // set new working directory
-    std::string rootFolder = rootFile.parent_path().string();
-    chdir (rootFolder.c_str ());
-    OSLM_DEBUG( "change working dir to " <<   rootFolder << "...." );
-    OSLM_DEBUG( "parsing XML file " <<   rootFile.string() << "...." );
 #if BOOST_FILESYSTEM_VERSION > 2
-    xmlDoc = xmlParseFile ( rootFile.filename().string().c_str () );
+    xmlDoc = xmlParseFile ( rootFile.string().c_str () );
 #else
-    xmlDoc = xmlParseFile ( rootFile.leaf().c_str () );
+    xmlDoc = xmlParseFile ( rootFile.c_str () );
 #endif
     if (xmlDoc == NULL)
     {
         throw ::fwTools::Failed("Unable to parse the XML file " + rootFile.string() );
     }
 
-    OSLM_DEBUG( "managing XInclude ...." );
+    SLM_DEBUG( "Managing XInclude" );
     xmlRoot = xmlDocGetRootElement (xmlDoc);
     if (xmlXIncludeProcessTree (xmlRoot) == -1)
     {
         throw ::fwTools::Failed(std::string ("Unable to manage xinclude !"));
     }
-
-    // check validation
-    //validateDoc(xmlDoc);
-
-    // restore old working directory
-    chdir (workingDirectorySaved);
 
     // memory cleanup
 

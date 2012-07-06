@@ -19,7 +19,7 @@
 #include "gui/aspect/DefaultMenuBarSrv.hpp"
 
 
-REGISTER_SERVICE( ::fwGui::IMenuBarSrv , ::gui::aspect::DefaultMenuBarSrv , ::fwTools::Object );
+REGISTER_SERVICE( ::fwGui::IMenuBarSrv , ::gui::aspect::DefaultMenuBarSrv , ::fwData::Object );
 
 namespace gui
 {

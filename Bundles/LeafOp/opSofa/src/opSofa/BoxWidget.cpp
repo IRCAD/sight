@@ -166,13 +166,13 @@ void BoxWidget::updateFromVtk()
     ::fwData::Float::NewSptr v5(tab2[0]);
     ::fwData::Float::NewSptr v6(tab2[1]);
     ::fwData::Float::NewSptr v7(tab2[2]);
-    data->push_back(v1);
-    data->push_back(v2);
-    data->push_back(v3);
-    data->push_back(v4);
-    data->push_back(v5);
-    data->push_back(v6);
-    data->push_back(v7);
+    data->getContainer().push_back(v1);
+    data->getContainer().push_back(v2);
+    data->getContainer().push_back(v3);
+    data->getContainer().push_back(v4);
+    data->getContainer().push_back(v5);
+    data->getContainer().push_back(v6);
+    data->getContainer().push_back(v7);
 
     // Notification
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();

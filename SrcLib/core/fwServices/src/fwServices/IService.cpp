@@ -22,12 +22,12 @@ namespace fwServices
 //-----------------------------------------------------------------------------
 
 IService::IService() :
+    m_configuration ( new ::fwRuntime::EConfigurationElement("EmptyConfigurationElement") ),
     m_globalState ( STOPPED ),
-    m_updatingState ( NOTUPDATING ),
     m_notificationState ( IDLE ),
+    m_updatingState ( NOTUPDATING ),
     m_configurationState ( UNCONFIGURED ),
-    m_isHandlingAllEvents ( true ),
-    m_configuration ( new ::fwRuntime::EConfigurationElement("EmptyConfigurationElement") )
+    m_isHandlingAllEvents ( true )
 {
     // by default a weak_ptr have a use_count == 0
     m_msgDeque.clear();
@@ -45,7 +45,7 @@ void IService::info( std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-::fwTools::Object::sptr IService::getObject()
+::fwData::Object::sptr IService::getObject()
 {
     SLM_ASSERT("Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired", !m_associatedObject.expired() );
     return m_associatedObject.lock();
@@ -108,7 +108,7 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 void IService::start() throw( ::fwTools::Failed)
 {
-    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STOPPED);
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
     if( m_globalState == STOPPED )
     {
         m_globalState = STARTING ;
@@ -204,7 +204,7 @@ void IService::update() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
+void IService::swap( ::fwData::Object::sptr _obj ) throw(::fwTools::Failed)
 {
     OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(), m_associatedObject.lock() != _obj );
 

@@ -10,6 +10,7 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -22,11 +23,12 @@ namespace fwData
  * @date    2007-2009.
  */
 
-class FWDATA_CLASS_API Material : public Object {
+class FWDATA_CLASS_API Material : public Object
+{
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwTools::Factory::New< Material >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::Factory::New< Material >) ;
 
     fwDataObjectMacro();
 
@@ -42,11 +44,25 @@ public:
     FWDATA_API Color::sptr ambient() const;
 
     /**
+     * @brief Setter for ambient color
+     *
+     * @param ambient color
+     */
+    FWDATA_API void setAmbient(Color::sptr ambient);
+
+    /**
     * @brief returns editable diffuse color
     */
     FWDATA_API Color::sptr diffuse() const;
 
-    /*
+    /**
+     * @brief Setter for diffuse color
+     *
+     * @param diffuse color
+     */
+    FWDATA_API void setDiffuse(Color::sptr diffuse);
+
+    /**
      * @brief Options
      */
     typedef enum
@@ -55,7 +71,7 @@ public:
         MODE_NORMALS  = 2,
     } OPTIONS_MODE;
 
-    /*
+    /**
      * @brief Shading models
      */
     typedef enum
@@ -65,7 +81,7 @@ public:
         MODE_PHONG   = 4,//MODE_FLAT<<2 -> 100
     } SHADING_MODE;
 
-    /*
+    /**
      * @brief Representation models
      */
     typedef enum

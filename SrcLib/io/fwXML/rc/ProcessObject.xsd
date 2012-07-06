@@ -7,8 +7,12 @@
 
 <xsd:complexType name="ProcessObjectXSDType">
     <xsd:sequence>
-        <xsd:element name="Name" type="xsd:string"/>
-        <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+
+    <xsd:element name="inputs" type="xsd:anyType" minOccurs="1" maxOccurs="1"/>
+    <xsd:element name="outputs" type="xsd:anyType" minOccurs="1" maxOccurs="1"/>
+    <xsd:element name="Attributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="DynamicAttributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="class" type="xsd:string"/>

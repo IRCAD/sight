@@ -7,22 +7,22 @@
 #ifndef _FWSERVICES_CONFIGTEMPLATEMANAGER_HPP_
 #define _FWSERVICES_CONFIGTEMPLATEMANAGER_HPP_
 
-#include <map>
+#include <vector>
 #include <string>
+
+#include <boost/tuple/tuple.hpp>
 
 #include <fwTools/Object.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include "fwServices/config.hpp"
-
-#include "fwServices/IService.hpp"
 #include "fwServices/IXMLParser.hpp"
+#include "fwServices/IService.hpp"
+#include "fwServices/ComChannelService.hpp"
 
 namespace fwServices
 {
-
 /**
  * @class   AppConfigManager.
  * @brief   This class provides an API to manage config template.
@@ -32,10 +32,22 @@ namespace fwServices
  */
 class FWSERVICES_CLASS_API AppConfigManager : public ::fwTools::Object
 {
+protected:
+    enum ConfigState
+    {
+        STATE_CREATED,
+        STATE_STARTED,
+        STATE_STOPPED,
+        STATE_DESTROYED,
+    };
+    typedef std::vector< ::fwServices::IService::wptr > ServiceContainer;
+    typedef ::boost::tuple< std::string, bool > ConfigAttribute;
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppConfigManager)(::fwTools::Object), (()), new AppConfigManager );
+    fwCoreClassDefinitionsWithFactoryMacro((AppConfigManager)(::fwTools::Object),
+                                           (()),
+                                           ::fwTools::Factory::New< AppConfigManager >);
 
     /// Constructor. Do nothing.
     FWSERVICES_API AppConfigManager();
@@ -43,95 +55,103 @@ public:
     /// Destructor. Do nothing.
     FWSERVICES_API virtual ~AppConfigManager();
 
+    /// Return state
+    bool isCreated() { return m_state == STATE_CREATED; }
+    bool isStarted() { return m_state == STATE_STARTED; }
+    bool isStopped() { return m_state == STATE_STOPPED; }
+    bool isDestroyed() { return m_state == STATE_DESTROYED; }
+
     /// Set config param
-    FWSERVICES_API void setConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem );
+    void setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem)
+    {
+        m_cfgElem = cfgElem;
+    }
 
     /// Get config root
-    FWSERVICES_API ::fwTools::Object::sptr getConfigRoot() const;
+    ::fwData::Object::sptr getConfigRoot() const
+    {
+        return m_configuredObject;
+    }
 
     /// Get config root with autocast
-    template < class CLASSNAME >
-    SPTR(CLASSNAME) getConfigRoot() const;
+    template < class ClassName >
+    ::boost::shared_ptr< ClassName > getConfigRoot() const;
 
     /// Creates objects and services from config
-    FWSERVICES_API void create();
+    FWSERVICES_API virtual void create();
 
     /// Starts services specified in config
-    FWSERVICES_API void start();
+    FWSERVICES_API virtual void start();
 
     /// Updates services specified in config
-    FWSERVICES_API void update();
+    FWSERVICES_API virtual void update();
+
+    /// Stops services specified in config
+    FWSERVICES_API virtual void stop();
+
+    /// Destroys services specified in config
+    FWSERVICES_API virtual void destroy();
 
     /// Calls methods : create, start then update.
     FWSERVICES_API void launch();
 
-    /// Stops services specified in config
-    FWSERVICES_API void stop();
-
-    /// Destroys services specified in config
-    FWSERVICES_API void destroy();
-
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
     FWSERVICES_API void stopAndDestroy();
 
-    /// Return state
-    FWSERVICES_API bool isCreated()  { return m_state == CONFIG_IS_CREATED;}
-    FWSERVICES_API bool isStarted()  { return m_state == CONFIG_IS_STARTED;}
-    FWSERVICES_API bool isStopped()  { return m_state == CONFIG_IS_STOPPED;}
-    FWSERVICES_API bool isDestroyed(){ return m_state == CONFIG_IS_DESTROYED;}
+protected:
 
-private:
-
-    ::fwTools::Object::sptr newObject( ::fwRuntime::ConfigurationElement::csptr _cfgElement );
-
-    void addServicesToObjectFromCfgElem( ::fwTools::Object::sptr _obj, ::fwRuntime::ConfigurationElement::csptr _cfgElement );
-
-    typedef std::vector< ::fwServices::IService::wptr > ServiceContainer;
-    ServiceContainer m_createdServices;
-    ServiceContainer m_startedServices;
-    ServiceContainer m_startedComChannelServices;
-
-    void startComChannel();
-    void stopComChannel();
-
-
-    ::fwTools::Object::sptr createNewObject( bool _hasAttributeType,
-                                             const std::string & _type,
-                                             bool _hasAttributeUid,
-                                             const std::string & _uid,
-                                             bool _hasAttributeId,
-                                             const std::string & _id );
-
-    ::fwTools::Object::sptr getAlreadyDefinedObject(
-            const std::string & _uid,
-            bool _hasAttributeType,
-            const std::string & _type,
-            bool _hasAttributeId,
-            const std::string & _id );
-
-    ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , ::fwRuntime::ConfigurationElement::csptr _elt );
-    ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceId , std::string _implementationId , std::string uid="");
-
-
-    typedef enum { CONFIG_IS_CREATED,
-                   CONFIG_IS_STARTED,
-                   CONFIG_IS_STOPPED,
-                   CONFIG_IS_DESTROYED,
-    } ConfigManagementState;
-
-    ::fwTools::Object::sptr m_configRoot;
-
+    ::fwData::Object::sptr m_configuredObject;
     ::fwServices::IXMLParser::sptr m_objectParser;
+    ::fwRuntime::ConfigurationElement::csptr m_cfgElem;
 
-    ::fwRuntime::ConfigurationElement::csptr m_adaptedConfig;
+    ConfigState m_state;
 
-    ConfigManagementState m_state;
+    ServiceContainer m_createdSrv;
+    ServiceContainer m_startedSrv;
+    ServiceContainer m_startedComChannels;
 
-    void start( ::fwRuntime::ConfigurationElement::csptr _elt );
-    void update(::fwRuntime::ConfigurationElement::csptr _elt );
+    FWSERVICES_API ::fwData::Object::sptr getNewObject(
+            ConfigAttribute type,
+            const std::string& uid,
+            ConfigAttribute id=ConfigAttribute("", false));
+
+    FWSERVICES_API ::fwData::Object::sptr getNewObject(
+            ConfigAttribute type,
+            ConfigAttribute uid=ConfigAttribute("", false),
+            ConfigAttribute id=ConfigAttribute("", false));
+
+    FWSERVICES_API ::fwData::Object::sptr getRefObject(
+            ConfigAttribute type,
+            const std::string& uid,
+            ConfigAttribute id=ConfigAttribute("", false));
+
+    FWSERVICES_API ::fwServices::IService::sptr getNewService(
+            ConfigAttribute type,
+            ConfigAttribute uid,
+            ConfigAttribute implType);
+
+    FWSERVICES_API ::fwServices::ComChannelService::sptr connectComChannel(
+            ::fwData::Object::sptr obj,
+            ::fwServices::IService::sptr srv,
+            ConfigAttribute priority);
+
+    FWSERVICES_API void startComChannels();
+    FWSERVICES_API void stopComChannels();
+
+    FWSERVICES_API void stopStartedServices();
+    FWSERVICES_API void destroyCreatedServices();
+
+    FWSERVICES_API void processStartItems();
+    FWSERVICES_API void processUpdateItems();
+
+    FWSERVICES_API virtual ::fwData::Object::sptr createObject();
+    FWSERVICES_API virtual void createServices();
+    FWSERVICES_API virtual void createServices(::fwRuntime::ConfigurationElement::csptr cfgElem);
+
+    FWSERVICES_API virtual void bindService(::fwRuntime::ConfigurationElement::csptr srvElem);
 };
 
-}
+} // namespace fwServices
 
 #include "fwServices/AppConfigManager.hxx"
 

@@ -78,7 +78,7 @@ struct Extension : public BundleElement, public ConfigurationElementContainer
      *
      * @return  the validity
      */
-    FWRUNTIME_API const Validity getValidity() const;
+    FWRUNTIME_API Validity getValidity() const;
 
     /**
      * @brief   Retrieves the xml node that represents the extension
@@ -95,7 +95,7 @@ struct Extension : public BundleElement, public ConfigurationElementContainer
      *
      * @return  the extension validity
      */
-    FWRUNTIME_API const Validity validate();
+    FWRUNTIME_API Validity validate();
 
 protected:
 

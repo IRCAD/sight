@@ -4,10 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <wx/wx.h>
 #include <fwData/Image.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include "devForum/tuto04/ImageReaderService.hpp"
 
@@ -37,22 +41,21 @@ ImageReaderService::~ImageReaderService() throw()
 
 void ImageReaderService::configureWithIHM()
 {
-    wxString title = _("Choose an vtk file to load an image"); // use _("...") for support string internationalization
+    m_fsImgPath="";
+    SLM_TRACE_FUNC();
 
-    // Create a dialog box to choose a file of type .vtk
-    wxString file = wxFileSelector(
-            title,
-            wxT(""),
-            wxT(""),
-            wxT(""),
-            wxT("Vtk (*.vtk)|*.vtk"),
-            wxFD_OPEN,
-            wxTheApp->GetTopWindow() );
+    ::fwGui::dialog::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a vtk file to load Mesh");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(m_fsImgPath) );
+    dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    // If the user choose an vtk file, the image path is initialized
-    if( file.IsEmpty() == false )
+    ::fwData::location::SingleFile::sptr  result;
+    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
     {
-        m_fsImgPath = ::boost::filesystem::path( wxConvertWX2MB(file) );
+        m_fsImgPath = result->getPath();
     }
 }
 

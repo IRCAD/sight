@@ -7,9 +7,12 @@
 #ifndef _FWMATH_MESHFUNCTIONS_HPP_
 #define _FWMATH_MESHFUNCTIONS_HPP_
 
-#include <math.h>
+#include <cmath>
 #include <vector>
 #include <utility>
+
+#include <boost/unordered_map.hpp>
+#include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
 #include "fwMath/IntrasecTypes.hpp"
@@ -50,6 +53,72 @@ FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexI
  * remove orphan vertices (i.e not used in _vertexIndex), _vertexIndex is reordered according to vertex suppressions
  */
 FWMATH_API bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
+
+//-----------------------------------------------------------------------------
+template <typename T, typename U>
+std::pair< T, U > makeOrderedPair(const T first, const U second)
+{
+    if (first < second)
+    {
+        return std::pair< T, U >(first, second);
+    }
+    else
+    {
+        return std::pair< T, U >(second, first);
+    }
+}
+
+//-----------------------------------------------------------------------------
+template <typename T, typename U, typename V>
+bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBegin, U* cellDataOffsetsEnd, V* cellTypesBegin)
+{
+    typedef std::pair< T, T >  Edge; // always Edge.first < Edge.second !!
+    typedef boost::unordered_map< Edge, int >  EdgeHistogram;
+    EdgeHistogram edgesHistogram;
+    bool isBorderless = true;
+
+    size_t dataLen = 0;
+    U* iter = cellDataOffsetsBegin;
+    U* iter2 = cellDataOffsetsBegin + 1;
+    const U* iterEnd = cellDataOffsetsEnd - 1;
+    V* iterTypes = cellTypesBegin;
+
+    dataLen = *iter2 - *iter;
+    for (
+            ;
+            iter < iterEnd || ( iter < cellDataOffsetsEnd && (dataLen = (cellDataEnd - cellDataBegin) - *iter) ) ;
+            dataLen = *++iter2 - *++iter, ++iterTypes
+        )
+    {
+        if(*iterTypes == 0)
+        {
+            continue;
+        }
+        T* iterCell = cellDataBegin + *iter;
+        T* iterCell2 = iterCell + 1;
+        T* beginCell = iterCell;
+        const T* iterCellEnd = beginCell + dataLen - 1;
+        for (
+                ;
+                iterCell < iterCellEnd || ( iterCell < (beginCell + dataLen) && (iterCell2 = beginCell) ) ;
+                ++iterCell, ++iterCell2
+            )
+        {
+            ++edgesHistogram[makeOrderedPair(*iterCell, *(iterCell2))];
+        }
+    }
+
+    BOOST_FOREACH(const typename EdgeHistogram::value_type &histo, edgesHistogram)
+    {
+        if (histo.second != 2)
+        {
+            isBorderless = false;
+            break;
+        }
+    }
+
+    return isBorderless;
+}
 
 }
 

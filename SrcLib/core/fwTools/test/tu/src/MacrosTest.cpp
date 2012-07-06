@@ -11,7 +11,12 @@
 #include "MacrosTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MacrosTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::MacrosTest );
+
+namespace fwTools
+{
+namespace ut
+{
 
 class ClassTest
 {
@@ -44,7 +49,7 @@ void MacrosTest::tearDown()
     // Clean up after the test run.
 }
 
-void MacrosTest::methode1()
+void MacrosTest::factoryMacroTest()
 {
     const int NUM = 15;
 
@@ -58,3 +63,6 @@ void MacrosTest::methode1()
     CPPUNIT_ASSERT_EQUAL(classTest3->getNum(), NUM);
     CPPUNIT_ASSERT_EQUAL(classTest4->getNum(), 1);
 }
+
+} // namespace ut
+} // namespace fwTools

@@ -19,7 +19,7 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::ComChannelService::sptr getCommunicationChannel( ::fwTools::Object::sptr _src, ::fwServices::IService::sptr _dest)
+::fwServices::ComChannelService::sptr getCommunicationChannel( ::fwData::Object::sptr _src, ::fwServices::IService::sptr _dest)
 {
     ::fwServices::ComChannelService::sptr comChannel;
     std::vector< ::fwServices::IEditionService::sptr > editors = ::fwServices::OSR::getServices< ::fwServices::IEditionService >( _src ) ;
@@ -45,7 +45,7 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::ComChannelService::sptr registerCommunicationChannel( ::fwTools::Object::sptr _src , ::fwServices::IService::sptr _dest)
+::fwServices::ComChannelService::sptr registerCommunicationChannel( ::fwData::Object::sptr _src , ::fwServices::IService::sptr _dest)
 {
     ::fwServices::ComChannelService::sptr comChannel = ::fwServices::getCommunicationChannel(_src, _dest);
     OSLM_FATAL_IF("ComChannel already exist [src= " << _src->getID() << " dest= "<< _dest->getID()<<"]", comChannel);
@@ -60,7 +60,7 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-void unregisterCommunicationChannel( ::fwTools::Object::sptr _src , ::fwServices::IService::sptr _dest)
+void unregisterCommunicationChannel( ::fwData::Object::sptr _src , ::fwServices::IService::sptr _dest)
 {
     ::fwServices::IEditionService::sptr srcEditor = ::fwServices::get< ::fwServices::IEditionService >( _src ) ;
     std::vector< ::fwServices::ICommunication::sptr > comChannels = ::fwServices::OSR::getServices< ::fwServices::ICommunication >( _src ) ;

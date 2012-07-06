@@ -12,15 +12,21 @@
 #include <QGraphicsView>
 #include <QResizeEvent>
 
+
 #include <fwRender/IRender.hpp>
 #include <fwServices/ComChannelService.hpp>
 #include <scene2D/data/Axis.hpp>
 #include <scene2D/data/Viewport.hpp>
-#include <fwData/Composite.hpp>
+
 
 #include "scene2D/config.hpp"
 #include "scene2D/data/Event.hpp"
 #include "scene2D/data/Coord.hpp"
+
+namespace  fwData
+{
+    class Composite;
+} //namespace fwData
 
 namespace scene2D
 {
@@ -50,7 +56,7 @@ public:
     typedef float AdaptorZValueType;
 
     /// Constructor, set coordinates m_sceneStart to (-100, -100), m_sceneWidth to (200, 200) and add new handle events
-    //  ADDED_FIELDS, REMOVED_FIELDS and SWAPPED_FIELDS.
+    //  ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS.
     SCENE2D_API Render() throw();
 
     /// Basic destructor, do nothing.
@@ -159,7 +165,7 @@ protected:
     /// Do nothing.
     SCENE2D_API void updating()    throw ( ::fwTools::Failed );
 
-    /// If the message is ADDED_FIELDS, call the startAdaptorsFromComposite function to start all the adaptors contained
+    /// If the message is ADDED_KEYS, call the startAdaptorsFromComposite function to start all the adaptors contained
     //  in the message composite.
     SCENE2D_API void updating( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
@@ -237,6 +243,9 @@ private:
 
     /// Get all the objects of the render related composite, and stop all their related adaptors.
     void stopAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
+
+    /// Get all the objects of the render related composite, and swap all their related adaptors.
+    void swapAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
 
     /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service corresponding to _object,
     //  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map,

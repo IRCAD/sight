@@ -49,7 +49,6 @@ void TransformationMatrix3D::createConfig( ::fwTools::Object::sptr _obj )
             for ( unsigned int k=0; k < 16; k++)
             {
                 inputString >> coef;
-                OSLM_WARN("Coef = " <<  coef );
                 matrix->getRefCoefficients().push_back( coef );
             }
         }

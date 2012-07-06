@@ -8,7 +8,7 @@
 #define _MEMORY_NAMESPACE_HPP_
 
 /**
- * @brief     The namespace memory contains tools to manage memory. Use for dump. .
+ * @brief     The namespace memory contains tools to manage memory. Used for dump.
  * @namespace memory
  * @author    IRCAD (Research and Development Team).
  * @date      2009-2011.

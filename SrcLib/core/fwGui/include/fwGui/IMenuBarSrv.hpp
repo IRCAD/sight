@@ -69,14 +69,15 @@ protected :
           </registry>
       </service>
        @endverbatim
-     *  <gui> </gui> : (mandatory) describe the interface of the service.
+     *  - <gui> </gui> : (mandatory) describe the interface of the service.
+     *  - <registry> </registry> : (mandatory) describe the service management.
      *
-     *  <registry> </registry> : (mandatory) describe the service management.
-     *   @warning
-     *   - The number of item in the gui section must be equal or greater than in the registry section.
-     *   - The order of the menu in each section (gui and registry) must be the same.\n
-     *  For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
-     *   - A menu bar can't have the same service connected on two different menu.
+     * @warning
+     * - The number of item in the gui section must be equal or greater than in the registry section.
+     * - The order of the menu in each section (gui and registry) must be the same.\n
+     *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
+     * - A menu bar can't have the same service connected on two different menu.
+     *
      *  @see ::fwGui::registrar::MenuBarRegistrar::initialize(), ::fwGui::layoutManager::IMenuBarLayoutManager::initialize()
      */
     FWGUI_API void initialize();

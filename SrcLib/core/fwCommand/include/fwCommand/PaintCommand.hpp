@@ -14,6 +14,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include "fwCommand/ICommand.hpp"
 
 namespace fwCommand
@@ -44,8 +46,8 @@ public:
     FWCOMMAND_API void paint( ::fwData::Image::BufferIndexType index, ::fwData::Image::BufferType oldValue, ::fwData::Image::BufferType newValue );
 
 
-    FWCOMMAND_API void prePaint( ::fwData::Image::VoxelIndexType x, ::fwData::Image::VoxelIndexType y, ::fwData::Image::VoxelIndexType z );
-    FWCOMMAND_API void prePaint( ::fwData::Image::VoxelIndexType index );
+    FWCOMMAND_API void prePaint( ::fwData::Image::IndexType x, ::fwData::Image::IndexType y, ::fwData::Image::IndexType z );
+    FWCOMMAND_API void prePaint( ::fwData::Image::IndexType index );
 
     FWCOMMAND_API void postPaint();
 
@@ -80,9 +82,10 @@ private :
 
     /// Working image
     ::fwData::Image::wptr         m_image;
-    ::fwData::Image::BufferType * m_buffer;
+    /// Helper on Working image
+    ::fwComEd::helper::Image::sptr m_imageHelper;
 
-    ::fwData::Image::VoxelIndexType m_currentPrepaintIndex;
+    ::fwData::Image::IndexType m_currentPrepaintIndex;
     std::vector< ::fwData::Image::BufferType > m_currentPrepaintBuff;
 
 };

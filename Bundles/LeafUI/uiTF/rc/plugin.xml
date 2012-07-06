@@ -9,7 +9,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiTF::TransferFunctionEditor</service>
-        <object>::fwData::Image</object>
+        <object>::fwData::Composite</object>
     </extension>
 
 </plugin>

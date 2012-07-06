@@ -21,6 +21,26 @@ namespace fwTools {
  */
 namespace os {
 
+
+/**
+ * @brief Returns a environment variable value
+ *
+ * @param name environment variable 'name'
+ * @param[out] ok boolean set to true if variable exists
+ *
+ * @return The environment variable content if it exists, else an empty string
+ */
+FWTOOLS_API std::string getEnv(const std::string &name, bool *ok = NULL);
+
+
+/**
+ * @brief Returns a environment variable value
+ *
+ * @param name environment variable 'name'
+ * @param defaultValue Value returned if variable 'name' doesn't exist
+ */
+FWTOOLS_API std::string getEnv(const std::string &name, const std::string &defaultValue);
+
 /**
  * @brief   Return the users's application data directory
  * @author  IRCAD (Research and Development Team).

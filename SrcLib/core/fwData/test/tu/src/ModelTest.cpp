@@ -11,14 +11,19 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Model.hpp"
-#include "fwData/TriangularMesh.hpp"
-#include "fwData/Material.hpp"
+#include <fwData/Model.hpp>
+#include <fwData/TriangularMesh.hpp>
+#include <fwData/Material.hpp>
 #include "ModelTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ModelTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ModelTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void ModelTest::setUp()
 {
@@ -44,5 +49,5 @@ void ModelTest::methode1()
     CPPUNIT_ASSERT_EQUAL(model->getRefMap()[tri], mat);
 }
 
-
-
+} //namespace ut
+} //namespace fwData

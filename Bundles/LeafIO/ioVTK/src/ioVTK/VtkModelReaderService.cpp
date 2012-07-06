@@ -26,7 +26,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <vtkIO/MeshReader.hpp>
+#include <vtkIO/TriangularMeshReader.hpp>
 
 #include "ioVTK/VtkModelReaderService.hpp"
 
@@ -89,8 +89,9 @@ void VtkModelReaderService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath();
+        _sDefaultPath = result->getPath().parent_path();
         m_fsMeshPath = result->getPath();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         m_bServiceIsConfigured = true;
     }
 }
@@ -150,7 +151,7 @@ void VtkModelReaderService::loadMesh( const ::boost::filesystem::path vtkFile, :
 {
     SLM_TRACE_FUNC();
 
-    ::vtkIO::MeshReader::NewSptr myReader;
+    ::vtkIO::TriangularMeshReader::NewSptr myReader;
     myReader->setObject(_pTriangularMesh);
     myReader->setFile(vtkFile);
 

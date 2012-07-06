@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 
 #include "fwData/List.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::List,  ::fwData::List);
+fwDataRegisterMacro( ::fwData::List );
 
 namespace fwData
 {
@@ -31,42 +31,24 @@ List::~List()
 
 //------------------------------------------------------------------------------
 
-List &List::getRefContainer()
-{
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-List const &List::getRefContainer() const
-{
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
 void List::shallowCopy( List::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    (ObjectListType)(*this) = (ObjectListType)(*(_source.get()));
+    this->fieldShallowCopy( _source );
+    m_attrContainer = _source->m_attrContainer;
 }
 
 //------------------------------------------------------------------------------
 
 void List::deepCopy( List::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
 
-    this->clear();
-
-    for(    List::Container::const_iterator iter = _source->begin();
-            iter != _source->end();
-            ++iter )
-    {
-        ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( (*iter)->getClassname() );
-        newObj->deepCopy( *iter );
-        this->push_back( ::fwData::Object::dynamicCast( newObj ) );
-    }
+    m_attrContainer.clear();
+    std::transform(
+            _source->begin(), _source->end(),
+            std::back_inserter(m_attrContainer),
+            &::fwData::Object::copy< ValueType::element_type >
+    );
 }
 
 //------------------------------------------------------------------------------

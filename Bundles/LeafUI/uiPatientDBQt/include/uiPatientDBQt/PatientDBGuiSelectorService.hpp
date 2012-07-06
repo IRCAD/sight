@@ -59,7 +59,7 @@ protected:
     /// Updated the PatientDB m_imageSelectedId field with the last added image of the patient given by its index in PatientDB
     void selectLastAddedImage(int patientIndex);
 
-protected slots:
+protected Q_SLOTS:
 
     /**
     * @brief This method is called when the value change.

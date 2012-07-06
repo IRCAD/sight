@@ -1,0 +1,11 @@
+<profile name="IoGdcmTest" version="0.1">
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+
+    <activate id="io" version="0-1" />
+    <activate id="ioGdcm" version="0-1" />
+
+    <start id="ioGdcm" />
+
+</profile>

@@ -108,8 +108,10 @@ void ServiceFactory::parseBundleInformation()
         }
     }
 
+#if SPYLOG_LEVEL >= 5
     //Print information
     this->printInfoMap( bundleInfoMap );
+#endif
 
     // Merge data info
     BOOST_FOREACH(SrvRegContainer::value_type bundle, bundleInfoMap)
@@ -134,14 +136,16 @@ void ServiceFactory::parseBundleInformation()
 
     }
 
+#if SPYLOG_LEVEL >= 5
     //Print information
     this->printInfoMap( m_srvImplTosrvInfo );
+#endif
     this->checkServicesNotDeclaredInPluginXml();
 }
 
 //-----------------------------------------------------------------------------
 
-IService::sptr ServiceFactory::create( const std::string & _srvType, const std::string & _srvImpl )
+IService::sptr ServiceFactory::create( const std::string & _srvImpl )
 {
     IService::sptr service;
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
@@ -149,7 +153,6 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     ServiceFactoryInfo::sptr info = iter->second;
 
     OSLM_DEBUG("SR create a new service ( classname = " << _srvImpl << " )");
-    OSLM_ASSERT("Sorry, type of service must correspond. "<< _srvType << " != " << info->serviceType, _srvType == info->serviceType);
     if ( info->factory )
     {
         service = info->factory->create();
@@ -166,6 +169,19 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     }
 
     this->checkServicesNotDeclaredInPluginXml();
+    return service;
+}
+
+
+//-----------------------------------------------------------------------------
+
+IService::sptr ServiceFactory::create( const std::string & _srvType, const std::string & _srvImpl )
+{
+    IService::sptr service = this->create(_srvImpl);
+    OSLM_ASSERT(
+                "Sorry, type of service must correspond. "
+                << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType,
+                _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType);
     return service;
 }
 
@@ -260,7 +276,7 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
     BOOST_FOREACH(SrvRegContainer::value_type srv, m_srvImplTosrvInfo)
     {
         ServiceFactoryInfo::sptr srvInfo = srv.second;
-        if(srvInfo->serviceType == type && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwTools::Object") )
+        if(srvInfo->serviceType == type && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwData::Object") )
         {
             serviceImpl.push_back(srv.first);
         }
@@ -272,7 +288,7 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
 
 std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( std::string object, std::string type )
 {
-    SLM_ASSERT("Sorry, this case is not managed ", object != "::fwTools::Object" );
+    SLM_ASSERT("Sorry, this case is not managed ", object != "::fwData::Object" );
 
     std::string serviceImpl = "";
     bool genericImplIsFound = false;
@@ -289,7 +305,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( std::st
                 specificImplIsFound = true;
                 serviceImpl = srv.first;
             }
-            else if ( srvInfo->objectImpl == "::fwTools::Object" )
+            else if ( srvInfo->objectImpl == "::fwData::Object" )
             {
                 OSLM_ASSERT("Sorry, method has already found a generic service for the object (" << srvInfo->objectImpl << ").", ! genericImplIsFound );
                 genericImplIsFound = true;
@@ -318,14 +334,14 @@ std::string ServiceFactory::getServiceDescription(std::string srvImpl)
 
 //-----------------------------------------------------------------------------
 
-bool ServiceFactory::checkServiceValidity(const std::string & object, const std::string & srvImpl)
+bool ServiceFactory::checkServiceValidity(const std::string & objectClassName, const std::string & srvImpl)
 {
     bool isValid = true;
     isValid &= (m_srvImplTosrvInfo.find(srvImpl)!= m_srvImplTosrvInfo.end());
     if (isValid)
     {
         ServiceFactoryInfo::sptr srvInfo = m_srvImplTosrvInfo[srvImpl];
-        isValid &= (srvInfo->objectImpl == "::fwTools::Object" || srvInfo->objectImpl == object);
+        isValid &= (srvInfo->objectImpl == "::fwData::Object" || srvInfo->objectImpl == objectClassName);
     }
     return isValid;
 }
@@ -339,7 +355,7 @@ bool ServiceFactory::support(const std::string & object, const std::string & srv
     if (isSupported)
     {
         ServiceFactoryInfo::sptr srvInfo = m_srvImplTosrvInfo[srvImpl];
-        isSupported &= (srvInfo->objectImpl == "::fwTools::Object" || srvInfo->objectImpl == object);
+        isSupported &= (srvInfo->objectImpl == "::fwData::Object" || srvInfo->objectImpl == object);
         isSupported &= (srvInfo->serviceType == srvType);
     }
     return isSupported;
@@ -361,7 +377,7 @@ bool ServiceFactory::support(const std::string & object, const std::string & srv
         BOOST_FOREACH(SrvRegContainer::value_type srv, m_srvImplTosrvInfo)
         {
             ServiceFactoryInfo::sptr srvInfo = srv.second;
-            if(srvInfo->serviceType == srvType && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwTools::Object") )
+            if(srvInfo->serviceType == srvType && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwData::Object") )
             {
                 isSupported = true;
                 break;

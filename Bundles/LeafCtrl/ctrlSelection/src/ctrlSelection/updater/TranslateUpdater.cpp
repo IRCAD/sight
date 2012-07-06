@@ -30,9 +30,9 @@ REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::Transl
 
 TranslateUpdater::TranslateUpdater() throw()
 {
-    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_FIELDS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,27 +63,27 @@ void TranslateUpdater::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( :
         if( obj->getID() == uuid)
         {
             //  test if message correspond to a defined event
-            if( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+            if( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
             {
-                ::fwData::Composite::sptr addedFields = compositeMsg->getAddedFields();
+                ::fwData::Composite::sptr addedFields = compositeMsg->getAddedKeys();
                 if (addedFields->find(fromKey) != addedFields->end())
                 {
                     // Udpate the composite object referenced by the composite key
                     this->updateComposite(composite, (*addedFields)[fromKey] , toKey , ADD );
                 }
             }
-            else if (compositeMsg->hasEvent( ::fwComEd::CompositeMsg::SWAPPED_FIELDS ))
+            else if (compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ))
             {
-                ::fwData::Composite::sptr swappedFields = compositeMsg->getSwappedNewFields();
+                ::fwData::Composite::sptr swappedFields = compositeMsg->getNewChangedKeys();
                 if (swappedFields->find(fromKey) != swappedFields->end())
                 {
                     // Udpate the composite object referenced by the composite key
                     this->updateComposite(composite, (*swappedFields)[fromKey] , toKey , SWAP );
                 }
             }
-            else if( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ))
+            else if( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ))
             {
-                ::fwData::Composite::sptr removedFields = compositeMsg->getRemovedFields();
+                ::fwData::Composite::sptr removedFields = compositeMsg->getRemovedKeys();
                 if (removedFields->find(fromKey) != removedFields->end())
                 {
                     // Udpate the composite object referenced by the composite key

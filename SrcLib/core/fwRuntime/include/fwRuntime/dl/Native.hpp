@@ -60,7 +60,7 @@ struct Native
      *
      * @return  true or false
      */
-    virtual const bool isLoaded() const throw() = 0;
+    virtual bool isLoaded() const throw() = 0;
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.

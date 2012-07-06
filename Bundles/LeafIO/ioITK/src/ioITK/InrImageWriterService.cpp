@@ -36,9 +36,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioITK::InrImageWriterService , ::fwData::Ima
 
 //------------------------------------------------------------------------------
 
-InrImageWriterService::InrImageWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImagePath("")
+InrImageWriterService::InrImageWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -48,8 +46,10 @@ InrImageWriterService::~InrImageWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType InrImageWriterService::getIOPathType() const
+{
+    return ::io::FILE;
+}
 
 //------------------------------------------------------------------------------
 
@@ -68,9 +68,13 @@ void InrImageWriterService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath();
-        m_fsImagePath = result->getPath();
-        m_bServiceIsConfigured = true;
+        _sDefaultPath = result->getPath().parent_path();
+        this->setFile( result->getPath() );
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -134,7 +138,7 @@ void InrImageWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
@@ -142,7 +146,7 @@ void InrImageWriterService::updating() throw(::fwTools::Failed)
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveImage(m_fsImagePath,associatedImage);
+        saveImage(this->getFile(),associatedImage);
         cursor.setDefaultCursor();
     }
 }

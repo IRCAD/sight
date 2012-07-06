@@ -46,6 +46,8 @@ void IGuiContainerSrv::initialize()
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
     if( ! vectGui.empty() )
     {
+        SLM_ASSERT("Sorry, no <registry> tag is allowed in <gui> section", vectGui.at(0)->find("registry").empty())
+
         // find view LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
         if( ! vectLayoutMng.empty() )

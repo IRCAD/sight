@@ -13,6 +13,7 @@
 #include "fwData/config.hpp"
 #include "fwData/PointList.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -28,13 +29,21 @@ class FWDATA_CLASS_API Tag : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwTools::Factory::New< Tag >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwData::Factory::New< Tag >) ;
+
+    fwDataObjectMacro();
 
     fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, the list of points )
 
     fwGettersSettersDocMacro(Type, sType, std::string, the type of tag)
 
     fwGettersSettersDocMacro(Size, size, double, the size of the tag)
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( Tag::csptr source );
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( Tag::csptr source );
 
 protected :
 

@@ -8,7 +8,7 @@
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 
-#include <fwData/visitor/accept.hpp>
+#include <fwXML/visitor/accept.hpp>
 #include <fwData/Node.hpp>
 #include <fwData/Port.hpp>
 
@@ -30,7 +30,7 @@ NodeXMLTranslator::~NodeXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr NodeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr NodeXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Node::sptr graphNode = ::fwData::Node::dynamicCast(obj);
     SLM_ASSERT("graphNode not instanced", graphNode);
@@ -68,7 +68,7 @@ xmlNodePtr NodeXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void NodeXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr source)
+void NodeXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate, xmlNodePtr source)
 {
     xmlNodePtr nodeObject = XMLParser::nextXMLElement(source->children);
     OSLM_DEBUG("NodeXMLTranslator::updateDataFromXML first XML child" << (const char *) nodeObject->name );

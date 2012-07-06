@@ -5,31 +5,30 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRuntime/Plugin.hpp"
-
-
+#include "fwRuntime/ConfigurationElement.hpp"
 
 namespace fwRuntime
 {
 
-
+//------------------------------------------------------------------------------
 
 ::boost::shared_ptr<Bundle> Plugin::getBundle() const throw()
 {
     return m_bundle;
 }
 
+//------------------------------------------------------------------------------
 
-
-void Plugin::setInitializationData(const ::boost::shared_ptr<ConfigurationElement>) throw()
+void Plugin::setInitializationData(const ConfigurationElement::sptr) throw()
 {}
 
-
+//------------------------------------------------------------------------------
 
 void Plugin::setBundle( ::boost::shared_ptr<Bundle> bundle) throw()
 {
     m_bundle = bundle;
 }
 
-
+//------------------------------------------------------------------------------
 
 } // namespace fwRuntime

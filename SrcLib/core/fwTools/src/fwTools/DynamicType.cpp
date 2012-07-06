@@ -111,6 +111,22 @@ bool DynamicType::isSigned()
     return isSigned;
 }
 
+template<>
+std::string getString(const DynamicType &dt)
+{
+    return dt.string();
+}
+
+
+template<>
+std::string getString(const std::vector<DynamicType> &dtv)
+{
+    return getString(dtv.begin(), dtv.end());
+}
+
+
+
+
 
 } // end namespace fwTools {
 

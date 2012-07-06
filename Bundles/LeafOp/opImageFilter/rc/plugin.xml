@@ -8,7 +8,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::opImageFilter::action::ImageFilter</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
     
 </plugin>

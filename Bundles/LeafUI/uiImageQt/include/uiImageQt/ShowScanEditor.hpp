@@ -80,7 +80,7 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * @brief This method is called when the scan button is clicked.
      *

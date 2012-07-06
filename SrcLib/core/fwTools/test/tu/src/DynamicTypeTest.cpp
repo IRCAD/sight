@@ -9,7 +9,12 @@
 #include "DynamicTypeTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( DynamicTypeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::DynamicTypeTest );
+
+namespace fwTools
+{
+namespace ut
+{
 
 void DynamicTypeTest::setUp()
 {
@@ -21,7 +26,7 @@ void DynamicTypeTest::tearDown()
     // Clean up after the test run.
 }
 
-void DynamicTypeTest::methode1()
+void DynamicTypeTest::typeTest()
 {
     const std::string TYPE = "double";
     ::fwTools::DynamicType type1 = ::fwTools::makeDynamicType<int>();
@@ -32,3 +37,7 @@ void DynamicTypeTest::methode1()
     CPPUNIT_ASSERT(type2.isType<double>());
     CPPUNIT_ASSERT_EQUAL(type2.string(), TYPE );
 }
+
+} // namespace ut
+} // namespace fwTools
+

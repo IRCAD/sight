@@ -32,10 +32,10 @@ namespace vtkSimpleMesh
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
- * Service rendering a ::fwData::TriangularMesh using VTK.
+ * Service rendering a ::fwData::Mesh using VTK.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::TriangularMesh)
+ * REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::Mesh)
  */
 class VTKSIMPLEMESH_CLASS_API RendererService : public fwRender::IRender
 {

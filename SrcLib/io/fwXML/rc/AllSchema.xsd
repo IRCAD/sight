@@ -21,8 +21,6 @@
 <xsd:include schemaLocation="Acquisition.xsd"/>
 <xsd:include schemaLocation="Study.xsd"/>
 <xsd:include schemaLocation="Reconstruction.xsd"/>
-<xsd:include schemaLocation="TransfertFunction.xsd"/>
-<xsd:include schemaLocation="TransfertFunctionPoint.xsd"/>
 <xsd:include schemaLocation="Color.xsd"/>
 
 

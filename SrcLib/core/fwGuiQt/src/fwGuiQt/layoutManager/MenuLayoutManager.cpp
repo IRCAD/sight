@@ -63,7 +63,11 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 
         action->setSeparator(actionInfo.m_isSeparator);
 
-
+        if (!actionInfo.m_icon.empty())
+        {
+            QIcon icon(QString::fromStdString(actionInfo.m_icon));
+            action->setIcon(icon);
+        }
         if (actionInfo.m_type == ::fwGui::layoutManager::IMenuLayoutManager::QUIT)
         {
             action->setMenuRole(QAction::QuitRole);
@@ -129,7 +133,6 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 
 void MenuLayoutManager::destroyLayout()
 {
-    QMenu* menu = m_parent->getQtMenu();
     this->destroyActions();
     m_menuItems.clear();
     m_parent->clean();

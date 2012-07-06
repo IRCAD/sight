@@ -287,12 +287,6 @@ void QfwToolBox::setItemEnabled(int index, bool enabled)
         return;
 
     c->button->setEnabled(enabled);
-    if (!enabled)
-    {
-        int curIndexUp = index;
-        int curIndexDown = curIndexUp;
-        const int count = this->pageList.count();
-    }
 }
 
 //-----------------------------------------------------------------------------

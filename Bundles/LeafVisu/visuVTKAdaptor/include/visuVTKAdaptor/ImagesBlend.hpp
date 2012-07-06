@@ -43,7 +43,7 @@ public:
 
     VISUVTKADAPTOR_API virtual ~ImagesBlend() throw();
 
-    VISUVTKADAPTOR_API void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
+    void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
 
 protected :
 
@@ -53,18 +53,13 @@ protected :
     public:
         ImageInfo():
             m_useTFAlfa(false),
-            m_useImageTF(true),
-            m_imageOpacity(1.0),
-            m_tfSelection("")
+            m_imageOpacity(1.0)
         {}
 
         bool   m_useTFAlfa;
-        bool   m_useImageTF;
         double m_imageOpacity;
-
-        /// Identifier of the field containing the specific selection of TransfertFunction
-        /// if m_tfSelection is empty => use default TF selection
-        std::string m_tfSelection;
+        std::string m_tfSelectionFwID;
+        std::string m_selectedTFKey;
 
         ::fwServices::IService::wptr m_comChannel;
     };
@@ -79,6 +74,9 @@ protected :
 
     void addImageAdaptors();
     void removeImageAdaptors();
+
+    /// Return true if images to blend have the same spacing, origin and size. Else show a message dialog and return false
+    bool checkImageInformations();
 
     std::vector<std::string> m_imageIds;
     typedef std::map< std::string, SPTR(ImageInfo) > ImageInfoMap;

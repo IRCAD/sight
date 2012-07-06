@@ -25,7 +25,7 @@ PlaneXMLTranslator::~PlaneXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr PlaneXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr PlaneXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
 
     ::fwData::Plane::sptr pPlane = ::fwData::Plane::dynamicCast(obj);
@@ -46,7 +46,7 @@ xmlNodePtr PlaneXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void PlaneXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
     //get its label
@@ -67,15 +67,15 @@ void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
             else if ( nodeName == "points" )
             {
                 xmlNodePtr pointsNode = XMLParser::nextXMLElement( elementNode->children );
-                int p = 0;
+                unsigned int p = 0;
                 while ( pointsNode )
                 {
                     std::string pointName = (const char *) pointsNode->name;
                     if ( pointName == "Point" )
                     {
                         // Load Point
-                        ::fwTools::Object::sptr valueObj;
-                        valueObj = Serializer().ObjectsFromXml( pointsNode, true );
+                        ::fwData::Object::sptr valueObj;
+                        valueObj = Serializer().ObjectsFromXml( pointsNode );
 
                         // Add point in the vector
                         SLM_ASSERT("valueObj not instanced", valueObj);
@@ -86,6 +86,7 @@ void PlaneXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  x
                     }
                     pointsNode = XMLParser::nextXMLElement( pointsNode->next );
                 }
+                pPlane->computePlaneFromPoints();
             }
 
             // Element ++

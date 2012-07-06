@@ -82,7 +82,7 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * @brief Show a file dialog and notify the scene must be printed.
      */

@@ -43,7 +43,7 @@ struct Win32 : public Native
      *
      * @return  true or false
      */
-    const bool isLoaded() const throw();
+    bool isLoaded() const throw();
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.

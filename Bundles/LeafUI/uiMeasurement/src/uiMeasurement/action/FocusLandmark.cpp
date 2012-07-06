@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwServices/macros.hpp>
@@ -11,13 +13,11 @@
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
-#include <fwData/PatientDB.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
@@ -87,7 +87,7 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
-    if ( pImage->getBuffer()==NULL )
+    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(pImage))
     {
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Add landmarks");
@@ -103,10 +103,10 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
         // get landmarks
         namespace ns = ::fwComEd::fieldHelper;
         ns::MedicalImageHelpers::checkLandmarks(  pImage );
-        ::fwData::PointList::sptr landmarks =  pImage->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+        ::fwData::PointList::sptr landmarks =  pImage->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
-        if( landmarks->getCRefPoints().size() == 0 )
+        if( landmarks->getCRefPoints().empty() )
         {
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Focus landmarks");
@@ -117,19 +117,17 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
         }
         else
         {
-            // Retreive point names
+            // Retrieve point names
             std::vector< std::string > names;
             std::map< std::string, ::fwData::Point::sptr > name2Point;
 
             ::fwData::PointList::PointListContainer points = landmarks->getCRefPoints();
-            for(    ::fwData::PointList::PointListContainer::iterator itPoint = points.begin();
-                    itPoint != points.end();
-                    ++itPoint )
+            BOOST_FOREACH(::fwData::Point::sptr point, points)
             {
-                std::string name =  (*itPoint)->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_labelId )->value();
+                std::string name =  point->getField< ::fwData::String >( ::fwComEd::Dictionary::m_labelId )->value();
                 OSLM_DEBUG( "Point name " << name );
                 names.push_back( name );
-                name2Point[name] = (*itPoint);
+                name2Point[name] = point;
             }
 
             // Propose to user to choose a landmark
@@ -142,21 +140,21 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
                 ::fwData::Point::sptr selectedPoint = name2Point[ selection ];
                 SLM_ASSERT("selectedPoint not instanced", selectedPoint);
                 ::fwData::Integer::NewSptr paramA;
-                paramA->value() = selectedPoint->getRefCoord()[2] /  pImage->getCRefSpacing()[2];
+                paramA->value() = static_cast<int>((selectedPoint->getRefCoord()[2] - pImage->getOrigin()[2] )/  pImage->getSpacing()[2] +0.5);
                 ::fwData::Integer::NewSptr paramF;
-                paramF->value() = selectedPoint->getRefCoord()[1] /  pImage->getCRefSpacing()[1];
+                paramF->value() = static_cast<int>((selectedPoint->getRefCoord()[1] -  pImage->getOrigin()[1])/  pImage->getSpacing()[1] +0.5);
                 ::fwData::Integer::NewSptr paramS;
-                paramS->value() = selectedPoint->getRefCoord()[0] /  pImage->getCRefSpacing()[0];
+                paramS->value() = static_cast<int>((selectedPoint->getRefCoord()[0] -  pImage->getOrigin()[0])/  pImage->getSpacing()[0] +0.5);
                 if( paramS->value() >= 0 &&
                         paramF->value() >= 0 &&
                         paramA->value() >= 0 &&
-                        pImage->getCRefSize()[0] > paramS->value() &&
-                        pImage->getCRefSize()[1] > paramF->value() &&
-                        pImage->getCRefSize()[2] > paramA->value() )
+                        pImage->getSize()[0] > paramS->value() &&
+                        pImage->getSize()[1] > paramF->value() &&
+                        pImage->getSize()[2] > paramA->value() )
                 {
-                    pImage->setFieldSingleElement( ::fwComEd::Dictionary::m_axialSliceIndexId, paramA );
-                    pImage->setFieldSingleElement( ::fwComEd::Dictionary::m_frontalSliceIndexId, paramF );
-                    pImage->setFieldSingleElement( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramS );
+                    pImage->setField( ::fwComEd::Dictionary::m_axialSliceIndexId, paramA );
+                    pImage->setField( ::fwComEd::Dictionary::m_frontalSliceIndexId, paramF );
+                    pImage->setField( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramS );
 
                     // notify
                     ::fwComEd::ImageMsg::NewSptr msg;

@@ -6,16 +6,14 @@
 
 #include <boost/foreach.hpp>
 
-
-#include <fwTools/helpers.hpp>
-
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Factory.hpp>
@@ -178,6 +176,8 @@ void NegatoWindowingInteractor::configuring() throw(fwTools::Failed)
     SLM_ASSERT("Tag config is required", m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setPickerId( m_configuration->getAttributeValue("picker") );
+
+    this->parseTFConfig( m_configuration );
 }
 
 //------------------------------------------------------------------------------
@@ -201,9 +201,9 @@ void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
 
 void NegatoWindowingInteractor::doUpdate() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
 }
 
 //------------------------------------------------------------------------------
@@ -249,13 +249,8 @@ void NegatoWindowingInteractor::startWindowing( )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->doUpdate();
 
-    ::fwComEd::fieldHelper::MedicalImageHelpers::updateMinMaxFromTF( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
-
-    int max = m_windowMax->value();
-    int min = m_windowMin->value();
-
-    m_initialLevel = 0.5*(min + max);
-    m_initialWindow = max - min;
+    m_initialLevel = this->getLevel();
+    m_initialWindow = this->getWindow();
 }
 
 //------------------------------------------------------------------------------
@@ -271,40 +266,12 @@ void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
 
     double newWindow = m_initialWindow + dw;
     double newLevel  = m_initialLevel - dl;
-    double rmin, rmax;
 
-    if ( fabs( newLevel ) < 0.01 )
-    {
-        newLevel = 0.01 * ( newLevel < 0 ? -1 : 1 );
-    }
+    this->setWindow( newWindow );
+    this->setLevel( newLevel );
+    this->notifyTFWindowing( this->getSptr() );
 
-    //window's min value  thresholded to 10.01
-    if ( newWindow <= 10.01 )
-    {
-        newWindow = 10.01;
-    }
-
-    rmin = newLevel - 0.5*fabs( newWindow );
-    rmax = rmin + fabs( newWindow );
-
-    SLM_ASSERT("Max should be greater than min", rmax > rmin );
-    SLM_ASSERT("TF doesn't support max - min <= 10 [see ACH]", rmax - rmin > 10 );
-
-    if(m_windowMax->value() != rmax || m_windowMin->value() != rmin)
-    {
-        m_windowMax->value() = rmax;
-        m_windowMin->value() = rmin;
-
-        // Update TF
-        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
-
-        // Fire the message
-        ::fwComEd::ImageMsg::NewSptr msg;
-        msg->setWindowMinMax(m_windowMin, m_windowMax);
-        ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
-
-        this->setVtkPipelineModified();
-    }
+    this->setVtkPipelineModified();
 }
 
 void NegatoWindowingInteractor::resetWindowing()
@@ -312,29 +279,12 @@ void NegatoWindowingInteractor::resetWindowing()
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     double newWindow = image->getWindowWidth();
     double newLevel  = image->getWindowCenter();
-    double rmin, rmax;
 
-    rmin = newLevel - 0.5*fabs( newWindow );
-    rmax = rmin + fabs( newWindow );
+    this->setWindow( newWindow );
+    this->setLevel( newLevel );
+    this->notifyTFWindowing( this->getSptr() );
 
-    SLM_ASSERT("Max should be greater than min", rmax > rmin );
-    SLM_ASSERT("TF doesn't support max - min <= 10 [see ACH]", rmax - rmin > 10 );
-
-    if(m_windowMax->value() != rmax || m_windowMin->value() != rmin)
-    {
-        m_windowMax->value() = rmax;
-        m_windowMin->value() = rmin;
-
-        // Update TF
-        ::fwComEd::fieldHelper::MedicalImageHelpers::updateTFFromMinMax( m_windowMin, m_windowMax, this->getCurrentTransfertFunction() );
-
-        // Fire the message
-        ::fwComEd::ImageMsg::NewSptr msg;
-        msg->setWindowMinMax(m_windowMin, m_windowMax);
-        ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
-
-        this->setVtkPipelineModified();
-    }
+    this->setVtkPipelineModified();
 }
 
 

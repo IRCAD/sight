@@ -17,7 +17,12 @@
 #include "RuntimeTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( RuntimeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwRuntime::ut::RuntimeTest );
+
+namespace fwRuntime
+{
+namespace ut
+{
 
 void RuntimeTest::setUp()
 {
@@ -32,9 +37,9 @@ void RuntimeTest::tearDown()
 void RuntimeTest::testRuntime()
 {
     // Bundles location
-    boost::filesystem::path location = boost::filesystem::current_path() / "Bundles/";
+    ::boost::filesystem::path location = ::boost::filesystem::current_path() / "Bundles/";
 
-    if (boost::filesystem::exists(location))
+    if (::boost::filesystem::exists(location))
     {
         ::fwRuntime::Runtime * runtime = ::fwRuntime::Runtime::getDefault();
 
@@ -57,5 +62,8 @@ void RuntimeTest::testRuntime()
         CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceConfig"));
         CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::AppConfig"));
     }
-
 }
+
+} // namespace ut
+} // namespace fwTools
+

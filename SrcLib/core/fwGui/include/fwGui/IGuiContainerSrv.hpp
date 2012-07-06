@@ -71,29 +71,40 @@ protected :
                 <toolBar sid="toolbar1" start="yes" />
                 <view sid="subView3" start="yes" />
                 <view wid="subView4" />
+                <view sid="subView5" />
             </registry>
         </service>
       @endverbatim
      *  - <layout type="::fwGui::LineLayoutManager" > : give the type of layout.
-     *    - \b type {::fwGui::LineLayoutManager |::fwGui::CardinalLayoutManager |::fwGui::TabLayoutManager} :
+     *    - \b type {::fwGui::LineLayoutManager |::fwGui::CardinalLayoutManager |::fwGui::TabLayoutManager |::fwGui::ToolboxLayoutManager} :
      *     - \b ::fwGui::LineLayoutManager : all views will be on the same line or column (it depends of the orientation value attribute)
      *           @see ::fwGui::layoutManager::LineLayoutManagerBase
      *     - \b ::fwGui::CardinalLayoutManager : all views will be added around a central view define by the align attribute.
      *           @see ::fwGui::layoutManager::CardinalLayoutManagerBase
      *     - \b ::fwGui::TabLayoutManager : all views will be draw as tab.
      *           @see ::fwGui::layoutManager::TabLayoutManagerBase
+     *     - \b ::fwGui::ToolboxLayoutManager : all views will be draw in toolbox.
+     *           @see ::fwGui::layoutManager::ToolboxLayoutManagerBase
      *  - The toolBar section isn't mandatory.
-     *   @warning
-     *   - The order of the menu in each section (gui and registry) must be the same.\n
-     *  For example: the view caption "view3" will be connected with the service which have the sid = "subView3" and so one (it also could be a wid).
      *
-     *  @see ::fwGui::registrar::ViewRegistrar::initialize(), ::fwGui::layoutManager::IViewLayoutManager::initialize(), ::fwGui::builder::IToolBarBuilder::initialize()
+     * @note The layout and registry sections can be empty. In this case no subview will be created.
+     *
+     * @warning
+     * - The order of the view in each section (gui and registry) must be the same.\n
+     *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" and so one (it also could be a wid).
+     *
+     * @see ::fwGui::registrar::ViewRegistrar::initialize(), ::fwGui::layoutManager::IViewLayoutManager::initialize(), ::fwGui::builder::IToolBarBuilder::initialize()
      */
-
     FWGUI_API void initialize();
 
+    /**
+     * @brief Creates view, sub-views and toolbar containers. Manages sub-views and toobar services.
+     *
+     * @pre Parent container must be registered.
+     */
     FWGUI_API void create();
 
+    /// Stops sub-views and toobar services. Destroys view, sub-views and toolbar containers.
     FWGUI_API void destroy();
 
 private:

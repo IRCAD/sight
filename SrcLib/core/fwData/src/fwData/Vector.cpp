@@ -4,11 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
-
+#include "fwData/registry/macros.hpp"
 #include "fwData/Vector.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Vector,  ::fwData::Vector);
+fwDataRegisterMacro( ::fwData::Vector );
 
 namespace fwData
 {
@@ -16,55 +15,33 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Vector::Vector()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 Vector::~Vector()
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-Vector &Vector::getRefContainer()
-{
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-Vector const &Vector::getRefContainer() const
-{
-    return *this;
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void Vector::shallowCopy( Vector::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    (ObjectVectorType)(*this) = (ObjectVectorType)(*(_source.get()));
+    this->fieldShallowCopy( _source );
+    m_attrContainer = _source->m_attrContainer;
 }
 
 //------------------------------------------------------------------------------
 
-void Vector::deepCopy( Vector::csptr _source )
+void Vector::deepCopy( Vector::csptr source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-
-    this->clear();
-
-    for(    Vector::Container::const_iterator iter = _source->begin();
-            iter != _source->end();
-            ++iter )
-    {
-        ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( (*iter)->getClassname() );
-        newObj->deepCopy( *iter );
-        this->push_back( ::fwData::Object::dynamicCast( newObj ) );
-    }
+    this->fieldDeepCopy( source );
+    m_attrContainer.clear();
+    m_attrContainer.resize(source->m_attrContainer.size());
+    std::transform(
+            source->begin(), source->end(),
+            this->begin(),
+            &::fwData::Object::copy< ValueType::element_type >
+    );
 }
 
 //------------------------------------------------------------------------------

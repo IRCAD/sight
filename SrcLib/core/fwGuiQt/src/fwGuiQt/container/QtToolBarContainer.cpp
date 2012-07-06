@@ -32,14 +32,14 @@ void QtToolBarContainer::clean()
     m_toolBar->clear();
 
     QList<QAction *> listAction = m_toolBar->findChildren<QAction *>();
-    foreach (QAction *a, listAction)
+    Q_FOREACH (QAction *a, listAction)
     {
         a->setParent(0);
         a->deleteLater();
     }
 
     QList<QMenu *> listMenu = m_toolBar->findChildren<QMenu *>();
-    foreach (QMenu *a, listMenu)
+    Q_FOREACH (QMenu *a, listMenu)
     {
         a->setParent(0);
         a->deleteLater();

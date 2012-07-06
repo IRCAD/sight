@@ -11,6 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Point.hpp"
 
 
@@ -28,7 +29,7 @@ class FWDATA_CLASS_API PointList : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (PointList)(::fwData::Object),
-        (()), ::fwTools::Factory::New< PointList >) ;
+        (()), ::fwData::Factory::New< PointList >) ;
 
     typedef std::vector< ::fwData::Point::sptr > PointListContainer;
 

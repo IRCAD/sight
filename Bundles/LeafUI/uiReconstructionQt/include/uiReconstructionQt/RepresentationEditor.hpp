@@ -70,9 +70,9 @@ protected:
     virtual void info( std::ostream &_sstream ) ;
 
     void notifyMaterial();
-    void notifyTriangularMesh();
+    void notifyMesh();
 
-protected slots:
+protected Q_SLOTS:
 
     void onChangeRepresentation( int id );
     void onChangeShading( int id );
@@ -87,7 +87,7 @@ private:
 
     QPointer<QButtonGroup> m_buttonGroup;
     QPointer<QButtonGroup> m_buttonGroupShading;
-    QPointer<QCheckBox> m_normalsCheckBox;
+    QPointer<QButtonGroup> m_normalsRadioBox ;
 
     ::fwData::Material::sptr m_material ;
 

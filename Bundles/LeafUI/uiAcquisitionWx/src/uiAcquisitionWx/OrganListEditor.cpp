@@ -149,15 +149,16 @@ void OrganListEditor::updateReconstructions()
     wxWindow* const container = wxContainer->getWxContainer();
     SLM_ASSERT("container not instanced", container);
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    container->Enable(acq->getReconstructions().first != acq->getReconstructions().second);
 
-    if(acq->getReconstructions().first != acq->getReconstructions().second)
+    bool hasReconstructions = !acq->getReconstructions().empty();
+
+    container->Enable(hasReconstructions);
+
+    if(hasReconstructions)
     {
-        ::fwData::Acquisition::ReconstructionIterator iter =  acq->getReconstructions().first;
-
-        for (; iter!=  acq->getReconstructions().second ; ++iter )
+        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, acq->getReconstructions())
         {
-            m_map[ (*iter)->getOrganName() ] = (*iter);
+            m_map[ rec->getOrganName() ] = rec;
         }
 
         wxArrayString organChoices ;
@@ -169,11 +170,9 @@ void OrganListEditor::updateReconstructions()
 
         m_organChoice->Append(organChoices);
 
-        bool showAllRec = true;
-        if (acq->getFieldSize("ShowReconstructions"))
-        {
-            showAllRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
-        }
+        bool showAllRec;
+        showAllRec = acq->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+
         m_showCheckBox->SetValue(!showAllRec);
         m_organChoice->Enable(!m_showCheckBox->IsChecked());
     }
@@ -222,10 +221,10 @@ void OrganListEditor::onOrganChoiceVisibility(wxCommandEvent & event )
 void OrganListEditor::onShowReconstructions(wxCommandEvent & event )
 {
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    acq->setFieldSingleElement("ShowReconstructions",  ::fwData::Boolean::NewSptr(!m_showCheckBox->IsChecked()) );
+    acq->setField("ShowReconstructions",  ::fwData::Boolean::NewSptr(!m_showCheckBox->IsChecked()) );
 
     ::fwComEd::AcquisitionMsg::NewSptr msg;
-    msg->addEvent( "ShowReconstructions" );
+    msg->addEvent( ::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS );
     ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
 
     m_organChoice->Enable(!m_showCheckBox->IsChecked());

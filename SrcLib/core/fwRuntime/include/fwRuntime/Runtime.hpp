@@ -77,6 +77,13 @@ struct Runtime
     FWRUNTIME_API void addBundle( ::boost::shared_ptr< Bundle > bundle ) throw( RuntimeException );
 
     /**
+     * @brief       Unregister a bundle instance to the runtime system.
+     *
+     * @param[in]   bundle  a shared pointer to the bundle instance to unregister
+     */
+    FWRUNTIME_API void unregisterBundle( ::boost::shared_ptr< Bundle > bundle );
+
+    /**
      * @brief       Adds all bundle found in t he given path.
      *
      * @param[in]   repository  a path that may containing bundles
@@ -122,6 +129,13 @@ struct Runtime
      * @param[in]   factory a shared pointer to an executable factory
      */
     FWRUNTIME_API void addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException);
+
+    /**
+     * @brief       Unregister a new executable factory instance to the runtime system.
+     *
+     * @param[in]   factory a shared pointer to an executable factory
+     */
+    FWRUNTIME_API void unregisterExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory );
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -188,6 +202,13 @@ struct Runtime
     FWRUNTIME_API void addExtension( ::boost::shared_ptr<Extension> extension) throw(RuntimeException);
 
     /**
+     * @brief       Unregister a new extension.
+     *
+     * @param[in]   extension   a shared pointer to the extension to register
+     */
+    FWRUNTIME_API void unregisterExtension( ::boost::shared_ptr<Extension> extension);
+
+    /**
      * @brief   Retrieves the iterator on the beginning of the extension collection.
      *
      * @return  an iterator
@@ -225,6 +246,13 @@ struct Runtime
     FWRUNTIME_API void addExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point) throw(RuntimeException);
 
     /**
+     * @brief       Unregister a new extension point.
+     *
+     * @param[in]   point   a pointer to the extension point to register
+     */
+    FWRUNTIME_API void unregisterExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point);
+
+    /**
      * @brief       Retrieves the extension point instance matching the specified identifier.
      *
      * @param[in]   identifier  a string containing an extension point identifier
@@ -233,23 +261,6 @@ struct Runtime
      */
     FWRUNTIME_API ::boost::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string & identifier ) const;
     //@}
-
-#ifdef _USE_FW_THREADS
-    // all the threads currently alive - as soon as the thread terminates, it's
-    // removed from the array
-    wxArrayThread m_threads;
-
-    // crit section protects access to all of the arrays below
-    wxCriticalSection m_critsect;
-
-    // semaphore used to wait for the threads to exit, see MyFrame::OnQuit()
-    wxSemaphore m_semAllDone;
-
-    // the last exiting thread should post to m_semAllDone if this is true
-    // (protected by the same m_critsect)
-    bool m_waitingUntilAllDone;
-#endif
-
 
 private:
 
@@ -270,7 +281,6 @@ private:
      * @brief   Constructor.
      */
     Runtime();
-
 };
 
 

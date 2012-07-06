@@ -57,11 +57,7 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Point::sptr point = this->getObject< ::fwData::Point >();
 
-    std::string label;
-    if ( point->getFieldSize( ::fwComEd::Dictionary::m_labelId ) )
-    {
-        label = point->getFieldSingleElement< ::fwData::String>( ::fwComEd::Dictionary::m_labelId )->value();
-    }
+    std::string label = point->getField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New())->value() ;
 
     setText( label );
 

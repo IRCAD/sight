@@ -39,18 +39,16 @@ protected:
      */
     IOITK_API virtual ~InrImageReaderService() throw();
 
-    IOITK_API virtual void configuring() throw(::fwTools::Failed) ;
+    /// Override
+    virtual void starting() throw(::fwTools::Failed){};
 
     /// Override
-    IOITK_API virtual void starting() throw(::fwTools::Failed){};
-
-    /// Override
-    IOITK_API virtual void stopping() throw(::fwTools::Failed){};
+    virtual void stopping() throw(::fwTools::Failed){};
 
     IOITK_API virtual void updating() throw(::fwTools::Failed) ;
 
     /// Override
-    IOITK_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
+    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOITK_API void info(std::ostream &_sstream ) ;
@@ -58,16 +56,14 @@ protected:
     /// Override
     IOITK_API virtual void configureWithIHM();
 
+    /// Return managed file type, here FILE
+    IOITK_API ::io::IOPathType getIOPathType() const;
+
 private :
 
     void notificationOfDBUpdate();
 
     bool createImage( const ::boost::filesystem::path inrFileDir, ::fwData::Image::sptr _pImg );
-
-    bool m_bServiceIsConfigured;
-
-    ::boost::filesystem::path m_fsImagePath;
-
 };
 
 } // namespace ioITK

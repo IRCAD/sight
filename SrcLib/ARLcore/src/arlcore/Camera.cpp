@@ -352,7 +352,6 @@ bool arlCore::Camera::save( const std::string &fileName, bool overwrite ) const
     for( i=0 ; i<5 ; ++i )
         fprintf( file, "%lf ", m_distortionCoeffs[i] );
     fprintf( file, "0.0\n" );
-    double a,b,c,d,rms;
 
     fclose( file );
     return true;
@@ -651,7 +650,6 @@ bool arlCore::Camera::undistort2DPoint(const Point& p2D, Point& p2D_undistorted)
     const double pixSquareMax = 1e-50;
     const unsigned int IterationsMax = 50;
     if(!p2D.isVisible() || p2D.size()<2) return false;
-    const double tol=1e-12;
     double pinit[3]={p2D.x(),p2D.y(),1.0};
     vnl_vector<double> points2DH(3,3,pinit),points2DH_undistorted(3);
     unsigned int i, nbIterations=0;

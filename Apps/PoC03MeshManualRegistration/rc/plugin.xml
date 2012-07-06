@@ -106,7 +106,7 @@
                                 <adaptor id="CamPos2MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="view2">
                                     <config renderer="default" picker="" transform="myCam2PosMatrixTransform" />
                                 </adaptor>
-                                <adaptor id="Cam2MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCam2Mesh">
+                                <adaptor id="Cam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myCam2Mesh">
                                     <config renderer="default" picker="myPicker" transform="myCam2PosMatrixTransform" autoresetcamera="no" />
                                 </adaptor>
 
@@ -144,7 +144,7 @@
                                 <adaptor id="CamPos1MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="view1">
                                     <config renderer="default" picker="" transform="myCam1PosMatrixTransform" />
                                 </adaptor>
-                                <adaptor id="Cam1MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myCam1Mesh">
+                                <adaptor id="Cam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myCam1Mesh">
                                     <config renderer="default" picker="myPicker" transform="myCam1PosMatrixTransform" autoresetcamera="no" />
                                 </adaptor>
 
@@ -171,19 +171,19 @@
                         </item>
 
                         <item key="myCam2Mesh">
-                            <object uid="myCam2Mesh" type="::fwData::TriangularMesh">
+                            <object uid="myCam2Mesh" type="::fwData::Mesh">
 
                                 <service uid="myCamReaderFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
-                                <service uid="myCam2ReaderFile" implementation="::ioData::TriangularMeshReaderService" type="::io::IReader" autoComChannel="no">
-                                    <filename>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</filename>
+                                <service uid="myCam2ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no">
+                                    <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
                                 </service>
                             </object>
                         </item>
 
                         <item key="myCam1Mesh">
-                            <object uid="myCam1Mesh" type="::fwData::TriangularMesh">
-                                <service uid="myCam1ReaderFile" implementation="::ioData::TriangularMeshReaderService" type="::io::IReader" autoComChannel="no">
-                                    <filename>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</filename>
+                            <object uid="myCam1Mesh" type="::fwData::Mesh">
+                                <service uid="myCam1ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no">
+                                    <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
                                 </service>
                             </object>
                         </item>

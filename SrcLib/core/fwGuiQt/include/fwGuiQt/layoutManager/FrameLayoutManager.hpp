@@ -55,7 +55,7 @@ public:
      */
     FWGUIQT_API virtual void destroyFrame();
 
-private slots:
+private Q_SLOTS:
     void onCloseFrame();
 
 private:

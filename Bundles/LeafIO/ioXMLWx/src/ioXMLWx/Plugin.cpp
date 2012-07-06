@@ -42,7 +42,7 @@ class wxEvtHandlerOpenFile : public wxEvtHandler
     {
         OSLM_TRACE("wxEvtHandlerOpenFile::open :" << _event.GetString().mb_str() );
 
-        ::fwTools::Object::sptr pRootObject = ::fwServices::OSR::getRootObject();
+        ::fwData::Object::sptr pRootObject = ::fwServices::OSR::getRootObject();
         assert( pRootObject );
 
         ::fwData::Composite::sptr pComposite = ::fwData::Composite::dynamicCast( pRootObject );

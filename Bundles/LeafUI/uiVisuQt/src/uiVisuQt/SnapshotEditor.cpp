@@ -20,6 +20,7 @@
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 
@@ -43,7 +44,7 @@
 namespace uiVisu
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::SnapshotEditor , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::SnapshotEditor , ::fwData::Object ) ;
 
 
 SnapshotEditor::SnapshotEditor() throw()
@@ -166,8 +167,8 @@ void SnapshotEditor::onSnapButton()
             filename->value() = this->requestFileName();
             if(!filename->value().empty())
             {
-                dataInfo->setFieldSingleElement("sceneID", sceneID);
-                dataInfo->setFieldSingleElement("filename", filename);
+                dataInfo->setField("sceneID", sceneID);
+                dataInfo->setField("filename", filename);
                 ::fwComEd::CompositeMsg::NewSptr compositeMsg;
                 compositeMsg->addEvent( "SNAP", dataInfo );
                 ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
@@ -207,6 +208,7 @@ std::string SnapshotEditor::requestFileName()
     if (result)
     {
         fileName = result->getPath().string();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(result->getPath().parent_path()) );
     }
 
     return fileName;

@@ -24,9 +24,14 @@
 #include <fwTools/Factory.hpp>
 #include <fwTools/Failed.hpp>
 #include <fwCore/Demangler.hpp>
-#include <fwData/visitor/accept.hpp>
 
-#include "fwXML/Serializer.hpp"
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/policy/NeverDump.hpp>
+#include <fwMemory/policy/BarrierDump.hpp>
+#include <fwMemory/tools/MemoryMonitorTools.hpp>
+
+#include <fwXML/visitor/accept.hpp>
+
 #include "fwXML/visitor/Serialize.hpp"
 #include "fwXML/XML/XMLAggregator.hpp"
 #include "fwXML/XML/XMLHierarchy.hpp"
@@ -40,96 +45,54 @@
 #include "fwXML/visitor/CollectFileFormatService.hpp"
 #include "fwXML/validator/DataFolderValidator.hpp"
 
+#include "fwXML/Serializer.hpp"
 
 namespace fwXML
 {
-
-std::string ProcessedXMLFile = std::string();
 
 ::boost::filesystem::path Serializer::m_rootFolder(".");
 
 //------------------------------------------------------------------------------
 
-// an handler helper which transform a single file progress to a group of IO Operation
-struct HandlerHelper : public ::boost::signals::trackable
+Serializer::Serializer()
 {
-    void operator()(float OnFilePercent, std::string filename)
+    ::fwMemory::BufferManager::sptr manager;
+    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+
+    if( manager )
     {
-        OSLM_DEBUG( "HandlerHelper filename=" << filename << " "<< OnFilePercent << "%" );
-
-        m_serializer->notifyProgress( (OnFilePercent + m_currentStep)/m_nbSteps , filename );
-    }
-
-    Serializer *m_serializer;
-    int m_currentStep;
-    int m_nbSteps;
-};
-
-//------------------------------------------------------------------------------
-
-void Serializer::IOforExtraXML( ::fwTools::Object::sptr object , bool savingMode)
-{
-    SLM_TRACE_FUNC();
-
-    ::visitor::CollectFileFormatService collector;
-    ::fwData::visitor::accept( object , &collector );
-
-    HandlerHelper handlerHelper;
-    handlerHelper.m_serializer = this;
-    handlerHelper.m_currentStep = 0;
-    handlerHelper.m_nbSteps = collector.m_objWithFileFormatService.size();
-
-    try
-    {
-        BOOST_FOREACH(::visitor::CollectFileFormatService::MapObjectFileFormatService::value_type elem, collector.m_objWithFileFormatService)
+        ::fwMemory::IPolicy::sptr policy = manager->getDumpPolicy();
+        if( ::boost::dynamic_pointer_cast< ::fwMemory::policy::NeverDump >( policy ) )
         {
-            ::fwXML::IFileFormatService::sptr filedata = elem.second;
-            OSLM_ASSERT("No IFileFormatService found for Object "<<elem.first->getID(), ::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"));
-            filedata->rootFolder() = this->rootFolder();
-            ::boost::filesystem::path filePath =  filedata->getFullPath() ;
-            std::string msg = savingMode?"saving":"loading";
-            OSLM_DEBUG( msg<< " extraXML for " << elem.first->className() << "-" << object.get() << "filename=" << filePath.string() << std::endl );
+            ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
+            size_t aliveMemory = manager->getManagedBufferSize() - manager->getDumpedBufferSize();
+            size_t freeMemory = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
+            size_t barrier = std::max( aliveMemory, std::max( freeMemory, static_cast<size_t>(500L * 1024 * 1024) ) );
 
-            //notifyProgress( currentStep*1.0/nbSteps,  filePath.string() );
-
-            filedata->addHandler( handlerHelper );
-            savingMode ? filedata->save() : filedata->load() ;
-            // remove IFileFormatService in OSR
-            ::fwServices::OSR::unregisterService(filedata);
-            handlerHelper.m_currentStep++;
+            newDumpPolicy->setBarrier( barrier );
+            manager->setDumpPolicy( newDumpPolicy );
+            m_oldPolicy = policy;
         }
     }
-    catch (const std::exception & e)
-    {
-        OSLM_ERROR("Exception : " << e.what());
-        BOOST_FOREACH(::visitor::CollectFileFormatService::MapObjectFileFormatService::value_type elem, collector.m_objWithFileFormatService)
-        {
-            ::fwXML::IFileFormatService::sptr filedata = elem.second;
-            if (::fwServices::OSR::has(elem.first, "::fwXML::IFileFormatService"))
-            {
-                // remove IFileFormatService in OSR
-                ::fwServices::OSR::unregisterService(filedata);
-            }
-        }
-        throw;
-    }
-
-    notifyProgress(1.0,"Done");
 }
 
 //------------------------------------------------------------------------------
 
-Serializer::Serializer()
-{}
-
-//------------------------------------------------------------------------------
-
 Serializer::~Serializer()
-{}
+{
+    ::fwMemory::BufferManager::sptr manager;
+    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+
+    if( manager && m_oldPolicy )
+    {
+        manager->setDumpPolicy( m_oldPolicy );
+        m_oldPolicy.reset();
+    }
+}
 
 //------------------------------------------------------------------------------
 
-void Serializer::setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPolicy)
+void Serializer::setPathPolicy( IPathPolicy::sptr  newPathPolicy)
 {
     SLM_TRACE_FUNC();
     XMLPartitioner::getDefault()->setPathPolicy( newPathPolicy );
@@ -137,7 +100,7 @@ void Serializer::setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPolicy
 
 //------------------------------------------------------------------------------
 
-void Serializer::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSplitPolicy)
+void Serializer::setSplitPolicy( ISplitPolicy::sptr  newSplitPolicy)
 {
     SLM_TRACE_FUNC();
     XMLPartitioner::getDefault()->setSplitPolicy( newSplitPolicy );
@@ -145,33 +108,14 @@ void Serializer::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSplitPol
 
 //------------------------------------------------------------------------------
 
-int nbObjectHavingFileFormatService()
-{
-    int nbObjects = 0;
-    ::fwXML::XMLHierarchy::ObjectAggregatorMap::iterator aggIter;
-    aggIter= ::fwXML::XMLHierarchy::getDefault()->mapObjectAggregator().begin();
-    while( aggIter != ::fwXML::XMLHierarchy::getDefault()->mapObjectAggregator().end() )
-    {
-        ::fwTools::Object::sptr obj =  aggIter->first.lock();
-        if ( obj && ::fwServices::OSR::has(obj, "::fwXML::IFileFormatService") )
-        {
-            nbObjects++;
-        }
-        ++aggIter;
-    }
-    return nbObjects;
-}
-
-//------------------------------------------------------------------------------
-
-void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) throw (::fwTools::Failed)
+void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) throw (::fwTools::Failed)
 {
     // serialize
     std::ofstream ofs_xml( m_rootFolder.string().c_str() );
 
-    SLM_ASSERT("object not instanced", object); // check if object is well instanciated
+    SLM_ASSERT("object not instanced", object); // check if object is well instantiated
     OSLM_INFO( "Serializing to " <<   m_rootFolder.string().c_str() << "...." );
-    ProcessedXMLFile =  m_rootFolder.string();
+    m_processedXMLFile =  m_rootFolder.string();
 
     //reset all hierarchy informations
     ::fwXML::XMLHierarchy::getDefault()->clearAll();
@@ -185,7 +129,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
     while( aggIter != ::fwXML::XMLHierarchy::getDefault()->mapObjectAggregator().end() )
     {
-         ::boost::shared_ptr<fwTools::Object> obj =  aggIter->first.lock();
+         ::fwData::Object::sptr obj =  aggIter->first.lock();
          ::fwXML::XMLAggregator::sptr aggregator =  aggIter->second;
 
         // save aggregator only once
@@ -194,7 +138,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
             aggIter->second->rootFolder() = this->rootFolder();
             ::boost::filesystem::path filePath =  aggIter->second->getFullPath(); ;
             OSLM_DEBUG( "Saving XMLAggregator " << filePath.string() << "..." );
-            ProcessedXMLFile =  filePath.string();
+            m_processedXMLFile =  filePath.string();
             {
                 // create directory structure if needed
                 if ( filePath.parent_path().empty() == false )
@@ -209,10 +153,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
         ++aggIter;
     }
 
-    // save extra XML
-    IOforExtraXML( object, true );
-
-     ProcessedXMLFile =  m_rootFolder.string();
+    m_processedXMLFile =  m_rootFolder.string();
 
     if (saveSchema)// save schema if needed
     {
@@ -228,7 +169,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 // a) if not a Field ignore this child
 // b) else createObject on this child
 
-::fwTools::Object::sptr Serializer::ObjectsFromXml( xmlNodePtr xmlNode, bool loadExtraXML  )
+::fwData::Object::sptr Serializer::ObjectsFromXml( xmlNodePtr xmlNode )
 {
     xmlNodePtr child = xmlNode->children;
 
@@ -237,7 +178,7 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     if ( className.empty() )
     {
         std::string mesg = "Serializer::ObjectsFromXml : missing class attribute for xml node " + std::string( (const char*)xmlNode->name);
-        mesg+= " from file " + ProcessedXMLFile;
+        mesg+= " from file " + m_processedXMLFile;
         throw ::fwTools::Failed(mesg);
     }
 
@@ -251,14 +192,10 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
         return ObjectTracker::buildObject( className , idXML  );
     }
 
-     ::fwTools::Object::sptr newObject = ObjectTracker::buildObject( className , idXML  );
-    // warning do not duplicate FIELDS
-    newObject->children().clear();
+     ::fwData::Object::sptr newObject = ObjectTracker::buildObject( className , idXML  );
 
     assert( newObject.get() );
 
-    bool classicObject = ( xmlStrcmp( xmlNode->name, BAD_CAST "Field" ) != 0 ) ;
-    ::fwData::Object::sptr newDataObject = ::fwData::Object::dynamicCast( newObject );
     // classic object ignore all children expect Field
     // labeledObject manage all children
     while ( child!=NULL )
@@ -266,19 +203,10 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
         if ( child->type == XML_ELEMENT_NODE )
         {
             std::string nodeName((const char*)child->name );
-            // normal parent object ignore chlidren which are not Field
-            OSLM_DEBUG_IF( "ObjectsFromXml : " << xmlNode->name << " ignoring " << child->name, classicObject &&  nodeName != "Field" );
-            if (!classicObject || nodeName == "Field")
-            {
-                OSLM_DEBUG( "ObjectsFromXml : " <<  xmlNode->name << " accept " << child->name );
-                ::fwTools::Object::sptr newChild = this->ObjectsFromXml( child, loadExtraXML );
-                assert (newChild);
-                newObject->children().push_back( newChild );
-            }
 
-            if ( nodeName == "DynamicAttributes" && newDataObject)
+            if ( nodeName == "Attributes" )
             {
-                xmlNodePtr elementNode = xmlNextElementSibling(child->children);
+                xmlNodePtr elementNode = XMLParser::getChildrenXMLElement( child );
                 while (elementNode)
                 {
                     std::string nodeName = (const char *) elementNode->name;
@@ -292,23 +220,52 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
 
                         std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
 
-                        xmlNodePtr ConcretevalueNode = xmlNextElementSibling( valueNode->children );
+                        xmlNodePtr ConcretevalueNode = XMLParser::getChildrenXMLElement( valueNode );
                         SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
 
-                        ::fwTools::Object::sptr valueObj;
-                        valueObj = this->ObjectsFromXml( ConcretevalueNode, true );
-
+                        ::fwData::Object::sptr valueObj;
+                        valueObj = this->ObjectsFromXml( ConcretevalueNode );
                         SLM_ASSERT("valueObj not instanced", valueObj);
-                        assert( ::fwData::Object::dynamicCast( valueObj ));
 
-                        if(newDataObject->hasAttribute(key))
-                        {
-                            newDataObject->setAttribute(key, ::fwData::Object::dynamicCast( valueObj ));
-                        }
+                        OSLM_ASSERT("Sorry, attribute " << key << " already exists.", ! newObject->getField(key) );
+                        newObject->setField( key, valueObj );
                     }
-                    elementNode = xmlNextElementSibling(elementNode->next);
+                    elementNode = XMLParser::nextXMLElement( elementNode->next );
                 }
             }
+
+            if ( nodeName == "DynamicAttributes" )
+            {
+                xmlNodePtr elementNode = XMLParser::getChildrenXMLElement( child );
+                while (elementNode)
+                {
+                    std::string nodeName = (const char *) elementNode->name;
+                    if ( nodeName == "element" )
+                    {
+                        xmlNodePtr keyNode   = XMLParser::findChildNamed( elementNode, "key");
+                        xmlNodePtr valueNode = XMLParser::findChildNamed( elementNode, "value");
+                        SLM_ASSERT("keyNode not instanced", keyNode);
+                        SLM_ASSERT("valueNode not instanced", valueNode);
+                        OSLM_INFO( "CompositeXMLTranslator::updateDataFromXML"  << BAD_CAST xmlNodeGetContent(keyNode) );
+
+                        std::string key ( (char *)xmlNodeGetContent(keyNode)) ;
+
+                        xmlNodePtr ConcretevalueNode = XMLParser::getChildrenXMLElement( valueNode );
+                        SLM_ASSERT("ConcretevalueNode not instanced", ConcretevalueNode);
+
+                        ::fwData::Object::sptr valueObj;
+                        valueObj = this->ObjectsFromXml( ConcretevalueNode );
+                        SLM_ASSERT("valueObj not instanced", valueObj);
+
+                        if(newObject->hasAttribute(key))
+                        {
+                            newObject->setAttribute( key, valueObj );
+                        }
+                    }
+                    elementNode = XMLParser::nextXMLElement( elementNode->next );
+                }
+            }
+
         }
         child = child->next;
     }
@@ -327,23 +284,22 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
         OSLM_ERROR("ObjectsFromXml : No XML Translator for " << newObject->className() << " use its default constructor");
     }
 
-    ::fwTools::Field::sptr  tmp = ::fwTools::Field::dynamicCast(newObject);
     OSLM_DEBUG(" ObjectsFromXml return " << newObject->className()  );
-    OSLM_DEBUG_IF(" with label= " << tmp->label(), tmp);
 
     return newObject;
 }
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr  Serializer::deSerialize( ::boost::filesystem::path filePath , bool loadExtraXML , bool validateWithSchema   ) throw (::fwTools::Failed)
+::fwData::Object::sptr  Serializer::deSerialize( ::boost::filesystem::path filePath, bool validateWithSchema) throw (::fwTools::Failed)
 {
     xmlDocPtr xmlDoc = NULL;
     xmlNodePtr xmlRoot = NULL;
+    xmlKeepBlanksDefault(0);
 
     // get XMLDOC & root PTR
     this->rootFolder() = filePath.parent_path();
-    ProcessedXMLFile = filePath.string();
+    m_processedXMLFile = filePath.string();
 
     xmlDoc = XMLParser::getXmlDocFromFile( filePath );
     xmlRoot = xmlDocGetRootElement (xmlDoc);
@@ -366,7 +322,6 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
             msg+= validator.getErrorLog();
             msg+= "\n NB: an apostrophe can cause problem to the XML library, so if you have one in your user name, change your TMP environment variable or contact your system administrator.";
             throw ::fwTools::Failed( msg );
-            return ::boost::shared_ptr< fwTools::Object>();
         }
     }
 
@@ -398,11 +353,19 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
     else if(dataVersion < XMLAggregator::Version::current())
     {
         if(dataVersion == XMLAggregator::Version(0)
-            && XMLAggregator::Version::current() == XMLAggregator::Version(1) )
+            && XMLAggregator::Version::current() == XMLAggregator::Version(2) )
         {
-            OSLM_WARN( "No  versioned  archive : " << filePath.string() );
             rootObject = xmlRoot;
-            XMLPatch::PatchNoVersionToNewData( rootObject ); // internal function
+            OSLM_INFO("Patch file "<<filePath.string()<<" from "<<dataVersion.string()<<" to v1");
+            XMLPatch::PatchNoVersionToVersion1( rootObject );
+            OSLM_INFO("Patch file "<<filePath.string()<<" from "<<dataVersion.string()<<" to v2");
+            XMLPatch::PatchVersion1ToVersion2( rootObject );
+        }
+        else if(dataVersion == XMLAggregator::Version(1)
+                && XMLAggregator::Version::current() == XMLAggregator::Version(2))
+        {
+            OSLM_INFO("Patch file "<<filePath.string()<<" from "<<dataVersion.string()<<" to v2");
+            XMLPatch::PatchVersion1ToVersion2( rootObject );
         }
         else
         {
@@ -415,38 +378,14 @@ void Serializer::serialize( ::fwTools::Object::sptr object, bool saveSchema) thr
         }
     }
 
-
     ObjectTracker::clear();
 
-    ::fwTools::Object::sptr objRoot = this->ObjectsFromXml( rootObject, loadExtraXML );
+    ::fwData::Object::sptr objRoot;
+    objRoot = this->ObjectsFromXml( rootObject );
 
-    if (loadExtraXML)
-    {
-        OSLM_INFO("Serializer::deSerialize also load extraXML");
-        try
-        {
-            this->IOforExtraXML( objRoot, false );
-        }
-        catch (const std::exception & e)
-        {
-            OSLM_ERROR("Exception : " << e.what());
-            // memory cleanup
-            xmlFreeDoc (xmlDoc);
-
-            ObjectTracker::clear();
-
-            throw;
-        }
-    }
-    else
-    {
-        OSLM_INFO("Serializer::deSerialize DO NOT load extraXML");
-    }
     // memory cleanup
     xmlFreeDoc (xmlDoc);
-
     ObjectTracker::clear();
-
     return objRoot;
 }
 

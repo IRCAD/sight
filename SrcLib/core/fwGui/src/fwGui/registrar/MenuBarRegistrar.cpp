@@ -53,7 +53,7 @@ void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
             configuration->getName() == "registry");
 
     // index represents associated menu with position in menus vector
-    int index = 0;
+    unsigned int index = 0;
     // initialize m_menuSids map with configuration
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     BOOST_FOREACH( ConfigurationType menu, vectMenus)
@@ -71,8 +71,7 @@ void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
                 start = (startValue=="yes");
             }
             std::string sid = menu->getAttributeValue("sid");
-            std::pair<int, bool> indexStart =  std::make_pair( index, start);
-            m_menuSids[sid] = indexStart;
+            m_menuSids[sid] = SIDMenuMapType::mapped_type(index, start);
         }
         index++;
     }

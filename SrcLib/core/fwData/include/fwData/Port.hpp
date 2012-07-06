@@ -9,6 +9,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -21,7 +22,7 @@ namespace fwData
 class FWDATA_CLASS_API Port : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwTools::Factory::New< Port >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwData::Factory::New< Port >) ;
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string,the port identifier (example : "ID_SIZEX", "THRESHOLD_LOW") );
 

@@ -39,12 +39,12 @@ namespace arlCore
     ARLCORE_API bool propagateCovarianceToReconst3D(const std::vector<arlCore::Point::csptr>&list2D, const std::vector<const arlCore::Camera*> &camsList,
          arlCore::Point &point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, std::vector<double> &log, const bool pixelFrame);
 
-    ARLCORE_API void WriteTableau ( char *nom, std::vector<double> tab, unsigned int n );
+    ARLCORE_API void WriteTableau (const char *nom, std::vector<double> tab, unsigned int n );
     /**
      * @brief Khi Square Validation for 3 dimensional data
      *
      */
-    ARLCORE_API double* KSValidation3D(char *index_file);
+    ARLCORE_API double* KSValidation3D(const char *index_file);
     ARLCORE_API double CumulativeChi2_3(double mu2);
 
     /**

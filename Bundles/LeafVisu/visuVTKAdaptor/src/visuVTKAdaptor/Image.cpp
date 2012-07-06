@@ -4,13 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/helpers.hpp>
-
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -18,14 +17,16 @@
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <vtkIO/vtk.hpp>
+#include <vtkIO/helper/TransferFunction.hpp>
 
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
-#include <vtkLookupTable.h>
+
+#include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
 
 #include "visuVTKAdaptor/Image.hpp"
 
@@ -41,7 +42,7 @@ namespace visuVTKAdaptor
 Image::Image() throw()
 {
     SLM_TRACE_FUNC();
-    m_lut        = vtkLookupTable::New();
+    m_lut        = fwVtkWindowLevelLookupTable::New();
     m_map2colors = vtkImageMapToColors::New();
     m_imageData  = vtkImageData::New();
 
@@ -49,16 +50,16 @@ Image::Image() throw()
 
     m_imagePortId = -1;
     m_allowAlphaInTF = false;
-    m_useImageTF = true;
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY      );
-    addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY        );
-    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING         );
+    this->installTFSelectionEventHandler(this);
+    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
+    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY               );
+    addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY                 );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING       );
 }
 
 //------------------------------------------------------------------------------
@@ -80,17 +81,15 @@ Image::~Image() throw()
 
 void Image::doStart() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-    OSLM_TRACE("starting " << this->getName());
-
     this->doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 //------------------------------------------------------------------------------
 
 void Image::doStop() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    this->removeTFObserver();
     this->destroyPipeline();
 }
 
@@ -98,25 +97,29 @@ void Image::doStop() throw(fwTools::Failed)
 
 void Image::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-    doUpdate();
+    this->removeTFObserver();
+    this->doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 //------------------------------------------------------------------------------
 
 void Image::doUpdate() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid)
     {
-        updateImage(image);
-        buildPipeline();
-        updateTransfertFunction(image);
-        updateWindowing(image);
-        updateImageOpacity();
+        this->updateImage(image);
+        this->buildPipeline();
+        this->updateImageTransferFunction(image);
+        this->updateWindowing(image);
+        this->updateImageOpacity();
+    }
+    else
+    {
+        this->updateTransferFunction(image, this->getSptr());
     }
 }
 
@@ -124,7 +127,6 @@ void Image::doUpdate() throw(::fwTools::Failed)
 
 void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
@@ -132,8 +134,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
     {
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
-//            this->destroyPipeline();
-            doUpdate();
+            this->doUpdate();
 
             // Hack to force imageSlice update until it is not able to detect a new image
             ::fwComEd::ImageMsg::NewSptr msg;
@@ -148,15 +149,16 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             this->setVtkPipelineModified();
         }
 
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION ) )
+        if (this->upadteTFObserver(msg, this->getSptr()) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
-            updateTransfertFunction(image);
+            this->updateImageTransferFunction(image);
         }
 
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::WINDOWING ) )
+        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
         {
-            ::fwComEd::ImageMsg::csptr imsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-            imsg->getWindowMinMax( m_windowMin, m_windowMax);
+            ::fwComEd::TransferFunctionMsg::csptr tfmsg = ::fwComEd::TransferFunctionMsg::dynamicConstCast(msg);
+            this->setWindow(tfmsg->getWindow());
+            this->setLevel(tfmsg->getLevel());
             updateWindowing(image);
         }
 
@@ -175,8 +177,6 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
 
 void Image::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("vtkimageregister") )
     {
@@ -190,12 +190,8 @@ void Image::configuring() throw(fwTools::Failed)
     {
         this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
     }
-    if ( m_configuration->hasAttribute("tfSelection") )
-    {
-        std::string tfSelectionFieldId = m_configuration->getAttributeValue("tfSelection");
-        SLM_FATAL_IF("'tfSelectionFieldId' must not be empty", tfSelectionFieldId.empty());
-        this->setTFSelectionFieldId(tfSelectionFieldId);
-    }
+
+    this->parseTFConfig( m_configuration );
 }
 
 //------------------------------------------------------------------------------
@@ -203,11 +199,9 @@ void Image::configuring() throw(fwTools::Failed)
 
 void Image::updateImage( ::fwData::Image::sptr image  )
 {
-    SLM_TRACE_FUNC();
     ::vtkIO::toVTKImage(image,m_imageData);
 
     this->updateImageInfos(image);
-
     this->setVtkPipelineModified();
 }
 
@@ -215,70 +209,46 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 
 void Image::updateWindowing( ::fwData::Image::sptr image )
 {
-    SLM_TRACE_FUNC();
-    //std::pair<bool,bool> fieldsAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( image );
-    // Temp test because theses cases are not manage ( need to notify if there are modifications of Min/Max/TF )
-    //assert( ! fieldsAreModified.first && ! fieldsAreModified.second );
-
-    m_lut->SetTableRange( m_windowMin->value(), m_windowMax->value() );
+    m_lut->SetWindow(this->getWindow());
+    m_lut->SetLevel(this->getLevel());
     m_lut->Modified();
-    setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
 
-void Image::updateTransfertFunction( ::fwData::Image::sptr image )
+void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
 {
-    SLM_TRACE_FUNC();
-    ::fwData::Composite::sptr tfComposite = m_transfertFunctions;
-    std::string tfName;
+    this->updateTransferFunction(image, this->getSptr());
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    this->updateImageInfos(image);
+    ::vtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
 
-    tfName = m_transfertFunctionId->value();
+    m_lut->SetClamping( !tf->getIsClamped() );
 
-    // If TF doesn't exist : set default BW TF
-    if (tfComposite->find(tfName) == tfComposite->end())
-    {
-        OSLM_WARN("TF '" << tfName << "' doesn't exist => set BW TF");
-        ::fwComEd::fieldHelper::MedicalImageHelpers::setBWTF(image, m_tfSelectionFieldId);
+    this->setWindow(tf->getWindow());
+    this->setLevel(tf->getLevel());
 
-        ::fwComEd::ImageMsg::NewSptr msg;
-        msg->addEvent(::fwComEd::ImageMsg::TRANSFERTFUNCTION) ;
-        ::fwServices::IEditionService::notify( this->getSptr(),  image, msg );
+    this->updateWindowing(image);
 
-        this->updateImageInfos(image);
-        tfName = m_transfertFunctionId->value();
-    }
-
-    ::fwData::TransfertFunction::sptr pTransfertFunction = ::fwData::TransfertFunction::dynamicCast(tfComposite->getRefMap()[tfName]);
-    if ( m_useImageTF )
-    {
-        ::vtkIO::convertTF2vtkTF( pTransfertFunction, m_lut, m_allowAlphaInTF );
-    }
-    else
-    {
-        ::vtkIO::convertTF2vtkTFBW( pTransfertFunction, m_lut);
-    }
-    setVtkPipelineModified();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
 
 void Image::updateImageOpacity()
 {
-    SLM_TRACE_FUNC();
     if (m_imagePortId>= 0)
     {
         ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-        if(img->getFieldSize( "TRANSPARENCY" ) > 0)
+        if(img->getField( "TRANSPARENCY" ) )
         {
-            ::fwData::Integer::sptr transparency = img->getFieldSingleElement< ::fwData::Integer >( "TRANSPARENCY" );
+            ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
             m_imageOpacity = (100 - (*transparency) ) / 100.0 ;
         }
-        if(img->getFieldSize( "VISIBILITY" ) > 0)
+        if(img->getField( "VISIBILITY" ) )
         {
-            ::fwData::Boolean::sptr visible = img->getFieldSingleElement< ::fwData::Boolean >( "VISIBILITY" );
+            ::fwData::Boolean::sptr visible = img->getField< ::fwData::Boolean >( "VISIBILITY" );
             m_imageOpacity = (*visible)?m_imageOpacity:0.0;
         }
         vtkImageBlend *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);

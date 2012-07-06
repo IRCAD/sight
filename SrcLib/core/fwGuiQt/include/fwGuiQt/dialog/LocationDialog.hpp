@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _fWGUIQT_LOCATIONDIALOG_HPP_
-#define _fWGUIQT_LOCATIONDIALOG_HPP_
+#ifndef _FWGUIQT_LOCATIONDIALOG_HPP_
+#define _FWGUIQT_LOCATIONDIALOG_HPP_
 
 #include <fwCore/base.hpp>
 
@@ -44,24 +44,17 @@ public:
 
     LocationDialog();
 
-    void setTitle(const std::string &title);
-
     ::fwData::location::ILocation::sptr show();
-
-    // FIXME ok with Folder but not singleFile
-    void setDefaultLocation( ::fwData::location::ILocation::csptr );
 
     void setType( ::fwGui::dialog::ILocationDialog::Types type );
 
     ::fwGui::dialog::ILocationDialog& setOption( ::fwGui::dialog::ILocationDialog::Options option);
 
-    // exemple ( addFilter("images","*.png *.jpg");
+    // Example ( addFilter("images","*.png *.jpg");
     void addFilter(const std::string &filterName, const std::string &wildcardList );
 
-
 protected:
-    std::string m_title;
-    ::boost::filesystem::path m_path;
+
     ::fwGui::dialog::ILocationDialog::Options m_style;
     ::fwGui::dialog::ILocationDialog::Types m_type;
     std::vector< std::pair< std::string, std::string > > m_filters;
@@ -73,6 +66,6 @@ protected:
 } // namespace dialog
 } // namespace fwGuiQt
 
-#endif /*_fWGUIQT_LOCATIONDIALOG_HPP_*/
+#endif /*_FWGUIQT_LOCATIONDIALOG_HPP_*/
 
 

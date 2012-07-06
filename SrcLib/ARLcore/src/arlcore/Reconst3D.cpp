@@ -75,14 +75,14 @@ bool arlCore::reconst3D(const std::vector<arlCore::Point::csptr>&list2D, const s
  *  @brief : Triangulation of a 3D point from 2D points detected in 2 video images (and only 2)
  * which coordinates are written in the optical frames of the cameras. These coordinates
  * are obtained with the function arlCore::pixelPlaneToUnitFocalPlane
- * 
- * param[in] : focalPts2D1 = 3D coordinates in the optical unit frame associated to camera 1 
+ *
+ * param[in] : focalPts2D1 = 3D coordinates in the optical unit frame associated to camera 1
  * of the 2D point detected in cam 1
  * param[in] : focalPts2D1 = 3D coordinates in the optical unit frame associated to camera 2
  * of the 2D point detected in cam 2
  * param[in] : PassageMatrix 4x4 matrix between cam 1 and cam 2
  * param[in] : methode = trinagulation method choice (Horaud or Lines)
- * 
+ *
  */
 bool simpleRecons3D( arlCore::Point &point3D, const vnl_vector_fixed<double,3>& focalPt2D1, const vnl_vector_fixed<double,3>& focalPt2D2,
                     vnl_matrix_fixed<double,4,4>& PassageMatrix, arlCore::ARLCORE_RECONSTRUCTION3D methode, double &error )
@@ -147,7 +147,7 @@ bool simpleRecons3D( arlCore::Point &point3D, const vnl_vector_fixed<double,3>& 
             assert(denom!=0);
             if(denom==0) return false;
             landa1 = num/denom;
-            I.put(0, C2(0) - landa1* m2C2(0) );  
+            I.put(0, C2(0) - landa1* m2C2(0) );
             I.put(1, C2(1) - landa1* m2C2(1) );
             I.put(2, C2(2) - landa1* m2C2(2) );
             // Determination du deuxieme point J sur la droite de reprojection
@@ -162,7 +162,7 @@ bool simpleRecons3D( arlCore::Point &point3D, const vnl_vector_fixed<double,3>& 
             denom = -1*dot2;
             assert(denom!=0);
             landa2 = num/denom;
-            J.put(0, -1* landa2* m1C1(0) );  
+            J.put(0, -1* landa2* m1C1(0) );
             J.put(1, -1* landa2* m1C1(1) );
             J.put(2, -1* landa2* m1C1(2) );
             // On prend le barycentre de I et J comme estimation de la reconstruction
@@ -179,6 +179,7 @@ bool simpleRecons3D( arlCore::Point &point3D, const vnl_vector_fixed<double,3>& 
             point3D.setError(error);
             return true;
         }
+    default: break;
     }
     return false;
 }
@@ -265,21 +266,22 @@ bool reconstruction3D( const vector<arlCore::Point::csptr> &points2D, const vect
         log.push_back(compute_reconstruction.get_start_error() / points2D.size());
     return true;
     }
+    default: break;
     }
     return false;
 }
 
 /**
- * @brief 
+ * @brief
  * Rigid registration of a 3D point set so that its reprojection on one image fits a 2D point set
- * 
- * This function compute the rigid transformation that registers a 3D rigid object (defined 
+ *
+ * This function compute the rigid transformation that registers a 3D rigid object (defined
  * in its own frame)  in the world frame of one calibrated camera (we call here
  * world frame the frame in which the camera were calibrated). In fact, this function corresponds
- * to arlCore::projectivePointsRegistration_3D_2D used with only one camera, but we add 
+ * to arlCore::projectivePointsRegistration_3D_2D used with only one camera, but we add
  * an initialization procedure before launching it (arlCore::planarHomographyRegistration_3D_2D).
  * TODO This function works if the 3D model is planar (because of the initialization) !
- * TODO We have to retrieve this constraint 
+ * TODO We have to retrieve this constraint
  */
 bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam , const std::vector<arlCore::Point::csptr > &points2D,
         const PointList &model3D, arlCore::vnl_rigid_matrix &T, arlCore::ARLCORE_PROJECTIVE_REGISTRATION method,
@@ -325,24 +327,24 @@ bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam , const 
 }
 
 /**
- * @brief 
+ * @brief
  * Rigid registration of a 3D point set so that its reprojection on several images fits 2D point sets
- * 
- * This function compute the rigid transformation that registers a 3D rigid object (defined 
+ *
+ * This function compute the rigid transformation that registers a 3D rigid object (defined
  * in its own frame)  in the world frame of several jointly calibrated camera (we call here
  * world frame the frame in which the camera were calibrated). Practically, this frame
  * corresponds to the position of a chessboard that has been used during the simultaneous
- * calibration of cameras. 
+ * calibration of cameras.
  *
  * param[in] : cameras = camera vector used for the registration (it works also with one camera only)
  * param[in] : points2D = vector of vector of 2D points [j] detected in the camera [i]
  * param[in] : T = initialisation of the iterative registration
- * param[in] : methode = choice of the optimization criterion and method (more informations on each 
- * criterion can be found in Optimization.h and in the following paper : S.Nicolau et.al. An Accuracy 
- * Certified Augmented Reality System for Therapy Guidance. In Proc. of the 8th European Conference 
+ * param[in] : methode = choice of the optimization criterion and method (more informations on each
+ * criterion can be found in Optimization.h and in the following paper : S.Nicolau et.al. An Accuracy
+ * Certified Augmented Reality System for Therapy Guidance. In Proc. of the 8th European Conference
  * on Computer Vision (ECCV 04), Part III, volume LNCS 3023, Prague, pages 79-91, May 2004)
  * param[in] : optimiserParameters = parameters for optimization function used (TODO still not used)
- * 
+ *
  * param[out] : log
  *      EPPC:
  *           log[0] = criterion value at the end of optimization divided by the point number
@@ -353,15 +355,15 @@ bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam , const 
  *      ISPPC & OSPPC:
  *           log[0] = criterion value at the end of optimization divided by the point number
  *           log[1] = criterion value at the beginning of optimization divided by the point number
- * 
+ *
  * ISPPC corrsponds to the minimization of the reprojection criterion in the camera : sum i ||P(T*Mi) - mi ||^2
  * This function can be launched for on eor several cameras. Obviously, an initialization is better than nothing
  * but it generally works correctly without one (then it is identity).
  * ISPPC and OSPPC assumes an isotropic noise for 2D detection in all images
- * ISPPC_ANISOTROP and EPPC use the point covariance matrix in the criterion formula 
- * 
+ * ISPPC_ANISOTROP and EPPC use the point covariance matrix in the criterion formula
+ *
  * The detailed formula of each criterion is given in Optimization.h
- * 
+ *
  */
 bool  arlCore::multiViewPointRegistration3D2D( const vector<arlCore::Camera> &cameras, const vector< vector< arlCore::Point::csptr > > &points2D, const PointList &model3D, arlCore::vnl_rigid_matrix &T, arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
 {
@@ -436,8 +438,8 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         unsigned int nbIterations=0;
         log.resize(5);
         do
-        {           
-            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init)); 
+        {
+            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
 //          std::cerr<<"ITERATION POW EPPC : "<<nbIterations<<std::endl;
 //          std::cerr<<"transfo ="<<std::endl<<T<<std::endl;
 //          std::cerr<<"erreur debut = "<<computeISPPC.get_start_error()<<std::endl;
@@ -484,8 +486,8 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.resize(5);
         do
         {
-            //std::cerr<<"ITERATION LM EPPC : "<<nbIterations<<std::endl;           
-            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init)); 
+            //std::cerr<<"ITERATION LM EPPC : "<<nbIterations<<std::endl;
+            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
             //Estimation des points 3D parfaits avec T(k+1)
             computeEPPC.minimize_using_gradient(init_pts3D);
             if(nbIterations==0) log[1]=sqrt(computeEPPC.get_start_error()/nbVisiblePoints);
@@ -526,8 +528,8 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         computeEPPC.set_x_tolerance(EPPCxTolerance);
         unsigned int nbIterations=0;
         do
-        {           
-            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init)); 
+        {
+            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
             //Estimation des points 3D parfaits avec T(k+1)
             computeEPPC.minimize(init_pts3D);
             init_precedent = init;
@@ -565,7 +567,6 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
     if(methode==arlCore::ARLCORE_PR_ISPPC_LM)
     {
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        unsigned int nb_visible_point=0;
         for( i=0 ; i<Model3DSize ; ++i )
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
         arlCore::vnl_rigid_vector vec(T);
@@ -631,7 +632,7 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         T = arlCore::vnl_rigid_matrix(vec);
         b= true;
     }
-    
+
     if(methode==arlCore::ARLCORE_PR_OSPPC)
     {
         arlCore::vnl_rigid_vector vec(T);
@@ -645,7 +646,7 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         vec = init;
         T = arlCore::vnl_rigid_matrix(vec);
         b= true;
-    }   
+    }
     if(methode==arlCore::ARLCORE_PR_OSPPC_LM)
     {
         arlCore::vnl_rigid_vector vec(T);
@@ -659,7 +660,7 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         vec = init;
         T = arlCore::vnl_rigid_matrix(vec);
         b= true;
-    }   
+    }
     if(methode==arlCore::ARLCORE_PR_OSPPC_CG)
     {
         arlCore::vnl_rigid_vector vec(T);
@@ -683,27 +684,27 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
  * @brief   HOMOGRAPHY WHEN THE INTRINSIC PARAMETERS ARE UNKNOWN
  * *****************************************************************************************
  * This function is necessary for camera calibration (see Zhang. Z. A flexible new technique for camera
- * calibration). The notations have been kept from his paper. The idea is that the point of the 
+ * calibration). The notations have been kept from his paper. The idea is that the point of the
  * chessboard model are projectively equivalent to the points detected in the video image.
- * Then it exist an homography 3x3 H so that (assuming points on the chessboard have a Z coordinate 
+ * Then it exist an homography 3x3 H so that (assuming points on the chessboard have a Z coordinate
  * equal to 0) :
- * 
- *       [u_i]       [X_i] 
- * m_i = [v_i] = H x [Y_i] 
- *       [w_i]       [ 1 ] 
- * 
  *
- * From a general point of view, this function provides "the best" homography between 
+ *       [u_i]       [X_i]
+ * m_i = [v_i] = H x [Y_i]
+ *       [w_i]       [ 1 ]
+ *
+ *
+ * From a general point of view, this function provides "the best" homography between
  * two point sets in 2D.
  * Considering the camera calibration problem, the H matrix corresponds to the multiplication of
  * the intrinsic matrix and the extrinsic matrix:
  * [u]   [ -  h1  - ]  [X]        [ | |  |] [X]                                                 [fc1 0   cc1]
  * [v] = [ -  h2  - ]x [Y] =A x   [r1 r2 t]x[Y]  where A is the intrinsic parameter matrix =    [0   fc2 cc2]
  * [w]   [ -  h3  - ]  [1]        [ | |  |] [1]                                                 [0   0    1 ]
- * 
+ *
  * where [u v w]' are PIXEL coordinates and not REAL. To find A and the extrinsic matrix, several poses
  * of the chessboard are necessary.
- * 
+ *
  * To find H, we seek the solution that minimize the following system:
  * [X1 Y1 1 0 0 0 -u1X1 -u1Y1 -u1 ]   [ | ]
  * [.                          .  ]   [ h1 ]
@@ -722,7 +723,7 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
  * m are the coordinates of its correspoding 3D points in the video image
  * Since the homography matrix is defined up to a scale factor, the solution is given by a svd
  * of the big matrix. Then we obtain the eigen vector associated to the smallest eigen value.
- * 
+ *
  * To obtain an evaluation of the homography estimation quality, put optimiserParameters[0] to 1.
  * In that case, log[0] contains the reprojection error.
  * To apply the prenormalisation (that ensure a good computation of the svd) detailed in R. Hartely.
@@ -731,9 +732,9 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
  * ******************************************************************************************/
 template <typename Type>
 bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &model3D, vnl_matrix_fixed<double,3,3> &H, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
-{   
+{
     bool normalize =false;
-    bool error_log=false;   
+    bool error_log=false;
     //ATTENTION : Points2D and  model3D doivent �tre parfaitement appareill�s :
     // Tailles identiques, pas de pointeur null
     if(points2D.size()<4) return false;
@@ -747,8 +748,8 @@ bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &m
             error_log = true;
     if(optimiserParameters.size() > 1)
         if(optimiserParameters[1] == 1)
-            normalize = true;   
-    // PRENORMALISATION DES DONNEES cf "In defence of the 8 points algorithm" et "Pose reconstruction with 
+            normalize = true;
+    // PRENORMALISATION DES DONNEES cf "In defence of the 8 points algorithm" et "Pose reconstruction with
     // uncalibrated CT imaging device"
     double meanX_model3D=0, meanY_model3D=0, scale_model3D=0;
     double meanX_points2D=0, meanY_points2D=0, scale_points2D=0;
@@ -777,7 +778,7 @@ bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &m
         norm_mat_model3D(1,2) = -meanY_model3D/scale_model3D;
         norm_mat_points2D(0,2) = -meanX_points2D/scale_points2D;
         norm_mat_points2D(1,2) = -meanY_points2D/scale_points2D;
-    }           
+    }
     for( i=0 ; i<size ; ++i )
     {
         if(normalize)
@@ -839,27 +840,27 @@ bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &m
         }
     }
 //  TODO tester si c plus rapide de passer par vnl_symmetric_eigensystem plutot que vnl_svd
-//  vnl_symmetric_eigensystem<double> objet(a_matrix.transpose()*a_matrix); 
+//  vnl_symmetric_eigensystem<double> objet(a_matrix.transpose()*a_matrix);
 //  cerr << "null vector = "<<objet.nullvector() << endl;
 //  vnl_matrix<double> PP(3,3);
 //  PP.set(objet.nullvector().data_block());
 //  PP/=PP.get_column(0).two_norm();
 //  cerr << "Matrice PP estimee " << endl << PP << endl;
-//  
+//
     //a_matrix.normalize_rows();
     vnl_svd<double> svd(a_matrix);
     //cerr << "svd(a_matrix) U =" <<endl << svd.U() <<endl;cerr << "svd(a_matrix) V =" <<endl << svd.V() <<endl;cerr << "svd(a_matrix) W =" <<endl << svd.W() <<endl;
     //cerr << "Vecteur propre associe a valeur singuliere minimale " << endl << svd.nullvector() << endl;
     P.set(svd.nullvector().data_block());
-//  cerr << "Matrice P estimee " << endl << P << endl;  
+//  cerr << "Matrice P estimee " << endl << P << endl;
     if(normalize){
         vnl_matrix<double> tmp = vnl_matrix_inverse<double>(norm_mat_points2D);
-        P = tmp * P * norm_mat_model3D; 
+        P = tmp * P * norm_mat_model3D;
     }
     P/=P.get_column(0).two_norm();//TODO cette normalisation est-elle necessaire ?
     // on teste si l'homographie estimee recale l'objet derriere la camera ou pas
     // si c'est le cas alors on multiplie P par -1;
-    //cerr << "Matrice P estimee apres normalisation" << endl << P << endl; 
+    //cerr << "Matrice P estimee apres normalisation" << endl << P << endl;
     vnl_vector_fixed<double,3> var_3D, test;
     var_3D(0) = model3D[0]->x() ;
     var_3D(1) = model3D[0]->y();
@@ -910,7 +911,7 @@ bool arlCore::planarHomographyUnknownIntrinsic( const arlCore::PointList &points
 }
 
 /**
- * 
+ *
  * @brief PLANAR HOMOGRAPHY REGISTRATION METHOD
  *******************************************************************************************
  * We are looking for the rigid matrix R,t so that :
@@ -918,7 +919,7 @@ bool arlCore::planarHomographyUnknownIntrinsic( const arlCore::PointList &points
  * [v] = [ [  Rw ][tw] ]x[ [  R  ][t] ] [Y] =[r1 r2 t]x[Y]
  * [w]   [ [     ][  ] ] [ [     ][ ] ] [0]  [ | |  |] [1]
  *       [ [0 0 0][1 ] ] [ [0 0 0][1] ] [1]
- * 
+ *
  * where [u v w]' are the REAL coordinates (in the unit focal plane) - and not pixellic
  *                                                                  [ - h1 -]
  * we write the matrix [r1 r2 t] under the homographic matrix    H =[ - h2 -] with 8 degrees of freedom
@@ -939,19 +940,19 @@ bool arlCore::planarHomographyUnknownIntrinsic( const arlCore::PointList &points
  *                                                                            [ - h3 -]
  * and M are the coordinates of the points of the PLANAR pattern [X Y 1.0] in the pattern frame
  * and m are the coordinates of its match in the video image in the REAL WORLD (in the unit focal plane)
- * Since the homographic matrix is defined up to a scale factor , the solution is given by the svd 
+ * Since the homographic matrix is defined up to a scale factor , the solution is given by the svd
  * of the big matrix. Then, we get the eigen vector associated to the smallest eigen value.
  * Once H is computed, we multiply this matrix so that the first column is of unit norm.
  * we compute r1 x r2 to find the third vector of the pseudo rotation matrix
  * then we seek the closest rotation matrix of this matrix using an svd.
- * Finally, we multiply left the found matrix with the inverse extrinsic matrix of the camera 
+ * Finally, we multiply left the found matrix with the inverse extrinsic matrix of the camera
  * To obtain a quality evaluation of the homography estimation, optimiserParameters[0]
  * must be set to 1. In that case, log[0] contains the reprojection error and log[1]
  * the norm of the first column of H (which should be equal to 1 !!).
- * 
- * To apply the prenormalisation (which ensure a good calculation of the svd), proposed in 
+ *
+ * To apply the prenormalisation (which ensure a good calculation of the svd), proposed in
  * "In defence of the 8 points algorithm" (R. Hartley), optimiserParameters[1] must be set to 1.
- * 
+ *
  */
 template <typename Type>
 bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, const vector<arlCore::Point::csptr> &points2D, const Type &model3D, arlCore::vnl_rigid_matrix &T, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
@@ -975,7 +976,7 @@ bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, co
     if(optimiserParameters.size() > 1)
         if(optimiserParameters[1] == 1)
             normalize = true;
-    // PRENORMALISATION DES DONNEES cf "In defence of the 8 points algorithm" et "Pose reconstruction with 
+    // PRENORMALISATION DES DONNEES cf "In defence of the 8 points algorithm" et "Pose reconstruction with
     // uncalibrated CT imaging device"
     double meanX_model3D=0, meanY_model3D=0, scale_model3D=0;
     double meanX_points2D=0, meanY_points2D=0, scale_points2D=0;
@@ -1072,14 +1073,14 @@ bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, co
         }
     }
 //  TODO tester si c plus rapide de passer par vnl_symmetric_eigensystem plutot que vnl_svd
-//  vnl_symmetric_eigensystem<double> objet(a_matrix.transpose()*a_matrix); 
+//  vnl_symmetric_eigensystem<double> objet(a_matrix.transpose()*a_matrix);
 //  cerr << "null vector = "<<objet.nullvector() << endl;
 //  cerr << "tAA = "<<a_matrix.transpose()*a_matrix << endl;
 //  vnl_matrix<double> PP(3,3);
 //  PP.set(objet.nullvector().data_block());
 //  PP/=PP.get_column(0).two_norm();
 //  cerr << "Matrice PP estimee " << endl << PP << endl;
-//  
+//
     //a_matrix.normalize_rows();
     vnl_svd<double> svd(a_matrix);
     //cerr << "svd(a_matrix) U =" <<endl << svd.U() <<endl;cerr << "svd(a_matrix) V =" <<endl << svd.V() <<endl;cerr << "svd(a_matrix) W =" <<endl << svd.W() <<endl;
@@ -1088,7 +1089,7 @@ bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, co
     if(normalize){
         vnl_matrix<double> tmp = vnl_matrix_inverse<double>(norm_mat_points2D);
         P = tmp * P.as_matrix() * norm_mat_model3D;
-    }   
+    }
     P/=P.get_column(0).two_norm();
     // on teste si l'homographie estimee recale l'objet derriere la camera ou pas
     // si c'est le cas alors on multiplie P par -1;

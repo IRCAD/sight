@@ -36,9 +36,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioITK::DicomPatientWriterService , ::fwData:
 
 //------------------------------------------------------------------------------
 
-DicomPatientWriterService::DicomPatientWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsPatientPath("")
+DicomPatientWriterService::DicomPatientWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -48,8 +46,10 @@ DicomPatientWriterService::~DicomPatientWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void DicomPatientWriterService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType DicomPatientWriterService::getIOPathType() const
+{
+    return ::io::FOLDER;
+}
 
 //------------------------------------------------------------------------------
 
@@ -68,8 +68,12 @@ void DicomPatientWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getFolder();
-        m_fsPatientPath = result->getFolder();
-        m_bServiceIsConfigured = true;
+        this->setFolder(result->getFolder());
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -114,7 +118,7 @@ std::string DicomPatientWriterService::getSelectorDialogTitle()
 void DicomPatientWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Patient::sptr associatedPatient = this->getObject< ::fwData::Patient >();
@@ -122,11 +126,10 @@ void DicomPatientWriterService::updating() throw(::fwTools::Failed)
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        savePatient(m_fsPatientPath, associatedPatient);
+        savePatient( this->getFolder(), associatedPatient );
         cursor.setDefaultCursor();
     }
 }
-
 
 //------------------------------------------------------------------------------
 

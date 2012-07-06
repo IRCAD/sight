@@ -7,6 +7,8 @@
 #ifndef _SCENE2D_ADAPTOR_NEGATO_HPP_
 #define _SCENE2D_ADAPTOR_NEGATO_HPP_
 
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
 #include "scene2D/adaptor/IAdaptor.hpp"
 #include "scene2D/data/Coord.hpp"
 
@@ -19,7 +21,7 @@ namespace scene2D
 namespace adaptor
 {
 
-class SCENE2D_CLASS_API Negato : public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API Negato : public ::fwComEd::helper::MedicalImageAdaptor, public ::scene2D::adaptor::IAdaptor
 {
 
 public:
@@ -45,6 +47,11 @@ private:
     void updateFromImage( QImage * qimg );
     void changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord );
 
+    QRgb getQImageVal(const unsigned int index, signed short* buffer,
+            const double wlMin, const double wlMax, const double window,
+            const double tfMin, const double tfMax,
+            ::fwData::TransferFunction::sptr tf);
+
     QImage * m_qimg;
     QGraphicsPixmapItem * m_pixmapItem;
     QGraphicsItemGroup* m_layer;
@@ -64,8 +71,20 @@ private:
      */
     bool m_negatoIsBeingMoved;
 
+    /// The current orientation of the negato
+    ::fwComEd::helper::MedicalImageAdaptor::Orientation m_orientation;
+
+    /// Scale ratios (x, y)
+    std::pair<double, double> m_scale;
+
+    /// Tell if the negato is being moved
     bool m_pointIsCaptured;
+
+    /// Ref. position when changing image min/max
     scene2D::data::Coord m_oldCoord;
+
+    /// Specify if the negato allow slice type events
+    bool m_changeSliceTypeAllowed;
 };
 
 

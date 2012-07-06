@@ -15,9 +15,10 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Image.hpp"
 #include "fwData/Reconstruction.hpp"
-#include "fwData/DownCastIterator.hpp"
+
 
 namespace fwData
 {
@@ -37,7 +38,7 @@ namespace fwData
 class FWDATA_CLASS_API Acquisition : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Acquisition)(::fwData::Object), (()), ::fwTools::Factory::New< Acquisition >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Acquisition)(::fwData::Object), (()), ::fwData::Factory::New< Acquisition >) ;
 
     fwDataObjectMacro();
 
@@ -47,66 +48,32 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Acquisition::csptr _source );
 
-    // Image -------------------------------------------------------------------
-    /// Field identifier for image
-    FWDATA_API static const Object::FieldID ID_IMAGE;
+    /**
+     * @brief Get/Set the image associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Image, ::fwData::Image::sptr);
 
     /**
-     * @brief Set the image associated with the acquisition
+     * @brief Get/Set the StructAnat associated with the acquisition
      */
-    FWDATA_API void setImage( ::fwData::Image::sptr _pImage );
+    fwDataGetSetSptrMacro(StructAnat, ::fwData::Image::sptr);
 
+
+    typedef std::vector< ::fwData::Reconstruction::sptr > ReconstructionContainerType;
     /**
-     * @{
-     * @brief Get the image associated with the acquisition
+     * @brief Get/Set Reconstructions associated with the acquisition
      */
-    FWDATA_API ::fwData::Image::csptr getImage() const;
-    FWDATA_API ::fwData::Image::sptr getImage();
-    ///@}
-
-    // StructAnat --------------------------------------------------------------
-    /// Field identifier for StructAnat
-    FWDATA_API static const Object::FieldID ID_STRUCTANAT;
-
-    /**
-     * @brief Set the StructAnat associated with the acquisition
-     * @param[in] _pStructAnat ::fwData::Image::sptr
-     */
-    FWDATA_API void setStructAnat( ::fwData::Image::sptr _pStructAnat );
-
-    /**
-     * @{
-     * @brief Get the StructAnat associated with the acquisition
-     */
-    FWDATA_API ::fwData::Image::csptr getStructAnat() const;
-    FWDATA_API ::fwData::Image::sptr getStructAnat();
-    ///@}
-
-
-    // Reconstruction ----------------------------------------------------------
-    /// Field identifier for reconstructions
-    FWDATA_API static const Object::FieldID ID_RECONSTRUCTIONS;
-
-    typedef ContainerCaster< Reconstruction >::iterator         ReconstructionIterator;
-    typedef ContainerCaster< Reconstruction >::const_iterator   ReconstructionConstIterator;
+    fwDataGetSetCRefMacro(Reconstructions, ReconstructionContainerType);
 
     /**
      * @brief Get the number of reconstructions
      */
-    FWDATA_API boost::uint32_t  getReconstructionSize() const;
+    FWDATA_API ReconstructionContainerType::size_type getNumberOfReconstructions() const;
 
     /**
      * @brief add reconstruction
      */
     FWDATA_API void addReconstruction( ::fwData::Reconstruction::sptr _reconstruction );
-
-    /**@{
-     * @brief Get iterator on the first and the last reconstruction.  Use it to browse all reconstructions.
-     * @return std::pair( reconstruction.begin(), reconstruction.end() )
-     */
-    FWDATA_API std::pair< ReconstructionIterator, ReconstructionIterator > getReconstructions();
-    FWDATA_API std::pair< ReconstructionConstIterator, ReconstructionConstIterator > getReconstructions() const;
-    //@}
 
     FWDATA_API void addDicomFileUrl(std::string dicomfileUrl);
 
@@ -257,6 +224,11 @@ protected :
 
     //! path to find Dicom files
     std::string m_pathToFiles;
+
+
+    ::fwData::Image::sptr m_attrImage;
+    ::fwData::Image::sptr m_attrStructAnat;
+    ReconstructionContainerType m_attrReconstructions;
 };
 
 } // namespace fwData

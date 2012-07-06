@@ -4,19 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DYNAMICTYPE_HPP_
-#define DYNAMICTYPE_HPP_
+#ifndef __FWTOOLS_DYNAMICTYPE_HPP__
+#define __FWTOOLS_DYNAMICTYPE_HPP__
 
 #include <string>
 #include <list>
+#include <vector>
 #include <stdexcept>
 
+#include <boost/mpl/vector.hpp>
+
+#include "fwTools/Stringizer.hpp"
 #include "fwTools/config.hpp"
 
 
-
-
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @brief   Class defining an elementary C++ type aka unsigned char, signed char, .... signed long, float, double
@@ -106,6 +109,18 @@ public:
     /// return true iff the type is signed
     FWTOOLS_API bool isSigned();
 
+    typedef boost::mpl::vector<
+        signed char,
+        unsigned char,
+        signed short,
+        unsigned short,
+        signed int,
+        unsigned int,
+        unsigned long,
+        signed long,
+        float,
+        double
+            >::type SupportedTypes;
 
 protected :
 
@@ -117,12 +132,7 @@ protected :
 
     /// Value for not specified type
     FWTOOLS_API static const std::string m_unSpecifiedType;
-
-
-
-
 };
-
 
 
 
@@ -140,10 +150,16 @@ template<class KEYTYPE>
 DynamicType makeDynamicType(const  KEYTYPE &keyType);
 
 
-} //end namespace fwTools {
+template<>
+FWTOOLS_API std::string getString(const DynamicType &dt);
+
+template<>
+FWTOOLS_API std::string getString(const std::vector<DynamicType> &dtv);
+
+} //end namespace fwTools
 
 
 #include "fwTools/DynamicType.hxx"
 
 
-#endif /*DYNAMICTYPE_H_*/
+#endif /*__FWTOOLS_DYNAMICTYPE_HPP__*/

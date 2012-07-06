@@ -11,6 +11,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace fwDataIO
+{
+namespace ut
+{
+
 /**
  * @brief Test many methods to read/create fw4spl dictionary file.
  */
@@ -44,5 +49,8 @@ protected:
     void generateDictionaryFile(::boost::filesystem::path dictionaryFile);
     ::boost::filesystem::path m_tmpDictionaryFilePath;
 };
+
+} //namespace ut
+} //namespace fwDataIO
 
 #endif //_FWDATAIO_TEST_TU_DICTIONARYREADERTEST_HPP_

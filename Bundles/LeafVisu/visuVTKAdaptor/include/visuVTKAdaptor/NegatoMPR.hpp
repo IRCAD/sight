@@ -36,9 +36,9 @@ public:
         THREE_SLICES
     } SliceMode;
 
-    VISUVTKADAPTOR_API void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
-    VISUVTKADAPTOR_API void setInterpolation(bool interpolation){m_interpolation = interpolation;};
-    VISUVTKADAPTOR_API void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
+    void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
+    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
 
 protected :
 
@@ -64,13 +64,7 @@ private:
     bool m_allowAlphaInTF;
     bool m_interpolation;
 
-    bool m_useImageTF;
-
     std::string m_imageSourceId;
-
-    /// Identifier of the field containing the specific selection of TransfertFunction
-    /// if m_tfSelection is empty => use default TF selection
-    std::string m_tfSelection;
 
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;

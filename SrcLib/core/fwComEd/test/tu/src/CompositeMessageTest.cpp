@@ -22,7 +22,12 @@
 #include "CompositeMessageTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( CompositeMessageTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwComEd::ut::CompositeMessageTest );
+
+namespace fwComEd
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -47,7 +52,7 @@ void CompositeMessageTest::testCompositeMessage()
     const std::string service2UUID = "myTestService2";
 
     // build composite
-    ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildConfig() ;
+    ::fwRuntime::ConfigurationElement::sptr config = buildConfig() ;
 
     // Create the object and its services from the configuration
     ::fwServices::AppConfigManager::NewSptr configManager;
@@ -55,16 +60,16 @@ void CompositeMessageTest::testCompositeMessage()
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
 
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
+    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
 
     // get service 1
-    ::TestService::sptr serviceCompo;
-    serviceCompo = ::TestService::dynamicCast( ::fwServices::get(service1UUID) );
+    ::fwComEd::ut::TestService::sptr serviceCompo;
+    serviceCompo = ::fwComEd::ut::TestService::dynamicCast( ::fwServices::get(service1UUID) );
     CPPUNIT_ASSERT(serviceCompo);
 
     // get service 2
-    ::TestService::sptr serviceCompo2;
-    serviceCompo2 = ::TestService::dynamicCast( ::fwServices::get(service2UUID) );
+    ::fwComEd::ut::TestService::sptr serviceCompo2;
+    serviceCompo2 = ::fwComEd::ut::TestService::dynamicCast( ::fwServices::get(service2UUID) );
     CPPUNIT_ASSERT(serviceCompo2);
 
     // start services
@@ -80,7 +85,7 @@ void CompositeMessageTest::testCompositeMessage()
     std::vector< std::string > modifiedFields;
     modifiedFields.push_back(objAUUID);
     ::fwComEd::CompositeMsg::NewSptr compoMsg;
-    compoMsg->addEventModifiedFields(modifiedFields);
+    compoMsg->addModifiedKeysEvent(modifiedFields);
     ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
 
     // test message is received
@@ -91,9 +96,9 @@ void CompositeMessageTest::testCompositeMessage()
     CPPUNIT_ASSERT(compositeMsg);
 
     std::vector< std::string > vEvent = compositeMsg->getEventIds();
-    CPPUNIT_ASSERT(std::find(vEvent.begin(), vEvent.end(),::fwComEd::CompositeMsg::MODIFIED_FIELDS) != vEvent.end());
+    CPPUNIT_ASSERT(std::find(vEvent.begin(), vEvent.end(),::fwComEd::CompositeMsg::MODIFIED_KEYS) != vEvent.end());
 
-    std::vector< std::string > vModifiedFields = compositeMsg->getEventModifiedFields();
+    std::vector< std::string > vModifiedFields = compositeMsg->getModifiedKeys();
     CPPUNIT_ASSERT(std::find(vModifiedFields.begin(), vModifiedFields.end(),objAUUID) != vModifiedFields.end());
 
     // unregister communication channel
@@ -119,17 +124,17 @@ void CompositeMessageTest::testMessageNotification()
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
 
-    ::TestService::sptr serviceCompo;
-    serviceCompo = ::TestService::dynamicCast( ::fwServices::add(compo, "::TestService", "::TestServiceImplementationComposite") );
+    ::fwComEd::ut::TestService::sptr serviceCompo;
+    serviceCompo = ::fwComEd::ut::TestService::dynamicCast( ::fwServices::add(compo, "::fwComEd::ut::TestService", "::fwComEd::ut::TestServiceImplementationComposite") );
     CPPUNIT_ASSERT(serviceCompo);
 
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
-    ::TestService::sptr serviceImage;
-    serviceImage = ::TestService::dynamicCast( ::fwServices::add(image, "::TestService", "::TestServiceImplementationImage", ImageServiceUUID) );
+    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
+    ::fwComEd::ut::TestService::sptr serviceImage;
+    serviceImage = ::fwComEd::ut::TestService::dynamicCast( ::fwServices::add(image, "::fwComEd::ut::TestService", "::fwComEd::ut::TestServiceImplementationImage", ImageServiceUUID) );
     CPPUNIT_ASSERT(serviceImage);
 
-    ::TestService::sptr serviceImage2;
-    serviceImage2 = ::TestService::dynamicCast( ::fwServices::add(image, "::TestService", "::TestServiceImplementationImage", ImageService2UUID) );
+    ::fwComEd::ut::TestService::sptr serviceImage2;
+    serviceImage2 = ::fwComEd::ut::TestService::dynamicCast( ::fwServices::add(image, "::fwComEd::ut::TestService", "::fwComEd::ut::TestServiceImplementationImage", ImageService2UUID) );
     CPPUNIT_ASSERT(serviceImage2);
 
 
@@ -145,7 +150,7 @@ void CompositeMessageTest::testMessageNotification()
 
     // notify message
     ::fwComEd::ImageMsg::sptr imgMsg = ::fwComEd::ImageMsg::New();
-    imgMsg->addEvent(::fwComEd::ImageMsg::WINDOWING);
+    imgMsg->addEvent(::fwComEd::ImageMsg::SLICE_INDEX);
 
     ::fwServices::IEditionService::notify(serviceImage, image, imgMsg);
 
@@ -192,14 +197,14 @@ void CompositeMessageTest::testMessageNotification()
     // image's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService = objA->addConfigurationElement("service");
     imageService->setAttributeValue( "uid" , "myImageService" ) ;
-    imageService->setAttributeValue( "type" , "::TestService" ) ;
-    imageService->setAttributeValue( "implementation" , "::TestServiceImplementationImage" ) ;
+    imageService->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    imageService->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
     imageService->setAttributeValue( "autoComChannel" , "no" ) ;
 
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService2 = objA->addConfigurationElement("service");
     imageService2->setAttributeValue( "uid" , "myImageService2" ) ;
-    imageService2->setAttributeValue( "type" , "::TestService" ) ;
-    imageService2->setAttributeValue( "implementation" , "::TestServiceImplementationImage" ) ;
+    imageService2->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    imageService2->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
     imageService2->setAttributeValue( "autoComChannel" , "no" ) ;
 
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
@@ -215,8 +220,8 @@ void CompositeMessageTest::testMessageNotification()
     // composite's service 1
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service = cfg->addConfigurationElement("service");
     service->setAttributeValue( "uid" , "myTestService1" ) ;
-    service->setAttributeValue( "type" , "::TestService" ) ;
-    service->setAttributeValue( "implementation" , "::TestServiceImplementationComposite" ) ;
+    service->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    service->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
     service->setAttributeValue( "autoComChannel" , "no" ) ;
 
     // start / stop / update on service 1
@@ -228,8 +233,8 @@ void CompositeMessageTest::testMessageNotification()
     // composite's service 2
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
     service2->setAttributeValue( "uid" , "myTestService2" ) ;
-    service2->setAttributeValue( "type" , "::TestService" ) ;
-    service2->setAttributeValue( "implementation" , "::TestServiceImplementationComposite" ) ;
+    service2->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    service2->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
     service2->setAttributeValue( "autoComChannel" , "no" ) ;
 
     // start / stop / update on service 2
@@ -242,3 +247,6 @@ void CompositeMessageTest::testMessageNotification()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwComEd

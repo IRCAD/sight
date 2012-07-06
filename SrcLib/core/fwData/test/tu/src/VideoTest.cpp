@@ -7,7 +7,12 @@
 #include <fwData/Video.hpp>
 #include "VideoTest.hpp"
 
-CPPUNIT_TEST_SUITE_REGISTRATION( VideoTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::VideoTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void VideoTest::setUp()
 {
@@ -25,15 +30,18 @@ void VideoTest::tearDown()
 
 void VideoTest::methode1()
 {
-    boost::uint32_t VALUE   = 0 ;
-    boost::uint8_t VALUE1   = 1 ;
+    ::boost::uint32_t VALUE   = 0 ;
+    ::boost::uint8_t VALUE1   = 1 ;
 
     // process
-    ::fwData::Video::NewSptr p1;
+    ::fwData::Video::NewSptr video;
 
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getXSize(),    VALUE);
-    CPPUNIT_ASSERT_EQUAL(p1->getYSize(),    VALUE);
-    CPPUNIT_ASSERT_EQUAL(p1->getBPP(),  VALUE1);
-
+    CPPUNIT_ASSERT_EQUAL(video->getXSize(), VALUE);
+    CPPUNIT_ASSERT_EQUAL(video->getYSize(), VALUE);
+    CPPUNIT_ASSERT_EQUAL(video->getBPP(),  VALUE1);
 }
+
+} //namespace ut
+} //namespace fwData
+

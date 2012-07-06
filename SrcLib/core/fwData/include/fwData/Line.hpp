@@ -12,6 +12,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Point.hpp"
 
 
@@ -29,7 +30,7 @@ class FWDATA_CLASS_API Line : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
-        (()), ::fwTools::Factory::New< Line >) ;
+        (()), ::fwData::Factory::New< Line >) ;
 
     fwDataObjectMacro();
 

@@ -29,7 +29,7 @@ Posix::~Posix() throw()
 {}
 
 
-const bool Posix::isLoaded() const throw()
+bool Posix::isLoaded() const throw()
 {
     return m_handle != 0;
 }

@@ -4,13 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_INTERPRETERTEST_H
-#define DATA_INTERPRETERTEST_H
+#ifndef __FWPYTHON_INTERPRETERTEST_HPP__
+#define __FWPYTHON_INTERPRETERTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
 
-class InterpreterTest : public CPPUNIT_NS::TestFixture {
+namespace fwPython
+{
+namespace ut
+{
+
+class InterpreterTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( InterpreterTest );
     CPPUNIT_TEST( helloWorld );
     CPPUNIT_TEST( fail );
@@ -35,5 +41,7 @@ public:
     void changeValue();
 };
 
+} // namespace ut
+} // namespace fwPython
 
-#endif
+#endif //__FWPYTHON_INTERPRETERTEST_HPP__

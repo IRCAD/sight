@@ -61,7 +61,7 @@ protected:
     void onChangeShading( wxCommandEvent & event );
     void onShowNormals(wxCommandEvent & event );
     void notifyMaterial();
-    void notifyTriangularMesh();
+    void notifyMesh();
 
 private:
 

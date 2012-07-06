@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/helpers.hpp>
-
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
@@ -15,7 +13,7 @@
 #include <fwServices/macros.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/String.hpp>
 
@@ -63,7 +61,7 @@ ImageSlice::ImageSlice() throw()
     this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
     this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
-    this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
 }
 
 //------------------------------------------------------------------------------
@@ -142,7 +140,7 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr         image = this->getCtrlImage();
+    ::fwData::Image::sptr image = this->getCtrlImage();
 
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
@@ -171,9 +169,9 @@ void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
     ::fwData::Image::sptr image = m_ctrlImage.lock();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
-    if ( msg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) )
+    if ( msg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
     {
-        SLM_TRACE("Has event MODIFIED_FIELDS");
+        SLM_TRACE("Has event MODIFIED_KEYS");
         doUpdate();
     }
 
@@ -197,8 +195,8 @@ void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
             ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
             ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
 
-            int fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] )->value();
-            int toSliceType =   ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] )->value();
+            int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
+            int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
             if( toSliceType == static_cast<int>(m_orientation) )
             {
@@ -257,16 +255,12 @@ void ImageSlice::configuring() throw(fwTools::Failed)
     }
 }
 
-
 //------------------------------------------------------------------------------
-
 
 void ImageSlice::updateImage( ::fwData::Image::sptr image  )
 {
-    SLM_TRACE_FUNC();
     SLM_ASSERT("Null control image", !m_ctrlImage.expired());
-    this->updateImageInfos(m_ctrlImage.lock());
-
+    this->updateImageInfos(image);
     this->setVtkPipelineModified();
 }
 
@@ -274,7 +268,6 @@ void ImageSlice::updateImage( ::fwData::Image::sptr image  )
 
 void ImageSlice::updateSliceIndex( ::fwData::Image::sptr image )
 {
-    SLM_TRACE_FUNC();
     unsigned int axialIndex    = m_axialIndex->value();
     unsigned int frontalIndex  = m_frontalIndex->value();
     unsigned int sagittalIndex = m_sagittalIndex->value();

@@ -6,12 +6,12 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
-
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 
 #include <io/IWriter.hpp>
 
@@ -41,9 +41,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image 
 
 //------------------------------------------------------------------------------
 
-ImageWriterService::ImageWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImgPath("")
+ImageWriterService::ImageWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -53,15 +51,10 @@ ImageWriterService::~ImageWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void ImageWriterService::configuring() throw(::fwTools::Failed)
+
+::io::IOPathType ImageWriterService::getIOPathType() const
 {
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsImgPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsImgPath);
-        OSLM_TRACE("Filename found" << filename ) ;
-    }
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -83,10 +76,15 @@ void ImageWriterService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_fsImgPath = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsImgPath.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
+    else
+    {
+        this->clearLocations();
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -146,7 +144,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path imgFile, ::b
     }
     else
     {
-        OSLM_FATAL("Unknown extension for file "<< imgFile);
+        throw(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
     }
 
     myWriter->setObject(_pImg);
@@ -184,7 +182,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
@@ -193,8 +191,15 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        this->saveImage(m_fsImgPath,pImage);
-
+        try
+        {
+            this->saveImage(this->getFile() ,pImage);
+        }
+        catch(::fwTools::Failed& e)
+        {
+            OSLM_TRACE("Error : " << e.what());
+            throw e;
+        }
         cursor.setDefaultCursor();
     }
 }

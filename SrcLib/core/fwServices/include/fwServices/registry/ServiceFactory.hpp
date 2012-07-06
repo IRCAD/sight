@@ -8,7 +8,13 @@
 #define _FWSERVICES_REGISTRY_SERVICEFACTORY_HPP_
 
 #include <map>
+
+#ifdef linux
+#include <boost/unordered_map.hpp>
+#else
 #include <boost/tr1/unordered_map.hpp>
+#endif
+
 #include <boost/tuple/tuple.hpp>
 
 #include "fwServices/config.hpp"
@@ -50,10 +56,10 @@ class FWSERVICES_CLASS_API ServiceFactoryInfo : public ::fwTools::Object
         fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactoryInfo)(::fwTools::Object), (()), ::fwTools::Factory::New< ServiceFactoryInfo > );
 
         /// Constructor, do nothing.
-        FWSERVICES_API ServiceFactoryInfo(){}
+        ServiceFactoryInfo(){}
 
         /// Destructor, do nothing.
-        FWSERVICES_API virtual ~ServiceFactoryInfo(){}
+        virtual ~ServiceFactoryInfo(){}
 
         std::string serviceType;
         std::string objectImpl;
@@ -75,7 +81,12 @@ class FWSERVICES_CLASS_API ServiceFactory : public ::fwCore::BaseObject
 public:
 
     typedef std::pair<std::string, std::string> StringPair;
+
+#ifdef linux
+    typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
+#else
     typedef std::tr1::unordered_map< StringPair, bool > SupportMapType;
+#endif
 
     fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory) ;
 
@@ -93,6 +104,8 @@ public:
         const std::string & simpl,
         const std::string & stype,
         const std::string & oimpl);
+
+    FWSERVICES_API IService::sptr create( const std::string & _srvImpl );
 
     FWSERVICES_API IService::sptr create( const std::string & _srvType, const std::string & _srvImpl );
 

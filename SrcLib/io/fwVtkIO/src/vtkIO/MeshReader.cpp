@@ -12,12 +12,11 @@
 
 #include <fwCore/base.hpp>
 
-#include "vtkIO/vtk.hpp"
+#include "vtkIO/helper/Mesh.hpp"
 #include "vtkIO/MeshReader.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 
 REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::MeshReader, ::vtkIO::MeshReader );
-
 
 namespace vtkIO
 {
@@ -43,7 +42,7 @@ void MeshReader::read()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::fwData::TriangularMesh::sptr pTriangularMesh = getConcreteObject();
+    ::fwData::Mesh::sptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
     reader->SetFileName(this->getFile().string().c_str());
@@ -55,24 +54,15 @@ void MeshReader::read()
 
     vtkDataObject *obj = reader->GetOutput();
     vtkPolyData* mesh = vtkPolyData::SafeDownCast(obj);
-    if(mesh)
-    {
-        ::vtkIO::fromVTKMesh(mesh, pTriangularMesh);
-    }
-    else
-    {
-        std::string errMsg;
-        errMsg  = "MeshReader cannot read VTK Mesh file : ";
-        errMsg.append( this->getFile().string() );
-        throw( errMsg );
-    }
+    FW_RAISE_IF("MeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
+    ::vtkIO::helper::Mesh::fromVTKMesh(mesh, pMesh);
 }
 
 //------------------------------------------------------------------------------
 
 std::string  MeshReader::extension()
 {
-   return ".trian";
+   return ".vtk";
 }
 
 } // namespace vtkIO

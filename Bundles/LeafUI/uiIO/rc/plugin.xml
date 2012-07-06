@@ -9,7 +9,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IDialogEditor</type>
         <service>::uiIO::editor::IOSelectorService</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

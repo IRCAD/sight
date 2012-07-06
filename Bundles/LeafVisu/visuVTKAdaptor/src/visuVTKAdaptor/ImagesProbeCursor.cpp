@@ -13,6 +13,7 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/Factory.hpp>
@@ -37,9 +38,10 @@
 #include <vtkCellData.h>
 #include <vtkTransform.h>
 
-#include "fwRenderVTK/vtk/Helpers.hpp"
-#include "visuVTKAdaptor/ImageText.hpp"
 
+#include <fwRenderVTK/vtk/Helpers.hpp>
+
+#include "visuVTKAdaptor/ImageText.hpp"
 #include "visuVTKAdaptor/ImagesProbeCursor.hpp"
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesProbeCursor, ::fwData::Composite ) ;
@@ -60,8 +62,9 @@ public:
     static ImagesProbingCallback *New()
     { return new ImagesProbingCallback(); }
 
-    ImagesProbingCallback() : m_mouseMoveObserved(false),
-                              m_priority(-1)
+    ImagesProbingCallback()
+        : m_priority(-1),
+          m_mouseMoveObserved(false)
     {
         m_picker = NULL;
         this->PassiveObserverOff();
@@ -320,38 +323,44 @@ void ImagesProbeCursor::updateView( double world[3] )
     {
         ::fwData::Image::sptr image = ::fwData::Image::dynamicCast((*composite)[m_imagesId.begin()->first]);
         OSLM_ASSERT("Object '" << m_imagesId.begin()->first << "' must be an image", image);
-        this->updateImageInfos(image);
 
-        int index[3];
-        this->worldToImageSliceIndex( world, index );
-        OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] );
-
-        static const double epsilon = -0.00001;
-        if ( world[0]<epsilon  || world[1]<epsilon  || world[2]<epsilon  ||
-                index[0]< 0 || index[1]< 0 || index[2]< 0 ||
-                index[0]>= image->getSize()[0] ||
-                index[1]>= image->getSize()[1] ||
-                index[2]>= image->getSize()[2]
-        )
+        if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
         {
-            txt << "(---,---,---)" << std::endl;
-        }
-        else
-        {
-            std::string greyLevel = ::fwData::getPixelAsString(image, index[0], index[1], index[2] );
-            txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
+            this->updateImageInfos(image);
 
-            // update polyData
-            double worldCross[4][3];
-            this->computeCrossExtremity( index, worldCross);
+            int index[3];
+            this->worldToImageSliceIndex( world, index );
+            OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] );
 
-            vtkPoints* points = m_cursorPolyData->GetPoints();
-            for ( int i=0; i < 4; ++i)
+            if (    world[0] < image->getOrigin()[0] ||
+                    world[1] < image->getOrigin()[1] ||
+                    world[2] < image->getOrigin()[2] ||
+                    index[0]< 0 || index[1]< 0 || index[2]< 0 ||
+                    index[0]>= image->getSize()[0] ||
+                    index[1]>= image->getSize()[1] ||
+                    index[2]>= image->getSize()[2]
+            )
             {
-                OSLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
-                points->SetPoint(i,worldCross[i]);
+                txt << "(---,---,---)" << std::endl;
             }
-            m_cursorPolyData->Modified();
+            else
+            {
+                ::fwComEd::helper::Image imageHelper(image);
+                std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
+                txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
+
+                // update polyData
+                double worldCross[4][3];
+                this->computeCrossExtremity( index, worldCross);
+
+                vtkPoints* points = m_cursorPolyData->GetPoints();
+                for ( int i=0; i < 4; ++i)
+                {
+                    OSLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
+                    points->SetPoint(i,worldCross[i]);
+                }
+                m_cursorPolyData->Modified();
+            }
         }
     }
 
@@ -361,22 +370,28 @@ void ImagesProbeCursor::updateView( double world[3] )
         {
             ::fwData::Image::sptr image = ::fwData::Image::dynamicCast((*composite)[element.first]);
             OSLM_ASSERT("Object '" << element.first << "' must be an image", image);
-            this->updateImageInfos(image);
 
-            int index[3];
-            this->worldToImageSliceIndex( world, index );
-            OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
-
-            static const double epsilon = -0.00001;
-            if ( !(world[0]<epsilon  || world[1]<epsilon  || world[2]<epsilon  ||
-                    index[0]< 0 || index[1]< 0 || index[2]< 0 ||
-                    index[0]>= image->getSize()[0] ||
-                    index[1]>= image->getSize()[1] ||
-                    index[2]>= image->getSize()[2])
-            )
+            if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
             {
-                std::string greyLevel = ::fwData::getPixelAsString(image, index[0], index[1], index[2] );
-                txt << element.second << " : " << greyLevel << std::endl;
+                ::fwComEd::helper::Image imageHelper(image);
+                this->updateImageInfos(image);
+
+                int index[3];
+                this->worldToImageSliceIndex( world, index );
+                OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] << "," );
+
+                if ( !( world[0] < image->getOrigin()[0] ||
+                        world[1] < image->getOrigin()[1] ||
+                        world[2] < image->getOrigin()[2]  ||
+                        index[0]< 0 || index[1]< 0 || index[2]< 0 ||
+                        index[0]>= image->getSize()[0] ||
+                        index[1]>= image->getSize()[1] ||
+                        index[2]>= image->getSize()[2])
+                )
+                {
+                    std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
+                    txt << element.second << " : " << greyLevel << std::endl;
+                }
             }
         }
     }
@@ -410,7 +425,7 @@ void ImagesProbeCursor::computeCrossExtremity( const int probeSlice[3] , double 
                 //setOrientation( (dim==2?2:(dim+1)%2) ); // KEEP Z but swap X,Y
                 this->setOrientation(dim);
             }
-            probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim];
+            probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);;
         }
 
         for ( int p=0; p<2; ++p )
@@ -421,10 +436,10 @@ void ImagesProbeCursor::computeCrossExtremity( const int probeSlice[3] , double 
                 worldCross[p+2][dim] = probeWorld[dim];
                 if ( (dim + p + 1)%3 == m_orientation )
                 {
-                    worldCross[p][dim] = 0;
-                    ::boost::int32_t size = image->getSize().at(dim)-1;
+                    worldCross[p][dim] = image->getOrigin().at(dim);
+                    ::fwData::Image::IndexType size = image->getSize().at(dim)-1;
                     double spacing = image->getSpacing().at(dim);
-                    worldCross[p+2][dim] =  size * spacing;
+                    worldCross[p+2][dim] =  size * spacing + image->getOrigin().at(dim);
                 }
             }
         }

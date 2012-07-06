@@ -28,11 +28,11 @@ fwMatrix4x4  getRotationMatrix( const fwVec3d &_vecNorm )
 {
     fwMatrix4x4 R;
 
-    const float FV0 = _vecNorm[0];
-    const float FV1 = _vecNorm[1];
-    const double YP  = sqrt ( FV0 * FV0 + FV1 * FV1 );
-    const double RZ  = - atan2 (FV0, FV1);
-    const double RX  = - atan2 (YP, _vecNorm[2]);
+    const double FV0 = _vecNorm[0];
+    const double FV1 = _vecNorm[1];
+    const double YP  = sqrt( FV0 * FV0 + FV1 * FV1 );
+    const double RZ  = - atan2(FV0, FV1);
+    const double RX  = - atan2(YP, _vecNorm[2]);
 
 
 //     Rotation Matrix
@@ -53,18 +53,16 @@ fwMatrix4x4  getRotationMatrix( const fwVec3d &_vecNorm )
     R[1][1] =  cos(RX) * cos(RZ);
     R[1][2] =  sin(RX);
     R[1][3] =  0.;
-    
+
     R[2][0] =  sin(RX) * sin(RZ);
     R[2][1] = -sin(RX) * cos(RZ);
     R[2][2] =  cos(RX);
     R[2][3] =  0.;
-    
+
     R[3][2] =  0.;
     R[3][3] =  1.;
     R[3][0] =  0.;
     R[3][1] =  0.;
-
-
 
     return R;
 }

@@ -50,7 +50,9 @@ protected:
     UIMEASUREMENT_API void info(std::ostream &_sstream ) ;
 
 private:
-    void notifyNewDistance( ::fwData::Image::sptr image, ::fwData::Object::sptr backup );
+    void notifyNewDistance(::fwData::Image::sptr image, ::fwData::Object::sptr backup);
+
+    void notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::Object::sptr distance);
 };
 
 } // namespace action

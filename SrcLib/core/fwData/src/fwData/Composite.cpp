@@ -4,13 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <algorithm>
+#include <boost/foreach.hpp>
+
+#include "fwData/registry/macros.hpp"
 
 
 #include "fwData/Composite.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Composite,  ::fwData::Composite);
+fwDataRegisterMacro( ::fwData::Composite );
 
 namespace fwData
 {
@@ -28,47 +31,27 @@ Composite::~Composite()
 }
 
 
-Composite &Composite::getRefMap()
-{
-    return *this;
-}
-
-
-Composite const &Composite::getRefMap() const
-{
-    return *this;
-}
-
 //------------------------------------------------------------------------------
 
 void Composite::shallowCopy( Composite::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->clear();
+    this->fieldShallowCopy( _source );
+    m_attrContainer.clear();
 
-     for(    Composite::Container::const_iterator iter = _source->begin();
-             iter != _source->end();
-             ++iter )
-     {
-         (*this)[ iter->first ] = iter->second;
-     }
+    m_attrContainer = _source->m_attrContainer;
 }
 
 //------------------------------------------------------------------------------
 
-void Composite::deepCopy( Composite::csptr _source )
+void Composite::deepCopy( Composite::csptr source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( source );
 
-    this->clear();
+    m_attrContainer.clear();
 
-    for(    Composite::Container::const_iterator iter = _source->begin();
-            iter != _source->end();
-            ++iter )
+    BOOST_FOREACH(const ValueType &elem, *source)
     {
-        ::fwTools::Object::sptr newObj = ::fwTools::Factory::buildData( iter->second->getClassname() );
-        newObj->deepCopy( iter->second );
-        (*this)[ iter->first ] = ::fwData::Object::dynamicCast( newObj );
+        m_attrContainer.insert( ValueType(elem.first, ::fwData::Object::copy(elem.second) ) );
     }
 }
 

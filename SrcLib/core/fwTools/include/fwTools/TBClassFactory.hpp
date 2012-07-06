@@ -4,12 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef TBCLASSFACTORY_H_
-#define TBCLASSFACTORY_H_
+#ifndef __FWTOOLS_TBCLASSFACTORY_HPP_
+#define __FWTOOLS_TBCLASSFACTORY_HPP_
 
 #include "fwTools/IClassFactory.hpp"
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @class   TBClassFactory
@@ -55,13 +56,7 @@ public:
      */
     virtual ::boost::shared_ptr< BaseClass > create() const = 0;
 
-
-
-protected :
-
-
-
 };
 
-} // end namespace fwTools {
-#endif /*TBCLASSFACTORY_H_*/
+} // end namespace fwTools
+#endif /*__FWTOOLS_TBCLASSFACTORY_HPP_*/

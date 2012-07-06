@@ -12,6 +12,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 #include "fwData/Node.hpp"
 #include "fwData/String.hpp"
@@ -29,7 +30,7 @@ class FWDATA_CLASS_API DictionaryOrgan : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwTools::Factory::New< DictionaryOrgan >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwData::Factory::New< DictionaryOrgan >) ;
 
     // Generator result---------------------------------------------------------
 

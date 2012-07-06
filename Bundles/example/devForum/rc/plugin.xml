@@ -4,6 +4,7 @@
 
     <requirement id="dataReg" />    <!-- For all tutos -->
     <requirement id="visu" />       <!-- For all tutos -->
+    <requirement id="visuVTK" />    <!-- For tuto : 2,3,4 -->
     <requirement id="io" />         <!-- For tuto : 2,3,4 -->
     <requirement id="gui" />        <!-- For tuto : 4 -->
         

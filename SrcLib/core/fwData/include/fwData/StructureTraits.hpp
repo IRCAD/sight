@@ -9,6 +9,7 @@
 
 #include "fwData/Color.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -30,7 +31,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwTools::Factory::New< StructureTraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwData::Factory::New< StructureTraits >) ;
 
     /// Defines structure categories
     typedef enum
@@ -76,6 +77,14 @@ public:
 
     fwGettersSettersDocMacro(Color, color, ::fwData::Color::sptr, structure default color);
 
+    /// Get Organ dicom Designation.
+
+    fwGettersSettersDocMacro(AnatomicRegion, anatomicRegion, std::string, Dicom anatomic region);
+
+    fwGettersSettersDocMacro(PropertyCategory, propertyCategory, std::string, Dicom property category);
+
+    fwGettersSettersDocMacro(PropertyType, propertyType, std::string, Dicom property type);
+
 protected :
 
     /// Constructor
@@ -107,6 +116,14 @@ private:
     /// structure attachment type if class is LESION or FUNCTIONAL (can be empty)
     std::string m_attachmentType;
 
+    /// Dicom designation of Anatomic region if unknown it must be set to "ToDefine"
+    std::string m_anatomicRegion;
+
+    /// Dicom property category of organ if unknown it must be set to "ToDefine"
+    std::string m_propertyCategory;
+
+    /// Dicom property type of organ if unknown it must be set to "ToDefine"
+    std::string m_propertyType;
 };
 
 } // namespace fwData

@@ -21,6 +21,7 @@
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/location/Folder.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 
@@ -46,7 +47,7 @@
 namespace uiVisu
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::SnapshotEditor , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::SnapshotEditor , ::fwData::Object ) ;
 
 
 SnapshotEditor::SnapshotEditor() throw()
@@ -174,8 +175,8 @@ void SnapshotEditor::onSnapButton( wxCommandEvent& event )
             filename->value() = this->requestFileName();
             if(!filename->value().empty())
             {
-                dataInfo->setFieldSingleElement("sceneID", sceneID);
-                dataInfo->setFieldSingleElement("filename", filename);
+                dataInfo->setField("sceneID", sceneID);
+                dataInfo->setField("filename", filename);
                 ::fwComEd::CompositeMsg::NewSptr compositeMsg;
                 compositeMsg->addEvent( "SNAP", dataInfo );
                 ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
@@ -184,13 +185,10 @@ void SnapshotEditor::onSnapButton( wxCommandEvent& event )
     }
     else
     {
-        std::string msgInfo("Sorry, it is not possible to snapshot the negato view. This view is not shown on screen.");
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Negato view snapshot");
-        messageBox.setMessage( msgInfo );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Negato view snapshot",
+                "Sorry, it is not possible to snapshot the negato view. This view is not shown on screen.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -202,7 +200,6 @@ std::string SnapshotEditor::requestFileName()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
-//    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Image file","*.jpg *.jpeg *.bmp *.png *.tiff");
     dialogFile.addFilter("jpeg","*.jpg *.jpeg");
     dialogFile.addFilter("bmp","*.bmp");
@@ -216,6 +213,7 @@ std::string SnapshotEditor::requestFileName()
     if (result)
     {
         fileName = result->getPath().string();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(result->getPath().parent_path()) );
     }
 
     return fileName;

@@ -53,13 +53,13 @@ public :
      * @param[in] _pSource The service which send the message
      * @param[in] _pSubject The subject of the message ( to retrieve listeners of the subject )
      * @param[in] _pMsg message notify to associated object listeners
-     * @param[in] _allowLoops Allow loops (be really carefull)
+     * @param[in] _allowLoops Allow loops (be really careful)
      *
      *  This method notifies observers of _pSubject. It changes notification status of _pSource during all notification, set correct source and subject of msg and timestamp the message.
      */
     FWSERVICES_API static void notify(
             ::fwServices::IService::sptr _pSource,
-            ::fwTools::Object::sptr _pSubject,
+            ::fwData::Object::sptr _pSubject,
             ObjectMsg::sptr _pMsg,
             ::fwServices::ComChannelService::MsgOptionsType options = ::fwServices::ComChannelService::NONE );
 
@@ -91,7 +91,7 @@ public :
     //@}
 
     /// Returns number of observers (specific event and global observers)
-    FWSERVICES_API int getNbObservers() const;
+    FWSERVICES_API size_t getNbObservers() const;
 
 protected:
 

@@ -84,11 +84,10 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
 
     ::fwData::ResectionDB::sptr resecDB = this->getObject< ::fwData::ResectionDB >();
 
-    ::fwData::ResectionDB::ResectionIterator iter = resecDB->getResections().first;
-    for ( ; iter != resecDB->getResections().second ; ++iter)
+    BOOST_FOREACH( ::fwData::Resection::sptr resection, resecDB->getResections() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( *iter, "::visuVTKAdaptor::Resection" );
+                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resection, "::visuVTKAdaptor::Resection" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
@@ -139,7 +138,7 @@ void ResectionDB::doStop() throw(fwTools::Failed)
 void ResectionDB::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::ResectionDBMsg::csptr pResectionDBMsg = ::fwComEd::ResectionDBMsg::dynamicConstCast( msg ) ;
-    if ( pResectionDBMsg ) 
+    if ( pResectionDBMsg )
     {
         if ( pResectionDBMsg->hasEvent(::fwComEd::ResectionDBMsg::ADD_SAFE_PART) ||
                 pResectionDBMsg->hasEvent(::fwComEd::ResectionDBMsg::ADD_RESECTION) )

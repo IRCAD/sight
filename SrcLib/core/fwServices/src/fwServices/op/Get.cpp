@@ -14,7 +14,7 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr get( ::fwTools::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed )
+::fwServices::IService::sptr get( ::fwData::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed )
 {
     ::fwServices::IService::sptr service;
     std::vector< ::fwServices::IService::sptr >  services = ::fwServices::OSR::getServices( obj , serviceType );

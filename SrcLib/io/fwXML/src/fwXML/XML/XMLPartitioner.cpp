@@ -20,7 +20,7 @@
 
 #include <fwCore/base.hpp>
 
-#include "fwXML/ImageFileFormatService.hpp"
+#include "fwXML/IFileFormatService.hpp"
 #include "fwXML/XML/XMLPartitioner.hpp"
 #include "fwXML/XML/XMLHierarchy.hpp"
 #include "fwXML/XML/XMLTranslator.hpp"
@@ -52,18 +52,18 @@ XMLPartitioner::~XMLPartitioner()
 
 //------------------------------------------------------------------------------
 
-void XMLPartitioner::setPathPolicy( ::boost::shared_ptr< IPathPolicy>  newPathPolicy)
+void XMLPartitioner::setPathPolicy( IPathPolicy::sptr  newPathPolicy)
 {
     SLM_DEBUG("Changing path policy");
-    m_pathPolicy=newPathPolicy;
+    m_pathPolicy = newPathPolicy;
 }
 
 //------------------------------------------------------------------------------
 
-void XMLPartitioner::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSplitPolicy)
+void XMLPartitioner::setSplitPolicy( ISplitPolicy::sptr newSplitPolicy)
 {
     SLM_DEBUG("Changing split policy");
-    m_splitPolicy=newSplitPolicy;
+    m_splitPolicy = newSplitPolicy;
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ void XMLPartitioner::setSplitPolicy( ::boost::shared_ptr< ISplitPolicy>  newSpli
 
 // saver->directory the same as the aggregator
 
-void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
+void XMLPartitioner::manageExtraData( ::fwData::Object::sptr obj )
 {
     if ( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService") )
     {
@@ -115,7 +115,7 @@ void XMLPartitioner::manageExtraData( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr XMLPartitioner::manage( ::fwTools::Object::sptr father, ::fwTools::Object::sptr  son )
+xmlNodePtr XMLPartitioner::manage( ::fwData::Object::sptr father, ::fwData::Object::sptr  son )
 {
     XMLHierarchy::getDefault()->mapChildFather()[son]=father;
     XMLHierarchy::getDefault()->mapFatherChildren()[father].insert(son);
@@ -126,7 +126,7 @@ xmlNodePtr XMLPartitioner::manage( ::fwTools::Object::sptr father, ::fwTools::Ob
         // root serialization : create a new Aggregator
         XMLAggregator::NewSptr newAggregator;
 
-        newAggregator->rootFolder()  =   DefaultRoot();
+        newAggregator->rootFolder()  =  DefaultRoot();
         newAggregator->localFolder() =  m_pathPolicy->getPath(son).parent_path();
         newAggregator->filename()    = ::boost::filesystem::basename( m_pathPolicy->getPath(son).leaf() ) ;
         newAggregator->extension()   = ::boost::filesystem::extension( m_pathPolicy->getPath(son).leaf() );

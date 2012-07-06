@@ -7,6 +7,8 @@
 #ifndef _FWSERVICES_CONFIGTEMPLATEMANAGER_HXX_
 #define _FWSERVICES_CONFIGTEMPLATEMANAGER_HXX_
 
+#include <fwCore/base.hpp>
+
 #include <fwTools/Object.hpp>
 
 namespace fwServices
@@ -15,7 +17,7 @@ namespace fwServices
 template<class CLASSNAME>
 SPTR(CLASSNAME) AppConfigManager::getConfigRoot() const
 {
-    SPTR(CLASSNAME) myObject = ::boost::dynamic_pointer_cast< CLASSNAME >( getConfigRoot() ) ;
+    SPTR(CLASSNAME) myObject = ::boost::dynamic_pointer_cast< CLASSNAME >( this->getConfigRoot() ) ;
     SLM_ASSERT("Sorry, this object cannot be autocast.", myObject);
     return myObject;
 }

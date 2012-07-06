@@ -118,7 +118,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
 
 
     // Process child nodes.
-     ::boost::shared_ptr< Profile > profile( new Profile() );
+    ::boost::shared_ptr< Profile > profile( new Profile() );
     xmlNodePtr              curChild = node->children;
     for(curChild = node->children; curChild != 0; curChild = curChild->next)
     {
@@ -276,7 +276,7 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node, ::boost::s
 
     // Creates the activater object.
     using ::fwRuntime::profile::Starter;
-     ::boost::shared_ptr< Starter > starter( new Starter(identifier) );
+    ::boost::shared_ptr< Starter > starter( new Starter(identifier) );
     return starter;
 }
 

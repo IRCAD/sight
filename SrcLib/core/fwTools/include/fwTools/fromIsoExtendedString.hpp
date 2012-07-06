@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FROMISOEXTENDEDSTRING_HPP_
-#define FROMISOEXTENDEDSTRING_HPP_
+#ifndef __FWTOOLS_FROMISOEXTENDEDSTRING_HPP__
+#define __FWTOOLS_FROMISOEXTENDEDSTRING_HPP__
 
 #include <string>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -26,6 +26,13 @@ namespace fwTools
  * @return      Time in the boost format
  */
 FWTOOLS_API boost::posix_time::ptime fromIsoExtendedString(const std::string & time_string );
+
+/**
+ * @brief   Construct a boost ptime from a string in xsd format (YYYY-MM-DD)
+ * @param   date_string date in the xsd format YYYY-MM-DD
+ * @return  Time in the boost format
+ */
+FWTOOLS_API ::boost::posix_time::ptime fromDateInXsdFormat(const std::string & date_string);
 
 /**
  * @brief       Construct a string in iso extended format from a boost ptime
@@ -52,4 +59,4 @@ FWTOOLS_API std::string toStringWithoutAccent(const std::string & str);
 
 }//end namespace
 
-#endif /*FROMISOEXTENDEDSTRING_HPP_*/
+#endif /*__FWTOOLS_FROMISOEXTENDEDSTRING_HPP__*/

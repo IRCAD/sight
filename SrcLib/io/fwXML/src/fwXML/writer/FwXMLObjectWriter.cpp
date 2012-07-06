@@ -8,6 +8,7 @@
 #include <fwData/Object.hpp>
 
 #include "fwXML/writer/FwXMLObjectWriter.hpp"
+#include "fwXML/writer/fwxmlextension.hpp"
 #include "fwXML/Serializer.hpp"
 #include "fwXML/policy/NeverSplitPolicy.hpp"
 #include "fwXML/policy/UniquePathPolicy.hpp"
@@ -52,12 +53,12 @@ void FwXMLObjectWriter::write()
     ::fwXML::Serializer serializer;
     serializer.rootFolder() = getFile().parent_path().string();
 
-    ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy ( new ::fwXML::NeverSplitPolicy );
+    ::fwXML::NeverSplitPolicy::NewSptr spolicy;
     serializer.setSplitPolicy( spolicy );
 #if BOOST_FILESYSTEM_VERSION > 2
-    ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy ( new ::fwXML::UniquePathPolicy( getFile().filename().string() ) );
+    ::fwXML::UniquePathPolicy::sptr pPathPolicy( new ::fwXML::UniquePathPolicy( getFile().filename().string() ) );
 #else
-    ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy ( new ::fwXML::UniquePathPolicy( getFile().leaf() ) );
+    ::fwXML::UniquePathPolicy::sptr pPathPolicy( new ::fwXML::UniquePathPolicy( getFile().leaf() ) );
 #endif
     serializer.setPathPolicy( pPathPolicy );
 
@@ -66,14 +67,14 @@ void FwXMLObjectWriter::write()
     serializer.addHandler ( handler );
 
     //do the serialization job
-    serializer.serialize( getObject(), m_saveSchema );
+    serializer.serialize( ::fwData::Object::dynamicCast( this->getObject() ), m_saveSchema );
 }
 
 //------------------------------------------------------------------------------
 
 std::string  FwXMLObjectWriter::extension()
 {
-    return ".fxz";
+    return "." FWXML_ARCHIVE_EXTENSION;
 }
 } // namespace writer
 

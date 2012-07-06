@@ -68,9 +68,7 @@ public:
       </service>
        @endverbatim
      * This method analyzes the registry section of the configuration.
-     *
      *  - <menu sid="myMenu" start="yes" /> : define the service of the menu to add in the menu bar.
-     *
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu bar service.
      */
@@ -95,7 +93,7 @@ public:
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    typedef std::map< std::string, std::pair<int, bool> > SIDMenuMapType;
+    typedef std::map< std::string, std::pair<unsigned int, bool> > SIDMenuMapType;
 
     /**
      * @brief All menu services ID managed and associated with pair containing:

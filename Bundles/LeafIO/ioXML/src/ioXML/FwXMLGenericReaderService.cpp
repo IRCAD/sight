@@ -27,6 +27,7 @@
 #include <fwTools/System.hpp>
 
 #include <ioXML/FwXMLGenericReaderService.hpp>
+#include <fwXML/writer/fwxmlextension.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -43,12 +44,12 @@
 namespace ioXML
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwTools::Object );
+REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
 FwXMLGenericReaderService::FwXMLGenericReaderService() throw()
-        : m_archiveExtenstion (".fxz")
+        : m_archiveExtenstion ("." FWXML_ARCHIVE_EXTENSION)
 {}
 
 //------------------------------------------------------------------------------
@@ -62,33 +63,31 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
+    ::io::IReader::configuring();
+
+
     typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
-    ConfigurationElementContainer filename  = m_configuration->find("filename");
     ConfigurationElementContainer extension = m_configuration->find("archiveExtension");
 
-    int elements = 0;
-
-    if( filename.size() > 0 )
-    {
-        ++elements;
-        ConfigurationElementContainer::iterator iter = filename.begin() ;
-        SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", filename.size() == 1 );
-        SLM_ASSERT("The <"<< (*iter)->getName() <<"> element value can not be empty.", !(*iter)->getValue().empty() );
-        ::boost::filesystem::path filePath((*iter)->getValue());
-        m_reader.setFile( filePath );
-    }
+    SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() <= 1 );
 
     if( extension.size() > 0 )
     {
-        ++elements;
         ConfigurationElementContainer::iterator iter = extension.begin() ;
         SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", extension.size() == 1 );
         SLM_ASSERT("The <"<< (*iter)->getName() <<"> element value can not be empty.", !(*iter)->getValue().empty() );
         m_archiveExtenstion =  (*iter)->getValue();
     }
 
-    SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", elements <= 2 );
 }
+
+//------------------------------------------------------------------------------
+
+::io::IOPathType FwXMLGenericReaderService::getIOPathType() const
+{
+    return ::io::FILE;
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -112,8 +111,13 @@ void FwXMLGenericReaderService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath = result->getPath();
-        m_reader.setFile( result->getPath() );
+        _sDefaultPath = result->getPath().parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -151,27 +155,26 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 {
     std::vector< std::string > extensions ;
     extensions.push_back(".xml");
+    extensions.push_back("." FWXML_ARCHIVE_EXTENSION);
     return extensions ;
 }
 
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
-::fwTools::Object::sptr FwXMLGenericReaderService::loadData( const ::boost::filesystem::path inrFileDir )
+::fwData::Object::sptr FwXMLGenericReaderService::loadData( const ::boost::filesystem::path xmlFile )
 {
     SLM_TRACE_FUNC();
-    ::fwXML::reader::FwXMLObjectReader myLoader;
-    ::fwTools::Object::sptr pObject;
+    ::fwXML::reader::FwXMLObjectReader::NewSptr myLoader;
+    ::fwData::Object::sptr pObject;
 
-    myLoader.setFile(inrFileDir);
+    myLoader->setFile(xmlFile);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading data ");
-        myLoader.addHandler( progressMeterGUI );
-        myLoader.read();
-        pObject = ::fwTools::Object::dynamicCast( myLoader.getObject() );
+        myLoader->addHandler( progressMeterGUI );
+        myLoader->read();
+        pObject = ::fwData::Object::dynamicCast( myLoader->getObject() );
     }
     catch (const std::exception & e)
     {
@@ -192,36 +195,58 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 
 void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 {
-    OSLM_TRACE("FwXMLGenericReaderService::updating()  m_fsObjectPath:"<<  m_fsObjectPath);
-
     SLM_TRACE_FUNC();
 
-    if( !m_reader.getFile().empty() )
+
+    if( this->hasLocationDefined() )
     {
-        ::fwTools::Object::sptr obj; // object loaded
+
+        m_reader.setFile( this->getFile() );
+
+        ::fwData::Object::sptr obj; // object loaded
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        m_reader.setFile( correctFileFormat( m_reader.getFile() ));
-        if ( isAnFwxmlArchive( m_reader.getFile() ) )
+        m_reader.setFile( this->correctFileFormat( m_reader.getFile() ));
+        if ( this->isAnFwxmlArchive( m_reader.getFile() ) )
         {
-            obj = manageZipAndLoadData( m_reader.getFile() );
+            obj = this->manageZipAndLoadData( m_reader.getFile() );
         }
         else
         {
-            obj = loadData(m_reader.getFile() );
+            obj = this->loadData(this->getFile() );
         }
 
         if (obj)
         {
             // Retrieve dataStruct associated with this service
-            ::fwTools::Object::sptr associatedObject = this->getObject< ::fwTools::Object >();
+            ::fwData::Object::sptr associatedObject = this->getObject();
             SLM_ASSERT("associatedObject not instanced", associatedObject);
 
-            associatedObject->shallowCopy( obj );
-
-            notificationOfUpdate();
+            if(obj->getClassname() != associatedObject->getClassname())
+            {
+                std::stringstream stream;
+                stream << "Sorry, the file "<<m_reader.getFile()<< " contains a "
+                        << obj->getRootedClassname() << ", and you need a "
+                        << associatedObject->getRootedClassname();
+                ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                            stream.str(),
+                            ::fwGui::dialog::IMessageDialog::WARNING);
+            }
+            else
+            {
+                associatedObject->shallowCopy( obj );
+                notificationOfUpdate();
+            }
+        }
+        else
+        {
+            std::stringstream stream;
+            stream << "Sorry, reader failed to read the file "<<m_reader.getFile();
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                    stream.str(),
+                    ::fwGui::dialog::IMessageDialog::WARNING);
         }
         cursor.setDefaultCursor();
     }
@@ -233,7 +258,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 void FwXMLGenericReaderService::notificationOfUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
+    ::fwData::Object::sptr object = this->getObject();
     SLM_ASSERT("object not instanced", object);
     ::fwServices::ObjectMsg::NewSptr msg;
     msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
@@ -249,12 +274,14 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr FwXMLGenericReaderService::manageZipAndLoadData( const ::boost::filesystem::path _pArchivePath )
+::fwData::Object::sptr FwXMLGenericReaderService::manageZipAndLoadData( const ::boost::filesystem::path _pArchivePath )
 {
-    ::fwTools::Object::sptr obj;
+    ::fwData::Object::sptr obj;
     // Unzip folder
     ::boost::filesystem::path destFolder = ::fwTools::System::getTemporaryFolder() / "fwxmlArchiveFolder";
 
+
+    FW_RAISE_IF( "<" << _pArchivePath << "> does not exist.", !::boost::filesystem::exists(_pArchivePath));
     OSLM_DEBUG("srcZipFileName = " << _pArchivePath );
     OSLM_DEBUG("destFolderName = " << destFolder );
     ::fwZip::ZipFolder::NewSptr zip;
@@ -263,12 +290,28 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
     zip->unpackFolder( _pArchivePath, destFolder );
 
     // Load
-    ::boost::filesystem::path xmlfile = destFolder / "root.xml";
-    obj = loadData( xmlfile );
-
+    ::boost::filesystem::path xmlFile;
+    if(::boost::filesystem::exists(destFolder/"root.xml"))
+    {
+        xmlFile = destFolder / "root.xml";
+        obj = this->loadData( xmlFile );
+    }
+    else if(::boost::filesystem::exists(destFolder/"patient.xml"))
+    {
+        xmlFile = destFolder / "patient.xml";
+        obj = this->loadData( xmlFile );
+    }
+    else
+    {
+        std::stringstream stream;
+        stream << "Sorry, "<<_pArchivePath<< " is not valid a valid " FWXML_ARCHIVE_EXTENSION " file."
+               << this->getObject()->getRootedClassname();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                        stream.str(),
+                        ::fwGui::dialog::IMessageDialog::WARNING);
+    }
     // Remove temp folder
     ::boost::filesystem::remove_all( destFolder );
-
     return obj;
 }
 

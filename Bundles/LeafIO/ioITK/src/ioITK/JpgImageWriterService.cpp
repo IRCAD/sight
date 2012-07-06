@@ -38,9 +38,7 @@ REGISTER_SERVICE( ::io::IWriter , ::ioITK::JpgImageWriterService , ::fwData::Ima
 
 //------------------------------------------------------------------------------
 
-JpgImageWriterService::JpgImageWriterService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsImagePath("")
+JpgImageWriterService::JpgImageWriterService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -50,8 +48,10 @@ JpgImageWriterService::~JpgImageWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::configuring() throw(::fwTools::Failed)
-{}
+::io::IOPathType JpgImageWriterService::getIOPathType() const
+{
+    return ::io::FOLDER;
+}
 
 //------------------------------------------------------------------------------
 
@@ -71,8 +71,12 @@ void JpgImageWriterService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getFolder();
-        m_fsImagePath = result->getFolder();
-        m_bServiceIsConfigured = true;
+        this->setFolder(result->getFolder());
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -138,7 +142,7 @@ void JpgImageWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
@@ -146,7 +150,7 @@ void JpgImageWriterService::updating() throw(::fwTools::Failed)
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveImage(m_fsImagePath,associatedImage);
+        saveImage(this->getFolder(),associatedImage);
         cursor.setDefaultCursor();
     }
 }

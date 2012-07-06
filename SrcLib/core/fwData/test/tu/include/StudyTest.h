@@ -4,26 +4,33 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DATA_STUDYTEST_H
-#define DATA_STUDYTEST_H
+#ifndef __FWDATA_UT_STUDYTEST_HPP__
+#define __FWDATA_UT_STUDYTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-class StudyTest : public CPPUNIT_NS::TestFixture {
+namespace fwData
+{
+namespace ut
+{
+
+class StudyTest : public CPPUNIT_NS::TestFixture
+{
     CPPUNIT_TEST_SUITE( StudyTest );
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST( methode2 );
     CPPUNIT_TEST( addAcquisition ) ;
     CPPUNIT_TEST_SUITE_END();
-protected:
 
 public:
     // interface
     void setUp();
     void tearDown();
-    // fonctions de tests
+
     void methode1();
     void methode2();
     void addAcquisition() ;
 };
-#endif
+} //namespace ut
+} //namespace fwData
+#endif //__FWDATA_UT_STUDYTEST_HPP__

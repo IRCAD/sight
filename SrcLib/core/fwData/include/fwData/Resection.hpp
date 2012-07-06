@@ -10,10 +10,9 @@
 #include <vector>
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Reconstruction.hpp"
 #include "fwData/PlaneList.hpp"
-
 
 namespace fwData
 {
@@ -28,7 +27,7 @@ class FWDATA_CLASS_API Resection : public ::fwData::Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Resection)(::fwData::Object),
-        (()), ::fwTools::Factory::New< Resection >) ;
+        (()), ::fwData::Factory::New< Resection >) ;
 
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionOutputs;

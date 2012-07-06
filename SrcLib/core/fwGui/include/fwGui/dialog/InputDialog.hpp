@@ -24,6 +24,14 @@ namespace dialog
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *
+ * Example of use:
+ * @verbatim
+  ::fwGui::dialog::InputDialog inputDlg;
+  inputDlg.setTitle("Identification dialog");
+  inputDlg.setMessage("Enter Pin Code: ");
+  inputDlg.setInput ("<Enter your code here>");
+  std::string inputText = inputDlg.getInput();
+  @endverbatim
  */
 class FWGUI_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 {
@@ -43,14 +51,15 @@ public:
     FWGUI_API static std::string showInputDialog(const std::string& title, const std::string& message, const std::string &text = "");
 
 
-    /** @brief Constructor. Create the implementation of the specific input dialog box \n
-     * Example of use: \n
-     * @verbatinm
-          ::fwGui::dialog::InputDialog inputDlg; \n
-          inputDlg.setTitle("Identification dialog"); \n
-          inputDlg.setMessage("Enter Pin Code: "); \n
-          inputDlg.setInput ("<Enter your code here>");\n
-          std::string inputText = inputDlg.getInput();\n
+    /** @brief Constructor. Create the implementation of the specific input dialog box.
+     *
+     * Example of use:
+     * @verbatim
+      ::fwGui::dialog::InputDialog inputDlg;
+      inputDlg.setTitle("Identification dialog");
+      inputDlg.setMessage("Enter Pin Code: ");
+      inputDlg.setInput ("<Enter your code here>");
+      std::string inputText = inputDlg.getInput();
      @endverbatim
      */
     FWGUI_API InputDialog();

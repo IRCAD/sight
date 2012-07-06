@@ -18,7 +18,12 @@
 #include "DictionaryReaderTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( DictionaryReaderTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataIO::ut::DictionaryReaderTest );
+
+namespace fwDataIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -49,7 +54,7 @@ void DictionaryReaderTest::tearDown()
 
 void DictionaryReaderTest::test_1()
 {
-    // Expected data 
+    // Expected data
     ::fwData::StructureTraits::NewSptr expectedSkin;
     expectedSkin->setType("Skin");
     expectedSkin->setClass(::fwData::StructureTraits::ENVIRONMENT);
@@ -57,7 +62,10 @@ void DictionaryReaderTest::test_1()
     ::fwData::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = ::fwData::StructureTraits::BODY;
     expectedSkin->setCategories(skinCat);
-    
+    expectedSkin->setAnatomicRegion("Entire_Body");
+    expectedSkin->setPropertyCategory("Anat_Struct");
+    expectedSkin->setPropertyType("Entire_Body");
+
     ::fwData::StructureTraitsDictionary::NewSptr structDico;
     // get data from file.
     ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
@@ -65,7 +73,7 @@ void DictionaryReaderTest::test_1()
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
     dictionaryReader->read();
 
-    ::fwData::StructureTraits::sptr struct1 = structDico->getStructure("Skin");    
+    ::fwData::StructureTraits::sptr struct1 = structDico->getStructure("Skin");
     CPPUNIT_ASSERT(struct1);
     CPPUNIT_ASSERT_EQUAL(struct1->getType(), expectedSkin->getType());
     CPPUNIT_ASSERT_EQUAL(struct1->getClass(), expectedSkin->getClass());
@@ -75,21 +83,26 @@ void DictionaryReaderTest::test_1()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->green(), expectedSkin->getColor()->green(),0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->blue(), expectedSkin->getColor()->blue(), 0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->alpha(), expectedSkin->getColor()->alpha(), 0.001);
- 
+
     CPPUNIT_ASSERT_EQUAL(struct1->getCategories().size(), expectedSkin->getCategories().size());
     CPPUNIT_ASSERT_EQUAL(struct1->getNativeExp(), expectedSkin->getNativeExp());
     CPPUNIT_ASSERT_EQUAL(struct1->getNativeGeometricExp(), expectedSkin->getNativeGeometricExp());
-    CPPUNIT_ASSERT_EQUAL(struct1->getAttachmentType(), expectedSkin->getAttachmentType());    
+    CPPUNIT_ASSERT_EQUAL(struct1->getAttachmentType(), expectedSkin->getAttachmentType());
+
+    CPPUNIT_ASSERT_EQUAL(struct1->getAnatomicRegion(), expectedSkin->getAnatomicRegion());
+    CPPUNIT_ASSERT_EQUAL(struct1->getPropertyCategory(), expectedSkin->getPropertyCategory());
+    CPPUNIT_ASSERT_EQUAL(struct1->getPropertyType(), expectedSkin->getPropertyType());
+
 }
 
 //------------------------------------------------------------------------------
 
 void DictionaryReaderTest::test_2()
-{   
+{
     // Set up context before running a test.
     m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
-    
+
     ::fwData::StructureTraitsDictionary::NewSptr structDico;
     // Get data from file.
     ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
@@ -116,11 +129,11 @@ void DictionaryReaderTest::test_3()
 //------------------------------------------------------------------------------
 
 void DictionaryReaderTest::test_4()
-{   
+{
     // Set up context before running a test.
     m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
-    
+
     ::fwData::StructureTraitsDictionary::NewSptr structDico;
     // Get data from file.
     ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
@@ -134,11 +147,11 @@ void DictionaryReaderTest::test_4()
 
 void DictionaryReaderTest::test_5()
 {
-    
+
     // Set up context before running a test.
     m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
-    
+
     ::fwData::StructureTraitsDictionary::NewSptr structDico;
     // Get data from file.
     ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
@@ -153,9 +166,9 @@ void DictionaryReaderTest::generateDictionaryFile(::boost::filesystem::path dict
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
-    
-    file<<"Skin;(255,179,140,100);Body;Environment;;;" << std::endl;    
-    
+
+    file<<"Skin;(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
+
     file.close();
 }
 
@@ -167,7 +180,7 @@ void DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(::boost::f
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
     // Missing ";" after the type Skin.
-    file<<"Skin(255,179,140,100);Body;Environment;;;" << std::endl;        
+    file<<"Skin(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
@@ -178,8 +191,7 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongCategory(::boost::file
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
-    // Missing ";" after the type Skin.
-    file<<"Skin;(255,179,140,100);Boy;Environment;;;" << std::endl;
+    file<<"Skin;(255,179,140,100);Boy;Environment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
@@ -190,9 +202,11 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongClass(::boost::filesys
     std::fstream file;
     file.open(dictionaryFile.string().c_str(), std::fstream::out);
     CPPUNIT_ASSERT(file.is_open());
-    // Missing ";" after the type Skin.
-    file<<"Skin;(255,179,140,100);Body;Enironment;;;" << std::endl;
+    file<<"Skin;(255,179,140,100);Body;Enironment;;;;Entire_Body;Anat_Struct;Entire_Body" << std::endl;
     file.close();
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwDataIO

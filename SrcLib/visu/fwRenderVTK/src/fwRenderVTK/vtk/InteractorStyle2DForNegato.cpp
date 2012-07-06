@@ -238,7 +238,6 @@ void InteractorStyle2DForNegato::Dolly()
     {
         return;
     }
-    vtkRenderWindowInteractor *rwi = this->Interactor;
     double *center = this->CurrentRenderer->GetCenter();
     int dy = m_newPickPoint[1] - m_oldPickPoint[1];
     double dyf = this->MotionFactor * dy / center[1];

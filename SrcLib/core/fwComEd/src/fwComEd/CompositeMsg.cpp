@@ -19,20 +19,20 @@ REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::CompositeMsg, ::fwCo
 namespace fwComEd
 {
 
-std::string CompositeMsg::MODIFIED_FIELDS = "MODIFIED_FIELDS";
+std::string CompositeMsg::MODIFIED_KEYS = "MODIFIED_KEYS";
 
-std::string CompositeMsg::ADDED_FIELDS = "ADDED_FIELDS";
-std::string CompositeMsg::REMOVED_FIELDS = "REMOVED_FIELDS";
-std::string CompositeMsg::SWAPPED_FIELDS = "SWAPPED_FIELDS";
+std::string CompositeMsg::ADDED_KEYS = "ADDED_KEYS";
+std::string CompositeMsg::REMOVED_KEYS = "REMOVED_KEYS";
+std::string CompositeMsg::CHANGED_KEYS = "CHANGED_KEYS";
 
 //-------------------------------------------------------------------------
 
 CompositeMsg::CompositeMsg() throw()
 {
-    m_removedFields    = ::fwData::Composite::New();
-    m_addedFields      = ::fwData::Composite::New();
-    m_swappedOldFields = ::fwData::Composite::New();
-    m_swappedNewFields = ::fwData::Composite::New();
+    m_removedKeys    = ::fwData::Composite::New();
+    m_addedKeys      = ::fwData::Composite::New();
+    m_oldChangedKeys = ::fwData::Composite::New();
+    m_newChangedKeys = ::fwData::Composite::New();
 }
 
 //-------------------------------------------------------------------------
@@ -42,113 +42,113 @@ CompositeMsg::~CompositeMsg() throw()
 
 //-------------------------------------------------------------------------
 
-void CompositeMsg::addEventModifiedFields( const std::vector< std::string > & _modifiedFields )
+void CompositeMsg::addModifiedKeysEvent( const std::vector< std::string > & _modifiedKeys )
 {
-    m_modifiedFields = _modifiedFields;
-    this->addEvent(MODIFIED_FIELDS);
+    m_modifiedKeys = _modifiedKeys;
+    this->addEvent(MODIFIED_KEYS);
 }
 
 //-------------------------------------------------------------------------
 
-void CompositeMsg::addEventModifiedField( std::string _modifiedField )
+void CompositeMsg::addModifiedKeyEvent( std::string _modifiedKey )
 {
-    if( ! this->hasEvent( MODIFIED_FIELDS ) )
+    if( ! this->hasEvent( MODIFIED_KEYS ) )
     {
-        this->addEvent( MODIFIED_FIELDS );
+        this->addEvent( MODIFIED_KEYS );
     }
-    m_modifiedFields.push_back(_modifiedField);
+    m_modifiedKeys.push_back(_modifiedKey);
 }
 
 //-------------------------------------------------------------------------
 
-void CompositeMsg::addEventModifiedFields( const std::vector< std::string > & _modifiedFields, std::vector< ::fwData::Object::sptr > _oldObjects )
+void CompositeMsg::addModifiedKeysEvent( const std::vector< std::string > & _modifiedKeys, std::vector< ::fwData::Object::sptr > _oldObjects )
 {
-    m_modifiedFields = _modifiedFields;
+    m_modifiedKeys = _modifiedKeys;
     m_modifiedObjects = _oldObjects;
-    this->addEvent(MODIFIED_FIELDS);
+    this->addEvent(MODIFIED_KEYS);
 }
 
 //-------------------------------------------------------------------------
 
-std::vector< std::string > CompositeMsg::getEventModifiedFields() const
+std::vector< std::string > CompositeMsg::getModifiedKeys() const
 {
-    SLM_ASSERT("sorry, CompositeMsg does not contained MODIFIED_FIELDS event", this->hasEvent(MODIFIED_FIELDS));
-    return m_modifiedFields;
+    SLM_ASSERT("sorry, CompositeMsg does not contained MODIFIED_KEYS event", this->hasEvent(MODIFIED_KEYS));
+    return m_modifiedKeys;
 }
 
 //-------------------------------------------------------------------------
 
-void CompositeMsg::addAddedField( std::string _compositeKey, ::fwData::Object::sptr _pNewObject )
+void CompositeMsg::appendAddedKey( std::string _compositeKey, ::fwData::Object::sptr _pNewObject )
 {
-    if( ! this->hasEvent( ADDED_FIELDS ) )
+    if( ! this->hasEvent( ADDED_KEYS ) )
     {
-        this->addEvent( ADDED_FIELDS, m_addedFields );
+        this->addEvent( ADDED_KEYS, m_addedKeys );
     }
 
-    SLM_ASSERT("This composite key is already register", m_addedFields->getRefMap().find(_compositeKey) == m_addedFields->getRefMap().end() );
+    SLM_ASSERT("This composite key is already register", m_addedKeys->find(_compositeKey) == m_addedKeys->end() );
 
-    m_addedFields->getRefMap()[ _compositeKey ] = _pNewObject;
-    addEventModifiedField( _compositeKey );
+    m_addedKeys->getContainer()[ _compositeKey ] = _pNewObject;
+    addModifiedKeyEvent( _compositeKey );
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr CompositeMsg::getAddedFields() const
+::fwData::Composite::sptr CompositeMsg::getAddedKeys() const
 {
-    return m_addedFields;
+    return m_addedKeys;
 }
 
 //-----------------------------------------------------------------------------
 
-void CompositeMsg::addRemovedField( std::string _compositeKey, ::fwData::Object::sptr _pOldObject )
+void CompositeMsg::appendRemovedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject )
 {
-    if( ! this->hasEvent( REMOVED_FIELDS ) )
+    if( ! this->hasEvent( REMOVED_KEYS ) )
     {
-        this->addEvent( REMOVED_FIELDS, m_removedFields );
+        this->addEvent( REMOVED_KEYS, m_removedKeys );
     }
 
-    SLM_ASSERT("This composite key is already register", m_removedFields->getRefMap().find(_compositeKey) == m_removedFields->getRefMap().end() );
+    SLM_ASSERT("This composite key is already register", m_removedKeys->find(_compositeKey) == m_removedKeys->end() );
 
-    m_removedFields->getRefMap()[ _compositeKey ] = _pOldObject;
-    addEventModifiedField( _compositeKey );
+    m_removedKeys->getContainer()[ _compositeKey ] = _pOldObject;
+    addModifiedKeyEvent( _compositeKey );
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr CompositeMsg::getRemovedFields() const
+::fwData::Composite::sptr CompositeMsg::getRemovedKeys() const
 {
-    return m_removedFields;
+    return m_removedKeys;
 }
 
 //-----------------------------------------------------------------------------
 
-void CompositeMsg::addSwappedField( std::string _compositeKey, ::fwData::Object::sptr _pOldObject, ::fwData::Object::sptr _pNewObject )
+void CompositeMsg::appendChangedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject, ::fwData::Object::sptr _pNewObject )
 {
-    if( ! this->hasEvent( SWAPPED_FIELDS ) )
+    if( ! this->hasEvent( CHANGED_KEYS ) )
     {
-        this->addEvent( SWAPPED_FIELDS, m_swappedOldFields );
+        this->addEvent( CHANGED_KEYS, m_oldChangedKeys );
     }
 
-    SLM_ASSERT("This composite key is already register", m_swappedOldFields->getRefMap().find(_compositeKey) == m_swappedOldFields->getRefMap().end() );
+    SLM_ASSERT("This composite key is already register", m_oldChangedKeys->find(_compositeKey) == m_oldChangedKeys->end() );
 
-    m_swappedOldFields->getRefMap()[ _compositeKey ] = _pOldObject;
-    m_swappedNewFields->getRefMap()[ _compositeKey ] = _pNewObject;
+    m_oldChangedKeys->getContainer()[ _compositeKey ] = _pOldObject;
+    m_newChangedKeys->getContainer()[ _compositeKey ] = _pNewObject;
 
-    addEventModifiedField( _compositeKey );
+    addModifiedKeyEvent( _compositeKey );
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr CompositeMsg::getSwappedOldFields() const
+::fwData::Composite::sptr CompositeMsg::getOldChangedKeys() const
 {
-    return m_swappedOldFields;
+    return m_oldChangedKeys;
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Composite::sptr CompositeMsg::getSwappedNewFields() const
+::fwData::Composite::sptr CompositeMsg::getNewChangedKeys() const
 {
-    return m_swappedNewFields;
+    return m_newChangedKeys;
 }
 
 //-----------------------------------------------------------------------------

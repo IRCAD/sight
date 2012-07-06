@@ -35,7 +35,7 @@ struct EmptyPlugin : public Plugin
     /**
      * @brief   Destructor : does nothing.
      */
-    FWRUNTIME_API virtual ~EmptyPlugin() throw() {}
+    virtual ~EmptyPlugin() throw() {}
 
 
     // Overrides

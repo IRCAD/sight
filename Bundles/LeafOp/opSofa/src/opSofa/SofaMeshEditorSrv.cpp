@@ -118,8 +118,8 @@ void SofaMeshEditorSrv::onStrengthSlider(int value)
         ::fwData::Vector::NewSptr data;
         ::fwData::String::NewSptr v1(idReconstruction->value());
         ::fwData::Integer::NewSptr v2(value);
-        data->push_back(v1);
-        data->push_back(v2);
+        data->getContainer().push_back(v2);
+        data->getContainer().push_back(v1);
        
         // Notification
         ::fwServices::ObjectMsg::NewSptr msg;
@@ -150,10 +150,10 @@ void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
     ::fwData::Integer::NewSptr v2(x);
     ::fwData::Integer::NewSptr v3(y);
     ::fwData::Integer::NewSptr v4(z);
-    data->push_back(v1);
-    data->push_back(v2);
-    data->push_back(v3);
-    data->push_back(v4);
+    data->getContainer().push_back(v1);
+    data->getContainer().push_back(v2);
+    data->getContainer().push_back(v3);
+    data->getContainer().push_back(v4);
    
     // Notification
     ::fwServices::ObjectMsg::NewSptr msg;

@@ -31,15 +31,15 @@ public:
     VISUVTKADAPTOR_API virtual ~Text() throw();
 
     VISUVTKADAPTOR_API virtual void setText(std::string str);
-    VISUVTKADAPTOR_API virtual std::string getText(){return m_text;};
+    virtual std::string getText(){return m_text;};
 
 protected:
 
     VISUVTKADAPTOR_API virtual void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API virtual void doStop() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doSwap() throw(fwTools::Failed){};
-    VISUVTKADAPTOR_API virtual void doUpdate() throw(fwTools::Failed){};
-    VISUVTKADAPTOR_API virtual void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
+    virtual void doSwap() throw(fwTools::Failed){};
+    virtual void doUpdate() throw(fwTools::Failed){};
+    virtual void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
     VISUVTKADAPTOR_API virtual void configuring() throw(fwTools::Failed);
  
 

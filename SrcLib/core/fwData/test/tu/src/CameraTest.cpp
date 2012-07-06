@@ -11,12 +11,17 @@
 #include <map>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include "fwData/Camera.hpp"
+#include <fwData/Camera.hpp>
 #include "CameraTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( CameraTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::CameraTest );
+
+namespace fwData
+{
+namespace ut
+{
 
 void CameraTest::setUp()
 {
@@ -49,4 +54,5 @@ void CameraTest::methode1() //test des attributs
     CPPUNIT_ASSERT_EQUAL(camera->getFy(),  FY ) ;
 }
 
-
+} //namespace ut
+} //namespace fwData

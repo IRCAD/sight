@@ -35,6 +35,4 @@ void serialize(Archive & ar, ::fwData::Boolean &_object, const unsigned int vers
 
 } }
 
-INSTANTIATE_SERIALIZER(::fwData::Boolean);
-
 #endif // _Boolean_SERIALIZER_HPP

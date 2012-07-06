@@ -53,7 +53,5 @@ void serialize(Archive & ar, ::fwData::TransformationMatrix3D & _transformationM
 
 } } // end namespace
 
-INSTANTIATE_SERIALIZER(::fwData::TransformationMatrix3D);
-
 #endif // _FWXML_BOOSTSERIALIZER_TRANSFORMATIONMATRIX3D_HPP_
 

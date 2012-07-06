@@ -4,47 +4,42 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Port.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Port, ::fwData::Port );
+fwDataRegisterMacro( ::fwData::Port );
 
 namespace fwData
 {
 //------------------------------------------------------------------------------
 
 Port::Port() : m_identifier("IDNOTdefined") , m_type("TypeNotDefined")
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 Port::~Port()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void Port::shallowCopy( Port::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
 
-    this->m_identifier = _source->m_identifier;
-    this->m_type = _source->m_type;
+    m_identifier = _source->m_identifier;
+    m_type = _source->m_type;
 }
 
 //------------------------------------------------------------------------------
 
 void Port::deepCopy( Port::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
 
-    this->m_identifier = _source->m_identifier;
-    this->m_type = _source->m_type;
-
+    m_identifier = _source->m_identifier;
+    m_type = _source->m_type;
 }
 
 //------------------------------------------------------------------------------

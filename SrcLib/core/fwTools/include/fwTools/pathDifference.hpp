@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef PATHDIFFERENCE_HPP_
-#define PATHDIFFERENCE_HPP_
+#ifndef __FWTOOLS_PATHDIFFERENCE_HPP___
+#define __FWTOOLS_PATHDIFFERENCE_HPP___
 
 #include "fwTools/config.hpp"
 #include <boost/filesystem/path.hpp>
@@ -50,4 +50,4 @@ FWTOOLS_API boost::filesystem::path getPathDifference( boost::filesystem::path p
 
 }
 
-#endif /*PATHDIFFERENCE_HPP_*/
+#endif /*__FWTOOLS_PATHDIFFERENCE_HPP___*/

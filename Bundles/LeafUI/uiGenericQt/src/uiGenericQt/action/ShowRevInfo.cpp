@@ -43,7 +43,7 @@ namespace uiGeneric
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::ShowRevInfo , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::ShowRevInfo , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 
@@ -296,6 +296,7 @@ void ShowRevInfo::saveReport()
     {
         ::boost::filesystem::path filename = result->getPath();
         _sDefaultPath = filename.parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
 
         QTextDocument* document = this->generateReport();
 

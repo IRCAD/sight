@@ -13,8 +13,8 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/DictionaryOrgan.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {
@@ -30,11 +30,9 @@ class FWDATA_CLASS_API Dictionary : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwTools::Factory::New< Dictionary >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwData::Factory::New< Dictionary >) ;
 
-    //--------------------------------------------------------------------------
-    /// Field identifier for organ dictionary
-    static const Object::FieldID ID_DICTIONARY_ORGANS;
+    fwDataObjectMacro();
 
     /**
      * @brief Check if the organ is in dictionary
@@ -63,17 +61,21 @@ public :
      */
     FWDATA_API ::fwData::DictionaryOrgan::sptr getDictionaryOrgan( const std::string & _dictionaryOrganName );
 
-    // to scan dictionary organ
-    typedef ContainerCaster< DictionaryOrgan >::iterator        DictionaryOrganIterator;
-    typedef ContainerCaster< DictionaryOrgan >::const_iterator  DictionaryOrganConstIterator;
+    typedef std::string DictionaryOrganNameType;
+    typedef std::map< DictionaryOrganNameType, ::fwData::DictionaryOrgan::sptr > DictionaryOrganContainerType;
 
-    /**@{
-     * Get iterator on the first and the last organ.
-     * @return std::pair( DictionaryOrgans.begin(), DictionaryOrgans.end() )
+    /**
+     * @brief Get/Set the organ map
      */
-    FWDATA_API std::pair< DictionaryOrganIterator, DictionaryOrganIterator > getDictionaryOrgans();
-    FWDATA_API std::pair< DictionaryOrganConstIterator, DictionaryOrganConstIterator > getDictionaryOrgans() const;
-    //@}
+    fwDataGetSetCRefMacro(DictionaryOrgans, DictionaryOrganContainerType);
+
+    /**
+     * @brief Shallow/deep copy
+     * @{
+     */
+    void shallowCopy( Dictionary::csptr _source );
+    void deepCopy( Dictionary::csptr _source );
+    /** @} */
 
 protected:
     /// Constructor
@@ -81,6 +83,8 @@ protected:
 
     /// Destructor
     FWDATA_API virtual ~Dictionary();
+
+    DictionaryOrganContainerType m_attrDictionaryOrgans;
 };
 
 } // namespace fwData

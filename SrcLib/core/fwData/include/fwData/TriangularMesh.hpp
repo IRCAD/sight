@@ -15,6 +15,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -31,7 +32,7 @@ namespace fwData
 class FWDATA_CLASS_API TriangularMesh : public Object
 {
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwTools::Factory::New< TriangularMesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwData::Factory::New< TriangularMesh >) ;
 
     /// 3D point container
     typedef std::vector< std::vector< float > >         PointContainer ;
@@ -44,11 +45,11 @@ public :
     /**
      * Typedef using for pointer function
      */
-    typedef ::boost::function<void      ( ::fwData::TriangularMesh*, int, double, double, double ) > set1ValueFunc;
+    typedef ::boost::function<void      ( ::fwData::TriangularMesh*, int, float, float, float ) > set1ValueFunc;
     typedef ::boost::function<double*   ( ::fwData::TriangularMesh*, int)  > get1ValueFunc;
     typedef ::boost::function<void      ( ::fwData::TriangularMesh*, int, int, int, int ) > set1IndexFunc;
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > get1IndexFunc;
-    typedef ::boost::function<void      ( ::fwData::TriangularMesh*, int, double, double, double ) > set1NormalFunc;
+    typedef ::boost::function<void      ( ::fwData::TriangularMesh*, int, float, float, float ) > set1NormalFunc;
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > get1NormalFunc;
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumPointsFunc;
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumCellsFunc;
@@ -91,21 +92,21 @@ public :
      */
     FWDATA_API void clearCells();
 
-    FWDATA_API void setOneVectorInPointList(int _iIndex, double _fX, double _fY, double _fZ);
+    FWDATA_API void setOneVectorInPointList(int _iIndex, float _fX, float _fY, float _fZ);
 
     FWDATA_API void setOneIndexInIndexList(int _iIndex, int _p1, int _p2, int _p3);
 
     FWDATA_API double* getOneVectorFromPointList(int _pt) const;
 
-    FWDATA_API const int getOneIndexFromIndexList(void) const;
+    FWDATA_API int getOneIndexFromIndexList(void) const;
 
-    FWDATA_API void setOneVectorInNormalList(int x, double, double, double);
+    FWDATA_API void setOneVectorInNormalList(int x, float, float, float);
 
-    FWDATA_API int const getOneIndexFromNormalList(void) const;
+    FWDATA_API int getOneIndexFromNormalList(void) const;
 
-    FWDATA_API int const getNumPoints(void) const ;
+    FWDATA_API size_t getNumPoints(void) const ;
 
-    FWDATA_API int const getNumCells(void) const ;
+    FWDATA_API size_t getNumCells(void) const ;
 
 protected :
 
@@ -120,8 +121,8 @@ protected :
      */
     FWDATA_API virtual ~TriangularMesh() ;
 
-    PointContainer        m_points ;
-    CellContainer        m_cells ;
+    PointContainer m_points ;
+    CellContainer  m_cells ;
 
 } ;
 

@@ -155,14 +155,14 @@
             </item>
 
             <!--
-                TriangularMesh object creation. Services contained between the tags <object> and </object> are
-                associated to the TriangularMesh data.
+                Mesh object creation. Services contained between the tags <object> and </object> are
+                associated to the Mesh data.
              -->
             <item key="myMesh1">
-                <object uid="myMesh1" type="::fwData::TriangularMesh">
+                <object uid="myMesh1" type="::fwData::Mesh">
 
                     <!--
-                        Services associated to the TriangularMesh data :
+                        Services associated to the Mesh data :
                         Visualization, reading and writing service creation.
                     -->
                     <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes">
@@ -179,14 +179,14 @@
             </item>
 
             <!--
-                TriangularMesh object creation. Services contained between the tags <object> and </object> are
-                associated to the TriangularMesh data.
+                Mesh object creation. Services contained between the tags <object> and </object> are
+                associated to the Mesh data.
              -->
             <item key="myMesh2">
-                <object uid="myMesh2" type="::fwData::TriangularMesh">
+                <object uid="myMesh2" type="::fwData::Mesh">
 
                     <!--
-                        Services associated to the TriangularMesh data :
+                        Services associated to the Mesh data :
                         Visualization, reading and writing service creation.
                     -->
                     <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes">
@@ -202,7 +202,7 @@
             </item>
 
             <!--
-                In order to start the different services, it does not need to follow the objects creation order. Note that the services associated to the Image and TriangularMesh data are not started
+                In order to start the different services, it does not need to follow the objects creation order. Note that the services associated to the Image and Mesh data are not started
                 between the tags corresponding to these two data definitions but, before the end of the Composite data definition.
             -->
             <start uid="myFrame" />

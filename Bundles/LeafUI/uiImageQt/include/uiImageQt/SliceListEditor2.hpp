@@ -84,7 +84,7 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-protected slots:
+protected Q_SLOTS:
     /// This method is called when the popup menu is clicked. Notify the slice mode changed.
     void onChangeSliceMode(bool checked = false);
 

@@ -9,14 +9,14 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioXML::FwXMLGenericWriterService</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
         <desc>Generic fwXML Writer (Ircad)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioXML::FwXMLGenericReaderService</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
         <desc>Generic fwXML Reader (Ircad)</desc>
     </extension>
 
@@ -37,21 +37,6 @@
 
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioXML::FwXMLImageReaderService</service>
-        <object>::fwData::Image</object>
-        <desc>fwXML Image Reader (Ircad)</desc>
-    </extension>
-
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioXML::FwXMLImageWriterService</service>
-        <object>::fwData::Image</object>
-        <desc>fwXML Image Writer (Ircad)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioXML::FwXMLPatient2PatientDBWriterService</service>
         <object>::fwData::Patient</object>
@@ -59,22 +44,15 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioXML::FwXMLAcquisitionWriterService</service>
-        <object>::fwData::Acquisition</object>
-        <desc>fwXML Acquisition Writer (Ircad)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwXML::IFileFormatService</type>
-        <service>::fwXML::MeshFileFormatService</service>
+        <service>::fwXML::TriangularMeshFileFormatService</service>
         <object>::fwData::TriangularMesh</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwXML::IFileFormatService</type>
-        <service>::fwXML::ImageFileFormatService</service>
-        <object>::fwData::Image</object>
+        <service>::fwXML::ArrayFileFormatService</service>
+        <object>::fwData::Array</object>
     </extension>
-
+    
 </plugin>

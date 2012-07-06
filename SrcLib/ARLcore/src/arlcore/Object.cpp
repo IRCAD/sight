@@ -17,23 +17,23 @@ unsigned int arlCore::Object::m_counter[arlCore::ARLCORE_CLASS_NBTYPES];
 arlCore::ARLCORE_LOG_VERBOSE arlCore::Object::m_staticVerboseLevel=arlCore::ARLCORE_LOG_VERBOSE_NBTYPES;
 
 arlCore::Object::Object( ARLCORE_CLASS c, const std::string &name ):
-m_updateIndex( FIRSTUPDATEINDEX ),
 m_date( 0 ),
 m_time( 0 ),
 m_class( c ),
 m_name(name),
 m_ok( false ),
+m_verboseLevel( ARLCORE_LOG_MUTE ),
 m_writeMutex( false ),
 m_readMutex( 0 ),
-m_verboseLevel( ARLCORE_LOG_MUTE )
+m_updateIndex( FIRSTUPDATEINDEX )
 {
     m_no=++m_counter[m_class];
 }
 
 arlCore::Object::Object( const Object& o ):
+m_verboseLevel( ARLCORE_LOG_MUTE ),
 m_writeMutex( false ),
-m_readMutex( 0 ),
-m_verboseLevel( ARLCORE_LOG_MUTE )
+m_readMutex( 0 )
 {
     copy(o);
     m_no=++m_counter[m_class];
@@ -72,7 +72,7 @@ arlCore::ARLCORE_CLASS arlCore::Object::getType( void ) const
 
 bool arlCore::Object::print( void ) const
 {
-    std::string s = getString(); 
+    std::string s = getString();
     std::cout<<s;
     return true;
 }
@@ -224,7 +224,7 @@ bool arlCore::Object::setTime( const long int &time )
 
 bool arlCore::Object::setMaxTime( long int date, long int time )
 {
-    if(date>m_date || date==m_date && time>m_time)
+    if(date>m_date || (date==m_date && time>m_time))
     {
         m_date = date;
         m_time = time;
@@ -236,7 +236,7 @@ bool arlCore::Object::setMaxTime( long int date, long int time )
 
 bool arlCore::Object::setMinTime( long int date, long int time )
 {
-    if((m_date==0 && m_time==0) || ((date<m_date || date==m_date && time<m_time) && (date!=0 || time!=0)))
+    if((m_date==0 && m_time==0) || ((date<m_date || (date==m_date && time<m_time)) && (date!=0 || time!=0)))
     {   // Never change if(date, time) is null
         // Change always if object time is null or
         // change if(date, time) lesser than object time
@@ -266,7 +266,6 @@ bool arlCore::Object::startLap( void )
 
 double arlCore::Object::getLap( void )
 {   // Return lap in seconds
-    double a = (double)m_lapDate;
     double b = (double)m_lapTime;
     startLap();
     double sec=0; //m_lapDate-a;
@@ -378,7 +377,7 @@ void arlCore::Object::log( ARLCORE_LOG_SERIOUSNESS level, const char* text ) con
         verboseLevel=m_staticVerboseLevel;
     else verboseLevel=m_verboseLevel;
 
-    if(verboseLevel<=level) return;
+    if(verboseLevel<=(ARLCORE_LOG_VERBOSE)level) return;
     if(level==ARLCORE_LOG_ERROR)
         std::cout<<"<ERROR>";
     if(level==ARLCORE_LOG_WARNING)

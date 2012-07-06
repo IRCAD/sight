@@ -68,27 +68,16 @@ protected:
     *
     * This method is used to initialize the service.
     */
-    IOVTK_API virtual void starting() throw(::fwTools::Failed){};
+    virtual void starting() throw(::fwTools::Failed){};
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    IOVTK_API virtual void stopping() throw(::fwTools::Failed){};
+    virtual void stopping() throw(::fwTools::Failed){};
 
-    /**
-    * @brief Configuring method.
-    *
-    * XML configuration sample:
-    * @verbatim
-    <service implementation="::ioVTK::VtkPatientDBReaderService" type="::io::IReader">
-        <filename id=".../imageTest.vtk"/>
-    </service>
-    @endverbatim
-    * This method is used to configure the service.
-    */
-    IOVTK_API virtual void configuring() throw(::fwTools::Failed);
+    IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
     /**
     * @brief Updating method.
@@ -105,7 +94,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IOVTK_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

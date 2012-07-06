@@ -54,6 +54,36 @@
 
                         <service uid="codeEditor" type="::gui::editor::IEditor" implementation="::guiQt::editor::Code" autoComChannel="yes" />
 
+                        <value>
+<![CDATA[
+import fwData
+import numpy
+
+#use 'open' to load an image, then you can use the 'test' button
+
+image = fwData.getObject("anImage")
+
+print "Image informations : "
+for attr in ['origin', 'spacing', 'type', 'size' ]:
+    print " - ", attr, ':', getattr(image, attr)
+
+#get view on fwData::Image buffer
+if image.buffer is not None:
+    data = numpy.asarray(image.buffer)
+
+    #work on data ...
+    data[ (0 < data) & (data > 10) ] = 5
+
+    #this will retrieve the <anImageWriter> described in the configuration,
+    #start, update and stop it. this will show a file dialog box requesting a
+    #filename to save the image to.
+    writer = fwData.getSrv("anImageWriter")
+    writer.start()
+    writer.update()
+    writer.stop()
+]]>
+                    </value>
+
                     </object>
                 </item>
 

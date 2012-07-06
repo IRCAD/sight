@@ -235,7 +235,7 @@ QRangeSlider::QRangeSlider(QWidget *parent)
 {
     m_minValue = 0.;
     m_maxValue = 1.;
-    m_allowMinGreaterThanMax = false;
+    m_allowMinGreaterThanMax = true;
     m_minimumMinMaxDelta = 0.;
     m_handleSize = 11;
 
@@ -322,7 +322,7 @@ bool QRangeSlider::movedTo(double _min, double _max)
     {
         m_minValue = _min;
         m_maxValue = _max;
-        emit sliderRangeChanged( m_minValue, m_maxValue );
+        Q_EMIT sliderRangeChanged( m_minValue, m_maxValue );
     }
     return changed;
 }
@@ -387,7 +387,7 @@ void QRangeSlider::mouseMoveEvent ( QMouseEvent * event )
         double max = maxHandle->floatingPos();
         if( this->movedTo(min, max) )
         {
-            emit sliderRangeEdited ( min, max );
+            Q_EMIT sliderRangeEdited ( min, max );
         }
         this->update();
     }
@@ -455,7 +455,7 @@ void QRangeSlider::wheelEvent ( QWheelEvent * event )
     double max = maxHandle->floatingPos();
     if( this->movedTo(min, max) )
     {
-        emit sliderRangeEdited ( min, max );
+        Q_EMIT sliderRangeEdited ( min, max );
     }
     this->update();
 }

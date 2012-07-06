@@ -44,7 +44,5 @@ void serialize(Archive & ar, ::fwData::ResectionDB & _patientDB, const unsigned 
 } // serialization
 } // boost
 
-INSTANTIATE_SERIALIZER(::fwData::ResectionDB);
-
 #endif // _FWXML_BOOSTSERIALIZER_RESECTIONDB_HPP_
 

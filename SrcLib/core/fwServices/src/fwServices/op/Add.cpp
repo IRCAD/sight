@@ -19,7 +19,7 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string uid)
+::fwServices::IService::sptr add( ::fwData::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string uid)
 {
     ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceType, _implementationId );
     ::fwServices::OSR::registerService( obj , srv );

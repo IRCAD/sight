@@ -33,15 +33,15 @@ REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySend
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfigTemplate() throw() :
-        m_fieldAdaptors ( ::fwData::Composite::New() ),
-        m_viewConfigTitlePrefixKey (""),
-        m_iconConfigId(""),
         m_tooltipConfigTitleKey(""),
-        m_isUnique(false)
+        m_iconConfigId(""),
+        m_viewConfigTitlePrefixKey (""),
+        m_isUnique(false),
+        m_fieldAdaptors(::fwData::Composite::New())
 {
     m_closableConfig = true;
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
 }
 
 //------------------------------------------------------------------------------
@@ -161,14 +161,14 @@ void ConfigActionSrvWithKeySendingConfigTemplate::updating( ::fwServices::Object
     bool executable = true;
     std::map< std::string, std::string >::const_iterator itr;
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast (_msg);
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_FIELDS ) )
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
     {
         for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
         {
             executable &= (composite->find(itr->second)!= composite->end());
         }
     }
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_FIELDS ) )
+    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
     {
         for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
         {
@@ -245,6 +245,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
         tabID = "TABID_" + ::fwTools::UUID::generateUUID();
     }
     ::fwServices::ObjectMsg::sptr  msg  = ::fwServices::ObjectMsg::New();
+    ::fwData::String::NewSptr title;
 
     std::stringstream ss;
     if (    ! m_viewConfigTitlePrefixKey.empty() &&
@@ -261,17 +262,16 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
             composite->find( m_tooltipConfigTitleKey ) != composite->end() )
     {
         ::fwData::String::sptr tooltip = ::fwData::String::dynamicCast( (*composite)[m_tooltipConfigTitleKey] );
-        msg->setFieldSingleElement( tooltipFieldID, tooltip );
+        title->setField( tooltipFieldID, tooltip );
     }
 
-    ::fwData::String::NewSptr title;
     title->value() = ss.str();
     msg->addEvent( "NEW_CONFIGURATION_HELPER", title );
-    msg->setFieldSingleElement( fieldID , finalMap );
-    msg->setFieldSingleElement( viewConfigID, ::fwData::String::New(m_viewConfigId) );
-    msg->setFieldSingleElement( closableFieldID, ::fwData::Boolean::New(m_closableConfig));
-    msg->setFieldSingleElement( tabIDFieldID, ::fwData::String::New(tabID));
-    msg->setFieldSingleElement( iconFieldID, ::fwData::String::New(m_iconConfigId) );
+    title->setField( fieldID , finalMap );
+    title->setField( viewConfigID, ::fwData::String::New(m_viewConfigId) );
+    title->setField( closableFieldID, ::fwData::Boolean::New(m_closableConfig));
+    title->setField( tabIDFieldID, ::fwData::String::New(tabID));
+    title->setField( iconFieldID, ::fwData::String::New(m_iconConfigId) );
 
     ::fwServices::IEditionService::notify(this->getSptr(), composite, msg);
 }

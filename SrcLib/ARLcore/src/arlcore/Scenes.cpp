@@ -117,8 +117,6 @@ arlCore::SceneUnitTestInitIntrinsicCalib::SceneUnitTestInitIntrinsicCalib( arlCo
 Scene(universe)
 {
     const double ChessSize = 120;
-    const double cubicSize = 1000;
-    const unsigned int nbParameters = 8;
     arlCore::Point Origin(0.0,0.0,0.0), zero_monde(0.0,0.0,0.0);
 
 //  Origin.cubicRandom(100);

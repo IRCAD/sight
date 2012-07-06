@@ -4,14 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/IToolBarBuilder.hpp
- * @brief This file defines the interface class  for the toolbar builder.
- *
- * @author IRCAD (Research and Development Team).
- * @date 2009-2010
- */
-
 #ifndef _FWGUI_BUILDER_ITOOLBARBUILDER_HPP_
 #define _FWGUI_BUILDER_ITOOLBARBUILDER_HPP_
 
@@ -29,7 +21,7 @@ namespace builder
 {
 
 /**
- * @brief   Defines the generic layout manager for toolBar.
+ * @brief   Defines the interface class  for the toolbar builder.
  * @class   IToolBarBuilder.
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
@@ -69,10 +61,11 @@ public:
      *
      * Example of configuration
      * @verbatim
-        <toolBar >
+        <toolBar align="top">
             <toolBitmapSize height= "50" width="50" />
         </toolBar>
        @endverbatim
+        - \b align : toolbar alignment (top, bottom, left, right)
      *  - <toolBitmapSize height= "50" width="50"/> : give the size of the icon.
      */
 

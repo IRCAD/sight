@@ -16,7 +16,7 @@
         <param id="config" value="config01" />
     </activate>
 
-    <activate id="devForumQt" version="0-1" />
+    <activate id="devForum" version="0-1" />
 
     <start id="visuVTK" />
     <start id="visuVTKQt" />

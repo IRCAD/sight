@@ -5,12 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/fwID.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwData/Image.hpp>
-
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+
+#include <fwData/Image.hpp>
+
+#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -25,7 +27,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE(  ::fwGui::IActionSrv, ::opImageFilter::action::ImageFilter, ::fwTools::Object ) ;
+REGISTER_SERVICE(  ::fwGui::IActionSrv, ::opImageFilter::action::ImageFilter, ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -88,13 +90,17 @@ struct ThresholdFilter
     template<class PIXELTYPE>
     void operator()(Parameter &param)
     {
-        assert( param.imageIn->getSize().size()==3 );
-//        *param.imageOut = *param.imageIn; // La copie serait utile uniquement lors du changement de l'image d'origine
-        param.imageOut->shallowCopy(param.imageIn);
-        // Il serait prefereable de copier uniquement les attributs de l'image et d'allouer le buffer sans le copier
-        PIXELTYPE *buffer1 = (PIXELTYPE *)param.imageIn->getBuffer();
-        PIXELTYPE *buffer2 = (PIXELTYPE *)param.imageOut->getBuffer();
-        const unsigned int NbPixels = param.imageIn->getSize()[0] * param.imageIn->getSize()[1] * param.imageIn->getSize()[2];
+        ::fwData::Image::sptr imageIn = param.imageIn;
+        ::fwData::Image::sptr imageOut = param.imageOut;
+        SLM_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3 );
+        imageOut->copyInformation(imageIn);
+        imageOut->allocate();
+
+        ::fwComEd::helper::Image imageInHelper(imageIn);
+        ::fwComEd::helper::Image imageOutHelper(imageOut);
+        PIXELTYPE *buffer1 = (PIXELTYPE *)imageInHelper.getBuffer();
+        PIXELTYPE *buffer2 = (PIXELTYPE *)imageOutHelper.getBuffer();
+        const unsigned int NbPixels = imageIn->getSize()[0] * imageIn->getSize()[1] * imageIn->getSize()[2];
         const PIXELTYPE ThresholdValue = ( PIXELTYPE )param.thresholdValue;
         unsigned int i;
         for( i=0 ; i<NbPixels ; ++i , ++buffer1, ++buffer2 )

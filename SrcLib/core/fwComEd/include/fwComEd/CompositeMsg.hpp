@@ -29,17 +29,17 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((CompositeMsg)(::fwServices::ObjectMsg), ( () ), new CompositeMsg );
 
-    /// Event identifier used to inform that fields were modified
-    FWCOMED_API static std::string MODIFIED_FIELDS;
+    /// Event identifier used to inform that keys were modified
+    FWCOMED_API static std::string MODIFIED_KEYS;
 
-    /// Event identifier used to inform that fields were added
-    FWCOMED_API static std::string ADDED_FIELDS;
+    /// Event identifier used to inform that keys were added
+    FWCOMED_API static std::string ADDED_KEYS;
 
-    /// Event identifier used to inform that fields were removed
-    FWCOMED_API static std::string REMOVED_FIELDS;
+    /// Event identifier used to inform that keys were removed
+    FWCOMED_API static std::string REMOVED_KEYS;
 
-    /// Event identifier used to inform that fields were swapped
-    FWCOMED_API static std::string SWAPPED_FIELDS;
+    /// Event identifier used to inform that keys were changed
+    FWCOMED_API static std::string CHANGED_KEYS;
 
 
     /**
@@ -53,90 +53,90 @@ public:
     FWCOMED_API virtual ~CompositeMsg() throw();
 
     /**
-     * @brief       This method add an event to the message from its fields identifiers.
-     * @param[in]   _modifiedFields : list of the keys of the composite object which were modified.
+     * @brief       This method add an event to the message from its keys identifiers.
+     * @param[in]   _modifiedkeys : list of the keys of the composite object which were modified.
      *
-     * This method create a MODIFIED_FIELDS event.
+     * This method create a MODIFIED_KEYS event.
      */
-    FWCOMED_API void addEventModifiedFields( const std::vector< std::string > & _modifiedFields );
+    FWCOMED_API void addModifiedKeysEvent( const std::vector< std::string > & _modifiedkeys );
 
     /**
-     * @brief       This method add an event to the message from its fields identifiers.
-     * @param[in]   _modifiedFields : list of the keys of the objects which were modified.
+     * @brief       This method add an event to the message from its keys identifiers.
+     * @param[in]   _modifiedkeys : list of the keys of the objects which were modified.
      * @param[in]   _oldObjects list : of objects which were modified.
      *
-     * This method create a MODIFIED_FIELDS event.
+     * This method create a MODIFIED_KEYS event.
      */
-    FWCOMED_API void addEventModifiedFields( const std::vector< std::string > & _modifiedFields, std::vector< ::fwData::Object::sptr > _oldObjects );
+    FWCOMED_API void addModifiedKeysEvent( const std::vector< std::string > & _modifiedkeys, std::vector< ::fwData::Object::sptr > _oldObjects );
 
     /**
-     * @brief   Return the list modified fields.
-     * @return  The list of the modified fields identifiers.
-     * @pre     The message must contain a MODIFIED_FIELDS event.
+     * @brief   Return the list modified keys.
+     * @return  The list of the modified keys identifiers.
+     * @pre     The message must contain a MODIFIED_KEYS event.
      */
-    FWCOMED_API std::vector< std::string > getEventModifiedFields() const;
+    FWCOMED_API std::vector< std::string > getModifiedKeys() const;
 
     /**
-     * @brief       This method add an object in the modified fields list.
-     * @param[in]   _modifiedField : the key of the object which was modified.
+     * @brief       This method add an object in the modified keys list.
+     * @param[in]   _modifiedkey : the key of the object which was modified.
      *
-     * This method create a MODIFIED_FIELDS event with an additional data information containing the fields identifiers.
+     * This method create a MODIFIED_KEYS event with an additional data information containing the keys identifiers.
      */
-    FWCOMED_API  void addEventModifiedField( std::string _modifiedField );
+    FWCOMED_API  void addModifiedKeyEvent( std::string _modifiedKey );
 
 
     /**
-     * @brief       This method add an object in the composite of added fields.
+     * @brief       This method add an object in the composite of added keys.
      * @param[in]   _compositeKey : the key of the added object.
      * @param[in]   _pNewObject   : the added object.
      */
-    FWCOMED_API void addAddedField( std::string _compositeKey, ::fwData::Object::sptr _pNewObject );
+    FWCOMED_API void appendAddedKey( std::string _compositeKey, ::fwData::Object::sptr _pNewObject );
 
     /**
-     * @brief   Return the composite of the added fields.
+     * @brief   Return the composite of the added keys.
      */
-    FWCOMED_API ::fwData::Composite::sptr getAddedFields() const;
+    FWCOMED_API ::fwData::Composite::sptr getAddedKeys() const;
 
 
     /**
-     * @brief       This method add an object in the composite of removed fields.
+     * @brief       This method add an object in the composite of removed keys.
      * @param[in]   _compositeKey : the key of the removed object.
      * @param[in]   _pOldObject   : the object which will be removed.
      */
-    FWCOMED_API void addRemovedField( std::string _compositeKey, ::fwData::Object::sptr _pOldObject );
+    FWCOMED_API void appendRemovedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject );
 
     /**
-     * @brief   Return the composite of the removed fields.
+     * @brief   Return the composite of the removed keys.
      */
-    FWCOMED_API ::fwData::Composite::sptr getRemovedFields() const;
+    FWCOMED_API ::fwData::Composite::sptr getRemovedKeys() const;
 
     /**
-     * @brief       This method add an object in the composites of swapped fields.
-     * @param[in]   _compositeKey : the key of the swapped object.
+     * @brief       This method add an object in the composites of changed keys.
+     * @param[in]   _compositeKey : the key of the changed object.
      * @param[in]   _pOldObject   : the old object which will be replaced.
      * @param[in]   _pNewObject   : the new object.
      */
-    FWCOMED_API void addSwappedField( std::string _compositeKey, ::fwData::Object::sptr _pOldObject, ::fwData::Object::sptr _pNewObject );
+    FWCOMED_API void appendChangedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject, ::fwData::Object::sptr _pNewObject );
 
     /**
-     * @brief   Return the composite of the old swapped fields (field which will be replaced).
+     * @brief   Return the composite of the old changed keys (key which will be replaced).
      */
-    FWCOMED_API ::fwData::Composite::sptr  getSwappedOldFields() const;
+    FWCOMED_API ::fwData::Composite::sptr  getOldChangedKeys() const;
 
     /**
-    * @brief   Return the composite of the new swapped fields.
+    * @brief   Return the composite of the new changed keys.
     */
-    FWCOMED_API ::fwData::Composite::sptr  getSwappedNewFields() const;
+    FWCOMED_API ::fwData::Composite::sptr  getNewChangedKeys() const;
 
 private :
 
-    std::vector< std::string > m_modifiedFields;
+    std::vector< std::string > m_modifiedKeys;
     std::vector< ::fwData::Object::sptr > m_modifiedObjects;
 
-    ::fwData::Composite::sptr m_removedFields;
-    ::fwData::Composite::sptr m_addedFields;
-    ::fwData::Composite::sptr m_swappedOldFields;
-    ::fwData::Composite::sptr m_swappedNewFields;
+    ::fwData::Composite::sptr m_removedKeys;
+    ::fwData::Composite::sptr m_addedKeys;
+    ::fwData::Composite::sptr m_oldChangedKeys;
+    ::fwData::Composite::sptr m_newChangedKeys;
 };
 
 } // namespace fwComEd

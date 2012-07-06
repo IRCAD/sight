@@ -66,11 +66,11 @@ public:
 
 protected :
 
-    FWXML_API virtual void starting() throw(::fwTools::Failed) {} ;
-    FWXML_API virtual void stopping() throw(::fwTools::Failed) {} ;
-    FWXML_API virtual void configuring() throw(::fwTools::Failed) {} ;
-    FWXML_API virtual void updating() throw(::fwTools::Failed) {} ;
-    FWXML_API virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    virtual void starting() throw(::fwTools::Failed) {} ;
+    virtual void stopping() throw(::fwTools::Failed) {} ;
+    virtual void configuring() throw(::fwTools::Failed) {} ;
+    virtual void updating() throw(::fwTools::Failed) {} ;
+    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
 
     // Override
     FWXML_API virtual void info(std::ostream &_sstream );

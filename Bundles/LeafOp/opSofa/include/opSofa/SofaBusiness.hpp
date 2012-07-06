@@ -2,7 +2,7 @@
 #define OPSOFA_SOFABUSINESS_HPP_
 
 #include <fwServices/IEditionService.hpp>
-#include <fwData/TriangularMesh.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/PatientDB.hpp>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/visualmodel/OglModel.h>
@@ -25,7 +25,7 @@ public:
     SofaBusiness();
     virtual ~SofaBusiness();
     void loadScn(std::string, ::fwData::Acquisition::sptr, ::fwServices::IService::sptr);
-    void loadMesh(::fwData::TriangularMesh::sptr, ::fwServices::IService::sptr);
+    void loadMesh(::fwData::Mesh::sptr, ::fwServices::IService::sptr);
     unsigned int getTimeStepAnimation();
     void setTimeStepAnimation(unsigned int timeStepAnimation);
     void animate();
@@ -39,8 +39,8 @@ public:
 private:
     void fillOglModelVector(GNode*, std::vector<OglModel*>*);
     void fillSpringForceField(GNode*, std::map<std::string, StiffSpringForceField3*>*);
-    void fillTriangularMeshVector(::fwData::Acquisition::sptr, std::vector<fwData::TriangularMesh::sptr>*);
-    void translationPointer(OglModel*, ::fwData::TriangularMesh::sptr);
+    void fillMeshVector(::fwData::Acquisition::sptr, std::vector<fwData::Mesh::sptr>*);
+    void translationPointer(OglModel*, ::fwData::Mesh::sptr);
     void clearTranslationPointer();
 
     /**
@@ -61,7 +61,7 @@ private:
     /**
      * @brief Vector to mesh object
      */
-    std::vector<fwData::TriangularMesh::sptr> *meshs;
+    std::vector<fwData::Mesh::sptr> *meshs;
 
     /**
      * @brief map to StiffSpringForceField3 object

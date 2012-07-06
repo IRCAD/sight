@@ -11,16 +11,12 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
-#include <fwComEd/TriangularMeshMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
 
-#include <io/IReader.hpp>
-
 #include <fwCore/base.hpp>
 
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -37,13 +33,11 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::TriangularMesh ) ;
+REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh ) ;
 
 //------------------------------------------------------------------------------
 
-MeshReaderService::MeshReaderService() throw() :
-    m_bServiceIsConfigured(false),
-    m_fsMeshPath("")
+MeshReaderService::MeshReaderService() throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -53,18 +47,11 @@ MeshReaderService::~MeshReaderService() throw()
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::configuring() throw(::fwTools::Failed)
-{
-    if( m_configuration->findConfigurationElement("filename") )
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsMeshPath = ::boost::filesystem::path( filename ) ;
-        m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsMeshPath);
-        OSLM_TRACE("Filename found" << filename ) ;
-    }
-}
 
-//------------------------------------------------------------------------------
+::io::IOPathType MeshReaderService::getIOPathType() const
+{
+    return ::io::FILE;
+}//------------------------------------------------------------------------------
 
 void MeshReaderService::configureWithIHM()
 {
@@ -83,10 +70,15 @@ void MeshReaderService::configureWithIHM()
     result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
-        m_fsMeshPath = result->getPath();
-        m_bServiceIsConfigured = true;
-        _sDefaultPath = m_fsMeshPath.parent_path();
+        _sDefaultPath = result->getPath().parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        this->setFile(result->getPath());
     }
+    else
+    {
+        this->clearLocations();
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -112,45 +104,38 @@ void MeshReaderService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pTriangularMesh )
+void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
     ::vtkIO::MeshReader::NewSptr myReader;
 
-    myReader->setObject(_pTriangularMesh);
+    myReader->setObject(_pMesh);
     myReader->setFile(vtkFile);
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Meshs ");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
         myReader->addHandler( progressMeterGUI );
         myReader->read();
-
     }
     catch (const std::exception & e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setTitle("Warning");
-        messageBox.setMessage( ss.str() );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-        messageBox.show();
-
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                "Warning during loading.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -160,17 +145,17 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    if( m_bServiceIsConfigured )
+    if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >() ;
-        SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
+        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >() ;
+        SLM_ASSERT("pMesh not instanced", pMesh);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        loadMesh(m_fsMeshPath, pTriangularMesh);
-        notificationOfUpdate();
+        this->loadMesh(this->getFile(), pMesh);
+        this->notificationOfUpdate();
 
         cursor.setDefaultCursor();
     }
@@ -181,12 +166,12 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
 void MeshReaderService::notificationOfUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >();
-    SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
+    ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
+    SLM_ASSERT("pMesh not instanced", pMesh);
 
-    ::fwComEd::TriangularMeshMsg::NewSptr msg;;
-    msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), pTriangularMesh, msg);
+    ::fwComEd::MeshMsg::NewSptr msg;;
+    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
+    ::fwServices::IEditionService::notify(this->getSptr(), pMesh, msg);
 }
 
 //------------------------------------------------------------------------------
