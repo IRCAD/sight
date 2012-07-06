@@ -72,6 +72,8 @@ void ObjectTest::fieldTest()
     refFieldNames.push_back(FIELD_ID1);
     refFieldNames.push_back(FIELD_ID2);
     ::fwData::Object::FieldNameVectorType fieldNames = obj->getFieldNames();
+    std::sort(fieldNames.begin(), fieldNames.end());
+    std::sort(refFieldNames.begin(), refFieldNames.end());
     CPPUNIT_ASSERT(refFieldNames == fieldNames);
 
     obj->setFields(localFieldsBackup);

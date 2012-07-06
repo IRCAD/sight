@@ -18,6 +18,8 @@
 #include <vgl/vgl_plane_3d.h>
 
 #include <arlcore/Object.h>
+#include <arlcore/Point.h>
+#include <arlcore/PointsList.h>
 #include <arlcore/Particle.h>
 #include <arlcore/MatrixR.h>
 
@@ -29,9 +31,9 @@ namespace arlCore
      * @class   Camera
      * @author  IRCAD (Research and Development Team)
      * @date    2007
-     * @brief   Parametres physiques d'une camera (intrinsèques et extrinsèques)
+     * @brief   Parametres physiques d'une camera (intrinsÃ¨ques et extrinsÃ¨ques)
      */
-    class Camera : public Object, public Particle
+    class Camera :  public Particle
     {
     public:
         //! @brief Constructor
@@ -65,14 +67,14 @@ namespace arlCore
         ARLCORE_API bool load( const std::string &fileName );
 
         /**
-        * @brief Création d'une caméra synthétique
+        * @brief CrÃ©ation d'une camÃ©ra synthÃ©tique
         * @param[in] center Point vers lequel est oriente la camera
         * @param[in] viewPoint Position du centre optique de la camera
         * @param[in] intrinsicParams Parametres intrinseques = {fx;fy;cx;cy;k1;k2;p1;p2;k3;alphaC}
         * (Selon le modele choisi - ici par defaut modele de zhang)
         * @return False si le point de vue de la camera est identique au point qu'elle regarde, True sinon
         */
-        ARLCORE_API bool syntheticCamera( const Point& center , const Point& viewPoint, const std::vector< double > &intrinsicParams);
+        ARLCORE_API bool syntheticCamera( Point::csptr  center , Point::csptr  viewPoint, const std::vector< double > &intrinsicParams);
 
         /**
         * @return Unique ID of calibration.
@@ -166,46 +168,46 @@ namespace arlCore
         ARLCORE_API bool projectiveLine( const vnl_vector_fixed<double,3> &focalPt2DH, vgl_line_3d_2_points <double> &line3D ) const;
 
         /**
-        * @brief Reprojection du point3D dans le repère de la caméra
-        * point2D est calculé dans le plan de la focale si focalPlane==true, dans le plan pixel sinon
-        * @param[in] point3DH Point 3D à reprojeter
-        * @param[out] point2D reprojeté
-        * @param[in] focalPlane True si le calcul est effectué dans le plan de la focal ou false dans le plan pixel
+        * @brief Reprojection du point3D dans le repÃ¨re de la camÃ©ra
+        * point2D est calculÃ© dans le plan de la focale si focalPlane==true, dans le plan pixel sinon
+        * @param[in] point3DH Point 3D Ã  reprojeter
+        * @param[out] point2D reprojetÃ©
+        * @param[in] focalPlane True si le calcul est effectuÃ© dans le plan de la focal ou false dans le plan pixel
         * @return True si le calcul est possible, false sinon (si le point2D est dans le plan de la focale par exemple)
         */
         ARLCORE_API bool project3DPoint( const vnl_vector_fixed<double,4>& point3DH, vnl_vector_fixed<double,2>& point2D, bool FocalPlane=false) const;
 
         /**
-        * @brief Reprojection du point3D dans le repère de la caméra
-        * point2D est calculé dans le plan de la focale si focalPlane==true, dans le plan pixel sinon
-        * @param[in] point3DH Point 3D à reprojeter
-        * @param[out] point2D reprojeté
-        * @param[in] focalPlane True si le calcul est effectué dans le plan de la focal ou false dans le plan pixel
+        * @brief Reprojection du point3D dans le repÃ¨re de la camÃ©ra
+        * point2D est calculÃ© dans le plan de la focale si focalPlane==true, dans le plan pixel sinon
+        * @param[in] point3DH Point 3D Ã  reprojeter
+        * @param[out] point2D reprojetÃ©
+        * @param[in] focalPlane True si le calcul est effectuÃ© dans le plan de la focal ou false dans le plan pixel
         * @return True si le calcul est possible, false sinon (si le point2D est dans le plan de la focale par exemple)
         */
-        ARLCORE_API bool project3DPoint( const Point& pt3D, Point& pt2D, bool FocalPlane=false) const;
+        ARLCORE_API bool project3DPoint( Point::csptr  pt3D, Point::sptr pt2D, bool FocalPlane=false) const;
 
         /**
-        * @brief Reprojection d'une liste de points 3D dans le repère de la caméra
-        * Les points 2D sont calculés dans le plan de la focale si focalPlane==true, dans le plan pixel sinon
-        * @param[in] list3D Liste de point 3D à reprojeter
-        * @param[out] list2D Liste de points 2D reprojetés
-        * @param[in] focalPlane True si le calcul est effectué dans le plan de la focal ou false dans le plan pixel
-        * @return Nombre de points 2D correctement reprojetés
+        * @brief Reprojection d'une liste de points 3D dans le repÃ¨re de la camÃ©ra
+        * Les points 2D sont calculÃ©s dans le plan de la focale si focalPlane==true, dans le plan pixel sinon
+        * @param[in] list3D Liste de point 3D Ã  reprojeter
+        * @param[out] list2D Liste de points 2D reprojetÃ©s
+        * @param[in] focalPlane True si le calcul est effectuÃ© dans le plan de la focal ou false dans le plan pixel
+        * @return Nombre de points 2D correctement reprojetÃ©s
         */
-        ARLCORE_API unsigned int project3DPoint( const PointList& list3D, PointList& list2D, bool FocalFrame=false) const;
+        ARLCORE_API unsigned int project3DPoint( PointList::csptr list3D, PointList::sptr list2D, bool FocalFrame=false) const;
 
         //! @brief Undistort 2D pixel point
-        ARLCORE_API bool undistort2DPoint(const Point& p2D, Point& p2D_undistorted) const;
+        ARLCORE_API bool undistort2DPoint(Point::csptr  p2D, Point::sptr  p2D_undistorted) const;
 
         //! @brief Set a 2D point from unitFocalPlane to pixelPlane
         ARLCORE_API bool unitFocalPlaneToPixelPlane( const vgl_point_2d<double>&, vgl_point_2d<double>& ) const;
 
         //! @brief Set a 2D point from  pixelPlane to unitFocalPlane with or without perfect distorsion evaluation
-        ARLCORE_API bool pixelPlaneToUnitFocalPlane( const Point&, Point&, bool perfectDisto ) const;
-        ARLCORE_API bool pixelPlaneToUnitFocalPlane( const Point&, vnl_vector_fixed<double,3>&, bool perfectDisto ) const;
-        ARLCORE_API bool pixelPlaneToUnitFocalPlane( const Point&, vgl_point_2d<double>&, bool perfectDisto ) const;
-        ARLCORE_API bool pixelPlaneToUnitFocalPlane( const Point&, vgl_point_3d<double>&, bool perfectDisto ) const;
+        ARLCORE_API bool pixelPlaneToUnitFocalPlane( Point::csptr , Point::sptr , bool perfectDisto ) const;
+        ARLCORE_API bool pixelPlaneToUnitFocalPlane( Point::csptr , vnl_vector_fixed<double,3>&, bool perfectDisto ) const;
+        ARLCORE_API bool pixelPlaneToUnitFocalPlane( Point::csptr , vgl_point_2d<double>&, bool perfectDisto ) const;
+        ARLCORE_API bool pixelPlaneToUnitFocalPlane( Point::csptr , vgl_point_3d<double>&, bool perfectDisto ) const;
         ARLCORE_API bool pixelPlaneToUnitFocalPlane( const vgl_point_2d<double>&, vgl_point_3d<double>&, bool perfectDisto ) const;
 
         //! @brief Set a 3D point from focalframe to extrinsicFrame
@@ -213,22 +215,22 @@ namespace arlCore
         ARLCORE_API bool focalFrameToExtrinsicFrame( const vgl_point_3d< double >&, vgl_point_3d< double >& ) const;
 
         /**
-        * @brief Calcul 2 points définis dans le plan pixel à partir d'une droite dans le plan focal
+        * @brief Calcul 2 points dÃ©finis dans le plan pixel Ã  partir d'une droite dans le plan focal
         * @param[in] (a,b,c) l'equation d'une droite dans le plan focal, ax+by+c=0
-        * @param[in] (ROI1,ROI2) dans le plan pixel, coin supérieur gauche et inférieur droit
+        * @param[in] (ROI1,ROI2) dans le plan pixel, coin supÃ©rieur gauche et infÃ©rieur droit
         * @param[out] (ROI1,ROI2) dans le plan pixel, recoit les coordonnes des intersections avec la ROI
         */
-        ARLCORE_API bool focalToPixelLine( double a, double b, double c, Point &ROI1, Point &ROI2 ) const;
+        ARLCORE_API bool focalToPixelLine( double a, double b, double c, SPTR( Point ) ROI1, SPTR( Point ) ROI2 ) const;
 
         /**
-        * @brief Calcul 2 points définis dans le plan pixel à partir d'une droite dans le plan focal
+        * @brief Calcul 2 points dÃ©finis dans le plan pixel Ã  partir d'une droite dans le plan focal
         * @param[in] (a,b,c) l'equation d'une droite dans le plan focal, ax+by+c=0
         * @param[in] org Origine dans le plan pixel
         * @param[in] dst Destination dans le plan pixel
-        * @param[in] nbSegments [1,n] Nombre de segments constituant la droite. Si 0, évalue le nb max de segments pour la résolution
-        * @param[out] pl Recoit la liste des points en coordonnées pixel constituant chaque segment
+        * @param[in] nbSegments [1,n] Nombre de segments constituant la droite. Si 0, Ã©value le nb max de segments pour la rÃ©solution
+        * @param[out] pl Recoit la liste des points en coordonnÃ©es pixel constituant chaque segment
         */
-        ARLCORE_API bool focalToPixelLine( double a, double b, double c, const Point &org, const Point &dst, PointList &pl, unsigned int nbSegments=0 ) const;
+        ARLCORE_API bool focalToPixelLine( double a, double b, double c, CSPTR( Point ) org, CSPTR( Point ) dst, SPTR( PointList ) pl, unsigned int nbSegments=0 ) const;
 
         /**
         * @brief 3D equation in focal plane of a pixel line
@@ -261,7 +263,7 @@ namespace arlCore
         vnl_vector_fixed<double,3> m_Cext;
         vnl_rigid_matrix m_invExtrinsic; //!< Invert extrinsic matrix
         vnl_matrix_fixed<double,3,3> m_invIntrinsicMatrix; //!< Invert intrinsic matrix
-        vnl_vector_fixed< double,3 > m_opticalCenterInExtrinsicFrame; //!< Position 3D du centre optique dans le repère extrinsèque
+        vnl_vector_fixed< double,3 > m_opticalCenterInExtrinsicFrame; //!< Position 3D du centre optique dans le repï¿½re extrinsï¿½que
     };
 
     /**
@@ -271,8 +273,8 @@ namespace arlCore
     * PM=camera2->getExtrinsic()).as_matrix()*vnl_matrix_inverse<double>(camera1->getExtrinsic());
     * @return Equation of epipolar line in the focal plane of the 2nd camera, ax+by+c=0
     */
-    ARLCORE_API bool getEpipolar(const Point &p, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b, double &c);
-    ARLCORE_API bool getEpipolar(const Point &p, const vnl_matrix_fixed<double,4,4> &PM, vgl_line_2d< double > &d);
+    ARLCORE_API bool getEpipolar(CSPTR( Point ) p, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b, double &c);
+    ARLCORE_API bool getEpipolar(CSPTR( Point ) p, const vnl_matrix_fixed<double,4,4> &PM, vgl_line_2d< double > &d);
     ARLCORE_API bool getEpipolar(const vnl_vector_fixed<double,3> &p, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b, double &c);
     ARLCORE_API bool getEpipolar(const vnl_vector_fixed<double,3> &p, const vnl_matrix_fixed<double,4,4> &PM, vgl_line_2d< double > &d);
 

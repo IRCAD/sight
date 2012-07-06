@@ -193,7 +193,7 @@ void Render::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
     {
-        SPTR(::fwData::Composite) field = compositeMsg->getAddedKeys();
+        SPTR(::fwData::Composite) field = compositeMsg->getRemovedKeys();
         this->stopAdaptorsFromComposite(field);
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
@@ -263,6 +263,8 @@ void Render::startContext()
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(m_view);
     qtContainer->getQtContainer()->setLayout(layout);
+
+    m_view->updateFromViewport();
 }
 
 //-----------------------------------------------------------------------------
@@ -515,15 +517,49 @@ void Render::stopAdaptor(AdaptorIDType _adaptorID)
 {
     SLM_TRACE_FUNC();
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel.lock()->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel.lock() );
+    SceneAdaptor2D & info = m_adaptorID2SceneAdaptor2D[_adaptorID];
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->stop();
-    SLM_ASSERT("Service is not stopped", m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->isStopped());
-    ::fwServices::OSR::unregisterService(m_adaptorID2SceneAdaptor2D[_adaptorID].getService());
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_service.reset();
-    m_adaptorID2SceneAdaptor2D.erase(_adaptorID);
+    m_zValue2AdaptorID.erase( info.getService()->getZValue() );
+
+    info.m_comChannel.lock()->stop();
+    ::fwServices::registry::ObjectService::unregisterService( info.m_comChannel.lock() );
+    info.m_comChannel.reset();
+
+    info.getService()->stop();
+    SLM_ASSERT("Service is not stopped", info.getService()->isStopped());
+    ::fwServices::OSR::unregisterService(info.getService());
+    info.m_service.reset();
+
 }
+
+//-----------------------------------------------------------------------------
+
+void Render::updateSceneSize( float ratioPercent )
+{
+    QRectF rec = m_scene->itemsBoundingRect();
+    qreal x,y,w,h;
+    rec.getRect(&x,&y,&w,&h);
+
+    if ( ratioPercent != 0 )
+    {
+        qreal centerX = x + w/2.0;
+        qreal centerY = y + h/2.0;
+        w = w + w * ratioPercent;
+        h = h + h * ratioPercent;
+        x = centerX - w/2.0;
+        y = centerY - h/2.0;
+        rec.setRect(x,y,w,h);
+    }
+    m_sceneStart.setX( x );
+    m_sceneStart.setY( y );
+    m_sceneWidth.setX( w );
+    m_sceneWidth.setY( h );
+
+    m_scene->setSceneRect( rec );
+
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace scene2D
 

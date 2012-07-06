@@ -9,9 +9,10 @@
 #include <arlcore/PlaneSystem.h>
 
 arlCore::Tag::Tag( arlCore::PlaneSystem &universe, const std::string &name ):
-Object(arlCore::ARLCORE_CLASS_TAG, name),
 Particle( universe, name ),
 Parameters("Tag"),
+m_geometry( PointList::New() ),
+m_measures( PointList::New() ),
 m_measuresPlane( 0 ),
 m_registrationType( ARLCORE_TAG_REGISTRATION_UNKNOWN ),
 m_registrationMaxError(-1.0),
@@ -20,27 +21,43 @@ m_persistence(-1)
     init();
 }
 
-arlCore::Tag::Tag( PlaneSystem &universe, const PointList& pl ):
-Object(arlCore::ARLCORE_CLASS_TAG, "Points cloud"),
+arlCore::Tag::Tag( PlaneSystem &universe, PointList::csptr pl ):
+//VAG Object(arlCore::ARLCORE_CLASS_TAG, "Points cloud"),
 Particle( universe, "Points cloud" ),
 Parameters("Tag"),
+m_geometry( PointList::New() ),
+m_measures( PointList::New() ),
 m_measuresPlane( 0 ),
 m_registrationType( ARLCORE_TAG_REGISTRATION_3D3D ),
 m_registrationMaxError(-1.0),
 m_persistence(-1)
 {
     init();
-    arlCore::Point p0(0.0, 0.0, 0.0);
-    p0.setVisible(false);
+    arlCore::Point::sptr p0 = arlCore::Point::New(0.0, 0.0, 0.0);
+    p0->setVisible(false);
     unsigned int i;
-    for(i=0 ; i<pl.size() ; ++i)
+    for(i=0 ; i<pl->size() ; ++i)
     {
-        m_geometry.push_back(*(pl[i]));
-        m_measures.push_back(p0);
+        m_geometry->push_back( (*pl)[i] );
+        m_measures->push_back(p0);
     }
     getPlaneSystem().setPlaneName(getPlane(), Object::getName());
-    setOK();
+    //VAG FIXME setOK();
 }
+
+
+
+
+
+arlCore::Tag::sptr arlCore::Tag::TagFactory( arlCore::PlaneSystem &universe, const std::string &name)
+{
+    return arlCore::Tag::sptr(  new Tag(universe, name)  );
+}
+arlCore::Tag::sptr arlCore::Tag::TagFactory( arlCore::PlaneSystem &universe, arlCore::PointList::csptr pl )
+{
+    return arlCore::Tag::sptr( new Tag(universe,pl)  );
+}
+
 
 bool arlCore::Tag::init( void )
 {
@@ -51,11 +68,11 @@ bool arlCore::Tag::init( void )
 arlCore::Tag::~Tag( void )
 {}
 
-std::string arlCore::Tag::getString( void ) const   
+std::string arlCore::Tag::getString( void ) const
 {
     std::stringstream s;
-    s<<this->Object::getString();
-    s<<this->Particle::getString();
+    //VAG FIXMEs<<this->Object::getString();
+    //VAG FIXMEs<<this->Particle::getString();
     if(m_registrationMaxError<0)
         s<<"No registration max error\n";
     else s<<"Registration max error = "<<m_registrationMaxError<<"\n";
@@ -70,25 +87,25 @@ unsigned int arlCore::Tag::getMeasuresPlane() const
 
 unsigned int arlCore::Tag::getNbPoints() const
 {
-    return m_geometry.size();
+    return m_geometry->size();
 }
 
-const arlCore::PointList& arlCore::Tag::getGeometry() const
+arlCore::PointList::csptr  arlCore::Tag::getGeometry() const
 {
     return m_geometry;
 }
 
-arlCore::PointList& arlCore::Tag::getGeometry()
+arlCore::PointList::sptr arlCore::Tag::getGeometry()
 {
     return m_geometry;
 }
 
-const arlCore::PointList& arlCore::Tag::getMeasures() const
+arlCore::PointList::csptr  arlCore::Tag::getMeasures() const
 {
     return m_measures;
 }
 
-arlCore::PointList& arlCore::Tag::getMeasures()
+arlCore::PointList::sptr arlCore::Tag::getMeasures()
 {
     return m_measures;
 }
@@ -111,12 +128,12 @@ void arlCore::Tag::setRegistrationMaxError( double error )
 void arlCore::Tag::reset( void )
 {
     m_measuresPlane=0;
-    m_measures.clear();
+    m_measures->clear();
 }
 
 bool arlCore::Tag::setRegistration( unsigned int plane, arlCore::vnl_rigid_matrix &T, long int date, long int time, bool reset )
 {
-    setTime(date,time);
+    //VAG FIXME setTime(date,time);
     //std::vector<double> errors;
     //T.RMS3D3D( m_geometry, m_measures, errors);
     const double Error = T.getRMS();
@@ -124,24 +141,24 @@ bool arlCore::Tag::setRegistration( unsigned int plane, arlCore::vnl_rigid_matri
     {
         m_measuresPlane = arlCore::PlaneSystem::NoPlane;
         getPlaneSystem().resetTrf( getPlane(), plane );
-        m_log<<"REGISTRATION FAILED : RMS="<<Error<<" > RMSMax="<<m_registrationMaxError<<"\n";
-        log(ARLCORE_LOG_WARNING);
+        //VAG FIXME  m_log<<"REGISTRATION FAILED : RMS="<<Error<<" > RMSMax="<<m_registrationMaxError<<"\n";
+        //VAG FIXME  log(ARLCORE_LOG_WARNING);
         return false;
     }
     if(reset) this->reset();
     unsigned int i;
-    for( i=0 ; i<m_geometry.size() ; ++i )
+    for( i=0 ; i<m_geometry->size() ; ++i )
     {
-        if(i>=m_measures.size())
+        if(i>=m_measures->size())
         {
-            m_measures.push_back(*m_geometry[i]);
-            m_measures[i]->setVisible(false);
+            m_measures->push_back( (*m_geometry)[i]);
+            (*m_measures)[i]->setVisible(false);
         }
-        if(!m_measures[i]->isVisible())
+        if(!(*m_measures)[i]->isVisible())
         {
-            assert(m_measures.size()>=i);
-            T.trf(*m_geometry[i],*m_measures[i]);
-            m_measures[i]->setVisible(true);
+            assert(m_measures->size()>=i);
+            T.trf( (*m_geometry)[i],(*m_measures)[i]);
+            (*m_measures)[i]->setVisible(true);
         }
     }
     bool b = getPlaneSystem().setTrf( getPlane(), plane, T, date,time );

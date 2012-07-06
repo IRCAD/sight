@@ -12,32 +12,36 @@
 #include <arlcore/vnl_rotation3d_vector.h>
 
 arlCore::Scene::Scene( PlaneSystem &universe ):
-m_tags(new Tags(universe)),
-m_cameras(universe),
-m_universe(universe)
-{}
+m_universe(universe),
+m_cameras(universe)
+{
+    m_tags = arlCore::Tags::New( universe , std::string() );
+}
 
-arlCore::Scene::Scene( PlaneSystem &universe, Tags* tags ):
-m_tags(tags),
-m_cameras(universe),
-m_universe(universe)
-{}
+arlCore::Scene::Scene( PlaneSystem &universe, Tags::sptr tags ):
+m_universe(universe),
+m_cameras(universe)
+{
+    //VAG FIXMEm_tags->copy(tags);
+    assert(false); //VAG
+}
 
 arlCore::Scene::~Scene( void )
 {
-    assert(m_tags!=0);
-    delete m_tags;
+    assert(m_tags);
 }
 
-arlCore::Tag* arlCore::Scene::addTag(unsigned int nbPoints, ARLCORE_SHAPE shapeType, const Point &centre, double size)
+arlCore::Tag::sptr arlCore::Scene::addTag(unsigned int nbPoints, ARLCORE_SHAPE shapeType, Point::csptr centre, double size)
 {
-    PointList pointsMonde;
-    pointsMonde.shapeRandom(nbPoints, shapeType, centre, size);
+    PointList::sptr pointsMonde = PointList::New();
+    pointsMonde->shapeRandom(nbPoints, shapeType, centre, size);
     return m_tags->addTag(pointsMonde);
 }
 
 bool arlCore::Scene::plot( void ) const
 {
+    assert(false); //VAG FIXME
+    /*
     const bool JustVisible = false;
     const bool Overwrite = true;
     std::fstream f1,f2;
@@ -71,6 +75,8 @@ bool arlCore::Scene::plot( void ) const
     f2.close();
     system(GNUPLOT_EXE );
     //exec("d:/gnuplot/bin/wgnuplot", "c:/000000.dem" );
+    
+    */
     return true;
 }
 
@@ -99,12 +105,12 @@ unsigned int arlCore::Scene::getNbCameras( void ) const
     return dynamicBehavior(step);
 }*/
 /*
-unsigned int arlCore::Scene::detection( unsigned int cam, arlCore::SmartPointList &spl, std::vector< const arlCore::Tag* > &tagsDetected, std::map< const arlCore::Tag*, unsigned int >& allTagsDetected )
+unsigned int arlCore::Scene::detection( unsigned int cam, arlCore::SmartPointList &spl, std::vector< const arlCore::Tag::sptr > &tagsDetected, std::map< const arlCore::Tag::sptr, unsigned int >& allTagsDetected )
 {
     return detectionBehavior( cam, spl, tagsDetected, allTagsDetected );
 }*/
 
-bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
+bool arlCore::Scene::addCameras(unsigned int nbCameras, Point::csptr  centre,
                             double sphereRadius, double distMin,
                             const std::vector<double> &intrinsic_param,
                             const std::vector<double> &intrinsic_range)
@@ -113,31 +119,32 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
     // tirage des points de vue des cameras
     // on tire d'abord sa position dans une sphere autour de centre
     // puis on l'eloigne du point de mire de la distance distMin
-    PointList CameraPOV(3);
+    PointList::sptr CameraPOV = PointList::New(3);
     double scalar, dist;
-    CameraPOV.shapeRandom(nbCameras,ARLCORE_SHAPE_SPHERE, centre, sphereRadius);
+    CameraPOV->shapeRandom(nbCameras,ARLCORE_SHAPE_SPHERE, centre, sphereRadius);
     //for( j=0 ; j<nb_camera ; ++j )
         //cerr<< "CameraPOV 1= " << CameraPOV[j]->getString() << endl;
     for( i=0 ; i<nbCameras ; ++i )
     {
-        dist = CameraPOV[i]->distance(centre);
+        dist = (*CameraPOV)[i]->distance(centre);
         scalar = (dist+distMin)/dist;
         for( j=0 ; j<3 ; ++j )
-            CameraPOV[i]->set(j,((*CameraPOV[i])[j]-centre[j])*scalar + centre[j] );
+            (*CameraPOV)[i]->set(j,((*(*CameraPOV)[i])[j]- (*centre)[j])*scalar + (*centre)[j] );
     }
     //for( j=0 ; j<nb_camera ; ++j )
         //cerr<< "CameraPOV 2= " << CameraPOV[j]->getString() << endl;
     // tirage des parametres intrinseques
-    Point tmp_intrinsic((unsigned int)intrinsic_param.size()),
-    tmp_intrinsic_var((unsigned int)intrinsic_param.size());
-    std::vector<Point> tirage_intrinsic;
+    Point::sptr tmp_intrinsic = Point::New( (unsigned int)intrinsic_param.size() );
+    Point::sptr tmp_intrinsic_var = Point::New( (unsigned int)intrinsic_param.size() );
+
+    std::vector<Point::sptr> tirage_intrinsic;
     for( i=0 ; i<intrinsic_param.size() ; ++i )
-        tmp_intrinsic.set(i,intrinsic_param[i]);
+        tmp_intrinsic->set(i,intrinsic_param[i]);
     tmp_intrinsic_var = tmp_intrinsic;
     for( i=0 ; i<nbCameras ; ++i )
     {
         for( j=0 ; j<intrinsic_param.size() ; ++j )
-            tmp_intrinsic_var.addUniformNoise(j, intrinsic_range[j]);
+            tmp_intrinsic_var->addUniformNoise(j, intrinsic_range[j]);
         tirage_intrinsic.push_back(tmp_intrinsic_var);
         tmp_intrinsic_var = tmp_intrinsic;
         //cerr<< "tirage_intrinsic = " << tirage_intrinsic[j].getString() << endl;
@@ -150,9 +157,9 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
     {
         intrinsic.clear();
         for(j=0; j<intrinsic_param.size(); j++)
-            intrinsic.push_back(tirage_intrinsic[i][j]);
+            intrinsic.push_back( (*(tirage_intrinsic[i]))[j]);
         m_cameras.push_back( GUID, width, heigth );
-        m_cameras[i].syntheticCamera( centre , *(CameraPOV[i]), intrinsic);
+        m_cameras[i].syntheticCamera( centre , (*CameraPOV)[i] , intrinsic);
         //cerr<< "CameraPOV 3= " << CameraPOV[j]->getString() << endl;
         //intrinsic.clear();
         //cerr<< "CamParam ["<<i<<"]= " << CamParam[i]->getString() << endl;
@@ -162,7 +169,7 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
     return true;
 }
 
-bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
+bool arlCore::Scene::addCameras(unsigned int nbCameras, Point::csptr  centre,
                             double sphereRadius, double distMin,
                             const std::vector<double> &intrinsic_param,
                             const std::vector<double> &intrinsic_range,
@@ -172,9 +179,10 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
     // tirage des points de vue des cameras
     // on tire d'abord sa position dans une sphere autour de centre
     // puis on l'eloigne du point de mire de la distance distMin
-    PointList CameraPOV(3), CameraPOV_before(3);
+    PointList::sptr CameraPOV = PointList::New(3);
+    PointList::sptr CameraPOV_before = PointList::New(3);
     double scalar, dist;
-    CameraPOV_before.shapeRandom(nbCameras,ARLCORE_SHAPE_SOLIDANGLE, centre, sphereRadius, angleMin);
+    CameraPOV_before->shapeRandom(nbCameras,ARLCORE_SHAPE_SOLIDANGLE, centre, sphereRadius, angleMin);
     //for(j=0; j<nb_camera; j++)
         //cerr<< "CameraPOV 1= " << CameraPOV[j]->getString() << endl;
 
@@ -187,24 +195,24 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
 
     for( i=0 ; i<nbCameras ; ++i )
     {
-        dist = CameraPOV[i]->distance(centre);
+        dist = (*CameraPOV)[i]->distance(centre);
         scalar = (dist+distMin)/dist;
         for( j=0 ; j<3 ; ++j )
-            CameraPOV[i]->set(j,((*CameraPOV[i])[j]-centre[j])*scalar + centre[j] );
+            (*CameraPOV)[i]->set(j,((*(*CameraPOV)[i])[j]- (*centre)[j])*scalar + (*centre)[j] );
     }
     //for(j=0; j<nb_camera; j++)
         //cerr<< "CameraPOV 2= " << CameraPOV[j]->getString() << endl;
     // tirage des parametres intrinseques
-    Point tmp_intrinsic((unsigned int)intrinsic_param.size()),
-    tmp_intrinsic_var((unsigned int)intrinsic_param.size());
-    std::vector<Point> tirage_intrinsic;
+    Point::sptr tmp_intrinsic = Point::New((unsigned int)intrinsic_param.size());
+    Point::sptr tmp_intrinsic_var = Point::New((unsigned int)intrinsic_param.size());
+    std::vector<Point::sptr> tirage_intrinsic;
     for( i=0 ; i<intrinsic_param.size() ; ++i )
-        tmp_intrinsic.set(i, intrinsic_param[i]);
+        tmp_intrinsic->set(i, intrinsic_param[i]);
     tmp_intrinsic_var = tmp_intrinsic;
     for( i=0 ; i<nbCameras ; ++i )
     {
         for( j=0 ; j<intrinsic_param.size() ; ++j )
-            tmp_intrinsic_var.addUniformNoise(j, intrinsic_range[j]);
+            tmp_intrinsic_var->addUniformNoise(j, intrinsic_range[j]);
         tirage_intrinsic.push_back(tmp_intrinsic_var);
         tmp_intrinsic_var = tmp_intrinsic;
         //cerr<< "tirage_intrinsic = " << tirage_intrinsic[j].getString() << endl;
@@ -217,10 +225,10 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
     {
         intrinsic.clear();
         for( j=0 ; j<intrinsic_param.size() ; ++j )
-            intrinsic.push_back(tirage_intrinsic[i][j]);
+            intrinsic.push_back( (*(tirage_intrinsic[i]))[j]);
 //      m_cameras.push_back( Camera (m_universe) );
         m_cameras.push_back( GUID, width, heigth );
-        m_cameras.back().syntheticCamera( centre , *(CameraPOV[i]), intrinsic);
+        m_cameras.back().syntheticCamera( centre ,  (*CameraPOV)[i] , intrinsic);
         //cerr<< "CameraPOV 3= " << CameraPOV[j]->getString() << endl;
         //intrinsic.clear();
         //cerr<< "CamParam ["<<i<<"]= " << CamParam[i]->getString() << endl;
@@ -231,7 +239,7 @@ bool arlCore::Scene::addCameras(unsigned int nbCameras, const Point& centre,
     return true;
 }
 
-arlCore::Tags& arlCore::Scene::getTags( void )
+arlCore::Tags  &arlCore::Scene::getTags( void )
 {
     return *m_tags;
 }
@@ -241,34 +249,34 @@ bool arlCore::Scene::dynamicBehavior( unsigned int step )
     return false;
 }
 
-unsigned int arlCore::Scene::detectionBehavior( unsigned int cam, SmartPointList &, std::vector< const Tag* > &tags, std::map< const Tag*, unsigned int >& allTags )
+unsigned int arlCore::Scene::detectionBehavior( unsigned int cam, SmartPointList::sptr , std::vector< Tag::csptr > &tags, std::map< Tag::csptr, unsigned int >& allTags )
 {
     return 0;
 }
 
-unsigned int arlCore::Scene::detection( unsigned int camNo, unsigned int tagNo, SmartPointList &spl, double gaussianNoise )
+unsigned int arlCore::Scene::detection( unsigned int camNo, unsigned int tagNo, SmartPointList::sptr spl, double gaussianNoise )
 {
     if(m_tags->size()<tagNo || camNo>m_cameras.size() || camNo==0 ) return 0;
     unsigned int i;
-    long int date=0, time=0;
-    Point pt(2,Point::ARLCORE_POINT_TYPE_ARTK,date,time);
-    Point pt3D(3);
-    pt.setStatus(Point::ARLCORE_POINT_STATUS_DETECTED);
+    Point::sptr pt= Point::New(2,Point::ARLCORE_POINT_TYPE_ARTK);
+    Point::sptr pt3D = Point::New(3) ;
+    pt->setStatus(Point::ARLCORE_POINT_STATUS_DETECTED);
     const double ColorMin=50.0;
     const double ColorStep=(255.0-ColorMin)/(double)(m_tags->size()+2);
     if(m_tags->getTag(tagNo)==0) return 0;
     assert(m_tags->getTag(tagNo)!=0);
-    PointList &tagPoints=m_tags->getTag(tagNo)->getGeometry();
+    PointList::sptr tagPoints=m_tags->getTag(tagNo)->getGeometry();
     vnl_rigid_matrix T;
+    const bool Transfo = m_universe.getTrf( m_tags->getTag(tagNo)->getPlane(), m_cameras[camNo-1].getPlane(), T );
     //T.invert();
-    for( i=0 ; i<tagPoints.size() ; ++i )
+    for( i=0 ; i<tagPoints->size() ; ++i )
     {
-        T.trf(*tagPoints[i], pt3D);
+        T.trf( (*tagPoints)[i], pt3D);
         m_cameras[camNo-1].project3DPoint( pt3D, pt);
         const Colour color(0,ColorMin+ColorStep*(tagNo+1),0);
-        pt.setColour(color);
-        if(gaussianNoise>0) pt.addGaussianNoise(gaussianNoise);
-        spl.push_back(pt, camNo, (void*)m_tags->getTag(tagNo));
+        pt->setColour(color);
+        if(gaussianNoise>0) pt->addGaussianNoise(gaussianNoise);
+        spl->push_back(pt, camNo, m_tags->getTag(tagNo) );
     }
-    return tagPoints.size();
+    return tagPoints->size();
 }

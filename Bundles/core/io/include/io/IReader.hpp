@@ -148,21 +148,21 @@ protected:
      * Sample configuration for a file:
      * @verbatim
      <service ... >
-        <file>/home/user/myFile.jpg<file/>
+        <file>/home/user/myFile.jpg</file>
      </service>
      @endverbatim
      * Sample configuration for many files:
      * @verbatim
      <service ... >
-        <file>/home/user/myFile01.jpg<file/>
-        <file>/home/user/myFile02.jpg<file/>
-        <file>/home/user/myFile03.jpg<file/>
+        <file>/home/user/myFile01.jpg</file>
+        <file>/home/user/myFile02.jpg</file>
+        <file>/home/user/myFile03.jpg</file>
      </service>
      @endverbatim
      * Sample configuration for a folder:
      * @verbatim
      <service ... >
-        <folder>/home/user/myFolder<folder/>
+        <folder>/home/user/myFolder</folder>
      </service>
      @endverbatim
      */

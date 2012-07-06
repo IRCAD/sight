@@ -7,6 +7,7 @@
 #ifndef _ARLCORE_UNITTEST_H
 #define _ARLCORE_UNITTEST_H
 
+//#ifdef _WIN32
 #include <arlcore/Common.h>
 
 #include <vector>
@@ -18,7 +19,7 @@ namespace arlCore
  * @Brief Tests sur les reconstructions 3D, recalages 3D/2D, 3D/3D
  */
     // 3D Reconstruction
-    ARLCORE_API bool testReconstructionPolyscopic( long int nbIterations, double tolerance );//TODO rajouter le tirage des transformations aléatoires 
+    ARLCORE_API bool testReconstructionPolyscopic( long int nbIterations, double tolerance );//TODO rajouter le tirage des transformations alÃ©atoires 
     ARLCORE_API bool testReconstructionPolyscopicUncertainty( long int nbIterations, double tolerance);
 
     // Calibration
@@ -79,7 +80,6 @@ namespace arlCore
      */
     ARLCORE_API bool testRegistrationCriteriaComparison( long int nbIterations, std::vector<double> parameters, std::vector<double> staticStatus,std::vector< vnl_vector<double>* > , std::vector< vnl_vector<double>* > , std::vector< vnl_vector<double>* >   );
 
-
     // Sphere Center Estimation from a 3D point cloud
     ARLCORE_API bool testSphereCenterEstimation( long int nbIterations, double tolerance );
     
@@ -88,5 +88,6 @@ namespace arlCore
     ARLCORE_API bool testPolynomialFieldDistortion( long int nbIterations, double tolerance );
 } // namespace arlCore
 
+//#endif // _WIN32
 
 #endif // _ARLCORE_UNITTEST_H

@@ -18,20 +18,21 @@ arlCore::SmartPointList::SmartPointList( void )
     m_listOfLists.resize(1);
 }
 
-arlCore::SmartPointList::SmartPointList(const SmartPointList& p)
+arlCore::SmartPointList::SmartPointList(SmartPointList::csptr  p)
 {
         copy(p);
 }
 
-arlCore::SmartPointList& arlCore::SmartPointList::operator=(const SmartPointList& p)
+arlCore::SmartPointList& arlCore::SmartPointList::operator=(SmartPointList::csptr  p)
 {
     copy(p);
     return *this;
 }
 
-void arlCore::SmartPointList::copy(const SmartPointList& p)
+void arlCore::SmartPointList::copy(SmartPointList::csptr  p)
 {
-    if(this==&p) return;
+    if(this==p.get()) return;
+    assert(false); //VAG FIXME
 //  arlCore::Object *a=this;
 //  const arlCore::Object *b=&p;
 //  *a = *b;
@@ -65,6 +66,7 @@ std::string arlCore::SmartPointList::getString( void ) const
         for( j=0 ; j<m_listsByCam[i].size() ; ++j )
         {
             s<<m_listsByCam[i][j]->getString();
+            unsigned int h=(unsigned int)m_listsByCam[i].size();
         }
     }
     s<<"\n";
@@ -80,7 +82,7 @@ bool arlCore::SmartPointList::save( const std::string &fileName, bool overwrite 
     file<<"FileType SmartPointList\n";
     file<<"Version 1.0\n";
     unsigned int cam, i, n=0;
-    void* tag;
+    SPTR(void) tag;
     int fringe;
     std::map<double, unsigned int, mapOrder>::const_iterator it;
     it = m_mapOfLists.begin();
@@ -114,7 +116,7 @@ bool arlCore::SmartPointList::load( const std::string &fileName )
     double version;
     clear();
 //  Object::update(); // TODO Optimize its position
-    Point p;
+    Point::sptr p= Point::New();
     do
     {   // Reading header
         file>>token;
@@ -135,9 +137,9 @@ bool arlCore::SmartPointList::load( const std::string &fileName )
     do
     {
         unsigned int cam;
-        void* tag;
+        SPTR(void) tag;
         int fringe;
-        b=p.load(file, cam, tag, fringe);
+        b=p->load(file, cam, tag, fringe);
         if(b) push_back(p, cam, tag, fringe);
     }while(b);
     file.close();
@@ -147,16 +149,16 @@ unsigned int arlCore::SmartPointList::findNearPoint(double x, double y, unsigned
 {
     found.clear();
     if(m_listsByCam.size()<cam) return 0;
-    Point pt(x,y);
+    Point::sptr pt = Point::New(x,y);
     unsigned int i, n;
     std::vector<unsigned int> pos;
     n=arlCore::findNearPoint(m_listsByCam[cam-1], pt, pos, distance, radius);
     for( i=0 ; i<pos.size() ; ++i )
-        found.push_back((Point*)m_listsByCam[cam-1][pos[i]]);
+        found.push_back( m_listsByCam[cam-1][pos[i]] );
     return (unsigned int)found.size();
 }
 /*
-const arlCore::Point* arlCore::SmartPointList::findNearPoint(const  arlCore::Point &pt, double &distance) const
+const arlCore::Point* arlCore::SmartPointList::findNearPoint(const  arlCore::Point::sptr pt, double &distance) const
 {
     if(m_listsByCam.size()<1) return 0;
     const arlCore::Point* r=0;
@@ -187,10 +189,10 @@ const arlCore::Point* arlCore::SmartPointList::findNearPoint(const  arlCore::Poi
     return 0;
 }*/
 
-arlCore::Point::csptr arlCore::SmartPointList::push_back( const arlCore::Point& pt, unsigned int cam, void* tag, int fringe )
+arlCore::Point::csptr arlCore::SmartPointList::push_back( arlCore::Point::csptr pt, unsigned int cam, SPTR(void) tag, int fringe )
 {
-    if(cam<1) return 0;
-    arlCore::Point *p=new Point(pt);
+    if(cam<1) return arlCore::Point::csptr();
+    arlCore::Point::csptr p= Point::New(pt);
     privateGetList(cam).push_back(p);
     if(tag!=0)
     {
@@ -200,7 +202,7 @@ arlCore::Point::csptr arlCore::SmartPointList::push_back( const arlCore::Point& 
     return p;
 }
 
-unsigned int arlCore::SmartPointList::push_back( const std::vector< arlCore::Point::csptr >& ptList, unsigned int cam, void* tag, int fringe )
+unsigned int arlCore::SmartPointList::push_back( const std::vector< arlCore::Point::csptr >& ptList, unsigned int cam, SPTR(void) tag, int fringe )
 {
     unsigned int i, n = 0;
     if(cam<1) return n;
@@ -211,10 +213,10 @@ unsigned int arlCore::SmartPointList::push_back( const std::vector< arlCore::Poi
     {
         if(ptList[i]!=0)
         {
-            arlCore::Point *p=new Point(*(ptList[i]));
+            arlCore::Point::csptr p=  ptList[i] ;
             ++n;
             camList.push_back(p);
-            if(tag!=0)
+            if(tag)
             {
                 tagList.push_back(p);
                 if(fringe!=0) frgList.push_back(p);
@@ -224,44 +226,45 @@ unsigned int arlCore::SmartPointList::push_back( const std::vector< arlCore::Poi
     return n;
 }
 
-bool arlCore::SmartPointList::addPoint( const arlCore::Point& pt, unsigned int cam, void* tag, unsigned int tagNo )
+bool arlCore::SmartPointList::addPoint( arlCore::Point::csptr pt, unsigned int cam, SPTR(void) tag, unsigned int tagNo )
 {
     if(cam<1 || tag==0) return false;
     unsigned int i;
     std::vector< arlCore::Point::csptr > &pointList = privateGetList( cam, tag );
     for( i=(unsigned int)pointList.size() ; i<tagNo+1 ; ++i )
-        pointList.push_back(0);
+        pointList.push_back( arlCore::Point::sptr() );
     if(pointList[tagNo]==0)
     {
-        arlCore::Point *p=new Point(pt);
+        arlCore::Point::sptr p= Point::New(pt);
         privateGetList(cam).push_back(p);
         pointList[tagNo]=p;
-    } else ((arlCore::Point*)pointList[tagNo])->copy(pt);
+    } else arlCore::Point::constCast( pointList[tagNo])->copy(pt);
     return true;
 }
 
 const double MaxFringes=100.0, MaxCams=10.0, HalfMaxFringes=MaxFringes/2.0;
 
-double arlCore::SmartPointList::hash( unsigned int cam, void* tag, int fringe ) const
+double arlCore::SmartPointList::hash( unsigned int cam, SPTR(void) tag, int fringe ) const
 {
-    long int p=(long int)tag;
+    long int p=(long int)tag.get();
     double key=(double)p*MaxCams*MaxFringes+(HalfMaxFringes+(double)fringe)*MaxCams+(double)cam;
     unsigned int c;
-    void* t;
+    SPTR(void) t;
     int f;
     assert(unhash( key, c, t, f ));
-    assert(cam==c && tag==t && fringe==f);
+    // VAG FIXME assert(cam==c && tag.get()==t.get() && fringe==f);
     // FIXME Test only in Debug mode
     unhash( key, c, t, f );
-    if(cam!=c || tag!=t || fringe!=f)
-        std::cout<<"*****UNHASH ERROR***** "<<cam<<","<<tag<<","<<fringe<<" => "<<c<<","<<t<<","<<f<<" ****************\n";
+
+    //VAG if(cam!=c || tag.get()!=t.get() || fringe!=f)
+    //VAG    std::cout<<"*****UNHASH ERROR***** "<<cam<<","<<tag.get()<<","<<fringe<<" => "<<c<<","<<t<<","<<f<<" ****************\n";
     return key;
 }
 
-bool arlCore::SmartPointList::unhash( double key, unsigned int &cam, void* &tag, int &fringe ) const
+bool arlCore::SmartPointList::unhash( double key, unsigned int &cam, SPTR(void) tag, int &fringe ) const
 {
     long int t = (long int)(key/(MaxCams*MaxFringes));
-    tag = (void*)t;
+    //tag = (SPTR(void))t; VAG necessary ???? FIXME
     key = key-t*MaxCams*MaxFringes;
     int f = (int)(key/MaxCams);
     fringe = f-(int)HalfMaxFringes;
@@ -269,7 +272,7 @@ bool arlCore::SmartPointList::unhash( double key, unsigned int &cam, void* &tag,
     return true;
 }
 
-std::vector< arlCore::Point::csptr >& arlCore::SmartPointList::privateGetList( unsigned int cam, void* tag, int fringe )
+std::vector< arlCore::Point::csptr >& arlCore::SmartPointList::privateGetList( unsigned int cam, SPTR(void) tag, int fringe )
 {
     if(tag==0 && fringe==0)
     {
@@ -293,7 +296,7 @@ std::vector< arlCore::Point::csptr >& arlCore::SmartPointList::privateGetList( u
     return m_listOfLists[n];
 }
 
-const std::vector< arlCore::Point::csptr >& arlCore::SmartPointList::getList( unsigned int cam, void* tag, int fringe ) const
+const std::vector< arlCore::Point::csptr >& arlCore::SmartPointList::getList( unsigned int cam, SPTR(void) tag, int fringe ) const
 {
     if(tag==0 && fringe==0 && cam>0 && cam <=m_listsByCam.size()) return m_listsByCam[cam-1];
     std::map< double, unsigned int, mapOrder >::const_iterator it;
@@ -302,7 +305,7 @@ const std::vector< arlCore::Point::csptr >& arlCore::SmartPointList::getList( un
     return m_listOfLists[0]; // Empty list
 }
 
-unsigned int arlCore::SmartPointList::getPointByCam( std::vector<arlCore::Point::csptr>&pl, const std::vector<arlCore::Camera> &cameras, void* tag, unsigned int no, std::vector< bool >&whichCams ) const
+unsigned int arlCore::SmartPointList::getPointByCam( std::vector<arlCore::Point::csptr>&pl, const std::vector<arlCore::Camera> &cameras, SPTR(void) tag, unsigned int no, std::vector< bool >&whichCams ) const
 {
     std::vector<const arlCore::Camera*> cams;
     unsigned int i;
@@ -311,7 +314,7 @@ unsigned int arlCore::SmartPointList::getPointByCam( std::vector<arlCore::Point:
     return getPointByCam( pl, cams, tag, no, whichCams );
 }
 
-unsigned int arlCore::SmartPointList::getPointByCam( std::vector<arlCore::Point::csptr>&pl, const std::vector<const arlCore::Camera*> &cams, void* tag, unsigned int no, std::vector< bool >&whichCams ) const
+unsigned int arlCore::SmartPointList::getPointByCam( std::vector<arlCore::Point::csptr>&pl, const std::vector<const arlCore::Camera*> &cams, SPTR(void) tag, unsigned int no, std::vector< bool >&whichCams ) const
 {
     pl.clear();
     whichCams.resize(cams.size());
@@ -327,14 +330,14 @@ unsigned int arlCore::SmartPointList::getPointByCam( std::vector<arlCore::Point:
                     if(l[no]->isVisible())
                     {
                         whichCams[cam]=true;
-                        pl.push_back((arlCore::Point*)l[no]);
+                        pl.push_back( l[no] );
                     }
         }
     }
     return (unsigned int)pl.size();
 }
 
-bool arlCore::SmartPointList::getPoint( arlCore::Point::csptr &p, unsigned int cam, void *t, unsigned int tagNo ) const
+bool arlCore::SmartPointList::getPoint( arlCore::Point::csptr &p, unsigned int cam, SPTR(void) t, unsigned int tagNo ) const
 {
     if(cam<=0) return false;
     const std::vector< arlCore::Point::csptr > &l=getList(cam,t);
@@ -343,29 +346,29 @@ bool arlCore::SmartPointList::getPoint( arlCore::Point::csptr &p, unsigned int c
     return p!=0;
 }
 
-unsigned int arlCore::SmartPointList::getPoints( std::vector< arlCore::Point::csptr >&pl, unsigned int cam, void* t ) const
+unsigned int arlCore::SmartPointList::getPoints( std::vector< arlCore::Point::csptr >&pl, unsigned int cam, SPTR(void) t ) const
 {
     pl.clear();
     if(cam<=0) return 0;
     const std::vector< arlCore::Point::csptr > &l=getList(cam,t);
     unsigned int i;
     for( i=0 ; i<l.size() ; ++i )
-        pl.push_back((arlCore::Point*)l[i]);
+        pl.push_back( l[i] );
     return (unsigned int)pl.size();
 }
 
-unsigned int arlCore::SmartPointList::getPoints( arlCore::PointList &pl, unsigned int cam, void* t ) const
+unsigned int arlCore::SmartPointList::getPoints( arlCore::PointList::sptr pl, unsigned int cam, SPTR(void) t ) const
 {
-    pl.clear();
+    pl->clear();
     if(cam<=0) return 0;
     const std::vector< arlCore::Point::csptr > &l=getList(cam,t);
     unsigned int i;
     for( i=0 ; i<l.size() ; ++i )
-        pl.push_back((arlCore::Point)(*l[i]));
-    return pl.size();
+        pl->push_back( l[i] );
+    return pl->size();
 }
 
-unsigned int arlCore::SmartPointList::getInvisiblePoints( std::vector< arlCore::Point::csptr >&pl, unsigned int cam, void* t ) const
+unsigned int arlCore::SmartPointList::getInvisiblePoints( std::vector< arlCore::Point::csptr >&pl, unsigned int cam, SPTR(void) t ) const
 {
     pl.clear();
     if(cam<=0) return 0;
@@ -374,16 +377,14 @@ unsigned int arlCore::SmartPointList::getInvisiblePoints( std::vector< arlCore::
     for( i=0 ; i<l.size() ; ++i )
         if(l[i]!=0)
             if(!l[i]->isVisible())
-                pl.push_back((arlCore::Point*)l[i]);
+                pl.push_back(  l[i] );
     return (unsigned int)pl.size();
 }
 
 bool arlCore::SmartPointList::clear( void )
 {
     unsigned int i,j;
-    for( i=0 ; i<m_listsByCam.size() ; ++i )
-        for( j=0 ; j<m_listsByCam[i].size() ; ++j )
-            if(m_listsByCam[i][j]!=0) delete m_listsByCam[i][j];
+
     m_listsByCam.clear();
     m_mapOfLists.clear();
     m_listOfLists.clear();
@@ -391,33 +392,33 @@ bool arlCore::SmartPointList::clear( void )
     return true;
 }
 
-unsigned int arlCore::SmartPointList::size( unsigned int cam, void* tag, int fringe ) const
+unsigned int arlCore::SmartPointList::size( unsigned int cam, SPTR(void) tag, int fringe ) const
 {
     return (unsigned int)getList( cam, tag, fringe ).size();
 }
 
-unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, const SmartPointList &spl, std::vector< std::vector<arlCore::Point::csptr> >&matching, double gaussianNoise )
+unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, SmartPointList::csptr spl, std::vector< std::vector<arlCore::Point::csptr> >&matching, double gaussianNoise )
 {
     unsigned int nbCameras = (unsigned int)cameras.size();
     if(nbCameras<2) return 0;
     if(nbCameras>2) nbCameras=2;
-    // Bruit minimum lié aux incertitudes sur le calcul
+    // Bruit minimum liÃ© aux incertitudes sur le calcul
     const double NumericNoise = 1e-3;
     // On retient que les points a une distance de la droite epipolaire < 'DistPixMax'
-    // Cette valeur est fonction du bruit estimé sur les points 2D
+    // Cette valeur est fonction du bruit estimÃ© sur les points 2D
     const double DistPixMax = 2*gaussianNoise+NumericNoise;
     //const double DistPixMax = sqrt(2*gaussianNoise*gaussianNoise)+NumericNoise;
-    // Le second plus proche doit imperativement etre à plus de DistPixMin de la droite epipolaire
-    // Les voisins doivent être à l'extérieur de la zone d'incertitude
+    // Le second plus proche doit imperativement etre Ã  plus de DistPixMin de la droite epipolaire
+    // Les voisins doivent Ãªtre Ã  l'extÃ©rieur de la zone d'incertitude
     const double DistPixMin = DistPixMax;
 
     // Elagage des points trop eloignes de la droite epipolaire
     // Actuellement inutile car l'algo actuel prend en compte le premier et le second
 
     // On retient que les 'Best'*100% points les plus proches de la droite epipolaire
-    // const double Best = 0.1; //]0,1]
+    const double Best = 0.1; //]0,1]
     // Garde au minimum les BestMin premiers quelque soit le pourcentage
-    // const unsigned int BestMin = 100;
+    const unsigned int BestMin = 100;
 
     // Cas avec 2 cameras - TODO : avec n cameras
     // distanceTab[no point de la cam0][no point de la cam 1]
@@ -430,14 +431,14 @@ unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, cons
     const vnl_vector_fixed<double,4> InitVector(DBL_MAX);
 
     unsigned int i,j,k,l,n;
-    Point point3D(3);
+    Point::sptr point3D = Point::New(3);
     // Passage dans le plan de la focale
     const bool PerfectDisto = true;
     std::vector< PointList > focalPlanePoints(cameras.size());
     std::vector< std::vector<arlCore::Point::csptr> >pixelPoints(cameras.size());
     for( i=0 ; i<nbCameras ; ++i )
     {
-        n = spl.getPoints( pixelPoints[i], i+1 );
+        n = spl->getPoints( pixelPoints[i], i+1 );
         // Cas avec 2 cameras - TODO : avec n cameras
         if(i==0) distanceTab.resize(n);
         if(i==1)
@@ -449,8 +450,8 @@ unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, cons
             }
         for( j=0 ; j<n ; ++j )
         {
-            ((Point::sptr)pixelPoints[i][j])->setScalar(-1); // Numero appariement pour visu
-            if(cameras[i].pixelPlaneToUnitFocalPlane( *(pixelPoints[i][j]), point3D, PerfectDisto ))
+            arlCore::Point::constCast( pixelPoints[i][j] )->setScalar(-1); // Numero appariement pour visu
+            if(cameras[i].pixelPlaneToUnitFocalPlane(  pixelPoints[i][j] , point3D, PerfectDisto ))
                 focalPlanePoints[i].push_back(point3D);
         }
     }
@@ -470,7 +471,7 @@ unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, cons
                         for( l=0 ; l<focalPlanePoints[j].size() ; ++l )
                         {
                             double a,b,c;
-                            if(getEpipolar(*(focalPlanePoints[i][k]), PMi_j, a, b, c))
+                            if(getEpipolar( focalPlanePoints[i][k] , PMi_j, a, b, c))
                             {
                                 distance = (a * focalPlanePoints[j][l]->x() + b * focalPlanePoints[j][l]->y() + c) / sqrt(a*a +b*b);
                                 distance = sqrt(distance*distance)*cameras[j].getfx();

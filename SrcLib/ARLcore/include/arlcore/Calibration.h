@@ -17,7 +17,7 @@ namespace arlCore
 {
     /**
     * @brief Intrinsic camera parameter initialisation
-    * @param[in] models3D List of 3D models, one for each pose (the object has to be a plane) 
+    * @param[in] models3D List of 3D models, one for each pose (the object has to be a plane)
     * If the 3D model does not change in all the pose you can provide only one PointList that corresponds
     * to the calibration object 3D points
     * If your calibration object changes in each pose (for example because some points are occluded), you have to
@@ -31,8 +31,8 @@ namespace arlCore
     * @param[out] log[i+1] provides the average reprojection error for the ith pose (sum_j euclidean_dist(reproj_j - extracted_j))
     * @warning : this initialization fonction works for 3D objects which Z coordinates are 0 only.
     */
-    ARLCORE_API bool initIntrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector <PointList>& points2D, Camera &, std::vector< vnl_rigid_matrix> &extrinsic,
+    ARLCORE_API bool initIntrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector < PointList::csptr >& points2D, Camera &, std::vector< vnl_rigid_matrix> &extrinsic,
         const std::vector<double> &optimiserParameters , std::vector<double> &log );
 
     /**
@@ -57,7 +57,7 @@ namespace arlCore
     *               [2]=f tolerance Default=1e-6
     *               [3]=x tolerance Default=1e-8
     *               [4]=g tolerance Default=1e-5
-    * @param[out] log List 
+    * @param[out] log List
     *               [0]=Average reprojection error RMS at the end of the optimization (sqrt(mean(sum_i reprojection_error)))
     *               [1]=Average reprojection error RMS at the beginning of the optimization
     *               [2]=Number of iteration to converge
@@ -67,10 +67,10 @@ namespace arlCore
     *               [3+N]=Number of point for the last pose
     *               [3+N+1]=Number total of point
     *               [3+N+2 -> 3+N+??]= Reprojection error for each of the points
-    * 
+    *
     */
-    ARLCORE_API bool refineIntrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector <PointList>& points2D, unsigned int nbParameters,
+    ARLCORE_API bool refineIntrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector < PointList::csptr >& points2D, unsigned int nbParameters,
         Camera &, std::vector< vnl_rigid_matrix> &, const std::vector<double> &optimiserParameters,
         std::vector<double> &log );
 
@@ -103,17 +103,17 @@ namespace arlCore
     * @param[out] log[N+4+N] gives the number of point of the Nth pose
     * @param[out] log[N+4+N+1 -> N+4+N+1 +?? ] Reprojection error for each of the points
     */
-    ARLCORE_API bool intrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector <PointList>& points2D, unsigned int nbParameters,
+    ARLCORE_API bool intrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector < PointList::csptr >& points2D, unsigned int nbParameters,
         Camera &, std::vector< vnl_rigid_matrix>& extrinsics, const std::vector<double>& optimiserParameters,
         std::vector<double>& log );
 
     /**
     * @brief Initialisation of the extrinsic calibration between several cameras
     * The parameter cameras is not changed !
-    * The rigid transformation from the calibration grid (for the ith pose) to the camera 0 
+    * The rigid transformation from the calibration grid (for the ith pose) to the camera 0
     * is given in extrinsics[i-1]
-    * The rigid transformation from the camera 0 frame to the jth camera frame is given in 
+    * The rigid transformation from the camera 0 frame to the jth camera frame is given in
     * extrinsic[nbPose+j-1]
     * @param[in] models3D List of 3D models points for each pose
     * @param[in] listsPoints2D List of 2D points (reprojection of th 3D model points) detected for each pose for each camera
@@ -125,12 +125,15 @@ namespace arlCore
     * @param[out] log[0] gives the number of pose used in the calibration
     * @param[out] log List of results to check the estimation quality (TODO still not used now)
     */
-    ARLCORE_API bool initExtrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector<std::vector<std::vector<Point*> > >& listsPoints2D, const std::vector<const Camera*>& cameras,
-        std::vector< vnl_rigid_matrix>& extrinsics, const std::vector<double> &optimiserParameters, std::vector<double> &log );
+    ARLCORE_API bool initExtrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector<std::vector<std::vector<Point::csptr > > >& listsPoints2D,
+        const std::vector<const Camera*>& cameras,
+        std::vector< vnl_rigid_matrix>& extrinsics,
+        const std::vector<double> &optimiserParameters,
+        std::vector<double> &log );
 
-    ARLCORE_API bool initExtrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector<std::vector<std::vector<Point*> > >& listsPoints2D, const std::vector<Camera>& cameras,
+    ARLCORE_API bool initExtrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector<std::vector<std::vector<Point::csptr > > >& listsPoints2D, const std::vector<Camera>& cameras,
         std::vector< vnl_rigid_matrix>& extrinsics, const std::vector<double> &optimiserParameters, std::vector<double> &log );
 
     /**
@@ -147,17 +150,17 @@ namespace arlCore
     *               [2]=f tolerance Default=1e-6
     *               [3]=x tolerance Default=1e-8
     *               [4]=g tolerance Default=1e-5
-    * @param[out] log List 
+    * @param[out] log List
     *               [0]=End error
     *               [1]=Start error
     *               [2,n+1]=Reprojection error for each of the n points
     */
-    ARLCORE_API bool refineExtrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector<std::vector<std::vector<Point*> > >& listsPoints2D, const std::vector<const Camera*>& cameras,
+    ARLCORE_API bool refineExtrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector<std::vector<std::vector<Point::csptr > > >& listsPoints2D, const std::vector<const Camera*>& cameras,
         std::vector< vnl_rigid_matrix>& extrinsics, const std::vector<double> &optimiserParameters, std::vector<double> &log );
 
-    ARLCORE_API bool refineExtrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector<std::vector<std::vector<Point*> > >& listsPoints2D, const std::vector<Camera>& cameras,
+    ARLCORE_API bool refineExtrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector<std::vector<std::vector<Point::csptr > > >& listsPoints2D, const std::vector<Camera>& cameras,
         std::vector< vnl_rigid_matrix>& extrinsics, const std::vector<double> &optimiserParameters, std::vector<double> &log );
 
     /**
@@ -176,12 +179,12 @@ namespace arlCore
     *               [2]=Start error
     *               [3,n+1]=Reprojection error for each of the n points
     */
-    ARLCORE_API bool extrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector<std::vector<std::vector<Point*> > >& listsPoints2D, const std::vector<const Camera*>& cameras,
+    ARLCORE_API bool extrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector<std::vector<std::vector<Point::csptr > > >& listsPoints2D, const std::vector<const Camera*>& cameras,
         std::vector< vnl_rigid_matrix>& extrinsics, const std::vector<double> &optimiserParameters, std::vector<double> &log );
 
-    ARLCORE_API bool extrinsicCalibration(const std::vector<PointList>& models3D,
-        const std::vector<std::vector<std::vector<Point*> > >& listsPoints2D, const std::vector<Camera>& cameras,
+    ARLCORE_API bool extrinsicCalibration(const std::vector< PointList::csptr >& models3D,
+        const std::vector<std::vector<std::vector<Point::csptr > > >& listsPoints2D, const std::vector<Camera>& cameras,
         std::vector< vnl_rigid_matrix>& extrinsics, const std::vector<double> &optimiserParameters, std::vector<double> &log );
 
 } // namespace arlCore

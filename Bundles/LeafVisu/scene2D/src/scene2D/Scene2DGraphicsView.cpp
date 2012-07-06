@@ -226,6 +226,7 @@ void Scene2DGraphicsView::wheelEvent ( QWheelEvent * _event )
     ::scene2D::data::Event::NewSptr sceneEvent;
     sceneEvent->setType( (scrollUp) ? ::scene2D::data::Event::MouseWheelUp : ::scene2D::data::Event::MouseWheelDown);
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
+    sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
     m_scene2DRender.lock()->dispatchInteraction( sceneEvent );
 }
@@ -242,10 +243,10 @@ void Scene2DGraphicsView::setViewport( ::scene2D::data::Viewport::sptr viewport 
 void Scene2DGraphicsView::updateFromViewport()
 {
     ::scene2D::data::Viewport::sptr viewport = m_viewport.lock();
+
     this->fitInView(
         viewport->getX(), viewport->getY(), viewport->getWidth(), viewport->getHeight(),
         m_scene2DRender.lock()->getAspectRatioMode() );
-//   this->update();
 }
 
 //-----------------------------------------------------------------------------

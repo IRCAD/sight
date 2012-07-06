@@ -44,14 +44,13 @@ protected:
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
     /**
-     * @brief Configure the services : declare the event to react.
+     * @brief Configure the services : declare the events to react.
      * @verbatim
          <service uid="myUpdater" implementation="::ctrlSelection::updater::TranslateUpdater" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no"  >
             <translate fromKey="myObject1Key1" toKey="myObject1Key2" fromUID="myComposite" />
             <translate fromKey="myObject2Key1" toKey="myObject2Key2" fromUID="myComposite" />
         </service>
       @endverbatim
-     * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 

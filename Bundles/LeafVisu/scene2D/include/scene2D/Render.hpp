@@ -83,6 +83,9 @@ public:
     /// Returns what happens to scene's aspect ratio on view resize events
     SCENE2D_API Qt::AspectRatioMode getAspectRatioMode();
 
+    /// Update scene size from items bounding rect, this bounding can be enlarged with ratioPercent parameter
+    SCENE2D_API void updateSceneSize( float ratioPercent = 0 );
+
 protected:
     /**
     * @brief Configuring the Render service.

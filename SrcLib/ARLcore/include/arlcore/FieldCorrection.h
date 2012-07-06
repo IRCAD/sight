@@ -66,7 +66,7 @@ namespace arlCore
         ARLCORE_API bool correct( const vnl_rigid_matrix &T1, vnl_rigid_matrix &T2 ) const;
 
         //! @brief P2 receive P1 corrected. P1=distorded point P2=undistorded
-        ARLCORE_API bool correct( const Point &P1, Point &P2 ) const;
+        ARLCORE_API bool correct( CSPTR( Point ) P1, SPTR( Point ) P2 ) const;
 
         //! @brief Correct the transformation T
         ARLCORE_API bool correct( vnl_rigid_matrix &T ) const;
@@ -85,7 +85,7 @@ namespace arlCore
     * @param[out] parameters parameters of the polynomial
     * @param[out] RMS Error of the optimization
     */
-    ARLCORE_API bool fieldCalibration( const PointList &real, const PointList &distorded, unsigned int degree, vnl_vector<double> &parameters, double &RMS );
+    ARLCORE_API bool fieldCalibration( CSPTR( PointList ) real, CSPTR( PointList ) distorded, unsigned int degree, vnl_vector<double> &parameters, double &RMS );
 
 } // namespace arlCore
 #endif // _ARLCORE_FIELDCORRECTION_H

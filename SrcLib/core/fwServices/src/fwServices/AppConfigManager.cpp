@@ -5,8 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-#define foreach BOOST_FOREACH
-#define reverse_foreach BOOST_REVERSE_FOREACH
 
 #include <fwRuntime/operations.hpp>
 
@@ -160,7 +158,7 @@ namespace fwServices
 
 void AppConfigManager::startComChannels()
 {
-    foreach(::fwServices::IService::wptr w_srv, m_startedComChannels)
+    BOOST_FOREACH(::fwServices::IService::wptr w_srv, m_startedComChannels)
     {
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
@@ -174,7 +172,7 @@ void AppConfigManager::startComChannels()
 
 void AppConfigManager::stopComChannels()
 {
-    reverse_foreach(::fwServices::IService::wptr w_srv, m_startedComChannels)
+    BOOST_REVERSE_FOREACH(::fwServices::IService::wptr w_srv, m_startedComChannels)
     {
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
@@ -189,7 +187,7 @@ void AppConfigManager::stopComChannels()
 
 void AppConfigManager::stopStartedServices()
 {
-    reverse_foreach(::fwServices::IService::wptr w_srv, m_startedSrv)
+    BOOST_REVERSE_FOREACH(::fwServices::IService::wptr w_srv, m_startedSrv)
     {
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
@@ -204,7 +202,7 @@ void AppConfigManager::stopStartedServices()
 
 void AppConfigManager::destroyCreatedServices()
 {
-    reverse_foreach(::fwServices::IService::wptr w_srv, m_createdSrv)
+    BOOST_REVERSE_FOREACH(::fwServices::IService::wptr w_srv, m_createdSrv)
     {
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
@@ -219,7 +217,7 @@ void AppConfigManager::destroyCreatedServices()
 
 void AppConfigManager::processStartItems()
 {
-    foreach(fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
     {
         if (elem->getName() == "start")
         {
@@ -243,7 +241,7 @@ void AppConfigManager::processStartItems()
 
 void AppConfigManager::processUpdateItems()
 {
-    foreach(fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
     {
         if (elem->getName() == "update")
         {
@@ -256,7 +254,7 @@ void AppConfigManager::processUpdateItems()
 
                 OSLM_ASSERT("No services of type \"" << type << "\" found.", !servicesToUpdate.empty());
 
-                foreach(fwServices::IService::sptr srv, servicesToUpdate)
+                BOOST_FOREACH(::fwServices::IService::sptr srv, servicesToUpdate)
                 {
                     srv->update();
                 }
@@ -356,7 +354,7 @@ void AppConfigManager::processUpdateItems()
 
 void AppConfigManager::createServices()
 {
-    foreach(fwRuntime::ConfigurationElement::csptr elem,  m_cfgElem->getElements())
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  m_cfgElem->getElements())
     {
         if (elem->getName() == "service")
         {
@@ -373,7 +371,7 @@ void AppConfigManager::createServices()
 
 void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr cfgElem)
 {
-    foreach(fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
     {
         if (elem->getName() == "service")
         {
@@ -474,7 +472,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     }
 
     // Check if user did not bind a service to another service
-    foreach(::fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
     {
         SLM_ASSERT("Cannot bind a service to another service.",
                 elem->getName() != "service" &&

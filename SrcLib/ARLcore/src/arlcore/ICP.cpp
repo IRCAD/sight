@@ -21,49 +21,49 @@
 #include <arlcore/Optimization.h>
 #include <arlcore/vnl_rigid_vector.h>
 
-arlCore::ICP::ICP( const arlCore::PointList &model, const arlCore::PointList &cloud, bool justVisible ):
+arlCore::ICP::ICP( arlCore::PointList::csptr model, arlCore::PointList::csptr cloud, bool justVisible ):
 m_point2PointMode(true),
-m_modelMesh(0),
-m_cloud(0),
-m_initialization(false),
+m_modelMesh(),
+m_cloud(),
 m_justVisible(justVisible),
-m_modelSize(0),
-m_cloudSize(0),
+m_maxIterations(50),
+m_nbIterations(0),
+m_startError(-1),
+m_endError(-1),
+m_initialization(false),
+m_ANNtree(0),
 m_modelPoints(0),
 m_cloudPoints(0),
 m_Pk(0),
 m_Yk(0),
 m_Pi(0),
-m_ANNtree(0),
 m_nn_idx(0),
 m_squaredDists(0),
-m_maxIterations(50),
-m_nbIterations(0),
-m_startError(-1),
-m_endError(-1)
+m_modelSize(0),
+m_cloudSize(0)
 {
     m_solution.setIdentity();
 #ifdef ANN
-    const unsigned int m_dimension = model.getDimension();
-    assert(m_dimension==cloud.getDimension());
+    const unsigned int m_dimension = model->getDimension();
+    assert(m_dimension==cloud->getDimension());
     m_modelGravity.set_size(m_dimension);
     m_cloudGravity.set_size(m_dimension);
     unsigned int i, j, n;
-    if(justVisible) m_modelSize = model.visibleSize();
-    else m_modelSize = model.size();
+    if(justVisible) m_modelSize = model->visibleSize();
+    else m_modelSize = model->size();
     if(m_modelSize<1) return;
     m_modelPoints = annAllocPts( m_modelSize, m_dimension );
     for( i=0, n=0 ; i<m_modelSize ; ++i )
-        if(model[i])
-            if(!justVisible || (justVisible && model[i]->isVisible()))
+        if((*model)[i])
+            if(!justVisible || (justVisible && (*model)[i]->isVisible()))
             {
                 for( j=0 ; j<m_dimension ; ++j )
-                    m_modelPoints[n][j]=model[i]->get(j);
+                    m_modelPoints[n][j]=(*model)[i]->get(j);
                 ++n;
             }
     m_modelSize = n;
-    if(justVisible) m_cloudSize = cloud.visibleSize();
-    else m_cloudSize = cloud.size();
+    if(justVisible) m_cloudSize = cloud->visibleSize();
+    else m_cloudSize = cloud->size();
     if(m_modelSize<1 || m_cloudSize<1)
     {
         annDeallocPts( m_modelPoints );
@@ -72,11 +72,11 @@ m_endError(-1)
     }
     m_cloudPoints = annAllocPts( m_cloudSize, m_dimension );
     for( i=0, n=0 ; i<m_cloudSize ; ++i )
-        if(cloud[i])
-            if(!justVisible || (justVisible && cloud[i]->isVisible()))
+        if((*cloud)[i])
+            if(!justVisible || (justVisible && (*cloud)[i]->isVisible()))
             {
                 for( j=0 ; j<m_dimension ; ++j )
-                    m_cloudPoints[n][j]=cloud[i]->get(j);
+                    m_cloudPoints[n][j]=(*cloud)[i]->get(j);
                 ++n;
             }
     m_cloudSize = n;
@@ -99,40 +99,33 @@ m_endError(-1)
 #endif // ANN
 }
 
-arlCore::ICP::ICP( const arlCore::Mesh &model, const arlCore::PointList &cloud, bool justVisible ):
-m_point2PointMode(true),
-m_modelMesh(&model),
-m_cloud(&cloud),
-m_initialization(false),
+arlCore::ICP::ICP( arlCore::Mesh::csptr model, arlCore::PointList::csptr cloud, bool justVisible ):
+m_point2PointMode(false),
+m_modelMesh(model),
+m_cloud(cloud),
 m_justVisible(justVisible),
-m_modelSize(0),
-m_cloudSize(0),
+m_maxIterations(50),
+m_nbIterations(0),
+m_startError(-1),
+m_endError(-1),
+m_initialization(false),
+m_ANNtree(0),
 m_modelPoints(0),
 m_cloudPoints(0),
 m_Pk(0),
 m_Yk(0),
 m_Pi(0),
-m_ANNtree(0),
 m_nn_idx(0),
-m_squaredDists(0),
-m_maxIterations(50),
-m_nbIterations(0),
-m_startError(-1),
-m_endError(-1)
+m_squaredDists(0)
 {
     m_solution.setIdentity();
-    if(justVisible) m_modelSize = model.getPointList().visibleSize();
-    else m_modelSize = model.getPointList().size();
-    if(justVisible) m_cloudSize = cloud.visibleSize();
-    else m_cloudSize = cloud.size();
+    if(justVisible) m_modelSize = model->getPointList()->visibleSize();
+    else m_modelSize = model->getPointList()->size();
+    if(justVisible) m_cloudSize = cloud->visibleSize();
+    else m_cloudSize = cloud->size();
 }
 
-arlCore::ICP::ICP( const ICP& T ):
-m_solution(T.m_solution),
-m_maxIterations(T.m_maxIterations)
-{
-    // TODO
-}
+
 
 void arlCore::ICP::initSolution( const arlCore::vnl_rigid_matrix &M )
 {
@@ -274,12 +267,12 @@ double arlCore::ICP::computeCriterion( const arlCore::vnl_rigid_matrix &M, vnl_v
         nbPoints.set_size(RMS.size());
         nbPoints.fill(0.0);
         unsigned int i;
-        arlCore::Point point(3);
+        arlCore::Point::sptr point = arlCore::Point::New(3);
         for( i=0 ; i<m_cloud->size() ; ++i )
             if(m_cloud->get(i))
                 if(!m_justVisible || m_cloud->get(i)->isVisible())
                 {
-                    InvM.trf(*m_cloud->get(i), point);
+                    InvM.trf(m_cloud->get(i), point);
                     const double SquaredDist = m_modelMesh->computeDistance2(point, noTriangle);
                     if(SquaredDist>0.0)
                     {
@@ -456,13 +449,13 @@ double arlCore::ICP::computeError( void )
         double n = 0.0;
         m_endError = 0.0;
         const arlCore::vnl_rigid_matrix InvM = m_solution.computeInverse();
-        arlCore::Point point(3);
+        arlCore::Point::sptr point = arlCore::Point::New(3);;
         assert(m_cloud!=0 && m_modelMesh!=0);
         for( i=0 ; i<m_cloud->size() ; ++i )
             if(m_cloud->get(i))
                 if(!m_justVisible || m_cloud->get(i)->isVisible())
                 {
-                    InvM.trf(*m_cloud->get(i), point);
+                    InvM.trf(m_cloud->get(i), point);
                     m_endError += m_modelMesh->computeDistance2(point);
                     ++n;
                 }
@@ -492,47 +485,47 @@ unsigned int arlCore::ICP::computeDistances( std::vector<double> &distances )
     {   // Point to mesh
         assert(m_cloud!=0 && m_modelMesh!=0);
         const arlCore::vnl_rigid_matrix InvM = m_solution.computeInverse();
-        arlCore::Point point(3);
+        arlCore::Point::sptr point = arlCore::Point::New(3);;
         for( i=0 ; i<m_cloud->size() ; ++i )
             if(m_cloud->get(i))
                 if(!m_justVisible || m_cloud->get(i)->isVisible())
                 {
-                    InvM.trf(*m_cloud->get(i), point);
+                    InvM.trf(m_cloud->get(i), point);
                     distances.push_back(m_modelMesh->computeDistance(point));
                 }
     }
     return (unsigned int)distances.size();
 }
 
-unsigned int arlCore::ICP::computeDistances( arlCore::PointList &points )
+unsigned int arlCore::ICP::computeDistances( arlCore::PointList::sptr points )
 {
     unsigned int i;
     std::vector<double> distances;
-    points.clear();
-    arlCore::Point point(3);
+    points->clear();
+    arlCore::Point::sptr point = arlCore::Point::New(3);;
     if(m_point2PointMode)
     {
         computeDistances( distances );
 #ifdef ANN
         for( i=0 ; i<distances.size() ; ++i )
         {
-            point.x(m_Pk[i][0]), point.y(m_Pk[i][1]), point.z(m_Pk[i][2]);
-            point.setError(distances[i]);
-            points.push_back(point);
+            point->x(m_Pk[i][0]), point->y(m_Pk[i][1]), point->z(m_Pk[i][2]);
+            point->setError(distances[i]);
+            points->push_back(point);
         }
 #endif // ANN
     }else
     {   // Point to mesh
         const arlCore::vnl_rigid_matrix InvM = m_solution.computeInverse();
-        assert(m_cloud!=0 && m_modelMesh!=0);
+        assert(m_cloud && m_modelMesh);
         for( i=0 ; i<m_cloud->size() ; ++i )
             if(m_cloud->get(i))
                 if(!m_justVisible || m_cloud->get(i)->isVisible())
                 {
-                    InvM.trf(*m_cloud->get(i), point);
-                    point.setError(m_modelMesh->computeDistance(point));
-                    points.push_back(point);
+                    InvM.trf(m_cloud->get(i), point);
+                    point->setError(m_modelMesh->computeDistance(point));
+                    points->push_back(point);
                 }
     }
-    return (unsigned int)points.size();
+    return (unsigned int)points->size();
 }

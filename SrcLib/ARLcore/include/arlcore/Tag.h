@@ -6,6 +6,8 @@
 
 #ifndef _ARLCORE_TAG_H
 #define _ARLCORE_TAG_H
+
+#include <fwCore/macros.hpp>
 #include <arlcore/Common.h>
 
 #include <arlcore/Object.h>
@@ -26,9 +28,18 @@ namespace arlCore
      * @date    2007
      * @brief   Detection tag
      */
-    class ARLCORE_CLASS_API Tag : public Object, public Particle, public arlCore::Parameters
+    class ARLCORE_CLASS_API Tag :  public Particle, public arlCore::Parameters
     {
     public:
+
+        fwCoreClassDefinitionsWithNFactoriesMacro( (Tag)(::fwTools::Object),
+                                                   ((TagFactory ,((arlCore::PlaneSystem &)) ((const std::string &)) ))
+                                                   ((TagFactory ,(( arlCore::PlaneSystem &)) ((PointList::csptr)) ))
+                                                 );
+
+        ARLCORE_API static Tag::sptr TagFactory( arlCore::PlaneSystem &universe, const std::string &name);
+        ARLCORE_API static Tag::sptr TagFactory( arlCore::PlaneSystem &universe, PointList::csptr );
+
         /**
         * @brief Type of registration
         * ARL_TAG_REGISTRATION_3D3D : Registration with matching 3D point
@@ -43,7 +54,7 @@ namespace arlCore
         ARLCORE_API Tag( arlCore::PlaneSystem &universe, const std::string &name );
 
         //! @brief Constructor with a pointlist for tag's geometry
-        ARLCORE_API Tag( arlCore::PlaneSystem &universe, const PointList& );
+        ARLCORE_API Tag( arlCore::PlaneSystem &universe, PointList::csptr );
 
         //! @brief Destructor
         ARLCORE_API ~Tag( void );
@@ -58,16 +69,16 @@ namespace arlCore
         ARLCORE_API unsigned int getNbPoints() const;
 
         //! @return Reference on geometry's pointlist
-        ARLCORE_API const arlCore::PointList& getGeometry() const;
+        ARLCORE_API arlCore::PointList::csptr getGeometry() const;
 
         //! @return Reference on geometry's pointlist
-        ARLCORE_API arlCore::PointList& getGeometry();
+        ARLCORE_API arlCore::PointList::sptr getGeometry();
 
         //! @return Reference on measures's pointlist
-        ARLCORE_API const arlCore::PointList& getMeasures() const;
+        ARLCORE_API arlCore::PointList::csptr getMeasures() const;
 
         //! @return Reference on measures's pointlist
-        ARLCORE_API arlCore::PointList& getMeasures();
+        ARLCORE_API arlCore::PointList::sptr getMeasures();
 
         //! @return Registration type
         ARLCORE_API ARLCORE_TAG_REGISTRATION_TYPE getRegistrationType( void );
@@ -83,7 +94,7 @@ namespace arlCore
 
         /**
         * @brief Set a transformation between Tag's plane -> plane (ie : Video's plane)
-        * @param[in] plane Plane of the 
+        * @param[in] plane Plane of the
         * @param[in] T Transformation
         * @param[in] reset If true, measures are all computed from T
         * @param[in] date & time of the measure
@@ -95,8 +106,8 @@ namespace arlCore
         ARLCORE_API void setPersistence( double p ){m_persistence=p;}
 
     protected:
-        PointList m_geometry; //3D
-        PointList m_measures; //3D
+        PointList::sptr m_geometry; //3D
+        PointList::sptr m_measures; //3D
         unsigned int m_measuresPlane;
         ARLCORE_TAG_REGISTRATION_TYPE m_registrationType;
         double m_registrationMaxError;
