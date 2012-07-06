@@ -12,6 +12,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ObjectTest );
 
+
 namespace fwData
 {
 namespace ut
@@ -33,56 +34,71 @@ void ObjectTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::methode1()
+void ObjectTest::fieldTest()
 {
-    const int MIN   = 1 ;
-    const int MAX   = 14 ;
-    const int VALUE = 13 ;
-    const std::string FIELDID1 = "fieldid1" ;
+    const std::string FIELD_ID1 = "FIELD_ID1";
+    const std::string FIELD_ID2 = "FIELD_ID2";
+    const std::string FIELD_ID3 = "FIELD_ID3";
 
-    ::fwData::Object::NewSptr  o1;
-    ::fwTools::Field::sptr f1 (::fwTools::Field::New() );
-    ::fwTools::Field::sptr f0 ; //shared_ptr NULL
-    f1 = o1->setField(FIELDID1) ;
+    ::fwData::Object::sptr nullobj;
+    ::fwData::Object::sptr obj = ::fwData::Object::New();
+    ::fwData::Object::sptr fieldObj1 = ::fwData::Object::New();
+    ::fwData::Object::sptr fieldObj2 = ::fwData::Object::New();
 
-    // check
-    CPPUNIT_ASSERT_EQUAL( o1->getField(FIELDID1),   f1 );
-}
+    CPPUNIT_ASSERT(obj->getFields().empty());
 
-void ObjectTest::methode2()
-{
-    const int MIN   = 1 ;
-    const int MAX   = 14 ;
-    const int VALUE = 13 ;
-    const std::string FIELDID1 = "fieldid1" ;
+    obj->setField(FIELD_ID1, fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
-    ::fwData::Object::NewSptr  o1;
-    ::fwTools::Field::sptr f1(::fwTools::Field::New());
-    ::fwData::Object::NewSptr  o2;
-    f1 = o1->setFieldSingleElement(FIELDID1,  o2) ;
+    ::fwData::Object::FieldMapType localFields = obj->getFields();
+    ::fwData::Object::FieldMapType localFieldsBackup = obj->getFields();
+    localFields.insert( ::fwData::Object::FieldMapType::value_type(FIELD_ID2,fieldObj2));
 
-    // check
-    CPPUNIT_ASSERT_EQUAL( o1->getField(FIELDID1),   f1 );
-}
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
-void ObjectTest::methode3()
-{
-    const int MIN   = 1 ;
-    const int MAX   = 14 ;
-    const int VALUE = 13 ;
-    const std::string FIELDID1 = "fieldid1" ;
-    const std::string FIELDID2 = "fieldid2" ;
+    obj->updateFields(localFields);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(2));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), fieldObj2);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
-    ::fwData::Object::NewSptr o1;
-    ::fwTools::Field::sptr f1(::fwTools::Field::New());
-    ::fwTools::Field::sptr f0 ;
-    ::fwData::Object::NewSptr  o2;
-    f1 = o1->addFieldElement(FIELDID1, o2) ;
+    ::fwData::Object::FieldNameVectorType refFieldNames;
+    refFieldNames.push_back(FIELD_ID1);
+    refFieldNames.push_back(FIELD_ID2);
+    ::fwData::Object::FieldNameVectorType fieldNames = obj->getFieldNames();
+    CPPUNIT_ASSERT(refFieldNames == fieldNames);
 
-    // check
-    CPPUNIT_ASSERT_EQUAL( o1->getField(FIELDID1),   f1 );
-    CPPUNIT_ASSERT_EQUAL( o1->getField(FIELDID2),   f0 );
-    CPPUNIT_ASSERT_EQUAL( o1->getField(FIELDID1),   f1 );
+    obj->setFields(localFieldsBackup);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
+
+    fieldNames = obj->getFieldNames();
+    refFieldNames.clear();
+    refFieldNames.push_back(FIELD_ID1);
+    CPPUNIT_ASSERT(refFieldNames == fieldNames);
+
+    obj->setField(FIELD_ID1, fieldObj2);
+    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj2);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
+    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
+
+    obj->removeField(FIELD_ID1);
+    CPPUNIT_ASSERT(obj->getFields().empty());
+
+    ::fwData::Object::sptr defaultField = obj->setDefaultField(FIELD_ID1, fieldObj1);
+    CPPUNIT_ASSERT(defaultField == fieldObj1);
+
+    defaultField = obj->setDefaultField(FIELD_ID1, fieldObj2);
+    CPPUNIT_ASSERT(defaultField != fieldObj2);
 }
 
 } //namespace ut

@@ -29,7 +29,7 @@ MeshXMLTranslator::~MeshXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr MeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr MeshXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Mesh::sptr pMesh = ::fwData::Mesh::dynamicCast(obj);
     SLM_ASSERT("Mesh not instanced", pMesh);
@@ -87,7 +87,7 @@ xmlNodePtr MeshXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void MeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void MeshXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate);
 
@@ -117,40 +117,95 @@ void MeshXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xm
             }
             else if ( nodeName == "Composite" )
             {
-                ::fwTools::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( elementNode, true );
+                ::fwData::Object::sptr valueObj;
+                valueObj = Serializer().ObjectsFromXml( elementNode );
                 SLM_ASSERT("valueObj not instanced", valueObj);
                 ::fwData::Composite::sptr meshArrays = ::fwData::Composite::dynamicCast(valueObj);
                 SLM_ASSERT("composite not instanced", meshArrays);
 
-                pMesh->setPointsArray(::fwData::Array::dynamicCast((*meshArrays)["points"]) );
-                pMesh->setCellTypesArray(::fwData::Array::dynamicCast((*meshArrays)["cellTypes"]));
-                pMesh->setCellDataArray(::fwData::Array::dynamicCast((*meshArrays)["cellData"]));
-                pMesh->setCellDataOffsetsArray(::fwData::Array::dynamicCast((*meshArrays)["cellDataOffsets"]));
+                ::fwData::Array::sptr pointsSrc = ::fwData::Array::dynamicCast((*meshArrays)["points"]);
+                ::fwData::Array::sptr points = pMesh->getPointsArray();
+                points->swap(pointsSrc);
+
+                ::fwData::Array::sptr cellTypesSrc = ::fwData::Array::dynamicCast((*meshArrays)["cellTypes"]);
+                ::fwData::Array::sptr cellTypes = pMesh->getCellTypesArray();
+                cellTypes->swap(cellTypesSrc);
+
+                ::fwData::Array::sptr cellDataSrc = ::fwData::Array::dynamicCast((*meshArrays)["cellData"]);
+                ::fwData::Array::sptr cellData = pMesh->getCellDataArray();
+                cellData->swap(cellDataSrc);
+
+                ::fwData::Array::sptr cellDataOffsetsSrc = ::fwData::Array::dynamicCast((*meshArrays)["cellDataOffsets"]);
+                ::fwData::Array::sptr cellDataOffsets = pMesh->getCellDataOffsetsArray();
+                cellDataOffsets->swap(cellDataOffsetsSrc);
 
                 if(meshArrays->find("pointColors")!=meshArrays->end())
                 {
-                    pMesh->setPointColorsArray(::fwData::Array::dynamicCast((*meshArrays)["pointColors"]));
+                    ::fwData::Array::sptr pointColors = pMesh->getPointColorsArray();
+                    ::fwData::Array::sptr pointColorsSrc = ::fwData::Array::dynamicCast((*meshArrays)["pointColors"]);
+                    if(pointColors)
+                    {
+                        pointColors->swap(pointColorsSrc);
+                    }
+                    else
+                    {
+                        pMesh->setPointColorsArray(pointColorsSrc);
+                    }
                 }
                 if(meshArrays->find("cellColors")!=meshArrays->end())
                 {
-                    pMesh->setCellColorsArray(::fwData::Array::dynamicCast((*meshArrays)["cellColors"]));
+                    ::fwData::Array::sptr cellColors = pMesh->getCellColorsArray();
+                    ::fwData::Array::sptr cellColorsSrc = ::fwData::Array::dynamicCast((*meshArrays)["cellColors"]);
+                    if(cellColors)
+                    {
+                        cellColors->swap(cellColorsSrc);
+                    }
+                    else
+                    {
+                        pMesh->setCellColorsArray(cellColorsSrc);
+                    }
                 }
                 if(meshArrays->find("pointNormals")!=meshArrays->end())
                 {
-                    pMesh->setPointNormalsArray(::fwData::Array::dynamicCast((*meshArrays)["pointNormals"]));
+                    ::fwData::Array::sptr pointNormals = pMesh->getPointNormalsArray();
+                    ::fwData::Array::sptr pointNormalsSrc = ::fwData::Array::dynamicCast((*meshArrays)["pointNormals"]);
+                    if(pointNormals)
+                    {
+                        pointNormals->swap(pointNormalsSrc);
+                    }
+                    else
+                    {
+                        pMesh->setPointNormalsArray(pointNormalsSrc);
+                    }
                 }
                 if(meshArrays->find("cellNormals")!=meshArrays->end())
                 {
-                    pMesh->setCellNormalsArray(::fwData::Array::dynamicCast((*meshArrays)["cellNormals"]));
+                    ::fwData::Array::sptr cellNormals = pMesh->getCellNormalsArray();
+                    ::fwData::Array::sptr cellNormalsSrc = ::fwData::Array::dynamicCast((*meshArrays)["cellNormals"]);
+                    if(cellNormals)
+                    {
+                        cellNormals->swap(cellNormalsSrc);
+                    }
+                    else
+                    {
+                        pMesh->setCellNormalsArray(cellNormalsSrc);
+                    }
                 }
-                if(meshArrays->find("dataArray")!=meshArrays->end())
+                if(meshArrays->find("dataArray") != meshArrays->end())
                 {
                     ::fwData::Composite::sptr dataArrays = ::fwData::Composite::dynamicCast((*meshArrays)["dataArray"]);
                     BOOST_FOREACH(::fwData::Composite::value_type elt, *dataArrays)
                     {
-                        ::fwData::Array::sptr array = ::fwData::Array::dynamicCast(elt.second);
-                        pMesh->addDataArray(elt.first, array);
+                        ::fwData::Array::sptr array = pMesh->getDataArray(elt.first);
+                        ::fwData::Array::sptr arraySrc = ::fwData::Array::dynamicCast(elt.second);
+                        if(array)
+                        {
+                            array->swap(arraySrc);
+                        }
+                        else
+                        {
+                            pMesh->addDataArray(elt.first, array);
+                        }
                     }
                 }
             }

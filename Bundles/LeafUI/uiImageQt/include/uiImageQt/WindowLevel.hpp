@@ -14,6 +14,8 @@
 #include <fwData/Integer.hpp>
 #include <gui/editor/IEditor.hpp>
 
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
 #include "uiImageQt/config.hpp"
 
 class QAction;
@@ -39,7 +41,7 @@ namespace uiImage
  * This is represented by
  *  - two sliders to modify the min, max value of windowing
  */
-class UIIMAGEQT_CLASS_API WindowLevel : public QObject, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API WindowLevel : public QObject, public ::fwComEd::helper::MedicalImageAdaptor, public ::gui::editor::IEditor
 {
     Q_OBJECT
 
@@ -83,13 +85,14 @@ protected:
      * Example of configuration
      * @verbatim
          <service uid="windowLevel" implementation="::uiImage::WindowLevel" type="::gui::editor::IEditor" autoComChannel="yes">
-             <config autoWindowing="yes" tfSelection="greyLevelTF" />
+             <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection" useImageGreyLevelTF="yes" />
          </service>
        @endverbatim
      * With :
      *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
      *  intensity when this service receive BUFFER event
      *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use default selection field.
+     *  - \b useImageGreyLevelTF : if 'yes' and if tfSelection is configured, then we use the grey level tf of image
      */
     virtual void configuring() throw(fwTools::Failed);
 
@@ -99,7 +102,7 @@ protected:
     virtual void setEnabled(bool enable);
 
 
-protected slots :
+protected Q_SLOTS:
 
     void onTextEditingFinished();
     void onToggleTF(bool squareTF);
@@ -109,23 +112,28 @@ protected slots :
     void onDynamicRangeSelectionChanged(QAction *action);
 
 protected:
-    typedef std::pair< ::fwData::Integer::ValueType, ::fwData::Integer::ValueType > WindowLevelMinMaxType;
+    typedef ::fwData::TransferFunction::TFValuePairType WindowLevelMinMaxType;
 
-    int toWindowLevel(double _val);
-    double fromWindowLevel(int _val);
+    double toWindowLevel(double _val);
+    double fromWindowLevel(double _val);
 
     WindowLevelMinMaxType getImageWindowMinMax();
 
-    void onImageWindowLevelChanged(int _imageMin, int _imageMax);
-    void notifyWindowLevel(int _imageMin, int _imageMax);
+    void onImageWindowLevelChanged(double _imageMin, double _imageMax);
+    void notifyWindowLevel(double _imageMin, double _imageMax);
 
-    void updateWidgetMinMax(int _imageMin, int _imageMax);
-    void updateImageWindowLevel(int _imageMin, int _imageMax);
-    void updateTextWindowLevel(int _imageMin, int _imageMax);
+    void updateWidgetMinMax(double _imageMin, double _imageMax);
+    void updateImageWindowLevel(double _imageMin, double _imageMax);
+    void updateTextWindowLevel(double _imageMin, double _imageMax);
 
     void setWidgetDynamicRange(double min, double max);
-    bool getWidgetIntValue(QLineEdit *widget, int &val);
-    bool checkMinMax(int &min, int &max);
+    bool getWidgetDoubleValue(QLineEdit *widget, double &val);
+
+    /// Returns the current grey level tf of image
+    ::fwData::TransferFunction::sptr getImageGreyLevelTF();
+
+    /// Swap current tf and notify other services
+    void swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF );
 
 private:
 
@@ -141,14 +149,15 @@ private:
 
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;
-    int m_imageMin;
-    int m_imageMax;
-    int m_notifiedImageMin;
-    int m_notifiedImageMax;
+    double m_imageMin;
+    double m_imageMax;
+    double m_notifiedImageMin;
+    double m_notifiedImageMax;
     bool m_isNotifying;
     bool m_autoWindowing;
+    bool m_useImageGreyLevelTF;
 
-    /// Identifier of the field containing the specific selection of TransfertFunction
+    /// Identifier of the field containing the specific selection of TransferFunction
     /// if m_tfSelection is empty => use default TF selection
     std::string m_tfSelection;
 

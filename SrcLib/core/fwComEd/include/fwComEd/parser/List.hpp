@@ -39,12 +39,12 @@ public :
     /**
      * @brief   Constructor : does nothing.
      */
-    FWCOMED_API List( ) {};
+    List( ) {};
 
     /**
      * @brief   Destructor : does nothing.
      */
-    FWCOMED_API virtual ~List() {};
+    virtual ~List() {};
 
     FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
 

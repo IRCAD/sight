@@ -23,7 +23,7 @@
 
 #include <fwComEd/fieldHelper/AnonymiseImage.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/BackupHelper.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -84,29 +84,11 @@ void ExportPatient::updating( ) throw(::fwTools::Failed)
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
     SLM_ASSERT("pPatientDB not instanced", pPatientDB);
 
-    if (pPatientDB->getPatientSize() > 0)
+    if (pPatientDB->getNumberOfPatients() > 0)
     {
-        if(pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId))
+        ::fwData::Patient::sptr patient = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pPatientDB);
+        if(patient)
         {
-            // Get Selection
-            ::fwTools::Field::sptr pDataInfo = pPatientDB->getField( fwComEd::Dictionary::m_imageSelectedId );
-
-            /*::fwData::Object * const vSelection = mySpecificMsg->m_modifiedObject;*/
-            ::fwData::Integer::sptr myIntPat = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(0) );
-            ::fwData::Integer::sptr myIntStu = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(1) );
-            ::fwData::Integer::sptr myIntAcq = ::boost::dynamic_pointer_cast< ::fwData::Integer > ( pDataInfo->children().at(2) );
-
-            // Print the selection (debug)
-            OSLM_DEBUG( "myIntPat->value : " << myIntPat->value() );
-            OSLM_DEBUG( "myIntStu->value : " << myIntStu->value() );
-            OSLM_DEBUG( "myIntAcq->value : " << myIntAcq->value() );
-
-            // Retrieve image selected in db
-
-            // Patient selection
-            ::fwData::PatientDB::PatientIterator patientIter = pPatientDB->getPatients().first;
-            patientIter += myIntPat->value();
-
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Patient anonymisation");
             messageBox.setMessage( "Do you want anonymise patient data ?" );
@@ -121,13 +103,13 @@ void ExportPatient::updating( ) throw(::fwTools::Failed)
             ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( m_ioSelectorSrvConfig , "::uiIO::editor::IOSelectorService" ) ;
             SLM_ASSERT("Sorry, there is not service configuration " << m_ioSelectorSrvConfig << " for ::uiIO::editor::IOSelectorService", ioCfg ) ;
 
+            ::gui::editor::IDialogEditor::sptr pIOSelectorSrv;
             if ( answer == ::fwGui::dialog::IMessageDialog::YES )
             {
-                ::fwData::Patient::sptr pAnonymisedPatient = ::fwComEd::fieldHelper::AnonymiseImage::createAnonymisedPatient((*patientIter));
+                ::fwData::Patient::sptr pAnonymisedPatient = ::fwComEd::fieldHelper::AnonymiseImage::createAnonymisedPatient(patient);
 
                 // Init and execute the service
-                ::gui::editor::IDialogEditor::sptr pIOSelectorSrv =
-                        ::fwServices::add< ::gui::editor::IDialogEditor >( pAnonymisedPatient, "::uiIO::editor::IOSelectorService", "IOSelectorServiceWriter" );
+                pIOSelectorSrv = ::fwServices::add< ::gui::editor::IDialogEditor >( pAnonymisedPatient, "::uiIO::editor::IOSelectorService", "IOSelectorServiceWriter" );
                 pIOSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) ) ;
                 pIOSelectorSrv->configure() ;
                 pIOSelectorSrv->start();
@@ -138,8 +120,7 @@ void ExportPatient::updating( ) throw(::fwTools::Failed)
             else if ( answer == ::fwGui::dialog::IMessageDialog::NO )
             {
                 // Init and execute the service
-                ::gui::editor::IDialogEditor::sptr pIOSelectorSrv =
-                        ::fwServices::add< ::gui::editor::IDialogEditor >( (*patientIter), "::uiIO::editor::IOSelectorService", "IOSelectorServiceWriter" );
+                pIOSelectorSrv = ::fwServices::add< ::gui::editor::IDialogEditor >( patient, "::uiIO::editor::IOSelectorService", "IOSelectorServiceWriter" );
                 pIOSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) ) ;
                 pIOSelectorSrv->configure() ;
                 pIOSelectorSrv->start();

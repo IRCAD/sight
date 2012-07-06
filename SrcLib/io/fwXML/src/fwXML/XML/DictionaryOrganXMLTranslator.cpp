@@ -30,7 +30,7 @@ DictionaryOrganXMLTranslator::~DictionaryOrganXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr DictionaryOrganXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr DictionaryOrganXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::DictionaryOrgan::sptr dicoOrgan = ::fwData::DictionaryOrgan::dynamicCast(obj);
     SLM_ASSERT("DictionaryOrgan not instanced", dicoOrgan);
@@ -111,7 +111,7 @@ xmlNodePtr DictionaryOrganXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj
 
 //------------------------------------------------------------------------------
 
-void DictionaryOrganXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void DictionaryOrganXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT( "XML node not valid", XMLTH::check< ::fwData::DictionaryOrgan >(toUpdate, source) );
     ::fwData::DictionaryOrgan::sptr dicoOrgan = ::fwData::DictionaryOrgan::dynamicCast(toUpdate);

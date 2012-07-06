@@ -15,7 +15,9 @@
         <xsd:element name="WindowCenter"     type="xsd:float"/>
         <xsd:element name= "WindowWidth"     type="xsd:float"/>
         <xsd:element name="Composite"/>
-        <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="Attributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="DynamicAttributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="class" type="xsd:string"/>

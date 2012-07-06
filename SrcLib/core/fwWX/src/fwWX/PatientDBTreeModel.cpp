@@ -4,14 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "wx/wxprec.h"
+#include <boost/foreach.hpp>
+
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <wx/version.h>
@@ -23,8 +25,9 @@
 
 #if wxCHECK_VERSION(2, 9, 0)
 
+#include <wx/dataview.h>
 #include <fwTools/dateAndTime.hpp>
-#include "wx/dataview.h"
+
 #include "fwWX/PatientDBTreeModel.hpp"
 #include "fwWX/convert.hpp"
 
@@ -98,13 +101,13 @@ wxVariant fwAcqNode::getCell(unsigned int _col)
     }
 
     ::fwComEd::fieldHelper::MedicalImageHelpers::checkComment(getAcq().lock()->getImage());
-    if ( ! getAcq().lock()->getImage()->getFieldSize( ::fwComEd::Dictionary::m_imageLabelId) )
+    if ( ! getAcq().lock()->getImage()->getField( ::fwComEd::Dictionary::m_imageLabelId) )
     {
         fwPatientNode *patientNode =  static_cast< fwPatientNode * >(GetParent());
         ::fwComEd::fieldHelper::MedicalImageHelpers::setImageLabel(patientNode->getPatient().lock(), getAcq().lock()->getImage());
     }
-    std::string comment = getAcq().lock()->getImage()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
-    comment += " : " + getAcq().lock()->getImage()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
+    std::string comment = getAcq().lock()->getImage()->getField< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
+    comment += " : " + getAcq().lock()->getImage()->getField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
 
     switch (_col)
     {
@@ -173,74 +176,42 @@ PatientDBTreeModel::PatientDBTreeModel(::fwData::PatientDB::wptr _pdb)
 
 // ----------------------------------------------------------------------------
 
-void PatientDBTreeModel::setPatientDB(::fwData::PatientDB::wptr _pdb)
+void PatientDBTreeModel::setPatientDB(::fwData::PatientDB::sptr pdb)
 {
-//  wxDataViewItem itemRoot( (void*) m_root.get() );
-//  ItemChanged( itemRoot );
-
-//  if (m_root)
-//      delete m_root;
-
-
-    //m_root = new fwPatientDBNode( NULL, _pdb );
-    //ItemAdded( GetParent(m_root), m_root );
-
-//  size_t count = m_root->GetChildren().GetCount();
-//  OSLM_TRACE("setPatientDB RootChildren count: " << count);
-//  for (size_t i = 0; i < count; i++)
-
-//  while (m_root->GetChildren().GetCount() > 0)
-//  {
-//      fwDataNode *child = m_root->GetChildren()[0];
-//      Delete(child);
-//      ItemDeleted(itemRoot, child);
-//  }
-    m_root = ::boost::shared_ptr< fwPatientDBNode >(new fwPatientDBNode( NULL, _pdb ));
+    m_root = ::boost::shared_ptr< fwPatientDBNode >(new fwPatientDBNode( NULL, pdb ));
     Cleared ();
 
-    ::fwData::PatientDB::PatientIterator patientBegin = _pdb.lock()->getPatients().first;
-    ::fwData::PatientDB::PatientIterator patientEnd     = _pdb.lock()->getPatients().second;
-    ::fwData::PatientDB::PatientIterator patient        = patientBegin;
-
-    while ( patient != patientEnd )
+    BOOST_FOREACH(::fwData::Patient::sptr patient, pdb->getPatients() )
     {
-        AddPatient(*patient);
-        ++patient;
+        this->AddPatient(patient);
     }
-//  wxDataViewItem child( (void*) m_root.get() );
-//  ItemAdded( NULL, child );
-    //Cleared ();
 }
 
 // ----------------------------------------------------------------------------
 
-void PatientDBTreeModel::AddPatient( ::fwData::Patient::wptr _patient )
+void PatientDBTreeModel::AddPatient( ::fwData::Patient::sptr _patient )
 {
     int indexP = m_root->GetChildren().GetCount();
     fwPatientNode *patient_node = new fwPatientNode( m_root.get(), _patient, indexP );
-    ::fwData::Patient::StudyIterator studyBegin = _patient.lock()->getStudies().first;
-    ::fwData::Patient::StudyIterator studyEnd = _patient.lock()->getStudies().second;
-    ::fwData::Patient::StudyIterator study = studyBegin;
+//    ::fwData::Patient::StudyIterator studyBegin = _patient.lock()->getStudies().first;
+//    ::fwData::Patient::StudyIterator studyEnd = _patient.lock()->getStudies().second;
+//    ::fwData::Patient::StudyIterator study = studyBegin;
 
-    while ( study != studyEnd )
+    int indexS = 0;
+    int indexA = 0;
+    BOOST_FOREACH(::fwData::Study::sptr study, _patient->getStudies() )
     {
-        int indexS = study - studyBegin;
-
-        ::fwData::Study::AcquisitionIterator acquisitionBegin = (*study)->getAcquisitions().first;
-        ::fwData::Study::AcquisitionIterator acquisitionEnd = (*study)->getAcquisitions().second;
-        ::fwData::Study::AcquisitionIterator acquisition = acquisitionBegin;
-
-        while ( acquisition != acquisitionEnd )
+        BOOST_FOREACH(::fwData::Acquisition::sptr acquisition, study->getAcquisitions() )
         {
-            int indexA = acquisition - acquisitionBegin;
-            fwAcqNode *acq_node = new fwAcqNode( patient_node, *study, *acquisition, indexP, indexS, indexA );
+            fwAcqNode *acq_node = new fwAcqNode( patient_node, study, acquisition, indexP, indexS, indexA );
             patient_node->Append( acq_node );
 
-            ++acquisition;
+            ++indexA;
         }
-        ++study;
+        ++indexS;
         // notify control
     }
+
     m_root->Append( patient_node );
     // notify control
 #ifndef MULTI_ROOT

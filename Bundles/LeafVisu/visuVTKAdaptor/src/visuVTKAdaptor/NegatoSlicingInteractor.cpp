@@ -9,7 +9,7 @@
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
@@ -19,6 +19,7 @@
 #include <fwServices/Factory.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkCellPicker.h>
@@ -29,11 +30,10 @@
 #include <vtkAssemblyNode.h>
 #include <vtkCommand.h>
 
+#include <fwRenderVTK/vtk/Helpers.hpp>
+#include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 
-#include "fwRenderVTK/vtk/Helpers.hpp"
-#include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
 
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ;
@@ -298,7 +298,6 @@ void NegatoSlicingInteractor::doUpdate() throw(fwTools::Failed)
 
 void NegatoSlicingInteractor::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
 }
@@ -338,8 +337,8 @@ void NegatoSlicingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) thro
         ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
         ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
 
-        int fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] )->value();
-        int toSliceType =   ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] )->value();
+        int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
+        int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
         if( toSliceType == static_cast<int>(m_orientation) )
         {
@@ -387,7 +386,7 @@ void NegatoSlicingInteractor::stopSlicing( )
     ::fwData::Object::NewSptr dataInfo;
     ::fwData::String::NewSptr sliceMode;
     sliceMode->value() = "STOP_SLICING";
-    dataInfo->setFieldSingleElement("SLICE_MODE", sliceMode);
+    dataInfo->setField("SLICE_MODE", sliceMode);
     ::fwComEd::ImageMsg::NewSptr msg;
     msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
@@ -426,7 +425,7 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
         ::fwData::Object::NewSptr dataInfo;
         ::fwData::String::NewSptr sliceMode;
         sliceMode->value() = "UPDATE_SLICING";
-        dataInfo->setFieldSingleElement("SLICE_MODE", sliceMode);
+        dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;
@@ -467,7 +466,7 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
         ::fwData::Object::NewSptr dataInfo;
         ::fwData::String::NewSptr sliceMode;
         sliceMode->value() = "STOP_SLICING";
-        dataInfo->setFieldSingleElement("SLICE_MODE", sliceMode);
+        dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
         ::fwComEd::ImageMsg::NewSptr msg;

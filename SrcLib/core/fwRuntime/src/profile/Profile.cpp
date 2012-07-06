@@ -183,10 +183,14 @@ char** Profile::getRawParams()
     // for each string, allocate memory in the character array and copy
     for (unsigned long i=0; i<m_params.size(); i++)
     {
-        int paramSize = m_params[i].size();
+        size_t paramSize = m_params[i].size();
         rawParams[i] = new char[paramSize+1];
+#ifndef _WIN32
         strncpy(rawParams[i], m_params[i].c_str(), paramSize);
         rawParams[i][paramSize] = '\0';
+#else
+        strncpy_s(rawParams[i], paramSize+1, m_params[i].c_str(), paramSize);
+#endif
     }
     return rawParams;
 }

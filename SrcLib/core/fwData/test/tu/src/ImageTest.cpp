@@ -18,6 +18,9 @@
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+#include <fwComEd/helper/Array.hpp>
+
 #include "ImageTest.hpp"
 
 
@@ -214,6 +217,8 @@ void ImageTest::testPixelType()
 void ImageTest::testSetGetPixel()
 {
     ::fwData::Image::NewSptr img;
+    ::fwComEd::helper::Image imgHelper(img);
+
     const ::boost::uint8_t DIMENSION = 3 ;
     ::fwTools::Type TYPE = ::fwTools::Type::create("int16")  ;
     ::fwData::Image::SizeType VECTORSIZE(DIMENSION)  ;
@@ -224,11 +229,12 @@ void ImageTest::testSetGetPixel()
     img->allocate(VECTORSIZE, TYPE);
 
     ::fwData::Array::sptr array = img->getDataArray();
+    ::fwComEd::helper::Array arrayHelper(array);
 
     // test 1 : use getPixelBuffer
     short count = 0;
-    short *iter = array->begin<short>();
-    for (; iter != array->end<short>() ; ++iter)
+    short *iter = arrayHelper.begin<short>();
+    for (; iter != arrayHelper.end<short>() ; ++iter)
     {
         *iter = count++;
     }
@@ -241,14 +247,14 @@ void ImageTest::testSetGetPixel()
             {
                 short val = static_cast<short>(x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1]);
                 ::fwData::Image::IndexType index = val;
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(img->getPixelBuffer(x,y,z)));
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(img->getPixelBuffer(index)));
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(::fwData::Image::getPixelBuffer(reinterpret_cast< ::fwData::Image::BufferType* >(img->getBuffer()), index, img->getType().sizeOf())));
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(img->getPixelBufferCopy(index).get()));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(x,y,z)));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
+                ::fwData::Image::BufferType* buffer = reinterpret_cast< ::fwData::Image::BufferType* >(imgHelper.getBuffer());
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
 
                 std::stringstream ss;
                 ss << val;
-                CPPUNIT_ASSERT_EQUAL( ss.str(), img->getPixelAsString(x,y,z));
+                CPPUNIT_ASSERT_EQUAL( ss.str(), imgHelper.getPixelAsString(x,y,z));
             }
         }
     }
@@ -262,23 +268,14 @@ void ImageTest::testSetGetPixel()
             {
                 ::fwData::Image::IndexType index = x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1];
                 short val = static_cast<short>(index * 2);
-                if(x%2 == 0) // to test different setters
-                {
-                    img->setPixelBuffer(index, reinterpret_cast< ::fwData::Image::BufferType* >(&val));
-                }
-                else
-                {
-                    ::fwData::Image::setPixelBuffer(reinterpret_cast< ::fwData::Image::BufferType* >(img->getBuffer()),
-                            reinterpret_cast< ::fwData::Image::BufferType* >(&val),
-                            index, img->getType().sizeOf());
-                }
+                imgHelper.setPixelBuffer(index, reinterpret_cast< ::fwData::Image::BufferType* >(&val));
             }
         }
     }
 
     count = 0;
-    iter = array->begin<short>();
-    for (; iter != array->end<short>() ; ++iter)
+    iter = arrayHelper.begin<short>();
+    for (; iter != arrayHelper.end<short>() ; ++iter)
     {
         CPPUNIT_ASSERT_EQUAL(static_cast<short>(count++ *2), *iter);
     }

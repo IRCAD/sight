@@ -62,7 +62,7 @@ void ArrayFileFormatService::save()
     ::fwData::Array::sptr array = this->getObject< ::fwData::Array >() ;
     SLM_ASSERT("array not instanced", array);
 
-    if (array->getBuffer() )
+    if (!array->empty() )
     {
         m_writer->setObject(array);
         this->extension() = m_writer->extension();

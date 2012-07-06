@@ -61,13 +61,13 @@ bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _ve
 bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex, const fwVec3d &_P)
 {
     const unsigned int X=0, Y=1, Z=2;
-    const unsigned int ElementNbr  = _vertexIndex.size();
+    const size_t ElementNbr  = _vertexIndex.size();
     if ( ElementNbr <= 0 )
         return false;
 
     // on regarde tous les triangles du maillage
     unsigned int IntersectionNbr = 0;
-    for ( unsigned int i = 0 ; i < ElementNbr ; ++i )
+    for ( size_t i = 0 ; i < ElementNbr ; ++i )
     {
         //recuperation des trois sommets du triangle
         const fwVec3d P1 = {{_vertex[ _vertexIndex[i][0] ][0], _vertex[ _vertexIndex[i][0] ][1], _vertex[ _vertexIndex[i][0] ][2]}};

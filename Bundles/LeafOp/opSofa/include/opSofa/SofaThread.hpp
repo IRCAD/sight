@@ -23,13 +23,13 @@ public:
     void stop();
     bool isRunning();
 
-signals:
+Q_SIGNALS:
     /**
      * @brief Signal emitted to request the display to be refreshed
      */
     void refreshVtkRequestSignal();
 
-public slots:
+public Q_SLOTS:
     void refreshVtk();
 
 private:

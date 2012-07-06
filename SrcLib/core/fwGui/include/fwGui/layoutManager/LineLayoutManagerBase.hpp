@@ -113,11 +113,11 @@ public:
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;
 
-    FWGUI_API Orientation getOrientation(){ return m_orientation;};
+    Orientation getOrientation(){ return m_orientation;};
 
 protected:
 
-    FWGUI_API std::list< ViewInfo> getViewsInfo(){ return m_views;};
+    std::list< ViewInfo> getViewsInfo(){ return m_views;};
 
 private:
 

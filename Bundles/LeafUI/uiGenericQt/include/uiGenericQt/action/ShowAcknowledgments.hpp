@@ -62,7 +62,7 @@ protected:
 
     UIGENERICQT_API void info(std::ostream &_sstream ) ;
 
-protected slots:
+protected Q_SLOTS:
 
     void onUrlClicked(const QUrl & url );
 

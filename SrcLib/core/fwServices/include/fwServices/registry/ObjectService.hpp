@@ -86,7 +86,7 @@ public:
      * It also updates IService::m_associatedObject of service to point to obj
      * removal at obj destruction.
      */
-    FWSERVICES_API static void registerService(  ::fwTools::Object::sptr obj, fwServices::IService::sptr service);
+    FWSERVICES_API static void registerService(  ::fwData::Object::sptr obj, fwServices::IService::sptr service);
 
     //@}
 
@@ -129,12 +129,12 @@ public:
      * @brief Return a container with all services of type SERVICE associated to obj in m_container
      */
     template<class SERVICE>
-    static std::vector< SPTR(SERVICE) > getServices(::fwTools::Object::sptr obj) ;
+    static std::vector< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj) ;
 
     /**
      * @brief Return a container of all services of type serviceType registered in the system (i.e. attached to the different objects of the system)
      * @note Should be optimized
-     * @note Invoke getServices( ::fwTools::Object::sptr , std::string ) for each registered object
+     * @note Invoke getServices( ::fwData::Object::sptr , std::string ) for each registered object
      * @author IRCAD (Research and Development Team).
      */
     FWSERVICES_API static std::vector< ::fwServices::IService::sptr > getServices( std::string serviceType ) ;
@@ -143,25 +143,25 @@ public:
      * @brief Return a container of services of type serviceType which are attached to obj
      * @author IRCAD (Research and Development Team).
      */
-    FWSERVICES_API static std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr obj , std::string serviceType ) ;
+    FWSERVICES_API static std::vector< ::fwServices::IService::sptr > getServices( ::fwData::Object::sptr obj , std::string serviceType ) ;
 
     /**
      * @brief return a vector containing all services associated with the object _obj
      * @author IRCAD (Research and Development Team).
      */
-    FWSERVICES_API static std::vector< ::fwServices::IService::sptr > getServices( ::fwTools::Object::sptr _obj );
+    FWSERVICES_API static std::vector< ::fwServices::IService::sptr > getServices( ::fwData::Object::sptr _obj );
 
     /**
      * @brief Return a container with all objects associated with a service of type SERVICE in m_container
      */
      template<class SERVICE>
-     static std::vector<  ::fwTools::Object::sptr > getObjects();
+     static std::vector<  ::fwData::Object::sptr > getObjects();
 
 
     /**
      * @brief Return a container with all objects registered in m_container
      */
-     FWSERVICES_API static std::vector<  ::fwTools::Object::sptr > getObjects();
+     FWSERVICES_API static std::vector<  ::fwData::Object::sptr > getObjects();
 
      /**
      * @brief Return a reference on m_container
@@ -179,7 +179,7 @@ public:
       * @brief return true is obj has at least one service of type srvType
       * @author IRCAD (Research and Development Team).
       */
-     FWSERVICES_API static bool has( ::fwTools::Object::sptr obj , const std::string & srvType);
+     FWSERVICES_API static bool has( ::fwData::Object::sptr obj , const std::string & srvType);
 
      /**
       * @brief return true if key is still present in OSR
@@ -199,7 +199,7 @@ public:
      * @brief Move service (_service) from object objSrc to object objDst in the m_container
      * @author  IRCAD (Research and Development Team).
      */
-    FWSERVICES_API static void swapService( fwTools::Object::sptr  objSrc, fwTools::Object::sptr  objDst, ::fwServices::IService::sptr _service );
+    FWSERVICES_API static void swapService( fwData::Object::sptr  objSrc, fwData::Object::sptr  objDst, ::fwServices::IService::sptr _service );
 
     //@}
 
@@ -208,7 +208,7 @@ protected :
     /**
      * @brief Object to service associations container
      * @note An object can be registered without services
-     * @warning Do not use smart pointers for fwTools::Object, otherwise they will never destroy
+     * @warning Do not use smart pointers for fwData::Object, otherwise they will never destroy
      */
     KSContainer m_container ;
 

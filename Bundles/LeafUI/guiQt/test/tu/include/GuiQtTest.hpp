@@ -13,6 +13,11 @@
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Array.hpp>
 
+namespace guiQt
+{
+namespace ut
+{
+
 /**
  * @brief Test many methods to create mesh.
  */
@@ -34,5 +39,8 @@ public:
     void testTuto02();
 
 };
+
+} //namespace ut
+} //namespace guiQt
 
 #endif //_FWDATATOOLS_TEST_TU_MESHGENERATORTEST_HPP_

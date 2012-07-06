@@ -198,8 +198,8 @@ public:
         m_root.reset();
     }
 
-    void AddPatient( ::fwData::Patient::wptr _patient );
-    void setPatientDB(::fwData::PatientDB::wptr _pdb);
+    void AddPatient( ::fwData::Patient::sptr _patient );
+    void setPatientDB(::fwData::PatientDB::sptr _pdb);
 
     void SelectNode(fwDataNode* _node);
 

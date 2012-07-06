@@ -40,7 +40,7 @@ bool arlCore::PlaneSystem::setPlaneName( unsigned int plane, const std::string &
     return true;
 }
 
-std::string arlCore::PlaneSystem::getString( void ) const   
+std::string arlCore::PlaneSystem::getString( void ) const
 {
     std::stringstream s;
     unsigned int i, j, index;
@@ -62,6 +62,7 @@ std::string arlCore::PlaneSystem::getString( void ) const
                 case STATE_CALIBRATION: s<<" C ";break;
                 case STATE_IDENTITY:    s<<" 1 ";break;
                 case STATE_COMPUTED:    s<<" = ";break;
+                default: break;
                 }
             }
         s<<"\n";
@@ -227,7 +228,7 @@ bool arlCore::PlaneSystem::getTrf( unsigned int plane1, unsigned int plane2, vnl
     const long int Date = 0, Time = 0; // FIXME
     if(plane1 != plane2)
     {
-        if(isConnected( plane1, plane2, Date, Time, true, false )) 
+        if(isConnected( plane1, plane2, Date, Time, true, false ))
         {
             if(verbose) std::cout<<"From "<<plane1<<" to "<<plane2<<"\n";
             T = m_trfTable[getIndex(plane1, plane2)];
@@ -725,8 +726,8 @@ bool arlCore::PlaneSystem::Path::pop_back( void )
 arlCore::TransformationFilter::TransformationFilter( const PlaneSystem& universe, long int duration, ARLCORE_TRF_FILTER_TYPE type ):
 m_universe(universe),
 m_duration(duration*10), //ms
-m_filterType(type),
-m_lastTime(0)
+m_lastTime(0),
+m_filterType(type)
 {}
 
 arlCore::TransformationFilter::TransformationFilter( const TransformationFilter& TF ):

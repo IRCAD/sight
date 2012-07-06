@@ -10,9 +10,12 @@
 #include <fwServices/macros.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
@@ -31,9 +34,10 @@ namespace visuVTKAdaptor
 
 ImageText::ImageText() throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( ::fwComEd::ImageMsg::WINDOWING );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSFERTFUNCTION );
+    this->installTFSelectionEventHandler(this);
+    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
 }
 
 //-----------------------------------------------------------------------------
@@ -45,10 +49,35 @@ ImageText::~ImageText() throw()
 
 void ImageText::doStart() throw(::fwTools::Failed)
 {
-    Text::doStart();
+    this->Text::doStart();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
+    this->installTFObserver( this->getSptr() );
+    this->doUpdate();
 }
+
+//-----------------------------------------------------------------------------
+
+void ImageText::doStop() throw(fwTools::Failed)
+{
+    this->removeTFObserver();
+    this->Text::doStop();
+}
+
+//-----------------------------------------------------------------------------
+
+void ImageText::configuring() throw(fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+
+    this->Text::configuring();
+
+    this->parseTFConfig( m_configuration );
+}
+
+
+//-----------------------------------------------------------------------------
 
 void ImageText::doUpdate() throw(::fwTools::Failed)
 {
@@ -57,22 +86,24 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 
     if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
+        ::fwComEd::helper::Image imageHelper(image);
         unsigned int axialIndex    = m_axialIndex->value();
         unsigned int frontalIndex  = m_frontalIndex->value();
         unsigned int sagittalIndex = m_sagittalIndex->value();
 
-        int min = m_windowMin->value();
-        int max = m_windowMax->value();
+        int min = this->getLevel() - this->getWindow()/2.0;
+        int max = this->getLevel() + this->getWindow()/2.0;
 
         double window = max - min;
         double level = min + window*0.5;
 
         ss <<  ( ::boost::format("[% 3li,% 3li]") % min % max ) << std::endl;
         ss <<  ( ::boost::format("W:% 3lg L:% 3lg") % window % level ) << std::endl;
-        ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex % image->getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
+        ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex %
+                imageHelper.getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
     }
 
-    setText(ss.str());
+    this->setText(ss.str());
 
     this->setVtkPipelineModified();
 }
@@ -83,13 +114,19 @@ void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::
 {
     // update only if new LandMarks
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
+    ::fwComEd::TransferFunctionMsg::csptr tfMsg =  ::fwComEd::TransferFunctionMsg::dynamicConstCast( msg );
+
     if ( imgMsg )
     {
         if( imgMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ))
         {
             imgMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
         }
-        doUpdate();
+        this->doUpdate();
+    }
+    else  if ( tfMsg || this->upadteTFObserver(msg, this->getSptr()))
+    {
+        this->doUpdate();
     }
 }
 
@@ -98,8 +135,11 @@ void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::
 void ImageText::doSwap() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->removeTFObserver();
     this->updateImageInfos(image);
+    this->updateTransferFunction(image, this->getSptr());
     this->doUpdate();
+    this->installTFObserver( this->getSptr() );
 }
 
 

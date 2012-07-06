@@ -104,7 +104,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      * @brief       Return the number of configurations
      * @return      Return the number of configurations
      */
-    FWRUNTIME_API unsigned int size() const;
+    FWRUNTIME_API size_t size() const;
 
 protected:
 

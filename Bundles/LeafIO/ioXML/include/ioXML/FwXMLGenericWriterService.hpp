@@ -65,7 +65,7 @@ protected:
     IOXML_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOXML_API virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOXML_API void info(std::ostream &_sstream ) ;

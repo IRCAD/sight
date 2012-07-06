@@ -31,7 +31,7 @@ namespace uiGeneric
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::ShowAcknowledgments , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::ShowAcknowledgments , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 

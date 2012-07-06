@@ -15,10 +15,10 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
 #include "fwData/Image.hpp"
-
 
 namespace fwData
 {
@@ -34,7 +34,7 @@ namespace fwData
 class FWDATA_CLASS_API Reconstruction : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwTools::Factory::New< Reconstruction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwData::Factory::New< Reconstruction >) ;
 
     fwCoreAllowSharedFromThis()
     fwDataObjectMacro();
@@ -45,43 +45,6 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Reconstruction::csptr _source );
 
-    // Image -------------------------------------------------------------------
-    /// @name Image accessor
-    /// Field identifier for image
-    static const Object::FieldID ID_IMAGE;
-
-    /**
-     * @brief Set the image associated with the mesh
-     */
-    FWDATA_API void setImage( ::fwData::Image::sptr _pImage );
-
-    /**
-     * @{
-     * @brief Get the image associated with the acquisition
-     */
-    FWDATA_API ::fwData::Image::csptr getImage() const;
-    FWDATA_API ::fwData::Image::sptr getImage();
-    //@}
-
-    // Mesh -------------------------------------------------------------------
-    /// @name Mesh accessor
-    /// Field identifier for mesh
-    static const Object::FieldID ID_MESH;
-    //@{
-    /// Get/Set triangular mesh
-    FWDATA_API void setMesh( ::fwData::Mesh::sptr _pMesh );
-    FWDATA_API ::fwData::Mesh::csptr getMesh() const;
-    FWDATA_API ::fwData::Mesh::sptr getMesh();
-    //@}
-
-    // Material -------------------------------------------------------------------
-    /// @name Material accessor
-    //@{
-    /// Get/Set material
-    FWDATA_API void setMaterial( ::fwData::Material::sptr _pMaterial );
-    FWDATA_API ::fwData::Material::csptr getMaterial() const;
-    FWDATA_API ::fwData::Material::sptr getMaterial();
-    //@}
 
     // Generator result---------------------------------------------------------
     fwGettersSettersDocMacro(IsVisible, bIsVisible, bool, the visibility of the reconstruction (true if visible));
@@ -116,22 +79,26 @@ public:
 
     fwGettersSettersDocMacro(DbID, i32DbID, ::boost::int32_t, the database indentifier);
 
-    /*!
-     * @brief Return true if the reconstruction is closed.
-     * The result is computed if m_bIsClosed is undefined
-     */
-    FWDATA_API bool getIsClosed();
-
-    /*!
-     * @brief Return true if the reconstruction is closed.
-     * The result is computed for each call.
-     */
-    static FWDATA_API bool isClosed(Reconstruction::csptr);
-
     //! Get/Set if the reconstruction is closed
     FWDATA_API ::boost::logic::tribool& getRefIsClosed();
     FWDATA_API const ::boost::logic::tribool& getCRefIsClosed() const;
     FWDATA_API void setIsClosed(::boost::logic::tribool isClosed);
+
+
+    /**
+     * @brief Get/Set the image associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Image, ::fwData::Image::sptr);
+
+    /**
+     * @brief Get/Set the mesh associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Mesh, ::fwData::Mesh::sptr);
+
+    /**
+     * @brief Get/Set the material associated with the acquisition
+     */
+    fwDataGetSetSptrMacro(Material, ::fwData::Material::sptr);
 
 protected :
 
@@ -143,8 +110,6 @@ protected :
     //! true if this reconstruction is visible
     bool m_bIsVisible;
 
-    //! Material of reconstruction
-    ::fwData::Material::sptr m_pMaterial;
 
     //! Reconstruction format. eg : TRIAN, TRIAN_GPG
     std::string m_sReconstructionFormat;
@@ -199,10 +164,17 @@ protected :
     //! Reconstruction path
     ::boost::filesystem::path m_fsPath;
 
-    //! Database indentifier
+    //! Database identifier
     ::boost::int32_t  m_i32DbID;
 
     //@}
+
+
+    //! Material of reconstruction
+    ::fwData::Material::sptr m_attrMaterial;
+
+    ::fwData::Image::sptr m_attrImage;
+    ::fwData::Mesh::sptr m_attrMesh;
 
 };
 

@@ -13,6 +13,8 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include "fwDataIO/writer/GzBufferImageWriter.hpp"
 
 
@@ -57,10 +59,12 @@ void GzBufferImageWriter::write()
         throw std::ios_base::failure(str);
     }
 
+    ::fwComEd::helper::Image imageHelper(image);
+
     // file is OK : process now
     size_t imageSizeInBytes = image->getSizeInBytes();
 
-    char *ptr = static_cast<char*>(image->getBuffer());
+    char *ptr = static_cast<char*>(imageHelper.getBuffer());
     size_t writtenBytes = 0;
 
     int uncompressedbyteswrited;

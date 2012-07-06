@@ -29,7 +29,7 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Acquisition() throw();
 
-    VISUVTKADAPTOR_API void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id){ m_clippingPlanes = id ; }
+    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id){ m_clippingPlanes = id ; }
 
 protected:
 

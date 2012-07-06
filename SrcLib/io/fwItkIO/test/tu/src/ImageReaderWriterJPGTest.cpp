@@ -25,7 +25,12 @@
 #include "ImageReaderWriterJPGTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ImageReaderWriterJPGTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageReaderWriterJPGTest );
+
+namespace fwItkIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -96,12 +101,15 @@ void ImageReaderWriterJPGTest::testPatientDBReader()
     myReader->setFolder(pathJPGDir);
     CPPUNIT_ASSERT_NO_THROW(myReader->read());
 
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::boost::uint32_t >(3),patientDB->getPatientSize());
-    ::fwData::Image::sptr image = (*(*(*patientDB->getPatients().first)->getStudies().first)->getAcquisitions().first)->getImage();
-    CPPUNIT_ASSERT_EQUAL(static_cast< size_t >(3),image->getNumberOfDimensions());
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(512),image->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(256),image->getSize()[1]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(1),image->getSize()[2]);
+    CPPUNIT_ASSERT_EQUAL(size_t(3), patientDB->getNumberOfPatients());
+    ::fwData::Image::sptr image = patientDB->getPatients().front()->getStudies().front()->getAcquisitions().front()->getImage();
+    CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(512), image->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(256), image->getSize()[1]);
+    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(1), image->getSize()[2]);
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwItkIO

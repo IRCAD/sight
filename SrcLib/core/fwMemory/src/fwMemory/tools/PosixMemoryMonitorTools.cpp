@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifdef linux
+
 #include <assert.h>
 #include <iomanip>
 #include <iostream>
@@ -16,10 +18,8 @@
 
 #include <fwCore/base.hpp>
 
-#include "fwMemory/MemoryMonitor.hpp"
 #include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
 
-#ifdef linux
 
 #include <cstdlib>
 #include <cstdio>
@@ -113,6 +113,8 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
                 << std::setw(5) << free
                 << std::setw(5) << computedFree -free
                 << " )" );
+    (void)computedFree;         // Fixes "unused variable" warnings
+    (void)free;
 }
 
 //-----------------------------------------------------------------------------
@@ -271,6 +273,7 @@ void PosixMemoryMonitorTools::printStatus( Status & stat )
     OSLM_DEBUG("VmExe = " << stat.VmExe / oToMo << " Mo" );
     OSLM_DEBUG("VmLib = " << stat.VmLib / oToMo << " Mo" );
     OSLM_DEBUG("VmPTE = " << stat.VmPTE / oToMo << " Mo" );
+    (void)oToMo;                // Fixes "unused variable" warnings
 }
 
 //------------------------------------------------------------------------------

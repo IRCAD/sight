@@ -17,6 +17,8 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/fromIsoExtendedString.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "gdcmIO/reader/DicomImageReader.hpp"
 #include "gdcmIO/helper/GdcmHelper.hpp"
 
@@ -279,7 +281,7 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img ) throw(::fwTools::F
     if ( !windowCenter.empty() )
     {
         ::boost::split( splitedWindows,       windowCenter,      ::boost::is_any_of( "\\" ) );  // Get each windowCenter
-        img->setCRefWindowCenter( atof( splitedWindows[0].c_str() ) );                          // Assign first one
+        img->setWindowCenter( atof( splitedWindows[0].c_str() ) );                          // Assign first one
     }
     OSLM_TRACE("Image's window center : "<<img->getWindowCenter());
 
@@ -288,7 +290,7 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img ) throw(::fwTools::F
     if ( !windowWidth.empty() )
     {
         ::boost::split( splitedWindows,       windowWidth,      ::boost::is_any_of( "\\" ) );  // Get each windowWidth
-        img->setCRefWindowWidth( atof( splitedWindows[0].c_str() ) );                          // Assign first one
+        img->setWindowWidth( atof( splitedWindows[0].c_str() ) );                          // Assign first one
     }
     OSLM_TRACE("Image's window width : "<<img->getWindowWidth());
 
@@ -386,6 +388,9 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
     case ::gdcm::PixelFormat::FLOAT32:
         gdcmGlobalBuffer = new float[allImagesSize];
         break;
+    default:
+        // ignore
+        break;
     }
     OSLM_TRACE("Global buffer size : " << allImagesSize);
 
@@ -456,6 +461,9 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
                     destBufferImg = new float[size];
                     bufferSize = size*sizeof(float);
                     break;
+                default:
+                    // Ignore
+                    break;
                 }
                 if(!r.Rescale((char*)destBufferImg, inBuffer, size))
                 {
@@ -473,13 +481,13 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
             return;
         }
 
-         ::fwData::Image::SizeType imgSize = img->getSize();
-         imgSize[2] = this->getFileNames().size();
-         img->setSize( imgSize );
+        ::fwData::Image::SizeType imgSize = img->getSize();
+        imgSize[2] = this->getFileNames().size();
+        img->setSize( imgSize );
 
-        ::fwData::Array::NewSptr array;
-        array->setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
-        img->setDataArray( array );
+        ::fwData::Array::sptr array = img->getDataArray();
+        ::fwComEd::helper::Array helper(array);
+        helper.setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
 
         // Update gdcm::Image.
         gImg.SetNumberOfDimensions(3);
@@ -513,9 +521,9 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
                 throw ::fwTools::Failed("Image could not be rescale.");
             }
 
-           ::fwData::Array::NewSptr array;
-           array->setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
-           img->setDataArray( array );
+            ::fwData::Array::sptr array = img->getDataArray();
+            ::fwComEd::helper::Array helper(array);
+            helper.setBuffer( gdcmGlobalBuffer, true, img->getType(), img->getSize(), 1 );
         }
         else
         {

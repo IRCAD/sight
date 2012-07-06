@@ -62,7 +62,6 @@ DicomPatientWriter::~DicomPatientWriter()
 
 struct VTKDicomSaverFunctor
 {
-
     struct Parameter
     {
         ::boost::filesystem::path   m_filename;
@@ -76,18 +75,14 @@ struct VTKDicomSaverFunctor
         srand( time( NULL ) );
         int nbSerie=0;
         // Study selection
-        ::fwData::Patient::StudyIterator studyIter;
-        for(studyIter = param.m_dataPatient->getStudies().first ; studyIter != param.m_dataPatient->getStudies().second ; studyIter++)
+        BOOST_FOREACH(::fwData::Study::sptr pStudy, param.m_dataPatient->getStudies())
         {
-            ::fwData::Study::sptr pStudy = (*studyIter);
             // Acquisition selection
-            ::fwData::Study::AcquisitionIterator acquisitionIter ;
-            for(acquisitionIter = pStudy->getAcquisitions().first ; acquisitionIter != pStudy->getAcquisitions().second ; acquisitionIter++)
+            BOOST_FOREACH(::fwData::Acquisition::sptr pAcquisition, pStudy->getAcquisitions())
             {
                 nbSerie++;
                 int idSerie = int( double( rand() ) / ( double( RAND_MAX) + 1 ) * 1000000);
 
-                ::fwData::Acquisition::sptr pAcquisition = (* acquisitionIter);
                 ::fwData::Image::sptr dataImage = pAcquisition->getImage();
 
                 // Vtk Conversion
@@ -281,11 +276,11 @@ void DicomPatientWriter::write()
     saverParam.m_fwWriter =  this->getSptr();
     assert( saverParam.m_dataPatient );
     // Study selection
-    ::fwData::Patient::StudyIterator studyIter = saverParam.m_dataPatient->getStudies().first;
+    ::fwData::Study::sptr study = saverParam.m_dataPatient->getStudies().front();
     // Acquisition selection
-    ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
+    ::fwData::Acquisition::sptr acquisition = study->getAcquisitions().front();
 
-    ::fwTools::Dispatcher< fwTools::IntrinsicTypes , VTKDicomSaverFunctor >::invoke( (*acquisitionIter)->getImage()->getPixelType(), saverParam );
+    ::fwTools::Dispatcher< fwTools::IntrinsicTypes , VTKDicomSaverFunctor >::invoke( acquisition->getImage()->getPixelType(), saverParam );
 }
 
 //------------------------------------------------------------------------------

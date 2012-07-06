@@ -32,7 +32,7 @@ class FWGUIQT_CLASS_API App : public QApplication
 public:
     FWGUIQT_API App(int & argc, char ** argv);
 
-public slots :
+public Q_SLOTS :
   void aboutToQuit();
   void onExit();
 

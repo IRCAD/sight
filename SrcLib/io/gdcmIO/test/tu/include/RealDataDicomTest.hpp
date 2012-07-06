@@ -13,6 +13,11 @@
 
 #include <fwData/Image.hpp>
 
+namespace gdcmIO
+{
+namespace ut
+{
+
 class RealDataDicomTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( RealDataDicomTest );
@@ -40,5 +45,9 @@ private :
 
     void writeImage( ::fwData::Image::sptr image );
 };
+
+
+} // namespace ut
+} // namespace gdcmIO
 
 #endif // _GDCMIO_TEST_TU_REALDATADICOMTEST_HPP_

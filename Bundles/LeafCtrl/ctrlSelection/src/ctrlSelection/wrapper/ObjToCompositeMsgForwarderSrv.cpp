@@ -42,9 +42,9 @@ void ObjToCompositeMsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr mes
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
     if (compositeMsg)
     {
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getAddedFields())
+            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getAddedKeys())
             {
                 std::string key = elt.first;
                 ::fwData::Object::sptr obj = elt.second;
@@ -54,9 +54,9 @@ void ObjToCompositeMsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr mes
                 m_objComChannel[key] = comChannel;
             }
         }
-        else if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS))
+        else if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getSwappedNewFields())
+            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getNewChangedKeys())
             {
                 std::string key = elt.first;
                 ::fwData::Object::sptr obj = elt.second;
@@ -70,9 +70,9 @@ void ObjToCompositeMsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr mes
                 m_objComChannel[key] = comChannel;
             }
         }
-        else if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS))
+        else if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedFields())
+            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedKeys())
             {
                 std::string key = elt.first;
 

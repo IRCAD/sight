@@ -60,12 +60,11 @@ void ReconstructionWriter::write()
     }
     ::fwData::Acquisition::sptr pAcquisition = getConcreteObject();
 
-    ::fwData::Acquisition::ReconstructionIterator iter;
     vtkRenderer *renderer = vtkRenderer::New();
 
-    for (iter = pAcquisition->getReconstructions().first; iter != pAcquisition->getReconstructions().second; ++iter)
+    BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, pAcquisition->getReconstructions() )
     {
-        vtkActor * actor = createActor(*iter);
+        vtkActor * actor = createActor(rec);
         renderer->AddActor(actor);
         actor->Delete();
     }

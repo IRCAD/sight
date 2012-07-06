@@ -43,7 +43,7 @@ public :
     /**
      * @brief Virtual destructor.
      */
-    FWCOMMAND_API virtual ~ICommand() {};
+    virtual ~ICommand() {};
 
     /**
      * @briefRetrieves the memory footprint of the command.
@@ -67,9 +67,9 @@ public :
      */
     FWCOMMAND_API virtual const std::string getDescription( void ) const = 0;
 
-    FWCOMMAND_API void setNotifier( ::fwServices::IService::sptr serviceNotifier ) { m_serviceNotifier = serviceNotifier; }
+    void setNotifier( ::fwServices::IService::sptr serviceNotifier ) { m_serviceNotifier = serviceNotifier; }
 
-    FWCOMMAND_API ::fwServices::IService::sptr getNotifier() { return m_serviceNotifier.lock(); }
+    ::fwServices::IService::sptr getNotifier() { return m_serviceNotifier.lock(); }
 };
 
 

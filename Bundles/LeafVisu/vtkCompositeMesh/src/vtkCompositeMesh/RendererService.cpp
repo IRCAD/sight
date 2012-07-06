@@ -204,7 +204,7 @@ void RendererService::createAndAddActorToRender()
     unsigned int elementNumber=0;
 
     //Loop through the composite objects, if it's a mesh, then render it:
-    for(::fwData::Composite::Container::const_iterator it = myComposite->begin(); it != myComposite->end(); ++it)
+    for(::fwData::Composite::ContainerType::const_iterator it = myComposite->begin(); it != myComposite->end(); ++it)
     {
         OSLM_INFO("ObjectName: " << it->first);
         OSLM_INFO("ObjectPointer: " << it->second);
@@ -232,7 +232,7 @@ void RendererService::createAndAddActorToRender()
 
 
             OSLM_INFO("Mesh found: " << it->first);
-            if (myMesh->getFieldSize( "MaterialMesh" ) == 0)
+            if (!myMesh->getField( "MaterialMesh" ))
             {
                 // No Material data then default
                 if(elementNumber == 0)
@@ -251,7 +251,7 @@ void RendererService::createAndAddActorToRender()
             else
             {
                 // Material exists
-                ::fwData::Material::sptr matObjPtr = myMesh->getFieldSingleElement< ::fwData::Material >( "MaterialMesh" );
+                ::fwData::Material::sptr matObjPtr = myMesh->getField< ::fwData::Material >( "MaterialMesh" );
                 actor->GetProperty()->SetColor (matObjPtr->ambient()->red(), matObjPtr->ambient()->green(), matObjPtr->ambient()->blue());
             }
             mapper->Delete();

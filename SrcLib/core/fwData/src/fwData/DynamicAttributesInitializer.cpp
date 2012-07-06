@@ -1,5 +1,5 @@
 #include <fwCore/base.hpp>
-#include <fwTools/Factory.hpp>
+
 
 #include "fwData/DynamicAttributesInitializer.hpp"
 #include "fwData/Object.hpp"
@@ -35,6 +35,7 @@ void DynamicAttributesInitializer::init( ::fwTools::Object::sptr _obj)
 
 void DynamicAttributesInitializer::uninit( ::fwCore::LogicStamp::csptr key )
 {
+    FwCoreNotUsedMacro(key);
     //TODO
 }
 

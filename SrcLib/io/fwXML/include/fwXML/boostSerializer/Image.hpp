@@ -33,8 +33,10 @@ void save(Archive & ar, const ::fwData::Image &_image, const unsigned int versio
     ar &  ::boost::serialization::make_nvp( "Origin" , _image.getOrigin() );
     ar &  ::boost::serialization::make_nvp( "Size" , _image.getSize() );
 
-    ar &  ::boost::serialization::make_nvp( "WindowCenter" , _image.getCRefWindowCenter() );
-    ar &  ::boost::serialization::make_nvp( "WindowWidth" , _image.getCRefWindowWidth() );
+    double windowCenter = _image.getWindowCenter();
+    double windowWidth = _image.getWindowWidth();
+    ar &  ::boost::serialization::make_nvp( "WindowCenter" , windowCenter );
+    ar &  ::boost::serialization::make_nvp( "WindowWidth" , windowWidth );
 
 }
 
@@ -46,7 +48,7 @@ void load(Archive & ar, ::fwData::Image &_image, const unsigned int version)
     ::fwTools::Type type;
     ar &  ::boost::serialization::make_nvp( "PixelType" , type);
     _image.setType(type);
- 
+
     ::fwData::Image::SizeType size;
     ::fwData::Image::SpacingType spacing;
     ::fwData::Image::OriginType origin;
@@ -57,8 +59,11 @@ void load(Archive & ar, ::fwData::Image &_image, const unsigned int version)
     _image.setOrigin(origin);
     _image.setSize(size);
 
-    ar &  ::boost::serialization::make_nvp( "WindowCenter" , _image.getRefWindowCenter() );
-    ar &  ::boost::serialization::make_nvp( "WindowWidth" , _image.getRefWindowWidth() );
+    double windowCenter, windowWidth;
+    ar &  ::boost::serialization::make_nvp( "WindowCenter" , windowCenter );
+    ar &  ::boost::serialization::make_nvp( "WindowWidth" , windowWidth );
+    _image.setWindowCenter(windowCenter);
+    _image.setWindowWidth(windowWidth);
 
 }
 

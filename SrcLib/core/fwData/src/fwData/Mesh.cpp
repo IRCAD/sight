@@ -14,6 +14,7 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include "fwData/registry/macros.hpp"
 #include "fwData/Mesh.hpp"
 
 using namespace boost::assign;
@@ -25,7 +26,8 @@ namespace fwData
 #define CELL_REALLOC_STEP 1000
 #define CELLDATA_REALLOC_STEP 1000
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Mesh, ::fwData::Mesh);
+
+fwDataRegisterMacro( ::fwData::Mesh );
 
 //------------------------------------------------------------------------------
 
@@ -41,16 +43,28 @@ Mesh::Mesh()
 //------------------------------------------------------------------------------
 
 Mesh::~Mesh()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
+
 void Mesh::initArrays()
 {
-    m_points          = ::fwData::Array::New();
-    m_cellTypes       = ::fwData::Array::New();
-    m_cellData        = ::fwData::Array::New();
-    m_cellDataOffsets = ::fwData::Array::New();
+    if (!m_points)
+    {
+        m_points          = ::fwData::Array::New();
+    }
+    if (!m_cellTypes)
+    {
+        m_cellTypes       = ::fwData::Array::New();
+    }
+    if (!m_cellData)
+    {
+        m_cellData        = ::fwData::Array::New();
+    }
+    if (!m_cellDataOffsets)
+    {
+        m_cellDataOffsets = ::fwData::Array::New();
+    }
 
     m_points->setType(::fwTools::Type::create<PointValueType>());
     m_points->setNumberOfComponents(3);
@@ -65,9 +79,11 @@ void Mesh::initArrays()
     m_cellDataOffsets->setNumberOfComponents(1);
 }
 
+//------------------------------------------------------------------------------
+
 void Mesh::shallowCopy( Mesh::csptr _source )
 {
-    this->::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
 
     m_nbPoints        = _source->m_nbPoints;
     m_nbCells         = _source->m_nbCells;
@@ -90,7 +106,7 @@ void Mesh::shallowCopy( Mesh::csptr _source )
 
 void Mesh::deepCopy( Mesh::csptr _source )
 {
-    this->::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
 
     m_nbPoints      = _source->m_nbPoints;
     m_nbCells       = _source->m_nbCells;
@@ -103,31 +119,10 @@ void Mesh::deepCopy( Mesh::csptr _source )
     m_cellData->deepCopy(_source->m_cellData);
     m_cellDataOffsets->deepCopy(_source->m_cellDataOffsets);
 
-    m_pointColors.reset();
-    m_cellColors.reset();
-    m_pointNormals.reset();
-    m_cellNormals.reset();
-
-    if(_source->m_pointColors)
-    {
-        m_pointColors = ::fwData::Array::New();
-        m_pointColors->deepCopy(_source->m_pointColors);
-    }
-    if(_source->m_cellColors)
-    {
-        m_cellColors = ::fwData::Array::New();
-        m_cellColors->deepCopy(_source->m_cellColors);
-    }
-    if(_source->m_pointNormals)
-    {
-        m_pointNormals = ::fwData::Array::New();
-        m_pointNormals->deepCopy(_source->m_pointNormals);
-    }
-    if(_source->m_cellNormals)
-    {
-        m_cellNormals = ::fwData::Array::New();
-        m_cellNormals->deepCopy(_source->m_cellNormals);
-    }
+    m_pointColors  = ::fwData::Object::copy(_source->m_pointColors );
+    m_cellColors   = ::fwData::Object::copy(_source->m_cellColors  );
+    m_pointNormals = ::fwData::Object::copy(_source->m_pointNormals);
+    m_cellNormals  = ::fwData::Object::copy(_source->m_cellNormals );
 
     m_arrayMap.clear();
     BOOST_FOREACH(ArrayMapType::value_type element, _source->m_arrayMap)
@@ -136,8 +131,8 @@ void Mesh::deepCopy( Mesh::csptr _source )
     }
 
 }
-//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 
 size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::fwData::Exception)
 {
@@ -237,244 +232,6 @@ bool Mesh::adjustAllocatedMemory() throw(::fwData::Exception)
             << " != data size : " << this->getDataSizeInBytes(),
             newAllocatedSize == this->getDataSizeInBytes());
     return oldAllocatedSize != newAllocatedSize;
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::Id Mesh::insertNextPoint(const PointValueType p[3]) throw(::fwData::Exception)
-{
-    size_t allocatedPts = m_points->empty() ? 0 : m_points->getSize().at(0);
-    if( allocatedPts <= m_nbPoints )
-    {
-        m_points->resize(list_of(allocatedPts + POINT_REALLOC_STEP), true);
-    }
-
-    m_points->setItem(list_of(m_nbPoints), p);
-    return m_nbPoints++;
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::Id Mesh::insertNextPoint(PointValueType x, PointValueType y, PointValueType z) throw(::fwData::Exception)
-{
-    const PointValueType p[3] = {x,y,z};
-    return this->insertNextPoint(p);
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setPoint(Id id, const PointValueType p[3])
-{
-    m_points->setItem(list_of(id), p);
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setPoint(Id id, PointValueType x, PointValueType y, PointValueType z)
-{
-    const PointValueType p[3] = {x,y,z};
-    this->setPoint(id, p);
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setPointColor(Id id, const ColorValueType c[4])
-{
-    m_pointColors->setItem(list_of(id), c);
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setCellColor(Id id, const ColorValueType c[4])
-{
-    m_cellColors->setItem(list_of(id), c);
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setPointNormal(Id id, const NormalValueType n[3])
-{
-    m_pointNormals->setItem(list_of(id), n);
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::setCellNormal(Id id, const NormalValueType n[3])
-{
-    m_cellNormals->setItem(list_of(id), n);
-}
-
-//------------------------------------------------------------------------------
-
-
-
-
-//------------------------------------------------------------------------------
-
-Mesh::Id Mesh::insertNextCell(CellTypesEnum type, const CellValueType *cell, size_t nb) throw(::fwData::Exception)
-{
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NO_CELL'", type != NO_CELL || nb == 0);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POINT'", type != POINT || nb == 1);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'EDGE'", type != EDGE || nb == 2);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TRIANGLE'", type != TRIANGLE || nb == 3);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'QUAD'", type != QUAD || nb == 4);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'", type != POLY || nb > 4);
-
-    size_t allocatedCellTypes       = m_cellTypes->empty() ? 0 : m_cellTypes->getSize().at(0);
-    size_t allocatedCellDataOffsets = m_cellDataOffsets->empty() ? 0 : m_cellDataOffsets->getSize().at(0);
-
-    if( allocatedCellTypes <= m_nbCells )
-    {
-        m_cellTypes->resize(list_of(allocatedCellTypes + CELL_REALLOC_STEP), true);
-    }
-    if( allocatedCellDataOffsets <= m_nbCells )
-    {
-        m_cellDataOffsets->resize(list_of(allocatedCellDataOffsets + CELL_REALLOC_STEP), true);
-    }
-
-
-    size_t allocatedCellData = m_cellData->empty() ? 0 : m_cellData->getSize().at(0);
-
-    if( allocatedCellData <= m_cellsDataSize + nb )
-    {
-        m_cellData->resize(list_of(allocatedCellData + CELLDATA_REALLOC_STEP), true);
-    }
-
-
-    const CellTypes t[1] = {static_cast<CellTypes>(type)};
-    m_cellTypes->setItem(list_of(m_nbCells), t);
-
-    CellValueType *buf = reinterpret_cast<CellValueType*>(
-            m_cellData->getBufferPtr(list_of(m_cellsDataSize), 0, sizeof(CellValueType))
-            );
-    std::copy(cell, cell+nb, buf);
-
-    const CellDataOffsetType id[1] = {m_cellsDataSize};
-    m_cellDataOffsets->setItem(list_of(m_nbCells), id);
-
-    m_cellsDataSize += nb;
-
-    return m_nbCells++;
-}
-
-//------------------------------------------------------------------------------
-
-
-Mesh::Id Mesh::insertNextCell(CellValueType p) throw(::fwData::Exception)
-{
-    CellValueType point[1] = {p};
-    return insertNextCell(POINT, point, 1);
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::Id Mesh::insertNextCell(CellValueType p1, CellValueType p2) throw(::fwData::Exception)
-{
-    CellValueType p[2] = {p1, p2};
-    return insertNextCell(EDGE, p, 2);
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::Id Mesh::insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3) throw(::fwData::Exception)
-{
-    CellValueType p[3] = {p1, p2, p3};
-    return insertNextCell(TRIANGLE, p, 3);
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::Id Mesh::insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3, CellValueType p4) throw(::fwData::Exception)
-{
-    CellValueType p[4] = {p1, p2, p3, p4};
-    return insertNextCell(QUAD, p, 4);
-}
-
-//------------------------------------------------------------------------------
-
-//void Mesh::cleanCells()
-//{
-//    //TODO
-//}
-
-//------------------------------------------------------------------------------
-
-Mesh::PointsMultiArrayType Mesh::getPoints() const
-{
-    return PointsMultiArrayType(
-            static_cast<PointsMultiArrayType::element*>(m_points->getBuffer()),
-            boost::extents[m_nbPoints][3]
-            );
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::CellTypesMultiArrayType Mesh::getCellTypes() const
-{
-    return CellTypesMultiArrayType(
-            static_cast<CellTypesMultiArrayType::element *>(m_cellTypes->getBuffer()),
-            boost::extents[m_nbCells]
-            );
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::CellDataMultiArrayType Mesh::getCellData() const
-{
-    return CellDataMultiArrayType(
-            static_cast<CellDataMultiArrayType::element *>(m_cellData->getBuffer()),
-            boost::extents[m_cellsDataSize]
-            );
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::CellDataOffsetsMultiArrayType Mesh::getCellDataOffsets() const
-{
-    return CellDataOffsetsMultiArrayType(
-            static_cast<CellDataOffsetsMultiArrayType::element *>(m_cellDataOffsets->getBuffer()),
-            boost::extents[m_nbCells]
-            );
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::PointColorsMultiArrayType Mesh::getPointColors() const
-{
-    return PointColorsMultiArrayType(
-            static_cast<PointColorsMultiArrayType::element *>(m_pointColors->getBuffer()),
-            boost::extents[m_nbPoints][m_pointColors->getNumberOfComponents()]
-            );
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::CellColorsMultiArrayType Mesh::getCellColors() const
-{
-    return CellColorsMultiArrayType(
-            static_cast<CellColorsMultiArrayType::element *>(m_cellColors->getBuffer()),
-            boost::extents[m_nbCells][m_cellColors->getNumberOfComponents()]
-            );
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::PointNormalsMultiArrayType Mesh::getPointNormals() const
-{
-    return PointNormalsMultiArrayType(
-            static_cast<PointNormalsMultiArrayType::element *>(m_pointNormals->getBuffer()),
-            boost::extents[m_nbPoints][m_pointNormals->getNumberOfComponents()]
-            );
-}
-
-//------------------------------------------------------------------------------
-
-Mesh::CellNormalsMultiArrayType Mesh::getCellNormals() const
-{
-    return CellNormalsMultiArrayType(
-            static_cast<CellNormalsMultiArrayType::element *>(m_cellNormals->getBuffer()),
-            boost::extents[m_nbCells][m_cellNormals->getNumberOfComponents()]
-            );
 }
 
 //------------------------------------------------------------------------------
@@ -613,6 +370,10 @@ void Mesh::clear()
     this->clearCellNormals();
     this->clearCellColors();
 
+    m_points->clear();
+    m_cellData->clear();
+    m_cellDataOffsets->clear();
+    m_cellTypes->clear();
     this->initArrays();
 
     this->clearPoints();
@@ -765,9 +526,5 @@ void Mesh::removeDataArray(const std::string &name)
 }
 
 //------------------------------------------------------------------------------
-
-
-
-
 
 }//namespace fwData

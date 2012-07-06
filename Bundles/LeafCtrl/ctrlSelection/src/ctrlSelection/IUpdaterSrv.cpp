@@ -79,7 +79,7 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
     // Manage special action
     if ( _action == ADD_OR_SWAP )
     {
-        if ( pComposite->getRefMap().find(_compositeKey) != pComposite->getRefMap().end() )
+        if ( pComposite->find(_compositeKey) != pComposite->end() )
         {
             _action = SWAP;
         }
@@ -90,7 +90,7 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
     }
     else if(_action == REMOVE_IF_PRESENT )
     {
-        if ( pComposite->getRefMap().find(_compositeKey) != pComposite->getRefMap().end() )
+        if ( pComposite->find(_compositeKey) != pComposite->end() )
         {
             _action = REMOVE;
         }

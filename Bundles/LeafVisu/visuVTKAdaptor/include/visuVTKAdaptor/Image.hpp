@@ -7,7 +7,11 @@
 #ifndef _VISUVTKADAPTOR_IMAGE_HPP_
 #define _VISUVTKADAPTOR_IMAGE_HPP_
 
+#include <vtkSmartPointer.h>
+
 #include <fwData/Image.hpp>
+
+
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
@@ -15,7 +19,7 @@
 #include "visuVTKAdaptor/config.hpp"
 
 class vtkImageActor;
-class vtkLookupTable;
+class fwVtkWindowLevelLookupTable;
 class vtkImageMapToColors;
 class vtkImageData;
 class vtkPolyDataMapper;
@@ -37,11 +41,10 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Image() throw();
 
-    VISUVTKADAPTOR_API void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
-    VISUVTKADAPTOR_API void setVtkImageRegister(vtkObject *obj)   {m_imageRegister = obj;};
-    VISUVTKADAPTOR_API void setImageOpacity(double opacity)       {m_imageOpacity = opacity;};
-    VISUVTKADAPTOR_API void setAllowAlphaInTF(bool allow)         {m_allowAlphaInTF = allow;};
-    VISUVTKADAPTOR_API void setUseImageTF(bool use)               {m_useImageTF = use;};
+    void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
+    void setVtkImageRegister(vtkObject *obj)   {m_imageRegister = obj;};
+    void setImageOpacity(double opacity)       {m_imageOpacity = opacity;};
+    void setAllowAlphaInTF(bool allow)         {m_allowAlphaInTF = allow;};
 
 protected :
 
@@ -60,7 +63,7 @@ protected :
     void updateImage( ::fwData::Image::sptr image  );
     void updateImageOpacity();
     void updateWindowing( ::fwData::Image::sptr image );
-    void updateTransfertFunction( ::fwData::Image::sptr image );
+    void updateImageTransferFunction( ::fwData::Image::sptr image );
 
     std::string m_imageRegisterId;
     vtkObject  *m_imageRegister;
@@ -68,9 +71,8 @@ protected :
     int    m_imagePortId;
     double m_imageOpacity;
     bool   m_allowAlphaInTF;
-    bool   m_useImageTF;
 
-    vtkLookupTable *m_lut;
+    vtkSmartPointer< fwVtkWindowLevelLookupTable > m_lut;
     vtkImageMapToColors *m_map2colors;
     vtkImageData *m_imageData;
 

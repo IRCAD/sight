@@ -24,6 +24,7 @@
 
 #include <fwComEd/InteractionMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -121,8 +122,9 @@ void ImageInfo::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools:
             if(point)
             {
                 fwVec3d  pointCoord = point->getCoord();
+                ::fwComEd::helper::Image imageHelper(image);
 
-                std::string intensity = image->getPixelAsString(pointCoord[0], pointCoord[1], pointCoord[2] );;
+                std::string intensity = imageHelper.getPixelAsString(pointCoord[0], pointCoord[1], pointCoord[2] );;
                 m_valueText->setText(QString::fromStdString(intensity));
             }
         }

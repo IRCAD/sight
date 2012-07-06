@@ -76,7 +76,6 @@ void XMLPatch::PatchVersion1ToVersion2( xmlNodePtr node )
                         ::fwDataTools::MeshGenerator::generatePointNormals(meshData);
 
                         xmlNodePtr mesh = XMLTH::toXMLRecursive(meshData);
-                        Serializer().IOforExtraXML(meshData, true);
                         xmlAddChild( fieldNode, mesh);
                     }
                 }

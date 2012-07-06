@@ -52,7 +52,7 @@ namespace fwRenderVTK
 VtkRenderService::VtkRenderService() throw() :
      m_pendingRenderRequest(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS );
+    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -147,20 +147,20 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
     SLM_ASSERT( "'adaptor' required attribute missing or empty" , !adaptor.empty() );
 
-    const unsigned int compositeObjectCount = composite->getRefMap().count(objectId);
+    const unsigned int compositeObjectCount = composite->getContainer().count(objectId);
 
     OSLM_TRACE_IF(objectId << " not found in composite. If it exist, associated Adaptor will be destroyed",
                   ! (compositeObjectCount == 1 || objectId == compositeName) );
 
 
-    ::fwTools::Object::sptr object;
+    ::fwData::Object::sptr object;
     if (compositeObjectCount)
     {
-        object = ::fwTools::Object::dynamicCast(composite->getRefMap()[objectId]);
+        object = ::fwData::Object::dynamicCast(composite->getContainer()[objectId]);
     }
     else if (objectId == compositeName)
     {
-        object = ::fwTools::Object::dynamicCast(composite);
+        object = ::fwData::Object::dynamicCast(composite);
     }
 
     if ( m_sceneAdaptors.count(id) == 0 && object )
@@ -401,9 +401,9 @@ void VtkRenderService::updating( ::fwServices::ObjectMsg::csptr message ) throw(
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
 
-    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_FIELDS ) )
+    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
     {
-        std::vector< std::string > objectIds = compositeMsg->getEventModifiedFields();
+        std::vector< std::string > objectIds = compositeMsg->getModifiedKeys();
         std::vector< std::string >::iterator iter;
 
         assert ( m_sceneConfiguration );

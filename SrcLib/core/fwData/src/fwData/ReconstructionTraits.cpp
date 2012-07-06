@@ -7,11 +7,10 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwTools/Factory.hpp>
-
 #include "fwData/ReconstructionTraits.hpp"
+#include "fwData/registry/macros.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::ReconstructionTraits, ::fwData::ReconstructionTraits );
+fwDataRegisterMacro( ::fwData::ReconstructionTraits );
 
 namespace fwData
 {

@@ -10,7 +10,7 @@
 #include <libxml/tree.h>
 
 #include <fwCore/base.hpp>
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 
 #include "fwXML/config.hpp"
 
@@ -34,10 +34,10 @@ public:
     FWXML_API virtual ~XMLTranslator();
 
     /// get XML from current object
-    FWXML_API virtual xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj ) = 0;
+    FWXML_API virtual xmlNodePtr getXMLFrom( ::fwData::Object::sptr obj ) = 0;
 
     /// get Object from an XML node
-    FWXML_API virtual void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source) = 0;
+    FWXML_API virtual void updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source) = 0;
 
 };
 

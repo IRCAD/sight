@@ -11,6 +11,7 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/String.hpp>
 
 #include "CompositeTest.hpp"
 
@@ -52,7 +53,7 @@ void CompositeTest::methode1()
 
     BOOST_FOREACH( pair_type p, PAIRS)
     {
-        composite->getRefMap()[p.first] = p.second;
+        composite->getContainer()[p.first] = p.second;
     }
 
     stdmap.insert(composite->begin(), composite->end());
@@ -61,7 +62,7 @@ void CompositeTest::methode1()
 
     BOOST_FOREACH( pair_type p, *composite)
     {
-        CPPUNIT_ASSERT( composite->getRefMap()[p.first] == (*composite)[p.first] );
+        CPPUNIT_ASSERT( composite->getContainer()[p.first] == (*composite)[p.first] );
         CPPUNIT_ASSERT(                 stdmap[p.first] == (*composite)[p.first] );
     }
 
@@ -75,13 +76,32 @@ void CompositeTest::methode1()
     const std::string STR = "toto";
     ::fwData::Object::sptr obj = ::fwData::Object::New();
 
-    composite->getRefMap()[STR] = obj;
+    composite->getContainer()[STR] = obj;
 
     CPPUNIT_ASSERT( composite->begin() != composite->end() );
 
-    CPPUNIT_ASSERT(composite->getRefMap().find(STR) != composite->getRefMap().end());
-    CPPUNIT_ASSERT_EQUAL(composite->getRefMap()[STR], obj);
+    CPPUNIT_ASSERT(composite->find(STR) != composite->end());
+    CPPUNIT_ASSERT_EQUAL(composite->getContainer()[STR], obj);
 }
+
+void CompositeTest::setGetContainerTest()
+{
+    std::map< std::string, ::fwData::String::sptr > myStdMap;
+    std::string key1 = "toto";
+    std::string key2 = "tutu";
+    myStdMap[ key1 ] = ::fwData::String::New("lolo");
+    myStdMap[ key2 ] = ::fwData::String::New("lulu");
+
+    ::fwData::Composite::NewSptr myDataMap;
+    myDataMap->setDataContainer( myStdMap );
+    CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(2), myDataMap->size() );
+
+    std::map< std::string, ::fwData::String::sptr > myStdMap2;
+    myStdMap2 = myDataMap->getDataContainer< ::fwData::String >();
+    CPPUNIT_ASSERT( myStdMap2[key1] ==  myStdMap[key1] );
+    CPPUNIT_ASSERT( myStdMap2[key2] ==  myStdMap[key2] );
+}
+
 
 } //namespace ut
 } //namespace fwData

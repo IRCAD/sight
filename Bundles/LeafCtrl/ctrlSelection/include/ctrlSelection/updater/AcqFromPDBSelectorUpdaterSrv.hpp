@@ -68,10 +68,6 @@ protected:
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
     CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-private:
-
-    ::fwData::Acquisition::sptr getAcquisition( ::fwData::PatientDB::sptr patientDB, ::fwServices::ObjectMsg::csptr _msg );
 };
 
 } // updater

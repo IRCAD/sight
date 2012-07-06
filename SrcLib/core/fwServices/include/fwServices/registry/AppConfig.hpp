@@ -44,10 +44,10 @@ public :
     fwCoreClassDefinitionsWithFactoryMacro( (AppInfo)(::fwCore::BaseObject), (()), new AppInfo );
 
     /// Constructor, do nothing.
-    FWSERVICES_API AppInfo(){}
+    AppInfo(){}
 
     /// Destructor, do nothing.
-    FWSERVICES_API virtual ~AppInfo(){}
+    virtual ~AppInfo(){}
 
     ConfigType type;
     std::string group;

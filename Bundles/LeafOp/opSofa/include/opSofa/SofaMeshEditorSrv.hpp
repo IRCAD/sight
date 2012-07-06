@@ -29,7 +29,7 @@ class SofaMeshEditorSrv : public QWidget, public ::gui::editor::IEditor
         void updating() throw ( ::fwTools::Failed );
         void updating( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
 
-    protected slots:
+    protected Q_SLOTS:
         void onStrengthSlider(int value);
         void moveOrgan(QKeyEvent*);
 

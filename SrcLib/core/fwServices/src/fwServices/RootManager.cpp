@@ -65,7 +65,7 @@ void RootManager::setRootObjectConfigurationFile(std::string _rootObjectConfigur
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr RootManager::getRootObject()
+::fwData::Object::sptr RootManager::getRootObject()
 {
     return getDefault()->m_ctm->getConfigRoot();
 }

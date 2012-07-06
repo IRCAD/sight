@@ -10,7 +10,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiPython::action::Test</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
         <desc>exec python script print hello</desc>
     </extension>
 

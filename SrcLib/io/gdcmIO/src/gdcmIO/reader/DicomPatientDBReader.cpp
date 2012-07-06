@@ -129,7 +129,7 @@ void DicomPatientDBReader::read() throw(::fwTools::Failed)
         itMap++;
     }
 
-    if (patientDB->getPatientSize() == 0)
+    if (patientDB->getNumberOfPatients() == 0)
     {
         std::stringstream ss;
         ss << "Read error : no DICOM file or does not contain image";

@@ -65,7 +65,7 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-protected slots:
+protected Q_SLOTS:
     /// Called when the slider value change.
     void onSliderChange(int value);
 

@@ -181,6 +181,7 @@ double arlCore::vnl_rigid_matrix::distance2( const vnl_rigid_matrix &T, ARLCORE_
             errors2.push_back(w1.distance2(w2));
             break;
         }
+    default: break;
     }
     for( i=0 ; i<errors2.size() ; ++i )
         distance2+=errors2[i];
@@ -663,10 +664,10 @@ bool arlCore::vnl_rigid_matrix::mean( const std::vector<arlCore::vnl_rigid_matri
     return n>0;
 /*
     * @brief The current matrix becomes the mean of listMatrix 1/N sum mat
-    * since the resulting 3x3 rotation part is no more a rotation, we apply the 
+    * since the resulting 3x3 rotation part is no more a rotation, we apply the
     * closest_rotation function to the rotation part to ensure it is a rotation
     * TODO average with rotation vector
-    * TODO average with the function in averageRotation class in Optimisation.cpp   
+    * TODO average with the function in averageRotation class in Optimisation.cpp
 
     if(list.size()==0) return false;
     fill(0.0);
@@ -682,7 +683,7 @@ bool arlCore::vnl_rigid_matrix::mean( const std::vector<arlCore::vnl_rigid_matri
     for( j=0 ; j<4 ; ++j )
         for( k=0 ; k<4 ; ++k )
             put( j, k, get(j,k)/i );
-            
+
     vnl_rotation3d_matrix rot = this->getRotation();
     rot.closest_rotation();
     this->setRotation(rot);
@@ -775,7 +776,7 @@ bool arlCore::vnl_rigid_matrix::trf( const Point &pt1, Point &pt2 ) const
     for( i=0 ; i<3 ; ++i )
         for( j=0 ; j<3 ; ++j )
             cov_mat.put(i,j,C[i][j]);
-    return true;    
+    return true;
 }
 
 bool arlCore::vnl_rigid_matrix::trf( Point &pt ) const
@@ -789,17 +790,17 @@ bool arlCore::vnl_rigid_matrix::trf( Point &pt ) const
     p2=(*this)*p1;
     for( i=0 ; i<3 ; ++i )
         pt.set(i,p2.get(i));
-        
+
     //compute uncertainty of pt2 wrt to pt1 uncertainty and this
     vnl_matrix_fixed<double,3,3> res;
     res = this->getRotation() *  pt.getCovMatrix() * vnl_transpose( this->getRotation() );
-    
+
     arlCore::vnl_covariance_matrix &cov_mat = pt.getCovMatrix();
     for(i=0;i<3;++i)
         for(j=0;j<3;++j)
             cov_mat.put(i,j,res[i][j]);
-        
-    return true;    
+
+    return true;
 }
 
 unsigned int arlCore::vnl_rigid_matrix::trf( const PointList &l1, PointList &l2 ) const
@@ -969,14 +970,13 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
     // ********************** ICP Initialisation ************************
     // ** P={pi} points de données (Np) et X={xi} points de modèle (Nx) *
     vnl_vector<double> gravityY(Dimension);
-    int index = 0;  
     double oldRMS = FLT_MAX;
     firstRMS = -1;
     vnl_matrix<double> Id3(3,3);    Id3.set_identity();
     vnl_matrix<double> Rend(3,3);   Rend.set_identity();
     vnl_matrix<double> Spy(3,3);
     vnl_vector<double> Delta (3);
-    vnl_matrix<double> QSpy(4,4);   
+    vnl_matrix<double> QSpy(4,4);
     vnl_matrix<double> Ricp (3,3);
     vnl_symmetric_eigensystem<double> eigQSpy(QSpy);
     lastRMS = FLT_MAX/2; // /2;
@@ -987,14 +987,14 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
         ++iterations;
         oldRMS = lastRMS;
         lastRMS = 0.0;
-        Spy.set_identity();     
+        Spy.set_identity();
         gravityY.fill(0);
-        // step 1 :     
+        // step 1 :
         // search the matching point for every data shape point
         for( i=0 ; i<acquisitionSize ; ++i )
           {
             // ****************************************************
-            // step 1 : 
+            // step 1 :
             // search the matching point for every data shape point
             // ****************************************************
              the_tree->annkSearch( Pk[i],  // query point
@@ -1009,7 +1009,7 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
               gravityY[j]+= Yk[i][j] = modelPoints[nn_idx[0]][j];
             // Update the value of error
             lastRMS += squaredDists[0];
-          } //end search matching for       
+          } //end search matching for
         // Calculate the new mean square point matching error
         // LG lastRMS/=(double)AcquisitionSize;
         lastRMS = sqrt(lastRMS/(double)acquisitionSize);
@@ -1086,13 +1086,13 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
     annDeallocPts( Pk );
     annDeallocPts( Yk );
     annDeallocPts( Pi );
-    annClose(); 
+    annClose();
     if(Verbose)
     {
         std::cout<<"ICP registration\n";
         std::cout<<"firstRMS="<<firstRMS<<" lastRMS="<<lastRMS<<" Iterations="<<iterations<<" PtsModel="<<modelSize<<" PtsAcquisition="<<acquisitionSize<<"\n";
         std::cout<<"Matrix ="<<*this<<"\n";
-    }   
+    }
     Object::update();
     std::cout<<"Tau="<<fabs(lastRMS-oldRMS)*1e8<<"\n";
     return true;
@@ -1106,12 +1106,12 @@ bool arlCore::vnl_rigid_matrix::registerICP( const PointList &pointsListA, const
 *  Routine Name: rotate_dim4
 *  Purpose: Fonction utilisée uniquement par ma fonction spec
 
-*  Remarque : IL FAUT SUPPRIMER CETTE FONCTION ET LA REMPLACER PAR UNE FONCTION 
+*  Remarque : IL FAUT SUPPRIMER CETTE FONCTION ET LA REMPLACER PAR UNE FONCTION
 *  DE LA LIBRAIRIE VNL
 *****************************************************************/
 void rotate_dim4( double a[][4] , double tau , double s , int i , int j ,int k , int l )
 {
-   double g = a[i][j]; 
+   double g = a[i][j];
    double h = a[k][l];
    a[i][j] = g-s*(h+g*tau);
    a[k][l] = h + s*(g-h*tau);
@@ -1121,17 +1121,17 @@ void rotate_dim4( double a[][4] , double tau , double s , int i , int j ,int k ,
 /************************************************************************************
 *
 *  Routine Name: spec
-*  Purpose: This function returns the vectors and eigenvalues of a matrix 
+*  Purpose: This function returns the vectors and eigenvalues of a matrix
 *  Input: m            - matrix (double)
 *  Output: d,v         - eigenvalues and vector
-*  
-*  Remarque : IL FAUT SUPPRIMER CETTE FONCTION ET LA REMPLACER PAR UNE FONCTION 
+*
+*  Remarque : IL FAUT SUPPRIMER CETTE FONCTION ET LA REMPLACER PAR UNE FONCTION
 *  DE LA LIBRAIRIE VNL
 **************************************************************************************/
 void spec( const double m[4][4], double *d, double (*v)[4] )
 {
     const unsigned int IT_MAX = 50;
-    register int i , j , ip , iq ; 
+    register int i , j , ip , iq ;
     double tresh,theta,tau,t,sm,s,h,g,c;
     double a[4][4], b[4], z[4];
     int p = 4;
@@ -1139,7 +1139,7 @@ void spec( const double m[4][4], double *d, double (*v)[4] )
         for(j=0;j<4; j++)
             if(i==j) v[i][j]=1.0; else v[i][j]=0.0;
    for( ip=0 ; ip<p ; ip++ )
-      for( iq = 0 ; iq < p ; iq++ )  
+      for( iq = 0 ; iq < p ; iq++ )
          a[ip][iq] = m[ip][iq];
    for( ip = 0 ; ip < p ; ip++ )
    {
@@ -1154,7 +1154,7 @@ void spec( const double m[4][4], double *d, double (*v)[4] )
          for( iq = ip+1 ; iq < p ; iq++ )
             sm += fabs(a[ip][iq]);
       if( sm == 0.0 ) return;
-      if( i < 3 )  tresh = 0.2 * sm / (p*p); 
+      if( i < 3 )  tresh = 0.2 * sm / (p*p);
       else  tresh = 0.0;
       for( ip = 0 ; ip < p-1 ; ip++ )
       {
@@ -1172,14 +1172,14 @@ void spec( const double m[4][4], double *d, double (*v)[4] )
                {
                   theta = 0.5 * h / a[ip][iq];
                   t     = 1.0 / ( fabs(theta) + sqrt(1.0+theta*theta) );
-                  if( theta < 0 )  
+                  if( theta < 0 )
                      t = -t;
                }
                c      = 1.0 / sqrt(1.0+t*t);
                s      = t * c;
                tau    = s / (1.0+c);
                h      = t * a[ip][iq];
-               z[ip] += - h;   
+               z[ip] += - h;
                z[iq] +=   h;
                d[ip] += - h;
                d[iq] +=   h;
@@ -1247,7 +1247,6 @@ bool arlCore::vnl_rigid_matrix::oldRegisterICP( const PointList &pointsListA, co
     return false;*/
 #define  SQR( x ) ((x)*(x))
     const unsigned int dim = 3;
-    const double tau = 0.0;
     //Model (scanner) = pointsListA ; Points cloud (Acquisition) = pointsListB
     const PointList& plA = pointsListA;
     const PointList& plB = pointsListB;
@@ -1259,7 +1258,6 @@ bool arlCore::vnl_rigid_matrix::oldRegisterICP( const PointList &pointsListA, co
 */
     ANNpointArray modelPoints, dataPoints;
     ANNpointArray Pk,Yk,Pi;
-    double eps = 0.0;// error bound
     unsigned int i,j,k;
     unsigned int modelSize, acquisitionSize;
     ANNpoint gravityA = annAllocPt( dim, 0.0 );
@@ -1492,7 +1490,7 @@ bool arlCore::vnl_rigid_matrix::oldRegisterICP( const PointList &pointsListA, co
     annDeallocPt( gravityA );
     //annDeallocPt( gravityP );
     //annDeallocPt( gravityY );
-    annClose(); 
+    annClose();
     m_registerRMS = RMS;
     std::cout<<"ICP registration\n";
     std::cout<<"RMS="<<RMS<<" Iterations="<<iterations<<" PtsModel="<<modelSize<<" PtsAcquisition="<<acquisitionSize<<"\n";
@@ -1603,7 +1601,7 @@ bool arlCore::vnl_rigid_matrix::register3D3DUncertainty( const PointList & a, co
     T.register3D3D(a,b,computeRMS/*,numberOfPoints*/);
     arlCore::vnl_rigid_vector vec(T);
     init = vec;
-    
+
     if(methode == arlCore::ARLCORE_REGISTER3D3D_LM)
     {
         arlCore::register3D3DUncertainty_LS_cost_function reg3D3D_LM(a, b, 6, /*numberOfPoints*/0, vnl_least_squares_function::use_gradient);
@@ -1826,6 +1824,7 @@ double getCoeff( double time, arlCore::ARLCORE_TRF_FILTER_TYPE filterType )
     case arlCore::ARLCORE_TRF_FILTER_LOG: return log(1.0+time*LogRange);
     case arlCore::ARLCORE_TRF_FILTER_SQUARE: return time*time;
     case arlCore::ARLCORE_TRF_FILTER_CUBIC: return time*time*time;
+    default: break;
     }
     return 1.0;
 }
@@ -1836,7 +1835,6 @@ unsigned int arlCore::filter( const std::vector<const arlCore::vnl_rigid_matrix*
     if(Size==0) return 0;
     assert(list.back());
     average.setTime(list.back()->getDate(), list.back()->getTime());
-    const double MatrixTime = (double)average.getTime();
     const double CurrentTime = (double)average.getTime(); // FIXME Planesystem time
     assert(list[0]);
     const double LastTime = (double)list[0]->getTime(); // FIXME Planesystem time - duration
@@ -1865,13 +1863,13 @@ unsigned int arlCore::filter( const std::vector<const arlCore::vnl_rigid_matrix*
         Q = list[i]->getQuaternion();
         T = list[i]->getTranslation();
         euler = Q.rotation_euler_angles();
-        eulermean+=euler*coeff; 
+        eulermean+=euler*coeff;
         Tmean+=T*coeff;
         coeffTotal += coeff;
     }
     eulermean/=coeffTotal;
-    Tmean/=coeffTotal;          
-    vnl_quaternion<double> q2(eulermean[0],eulermean[1],eulermean[2]);  
+    Tmean/=coeffTotal;
+    vnl_quaternion<double> q2(eulermean[0],eulermean[1],eulermean[2]);
     rot = q2.rotation_matrix_transpose();
     rot = rot.transpose();
     average.setTranslation(Tmean);

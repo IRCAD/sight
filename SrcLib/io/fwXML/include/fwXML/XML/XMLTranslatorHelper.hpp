@@ -13,11 +13,14 @@
 
 #include "fwXML/XML/XMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"
-#include "fwXML/ObjectTracker.hpp"
+#include "fwXML/Serializer.hpp"
 
 #include <fwCore/Demangler.hpp>
+
 #include <fwTools/ClassFactoryRegistry.hpp>
 
+#include <fwData/Vector.hpp>
+#include <fwData/Composite.hpp>
 
 namespace fwXML
 {
@@ -30,14 +33,14 @@ public:
      * @brief return the master node of an Object : className + unique ID as attribue
      * For example <Image id="626b2206-c55b-4a90-b215-d138dc32640e"/> RFC4122 version 4 random based generation
      */
-    FWXML_API static xmlNodePtr MasterNode( ::fwTools::Object::sptr obj );
+    FWXML_API static xmlNodePtr MasterNode( ::fwData::Object::sptr obj );
 
     /**
      * @brief for debug/quality test only test if objet is of type OBJECTTYPE and source->name is equal to OBJECTTYPE
      * class name
      */
     template<class OBJECTTYPE>
-    inline static bool check( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+    inline static bool check( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
     {
         bool valid = ::boost::dynamic_pointer_cast< OBJECTTYPE >(toUpdate);
         const std::string srcName = (const char*)source->name;
@@ -45,29 +48,29 @@ public:
         return valid;
     }
 
-    /**
-     * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
-     * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence
-     */
-    FWXML_API static xmlNodePtr toXML( ::fwTools::Object::sptr obj );
+//    /**
+//     * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
+//     * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence
+//     */
+//    FWXML_API static xmlNodePtr toXML( ::fwData::Object::sptr obj );
 
     /**
      * @brief return a xmlNode by calling the corresponding XMLTranslator Specialized to the given object
      * Use ClassFactoryRegistry , use TrivialXMLTranslator if no correspondence and visit all its Field
      */
-    FWXML_API static xmlNodePtr toXMLRecursive( ::fwTools::Object::sptr obj );
+    FWXML_API static xmlNodePtr toXMLRecursive( ::fwData::Object::sptr obj );
 
     /**
      * @brief modify the  given object return from the  xmlNode by calling the corresponding XMLTranslator Specialized
      * Use ClassFactoryRegistry , if no correspondence let object unchanged
      * Object must be castable to source->name class
      */
-    FWXML_API static void fromXML( ::fwTools::Object::sptr toUpdate, xmlNodePtr source );
+    FWXML_API static void fromXML( ::fwData::Object::sptr toUpdate, xmlNodePtr source );
 
     /**
      * @brief return a newObject form an XML node : if object already created use the previous one
      */
-    FWXML_API static ::fwTools::Object::sptr fromXML( xmlNodePtr source );
+    FWXML_API static ::fwData::Object::sptr fromXML( xmlNodePtr source );
 
     /**
      * @brief to node append a new Property with given value
@@ -204,7 +207,7 @@ public:
             {
                 OSLM_DEBUG(" containerFromXml" << (const char*)currentNode->name << currentNode );
                 // dot not create duplicate object
-                ::fwTools::Object::sptr obj = fromXML(currentNode);
+                ::fwData::Object::sptr obj = fromXML(currentNode);
 
                 // append to container
                 typedef typename InserterIterator::container_type::value_type SharedPtrConcreteObject;
@@ -241,6 +244,73 @@ public:
                 currentNode = XMLParser::nextXMLElement(currentNode->next);
             }
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+    template< class DATATYPE >
+    static SPTR(DATATYPE) getAttribute( xmlNodePtr source, const std::string & name , bool isMandatory = true )
+    {
+        SPTR(DATATYPE) castedData;
+        xmlNodePtr fatherNode = XMLParser::findChildNamed( source, name );
+        if ( fatherNode )
+        {
+            OSLM_ASSERT("Sorry, node '"<< name <<"' not instanced", fatherNode);
+            xmlNodePtr node = ::fwXML::XMLParser::getChildrenXMLElement( fatherNode );
+            OSLM_ASSERT("Sorry, child node of '"<< name <<"' node not instanced", node);
+            ::fwData::Object::sptr obj;
+            obj = Serializer().ObjectsFromXml( node );
+
+            castedData = ::boost::dynamic_pointer_cast<DATATYPE>( obj );
+            OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
+        }
+        else if ( isMandatory )
+        {
+            FW_RAISE("Sorry, attribute " << name << " is mandatory.");
+        }
+        return castedData;
+    }
+
+    //------------------------------------------------------------------------------
+
+    template< class DATATYPE >
+    static std::vector< SPTR(DATATYPE) > getAttributeVector( xmlNodePtr source, const std::string & name )
+    {
+        ::fwData::Vector::sptr dataVector = XMLTranslatorHelper::getAttribute< ::fwData::Vector >( source, name );
+        return dataVector->getDataContainer< DATATYPE >();
+    }
+
+    //------------------------------------------------------------------------------
+
+    template< class DATATYPE >
+    static std::map< std::string, SPTR(DATATYPE) > getAttributeComposite( xmlNodePtr source, const std::string & name )
+    {
+        ::fwData::Composite::sptr dataComposite = XMLTranslatorHelper::getAttribute< ::fwData::Composite >( source, name );
+        return dataComposite->getDataContainer< DATATYPE >();
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void addAttribute( xmlNodePtr masterNode, const std::string & name, ::fwData::Object::sptr obj, bool isMandatory = true );
+
+    //------------------------------------------------------------------------------
+
+    template< class DATATYPE >
+    static void addAttributeVector( xmlNodePtr masterNode, const std::string & name, const std::vector< SPTR(DATATYPE) > & objVec )
+    {
+        ::fwData::Vector::NewSptr dataVector;
+        dataVector->setDataContainer< DATATYPE >( objVec );
+        XMLTranslatorHelper::addAttribute( masterNode, name, dataVector );
+    }
+
+    //------------------------------------------------------------------------------
+
+    template< class DATATYPE >
+    static void addAttributeComposite( xmlNodePtr masterNode, const std::string & name, const std::map< std::string, SPTR(DATATYPE) > & objMap )
+    {
+        ::fwData::Composite::NewSptr dataComposite;
+        dataComposite->setDataContainer< DATATYPE >( objMap );
+        XMLTranslatorHelper::addAttribute( masterNode, name, dataComposite );
     }
 
 protected:

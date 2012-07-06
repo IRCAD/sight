@@ -143,7 +143,7 @@ public:
     /**
      * @brief Returns callbacks associate with toolBar items.
      */
-    FWGUI_API virtual CallbacksType getCallbacks(){ return m_callbacks;};
+    virtual CallbacksType getCallbacks(){ return m_callbacks;};
 
 protected:
 

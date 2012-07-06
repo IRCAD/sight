@@ -5,13 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
-#include <fwTools/Factory.hpp>
+
 
 #include "fwData/Line.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Line, ::fwData::Line );
+fwDataRegisterMacro( ::fwData::Line );
 
 namespace fwData
 {
@@ -43,18 +43,18 @@ Line::~Line ()
 
 void Line::shallowCopy( Line::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_position = _source->m_position;
-    this->m_direction = _source->m_direction;
+    this->fieldShallowCopy( _source );
+    m_position = _source->m_position;
+    m_direction = _source->m_direction;
 }
 
 //------------------------------------------------------------------------------
 
 void Line::deepCopy( Line::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    this->m_position->deepCopy( _source->m_position );
-    this->m_direction->deepCopy( _source->m_direction );
+    this->fieldDeepCopy( _source );
+    m_position = ::fwData::Object::copy( _source->m_position );
+    m_direction = ::fwData::Object::copy( _source->m_direction );
 }
 
 //------------------------------------------------------------------------------

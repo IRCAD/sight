@@ -30,14 +30,14 @@ class FWCOMED_CLASS_API Object : public ::fwServices::IXMLParser
 public :
     fwCoreServiceClassDefinitionsMacro ( (Object)(::fwServices::IXMLParser) ) ;
 
-    FWSERVICES_API Object( ) ;
-    FWSERVICES_API virtual ~Object() ;
+    FWCOMED_API Object( ) ;
+    FWCOMED_API virtual ~Object() ;
 
-    FWSERVICES_API void createConfig( ::fwTools::Object::sptr _obj );
-    FWSERVICES_API void startConfig();
-    FWSERVICES_API void updateConfig();
-    FWSERVICES_API void stopConfig();
-    FWSERVICES_API void destroyConfig();
+    FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
+    FWCOMED_API void startConfig();
+    FWCOMED_API void updateConfig();
+    FWCOMED_API void stopConfig();
+    FWCOMED_API void destroyConfig();
 
 protected :
 

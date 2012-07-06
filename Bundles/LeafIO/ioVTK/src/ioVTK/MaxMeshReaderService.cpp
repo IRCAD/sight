@@ -41,7 +41,8 @@ static void *list_find (vtk3DSList **root, const char *name)
     vtk3DSList *p;
     int i = 0;
     for (p = *root; p != (vtk3DSList *) NULL; p = (vtk3DSList *) p->next) {
-        OSLM_DEBUG("List_find - " << i++ << " name: " << p->name);
+        OSLM_DEBUG("List_find - " << i << " name: " << p->name);
+        ++i;
         if (strcmp(p->name, name) == 0) {
             break;
         }

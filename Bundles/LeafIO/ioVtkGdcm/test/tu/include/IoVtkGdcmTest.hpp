@@ -9,6 +9,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace ioVtkGdcm
+{
+namespace ut
+{
+
 /**
  * @brief Test the reading of Dicom file with vtkGdcm.
  */
@@ -28,5 +33,8 @@ public:
     void testWriter();
 
 };
+
+} //namespace ut
+} //namespace ioVtkGdcm
 
 #endif //_FWDATATOOLS_TEST_TU_IOVTKGDCMREADER_HPP_

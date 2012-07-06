@@ -78,7 +78,7 @@ void ExportImage::updating( ) throw(::fwTools::Failed)
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
     SLM_ASSERT("pPatientDB not instanced", pPatientDB);
 
-    if ( pPatientDB->getPatientSize() > 0 )
+    if ( pPatientDB->getNumberOfPatients() > 0 )
     {
         ::fwData::Image::sptr pImage = ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(pPatientDB);
         if(pImage == 0)

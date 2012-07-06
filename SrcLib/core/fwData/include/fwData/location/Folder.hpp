@@ -12,7 +12,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
-
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -30,7 +30,7 @@ public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro(
             (Folder)(ILocation),
-            ((::fwTools::Factory::New< Folder > ,() ))
+            ((::fwData::Factory::New< Folder > ,() ))
             ((FolderFactory ,((::boost::filesystem::path)) ((bool)(false)) ))
     );
 

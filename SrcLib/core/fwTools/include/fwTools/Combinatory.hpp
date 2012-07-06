@@ -5,8 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 // fwTools - copyright (C) 2005 IRCAD.
-#ifndef COMBINATORY_HPP_
-#define COMBINATORY_HPP_
+#ifndef __FWTOOLS_COMBINATORY_HPP__
+#define __FWTOOLS_COMBINATORY_HPP__
 
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/empty.hpp>
@@ -20,7 +20,8 @@
 #include <boost/mpl/back_inserter.hpp>
 #include <boost/type_traits.hpp>
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @brief   Helper for BinaryCartesianProduct two Set
@@ -209,7 +210,7 @@ struct CartesianProduct
 
 
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
 
-#endif /*COMBINATORY_HPP_*/
+#endif /*__FWTOOLS_COMBINATORY_HPP__*/

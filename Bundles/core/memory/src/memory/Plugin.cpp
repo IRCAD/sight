@@ -12,9 +12,11 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwTools/System.hpp>
 
-#include <fwMemory/Initializer.hpp>
-#include <fwMemory/MemoryMonitor.hpp>
-#include <fwMemory/IDumpPolicy.hpp>
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/policy/AlwaysDump.hpp>
+#include <fwMemory/policy/BarrierDump.hpp>
+#include <fwMemory/policy/NeverDump.hpp>
+#include <fwMemory/policy/ValveDump.hpp>
 
 #include "memory/Plugin.hpp"
 
@@ -30,33 +32,19 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-    ::fwTools::Factory::addInitializer( ::fwMemory::Initializer::New() ) ;
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
+    // manager->setDumpPolicy( ::fwMemory::policy::NeverDump::New() );
+    // manager->setDumpPolicy( ::fwMemory::policy::ValveDump::New() );
+    // manager->setDumpPolicy( ::fwMemory::policy::AlwaysDump::New() );
+    // manager->setDumpPolicy( ::fwMemory::policy::BarrierDump::New() );
 
-    if( this->getBundle()->hasParameter("Policy") )
-    {
-        SLM_INFO("Memory policy specified by monitor component") ;
-        std::string policyName = this->getBundle()->getParameterValue("Policy") ;
-        typedef std::map< std::string , ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > > MapType ;
-        MapType ids = ::fwRuntime::getAllIdAndConfigurationElementsForPoint( "::memory::DumpPolicy" ) ;
-        if( ids.find(policyName) != ids.end() )
-        {
-            ::boost::shared_ptr< ::fwMemory::IDumpPolicy > memPolicy = ::fwTools::ClassFactoryRegistry::create< ::fwMemory::IDumpPolicy , std::string >( policyName ) ;
-            SLM_INFO("Affecting Memory policy to the memory monitor") ;
-            ::fwMemory::MemoryMonitor::setPolicy( memPolicy ) ;
-            memPolicy->configure( ids[policyName] );
-        }
-        else
-        {
-            SLM_WARN("Bad memory policy identifier") ;
-        }
-    }
+    ::fwTools::IBufferManager::setCurrent( manager );
 }
 
 //------------------------------------------------------------------------------
 
 void Plugin::stop() throw()
 {
-    ::fwTools::System::getDefault()->eraseDumpFolderOfZombies();
 }
 
 //------------------------------------------------------------------------------

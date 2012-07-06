@@ -47,7 +47,7 @@ public :
     /**
      * @brief  Qt slot.
      */
-public slots:
+public Q_SLOTS:
     void executeQt(bool checked = false);
     void checkQt(bool checked);
 

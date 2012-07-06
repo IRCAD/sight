@@ -34,9 +34,9 @@ ImageXMLTranslator::~ImageXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
-    // call default xmtl representation
+    // call default xml representation
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
     xmlNodePtr node = img2xmlbase.getXMLFrom(obj);
 
@@ -56,26 +56,31 @@ xmlNodePtr ImageXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void ImageXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ImageXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast(toUpdate);
     SLM_ASSERT("Object is not an image", pImage);
 
-    OSLM_DEBUG("ImageXMLTranslator::updateDataFromXML( obj " << toUpdate->className() << " XMLNode source " << source->name << "calling Generic" );
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
-    img2xmlbase.updateDataFromXML(toUpdate,source);
+    img2xmlbase.updateDataFromXML(toUpdate, source);
 
     xmlNodePtr compositeNode = XMLParser::findChildNamed( source, std::string("Composite") );
 
-    ::fwTools::Object::sptr obj;
-    obj = Serializer().ObjectsFromXml( compositeNode, true );
+    ::fwData::Object::sptr obj;
+    obj = Serializer().ObjectsFromXml( compositeNode );
     SLM_ASSERT("obj not instanced", obj);
     ::fwData::Composite::sptr arrays = ::fwData::Composite::dynamicCast(obj);
     SLM_ASSERT("composite not instanced", arrays);
 
-    if(arrays->find("DataArray")!=arrays->end())
+    ::fwData::Composite::iterator iterDataArray = arrays->find("DataArray");
+    if(iterDataArray != arrays->end())
     {
-        pImage->setDataArray(::fwData::Array::dynamicCast((*arrays)["DataArray"]));
+        ::fwData::Array::sptr arraySource = ::fwData::Array::dynamicCast(iterDataArray->second);
+        if(arraySource)
+        {
+            ::fwData::Array::sptr array = pImage->getDataArray();
+            array->swap(arraySource);
+        }
     }
 
 }

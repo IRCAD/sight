@@ -12,6 +12,7 @@
 #include "fwData/Array.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/Mesh.hpp"
+#include "fwData/Factory.hpp"
 
 #include "fwData/config.hpp"
 
@@ -72,7 +73,7 @@ class FWDATA_CLASS_API Mesh : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwTools::Factory::New< Mesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::Factory::New< Mesh >) ;
 
     fwDataObjectMacro();
 
@@ -162,154 +163,6 @@ public:
      * @throw ::fwData::Exception
      */
     FWDATA_API bool adjustAllocatedMemory() throw(::fwData::Exception);
-
-    /**
-     * @brief Insert a point into the mesh.
-     * Reallocates the point array if needed.
-     *
-     * @param p[3] point coordinates
-     *
-     * @return The id of the new point
-     *
-     * @throw ::fwData::Exception
-     */
-    FWDATA_API Id insertNextPoint(const PointValueType p[3]) throw(::fwData::Exception);
-
-    /**
-     * @brief Insert a point into the mesh.
-     * @see insertNextPoint
-     */
-    FWDATA_API Id insertNextPoint(PointValueType x, PointValueType y, PointValueType z)
-    throw(::fwData::Exception);
-
-    /**
-     * @brief Set a point coordinates.
-     * The mesh must be allocated before calling this method.
-     *
-     * @param id point index
-     * @param p[3] point coordinates
-     *
-     * @throw ::fwData::Exception
-     */
-    FWDATA_API void setPoint(Id id, const PointValueType p[3]);
-
-    /**
-     * @brief Set a point coordinates.
-     * @see setPoint
-     */
-    FWDATA_API void setPoint(Id id, PointValueType x, PointValueType y, PointValueType z);
-
-    /**
-     * @brief Set a point color.
-     *
-     * Depending on the type of allocated point-colors array (RGB or RGBA), 3
-     * or 4 points will be read from p.
-     * The color array must be allocated before calling this method.
-     *
-     * @param id point index
-     * @param c[3] color
-     *
-     * @throw ::fwData::Exception
-     */
-    FWDATA_API void setPointColor(Id id, const ColorValueType c[4]);
-
-    /**
-     * @brief Set a cell color.
-     *
-     * Depending on the type of allocated cell-colors array (RGB or RGBA), 3 or
-     * 4 points will be read from p.
-     * The color array must be allocated before calling this method.
-     *
-     * @param id cell index
-     * @param c[3] color
-     *
-     * @throw ::fwData::Exception
-     */
-    FWDATA_API void setCellColor(Id id, const ColorValueType c[4]);
-
-    /**
-     * @brief Set a point normal.
-     *
-     * The normal array must be allocated before calling this method.
-     *
-     * @param id point index
-     * @param n[3] normal
-     *
-     * @throw ::fwData::Exception
-     */
-    FWDATA_API void setPointNormal(Id id, const NormalValueType n[3]);
-
-    /**
-     * @brief Set a cell normal.
-     *
-     * The normal array must be allocated before calling this method.
-     *
-     * @param id cell index
-     * @param n[3] normal
-     *
-     * @throw ::fwData::Exception
-     */
-    FWDATA_API void setCellNormal(Id id, const NormalValueType n[3]);
-
-    /**
-     * @brief Insert a cell into the mesh.
-     *
-     * Reallocates the mesh concerned arrays if needed.
-     *
-     * @return The id of the new cell
-     *
-     * @throw ::fwData::Exception
-     */
-    FWDATA_API Id insertNextCell(CellTypesEnum type, const CellValueType *cell, size_t nb)
-        throw(::fwData::Exception);
-    /**
-     * @brief Insert a cell into the mesh.
-     * @see insertNextCell
-     */
-    FWDATA_API Id insertNextCell(CellValueType p)
-    throw(::fwData::Exception);
-    /**
-     * @brief Insert a cell into the mesh.
-     * @see insertNextCell
-     */
-    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2)
-    throw(::fwData::Exception);
-    /**
-     * @brief Insert a cell into the mesh.
-     * @see insertNextCell
-     */
-    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3)
-    throw(::fwData::Exception);
-    /**
-     * @brief Insert a cell into the mesh.
-     * @see insertNextCell
-     */
-    FWDATA_API Id insertNextCell(CellValueType p1, CellValueType p2, CellValueType p3, CellValueType p4)
-    throw(::fwData::Exception);
-    /**
-     * @brief Insert a cell into the mesh.
-     * @see insertNextCell
-     */
-    template <typename T> Id insertNextCell(CellTypesEnum type, const T &pointsBegin, const T &pointsEnd)
-    throw(::fwData::Exception);
-
-
-    /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATA_API PointsMultiArrayType          getPoints() const;
-    /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATA_API CellTypesMultiArrayType       getCellTypes() const;
-    /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATA_API CellDataMultiArrayType        getCellData() const;
-    /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATA_API CellDataOffsetsMultiArrayType getCellDataOffsets() const;
-    /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATA_API PointColorsMultiArrayType     getPointColors() const;
-    /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATA_API CellColorsMultiArrayType      getCellColors() const;
-    /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATA_API PointNormalsMultiArrayType    getPointNormals() const;
-    /// Returns the internal corresponding array as a boost::multi_array_ref
-    FWDATA_API CellNormalsMultiArrayType     getCellNormals() const;
 
     /// Sets the internal corresponding array
     FWDATA_API void setPointsArray           (::fwData::Array::sptr array);
@@ -497,8 +350,6 @@ protected:
 
     /// Array map where you can add few additional arrays registered thanks to a key to perform/conserve some specific analysis.
     ArrayMapType m_arrayMap;
-
-
 };
 
 } // namespace fwData

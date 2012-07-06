@@ -117,8 +117,9 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
                 throw std::ios_base::failure(str);
             }
             file >> imageName;
-            dataComposite->getRefMap()["filename"] = ::fwData::String::NewSptr(imageName);
+            dataComposite->getContainer()["filename"] = ::fwData::String::NewSptr(imageName);
             // Clean all the field
+
             dataComposite->removeField("TF1");
             dataComposite->removeField("TF2");
             int readedValue = 0;
@@ -145,9 +146,9 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
                     readedValue++;
                 }
                 // TF1 contains the first and third tranformations
-                dataComposite->addFieldElement("TF1",transformation1);
+                dataComposite->setField("TF1",transformation1);
                 // TF2 contains the first and third tranformations
-                dataComposite->addFieldElement("TF2",transformation2);
+                dataComposite->setField("TF2",transformation2);
             }
             assert( readedValue==32 );
             file.close();

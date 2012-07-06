@@ -206,7 +206,7 @@ void InrPatientDBReader::read()
         searchRecursivelyInrFile( this->getFolder(), filesToRead, this->getRecursive() );
     }
 
-    assert ( filesToRead.size() );
+    FW_RAISE_IF( "There is no file to read.",filesToRead.empty() );
 
     // do effective reading
     std::string commonPath = findCommonPath(filesToRead);
@@ -218,7 +218,7 @@ void InrPatientDBReader::read()
             inrFilePath++ )
     {
         getConcreteObject()->addPatient( createPatient( *inrFilePath,  commonPathSize, startPercent, filesToRead.size()) );
-        startPercent += 1.0/filesToRead.size();
+        startPercent += 1.0f/filesToRead.size();
     }
 
 }

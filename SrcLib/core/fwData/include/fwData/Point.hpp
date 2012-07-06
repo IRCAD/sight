@@ -7,11 +7,11 @@
 #ifndef _FWDATA_POINT_HPP_
 #define _FWDATA_POINT_HPP_
 
-#include <boost/array.hpp>
+#include <fwMath/IntrasecTypes.hpp>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwMath/IntrasecTypes.hpp"
+#include "fwData/Factory.hpp"
 
 
 namespace fwData
@@ -30,15 +30,13 @@ class FWDATA_CLASS_API Point : public Object
 public :
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwData::Object),
-       ((::fwTools::Factory::New< Point > ,() ))
+       ((::fwData::Factory::New< Point > ,() ))
        ((PointFactory ,((float)) ((float)(0.0)) ((float) (0.0)) ))
        ((PointFactory ,((Point::sptr)) ))
        );
 
     typedef double PointCoordType;
-
     typedef fwVec3d PointCoordArrayType;
-    typedef PointCoordArrayType PointCoordArray; // Remove me
 
     fwDataObjectMacro();
 

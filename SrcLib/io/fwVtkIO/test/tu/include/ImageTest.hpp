@@ -4,13 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWVTKIO_TEST_TU_IMAGETEST_HPP_
-#define _FWVTKIO_TEST_TU_IMAGETEST_HPP_
+#ifndef _FWVTKIO_UT_IMAGETEST_HPP_
+#define _FWVTKIO_UT_IMAGETEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwData/Image.hpp>
 #include <fwData/Array.hpp>
+
+namespace fwVtkIO
+{
+namespace ut
+{
 
 /**
  * @brief Test many methods to create image.
@@ -47,4 +52,7 @@ public:
 
 };
 
-#endif //_FWVTKIO_TEST_TU_IMAGETEST_HPP_
+} // namespace ut
+} // namespace fwVtkIO
+
+#endif //_FWVTKIO_UT_IMAGETEST_HPP_

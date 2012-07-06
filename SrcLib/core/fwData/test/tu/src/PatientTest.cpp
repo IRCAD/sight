@@ -49,7 +49,7 @@ void PatientTest::methodes1()
     const std::string IDDICOM   ="IDDICOM" ;
     const std::string BIRTHDATE ="2007-Feb-21 15:00:00";
     const bool SEX              =true;
-    const ::boost::int32_t  DBID = '457';
+    const ::boost::int32_t  DBID = 457;
     // process
     ::fwData::Patient::NewSptr p1;
     p1->setCRefName(        NOM);
@@ -59,29 +59,29 @@ void PatientTest::methodes1()
     p1->setIsMale(  SEX);
     p1->setDbID(    DBID);
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getName(), NOM);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefName(), NOM);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefName(), NOM);
+    CPPUNIT_ASSERT_EQUAL(NOM, p1->getName());
+    CPPUNIT_ASSERT_EQUAL(NOM, p1->getCRefName());
+    CPPUNIT_ASSERT_EQUAL(NOM, p1->getRefName());
 
-    CPPUNIT_ASSERT_EQUAL(p1->getFirstname(),        FIRSTNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefFirstname(),    FIRSTNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefFirstname(),     FIRSTNAME);
+    CPPUNIT_ASSERT_EQUAL(FIRSTNAME,        p1->getFirstname());
+    CPPUNIT_ASSERT_EQUAL(FIRSTNAME,    p1->getCRefFirstname());
+    CPPUNIT_ASSERT_EQUAL(FIRSTNAME,     p1->getRefFirstname());
 
-    CPPUNIT_ASSERT_EQUAL(p1->getIDDicom(),      IDDICOM);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIDDicom(),  IDDICOM);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIDDicom(),   IDDICOM);
+    CPPUNIT_ASSERT_EQUAL(IDDICOM,      p1->getIDDicom());
+    CPPUNIT_ASSERT_EQUAL(IDDICOM,  p1->getCRefIDDicom());
+    CPPUNIT_ASSERT_EQUAL(IDDICOM,   p1->getRefIDDicom());
 
-    CPPUNIT_ASSERT_EQUAL( ::boost::posix_time::to_simple_string(p1->getBirthdate()),    BIRTHDATE);
-    CPPUNIT_ASSERT_EQUAL( ::boost::posix_time::to_simple_string(p1->getCRefBirthdate()),BIRTHDATE);
-    CPPUNIT_ASSERT_EQUAL( ::boost::posix_time::to_simple_string(p1->getRefBirthdate()), BIRTHDATE);
+    CPPUNIT_ASSERT_EQUAL(BIRTHDATE ,    ::boost::posix_time::to_simple_string(p1->getBirthdate()));
+    CPPUNIT_ASSERT_EQUAL(BIRTHDATE ,::boost::posix_time::to_simple_string(p1->getCRefBirthdate()));
+    CPPUNIT_ASSERT_EQUAL(BIRTHDATE , ::boost::posix_time::to_simple_string(p1->getRefBirthdate()));
 
-    CPPUNIT_ASSERT_EQUAL(p1->getIsMale(),       SEX);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsMale(),   SEX);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsMale(),    SEX);
+    CPPUNIT_ASSERT_EQUAL(SEX,       p1->getIsMale());
+    CPPUNIT_ASSERT_EQUAL(SEX,   p1->getCRefIsMale());
+    CPPUNIT_ASSERT_EQUAL(SEX,    p1->getRefIsMale());
 
-    CPPUNIT_ASSERT_EQUAL(p1->getDbID(),     DBID ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID(), DBID ) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefDbID(),  DBID ) ;
+    CPPUNIT_ASSERT_EQUAL(DBID ,     p1->getDbID()) ;
+    CPPUNIT_ASSERT_EQUAL(DBID , p1->getCRefDbID()) ;
+    CPPUNIT_ASSERT_EQUAL(DBID ,  p1->getRefDbID()) ;
 }
 
 //------------------------------------------------------------------------------
@@ -108,45 +108,48 @@ void PatientTest::methodes2()
     //test l'autre setter
     p1->setCRefDbID( DBID );
     // check
-    CPPUNIT_ASSERT_EQUAL(p1->getName(), NOM);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefName(), NOM);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefName(), NOM);
+    CPPUNIT_ASSERT_EQUAL(NOM, p1->getName());
+    CPPUNIT_ASSERT_EQUAL(NOM, p1->getCRefName());
+    CPPUNIT_ASSERT_EQUAL(NOM, p1->getRefName());
 
-    CPPUNIT_ASSERT_EQUAL(p1->getFirstname(), FIRSTNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefFirstname(), FIRSTNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefFirstname(), FIRSTNAME);
+    CPPUNIT_ASSERT_EQUAL(FIRSTNAME, p1->getFirstname());
+    CPPUNIT_ASSERT_EQUAL(FIRSTNAME, p1->getCRefFirstname());
+    CPPUNIT_ASSERT_EQUAL(FIRSTNAME, p1->getRefFirstname());
 
-    CPPUNIT_ASSERT_EQUAL(p1->getIDDicom(), IDDICOM);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIDDicom(), IDDICOM);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIDDicom(), IDDICOM);
+    CPPUNIT_ASSERT_EQUAL(IDDICOM, p1->getIDDicom());
+    CPPUNIT_ASSERT_EQUAL(IDDICOM, p1->getCRefIDDicom());
+    CPPUNIT_ASSERT_EQUAL(IDDICOM, p1->getRefIDDicom());
 
-    CPPUNIT_ASSERT_EQUAL( ::boost::posix_time::to_simple_string(p1->getBirthdate()), BIRTHDATE);
-    CPPUNIT_ASSERT_EQUAL( ::boost::posix_time::to_simple_string(p1->getCRefBirthdate()),BIRTHDATE);
-    CPPUNIT_ASSERT_EQUAL( ::boost::posix_time::to_simple_string(p1->getRefBirthdate()), BIRTHDATE);
+    CPPUNIT_ASSERT_EQUAL(BIRTHDATE , ::boost::posix_time::to_simple_string(p1->getBirthdate()));
+    CPPUNIT_ASSERT_EQUAL(BIRTHDATE ,::boost::posix_time::to_simple_string(p1->getCRefBirthdate()));
+    CPPUNIT_ASSERT_EQUAL(BIRTHDATE , ::boost::posix_time::to_simple_string(p1->getRefBirthdate()));
 
-    CPPUNIT_ASSERT_EQUAL(p1->getIsMale(), SEX);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsMale(), SEX);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsMale(), SEX);
+    CPPUNIT_ASSERT_EQUAL(SEX, p1->getIsMale());
+    CPPUNIT_ASSERT_EQUAL(SEX, p1->getCRefIsMale());
+    CPPUNIT_ASSERT_EQUAL(SEX, p1->getRefIsMale());
 
-    CPPUNIT_ASSERT_EQUAL(p1->getDbID(), DBID) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefDbID(), DBID) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefDbID(), DBID) ;
+    CPPUNIT_ASSERT_EQUAL(DBID, p1->getDbID()) ;
+    CPPUNIT_ASSERT_EQUAL(DBID, p1->getCRefDbID()) ;
+    CPPUNIT_ASSERT_EQUAL(DBID, p1->getRefDbID()) ;
 }
 
 //------------------------------------------------------------------------------
 
 void PatientTest::addStudy()
 {
-    ::boost::uint32_t  NBSTUDIES = 0 ;
+    Patient::StudyContainerType::size_type NBSTUDIES = 0 ;
     ::fwData::Patient::NewSptr p1;
 
     //test : addStudy()
     ::fwData::Study::NewSptr s1;
-    CPPUNIT_ASSERT_EQUAL(p1->getStudySize(), NBSTUDIES);
+    CPPUNIT_ASSERT_EQUAL(NBSTUDIES, p1->getNumberOfStudies());
     p1->addStudy(s1) ;
     NBSTUDIES = 1;
-    CPPUNIT_ASSERT_EQUAL(p1->getStudySize(), NBSTUDIES);
+    CPPUNIT_ASSERT_EQUAL(NBSTUDIES, p1->getNumberOfStudies());
     //end addStudy
+
+    ::fwData::Patient::sptr p2 = ::fwData::Object::copy(p1);
+    CPPUNIT_ASSERT_EQUAL(NBSTUDIES, p2->getNumberOfStudies());
 }
 
 } //namespace ut

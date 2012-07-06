@@ -1,3 +1,5 @@
+#include <fwComEd/helper/Mesh.hpp>
+
 #include "opSofa/sofa/MeshF4S.hpp"
 
 
@@ -12,7 +14,8 @@ void MeshF4S::loadMesh(::fwData::Mesh::sptr pMesh)
 {
     // Copy points to Sofa
     const size_t nbPoints = pMesh->getNumberOfPoints();
-    ::fwData::Mesh::PointsMultiArrayType points = pMesh->getPoints();
+    ::fwComEd::helper::Mesh meshHelper(pMesh);
+    ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     vertices.resize(nbPoints);
     for (int p=0;p<nbPoints;p++)
     {
@@ -23,7 +26,7 @@ void MeshF4S::loadMesh(::fwData::Mesh::sptr pMesh)
 
     // Copy cells to Sofa
     const size_t nbCells = pMesh->getNumberOfCells();
-    ::fwData::Mesh::CellDataMultiArrayType cells = pMesh->getCellData();
+    ::fwData::Mesh::CellDataMultiArrayType cells = meshHelper.getCellData();
     facets.resize(nbCells);
     for (int i=0, f=0; f<nbCells; f++,i+=3)
     {

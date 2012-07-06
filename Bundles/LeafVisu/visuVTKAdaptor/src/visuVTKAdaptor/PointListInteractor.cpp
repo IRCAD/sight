@@ -45,8 +45,9 @@ public:
     static PointListInteractorCallback *New()
     { return new PointListInteractorCallback(); }
 
-    PointListInteractorCallback() : m_mouseMoveObserved(false),
-                        m_priority(-1)
+    PointListInteractorCallback()
+        : m_priority(-1),
+          m_mouseMoveObserved(false)
     {
         m_picker = NULL;
         this->PassiveObserverOff();

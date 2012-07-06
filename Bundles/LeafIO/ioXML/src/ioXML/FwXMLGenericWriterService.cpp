@@ -35,7 +35,7 @@
 namespace ioXML
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLGenericWriterService , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLGenericWriterService , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Object::sptr obj = this->getObject< ::fwData::Object >();
+        ::fwData::Object::sptr obj = this->getObject();
         SLM_ASSERT("data is null", obj);
 
         ::fwGui::Cursor cursor;

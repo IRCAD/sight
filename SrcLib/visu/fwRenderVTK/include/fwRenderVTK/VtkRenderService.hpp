@@ -62,8 +62,8 @@ public :
 
     FWRENDERVTK_API vtkObject * getVtkObject(VtkObjectIdType objectId);
 
-    FWRENDERVTK_API bool getPendingRenderRequest(){return m_pendingRenderRequest;}
-    FWRENDERVTK_API void setPendingRenderRequest(bool b){m_pendingRenderRequest=b;}
+    bool getPendingRenderRequest(){return m_pendingRenderRequest;}
+    void setPendingRenderRequest(bool b){m_pendingRenderRequest=b;}
 
 protected:
 

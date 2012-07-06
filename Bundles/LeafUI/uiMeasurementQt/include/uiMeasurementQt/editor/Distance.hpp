@@ -82,7 +82,7 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * @brief Notify the scene that a distance is added.
      */

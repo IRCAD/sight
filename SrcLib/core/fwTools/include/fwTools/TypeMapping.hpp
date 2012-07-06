@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef TYPEMAPPING_HPP_
-#define TYPEMAPPING_HPP_
+#ifndef __FWTOOLS_TYPEMAPPING_HPP__
+#define __FWTOOLS_TYPEMAPPING_HPP__
 
 #include <iterator>
 #include <boost/static_assert.hpp>
@@ -21,7 +21,8 @@
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/pop_front.hpp>
 
-namespace fwTools {
+namespace fwTools
+{
 
 // forward declaration
 template< class TSEQ, class KeyTypeContainer >
@@ -43,7 +44,7 @@ struct isMappingSingleMPLHelper;
  * This function is used by Dispatcher:<..>::invoke(key) to know what instance to execute.
  * If isMapping function is missing for a given type then a compilation error
  * "invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>" is raised
- * to inform develloper.
+ * to inform developer.
  *
  * *Example* : if keytype type is a std::string and we need to have a binding within unsigned char
  * @code
@@ -57,7 +58,7 @@ struct isMappingSingleMPLHelper;
 template< class TSingle_or_TSEQ, class KeyType_or_KeyTypeContainer >
 bool isMapping(const KeyType_or_KeyTypeContainer &key)
 {
-    namespace mpl = boost::mpl;
+    namespace mpl = ::boost::mpl;
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
                                         mpl::is_sequence< TSingle_or_TSEQ >,
                                         isMappingMultiMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >,
@@ -83,12 +84,11 @@ bool isMapping(const KeyType_or_KeyTypeContainer &key)
 template< class T, class KeyType >
 struct isMappingSingleMPLHelper
 {
-    /**
-     * @brief
-     */
-    //this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
+
+    /// this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
     static bool evaluate(const KeyType &key)
     {
+        FwCoreNotUsedMacro(key);
         BOOST_STATIC_ASSERT(sizeof(T) == 0);  // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
         // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
@@ -97,14 +97,6 @@ struct isMappingSingleMPLHelper
         return false;
     }
 };
-
-
-
-
-// // forward declaration
-//template< class TSEQ, class KeyTypeContainer >
-//struct isMappingMultiMPLHelper;
-
 
 
 /**
@@ -156,7 +148,7 @@ isMappingMultiMPLHelper
     static bool evaluate(const KeyTypeContainer& keys)
     {
 
-        namespace mpl = boost::mpl;
+        namespace mpl = ::boost::mpl;
 
         if ( keys.size() !=  static_cast<unsigned long>(mpl::size<TSEQ>::value) )
         {
@@ -178,7 +170,7 @@ template< class TSEQ, class KeyTypeContainer >
 bool
 isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(typename KeyTypeContainer::const_iterator & begin, typename KeyTypeContainer::const_iterator & end)
 {
-        namespace mpl = boost::mpl;
+        namespace mpl = ::boost::mpl;
 
         typedef BOOST_DEDUCED_TYPENAME mpl::front<TSEQ>::type Head;
         typedef BOOST_DEDUCED_TYPENAME mpl::pop_front<TSEQ>::type Tail;
@@ -203,7 +195,7 @@ isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(typename KeyTypeContain
 
 
 
-} // namespace fwTools {
+} // namespace fwTools
 
 
-#endif /*TYPEMAPPING_HPP_*/
+#endif /*__FWTOOLS_TYPEMAPPING_HPP__*/

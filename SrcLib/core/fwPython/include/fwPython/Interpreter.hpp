@@ -36,6 +36,16 @@ public :
    //execute the python code sequence
    FWPYTHON_API int execute(std::string code);
 
+   /**
+    * @brief Return the value of the given sys module attribute value.
+    *
+    * @param moduleName Python module name
+    * @param attrName   attribute name of the specified Python module
+    *
+    * @return attribute value
+    */
+   FWPYTHON_API std::string getAttrValue(const std::string moduleName, const std::string attrName);
+
    protected :
 
    void importBindings();

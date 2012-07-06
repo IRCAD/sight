@@ -25,22 +25,22 @@ arlCore::ICP::ICP( const arlCore::PointList &model, const arlCore::PointList &cl
 m_point2PointMode(true),
 m_modelMesh(0),
 m_cloud(0),
-m_justVisible(justVisible),
-m_maxIterations(50),
-m_nbIterations(0),
-m_startError(-1),
-m_endError(-1),
 m_initialization(false),
-m_ANNtree(0),
+m_justVisible(justVisible),
+m_modelSize(0),
+m_cloudSize(0),
 m_modelPoints(0),
 m_cloudPoints(0),
 m_Pk(0),
 m_Yk(0),
 m_Pi(0),
+m_ANNtree(0),
 m_nn_idx(0),
 m_squaredDists(0),
-m_modelSize(0),
-m_cloudSize(0)
+m_maxIterations(50),
+m_nbIterations(0),
+m_startError(-1),
+m_endError(-1)
 {
     m_solution.setIdentity();
 #ifdef ANN
@@ -100,23 +100,25 @@ m_cloudSize(0)
 }
 
 arlCore::ICP::ICP( const arlCore::Mesh &model, const arlCore::PointList &cloud, bool justVisible ):
-m_point2PointMode(false),
+m_point2PointMode(true),
 m_modelMesh(&model),
 m_cloud(&cloud),
-m_justVisible(justVisible),
-m_maxIterations(50),
-m_nbIterations(0),
-m_startError(-1),
-m_endError(-1),
 m_initialization(false),
-m_ANNtree(0),
+m_justVisible(justVisible),
+m_modelSize(0),
+m_cloudSize(0),
 m_modelPoints(0),
 m_cloudPoints(0),
 m_Pk(0),
 m_Yk(0),
 m_Pi(0),
+m_ANNtree(0),
 m_nn_idx(0),
-m_squaredDists(0)
+m_squaredDists(0),
+m_maxIterations(50),
+m_nbIterations(0),
+m_startError(-1),
+m_endError(-1)
 {
     m_solution.setIdentity();
     if(justVisible) m_modelSize = model.getPointList().visibleSize();
@@ -126,8 +128,8 @@ m_squaredDists(0)
 }
 
 arlCore::ICP::ICP( const ICP& T ):
-m_maxIterations(T.m_maxIterations),
-m_solution(T.m_solution)
+m_solution(T.m_solution),
+m_maxIterations(T.m_maxIterations)
 {
     // TODO
 }
@@ -154,7 +156,7 @@ arlCore::ICP::~ICP( void )
     if(m_Pi) annDeallocPts( m_Pi );
     if(m_nn_idx) delete[] m_nn_idx;
     if(m_squaredDists) delete[] m_squaredDists;
-    annClose(); 
+    annClose();
 #endif // ANN
 }
 
@@ -194,7 +196,7 @@ double arlCore::ICP::optimisePowell( void )
 {
     unsigned int i;
     arlCore::OptimiseICP optimizer( *this );
-    //optimizer.setObserver(true); 
+    //optimizer.setObserver(true);
     vnl_powell powell(&optimizer);
     const arlCore::vnl_rigid_vector V( m_solution );
     vnl_vector<double> init(6);
@@ -216,7 +218,7 @@ double arlCore::ICP::optimiseLS( void )
     unsigned int i;
     m_startError = m_endError;
     arlCore::OptimiseICP_LS optimizer( *this, vnl_least_squares_function::use_gradient );
-    //optimizer.setObserver(true); 
+    //optimizer.setObserver(true);
     vnl_levenberg_marquardt lm(optimizer);
     const arlCore::vnl_rigid_vector V( m_solution );
     vnl_vector<double> init(6);
@@ -411,8 +413,8 @@ bool arlCore::ICP::solve( void )
         std::cout<<"ICP registration\n";
         std::cout<<"First RMS="<<m_startError<<"\nLast RMS="<<m_endError<<"\nIterations="<<m_nbIterations<<"\nPtsModel="<<m_modelSize<<"\nPtsCloud="<<m_cloudSize<<"\n";
         std::cout<<"Tau ="<<fabs(m_endError-previousRMS)<<"\n";
-        std::cout<<"Matrix ="<<m_solution<<"\n";        
-    }   
+        std::cout<<"Matrix ="<<m_solution<<"\n";
+    }
     return true;
 #else // ANN
     m_endError = -1.0;

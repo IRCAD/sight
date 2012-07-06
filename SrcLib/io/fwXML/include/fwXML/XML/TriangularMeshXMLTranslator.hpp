@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef TRIANGULARMESHXMLTRANSLATOR_HPP_
-#define TRIANGULARMESHXMLTRANSLATOR_HPP_
+#ifndef __FWXML_XML_TRIANGULARMESHXMLTRANSLATOR_HPP__
+#define __FWXML_XML_TRIANGULARMESHXMLTRANSLATOR_HPP__
 
 #include <boost/lexical_cast.hpp>
 
@@ -27,11 +27,11 @@ public:
     FWXML_API virtual ~TriangularMeshXMLTranslator() ;
 
     /// get XML from current object
-    FWXML_API xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj );
+    FWXML_API xmlNodePtr getXMLFrom( ::fwData::Object::sptr obj );
 
 
     /// get Object from an XML node
-    FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
+    FWXML_API void updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source);
 
 protected :
 
@@ -44,4 +44,4 @@ protected :
 
 }
 
-#endif /*TRIANGULARMESHXMLTRANSLATOR_HPP_*/
+#endif /*__FWXML_XML_TRIANGULARMESHXMLTRANSLATOR_HPP__*/

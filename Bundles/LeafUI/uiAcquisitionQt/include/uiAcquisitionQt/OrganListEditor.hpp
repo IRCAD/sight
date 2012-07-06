@@ -69,7 +69,7 @@ protected:
     void updateReconstructions();
     void notifyOrganChoiceSelection();
 
-    protected slots:
+    protected Q_SLOTS:
 
     void onShowReconstructions(int state);
     void onOrganChoiceVisibility(QListWidgetItem * item);

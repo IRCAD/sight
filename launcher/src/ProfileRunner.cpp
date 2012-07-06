@@ -18,11 +18,11 @@
 #include <fwRuntime/io/ProfileReader.hpp>
 
 //------------------------------------------------------------------------------
-#if defined(_WIN32) && _MSC_VER > 1499 // Visual C++ 2008 only
+#if defined(_WIN32) && _MSC_VER > 1499 &&  _MSC_VER < 1600 // Visual C++ 2008 only
 
  #pragma message ( "Setting up manifest..." )
- 
- #if defined(_DEBUG) 
+
+ #if defined(_DEBUG)
      // add a dependency on the retail crt even in debug
      #pragma comment(linker,"/manifestdependency:\"type='win32' " \
              "name='" __LIBRARIES_ASSEMBLY_NAME_PREFIX ".CRT' "   \
@@ -31,7 +31,7 @@
              "publicKeyToken='" _VC_ASSEMBLY_PUBLICKEYTOKEN "' "  \
              "language='*'\"")
  #endif /* _DEBUG */
- 
+
  #pragma comment(linker,"/manifestdependency:\"type='win32' " \
         "name='Microsoft.Windows.Common-Controls' "           \
         "version='6.0.0.0' "                                  \
@@ -39,8 +39,8 @@
         "publicKeyToken='6595b64144ccf1df' "                  \
         "language='*'\"")
 
-#endif /* _WIN32 && _MSC_VER > 1499 */
- 
+#endif /* _WIN32 && _MSC_VER > 1499 &&  _MSC_VER < 1600 */
+
 //------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 int    m_argc;

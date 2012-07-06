@@ -5,13 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
-#include <fwTools/Factory.hpp>
+
 
 #include "fwData/Color.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Color, ::fwData::Color );
+fwDataRegisterMacro( ::fwData::Color );
 namespace fwData
 {
 //------------------------------------------------------------------------------
@@ -58,16 +58,16 @@ Color::~Color ()
 
 void Color::shallowCopy( Color::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_vRGBA = _source->m_vRGBA;
+    this->fieldShallowCopy( _source );
+    m_vRGBA = _source->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------
 
 void Color::deepCopy( Color::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    this->m_vRGBA = _source->m_vRGBA;
+    this->fieldDeepCopy( _source );
+    m_vRGBA = _source->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ void Color::setRGBA( std::string  hexaColor )
         iss >> std::hex >> a;
     }
 
-    this->setRGBA(r/255.0, g/255.0, b/255.0, a/255.0);
+    this->setRGBA(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
 
 }
 

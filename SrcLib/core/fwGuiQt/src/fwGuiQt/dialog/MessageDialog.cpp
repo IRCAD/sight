@@ -41,7 +41,9 @@ MessageDialogQtButtonType messageDialogQtButton =
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog() : m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON)
+MessageDialog::MessageDialog() :
+    m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON),
+    m_icon(::fwGui::dialog::IMessageDialog::NONE)
 {}
 
 //------------------------------------------------------------------------------

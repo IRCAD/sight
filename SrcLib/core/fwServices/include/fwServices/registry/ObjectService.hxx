@@ -41,7 +41,7 @@ std::vector< SPTR(SERVICE) > ObjectService::getServices()
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::vector< SPTR(SERVICE) > ObjectService::getServices( ::fwTools::Object::sptr obj)
+std::vector< SPTR(SERVICE) > ObjectService::getServices( ::fwData::Object::sptr obj)
 {
     std::vector< SPTR(SERVICE) >  lfwServices;
     if(getDefault()->m_container.left.find(obj->getOSRKey()->getLogicStamp()) != getDefault()->m_container.left.end())
@@ -65,9 +65,9 @@ std::vector< SPTR(SERVICE) > ObjectService::getServices( ::fwTools::Object::sptr
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-std::vector< ::fwTools::Object::sptr > ObjectService::getObjects()
+std::vector< ::fwData::Object::sptr > ObjectService::getObjects()
 {
-    std::vector< ::fwTools::Object::sptr >   lobjects;
+    std::vector< ::fwData::Object::sptr >   lobjects;
     ObjectService::KSContainer::right_map & right = getDefault()->m_container.right;
     BOOST_FOREACH( ObjectService::KSContainer::right_map::value_type elt, right)
     {

@@ -179,9 +179,9 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
         {
             imageMessage->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
             ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-            image->setFieldSingleElement( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
-            image->setFieldSingleElement( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
-            image->setFieldSingleElement( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
+            image->setField( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
+            image->setField( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
+            image->setField( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
             this->updateSliceIndex();
         }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
@@ -190,8 +190,8 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
             ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
             ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
 
-            ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] );
-            ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] );
+            ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] );
+            ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
 
             if( toSliceType->value() == static_cast< int > ( m_orientation ) )
             {
@@ -209,9 +209,7 @@ void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) t
 //------------------------------------------------------------------------------
 
 void SliceIndexPositionEditor::info( std::ostream &_sstream )
-{
-
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -220,8 +218,8 @@ void SliceIndexPositionEditor::updateSliceIndex()
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Get Index
     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
-    unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
+    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
+    unsigned int index = image->getField< ::fwData::Integer >( fieldID )->value();
 
     // Update wxSlider
     int max = image->getSize()[m_orientation]-1;
@@ -239,8 +237,8 @@ void SliceIndexPositionEditor::updateSliceType(Orientation type )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Get Index
      std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
-    unsigned int index = image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value();
+     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
+    unsigned int index = image->getField< ::fwData::Integer >( fieldID )->value();
     int max = image->getSize()[m_orientation]-1;
     m_sliceSelectorPanel->setSliceRange( 0, max );
     m_sliceSelectorPanel->setSliceValue( index );
@@ -258,8 +256,8 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 
     SliceIndexPositionEditor::SLICE_INDEX_FIELDID[m_orientation];
     std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getFieldSize( fieldID ) > 0);
-    image->getFieldSingleElement< ::fwData::Integer >( fieldID )->value() = index;
+    OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
+    image->getField< ::fwData::Integer >( fieldID )->value() = index;
 
     ::fwServices::IEditionService::notify(this->getSptr(),  image, msg);
 }
@@ -279,8 +277,8 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     ::fwData::Integer::NewSptr toSliceType;
     fromSliceType->value() = static_cast< int > ( m_orientation ) ;
     toSliceType->value() = static_cast< int > ( type ) ;
-    info->getRefMap()["fromSliceType"] = fromSliceType;
-    info->getRefMap()["toSliceType"] = toSliceType;
+    info->getContainer()["fromSliceType"] = fromSliceType;
+    info->getContainer()["toSliceType"] = toSliceType;
 
     // Change slice type
     m_orientation = type;

@@ -46,7 +46,7 @@ public:
      * @param className the name of object to build
      * @param id the unique ID for an object : if no one specified the object is created via ObjectFactory
      */
-    FWXML_API static ::fwTools::Object::sptr buildObject( const std::string &className, const std::string &uniqueID  );
+    FWXML_API static ::fwData::Object::sptr buildObject( const std::string &className, const std::string &uniqueID  );
 
     /// return true if its already instanciated
     FWXML_API static bool isAlreadyInstanciated( const std::string &uniqueID  );
@@ -55,7 +55,7 @@ public:
 
     static std::string getClassname( xmlNodePtr xmlNode );
 
-    /// return the UUID generated at runtime for the  object instanciated from XML node with attribute id="<xmlID>"
+    /// return the UUID generated at runtime for the  object instantiated from XML node with attribute id="<xmlID>"
     static std::string  xmlID2RuntimeID( const std::string &xmlID );
 
     /**

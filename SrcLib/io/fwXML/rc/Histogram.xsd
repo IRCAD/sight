@@ -20,7 +20,9 @@
         <xsd:element name="MaxValue"    type="xsd:float"/>
         <xsd:element name="MinValue"    type="xsd:float"/>
         <xsd:element name="Values"      type="IntegerContainerXSDType"/>
-        <xsd:element name="Field"       type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="Attributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="DynamicAttributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+
     </xsd:sequence>
 
     <xsd:attribute name="id" type="xsd:string"/>

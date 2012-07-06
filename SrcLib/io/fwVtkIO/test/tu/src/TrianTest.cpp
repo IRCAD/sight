@@ -15,7 +15,12 @@
 #include "TrianTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( TrianTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::TrianTest );
+
+namespace fwVtkIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -75,3 +80,6 @@ void TrianTest::testTrianToVtk()
 }
 
 //------------------------------------------------------------------------------
+
+} // namespace ut
+} // namespace fwVtkIO

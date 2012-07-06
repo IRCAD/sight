@@ -88,13 +88,12 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
     SLM_ASSERT("pPatientDB not instanced", pPatientDB);
 
-    if ( pPatientDB->getPatientSize() > 0 )
+    if ( pPatientDB->getNumberOfPatients() )
     {
         ::fwData::Acquisition::sptr pAcquisition = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisition(pPatientDB);
         if(!pAcquisition)
         {
             std::string msgInfo = "Sorry, it is impossible to export acquisition. There are not selected patients in the software.";
-            ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Acquisition export");
             messageBox.setMessage( msgInfo );
@@ -123,7 +122,6 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
     {
 
         std::string msgInfo = "Sorry, it is impossible to export acquisition. There are not loaded patients in the software.";
-        ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Image export");
         messageBox.setMessage( msgInfo );

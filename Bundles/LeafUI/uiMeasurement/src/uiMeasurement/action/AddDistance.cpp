@@ -13,18 +13,13 @@
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
-#include <fwData/PatientDB.hpp>
-#include <fwData/Patient.hpp>
+#include <fwData/Vector.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Acquisition.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/Image.hpp>
 
-#include <fwComEd/PatientMsg.hpp>
-#include <fwComEd/ReconstructionMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
@@ -86,15 +81,13 @@ void AddDistance::updating() throw(::fwTools::Failed)
     pl->getRefPoints().push_back( pt1 );
     pl->getRefPoints().push_back( pt2 );
 
-    image->addFieldElement( ::fwComEd::Dictionary::m_imageDistancesId , pl);
-    //image->setFieldSingleElement( ::fwComEd::Dictionary::m_imageDistancesId ,  pl);
+    ::fwData::Vector::sptr vectDist;
+    vectDist = image->setDefaultField(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
 
-    OSLM_DEBUG("AddDistance::image.get " << image );
-    OSLM_DEBUG("AddDistance::image->getField( LAND).size() " << image->getField( ::fwComEd::Dictionary::m_imageDistancesId)->children().size() );
-    assert( image->getFieldSize( ::fwComEd::Dictionary::m_imageDistancesId ) );
+    vectDist->getContainer().push_back(pl);
 
     // force distance to be shown
-    image->setFieldSingleElement("ShowDistances",  ::fwData::Boolean::NewSptr(true));
+    image->setField("ShowDistances",  ::fwData::Boolean::NewSptr(true));
 
 
     ::fwComEd::ImageMsg::NewSptr msg;

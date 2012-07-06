@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <sstream>
 #include <boost/lexical_cast.hpp>
 #include <fwCore/base.hpp>
 
@@ -18,18 +19,15 @@
 #include <fwData/String.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/Composite.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
 
 #include "uiMeasurement/action/RemoveLandmark.hpp"
-
-#include <sstream>
 
 
 namespace uiMeasurement
@@ -65,7 +63,8 @@ void RemoveLandmark::info(std::ostream &_sstream )
     ::fwData::Point::sptr landmarkToRemove;
     removeAll = false;
 
-    ::fwData::PointList::sptr landmarksBackup = image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId );
+    ::fwData::PointList::sptr landmarksBackup = image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId );
+    SLM_ASSERT("No Field ImageLandmarks", landmarksBackup);
 
     std::vector< std::string > selections;
     selections.push_back("ALL");
@@ -73,7 +72,8 @@ void RemoveLandmark::info(std::ostream &_sstream )
 
     BOOST_FOREACH(::fwData::Point::sptr landmark, landmarksBackup->getRefPoints())
     {
-        ::fwData::String::sptr name = landmark->getFieldSingleElement< ::fwData::String >(::fwComEd::Dictionary::m_labelId);
+        ::fwData::String::sptr name = landmark->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId);
+        SLM_ASSERT("No Field LabelId", name);
         selections.push_back( *name );
         correspondance[ *name ] = landmark;
     }
@@ -114,32 +114,32 @@ void RemoveLandmark::updating( ) throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) &&
-            image->getFieldSize(::fwComEd::Dictionary::m_imageLandmarksId))
-    {
-        ::fwData::PointList::sptr landmarks = image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId );
+    ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId );
 
+    if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) && landmarks)
+    {
         if (!landmarks->getRefPoints().empty())
         {
             bool requestAll;
-            ::fwData::Point::sptr landmarkToRemove = getLandmarkToRemove(image, requestAll );
+            ::fwData::Point::sptr landmarkToRemove = this->getLandmarkToRemove(image, requestAll );
 
             // perform action only available distance
             if ( landmarkToRemove )
             {
 
-                ::fwData::PointList::PointListContainer::iterator itr = std::find( landmarks->getRefPoints().begin(), landmarks->getRefPoints().end(), landmarkToRemove );
+                ::fwData::PointList::PointListContainer::iterator itr;
+                itr = std::find( landmarks->getRefPoints().begin(), landmarks->getRefPoints().end(), landmarkToRemove );
                 if (itr != landmarks->getRefPoints().end())
                 {
                     landmarks->getRefPoints().erase(itr);
-                    notify(image, landmarkToRemove);
+                    this->notify(image, landmarkToRemove);
                 }
             }
             if ( requestAll )
             {
                 // backup
-                image->setField( ::fwComEd::Dictionary::m_imageLandmarksId ); // erase field
-                notify(image, landmarks);
+                image->removeField( ::fwComEd::Dictionary::m_imageLandmarksId ); // erase field
+                this->notify(image, landmarks);
             }
         }
     }

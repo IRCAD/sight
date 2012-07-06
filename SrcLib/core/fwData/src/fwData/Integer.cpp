@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Object.hpp"
 #include "fwData/GenericField.hpp"
 #include "fwData/Integer.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Integer, ::fwData::Integer );
+fwDataRegisterMacro( ::fwData::Integer );
 
 namespace fwData
 {
@@ -30,16 +30,16 @@ Integer::~Integer() throw()
 
 void Integer::shallowCopy( Integer::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_value = _source->m_value;
+    this->fieldShallowCopy( _source );
+    m_value = _source->m_value;
 }
 
 //------------------------------------------------------------------------------
 
 void Integer::deepCopy( Integer::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    this->m_value = _source->m_value;
+    this->fieldDeepCopy( _source );
+    m_value = _source->m_value;
 }
 
 } // namespace fwData

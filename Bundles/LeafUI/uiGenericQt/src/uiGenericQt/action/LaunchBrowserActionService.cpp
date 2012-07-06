@@ -23,7 +23,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::LaunchBrowserActionService , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::LaunchBrowserActionService , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 

@@ -32,7 +32,7 @@ MaterialXMLTranslator::~MaterialXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr MaterialXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr MaterialXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Material::sptr mat = ::fwData::Material::dynamicCast(obj);
 
@@ -58,7 +58,7 @@ xmlNodePtr MaterialXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void MaterialXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void MaterialXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate);
     ::fwData::Material::sptr mat = ::fwData::Material::dynamicCast(toUpdate);
@@ -75,10 +75,10 @@ void MaterialXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,
     xmlNodePtr cDiffuseNode = ::fwXML::XMLParser::getChildrenXMLElement(diffuseNode);
     SLM_ASSERT("cDiffuseNode not instanced", cDiffuseNode);
 
-    ::fwTools::Object::sptr valueObj;
-    valueObj = Serializer().ObjectsFromXml( cAmbientNode, true );
+    ::fwData::Object::sptr valueObj;
+    valueObj = Serializer().ObjectsFromXml( cAmbientNode );
     mat->setAmbient(::fwData::Color::dynamicCast(valueObj));
-    valueObj = Serializer().ObjectsFromXml( cDiffuseNode, true );
+    valueObj = Serializer().ObjectsFromXml( cDiffuseNode );
     mat->setDiffuse(::fwData::Color::dynamicCast(valueObj));
 }
 

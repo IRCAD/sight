@@ -115,41 +115,41 @@ public:
     /**
      * @brief   Return profile name.
      */
-    FWRUNTIME_API std::string getName() { return m_sName; }
+    std::string getName() { return m_sName; }
 
     /**
      * @brief       Set profile name.
      *
      * @param[in]   _sName  profile name
      */
-    FWRUNTIME_API void setName(std::string _sName) { m_sName = _sName; }
+    void setName(std::string _sName) { m_sName = _sName; }
 
 
     /**
      * @brief   Return profile version.
      */
-    FWRUNTIME_API std::string getVersion() { return m_sVersion; }
+    std::string getVersion() { return m_sVersion; }
 
     /**
      * @brief       Set profile version.
      *
      * @param[in]   _sVersion   profile version
      */
-    FWRUNTIME_API void setVersion(std::string _sVersion) { m_sVersion = _sVersion; }
+    void setVersion(std::string _sVersion) { m_sVersion = _sVersion; }
 
 
 
     /**
      * @brief   Return profile CheckSingleInstance.
      */
-    FWRUNTIME_API bool getCheckSingleInstance() { return m_checkSingleInstance; }
+    bool getCheckSingleInstance() { return m_checkSingleInstance; }
 
     /**
      * @brief       Set profile CheckSingleInstance.
      *
      * @param[in]   _checkSingleInstance    profile CheckSingleInstance
      */
-    FWRUNTIME_API void setCheckSingleInstance(bool _checkSingleInstance) { m_checkSingleInstance = _checkSingleInstance; }
+    void setCheckSingleInstance(bool _checkSingleInstance) { m_checkSingleInstance = _checkSingleInstance; }
 
     FWRUNTIME_API ParamsContainer getParams();
 

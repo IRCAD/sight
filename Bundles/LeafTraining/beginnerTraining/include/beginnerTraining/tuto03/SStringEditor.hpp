@@ -45,7 +45,7 @@ public:
     /// Overrides
     BEGINNERTRAINING_API virtual void swapping() throw ( ::fwTools::Failed );
 
-protected slots:
+protected Q_SLOTS:
 
     BEGINNERTRAINING_API void onTextChanged();
 

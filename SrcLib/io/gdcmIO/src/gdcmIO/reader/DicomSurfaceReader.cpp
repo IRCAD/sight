@@ -80,9 +80,9 @@ void DicomSurfaceReader::read() throw (::fwTools::Failed)
         OSLM_ERROR("Surface segmentation reading error : "<<surfaceFiles[0]);
     }
 
-    OSLM_TRACE("series->getReconstructionSize() : "<<series->getReconstructionSize());
+    OSLM_TRACE("series->getNumberOfReconstructions() : "<<series->getNumberOfReconstructions());
 
-    series->setFieldSingleElement("ShowReconstructions", ::fwData::Boolean::NewSptr(true));
+    series->setField("ShowReconstructions", ::fwData::Boolean::NewSptr(true));
 }
 
 //------------------------------------------------------------------------------
@@ -166,7 +166,7 @@ void DicomSurfaceReader::readSurfaceMesh( ::gdcm::SmartPointer< ::gdcm::Segment 
 
     // Finite Volume
     reconstruction->setIsClosed( (surface->GetFiniteVolume() == ::gdcm::Surface::YES)?true:false );
-    OSLM_TRACE("Reconstruction is closed : " << reconstruction->getIsClosed());
+    OSLM_TRACE("Reconstruction is closed : " << reconstruction->getCRefIsClosed());
 
     // Manifold
     if (surface->GetManifold() == ::gdcm::Surface::YES)

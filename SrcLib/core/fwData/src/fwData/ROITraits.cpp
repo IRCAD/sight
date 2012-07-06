@@ -7,11 +7,10 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwTools/Factory.hpp>
-
+#include "fwData/registry/macros.hpp"
 #include "fwData/ROITraits.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::ROITraits, ::fwData::ROITraits );
+fwDataRegisterMacro( ::fwData::ROITraits );
 
 namespace fwData
 {
@@ -19,14 +18,12 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 ROITraits::ROITraits()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
 ROITraits::~ROITraits()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 

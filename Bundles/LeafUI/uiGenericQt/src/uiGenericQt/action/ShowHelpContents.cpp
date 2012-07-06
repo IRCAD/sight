@@ -51,7 +51,7 @@ private:
 //------------------------------------------------------------------------------
 
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::ShowHelpContents , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::ShowHelpContents , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 

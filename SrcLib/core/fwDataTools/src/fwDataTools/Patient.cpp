@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <algorithm>
 #include <map>
 #include <iomanip>
 #include <cstdlib>
@@ -11,6 +12,8 @@
 
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/trim.hpp>
+
+#include <fwTools/NumericRoundCast.hxx>
 
 #include "fwDataTools/Patient.hpp"
 #include "fwDataTools/Image.hpp"
@@ -29,6 +32,66 @@ Patient::Patient()
 
 Patient::~Patient()
 {}
+
+//------------------------------------------------------------------------------
+
+void Patient::removePatient(::fwData::PatientDB::sptr patientDB,
+                            ::fwData::Patient::sptr patient)
+{
+    const ::fwData::PatientDB::PatientContainerType oldPatients = patientDB->getPatients();
+    ::fwData::PatientDB::PatientContainerType newPatients(oldPatients.begin(), oldPatients.end());
+
+    ::fwData::PatientDB::PatientContainerType::iterator newEnd;
+    newEnd = std::remove(newPatients.begin(), newPatients.end(), patient);
+    newPatients.erase(newEnd, newPatients.end());
+
+    patientDB->setPatients( newPatients );
+}
+
+//------------------------------------------------------------------------------
+
+void Patient::removeStudy(::fwData::Patient::sptr patient,
+                            ::fwData::Study::sptr study)
+{
+    const ::fwData::Patient::StudyContainerType oldStudies = patient->getStudies();
+    ::fwData::Patient::StudyContainerType newStudies(oldStudies.begin(), oldStudies.end());
+
+    ::fwData::Patient::StudyContainerType::iterator newEnd;
+    newEnd = std::remove(newStudies.begin(), newStudies.end(), study);
+    newStudies.erase(newEnd, newStudies.end());
+
+    patient->setStudies( newStudies );
+}
+
+//------------------------------------------------------------------------------
+
+void Patient::removeAcquisition(::fwData::Study::sptr study,
+                                    ::fwData::Acquisition::sptr acq)
+{
+    const ::fwData::Study::AcquisitionContainerType oldAcq = study->getAcquisitions();
+    ::fwData::Study::AcquisitionContainerType newAcq(oldAcq.begin(), oldAcq.end());
+
+    ::fwData::Study::AcquisitionContainerType::iterator newEnd;
+    newEnd = std::remove(newAcq.begin(), newAcq.end(), acq);
+    newAcq.erase(newEnd, newAcq.end());
+
+    study->setAcquisitions( newAcq );
+}
+
+//------------------------------------------------------------------------------
+
+void Patient::removeReconstruction(::fwData::Acquisition::sptr acq,
+                                    ::fwData::Reconstruction::sptr rec)
+{
+    const ::fwData::Acquisition::ReconstructionContainerType oldRec = acq->getReconstructions();
+    ::fwData::Acquisition::ReconstructionContainerType newRec(oldRec.begin(), oldRec.end());
+
+    ::fwData::Acquisition::ReconstructionContainerType::iterator newEnd;
+    newEnd = std::remove(newRec.begin(), newRec.end(), rec);
+    newRec.erase(newEnd, newRec.end());
+
+    acq->setReconstructions( newRec );
+}
 
 //------------------------------------------------------------------------------
 
@@ -94,18 +157,19 @@ bool Patient::comparePatient(::fwData::Patient::sptr patient1, ::fwData::Patient
     OSLM_ERROR_IF("Patient have not same DbID : " << patient1->getDbID() << " != " << patient2->getDbID(),
                 patient1->getDbID() != patient2->getDbID());
 
-    compare &= (patient1->getStudySize() == patient2->getStudySize());
-    OSLM_ERROR_IF("Patient have not same study size : " << patient1->getStudySize() << " != " << patient2->getStudySize(),
-                patient1->getStudySize() != patient2->getStudySize());
+    compare &= (patient1->getNumberOfStudies() == patient2->getNumberOfStudies());
+    OSLM_ERROR_IF("Patient have not same study size : " << patient1->getNumberOfStudies() << " != " << patient2->getNumberOfStudies(),
+                patient1->getNumberOfStudies() != patient2->getNumberOfStudies());
 
-    std::pair< ::fwData::Patient::StudyIterator, ::fwData::Patient::StudyIterator > pairPatient1 = patient1->getStudies();
-    ::fwData::Patient::StudyIterator iter1 = pairPatient1.first;
-    ::fwData::Patient::StudyIterator iter2 = patient2->getStudies().first;
-    while( iter1 != pairPatient1.second )
+    const ::fwData::Patient::StudyContainerType & studies1 = patient1->getStudies();
+    const ::fwData::Patient::StudyContainerType & studies2 = patient2->getStudies();
+    ::fwData::Patient::StudyContainerType::const_iterator iter1 = studies1.begin();
+    ::fwData::Patient::StudyContainerType::const_iterator end1  = studies1.end();
+    ::fwData::Patient::StudyContainerType::const_iterator iter2 = studies2.begin();
+
+    for ( ; compare && iter1 != end1; ++iter1, ++iter2)
     {
         compare &= Patient::compareStudy(*iter1, *iter2);
-        iter1++;
-        iter2++;
     }
 
 
@@ -120,7 +184,7 @@ void Patient::generateStudy(::fwData::Study::sptr study,
                             const unsigned char nbReconstruction)
 {
     // studies informations
-    const std::string STUDY_HOSPITAL       = "hopital" ;
+    const std::string STUDY_HOSPITAL       = "hospital" ;
     const std::string STUDY_MODALITY       = "modality" ;
     const std::string STUDY_ZONE           = "IDDICOM" ;
     const std::string STUDY_RISID          = "risid569" ;
@@ -154,7 +218,7 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
     OSLM_ERROR_IF("Studies not initialized", !study1 || !study2);
 
     compare &= (study1->getHospital() == study2->getHospital());
-    OSLM_ERROR_IF("Studies have not same hopital  : " << study1->getHospital() << " != " << study2->getHospital(),
+    OSLM_ERROR_IF("Studies have not same hospital  : " << study1->getHospital() << " != " << study2->getHospital(),
                   study1->getHospital() != study2->getHospital());
 
 
@@ -178,19 +242,22 @@ bool Patient::compareStudy(::fwData::Study::sptr study1, ::fwData::Study::sptr s
     OSLM_ERROR_IF("Studies have not same DbID  : " << study1->getDbID() << " != " << study2->getDbID(),
             study1->getDbID() != study2->getDbID());
 
-    compare &= (study1->getAcquisitionSize() == study2->getAcquisitionSize());
-    OSLM_ERROR_IF("Studies have not same size  : " << study1->getAcquisitionSize() << " != " << study2->getAcquisitionSize(),
-            study1->getAcquisitionSize() != study2->getAcquisitionSize());
+    compare &= (study1->getNumberOfAcquisitions() == study2->getNumberOfAcquisitions());
+    OSLM_ERROR_IF("Studies have not same size  : " << study1->getNumberOfAcquisitions() << " != " << study2->getNumberOfAcquisitions(),
+            study1->getNumberOfAcquisitions() != study2->getNumberOfAcquisitions());
 
-    std::pair< ::fwData::Study::AcquisitionIterator, ::fwData::Study::AcquisitionIterator > pairStudy1 = study1->getAcquisitions();
-    ::fwData::Study::AcquisitionIterator iter1 = pairStudy1.first;
-    ::fwData::Study::AcquisitionIterator iter2 = study2->getAcquisitions().first;
-    while( iter1 != pairStudy1.second )
+    const ::fwData::Study::AcquisitionContainerType & acquisitions1 = study1->getAcquisitions();
+    const ::fwData::Study::AcquisitionContainerType & acquisitions2 = study2->getAcquisitions();
+    ::fwData::Study::AcquisitionContainerType::const_iterator iter1 = acquisitions1.begin();
+    ::fwData::Study::AcquisitionContainerType::const_iterator end1  = acquisitions1.end();
+    ::fwData::Study::AcquisitionContainerType::const_iterator iter2 = acquisitions2.begin();
+
+    for ( ; compare && iter1 != end1; ++iter1, ++iter2)
     {
         compare &= Patient::compareAcquisition(*iter1, *iter2);
-        iter1++;
-        iter2++;
     }
+
+
 
     return compare;
 }
@@ -230,7 +297,7 @@ void Patient::generateAcquisition(::fwData::Acquisition::sptr acq,
     acq->setImage(img);
 
     acq->setBitsPerPixel(img->getType().sizeOf()*8);
-    acq->setSliceThickness(img->getSpacing()[2]);
+    acq->setSliceThickness(::fwTools::numericRoundCast< float >(img->getSpacing()[2]));
     acq->setAxe(ACQ_AXE);
     acq->setUnsignedFlag(ACQ_UNSIGNEDFLAG);
     acq->setAcquisitionIndex(ACQ_INDEX);
@@ -365,20 +432,22 @@ bool Patient::compareAcquisition(::fwData::Acquisition::sptr acquisition1, ::fwD
     OSLM_ERROR_IF("Acquisitions have not same patient position : '" << acquisition1->getPatientPosition() << "' != '" << acquisition2->getPatientPosition()<<"'",
             acquisition1->getPatientPosition() != acquisition2->getPatientPosition());
 
-    compare &= (acquisition1->getReconstructionSize() == acquisition2->getReconstructionSize());
-    OSLM_ERROR_IF("Acquisitions have not same reconstruction size : " << acquisition1->getReconstructionSize() << " != " << acquisition2->getReconstructionSize(),
-            acquisition1->getReconstructionSize() != acquisition2->getReconstructionSize());
+    compare &= (acquisition1->getNumberOfReconstructions() == acquisition2->getNumberOfReconstructions());
+    OSLM_ERROR_IF("Acquisitions have not same reconstruction size : " << acquisition1->getNumberOfReconstructions() << " != " << acquisition2->getNumberOfReconstructions(),
+            acquisition1->getNumberOfReconstructions() != acquisition2->getNumberOfReconstructions());
 
     compare &= Image::compareImage(acquisition1->getImage(), acquisition2->getImage());
 
-    std::pair< ::fwData::Acquisition::ReconstructionIterator, ::fwData::Acquisition::ReconstructionIterator > pairAcquisition1 = acquisition1->getReconstructions();
-    ::fwData::Acquisition::ReconstructionIterator iter1 = pairAcquisition1.first;
-    ::fwData::Acquisition::ReconstructionIterator iter2 = acquisition2->getReconstructions().first;
-    while( iter1 != pairAcquisition1.second )
+
+    const ::fwData::Acquisition::ReconstructionContainerType & reconstructions1 = acquisition1->getReconstructions();
+    const ::fwData::Acquisition::ReconstructionContainerType & reconstructions2 = acquisition2->getReconstructions();
+    ::fwData::Acquisition::ReconstructionContainerType::const_iterator iter1 = reconstructions1.begin();
+    ::fwData::Acquisition::ReconstructionContainerType::const_iterator end1  = reconstructions1.end();
+    ::fwData::Acquisition::ReconstructionContainerType::const_iterator iter2 = reconstructions2.begin();
+
+    for ( ; compare && iter1 != end1; ++iter1, ++iter2)
     {
         compare &= Patient::compareReconstruction(*iter1, *iter2);
-        iter1++;
-        iter2++;
     }
 
     return compare;
@@ -398,7 +467,7 @@ void Patient::generateReconstruction(::fwData::Reconstruction::sptr rec)
     rec->setVolPctConfidence(rand()%1000/100.0);
     rec->setReconstructionTime("2007-Feb-24 18:55:00");
     rec->setMaskGenerated(true);
-    rec->setLevel(rand()%255);
+    rec->setLevel(rand()%127);
     rec->setLabel(rand()%500);
     rec->setGenerated3D(true);
     rec->setType3D("recType3D");
@@ -410,14 +479,14 @@ void Patient::generateReconstruction(::fwData::Reconstruction::sptr rec)
     rec->setImage(img);
 
     ::fwData::Material::NewSptr material;
-    material->ambient()->red() = 0.75;
-    material->ambient()->green() = 0.10;
-    material->ambient()->blue() = 0.56;
-    material->ambient()->alpha() = 0.8;
-    material->diffuse()->red() = 0.85;
-    material->diffuse()->green() = 0.20;
-    material->diffuse()->blue() = 0.66;
-    material->diffuse()->alpha() = 0.9;
+    material->ambient()->red() = 0.75f;
+    material->ambient()->green() = 0.10f;
+    material->ambient()->blue() = 0.56f;
+    material->ambient()->alpha() = 0.8f;
+    material->diffuse()->red() = 0.85f;
+    material->diffuse()->green() = 0.20f;
+    material->diffuse()->blue() = 0.66f;
+    material->diffuse()->alpha() = 0.9f;
     rec->setMaterial(material);
 
     ::fwData::Mesh::NewSptr mesh;
@@ -530,7 +599,7 @@ bool Patient::compareMesh( ::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh
 {
     bool compare = true;
 
-    if ( ! mesh1 && mesh2 || mesh1 && ! mesh2 )
+    if ( (! mesh1 && mesh2) || (mesh1 && ! mesh2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Meshes are not equivalent (one mesh has a null sptr)");
@@ -587,7 +656,7 @@ bool Patient::compareMaterial(::fwData::Material::sptr mat1, ::fwData::Material:
 {
     bool compare = true;
 
-    if ( ! mat1 && mat2 || mat1 && ! mat2 )
+    if ( (! mat1 && mat2) || (mat1 && ! mat2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Materials are not equivalent (one Material has a null sptr)");
@@ -606,40 +675,40 @@ bool Patient::compareMaterial(::fwData::Material::sptr mat1, ::fwData::Material:
         OSLM_ERROR_IF( errorPrefix << "Materials have not same options mode : " << mat1->getOptionsMode() << " != " << mat2->getOptionsMode(),
                 mat1->getOptionsMode() != mat2->getOptionsMode());
 
-        compare &= Patient::compareColor( mat1->ambient(), mat2->ambient(), "Ambient color : ");
-        compare &= Patient::compareColor( mat1->diffuse(), mat2->diffuse(), "Diffuse color : ");
+        compare &= Patient::compareColor( mat1->ambient(), mat2->ambient(), 1/255.f, "Ambient color : ");
+        compare &= Patient::compareColor( mat1->diffuse(), mat2->diffuse(), 1/255.f, "Diffuse color : ");
     }
     return compare;
 }
 
 //------------------------------------------------------------------------------
 
-bool Patient::compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr col2, std::string errorPrefix )
+bool Patient::compareColor( ::fwData::Color::sptr col1, ::fwData::Color::sptr col2, float colorTolerance, std::string errorPrefix )
 {
     bool compare = true;
 
-    if ( ! col1 && col2 || col1 && ! col2 )
+    if ( (! col1 && col2) || (col1 && ! col2) )
     {
         compare &= false;
         OSLM_ERROR( errorPrefix << "Colors are not equivalent (one Color has a null sptr)");
     }
     else if ( col1 && col2 )
     {
-        compare &= ( col1->red() == col2->red() );
-        OSLM_ERROR_IF( errorPrefix << "Materials have not same red : " << col1->red() << " != " << col2->red(),
-                col1->red() != col2->red());
+        compare &= ( fabs( col1->red() - col2->red() ) <= colorTolerance );
+        OSLM_ERROR_IF( errorPrefix << "colors have not same red : " << col1->red() << " != " << col2->red(),
+                fabs( col1->red() - col2->red() ) > colorTolerance );
 
-        compare &= ( col1->green() == col2->green() );
-        OSLM_ERROR_IF( errorPrefix << "Materials have not same green : " << col1->green() << " != " << col2->green(),
-                col1->green() != col2->green());
+        compare &= ( fabs( col1->green() - col2->green() ) <= colorTolerance );
+        OSLM_ERROR_IF( errorPrefix << "colors have not same green : " << col1->green() << " != " << col2->green(),
+                fabs( col1->green() - col2->green() ) > colorTolerance );
 
-        compare &= ( col1->blue() == col2->blue() );
-        OSLM_ERROR_IF( errorPrefix << "Materials have not same blue : " << col1->blue() << " != " << col2->blue(),
-                col1->blue() != col2->blue());
+        compare &= ( fabs( col1->blue() - col2->blue() ) <= colorTolerance );
+        OSLM_ERROR_IF( errorPrefix << "colors have not same blue : " << col1->blue() << " != " << col2->blue(),
+                fabs( col1->blue() - col2->blue() ) > colorTolerance );
 
-        compare &= ( col1->alpha() == col2->alpha() );
-        OSLM_ERROR_IF( errorPrefix << "Materials have not same alpha : " << col1->alpha() << " != " << col2->alpha(),
-                col1->alpha() != col2->alpha());
+        compare &= ( fabs( col1->alpha() - col2->alpha() ) <= colorTolerance );
+        OSLM_ERROR_IF( errorPrefix << "colors have not same alpha : " << col1->alpha() << " != " << col2->alpha(),
+                fabs( col1->alpha() - col2->alpha() ) > colorTolerance);
     }
     return compare;
 }

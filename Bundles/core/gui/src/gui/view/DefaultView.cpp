@@ -17,7 +17,7 @@ namespace gui
 namespace view
 {
 
-REGISTER_SERVICE( ::gui::view::IView , ::gui::view::DefaultView , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::gui::view::IView , ::gui::view::DefaultView , ::fwData::Object ) ;
 
 
 DefaultView::DefaultView() throw()

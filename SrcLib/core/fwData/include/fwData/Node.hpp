@@ -14,6 +14,7 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Port.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -32,7 +33,7 @@ class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwTools::Factory::New< Node >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::Factory::New< Node >) ;
 
     /// Port container
     typedef std::vector< ::fwData::Port::sptr > PortContainer;

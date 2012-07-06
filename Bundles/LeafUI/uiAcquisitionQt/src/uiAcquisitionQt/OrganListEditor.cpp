@@ -123,13 +123,10 @@ void OrganListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwT
     if ( acquisitionMsg )
     {
         if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) ||
-             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) ||
+             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS))
         {
             this->updating();
-        }
-        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS))
-        {
-            m_organChoice->clear();
         }
     }
 }
@@ -152,29 +149,27 @@ void OrganListEditor::updateReconstructions()
 
     SLM_ASSERT("container not instanced", container);
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    container->setEnabled(acq->getReconstructions().first != acq->getReconstructions().second);
 
-    if(acq->getReconstructions().first != acq->getReconstructions().second)
+    bool hasReconstructions = !acq->getReconstructions().empty();
+    container->setEnabled( hasReconstructions );
+
+    if(hasReconstructions)
     {
-        ::fwData::Acquisition::ReconstructionIterator iter =  acq->getReconstructions().first;
-
-        for (; iter!=  acq->getReconstructions().second ; ++iter )
+        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, acq->getReconstructions())
         {
-            m_map[ (*iter)->getOrganName() ] = (*iter);
+            m_map[ rec->getOrganName() ] = rec;
         }
 
         for( OrganNameReconstruction::iterator iter = m_map.begin(); iter != m_map.end(); ++iter )
         {
             QListWidgetItem* item = new QListWidgetItem(QString::fromStdString((*iter).first), m_organChoice);
             item->setCheckState(Qt::Unchecked);
-            m_organChoice->addItem (item);
+            m_organChoice->addItem(item);
         }
 
-        bool showAllRec = true;
-        if (acq->getFieldSize("ShowReconstructions"))
-        {
-            showAllRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
-        }
+        bool showAllRec;
+        showAllRec = acq->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+
         m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked );
         m_organChoice->setEnabled(m_showCheckBox->checkState() == Qt::Unchecked);
     }
@@ -230,7 +225,7 @@ void OrganListEditor::onOrganChoiceVisibility(QListWidgetItem * item )
 void OrganListEditor::onShowReconstructions(int state )
 {
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    acq->setFieldSingleElement("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
+    acq->setField("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
 
     ::fwComEd::AcquisitionMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS );

@@ -17,7 +17,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IEditionService</type>
         <service>::fwServices::DefaultEditor</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -35,7 +35,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwComEd::parser::Object</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
     
      <extension implements="::fwServices::registry::ServiceFactory">
@@ -71,6 +71,6 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::ICommunication</type>
         <service>::fwServices::ComChannelService</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
     </extension>
 </plugin>

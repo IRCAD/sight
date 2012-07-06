@@ -69,10 +69,14 @@ void DicomLandmarkWriter::write(::gdcm::DataSet & a_gDs) throw (::fwTools::Faile
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > gContentSQ = a_gDs.GetDataElement(contentSQTag).GetValueAsSQ();
 
     // Write each landmark in a sequence of items
-    const unsigned int nbLandmark = image->getFieldSingleElement< fwData::PointList >( fwComEd::Dictionary::m_imageLandmarksId )->getPoints().size();
-    for (unsigned int i = 0; i < nbLandmark; ++i)
+    ::fwData::PointList::sptr pl = image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId );
+    if(pl)
     {
-        this->writeLandmark(i, gContentSQ);
+        const unsigned int nbLandmark = pl->getPoints().size();
+        for (unsigned int i = 0; i < nbLandmark; ++i)
+        {
+            this->writeLandmark(i, gContentSQ);
+        }
     }
 }
 

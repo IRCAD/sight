@@ -10,12 +10,6 @@
 
 #include <string>
 
-// Defined QT_NO_KEYWORDS because of conflict with boost::signals namespace.
-#ifndef QT_NO_KEYWORDS
-#define QT_NO_KEYWORDS
-#define QT_NO_KEYWORDS_FWDEF
-#endif
-
 #include <QApplication>
 #include <QMainWindow>
 #include <QPointer>
@@ -26,14 +20,9 @@
 #include <QString>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include "fwGuiQt/container/QtContainer.hpp"
-
-#ifdef QT_NO_KEYWORDS_FWDEF
-#undef QT_NO_KEYWORDS
-#undef QT_NO_KEYWORDS_FWDEF
-#endif
 
 #include "fwGuiQt/config.hpp"
+#include "fwGuiQt/container/QtContainer.hpp"
 
 
 QT_BEGIN_NAMESPACE

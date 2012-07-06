@@ -17,7 +17,7 @@
 
 #include "visuVTKAdaptor/Axes.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwTools::Object );
+REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {

@@ -8,20 +8,40 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
+#include <boost/assign/std/vector.hpp>
 
 #include <fwTools/System.hpp>
 #include <fwTools/Type.hpp>
+
+#include <fwData/PatientDB.hpp>
+#include <fwData/Array.hpp>
+#include <fwData/String.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/ResectionDB.hpp>
+#include <fwData/Dictionary.hpp>
+#include <fwData/ProcessObject.hpp>
+
+#include <fwDataTools/Patient.hpp>
+#include <fwDataTools/Image.hpp>
+#include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/ObjectGenerator.hpp>
+#include <fwDataTools/ObjectComparator.hpp>
 
 #include <fwXML/Serializer.hpp>
 #include <fwXML/policy/NeverSplitPolicy.hpp>
 #include <fwXML/policy/UniquePathPolicy.hpp>
 
+
 #include "ObjectTest.hpp"
-#include "ObjectGenerator.hpp"
-#include "ObjectComparator.hpp"
+
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwXML::ut::ObjectTest );
+
+namespace fwXML
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +83,7 @@ void ObjectTest::tearDown()
     CPPUNIT_ASSERT(::boost::filesystem::exists(testFile));
 
     // load object
-    ::fwData::Object::sptr obj2 = ::fwData::Object::dynamicCast(serializer.deSerialize(testFile, true));
+    ::fwData::Object::sptr obj2 = ::fwData::Object::dynamicCast(serializer.deSerialize(testFile));
 
     // check object
     CPPUNIT_ASSERT(obj2);
@@ -75,118 +95,311 @@ void ObjectTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testArray()
+void ObjectTest::arrayTest()
 {
-    ::fwData::Array::sptr array1 = ObjectGenerator::createArray();
+
+    ::fwData::Array::SizeType arraySize;
+
+    const std::string arrayType("uint8");
+    arraySize.push_back(5);
+    arraySize.push_back(10);
+
+    ::fwData::Array::sptr array1 = ::fwDataTools::ObjectGenerator::randomizeArray(arrayType, arraySize);
+
     ::fwData::Array::sptr array2 = ::fwData::Array::dynamicCast(ObjectTest::serialize("Array.xml", array1));
     CPPUNIT_ASSERT(array2);
-    ObjectComparator::compareArray(array1, array2);
+    CPPUNIT_ASSERT(::fwDataTools::Image::compareArray(array1, array2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testMesh()
+void ObjectTest::meshTest()
 {
-    ::fwData::Mesh::sptr mesh1 = ObjectGenerator::createMesh();
+    ::fwData::Mesh::NewSptr mesh1;
+    ::fwDataTools::Patient::generateMesh( mesh1 );
+
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::dynamicCast(ObjectTest::serialize("Mesh.xml", mesh1));
     CPPUNIT_ASSERT(mesh2);
-    ObjectComparator::compareMesh(mesh1, mesh2);
+
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareMesh( mesh1, mesh2 ) );
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testPatientDB()
+void ObjectTest::imageTest()
 {
-    ::fwData::PatientDB::sptr pdb1 = ObjectGenerator::createPatientDB();
+    ::fwData::Image::NewSptr image1;
+    ::fwDataTools::Image::generateRandomImage( image1, ::fwTools::Type::create("int16") );
+
+    ::fwData::Image::sptr image2 = ::fwData::Image::dynamicCast( ObjectTest::serialize("Image.xml", image1) );
+
+    CPPUNIT_ASSERT(image2);
+    CPPUNIT_ASSERT( ::fwDataTools::Image::compareImage( image1, image2 ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::reconstructionTest()
+{
+    ::fwData::Reconstruction::NewSptr rec1;
+    ::fwDataTools::Patient::generateReconstruction(rec1);
+
+    ::fwData::Reconstruction::sptr rec2 = ::fwData::Reconstruction::dynamicCast( ObjectTest::serialize("Reconstruction.xml", rec1) );
+
+    CPPUNIT_ASSERT(rec2);
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareReconstruction( rec1, rec2 ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::acquisitionTest()
+{
+    ::fwData::Acquisition::NewSptr acq1;
+    ::fwDataTools::Patient::generateAcquisition( acq1, 1 );
+    ::fwData::Acquisition::sptr acq2 = ::fwData::Acquisition::dynamicCast( ObjectTest::serialize("Acquisition.xml", acq1) );
+    CPPUNIT_ASSERT(acq2);
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareAcquisition( acq1, acq2 ) );
+
+    ::fwData::Acquisition::NewSptr acq1bis;
+    ::fwDataTools::Patient::generateAcquisition( acq1bis, 0 );
+    acq2 = ::fwData::Acquisition::dynamicCast( ObjectTest::serialize("Acquisition.xml", acq1bis) );
+    CPPUNIT_ASSERT(acq2);
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareAcquisition( acq1bis, acq2 ) );
+}
+
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::studyTest()
+{
+    ::fwData::Study::NewSptr study;
+    ::fwDataTools::Patient::generateStudy(study, 2,2);
+
+    ::fwData::Study::sptr study2 = ::fwData::Study::dynamicCast(ObjectTest::serialize("Study.xml", study));
+    CPPUNIT_ASSERT(study2);
+
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::compareStudy( study, study2 ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::patientTest()
+{
+    ::fwData::Patient::NewSptr patient;
+    ::fwDataTools::Patient::generatePatient(patient,2,2,2);
+
+    ::fwData::Patient::sptr patient2 = ::fwData::Patient::dynamicCast(ObjectTest::serialize("Patient.xml", patient));
+    CPPUNIT_ASSERT(patient2);
+
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::comparePatient( patient, patient2 ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::patientDBTest()
+{
+    ::fwData::PatientDB::NewSptr pdb1;
+    ::fwData::Patient::NewSptr patient;
+    ::fwDataTools::Patient::generatePatient(patient,2,2,2);
+    pdb1->addPatient( patient );
+
     ::fwData::PatientDB::sptr pdb2 = ::fwData::PatientDB::dynamicCast(ObjectTest::serialize("PatientDB.xml", pdb1));
     CPPUNIT_ASSERT(pdb2);
-    ObjectComparator::comparePatientDB(pdb1, pdb2);
+
+    CPPUNIT_ASSERT( pdb2->getNumberOfPatients() == 1 );
+    CPPUNIT_ASSERT( ::fwDataTools::Patient::comparePatient( pdb1->getPatients()[0], pdb2->getPatients()[0] ) );
 }
 
 //------------------------------------------------------------------------------
-
-void ObjectTest::testColor()
+void ObjectTest::colorTest()
 {
-    ::fwData::Color::sptr col1 = ObjectGenerator::createColor();
+    ::fwData::Color::sptr col1 = ::fwDataTools::ObjectGenerator::randomizeColor();
     ::fwData::Color::sptr col2 = ::fwData::Color::dynamicCast(ObjectTest::serialize("Color.xml", col1));
     CPPUNIT_ASSERT(col2);
-    ObjectComparator::compareColor(col1, col2);
+    CPPUNIT_ASSERT(::fwDataTools::Patient::compareColor(col1, col2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testMaterial()
+void ObjectTest::materialTest()
 {
-    ::fwData::Material::sptr mat1 = ObjectGenerator::createMaterial();
+    ::fwData::Material::sptr mat1 = ::fwDataTools::ObjectGenerator::createMaterial();
     ::fwData::Material::sptr mat2 = ::fwData::Material::dynamicCast(ObjectTest::serialize("Material.xml", mat1));
     CPPUNIT_ASSERT(mat2);
-    ObjectComparator::compareMaterial(mat1, mat2);
+    CPPUNIT_ASSERT(::fwDataTools::Patient::compareMaterial(mat1, mat2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testTriangularMesh()
+void ObjectTest::transferFunctionTest()
 {
-    ::fwData::TriangularMesh::sptr trian1 = ObjectGenerator::createTriangularMesh();
-    ::fwData::TriangularMesh::sptr trian2 = ::fwData::TriangularMesh::dynamicCast(ObjectTest::serialize("TriangularMesh.xml", trian1));
-    CPPUNIT_ASSERT(trian2);
-    ObjectComparator::compareTriangularMesh(trian1, trian2);
-}
+    ::fwData::TransferFunction::sptr tf1 = ::fwDataTools::ObjectGenerator::createTFColor();
 
-//------------------------------------------------------------------------------
-
-void ObjectTest::testTransfertFunction()
-{
-    ::fwData::TransfertFunction::sptr tf1 = ObjectGenerator::createTransfertFunction();
-    ::fwData::TransfertFunction::sptr tf2 = ::fwData::TransfertFunction::dynamicCast(ObjectTest::serialize("TransfertFunction.xml", tf1));
+    ::fwData::TransferFunction::sptr tf2 = ::fwData::TransferFunction::dynamicCast(ObjectTest::serialize("TransferFunction.xml", tf1));
     CPPUNIT_ASSERT(tf2);
-    ObjectComparator::compareTransfertFunction(tf1, tf2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareTransferFunction(tf1, tf2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testStructureTraitsDictionary()
+void ObjectTest::structureTraitsDictionaryTest()
 {
-    ::fwData::StructureTraitsDictionary::sptr structureDico1 = ObjectGenerator::createStructureTraitsDictionary();
+    ::fwData::StructureTraitsDictionary::sptr structureDico1 = ::fwDataTools::ObjectGenerator::createStructureTraitsDictionary();
     ::fwData::StructureTraitsDictionary::sptr structureDico2 = ::fwData::StructureTraitsDictionary::dynamicCast(ObjectTest::serialize("StructureTraitsDictionary.xml", structureDico1));
     CPPUNIT_ASSERT(structureDico2);
-    ObjectComparator::compareStructureTraitsDictionary(structureDico1, structureDico2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareStructureTraitsDictionary(structureDico1, structureDico2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testStructureTraits()
+void ObjectTest::structureTraitsTest()
 {
-    ::fwData::StructureTraits::sptr structure1 = ObjectGenerator::createStructureTraits();
+    ::fwData::StructureTraits::sptr structure1 = ::fwDataTools::ObjectGenerator::createStructureTraits();
     ::fwData::StructureTraits::sptr structure2 = ::fwData::StructureTraits::dynamicCast(ObjectTest::serialize("StructureTraits.xml", structure1));
     CPPUNIT_ASSERT(structure2);
-    ObjectComparator::compareStructureTraits(structure1, structure2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareStructureTraits(structure1, structure2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testROITraits()
+void ObjectTest::ROITraitsTest()
 {
-    ::fwData::Composite::sptr roiCompo1 = ObjectGenerator::createROITraits();
+    ::fwData::Composite::sptr roiCompo1 = ::fwDataTools::ObjectGenerator::createROITraits();
     ::fwData::Composite::sptr roiCompo2 = ::fwData::Composite::dynamicCast(ObjectTest::serialize("ROITraits.xml", roiCompo1));
     CPPUNIT_ASSERT(roiCompo2);
     CPPUNIT_ASSERT(roiCompo2->find("ROITraits") != roiCompo2->end());
     ::fwData::ROITraits::sptr roi1 = ::fwData::ROITraits::dynamicCast((*roiCompo1)["ROITraits"]);
     ::fwData::ROITraits::sptr roi2 = ::fwData::ROITraits::dynamicCast((*roiCompo2)["ROITraits"]);
-    ObjectComparator::compareROITraits(roi1, roi2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareROITraits(roi1, roi2));
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectTest::testReconstructionTraits()
+void ObjectTest::reconstructionTraitsTest()
 {
-    ::fwData::Composite::sptr recCompo1 = ObjectGenerator::createReconstructionTraits();
+    ::fwData::Composite::sptr recCompo1 = ::fwDataTools::ObjectGenerator::createReconstructionTraits();
     ::fwData::Composite::sptr recCompo2 = ::fwData::Composite::dynamicCast(ObjectTest::serialize("ReconstructionTraits.xml", recCompo1));
     CPPUNIT_ASSERT(recCompo2);
     CPPUNIT_ASSERT(recCompo2->find("ReconstructionTraits") != recCompo2->end());
     ::fwData::ReconstructionTraits::sptr rec1 = ::fwData::ReconstructionTraits::dynamicCast((*recCompo1)["ReconstructionTraits"]);
     ::fwData::ReconstructionTraits::sptr rec2 = ::fwData::ReconstructionTraits::dynamicCast((*recCompo2)["ReconstructionTraits"]);
-    ObjectComparator::compareReconstructionTraits(rec1, rec2);
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareReconstructionTraits(rec1, rec2));
 }
 
 //------------------------------------------------------------------------------
+
+void ObjectTest::fieldSerializationTest()
+{
+    ::fwData::Color::sptr mainObj = ::fwDataTools::ObjectGenerator::randomizeColor();
+
+    ::fwData::String::NewSptr obj1 ("toto");
+    std::string key1 = "key1";
+    mainObj->setField( key1, obj1 );
+
+    ::fwData::Integer::NewSptr obj2 (3);
+    std::string key2 = "key2";
+    mainObj->setField( key2, obj2 );
+
+    ::fwData::String::NewSptr obj3 ("tutu");
+    std::string key3 = "key3";
+    mainObj->setField( key3, obj3 );
+    obj1->setField( key3, obj3 );
+
+    ::fwData::Color::sptr mainObjReloaded = ::fwData::Color::dynamicCast(ObjectTest::serialize("fieldSerialization.xml", mainObj));
+    CPPUNIT_ASSERT(mainObjReloaded);
+
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(3), mainObjReloaded->getFields().size() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField( key1 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("toto"), mainObjReloaded->getField< ::fwData::String >( key1 )->value() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField( key2 ) );
+    CPPUNIT_ASSERT_EQUAL( 3, mainObjReloaded->getField< ::fwData::Integer >( key2 )->value() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField( key3 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("tutu"), mainObjReloaded->getField< ::fwData::String >(key3)->value() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField< ::fwData::String >( key1 )->getField( key3 ) );
+    CPPUNIT_ASSERT_EQUAL( std::string("tutu"), mainObjReloaded->getField< ::fwData::String >( key1 )->getField< ::fwData::String >(key3)->value() );
+
+    CPPUNIT_ASSERT( mainObjReloaded->getField(key1)->getField(key3) ==  mainObjReloaded->getField(key3) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::imageFieldSerializationTest()
+{
+    ::fwData::Patient::NewSptr patient;
+    ::fwDataTools::Patient::generatePatient( patient, 1, 1, 0 );
+
+    ::fwData::Image::sptr imgAcq = patient->getStudies()[0]->getAcquisitions()[0]->getImage();
+
+    std::string key = "image";
+    patient->setField( key, imgAcq );
+
+    ::fwData::Patient::sptr objReloaded = ::fwData::Patient::dynamicCast(ObjectTest::serialize("imageFieldSerialization.xml", patient));
+    CPPUNIT_ASSERT( objReloaded );
+    CPPUNIT_ASSERT( objReloaded->getStudies().size() == 1 );
+    CPPUNIT_ASSERT( objReloaded->getStudies()[0]->getAcquisitions().size() == 1 );
+    ::fwData::Image::sptr imgAcqReloaded = objReloaded->getStudies()[0]->getAcquisitions()[0]->getImage();
+    CPPUNIT_ASSERT( imgAcqReloaded );
+    CPPUNIT_ASSERT( objReloaded->getField( key ) );
+    CPPUNIT_ASSERT( objReloaded->getField( key ) == imgAcqReloaded );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::resectionDBSerializationTest()
+{
+
+    ::fwData::ResectionDB::sptr resecDB1 = ::fwDataTools::ObjectGenerator::generateResectionDB();
+    ::fwData::ResectionDB::sptr resecDBReloaded = ::fwData::ResectionDB::dynamicCast(ObjectTest::serialize("resectionDBSerialization.xml", resecDB1));
+
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareResectionDB(resecDBReloaded, resecDB1));
+
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::resectionDBWithSafeResectionSerializationTest()
+{
+
+    ::fwData::ResectionDB::sptr resecDB1 = ::fwDataTools::ObjectGenerator::generateResectionDB();
+
+    ::fwData::Resection::sptr safeResection = ::fwDataTools::ObjectGenerator::generateResection();
+    resecDB1->setSafeResection(safeResection);
+
+    ::fwData::ResectionDB::sptr resecDBReloaded = ::fwData::ResectionDB::dynamicCast(ObjectTest::serialize("resectionDBSerialization.xml", resecDB1));
+
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareResectionDB(resecDBReloaded, resecDB1));
+
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::dictionarySerializationTest()
+{
+
+    ::fwData::Dictionary::sptr dico1 = ::fwDataTools::ObjectGenerator::createDictionary();
+    ::fwData::Dictionary::sptr dicoReloaded = ::fwData::Dictionary::dynamicCast(ObjectTest::serialize("dictionarySerialization.xml", dico1));
+
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareDictionary(dicoReloaded, dico1));
+
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectTest::processObjectSerializationTest()
+{
+
+    ::fwData::ProcessObject::sptr po1 = ::fwDataTools::ObjectGenerator::createProcessObject();
+    ::fwData::ProcessObject::sptr poReloaded = ::fwData::ProcessObject::dynamicCast(ObjectTest::serialize("processObjectSerialization.xml", po1));
+
+    CPPUNIT_ASSERT(::fwDataTools::ObjectComparator::compareProcessObject(poReloaded, po1));
+
+}
+
+//------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwXML

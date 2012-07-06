@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWTOOLS_TYPEINFO
-#define FWTOOLS_TYPEINFO
+#ifndef __FWTOOLS_TYPEINFO_HPP__
+#define __FWTOOLS_TYPEINFO_HPP__
 
 #include <typeinfo>
 #include "fwTools/config.hpp"
@@ -88,8 +88,6 @@ FWTOOLS_API bool operator<=(const TypeInfo& lhs, const TypeInfo& rhs);
 FWTOOLS_API bool operator>=(const TypeInfo& lhs, const TypeInfo& rhs);
 ///@}
 
-
-
 }
 
-#endif /* FWTOOLS_TYPEINFO_ */
+#endif /* __FWTOOLS_TYPEINFO_HPP__ */

@@ -32,7 +32,7 @@ void QtMenuBarContainer::clean()
     m_menuBar->clear();
 
     QList<QMenu *> list = m_menuBar->findChildren<QMenu *>();
-    foreach (QMenu *m, list)
+    Q_FOREACH (QMenu *m, list)
     {
         m->setParent(0);
         m->deleteLater();

@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifdef _WIN32
+
 #include <assert.h>
 #include <iomanip>
 #include <iostream>
@@ -15,10 +17,8 @@
 
 #include <fwCore/base.hpp>
 
-#include "fwMemory/MemoryMonitor.hpp"
 #include "fwMemory/tools/Win32MemoryMonitorTools.hpp"
 
-#ifdef _WIN32
 
 #include <windows.h>
 #include <stdio.h>

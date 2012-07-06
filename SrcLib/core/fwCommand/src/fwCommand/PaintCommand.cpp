@@ -22,10 +22,8 @@ namespace fwCommand
 REGISTER_BINDING_BYCLASSNAME( ::fwCommand::ICommand, ::fwCommand::PaintCommand, ::fwCommand::PaintCommand );
 
 //-----------------------------------------------------------------------------
-PaintCommand::PaintCommand() : ICommand(),
-    m_buffer(0)
-{
-}
+PaintCommand::PaintCommand() : ICommand()
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -43,10 +41,11 @@ const boost::uint32_t  PaintCommand::getSize() const
 void PaintCommand::setImage( ::fwData::Image::sptr  image )
 {
     m_image = image;
+    m_imageHelper = ::fwComEd::helper::Image::New(image);
     //We assume that during all the command construction, the image do not
     //change and is not destroyed, so we can keep a reference to it buffer
-    m_buffer = static_cast< ::fwData::Image::BufferType* >( image->getBuffer() );
-    SLM_ASSERT("Using a paintcommand on an image without buffer is not possible", m_buffer);
+//    m_buffer = static_cast< ::fwData::Image::BufferType* >( image->getBuffer() );
+    SLM_ASSERT("Using a paintcommand on an image without buffer is not possible", image->getSizeInBytes() > 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -58,7 +57,7 @@ void PaintCommand::prePaint( ::fwData::Image::IndexType x, ::fwData::Image::Inde
     const int &sx = size[0];
     const int &sy = size[1];
     const ::fwData::Image::IndexType index = x + sx*y + z*sx*sy;
-    prePaint(index);
+    this->prePaint(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,7 +69,8 @@ void PaintCommand::prePaint( ::fwData::Image::IndexType index )
 
     m_currentPrepaintIndex = index;
     SLM_ASSERT("currentPrepaintBuff must be empty. Forgot a postPaint call ?", m_currentPrepaintBuff.empty());
-    ::fwData::Image::BufferType *buf  = m_buffer + index*imageTypeSize;
+    ::fwData::Image::BufferType *pixels = static_cast< ::fwData::Image::BufferType* >( m_imageHelper->getBuffer() );
+    ::fwData::Image::BufferType *buf  = pixels + index*imageTypeSize;
     std::copy(buf, buf+imageTypeSize, std::back_insert_iterator<std::vector< ::fwData::Image::BufferType > >(m_currentPrepaintBuff));
 }
 
@@ -79,14 +79,15 @@ void PaintCommand::prePaint( ::fwData::Image::IndexType index )
 void PaintCommand::postPaint()
 {
     ::fwData::Image::sptr image = m_image.lock();
-    ::fwData::Image::BufferType *buf  = m_buffer + m_currentPrepaintIndex;
+    ::fwData::Image::BufferType *pixels = static_cast< ::fwData::Image::BufferType* >( m_imageHelper->getBuffer() );
+    ::fwData::Image::BufferType *buf  = pixels + m_currentPrepaintIndex;
 
     unsigned int imageTypeSize = image->getPixelType().sizeOf();
     ::fwData::Image::BufferIndexType bufIndex = m_currentPrepaintIndex * imageTypeSize;
 
     for (unsigned int i = 0; i < imageTypeSize; ++i)
     {
-        paint( bufIndex + i, m_currentPrepaintBuff[i], buf[i]);
+        this->paint( bufIndex + i, m_currentPrepaintBuff[i], buf[i]);
     }
     m_currentPrepaintBuff.clear();
 }
@@ -104,9 +105,9 @@ void PaintCommand::paint( ::fwData::Image::BufferIndexType index, ::fwData::Imag
 void PaintCommand::apply()
 {
     // start image editing
-    ::fwData::Image::BufferType* pixels = static_cast< ::fwData::Image::BufferType* >( m_image.lock()->getBuffer() );
+    ::fwData::Image::BufferType *pixels = static_cast< ::fwData::Image::BufferType* >( m_imageHelper->getBuffer() );
     SLM_ASSERT("commandIndexContainer and commandColorContainer must have same size",
-            m_commandColorContainer.size() == m_commandIndexContainer.size());
+                m_commandColorContainer.size() == m_commandIndexContainer.size());
 
     // do each voxel modification
     ColorContainer::const_iterator indexC( m_commandColorContainer.begin() );
@@ -123,9 +124,9 @@ void PaintCommand::apply()
 void PaintCommand::unapply()
 {
     // start image editing
-    ::fwData::Image::BufferType * pixels = static_cast< ::fwData::Image::BufferType* >( m_image.lock()->getBuffer() );
+    ::fwData::Image::BufferType *pixels = static_cast< ::fwData::Image::BufferType* >( m_imageHelper->getBuffer() );
     SLM_ASSERT("commandIndexContainer and commandColorContainer must have same size",
-            m_commandColorContainer.size() == m_commandIndexContainer.size());
+                m_commandColorContainer.size() == m_commandIndexContainer.size());
 
     // do each voxel modification
     ColorContainer::const_iterator indexC( m_commandColorContainer.begin() );

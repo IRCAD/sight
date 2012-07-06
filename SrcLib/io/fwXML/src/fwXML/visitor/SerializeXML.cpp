@@ -21,7 +21,6 @@
 #include "fwXML/visitor/SerializeXML.hpp"
 #include "fwXML/XML/XMLTranslatorHelper.hpp"
 #include "fwXML/XML/TrivialXMLTranslator.hpp"
-#include "fwXML/IFileFormatService.hpp"
 
 namespace visitor
 {
@@ -36,14 +35,12 @@ SerializeXML::~SerializeXML()
 
 //-----------------------------------------------------------------------------
 
-void SerializeXML::visit( ::fwTools::Object::sptr obj)
+void SerializeXML::visit( ::fwData::Object::sptr obj)
 {
     SLM_ASSERT("Object is null", obj);
-    bool supportFileFormatSrv =  ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),  "::fwXML::IFileFormatService");
     OSLM_DEBUG( "SerializeXML Visitor Visiting : Class " << obj->className() <<
             "(" <<  ::fwTools::UUID::get(obj)    <<
-            ") Support<FileFormatService>" <<  (supportFileFormatSrv?"yes":"no") <<
-            "ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
+            ") ParentClass: " <<  (m_source?m_source->className():"NULL")   <<
             "(" << (m_source?::fwTools::UUID::get(m_source):"NoSOURCENOUUID") << ")"
     );
 
@@ -55,35 +52,44 @@ void SerializeXML::visit( ::fwTools::Object::sptr obj)
         translator = ::fwXML::TrivialXMLTranslator::New();
     }
 
-    if ( supportFileFormatSrv )
-    {
-        ::fwXML::IFileFormatService::sptr  saver;
-        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(obj);
-        if( filesSrv.empty() )
-        {
-            std::string defaultImpl = ::fwServices::registry::ServiceFactory::getDefault()->getDefaultImplementationIdFromObjectAndType(obj->getClassname(), "::fwXML::IFileFormatService");
-            saver = ::fwServices::add< ::fwXML::IFileFormatService >(obj, defaultImpl);
-        }
-        else
-        {
-            saver = filesSrv.at(0);
-        }
-        saver->filename() = obj->getLeafClassname() + "_" + ::fwTools::UUID::get(obj);
-        saver->extension() = saver->getWriter()->extension();
-    }
-
     // update XML
     xmlNodePtr objectXMLNode = translator->getXMLFrom(obj);
 
+    // save fields
+    if( ! obj->getFields().empty() )
+    {
+        xmlNodePtr attributeNode = xmlNewNode( NULL, xmlStrdup( BAD_CAST "Attributes" )  );
+        xmlAddChild( objectXMLNode, attributeNode );
+
+        BOOST_FOREACH( ::fwData::Object::FieldNameType name, obj->getFieldNames() )
+        {
+            ::fwData::Object::sptr objAttribute = obj->getField(name);
+            if( objAttribute )
+            {
+                // <element key="" value="" />
+                xmlNodePtr elementNode = xmlNewNode(NULL, BAD_CAST "element");
+                xmlAddChild(attributeNode, elementNode);
+
+                xmlNodePtr keyNode = xmlNewNode(NULL, BAD_CAST "key");
+                xmlNodeAddContent( keyNode,  xmlStrdup( BAD_CAST name.c_str() ) );
+                xmlAddChild(elementNode, keyNode);
+
+                xmlNodePtr valueNode = xmlNewNode(NULL, BAD_CAST "value");
+                xmlNodePtr trueValueNode = ::fwXML::XMLTranslatorHelper::toXMLRecursive(objAttribute);
+                xmlAddChild(elementNode, valueNode);
+                xmlAddChild(valueNode, trueValueNode);
+            }
+        }
+    }
+
     // save DynamicAttributes
-    ::fwData::Object::sptr dataObject = ::fwData::Object::dynamicCast(obj);
-    if(dataObject && !dataObject->getAttributeNames().empty())
+    if( ! obj->getAttributeNames().empty() )
     {
         xmlNodePtr dynAttributeNode = xmlNewNode( NULL, xmlStrdup( BAD_CAST "DynamicAttributes" )  );
         xmlAddChild(objectXMLNode, dynAttributeNode);
-        BOOST_FOREACH( ::fwData::Object::AttrNameType name, dataObject->getAttributeNames() )
+        BOOST_FOREACH( ::fwData::Object::AttrNameType name, obj->getAttributeNames() )
         {
-            ::fwData::Object::sptr objAttribute = dataObject->getAttribute(name);
+            ::fwData::Object::sptr objAttribute = obj->getAttribute(name);
             if(objAttribute)
             {
                 xmlNodePtr elementNode = xmlNewNode(NULL, BAD_CAST "element");
@@ -100,11 +106,12 @@ void SerializeXML::visit( ::fwTools::Object::sptr obj)
             }
         }
     }
+
     if ( m_correspondance[m_source] ) //manage the root
     {
         xmlAddChild(m_correspondance[m_source] , objectXMLNode );
     }
-    // keep correspondance
+    // keep correspondence
     m_correspondance[obj] = objectXMLNode;
 }
 

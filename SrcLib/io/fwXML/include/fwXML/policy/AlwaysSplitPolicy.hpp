@@ -26,7 +26,7 @@ public:
     /**
      * @brief   always return true
      */
-    FWXML_API virtual bool split(::fwTools::Object::sptr obj);
+    FWXML_API virtual bool split(::fwData::Object::sptr obj);
 };
 
 } //namespace fwXML

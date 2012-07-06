@@ -13,6 +13,7 @@
 #include "fwData/config.hpp"
 
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/TriangularMesh.hpp"
 #include "fwData/Material.hpp"
 
@@ -34,7 +35,7 @@ namespace fwData
 class FWDATA_CLASS_API Model : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object), (()), ::fwTools::Factory::New< Model >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object), (()), ::fwData::Factory::New< Model >) ;
 
     /// mesh and material container
     typedef std::map< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr  > Container ;

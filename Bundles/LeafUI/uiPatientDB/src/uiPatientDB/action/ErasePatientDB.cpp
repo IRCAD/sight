@@ -16,7 +16,6 @@
 #include <fwServices/Base.hpp>
 
 #include <fwComEd/PatientDBMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/BackupHelper.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -55,8 +54,10 @@ void ErasePatientDB::updating( ) throw(::fwTools::Failed)
 
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
 
-    if(!pPatientDB || pPatientDB->getPatientSize()==0)
+    if(!pPatientDB || pPatientDB->getNumberOfPatients()==0)
+    {
         return;
+    }
 
     ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Erase all patients");
@@ -69,12 +70,12 @@ void ErasePatientDB::updating( ) throw(::fwTools::Failed)
     if ( answer == ::fwGui::dialog::IMessageDialog::OK )
     {
         ::fwData::Patient::sptr pPatientBAK = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pPatientDB);
+        ::fwData::PatientDB::PatientContainerType emptyPatient;
+        pPatientDB->setPatients(emptyPatient);
 
-        ::fwData::PatientDB::PatientIterator patientIter = pPatientDB->getPatients().first;
-        pPatientDB->removeField( ::fwData::PatientDB::ID_PATIENTS );
-        pPatientDB->setField( ::fwData::PatientDB::ID_PATIENTS );
-
-        pPatientDB->removeField( fwComEd::Dictionary::m_imageSelectedId);
+        pPatientDB->removeField("SELECTED_PATIENT");
+        pPatientDB->removeField("SELECTED_STUDY");
+        pPatientDB->removeField("SELECTED_ACQUISITION");
 
         ::fwComEd::PatientDBMsg::NewSptr msg;
         msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);

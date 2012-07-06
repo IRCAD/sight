@@ -41,6 +41,11 @@
 
 #include <fwMath/MeshFunctions.hpp>
 
+#include <fwData/Image.hpp>
+#include <fwData/ObjectLock.hpp>
+
+#include <fwComEd/helper/Image.hpp>
+
 #include "vtkIO/vtk.hpp"
 
 
@@ -136,6 +141,8 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = boost::assign:
 
 void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
 {
+    ::fwComEd::helper::Image imageHelper(data);
+
     vtkSmartPointer< vtkImageImport > importer = vtkSmartPointer< vtkImageImport >::New();
     importer->SetDataSpacing( data->getSpacing().at(0),
                               data->getSpacing().at(1),
@@ -157,7 +164,7 @@ void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
     importer->SetDataExtentToWholeExtent();
 
     // no copy, no buffer destruction/management
-    importer->SetImportVoidPointer( data->getBuffer() );
+    importer->SetImportVoidPointer( imageHelper.getBuffer() );
     importer->SetCallbackUserData( data.get() );
     // used to set correct pixeltype to VtkImage
     importer->SetDataScalarType( TypeTranslator::translate(data->getType()) );
@@ -216,7 +223,9 @@ void fromRGBBuffer( void *input, size_t size, void *&destBuffer)
 
 void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
-    assert(destination && source );
+    SLM_ASSERT("vtkImageData source and/or ::fwData::Image destination are not correct", destination && source );
+
+    ::fwComEd::helper::Image imageHelper(destination);
 
     // ensure image size correct
     source->UpdateInformation();
@@ -226,6 +235,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     OSLM_TRACE("source->GetDataDimension() : " << dim);
 
     SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
+
 
     destination->setSize( ::fwData::Image::SizeType(source->GetDimensions(), source->GetDimensions()+dim) );
     destination->setSpacing( ::fwData::Image::SpacingType(source->GetSpacing(), source->GetSpacing()+dim) );
@@ -248,7 +258,8 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
             destination->setType( "uint16" );
             destination->allocate();
-            destBuffer = destination->getBuffer();
+            ::fwData::ObjectLock lock(destination);
+            destBuffer = imageHelper.getBuffer();
             SLM_ASSERT("Image allocation error", destBuffer != NULL);
             fromRGBBuffer< unsigned short >(input, size, destBuffer);
         }
@@ -258,7 +269,8 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
             destination->setType( "uint8" );
             destination->allocate();
-            destBuffer = destination->getBuffer();
+            ::fwData::ObjectLock lock(destination);
+            destBuffer = imageHelper.getBuffer();
             SLM_ASSERT("Image allocation error", destBuffer != NULL);
             fromRGBBuffer< unsigned char >(input, size, destBuffer);
         }
@@ -267,7 +279,8 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
             SLM_TRACE ("Luminance image");
             destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
             destination->allocate();
-            destBuffer = destination->getBuffer();
+            ::fwData::ObjectLock lock(destination);
+            destBuffer = imageHelper.getBuffer();
             size_t sizeInBytes = destination->getSizeInBytes();
             std::memcpy(destBuffer, input, sizeInBytes);
         }
@@ -283,6 +296,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
 void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage )
 {
+    ::fwComEd::helper::Image imageHelper(_pDataImage);
 
     _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
                                     _pDataImage->getSpacing().at(1),
@@ -302,7 +316,7 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
     // copy WholeExtent to DataExtent
     _pImageImport->SetDataExtentToWholeExtent();
     // no copy, no buffer destruction/management
-    _pImageImport->SetImportVoidPointer( _pDataImage->getBuffer() );
+    _pImageImport->SetImportVoidPointer( imageHelper.getBuffer() );
     _pImageImport->SetCallbackUserData( _pDataImage.get() );
     // used to set correct pixeltype to VtkImage
     _pImageImport->SetDataScalarType( TypeTranslator::translate(_pDataImage->getType()) );
@@ -517,149 +531,6 @@ bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::spt
     return res;
 }
 
-
 //-----------------------------------------------------------------------------
-
-void convertTF2vtkTF(
-        ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
-        vtkLookupTable * lookupTableDst,
-        bool allow_transparency
-        )
-{
-    SLM_TRACE_FUNC();
-    //vtkWindowLevelLookupTable * lookupTable = vtkWindowLevelLookupTable::New();
-
-    // Compute center and width
-    std::pair< double, ::boost::int32_t > centerAndWidth = _pTransfertFunctionSrc->getCenterWidth();
-    double width = centerAndWidth.second;
-
-    // Compute min and max
-    typedef ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPCIterator;
-    std::pair< TFPCIterator, TFPCIterator > range = _pTransfertFunctionSrc->getTransfertFunctionPoints();
-    int min = (*range.first)->getValue();
-
-
-    // Convert tf points
-    //-------------------
-
-    // Init iterator
-    TFPCIterator iterTF = range.first;
-    TFPCIterator iterTFNext = range.first + 1;
-    TFPCIterator end = range.second;
-
-    // Must have point in data tf
-    assert( iterTF != end );
-
-    // Init parameters
-    double r, g, b, x;
-    int    i          = 0;
-    double alpha      = 1.0;
-    double widthScale = 255.0 / width;
-    int    value      = 0;
-
-
-    // Set first point
-    value = ((*iterTF)->getValue() - min) * widthScale;
-    const ::fwData::Color::ColorArray & vRGBA0 = (*iterTF)->getColor()->getCRefRGBA();
-
-    if(allow_transparency)
-    {
-        alpha = vRGBA0[3];
-    }
-    lookupTableDst->SetTableValue(i, vRGBA0[0], vRGBA0[1], vRGBA0[2], alpha);
-
-    i++;
-
-    ::fwData::Color::ColorType R, G, B, A;
-    ::fwData::Color::ColorType deltaR, deltaV, deltaB, deltaA;
-    int valueNext, deltaValue;
-
-    while ( iterTFNext != end )
-    {
-        // First point
-        const ::fwData::Color::ColorArray &vRGBA     = (*iterTF)->getColor()->getCRefRGBA();
-        // Second point
-        const ::fwData::Color::ColorArray &vRGBANext = (*iterTFNext)->getColor()->getCRefRGBA();
-
-
-        value = ((*iterTF)->getValue() - min) * widthScale + 0.5; // + 0.5 just a hack to cap the integer
-        valueNext = ((*iterTFNext)->getValue() - min) * widthScale + 0.5; // + 0.5 just a hack to cap the integer ex : replace 254.9999999999999999 by 255
-
-        R = vRGBA[0];
-        G = vRGBA[1];
-        B = vRGBA[2];
-        A = vRGBA[3];
-        deltaR = vRGBANext[0] - vRGBA[0];
-        deltaV = vRGBANext[1] - vRGBA[1];
-        deltaB = vRGBANext[2] - vRGBA[2];
-        deltaA = vRGBANext[3] - vRGBA[3];
-        deltaValue = valueNext - value;
-
-        // Interpolation
-        if(allow_transparency)
-        {
-            while (i <= valueNext)
-            {
-                x = (double)(i - value) / (double)(deltaValue);
-                r     = ( R + (deltaR * x) );
-                g     = ( G + (deltaV * x) );
-                b     = ( B + (deltaB * x) );
-                alpha = ( A + (deltaA * x) );
-
-                lookupTableDst->SetTableValue( i, r, g, b , alpha );
-                i++;
-            }
-        }
-        else
-        {
-            while (i <= valueNext)
-            {
-                x = (double)(i - value) / (double)(deltaValue);
-                r     = ( R + (deltaR * x) );
-                g     = ( G + (deltaV * x) );
-                b     = ( B + (deltaB * x) );
-
-                lookupTableDst->SetTableValue( i, r, g, b , alpha );
-                i++;
-            }
-        }
-
-        iterTF++;
-        iterTFNext++;
-    }
-
-    lookupTableDst->SetTableRange( min, min + width );
-
-    lookupTableDst->Build();
-}
-
-//-----------------------------------------------------------------------------
-
-void convertTF2vtkTFBW(
-        ::fwData::TransfertFunction::sptr _pTransfertFunctionSrc ,
-        vtkLookupTable * lookupTableDst )
-{
-    SLM_TRACE_FUNC();
-
-    // Compute center and width
-    std::pair< double, ::boost::int32_t > centerAndWidth = _pTransfertFunctionSrc->getCenterWidth();
-    double width = centerAndWidth.second;
-
-    // Compute min and max
-    typedef ::fwData::TransfertFunction::TransfertFunctionPointIterator TFPCIterator;
-    std::pair< TFPCIterator, TFPCIterator > range = _pTransfertFunctionSrc->getTransfertFunctionPoints();
-    int min = (*range.first)->getValue();
-
-
-    double alpha = 1.0;
-    float value;
-    for( int k = 0; k < 256; k++ )
-    {
-        value = ((float) k)/255.0;
-        lookupTableDst->SetTableValue( k, value, value, value, alpha );
-    }
-    lookupTableDst->SetTableRange( min, min + width );
-    lookupTableDst->Build();
-}
 
 } // namespace vtkIO

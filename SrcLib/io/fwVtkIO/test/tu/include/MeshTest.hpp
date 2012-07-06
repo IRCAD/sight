@@ -4,13 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWVTKIO_TEST_TU_MESHTEST_HPP_
-#define _FWVTKIO_TEST_TU_MESHTEST_HPP_
+#ifndef _FWVTKIO_UT_MESHTEST_HPP_
+#define _FWVTKIO_UT_MESHTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/Array.hpp>
+
+namespace fwVtkIO
+{
+namespace ut
+{
 
 /**
  * @brief Test many methods to create mesh.
@@ -32,8 +37,9 @@ public:
     void testSyntheticMesh();
     void testExportImportSyntheticMesh();
 
-    static void compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2);
-    static void compareBuffer(::fwData::Array::sptr buff1, ::fwData::Array::sptr buff2);
 };
 
-#endif //_FWVTKIO_TEST_TU_MESHTEST_HPP_
+} // namespace ut
+} // namespace fwVtkIO
+
+#endif //_FWVTKIO_UT_MESHTEST_HPP_

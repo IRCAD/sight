@@ -70,8 +70,8 @@ void CameraReaderService::updating() throw(::fwTools::Failed)
         ::fwData::Camera::sptr cam = this->getObject< ::fwData::Camera>( );
         SLM_ASSERT("cam not instanced", cam);
 
-        OSLM_INFO("path: " << m_fsCameraPath);
-        loadCalibration(this->getFile().string(), cam);
+        OSLM_INFO("path: " << this->getFile().string());
+        this->loadCalibration(this->getFile().string(), cam);
 
         // Notify reading
         ::fwComEd::CameraMsg::NewSptr msg;

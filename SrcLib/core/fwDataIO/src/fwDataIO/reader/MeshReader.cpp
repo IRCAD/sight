@@ -26,6 +26,9 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/location/SingleFile.hpp>
 
+#include <fwComEd/helper/Mesh.hpp>
+#include <fwComEd/helper/Array.hpp>
+
 #include "fwDataIO/reader/MeshReader.hpp"
 
 
@@ -84,6 +87,12 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     ::fwData::Array::sptr cellDataOffsetsArray = mesh->getCellDataOffsetsArray();
     ::fwData::Array::sptr cellNormalsArray     = mesh->getCellNormalsArray();
 
+    fwComEd::helper::Array pointHelper(pointArray);
+    fwComEd::helper::Array cellDataHelper(cellDataArray);
+    fwComEd::helper::Array cellNormalsHelper(cellNormalsArray);
+    fwComEd::helper::Array cellDataOffsetsHelper(cellDataOffsetsArray);
+    fwComEd::helper::Array cellTypesHelper(cellTypesArray);
+
 
     ::fwData::Array::SizeType pointArraySize;
     ::fwData::Array::SizeType cellArraySize;
@@ -100,9 +109,9 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
             [
                 ref(nbPoints) = _1,
                 phx::bind(&::fwData::Mesh::setNumberOfPoints, *mesh, _1),
-                phx::push_back(ref(pointArraySize),ref(nbPoints)),
-                phx::bind(&::fwData::Array::resize, *pointArray, ref(pointArraySize), true) ,
-                ref(pointArrayBuffer) = phx::bind(&::fwData::Array::begin< ::fwData::Mesh::PointValueType >, *pointArray )
+                phx::push_back(phx::ref(pointArraySize),phx::ref(nbPoints)),
+                phx::bind(&::fwData::Array::resize, *pointArray, phx::ref(pointArraySize), true) ,
+                ref(pointArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::PointValueType >, pointHelper )
             ]
 
             >> repeat(ref(nbPoints))
@@ -121,8 +130,8 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                 phx::bind(&::fwData::Mesh::setNumberOfCells, *mesh, _1),
                 phx::bind(&::fwData::Mesh::setCellDataSize, *mesh, _1*3),
                 phx::bind(&::fwData::Mesh::adjustAllocatedMemory, *mesh),
-                ref(cellDataArrayBuffer) = phx::bind(&::fwData::Array::begin< ::fwData::Mesh::CellValueType >, *cellDataArray ),
-                ref(cellNormalsArrayBuffer) = phx::bind(&::fwData::Array::begin< ::fwData::Mesh::NormalValueType >, *cellNormalsArray )
+                ref(cellDataArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::CellValueType >, cellDataHelper ),
+                ref(cellNormalsArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::NormalValueType >, cellNormalsHelper )
             ]
 
             >> repeat(ref(nbCells))
@@ -143,9 +152,9 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
         space
         );
 
-    std::fill( 
-            cellTypesArray->begin< ::fwData::Mesh::CellTypes >(),
-            cellTypesArray->end< ::fwData::Mesh::CellTypes >(),
+    std::fill(
+            cellTypesHelper.begin< ::fwData::Mesh::CellTypes >(),
+            cellTypesHelper.end< ::fwData::Mesh::CellTypes >(),
             static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE)
             );
 
@@ -153,8 +162,8 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     cell_data_offset_generator cellDataOffsetGenerator;
 
     std::generate(
-            cellDataOffsetsArray->begin< ::fwData::Mesh::CellDataOffsetType >(),
-            cellDataOffsetsArray->end< ::fwData::Mesh::CellDataOffsetType >(),
+            cellDataOffsetsHelper.begin< ::fwData::Mesh::CellDataOffsetType >(),
+            cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(),
             cellDataOffsetGenerator
             );
 
@@ -166,8 +175,8 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     int &n = *reinterpret_cast<int*>(&normal);
 
     std::for_each(
-            cellNormalsArray->begin< int >(),
-            cellNormalsArray->end< int >(),
+            cellNormalsHelper.begin< int >(),
+            cellNormalsHelper.end< int >(),
             ref(n) &= boost::phoenix::arg_names::arg1
             );
 

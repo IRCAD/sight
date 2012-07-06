@@ -189,7 +189,7 @@ void DicomStudyReader::read() throw(::fwTools::Failed)
         itMap++;
     }
 
-    if(study->getAcquisitionSize() == 0)
+    if(study->getNumberOfAcquisitions() == 0)
         throw ::fwTools::Failed("Study has no acquisition");
 
     //*****     Read study      *****//

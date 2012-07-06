@@ -4,28 +4,27 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwMath/MatrixFunctions.hpp"
+#include <fwMath/MatrixFunctions.hpp>
+#include <fwMath/IntrasecTypes.hpp>
+#include <fwMath/VectorFunctions.hpp>
+#include <fwMath/LineFunctions.hpp>
+#include <fwMath/MatrixFunctions.hpp>
+
 #include "MatrixFunctionsTest.hpp"
 
-
-#include "fwMath/IntrasecTypes.hpp"
-#include "fwMath/VectorFunctions.hpp"
-#include "fwMath/LineFunctions.hpp"
-#include "fwMath/export.hpp"
-#include "fwMath/MatrixFunctions.hpp"
-
-//#include "SoLib/Sblinear.h"
-
-
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( MatrixFunctionsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMath::ut::MatrixFunctionsTest );
+
+namespace fwMath
+{
+namespace ut
+{
 
 void MatrixFunctionsTest::setUp()
 {
     // Set up context before running a test.
-
-
 }
+
 void MatrixFunctionsTest::tearDown()
 {
     // Clean up after the test run.
@@ -43,7 +42,6 @@ void MatrixFunctionsTest::checkMultVecMatrix()
     const double c3 = rand()%29+0.5;
     const double c4 = rand()%50+0.6;
     const double c5 = rand()%20+0.5;
-
 
     const fwVec3d source = {X, Y, Z};
     fwVec3d result;
@@ -95,3 +93,6 @@ void MatrixFunctionsTest::checkRotationMatrix()
 //  CPPUNIT_ASSERT_DOUBLES_EQUAL(result[3][2], sbResult[3][2], 0.00001);
 //  CPPUNIT_ASSERT_DOUBLES_EQUAL(result[3][3], sbResult[3][3], 0.00001);
 }
+
+} //namespace ut
+} //namespace fwMath

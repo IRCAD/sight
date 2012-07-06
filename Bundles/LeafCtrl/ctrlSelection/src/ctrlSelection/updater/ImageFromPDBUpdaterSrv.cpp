@@ -70,15 +70,13 @@ void ImageFromPDBUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) thr
 
 ::fwData::Image::sptr ImageFromPDBUpdaterSrv::getImage(::fwData::PatientDB::sptr patientDB)
 {
-    // Patient selection
-    ::fwData::PatientDB::PatientIterator patientIter = patientDB->getPatients().first;
-
-    // Study selection
-    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
-
-    // Acquisition selection
-    ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
-    return (*acquisitionIter)->getImage();
+    SLM_ASSERT("No patient in DB", patientDB->getNumberOfPatients());
+    ::fwData::Patient::sptr patient = patientDB->getPatients().front();
+    SLM_ASSERT("No study in patient", patient->getNumberOfStudies());
+    ::fwData::Study::sptr study     = patient->getStudies().front();
+    SLM_ASSERT("No acquisition in study", study->getNumberOfAcquisitions());
+    ::fwData::Acquisition::sptr acq = study->getAcquisitions().front();
+    return acq->getImage();
 }
 
 //-----------------------------------------------------------------------------

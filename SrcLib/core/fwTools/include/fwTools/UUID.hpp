@@ -42,7 +42,6 @@ public:
      */
     FWTOOLS_API static const UUIDType& get(::fwTools::Object::sptr object);
 
-
     /**
      * @brief   Return a smart ptr on the object related to a given UUID : return null shared if not supervised
      */
@@ -78,6 +77,5 @@ private:
 };
 
 }
-
 
 #endif /* _FWTOOLS_UUID_HPP_ */

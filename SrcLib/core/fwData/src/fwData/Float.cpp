@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Object.hpp"
 #include "fwData/GenericField.hpp"
 #include "fwData/Float.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Float, ::fwData::Float );
+fwDataRegisterMacro( ::fwData::Float );
 
 namespace fwData
 {
@@ -29,16 +29,16 @@ Float::~Float() throw()
 //------------------------------------------------------------------------------
 void Float::shallowCopy( Float::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_value = _source->m_value;
+    this->fieldShallowCopy( _source );
+    m_value = _source->m_value;
 }
 
 //------------------------------------------------------------------------------
 
 void Float::deepCopy( Float::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    this->m_value = _source->m_value;
+    this->fieldDeepCopy( _source );
+    m_value = _source->m_value;
 }
 
 

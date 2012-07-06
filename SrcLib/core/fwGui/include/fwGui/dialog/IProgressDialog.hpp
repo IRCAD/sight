@@ -56,13 +56,13 @@ public:
 
     FWGUI_API virtual void setCancelCallback(CancelCallbackType callback);
 
-    FWGUI_API virtual void setCancelRaiseException(bool raise){m_raise = raise;};
+    virtual void setCancelRaiseException(bool raise){m_raise = raise;};
 
-    FWGUI_API virtual bool getCanceled(){return m_canceled;};
+    virtual bool getCanceled(){return m_canceled;};
 
-    FWGUI_API virtual void hideCancelButton() {};
+    virtual void hideCancelButton() {};
 
-    FWGUI_API virtual void setProcessUserEvents(bool process){m_processUserEvents = process;}
+    virtual void setProcessUserEvents(bool process){m_processUserEvents = process;}
 
 protected :
 

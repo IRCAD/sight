@@ -61,7 +61,7 @@ struct LibraryBridge
      *
      * @return  true or false
      */
-    const bool isLoaded() const throw()
+    bool isLoaded() const throw()
     {
         return m_implementor.isLoaded();
     }

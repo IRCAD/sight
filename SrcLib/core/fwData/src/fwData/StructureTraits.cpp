@@ -7,27 +7,24 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwTools/Factory.hpp>
-
+#include "fwData/registry/macros.hpp"
 #include "fwData/StructureTraits.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::StructureTraits, ::fwData::StructureTraits );
+fwDataRegisterMacro( ::fwData::StructureTraits );
 
 namespace fwData
 {
 //------------------------------------------------------------------------------
 
-StructureTraits::StructureTraits ():m_propertyCategory(""), m_propertyType(""), m_anatomicRegion("")
+StructureTraits::StructureTraits() : m_anatomicRegion(""), m_propertyCategory(""), m_propertyType("")
 {
     m_color = ::fwData::Color::New();
 }
 
-
 //------------------------------------------------------------------------------
 
 StructureTraits::~StructureTraits ()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 

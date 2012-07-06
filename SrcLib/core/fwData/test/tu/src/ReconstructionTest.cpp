@@ -106,7 +106,7 @@ void ReconstructionTest::methode1() //test des setters et getters
     CPPUNIT_ASSERT_EQUAL(p1->getCRefStructureType(), CREFSTRUCTURETYPE);
     CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(), CREFSTRUCTURETYPE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getIsClosed(), ISCLOSED);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsClosed(), ::boost::logic::tribool(ISCLOSED));
 
     CPPUNIT_ASSERT_EQUAL(p1->getIsAutomatic(), ISAUTOMATIC);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefIsAutomatic(), ISAUTOMATIC);
@@ -223,7 +223,7 @@ void ReconstructionTest::methode2()
     CPPUNIT_ASSERT_EQUAL(p1->getCRefStructureType(), CREFSTRUCTURETYPE);
     CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(), CREFSTRUCTURETYPE);
 
-    CPPUNIT_ASSERT_EQUAL(p1->getIsClosed(), ISCLOSED);
+    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsClosed(), ::boost::logic::tribool(ISCLOSED));
 
     CPPUNIT_ASSERT_EQUAL(p1->getIsAutomatic(), ISAUTOMATIC);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefIsAutomatic(), ISAUTOMATIC);

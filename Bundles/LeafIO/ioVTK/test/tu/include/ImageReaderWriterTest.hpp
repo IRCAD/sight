@@ -9,6 +9,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace ioVTK
+{
+namespace ut
+{
+
 /**
  * @brief Test the reader and the writer of Image using VTK.
  */
@@ -39,11 +44,14 @@ public:
     void testMhdImageWriter();
     void testImageWriterExtension();
 
-    
+
 private :
     void runImageSrv(const std::string &srvtype, const std::string &srv, const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image);
-    
+
 
 };
+
+} //namespace ut
+} //namespace ioVTK
 
 #endif //_IOVTK_TEST_TU_IMAGEREADERWRITERTEST_HPP_

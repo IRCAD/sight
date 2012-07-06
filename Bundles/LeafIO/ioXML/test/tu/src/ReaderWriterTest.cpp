@@ -27,8 +27,12 @@
 #include "ReaderWriterTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ReaderWriterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::ioXML::ut::ReaderWriterTest );
 
+namespace ioXML
+{
+namespace ut
+{
 
 ::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path &file)
 {
@@ -187,3 +191,6 @@ void ReaderWriterTest::testWriter()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace ioXML

@@ -48,8 +48,8 @@ public:
         m_notifyHandler = handler;
     };
 
-    FWSERVICES_API DeliveryType getDeliveryType(){return m_deliveryType;}
-    FWSERVICES_API void setDeliveryType(DeliveryType t){m_deliveryType = t;}
+    DeliveryType getDeliveryType(){return m_deliveryType;}
+    void setDeliveryType(DeliveryType t){m_deliveryType = t;}
 
     virtual ~GlobalEventManager();
 

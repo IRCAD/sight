@@ -17,13 +17,21 @@
 #include <fwData/Image.hpp>
 #include <fwDataTools/Image.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include <fwTest/Data.hpp>
 
 #include "ImageReaderWriterTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ImageReaderWriterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVTK::ut::ImageReaderWriterTest );
+
 static const double epsilon = 0.00001;
+
+namespace ioVTK
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -48,7 +56,7 @@ void ImageReaderWriterTest::tearDown()
     readerSrvCfg->addConfigurationElement(readerCfg);
 
     return readerSrvCfg;
-    
+
 }
 
 //------------------------------------------------------------------------------
@@ -59,25 +67,25 @@ void ImageReaderWriterTest::testVtkImageReader()
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
 
     ::fwData::Image::NewSptr image;
-    
+
     // Data expected
     const size_t dim = 3;
     ::fwData::Image::SpacingType spacingExpected(dim);
     spacingExpected[0] = 1.732;
     spacingExpected[1] = 1.732;
     spacingExpected[2] = 3.2;
-    
+
     ::fwData::Image::OriginType originExpected(dim);
     originExpected[0] = 34.64;
     originExpected[1] = 86.6;
     originExpected[2] = 56;
-    
+
     ::fwData::Image::SizeType sizeExpected(dim);
     sizeExpected[0] = 230;
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
-    
-    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image); 
+
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
 
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
@@ -99,7 +107,7 @@ void ImageReaderWriterTest::testVtkImageReader()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
-        
+
 }
 
 //------------------------------------------------------------------------------
@@ -110,20 +118,20 @@ void ImageReaderWriterTest::testVtiImageReader()
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/image/vti/BostonTeapot.vti";
 
     ::fwData::Image::NewSptr image;
-    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image); 
-    
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
+
     // Data expected
     const size_t dim = 3;
     ::fwData::Image::SpacingType spacingExpected(dim);
     spacingExpected[0] = 1.0;
     spacingExpected[1] = 1.0;
     spacingExpected[2] = 1.0;
-    
+
     ::fwData::Image::OriginType originExpected(dim);
     originExpected[0] = 1.1;
     originExpected[1] = 2.2;
     originExpected[2] = 3.3;
-    
+
     ::fwData::Image::SizeType sizeExpected(dim);
     sizeExpected[0] = 256;
     sizeExpected[1] = 256;
@@ -136,7 +144,7 @@ void ImageReaderWriterTest::testVtiImageReader()
     ::fwData::Image::SpacingType originRead = image->getOrigin();
     ::fwData::Image::SizeType sizeRead = image->getSize();
 
-    
+
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
     CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
@@ -152,7 +160,7 @@ void ImageReaderWriterTest::testVtiImageReader()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
-    
+
     CPPUNIT_ASSERT_EQUAL( expectedType, image->getType());
 }
 
@@ -163,25 +171,25 @@ void ImageReaderWriterTest::testMhdImageReader()
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd";
 
     ::fwData::Image::NewSptr image;
-    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image); 
-    
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
+
     // Data expected
     const size_t dim = 3;
     ::fwData::Image::SpacingType spacingExpected(dim);
     spacingExpected[0] = 1.0;
     spacingExpected[1] = 1.0;
     spacingExpected[2] = 1.0;
-    
+
     ::fwData::Image::OriginType originExpected(dim);
     originExpected[0] = 1.1;
     originExpected[1] = 2.2;
     originExpected[2] = 3.3;
-    
+
     ::fwData::Image::SizeType sizeExpected(dim);
     sizeExpected[0] = 256;
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
-    
+
     ::fwTools::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
@@ -190,7 +198,7 @@ void ImageReaderWriterTest::testMhdImageReader()
     ::fwData::Image::SizeType sizeRead = image->getSize();
 
 
-    
+
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
     CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
@@ -223,7 +231,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
     ::fwData::Image::NewSptr image;
 
 
-    CPPUNIT_ASSERT_THROW( 
+    CPPUNIT_ASSERT_THROW(
             this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image),
             ::fwTools::Failed
             );
@@ -252,26 +260,26 @@ void ImageReaderWriterTest::testVtkImageWriter()
     originExpected[2] = 11.11;
 
     ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);    
+    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
 
-    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image); 
+    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image);
 
 
-    // Read image from disk 
+    // Read image from disk
     ::fwData::Image::NewSptr imageFromDisk;
-    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk); 
-    
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
+
     ::boost::filesystem::remove(file);
 
-    // Data read 
+    // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
 
-    
+
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
     CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
@@ -288,9 +296,11 @@ void ImageReaderWriterTest::testVtkImageWriter()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
 
+    ::fwComEd::helper::Image imageHelper(image);
+    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
 
-    char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
+    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -316,24 +326,24 @@ void ImageReaderWriterTest::testVtiImageWriter()
     originExpected[2] = 11.11;
 
     ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);    
+    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
 
-    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image); 
+    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image);
 
 
-    // Read image from disk 
+    // Read image from disk
     ::fwData::Image::NewSptr imageFromDisk;
-    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk); 
-    
-    // Data read 
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
+
+    // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
 
-    
+
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
     CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
@@ -350,9 +360,10 @@ void ImageReaderWriterTest::testVtiImageWriter()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1], epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
 
-
-    char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
+    ::fwComEd::helper::Image imageHelper(image);
+    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
+    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -379,23 +390,23 @@ void ImageReaderWriterTest::testMhdImageWriter()
     originExpected[2] = 11.11;
 
     ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);    
+    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
 
-    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image); 
+    this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image);
 
-    // Read image from disk 
+    // Read image from disk
     ::fwData::Image::NewSptr imageFromDisk;
-    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk); 
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
 
-    // Data read 
+    // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
 
-    
+
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
     CPPUNIT_ASSERT_EQUAL(sizeExpected.size(), sizeRead.size() );
@@ -413,8 +424,10 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2], epsilon);
 
 
-    char *ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDisk->getBuffer());
+    ::fwComEd::helper::Image imageHelper(image);
+    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
+    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -470,3 +483,6 @@ void ImageReaderWriterTest::runImageSrv(const std::string &srvtype, const std::s
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace ioVTK

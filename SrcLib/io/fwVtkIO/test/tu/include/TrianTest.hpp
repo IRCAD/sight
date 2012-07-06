@@ -4,13 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWVTKIO_TEST_TU_TRIANTEST_HPP_
-#define _FWVTKIO_TEST_TU_TRIANTEST_HPP_
+#ifndef _FWVTKIO_UT_TRIANTEST_HPP_
+#define _FWVTKIO_UT_TRIANTEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+namespace fwVtkIO
+{
+namespace ut
+{
 
 /**
  * @brief Test many methods to create mesh or image with VTK.
@@ -31,4 +35,7 @@ public:
 
 };
 
-#endif //_FWVTKIO_TEST_TU_TRIANTEST_HPP_
+} // namespace ut
+} // namespace fwVtkIO
+
+#endif //_FWVTKIO_UT_TRIANTEST_HPP_

@@ -7,7 +7,7 @@
 #ifndef _VISUVTKADAPTOR_IMAGESPROBECURSOR_HPP_
 #define _VISUVTKADAPTOR_IMAGESPROBECURSOR_HPP_
 
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 

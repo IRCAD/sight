@@ -7,7 +7,7 @@
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwCore/base.hpp>
 
-#include <fwData/visitor/accept.hpp>
+#include <fwXML/visitor/accept.hpp>
 
 #include "fwXML/visitor/Serialize.hpp"
 #include "fwXML/XML/XMLHierarchy.hpp"
@@ -25,7 +25,7 @@ namespace fwXML
 
 //------------------------------------------------------------------------------
 
-const std::string ObjectToStream::toString( ::fwTools::Object::sptr object, unsigned int option )
+const std::string ObjectToStream::toString( ::fwData::Object::sptr object, unsigned int option )
 {
     std::stringstream os;
 

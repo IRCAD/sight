@@ -19,6 +19,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/Study.hpp"
 #include "fwData/Composite.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -41,7 +42,7 @@ class FWDATA_CLASS_API Patient : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), (()), ::fwTools::Factory::New< Patient >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), (()), ::fwData::Factory::New< Patient >) ;
 
     fwDataObjectMacro();
 
@@ -51,77 +52,42 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( Patient::csptr _source );
 
-    // Studies -----------------------------------------------------------------
-    /// Field identifier for studies
-    FWDATA_API static const Object::FieldID ID_STUDIES;
+    typedef std::vector < ::fwData::Study::sptr > StudyContainerType;
 
-    /// Iterator for study
-    typedef ContainerCaster< Study >::iterator       StudyIterator;
-    /// const iterator for study
-    typedef ContainerCaster< Study >::const_iterator StudyConstIterator;
+    /**
+     * @brief Get/Set the study container
+     */
+    fwDataGetSetCRefMacro(Studies, StudyContainerType);
 
     /**
      * @brief Get the number of studies
      * @return number of studies
      */
-    FWDATA_API ::boost::uint32_t  getStudySize() const;
+    FWDATA_API StudyContainerType::size_type getNumberOfStudies() const;
 
     /**
-     * @brief add study
+     * @brief add a study
      * @param[in] _study ::fwData::Study::sptr
      */
     FWDATA_API void addStudy( ::fwData::Study::sptr _study );
 
-    /**@{
-     * Get iterator on the first and the last study.
-     * @return std::pair( study.begin(), study.end() )
+    /**
+     * @brief Get/Set the ToolBox container
      */
-    FWDATA_API std::pair< StudyIterator, StudyIterator > getStudies();
-    FWDATA_API std::pair< StudyConstIterator, StudyConstIterator > getStudies() const;
-    //@}
-
-    // toolBox -----------------------------------------------------------------
-    /// Field identifier for toolBox
-    FWDATA_API static const Object::FieldID ID_TOOLBOX;
+    fwDataGetSetSptrMacro(ToolBox, ::fwData::Composite::sptr);
 
     /**
-     * @brief set toolBox
-     * @param[in] _toolBox ::fwData::Composite::sptr
+     * @brief Get/Set the scenario container
      */
-    FWDATA_API void setToolBox( ::fwData::Composite::sptr _toolBox );
+    fwDataGetSetSptrMacro(Scenarios, ::fwData::Composite::sptr);
 
-    /**@{
-     * Get the toolBox.
+    /**
+     * @brief add/get a scenario
+     * @{
      */
-    FWDATA_API ::fwData::Composite::sptr getToolBox();
-    FWDATA_API ::fwData::Composite::csptr getToolBox() const;
-    //@}
-
-
-    //------------------------------------------------------------------------------
-
     FWDATA_API void addScenario( std::string _name, ::fwData::Object::sptr _scenario );
-
     FWDATA_API ::fwData::Object::sptr getScenario( std::string _name );
-
-
-
-    // scenarios -----------------------------------------------------------------
-    /// Field identifier for scenarios
-    FWDATA_API static const Object::FieldID ID_SCENARIOS;
-
-    /**
-     * @brief set scenarios
-     * @param[in] _scenarios ::fwData::Composite::sptr
-     */
-    FWDATA_API void setScenarios( ::fwData::Composite::sptr _scenarios );
-
-    /**@{
-     * Get the scenarios.
-     */
-    FWDATA_API ::fwData::Composite::sptr getScenarios();
-    FWDATA_API ::fwData::Composite::csptr getScenarios() const;
-    //@}
+    /** @} */
 
     /**
      * @brief add tool in the toolBox
@@ -182,6 +148,9 @@ protected:
     //! Database indentifier
     ::boost::int32_t  m_i32DbID;
 
+    StudyContainerType m_attrStudies;
+    ::fwData::Composite::sptr m_attrToolBox;
+    ::fwData::Composite::sptr m_attrScenarios;
 };
 
 }//end namespace fwData

@@ -207,7 +207,7 @@ bool arlCore::Mesh::generate( unsigned int axis, double width, double length, do
         const double Width1 = (double)(i+1)*stepW;
         for( j=0 ; j<Length-1 ; ++j )
         {
-            
+
             const double Length0 = (double)j*stepL;
             const double Length1 = (double)(j+1)*stepL;
             const double Alt0 = grid[i+0][j+0];
@@ -246,7 +246,6 @@ bool arlCore::Mesh::generate( unsigned int axis, double width, double length, do
 
 bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
 {
-    const bool Verbose = true;
     clear();
     if(fileName=="") return false;
     std::string extractFolder, extractFile, ext;
@@ -736,7 +735,7 @@ bool arlCore::Mesh::simplify( void )
     annDeallocPts( ANNPoints );
     delete[] Nn_idx;
     delete[] SquaredDists;
-    annClose(); 
+    annClose();
     return true;
 #endif // ANN
 }

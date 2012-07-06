@@ -7,14 +7,11 @@
 #ifndef _FWDATA_RESECTIONDB_HPP_
 #define _FWDATA_RESECTIONDB_HPP_
 
-
-#include <vector>
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Resection.hpp"
-#include "fwData/DownCastIterator.hpp"
 
 namespace fwData
 {
@@ -30,7 +27,7 @@ class FWDATA_CLASS_API ResectionDB : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwTools::Factory::New< ResectionDB >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwData::Factory::New< ResectionDB >) ;
 
     fwDataObjectMacro();
 
@@ -40,30 +37,19 @@ public:
     /// Defines deep copy
     FWDATA_API void deepCopy( ResectionDB::csptr _source );
 
-    // Patients ----------------------------------------------------------------
-    /// Field identifier for patients
-    FWDATA_API static const Object::FieldID ID_RESECTIONS;
-
-    typedef ContainerCaster< Resection >::iterator          ResectionIterator;
-    typedef ContainerCaster< Resection >::const_iterator    ResectionConstIterator;
+    typedef std::vector< ::fwData::Resection::sptr > ResectionContainerType;
 
     /**
      * @brief Get the number of resections
      */
-    FWDATA_API ::boost::uint32_t  getResectionSize() const;
+    FWDATA_API ResectionContainerType::size_type getNumberOfResections() const;
 
     /**
      * @brief add resection
      */
-    FWDATA_API void addResection( ::fwData::Resection::sptr _resection );
+    FWDATA_API void addResection( ::fwData::Resection::sptr resection );
 
-    /**@{
-     * @brief Get iterator on the first and the last resection. Use it to browse all resections.
-     * @return std::pair( patient.begin(), patient.end() )
-     */
-    FWDATA_API std::pair< ResectionIterator, ResectionIterator > getResections();
-    FWDATA_API std::pair< ResectionConstIterator, ResectionConstIterator > getResections() const;
-    //@}
+    fwDataGetSetCRefMacro(Resections, ResectionContainerType);
 
     fwGettersSettersDocMacro(SafeResection, safeResection, ::fwData::Resection::sptr, Get the safe part of the resections);
 
@@ -76,6 +62,8 @@ protected:
     FWDATA_API virtual ~ResectionDB ();
 
     ::fwData::Resection::sptr m_safeResection;
+
+    ResectionContainerType m_attrResections;
 };
 
 }//end namespace fwData

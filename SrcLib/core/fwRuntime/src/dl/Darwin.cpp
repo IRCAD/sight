@@ -28,7 +28,7 @@ Darwin::~Darwin() throw()
 
 //------------------------------------------------------------------------------
 
-const bool Darwin::isLoaded() const throw()
+bool Darwin::isLoaded() const throw()
 {
     return m_handle != 0;
 }

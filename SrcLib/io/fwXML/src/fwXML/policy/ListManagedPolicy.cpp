@@ -11,7 +11,7 @@
 namespace fwXML
 {
 
-bool ListManagedPolicy::split(::fwTools::Object::sptr obj)
+bool ListManagedPolicy::split(::fwData::Object::sptr obj)
 {
     std::string className = obj->getLeafClassname();
     return m_classNames.find( className )!= m_classNames.end();

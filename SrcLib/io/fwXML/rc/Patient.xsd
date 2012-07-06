@@ -15,7 +15,11 @@
     <xsd:element name="IsMale" type="xsd:boolean"/>
     <xsd:element name="DbID" type="xsd:int"/>
     
-    <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="studies" type="xsd:anyType" />
+    <xsd:element name="toolBox" type="xsd:anyType" minOccurs="0" maxOccurs="1" />
+    <xsd:element name="scenarios" type="xsd:anyType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="Attributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="DynamicAttributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
     
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:string"/>

@@ -5,21 +5,18 @@
     <requirement id="servicesReg"/>
     <requirement id="gui"/>
     
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::SliceIndexPositionEditor , ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiImage::SliceIndexPositionEditor</service>
         <object>::fwData::Image</object>
     </extension>
     
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiImage::SliceListEditor, ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiImage::SliceListEditor</service>
         <object>::fwData::Image</object>
     </extension>
     
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiImage::ShowScanEditor, ::fwData::Image ) ;-->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiImage::ShowScanEditor</service>

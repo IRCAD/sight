@@ -7,7 +7,7 @@
 #ifndef _VISUVTKADAPTOR_PLANEINTERACTOR_HPP_
 #define _VISUVTKADAPTOR_PLANEINTERACTOR_HPP_
 
-#include <fwData/TransfertFunction.hpp>
+#include <fwData/TransferFunction.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 

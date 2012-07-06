@@ -11,6 +11,8 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "fwDataIO/reader/GzArrayReader.hpp"
 
 
@@ -44,7 +46,8 @@ void GzArrayReader::read()
 
     ::fwData::Array::sptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->resize(array->getSize());
-    void* buff = array->getBuffer();
+    ::fwComEd::helper::Array helper(array);
+    void* buff = helper.getBuffer();
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
     if ( rawFile == 0 )

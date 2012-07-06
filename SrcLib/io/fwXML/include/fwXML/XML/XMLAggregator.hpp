@@ -79,7 +79,7 @@ public:
 
         static Version current()
         {
-            return Version(3);
+            return Version(4);
         }
 
         bool operator==(const Version& ver)
@@ -116,7 +116,7 @@ public:
      * @brief append object in the XML Aggregator
      * Object hierarchy is implicitly stored in object its self
      */
-    FWXML_API virtual void append( ::boost::weak_ptr< ::fwTools::Object>  obj );
+    FWXML_API virtual void append( ::boost::weak_ptr< ::fwData::Object>  obj );
 
     /**
      * @brief return a document viewable
@@ -131,7 +131,7 @@ public:
      *  @brief helper wich retreive the root object from m_objects using child information.
      *   (used by  getXMLDoc)
      */
-     ::boost::weak_ptr< ::fwTools::Object>  getRootObject();
+     ::boost::weak_ptr< ::fwData::Object>  getRootObject();
 
 
 protected :
@@ -139,18 +139,18 @@ protected :
     /**
      * @brief An helper wich give the relative path form this aggregator to obj aggregator
      */
-    std::string getXMLIncludePathValue(::boost::weak_ptr< ::fwTools::Object > obj);
+    std::string getXMLIncludePathValue(::boost::weak_ptr< ::fwData::Object > obj);
 
     /**
      * @brief manage xi::include
      */
-    xmlNodePtr getXMLInclude( ::boost::weak_ptr< ::fwTools::Object> obj);
+    xmlNodePtr getXMLInclude( ::boost::weak_ptr< ::fwData::Object> obj);
 
     /// container of aggregator elements
-    typedef std::set< ::boost::weak_ptr< ::fwTools::Object >  > Elements;
+    typedef std::set< ::boost::weak_ptr< ::fwData::Object >  > Elements;
 
     /// store objects which are in this Aggregator
-    std::set< ::boost::weak_ptr< ::fwTools::Object >  > m_objects;
+    std::set< ::boost::weak_ptr< ::fwData::Object >  > m_objects;
 
     /// the protocol version used for this XML aggregator
     Version m_version;

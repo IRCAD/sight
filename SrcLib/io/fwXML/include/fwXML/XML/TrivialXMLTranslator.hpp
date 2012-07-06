@@ -29,10 +29,10 @@ public:
     FWXML_API virtual ~TrivialXMLTranslator() ;
 
     /// get XML from current object aka <CLASSNAME/>
-    FWXML_API xmlNodePtr getXMLFrom( ::fwTools::Object::sptr obj );
+    FWXML_API xmlNodePtr getXMLFrom( ::fwData::Object::sptr obj );
 
     /// get Object from an XML node : in this case doesnot change anything to fwTools::Object
-    FWXML_API void updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source);
+    FWXML_API void updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source);
 
 protected :
 

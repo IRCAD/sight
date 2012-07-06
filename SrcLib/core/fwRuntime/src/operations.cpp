@@ -35,7 +35,7 @@ struct ConfigurationElementIdentifierPredicate
     :   m_identifier( identifier )
     {}
 
-    const bool operator() ( ::boost::shared_ptr< ConfigurationElement > element )
+    bool operator() ( ::boost::shared_ptr< ConfigurationElement > element )
     {
         return element->getAttributeValue("id") == m_identifier;
     }

@@ -105,17 +105,17 @@ public:
     /**
      * @brief Returns the maximum number of undo that could be stored in the history.
      */
-    FWCOMMAND_API const ::boost::uint32_t  getMaxUndoLevel() const { return m_maxUndoLevel; }
+    const ::boost::uint32_t  getMaxUndoLevel() const { return m_maxUndoLevel; }
 
     /**
      * @brief Returns the maximum memory that could be used by the history.
      */
-    FWCOMMAND_API const ::boost::uint32_t  getMaxUndoMemory() const { return m_maxUndoMemory; }
+    const ::boost::uint32_t  getMaxUndoMemory() const { return m_maxUndoMemory; }
 
     /**
      * @brief Returns the maximum memory that could be used by a single command.
      */
-    FWCOMMAND_API const ::boost::uint32_t  getMaxCommandMemory() const { return m_maxCommandMemory; }
+    const ::boost::uint32_t  getMaxCommandMemory() const { return m_maxCommandMemory; }
 
     /**
      * @briefReturns the number of commands that can be un-done.

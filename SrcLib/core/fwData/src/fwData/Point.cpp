@@ -5,13 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 
-#include <fwTools/Factory.hpp>
-
+#include "fwData/registry/macros.hpp"
 #include "fwData/Point.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Point, ::fwData::Point );
+fwDataRegisterMacro( ::fwData::Point );
 
 namespace fwData
 {
@@ -20,7 +18,6 @@ namespace fwData
 
 Point::Point ()
 {
-    SLM_TRACE_FUNC();
     m_vCoord[0] = 0.0;
     m_vCoord[1] = 0.0;
     m_vCoord[2] = 0.0;
@@ -51,24 +48,22 @@ Point::sptr Point::PointFactory( Point::sptr p )
 //------------------------------------------------------------------------------
 
 Point::~Point ()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void Point::shallowCopy( Point::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
-    this->m_vCoord = _source->m_vCoord;
+    this->fieldShallowCopy( _source );
+    m_vCoord = _source->m_vCoord;
 }
 
 //------------------------------------------------------------------------------
 
 void Point::deepCopy( Point::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
-    this->m_vCoord = _source->m_vCoord;
+    this->fieldDeepCopy( _source );
+    m_vCoord = _source->m_vCoord;
 }
 
 //------------------------------------------------------------------------------

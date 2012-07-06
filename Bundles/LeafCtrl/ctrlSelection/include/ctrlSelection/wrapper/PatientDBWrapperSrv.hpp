@@ -41,22 +41,22 @@ public :
 protected:
 
     /// Implements starting method derived from IService. Do nothing.
-   CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed ) {};
+   virtual void starting()  throw ( ::fwTools::Failed ) {};
 
     /// Implements stopping method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed ) {};
+    virtual void stopping()  throw ( ::fwTools::Failed ) {};
 
     /// Implements configuring method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed ) {};
+    virtual void configuring()  throw ( ::fwTools::Failed ) {};
 
     /// Implements reconfiguring method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed ) {};
+    virtual void reconfiguring()  throw ( ::fwTools::Failed ) {};
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed ) {};
+    virtual void updating() throw ( ::fwTools::Failed ) {};
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream ) {};
+    virtual void info( std::ostream &_sstream ) {};
 
     /**
      * @brief Convert the Object message with "UPDATED_OBJECT" event sent on PatientDB by PatientDBMsg with "NEW_PATIENT" event

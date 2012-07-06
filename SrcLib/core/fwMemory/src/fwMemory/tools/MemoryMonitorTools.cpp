@@ -5,17 +5,17 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwMemory/tools/MemoryMonitorTools.hpp"
-#include "fwMemory/tools/Win32MemoryMonitorTools.hpp"
-#include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
-#include "fwMemory/tools/DarwinMemoryMonitorTools.hpp"
 
 
 #ifdef _WIN32
 #define MEMORYTOOLIMPL Win32MemoryMonitorTools
+#include "fwMemory/tools/Win32MemoryMonitorTools.hpp"
 #elif defined(__MACOSX__)
 #define MEMORYTOOLIMPL DarwinMemoryMonitorTools
+#include "fwMemory/tools/DarwinMemoryMonitorTools.hpp"
 #else
 #define MEMORYTOOLIMPL PosixMemoryMonitorTools
+#include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
 #endif
 
 namespace fwMemory

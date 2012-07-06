@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -12,12 +11,15 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include "fwData/registry/macros.hpp"
+
 #include "fwData/Array.hpp"
+
 
 namespace fwData
 {
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Array, ::fwData::Array);
+fwDataRegisterMacro( ::fwData::Array );
 
 inline size_t computeSize(
         size_t elementSize,
@@ -52,10 +54,10 @@ inline size_t computeSize(
 Array::Array():
     m_strides(0),
     m_type(),
-    m_buffer(0),
+    m_attrBufferObject(::fwTools::BufferObject::New()),
     m_size(0),
     m_nbOfComponents(0),
-    m_isBufferOwner(false)
+    m_isBufferOwner(true)
 {
 }
 
@@ -68,85 +70,42 @@ Array::~Array()
 
 //------------------------------------------------------------------------------
 
-void Array::shallowCopy( Array::csptr _source )
+void Array::swap( Array::sptr _source )
 {
-    this->::fwTools::Object::shallowCopyOfChildren( _source );
+    m_fields.swap(_source->m_fields);
+    m_strides.swap(_source->m_strides);
+    m_size.swap(_source->m_size);
+    m_attrBufferObject->swap(_source->m_attrBufferObject);
 
-    m_strides        = _source->m_strides;
-    m_type           = _source->m_type;
-    m_buffer         = _source->m_buffer;
-    m_size           = _source->m_size;
-    m_nbOfComponents = _source->m_nbOfComponents;
-    m_isBufferOwner  = false;
+    std::swap(m_type, _source->m_type);
+    std::swap(m_nbOfComponents, _source->m_nbOfComponents);
+    std::swap(m_isBufferOwner, _source->m_isBufferOwner);
 }
 
 //------------------------------------------------------------------------------
 
 void Array::deepCopy( Array::csptr _source )
 {
-    this->::fwTools::Object::deepCopyOfChildren( _source );
-
-    m_strides        = _source->m_strides;
-    m_type           = _source->m_type;
-    m_size           = _source->m_size;
-    m_nbOfComponents = _source->m_nbOfComponents;
+    this->fieldDeepCopy( _source );
 
     this->clear();
 
-    if( _source->m_buffer )
+    if( !_source->m_attrBufferObject->isEmpty() )
     {
+        ::fwTools::BufferObject::Lock lockerDest(m_attrBufferObject);
         this->resize(_source->m_type, _source->m_size, _source->m_nbOfComponents, true);
-        std::copy(_source->begin(), _source->end(), this->begin());
+        char * buffDest = static_cast< char * >( lockerDest.getBuffer() );
+        ::fwTools::BufferObject::Lock lockerSource(_source->m_attrBufferObject);
+        char * buffSrc = static_cast< char * >( lockerSource.getBuffer() );
+        std::copy(buffSrc, buffSrc+_source->getSizeInBytes(), buffDest );
     }
-}
-
-//------------------------------------------------------------------------------
-char *Array::begin() const
-{
-    return static_cast<char*>(m_buffer);
-}
-
-//------------------------------------------------------------------------------
-
-char *Array::end() const
-{
-    return reinterpret_cast<char*> (static_cast<char*>(m_buffer) + this->getSizeInBytes());
-}
-
-
-//------------------------------------------------------------------------------
-
-void *Array::getBuffer() const
-{
-    return m_buffer;
-}
-
-//------------------------------------------------------------------------------
-void Array::setBuffer(void *buf, bool takeOwnership)
-{
-    if(m_buffer != NULL && m_isBufferOwner)
+    else
     {
-        free(m_buffer);
+        m_strides        = _source->m_strides;
+        m_type           = _source->m_type;
+        m_size           = _source->m_size;
+        m_nbOfComponents = _source->m_nbOfComponents;
     }
-    m_buffer = buf;
-    m_isBufferOwner = (buf != NULL) && takeOwnership;
-}
-
-//------------------------------------------------------------------------------
-
-void Array::setBuffer(
-        void *buf,
-        bool takeOwnership,
-        const ::fwTools::Type &type,
-        const SizeType &size,
-        size_t nbOfComponents )
-{
-    nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
-    this->setBuffer( buf, takeOwnership);
-    m_strides = computeStrides(size, nbOfComponents, type.sizeOf());
-    m_type           = type;
-    m_size           = size;
-    m_nbOfComponents = nbOfComponents;
 }
 
 //------------------------------------------------------------------------------
@@ -159,24 +118,19 @@ size_t Array::resize(
         ) throw(::fwData::Exception)
 {
     nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
-    size_t oldBufSize = this->getSizeInBytes();
     size_t bufSize = computeSize(type.sizeOf(), size, nbOfComponents);
 
-    if(reallocate && (m_isBufferOwner || m_buffer == NULL))
+    if(reallocate && (m_isBufferOwner || m_attrBufferObject->isEmpty()))
     {
-        void *oldBuf = m_buffer;
-        m_buffer = realloc(m_buffer, bufSize);
-        if (m_buffer == NULL)
+        if(m_attrBufferObject->isEmpty())
         {
-            m_buffer = oldBuf; // if realloc fail, oldBuf keeps unchanged
-            FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
-                    "Was not able to (re)allocate the array from " << oldBufSize
-                    << " bytes to " << bufSize);
+            m_attrBufferObject->allocate(bufSize);
         }
-        else if (oldBuf == NULL )
+        else
         {
-            m_isBufferOwner = true;
+            m_attrBufferObject->reallocate(bufSize);
         }
+        m_isBufferOwner = true;
     }
     else if(reallocate && !m_isBufferOwner)
     {
@@ -191,7 +145,6 @@ size_t Array::resize(
 
     return bufSize;
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -218,10 +171,12 @@ size_t Array::resize(const std::string &type, const SizeType &size, size_t nbOfC
 
 void Array::clear()
 {
-    if (m_buffer)
+    if ( ! this->m_attrBufferObject->isEmpty() )
     {
-        this->setBuffer(NULL);
-
+        if(m_isBufferOwner)
+        {
+            this->m_attrBufferObject->destroy();
+        }
         m_strides.clear();
         m_type = ::fwTools::Type();
         m_size.clear();
@@ -281,7 +236,7 @@ void Array::setNumberOfComponents(size_t nb)
             m_type,
             m_size,
             m_nbOfComponents,
-            (m_isBufferOwner && m_buffer != NULL)
+            (m_isBufferOwner && !m_attrBufferObject->isEmpty())
             );
 }
 
@@ -328,7 +283,7 @@ void Array::setType(const ::fwTools::Type &type)
             m_type,
             m_size,
             m_nbOfComponents,
-            (m_isBufferOwner && m_buffer != NULL)
+            (m_isBufferOwner && !m_attrBufferObject->isEmpty())
             );
 }
 
@@ -354,77 +309,13 @@ size_t Array::getBufferOffset( const ::fwData::Array::IndexType &id, size_t comp
     std::transform(id.begin(), id.end(), m_strides.begin(), offsets.begin(), std::multiplies<OffsetType::value_type>() );
 
     size_t offset;
-    offset = std::accumulate(offsets.begin(), offsets.end(), 0);
+    offset = std::accumulate(offsets.begin(), offsets.end(), size_t(0));
 
     offset += component*sizeOfType;
 
     return offset;
-
 }
 
 //------------------------------------------------------------------------------
-
-char *Array::getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const
-{
-    size_t sizeOf = m_type.sizeOf();
-    size_t offset = getBufferOffset(id, component, sizeOf);
-    char *item = static_cast<char*>(m_buffer) + offset;
-    return item;
-}
-
-//------------------------------------------------------------------------------
-
-void Array::setItem(const ::fwData::Array::IndexType &id, const void *value)
-{
-    size_t sizeOf = m_type.sizeOf();
-    const char *val  = static_cast<const char*>(value);
-    char *item = getBufferPtr(id, 0, sizeOf);
-    std::copy(val, val + m_nbOfComponents*sizeOf, item);
-}
-//------------------------------------------------------------------------------
-
-
-void Array::setItem(const ::fwData::Array::IndexType &id, const size_t component, const void *value)
-{
-    size_t sizeOf = m_type.sizeOf();
-    const char *val  = static_cast<const char*>(value);
-    char *item = getBufferPtr(id, component, sizeOf);
-    std::copy(val, val + sizeOf, item);
-}
-
-
-//------------------------------------------------------------------------------
-
-void *Array::getItem(const ::fwData::Array::IndexType &id, const size_t component) const
-{
-    size_t sizeOf = m_type.sizeOf();
-    char *item = getBufferPtr(id, component, sizeOf);
-    return item;
-}
-
-//------------------------------------------------------------------------------
-
-void Array::getItem(const ::fwData::Array::IndexType &id, void *value) const
-{
-    size_t sizeOf = m_type.sizeOf();
-    const char *item = getBufferPtr(id, 0, sizeOf);
-    char *val  = static_cast<char*>(value);
-    std::copy(item, item + m_nbOfComponents*sizeOf, val);
-}
-
-//------------------------------------------------------------------------------
-
-void Array::getItem(const ::fwData::Array::IndexType &id, const size_t component, void *value) const
-{
-    size_t sizeOf = m_type.sizeOf();
-    const char *item = getBufferPtr(id, component, sizeOf);
-    char *val  = static_cast<char*>(value);
-    std::copy(item, item + m_nbOfComponents*sizeOf, val);
-}
-
-//------------------------------------------------------------------------------
-
-
-
 
 }//namespace fwData

@@ -39,12 +39,12 @@ public :
     /**
      * @brief   Constructor : does nothing.
      */
-    FWCOMED_API Composite( ) {};
+    Composite( ) {};
 
     /**
      * @brief   Destructor : does nothing.
      */
-    FWCOMED_API virtual ~Composite() {};
+    virtual ~Composite() {};
 
     FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
 

@@ -25,37 +25,12 @@ namespace fwXML
 
 //------------------------------------------------------------------------------
 
-// from an object ( in a FIELD it is *mandatory* ) find its index/rank in parent Field which contain it
-int getFieldIndex( ::fwTools::Object::sptr obj )
-{
-    ::fwTools::Object::sptr parent = ::fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
-    assert ( ::fwTools::Field::dynamicCast(parent) );
-
-    ::fwTools::Object::ChildContainer::iterator iter =
-    std::find( parent->children().begin(),   parent->children().end(), obj );
-
-    // must exist
-    assert( iter !=  parent->children().end() );
-    int index = std::distance( parent->children().begin(), iter );
-
-    OSLM_DEBUG( "getFieldIndex" << obj->className() << " addr=" << obj.get() << " indexFound=" << index );
-
-    return index;
-}
-
-//------------------------------------------------------------------------------
-
 // from an object find transitivaly the first parent which is not a Field
-::fwTools::Object::sptr dataParent( ::fwTools::Object::sptr obj )
+::fwData::Object::sptr dataParent( ::fwData::Object::sptr obj )
 {
-    ::fwTools::Object::sptr parent = ::fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
-
-    while ( parent &&  ::fwTools::Field::dynamicCast(parent) )
-    {
-        parent = dataParent( parent );
-    }
-
+    ::fwData::Object::sptr parent = ::fwXML::XMLHierarchy::getDefault()->mapChildFather()[obj].lock();
     assert (parent);
+
     OSLM_DEBUG( "dataParentof ( " << obj->className() << " addr=" << obj.get() << " ) return " <<  parent->className() << " addr=" << parent.get()  );
 
     return parent;
@@ -63,7 +38,7 @@ int getFieldIndex( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path PatientFolderPathPolicy::getPath(::fwTools::Object::sptr obj )
+::boost::filesystem::path PatientFolderPathPolicy::getPath(::fwData::Object::sptr obj )
 {
     static IndexPathPolicy fpolicy;
 
@@ -85,18 +60,21 @@ int getFieldIndex( ::fwTools::Object::sptr obj )
 
     if ( className == "Study" ) // "s#/study.xml"
     {
-        std::stringstream ss;
-        ss << "s" << getFieldIndex(obj) << "/study.xml";
-        return ss.str();
+        SLM_FATAL("Study, problem with field removing, ACH ToDo");
+//        std::stringstream ss;
+//        ss << "s" << getFieldIndex(obj) << "/study.xml";
+//        return ss.str();
+        return "study.xml";
     }
 
     if ( className == "Acquisition" ) // "s#/a#/acquisition.xml"
     {
-        std::string acquisitionFolder("a");
-        acquisitionFolder+=boost::lexical_cast<std::string>( getFieldIndex(obj) );
-        ::boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).parent_path();
-
-        return  parentFolder / acquisitionFolder / "/acquistion.xml";
+        SLM_FATAL("Acquisition : problem with field removing, ACH ToDo");
+//        std::string acquisitionFolder("a");
+//        acquisitionFolder+=boost::lexical_cast<std::string>( getFieldIndex(obj) );
+//        ::boost::filesystem::path parentFolder = this->getPath(  dataParent(obj)  ).parent_path();
+//        return  parentFolder / acquisitionFolder / "/acquistion.xml";
+        return "acquistion.xml";
     }
 
     if ( className == "Reconstruction" ) // "s#/a#/NOMORGANE/reconstruction.xml"

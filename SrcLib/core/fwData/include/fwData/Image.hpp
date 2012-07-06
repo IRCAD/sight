@@ -18,7 +18,7 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/Array.hpp"
-
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -35,7 +35,7 @@ namespace fwData
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwTools::Factory::New< Image > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::Factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
 
     /**
@@ -69,12 +69,6 @@ public:
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     FWDATA_API void copyInformation( Image::csptr _source );
 
-
-    /**
-     * @brief return a pointer to the buffer
-     */
-    FWDATA_API void * getBuffer() const;
-
     /// Number of dimension of the image (3 for 3D image)
     FWDATA_API size_t getNumberOfDimensions() const;
 
@@ -100,24 +94,15 @@ public:
     FWDATA_API void setSize(const SizeType &size);
     // @}
 
+    /**
+     * @brief Get/set prefered window center
+     */
+    fwDataGetSetMacro(WindowCenter, double);
 
-    fwGettersSettersDocMacro(WindowCenter, dWindowCenter, double, window level);
-
-    fwGettersSettersDocMacro(WindowWidth, dWindowWidth, double, window width);
-
-
-    /// Helpers for 3D images
-    FWDATA_API void* getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z ) const;
-    FWDATA_API void* getPixelBuffer( IndexType index ) const;
-    FWDATA_API SharedArray getPixelBufferCopy( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z ) const;
-    FWDATA_API SharedArray getPixelBufferCopy( IndexType index ) const;
-
-    FWDATA_API void setPixelBuffer( IndexType index , Image::BufferType * pixBuf);
-
-    FWDATA_API static Image::BufferType* getPixelBuffer( Image::BufferType *buffer, IndexType offset, ::boost::uint8_t imagePixelSize );
-    FWDATA_API static SharedArray getPixelBufferCopy( Image::BufferType *buffer, IndexType offset, ::boost::uint8_t imagePixelSize );
-    FWDATA_API static void  setPixelBuffer( Image::BufferType *destBuffer, const Image::BufferType * pixBuf, IndexType offset, ::boost::uint8_t imagePixelSize );
-
+    /**
+     * @brief Get/set prefered window width
+     */
+    fwDataGetSetMacro(WindowWidth , double);
 
     /**
      * @brief set data array
@@ -127,6 +112,7 @@ public:
      *
      */
     FWDATA_API void setDataArray(::fwData::Array::sptr array, bool copyArrayInfo = true);
+
     ///get data array
     FWDATA_API ::fwData::Array::sptr getDataArray() const;
 
@@ -145,7 +131,7 @@ public:
      * @brief Allocate image
      *
      * If the data array owns its buffer, these methods will always work (until it remain free memory)
-     * Otherwise an exeption is thrown :
+     * Otherwise an exception is thrown :
      *  - if m_dataArray does not own it buffer and image's size and type combination do not match anymore array's one
      *  - if there is no memory left
      *
@@ -164,17 +150,6 @@ public:
     FWDATA_API size_t getSizeInBytes() const;
      /// @brief return allocated image size in bytes
     size_t getAllocatedSizeInBytes() const;
-
-    /**
-     * @brief Get a string containing pixel value
-     * @param[in] _image image containing the pixel
-     * @param[in] _x x coordinate of the pixel
-     * @param[in] _y y coordinate of the pixel
-     * @param[in] _z z coordinate of the pixel
-     *
-     * @return pixel value
-     */
-    FWDATA_API std::string  getPixelAsString( unsigned int _x, unsigned int _y, unsigned int _z ) const;
 
 protected :
 
@@ -200,12 +175,11 @@ protected :
     //! Origin of the image in 3D repair
     OriginType m_origin;
 
-    /** @{
-     * @brief Visu control to adjust contrast image (come from dicom image ?)
-     */
-    double m_dWindowCenter;
-    double m_dWindowWidth;
-    // @}
+    //! Prefered window center/with
+    ///@{
+    double m_attrWindowCenter;
+    double m_attrWindowWidth;
+    ///@}
 
     //! image buffer
     ::fwData::Array::sptr m_dataArray;

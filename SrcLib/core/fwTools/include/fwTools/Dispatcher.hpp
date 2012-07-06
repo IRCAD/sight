@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef DISPATCHER_HPP_
-#define DISPATCHER_HPP_
+#ifndef __FWTOOLS_DISPATCHER_HPP__
+#define __FWTOOLS_DISPATCHER_HPP__
 
 #include <stdexcept>
 #include <boost/mpl/if.hpp>
@@ -13,11 +13,14 @@
 #include <boost/mpl/front.hpp>
 #include <boost/mpl/pop_front.hpp>
 
+#include <fwCore/macros.hpp>
+
 #include "fwTools/TypeMapping.hpp"
 #include "fwTools/Stringizer.hpp"
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 
 /**
@@ -45,6 +48,7 @@ namespace fwTools {
     template< class KeyType,class Parameter>
     static void  invoke( const KeyType &keytype,const Parameter &param )
     {
+        FwCoreNotUsedMacro(param);
         std::string msg = ::fwTools::getString(keytype) + " : KeyType value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
     }
@@ -182,6 +186,6 @@ struct Dispatcher
 };
 
 
-} //end namespace fwTools {
+} //end namespace fwTools
 
-#endif /*DISPATCHER_HPP_*/
+#endif /*__FWTOOLS_DISPATCHER_HPP__*/

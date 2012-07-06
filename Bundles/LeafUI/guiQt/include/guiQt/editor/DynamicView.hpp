@@ -114,7 +114,7 @@ protected:
     DynamicViewInfoMapType m_dynamicInfoMap;
     bool m_dynamicConfigStartStop;
 
-protected slots:
+protected Q_SLOTS:
 
     void closeTab( int index, bool forceClose );
 

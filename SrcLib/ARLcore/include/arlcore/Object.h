@@ -89,7 +89,7 @@ namespace arlCore
 
         //! @return Numero of the object in order of creation [1,..[
         ARLCORE_API unsigned int getNo( void ) const;
-        
+
         //! @return Date and Timestamp of the last modification of the current object
         //! @todo Replace long int date and time by a appropriate structure of time
         ARLCORE_API bool getTime( long int &date, long int &time ) const;
@@ -187,7 +187,7 @@ namespace arlCore
         // Date et time of the last modification of the object
         //pt:datetime m_time;
         long int m_date, m_time;
-        
+
         ARLCORE_API bool lockWriteMutex( void );
         ARLCORE_API bool unlockWriteMutex( void );
 

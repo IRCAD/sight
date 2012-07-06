@@ -47,7 +47,7 @@ void SofaThread::run()
         sofa->animate();
 
         // Emit signal for refresh screen
-        emit refreshVtkRequestSignal();
+        Q_EMIT refreshVtkRequestSignal();
 
         // Put the thread to sleep
         condition.wait(&mutex);

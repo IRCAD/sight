@@ -6,8 +6,6 @@
 
 #include <boost/foreach.hpp>
 
-#define QT_NO_KEYWORDS
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QWidget>

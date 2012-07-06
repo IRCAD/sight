@@ -31,7 +31,7 @@ ReconstructionXMLTranslator::~ReconstructionXMLTranslator()
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ReconstructionXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ReconstructionXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Reconstruction::sptr reconst = ::fwData::Reconstruction::dynamicCast(obj);
 
@@ -41,18 +41,16 @@ xmlNodePtr ReconstructionXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj 
     xmlNodePtr masterNode = reconst2xmlbase.getXMLFrom(obj);
     SLM_ASSERT("node not instanced", masterNode);
 
-    xmlNodePtr material = XMLTH::toXMLRecursive(reconst->getMaterial());
-    xmlNodePtr materialNode = xmlNewNode(NULL, BAD_CAST "material");
-    xmlAddChild( materialNode, material);
-
-    xmlAddChild( masterNode , materialNode);
+    XMLTranslatorHelper::addAttribute( masterNode, "material", reconst->getMaterial() );
+    XMLTranslatorHelper::addAttribute( masterNode, "image", reconst->getImage(), false );
+    XMLTranslatorHelper::addAttribute( masterNode, "mesh", reconst->getMesh() );
 
     return masterNode;
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void ReconstructionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ReconstructionXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate);
     ::fwData::Reconstruction::sptr reconst = ::fwData::Reconstruction::dynamicCast(toUpdate);
@@ -60,15 +58,9 @@ void ReconstructionXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toU
     GenericXMLTranslator< ::fwData::Reconstruction > reconst2xmlbase;
     reconst2xmlbase.updateDataFromXML(toUpdate, source);
 
-    xmlNodePtr materialNode = XMLParser::findChildNamed( source, std::string("material") );
-    SLM_ASSERT("materialNode not instanced", materialNode);
-
-    xmlNodePtr cMaterialNode = ::fwXML::XMLParser::getChildrenXMLElement(materialNode );
-    SLM_ASSERT("cMaterialNode not instanced", cMaterialNode);
-
-    ::fwTools::Object::sptr valueObj;
-    valueObj = Serializer().ObjectsFromXml( cMaterialNode, true );
-    reconst->setMaterial(::fwData::Material::dynamicCast(valueObj));
+    reconst->setMaterial( XMLTranslatorHelper::getAttribute< ::fwData::Material >( source, "material" ) );
+    reconst->setImage( XMLTranslatorHelper::getAttribute< ::fwData::Image >( source, "image", false ) );
+    reconst->setMesh( XMLTranslatorHelper::getAttribute< ::fwData::Mesh >( source, "mesh" ) );
 }
 
 //------------------------------------------------------------------------------

@@ -26,7 +26,7 @@ namespace gui
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::StarterActionService , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::StarterActionService , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -167,7 +167,6 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
         else
         {
             std::string msgInfo = "Sorry, the service is unavailable.";
-            ::fwGui::dialog::IMessageDialog::Icons icon = ::fwGui::dialog::IMessageDialog::WARNING;
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Service unavailable");
             messageBox.setMessage( msgInfo );

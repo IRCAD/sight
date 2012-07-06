@@ -157,6 +157,12 @@
             </object>
         </item>
 
+        <item key="TFSelectionsKey">
+            <object uid="TFSelections" type="::fwData::Composite" >
+
+            </object>
+        </item>
+
         <!-- CompositeVisu description -->
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" type="::fwData::Composite">
@@ -191,7 +197,8 @@
 
                         <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
                             <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5"
-                                pointSize="12" viewportUID="GENERIC_UID_Viewport" />
+                                pointSize="12" viewportUID="GENERIC_UID_Viewport"
+                                selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                         </adaptor>
 
                         <!--
@@ -301,7 +308,8 @@
                         
                         <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
                             <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5"
-                                pointSize="12" viewportUID="GENERIC_UID_Viewport" />
+                                    pointSize="12" viewportUID="GENERIC_UID_Viewport"
+                                    selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                         </adaptor>
                         
                         <!--
@@ -327,7 +335,7 @@
                         <viewport id="view1" x="-10" y="-10" width="310" height="310" />
 
                         <adaptor id="negato" class="::scene2D::adaptor::Negato" objectId="myImage">
-                            <config zValue="0"/>
+                            <config zValue="0" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                         </adaptor>
                         
                         <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
@@ -369,10 +377,17 @@
                                 <sliceIndex>axial</sliceIndex>
                             </service>
 
-                            <service uid="GENERIC_UID_TFEditor" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes" >
-                                <image id="myImage" />
+                            <service implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
+                                <mode type="stop" />
+                                <config>
+                                    <field id="m_transferFunctionCompositeId" type="::fwData::Composite">
+                                        <service uid="GENERIC_UID_TFEditor" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes">
+                                            <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                        </service>
+                                    </field>
+                                </config>
                             </service>
-                          
+
                             <!-- Compute the histogram of 'myImage' and stores it into 'myHistogram'    -->
                             <!--
                             <service uid="computeHistogramSrv" type="::fwServices::IController" implementation="::scene2D::ComputeHistogramSrv" autoComChannel="yes">
@@ -399,11 +414,17 @@
                         </adaptor>
 
                         <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" 
+                                    selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                         </adaptor>
                         
                         <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
                             <config renderer="default" />
+                        </adaptor>
+                        
+                        <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
+                            <config renderer="default" picker="negato2default" text=""
+                                    selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                         </adaptor>
                         
                     </scene>

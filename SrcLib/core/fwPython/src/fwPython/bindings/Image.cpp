@@ -1,4 +1,6 @@
 #include <boost/python.hpp>
+#include <boost/python/stl_iterator.hpp>
+#include <boost/preprocessor/cat.hpp>
 
 #include <boost/assign/list_of.hpp>
 
@@ -7,8 +9,13 @@
 #include <fwTools/StringKeyTypeMapping.hpp> // for makedynamicType
 
 #include <fwData/Image.hpp>
+#include <fwCore/base.hpp>
+
+#include <fwComEd/helper/Image.hpp>
 
 #include "fwPython/bindings/Image.hpp"
+
+#include "fwPython/bindings/STLContainers.hpp"
 
 
 // transform CPP type description in python buffer-info.format
@@ -36,11 +43,13 @@ namespace bindings
 ::boost::python::object getImageBuffer (::fwData::Image::sptr image)
 {
     using namespace ::boost::python;
-    if ( image->getBuffer() )
+
+    ::fwComEd::helper::Image imageHelper(image);
+    if ( imageHelper.getBuffer() )
     {
         Py_buffer *pybuf = new Py_buffer;
         pybuf->obj = NULL;
-        pybuf->buf = image->getBuffer();
+        pybuf->buf = imageHelper.getBuffer();
         pybuf->readonly= 0;
         pybuf->len = image->getSizeInBytes();
         pybuf->format =  (char *)typeCPP2Python[ image->getType() ];
@@ -51,10 +60,10 @@ namespace bindings
         pybuf->suboffsets =  new Py_ssize_t[image->getNumberOfDimensions()];
         pybuf->internal = NULL;
 
-        std::copy(  image->getSize().rbegin(), image->getSize().rend(), pybuf->shape);
+        std::copy(  image->getSize().begin(), image->getSize().end(), pybuf->shape);
         std::fill(pybuf->suboffsets, pybuf->suboffsets+3, -1);
 
-        PyBuffer_FillContiguousStrides(   pybuf->ndim , pybuf->shape, pybuf->strides, pybuf->itemsize, 'C');
+        PyBuffer_FillContiguousStrides(   pybuf->ndim , pybuf->shape, pybuf->strides, pybuf->itemsize, 'F');
 
         handle<> bufHandle( PyMemoryView_FromBuffer( pybuf ) );
         delete pybuf;
@@ -76,28 +85,46 @@ std::string getPixelTypeAsString( ::fwData::Image::sptr image )
 
 void setPixelTypeFromString( ::fwData::Image::sptr image, std::string type)
 {
-    image->setType( ::fwTools::Type( type ) );
+    ::fwTools::Type fwtype = ::fwTools::Type( type );
+    if ( fwtype ==  ::fwTools::Type::s_UNSPECIFIED_TYPE )
+    {
+        FW_RAISE("Incorrect PixelType : supported : int8, uint8, .. 16, ... 32 ... 64 , float,double");
+    }
+    else
+    {
+        image->setType(  fwtype );
+    }
 }
 
 //------------------------------------------------------------------------------
 
-fwData::Image::SizeType getSize(fwData::Image::sptr image)
+
+#define __FWPYTHON_pygGetSetter( ATTRIB )                                                                       \
+        ::boost::python::list get##ATTRIB(fwData::Image::sptr image)                                 \
+        {                                                                                            \
+            return make_pylist (image->get##ATTRIB() );                                              \
+        }                                                                                            \
+                                                                                                     \
+        void set##ATTRIB( fwData::Image::sptr image, ::boost::python::object ob)                     \
+        {                                                                                            \
+            ::boost::python::stl_input_iterator<fwData::Image::BOOST_PP_CAT(ATTRIB,Type)::value_type> begin(ob), end; \
+            fwData::Image::BOOST_PP_CAT(ATTRIB,Type)  value(begin, end);                                          \
+            image->set##ATTRIB( value );                                                             \
+        }
+
+
+
+__FWPYTHON_pygGetSetter(Size)
+__FWPYTHON_pygGetSetter(Spacing)
+__FWPYTHON_pygGetSetter(Origin)
+
+#undef __FWPYTHON_pygGetSetter
+
+
+// use a wrapper because deepCopy is a virtual function
+void deepCopyImageWrapper( fwData::Image::sptr imageSelf, fwData::Image::sptr imageSrc)
 {
-    return image->getSize();
-}
-
-//------------------------------------------------------------------------------
-
-fwData::Image::SpacingType getSpacing(fwData::Image::sptr image)
-{
-    return image->getSpacing();
-}
-
-//------------------------------------------------------------------------------
-
-fwData::Image::OriginType getOrigin(fwData::Image::sptr image)
-{
-    return image->getOrigin();
+    imageSelf->deepCopy(imageSrc);
 }
 
 //------------------------------------------------------------------------------
@@ -105,13 +132,16 @@ fwData::Image::OriginType getOrigin(fwData::Image::sptr image)
 void export_image()
 {
     using namespace ::boost::python;
+    size_t (::fwData::Image::*SIMPLEIMAGEALLOCATE)(void) =  &::fwData::Image::allocate;
     class_< ::fwData::Image, bases< ::fwData::Object >, ::fwData::Image::sptr >("Image")
        .add_property("buffer",  &getImageBuffer )
        .add_property("type",  &getPixelTypeAsString, & setPixelTypeFromString )
-       .add_property("spacing", &getSpacing,  &::fwData::Image::setSpacing )
-       .add_property("size", &getSize,  &::fwData::Image::setSize )
-       .add_property("origin", &getOrigin,  &::fwData::Image::setOrigin )
+       .add_property("spacing", &getSpacing,  &setSpacing )
+       .add_property("size", &getSize,  &setSize )
+       .add_property("origin", &getOrigin,  &setOrigin )
        .add_property("number_of_dimentions", &::fwData::Image::getNumberOfDimensions )
+       .def("allocate", SIMPLEIMAGEALLOCATE )
+       .def("deepCopy",  deepCopyImageWrapper )
        ;
 }
 

@@ -49,7 +49,7 @@ struct BundleElement
      *
      * @return  true or false
      */
-    FWRUNTIME_API const bool isEnable() const;
+    FWRUNTIME_API bool isEnable() const;
 
     /**
      * @brief       Set if the element is enabled or not.

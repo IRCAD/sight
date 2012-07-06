@@ -50,7 +50,7 @@ void MsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw (
             if(composite->find(compositeKey) != composite->end())
             {
                 ::fwData::Object::sptr object = (*composite)[compositeKey];
-                ::fwTools::Object::sptr objMsg = message->getSubject().lock();
+                ::fwData::Object::sptr objMsg = message->getSubject().lock();
                 // Test if we manage this event from this object message uid ( it->get<1>() )
                 if( objMsg->getID() == fromUID || fromUID == "*")
                 {

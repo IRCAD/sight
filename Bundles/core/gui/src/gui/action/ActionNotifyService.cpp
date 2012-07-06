@@ -27,7 +27,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ void ActionNotifyService::updating() throw( ::fwTools::Failed )
             ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::ObjectMsg::dynamicCast(obj);
             OSLM_ASSERT(msgType << " dynamicCast failed", objectMsg);
 
-            ::fwTools::Object::sptr srvObj = this->getObject();
+            ::fwData::Object::sptr srvObj = this->getObject();
             objectMsg->addEvent( event );
             ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
         }

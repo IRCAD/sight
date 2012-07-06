@@ -13,15 +13,11 @@
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
-#include <fwData/PatientDB.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Boolean.hpp>
 
-#include <fwComEd/PatientMsg.hpp>
-#include <fwComEd/ReconstructionMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
@@ -89,7 +85,7 @@ void AddLandmark::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (image->getBuffer()==NULL )
+    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Add landmarks",
@@ -103,7 +99,7 @@ void AddLandmark::updating() throw(::fwTools::Failed)
     {
         //get landmarks
         ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
-        ::fwData::PointList::sptr landmarks =  image->getFieldSingleElement< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+        ::fwData::PointList::sptr landmarks =  image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
         // create a new point
@@ -123,9 +119,9 @@ void AddLandmark::updating() throw(::fwTools::Failed)
         // append to point the label
         ::fwData::String::NewSptr label;
         label->value() = value;
-        newPoint->setFieldSingleElement( ::fwComEd::Dictionary::m_labelId , label );
+        newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
 
-        image->setFieldSingleElement("ShowLandmarks", ::fwData::Boolean::NewSptr(true));
+        image->setField("ShowLandmarks", ::fwData::Boolean::NewSptr(true));
 
         // notify
         ::fwComEd::ImageMsg::NewSptr msg;

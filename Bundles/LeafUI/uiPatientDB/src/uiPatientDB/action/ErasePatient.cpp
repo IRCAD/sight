@@ -18,8 +18,9 @@
 #include <fwServices/Base.hpp>
 
 #include <fwComEd/PatientDBMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/BackupHelper.hpp>
+
+#include <fwDataTools/Patient.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -55,9 +56,15 @@ void ErasePatient::updating( ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwData::PatientDB::sptr pPatientDB = this->getObject<  ::fwData::PatientDB > ();
+    ::fwData::Patient::sptr patient = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pPatientDB);
+    ::fwData::Study::sptr study = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudy(pPatientDB);
+    ::fwData::Acquisition::sptr acquisition = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisition(pPatientDB);
+    ::fwData::Image::sptr image = ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(pPatientDB);
 
-    if(!pPatientDB->getFieldSize(fwComEd::Dictionary::m_imageSelectedId))
+    if(!image)
+    {
         return;
+    }
 
     ::fwGui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Erase selected data");
@@ -68,66 +75,32 @@ void ErasePatient::updating( ) throw(::fwTools::Failed)
     ::fwGui::dialog::IMessageDialog::Buttons answer = messageBox.show();
 
     if ( answer != ::fwGui::dialog::IMessageDialog::OK )
+    {
         return;
+    }
 
-    ::fwTools::Field::sptr pDataInfo = pPatientDB->getField( fwComEd::Dictionary::m_imageSelectedId );
+    ::fwComEd::fieldHelper::BackupHelper::SelectionIdType myIntPat, myIntStu, myIntAcq;
+    myIntPat = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatientIdx(pPatientDB);
+    myIntStu = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudyIdx(pPatientDB);
+    myIntAcq = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisitionIdx(pPatientDB);
 
-    /*::fwData::Object * const vSelection = mySpecificMsg->m_modifiedObject;*/
-    ::fwData::Integer::sptr myIntPat = ::fwData::Integer::dynamicCast( pDataInfo->children().at(0) );
-    ::fwData::Integer::sptr myIntStu = ::fwData::Integer::dynamicCast( pDataInfo->children().at(1) );
-    ::fwData::Integer::sptr myIntAcq = ::fwData::Integer::dynamicCast( pDataInfo->children().at(2) );
-
-
-    ::fwData::Patient::sptr pPatientBAK = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pPatientDB);
-
-    // Patient selection
-    ::fwData::PatientDB::PatientIterator patientIter = pPatientDB->getPatients().first;
-    patientIter +=  myIntPat->value();
-    OSLM_DEBUG("erase Patient: "<<myIntPat->value());
-
-    // Study selection
-    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
-    int nbStudies = (*patientIter)->getStudySize();
-    studyIter +=  myIntStu->value();
-    OSLM_DEBUG("erase Study: "<<myIntStu->value());
-
-    // Acquisition selection
-    ::fwData::Study::AcquisitionIterator acquisitionIter = (*studyIter)->getAcquisitions().first;
-    int nbAcquisitions = (*studyIter)->getAcquisitionSize();
-    acquisitionIter +=  myIntAcq->value();
-    OSLM_DEBUG("erase Acquisition: "<<myIntAcq->value());
-
-    (*studyIter)->getField( ::fwData::Study::ID_ACQUISITIONS )->children().erase( acquisitionIter.base() );
-
-    if( nbAcquisitions == 1 )
+    // Erase acquisition
+    ::fwDataTools::Patient::removeAcquisition(study, acquisition);
+    myIntAcq--;
+    if( study->getAcquisitions().empty() )
     {
         // Erase study
-        (*patientIter)->getField( ::fwData::Patient::ID_STUDIES )->children().erase( studyIter.base() );
-
-        if ( nbStudies == 1 )
+        ::fwDataTools::Patient::removeStudy(patient, study);
+        myIntStu--;
+        if ( patient->getStudies().empty() )
         {
             // Erase patient
-            pPatientDB->getField( ::fwData::PatientDB::ID_PATIENTS )->children().erase( patientIter.base() );
-            pPatientDB->removeField( fwComEd::Dictionary::m_imageSelectedId);
-        }
-        else
-        {
-            // Select previous study
-            if (myIntStu->value() > 0)
-            {
-                myIntStu->value()--;
-            }
-        }
-    }
-    else
-    {
-        // Select previous acquisition
-        if (myIntAcq->value() > 0)
-        {
-            myIntAcq->value()--;
+            ::fwDataTools::Patient::removePatient(pPatientDB, patient);
+            myIntPat--;
         }
     }
 
+    ::fwComEd::fieldHelper::BackupHelper::setSelection(pPatientDB, myIntPat, myIntStu, myIntAcq);
     ::fwComEd::PatientDBMsg::NewSptr msg;
     msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
     ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);

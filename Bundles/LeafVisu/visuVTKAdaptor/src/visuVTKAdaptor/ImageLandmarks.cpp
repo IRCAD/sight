@@ -49,7 +49,7 @@ void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* 
 
     ::fwComEd::PointListMsg::NewSptr msgPointList;
     msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
-    ::fwData::PointList::sptr pointList = image->getFieldSingleElement< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
+    ::fwData::PointList::sptr pointList = image->getField< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
     ::fwServices::IEditionService::notify( _service->getSptr(), pointList, msgPointList);
 
     ::fwComEd::ImageMsg::NewSptr msgLandmark;
@@ -230,20 +230,19 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
     // get PointList in image Field then install distance service if required
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    bool hasLandmarkField = image->getFieldSize( ::fwComEd::Dictionary::m_imageLandmarksId );
-    bool isShown
-        = (!image->getFieldSize("ShowLandmarks")) ? true : image->getFieldSingleElement< ::fwData::Boolean > ("ShowLandmarks")->value();
+    ::fwData::PointList::sptr landmarks;
+    bool isShown;
+    landmarks = image->getField< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
+    isShown = image->getField("ShowLandmarks", ::fwData::Boolean::New(true))->value();
 
-    if (!isShown || !hasLandmarkField || m_needSubservicesDeletion)
+    if (!isShown || !landmarks || m_needSubservicesDeletion)
     {
         this->unregisterServices();
         m_needSubservicesDeletion = false;
     }
 
-    if( isShown && hasLandmarkField )
+    if( isShown && landmarks )
     {
-        ::fwData::PointList::sptr landmarks = image->getFieldSingleElement< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
-
         if ( ! landmarks->getPoints().empty() )
         {
             ::fwRenderVTK::IVtkAdaptorService::sptr servicePointList;

@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwMath/VectorFunctions.hpp>
-// #include "SoLib/Sblinear.h"
 
 #include <fwCore/base.hpp>
 
@@ -13,7 +12,12 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( VectorFunctionsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMath::ut::VectorFunctionsTest );
+
+namespace fwMath
+{
+namespace ut
+{
 
 void VectorFunctionsTest::setUp()
 {
@@ -77,9 +81,9 @@ void VectorFunctionsTest::checkDot_fwMath_Solib()
 //  OSLM_TRACE( "V2_Z :" <<  V2[2] << ", " << soV2[2]);
 //  OSLM_TRACE( "DOT RESULT :" <<  result << ", " << soResult);
 
-
 //  CPPUNIT_ASSERT_DOUBLES_EQUAL(result, double(soResult), 0.00001);
 }
+
 void VectorFunctionsTest::checkCross()
 {
     // Produit vectoriel.
@@ -102,7 +106,6 @@ void VectorFunctionsTest::checkCross()
 
 void VectorFunctionsTest::checkCross_fwMath_SoLib()
 {
-    SLM_TRACE_FUNC();
     // Produit vectoriel.
 
     const double V1_X = 0.1;
@@ -149,3 +152,5 @@ void VectorFunctionsTest::checkNormalize()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(norme,  NORME, 0.00001);
 }
 
+} //namespace ut
+} //namespace fwMath

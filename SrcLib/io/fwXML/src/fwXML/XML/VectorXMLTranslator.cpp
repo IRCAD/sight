@@ -28,7 +28,7 @@ VectorXMLTranslator::~VectorXMLTranslator()
 
 //-----------------------------------------------------------------------------
 
-xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Vector::sptr myVector = ::fwData::Vector::dynamicCast(obj);
 
@@ -36,7 +36,7 @@ xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
     xmlNodePtr masterNode = XMLTranslatorHelper::MasterNode( obj );
 
     // create node for container
-    xmlNodePtr containerNode = XMLTH::homogeneousContainerToXml("container", myVector->getRefContainer().begin(),  myVector->getRefContainer().end() );
+    xmlNodePtr containerNode = XMLTH::homogeneousContainerToXml("container", myVector->begin(),  myVector->end() );
     xmlAddChild( masterNode , containerNode);
 
     return masterNode;
@@ -44,13 +44,13 @@ xmlNodePtr VectorXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //-----------------------------------------------------------------------------
 
-void VectorXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void VectorXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate); // object should exist
 
     //get its label
     ::fwData::Vector::sptr myVector = ::fwData::Vector::dynamicCast(toUpdate);
-    myVector->getRefContainer().clear();
+    myVector->getContainer().clear();
 
     // If the point list is not empty
     if ( source->children != NULL )
@@ -67,10 +67,11 @@ void VectorXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  
                     while ( containerNode )
                     {
                         // Load Object
-                        ::fwTools::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode, true  );
+                        ::fwData::Object::sptr valueObj = Serializer().ObjectsFromXml( containerNode );
                         SLM_ASSERT("valueObj not instanced", valueObj);
                         assert( ::fwData::Object::dynamicCast( valueObj ) );
-                        myVector->getRefContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
+
+                        myVector->getContainer().push_back( ::fwData::Object::dynamicCast( valueObj ) );
 
                         containerNode = XMLParser::nextXMLElement( containerNode->next );
                     }

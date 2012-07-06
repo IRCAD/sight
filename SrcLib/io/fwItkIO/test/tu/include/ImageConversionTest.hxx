@@ -8,6 +8,11 @@
 
 #include <itkIO/itk.hpp>
 
+namespace fwItkIO
+{
+namespace ut
+{
+
 template< class TYPE>
 void ImageConversionTest::stressTestForAType()
 {
@@ -30,3 +35,6 @@ void ImageConversionTest::stressTestForAType()
         CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3));
     }
 }
+
+} //namespace ut
+} //namespace fwItkIO

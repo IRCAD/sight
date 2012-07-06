@@ -5,15 +5,15 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwTools/Factory.hpp>
-
+#include "fwData/registry/macros.hpp"
 #include "fwData/StructureTraitsDictionary.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::StructureTraitsDictionary, ::fwData::StructureTraitsDictionary );
+fwDataRegisterMacro( ::fwData::StructureTraitsDictionary );
 
 namespace fwData
 {
@@ -26,8 +26,7 @@ StructureTraitsDictionary::StructureTraitsDictionary ()
 //------------------------------------------------------------------------------
 
 StructureTraitsDictionary::~StructureTraitsDictionary ()
-{
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -55,19 +54,38 @@ void StructureTraitsDictionary::addStructure(StructureTraits::sptr structureTrai
             structureTraits->getCategories().empty());
     FW_RAISE_IF("Wrong structure type '" << type<< "', a type cannot contain space" , structureTraits->getType().find(" ") != std::string::npos );
 
-
     m_structureTraitsMap[type] = structureTraits;
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<std::string> StructureTraitsDictionary::getStructureTypeNames() const
+StructureTraitsDictionary::StructureTypeNameContainer StructureTraitsDictionary::getStructureTypeNames() const
 {
-    std::vector<std::string> vectNames;
+    StructureTypeNameContainer vectNames;
     std::transform( m_structureTraitsMap.begin(), m_structureTraitsMap.end(),
             std::back_inserter(vectNames),
             ::boost::bind(& StructureTraitsMapType::value_type::first,_1) );
     return vectNames;
+}
+
+//------------------------------------------------------------------------------
+
+void StructureTraitsDictionary::shallowCopy( StructureTraitsDictionary::csptr source )
+{
+    this->fieldShallowCopy( source );
+    m_structureTraitsMap = source->m_structureTraitsMap;
+}
+
+//------------------------------------------------------------------------------
+
+void StructureTraitsDictionary::deepCopy( StructureTraitsDictionary::csptr source )
+{
+    this->fieldDeepCopy( source );
+    m_structureTraitsMap.clear();
+    BOOST_FOREACH(StructureTraitsMapType::value_type elt, source->m_structureTraitsMap)
+    {
+        m_structureTraitsMap[elt.first] = ::fwData::Object::copy(elt.second);
+    }
 }
 
 //------------------------------------------------------------------------------

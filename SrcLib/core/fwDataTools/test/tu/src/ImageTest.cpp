@@ -7,6 +7,8 @@
 #include <sstream>
 #include <fwTools/Type.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include <fwDataTools/Image.hpp>
 
 #include "ImageTest.hpp"
@@ -173,6 +175,8 @@ void ImageTest::roiApplyTest()
         imgData = image->getDataArray();                                                               \
         roiData = roi->getDataArray();                                                                 \
                                                                                                        \
+        ::fwComEd::helper::Array roiDataHelper(roiData);                                               \
+                                                                                                       \
         CPPUNIT_ASSERT(imgData);                                                                       \
         CPPUNIT_ASSERT(imgData->getNumberOfElements());                                                \
                                                                                                        \
@@ -181,8 +185,8 @@ void ImageTest::roiApplyTest()
                                                                                                        \
         ::fwDataTools::Image::randomizeArray(roi->getDataArray());                                     \
                                                                                                        \
-        char *begin = roiData->begin();                                                                \
-        char *end   = roiData->end();                                                                  \
+        char *begin = roiDataHelper.begin();                                                           \
+        char *end   = roiDataHelper.end();                                                             \
         size_t part = (end - begin)/3;                                                                 \
                                                                                                        \
         std::fill(begin, begin + part, 0);                                                             \

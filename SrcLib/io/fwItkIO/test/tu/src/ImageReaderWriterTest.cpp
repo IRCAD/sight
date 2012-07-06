@@ -16,7 +16,12 @@
 #include "ImageReaderWriterTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ImageReaderWriterTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageReaderWriterTest );
+
+namespace fwItkIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -122,3 +127,6 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::NewSptr image )
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwItkIO

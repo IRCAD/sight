@@ -45,7 +45,7 @@ void IService::info( std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-::fwTools::Object::sptr IService::getObject()
+::fwData::Object::sptr IService::getObject()
 {
     SLM_ASSERT("Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired", !m_associatedObject.expired() );
     return m_associatedObject.lock();
@@ -204,7 +204,7 @@ void IService::update() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void IService::swap( ::fwTools::Object::sptr _obj ) throw(::fwTools::Failed)
+void IService::swap( ::fwData::Object::sptr _obj ) throw(::fwTools::Failed)
 {
     OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(), m_associatedObject.lock() != _obj );
 

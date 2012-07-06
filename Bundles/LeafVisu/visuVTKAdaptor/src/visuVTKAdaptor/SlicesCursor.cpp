@@ -6,7 +6,6 @@
 
 #include <boost/assign/list_of.hpp>
 
-#include "visuVTKAdaptor/SlicesCursor.hpp"
 
 
 #include <fwServices/macros.hpp>
@@ -30,6 +29,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/String.hpp>
+
+#include "visuVTKAdaptor/SlicesCursor.hpp"
 
 REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image ) ;
 
@@ -100,11 +101,10 @@ void SlicesCursor::reconfiguring() throw(fwTools::Failed)
 void SlicesCursor::doStart() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    //setOrientation( static_cast< Orientation >( 0 ) );
-    buildPolyData();
-    buildColorAttribute();
+    this->buildPolyData();
+    this->buildColorAttribute();
     this->updateImageInfos(image);
-    updateColors();
+    this->updateColors();
     m_cursorMapper->SetInput( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     if(!this->getTransformId().empty())
@@ -382,9 +382,9 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
             ::fwData::Object::csptr dataInfo = imageMsg->getDataInfo(::fwComEd::ImageMsg::SLICE_INDEX);
             imageMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
 
-            if(dataInfo && dataInfo->getFieldSize("SLICE_MODE"))
+            if(dataInfo && dataInfo->getField("SLICE_MODE"))
             {
-                ::fwData::String::sptr sliceMode = dataInfo->getFieldSingleElement< ::fwData::String >("SLICE_MODE");
+                ::fwData::String::sptr sliceMode = dataInfo->getField< ::fwData::String >("SLICE_MODE");
                 SLM_ASSERT("sceneID empty!", sliceMode);
                 m_isSelected = ( sliceMode->value() == "UPDATE_SLICING" );
             }
@@ -397,8 +397,8 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
             ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
             ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
 
-            int fromSliceType = ::fwData::Integer::dynamicCast( info->getRefMap()["fromSliceType"] )->value();
-            int toSliceType =   ::fwData::Integer::dynamicCast( info->getRefMap()["toSliceType"] )->value();
+            int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
+            int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
             if( toSliceType == static_cast<int>(m_orientation) )
             {

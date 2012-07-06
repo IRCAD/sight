@@ -33,10 +33,10 @@ public :
     fwCoreClassDefinitionsWithFactoryMacro( (ServiceConfigInfo)(::fwCore::BaseObject), (()), new ServiceConfigInfo );
 
     /// Constructor, do nothing.
-    FWSERVICES_API ServiceConfigInfo(){}
+    ServiceConfigInfo(){}
 
     /// Destructor, do nothing.
-    FWSERVICES_API virtual ~ServiceConfigInfo(){}
+    virtual ~ServiceConfigInfo(){}
 
     std::string service;
     std::string desc;

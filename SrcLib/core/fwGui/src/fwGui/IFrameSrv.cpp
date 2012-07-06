@@ -216,7 +216,7 @@ void IFrameSrv::onCloseNotify()
 {
     SLM_TRACE_FUNC();
     ::fwServices::ObjectMsg::NewSptr objectMsg;
-    ::fwTools::Object::sptr srvObj = this->getObject();
+    ::fwData::Object::sptr srvObj = this->getObject();
     objectMsg->addEvent( "WINDOW_CLOSED" );
     ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
 }

@@ -60,6 +60,7 @@ public:
         ActionInfo() :
             m_name(""),
             m_shortcut(""),
+            m_icon(""),
             m_isCheckable (false),
             m_isRadio(false),
             m_type(DEFAULT),
@@ -69,6 +70,7 @@ public:
 
         std::string m_name;
         std::string m_shortcut;
+        std::string m_icon;
         bool        m_isCheckable;
         bool        m_isRadio;
         ActionType  m_type;
@@ -164,7 +166,7 @@ public:
     /**
      * @brief Sets callbacks associate with menu items.
      */
-    FWGUI_API virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
+    virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
 
 protected:
 

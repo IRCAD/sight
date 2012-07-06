@@ -11,6 +11,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/helper/Image.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include "ctrlSelection/MedicalImageSrv.hpp"
@@ -47,9 +48,14 @@ void MedicalImageSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw (
 void MedicalImageSrv::convertImage()
 {
     ::fwData::Image::sptr pImg = this->getObject< ::fwData::Image >();
-    std::pair<bool, bool> MinMaxTFAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkMinMaxTF( pImg );
-    bool landMarksAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks( pImg );
-    bool sliceIndexAreModified = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageSliceIndex( pImg );
+    if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
+    {
+        ::fwComEd::helper::Image helper ( pImg );
+
+        helper.createLandmarks();
+        helper.createTransferFunctionPool(this->getSptr());
+        helper.createImageSliceIndex();
+    }
 }
 
 //-----------------------------------------------------------------------------

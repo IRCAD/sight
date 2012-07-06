@@ -176,7 +176,7 @@ void FwXMLPatientDBReaderService::updating() throw(::fwTools::Failed)
 
         if (patientDB)
         {
-            if( patientDB->getPatientSize() > 0 )
+            if( patientDB->getNumberOfPatients() )
             {
                 // Retrieve dataStruct associated with this service
                 ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
@@ -254,7 +254,7 @@ bool FwXMLPatientDBReaderService::isAnFwxmlArchive( const ::boost::filesystem::p
     {
         std::stringstream stream;
         stream << "Sorry, "<<_pArchivePath<< " is not a valid " FWXML_ARCHIVE_EXTENSION " file."
-               << this->getObject< ::fwTools::Object >()->getRootedClassname();
+               << this->getObject()->getRootedClassname();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                         stream.str(),
                         ::fwGui::dialog::IMessageDialog::WARNING);

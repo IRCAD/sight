@@ -145,7 +145,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      *
      * @return      true or false
      */
-    FWRUNTIME_API const bool hasAttribute(const std::string& name) const throw();
+    FWRUNTIME_API bool hasAttribute(const std::string& name) const throw();
 
     /**
      * @brief   Return the map with attributes

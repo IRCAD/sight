@@ -43,7 +43,7 @@ public:
 
     /// manage the new object son
     /// return a xml pointer node on xml_unit (XMLAggregator) containing son ( not mandatory )
-    FWXML_API xmlNodePtr manage( ::fwTools::Object::sptr father, ::fwTools::Object::sptr son );
+    FWXML_API xmlNodePtr manage( ::fwData::Object::sptr father, ::fwData::Object::sptr son );
 
     /// allow to change Path policy
     FWXML_API void setPathPolicy( IPathPolicy::sptr newPathPolicy);
@@ -54,7 +54,7 @@ public:
 protected :
 
     /// test if object contain extra data (IFileFormat Exist) : if yes update FileFormat.path/dir
-    void manageExtraData( ::fwTools::Object::sptr obj );
+    void manageExtraData( ::fwData::Object::sptr obj );
 
     FWXML_API XMLPartitioner();
 

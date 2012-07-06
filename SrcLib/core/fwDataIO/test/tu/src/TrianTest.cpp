@@ -75,8 +75,8 @@ void TrianTest::test_1()
     reader->setFile(m_tmpTrianPath1);
     reader->read();
 
-    CPPUNIT_ASSERT_EQUAL(trianMesh->getNumPoints(), (int)NBPTS);
-    CPPUNIT_ASSERT_EQUAL(trianMesh->getNumCells(), (int)NBCELLS);
+    CPPUNIT_ASSERT_EQUAL((size_t)NBPTS, trianMesh->getNumPoints());
+    CPPUNIT_ASSERT_EQUAL((size_t)NBCELLS, trianMesh->getNumCells());
 }
 
 //------------------------------------------------------------------------------
@@ -101,8 +101,8 @@ void TrianTest::test_2()
     reader->setFile(m_tmpTrianPath2);
     reader->read();
 
-    CPPUNIT_ASSERT_EQUAL(trianMesh1->getNumPoints(), (int)NBPTS);
-    CPPUNIT_ASSERT_EQUAL(trianMesh1->getNumCells(),  (int)NBCELLS);
+    CPPUNIT_ASSERT_EQUAL((size_t)NBPTS, trianMesh1->getNumPoints());
+    CPPUNIT_ASSERT_EQUAL((size_t)NBCELLS, trianMesh1->getNumCells());
     CPPUNIT_ASSERT_EQUAL(trianMesh1->getNumCells(),  trianMesh2->getNumCells());
     CPPUNIT_ASSERT_EQUAL(trianMesh1->getNumPoints(), trianMesh2->getNumPoints());
     CPPUNIT_ASSERT(trianMesh1->points() == trianMesh2->points());
@@ -118,8 +118,8 @@ void TrianTest::file_load_test()
     unsigned long long nbPts, nbCells;
     std::string testFileName("Mesh-00-002502pts-005000cells.trian");
     parseMeshFileName( testFileName, nbPts, nbCells );
-    CPPUNIT_ASSERT_EQUAL(nbPts, 2502ULL);
-    CPPUNIT_ASSERT_EQUAL(nbCells, 5000ULL);
+    CPPUNIT_ASSERT_EQUAL(2502ULL, nbPts);
+    CPPUNIT_ASSERT_EQUAL(5000ULL, nbCells);
 
     const ::boost::filesystem::path trian_path( ::fwTest::Data::dir() / "fw4spl/trian/" );
     const boost::regex fileNameFilter( "Mesh-\\d+-\\d+pts-\\d+cells\\.trian" );
@@ -163,8 +163,8 @@ void TrianTest::file_load_test()
         reader->setFile(trianFile);
         reader->read();
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE(trianFile.string(), trianMesh->getNumPoints(), (int)nbPts);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("File : " +  trianFile.string(), trianMesh->getNumCells(),  (int)nbCells);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(trianFile.string(), (size_t)nbPts, trianMesh->getNumPoints());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("File : " +  trianFile.string(), (size_t)nbCells, trianMesh->getNumCells());
     }
 }
 //------------------------------------------------------------------------------

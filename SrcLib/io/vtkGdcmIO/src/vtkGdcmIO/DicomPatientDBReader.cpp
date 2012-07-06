@@ -149,7 +149,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
     scanner.AddTag( t11 );
     scanner.AddTag( t12 );
     scanner.AddTag( t13 );
-    scanner.AddTag( t14 );    
+    scanner.AddTag( t14 );
     scanner.AddTag(imageTypeTag);
 
     //const gdcm::Tag &reftag = t2;
@@ -243,7 +243,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                 files->Initialize();
 
                 std::vector< std::string > listOfFiles = iter->second;
-                int nb = listOfFiles.size();
                 if( !b )
                 {
                     SLM_WARN ( "Failed to sort:" );
@@ -387,7 +386,6 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     double thickness = medprop->GetSliceThicknessAsDouble();//"0018|0050"
                     //std::string interSliceStr= "0018|0088"
                     //std::vector<double> vRescale = gdcm::ImageHelper::GetRescaleInterceptSlopeValue(localReader.GetFile());
-                    double rescale=0.0;//(vRescale.size()>0)?vRescale[0]:0.0;
                     double center=0.0;
                     double width=0.0;
                     if (medprop->GetNumberOfWindowLevelPresets())//FIXME : Multiple preset !!!
@@ -410,26 +408,20 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     // Check the existence of the the study and the patient.
                     bool bIsNewStudy =false;
                     bool bIsNewPatient =false;
-                    if(patientDB->getPatientSize() !=0 )
+                    if(patientDB->getNumberOfPatients() !=0 )
                     {
                         //Looking for an existing patient.
-                        ::fwData::PatientDB::PatientIterator itrOnPatient;
-                        std::pair< ::fwData::PatientDB::PatientIterator, ::fwData::PatientDB::PatientIterator > patients = patientDB->getPatients();
-                        for(itrOnPatient = patients.first; itrOnPatient != patients.second; ++itrOnPatient)
+                        BOOST_FOREACH(patient, patientDB->getPatients())
                         {
-                            std::string id = (*itrOnPatient)->getIDDicom();
+                            std::string id = patient->getIDDicom();
                             if (patientID == id)
                             {
-                                patient =*itrOnPatient;
-                                std::pair< ::fwData::Patient::StudyIterator, ::fwData::Patient::StudyIterator > studies = patient->getStudies();
                                 // Looking for an existing study
-                                ::fwData::Patient::StudyIterator itrOnStudy;
                                 bool studyExists = false;
-                                for(itrOnStudy = studies.first; itrOnStudy != studies.second; ++itrOnStudy)
+                                BOOST_FOREACH(study, patient->getStudies())
                                 {
-                                    if((*itrOnStudy)->getUID() == studyInstanceUID)
+                                    if(study->getUID() == studyInstanceUID)
                                     {
-                                        study = *itrOnStudy;
                                         studyExists = true;
                                         break;
                                     }

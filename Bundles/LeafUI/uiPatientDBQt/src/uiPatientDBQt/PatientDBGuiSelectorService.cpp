@@ -31,6 +31,7 @@
 #include <fwComEd/PatientDBMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/fieldHelper/BackupHelper.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -38,8 +39,6 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include "uiPatientDBQt/PatientDBGuiSelectorService.hpp"
-
-using namespace fwServices;
 
 namespace uiPatientDB
 {
@@ -174,39 +173,27 @@ void PatientDBGuiSelectorService::stopping() throw(::fwTools::Failed)
 
 void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
 {
+    using namespace ::fwComEd::fieldHelper;
+
     m_pSelectorPanel->clearSelection();
     m_pSelectorPanel->clear();
 
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
-    ::fwData::PatientDB::PatientIterator patientBegin = pPatientDB->getPatients().first;
-    ::fwData::PatientDB::PatientIterator patientEnd   = pPatientDB->getPatients().second;
-    ::fwData::PatientDB::PatientIterator patient      = patientBegin;
 
-    int selPatient = 0;
-    int selStudy = 0;
-    int selAcq = 0;
-    ::fwTools::Field::sptr pDataInfo = pPatientDB->getField( fwComEd::Dictionary::m_imageSelectedId );
-    if (pDataInfo)
+    BackupHelper::SelectionIdType selPatient = BackupHelper::getSelectedPatientIdx(pPatientDB);
+    BackupHelper::SelectionIdType selStudy = BackupHelper::getSelectedStudyIdx(pPatientDB);
+    BackupHelper::SelectionIdType selAcq = BackupHelper::getSelectedAcquisitionIdx(pPatientDB);
+    selPatient = std::max(0, selPatient);
+    selStudy = std::max(0, selStudy);
+    selAcq = std::max(0, selAcq);
+
+    BackupHelper::SelectionIdType indexP = 0;
+    BackupHelper::SelectionIdType indexS = 0;
+    BackupHelper::SelectionIdType indexA = 0;
+    BOOST_FOREACH(::fwData::Patient::sptr pPatient, pPatientDB->getPatients() )
     {
-        ::fwData::Integer::sptr myIntPat = ::fwData::Integer::dynamicCast( pDataInfo->children().at(0) );
-        ::fwData::Integer::sptr myIntStu = ::fwData::Integer::dynamicCast( pDataInfo->children().at(1) );
-        ::fwData::Integer::sptr myIntAcq = ::fwData::Integer::dynamicCast( pDataInfo->children().at(2) );
-        selPatient = myIntPat->value();
-        selStudy = myIntStu->value();
-        selAcq = myIntAcq->value();
-    }
-
-    int indexP = 0;
-    while ( patient != patientEnd )
-    {
-        int indexS = 0;
-        int indexA = 0;
-        indexP = patient - patientBegin;
-
-        ::fwData::Patient::sptr pPatient = *patient;
-        ::fwData::Patient::StudyIterator studyBegin = pPatient->getStudies().first;
-        ::fwData::Patient::StudyIterator studyEnd = pPatient->getStudies().second;
-        ::fwData::Patient::StudyIterator study = studyBegin;
+        indexS = 0;
+        indexA = 0;
 
         QTreeWidgetItem* patientItem = new QTreeWidgetItem();
         std::string name = pPatient->getName() + " " + pPatient->getFirstname();
@@ -219,19 +206,12 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
         patientItem->setData(0, Qt::UserRole, QVariant::fromValue(selectionP));
         m_pSelectorPanel->addTopLevelItem( patientItem );
 
-        while ( study != studyEnd )
+        BOOST_FOREACH(::fwData::Study::sptr pStudy, pPatient->getStudies() )
         {
-            indexS = study - studyBegin;
-            ::fwData::Study::sptr pStudy = *study;
-            ::fwData::Study::AcquisitionIterator acquisitionBegin = pStudy->getAcquisitions().first;
-            ::fwData::Study::AcquisitionIterator acquisitionEnd = pStudy->getAcquisitions().second;
-            ::fwData::Study::AcquisitionIterator acquisition = acquisitionBegin;
-
-            while ( acquisition != acquisitionEnd )
+            indexA = 0;
+            BOOST_FOREACH(::fwData::Acquisition::sptr pAcquisition, pStudy->getAcquisitions() )
             {
-                indexA = acquisition - acquisitionBegin;
-                ::fwData::Acquisition::sptr pAcquisition = *acquisition;
-
+                ::fwData::Image::sptr image = pAcquisition->getImage();
                 // Get Infos
                 std::string zone = ((pStudy->getAcquisitionZone().length())?pStudy->getAcquisitionZone():"Unknown study description")
                                  + "-" + pAcquisition->getDescription();
@@ -240,32 +220,30 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
                 std::string nbImages = "";
                 std::string acqDate = ::boost::posix_time::to_iso_extended_string( pAcquisition->getCreationDate() );
                 acqDate =  acqDate.substr(0,10) + " " + acqDate.substr(11,5);
-                if ( pAcquisition->getImage()->getNumberOfDimensions() == 3 )
+                if ( image->getNumberOfDimensions() == 3 )
                 {
                     std::stringstream nbImagesStream;
-                    nbImagesStream << pAcquisition->getImage()->getSize()[0] << "  x " << pAcquisition->getImage()->getSize()[1] << " x " << pAcquisition->getImage()->getSize()[2];
+                    nbImagesStream << image->getSize()[0] << "  x " << image->getSize()[1] << " x " << image->getSize()[2];
                     nbImages = nbImagesStream.str();
 
                     std::stringstream voxelSizeStream;
-                    voxelSizeStream << pAcquisition->getImage()->getSpacing()[0] << " x "
-                                    << pAcquisition->getImage()->getSpacing()[1] << " x "
-                                    << pAcquisition->getImage()->getSpacing()[2];
+                    voxelSizeStream << image->getSpacing()[0] << " x "
+                                    << image->getSpacing()[1] << " x "
+                                    << image->getSpacing()[2];
                     voxelSize = voxelSizeStream.str();
 
 
                     std::stringstream originStream;
-                    originStream << pAcquisition->getImage()->getOrigin()[0] << " x "
-                                    << pAcquisition->getImage()->getOrigin()[1] << " x "
-                                    << pAcquisition->getImage()->getOrigin()[2];
+                    originStream << image->getOrigin()[0] << " x "
+                                    << image->getOrigin()[1] << " x "
+                                    << image->getOrigin()[2];
                     origin = originStream.str();
                 }
-                ::fwComEd::fieldHelper::MedicalImageHelpers::checkComment(pAcquisition->getImage());
-                if ( ! pAcquisition->getImage()->getFieldSize( ::fwComEd::Dictionary::m_imageLabelId) )
-                {
-                    ::fwComEd::fieldHelper::MedicalImageHelpers::setImageLabel(pPatient, pAcquisition->getImage());
-                }
-                std::string comment = pAcquisition->getImage()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
-                comment += " : " + pAcquisition->getImage()->getFieldSingleElement< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
+
+                ::fwComEd::fieldHelper::MedicalImageHelpers::checkComment(image);
+                ::fwComEd::fieldHelper::MedicalImageHelpers::setImageLabel(pPatient, image);
+                std::string comment = image->getField< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
+                comment += " : " + image->getField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId )->value();
 
                 QTreeWidgetItem* acquisitionItem = new QTreeWidgetItem();
                 acquisitionItem->setText(0, QString::fromStdString(zone));
@@ -288,12 +266,11 @@ void PatientDBGuiSelectorService::updating() throw(::fwTools::Failed)
                     m_pSelectorPanel->setCurrentItem(acquisitionItem);
                     m_pSelectorPanel->expandItem(acquisitionItem);
                 }
-                ++acquisition;
+                ++indexA;
             }
-            ++study;
+            ++indexS;
         }
-
-        ++patient;
+        ++indexP;
     }
 }
 
@@ -335,20 +312,12 @@ void PatientDBGuiSelectorService::onSelectionChange(QTreeWidgetItem * current, Q
 
         QList<int> list = variant.value< QList<int> >();
 
-        ::fwData::Object::NewSptr acqSelected;
-        acqSelected->children().push_back( ::fwData::Integer::NewSptr(list[0]) );
-        acqSelected->children().push_back( ::fwData::Integer::NewSptr(list[1]) );
-        acqSelected->children().push_back( ::fwData::Integer::NewSptr(list[2]) );
-
         // Add Field
-        pPatientDB->removeField( ::fwComEd::Dictionary::m_imageSelectedId );
-        pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(list[0]));
-        pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(list[1]));
-        pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(list[2]));
+        ::fwComEd::fieldHelper::BackupHelper::setSelection(pPatientDB, list[0], list[1], list[2]);
 
         // notification
         ::fwComEd::PatientDBMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED, acqSelected );
+        msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED );
         ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
     }
 }
@@ -366,19 +335,16 @@ void PatientDBGuiSelectorService::selectLastAddedImage(int patientIndex)
 {
     ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
 
-    ::fwData::PatientDB::PatientIterator patientIter = pPatientDB->getPatients().first;
-    patientIter += patientIndex;
+    ::fwData::Patient::sptr patient = pPatientDB->getPatients().at(patientIndex);
 
-    int studyIndex = (*patientIter)->getStudySize() - 1;
-    ::fwData::Patient::StudyIterator studyIter = (*patientIter)->getStudies().first;
-    studyIter += studyIndex;
+    ::fwData::Patient::StudyContainerType::size_type studyIndex;
+    studyIndex = patient->getNumberOfStudies() - 1;
+    ::fwData::Study::sptr study = patient->getStudies().at(studyIndex);
 
-    int acqIndex = (*studyIter)->getAcquisitionSize() - 1;
+    ::fwData::Study::AcquisitionContainerType::size_type acqIndex;
+     acqIndex = study->getNumberOfAcquisitions() - 1;
 
-    pPatientDB->removeField( ::fwComEd::Dictionary::m_imageSelectedId );
-    pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(patientIndex));
-    pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(studyIndex));
-    pPatientDB->addFieldElement( ::fwComEd::Dictionary::m_imageSelectedId, ::fwData::Integer::NewSptr(acqIndex));
+    ::fwComEd::fieldHelper::BackupHelper::setSelection(pPatientDB, patientIndex, studyIndex, acqIndex);
 }
 
 //------------------------------------------------------------------------------

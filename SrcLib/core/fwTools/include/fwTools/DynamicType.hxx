@@ -11,7 +11,8 @@
 #include "fwTools/StringKeyTypeMapping.hpp"
 #include "fwTools/Dispatcher.hpp"
 
-namespace fwTools {
+namespace fwTools
+{
 
 
 template<class TYPE>

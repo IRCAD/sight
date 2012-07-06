@@ -37,10 +37,10 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (GenericField)(::fwServices::IXMLParser) ) ;
 
     /// Constructor : does nothing.
-    FWCOMED_API GenericField() {};
+    GenericField() {};
 
     /// Destructor : does nothing.
-    FWCOMED_API virtual ~GenericField() {};
+    virtual ~GenericField() {};
 
     FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
 protected:

@@ -8,6 +8,8 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
+#include <fwData/Object.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/GlobalEventManager.hpp>
 
@@ -15,7 +17,7 @@
 #include "fwGuiWx/MessageHandler.hpp"
 
 
-REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwGui::MessageHandler , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwGui::MessageHandler , ::fwData::Object ) ;
 
 namespace fwGui
 {

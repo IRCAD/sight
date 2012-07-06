@@ -115,12 +115,12 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     // Retrieve object
-    ::fwData::Spline::wptr spline = this->getObject< ::fwData::Spline >( );
+    ::fwData::Spline::sptr spline = this->getObject< ::fwData::Spline >( );
 
-    spline.lock()->points() = m_points ;
-    spline.lock()->setRadius(m_radius);
-    spline.lock()->setNbSides(m_nbSides);
-    spline.lock()->setIdSpline(m_idSpline);
+    spline->points() = m_points ;
+    spline->setRadius(m_radius);
+    spline->setNbSides(m_nbSides);
+    spline->setIdSpline(m_idSpline);
 
     // Notify reading
     ::fwComEd::SplineMsg::NewSptr msg;
@@ -128,14 +128,10 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
 
     if(isTransfo)
     {
-        spline.lock()->setFieldSingleElement( ::fwComEd::Dictionary::position, objectMatrix ) ;
+        spline->setField( ::fwComEd::Dictionary::position, objectMatrix ) ;
         msg->addEvent( ::fwComEd::Dictionary::position ) ;
-        ::fwServices::IEditionService::notify(this->getSptr(), spline.lock(), msg);
     }
-    else
-    {
-        ::fwServices::IEditionService::notify(this->getSptr(), spline.lock(), msg);
-    }
+    ::fwServices::IEditionService::notify(this->getSptr(), spline, msg);
 }
 
 //-----------------------------------------------------------------------------

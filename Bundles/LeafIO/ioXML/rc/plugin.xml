@@ -9,14 +9,14 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioXML::FwXMLGenericWriterService</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
         <desc>Generic fwXML Writer (Ircad)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioXML::FwXMLGenericReaderService</service>
-        <object>::fwTools::Object</object>
+        <object>::fwData::Object</object>
         <desc>Generic fwXML Reader (Ircad)</desc>
     </extension>
 

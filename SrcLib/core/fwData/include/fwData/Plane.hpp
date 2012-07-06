@@ -12,11 +12,8 @@
 #include <fwMath/IntrasecTypes.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Point.hpp"
-#include "fwData/Line.hpp"
-#include "fwData/TransformationMatrix3D.hpp"
-
 
 namespace fwData
 {
@@ -32,7 +29,7 @@ class FWDATA_CLASS_API Plane : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object),
-        (()), ::fwTools::Factory::New< Plane >) ;
+        (()), ::fwData::Factory::New< Plane >) ;
 
     typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
 
@@ -52,7 +49,7 @@ public :
     FWDATA_API bool operator==( const Plane & _plane ) ;
 
     /// get the plane coordinate
-    FWDATA_API fwPlane getPlane() const {return m_plane;};
+    fwPlane getPlane() const {return m_plane;};
 
     /// Re-initialize the plane with 3 points
     FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);

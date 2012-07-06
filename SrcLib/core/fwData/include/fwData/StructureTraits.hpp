@@ -9,6 +9,7 @@
 
 #include "fwData/Color.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -30,7 +31,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwTools::Factory::New< StructureTraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwData::Factory::New< StructureTraits >) ;
 
     /// Defines structure categories
     typedef enum

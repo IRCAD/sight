@@ -4,6 +4,7 @@
 
 <xsd:include schemaLocation="Field.xsd"/>
 <xsd:include schemaLocation="Material.xsd"/>
+<xsd:include schemaLocation="Image.xsd"/>
 
 <xsd:element name="Reconstruction" type="ReconstructionXSDType"/>
 
@@ -26,8 +27,12 @@
         <xsd:element name="Type3D" type="xsd:string"/>
         <xsd:element name="Path" type="xsd:anyURI"/>
         <xsd:element name="DbID" type="xsd:int"/>
-        <xsd:element name="material" type="MaterialType" />
-        <xsd:element name="Field" type="FieldXSDType" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="material" type="ReconstructionMaterialType" />
+        <xsd:element name="image" type="ReconstructionImageType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="mesh" type="ReconstructionMeshType" />
+            <xsd:element name="Attributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element name="DynamicAttributes" type="xsd:anyType" minOccurs="0" maxOccurs="unbounded"/>
+        
     </xsd:sequence>
     
     <xsd:attribute name="id" type="xsd:string"/>
@@ -43,9 +48,21 @@
     </xsd:restriction>
 </xsd:simpleType>
 
-<xsd:complexType name="MaterialType">
+<xsd:complexType name="ReconstructionMaterialType">
     <xsd:sequence>
         <xsd:element name="Material" type="MaterialXSDType" minOccurs="1" maxOccurs="1" />
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ReconstructionImageType">
+    <xsd:sequence>
+        <xsd:element name="Image" type="ImageType" minOccurs="1" maxOccurs="1" />
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ReconstructionMeshType">
+    <xsd:sequence>
+        <xsd:any minOccurs="0" maxOccurs="unbounded" processContents="lax" />
     </xsd:sequence>
 </xsd:complexType>
 

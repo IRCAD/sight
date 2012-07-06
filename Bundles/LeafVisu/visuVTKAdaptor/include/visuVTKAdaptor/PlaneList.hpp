@@ -30,9 +30,9 @@ public:
 
     VISUVTKADAPTOR_API virtual ~PlaneList() throw();
 
-    VISUVTKADAPTOR_API void setPlaneCollectionId(::fwRenderVTK::VtkRenderService::VtkObjectIdType id) { m_planeCollectionId = id; }
+    void setPlaneCollectionId(::fwRenderVTK::VtkRenderService::VtkObjectIdType id) { m_planeCollectionId = id; }
 
-    VISUVTKADAPTOR_API ::fwRenderVTK::VtkRenderService::VtkObjectIdType getPlaneCollectionId() { return m_planeCollectionId; }
+    ::fwRenderVTK::VtkRenderService::VtkObjectIdType getPlaneCollectionId() { return m_planeCollectionId; }
 
 protected:
 

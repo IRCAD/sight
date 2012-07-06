@@ -35,10 +35,10 @@ class FWXML_CLASS_API XMLHierarchy
 {
 public:
 
-    typedef std::map< ::fwTools::Object::wptr, ::fwTools::Object::wptr >               ChildFatherMap;
-    typedef std::map< ::fwTools::Object::wptr, std::set< ::fwTools::Object::wptr >  >  FatherChildrenMap;
-    typedef std::map< ::fwTools::Object::wptr, xmlNodePtr>                             ObjectXMLNodeMap;
-    typedef std::map< ::fwTools::Object::wptr, XMLAggregator::sptr >                   ObjectAggregatorMap;
+    typedef std::map< ::fwData::Object::wptr, ::fwData::Object::wptr >               ChildFatherMap;
+    typedef std::map< ::fwData::Object::wptr, std::set< ::fwData::Object::wptr >  >  FatherChildrenMap;
+    typedef std::map< ::fwData::Object::wptr, xmlNodePtr>                             ObjectXMLNodeMap;
+    typedef std::map< ::fwData::Object::wptr, XMLAggregator::sptr >                   ObjectAggregatorMap;
 
 
     // WINSUX friend class Singleton< XMLHierarchy >;

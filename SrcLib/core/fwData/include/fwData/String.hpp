@@ -9,6 +9,7 @@
 
 
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/GenericField.hpp"
 
 namespace fwData

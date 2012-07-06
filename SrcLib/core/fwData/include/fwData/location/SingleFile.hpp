@@ -12,7 +12,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
-
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -29,7 +29,7 @@ class FWDATA_CLASS_API SingleFile  : public ILocation
 public:
     fwCoreClassDefinitionsWithNFactoriesMacro(
             (SingleFile)(ILocation),
-            ((::fwTools::Factory::New< SingleFile > ,() ))
+            ((::fwData::Factory::New< SingleFile > ,() ))
             ((SingleFileFactory ,((::boost::filesystem::path)) ))
     );
 

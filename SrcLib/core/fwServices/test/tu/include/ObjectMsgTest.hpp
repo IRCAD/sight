@@ -9,6 +9,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace fwServices
+{
+namespace ut
+{
+
 /**
  * @brief   Test ObjectMsg API
  */
@@ -29,5 +34,8 @@ public:
     void testObjectMsg();
 
 };
+
+} //namespace ut
+} //namespace fwServices
 
 #endif

@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include <fwData/Image.hpp>
 
 #include "fwData/Histogram.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Histogram, ::fwData::Histogram);
+fwDataRegisterMacro( ::fwData::Histogram );
 
 
 namespace fwData
@@ -36,7 +36,7 @@ Histogram::~Histogram()
 
 void Histogram::shallowCopy( Histogram::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
     m_values = _source->m_values;
     m_minValue = _source->m_minValue;
     m_maxValue = _source->m_maxValue;
@@ -47,7 +47,7 @@ void Histogram::shallowCopy( Histogram::csptr _source )
 
 void Histogram::deepCopy( Histogram::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
 
     m_minValue = _source->m_minValue;
     m_maxValue = _source->m_maxValue;
@@ -65,9 +65,9 @@ void Histogram::deepCopy( Histogram::csptr _source )
 
 void Histogram::addPixel( float _pixel )
 {
-    if( isInRange( _pixel ) )
+    if( this->isInRange( _pixel ) )
     {
-        int index = ( _pixel - m_minValue ) / m_binsWidth;
+        int index = static_cast<int>(( _pixel - m_minValue ) / m_binsWidth);
         m_values[ index ]++;
     }
 }
@@ -79,14 +79,14 @@ void Histogram::initialize( float _min, float _max, float _binsWidth )
     SLM_ASSERT("The minimum value can't be greater than the maximum value", _min <= _max);
 
     m_minValue = _min;
-    m_maxValue = _max; 
+    m_maxValue = _max;
     m_binsWidth = _binsWidth;
-    
+
     m_values.clear();
-    
+
     if( m_binsWidth != 0 )
     {
-        int newSize = ( m_maxValue - m_minValue ) / m_binsWidth;
+        int newSize = static_cast<int>(( m_maxValue - m_minValue ) / m_binsWidth);
         m_values.resize( newSize + 1, 0 );
     }
 }
@@ -97,16 +97,24 @@ long Histogram::getNbPixels( float _min, float _max )
 {
     SLM_ASSERT("The minimum value can't be greater than the maximum value", _min < _max);
 
-    int indexMin = ( _min < m_minValue ) ? 0 : ( _min - m_minValue ) / m_binsWidth;
-    int indexMax = ( _max > m_maxValue ) ? m_values.size() : ( _max - m_minValue ) / m_binsWidth;
+    size_t indexMin = 0;
+    if( _min >= m_minValue )
+    {
+        indexMin = static_cast<size_t>(( _min - m_minValue ) / m_binsWidth);
+    }
+    size_t indexMax = m_values.size();
+    if( _max <= m_maxValue )
+    {
+        indexMax = static_cast<size_t>(( _max - m_minValue ) / m_binsWidth);
+    }
     long nbPixels = 0;
-    
+
     while( indexMin < indexMax )
     {
         nbPixels += m_values.at( indexMin++ );
     }
 
-    return nbPixels; 
+    return nbPixels;
 }
 
 //------------------------------------------------------------------------------

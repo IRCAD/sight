@@ -11,7 +11,12 @@
 #include "ImageConversionTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ImageConversionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageConversionTest );
+
+namespace fwItkIO
+{
+namespace ut
+{
 
 //------------------------------------------------------------------------------
 
@@ -107,3 +112,6 @@ void ImageConversionTest::testConversion2D()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwItkIO

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_TEST_TU_COMPOSITEMESSAGETEST_HPP_
-#define _FWCOMED_TEST_TU_COMPOSITEMESSAGETEST_HPP_
+#ifndef _FWCOMED_TU_COMPOSITEMESSAGETEST_HPP_
+#define _FWCOMED_TU_COMPOSITEMESSAGETEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -16,6 +16,10 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+namespace fwComEd
+{
+namespace ut
+{
 
 /**
  * @brief   Test ProcessObject building from a ConfigurationElement and composite message.
@@ -47,5 +51,7 @@ private:
     ::fwRuntime::ConfigurationElement::sptr buildConfig();
 };
 
+} //namespace ut
+} //namespace fwComEd
 
-#endif // _FWCOMED_TEST_TU_COMPOSITEMESSAGETEST_HPP_
+#endif // _FWCOMED_TU_COMPOSITEMESSAGETEST_HPP_

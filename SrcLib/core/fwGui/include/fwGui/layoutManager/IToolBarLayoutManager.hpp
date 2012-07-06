@@ -172,7 +172,7 @@ public:
     /**
      * @brief Sets callbacks associate with toolBar items.
      */
-    FWGUI_API virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
+    virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
 
 protected:
 

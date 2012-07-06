@@ -44,8 +44,8 @@
 #else
 
         #define FWTOOLS_API
-    #define FWTOOLS_CLASS_API
-        #define FWTOOLS_TEMPLATE_API 
+        #define FWTOOLS_CLASS_API
+        #define FWTOOLS_TEMPLATE_API
 
 #endif
 

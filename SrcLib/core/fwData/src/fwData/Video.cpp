@@ -5,11 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include "fwData/registry/macros.hpp"
 
 #include "fwData/Video.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Video, ::fwData::Video  );
+fwDataRegisterMacro( ::fwData::Video );
 namespace fwData
 {
 //------------------------------------------------------------------------------
@@ -22,16 +22,13 @@ Video::Video() :
         m_dataAvailable(false),
         m_lastModified(0)
 {
-    SLM_TRACE_FUNC();
     m_camera = ::fwData::Camera::New();
 }
 
 //------------------------------------------------------------------------------
 
 Video::~Video() throw()
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -62,5 +59,6 @@ void Video::Modified()
 }
 
 //------------------------------------------------------------------------------
+
 
 } // namespace fwData

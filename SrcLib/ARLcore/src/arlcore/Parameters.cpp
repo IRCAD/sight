@@ -11,8 +11,8 @@
 #include <iostream>
 
 arlCore::Parameters::Parameters( const std::string &name, const std::string &fileName ):
-m_name(name),
-m_paramFile(fileName)
+m_paramFile(fileName),
+m_name(name)
 {}
 
 arlCore::Parameters::~Parameters( void )

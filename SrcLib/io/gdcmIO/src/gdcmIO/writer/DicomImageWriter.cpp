@@ -10,8 +10,9 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
-// fwTools
 #include <fwTools/dateAndTime.hpp>
+
+#include <fwComEd/helper/Image.hpp>
 
 #include "gdcmIO/writer/DicomImageWriter.hpp"
 #include "gdcmIO/writer/DicomEquipmentWriter.hpp"
@@ -158,7 +159,7 @@ void DicomImageWriter::write2DImage()
 
     // Get images
     ::gdcm::Image &         gImg            = gImageWriter->GetImage();
-    ::fwData::Image::csptr  image           = this->getConcreteObject()->getImage();
+    ::fwData::Image::sptr   image           = this->getConcreteObject()->getImage();
 
     ::boost::shared_ptr< DicomInstance > dicomInstance = this->getDicomInstance();
 
@@ -179,7 +180,8 @@ void DicomImageWriter::write2DImage()
     const unsigned int                  bufferLength    = size[0]*size[1] * gImg.GetPixelFormat().GetPixelSize();
     OSLM_TRACE("Frame's buffer size : "<<bufferLength);
 
-    const char *                        imageBuffer     = static_cast<char*>( image->getBuffer() );
+    ::fwComEd::helper::Image imgHelper(image);
+    const char *                        imageBuffer     = static_cast<char*>( imgHelper.getBuffer() );
     const unsigned int                  nbFrame         = size[2];
     const std::string &                 imagesPath      = this->getFile().string();
     const std::string                   fileName        = imagesPath + "/image_";
@@ -262,7 +264,7 @@ void DicomImageWriter::write3DImage()
 
     // Get images
     ::gdcm::Image &         gImg            = gImageWriter->GetImage();
-    ::fwData::Image::csptr  image           = this->getConcreteObject()->getImage();
+    ::fwData::Image::sptr   image           = this->getConcreteObject()->getImage();
 
     ::boost::shared_ptr< DicomInstance > dicomInstance = this->getDicomInstance();
 
@@ -273,7 +275,8 @@ void DicomImageWriter::write3DImage()
     //*****     Set buffer     *****//
     // Pixel Data
     ::gdcm::DataElement pixeldata( ::gdcm::Tag(0x7fe0,0x0010) );
-    pixeldata.SetByteValue( static_cast<char*>(image->getBuffer()), bufferLength );
+    ::fwComEd::helper::Image imgHelper(image);
+    pixeldata.SetByteValue( static_cast<char*>(imgHelper.getBuffer()), bufferLength );
     gImg.SetDataElement( pixeldata );
 
     //*****     Complete the file      *****//

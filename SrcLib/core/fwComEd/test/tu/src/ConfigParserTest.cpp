@@ -21,12 +21,17 @@
 #include "ConfigParserTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ConfigParserTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwComEd::ut::ConfigParserTest );
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( TestService , ::TestServiceImplementationComposite , ::fwData::Composite ) ;
-REGISTER_SERVICE( TestService , ::TestServiceImplementationImage , ::fwData::Image ) ;
+REGISTER_SERVICE( ::fwComEd::ut::TestService , ::fwComEd::ut::TestServiceImplementationComposite , ::fwData::Composite ) ;
+REGISTER_SERVICE( ::fwComEd::ut::TestService , ::fwComEd::ut::TestServiceImplementationImage , ::fwData::Image ) ;
+
+namespace fwComEd
+{
+namespace ut
+{
 
 void ConfigParserTest::setUp()
 {
@@ -61,7 +66,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     CPPUNIT_ASSERT_EQUAL(objectUUID, image->getID());
 
     // Test if object's service is created
-    CPPUNIT_ASSERT( ::fwServices::OSR::has(image, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::OSR::has(image, "::fwComEd::ut::TestService"));
 
     // Test start services
     configManager->start();
@@ -70,8 +75,8 @@ void ConfigParserTest::testObjectCreationWithConfig()
 
     // Test update services
     configManager->update();
-    CPPUNIT_ASSERT( ::TestService::dynamicCast( ::fwServices::get(serviceUUID1) )->getIsUpdated() );
-    CPPUNIT_ASSERT( ::TestService::dynamicCast( ::fwServices::get(serviceUUID2) )->getIsUpdated() == false );
+    CPPUNIT_ASSERT( ::fwComEd::ut::TestService::dynamicCast( ::fwServices::get(serviceUUID1) )->getIsUpdated() );
+    CPPUNIT_ASSERT( ::fwComEd::ut::TestService::dynamicCast( ::fwServices::get(serviceUUID2) )->getIsUpdated() == false );
 
     // Test stop services
     configManager->stop();
@@ -104,28 +109,28 @@ void ConfigParserTest::testBuildComposite()
     CPPUNIT_ASSERT_EQUAL(compositeUUID, compo->getID());
 
     // test composite objects
-    CPPUNIT_ASSERT(compo->getRefMap().size() > 0);
+    CPPUNIT_ASSERT(compo->getContainer().size() > 0);
 
-    CPPUNIT_ASSERT(compo->getRefMap().find(objAUUID) != compo->getRefMap().end());
+    CPPUNIT_ASSERT(compo->find(objAUUID) != compo->end());
 
-    CPPUNIT_ASSERT_EQUAL(objAType, compo->getRefMap()[objAUUID]->className());
+    CPPUNIT_ASSERT_EQUAL(objAType, compo->getContainer()[objAUUID]->className());
 
-    ::fwData::Video::sptr video = ::fwData::Video::dynamicCast(compo->getRefMap()[objBUUID]);
+    ::fwData::Video::sptr video = ::fwData::Video::dynamicCast(compo->getContainer()[objBUUID]);
     CPPUNIT_ASSERT_EQUAL(objBUUID, video->getID());
 
     // test composite services
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getRefMap()[objAUUID]);
+    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
     CPPUNIT_ASSERT_EQUAL(objAUUID, image->getID());
-    CPPUNIT_ASSERT( ::fwServices::OSR::has(image, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::OSR::has(image, "::fwComEd::ut::TestService"));
 
-    CPPUNIT_ASSERT( ::fwServices::OSR::has(compo, "::TestService"));
+    CPPUNIT_ASSERT( ::fwServices::OSR::has(compo, "::fwComEd::ut::TestService"));
 
     /// test start/update/stop service
     configManager->start();
     CPPUNIT_ASSERT(::fwServices::get(serviceUUID1)->isStarted());
 
     configManager->update();
-    CPPUNIT_ASSERT(::TestService::dynamicCast(::fwServices::get(serviceUUID1))->getIsUpdated());
+    CPPUNIT_ASSERT(::fwComEd::ut::TestService::dynamicCast(::fwServices::get(serviceUUID1))->getIsUpdated());
 
     configManager->stop();
     CPPUNIT_ASSERT(::fwServices::get(serviceUUID1)->isStopped());
@@ -145,15 +150,15 @@ void ConfigParserTest::testBuildComposite()
     // Object's service A
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid" , "myTestService1" ) ;
-    serviceA->setAttributeValue( "type" , "::TestService" ) ;
-    serviceA->setAttributeValue( "implementation" , "::TestServiceImplementationImage" ) ;
+    serviceA->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    serviceA->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
     serviceA->setAttributeValue( "autoComChannel" , "no" ) ;
 
     // Object's service B
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid" , "myTestService2" ) ;
-    serviceB->setAttributeValue( "type" , "::TestService" ) ;
-    serviceB->setAttributeValue( "implementation" , "::TestServiceImplementationImage" ) ;
+    serviceB->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    serviceB->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
     serviceB->setAttributeValue( "autoComChannel" , "no" ) ;
 
     // Start method from object's services
@@ -191,14 +196,14 @@ void ConfigParserTest::testBuildComposite()
     // image's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService = objA->addConfigurationElement("service");
     imageService->setAttributeValue( "uid" , "myImageService" ) ;
-    imageService->setAttributeValue( "type" , "::TestService" ) ;
-    imageService->setAttributeValue( "implementation" , "::TestServiceImplementationImage" ) ;
+    imageService->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    imageService->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
     imageService->setAttributeValue( "autoComChannel" , "no" ) ;
 
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService2 = objA->addConfigurationElement("service");
     imageService2->setAttributeValue( "uid" , "myImageService2" ) ;
-    imageService2->setAttributeValue( "type" , "::TestService" ) ;
-    imageService2->setAttributeValue( "implementation" , "::TestServiceImplementationImage" ) ;
+    imageService2->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    imageService2->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
     imageService2->setAttributeValue( "autoComChannel" , "no" ) ;
 
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
@@ -214,8 +219,8 @@ void ConfigParserTest::testBuildComposite()
     // composite's service 1
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service = cfg->addConfigurationElement("service");
     service->setAttributeValue( "uid" , "myTestService1" ) ;
-    service->setAttributeValue( "type" , "::TestService" ) ;
-    service->setAttributeValue( "implementation" , "::TestServiceImplementationComposite" ) ;
+    service->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    service->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
     service->setAttributeValue( "autoComChannel" , "no" ) ;
 
     // start / stop / update on service 1
@@ -227,8 +232,8 @@ void ConfigParserTest::testBuildComposite()
     // composite's service 2
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
     service2->setAttributeValue( "uid" , "myTestService2" ) ;
-    service2->setAttributeValue( "type" , "::TestService" ) ;
-    service2->setAttributeValue( "implementation" , "::TestServiceImplementationComposite" ) ;
+    service2->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
+    service2->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
     service2->setAttributeValue( "autoComChannel" , "no" ) ;
 
     // start / stop / update on service 2
@@ -241,3 +246,6 @@ void ConfigParserTest::testBuildComposite()
 }
 
 //------------------------------------------------------------------------------
+
+} //namespace ut
+} //namespace fwComEd

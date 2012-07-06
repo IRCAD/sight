@@ -48,7 +48,7 @@ struct Posix : public Native
     /**
      * @see ::fwRuntime::dl::Native#isLoaded
      */
-    const bool isLoaded() const throw();
+    bool isLoaded() const throw();
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.

@@ -28,7 +28,7 @@ StructureTraitsDictionaryXMLTranslator::~StructureTraitsDictionaryXMLTranslator(
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr StructureTraitsDictionaryXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr StructureTraitsDictionaryXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::StructureTraitsDictionary::sptr structureDico = ::fwData::StructureTraitsDictionary::dynamicCast(obj);
     SLM_ASSERT("StructureTraitsDictionary not instanced", structureDico);
@@ -53,7 +53,7 @@ xmlNodePtr StructureTraitsDictionaryXMLTranslator::getXMLFrom( ::fwTools::Object
 
 //------------------------------------------------------------------------------
 
-void StructureTraitsDictionaryXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void StructureTraitsDictionaryXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     SLM_ASSERT("toUpdate not instanced", toUpdate);
 
@@ -69,8 +69,8 @@ void StructureTraitsDictionaryXMLTranslator::updateDataFromXML( ::fwTools::Objec
 
             if ( nodeName == "Composite" )
             {
-                ::fwTools::Object::sptr valueObj;
-                valueObj = Serializer().ObjectsFromXml( elementNode, true );
+                ::fwData::Object::sptr valueObj;
+                valueObj = Serializer().ObjectsFromXml( elementNode );
                 SLM_ASSERT("valueObj not instanced", valueObj);
                 ::fwData::Composite::sptr compo = ::fwData::Composite::dynamicCast(valueObj);
                 SLM_ASSERT("composite not instanced", compo);

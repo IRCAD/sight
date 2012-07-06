@@ -29,6 +29,7 @@ Folder::~Folder()
 
 Folder::sptr Folder::FolderFactory(::boost::filesystem::path _path, bool recursive )
 {
+    FwCoreNotUsedMacro(recursive);
     Folder::sptr folder = Folder::New();
     folder->setFolder(_path);
     return folder;
@@ -38,7 +39,7 @@ Folder::sptr Folder::FolderFactory(::boost::filesystem::path _path, bool recursi
 
 void Folder::shallowCopy( Folder::csptr _source )
 {
-    ::fwTools::Object::shallowCopyOfChildren( _source );
+    this->fieldShallowCopy( _source );
     this->m_folder = _source->m_folder;
 }
 
@@ -46,7 +47,7 @@ void Folder::shallowCopy( Folder::csptr _source )
 
 void Folder::deepCopy( Folder::csptr _source )
 {
-    ::fwTools::Object::deepCopyOfChildren( _source );
+    this->fieldDeepCopy( _source );
     this->m_folder = _source->m_folder;
 }
 

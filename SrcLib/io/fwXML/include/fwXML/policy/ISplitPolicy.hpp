@@ -35,7 +35,7 @@ public:
      *
      * @return  true iff the object should be splitted, false otherwise
      */
-    FWXML_API virtual bool split(::fwTools::Object::sptr obj) = 0 ;
+    FWXML_API virtual bool split(::fwData::Object::sptr obj) = 0 ;
 
     /**
      * @brief       Virtual destructor

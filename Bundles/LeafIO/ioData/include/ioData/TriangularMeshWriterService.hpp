@@ -82,14 +82,14 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    IODATA_API virtual void starting() throw(::fwTools::Failed){};
+    virtual void starting() throw(::fwTools::Failed){};
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    IODATA_API virtual void stopping() throw(::fwTools::Failed){};
+    virtual void stopping() throw(::fwTools::Failed){};
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -107,7 +107,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IODATA_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
 
 
     /**

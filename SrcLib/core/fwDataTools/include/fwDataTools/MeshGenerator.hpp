@@ -10,7 +10,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/TriangularMesh.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Mesh.hpp>
+
+#include <fwComEd/helper/Mesh.hpp>
 
 #include "fwDataTools/Vector.hxx"
 #include "fwDataTools/export.hpp"
@@ -96,7 +99,7 @@ public :
     FWDATATOOLS_API static void generateCellNormals(::fwData::Mesh::sptr mesh);
 
     /**
-     * @brief Generate cell normals for the mesh.
+     * @brief Generate point normals for the mesh.
      *
      * @param[out]  mesh fwData::Mesh structure to fill with cell normals.
      */
@@ -105,7 +108,7 @@ public :
     /**
      * @brief Shake Array of Normals.
      *
-     * Array must have 3 float components, 1 dimention. Otherwise, shakeNormals
+     * Array must have 3 float components, 1 dimension. Otherwise, shakeNormals
      * will do nothing.
      *
      * @param[out]  mesh fwData::Array structure to shake normals.
@@ -171,11 +174,16 @@ public :
      * @param[in]  mesh fwData::Mesh mesh structure to find cell type.
      * @param[in]  cell CellTypes to find in mesh.
      */
-    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::csptr mesh, ::fwData::Mesh::CellTypes cell);
+    FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell);
+
+    /// Applied a transformation 4x4 on mesh
+    FWDATATOOLS_API static void transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::sptr t );
 
 protected:
 
-    FWDATATOOLS_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt, ::fwData::Mesh::sptr mesh, PointsMapType& points);
+    FWDATATOOLS_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt,
+                                                       ::fwComEd::helper::Mesh::sptr meshHelper,
+                                                       PointsMapType& points);
 
     //! @brief Constructor.
     FWDATATOOLS_API MeshGenerator();

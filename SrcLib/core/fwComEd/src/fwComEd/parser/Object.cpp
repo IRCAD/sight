@@ -4,11 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/Object.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include "fwComEd/parser/Object.hpp"
 
-REGISTER_SERVICE( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwData::Object ) ;
 
 namespace fwComEd
 {
@@ -62,7 +64,7 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
     const std::string BUILD_OBJECT = "new";
     const std::string GET_OBJECT = "ref";
 
-    ::fwTools::Object::sptr associatedObject = _obj;
+    ::fwData::Object::sptr associatedObject = ::fwData::Object::dynamicCast(_obj);
     SLM_ASSERT("associatedObject not instanced", associatedObject);
 
     BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
@@ -88,17 +90,17 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
             if( buildMode == BUILD_OBJECT )
             {
                 // Test if key already exist in object
-                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", associatedObject->getFieldSize( key ) == 0 );
+                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", !associatedObject->getField( key ) );
 
                 // Create and manage object config
                 ::fwServices::AppConfigManager::NewSptr ctm;
                 ctm->setConfig( *(elem->getElements().begin()) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
-                ::fwTools::Object::sptr localObj = ctm->getConfigRoot();
+                ::fwData::Object::sptr localObj = ctm->getConfigRoot< ::fwData::Object >();
 
                 // Add object
-                associatedObject->setFieldSingleElement( key, localObj);
+                associatedObject->setField(key, localObj);
             }
             else // if( buildMode == GET_OBJECT )
             {

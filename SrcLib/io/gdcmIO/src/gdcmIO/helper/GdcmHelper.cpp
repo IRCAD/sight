@@ -28,6 +28,8 @@
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "gdcmIO/helper/GdcmHelper.hpp"
 
 namespace gdcmIO
@@ -403,9 +405,9 @@ void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
     a_dest->setSize( dataSize );
 
     // Set Array
-    ::fwData::Array::NewSptr array;
-    array->setBuffer( destBuffer, true, a_dest->getType(), a_dest->getSize(), 1 );
-    a_dest->setDataArray( array );
+    ::fwData::Array::sptr array = a_dest->getDataArray();
+    ::fwComEd::helper::Array helper(array);
+    helper.setBuffer( destBuffer, true, a_dest->getType(), a_dest->getSize(), 1 );
 }
 
 //------------------------------------------------------------------------------

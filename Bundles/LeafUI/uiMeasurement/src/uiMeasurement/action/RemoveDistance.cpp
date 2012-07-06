@@ -4,10 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
-#include <fwCore/base.hpp>
-
+#include <sstream>
 #include <exception>
+#include <boost/lexical_cast.hpp>
+
+#include <fwCore/base.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -17,18 +18,15 @@
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/Composite.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
 
 #include "uiMeasurement/action/RemoveDistance.hpp"
-
-#include <sstream>
-
 
 namespace uiMeasurement
 {
@@ -37,9 +35,7 @@ namespace action
 
 REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::RemoveDistance , ::fwData::Image ) ;
 
-
 //------------------------------------------------------------------------------
-
 
 RemoveDistance::RemoveDistance( ) throw()
 {}
@@ -71,61 +67,71 @@ std::string distanceToStr(double dist)
 {
     ::fwData::PointList::sptr distToRemove;
     removeAll = false;
-    typedef ::fwData::ContainerCaster< ::fwData::PointList >::iterator Iterator;
-    Iterator plIter( image->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().begin() );
-    Iterator end( image->getField(::fwComEd::Dictionary::m_imageDistancesId)->children().end() );
+    ::fwData::Vector::sptr vectDist;
+    vectDist = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
 
-    std::vector< std::string > selections;
-    selections.push_back("ALL");
-    std::map< std::string , ::fwData::PointList::sptr > correspondance;
-
-    for (  ; plIter != end; ++plIter )
+    if(vectDist)
     {
-        ::fwData::PointList::sptr pl = *plIter;
+        std::vector< std::string > selections;
+        selections.push_back("ALL");
+        std::map< std::string , ::fwData::PointList::sptr > correspondance;
 
-        if ( pl->getPoints().size()!=2 ) { continue; } // we skip no paired pointList
-        ::fwData::Point::sptr pt1 =  pl->getPoints().front();
-        ::fwData::Point::sptr pt2 =  pl->getPoints().back();
-
-        double dist=0;
-        double delta = pt1->getCRefCoord()[0] - pt2->getCRefCoord()[0];
-        dist += delta*delta;
-        delta = pt1->getCRefCoord()[1] - pt2->getCRefCoord()[1];
-        dist += delta*delta;
-        delta = pt1->getCRefCoord()[2] - pt2->getCRefCoord()[2];
-        dist += delta*delta;
-        dist = sqrt(dist);
-
-        selections.push_back( distanceToStr(dist) );
-        correspondance[ selections.back() ] = pl;
-    }
-
-    if ( selections.size() )
-    {
-        ::fwGui::dialog::SelectorDialog::NewSptr selector;
-        selector->setTitle("Select a distance to remove");
-        selector->setSelections(selections);
-        std::string selection = selector->show();
-        if( ! selection.empty() )
+        BOOST_FOREACH(::fwData::Object::sptr obj, *vectDist)
         {
-            if (selection=="ALL")
+            ::fwData::PointList::sptr pl = ::fwData::PointList::dynamicCast(obj);
+
+            if ( pl->getPoints().size()!=2 ) { continue; } // we skip no paired pointList
+            ::fwData::Point::sptr pt1 =  pl->getPoints().front();
+            ::fwData::Point::sptr pt2 =  pl->getPoints().back();
+
+            double dist=0;
+            double delta = pt1->getCRefCoord()[0] - pt2->getCRefCoord()[0];
+            dist += delta*delta;
+            delta = pt1->getCRefCoord()[1] - pt2->getCRefCoord()[1];
+            dist += delta*delta;
+            delta = pt1->getCRefCoord()[2] - pt2->getCRefCoord()[2];
+            dist += delta*delta;
+            dist = sqrt(dist);
+
+            selections.push_back( distanceToStr(dist) );
+            correspondance[ selections.back() ] = pl;
+        }
+
+        if ( selections.size() )
+        {
+            ::fwGui::dialog::SelectorDialog::NewSptr selector;
+            selector->setTitle("Select a distance to remove");
+            selector->setSelections(selections);
+            std::string selection = selector->show();
+            if( ! selection.empty() )
             {
-                removeAll=true;
-            }
-            else
-            {
-                removeAll=false;
-                distToRemove = correspondance[selection];
+                if (selection=="ALL")
+                {
+                    removeAll=true;
+                }
+                else
+                {
+                    removeAll=false;
+                    distToRemove = correspondance[selection];
+                }
             }
         }
     }
-
     return distToRemove;
 }
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::notifyNewDistance( ::fwData::Image::sptr image , ::fwData::Object::sptr backup)
+void RemoveDistance::notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::Object::sptr distance)
+{
+    ::fwComEd::ImageMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, distance );
+    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+}
+
+//------------------------------------------------------------------------------
+
+void RemoveDistance::notifyNewDistance(::fwData::Image::sptr image, ::fwData::Object::sptr backup)
 {
     ::fwComEd::ImageMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::ImageMsg::DISTANCE, backup );
@@ -136,36 +142,34 @@ void RemoveDistance::notifyNewDistance( ::fwData::Image::sptr image , ::fwData::
 
 void RemoveDistance::updating( ) throw(::fwTools::Failed)
 {
-    SLM_TRACE("RemoveDistance::updating");
-
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (image->getBuffer()==NULL) {return;}
 
-    if ( image->getFieldSize(::fwComEd::Dictionary::m_imageDistancesId) == false )
-    {
-        return;
-    }
+    ::fwData::Vector::sptr vectDist;
+    vectDist = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
 
-    bool requestAll;
-    ::fwData::PointList::sptr distToRemove = getDistanceToRemove(image, requestAll );
+    if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
+        && vectDist)
+    {
+        bool requestAll;
+        ::fwData::PointList::sptr distToRemove = getDistanceToRemove(image, requestAll );
 
-    SLM_TRACE("RemoveDistance::distToRemove");
-    // perform action only available distance
-    if ( distToRemove )
-    {
-        SLM_TRACE("RemoveDistance::distToRemove");
-        image->removeFieldElement( ::fwComEd::Dictionary::m_imageDistancesId , distToRemove);
-        notifyNewDistance(image, distToRemove);
-    }
-    if ( requestAll )
-    {
-        SLM_TRACE("RemoveDistance::distToRemove ALL");
-        // backup
-        ::fwTools::Field::sptr imageOldLandMaskField = image->getField( ::fwComEd::Dictionary::m_imageDistancesId );
-        ::fwData::Object::NewSptr dummy;
-        dummy->children().push_back(imageOldLandMaskField);
-        image->removeField( ::fwComEd::Dictionary::m_imageDistancesId ); // erase lan field
-        notifyNewDistance(image, dummy);
+        // perform action only available distance
+        if ( distToRemove )
+        {
+            SLM_ASSERT("No Field ImageDistancesId",vectDist);
+            ::fwData::Vector::IteratorType newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
+            vectDist->getContainer().erase(newEnd, vectDist->end());
+
+            this->notifyDeleteDistance(image, distToRemove);
+        }
+        if ( requestAll )
+        {
+            // backup
+            ::fwData::Object::sptr backupDistance = image->getField( ::fwComEd::Dictionary::m_imageDistancesId );
+
+            image->removeField( ::fwComEd::Dictionary::m_imageDistancesId );
+            this->notifyNewDistance(image, backupDistance);
+        }
     }
 }
 

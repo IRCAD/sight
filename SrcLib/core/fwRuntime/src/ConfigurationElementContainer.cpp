@@ -28,7 +28,7 @@ namespace
         :   m_name( name )
         {}
 
-        const bool operator() ( ConfigurationElement::csptr element ) const
+        bool operator() ( ConfigurationElement::csptr element ) const
         {
             return element->getName() == m_name;
         }
@@ -106,7 +106,7 @@ ConfigurationElementContainer ConfigurationElementContainer::findAllConfiguratio
 
 //-----------------------------------------------------------------------------
 
-unsigned int ConfigurationElementContainer::size() const
+size_t ConfigurationElementContainer::size() const
 {
     return m_elements.size();
 }

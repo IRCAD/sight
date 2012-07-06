@@ -91,7 +91,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IOVTK_API void updating( ::fwServices::ObjectMsg::csptr ) throw(::fwTools::Failed){};
+    void updating( ::fwServices::ObjectMsg::csptr ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

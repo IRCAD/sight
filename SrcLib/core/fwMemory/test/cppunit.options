@@ -1,0 +1,8 @@
+
+CLASSTEST=[
+    'BufferManagerTest',
+    ]
+
+USE = ['boost']
+LIB = ['fwTools_0-1', 'fwCore_0-1', 'fwMemory_0-1']
+CONSOLE='yes'

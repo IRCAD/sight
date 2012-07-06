@@ -11,6 +11,8 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
 
+#include <fwData/Vector.hpp>
+
 #include "gdcmIO/writer/DicomDistanceWriter.hpp"
 #include "gdcmIO/helper/GdcmHelper.hpp"
 #include "gdcmIO/DicomDictionarySR.hpp"
@@ -68,10 +70,14 @@ void DicomDistanceWriter::write(::gdcm::DataSet & a_gDs) throw (::fwTools::Faile
     // Get the content sequence of the root of document SR
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > gContentSQ = a_gDs.GetDataElement(contentSQTag).GetValueAsSQ();
 
-    const unsigned int nbDistance = image->getFieldSize( fwComEd::Dictionary::m_imageDistancesId );
-    for (unsigned int i = 0; i < nbDistance; ++i)
-    {// Write one distance as a child of root of document SR
-        this->writeDistance(i, gContentSQ);
+    ::fwData::Vector::sptr vectDist;
+    vectDist = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+    if(vectDist)
+    {
+        for (unsigned int i = 0; i < vectDist->size(); ++i)
+        {// Write one distance as a child of root of document SR
+            this->writeDistance(i, gContentSQ);
+        }
     }
 }
 

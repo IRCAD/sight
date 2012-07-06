@@ -25,7 +25,7 @@ PortXMLTranslator::~PortXMLTranslator() {};
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr PortXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr PortXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
     ::fwData::Port::sptr port = ::fwData::Port::dynamicCast(obj);
     SLM_ASSERT("port not instanced", port);
@@ -41,7 +41,7 @@ xmlNodePtr PortXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void PortXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void PortXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     assert( XMLTH::check< ::fwData::Port >(toUpdate,source) );
 

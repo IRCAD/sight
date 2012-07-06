@@ -87,18 +87,14 @@ void Acquisition::doUpdate() throw(fwTools::Failed)
     ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
 
     doStop();
-    bool showRec = true;
-    if (acq->getFieldSize("ShowReconstructions"))
-    {
-        showRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
-    }
-    ::fwData::Acquisition::ReconstructionIterator iter;
+    bool showRec;
+    showRec = acq->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
-    for (iter = acq->getReconstructions().first; iter != acq->getReconstructions().second; ++iter)
+    BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, acq->getReconstructions() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
                 ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-        ( *iter, "::visuVTKAdaptor::Reconstruction" );
+        ( reconstruction, "::visuVTKAdaptor::Reconstruction" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
@@ -140,11 +136,8 @@ void Acquisition::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
         if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) )
         {
             ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-            bool showRec = true;
-            if (acq->getFieldSize("ShowReconstructions"))
-            {
-                showRec = acq->getFieldSingleElement< ::fwData::Boolean >("ShowReconstructions")->value();
-            }
+            bool showRec;
+            showRec = acq->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
             BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
             {

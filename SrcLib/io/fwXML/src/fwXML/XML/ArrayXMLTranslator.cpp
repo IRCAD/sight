@@ -6,13 +6,16 @@
 
 #include <boost/filesystem/convenience.hpp>
 
-#include <stdio.h>
 #include <string.h>
+
+#include <fwTools/UUID.hpp>
 
 #include <fwServices/Base.hpp>
 
 #include <fwDataIO/writer/IObjectWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
+
+#include <fwMemory/BufferManager.hpp>
 
 #include "fwXML/XML/ArrayXMLTranslator.hpp"
 #include "fwXML/XML/XMLParser.hpp"
@@ -21,6 +24,7 @@
 #include "fwXML/ArrayFileFormatService.hpp"
 #include "fwXML/IFileFormatService.hpp"
 #include "fwXML/boostSerializer/Array.hpp"
+#include "fwXML/Serializer.hpp"
 
 namespace fwXML
 {
@@ -42,22 +46,51 @@ void ArrayXMLTranslator::manageSavingBuffer( xmlNodePtr boostXMLBuffer, ::fwData
     // get XML node related to Buffer
     if ( array->getSizeInBytes() != 0  )
     {
-        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(array);
         ::fwXML::IFileFormatService::sptr binSaver;
-        if( filesSrv.empty() )
-        {
-            binSaver = ::fwXML::ArrayFileFormatService::sptr( new ::fwXML::ArrayFileFormatService());
-            ::fwServices::registry::ObjectService::registerService(array, binSaver);
-        }
-        else
-        {
-            binSaver = filesSrv.at(0);
-        }
+        binSaver = ::fwServices::add< ::fwXML::IFileFormatService >(array, "::fwXML::ArrayFileFormatService");
+        SLM_ASSERT("ArrayFileFormatService not found", binSaver);
 
-        std::string path;
-        path = ( binSaver->localFolder() / binSaver->getFullFilename() ).string();
+        binSaver->filename() = array->getLeafClassname() + "_" + ::fwTools::UUID::get(array);
+        binSaver->extension() = binSaver->getWriter()->extension();
+        binSaver->rootFolder() = ::fwXML::Serializer::rootFolder();
+
+        ::boost::filesystem::path fileLocation = binSaver->localFolder() / binSaver->getFullFilename();
+        std::string path = fileLocation.string();
         XMLTH::addProp( boostXMLBuffer, "filename",  path );
         XMLTH::addProp( boostXMLBuffer, "protocol",  binSaver->getWriter()->getClassname() );
+
+
+        bool saveIsRequired = true;
+
+        // Test if buffer is not already dumped
+        ::fwMemory::BufferManager::sptr manager;
+        manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+        if( manager )
+        {
+            if( manager->isDumped( (void ** ) array->getBufferObject()->getBufferPointer() ) )
+            {
+                saveIsRequired = false;
+
+                ::boost::filesystem::path fileDest = binSaver->getFullPath();
+                if (! ::boost::filesystem::exists(fileDest))
+                {
+                    ::boost::filesystem::path fileSrc = manager->getDumpedFilePath( (void ** ) array->getBufferObject()->getBufferPointer() );
+                    ::boost::system::error_code err;
+                    ::boost::filesystem::create_hard_link( fileSrc, fileDest, err );
+                    if (err.value() != 0)
+                    {
+                        ::boost::filesystem::copy_file( fileSrc, fileDest );
+                    }
+                }
+            }
+        }
+
+        if( saveIsRequired )
+        {
+            binSaver->save();
+        }
+
+        ::fwServices::OSR::unregisterService(binSaver);
     }
     else
     {
@@ -76,22 +109,15 @@ void ArrayXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwDat
     if ( protocol != ArrayXMLTranslator::S_NOFILEPROTOCOL )
     {
         // get XML node related to Buffer
-        std::vector< ::fwXML::IFileFormatService::sptr > filesSrv = ::fwServices::OSR::getServices< ::fwXML::IFileFormatService >(array);
         ::fwXML::IFileFormatService::sptr binLoader;
-        if( filesSrv.empty() )
-        {
-            binLoader = ::fwXML::ArrayFileFormatService::sptr( new ::fwXML::ArrayFileFormatService());
-            ::fwServices::registry::ObjectService::registerService(array, binLoader);
-        }
-        else
-        {
-            binLoader = filesSrv.at(0);
-        }
-        OSLM_DEBUG( "ArrayXMLTranslator::manageLoadingBuffer :: READED FILENAME " << XMLParser::getAttribute(boostXMLBuffer,"filename") );
+        binLoader = ::fwServices::add< ::fwXML::IFileFormatService >(array, "::fwXML::ArrayFileFormatService");
+        SLM_ASSERT("ArrayFileFormatService not found", binLoader);
+
         ::boost::filesystem::path fileLocation(  XMLParser::getAttribute(boostXMLBuffer,"filename") );
         binLoader->filename() = ::boost::filesystem::basename( fileLocation.leaf() );
         binLoader->extension()   = ::boost::filesystem::extension( fileLocation.leaf() );
         binLoader->localFolder() = fileLocation.parent_path();
+        binLoader->rootFolder() = ::fwXML::Serializer::rootFolder();
 
         std::string pseudoReader = protocol;
         if (  protocol.find("Writer") != std::string::npos )
@@ -106,20 +132,21 @@ void ArrayXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwDat
 
         // get new reader
         ::fwDataIO::reader::IObjectReader::sptr reader;
-        OSLM_DEBUG("ArrayXMLTranslator::manageLoadingBuffer initial protocol="<< protocol << " final loading protocol=" << pseudoReader)
         reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
         SLM_ASSERT("reader not instanced", reader);
 
         // assign to FileFormatService
         binLoader->setReader( reader );
+        binLoader->load();
+        ::fwServices::OSR::unregisterService(binLoader);
     }
 }
 
 //------------------------------------------------------------------------------
 
-xmlNodePtr ArrayXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
+xmlNodePtr ArrayXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj )
 {
-    // call default xmtl representation
+    // call default xml representation
     GenericXMLTranslator< ::fwData::Array > array2xmlbase;
     xmlNodePtr node = array2xmlbase.getXMLFrom(obj);
     SLM_ASSERT("node not instanced", node);
@@ -135,7 +162,7 @@ xmlNodePtr ArrayXMLTranslator::getXMLFrom( ::fwTools::Object::sptr obj )
 
 //------------------------------------------------------------------------------
 
-void ArrayXMLTranslator::updateDataFromXML( ::fwTools::Object::sptr toUpdate,  xmlNodePtr source)
+void ArrayXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xmlNodePtr source)
 {
     GenericXMLTranslator< ::fwData::Array > array2xmlbase;
     array2xmlbase.updateDataFromXML(toUpdate,source);

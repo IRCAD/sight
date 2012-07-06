@@ -68,9 +68,9 @@ namespace visuVTKAdaptor
 
 MeshesBoxWidget::MeshesBoxWidget() throw()
 {
-    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_FIELDS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
+    addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
     addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
 
     m_boxWidgetCommand = MeshesBoxClallback::New(this);
@@ -153,7 +153,7 @@ void MeshesBoxWidget::doStop() throw(fwTools::Failed)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
-        fieldTransform = mesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+        fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
         ::fwServices::unregisterCommunicationChannel(fieldTransform, this->getSptr());
     }
     m_meshMap.clear();
@@ -174,26 +174,26 @@ void MeshesBoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTool
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg ) ;
     if (compositeMsg)
     {
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedFields())
+            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedKeys())
             {
                 ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
                 m_meshMap[elt.first]->Delete();
                 m_meshMap.erase(elt.first);
 
                 ::fwData::TransformationMatrix3D::sptr fieldTransform;
-                fieldTransform = mesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+                fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
                 ::fwServices::unregisterCommunicationChannel(fieldTransform, this->getSptr());
             }
         }
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS))
         {
-            this->updateMeshMapFromComposite(compositeMsg->getAddedFields());
+            this->updateMeshMapFromComposite(compositeMsg->getAddedKeys());
         }
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::SWAPPED_FIELDS))
+        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
-            this->updateMeshMapFromComposite(compositeMsg->getSwappedNewFields());
+            this->updateMeshMapFromComposite(compositeMsg->getNewChangedKeys());
         }
         this->updateMeshTransform();
         this->doUpdate();
@@ -221,8 +221,8 @@ void MeshesBoxWidget::updateFromVtk()
     {
         ::fwData::Mesh::sptr triangularMesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
-        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", triangularMesh->getFieldSize("TransformMatrix"))
-        fieldTransform = triangularMesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", triangularMesh->getField("TransformMatrix"))
+        fieldTransform = triangularMesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
         vtkTransform * transform = vtkTransform::New();
         vtkLinearTransform * meshTransform = m_meshMap[elt.first]->GetUserTransform();
@@ -258,15 +258,7 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
         ::vtkIO::helper::Mesh::toVTKMesh( mesh, vtkMesh);
 
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
-        if (mesh->getFieldSize("TransformMatrix"))
-        {
-            fieldTransform = mesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
-        }
-        else
-        {
-            fieldTransform = ::fwData::TransformationMatrix3D::New();
-            mesh->setFieldSingleElement("TransformMatrix", fieldTransform);
-        }
+        fieldTransform = mesh->setDefaultField("TransformMatrix", ::fwData::TransformationMatrix3D::New());
 
         vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
         transform->Identity();
@@ -304,8 +296,8 @@ void MeshesBoxWidget::updateMeshTransform()
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
 
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
-        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", mesh->getFieldSize("TransformMatrix"))
-        fieldTransform = mesh->getFieldSingleElement< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", mesh->getField("TransformMatrix"))
+        fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
         vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
         transform->Identity();

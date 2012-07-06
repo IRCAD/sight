@@ -97,12 +97,12 @@ void Snapshot::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
     {
         ::fwData::Object::csptr dataInfo = compositeMsg->getDataInfo("SNAP");
 
-        SLM_ASSERT("sceneID missing", dataInfo->getFieldSize("sceneID"));
-        ::fwData::String::sptr sceneID = dataInfo->getFieldSingleElement< ::fwData::String >("sceneID");
+        SLM_ASSERT("sceneID missing", dataInfo->getField("sceneID"));
+        ::fwData::String::sptr sceneID = dataInfo->getField< ::fwData::String >("sceneID");
         SLM_ASSERT("sceneID empty!", sceneID);
 
-        SLM_ASSERT("filename missing", dataInfo->getFieldSize("filename"));
-        ::fwData::String::sptr filename = dataInfo->getFieldSingleElement< ::fwData::String >("filename");
+        SLM_ASSERT("filename missing", dataInfo->getField("filename"));
+        ::fwData::String::sptr filename = dataInfo->getField< ::fwData::String >("filename");
         SLM_ASSERT("filename empty!", !filename->value().empty());
 
         if( this->getRenderService()->getID() == sceneID->value())

@@ -13,6 +13,7 @@
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/date_time/posix_time/conversion.hpp>
 
+
 #include "microzip/Zipper.hpp"
 
 namespace microzip
@@ -145,7 +146,7 @@ bool Zipper::AddFileToZip(::boost::filesystem::path filePath, bool bIgnoreFilePa
     }
 
     int nRet = zipOpenNewFileInZip(m_uzFile,
-            fileName.string().c_str(),
+            fileName.generic_string().c_str(),
             &zfi,
             NULL,
             0,
@@ -224,7 +225,7 @@ bool Zipper::AddFileToZip(::boost::filesystem::path filePath, ::boost::filesyste
 
     // open the file in the zip making sure we remove any leading '\'
     int nRet = zipOpenNewFileInZip(m_uzFile,
-            zipFilePath.string().c_str(),
+            zipFilePath.generic_string().c_str(),
             &zfi,
             NULL,
             0,
@@ -298,11 +299,12 @@ bool Zipper::AddFolderToZip(::boost::filesystem::path folderPath, bool bIgnoreFi
         folderName = this->relative_path(folderPath, m_rootFolder);
     }
 
+
     if ( ! folderName.string().empty())
     {
         // open the file in the zip
         zipOpenNewFileInZip(m_uzFile,
-                            (folderName.string()+"/").c_str(),
+                            (folderName.generic_string()+"/").c_str(),
                             &zfi,
                             NULL,
                             0,

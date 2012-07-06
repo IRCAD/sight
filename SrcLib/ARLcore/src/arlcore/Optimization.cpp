@@ -26,10 +26,10 @@ using namespace std;
 double arlCore::CostFunction::m_errorMax = 9e99;
 
 arlCore::CostFunction::CostFunction():
-m_observer(false),
-m_iterations(0),
 m_errorMin(m_errorMax),
-m_firstIteration(true)
+m_firstIteration(true),
+m_observer(false),
+m_iterations(0)
 {}
 
 double arlCore::CostFunction::getCriterion( const vnl_vector<double> &x )
@@ -254,7 +254,6 @@ double arlCore::OptimisePivot::f(vnl_vector< double > const &x)
     for( i=0 ; i<m_points.size() ; i++ )
         distances[i] = m_points[i]->distance(center);
     m_radius = distances.mean();
-    double stdDev = 0;
     for( i=0 ; i<distances.size() ; ++i )
         m_error += (distances[i]-m_radius)*(distances[i]-m_radius);
     return observe(x);
@@ -580,8 +579,9 @@ void arlCore::OptimiseVideoRobotXZ_LS::gradf(vnl_vector< double > const &x, vnl_
 // OptimiseReprojection
 arlCore::OptimiseReprojection::OptimiseReprojection(const vector<const arlCore::Camera*> &cameras, const vector<arlCore::Point::csptr> &points2D):
 vnl_cost_function(3),
-m_points2D(points2D),
-m_cameras(cameras){}
+m_cameras(cameras),
+m_points2D(points2D)
+{}
 
 arlCore::OptimiseReprojection::~OptimiseReprojection(){}
 
@@ -630,7 +630,7 @@ arlCore::AxxBReproj_cost_function::~AxxBReproj_cost_function(){}
 double arlCore::AxxBReproj_cost_function::f(vnl_vector< double > const &v)
 {
     const unsigned int NbPoses = 1;//m_A_matrix.size();
-    const unsigned int NbCams = m_videoCams.size(); 
+    const unsigned int NbCams = m_videoCams.size();
     m_error = 0.0;
     const vnl_rigid_matrix X = arlCore::vnl_rigid_vector(v);
     const vnl_rigid_matrix Z = arlCore::vnl_rigid_vector(v);
@@ -671,7 +671,7 @@ m_A_matrix(A),
 m_B_matrix(B){}
 
 arlCore::Dornaika_cost_function::~Dornaika_cost_function(){}
-  
+
 double arlCore::Dornaika_cost_function::f(vnl_vector< double > const &x)
 {
     assert(x.size()==7);
@@ -686,10 +686,10 @@ double arlCore::Dornaika_cost_function::f(vnl_vector< double > const &x)
     vnl_vector_fixed<double,3>  pi, piprime, sum2;
     vnl_matrix_fixed<double,3,3> identite, sum1;
     identite.set_identity();
-    sum1.fill(0.0);    
-    sum2.fill(0.0);    
+    sum1.fill(0.0);
+    sum2.fill(0.0);
     vnl_rigid_matrix X;
-    double norme=0.0, a=0.0, frob;
+    double norme=0.0, frob;
     for( i=0 ; i<m_A_matrix.size() ; ++i )
     {
         //extraction des vecteurs rotation et translation
@@ -709,13 +709,13 @@ double arlCore::Dornaika_cost_function::f(vnl_vector< double > const &x)
         translation = rotA * translation;
         //calcul du 2ieme terme
         sum2 = rotX*pi - piprime - translation;
-        for( j=0 ; j<sum2.size() ; ++j )             
+        for( j=0 ; j<sum2.size() ; ++j )
             sum2[j] = sum2[j]*sum2[j] ;
         X.fill(0.0);
         X.setRotation(sum1);
-        for( j=0 ; j<sum2.size() ; ++j )    
+        for( j=0 ; j<sum2.size() ; ++j )
             m_error+=sum2[j]*Lambda2;
-        frob = X.frobenius_norm();    
+        frob = X.frobenius_norm();
         frob=frob*frob;
         m_error+=frob*Lambda1;
         translation[0] = x[4];
@@ -752,10 +752,10 @@ void arlCore::Dornaika_LS_cost_function::f(vnl_vector< double > const &x, vnl_ve
     vnl_vector_fixed<double,3>  pi, piprime, sum2;
     vnl_matrix_fixed<double,3,3> identite, sum1;
     identite.set_identity();
-    sum1.fill(0.0);    
-    sum2.fill(0.0);    
+    sum1.fill(0.0);
+    sum2.fill(0.0);
     vnl_rigid_matrix X;
-    double norme=0.0, a=0.0, frob, temp;
+    double norme=0.0, frob, temp;
     for( i=0 ; i<m_A_matrix.size()  ; ++i )
     {
         temp=0;
@@ -775,19 +775,19 @@ void arlCore::Dornaika_LS_cost_function::f(vnl_vector< double > const &x, vnl_ve
         translation = rotA * translation;
         //calcul du 2ieme terme
         sum2 = rotX*pi - piprime - translation;
-        for( j=0 ; j<sum2.size() ; ++j )                        
+        for( j=0 ; j<sum2.size() ; ++j )
         {
             sum2[j] = sum2[j]*sum2[j] ;
             temp+=sum2[j]*Lambda2;
         }
         X.fill(0.0);
         X.setRotation(sum1);
-        frob = X.frobenius_norm();    
+        frob = X.frobenius_norm();
         norme=0.0;
         for(j=0;j<q.size();j++)
             norme += (q[j]*q[j]);
         norme = sqrt(norme);
-        fx[i] = temp+frob*frob*Lambda1+Lambda*(1- norme)*(Lambda*(1- norme));    
+        fx[i] = temp+frob*frob*Lambda1+Lambda*(1- norme)*(Lambda*(1- norme));
         m_error += fx[i];
         translation[0] = x[4];
         translation[1] = x[5];
@@ -795,7 +795,7 @@ void arlCore::Dornaika_LS_cost_function::f(vnl_vector< double > const &x, vnl_ve
     }
     observe(x);
 }
-            
+
 void arlCore::Dornaika_LS_cost_function::gradf(vnl_vector< double > const &x, vnl_matrix<double>& g)
 {
     vnl_least_squares_function::fdgradf(x, g, 1e-8);
@@ -803,11 +803,11 @@ void arlCore::Dornaika_LS_cost_function::gradf(vnl_vector< double > const &x, vn
 
 // Polynomial_cost_function
 arlCore::Polynomial_cost_function::Polynomial_cost_function( const arlCore::PointList &real, const arlCore::PointList &distorded, unsigned int degree ) :
-m_nbEquations(3),
 vnl_cost_function(nbPolynomialParameters(degree, m_nbEquations)),
 m_real(real),
 m_distorded(distorded),
-m_degree(degree){}  
+m_nbEquations(3),
+m_degree(degree){}
 
 arlCore::Polynomial_cost_function::~Polynomial_cost_function(){}
 
@@ -828,7 +828,7 @@ double arlCore::Polynomial_cost_function::f( vnl_vector<double > const &x )
             for( j=0 ; j<m_nbEquations ; ++j )
                 m_error += (distorded[j]-distorsion[j]-m_real[i]->get(j))*(distorded[j]-distorsion[j]-m_real[i]->get(j));
     }
-    return observe(x);  
+    return observe(x);
 }
 
 unsigned int arlCore::Polynomial_cost_function::getNbParameters()
@@ -839,8 +839,8 @@ unsigned int arlCore::Polynomial_cost_function::getNbParameters()
 // OptimiseReprojectionUncertainty
 arlCore::OptimiseReprojectionUncertainty::OptimiseReprojectionUncertainty(const vector<const arlCore::Camera*> &cameras, const vector<arlCore::Point::csptr> &points2D):
 vnl_cost_function(3),
-m_points2D(points2D),
-m_cameras(cameras)
+m_cameras(cameras),
+m_points2D(points2D)
 {
     unsigned int i;
     //m_inv_cov_matrix.resize(m_cameras.size());
@@ -967,7 +967,7 @@ double arlCore::EPPC_cost_function::f(vnl_vector< double > const &x)
                     m_2Derror += vector2Dsub.transpose() * m_invCovMat2D[i][j] * vector2Dsub;
                 }
             }
-    }   
+    }
     m_error = m_2Derror(0,0) + m_3Derror(0,0);
     //std::cerr<<"erreur EPPC 2D :"<< m_2Derror(0,0)<<"    3D :"<< m_3Derror(0,0)<<std::endl;
     return observe(x);
@@ -1072,10 +1072,10 @@ arlCore::ISPPC_cost_function::ISPPC_cost_function(const std::vector<const Camera
             const std::vector< vnl_vector_fixed<double,4> > &points3D,
             const std::vector< std::vector<Point::csptr> > &points2D, bool noise_feature):
 vnl_cost_function(6),
-m_cameras(a),
 m_points3D(points3D),
 m_points2D(points2D),
-m_noise_feature(noise_feature) 
+m_cameras(a),
+m_noise_feature(noise_feature)
 {
     if(m_noise_feature == true)
     {
@@ -1139,7 +1139,7 @@ double arlCore::ISPPC_cost_function::f(vnl_vector< double > const &x)
                     {
                         vnl_vector_fixed<double,4> points3DRepereCam = trsf * m_points3D[j];
                         if(m_cameras[i]->project3DPoint(points3DRepereCam, projPoint2D))
-                        {   
+                        {
                             vnl_vector_fixed<double,2> point2D(m_points2D[i][j]->x(),m_points2D[i][j]->y());
                             vector2Dsub.set_column(0, projPoint2D - point2D);
                             matrix_2Derror += vector2Dsub.transpose() * m_invCovMat2D[i][j] * vector2Dsub;
@@ -1163,10 +1163,10 @@ arlCore::ISPPC_LS_cost_function::ISPPC_LS_cost_function(const std::vector<const 
             unsigned int number_of_unknowns,
             unsigned int number_of_residuals, UseGradient g, bool noise_feature):
 vnl_least_squares_function(number_of_unknowns, number_of_residuals, g),
-m_cameras(a),
 m_points3D(points3D),
 m_points2D(points2D),
-m_noise_feature(noise_feature) 
+m_cameras(a),
+m_noise_feature(noise_feature)
 {
     if(m_noise_feature == true)
     {
@@ -1194,7 +1194,7 @@ void arlCore::ISPPC_LS_cost_function::f(vnl_vector< double > const &x, vnl_vecto
     assert(x.size()==6);
     vnl_vector_fixed<double,2> projPoint2D;
     unsigned int i,j, index=0;
-    double errorX, errorY, toto=0;
+    double errorX, errorY;
     arlCore::vnl_rigid_vector vec(x);
     arlCore::vnl_rigid_matrix trsf(vec);
     m_error = 0.0;
@@ -1258,9 +1258,9 @@ arlCore::OSPPC_cost_function::OSPPC_cost_function(const std::vector<const arlCor
     const std::vector< arlCore::Point* > &points3D,
     const std::vector< std::vector<arlCore::Point::csptr> > &points2D):
 vnl_cost_function(6),
-m_cameras(a),
 m_points3D(points3D),
-m_points2D(points2D)
+m_points2D(points2D),
+m_cameras(a)
 {
     unsigned int i,j;
     m_extPoints2D.resize(m_cameras.size());
@@ -1311,9 +1311,9 @@ arlCore::OSPPC_LS_cost_function::OSPPC_LS_cost_function(const std::vector<const 
                                                         const std::vector< Point* > &points3D, const std::vector< std::vector<Point::csptr> > &points2D,
     unsigned int number_of_unknowns, unsigned int number_of_residuals, UseGradient g):
 vnl_least_squares_function(number_of_unknowns, number_of_residuals, g),
-m_cameras(a),
 m_points3D(points3D),
-m_points2D(points2D)
+m_points2D(points2D),
+m_cameras(a)
 {
     unsigned int i,j;
     m_extPoints2D.resize(m_cameras.size());
@@ -1371,7 +1371,7 @@ arlCore::Intrinsic_cost_function::Intrinsic_cost_function(unsigned int nbParamet
     else m_nbParameters = nbParameters;
     assert(m_nbParameters>=4);
     m_camera = new Camera(m_universe);
-    m_verbose = false; 
+    m_verbose = false;
     m_available_reprojection_error = false;
 }
 
@@ -1569,7 +1569,7 @@ arlCore::Extrinsic_cost_function::Extrinsic_cost_function(const std::vector<cons
 vnl_cost_function(nou),
 m_cameras(a)
 {
-    m_verbose = false; 
+    m_verbose = false;
     m_available_reprojection_error = false;
 }
 
@@ -1579,8 +1579,8 @@ arlCore::Extrinsic_cost_function::~Extrinsic_cost_function(){}
 unsigned int arlCore::Extrinsic_cost_function::addPattern(const std::vector<std::vector<arlCore::Point*> >& points2D, const std::vector<arlCore::Point*>& model3D)
 {// faire addPattern pour chaque pattern rigide et chaque pose
     //assert(points2D.size()==model3D.size());
-    unsigned int i, j, size = (unsigned int)m_3DpatternsList.size();
-    
+    unsigned int i, j;
+
     std::vector<std::vector<arlCore::Point*> > patternsList2D;
     std::vector< arlCore::Point* > patternsList3D(model3D.size());
     for( i=0 ; i<model3D.size() ; ++i )
@@ -1595,8 +1595,8 @@ unsigned int arlCore::Extrinsic_cost_function::addPattern(const std::vector<std:
         std::vector<arlCore::Point*> tmp(points2D[j].size());
         for( i=0 ; i<model3D.size() ; ++i )
             tmp[i]=points2D[j][i];
-        patternsList2D.push_back(tmp);              
-    }           
+        patternsList2D.push_back(tmp);
+    }
     m_2DpatternsList.push_back(patternsList2D);
     m_3DpatternsList.push_back(patternsList3D);
     //assert(m_2DpatternsList[size]->size()==m_3DpatternsList[size]->size());
@@ -1621,7 +1621,7 @@ double arlCore::Extrinsic_cost_function::f(vnl_vector< double > const &x)
 {
     const unsigned int NbCameras = (unsigned int)m_cameras.size();
     const unsigned int NbPoses = (unsigned int)m_3DpatternsList.size();
-    std::vector <arlCore::vnl_rigid_matrix> listTransfo(NbPoses + NbCameras -1);         
+    std::vector <arlCore::vnl_rigid_matrix> listTransfo(NbPoses + NbCameras -1);
     vnl_vector_fixed<double,4> points3DRepereCam;
     vnl_vector_fixed<double,2> projPoint2D;
     unsigned int i,j,k,index=0;
@@ -1638,7 +1638,7 @@ double arlCore::Extrinsic_cost_function::f(vnl_vector< double > const &x)
         for( j=0 ; j<6; ++j )
             rigid_vect.put(j, x[6*i+j]);
         listTransfo[i]=arlCore::vnl_rigid_matrix(rigid_vect);
-    } 
+    }
     //Calcul des coordonnes de points3d aprs application de la transfo recherche
     for( i=0 ; i<NbPoses; ++i )
         for( j=0 ; j<NbCameras; ++j )
@@ -1667,7 +1667,7 @@ double arlCore::Extrinsic_cost_function::f(vnl_vector< double > const &x)
 
 //void arlCore::Extrinsic_cost_function::gradf(vnl_vector< double > const &x, vnl_vector<double>& g)
 //{
-//  fdgradf(x, g);  
+//  fdgradf(x, g);
 //}
 
 // EXTRINSIC LS
@@ -1675,7 +1675,7 @@ arlCore::ExtrinsicLS_cost_function::ExtrinsicLS_cost_function(const std::vector<
     vnl_least_squares_function(number_of_unknowns, number_of_residuals, g),
     m_cameras(a)
 {
-    m_verbose = false; 
+    m_verbose = false;
 }
 
 arlCore::ExtrinsicLS_cost_function::~ExtrinsicLS_cost_function(){}
@@ -1686,8 +1686,8 @@ void arlCore::ExtrinsicLS_cost_function::setVerbose(bool verbose)
 unsigned int arlCore::ExtrinsicLS_cost_function::addPattern( const std::vector<std::vector<arlCore::Point*> >& points2D, const std::vector<arlCore::Point*>& model3D )
 {// faire addPattern pour chaque pattern rigide et chaque pose
     //assert(points2D.size()==model3D.size());
-    unsigned int i, j, size = (unsigned int)m_3DpatternsList.size();
-    
+    unsigned int i, j;
+
     std::vector<std::vector<arlCore::Point*> > patternsList2D;
     std::vector< arlCore::Point* > patternsList3D(model3D.size());
     for( i=0 ; i<model3D.size() ; ++i )
@@ -1702,8 +1702,8 @@ unsigned int arlCore::ExtrinsicLS_cost_function::addPattern( const std::vector<s
         std::vector<arlCore::Point*> tmp(points2D[j].size());
         for( i=0 ; i<model3D.size() ; ++i )
             tmp[i]=points2D[j][i];
-        patternsList2D.push_back(tmp);              
-    }           
+        patternsList2D.push_back(tmp);
+    }
     m_2DpatternsList.push_back(patternsList2D);
     m_3DpatternsList.push_back(patternsList3D);
     //assert(m_2DpatternsList[size]->size()==m_3DpatternsList[size]->size());
@@ -1724,7 +1724,7 @@ void arlCore::ExtrinsicLS_cost_function::f(vnl_vector< double > const &x, vnl_ve
     //tmp_index is used in a loop and contain the number of visible 2D points for a video image
     const unsigned int NbCameras = (unsigned int)m_cameras.size();
     const unsigned int NbPoses = (unsigned int)m_3DpatternsList.size();
-    std::vector <arlCore::vnl_rigid_matrix> listTransfo(NbPoses+NbCameras-1);         
+    std::vector <arlCore::vnl_rigid_matrix> listTransfo(NbPoses+NbCameras-1);
     vnl_vector_fixed<double,4> points3DRepereCam;
     vnl_vector_fixed<double,2> projPoint2D;
     unsigned int i,j,k;
@@ -1741,7 +1741,7 @@ void arlCore::ExtrinsicLS_cost_function::f(vnl_vector< double > const &x, vnl_ve
         for(j=0 ; j<6; ++j)
             rigid_vect.put(j, x[6*i+j]);
         listTransfo[i]=arlCore::vnl_rigid_matrix(rigid_vect);
-    } 
+    }
     for( i=0 ; i<NbPoses; ++i )
         for( j=0 ; j<NbCameras; ++j )
 //      {
@@ -1763,7 +1763,7 @@ void arlCore::ExtrinsicLS_cost_function::f(vnl_vector< double > const &x, vnl_ve
 //          index += tmp_index;
 //          tmp_index = 0;
 //      }
-            
+
     m_error /= index;
     //std::cerr<<"erreur reprojection = "<<sqrt(m_error/index) <<"  " <<index<<std::endl;
     observe(x);
@@ -1776,7 +1776,7 @@ void arlCore::ExtrinsicLS_cost_function::gradf(vnl_vector< double > const &x, vn
     {
         std::cerr<<"calcul du gradient"<<std::endl;
         std::cerr<<"reprojection error= "<<sqrt(m_error)<<std::endl;
-    }   
+    }
 }
 
 // AX=XB
@@ -1864,7 +1864,7 @@ double arlCore::AXB_Z_cost_function::criterion( const arlCore::vnl_rigid_matrix 
         const arlCore::vnl_rigid_vector V( AXB * invZ );
         error2 += V.as_vector().two_norm();
 
-        // 3rd Method : Optimization of distance2 between AXB & Z       
+        // 3rd Method : Optimization of distance2 between AXB & Z
         error3 += AXB.distance2( Z, arlCore::ARLCORE_VRM_DISTANCE_3AXIS );
 
         // 4th Method Klaus H. Strobl & Gerd Hirzinger
@@ -1950,7 +1950,7 @@ double arlCore::register3D3DUncertainty_cost_function::f(vnl_vector< double > co
     vnl_matrix_fixed<double,1,1> error(0.0);
     arlCore::vnl_rigid_vector vec(x);
     arlCore::vnl_rigid_matrix trsf(vec);
-    m_error=0.0;    
+    m_error=0.0;
     for(i=0 ; i<m_points3D_source.size() ; ++i)
     {
         arlCore::Point points3D_recale;
@@ -1965,7 +1965,7 @@ double arlCore::register3D3DUncertainty_cost_function::f(vnl_vector< double > co
                 m_error += error(0,0);
                 //std::cerr<<"covariance nulle"<<std::endl;
             }
-            else 
+            else
             {
                 error = pointSubtraction.transpose().as_matrix() * ((m_inv_cov_matrix[i])) * pointSubtraction;
                 //error = pointSubtraction.transpose().as_matrix() * pointSubtraction;
@@ -2011,7 +2011,7 @@ void arlCore::register3D3DUncertainty_LS_cost_function::f(vnl_vector< double > c
     vnl_matrix_fixed<double,1,1> error(0.0);
     arlCore::vnl_rigid_vector vec(x);
     arlCore::vnl_rigid_matrix trsf(vec);
-    
+
     for(i=0 ; i<m_points3D_source.size() ; ++i)
     {
         arlCore::Point points3D_recale;
@@ -2026,7 +2026,7 @@ void arlCore::register3D3DUncertainty_LS_cost_function::f(vnl_vector< double > c
                 fx[i] = sqrt( error(0,0) );
                 //std::cerr<<"covariance nulle"<<std::endl;
             }
-            else 
+            else
             {
                 error = pointSubtraction.transpose().as_matrix() * ((m_inv_cov_matrix[i])) * pointSubtraction;
                 //error = pointSubtraction.transpose().as_matrix() * pointSubtraction;

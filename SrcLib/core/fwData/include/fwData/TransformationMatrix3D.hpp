@@ -12,6 +12,7 @@
 #include <assert.h>
 
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 
 namespace fwData
 {
@@ -27,7 +28,7 @@ class FWDATA_CLASS_API TransformationMatrix3D : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
-            (()), ::fwTools::Factory::New< TransformationMatrix3D >) ;
+            (()), ::fwData::Factory::New< TransformationMatrix3D >) ;
 
     typedef double TM3DType;
     typedef std::vector<TM3DType> TMCoefArray;
@@ -48,7 +49,7 @@ public :
      * @{
      * @brief Get/Set value of the coefficient in the given position (matrix[l][c])
      */
-    FWDATA_API double getCoefficient(int l, int c);
+    FWDATA_API double getCoefficient(int l, int c) const;
     FWDATA_API void setCoefficient(int l, int c, TM3DType val);
     // @}
 
@@ -56,13 +57,13 @@ public :
     static const int MATRIX_SIZE = 4;
 
     /// Print the coefficients of the matrix
-    friend std::ostream& operator<<(std::ostream& s, TransformationMatrix3D mat)
+    friend std::ostream& operator<<(std::ostream& s, const TransformationMatrix3D& mat)
     {
         for(int l = 0; l < MATRIX_SIZE; l++)
         {
             for(int c = 0; c < MATRIX_SIZE; c++)
             {
-                s << mat.getCoefficient(l, c)<< "\t";
+                s << mat.getCoefficient(l, c) << "\t";
             }
             s << std::endl;
         }

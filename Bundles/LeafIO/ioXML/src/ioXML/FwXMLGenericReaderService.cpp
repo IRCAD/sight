@@ -44,7 +44,7 @@
 namespace ioXML
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwTools::Object );
+REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -161,11 +161,11 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr FwXMLGenericReaderService::loadData( const ::boost::filesystem::path xmlFile )
+::fwData::Object::sptr FwXMLGenericReaderService::loadData( const ::boost::filesystem::path xmlFile )
 {
     SLM_TRACE_FUNC();
     ::fwXML::reader::FwXMLObjectReader::NewSptr myLoader;
-    ::fwTools::Object::sptr pObject;
+    ::fwData::Object::sptr pObject;
 
     myLoader->setFile(xmlFile);
 
@@ -174,7 +174,7 @@ std::vector< std::string > FwXMLGenericReaderService::getSupportedExtensions()
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading data ");
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
-        pObject = ::fwTools::Object::dynamicCast( myLoader->getObject() );
+        pObject = ::fwData::Object::dynamicCast( myLoader->getObject() );
     }
     catch (const std::exception & e)
     {
@@ -203,7 +203,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 
         m_reader.setFile( this->getFile() );
 
-        ::fwTools::Object::sptr obj; // object loaded
+        ::fwData::Object::sptr obj; // object loaded
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -221,7 +221,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
         if (obj)
         {
             // Retrieve dataStruct associated with this service
-            ::fwTools::Object::sptr associatedObject = this->getObject< ::fwTools::Object >();
+            ::fwData::Object::sptr associatedObject = this->getObject();
             SLM_ASSERT("associatedObject not instanced", associatedObject);
 
             if(obj->getClassname() != associatedObject->getClassname())
@@ -240,6 +240,14 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
                 notificationOfUpdate();
             }
         }
+        else
+        {
+            std::stringstream stream;
+            stream << "Sorry, reader failed to read the file "<<m_reader.getFile();
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                    stream.str(),
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+        }
         cursor.setDefaultCursor();
     }
 }
@@ -250,7 +258,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 void FwXMLGenericReaderService::notificationOfUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwData::Object::sptr object = this->getObject< ::fwData::Object >();
+    ::fwData::Object::sptr object = this->getObject();
     SLM_ASSERT("object not instanced", object);
     ::fwServices::ObjectMsg::NewSptr msg;
     msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
@@ -266,9 +274,9 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
 
 //------------------------------------------------------------------------------
 
-::fwTools::Object::sptr FwXMLGenericReaderService::manageZipAndLoadData( const ::boost::filesystem::path _pArchivePath )
+::fwData::Object::sptr FwXMLGenericReaderService::manageZipAndLoadData( const ::boost::filesystem::path _pArchivePath )
 {
-    ::fwTools::Object::sptr obj;
+    ::fwData::Object::sptr obj;
     // Unzip folder
     ::boost::filesystem::path destFolder = ::fwTools::System::getTemporaryFolder() / "fwxmlArchiveFolder";
 
@@ -297,7 +305,7 @@ bool FwXMLGenericReaderService::isAnFwxmlArchive( const ::boost::filesystem::pat
     {
         std::stringstream stream;
         stream << "Sorry, "<<_pArchivePath<< " is not valid a valid " FWXML_ARCHIVE_EXTENSION " file."
-               << this->getObject< ::fwTools::Object >()->getRootedClassname();
+               << this->getObject()->getRootedClassname();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                         stream.str(),
                         ::fwGui::dialog::IMessageDialog::WARNING);

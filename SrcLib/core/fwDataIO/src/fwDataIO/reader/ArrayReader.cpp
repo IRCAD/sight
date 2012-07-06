@@ -13,6 +13,8 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
 #include "fwDataIO/reader/ArrayReader.hpp"
 
 
@@ -43,8 +45,10 @@ void ArrayReader::read()
     ::boost::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
 
     ::fwData::Array::sptr array = this->getConcreteObject();
+    ::fwComEd::helper::Array arrayHelper(array);
+
     size_t arraySizeInBytes = array->resize(array->getSize());
-    char* buff = array->begin();
+    char* buff = arrayHelper.begin();
 
     std::ifstream fs(file.string().c_str(), std::ios::in|std::ios::binary|std::ios::ate);
 

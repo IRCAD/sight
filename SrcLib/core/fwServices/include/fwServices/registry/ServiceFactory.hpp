@@ -56,10 +56,10 @@ class FWSERVICES_CLASS_API ServiceFactoryInfo : public ::fwTools::Object
         fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactoryInfo)(::fwTools::Object), (()), ::fwTools::Factory::New< ServiceFactoryInfo > );
 
         /// Constructor, do nothing.
-        FWSERVICES_API ServiceFactoryInfo(){}
+        ServiceFactoryInfo(){}
 
         /// Destructor, do nothing.
-        FWSERVICES_API virtual ~ServiceFactoryInfo(){}
+        virtual ~ServiceFactoryInfo(){}
 
         std::string serviceType;
         std::string objectImpl;
@@ -104,6 +104,8 @@ public:
         const std::string & simpl,
         const std::string & stype,
         const std::string & oimpl);
+
+    FWSERVICES_API IService::sptr create( const std::string & _srvImpl );
 
     FWSERVICES_API IService::sptr create( const std::string & _srvType, const std::string & _srvImpl );
 

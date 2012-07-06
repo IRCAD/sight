@@ -11,6 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/Factory.hpp"
 #include "fwData/Plane.hpp"
 
 
@@ -28,7 +29,7 @@ class FWDATA_CLASS_API PlaneList : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object),
-        (()), ::fwTools::Factory::New< PlaneList >) ;
+        (()), ::fwData::Factory::New< PlaneList >) ;
 
     typedef std::vector< ::fwData::Plane::sptr > PlaneListContainer;
 

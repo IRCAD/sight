@@ -5,23 +5,25 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwMath/PlaneFunctions.hpp>
-// #include "SoLib/Sblinear.h"
 
 #include "PlaneFunctionsTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( PlaneFunctionsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMath::ut::PlaneFunctionsTest );
+
+namespace fwMath
+{
+namespace ut
+{
 
 void PlaneFunctionsTest::setUp()
 {
     // Set up context before running a test.
-
 }
 void PlaneFunctionsTest::tearDown()
 {
     // Clean up after the test run.
-
 }
 
 void PlaneFunctionsTest::checkDistance()
@@ -32,6 +34,7 @@ void PlaneFunctionsTest::checkDistance()
     ::fwMath::setDistance(plane, DISTANCE);
     CPPUNIT_ASSERT_EQUAL(::fwMath::getDistance(plane), DISTANCE);
 }
+
 void PlaneFunctionsTest::checkNormal()
 {
     const double PlanP1_X = 1.0;
@@ -62,12 +65,8 @@ void PlaneFunctionsTest::checkNormal()
 //  CPPUNIT_ASSERT_DOUBLES_EQUAL(normal[2], (double)sbNormal[2], 0.00001);
 }
 
-void PlaneFunctionsTest::checkSetValues()
+void PlaneFunctionsTest::checkIntersect()
 {
-
-}
-void PlaneFunctionsTest::checkIntersect( ) {
-
     const bool INTERSECT = true;
 
     fwVec3d  point;
@@ -93,9 +92,8 @@ void PlaneFunctionsTest::checkIntersect( ) {
     CPPUNIT_ASSERT_EQUAL(intersect, INTERSECT);
 }
 
-void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( ) {
-
-    SLM_TRACE_FUNC();
+void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( )
+{
 
 //  for(int i= 0; i<100; i++) {
     const double LineP1_X = 1.0;
@@ -153,9 +151,8 @@ void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( ) {
 //  CPPUNIT_ASSERT_EQUAL(intersect, INTERSECT);
 }
 
-void PlaneFunctionsTest::checkIsInHalfSpace_fwMath_SoLib() {
-
-
+void PlaneFunctionsTest::checkIsInHalfSpace_fwMath_SoLib()
+{
     const double P1_X = 1.0;
     const double P1_Y = 0.0;
     const double P1_Z = 1.0;
@@ -174,7 +171,6 @@ void PlaneFunctionsTest::checkIsInHalfSpace_fwMath_SoLib() {
 
     const fwVec3d point1 = {P1_X, P1_Y, P1_Z};
 
-
     const fwVec3d planPt1 = {PlanP1_X, PlanP1_Y, PlanP1_Z};
     const fwVec3d planPt2 = {PlanP2_X, PlanP2_Y, PlanP2_Z};
     const fwVec3d planPt3 = {PlanP3_X, PlanP3_Y, PlanP3_Z};
@@ -192,9 +188,8 @@ void PlaneFunctionsTest::checkIsInHalfSpace_fwMath_SoLib() {
 
 }
 
-void PlaneFunctionsTest::checkOffset() {
-
-
+void PlaneFunctionsTest::checkOffset()
+{
     const double OFFSET = 0.3;
 
     const double PlanP1_X = 1.0;
@@ -225,8 +220,8 @@ void PlaneFunctionsTest::checkOffset() {
 //  CPPUNIT_ASSERT_DOUBLES_EQUAL(result, sbResult, 0.00001);
 }
 
-void PlaneFunctionsTest::checkTransform() {
-
+void PlaneFunctionsTest::checkTransform()
+{
     const fwVec3d normal = {0.2, 0.6, 0.8};
     const double distance = 0.28;
 
@@ -267,5 +262,6 @@ void PlaneFunctionsTest::checkTransform() {
 //  CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], soPlane.getDistanceFromOrigin(), 0.00001);
 }
 
-
+} //namespace ut
+} //namespace fwMath
 

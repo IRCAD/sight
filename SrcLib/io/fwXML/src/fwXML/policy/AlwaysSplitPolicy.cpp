@@ -9,7 +9,7 @@
 namespace fwXML
 {
 
-bool AlwaysSplitPolicy::split(::fwTools::Object::sptr obj)
+bool AlwaysSplitPolicy::split(::fwData::Object::sptr obj)
 {
     return true;
 }

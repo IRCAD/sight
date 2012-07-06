@@ -26,10 +26,10 @@ namespace fwServices
  * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceType
  * @author IRCAD (Research and Development Team).
  */
-FWSERVICES_API ::fwServices::IService::sptr add( ::fwTools::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string _id = "") ;
+FWSERVICES_API ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string _id = "") ;
 
 template<class SERVICE>
-SPTR(SERVICE) add( ::fwTools::Object::sptr obj , std::string _implementationId , std::string _id= "") ;
+SPTR(SERVICE) add( ::fwData::Object::sptr obj , std::string _implementationId , std::string _id= "") ;
 
 //@}
 

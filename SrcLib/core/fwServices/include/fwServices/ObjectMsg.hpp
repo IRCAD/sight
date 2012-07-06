@@ -70,7 +70,12 @@ public:
     /// Event identifier used to inform that an object has to be removed
     FWSERVICES_API static std::string DELETE_OBJECT;
 
-
+    /// Event identifier used to inform that fields were added, removed or changed
+    //@{
+    FWSERVICES_API static std::string ADDED_FIELDS;
+    FWSERVICES_API static std::string REMOVED_FIELDS;
+    FWSERVICES_API static std::string CHANGED_FIELDS;
+    //@}
 
     /**
      * @name Event management
@@ -120,10 +125,63 @@ public:
     FWSERVICES_API WPTR(::fwServices::IService) getSource() const;
 
     /// Set message subject (object observed)
-    FWSERVICES_API void setSubject( ::fwTools::Object::wptr _subject );
+    FWSERVICES_API void setSubject( ::fwData::Object::wptr _subject );
 
     /// Get message subject (object observed)
-    FWSERVICES_API ::fwTools::Object::wptr getSubject() const;
+    FWSERVICES_API ::fwData::Object::wptr getSubject() const;
+
+    //@}
+
+
+    /**
+     * @name Field events
+     */
+    //@{
+
+    typedef std::map<std::string, ::fwData::Object::sptr> ModifiedFieldsContainerType;
+    typedef ::fwData::Object::FieldNameType FieldNameType;
+
+    /**
+     * @brief       Append an object to the added fields list.
+     * @param[in]   fieldName : the field name of the added object.
+     * @param[in]   object    : the added object.
+     */
+    FWSERVICES_API void appendAddedField( const FieldNameType &fieldName, ::fwData::Object::sptr object );
+
+    /**
+     * @brief   Return the map of the added fields.
+     */
+    FWSERVICES_API const ModifiedFieldsContainerType &getAddedFields() const;
+
+    /**
+     * @brief       Append an object to the removed fields list.
+     * @param[in]   fieldName : the field name of the removed object.
+     * @param[in]   object    : the object which will be removed.
+     */
+    FWSERVICES_API void appendRemovedField( const FieldNameType &fieldName, ::fwData::Object::sptr object );
+
+    /**
+     * @brief   Return the map of the removed fields.
+     */
+    FWSERVICES_API const ModifiedFieldsContainerType &getRemovedFields() const;
+
+    /**
+     * @brief       Append an object to the changed fields list.
+     * @param[in]   fieldName : the field name of the changed object.
+     * @param[in]   oldObject : the old object which will be replaced.
+     * @param[in]   newObject : the new object.
+     */
+    FWSERVICES_API void appendChangedField( const FieldNameType &fieldName, ::fwData::Object::sptr oldObject, ::fwData::Object::sptr newObject );
+
+    /**
+     * @brief   Return a map of old object in changed fields list.
+     */
+    FWSERVICES_API const ModifiedFieldsContainerType &getOldChangedFields() const;
+
+    /**
+    * @brief   Return a map of new object in changed fields list.
+    */
+    FWSERVICES_API const ModifiedFieldsContainerType &getNewChangedFields() const;
 
     //@}
 
@@ -153,13 +211,19 @@ protected :
     /// Give some message informations, this method uses getGeneralInfo.
     FWSERVICES_API virtual void info(std::ostream &_sstream ) const ;
 
+
+    ModifiedFieldsContainerType m_removedFields;
+    ModifiedFieldsContainerType m_addedFields;
+    ModifiedFieldsContainerType m_oldChangedFields;
+    ModifiedFieldsContainerType m_newChangedFields;
+
 private :
 
     /// Message source. It is the service which creates msg and sends it at all subject observers
     WPTR(::fwServices::IService) m_source;
 
     /// Message subject. All subject observers will be notified.
-    ::fwTools::Object::wptr m_subject;
+    ::fwData::Object::wptr m_subject;
 
     /// Helper to convert string UUID/Classname in pretty string
     static std::string convertToLightString( std::string _initialString );

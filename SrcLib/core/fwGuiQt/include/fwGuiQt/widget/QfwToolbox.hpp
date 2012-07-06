@@ -79,7 +79,7 @@ protected:
 
     typedef QList< ::fwGuiQt::widget::Page > PageList;
 
-private slots:
+private Q_SLOTS:
     void buttonToggled(bool checked);
     void widgetDestroyed(QObject*);
 

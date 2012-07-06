@@ -131,7 +131,7 @@ public:
     /**
      * @brief Returns callbacks associate with menu items.
      */
-    FWGUI_API virtual CallbacksType getCallbacks(){ return m_callbacks;};
+    virtual CallbacksType getCallbacks(){ return m_callbacks;};
 
 protected:
 

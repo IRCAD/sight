@@ -29,7 +29,7 @@ struct IsEnableAndHasIdentifier
     :   m_identifier( identifier )
     {}
 
-    const bool operator() ( const ::boost::shared_ptr< T > p ) const
+    bool operator() ( const ::boost::shared_ptr< T > p ) const
     {
         return p->getIdentifier() == m_identifier && p->isEnable();
     }

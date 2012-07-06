@@ -23,6 +23,8 @@
 #include <fwTest/Data.hpp>
 #include <fwTest/File.hpp>
 
+#include <fwComEd/helper/Image.hpp>
+
 #include <vtkIO/ImageWriter.hpp>
 #include <vtkIO/ImageReader.hpp>
 #include <vtkIO/MetaImageReader.hpp>
@@ -34,7 +36,12 @@
 #include "ImageTest.hpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ImageTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::ImageTest );
+
+namespace fwVtkIO
+{
+namespace ut
+{
 
 using namespace boost::assign;
 
@@ -132,6 +139,8 @@ void ImageTest::testImageToVtk()
     ::fwData::Image::NewSptr image;                                                                                            \
     ::fwDataTools::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));                               \
                                                                                                                                \
+    ::fwComEd::helper::Image imageHelper(image);                                                                               \
+                                                                                                                               \
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();                                         \
     ::vtkIO::toVTKImage(image, vtkImage);                                                                                      \
                                                                                                                                \
@@ -149,7 +158,7 @@ void ImageTest::testImageToVtk()
     CPPUNIT_ASSERT_MESSAGE( "Test failed for type " imgtype, types.find( vtkImage->GetScalarType() ) != types.end() );         \
                                                                                                                                \
     char *vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                                           \
-    char *ptr = static_cast<char*>(image->getBuffer());                                                                        \
+    char *ptr = static_cast<char*>(imageHelper.getBuffer());                                                                   \
                                                                                                                                \
     CPPUNIT_ASSERT_MESSAGE( "Test failed for type " imgtype, std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );         \
 }
@@ -193,6 +202,8 @@ void ImageTest::testFromVtk()
         ::fwData::Image::NewSptr image;                                                                                \
         ::vtkIO::fromVTKImage(vtkImage, image);                                                                        \
                                                                                                                        \
+        ::fwComEd::helper::Image imageHelper(image);                                                                   \
+                                                                                                                       \
         COMPARE_IMAGE_ATTRS_MACRO(                                                                                     \
                 vtkImage->GetDimensions(),                                                                             \
                 vtkImage->GetSpacing(),                                                                                \
@@ -206,7 +217,7 @@ void ImageTest::testFromVtk()
         CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" imagename "> Failed ", ::fwTools::Type(type), image->getType() );    \
                                                                                                                        \
         char *vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                               \
-        char *ptr = static_cast<char*>(image->getBuffer());                                                            \
+        char *ptr = static_cast<char*>(imageHelper.getBuffer());                                                       \
                                                                                                                        \
         CPPUNIT_ASSERT( std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );                                      \
     }
@@ -433,4 +444,6 @@ void ImageTest::vtkWriterTest()
 
 //------------------------------------------------------------------------------
 
+} // namespace ut
+} // namespace fwVtkIO
 

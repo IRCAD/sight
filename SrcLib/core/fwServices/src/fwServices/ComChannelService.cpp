@@ -23,7 +23,7 @@
 #include "fwServices/registry/ServiceFactory.hpp"
 
 
-REGISTER_SERVICE( ::fwServices::ICommunication , ::fwServices::ComChannelService , ::fwTools::Object ) ;
+REGISTER_SERVICE( ::fwServices::ICommunication , ::fwServices::ComChannelService , ::fwData::Object ) ;
 
 namespace fwServices
 {
@@ -154,7 +154,7 @@ void ComChannelService::stopping() throw(fwTools::Failed)
             m_source.lock()->detach( this->getSptr() );
 
             /// Remove IEditionService if it is the last comChannel
-            int nbObservers = m_source.lock()->getNbObservers();
+            size_t nbObservers = m_source.lock()->getNbObservers();
             if(nbObservers == 0)
             {
                 if (m_source.lock()->isStarted())
@@ -332,6 +332,7 @@ std::string ComChannelService::getNotificationInformation( ::fwServices::ObjectM
 
 void ComChannelService::sendMessage( ::fwServices::ObjectMsg::csptr _msg, ::fwServices::ComChannelService::MsgOptionsType options )
 {
+    SLM_ASSERT("ComChannel destination expired", m_destination.lock());
     if( m_destination.lock()->isStarted())
     {
         bool notifySource = options & ::fwServices::ComChannelService::NOTIFY_SOURCE;

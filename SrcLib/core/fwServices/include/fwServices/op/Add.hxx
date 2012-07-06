@@ -7,7 +7,7 @@
 #ifndef _FWSERVICES_ADD_HXX_
 #define _FWSERVICES_ADD_HXX_
 
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/IService.hpp"
@@ -18,7 +18,7 @@ namespace fwServices
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) add( ::fwTools::Object::sptr obj  , std::string _implementationId , std::string _id)
+SPTR(SERVICE) add( ::fwData::Object::sptr obj  , std::string _implementationId , std::string _id)
 {
     std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname() ;
     ::fwServices::IService::sptr service = ::fwServices::add( obj , serviceType , _implementationId, _id ) ;
