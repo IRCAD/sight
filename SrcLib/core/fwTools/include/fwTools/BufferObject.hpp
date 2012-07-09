@@ -11,10 +11,13 @@
 #include <boost/type_traits/is_const.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwCamp/macros.hpp>
 
 #include "fwTools/BufferAllocationPolicy.hpp"
 #include "fwTools/IBufferManager.hpp"
 #include "fwTools/config.hpp"
+
+fwCampAutoDeclareMacro((fwTools)(BufferObject), FWTOOLS_API)
 
 namespace fwTools
 {
@@ -47,6 +50,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((BufferObject), (()), new BufferObject );
     fwCoreAllowSharedFromThis();
+    FWTOOLS_API  virtual void* getBuffer() { return m_buffer;};
 
     /**
      * @brief base class for BufferObject Lock
@@ -64,6 +68,8 @@ public:
     public:
 
         typedef typename ::boost::conditional< ::boost::is_const< T >::value, const void*, void* >::type BufferType;
+
+
 
 
         /**
@@ -348,5 +354,6 @@ protected :
 };
 
 }
+
 
 #endif /* _FWTOOLS_BUFFEROBJECT_HPP_ */

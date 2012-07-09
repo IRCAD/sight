@@ -7,6 +7,11 @@
 #include "fwTools/Exception.hpp"
 #include "fwTools/BufferObject.hpp"
 
+fwCampImplementMacro((fwTools)(BufferObject))
+{
+    builder.tag("buffer");
+}
+
 namespace fwTools
 {
 
