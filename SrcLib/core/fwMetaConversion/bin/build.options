@@ -1,0 +1,4 @@
+TYPE = 'shared'
+VERSION = '0.1'
+USE = ['boost','camp']
+LIB = ['fwData_0.1', 'fwMetaData_0.1', 'fwDataCamp_0.1']

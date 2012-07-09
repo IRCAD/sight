@@ -1,0 +1,7 @@
+
+CLASSTEST=[
+    'MetaHelperTest'
+]
+
+LIB = ['fwTools_0-1','fwCore_0-1', 'fwMetaConversion_0-1', 'fwDataTools_0-1']
+CONSOLE = 'yes'
