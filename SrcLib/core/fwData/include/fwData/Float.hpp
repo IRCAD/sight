@@ -13,6 +13,9 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Float), FWDATA_API);
+
+
 namespace fwData
 {
 
@@ -32,6 +35,7 @@ public:
 
     fwDataObjectMacro();
 
+    fwCampMakeFriendDataMacro((fwData)(Float));
 
     /**
      * @brief Constructor

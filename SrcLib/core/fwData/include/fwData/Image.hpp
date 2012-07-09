@@ -20,6 +20,11 @@
 #include "fwData/Array.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Image), FWDATA_API);
+
+
+
+
 namespace fwData
 {
 
@@ -37,6 +42,7 @@ class FWDATA_CLASS_API Image : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
+    fwCampMakeFriendDataMacro((fwData)(Image));
 
     /**
      * @brief Image size type
@@ -196,7 +202,6 @@ protected :
 
 
 } // namespace fwData
-
 
 #endif //_FWDATA_IMAGE_HPP_
 

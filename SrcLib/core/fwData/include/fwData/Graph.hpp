@@ -16,6 +16,9 @@
 #include "fwData/Edge.hpp"
 #include "fwData/Node.hpp"
 
+
+fwCampAutoDeclareDataMacro((fwData)(Graph), FWDATA_API);
+
 namespace fwData {
 /**
  * @class   Graph
@@ -35,6 +38,7 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwData::factory::New< Graph >) ;
 
     fwDataObjectMacro();
+    fwCampMakeFriendDataMacro((fwData)(Graph));
 
     FWDATA_API static const bool UP_STREAM;
     FWDATA_API static const bool DOWN_STREAM;

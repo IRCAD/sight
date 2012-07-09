@@ -14,6 +14,9 @@
 #include "fwData/location/ILocation.hpp"
 #include "fwData/factory/new.hpp"
 
+
+fwCampAutoDeclareDataMacro((fwData)(location)(Folder), FWDATA_API);
+
 namespace fwData
 {
 namespace location
@@ -35,6 +38,7 @@ public:
     );
 
     fwDataObjectMacro();
+    fwCampMakeFriendDataMacro((fwData)(location)(Folder));
 
     /// Constructor
     FWDATA_API Folder( ::fwData::Object::Key key );

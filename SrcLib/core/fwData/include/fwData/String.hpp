@@ -12,6 +12,8 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/GenericField.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(String), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -27,7 +29,7 @@ class FWDATA_CLASS_API String : public GenericField< std::string >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ), GenericFieldFactory< String >) ;
-
+    fwCampMakeFriendDataMacro((fwData)(String));
     fwDataObjectMacro();
 
     /**
@@ -49,7 +51,8 @@ public:
 
 };
 
-}
 
+
+}
 
 #endif /*_FWDATA_STRING_HPP_*/

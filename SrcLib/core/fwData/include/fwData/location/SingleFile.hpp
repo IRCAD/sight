@@ -14,6 +14,9 @@
 #include "fwData/location/ILocation.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(location)(SingleFile), FWDATA_API);
+
+
 namespace fwData
 {
 namespace location
@@ -40,6 +43,9 @@ public:
 
     /// Destructor
     FWDATA_API virtual ~SingleFile();
+
+
+    fwCampMakeFriendDataMacro((fwData)(location)(SingleFile));
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( SingleFile::csptr _source );

@@ -11,6 +11,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Port), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -36,6 +38,8 @@ public:
     fwGettersSettersDocMacro(Identifier, identifier, std::string,the port identifier (example : "ID_SIZEX", "THRESHOLD_LOW") );
 
     fwGettersSettersDocMacro(Type, type, std::string, the port type (example : "Image", "Mesh", a %data className));
+
+    fwCampMakeFriendDataMacro((fwData)(Port));
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Port::csptr _source );

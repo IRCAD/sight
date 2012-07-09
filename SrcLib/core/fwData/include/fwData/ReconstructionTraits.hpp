@@ -11,6 +11,7 @@
 #include "fwData/StructureTraits.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(ReconstructionTraits), FWDATA_API);
 namespace fwData
 {
 /**
@@ -31,6 +32,7 @@ class FWDATA_CLASS_API ReconstructionTraits : public ::fwData::Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ReconstructionTraits)(::fwData::Object), (()), ::fwData::factory::New< ReconstructionTraits >) ;
+    fwCampMakeFriendDataMacro((fwData)(ReconstructionTraits));
 
     /**
      * @brief Constructor
@@ -69,13 +71,13 @@ private:
     std::string m_identifier;
 
     /// reconstruction mask operator node
-    ::fwData::Node::wptr m_maskOpNode;
+    ::fwData::Node::sptr m_maskOpNode;
 
     /// reconstruction mesh operator node
-    ::fwData::Node::wptr m_meshOpNode;
+    ::fwData::Node::sptr m_meshOpNode;
 
     /// associated structure traits
-    ::fwData::StructureTraits::wptr m_structureTraits;
+    ::fwData::StructureTraits::sptr m_structureTraits;
 
 };
 

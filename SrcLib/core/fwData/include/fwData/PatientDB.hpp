@@ -17,6 +17,10 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Patient.hpp"
 
+#include "fwData/Factory.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(PatientDB), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -32,6 +36,7 @@ class FWDATA_CLASS_API PatientDB : public Object
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwData::factory::New< PatientDB >) ;
+    fwCampMakeFriendDataMacro((fwData)(PatientDB));
 
     fwDataObjectMacro();
 

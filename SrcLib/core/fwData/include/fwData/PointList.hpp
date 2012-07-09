@@ -14,6 +14,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
 
+#include "fwData/Factory.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(PointList), FWDATA_API);
 
 namespace fwData
 {
@@ -30,6 +33,8 @@ class FWDATA_CLASS_API PointList : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (PointList)(::fwData::Object),
         (()), ::fwData::factory::New< PointList >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(PointList));
 
     typedef std::vector< ::fwData::Point::sptr > PointListContainer;
 

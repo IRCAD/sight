@@ -17,6 +17,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(TriangularMesh), FWDATA_API);
 namespace fwData
 {
 /**
@@ -33,6 +34,8 @@ class FWDATA_CLASS_API TriangularMesh : public Object
 {
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwData::factory::New< TriangularMesh >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(TriangularMesh));
 
     /// 3D point container
     typedef std::vector< std::vector< float > >         PointContainer ;

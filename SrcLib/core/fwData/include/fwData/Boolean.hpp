@@ -12,6 +12,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Boolean), FWDATA_API);
 namespace fwData
 {
 
@@ -28,7 +29,7 @@ class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object),( ((const bool)(false)) ), GenericFieldFactory< Boolean >) ;
-
+    fwCampMakeFriendDataMacro((fwData)(Boolean));
     fwDataObjectMacro();
 
     /**

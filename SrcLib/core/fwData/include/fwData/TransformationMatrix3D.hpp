@@ -14,6 +14,10 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+#include "fwData/Factory.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(TransformationMatrix3D), FWDATA_API);
+
 namespace fwData
 {
 
@@ -29,6 +33,8 @@ class FWDATA_CLASS_API TransformationMatrix3D : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
             (()), ::fwData::factory::New< TransformationMatrix3D >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(TransformationMatrix3D));
 
     typedef double TM3DType;
     typedef std::vector<TM3DType> TMCoefArray;

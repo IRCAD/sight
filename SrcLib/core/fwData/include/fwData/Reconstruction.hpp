@@ -20,6 +20,8 @@
 #include "fwData/Material.hpp"
 #include "fwData/Image.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Reconstruction), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -47,6 +49,8 @@ public:
 
     /// Destructor
     FWDATA_API virtual ~Reconstruction();
+
+    fwCampMakeFriendDataMacro((fwData)(Reconstruction));
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Reconstruction::csptr _source );

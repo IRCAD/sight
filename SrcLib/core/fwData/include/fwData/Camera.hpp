@@ -16,6 +16,9 @@
 #include "fwData/TransformationMatrix3D.hpp"
 #include "fwData/factory/new.hpp"
 
+
+fwCampAutoDeclareDataMacro((fwData)(Camera), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -27,6 +30,7 @@ namespace fwData
 class FWDATA_CLASS_API Camera : public Object
 {
 public:
+    fwCampMakeFriendDataMacro((fwData)(Camera));
     fwCoreClassDefinitionsWithFactoryMacro(
             (Camera)(::fwData::Object),
             (()),

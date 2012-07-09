@@ -13,6 +13,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Color), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -36,6 +38,7 @@ public :
        );
 
     fwDataObjectMacro();
+	fwCampMakeFriendDataMacro((fwData)(Color));
 
     /**
      * @brief Constructor
@@ -86,7 +89,6 @@ public :
     FWDATA_API const ColorType  &alpha() const;
     //@}
 
-
 protected :
 
 
@@ -96,8 +98,10 @@ protected :
     ColorArray  m_vRGBA;
 
 
+
 }; // end class Color
 
 } // end namespace fwData
+
 
 #endif // _FWDATA_COLOR_HPP_

@@ -11,6 +11,9 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+
+fwCampAutoDeclareDataMacro((fwData)(StructureTraits), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -32,6 +35,7 @@ class FWDATA_CLASS_API StructureTraits : public ::fwData::Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwData::factory::New< StructureTraits >) ;
+    fwCampMakeFriendDataMacro((fwData)(StructureTraits));
 
     /// Defines structure categories
     typedef enum

@@ -13,6 +13,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Point), FWDATA_API);
+
 
 namespace fwData
 {
@@ -34,6 +36,8 @@ public :
        ((PointFactory ,((float)) ((float)(0.0)) ((float) (0.0)) ))
        ((PointFactory ,((Point::sptr)) ))
        );
+
+    fwCampMakeFriendDataMacro((fwData)(Point));
 
     typedef double PointCoordType;
     typedef fwVec3d PointCoordArrayType;

@@ -15,6 +15,9 @@
 
 fwCorePredeclare( (fwData)(Field) );
 
+
+fwCampAutoDeclareDataMacro((fwData)(ProcessObject), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -27,6 +30,9 @@ class FWDATA_CLASS_API ProcessObject : public Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwData::factory::New< ProcessObject >) ;
+
+
+    fwCampMakeFriendDataMacro((fwData)(ProcessObject));
 
     typedef std::string ParamNameType;
     typedef std::vector<std::string> ParamNameVectorType;

@@ -16,6 +16,8 @@
 #include "fwData/Camera.hpp"
 #include "fwData/TransformationMatrix3D.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Video), FWDATA_API);
+
 namespace fwData
 {
 
@@ -31,6 +33,8 @@ class FWDATA_CLASS_API Video : public Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwData::factory::New< Video >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(Video));
 
     typedef ::boost::uint8_t VideoType;
 
@@ -96,5 +100,6 @@ protected :
 };
 
 } // namespace fwData
+
 
 #endif // _FWDATA_VIDEO_HPP_

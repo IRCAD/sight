@@ -17,6 +17,8 @@
 #include "fwData/TriangularMesh.hpp"
 #include "fwData/Material.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Model), FWDATA_API);
+
 namespace fwData
 {
 
@@ -36,6 +38,8 @@ class FWDATA_CLASS_API Model : public Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Model)(::fwData::Object), (()), ::fwData::factory::New< Model >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(Model));
 
     /// mesh and material container
     typedef std::map< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr  > Container ;

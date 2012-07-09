@@ -12,6 +12,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Integer), FWDATA_API);
+
 namespace fwData
 {
 
@@ -28,7 +30,7 @@ class FWDATA_CLASS_API Integer : public GenericField< int >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object),( ((const int)(0)) ), GenericFieldFactory< Integer >) ;
-
+    fwCampMakeFriendDataMacro((fwData)(Integer));
     fwDataObjectMacro();
 
     /**
@@ -50,5 +52,7 @@ public:
 };
 
 } // namespace fwData
+
+
 
 #endif // _FWDATA_INTEGER_HPP_

@@ -16,6 +16,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/DictionaryOrgan.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Dictionary), FWDATA_API);
+
+
 namespace fwData
 {
 /**
@@ -42,6 +45,9 @@ public :
 
     /// Destructor
     FWDATA_API virtual ~Dictionary();
+
+
+    fwCampMakeFriendDataMacro((fwData)(Dictionary));
 
     /**
      * @brief Check if the organ is in dictionary

@@ -15,6 +15,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Tag), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -42,6 +44,8 @@ public :
     /// Destructor
     FWDATA_API virtual ~Tag();
 
+    fwCampMakeFriendDataMacro((fwData)(Tag));
+
     fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, the list of points )
 
     fwGettersSettersDocMacro(Type, sType, std::string, the type of tag)
@@ -68,5 +72,6 @@ protected :
 }; // end class Tag
 
 } // end namespace fwData
+
 
 #endif // _FWDATA_TAG_HPP_

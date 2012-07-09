@@ -15,6 +15,7 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Line), FWDATA_API);
 
 namespace fwData
 {
@@ -42,6 +43,8 @@ public :
 
     /// Destructor
     FWDATA_API virtual ~Line();
+
+    fwCampMakeFriendDataMacro((fwData)(Line));
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Line::csptr _source );

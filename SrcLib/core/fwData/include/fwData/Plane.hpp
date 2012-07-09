@@ -15,6 +15,7 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Plane), FWDATA_API);
 namespace fwData
 {
 /**
@@ -30,6 +31,8 @@ class FWDATA_CLASS_API Plane : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object),
         (()), ::fwData::factory::New< Plane >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(Plane));
 
     typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
 

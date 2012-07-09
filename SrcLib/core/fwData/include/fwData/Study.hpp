@@ -14,6 +14,8 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Acquisition.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Study), FWDATA_API);
+
 namespace fwData
 {
 
@@ -34,6 +36,8 @@ class FWDATA_CLASS_API Study : public Object
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwData::factory::New< Study >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(Study))
 
     fwDataObjectMacro();
 
@@ -112,5 +116,6 @@ protected :
 };
 
 } // namespace fwData
+
 
 #endif // _FWDATA_STUDY_HPP_

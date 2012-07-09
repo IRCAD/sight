@@ -14,6 +14,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+fwCampAutoDeclareDataMacro((fwData)(Histogram), FWDATA_API);
 
 namespace fwData
 {
@@ -32,6 +33,8 @@ class FWDATA_CLASS_API Histogram : public Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Histogram)(::fwData::Object), (()), ::fwData::factory::New< Histogram > );
+
+    fwCampMakeFriendDataMacro((fwData)(Histogram));
 
     typedef std::vector< long > fwHistogramValues;
 

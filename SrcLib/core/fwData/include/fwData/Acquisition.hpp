@@ -13,12 +13,15 @@
 #include <boost/cstdint.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include <fwCamp/Mapper/ValueMapper.hpp>
+
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Image.hpp"
 #include "fwData/Reconstruction.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Acquisition), FWDATA_API);
 
 namespace fwData
 {
@@ -50,6 +53,8 @@ public:
     /// Destructor
     FWDATA_API virtual ~Acquisition();
 
+
+    fwCampMakeFriendDataMacro((fwData)(Acquisition))
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Acquisition::csptr _source );

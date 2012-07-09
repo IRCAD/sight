@@ -14,6 +14,8 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(List), FWDATA_API);
+
 namespace fwData
 {
 
@@ -35,6 +37,9 @@ class FWDATA_CLASS_API List : public Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >) ;
+
+
+    fwCampMakeFriendDataMacro((fwData)(List));
 
     typedef std::list< Object::sptr > ContainerType;
 

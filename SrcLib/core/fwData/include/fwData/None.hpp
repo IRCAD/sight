@@ -13,6 +13,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(None), FWDATA_API);
+
 namespace fwData
 {
 /**

@@ -16,6 +16,8 @@
 #include "fwData/Port.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Node), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -34,6 +36,7 @@ class FWDATA_CLASS_API Node : public ::fwData::Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::factory::New< Node >) ;
+    fwCampMakeFriendDataMacro((fwData)(Node));
 
     /// Port container
     typedef std::vector< ::fwData::Port::sptr > PortContainer;

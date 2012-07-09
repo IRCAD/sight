@@ -13,6 +13,8 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Resection.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(ResectionDB), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -28,7 +30,7 @@ class FWDATA_CLASS_API ResectionDB : public Object
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwData::factory::New< ResectionDB >) ;
-
+    fwCampMakeFriendDataMacro((fwData)(ResectionDB));
     fwDataObjectMacro();
 
     /**
@@ -71,6 +73,9 @@ protected:
 };
 
 }//end namespace fwData
+
+
+
 
 #endif // _FWDATA_RESECTIONDB_HPP_
 

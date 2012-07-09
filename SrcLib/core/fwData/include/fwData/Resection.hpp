@@ -14,6 +14,7 @@
 #include "fwData/Reconstruction.hpp"
 #include "fwData/PlaneList.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Resection), FWDATA_API);
 namespace fwData
 {
 /**
@@ -28,6 +29,8 @@ class FWDATA_CLASS_API Resection : public ::fwData::Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Resection)(::fwData::Object),
         (()), ::fwData::factory::New< Resection >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(Resection));
 
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionOutputs;

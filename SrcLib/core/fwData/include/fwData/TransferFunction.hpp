@@ -16,6 +16,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -36,6 +38,8 @@ public :
 
     /// Macro for deep and shallow copies
     fwDataObjectMacro();
+
+    fwCampMakeFriendDataMacro((fwData)(TransferFunction));
 
 
     /// Defines color structure for TF
@@ -213,5 +217,6 @@ private :
 }; // end class TransferFunction
 
 } // end namespace fwData
+
 
 #endif // _FWDATA_TRANSFERFUNCTION_HPP_
