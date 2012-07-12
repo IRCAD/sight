@@ -23,11 +23,11 @@ typedef ::boost::mutex::scoped_lock ScopedLock;
 typedef ::boost::recursive_mutex RecursiveMutex;
 typedef ::boost::recursive_mutex::scoped_lock RecursiveScopedLock;
 
-typedef ::boost::shared_mutex SharedMutex;
-typedef ::boost::shared_lock< SharedMutex > ReadLock;
-typedef ::boost::unique_lock< SharedMutex > WriteLock;
-typedef ::boost::upgrade_lock< SharedMutex > ReadToWriteLock;
-typedef ::boost::upgrade_to_unique_lock< SharedMutex > UpgradeToWriteLock;
+typedef ::boost::shared_mutex ReadWriteMutex;
+typedef ::boost::shared_lock< ReadWriteMutex > ReadLock;
+typedef ::boost::unique_lock< ReadWriteMutex > WriteLock;
+typedef ::boost::upgrade_lock< ReadWriteMutex > ReadToWriteLock;
+typedef ::boost::upgrade_to_unique_lock< ReadWriteMutex > UpgradeToWriteLock;
 
 } //namespace mt
 } //namespace fwCore
