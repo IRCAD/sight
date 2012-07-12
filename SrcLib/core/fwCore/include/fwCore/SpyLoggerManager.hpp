@@ -21,7 +21,7 @@ namespace spyLog
 
 /**
  * @brief   Implements the SpyLoggerManager.
- * 
+ *
  * @author IRCAD (Research and Development Team).
  */
 class SpyLoggerManager : public ::fwCore::BaseObject
@@ -34,13 +34,11 @@ public :
 
     FWCORE_API static void kill();
 
-    // FWCORE_API static void initMainSpyLogger(const SpyLogger & logger);
-
     FWCORE_API SpyLogger & getMainSpyLogger();
 
     FWCORE_API SpyLogger & getSpyLogger(const std::string & loggerName);
 
-    ~SpyLoggerManager();
+    virtual ~SpyLoggerManager();
 
 private :
 

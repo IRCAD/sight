@@ -7,325 +7,159 @@
 #include "fwCore/macros.hpp"
 #include "fwCore/SpyLogger.hpp"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-#ifdef USE_LOG4CXX
-
-#include <log4cxx/patternlayout.h>
-#include <log4cxx/fileappender.h>
-#include <log4cxx/consoleappender.h>
-#include <log4cxx/spi/location/locationinfo.h>
-#include <log4cxx/helpers/transcoder.h>
-
-#include <log4cxx/net/syslogappender.h>
-
-#endif
+#include <boost/log/trivial.hpp>
+#include <boost/log/filters.hpp>
+#include <boost/log/utility/init/to_console.hpp>
+#include <boost/log/utility/init/to_file.hpp>
+#include <boost/log/utility/init/common_attributes.hpp>
+#include <boost/log/attributes/named_scope.hpp>
+#include <boost/log/utility/init/formatter_parser.hpp>
 
 namespace spyLog
 {
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLogger::SpyLogger()
 {
-#ifdef _DEBUG
-    std::cout << "SpyLogger::SpyLogger()" << std::endl;
-#endif
-
-#ifdef USE_LOG4CXX
-
-    m_logger = log4cxx::Logger::getLogger("SL");
-    m_logger->setLevel(log4cxx::Level::getTrace());
-
-#endif
-
+    m_logCore = ::boost::log::core::get();
+    m_logCore->set_filter
+    (
+            ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity") >= ::boost::log::trivial::trace
+    );
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLogger::SpyLogger(const std::string & name)
 {
-#ifdef _DEBUG
-    std::cout << "SpyLogger::SpyLogger(name=" << name << ")" << std::endl;
-#endif
     m_loggerName = name;
-
-#ifdef USE_LOG4CXX
-
-    m_logger = log4cxx::Logger::getLogger(name);
-    m_logger->setLevel(log4cxx::Level::getTrace());
-
-#endif
-
+    m_logCore = ::boost::log::core::get();
+    m_logCore->set_filter
+    (
+            ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity") >= ::boost::log::trivial::trace
+    );
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLogger::SpyLogger (const SpyLogger & logger)
 {
-
     m_loggerName = logger.m_loggerName;
-
-#ifdef USE_LOG4CXX
-
-    m_logger = logger.m_logger;
-
-#endif
-
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLogger::~SpyLogger()
 {
-#ifdef _DEBUG
-    std::cout << "SpyLogger::~SpyLogger()" << std::endl;
-#endif
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::createBasicConfiguration()
 {
-
 #ifdef _WIN32
-
-    addFileAppender(m_loggerName + ".log");
-
+    this->addFileAppender(m_loggerName + ".log");
 #elif __MACOSX__
-
-    addConsoleAppender();
-
+    this->addConsoleAppender();
 #else // linux
-
-    addConsoleAppender();
-
+    this->addConsoleAppender();
 #endif
-
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::addConsoleAppender()
 {
-
-#ifdef USE_LOG4CXX
-
-    // Default conversion pattern
-    log4cxx::LogString defaultConversionPattern (LOG4CXX_STR("[%c] %-5p (%F:%L) - %m%n"));
-
-    // Create Appender
-    log4cxx::PatternLayoutPtr layout = new log4cxx::PatternLayout();
-    layout->setConversionPattern (defaultConversionPattern);
-    log4cxx::ConsoleAppenderPtr appender = new log4cxx::ConsoleAppender(layout);
-
-    // Add to the main SpyLogger
-    m_logger->addAppender(appender);
-
-#endif
-
+    ::boost::log::add_common_attributes();
+    ::boost::log::init_log_to_console
+     (
+        std::clog,
+        ::boost::log::keywords::format = "[%ProcessID%][%ThreadID%][%TimeStamp%][%Channel%][%Severity%]: %_%",
+        // auto-flush feature of the backend
+        ::boost::log::keywords::auto_flush = true
+     );
 }
 
-//==============================================================================
-
+//-----------------------------------------------------------------------------
 
 void SpyLogger::addSyslogAppender(const std::string & hostName, const std::string & facilityName)
 {
-
-#ifdef USE_LOG4CXX
-
-    // Default conversion pattern
-    log4cxx::LogString defaultConversionPattern (LOG4CXX_STR("[%c] %-5p (%F:%L) - %m%n"));
-
-    // Create layout
-    log4cxx::PatternLayoutPtr layout = new log4cxx::PatternLayout();
-    layout->setConversionPattern (defaultConversionPattern);
-
-    // Create appender
-    log4cxx::LogString host = log4cxx::helpers::Transcoder::decode(hostName.c_str());
-    log4cxx::LogString facility = log4cxx::helpers::Transcoder::decode(facilityName.c_str());
-    log4cxx::net::SyslogAppenderPtr appender = new log4cxx::net::SyslogAppender(layout, host, log4cxx::net::SyslogAppender::getFacility(facility));
-
-    // Add to the main SpyLogger
-    m_logger->addAppender(appender);
-
-#else
-    FwCoreNotUsedMacro(hostName);
-    FwCoreNotUsedMacro(facilityName);
-#endif
-
 }
 
-
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::addFileAppender(const std::string & logFile)
 {
-
-#ifdef USE_LOG4CXX
-
-    // Default conversion pattern
-    log4cxx::LogString defaultConversionPattern (LOG4CXX_STR("[%c] %-5p (%F:%L) - %m%n"));
-
-    // Create Appender
-    log4cxx::PatternLayoutPtr layout = new log4cxx::PatternLayout();
-    layout->setConversionPattern (defaultConversionPattern);
-
-    //const wchar_t * file = logFile.c_str();
-    log4cxx::LogString logStringFile = log4cxx::helpers::Transcoder::decode(logFile.c_str());
-    log4cxx::FileAppenderPtr appender = new log4cxx::FileAppender(layout,logStringFile,false);
-
-    // Add to the main SpyLogger
-    m_logger->addAppender(appender);
-
-#else
-    FwCoreNotUsedMacro(logFile);
-#endif
-
+    ::boost::log::add_common_attributes();
+    ::boost::log::init_log_to_file
+    (
+         // file name pattern
+        ::boost::log::keywords::file_name = logFile,
+         // rotate files every 10 MiB...
+        ::boost::log::keywords::rotation_size = 10 * 1024 * 1024,
+        // ...or at midnight
+        ::boost::log::keywords::time_based_rotation = ::boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
+        // log record format
+        ::boost::log::keywords::format = "[%LineID%][%ProcessID%][%ThreadID%][%TimeStamp%][%Scope%][%Severity%]: %_%",
+         // auto-flush feature of the backend
+         ::boost::log::keywords::auto_flush = true
+    );
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::setLevel(LevelType level)
 {
-
-#ifdef USE_LOG4CXX
-
-    switch (level)
-    {
-        case SpyLogger::SL_TRACE : m_logger->setLevel(log4cxx::Level::getTrace()); break;
-        case SpyLogger::SL_DEBUG : m_logger->setLevel(log4cxx::Level::getDebug()); break;
-        case SpyLogger::SL_INFO  : m_logger->setLevel(log4cxx::Level::getInfo() ); break;
-        case SpyLogger::SL_WARN  : m_logger->setLevel(log4cxx::Level::getWarn() ); break;
-        case SpyLogger::SL_ERROR : m_logger->setLevel(log4cxx::Level::getError()); break;
-        case SpyLogger::SL_FATAL : m_logger->setLevel(log4cxx::Level::getFatal()); break;
-        default : break;
-    }
-
-#else
-    FwCoreNotUsedMacro(level);
-#endif
-
+    m_logCore->set_filter
+    (
+        ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity") >= level
+    );
 }
 
-
-
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::trace(const std::string & mes, const char * file, int line)
 {
-
-#ifdef USE_LOG4CXX
-
-    if (m_logger->isTraceEnabled()) {
-        ::std::stringstream oss;
-        oss << mes;
-        m_logger->forcedLog(::log4cxx::Level::getTrace(), oss.str(), log4cxx::spi::LocationInfo(file, file, line));
-    }
-#else
-    std::cout << "[TRACE] (" << file << ":" << line << ") : " << mes << std::endl;
-#endif
-
+    BOOST_LOG_TRIVIAL(trace) << "TRACE "<< file << " l" << line << ": "<< mes ;
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::debug(const std::string & mes, const char * file, int line)
 {
-
-#ifdef USE_LOG4CXX
-
-    if (m_logger->isDebugEnabled()) {
-        ::std::stringstream oss;
-        oss << mes;
-        m_logger->forcedLog(::log4cxx::Level::getDebug(), oss.str(), log4cxx::spi::LocationInfo(file, file, line));
-    }
-
-#else
-    std::cout << "[DEBUG] (" << file << ":" << line << ") : " << mes << std::endl;
-#endif
-
+    BOOST_LOG_TRIVIAL(debug) << "DEBUG "<< file << " l" << line << ": "<< mes ;
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::info(const std::string & mes, const char * file, int line)
 {
-
-#ifdef USE_LOG4CXX
-
-    if (m_logger->isInfoEnabled()) {
-        ::std::stringstream oss;
-        oss << mes;
-        m_logger->forcedLog(::log4cxx::Level::getInfo(), oss.str(), log4cxx::spi::LocationInfo(file, file, line));
-    }
-
-#else
-    std::cout << "[INFO]  (" << file << ":" << line << ") : " << mes << std::endl;
-#endif
-
+    BOOST_LOG_TRIVIAL(info) << "INFO "<< file << " l" << line << ": "<< mes ;
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::warn(const std::string & mes, const char * file, int line)
 {
-
-#ifdef USE_LOG4CXX
-
-    if (m_logger->isWarnEnabled()) {
-        ::std::stringstream oss;
-        oss << mes;
-        m_logger->forcedLog(::log4cxx::Level::getWarn(), oss.str(), log4cxx::spi::LocationInfo(file, file, line));
-    }
-
-#else
-    std::cout << "[WARN]  (" << file << ":" << line << ") : " << mes << std::endl;
-#endif
-
+    BOOST_LOG_TRIVIAL(warning) << "WARNING "<< file << " l" << line << ": "<< mes ;
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::error(const std::string & mes, const char * file, int line)
 {
-
-#ifdef USE_LOG4CXX
-
-    if (m_logger->isErrorEnabled()) {
-        ::std::stringstream oss;
-        oss << mes;
-        m_logger->forcedLog(::log4cxx::Level::getError(), oss.str(),log4cxx::spi::LocationInfo(file, file, line));
-    }
-
-#else
-    std::cout << "[ERROR] (" << file << ":" << line << ") : " << mes << std::endl;
-#endif
-
+    BOOST_LOG_TRIVIAL(error) << "ERROR "<< file << " l" << line << ": "<< mes ;
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLogger::fatal(const std::string & mes, const char * file, int line)
 {
-
-#ifdef USE_LOG4CXX
-
-    if (m_logger->isFatalEnabled()) {
-        ::std::stringstream oss;
-        oss << mes;
-        m_logger->forcedLog(::log4cxx::Level::getFatal(), oss.str(), log4cxx::spi::LocationInfo(file, file, line));
-    }
-
-#else
-    std::cout << "[FATAL] (" << file << ":" << line << ") : " << mes << std::endl;
-#endif
-
+    BOOST_LOG_TRIVIAL(fatal) << "FATAL "<< file << " l" << line << ": "<< mes ;
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 } // namespace spyLog
 

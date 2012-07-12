@@ -11,14 +11,14 @@
 namespace spyLog
 {
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLogger & SpyLoggerManager::getMainSpyLogger()
 {
     return m_mainSpyLogger;
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLogger & SpyLoggerManager::getSpyLogger(const std::string & loggerName)
 {
@@ -32,11 +32,11 @@ SpyLogger & SpyLoggerManager::getSpyLogger(const std::string & loggerName)
     return m_loggerNameToLogger[loggerName];
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLoggerManager::sptr SpyLoggerManager::m_manager = SpyLoggerManager::sptr();
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLoggerManager::sptr SpyLoggerManager::getSpyLoggerManager()
 {
@@ -48,7 +48,7 @@ SpyLoggerManager::sptr SpyLoggerManager::getSpyLoggerManager()
     return m_manager;
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 void SpyLoggerManager::kill()
 {
@@ -59,26 +59,19 @@ void SpyLoggerManager::kill()
     // }
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
-SpyLoggerManager::SpyLoggerManager() :
-m_mainSpyLogger("SLM")
+SpyLoggerManager::SpyLoggerManager() : m_mainSpyLogger("SLM")
 {
-#ifdef _DEBUG
-    std::cout << "SpyLoggerManager::SpyLoggerManager()" << std::endl;
-#endif //_DEBUG
     m_mainSpyLogger.createBasicConfiguration();
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 SpyLoggerManager::~SpyLoggerManager()
 {
-#ifdef _DEBUG
-    std::cout << "SpyLoggerManager::~SpyLoggerManager()" << std::endl;
-#endif //_DEBUG
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
 
 } // namespace spyLog

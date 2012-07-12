@@ -7,11 +7,10 @@
 #ifndef _FWCORE_SPYLOGGER_HPP_
 #define _FWCORE_SPYLOGGER_HPP_
 
-#ifdef USE_LOG4CXX
-#include <log4cxx/logger.h>
-#endif
-
 #include <string>
+
+#include <boost/shared_ptr.hpp>
+#include <boost/log/core.hpp>
 
 #include "fwCore/BaseObject.hpp"
 #include "fwCore/config.hpp"
@@ -21,7 +20,7 @@ namespace spyLog
 
 /**
  * @brief   Implements the SpyLogger.
- * 
+ *
  * @author IRCAD (Research and Development Team).
  */
 class SpyLogger : public ::fwCore::BaseObject
@@ -30,8 +29,9 @@ class SpyLogger : public ::fwCore::BaseObject
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (SpyLogger)(BaseObject), (()), new SpyLogger) ;
 
-    FWCORE_API enum LevelType
-    {   SL_TRACE,
+    enum LevelType
+    {
+        SL_TRACE,
         SL_DEBUG,
         SL_INFO,
         SL_WARN,
@@ -45,7 +45,7 @@ public :
 
     FWCORE_API SpyLogger (const SpyLogger & logger);
 
-    FWCORE_API ~SpyLogger ();
+    FWCORE_API virtual ~SpyLogger();
 
     FWCORE_API void createBasicConfiguration();
 
@@ -58,7 +58,7 @@ public :
     FWCORE_API void setLevel(LevelType level);
 
     FWCORE_API void trace(const std::string & mes, const char * file = 0, int line = -1);
-    
+
     FWCORE_API void debug(const std::string & mes, const char * file = 0, int line = -1);
 
     FWCORE_API void info(const std::string & mes, const char * file = 0, int line = -1);
@@ -71,14 +71,10 @@ public :
 
 protected :
 
-#ifdef USE_LOG4CXX
-    log4cxx::LoggerPtr m_logger;
-#endif
-    
+    ::boost::shared_ptr< ::boost::log::core > m_logCore;
     std::string m_loggerName;
 
-}
-; // SpyLogger
+}; // SpyLogger
 
 } // namespace spyLog
 

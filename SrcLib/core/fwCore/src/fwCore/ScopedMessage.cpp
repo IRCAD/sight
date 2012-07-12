@@ -14,11 +14,12 @@
 namespace spyLog
 {
 
-// Msg Format : 
+// Msg Format :
 // [ENTERING SCOPE] "Timed{'file':m_file, 'line':m_line, 'entermessage':enterMessage}"
 // [LEAVING SCOPE] "Timed{'file':m_file, 'line':m_line, 'leavemessage':m_leave, 'elapsed':elapsedTime}"
 
-//==============================================================================
+//-----------------------------------------------------------------------------
+
 ScopedMessage::ScopedMessage( const char * _file, int _line, std::string enterMessage, std::string leaveMessage)
     : m_file(_file), m_line(_line)
 {
@@ -34,7 +35,8 @@ ScopedMessage::ScopedMessage( const char * _file, int _line, std::string enterMe
     m_timer.start();
 }
 
-//==============================================================================
+//-----------------------------------------------------------------------------
+
 ScopedMessage::~ScopedMessage()
 {
     std::stringstream oslStr;

@@ -35,7 +35,7 @@ public:
 
     void use(){}; // avoid compiler warnings like "variable X never used"
 
-    FWCORE_API ~ScopedMessage();
+    FWCORE_API virtual ~ScopedMessage();
 
 protected:
 
