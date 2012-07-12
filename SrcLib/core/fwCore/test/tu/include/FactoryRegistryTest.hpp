@@ -35,4 +35,4 @@ public:
 
 } //namespace ut
 } //namespace fwCore
-#endif __FWCORE_UT_FATORYREGISTRYTEST_HPP__
+#endif //__FWCORE_UT_FATORYREGISTRYTEST_HPP__

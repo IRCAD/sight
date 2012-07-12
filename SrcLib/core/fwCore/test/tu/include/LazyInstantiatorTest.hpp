@@ -33,4 +33,4 @@ public:
 
 } //namespace ut
 } //namespace fwCore
-#endif __FWCORE_UT_LAZYINSTANTIATORTEST_HPP__
+#endif //__FWCORE_UT_LAZYINSTANTIATORTEST_HPP__

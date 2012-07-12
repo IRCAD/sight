@@ -156,15 +156,19 @@ void FactoryRegistryTest::argTest()
     objectTestFactory.addFactory("ObjectTest", ::boost::factory<ObjectTest::sptr>());
     objectTestFactory.addFactory("DerivedObjectTest", ::boost::factory<DerivedObjectTest::sptr>());
 
-    ObjectTest::sptr objectTest1 = objectTestFactory.create("ObjectTest", std::string("ObjectTest1"));
-    ObjectTest::sptr objectTest2 = objectTestFactory.create("ObjectTest", std::string("ObjectTest2"));
+    std::string objTest1("ObjectTest1");
+    std::string objTest2("ObjectTest2");
+    ObjectTest::sptr objectTest1 = objectTestFactory.create("ObjectTest", objTest1);
+    ObjectTest::sptr objectTest2 = objectTestFactory.create("ObjectTest", objTest2);
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest1"), objectTest1->getName());
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest2"), objectTest2->getName());
 
     ObjectTest::sptr derivedObjectTest1;
     ObjectTest::sptr derivedObjectTest2;
-    derivedObjectTest1 = objectTestFactory.create("DerivedObjectTest", std::string("DerivedObjectTest1"));
-    derivedObjectTest2 = objectTestFactory.create("DerivedObjectTest", std::string("DerivedObjectTest2"));
+    std::string derObjTest1("DerivedObjectTest1");
+    std::string derObjTest2("DerivedObjectTest2");
+    derivedObjectTest1 = objectTestFactory.create("DerivedObjectTest", derObjTest1);
+    derivedObjectTest2 = objectTestFactory.create("DerivedObjectTest", derObjTest2);
     CPPUNIT_ASSERT_EQUAL(std::string("DerivedObjectTest1"), derivedObjectTest1->getName());
     CPPUNIT_ASSERT_EQUAL(std::string("DerivedObjectTest2"), derivedObjectTest2->getName());
 
