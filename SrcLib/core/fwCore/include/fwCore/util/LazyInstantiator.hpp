@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWCORE_UTIL_LAZYINSTANCIATOR_HPP__
-#define __FWCORE_UTIL_LAZYINSTANCIATOR_HPP__
+#ifndef __FWCORE_UTIL_LAZYINSTANTIATOR_HPP__
+#define __FWCORE_UTIL_LAZYINSTANTIATOR_HPP__
 
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/once.hpp>
@@ -18,15 +18,15 @@ namespace fwCore
 namespace util
 {
 
-struct LazyInstanciatorDefaultTag {} ;
+struct LazyInstantiatorDefaultTag {} ;
 
 /**
  * @brief A base class for lazy instantiation, constructed on first demand.
  * @tparam INSTANCE_TYPE Type of object to instantiate.
- * @tparam TAG Tag used to allow several LazyInstanciator for one INSTANCE_TYPE.
+ * @tparam TAG Tag used to allow several LazyInstantiator for one INSTANCE_TYPE.
  */
-template< typename INSTANCE_TYPE, typename TAG = LazyInstanciatorDefaultTag >
-class LazyInstanciator : ::boost::noncopyable
+template< typename INSTANCE_TYPE, typename TAG = LazyInstantiatorDefaultTag >
+class LazyInstantiator : ::boost::noncopyable
 {
 public:
 
@@ -65,4 +65,4 @@ protected:
 } //namespace util
 } //namespace fwCore
 
-#endif /* __FWCORE_UTIL_LAZYINSTANCIATOR_HPP__ */
+#endif /* __FWCORE_UTIL_LAZYINSTANTIATOR_HPP__ */
