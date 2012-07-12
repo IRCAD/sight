@@ -1,5 +1,5 @@
 TYPE    = 'shared'
-USE     = ['boost']
+USE     = ['boost', 'boostThread']
 #USE     = ['boost_1-38-0']
 import os
 if os.name == 'nt':
