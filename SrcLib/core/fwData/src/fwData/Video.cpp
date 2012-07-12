@@ -32,7 +32,7 @@ Video::~Video() throw()
 
 //------------------------------------------------------------------------------
 
-::boost::interprocess::interprocess_mutex &Video::getMutex()
+::fwCore::mt::Mutex &Video::getMutex()
 {
     return m_mutex;
 }

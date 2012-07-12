@@ -9,8 +9,7 @@
 
 #include <boost/cstdint.hpp>
 
-#include <boost/interprocess/sync/interprocess_mutex.hpp>
-#include <boost/interprocess/sync/scoped_lock.hpp>
+#include <fwCore/mt/types.hpp>
 
 #include "fwData/Object.hpp"
 #include "fwData/Factory.hpp"
@@ -62,7 +61,7 @@ public:
     FWDATA_API void Modified();
 
     /// @brief Get video mutex
-    FWDATA_API ::boost::interprocess::interprocess_mutex &getMutex();
+    FWDATA_API ::fwCore::mt::Mutex &getMutex();
 
     //! The buffer size along X axis
     ::boost::uint32_t  m_ui32XSize;
@@ -95,7 +94,7 @@ protected :
     ::boost::uint64_t m_lastModified;
 
     /// Video mutex
-    ::boost::interprocess::interprocess_mutex m_mutex;
+    ::fwCore::mt::Mutex m_mutex;
 
     /// Camera
     ::fwData::Camera::sptr m_camera;
