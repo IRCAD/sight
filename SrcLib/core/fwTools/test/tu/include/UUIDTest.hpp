@@ -17,7 +17,8 @@ namespace ut
 class UUIDTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( UUIDTest );
-    CPPUNIT_TEST( objectIDTest );
+    CPPUNIT_TEST( objectUUIDTest );
+    CPPUNIT_TEST( threadSafeTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -25,7 +26,12 @@ public:
     void setUp();
     void tearDown();
 
-    void objectIDTest();
+    void objectUUIDTest();
+
+    void threadSafeTest();
+
+private:
+    void runUUIDCreation();
 };
 
 } // namespace ut

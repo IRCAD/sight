@@ -7,6 +7,8 @@
 #include <fwTools/UUID.hpp>
 #include <fwTools/Object.hpp>
 
+#include <fwTest/helper/Thread.hpp>
+
 #include "UUIDTest.hpp"
 
 // Registers the fixture into the 'registry'
@@ -27,20 +29,68 @@ void UUIDTest::tearDown()
     // Clean up after the test run.
 }
 
-void UUIDTest::objectIDTest()
+void UUIDTest::objectUUIDTest()
 {
     const std::string UUID = "myUUID" ;
 
     ::fwTools::Object::sptr obj = ::fwTools::Object::New() ;
 
-    CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID, ::fwTools::UUID::Version::SIMPLE) == false);
+    CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID) == false);
 
-    ::fwTools::UUID::impose(obj, UUID, ::fwTools::UUID::Version::SIMPLE);
+    ::fwTools::UUID::set(obj, UUID);
 
-    CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID, ::fwTools::UUID::Version::SIMPLE) );
-    CPPUNIT_ASSERT( ::fwTools::UUID::supervise(obj) );
-    CPPUNIT_ASSERT_EQUAL( obj->getID(), UUID );
-    CPPUNIT_ASSERT_EQUAL( ::fwTools::UUID::get< ::fwTools::Object >(UUID), obj );
+    CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID) );
+    CPPUNIT_ASSERT_EQUAL(  UUID, ::fwTools::UUID::get(obj) );
+    CPPUNIT_ASSERT_EQUAL( obj, ::fwTools::UUID::get(UUID) );
+
+    ::fwTools::Object::sptr obj2 = ::fwTools::Object::New() ;
+    std::string uuid = ::fwTools::UUID::get(obj2);
+    CPPUNIT_ASSERT_EQUAL( obj2, ::fwTools::UUID::get(uuid) );
+}
+
+
+void UUIDTest::threadSafeTest()
+{
+    ::fwTest::helper::Thread thread(::boost::bind(&UUIDTest::runUUIDCreation, this));
+    ::fwTest::helper::Thread thread2(::boost::bind(&UUIDTest::runUUIDCreation, this));
+    ::fwTest::helper::Thread thread3(::boost::bind(&UUIDTest::runUUIDCreation, this));
+
+    CPPUNIT_ASSERT(thread.timedJoin(100));
+    CPPUNIT_ASSERT(thread2.timedJoin(100));
+    CPPUNIT_ASSERT(thread3.timedJoin(100));
+
+
+    if (thread.hasFailed())
+    {
+        throw thread.getException();
+    }
+    if (thread2.hasFailed())
+    {
+        throw thread2.getException();
+    }
+    if (thread3.hasFailed())
+    {
+        throw thread3.getException();
+    }
+}
+
+void UUIDTest::runUUIDCreation()
+{
+    std::string UUID = ::fwTools::UUID::generateUUID();
+
+    ::fwTools::Object::sptr obj = ::fwTools::Object::New() ;
+
+    CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID) == false);
+
+    CPPUNIT_ASSERT( ::fwTools::UUID::set(obj, UUID));
+
+    CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID) );
+    CPPUNIT_ASSERT_EQUAL( UUID, ::fwTools::UUID::get(obj) );
+    CPPUNIT_ASSERT_EQUAL( obj, ::fwTools::UUID::get(UUID) );
+
+    ::fwTools::Object::sptr obj2 = ::fwTools::Object::New() ;
+    std::string uuid = ::fwTools::UUID::get(obj2);
+    CPPUNIT_ASSERT_EQUAL( obj2, ::fwTools::UUID::get(uuid) );
 }
 
 } // namespace ut
