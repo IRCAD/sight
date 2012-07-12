@@ -26,12 +26,16 @@ namespace ut
 void LazyInstantiatorTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
+//-----------------------------------------------------------------------------
+
 void LazyInstantiatorTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//-----------------------------------------------------------------------------
 
 template < int SLEEP = 0 >
 class StaticCounter
@@ -41,19 +45,24 @@ public:
 
     StaticCounter()
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
+        ::fwCore::mt::ScopedLock lock(s_mutex);
         ++s_counter;
         ::boost::this_thread::sleep(::boost::posix_time::seconds(SLEEP));
     }
 
     static int s_counter;
-    ::fwCore::mt::Mutex m_mutex;
+    static ::fwCore::mt::Mutex s_mutex;
 };
 
 template < int SLEEP >
 int StaticCounter<SLEEP>::s_counter = 0;
 
+template < int SLEEP >
+::fwCore::mt::Mutex StaticCounter<SLEEP>::s_mutex;
+
 struct second_counter{};
+
+//-----------------------------------------------------------------------------
 
 void LazyInstantiatorTest::lazyTest()
 {
@@ -75,6 +84,7 @@ void LazyInstantiatorTest::lazyTest()
     StaticCounter<>::s_counter = 0;
 }
 
+//-----------------------------------------------------------------------------
 
 struct thread_counter_tag {} ;
 
@@ -89,6 +99,8 @@ struct CounterThread
         counter = ::fwCore::util::LazyInstantiator< CounterType , thread_counter_tag >::getInstance();
     }
 };
+
+//-----------------------------------------------------------------------------
 
 void LazyInstantiatorTest::threadSafeTest()
 {

@@ -37,15 +37,6 @@ public:
     typedef std::map< KeyType, FactoryType > RegistryType;
 
     /**
-     * @brief Add T factory to the registry.
-     */
-    template < typename T >
-    void addFactory(const KeyType& name)
-    {
-        this->addFactory( name, ::boost::factory<T>() );
-    }
-
-    /**
      * @brief Add a factory to the registry.
      */
     void addFactory(const KeyType& name, FactoryType factory)
@@ -100,12 +91,13 @@ public:
     ReturnType create(const KeyType& key)
     {
         FactoryType factory = this->getFactory(key);
-        ReturnType obj;
-        if(factory)
+
+        if(!factory)
         {
-            obj = factory();
+            ReturnType obj;
+            return obj;
         }
-        return obj;
+        return factory();
     }
 };
 

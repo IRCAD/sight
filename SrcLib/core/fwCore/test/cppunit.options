@@ -1,4 +1,4 @@
-CLASSTEST=['LazyInstantiatorTest',]
+CLASSTEST=['LazyInstantiatorTest','FactoryRegistryTest']
 USE = ['boost','boostThread','boostDateTime']
 LIB = ['fwCore_0-1']
 CONSOLE = 'yes'
