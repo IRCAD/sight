@@ -47,6 +47,12 @@ public:
         ++s_counter;
     }
 
+    ObjectTest(std::string name) : m_name(name)
+    {
+        ::fwCore::mt::ScopedLock lock(s_mutex);
+        ++s_counter;
+    }
+
     virtual ~ObjectTest()
     {}
 
@@ -70,6 +76,10 @@ public:
     DerivedObjectTest() : ObjectTest()
     {
         m_name = "DerivedObjectTest";
+    }
+
+    DerivedObjectTest(std::string name)  : ObjectTest(name)
+    {
     }
 };
 
@@ -125,7 +135,6 @@ void FactoryRegistryTest::valueTest()
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), objectTest2.getName());
 
 
-
     ObjectTest derivedObjectTest1 = objectTestFactory.create("DerivedObjectTest");
     CPPUNIT_ASSERT_EQUAL(3, ObjectTest::s_counter);
     ObjectTest derivedObjectTest2 = objectTestFactory.create("DerivedObjectTest");
@@ -136,6 +145,33 @@ void FactoryRegistryTest::valueTest()
 
     ObjectTest::s_counter = 0;
 }
+
+//-----------------------------------------------------------------------------
+
+void FactoryRegistryTest::argTest()
+{
+    ObjectTest::s_counter = 0;
+
+    ::fwCore::util::FactoryRegistry< ObjectTest::sptr(std::string) > objectTestFactory;
+    objectTestFactory.addFactory("ObjectTest", ::boost::factory<ObjectTest::sptr>());
+    objectTestFactory.addFactory("DerivedObjectTest", ::boost::factory<DerivedObjectTest::sptr>());
+
+    ObjectTest::sptr objectTest1 = objectTestFactory.create("ObjectTest", std::string("ObjectTest1"));
+    ObjectTest::sptr objectTest2 = objectTestFactory.create("ObjectTest", std::string("ObjectTest2"));
+    CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest1"), objectTest1->getName());
+    CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest2"), objectTest2->getName());
+
+    ObjectTest::sptr derivedObjectTest1;
+    ObjectTest::sptr derivedObjectTest2;
+    derivedObjectTest1 = objectTestFactory.create("DerivedObjectTest", std::string("DerivedObjectTest1"));
+    derivedObjectTest2 = objectTestFactory.create("DerivedObjectTest", std::string("DerivedObjectTest2"));
+    CPPUNIT_ASSERT_EQUAL(std::string("DerivedObjectTest1"), derivedObjectTest1->getName());
+    CPPUNIT_ASSERT_EQUAL(std::string("DerivedObjectTest2"), derivedObjectTest2->getName());
+
+    ObjectTest::s_counter = 0;
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace ut
 } //namespace fwCore
