@@ -11,6 +11,7 @@
 #include <map>
 
 #include <fwCore/base.hpp>
+#include <fwCore/mt/types.hpp>
 
 #include "fwTools/Object.hpp"
 #include "fwTools/config.hpp"
@@ -63,7 +64,7 @@ protected :
     /// Store association ::boost::weak_ptr <--> uuid as a string
     typedef std::map< UUIDType, ::fwTools::Object::wptr > UUIDContainer;
 
-    FWTOOLS_API static UUIDContainer m_uuidMap;
+    FWTOOLS_API static UUIDContainer s_uuidMap;
 
     /**
      * @brief   Default constructor : does nothing.
@@ -79,6 +80,10 @@ private:
 
     /// local UUID, empty by default if not generated.
     UUIDType m_uuid;
+
+    static ::fwCore::mt::ReadWriteMutex s_rwMutex;
+
+    static ::fwCore::mt::Mutex s_mutex;
 
 };
 
