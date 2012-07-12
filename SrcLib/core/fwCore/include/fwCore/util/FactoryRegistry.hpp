@@ -9,6 +9,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/functional/factory.hpp>
@@ -35,6 +36,7 @@ public:
 
     typedef ::boost::function< FactorySignatureType > FactoryType;
     typedef std::map< KeyType, FactoryType > RegistryType;
+    typedef std::vector<KeyType> KeyVectorType;
 
     /**
      * @brief Add a factory to the registry.
@@ -62,10 +64,23 @@ public:
         return factory;
     }
 
+    /**
+     * @brief returns the registered factory keys.
+     */
+    virtual KeyVectorType getFactoryKeys() const
+    {
+        ::fwCore::mt::ReadLock lock(m_mutex);
+        KeyVectorType vectKeys;
+        std::transform( m_registry.begin(), m_registry.end(),
+                std::back_inserter(vectKeys),
+                ::boost::bind(& RegistryType::value_type::first,_1) );
+        return vectKeys;
+    }
+
 protected:
 
     RegistryType m_registry;
-    ::fwCore::mt::ReadWriteMutex m_mutex;
+    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 
 /**

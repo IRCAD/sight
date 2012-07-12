@@ -7,6 +7,7 @@
 #include <iostream>
 #include <exception>
 
+#include <boost/assign/list_of.hpp>
 #include <boost/thread.hpp>
 
 #include <fwCore/util/LazyInstantiator.hpp>
@@ -89,9 +90,17 @@ void FactoryRegistryTest::pointerTest()
 {
     ObjectTest::s_counter = 0;
 
-    ::fwCore::util::FactoryRegistry< ObjectTest::sptr() > objectTestFactory;
+    typedef ::fwCore::util::FactoryRegistry< ObjectTest::sptr() > FactoryType;
+    FactoryType objectTestFactory;
     objectTestFactory.addFactory("ObjectTest", ::boost::factory<ObjectTest::sptr>());
     objectTestFactory.addFactory("DerivedObjectTest", ::boost::factory<DerivedObjectTest::sptr>());
+
+    FactoryType::KeyVectorType keys = ::boost::assign::list_of("ObjectTest") ("DerivedObjectTest");
+    std::sort(keys.begin(), keys.end());
+    FactoryType::KeyVectorType vectKeys = objectTestFactory.getFactoryKeys();
+    std::sort(vectKeys.begin(), vectKeys.end());
+    CPPUNIT_ASSERT(keys == vectKeys);
+
 
     ObjectTest::sptr objectTest1 = objectTestFactory.create("ObjectTest");
     CPPUNIT_ASSERT_EQUAL(1, ObjectTest::s_counter);
