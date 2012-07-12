@@ -52,6 +52,12 @@ public:
      */
     FWTOOLS_API static UUIDType generateUUID();
 
+    /**
+     * @brief Attempt to set an UUID. If uuid already exists, do nothing.
+     * @return true if the uuid is set, else false.
+     */
+    FWTOOLS_API static bool set(::fwTools::Object::sptr object,  const UUID::UUIDType & uuid);
+
 protected :
 
     /// Store association ::boost::weak_ptr <--> uuid as a string

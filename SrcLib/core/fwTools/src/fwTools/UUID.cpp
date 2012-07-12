@@ -69,6 +69,23 @@ const UUID::UUIDType& UUID::get(::fwTools::Object::sptr object)
 
 //-----------------------------------------------------------------------------
 
+bool UUID::set(::fwTools::Object::sptr object, const UUID::UUIDType & uuid )
+{
+    bool setted = false;
+
+    if(!UUID::exist(uuid))
+    {
+        UUID::sptr uuidObject = object->m_uuid;
+        uuidObject->m_uuid = uuid;
+        UUID::m_uuidMap.insert(UUID::UUIDContainer::value_type(uuidObject->m_uuid, object));
+        setted = true;
+    }
+
+    return setted;
+}
+
+//-----------------------------------------------------------------------------
+
 UUID::UUIDType UUID::generateUUID()
 {
     UUID::UUIDType extUUID;
