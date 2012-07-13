@@ -27,7 +27,7 @@ class SpyLogger : public ::fwCore::BaseObject
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (SpyLogger)(BaseObject), (()), new SpyLogger) ;
+    // fwCoreClassDefinitionsWithFactoryMacro( (SpyLogger)(BaseObject), (()), new SpyLogger) ;
 
     enum LevelType
     {
@@ -39,21 +39,13 @@ public :
         SL_FATAL
     };
 
-    FWCORE_API SpyLogger ();
-
-    FWCORE_API SpyLogger (const std::string & name);
-
-    FWCORE_API SpyLogger (const SpyLogger & logger);
-
-    FWCORE_API virtual ~SpyLogger();
-
     FWCORE_API void createBasicConfiguration();
 
     FWCORE_API void addConsoleAppender();
 
-    FWCORE_API void addFileAppender(const std::string & logFile);
+    FWCORE_API void addFileAppender(const std::string & logFile = "SLM.log");
 
-    FWCORE_API void addSyslogAppender(const std::string & hostName, const std::string & facilityName);
+    // FWCORE_API void addSyslogAppender(const std::string & hostName, const std::string & facilityName);
 
     FWCORE_API void setLevel(LevelType level);
 
@@ -69,10 +61,14 @@ public :
 
     FWCORE_API void fatal(const std::string & mes, const char * file = 0, int line = -1);
 
+    static SpyLogger &getSpyLogger() {return s_spyLogger;}
+
 protected :
 
-    ::boost::shared_ptr< ::boost::log::core > m_logCore;
-    std::string m_loggerName;
+
+    FWCORE_API SpyLogger ();
+
+    static SpyLogger s_spyLogger;
 
 }; // SpyLogger
 

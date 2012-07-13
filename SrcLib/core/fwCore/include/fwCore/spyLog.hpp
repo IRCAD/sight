@@ -67,7 +67,6 @@
 
 # include "fwCore/SpyLogger.hpp"
 # include "fwCore/ScopedMessage.hpp"
-# include "fwCore/SpyLoggerManager.hpp"
 
 // -----------------------------------------------------------------------------
 
@@ -289,15 +288,8 @@
 
 // -----------------------------------------------------------------------------
 
-# ifdef SPYLOG_TYPE
-#  define _SPYLOG_SPYLOGGER_                                            \
-    ::spyLog::SpyLoggerManager::getSpyLoggerManager()->getSpyLogger(    \
-        PROJECT_NAME                                                    \
-        )
-# else
-#  define _SPYLOG_SPYLOGGER_                                            \
-    ::spyLog::SpyLoggerManager::getSpyLoggerManager()->getMainSpyLogger()
-# endif
+#  define _SPYLOG_SPYLOGGER_            \
+    ::spyLog::SpyLogger::getSpyLogger() \
 
 // -----------------------------------------------------------------------------
 
@@ -398,7 +390,6 @@
 /** @{ */
 /** Log message macros.  */
 #define OSLM_LOG(msg) __FWCORE_EXPR_BLOCK(                                                 \
-        ::spyLog::SpyLoggerManager::getSpyLoggerManager();                                 \
         BOOST_LOG_TRIVIAL(error) << "[LOG] "<< __FILE__ << ":" << __LINE__ << ": "<< msg ; \
         )
 /**  @} */

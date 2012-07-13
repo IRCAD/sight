@@ -7,7 +7,6 @@
 #include <sstream>
 
 #include "fwCore/SpyLogger.hpp"
-#include "fwCore/SpyLoggerManager.hpp"
 
 #include "fwCore/ScopedMessage.hpp"
 
@@ -30,8 +29,7 @@ ScopedMessage::ScopedMessage( const char * _file, int _line, std::string enterMe
 
     std::stringstream oslStr;
     oslStr << "[ENTERING SCOPE] "<<  m_baseMsg << "'entermessage':'" <<  enterMessage << "'}";
-    m_logger = &::spyLog::SpyLoggerManager::getSpyLoggerManager()->getMainSpyLogger();
-    m_logger->trace(oslStr.str(), m_file, m_line);
+    ::spyLog::SpyLogger::getSpyLogger().trace(oslStr.str(), m_file, m_line);
     m_timer.start();
 }
 
