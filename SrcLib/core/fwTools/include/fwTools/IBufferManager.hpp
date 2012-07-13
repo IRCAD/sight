@@ -177,6 +177,7 @@ public:
 
     /**
      * @brief Returns the current BufferManager instance
+     * @note This method is thread-safe.
      */
     FWTOOLS_API static IBufferManager::sptr getCurrent();
 
@@ -184,7 +185,7 @@ public:
      * @brief sets the current BufferManager instance
      *
      * @param currentManager BufferManager instance
-     *
+     * @note This method is thread-safe.
      */
     FWTOOLS_API static void setCurrent( IBufferManager::sptr currentManager );
 
