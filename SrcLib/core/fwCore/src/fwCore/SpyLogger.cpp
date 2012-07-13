@@ -138,42 +138,42 @@ void SpyLogger::setLevel(LevelType level)
 
 void SpyLogger::trace(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(trace) << "[TRACE]: "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(trace) << "[TRACE]: "<< file << ":" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::debug(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(debug) << "[DEBUG] "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(debug) << "[DEBUG] "<< file << ":" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::info(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(info) << "[INFO] "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(info) << "[INFO] "<< file << ":" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::warn(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(warning) << "[WARNING] "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(warning) << "[WARNING] "<< file << ":" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::error(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(error) << "[ERROR] "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(error) << "[ERROR] "<< file << ":" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::fatal(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(fatal) << "[FATAL] "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(fatal) << "[FATAL] "<< file << ":" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------

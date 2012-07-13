@@ -25,12 +25,12 @@
  * Each log level macro has two variant : SLM_<level> and OSLM_<level>.
  * - SLM_ variant is a simple log message macros, append a loglevel-tagged
  *   log message to the logger.
- *   - Example : SLM_FATAL( "This should not happend" );
+ *   - Example : SLM_FATAL( "This should not append" );
  * - OSLM_ variant is a stringstream log message macros, it is the same as
- *   "Simple log message macros", but accept a stream as arguement.
+ *   "Simple log message macros", but accept a stream as argument.
  *   - Example : OSLM_INFO( "Count : " << i );
  *
- * FATAL macros have a particular behaviour : the application is aborted after
+ * FATAL macros have a particular behavior : the application is aborted after
  * the message was logged.
  *
  * @author IRCAD (Research and Development Team).
@@ -60,6 +60,8 @@
 
 # include <cassert>
 # include <sstream>
+
+#include <boost/log/trivial.hpp>
 
 # include "fwCore/config.hpp"
 
@@ -393,6 +395,14 @@
     OSL_FATAL_IF (_SPYLOG_SPYLOGGER_, message, cond)
 /**  @} */
 
+/** @{ */
+/** Log message macros.  */
+#define OSLM_LOG(msg) __FWCORE_EXPR_BLOCK(                                                 \
+        ::spyLog::SpyLoggerManager::getSpyLoggerManager();                                 \
+        BOOST_LOG_TRIVIAL(error) << "[LOG] "<< __FILE__ << ":" << __LINE__ << ": "<< msg ; \
+        )
+/**  @} */
+
 /**
  * @name Special macros
  * @{ */
@@ -431,5 +441,6 @@
 
 # endif
 /**  @} */
+
 
 #endif  // _FWCORE_SPYLOG_HPP_
