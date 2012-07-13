@@ -35,6 +35,9 @@ protected:
     : m_num(num)
     {}
 
+    virtual ~ClassTest()
+    {}
+
 private:
     int m_num;
 };
