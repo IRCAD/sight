@@ -68,7 +68,7 @@ protected :
 
     FWCORE_API SpyLogger ();
 
-    static SpyLogger s_spyLogger;
+    FWCORE_API static SpyLogger s_spyLogger;
 
 }; // SpyLogger
 
