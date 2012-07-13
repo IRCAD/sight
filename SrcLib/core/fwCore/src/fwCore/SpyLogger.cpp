@@ -15,6 +15,23 @@
 #include <boost/log/attributes/named_scope.hpp>
 #include <boost/log/utility/init/formatter_parser.hpp>
 
+#ifndef SPYLOG_NO_LOG
+
+# if !defined(SPYLOG_FILE_LOG) && !defined( SPYLOG_CONSOLE_LOG )
+
+#  ifdef _WIN32
+#   define SPYLOG_FILE_LOG
+#  elif __MACOSX__
+#   define SPYLOG_CONSOLE_LOG
+#  else // linux
+#   define SPYLOG_CONSOLE_LOG
+#  endif
+
+# endif //!defined(SPYLOG_FILE_LOG) && !defined( SPYLOG_CONSOLE_LOG )
+
+#endif //SPYLOG_NO_LOG
+
+
 namespace spyLog
 {
 
@@ -58,11 +75,11 @@ SpyLogger::~SpyLogger()
 
 void SpyLogger::createBasicConfiguration()
 {
-#ifdef _WIN32
+#ifdef SPYLOG_FILE_LOG
     this->addFileAppender(m_loggerName + ".log");
-#elif __MACOSX__
-    this->addConsoleAppender();
-#else // linux
+#endif
+
+#ifdef SPYLOG_CONSOLE_LOG
     this->addConsoleAppender();
 #endif
 }
@@ -75,7 +92,7 @@ void SpyLogger::addConsoleAppender()
     ::boost::log::init_log_to_console
      (
         std::clog,
-        ::boost::log::keywords::format = "[%ProcessID%][%ThreadID%][%TimeStamp%][%Channel%][%Severity%]: %_%",
+        ::boost::log::keywords::format = "[%ProcessID%][%ThreadID%][%TimeStamp%]%_%",
         // auto-flush feature of the backend
         ::boost::log::keywords::auto_flush = true
      );
@@ -94,16 +111,16 @@ void SpyLogger::addFileAppender(const std::string & logFile)
     ::boost::log::add_common_attributes();
     ::boost::log::init_log_to_file
     (
-         // file name pattern
+        // file name pattern
         ::boost::log::keywords::file_name = logFile,
-         // rotate files every 10 MiB...
+        // rotate files every 10 MiB...
         ::boost::log::keywords::rotation_size = 10 * 1024 * 1024,
         // ...or at midnight
         ::boost::log::keywords::time_based_rotation = ::boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
         // log record format
-        ::boost::log::keywords::format = "[%LineID%][%ProcessID%][%ThreadID%][%TimeStamp%][%Scope%][%Severity%]: %_%",
-         // auto-flush feature of the backend
-         ::boost::log::keywords::auto_flush = true
+        ::boost::log::keywords::format = "[%LineID%][%ProcessID%][%ThreadID%][%TimeStamp%]%_%",
+        // auto-flush feature of the backend
+        ::boost::log::keywords::auto_flush = true
     );
 }
 
@@ -121,42 +138,42 @@ void SpyLogger::setLevel(LevelType level)
 
 void SpyLogger::trace(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(trace) << "TRACE "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(trace) << "[TRACE]: "<< file << " l" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::debug(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(debug) << "DEBUG "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(debug) << "[DEBUG] "<< file << " l" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::info(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(info) << "INFO "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(info) << "[INFO] "<< file << " l" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::warn(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(warning) << "WARNING "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(warning) << "[WARNING] "<< file << " l" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::error(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(error) << "ERROR "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(error) << "[ERROR] "<< file << " l" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
 
 void SpyLogger::fatal(const std::string & mes, const char * file, int line)
 {
-    BOOST_LOG_TRIVIAL(fatal) << "FATAL "<< file << " l" << line << ": "<< mes ;
+    BOOST_LOG_TRIVIAL(fatal) << "[FATAL] "<< file << " l" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
