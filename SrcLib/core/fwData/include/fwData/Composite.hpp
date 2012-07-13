@@ -19,7 +19,7 @@
 
 // boost 1.47 issue with FOREACH
 #include <boost/version.hpp>
-#if BOOST_VERSION == 104700
+#if BOOST_VERSION >= 104700
 #include <boost/foreach.hpp>
 
 namespace fwData
@@ -28,7 +28,7 @@ namespace fwData
 inline boost::mpl::true_ * boost_foreach_is_noncopyable( ::fwData::Composite *&, BOOST_FOREACH_TAG_DEFAULT )
 { return 0; }
 
-#endif //BOOST_VERSION == 104700
+#endif //BOOST_VERSION >= 104700
 
 
 namespace fwData
