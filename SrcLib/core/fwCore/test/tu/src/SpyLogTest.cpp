@@ -34,13 +34,6 @@ namespace ut
 
 void SpyLogTest::setUp()
 {
-//    namespace fs = ::boost::filesystem;
-//    ::boost::system::error_code err;
-//    fs::path sysTmp = fs::temp_directory_path(err);
-//    CPPUNIT_ASSERT_MESSAGE(std::string("Temporary Path Error : ") + err.message() + ".", err.value() == 0);
-//
-//    m_tempFile = fs::unique_path(sysTmp / "fwCore_ut_spyLog_%%%%-%%%%-%%%%-%%%%-%%%%.log");
-
     ::spyLog::SpyLogger& log = ::spyLog::SpyLogger::getSpyLogger();
     log.addStreamAppender(m_ostream);
 }
@@ -49,15 +42,11 @@ void SpyLogTest::setUp()
 
 void SpyLogTest::tearDown()
 {
-//    if(::boost::filesystem::exists(m_tempFile))
-//    {
-//        ::boost::filesystem::remove_all(m_tempFile);
-//    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogTest::test()
+void SpyLogTest::logMessageTest()
 {
     m_ostream.clear();
     ::spyLog::SpyLogger& log = ::spyLog::SpyLogger::getSpyLogger();
@@ -110,18 +99,14 @@ struct LogProducerThread
             log.fatal(logs[i], __FILE__, __LINE__);
         }
     }
-
 };
 
 //-----------------------------------------------------------------------------
-
-
 
 struct RegexLogCompare
 {
   bool operator() (std::string a, std::string b)
   {
-
       ::boost::regex re(".*(msg n [[:digit:]]+)$");
       ::boost::smatch matchA;
       ::boost::smatch matchB;
@@ -136,8 +121,6 @@ struct RegexLogCompare
       return strA < strB;
   }
 } regex_compare;
-
-
 
 void SpyLogTest::threadSafetyTest()
 {
@@ -179,7 +162,6 @@ std::vector<std::string> SpyLogTest::logToVector(const std::stringstream &logsSt
 
 void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const std::vector<std::string> &logMessages)
 {
-
     CPPUNIT_ASSERT_EQUAL(logMessagesRef.size(), logMessages.size());
 
     const std::string countPattern("(\\[[0-9]+\\])");
@@ -215,6 +197,7 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
         ++i;
     }
 }
+
 //-----------------------------------------------------------------------------
 
 } //namespace ut

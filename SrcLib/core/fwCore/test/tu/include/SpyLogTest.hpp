@@ -21,7 +21,7 @@ namespace ut
 class SpyLogTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( SpyLogTest );
-    CPPUNIT_TEST( test );
+    CPPUNIT_TEST( logMessageTest );
     CPPUNIT_TEST( threadSafetyTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,7 +30,7 @@ public:
     void setUp();
     void tearDown();
 
-    void test();
+    void logMessageTest();
     void threadSafetyTest();
 
 private:
