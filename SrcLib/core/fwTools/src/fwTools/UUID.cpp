@@ -100,7 +100,7 @@ bool UUID::set(::fwTools::Object::sptr object, const UUID::UUIDType & uuid )
         }
         {
             ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
-            UUID::s_uuidMap.insert(UUID::UUIDContainer::value_type(uuidObject->m_uuid, object));
+            UUID::s_uuidMap.insert(UUID::UUIDContainer::value_type(uuid, object));
         }
         isSet = true;
     }
