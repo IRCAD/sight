@@ -12,7 +12,7 @@
 #include <boost/unordered_map.hpp>
 
 #include <fwCore/base.hpp>
-
+#include <fwCore/mt/types.hpp>
 
 #include "fwTools/config.hpp"
 #include "fwTools/macros.hpp"
@@ -22,12 +22,10 @@ namespace fwTools
 
 class Object;
 /**
- * @brief   Defines the abstract interface for deletion.
- * @class   IDeleter
+ * @brief   Defines ID for fwTools::Object. It is used to associate ID with object.
+ * @class   fwID
  * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
- * @note    To be specialized to extend object destruction procedure.
- * @note    Typical use: for service unregistration while keeping data independent with respect to fwServices library and keeping the benefits of smart pointers use.
+ * @date    2007-2012.
  */
 class FWTOOLS_CLASS_API fwID
 {
@@ -39,20 +37,22 @@ public:
 
 
     typedef enum {
-        EMPTY    = 1, // return a empty id if no one set
-        GENERATE    , // generate a new id if necessary
-        MUST_EXIST    // throw an exception if object not have an id
+        EMPTY    = 1, ///< return an empty id if no one set
+        GENERATE    , ///< generate a new id if necessary
+        MUST_EXIST    ///< throw an exception if object has not id.
     } Policy;
 
     /**
      * Test if the given id exist (i.e recorded in fwID dictionary)
-     * @param[in] _id : the id to test
-     * @return true iff the given id is recorded in fwID dictionary
+     * @param[in] _id : the id to test.
+     * @return true iff the given id is recorded in fwID dictionary.
+     * @note This method is thread-safe.
      */
     FWTOOLS_API static bool exist( IDType _id);
 
     /**
-     * @brief retrieve the object attached to the given id. Return a null sptr if no correspondence exist
+     * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exist.
+     * @note This method is thread-safe.
      */
     FWTOOLS_API static SPTR(::fwTools::Object ) getObject( IDType requestID );
 
@@ -60,34 +60,73 @@ public:
 
 protected :
 
-    // API to expose in fwToolsObject
-    /// return true if object have an id set
-    FWTOOLS_API bool   hasID() const;
+    // API to expose in fwTools::Object
     /**
-     * @brief retun the id of the object. If no set and the policy value =
-     * \li EMPTY then a empty id is returned
-     * \li GENERATE (default) a new ID will be generated (and recorded ) using the pattern "CLASSNAME-NUM". NUM is always increasing
-     * \li MUST_EXIST  an exception Failed is raised
-     * @note we consider a object be constant whatever if its id is generated
+     * @brief Return true if the object has an id set.
+     * @note This method is thread-safe.
+     */
+    FWTOOLS_API bool   hasID() const;
+
+    /**
+     * @brief Retun the id of the object. If it is not set and the policy value is
+     * \li EMPTY then an empty id is returned
+     * \li GENERATE (default) then a new ID will be generated (and recorded ) using the pattern "CLASSNAME-NUM". NUM is always increasing
+     * \li MUST_EXIST then an exception Failed is raised
+     * @note We consider an object be constant whatever if its id is generated.
+     * @note This method is thread-safe.
      */
     FWTOOLS_API IDType getID( Policy  policy=GENERATE ) const;
-    /// set a newID  for the object, (newID must not exist in fwID), the oldest one is released
+
+    /**
+      * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.
+      * @warning Cannot set a empty ID.
+      * @note This method is thread-safe.
+      */
     FWTOOLS_API void   setID( IDType newID ); // cannot set a empty one
 
-    /** @brief swap the id of the 2 object, if a object do not have a id then getID(...,GENERATE) will be used **/
+    /**
+     * @brief Swap the id of the 2 objects, if an object do not have a id then getID(...,GENERATE) will be used
+     * @note This method is NOT thread-safe.
+    **/
     FWTOOLS_API void swapID( SPTR(::fwTools::Object )   );
 
-    /// release the id for the object
-    FWTOOLS_API void   resetID();
+    /**
+      * @brief Release the id for the object.
+      * @note This method is thread-safe
+      */
+    FWTOOLS_API  void   resetID();
 
-     /**
+    /**
       * @brief   Constructor : does nothing.
       */
     fwID() {}; // cannot be instantiated
 
-    /// will generate a new ID using the pattern "CLASSNAME-NUM". NUM is always increasing
+
+private :
+
+    /**
+      * @brief Will generate a new ID using the pattern "CLASSNAME-NUM". NUM is always increasing.
+      * @note This method is NOT thread-safe.
+      */
     IDType generate() const;
 
+    /**
+     * @brief Remove ID from the dictionary.
+     * @note This method is NOT thread-safe.
+     */
+    static void removeIDfromDictionary(IDType _id );
+
+    /**
+      * @brief return true if the  _id is found in the dictionary.
+      * @note This method is NOT thread-safe.
+      */
+    static bool isIdFound( IDType _id);
+
+    /**
+      * @brief Add newID in the dictionary (newID must not exist in fwID).
+      * @note This method is NOT thread-safe
+      */
+    void addIDInDictionary( IDType newID );
 
    IDType m_id;
 
@@ -96,6 +135,15 @@ protected :
 
    static  Dictionary m_dictionary;
    static  CategorizedCounter m_CategorizedCounter;
+
+   /// Mutex used to lock dictionary access
+   static ::fwCore::mt::ReadWriteMutex s_dictionaryMutex;
+
+   /// Mutex used by generate() to lock m_CategorizedCounter changes.
+   static ::fwCore::mt::Mutex s_mutexCounter;
+
+   /// Mutex used to lock m_id access
+   mutable ::fwCore::mt::ReadWriteMutex m_idMutex;
 };
 
 }
