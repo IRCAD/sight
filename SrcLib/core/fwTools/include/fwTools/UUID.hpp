@@ -81,16 +81,19 @@ protected :
      */
     FWTOOLS_API virtual ~UUID();
 
+    /// Mutex used to lock uuid object access.
+    ::fwCore::mt::ReadWriteMutex m_uuidMutex;
+
 private:
 
     /// Local UUID, empty by default if not generated.
     UUIDType m_uuid;
 
     /// Read/Write mutex used to thread-safe UUID get/set/exist methods.
-    static ::fwCore::mt::ReadWriteMutex s_rwMutex;
+    static ::fwCore::mt::ReadWriteMutex s_uuidMapMutex;
 
     /// Mutex used by generateUUID().
-    static ::fwCore::mt::Mutex s_mutex;
+    static ::fwCore::mt::Mutex s_generateUUIDMutex;
 
 };
 

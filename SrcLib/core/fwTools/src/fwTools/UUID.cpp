@@ -14,8 +14,8 @@ namespace fwTools
 
 UUID::UUIDContainer UUID::s_uuidMap;
 
-::fwCore::mt::ReadWriteMutex UUID::s_rwMutex;
-::fwCore::mt::Mutex UUID::s_mutex;
+::fwCore::mt::ReadWriteMutex UUID::s_uuidMapMutex;
+::fwCore::mt::Mutex UUID::s_generateUUIDMutex;
 
 //-----------------------------------------------------------------------------
 
@@ -26,9 +26,12 @@ UUID::UUID() : m_uuid("")
 
 UUID::~UUID()
 {
+    ::fwCore::mt::ReadLock uuidLock(m_uuidMutex);
+    ::fwCore::mt::ReadToWriteLock lock(s_uuidMapMutex);
     UUID::UUIDContainer::iterator iter = UUID::s_uuidMap.find(m_uuid);
     if( iter != UUID::s_uuidMap.end())
     {
+        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
         UUID::s_uuidMap.erase(iter);
     }
 }
@@ -37,7 +40,7 @@ UUID::~UUID()
 
 bool UUID::exist( const UUID::UUIDType & uuid)
 {
-    ::fwCore::mt::ReadLock lock(s_rwMutex);
+    ::fwCore::mt::ReadLock lock(s_uuidMapMutex);
     return ( UUID::s_uuidMap.find(uuid) != UUID::s_uuidMap.end() );
 }
 
@@ -47,13 +50,20 @@ const UUID::UUIDType& UUID::get(::fwTools::Object::sptr object)
 {
     SLM_ASSERT("Object expired", object);
 
-    ::fwCore::mt::ReadToWriteLock lock(s_rwMutex);
     UUID::sptr uuidObject = object->m_uuid;
+    ::fwCore::mt::ReadToWriteLock uuidLock(uuidObject->m_uuidMutex);
     if(uuidObject->m_uuid.empty())
     {
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
-        uuidObject->m_uuid = UUID::generateUUID();
-        UUID::s_uuidMap.insert(UUID::UUIDContainer::value_type(uuidObject->m_uuid, object));
+        UUIDType uuid = UUID::generateUUID();
+
+        {
+            ::fwCore::mt::UpgradeToWriteLock writeLock(uuidLock);
+            uuidObject->m_uuid = uuid;
+        }
+        {
+            ::fwCore::mt::WriteLock lock(s_uuidMapMutex);
+            UUID::s_uuidMap.insert(UUID::UUIDContainer::value_type(uuid, object));
+        }
     }
     return uuidObject->m_uuid;
 }
@@ -62,7 +72,7 @@ const UUID::UUIDType& UUID::get(::fwTools::Object::sptr object)
 
 ::fwTools::Object::sptr UUID::get( const UUID::UUIDType & uuid )
 {
-    ::fwCore::mt::ReadLock lock(s_rwMutex);
+    ::fwCore::mt::ReadLock lock(s_uuidMapMutex);
     ::fwTools::Object::sptr obj;
     UUID::UUIDContainer::iterator iter = UUID::s_uuidMap.find(uuid);
     if( iter != UUID::s_uuidMap.end() )
@@ -76,28 +86,34 @@ const UUID::UUIDType& UUID::get(::fwTools::Object::sptr object)
 
 bool UUID::set(::fwTools::Object::sptr object, const UUID::UUIDType & uuid )
 {
-    bool setted = false;
+    ::fwCore::mt::ReadToWriteLock lock(s_uuidMapMutex);
 
-    ::fwCore::mt::ReadToWriteLock lock(s_rwMutex);
+    bool isSet = false;
 
-    if(!UUID::exist(uuid))
+    if(UUID::s_uuidMap.find(uuid) == UUID::s_uuidMap.end())
     {
-        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
         UUID::sptr uuidObject = object->m_uuid;
-        uuidObject->m_uuid = uuid;
-        UUID::s_uuidMap.insert(UUID::UUIDContainer::value_type(uuidObject->m_uuid, object));
-        setted = true;
+
+        {
+            ::fwCore::mt::WriteLock uuidLock(uuidObject->m_uuidMutex);
+            uuidObject->m_uuid = uuid;
+        }
+        {
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            UUID::s_uuidMap.insert(UUID::UUIDContainer::value_type(uuidObject->m_uuid, object));
+        }
+        isSet = true;
     }
 
-    return setted;
+    return isSet;
 }
 
 //-----------------------------------------------------------------------------
 
 UUID::UUIDType UUID::generateUUID()
 {
-    ::fwCore::mt::ScopedLock lock(s_mutex);
     static boost::uuids::random_generator gen;
+    ::fwCore::mt::ScopedLock lock(s_generateUUIDMutex);
     ::boost::uuids::uuid uuid = gen();
     return ::boost::uuids::to_string(uuid);
 }
