@@ -81,7 +81,7 @@ fwID::IDType fwID::getID( Policy policy) const
     if ( m_id.empty() ) // no id set
     {
         if ( policy==GENERATE )
-        {            
+        {
             IDType newID = generate();
             ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
             const_cast<fwID *>(this)->addIDInDictionary(newID);

@@ -3,6 +3,8 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+#ifndef __FWCORE_MACROS_HPP__
+#define __FWCORE_MACROS_HPP__
 
 /**
  * @file fwCore/macros.hpp
@@ -466,7 +468,7 @@ namespace boost{
 namespace python{
 namespace objects {
 template <class, class>
-class pointer_holder;
+struct pointer_holder;
 }}}
 
 /**
@@ -475,7 +477,7 @@ class pointer_holder;
 #define fwCoreFriendClassFactoryMacro()                                      \
     friend class ::boost::serialization::access;                             \
     template<class, class>                                                   \
-    friend class ::boost::python::objects::pointer_holder;                   \
+    friend struct ::boost::python::objects::pointer_holder;                  \
     template<typename _FWCORE_CHECKED_DELETE_T_ >                            \
     friend void ::boost::checked_delete(_FWCORE_CHECKED_DELETE_T_ *x);       \
     template<class, class, class>                                            \
@@ -599,4 +601,5 @@ class pointer_holder;
 
 
 /**  @} */
+#endif // __FWCORE_MACROS_HPP__
 

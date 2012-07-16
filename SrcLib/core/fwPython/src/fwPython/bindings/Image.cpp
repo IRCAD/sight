@@ -133,7 +133,7 @@ void export_image()
 {
     using namespace ::boost::python;
     size_t (::fwData::Image::*SIMPLEIMAGEALLOCATE)(void) =  &::fwData::Image::allocate;
-    class_< ::fwData::Image, bases< ::fwData::Object >, ::fwData::Image::sptr >("Image")
+    class_< ::fwData::Image, bases< ::fwData::Object >, ::fwData::Image::sptr, boost::noncopyable >("Image")
        .add_property("buffer",  &getImageBuffer )
        .add_property("type",  &getPixelTypeAsString, & setPixelTypeFromString )
        .add_property("spacing", &getSpacing,  &setSpacing )
