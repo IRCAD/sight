@@ -4,9 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCORE_SPYLOGGER_HPP_
-#define _FWCORE_SPYLOGGER_HPP_
+#ifndef _FWCORE_LOG_SPYLOGGER_HPP_
+#define _FWCORE_LOG_SPYLOGGER_HPP_
 
+#include <iostream>
 #include <string>
 
 #include <boost/shared_ptr.hpp>
@@ -15,7 +16,9 @@
 #include "fwCore/BaseObject.hpp"
 #include "fwCore/config.hpp"
 
-namespace spyLog
+namespace fwCore
+{
+namespace log
 {
 
 /**
@@ -72,6 +75,7 @@ protected :
 
 }; // SpyLogger
 
-} // namespace spyLog
+} // namespace log
+} // namespace fwCore
 
-#endif // _FWCORE_SPYLOGGER_HPP_
+#endif // _FWCORE_LOG_SPYLOGGER_HPP_

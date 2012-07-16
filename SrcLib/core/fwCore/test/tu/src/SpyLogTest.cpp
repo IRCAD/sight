@@ -34,7 +34,7 @@ namespace ut
 
 void SpyLogTest::setUp()
 {
-    ::spyLog::SpyLogger& log = ::spyLog::SpyLogger::getSpyLogger();
+    ::fwCore::log::SpyLogger& log = ::fwCore::log::SpyLogger::getSpyLogger();
     log.addStreamAppender(m_ostream);
 }
 
@@ -49,7 +49,7 @@ void SpyLogTest::tearDown()
 void SpyLogTest::logMessageTest()
 {
     m_ostream.clear();
-    ::spyLog::SpyLogger& log = ::spyLog::SpyLogger::getSpyLogger();
+    ::fwCore::log::SpyLogger& log = ::fwCore::log::SpyLogger::getSpyLogger();
 
     std::vector< std::string > logs;
 
@@ -87,7 +87,7 @@ struct LogProducerThread
 
     void run(LogContainerType& logs, size_t nbLogs, size_t offset)
     {
-        ::spyLog::SpyLogger& log = ::spyLog::SpyLogger::getSpyLogger();
+        ::fwCore::log::SpyLogger& log = ::fwCore::log::SpyLogger::getSpyLogger();
         for(size_t i=offset; i < nbLogs + offset; ++i)
         {
             std::stringstream ss;

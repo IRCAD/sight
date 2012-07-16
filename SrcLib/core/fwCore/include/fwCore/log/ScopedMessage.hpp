@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCORE_SCOPEDMESSAGE_HPP_
-#define _FWCORE_SCOPEDMESSAGE_HPP_
+#ifndef _FWCORE_LOG_SCOPEDMESSAGE_HPP_
+#define _FWCORE_LOG_SCOPEDMESSAGE_HPP_
 
 #include <string>
 
@@ -13,7 +13,9 @@
 #include "fwCore/HiResTimer.hpp"
 #include "fwCore/config.hpp"
 
-namespace spyLog
+namespace fwCore
+{
+namespace log
 {
 
 class SpyLogger;
@@ -44,11 +46,11 @@ protected:
     std::string  m_baseMsg;
     std::string  m_leave;
 
-    ::spyLog::SpyLogger  *m_logger;
+    ::fwCore::log::SpyLogger  *m_logger;
     ::fwCore::HiResTimer  m_timer;
 };
 
+} // namespace log
+} // namespace fwCore
 
-} // namespace spyLog
-
-#endif // _FWCORE_SCOPEDMESSAGE_HPP_
+#endif // _FWCORE_LOG_SCOPEDMESSAGE_HPP_

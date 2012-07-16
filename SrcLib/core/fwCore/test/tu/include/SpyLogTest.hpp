@@ -9,8 +9,6 @@
 
 #include <sstream>
 
-#include <boost/filesystem/path.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwCore
@@ -38,7 +36,6 @@ private:
     std::vector<std::string> logToVector(const std::stringstream &logsStream);
     void checkLog(const std::vector<std::string> &logMessagesRef, const std::vector<std::string> &logMessages);
 
-    ::boost::filesystem::path m_tempFile;
     std::stringstream m_ostream;
 };
 

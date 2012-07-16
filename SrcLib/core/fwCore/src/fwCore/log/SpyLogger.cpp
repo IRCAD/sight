@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwCore/macros.hpp"
-#include "fwCore/SpyLogger.hpp"
+#include "fwCore/log/SpyLogger.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <boost/log/filters.hpp>
@@ -32,9 +32,10 @@
 #endif //SPYLOG_NO_LOG
 
 
-namespace spyLog
+namespace fwCore
 {
-
+namespace log
+{
 
 SpyLogger SpyLogger::s_spyLogger;
 
@@ -156,5 +157,6 @@ void SpyLogger::fatal(const std::string & mes, const char * file, int line)
 
 //-----------------------------------------------------------------------------
 
-} // namespace spyLog
+} // namespace log
+} // namespace fwCore
 

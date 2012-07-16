@@ -65,8 +65,8 @@
 
 # include "fwCore/config.hpp"
 
-# include "fwCore/SpyLogger.hpp"
-# include "fwCore/ScopedMessage.hpp"
+# include "fwCore/log/SpyLogger.hpp"
+# include "fwCore/log/ScopedMessage.hpp"
 
 // -----------------------------------------------------------------------------
 
@@ -289,7 +289,7 @@
 // -----------------------------------------------------------------------------
 
 #  define _SPYLOG_SPYLOGGER_            \
-    ::spyLog::SpyLogger::getSpyLogger() \
+    ::fwCore::log::SpyLogger::getSpyLogger() \
 
 // -----------------------------------------------------------------------------
 
@@ -425,7 +425,7 @@
 # else
 
 # define SLM_TRACE_FUNC() __FWCORE_EXPR_BLOCK(                  \
-        ::spyLog::ScopedMessage __spylog__scoped__msg__(        \
+        ::fwCore::log::ScopedMessage __spylog__scoped__msg__(        \
             __FILE__, __LINE__, SLM_PRETTY_FUNC());             \
         __spylog__scoped__msg__.use();                          \
         )
