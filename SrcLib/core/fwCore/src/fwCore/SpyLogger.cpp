@@ -58,18 +58,18 @@ void SpyLogger::createBasicConfiguration()
 #endif
 
 #ifdef SPYLOG_CONSOLE_LOG
-    this->addConsoleAppender();
+    this->addStreamAppender();
 #endif
 }
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::addConsoleAppender()
+void SpyLogger::addStreamAppender( std::ostream &os )
 {
     ::boost::log::add_common_attributes();
     ::boost::log::init_log_to_console
      (
-        std::clog,
+        os,
         ::boost::log::keywords::format = "[%LineID%][%ProcessID%][%ThreadID%][%TimeStamp%]%_%",
         // auto-flush feature of the backend
         ::boost::log::keywords::auto_flush = true

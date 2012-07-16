@@ -41,7 +41,7 @@ public :
 
     FWCORE_API void createBasicConfiguration();
 
-    FWCORE_API void addConsoleAppender();
+    FWCORE_API void addStreamAppender(std::ostream &os = std::clog);
 
     FWCORE_API void addFileAppender(const std::string & logFile = "SLM.log");
 
