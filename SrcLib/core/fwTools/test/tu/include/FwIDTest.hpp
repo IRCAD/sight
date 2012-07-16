@@ -18,7 +18,8 @@ class FwIDTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( FwIDTest );
     CPPUNIT_TEST( objectFwIDTest );
-    CPPUNIT_TEST( threadSafeTest );
+    CPPUNIT_TEST( conccurentAccessOnFwIDMapTest );
+    CPPUNIT_TEST( conccurentAccessOnSameObjFwIDTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -28,10 +29,14 @@ public:
 
     void objectFwIDTest();
 
-    void threadSafeTest();
+    void conccurentAccessOnFwIDMapTest();
+    void conccurentAccessOnSameObjFwIDTest();
 
 private:
     void runFwIDCreation();
+    void runAccessToObjectFwID();
+
+    ::fwTools::Object::sptr m_object;
 };
 
 } // namespace ut

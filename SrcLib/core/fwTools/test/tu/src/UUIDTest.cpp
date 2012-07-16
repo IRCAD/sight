@@ -19,15 +19,23 @@ namespace fwTools
 namespace ut
 {
 
+//-----------------------------------------------------------------------------
+
 void UUIDTest::setUp()
 {
     // Set up context before running a test.
+    m_object = ::fwTools::Object::New();
+    m_uuid = ::fwTools::UUID::generateUUID();
 }
+
+//-----------------------------------------------------------------------------
 
 void UUIDTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//-----------------------------------------------------------------------------
 
 void UUIDTest::objectUUIDTest()
 {
@@ -48,11 +56,13 @@ void UUIDTest::objectUUIDTest()
     CPPUNIT_ASSERT_EQUAL( obj2, ::fwTools::UUID::get(uuid) );
 }
 
+//-----------------------------------------------------------------------------
 
-void UUIDTest::threadSafeTest()
+void UUIDTest::conccurentAccessOnUUIDMapTest()
 {
+    const unsigned int nbThreads = 10;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i=0 ; i<30 ; ++i)
+    for (int i=0 ; i<nbThreads ; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
@@ -60,14 +70,14 @@ void UUIDTest::threadSafeTest()
         threads.push_back(thread);
     }
 
-    for (int i=0 ; i<10 ; ++i)
+    for (int i=0 ; i<nbThreads ; ++i)
     {
         std::stringstream str;
         str << "thread " << i;
         CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
     }
 
-    for (int i=0 ; i<10 ; ++i)
+    for (int i=0 ; i<nbThreads ; ++i)
     {
         if (threads[i]->hasFailed())
         {
@@ -75,6 +85,8 @@ void UUIDTest::threadSafeTest()
         }
     }
 }
+
+//-----------------------------------------------------------------------------
 
 void UUIDTest::runUUIDCreation()
 {
@@ -94,6 +106,50 @@ void UUIDTest::runUUIDCreation()
     std::string uuid = ::fwTools::UUID::get(obj2);
     CPPUNIT_ASSERT_EQUAL( obj2, ::fwTools::UUID::get(uuid) );
 }
+
+//-----------------------------------------------------------------------------
+
+void UUIDTest::conccurentAccessOnSameObjUUIDTest()
+{
+    const unsigned int nbThreads = 10;
+    std::vector< SPTR(::fwTest::helper::Thread) > threads;
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        SPTR(::fwTest::helper::Thread) thread;
+        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+                new ::fwTest::helper::Thread(::boost::bind(&UUIDTest::runAccessToObjectUUID, this)));
+        threads.push_back(thread);
+    }
+
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        std::stringstream str;
+        str << "thread " << i;
+        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
+    }
+
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        if (threads[i]->hasFailed())
+        {
+            throw threads[i]->getException();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void UUIDTest::runAccessToObjectUUID()
+{
+    ::fwTools::UUID::set(m_object, m_uuid);
+
+    CPPUNIT_ASSERT( ::fwTools::UUID::exist(m_uuid) );
+    CPPUNIT_ASSERT_EQUAL( m_uuid, ::fwTools::UUID::get(m_object) );
+    CPPUNIT_ASSERT_EQUAL( m_object, ::fwTools::UUID::get(m_uuid) );
+    CPPUNIT_ASSERT(::fwTools::UUID::set(m_object, m_uuid) == false);
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace ut
 } // namespace fwTools

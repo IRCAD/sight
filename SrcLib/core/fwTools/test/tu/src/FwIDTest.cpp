@@ -21,15 +21,22 @@ namespace fwTools
 namespace ut
 {
 
+//-----------------------------------------------------------------------------
+
 void FwIDTest::setUp()
 {
     // Set up context before running a test.
+    m_object = ::fwTools::Object::New();
 }
+
+//-----------------------------------------------------------------------------
 
 void FwIDTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//-----------------------------------------------------------------------------
 
 void FwIDTest::objectFwIDTest()
 {
@@ -63,31 +70,37 @@ void FwIDTest::objectFwIDTest()
     CPPUNIT_ASSERT( !::fwTools::fwID::getObject(fwid) );
 }
 
+//-----------------------------------------------------------------------------
 
-void FwIDTest::threadSafeTest()
+void FwIDTest::conccurentAccessOnFwIDMapTest()
 {
-    ::fwTest::helper::Thread thread(::boost::bind(&FwIDTest::runFwIDCreation, this));
-    ::fwTest::helper::Thread thread2(::boost::bind(&FwIDTest::runFwIDCreation, this));
-    ::fwTest::helper::Thread thread3(::boost::bind(&FwIDTest::runFwIDCreation, this));
-
-    CPPUNIT_ASSERT(thread.timedJoin(5000));
-    CPPUNIT_ASSERT(thread2.timedJoin(5000));
-    CPPUNIT_ASSERT(thread3.timedJoin(5000));
-
-
-    if (thread.hasFailed())
+    const unsigned int nbThreads = 10;
+    std::vector< SPTR(::fwTest::helper::Thread) > threads;
+    for (int i=0 ; i<nbThreads ; ++i)
     {
-        throw thread.getException();
+        SPTR(::fwTest::helper::Thread) thread;
+        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+                new ::fwTest::helper::Thread(::boost::bind(&FwIDTest::runFwIDCreation, this)));
+        threads.push_back(thread);
     }
-    if (thread2.hasFailed())
+
+    for (int i=0 ; i<nbThreads ; ++i)
     {
-        throw thread2.getException();
+        std::stringstream str;
+        str << "thread " << i;
+        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
     }
-    if (thread3.hasFailed())
+
+    for (int i=0 ; i<nbThreads ; ++i)
     {
-        throw thread3.getException();
+        if (threads[i]->hasFailed())
+        {
+            throw threads[i]->getException();
+        }
     }
 }
+
+//-----------------------------------------------------------------------------
 
 void FwIDTest::runFwIDCreation()
 {
@@ -122,6 +135,60 @@ void FwIDTest::runFwIDCreation()
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwid) == false );
     CPPUNIT_ASSERT( !::fwTools::fwID::getObject(fwid) );
 }
+
+//-----------------------------------------------------------------------------
+
+void FwIDTest::conccurentAccessOnSameObjFwIDTest()
+{
+    const unsigned int nbThreads = 10;
+    std::vector< SPTR(::fwTest::helper::Thread) > threads;
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        SPTR(::fwTest::helper::Thread) thread;
+        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+                new ::fwTest::helper::Thread(::boost::bind(&FwIDTest::runAccessToObjectFwID, this)));
+        threads.push_back(thread);
+    }
+
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        std::stringstream str;
+        str << "thread " << i;
+        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
+    }
+
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        if (threads[i]->hasFailed())
+        {
+            throw threads[i]->getException();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void FwIDTest::runAccessToObjectFwID()
+{
+    std::string id = m_object->getID();
+    CPPUNIT_ASSERT( ::fwTools::fwID::exist(id) );
+    CPPUNIT_ASSERT( m_object->hasID() );
+
+    ::boost::this_thread::sleep(::boost::posix_time::milliseconds(200));
+
+    CPPUNIT_ASSERT_EQUAL(  id, m_object->getID() );
+
+    CPPUNIT_ASSERT_EQUAL( m_object, ::fwTools::fwID::getObject(id) );
+
+    ::boost::this_thread::sleep(::boost::posix_time::milliseconds(200));
+
+    m_object->resetID();
+    CPPUNIT_ASSERT( m_object->hasID() == false );
+    CPPUNIT_ASSERT( ::fwTools::fwID::exist(id) == false );
+
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace ut
 } // namespace fwTools
