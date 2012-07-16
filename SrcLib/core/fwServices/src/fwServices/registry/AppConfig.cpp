@@ -63,14 +63,40 @@ void AppConfig::parseBundleInformation()
 
         // get type
         std::string typeStr = ext->findConfigurationElement("type")->getValue();
-        OSLM_ASSERT("Sorry, xml elment \"type\" must be equal to \"standard\" or \"template\" (here = " << typeStr << ") ", typeStr=="standard" || typeStr=="template" );
-        AppInfo::ConfigType type = ( typeStr == "standard" ) ? AppInfo::STANDARD : AppInfo::TEMPLATE ;
+        OSLM_ASSERT("Sorry, xml elment \"type\" must be equal to \"standard\" or \"template\" (here = " << typeStr << ") ", typeStr=="standard" || typeStr=="template" || typeStr=="parameters" );
+        AppInfo::ConfigType type;
+        if ( typeStr == "standard" )
+        {
+            type = AppInfo::STANDARD;
+        }
+        else if ( typeStr == "template" )
+        {
+            type=  AppInfo::TEMPLATE;
+        }
+        else
+        {
+            type = AppInfo::PARAMETERS;
+        }
+
+        // Get parmeters
+        AppInfo::ParamatersType parameters;
+        if ( ext->hasConfigurationElement("parameters") )
+        {
+            ::fwRuntime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
+            ::fwRuntime::ConfigurationElement::Container elements = parametersConfig->getElements();
+            BOOST_FOREACH( ::fwRuntime::ConfigurationElement::sptr paramConfig, elements )
+            {
+                std::string name = paramConfig->getExistingAttributeValue("name");
+                std::string defaultValue = paramConfig->getAttributeValue("default");
+                parameters[name] = defaultValue;
+            }
+        }
 
         // Get config
         ::fwRuntime::ConfigurationElement::csptr config = *(ext->findConfigurationElement("config")->begin());
 
         // Add app info
-        addAppInfo( configId, type, group, desc, config );
+        this->addAppInfo( configId, type, group, desc, parameters, config );
     }
 }
 
@@ -81,6 +107,7 @@ void AppConfig::addAppInfo
     AppInfo::ConfigType type,
     const std::string & group,
     const std::string & desc,
+    const AppInfo::ParamatersType & parameters,
     ::fwRuntime::ConfigurationElement::csptr config)
 {
     SLM_TRACE_FUNC();
@@ -96,6 +123,7 @@ void AppConfig::addAppInfo
     info->group = group;
     info->desc = desc;
     info->config =  config;
+    info->parameters = parameters;
     m_reg[configId] = info;
 }
 
@@ -132,8 +160,39 @@ void AppConfig::clearRegistry()
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
 
+
     // Adapt config
-    ::fwRuntime::ConfigurationElement::csptr newConfig = adaptConfig(  iter->second->config, fieldAdaptors );
+    ::fwRuntime::ConfigurationElement::sptr newConfig;
+    if ( iter->second->type != AppInfo::PARAMETERS )
+    {
+        newConfig = this->adaptConfig(  iter->second->config, fieldAdaptors );
+    }
+    else
+    {
+        FieldAdaptorType fields;
+        AppInfo::ParamatersType parameters = iter->second->parameters;
+        BOOST_FOREACH( AppInfo::ParamatersType::value_type param, parameters )
+        {
+            FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
+            std::stringstream key;
+            key << "\\$\\{" << param.first << "\\}";
+            if ( iter != fieldAdaptors.end() )
+            {
+                fields[key.str()] = iter->second;
+            }
+            else if ( param.second != "" )
+            {
+                fields[key.str()] = param.second;
+            }
+            else
+            {
+                FW_RAISE("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<"'.");
+            }
+        }
+        newConfig = this->adaptConfig(  iter->second->config, fields );
+    }
+
+
     return newConfig;
 }
 
@@ -142,7 +201,7 @@ void AppConfig::clearRegistry()
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId, ::fwData::Composite::csptr replaceFields ) const
 {
     FieldAdaptorType fieldAdaptors = compositeToFieldAdaptor( replaceFields );
-    return getAdaptedTemplateConfig( configId, fieldAdaptors );
+    return this->getAdaptedTemplateConfig( configId, fieldAdaptors );
 }
 
 //-----------------------------------------------------------------------------
