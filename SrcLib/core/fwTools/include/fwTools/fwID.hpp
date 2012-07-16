@@ -85,12 +85,6 @@ protected :
     FWTOOLS_API void   setID( IDType newID ); // cannot set a empty one
 
     /**
-     * @brief Swap the id of the 2 objects, if an object do not have a id then getID(...,GENERATE) will be used
-     * @note This method is NOT thread-safe.
-    **/
-    FWTOOLS_API void swapID( SPTR(::fwTools::Object )   );
-
-    /**
       * @brief Release the id for the object.
       * @note This method is thread-safe
       */

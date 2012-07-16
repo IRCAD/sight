@@ -150,16 +150,4 @@ void fwID::removeIDfromDictionary(IDType _id )
 
 //-----------------------------------------------------------------------------
 
-void fwID::swapID( ::fwTools::Object::sptr   obj2 )
-{
-    IDType id1 = getID(GENERATE);
-    IDType id2 = obj2->getID(GENERATE);
-    resetID();
-    obj2->resetID();
-    setID(id2);
-    obj2->setID(id1);
-}
-
-//-----------------------------------------------------------------------------
-
 }
