@@ -4,20 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWCORE_MT_NAMESPACE_HPP__
-#define __FWCORE_MT_NAMESPACE_HPP__
+#ifndef __FWCORE_LOG_NAMESPACE_HPP__
+#define __FWCORE_LOG_NAMESPACE_HPP__
 
 namespace fwCore
 {
 /**
- * @brief       This namespace fwCore::mt provides common foundations for multithread in FW4SPL.
- * @namespace   fwCore::mt
+ * @brief       This namespace fwCore::log provides common foundations for log in FW4SPL.
+ * @namespace   fwCore::log
  * @author      IRCAD (Research and Development Team).
  * @date        2012.
  */
-namespace mt
+namespace log
 {
 }
 
 }
-#endif /* __FWCORE_MT_NAMESPACE_HPP__ */
+#endif /* __FWCORE_LOG_NAMESPACE_HPP__ */

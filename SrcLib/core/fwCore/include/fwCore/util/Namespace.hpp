@@ -4,20 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWCORE_MT_NAMESPACE_HPP__
-#define __FWCORE_MT_NAMESPACE_HPP__
+#ifndef __FWCORE_UTIL_NAMESPACE_HPP__
+#define __FWCORE_UTIL_NAMESPACE_HPP__
 
 namespace fwCore
 {
 /**
- * @brief       This namespace fwCore::mt provides common foundations for multithread in FW4SPL.
- * @namespace   fwCore::mt
+ * @brief       This namespace fwCore::util provides generic utilities for FW4SPL.
+ * @namespace   fwCore::util
  * @author      IRCAD (Research and Development Team).
  * @date        2012.
  */
-namespace mt
+namespace util
 {
 }
 
 }
-#endif /* __FWCORE_MT_NAMESPACE_HPP__ */
+#endif /* __FWCORE_UTIL_NAMESPACE_HPP__ */
