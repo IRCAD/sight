@@ -11,6 +11,7 @@ CLASSTEST=[
     'BufferObjectTest'        ,
     'ByteSizeTest'            ,
     'NumericRoundCastTest'    ,
+    'FwIDTest'                ,
     ]
 
 USE = ['boost']
