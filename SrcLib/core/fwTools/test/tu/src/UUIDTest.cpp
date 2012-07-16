@@ -51,26 +51,28 @@ void UUIDTest::objectUUIDTest()
 
 void UUIDTest::threadSafeTest()
 {
-    ::fwTest::helper::Thread thread(::boost::bind(&UUIDTest::runUUIDCreation, this));
-    ::fwTest::helper::Thread thread2(::boost::bind(&UUIDTest::runUUIDCreation, this));
-    ::fwTest::helper::Thread thread3(::boost::bind(&UUIDTest::runUUIDCreation, this));
-
-    CPPUNIT_ASSERT(thread.timedJoin(100));
-    CPPUNIT_ASSERT(thread2.timedJoin(100));
-    CPPUNIT_ASSERT(thread3.timedJoin(100));
-
-
-    if (thread.hasFailed())
+    std::vector< SPTR(::fwTest::helper::Thread) > threads;
+    for (int i=0 ; i<30 ; ++i)
     {
-        throw thread.getException();
+        SPTR(::fwTest::helper::Thread) thread;
+        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+                new ::fwTest::helper::Thread(::boost::bind(&UUIDTest::runUUIDCreation, this)));
+        threads.push_back(thread);
     }
-    if (thread2.hasFailed())
+
+    for (int i=0 ; i<10 ; ++i)
     {
-        throw thread2.getException();
+        std::stringstream str;
+        str << "thread " << i;
+        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
     }
-    if (thread3.hasFailed())
+
+    for (int i=0 ; i<10 ; ++i)
     {
-        throw thread3.getException();
+        if (threads[i]->hasFailed())
+        {
+            throw threads[i]->getException();
+        }
     }
 }
 
