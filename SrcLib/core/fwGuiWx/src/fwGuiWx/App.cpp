@@ -29,10 +29,7 @@
 
 #include <fwTools/Os.hpp>
 
-#include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwRuntime/RuntimeException.hpp>
-
-//#include <fwServices/RootManager.hpp>
 
 #include <fwWX/convert.hpp>
 #include <fwWX/LoggerInitializer.hpp>
@@ -123,9 +120,6 @@ bool App::OnInit()
         }
     }
 
-    // Initialize root object : root object, views, ...
-    //::fwServices::RootManager::initializeRootObject();
-
     return TRUE;
 }
 
@@ -135,59 +129,8 @@ int App::OnExit()
 {
     SLM_TRACE_FUNC();
 
-    wxBeginBusyCursor();
-    //::fwServices::RootManager::uninitializeRootObject();
-    wxEndBusyCursor();
-
     delete m_checker;
     return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-bool App::OnCmdLineParsed(wxCmdLineParser & parser)
-{
-    bool parsing;
-
-    parsing = wxApp::OnCmdLineParsed(parser);
-
-    // Retrieves the substitute parameters
-    wxString value;
-    parser.Found("s", &value);
-    if(!value.IsEmpty())
-    {
-        std::string str ( ::fwWX::wx2std(value) );
-        typedef ::boost::tokenizer< ::boost::char_separator<char> >   tokenizer;
-        ::boost::char_separator<char> sep("@");
-        tokenizer tokens(str, sep);
-        assert ( std::distance (tokens.begin(),tokens.end())%2 == 0 );
-        for (tokenizer::iterator tok_iter = tokens.begin(); tok_iter != tokens.end(); ++tok_iter)
-        {
-            std::string key = *tok_iter;
-            std::string val = (*++tok_iter);
-            ::fwRuntime::io::XMLSubstitute::getDefault()->getRefDictionary()[key]= val ;
-            OSLM_TRACE("Token : "<< key << " - " << val );
-        }
-    }
-
-//  // Profile path is valid ?
-//  m_profilePathIsValid = ::boost::filesystem::exists( m_profilePath );
-//
-//  // Print a message if the path is not valid
-//  if ( ! m_profilePathIsValid )
-//  {
-//      const wxString msgPart1 = wxT("A valid profile is required to start the application. The file ");
-//      const wxString msgPart3 = wxT(" does not exist.");
-//
-//      std::stringstream mes;
-//      mes << std::string(msgPart1.mb_str());
-//      mes << m_profilePath;
-//      mes << std::string(msgPart3.mb_str());
-//
-//      usage(mes.str());
-//      parsing = false;
-//  }
-    return parsing;
 }
 
 //-----------------------------------------------------------------------------

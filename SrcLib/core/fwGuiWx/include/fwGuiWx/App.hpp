@@ -52,8 +52,6 @@ public:
 
     FWGUIWX_API void usage(const std::string & mes) const;
 
-    FWGUIWX_API bool OnCmdLineParsed(wxCmdLineParser & parser);
-
     FWGUIWX_API void OnInitCmdLine(wxCmdLineParser & parser);
 
     FWGUIWX_API void OnUnhandledException();
