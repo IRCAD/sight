@@ -18,7 +18,7 @@ namespace operators
 //------------------------------------------------------------------------------
 
 BoxParameterEditor::BoxParameterEditor( wxWindow * parent, ::fwData::Image::sptr pImage ) :
-    wxDialog( parent, wxID_ANY, _("Box parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Box parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_xMin ( 0 ),
     m_yMin ( 0 ),
     m_zMin ( 0 ),
@@ -38,13 +38,13 @@ BoxParameterEditor::~BoxParameterEditor(){}
 
 void BoxParameterEditor::createContent()
 {
-    wxStaticText * pXMinInfo = new wxStaticText( this, wxID_ANY, _(" x min : ") );
-    wxStaticText * pYMinInfo = new wxStaticText( this, wxID_ANY, _(" y min : ") );
-    wxStaticText * pZMinInfo = new wxStaticText( this, wxID_ANY, _(" z min : ") );
-    wxStaticText * pXMaxInfo = new wxStaticText( this, wxID_ANY, _(" x max : ") );
-    wxStaticText * pYMaxInfo = new wxStaticText( this, wxID_ANY, _(" y max : ") );
-    wxStaticText * pZMaxInfo = new wxStaticText( this, wxID_ANY, _(" z max : ") );
-    wxStaticText * pFillValueInfo = new wxStaticText( this, wxID_ANY, _(" fill value : ") );
+    wxStaticText * pXMinInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" x min : ") );
+    wxStaticText * pYMinInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" y min : ") );
+    wxStaticText * pZMinInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" z min : ") );
+    wxStaticText * pXMaxInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" x max : ") );
+    wxStaticText * pYMaxInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" y max : ") );
+    wxStaticText * pZMaxInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" z max : ") );
+    wxStaticText * pFillValueInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" fill value : ") );
 
     wxTextCtrl * pXMin = new wxTextCtrl( this, wxID_ANY);
     wxTextCtrl * pXMax = new wxTextCtrl( this, wxID_ANY);
@@ -93,7 +93,7 @@ void BoxParameterEditor::createContent()
     sizer->Add( pFillValueInfo, 1 , wxLEFT, 10 );
     sizer->Add( pFillValue, 1, wxRIGHT, 10);
 
-    m_checkbox = new wxCheckBox(this, wxID_ANY, _("is inside"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+    m_checkbox = new wxCheckBox(this, wxID_ANY, wxGetTranslation("is inside"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
 //  m_checkbox->SetValue(true);
 
     sizer->Add( m_checkbox, 1 , wxLEFT, 10 );

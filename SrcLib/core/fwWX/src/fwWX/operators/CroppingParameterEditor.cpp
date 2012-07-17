@@ -18,7 +18,7 @@ namespace operators
 {
 
 CroppingParameterEditor::CroppingParameterEditor( wxWindow * parent, int max ) :
- wxDialog( parent, wxID_ANY, _("Image Cropping"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+ wxDialog( parent, wxID_ANY, wxGetTranslation("Image Cropping"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_min ( 0 ),
     m_max ( 0 )
 {
@@ -31,7 +31,7 @@ CroppingParameterEditor::CroppingParameterEditor( wxWindow * parent, int max ) :
     wxStaticText * staticText2 = new wxStaticText( this, wxID_ANY, _T("Max : ") ) ;
     wxStaticText * staticText3 = new wxStaticText( this, wxID_ANY, _T("Axis : ") ) ;
 
-    wxString directionChoices[3] = { _("X"), _("Y"), _("Z")} ;
+    wxString directionChoices[3] = { wxGetTranslation("X"), wxGetTranslation("Y"), wxGetTranslation("Z")} ;
 
     textCtrl1 = new wxTextCtrl( this, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, 0, ::fwWX::validator::LongValidator( m_min, 0, max )) ;
     textCtrl2 = new wxTextCtrl( this, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, 0, ::fwWX::validator::LongValidator( m_max, 0, max )) ;

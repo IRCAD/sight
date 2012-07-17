@@ -69,7 +69,7 @@ AcquisitionSelectorPanelDataView::AcquisitionSelectorPanelDataView(wxWindow * _c
     centerInfo.CloseButton(false);
     centerInfo.Floatable(false);
     centerInfo.MaximizeButton(true);
-    centerInfo.Caption(_("Series selector"));
+    centerInfo.Caption(wxGetTranslation("Series selector"));
 
     // Right Panel
     wxPanel * rightPanel = new wxPanel( this , wxID_ANY,
@@ -81,7 +81,7 @@ AcquisitionSelectorPanelDataView::AcquisitionSelectorPanelDataView(wxWindow * _c
     rightInfo.CloseButton(false);
     rightInfo.Floatable(false);
     rightInfo.MaximizeButton(true);
-    rightInfo.Caption(_("Property"));
+    rightInfo.Caption(wxGetTranslation("Property"));
     rightInfo.Show(true);
     rightInfo.SetFlag(wxAuiPaneInfo::savedHiddenState, rightInfo.HasFlag(wxAuiPaneInfo::optionHidden));
     rightInfo.Hide();

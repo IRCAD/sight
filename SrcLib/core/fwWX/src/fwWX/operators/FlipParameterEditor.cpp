@@ -17,9 +17,9 @@ namespace operators
 {
 
 FlipParameterEditor::FlipParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Image Flip"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Image Flip"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
 {
-    wxString directionChoices[3] = { _("Axial"), _("Frontal"), _("Sagittal")} ;
+    wxString directionChoices[3] = { wxGetTranslation("Axial"), wxGetTranslation("Frontal"), wxGetTranslation("Sagittal")} ;
 
     wxBoxSizer * dialogBoxSizerV = new wxBoxSizer( wxVERTICAL ) ;
 

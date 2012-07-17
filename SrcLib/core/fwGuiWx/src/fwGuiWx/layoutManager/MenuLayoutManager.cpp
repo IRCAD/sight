@@ -94,7 +94,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
             ::fwGuiWx::Shortcut::sptr shortcut =  ::fwGuiWx::Shortcut::New( actionInfo.m_shortcut );
             actionNameInMenu += "\t" + shortcut->toString();
         }
-        menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionNameInMenu ),_(""), kind ) ;
+        menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionNameInMenu ),wxGetTranslation(""), kind ) ;
         menu->Append( menuItemWx );
         menuItem->setWxMenuItem(menuItemWx);
 

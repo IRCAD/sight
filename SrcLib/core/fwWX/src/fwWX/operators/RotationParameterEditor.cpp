@@ -22,11 +22,11 @@ namespace operators
 {
 
 RotationParameterEditor::RotationParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Image Rotation"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Image Rotation"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
 {
-    wxString rotationChoices[2] = { _("+90"), _("-90")} ;
+    wxString rotationChoices[2] = { wxGetTranslation("+90"), wxGetTranslation("-90")} ;
 
-    wxString directionChoices[3] = { _("Sagittal"), _("Frontal"), _("Axial")} ;
+    wxString directionChoices[3] = { wxGetTranslation("Sagittal"), wxGetTranslation("Frontal"), wxGetTranslation("Axial")} ;
 
     wxBoxSizer * dialogBoxSizerV = new wxBoxSizer( wxVERTICAL ) ;
 
@@ -36,20 +36,20 @@ RotationParameterEditor::RotationParameterEditor( wxWindow * parent ) :
     wxSizer* staticBoxSizer = new wxStaticBoxSizer( wxVERTICAL, this, wxT("Rotation (degrees) :"));
 #endif
 
-//  wxStaticBox * staticBox = new wxStaticBox(this, wxID_ANY, _("Rotation (degrees) :"));
+//  wxStaticBox * staticBox = new wxStaticBox(this, wxID_ANY, wxGetTranslation("Rotation (degrees) :"));
 //  wxStaticBoxSizer * staticBoxSizer = new wxStaticBoxSizer(staticBox, wxVERTICAL );
 
     wxFlexGridSizer * flexGridSizer = new wxFlexGridSizer(2, 2, 10, 2);
 
 //  flexGridSizer->Add(
-//          m_rotationRadioBox = new wxRadioBox( this, wxID_ANY, _(""), wxDefaultPosition, wxDefaultSize, 2, rotationChoices ),
+//          m_rotationRadioBox = new wxRadioBox( this, wxID_ANY, wxGetTranslation(""), wxDefaultPosition, wxDefaultSize, 2, rotationChoices ),
 //          0,
 //          wxLEFT | wxRIGHT | wxEXPAND ,
 //          10
 //          );
 
-    m_p90RadioButton = new wxRadioButton(this, wxID_ANY, _("+90"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-    m_m90RadioButton = new wxRadioButton(this, wxID_ANY, _("-90"));
+    m_p90RadioButton = new wxRadioButton(this, wxID_ANY, wxGetTranslation("+90"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+    m_m90RadioButton = new wxRadioButton(this, wxID_ANY, wxGetTranslation("-90"));
 
     ::boost::filesystem::path pathImageP90 ( "share/fwWX_" + std::string(FWWX_VER) + "/rotation_p90.png" );
     wxString filenameP90 ( wxConvertMB2WX(pathImageP90.string().c_str() ) );

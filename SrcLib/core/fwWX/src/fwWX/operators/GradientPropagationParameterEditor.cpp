@@ -19,7 +19,7 @@ namespace operators
 //------------------------------------------------------------------------------
 
 GradientPropagationParameterEditor::GradientPropagationParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Gradient propagation parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Gradient propagation parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_seedX ( 0 ),
     m_seedY ( 0 ),
     m_seedZ ( 0 ),
@@ -40,14 +40,14 @@ GradientPropagationParameterEditor::~GradientPropagationParameterEditor(){}
 
 void GradientPropagationParameterEditor::createContent()
 {
-    wxStaticText * pseedXInfo = new wxStaticText( this, wxID_ANY, _(" X Coord : ") );
-    wxStaticText * pseedYInfo = new wxStaticText( this, wxID_ANY, _(" Y Coord : ") );
-    wxStaticText * pseedZInfo = new wxStaticText( this, wxID_ANY, _(" Z Coord : ") );
-    wxStaticText * pIntMinInfo = new wxStaticText( this, wxID_ANY, _("Min intensity : ") );
-    wxStaticText * pIntMaxInfo = new wxStaticText( this, wxID_ANY, _("Max intensity : ") );
-    wxStaticText * pGradMinInfo = new wxStaticText( this, wxID_ANY, _("Min gradient : ") );
-    wxStaticText * pGradMaxInfo = new wxStaticText( this, wxID_ANY, _("Max gradient : ") );
-    wxStaticText * pColorInfo = new wxStaticText( this, wxID_ANY, _("Color : ") );
+    wxStaticText * pseedXInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" X Coord : ") );
+    wxStaticText * pseedYInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Y Coord : ") );
+    wxStaticText * pseedZInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Z Coord : ") );
+    wxStaticText * pIntMinInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation("Min intensity : ") );
+    wxStaticText * pIntMaxInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation("Max intensity : ") );
+    wxStaticText * pGradMinInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation("Min gradient : ") );
+    wxStaticText * pGradMaxInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation("Max gradient : ") );
+    wxStaticText * pColorInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation("Color : ") );
 
     wxTextCtrl * pseedX = new wxTextCtrl( this, wxID_ANY );
     wxTextCtrl * pseedY = new wxTextCtrl( this, wxID_ANY );

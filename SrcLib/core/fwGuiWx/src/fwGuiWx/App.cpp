@@ -45,7 +45,7 @@ namespace fwGuiWx
 
 App::App()
 {
-    SetAppName( _("launcher") );
+    SetAppName( wxGetTranslation("launcher") );
 #ifdef __MACOSX__
     ProcessSerialNumber PSN;
     GetCurrentProcess(&PSN);
@@ -112,10 +112,10 @@ bool App::OnInit()
     m_checker = new wxSingleInstanceChecker();
     if (m_profile->getCheckSingleInstance())
     {
-        m_checker->Create( ::fwWX::std2wx(appName) + _(".pid"), ::fwWX::std2wx(checkerPath));
+        m_checker->Create( ::fwWX::std2wx(appName) + wxGetTranslation(".pid"), ::fwWX::std2wx(checkerPath));
         if ( m_checker->IsAnotherRunning() )
         {
-            wxLogError(_("Another " + ::fwWX::std2wx(appName) + _(" instance is already running, aborting.")));
+            wxLogError(wxGetTranslation("Another " + ::fwWX::std2wx(appName) + wxGetTranslation(" instance is already running, aborting.")));
             return false;
         }
     }
@@ -264,7 +264,7 @@ wxLanguage GetUILanguage()
         if (info != NULL)
             lang = (wxLanguage)info->Language;
         else
-            wxLogError(_("Uknown locale code '%s' in registry."), lng.c_str());
+            wxLogError(wxGetTranslation("Uknown locale code '%s' in registry."), lng.c_str());
     }
     return lang;
 #endif // NEED_CHOOSELANG_UI
@@ -283,7 +283,7 @@ wxLanguage ChooseLanguage()
 
     LangInfo langs[] =
     {
-            { _("(Use default language)"), wxLANGUAGE_DEFAULT },
+            { wxGetTranslation("(Use default language)"), wxLANGUAGE_DEFAULT },
 
             { _T("English"), wxLANGUAGE_ENGLISH },
             { _T("French"), wxLANGUAGE_FRENCH },
@@ -296,8 +296,8 @@ wxLanguage ChooseLanguage()
         arr.Add(langs[i].name);
 
     int choice = wxGetSingleChoiceIndex(
-            _("Select your prefered language"),
-            _("Language selection"),
+            wxGetTranslation("Select your prefered language"),
+            wxGetTranslation("Language selection"),
             arr);
     if (choice == -1)
         return wxLANGUAGE_UNKNOWN;

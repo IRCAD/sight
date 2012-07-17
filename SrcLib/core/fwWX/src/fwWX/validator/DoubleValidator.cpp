@@ -72,7 +72,7 @@ bool DoubleValidator::TransferToWindow()
 {
     wxTextCtrl  * textCtrl = wxStaticCast( GetWindow(), wxTextCtrl );
     OSLM_DEBUG( "DoubleValidator::TransferFromWindow() => " << this->m_value );
-    wxString    value = wxString::Format( _("%0.4f"), this->m_value );
+    wxString    value = wxString::Format( wxGetTranslation("%0.4f"), this->m_value );
 
     if( textCtrl->GetValue() != value )
     {
@@ -97,7 +97,7 @@ bool DoubleValidator::Validate( wxWindow * parent )
 
         ::wxMessageBox(
                 ::fwWX::std2wx( ss.str() ),
-                _("Invalid value"),
+                wxGetTranslation("Invalid value"),
                 wxOK|wxICON_ERROR,
                 parent );
         GetWindow()->SetFocus();

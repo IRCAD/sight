@@ -31,9 +31,9 @@ namespace fwWX
 
 const wxString SliceSelector::m_sliceTypes[] =
 {
-        wxString( _("Sagittal") ),
-        wxString( _("Frontal") ),
-        wxString( _("Axial") )
+        wxString( wxGetTranslation("Sagittal") ),
+        wxString( wxGetTranslation("Frontal") ),
+        wxString( wxGetTranslation("Axial") )
 };
 
 //------------------------------------------------------------------------------
@@ -51,12 +51,12 @@ SliceSelector::SliceSelector(wxWindow* const parent, const wxWindowID id ) throw
 
 #ifdef __MACOSX__
     m_sliceMenu = new wxMenu();
-    m_sliceType = new wxButton( this, ID_SLICE_TYPE, _("Planes"), wxDefaultPosition, wxDefaultSize );
+    m_sliceType = new wxButton( this, ID_SLICE_TYPE, wxGetTranslation("Planes"), wxDefaultPosition, wxDefaultSize );
 #else
     m_sliceType = new wxChoice( this, ID_SLICE_TYPE, wxDefaultPosition, wxDefaultSize, m_sliceTypesArray );
 #endif
     m_sliceIndex = new wxSlider( this, ID_SLICE_INDEX, 0, 0, 0);
-    m_pSliceIndexText = new wxTextCtrl( this, ID_SLICE_TEXT, _(""), wxDefaultPosition, wxSize(75,-1), wxTE_READONLY|wxTE_CENTRE);
+    m_pSliceIndexText = new wxTextCtrl( this, ID_SLICE_TEXT, wxGetTranslation(""), wxDefaultPosition, wxSize(75,-1), wxTE_READONLY|wxTE_CENTRE);
 
     wxSizer* const sizer = new wxBoxSizer( wxHORIZONTAL );
     sizer->Add( m_sliceType      , 0, ( wxEXPAND | wxALL )  , 1 );

@@ -48,15 +48,15 @@ m_serviceParent(_serviceParent)
     int cellWidthT2 = 150;
     int cellWidthT3 = 200;
 
-    m_wxList->InsertColumn(0, _("Name"), wxLIST_FORMAT_LEFT, cellWidthT3);
-    m_wxList->InsertColumn(1, _("Modality"), wxLIST_FORMAT_CENTER, cellWidthT1);
-    m_wxList->InsertColumn(2, _("Zone"), wxLIST_FORMAT_LEFT, cellWidthT3);
-    m_wxList->InsertColumn(3, _("ID"), wxLIST_FORMAT_LEFT, cellWidthT1);
-    m_wxList->InsertColumn(4, _("Birthdate"), wxLIST_FORMAT_CENTER, cellWidthT2);
-    m_wxList->InsertColumn(5, _("Hospital"), wxLIST_FORMAT_LEFT, cellWidthT2);
-    m_wxList->InsertColumn(6, _("Acq. date"), wxLIST_FORMAT_CENTER, cellWidthT2);
-    m_wxList->InsertColumn(7, _("Nb images"), wxLIST_FORMAT_CENTER, cellWidthT1);
-    m_wxList->InsertColumn(8, _("Voxel size"), wxLIST_FORMAT_CENTER, cellWidthT2);
+    m_wxList->InsertColumn(0, wxGetTranslation("Name"), wxLIST_FORMAT_LEFT, cellWidthT3);
+    m_wxList->InsertColumn(1, wxGetTranslation("Modality"), wxLIST_FORMAT_CENTER, cellWidthT1);
+    m_wxList->InsertColumn(2, wxGetTranslation("Zone"), wxLIST_FORMAT_LEFT, cellWidthT3);
+    m_wxList->InsertColumn(3, wxGetTranslation("ID"), wxLIST_FORMAT_LEFT, cellWidthT1);
+    m_wxList->InsertColumn(4, wxGetTranslation("Birthdate"), wxLIST_FORMAT_CENTER, cellWidthT2);
+    m_wxList->InsertColumn(5, wxGetTranslation("Hospital"), wxLIST_FORMAT_LEFT, cellWidthT2);
+    m_wxList->InsertColumn(6, wxGetTranslation("Acq. date"), wxLIST_FORMAT_CENTER, cellWidthT2);
+    m_wxList->InsertColumn(7, wxGetTranslation("Nb images"), wxLIST_FORMAT_CENTER, cellWidthT1);
+    m_wxList->InsertColumn(8, wxGetTranslation("Voxel size"), wxLIST_FORMAT_CENTER, cellWidthT2);
 
     wxSizer *   testSizer   ( new wxBoxSizer( wxVERTICAL ) );
     testSizer->Add(m_wxList, 1, wxALL|wxEXPAND);
@@ -106,7 +106,7 @@ void AcquisitionSelectorPanel::onKeyDown( wxListEvent & event )
 
         if ( m_associatedPatientDB->getNumberOfPatients() > 1 || patient->getNumberOfStudies() > 1 || study->getNumberOfAcquisitions() > 1 )
         {
-            int answer = wxMessageBox( _("Are you sure to remove the patient of the list ?"), _("Patient delete"), wxYES_NO | wxICON_WARNING, this );
+            int answer = wxMessageBox( wxGetTranslation("Are you sure to remove the patient of the list ?"), wxGetTranslation("Patient delete"), wxYES_NO | wxICON_WARNING, this );
             if (answer == wxYES)
             {
                 // Save current selection
@@ -131,7 +131,7 @@ void AcquisitionSelectorPanel::onKeyDown( wxListEvent & event )
         }
         else
         {
-            wxMessageBox( _("Sorry, it is not possible to remove the last patient of the list. This patient is used by the application."), _("Patient delete"), wxOK | wxICON_INFORMATION, this );
+            wxMessageBox( wxGetTranslation("Sorry, it is not possible to remove the last patient of the list. This patient is used by the application."), wxGetTranslation("Patient delete"), wxOK | wxICON_INFORMATION, this );
         }
     }
 }

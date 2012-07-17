@@ -79,8 +79,8 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
     // Creates the default buttons.
     wxSizer  * defaultButtonSizer = new wxBoxSizer( wxHORIZONTAL );
-    wxButton * okButton = new wxButton( dialog, wxID_OK, _("OK") );
-    wxButton * cancelButton = new wxButton( dialog, wxID_CANCEL, _("Cancel") );
+    wxButton * okButton = new wxButton( dialog, wxID_OK, wxGetTranslation("OK") );
+    wxButton * cancelButton = new wxButton( dialog, wxID_CANCEL, wxGetTranslation("Cancel") );
 
     okButton->SetDefault();
     defaultButtonSizer->Add( okButton, 0, 0 );

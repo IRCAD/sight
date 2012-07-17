@@ -18,7 +18,7 @@ namespace operators
 {
 
 MeshParameterEditor::MeshParameterEditor( wxWindow * parent ) :
- wxDialog( parent, wxID_ANY, _("Image Mesh"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+ wxDialog( parent, wxID_ANY, wxGetTranslation("Image Mesh"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_value ( 0 ),
     m_minVoxelSize(1),
     m_maxVoxelSize(1)

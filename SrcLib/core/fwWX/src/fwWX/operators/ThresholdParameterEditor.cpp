@@ -23,7 +23,7 @@ namespace operators
 END_EVENT_TABLE()*/
 
 ThresholdParameterEditor::ThresholdParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Threshold image"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Threshold image"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     outsideValue ( 0 ),
     insideValue ( 255 ),
     lowerThreshold ( -200 ),

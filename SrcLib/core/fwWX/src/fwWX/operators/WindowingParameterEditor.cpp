@@ -20,7 +20,7 @@ namespace operators
 //------------------------------------------------------------------------------
 
 WindowingParameterEditor::WindowingParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Windowing parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Windowing parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_iWindowMinimum ( 0 ),
     m_iWindowMaximum ( 0 ),
     m_iOutputMinimum ( 0 ),
@@ -38,10 +38,10 @@ WindowingParameterEditor::~WindowingParameterEditor(){}
 void WindowingParameterEditor::createContent()
 {
 
-    wxStaticText * pWindowMinimumInfo = new wxStaticText( this, wxID_ANY, _(" Window minimun : ") );
-    wxStaticText * pWindowMaximumInfo = new wxStaticText( this, wxID_ANY, _(" Window maximum : ") );
-    wxStaticText * pOutputMinimumInfo = new wxStaticText( this, wxID_ANY, _(" Output minimum : ") );
-    wxStaticText * pOutputMaximunInfo = new wxStaticText( this, wxID_ANY, _(" Output maximum : ") );
+    wxStaticText * pWindowMinimumInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Window minimun : ") );
+    wxStaticText * pWindowMaximumInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Window maximum : ") );
+    wxStaticText * pOutputMinimumInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Output minimum : ") );
+    wxStaticText * pOutputMaximunInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Output maximum : ") );
 
 
     wxTextCtrl * pWindowMinimum = new wxTextCtrl( this, wxID_ANY );

@@ -8,5 +8,6 @@ LIB     = [
           'fwServices_0-1',
           'fwDataTools_0-1',
           ]
+GLOBAL_DEF = ['WXINTL_NO_GETTEXT_MACRO']
 TYPE    = 'shared'
 VERSION = '0-1'

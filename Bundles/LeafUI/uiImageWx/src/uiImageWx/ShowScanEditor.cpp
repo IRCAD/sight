@@ -80,7 +80,7 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
 
 
     m_showScanButton = new wxBitmapButton( container, wxNewId(), m_imageShowScan, wxDefaultPosition, wxSize(40,-1) ) ;
-    m_showScanButton->SetToolTip(_("Show/Hide Scan"));
+    m_showScanButton->SetToolTip(wxGetTranslation("Show/Hide Scan"));
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
     sizer->Add( m_showScanButton, 1, wxALL|wxEXPAND, 1 );

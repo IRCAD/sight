@@ -73,12 +73,12 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
     SLM_ASSERT("container not instanced", container);
 
     m_dropDownButton = new wxButton( container, m_idDropDown, _T(">"), wxDefaultPosition, wxSize(25,-1) );
-    m_dropDownButton->SetToolTip(_("Manage slice visibility"));
+    m_dropDownButton->SetToolTip(wxGetTranslation("Manage slice visibility"));
 
     m_pDropDownMenu = new wxMenu();
-    m_oneSliceItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), _("One slice"), wxEmptyString, wxITEM_RADIO);
-    m_threeSlicesItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), _("three slices"), wxEmptyString, wxITEM_RADIO);
-//  m_obliqueSliceItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), _("Oblique slice") , wxEmptyString, wxITEM_RADIO);
+    m_oneSliceItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), wxGetTranslation("One slice"), wxEmptyString, wxITEM_RADIO);
+    m_threeSlicesItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), wxGetTranslation("three slices"), wxEmptyString, wxITEM_RADIO);
+//  m_obliqueSliceItem = new wxMenuItem(m_pDropDownMenu, wxNewId(), wxGetTranslation("Oblique slice") , wxEmptyString, wxITEM_RADIO);
     m_pDropDownMenu->Append(m_oneSliceItem);
     m_pDropDownMenu->Append(m_threeSlicesItem);
 //    m_pDropDownMenu->Append(m_obliqueSliceItem);

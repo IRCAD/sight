@@ -78,7 +78,7 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
     wxImage imageSnap;
     imageSnap.LoadFile(filenameSnap);
     wxBitmapButton* snapButton = new wxBitmapButton( container, m_idSnapButton, imageSnap, wxDefaultPosition, wxSize(25,-1) ) ;
-    snapButton->SetToolTip(_("Snapshot"));
+    snapButton->SetToolTip(wxGetTranslation("Snapshot"));
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
     sizer->Add( snapButton, 1, wxALL|wxEXPAND, 1 );
