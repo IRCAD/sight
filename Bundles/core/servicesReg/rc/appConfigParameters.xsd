@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="extension" type="ExtensionType" />
+
+    <xs:complexType name="ExtensionType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string" />
+            <xs:element name="parameters" type="ParametersType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:anyAttribute processContents="skip" />
+    </xs:complexType>
+
+    <xs:complexType name="ParametersType">
+        <xs:sequence>
+            <xs:element name="param" type="ParamType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ParamType">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='value' type='xs:string' />
+    </xs:complexType>
+
+</xs:schema>        

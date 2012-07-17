@@ -41,7 +41,8 @@ public:
     APPXML_API void uninitialize() throw();
 
 private:
-    std::string m_configurationName ;
+    std::string m_configurationName;
+    std::string m_parametersName;
     ::fwServices::AppConfigManager::sptr m_appConfigMng;
 };
 

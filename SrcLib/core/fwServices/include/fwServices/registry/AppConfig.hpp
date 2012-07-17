@@ -39,6 +39,7 @@ public :
     enum ConfigType {
         TEMPLATE,
         STANDARD,
+        PARAMETERS
     };
 
     fwCoreClassDefinitionsWithFactoryMacro( (AppInfo)(::fwCore::BaseObject), (()), new AppInfo );
@@ -52,6 +53,8 @@ public :
     ConfigType type;
     std::string group;
     std::string desc;
+    typedef std::map< std::string, std::string > ParamatersType;
+    ParamatersType parameters;
     ::fwRuntime::ConfigurationElement::csptr config;
 };
 
@@ -83,6 +86,7 @@ public:
             AppInfo::ConfigType type,
             const std::string & group,
             const std::string & desc,
+            const AppInfo::ParamatersType & parameters,
             ::fwRuntime::ConfigurationElement::csptr config);
 
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getStandardConfig( const std::string & configId ) const;
