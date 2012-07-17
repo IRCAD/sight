@@ -15,7 +15,6 @@
 
 #include <fwTools/Os.hpp>
 
-#include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
