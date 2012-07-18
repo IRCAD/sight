@@ -146,8 +146,21 @@ protected:
     // viewport is the same as preceding.
     ViewportSizeRatio m_viewportInitialSize;
 
+    typedef std::pair< ::scene2D::adaptor::IAdaptor::wptr, ::fwServices::ComChannelService::wptr > AdaptorAndComType;
+    typedef std::vector< AdaptorAndComType > ManagedAdaptorVector;
 
+    /// Return all managed adaptor
+    SCENE2D_API ManagedAdaptorVector & getRegisteredServices() { return m_managedAdaptors; };
+
+    /// Register new adaptor and create his communication channel
+    SCENE2D_API void registerService( ::fwData::Object::sptr obj, ::scene2D::adaptor::IAdaptor::sptr srv );
+
+    /// Unregister all adaptors
+    SCENE2D_API void unregisterServices();
 private:
+
+    // All managed adaptors & their communication channel
+    ManagedAdaptorVector m_managedAdaptors;
 
     /// The render that manage the IAdaptor.
     ::scene2D::Render::wptr m_scene2DRender;

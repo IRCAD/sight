@@ -307,6 +307,33 @@ void IAdaptor::processInteraction( ::scene2D::data::Event::sptr _event )
 
 //-----------------------------------------------------------------------------
 
+void IAdaptor::registerService( ::fwData::Object::sptr obj, ::scene2D::adaptor::IAdaptor::sptr srv )
+{
+    ::fwServices::ComChannelService::sptr comSrv;
+    comSrv = ::fwServices::registerCommunicationChannel( obj, srv );
+    comSrv->start();
+
+    AdaptorAndComType info = std::make_pair( srv, comSrv );
+    m_managedAdaptors.push_back( info );
+}
+
+//-----------------------------------------------------------------------------
+
+void IAdaptor::unregisterServices()
+{
+    BOOST_FOREACH( ManagedAdaptorVector::value_type info, m_managedAdaptors )
+    {
+        info.second.lock()->stop();
+        ::fwServices::OSR::unregisterService( info.second.lock() );
+
+        info.first.lock()->stop();
+        ::fwServices::OSR::unregisterService(info.first.lock());
+    }
+    m_managedAdaptors.clear();
+}
+
+//-----------------------------------------------------------------------------
+
 }
 } // namespace scene2D
 
