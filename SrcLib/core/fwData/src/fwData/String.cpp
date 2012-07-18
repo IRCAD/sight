@@ -16,8 +16,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-String::String( const std::string value ) throw()
-:   GenericField< std::string >( value )
+String::String(::fwData::Object::Key key ) throw()
 {}
 
 //------------------------------------------------------------------------------
@@ -26,6 +25,7 @@ String::~String() throw()
 {}
 
 //------------------------------------------------------------------------------
+
 void String::shallowCopy( String::csptr _source )
 {
     this->fieldShallowCopy( _source );

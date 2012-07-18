@@ -13,7 +13,7 @@ fwDataRegisterMacro( ::fwData::Material );
 namespace fwData
 {
 
-Material::Material() :
+Material::Material(::fwData::Object::Key key) :
     m_shadingMode(MODE_PHONG),
     m_representationMode(MODE_SURFACE),
     m_optionsMode(MODE_STANDARD),

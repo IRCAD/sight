@@ -11,10 +11,11 @@
 #include <string>
 #include <vector>
 
-#include <boost/shared_ptr.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 #include <boost/functional/factory.hpp>
 #include <boost/functional/value_factory.hpp>
-#include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "fwCore/mt/types.hpp"
 
@@ -76,6 +77,16 @@ public:
                 ::boost::bind(& RegistryType::value_type::first,_1) );
         return vectKeys;
     }
+
+    struct Registrar
+    {
+        typedef FactoryRegistryBase< FACTORY_SIGNATURE, KEY_TYPE > FactoryRegistryType;
+
+        Registrar(FactoryRegistryType &registry, const KeyType& name, FactoryType factory)
+        {
+            registry.addFactory(name, factory);
+        }
+    };
 
 protected:
 

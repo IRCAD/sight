@@ -9,7 +9,7 @@
 
 #include "fwData/StructureTraits.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -25,9 +25,19 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraitsDictionary : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraitsDictionary)(::fwData::Object), (()), ::fwData::Factory::New< StructureTraitsDictionary >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraitsDictionary)(::fwData::Object), (()), ::fwData::factory::New< StructureTraitsDictionary >) ;
 
     typedef std::vector<std::string> StructureTypeNameContainer;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API StructureTraitsDictionary(::fwData::Object::Key key);
+
+    /// Destructor. Does nothing.
+    FWDATA_API virtual ~StructureTraitsDictionary();
+
 
     /**
      * @brief Add a structure in dictionary
@@ -53,14 +63,6 @@ public:
 
     /// Defines deep copy
     FWDATA_API void deepCopy( StructureTraitsDictionary::csptr _source );
-
-protected :
-
-    /// Constructor
-    FWDATA_API StructureTraitsDictionary();
-
-    /// Destructor. Does nothing.
-    FWDATA_API virtual ~StructureTraitsDictionary();
 
 private:
 

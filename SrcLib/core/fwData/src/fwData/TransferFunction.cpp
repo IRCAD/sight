@@ -24,9 +24,8 @@ const std::string TransferFunction::s_DEFAULT_TF_NAME = "CT-GreyLevel";
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction()
+TransferFunction::TransferFunction(::fwData::Object::Key key)
 {
-    SLM_TRACE_FUNC();
     this->initTF();
 }
 

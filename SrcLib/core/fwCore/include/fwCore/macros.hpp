@@ -403,7 +403,7 @@
     { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getLeafClassname<SelfType>());};             \
     /** @brief return object's classname given by ::fwCore::Demangler::getClassname()  */        \
     virtual const std::string& getClassname() const                                              \
-    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getClassname());};          \
+    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getClassname<SelfType>());};          \
     static  const std::string& classname()                                                       \
     { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getClassname<SelfType>());};                 \
     /** @brief return object's classname given by ::fwCore::Demangler::getFullClassname()  */    \

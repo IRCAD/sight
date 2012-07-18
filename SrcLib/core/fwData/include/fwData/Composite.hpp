@@ -14,7 +14,7 @@
 #include "fwData/config.hpp"
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 
 // boost 1.47 issue with FOREACH
@@ -47,7 +47,7 @@ namespace fwData
 class FWDATA_CLASS_API Composite : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::Factory::New< Composite >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::factory::New< Composite >) ;
 
     typedef std::map< std::string, ::fwData::Object::sptr > ContainerType;
 
@@ -70,6 +70,17 @@ public:
     typedef ContainerType::reverse_iterator reverse_iterator;
     typedef ContainerType::const_reverse_iterator const_reverse_iterator;
     typedef ContainerType::size_type size_type;
+
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Composite( ::fwData::Object::Key key );
+
+    /// Destructor
+    FWDATA_API virtual ~Composite();
+
 
     IteratorType begin() { return m_attrContainer.begin(); }
     IteratorType end()   { return m_attrContainer.end(); }
@@ -134,12 +145,6 @@ public:
     }
 
 protected:
-    /// Constructor
-    FWDATA_API Composite();
-
-    /// Destructor
-    FWDATA_API virtual ~Composite();
-
     ContainerType m_attrContainer;
 };
 

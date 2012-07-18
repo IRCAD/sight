@@ -17,8 +17,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Integer::Integer( const int value ) throw()
-:   GenericField< int >( value )
+Integer::Integer(::fwData::Object::Key key ) throw()
 {}
 
 //------------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -32,6 +32,19 @@ public:
 
     fwDataObjectMacro();
 
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Float( ::fwData::Object::Key key ) throw();
+
+    /**
+     * @brief Destructor.
+     */
+    FWDATA_API virtual ~Float() throw();
+
+
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Float::csptr _source );
 
@@ -39,16 +52,8 @@ public:
     FWDATA_API void deepCopy( Float::csptr _source );
 
 protected:
-    /**
-     * @brief Constructor.
-     * @param[in] value The initial value.
-     */
-    FWDATA_API Float( const float value = 0.0f ) throw();
 
-    /**
-     * @brief Destructor.
-     */
-    FWDATA_API virtual ~Float() throw();
+    FWDATA_API Float() throw();
 };
 
 } // namespace fwData

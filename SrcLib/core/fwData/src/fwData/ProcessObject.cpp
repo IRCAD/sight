@@ -19,7 +19,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-ProcessObject::ProcessObject()
+ProcessObject::ProcessObject(::fwData::Object::Key key)
 {}
 
 //------------------------------------------------------------------------------

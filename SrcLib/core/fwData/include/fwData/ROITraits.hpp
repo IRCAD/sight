@@ -9,7 +9,7 @@
 
 #include "fwData/Node.hpp"
 #include "fwData/StructureTraits.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -31,7 +31,18 @@ namespace fwData
 class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::Factory::New< ROITraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::factory::New< ROITraits >) ;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API ROITraits(::fwData::Object::Key key);
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~ROITraits();
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
 
@@ -48,18 +59,6 @@ public:
 
     /// Get the associated structure traits
     FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
-
-protected :
-
-    /**
-     * @brief constructor
-     */
-    FWDATA_API ROITraits();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~ROITraits();
 
 private:
 

@@ -12,7 +12,7 @@
 #include <fwCore/mt/types.hpp>
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Camera.hpp"
 #include "fwData/TransformationMatrix3D.hpp"
 
@@ -30,9 +30,20 @@ namespace fwData
 class FWDATA_CLASS_API Video : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwData::Factory::New< Video >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwData::factory::New< Video >) ;
 
     typedef ::boost::uint8_t VideoType;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Video(::fwData::Object::Key key);
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Video() throw();
 
     /// @brief Get the buffer size along X axis
     ::boost::uint32_t  getXSize() const { return m_ui32XSize; };
@@ -77,16 +88,6 @@ public:
 
 protected :
 
-    /**
-     * @brief constructor
-     */
-    FWDATA_API Video();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~Video() throw();
-
     /// Flag if the video is available
     bool m_dataAvailable;
 
@@ -98,7 +99,6 @@ protected :
 
     /// Camera
     ::fwData::Camera::sptr m_camera;
-
 };
 
 } // namespace fwData

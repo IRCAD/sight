@@ -8,7 +8,6 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/StructureTraitsDictionary.hpp"
@@ -19,9 +18,8 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-StructureTraitsDictionary::StructureTraitsDictionary ()
+StructureTraitsDictionary::StructureTraitsDictionary (::fwData::Object::Key key)
 {}
-
 
 //------------------------------------------------------------------------------
 

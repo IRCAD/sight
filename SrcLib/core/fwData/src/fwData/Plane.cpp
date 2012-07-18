@@ -19,21 +19,11 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Plane::Plane () : m_isIntersection(true)
+Plane::Plane (::fwData::Object::Key key) : m_isIntersection(true)
 {
     m_vPoints[0] = ::fwData::Point::New();
     m_vPoints[1] = ::fwData::Point::New();
     m_vPoints[2] = ::fwData::Point::New();
-}
-
-//------------------------------------------------------------------------------
-
-Plane::Plane(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3)
-{
-    m_vPoints[0] = _point1;
-    m_vPoints[1] = _point2;
-    m_vPoints[2] = _point3;
-    this->computePlaneFromPoints();
 }
 
 //------------------------------------------------------------------------------

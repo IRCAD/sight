@@ -11,7 +11,7 @@
 #include "fwData/config.hpp"
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -26,15 +26,18 @@ class FWDATA_CLASS_API None : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object), (()), ::fwData::Factory::New< None >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (None)(::fwData::Object), (()), ::fwData::factory::New< None >) ;
 
-    FWDATA_API static bool isNone(::fwData::Object::sptr object);
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API None(::fwData::Object::Key key);
 
-protected:
-    /// Constructor
-    FWDATA_API None();
     /// Destructor
     FWDATA_API virtual ~None();
+
+    FWDATA_API static bool isNone(::fwData::Object::sptr object);
 
 }; // end class None
 

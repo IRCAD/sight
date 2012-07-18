@@ -16,7 +16,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Point::Point ()
+Point::Point(::fwData::Object::Key key)
 {
     m_vCoord[0] = 0.0;
     m_vCoord[1] = 0.0;

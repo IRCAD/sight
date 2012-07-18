@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/Object.hpp>
+#include <fwData/Float.hpp>
 
 #include "ObjectTest.hpp"
 
@@ -41,9 +42,9 @@ void ObjectTest::fieldTest()
     const std::string FIELD_ID3 = "FIELD_ID3";
 
     ::fwData::Object::sptr nullobj;
-    ::fwData::Object::sptr obj = ::fwData::Object::New();
-    ::fwData::Object::sptr fieldObj1 = ::fwData::Object::New();
-    ::fwData::Object::sptr fieldObj2 = ::fwData::Object::New();
+    ::fwData::Object::sptr obj = ::fwData::Float::New();
+    ::fwData::Object::sptr fieldObj1 = ::fwData::Float::New();
+    ::fwData::Object::sptr fieldObj2 = ::fwData::Float::New();
 
     CPPUNIT_ASSERT(obj->getFields().empty());
 

@@ -9,8 +9,6 @@
 #include <functional>
 #include <numeric>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include "fwData/registry/macros.hpp"
 
 #include "fwData/Array.hpp"
@@ -51,7 +49,7 @@ inline size_t computeSize(
 
 //------------------------------------------------------------------------------
 
-Array::Array():
+Array::Array( ::fwData::Object::Key key ):
     m_strides(0),
     m_type(),
     m_attrBufferObject(::fwTools::BufferObject::New()),

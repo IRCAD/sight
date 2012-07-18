@@ -13,8 +13,10 @@ fwDataRegisterMacro( ::fwData::TriangularMesh );
 namespace fwData
 {
 
-TriangularMesh::TriangularMesh()
+TriangularMesh::TriangularMesh(::fwData::Object::Key key)
 {}
+
+//-----------------------------------------------------------------------------
 
 TriangularMesh::~TriangularMesh()
 {

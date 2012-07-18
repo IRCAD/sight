@@ -15,7 +15,7 @@ fwDataRegisterMacro( ::fwData::Patient );
 namespace fwData
 {
 
-Patient::Patient () :
+Patient::Patient(::fwData::Object::Key key) :
                     m_sName (""),
                     m_sFirstname (""),
                     m_sIDDicom (""),
@@ -27,7 +27,7 @@ Patient::Patient () :
 
 //------------------------------------------------------------------------------
 
-Patient::~Patient ()
+Patient::~Patient()
 {}
 
 //------------------------------------------------------------------------------

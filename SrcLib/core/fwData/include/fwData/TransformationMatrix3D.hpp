@@ -12,7 +12,7 @@
 #include <assert.h>
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -28,13 +28,22 @@ class FWDATA_CLASS_API TransformationMatrix3D : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
-            (()), ::fwData::Factory::New< TransformationMatrix3D >) ;
+            (()), ::fwData::factory::New< TransformationMatrix3D >) ;
 
     typedef double TM3DType;
     typedef std::vector<TM3DType> TMCoefArray;
 
     //duplication methods
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API TransformationMatrix3D(::fwData::Object::Key key);
+
+    //! @brief destructor
+    FWDATA_API virtual ~TransformationMatrix3D();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( TransformationMatrix3D::csptr _source );
@@ -70,13 +79,7 @@ public :
         return s;
     }
 
-private :
-
-    //! @brief constructor
-    FWDATA_API TransformationMatrix3D();
-
-    //! @brief destructor
-    FWDATA_API virtual ~TransformationMatrix3D();
+protected :
 
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
     TMCoefArray m_vCoefficients;

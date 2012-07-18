@@ -15,7 +15,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -32,7 +32,7 @@ namespace fwData
 class FWDATA_CLASS_API TriangularMesh : public Object
 {
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwData::Factory::New< TriangularMesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwData::factory::New< TriangularMesh >) ;
 
     /// 3D point container
     typedef std::vector< std::vector< float > >         PointContainer ;
@@ -55,6 +55,17 @@ public :
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumCellsFunc;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API TriangularMesh(::fwData::Object::Key key);
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~TriangularMesh() ;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( TriangularMesh::csptr _source );
@@ -109,17 +120,6 @@ public :
     FWDATA_API size_t getNumCells(void) const ;
 
 protected :
-
-
-    /**
-     * @brief constructor
-     */
-    FWDATA_API TriangularMesh();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~TriangularMesh() ;
 
     PointContainer m_points ;
     CellContainer  m_cells ;

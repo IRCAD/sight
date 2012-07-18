@@ -11,7 +11,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
 
 namespace fwData
@@ -34,7 +34,7 @@ class FWDATA_CLASS_API List : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::Factory::New< List >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >) ;
 
     typedef std::list< Object::sptr > ContainerType;
 
@@ -46,6 +46,15 @@ public:
     typedef ContainerType::reverse_iterator ReverseIteratorType;
     typedef ContainerType::const_reverse_iterator ConstReverseIteratorType;
     typedef ContainerType::size_type SizeType;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API List(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~List();
 
     /// boost_foreach/stl compatibility
     /// @{
@@ -92,11 +101,6 @@ public:
     FWDATA_API void deepCopy( List::csptr _source );
 
 protected:
-    /// Constructor
-    FWDATA_API List();
-
-    /// Destructor
-    FWDATA_API virtual ~List();
 
     ContainerType m_attrContainer;
 };

@@ -14,7 +14,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Patient.hpp"
 
 namespace fwData
@@ -31,9 +31,18 @@ class FWDATA_CLASS_API PatientDB : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwData::Factory::New< PatientDB >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwData::factory::New< PatientDB >) ;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API PatientDB(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~PatientDB();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( PatientDB::csptr _source );
@@ -59,11 +68,6 @@ public:
     FWDATA_API void addPatient( ::fwData::Patient::sptr _patient );
 
 protected:
-    /// Constructor
-    FWDATA_API PatientDB ();
-
-    /// Destructor
-    FWDATA_API virtual ~PatientDB ();
 
     PatientContainerType m_attrPatients;
 };

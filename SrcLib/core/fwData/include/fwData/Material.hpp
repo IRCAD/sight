@@ -10,7 +10,7 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -28,9 +28,18 @@ class FWDATA_CLASS_API Material : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::Factory::New< Material >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::factory::New< Material >) ;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Material(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Material();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Material::csptr _source );
@@ -97,12 +106,6 @@ public:
     fwGettersSettersDocMacro(OptionsMode, optionsMode, OPTIONS_MODE, the option representation (Standard, normals).);
 
 protected :
-
-    /// Constructor
-    FWDATA_API Material();
-
-    /// Destructor
-    FWDATA_API virtual ~Material();
 
     SHADING_MODE m_shadingMode;
     REPRESENTATION_MODE m_representationMode;

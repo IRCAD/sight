@@ -11,7 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 
 namespace fwData
@@ -30,7 +30,7 @@ class FWDATA_CLASS_API Point : public Object
 public :
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwData::Object),
-       ((::fwData::Factory::New< Point > ,() ))
+       ((::fwData::factory::New< Point > ,() ))
        ((PointFactory ,((float)) ((float)(0.0)) ((float) (0.0)) ))
        ((PointFactory ,((Point::sptr)) ))
        );
@@ -39,6 +39,15 @@ public :
     typedef fwVec3d PointCoordArrayType;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Point(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Point();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Point::csptr _source );
@@ -50,12 +59,6 @@ public :
     fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
 
 protected :
-
-    /// Constructor
-    FWDATA_API Point();
-
-    /// Destructor
-    FWDATA_API virtual ~Point();
 
     /// Point factory
     FWDATA_API static Point::sptr PointFactory(float x, float y, float z);

@@ -12,7 +12,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 #include "fwData/Node.hpp"
 #include "fwData/String.hpp"
@@ -30,9 +30,18 @@ class FWDATA_CLASS_API DictionaryOrgan : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwData::Factory::New< DictionaryOrgan >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwData::factory::New< DictionaryOrgan >) ;
 
-    // Generator result---------------------------------------------------------
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API DictionaryOrgan( ::fwData::Object::Key key );
+
+    /// Destructor
+    FWDATA_API virtual ~DictionaryOrgan();
+
 
     fwGettersSettersDocMacro(StructureType, sStructureType, std::string, the organ structure type);
 
@@ -94,12 +103,6 @@ public:
     fwGettersSettersDocMacro(MeshDataNode, meshDataNode, ::fwData::Node::wptr, the node that represents the organ mesh);
 
 protected :
-
-    /// Constructor
-    FWDATA_API DictionaryOrgan();
-
-    /// Destructor
-    FWDATA_API virtual ~DictionaryOrgan();
 
     /// the name of the organ
     ::fwData::String::sptr m_organName;

@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 
 #include "fwData/ReconstructionTraits.hpp"
 #include "fwData/registry/macros.hpp"
@@ -69,7 +68,7 @@ void ReconstructionTraits::setStructureTraits( ::fwData::StructureTraits::sptr s
 
 //------------------------------------------------------------------------------
 
-ReconstructionTraits::ReconstructionTraits()
+ReconstructionTraits::ReconstructionTraits(::fwData::Object::Key key)
 {}
 
 

@@ -15,7 +15,7 @@
 #include <boost/typeof/typeof.hpp>
 
 #include <fwTools/random/Generator.hpp>
-#include <fwData/Object.hpp>
+#include <fwData/Float.hpp>
 #include <fwData/macros.hpp>
 
 #include "MacrosTest.hpp"
@@ -80,7 +80,7 @@ void MacrosTest::getterSetterTest()
     int valInt = ::fwTools::random::getValue(-100, 100);
     MyObjectTest::VectFloatType vectFloat(100, 0);
     ::fwTools::random::fillContainer(0.f, 100.f, vectFloat);
-    ::fwData::Object::sptr object = ::fwData::Object::New();
+    ::fwData::Object::sptr object = ::fwData::Float::New();
 
     MyObjectTest objTest;
     objTest.setValInt(valInt);

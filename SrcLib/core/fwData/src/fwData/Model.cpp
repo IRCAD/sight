@@ -11,7 +11,7 @@
 fwDataRegisterMacro( ::fwData::Model );
 namespace fwData
 {
-Model::Model()
+Model::Model(::fwData::Object::Key key)
 {}
 
 //------------------------------------------------------------------------------

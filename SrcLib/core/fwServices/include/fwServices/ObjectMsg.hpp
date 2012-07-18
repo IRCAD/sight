@@ -14,6 +14,7 @@
 #include <boost/function.hpp>
 
 #include <fwTools/Object.hpp>
+#include <fwTools/Factory.hpp>
 #include <fwData/Object.hpp>
 
 

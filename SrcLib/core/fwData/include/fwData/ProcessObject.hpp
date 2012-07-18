@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 fwCorePredeclare( (fwData)(Field) );
 
@@ -26,11 +26,22 @@ namespace fwData
 class FWDATA_CLASS_API ProcessObject : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwData::Factory::New< ProcessObject >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwData::factory::New< ProcessObject >) ;
 
     typedef std::string ParamNameType;
     typedef std::vector<std::string> ParamNameVectorType;
     typedef std::map< ParamNameType, ::fwData::Object::sptr > ProcessObjectMapType;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API ProcessObject(::fwData::Object::Key key) ;
+
+    /**
+     * @brief   Destructor
+     */
+    FWDATA_API virtual ~ProcessObject();
 
     /**
      * @brief Retrieves the input data associated with specified name (null if non exist).
@@ -117,16 +128,6 @@ public:
     FWDATA_API void deepCopy( ProcessObject::csptr source );
 
 protected:
-
-    /**
-     * @brief   Constructor
-     */
-    FWDATA_API ProcessObject() ;
-
-    /**
-     * @brief   Destructor
-     */
-    FWDATA_API virtual ~ProcessObject();
 
     /**
      * @brief Returns vector of parameters names from params map.

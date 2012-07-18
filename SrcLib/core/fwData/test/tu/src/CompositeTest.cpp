@@ -38,10 +38,10 @@ void CompositeTest::methode1()
 {
     typedef ::fwData::Composite::value_type pair_type;
     const pair_type PAIRS[] = {
-        std::make_pair( "object"       , ::fwData::Object::New()       ),
+        std::make_pair( "Composite"    , ::fwData::Composite::New()    ),
         std::make_pair( "boolean true" , ::fwData::Boolean::New(true)  ),
         std::make_pair( "boolean false", ::fwData::Boolean::New(false) ),
-        std::make_pair( "float"        , ::fwData::Float::New(3.14f)    ),
+        std::make_pair( "float"        , ::fwData::Float::New(3.14f)   ),
         std::make_pair( "integer"      , ::fwData::Integer::New(404)   )
     };
 
@@ -74,7 +74,7 @@ void CompositeTest::methode1()
 
     //-----------test values
     const std::string STR = "toto";
-    ::fwData::Object::sptr obj = ::fwData::Object::New();
+    ::fwData::Object::sptr obj = ::fwData::Float::New();
 
     composite->getContainer()[STR] = obj;
 

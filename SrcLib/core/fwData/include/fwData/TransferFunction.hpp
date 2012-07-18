@@ -14,7 +14,7 @@
 #include "fwData/config.hpp"
 #include "fwData/macros.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -32,7 +32,7 @@ class FWDATA_CLASS_API TransferFunction : public Object
 {
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::Factory::New< TransferFunction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::factory::New< TransferFunction >) ;
 
     /// Macro for deep and shallow copies
     fwDataObjectMacro();
@@ -91,6 +91,15 @@ public :
     typedef std::map< TFValueType, TFColor > TFDataType;
 
     typedef std::pair< TFValueType, TFValueType > TFValuePairType;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API TransferFunction(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~TransferFunction();
 
     // Initialize a default TF.
     FWDATA_API void initTF();
@@ -172,15 +181,6 @@ public :
 
     /// Default transfer function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;
-
-protected :
-
-    /// Constructor
-    FWDATA_API TransferFunction();
-
-    /// Destructor
-    FWDATA_API virtual ~TransferFunction();
-
 
 private :
 

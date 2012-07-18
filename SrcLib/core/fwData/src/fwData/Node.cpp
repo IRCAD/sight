@@ -18,7 +18,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Node::Node()
+Node::Node(::fwData::Object::Key key)
 {
     SLM_TRACE_FUNC();
 }
@@ -110,7 +110,7 @@ void Node::shallowCopy( Node::csptr _source )
 
     if( _source->getObject())
     {
-        ::fwTools::Object::sptr object = ::fwData::Factory::New( _source->getObject()->getClassname() );
+        ::fwTools::Object::sptr object = ::fwData::factory::New( _source->getObject()->getClassname() );
         OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
         m_object = ::fwData::Object::dynamicCast(object);
         m_object->shallowCopy( _source->m_object );
@@ -140,7 +140,7 @@ void Node::deepCopy( Node::csptr _source )
 
     if( _source->getObject())
     {
-        ::fwTools::Object::sptr object = ::fwData::Factory::New( _source->getObject()->getClassname() );
+        ::fwTools::Object::sptr object = ::fwData::factory::New( _source->getObject()->getClassname() );
         OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
         m_object = ::fwData::Object::dynamicCast(object);
         m_object->deepCopy(_source->m_object);

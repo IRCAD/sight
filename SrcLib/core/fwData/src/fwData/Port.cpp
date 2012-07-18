@@ -14,7 +14,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Port::Port() : m_identifier("IDNOTdefined") , m_type("TypeNotDefined")
+Port::Port(::fwData::Object::Key key) : m_identifier("IDNOTdefined") , m_type("TypeNotDefined")
 {}
 
 //------------------------------------------------------------------------------

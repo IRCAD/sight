@@ -15,7 +15,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
 #include "fwData/Image.hpp"
@@ -34,10 +34,19 @@ namespace fwData
 class FWDATA_CLASS_API Reconstruction : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwData::Factory::New< Reconstruction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwData::factory::New< Reconstruction >) ;
 
     fwCoreAllowSharedFromThis()
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Reconstruction(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Reconstruction();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Reconstruction::csptr _source );
@@ -101,11 +110,6 @@ public:
     fwDataGetSetSptrMacro(Material, ::fwData::Material::sptr);
 
 protected :
-
-    /// Constructor
-    FWDATA_API Reconstruction();
-    /// Destructor
-    FWDATA_API virtual ~Reconstruction();
 
     //! true if this reconstruction is visible
     bool m_bIsVisible;

@@ -10,7 +10,7 @@
 #include "fwData/GenericField.hpp"
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -31,6 +31,17 @@ public:
 
     fwDataObjectMacro();
 
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Boolean( ::fwData::Object::Key key ) throw();
+
+    /**
+     * @brief Destructor.
+     */
+    FWDATA_API virtual ~Boolean() throw();
+
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Boolean::csptr _source );
 
@@ -38,16 +49,7 @@ public:
     FWDATA_API void deepCopy( Boolean::csptr _source );
 
 protected:
-    /**
-     * @brief Constructor.
-     * @param[in] value The initial value.
-     */
-    FWDATA_API Boolean( const bool value = false ) throw();
 
-    /**
-     * @brief Destructor.
-     */
-    FWDATA_API virtual ~Boolean() throw();
 };
 
 } // namespace fwData

@@ -38,4 +38,4 @@ public:
 
 } //namespace ut
 } //namespace fwData
-#endif __FWDATA_UT_ACQUISITIONTEST_HPP__
+#endif // __FWDATA_UT_ACQUISITIONTEST_HPP__

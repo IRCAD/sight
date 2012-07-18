@@ -11,8 +11,6 @@ CLASSTEST=[
     'DictionaryTest',
     'EdgeTest',
     'FloatTest',
-    'GenericFieldTest',
-    'GenericFieldTest',
     'GraphTest',
     'ImageTest',
     'IntegerTest',

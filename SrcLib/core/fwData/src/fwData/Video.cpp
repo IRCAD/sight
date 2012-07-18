@@ -14,7 +14,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Video::Video() :
+Video::Video(::fwData::Object::Key key) :
         m_ui32XSize(0),
         m_ui32YSize(0),
         m_ui8BPP(1),

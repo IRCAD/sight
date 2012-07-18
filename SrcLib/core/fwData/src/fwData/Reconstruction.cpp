@@ -20,7 +20,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Reconstruction::Reconstruction() :
+Reconstruction::Reconstruction(::fwData::Object::Key key) :
     m_bIsVisible(false),
     m_sReconstructionFormat(""),
     m_sOrganName(""),
@@ -38,7 +38,7 @@ Reconstruction::Reconstruction() :
     m_sType3D(""),
     m_fsPath(""),
     m_i32DbID(0),
-    m_attrMaterial( ::fwData::Factory::New< ::fwData::Material>() )
+    m_attrMaterial( ::fwData::factory::New< ::fwData::Material>() )
 {
     SLM_TRACE_FUNC();
 }

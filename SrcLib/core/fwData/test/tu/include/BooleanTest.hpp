@@ -30,4 +30,4 @@ public:
 
 } //namespace ut
 } //namespace fwData
-#endif __FWDATA_UT_BOOLEANTEST_HPP__
+#endif // __FWDATA_UT_BOOLEANTEST_HPP__

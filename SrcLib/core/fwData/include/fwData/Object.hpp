@@ -16,7 +16,9 @@
 
 #include <fwTools/Object.hpp>
 #include <fwTools/DynamicAttributes.hxx>
-#include <fwTools/Factory.hpp>
+
+#include "fwData/factory/new.hpp"
+#include "fwData/registry/detail.hpp"
 
 #include "fwData/macros.hpp"
 #include "fwData/config.hpp"
@@ -37,7 +39,28 @@ namespace fwData
 class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwTools::Factory::New< Object > );
+
+    typedef ::fwData::factory::Key Key;
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar()
+        {
+            ::fwData::registry::InstantiatorType::getInstance()->addFactory(T::classname(), &::fwData::factory::New<T>);
+        }
+    };
+
+
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwTools::Object) );
     fwCoreAllowSharedFromThis();
 
     typedef std::string FieldNameType;

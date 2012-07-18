@@ -18,14 +18,14 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-PatientDB::PatientDB ()
+PatientDB::PatientDB(::fwData::Object::Key key)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-PatientDB::~PatientDB ()
+PatientDB::~PatientDB()
 {
     SLM_TRACE_FUNC();
 }

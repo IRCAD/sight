@@ -13,7 +13,7 @@
 #include <fwData/Study.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/Acquisition.hpp>
-#include "StudyTest.h"
+#include "StudyTest.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::StudyTest );

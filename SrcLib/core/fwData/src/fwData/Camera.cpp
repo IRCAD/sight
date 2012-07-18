@@ -14,7 +14,7 @@ fwDataRegisterMacro(::fwData::Camera);
 
 namespace fwData
 {
-    Camera::Camera()
+    Camera::Camera( ::fwData::Object::Key key )
         : m_attrSkew(0.0), m_dataAvailable(false)
     {
         SLM_TRACE_FUNC();

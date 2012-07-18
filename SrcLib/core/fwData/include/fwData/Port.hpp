@@ -9,7 +9,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -22,7 +22,16 @@ namespace fwData
 class FWDATA_CLASS_API Port : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwData::Factory::New< Port >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwData::factory::New< Port >) ;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Port(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Port();
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string,the port identifier (example : "ID_SIZEX", "THRESHOLD_LOW") );
 
@@ -35,12 +44,6 @@ public:
     FWDATA_API void deepCopy( Port::csptr _source );
 
 protected :
-
-    /// Constructor
-    FWDATA_API Port();
-
-    /// Destructor
-    FWDATA_API virtual ~Port();
 
     //! port identifier
     std::string  m_identifier; // example "ID_SIZEX", "THRESHOLD_LOW"

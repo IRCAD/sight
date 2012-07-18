@@ -26,7 +26,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Acquisition::Acquisition() :
+Acquisition::Acquisition( ::fwData::Object::Key key ) :
     m_ui8BitsPerPixel(0),
     m_fSliceThickness(0),
     m_ui8Axe(0),

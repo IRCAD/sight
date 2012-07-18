@@ -15,7 +15,8 @@ std::string Edge::NATURE_DATA = "data";
 
 //------------------------------------------------------------------------------
 
-Edge::Edge() : m_fromPortIdentifier("not defined"), m_toPortIdentifier("not defined"), m_nature("not defined")
+Edge::Edge( ::fwData::Object::Key key ) :
+    m_fromPortIdentifier("not defined"), m_toPortIdentifier("not defined"), m_nature("not defined")
 {
     SLM_TRACE_FUNC();
 }
