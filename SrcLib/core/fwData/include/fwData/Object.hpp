@@ -13,6 +13,7 @@
 #include <boost/enable_shared_from_this.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwCore/mt/types.hpp>
 
 #include <fwTools/Object.hpp>
 #include <fwTools/DynamicAttributes.hxx>
@@ -196,6 +197,10 @@ public:
         castDest->DATA_TYPE::deepCopy( castSource );
     }
 
+    //-----------------------------------------------------------------------------
+
+    ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
+
 protected:
 
     /// Constructor
@@ -206,6 +211,8 @@ protected:
 
     /// Fields
     FieldMapType m_fields;
+
+    ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 
 
