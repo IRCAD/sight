@@ -383,7 +383,7 @@ void NegatoSlicingInteractor::stopSlicing( )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Fire the message to stop full cross display
-    ::fwData::Object::NewSptr dataInfo;
+    ::fwData::Integer::NewSptr dataInfo;
     ::fwData::String::NewSptr sliceMode;
     sliceMode->value() = "STOP_SLICING";
     dataInfo->setField("SLICE_MODE", sliceMode);
@@ -422,7 +422,7 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
 
     if(setSliceIndex(index))
     {
-        ::fwData::Object::NewSptr dataInfo;
+        ::fwData::Integer::NewSptr dataInfo;
         ::fwData::String::NewSptr sliceMode;
         sliceMode->value() = "UPDATE_SLICING";
         dataInfo->setField("SLICE_MODE", sliceMode);
@@ -463,7 +463,7 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-        ::fwData::Object::NewSptr dataInfo;
+        ::fwData::Integer::NewSptr dataInfo;
         ::fwData::String::NewSptr sliceMode;
         sliceMode->value() = "STOP_SLICING";
         dataInfo->setField("SLICE_MODE", sliceMode);
