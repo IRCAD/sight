@@ -1,6 +1,7 @@
 CLASSTEST=[
     'ObjectMsgTest',
     'ServiceTest',
+    'AppConfigTest',
     ]
 
 USE = ['boost']
