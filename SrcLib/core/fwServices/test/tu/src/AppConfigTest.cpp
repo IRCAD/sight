@@ -6,6 +6,7 @@
 
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwData/String.hpp>
+#include <fwTest/helper/Thread.hpp>
 
 #include "AppConfigTest.hpp"
 
@@ -35,7 +36,7 @@ void AppConfigTest::standardConfigTest()
 {
     ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
 
-    const std::string configId("configId");
+    const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
     const ::fwServices::registry::AppInfo::ConfigType configType(::fwServices::registry::AppInfo::STANDARD);
     const std::string group("standardGroup");
     const std::string desc("Descritpion");
@@ -45,10 +46,10 @@ void AppConfigTest::standardConfigTest()
     currentAppConfig->addAppInfo(configId, configType, group, desc, parameters, config);
 
     std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
-    CPPUNIT_ASSERT_EQUAL( (size_t) 1, allCconfigs.size());
+    CPPUNIT_ASSERT( !allCconfigs.empty());
 
     std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
-    CPPUNIT_ASSERT_EQUAL((size_t)1, configs.size());
+    CPPUNIT_ASSERT( ! configs.empty());
 
     ::fwRuntime::ConfigurationElement::csptr configElt = currentAppConfig->getStandardConfig(configId);
 
@@ -62,7 +63,7 @@ void AppConfigTest::templateConfigTest()
 {
     ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
 
-    const std::string configId("templateConfigId");
+    const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
     const ::fwServices::registry::AppInfo::ConfigType configType(::fwServices::registry::AppInfo::TEMPLATE);
     const std::string group("templateGroup");
     const std::string desc("Descritpion");
@@ -72,10 +73,10 @@ void AppConfigTest::templateConfigTest()
     currentAppConfig->addAppInfo(configId, configType, group, desc, parameters, config);
 
     std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
-    CPPUNIT_ASSERT_EQUAL((size_t)2, allCconfigs.size());
+    CPPUNIT_ASSERT( !allCconfigs.empty());
 
     std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
-    CPPUNIT_ASSERT_EQUAL((size_t)1, configs.size());
+    CPPUNIT_ASSERT( !configs.empty());
 
     ::fwServices::registry::AppConfig::FieldAdaptorType replaceFields;
     replaceFields["TEST_IMAGE"] = "objectUUID";
@@ -102,7 +103,7 @@ void AppConfigTest::parametersConfigTest()
 {
     ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
 
-    const std::string configId("parametersConfigId");
+    const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
     const ::fwServices::registry::AppInfo::ConfigType configType(::fwServices::registry::AppInfo::PARAMETERS);
     const std::string group("parametersGroup");
     const std::string desc("Descritpion");
@@ -117,10 +118,10 @@ void AppConfigTest::parametersConfigTest()
     currentAppConfig->addAppInfo(configId, configType, group, desc, parameters, config);
 
     std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
-    CPPUNIT_ASSERT_EQUAL((size_t)3, allCconfigs.size());
+    CPPUNIT_ASSERT( !allCconfigs.empty());
 
     std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
-    CPPUNIT_ASSERT_EQUAL((size_t)1, configs.size());
+    CPPUNIT_ASSERT(!configs.empty());
 
     ::fwServices::registry::AppConfig::FieldAdaptorType replaceFields;
     replaceFields["TEST_IMAGE"] = "objectUUID";
@@ -144,10 +145,55 @@ void AppConfigTest::parametersConfigTest()
     std::string serviceUid2 = servicesCfg.at(1)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL( std::string("myTestService2"), serviceUid2);
 
-    currentAppConfig->clearRegistry();
-    allCconfigs = currentAppConfig->getAllConfigs();
+}
+
+//-----------------------------------------------------------------------------
+
+void AppConfigTest::concurentAccessToAppConfigTest()
+{
+    const unsigned int nbThreads = 20;
+    std::vector< SPTR(::fwTest::helper::Thread) > threads;
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        SPTR(::fwTest::helper::Thread) thread;
+        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+                new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::standardConfigTest, this)));
+        threads.push_back(thread);
+    }
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        SPTR(::fwTest::helper::Thread) thread;
+        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+                new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::templateConfigTest, this)));
+        threads.push_back(thread);
+    }
+    for (int i=0 ; i<nbThreads ; ++i)
+    {
+        SPTR(::fwTest::helper::Thread) thread;
+        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+                new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::parametersConfigTest, this)));
+        threads.push_back(thread);
+    }
+
+    for (int i=0 ; i<nbThreads*3 ; ++i)
+    {
+        std::stringstream str;
+        str << "thread " << i;
+        CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
+    }
+
+    ::fwServices::registry::AppConfig::getDefault()->clearRegistry();
+    std::vector< std::string > allCconfigs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
     CPPUNIT_ASSERT(allCconfigs.empty());
 
+
+    for (int i=0 ; i<nbThreads*3 ; ++i)
+    {
+        if (threads[i]->hasFailed())
+        {
+            throw threads[i]->getException();
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
