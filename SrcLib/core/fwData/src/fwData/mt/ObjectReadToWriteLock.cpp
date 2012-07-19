@@ -51,7 +51,7 @@ void ObjectReadToWriteLock::unlock()
 
 void ObjectReadToWriteLock::upgrade()
 {
-    m_upgradedLock = ::boost::make_shared< ::fwCore::mt::UpgradeToWriteLock >(m_lock);
+    m_upgradedLock = ::boost::make_shared< ::fwCore::mt::UpgradeToWriteLock >(::boost::ref(m_lock));
 }
 
 //-----------------------------------------------------------------------------
