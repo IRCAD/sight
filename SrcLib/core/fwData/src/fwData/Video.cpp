@@ -32,13 +32,6 @@ Video::~Video() throw()
 
 //------------------------------------------------------------------------------
 
-::fwCore::mt::Mutex &Video::getMutex()
-{
-    return m_mutex;
-}
-
-//------------------------------------------------------------------------------
-
 bool &Video::dataAvailable()
 {
     return m_dataAvailable;

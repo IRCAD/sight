@@ -71,9 +71,6 @@ public:
      */
     FWDATA_API void Modified();
 
-    /// @brief Get video mutex
-    FWDATA_API ::fwCore::mt::Mutex &getMutex();
-
     //! The buffer size along X axis
     ::boost::uint32_t  m_ui32XSize;
 
@@ -93,9 +90,6 @@ protected :
 
     /// Value of the last modification (incremented by Modified() method
     ::boost::uint64_t m_lastModified;
-
-    /// Video mutex
-    ::fwCore::mt::Mutex m_mutex;
 
     /// Camera
     ::fwData::Camera::sptr m_camera;
