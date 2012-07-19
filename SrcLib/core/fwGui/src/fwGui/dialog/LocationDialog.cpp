@@ -5,6 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 
+#include <fwTools/ClassFactoryRegistry.hpp>
+
 #include "fwGui/dialog/LocationDialog.hpp"
 
 namespace fwGui

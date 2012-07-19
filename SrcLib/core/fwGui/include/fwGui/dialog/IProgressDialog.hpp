@@ -12,6 +12,9 @@
 #include <boost/signals.hpp>
 
 #include <fwCore/base.hpp>
+
+#include <fwTools/ClassFactoryRegistry.hpp>
+
 #include <fwData/location/ILocation.hpp>
 
 #include "fwGui/config.hpp"
