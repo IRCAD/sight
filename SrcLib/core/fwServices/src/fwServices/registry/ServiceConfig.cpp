@@ -16,13 +16,14 @@ namespace registry
 {
 
 const std::string ServiceConfig::CONFIG_EXT_POINT = "::fwServices::registry::ServiceConfig";
+
+ServiceConfig::sptr ServiceConfig::s_currentServiceConfig = ServiceConfig::New();
+
 //-----------------------------------------------------------------------------
 
 ServiceConfig::sptr ServiceConfig::getDefault()
 {
-    SLM_TRACE_FUNC();
-    static ServiceConfig::sptr m_instance = ServiceConfig::New();
-    return m_instance;
+    return s_currentServiceConfig;
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +78,8 @@ void ServiceConfig::addServiceConfigInfo
     const std::string & desc,
     ::fwRuntime::ConfigurationElement::csptr config)
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::WriteLock lock(m_registryMutex);
+
     OSLM_DEBUG( "New service config registring : "
             << " configId = " << configId
             << " service = " << service
@@ -104,17 +106,19 @@ ServiceConfig::ServiceConfig()
 
 void ServiceConfig::clearRegistry()
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string & configId, const std::string &serviceImpl ) const
+::fwRuntime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string & configId,
+                                                                          const std::string &serviceImpl ) const
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
+    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry",
+               iter != m_reg.end());
     SLM_ASSERT("Sorry, the id " <<  configId << " is not allowed for this service " << serviceImpl,
                serviceImpl.empty() || iter->second->service.empty() || iter->second->service == serviceImpl);
     return iter->second->config;
@@ -124,6 +128,7 @@ void ServiceConfig::clearRegistry()
 
 std::vector< std::string > ServiceConfig::getAllConfigForService( std::string serviceImpl ) const
 {
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > configs;
 
     BOOST_FOREACH(Registry::value_type srvCfg, m_reg)

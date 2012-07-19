@@ -63,7 +63,7 @@ public :
 
 /**
  * @class AppConfig
- * @brief this class allows to register all the configuration which has the point extension
+ * @brief This class allows to register all the configuration which has the point extension
  *        "::fwServices::registry::AppConfig".
  * @author  IRCAD (Research and Development Team).
  * @date 2012.
@@ -82,7 +82,7 @@ public:
     FWSERVICES_API virtual ~AppConfig();
 
     /**
-     * @brief Parse bundle information to retreive service declaration.
+     * @brief Parses bundle information to retrieve configuration declaration.
      * @note This method is thread safe
      */
     FWSERVICES_API void parseBundleInformation();
