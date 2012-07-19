@@ -21,14 +21,14 @@ namespace fwServices
 {
 namespace registry
 {
+AppConfig::sptr AppConfig::s_currentAppConfig = AppConfig::New();
+::fwCore::mt::Mutex AppConfig::s_idMutex;
 
 //-----------------------------------------------------------------------------
 
 AppConfig::sptr AppConfig::getDefault()
 {
-    SLM_TRACE_FUNC();
-    static AppConfig::sptr m_instance = AppConfig::New();
-    return m_instance;
+    return s_currentAppConfig;
 }
 
 //-----------------------------------------------------------------------------
@@ -42,7 +42,8 @@ AppConfig::~AppConfig()
 
 void AppConfig::parseBundleInformation()
 {
-    std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > >  extensions = ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
+    std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > >  extensions =
+            ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
     BOOST_FOREACH( ::boost::shared_ptr< ::fwRuntime::Extension > ext, extensions )
     {
         // Get id
@@ -63,7 +64,8 @@ void AppConfig::parseBundleInformation()
 
         // get type
         std::string typeStr = ext->findConfigurationElement("type")->getValue();
-        OSLM_ASSERT("Sorry, xml elment \"type\" must be equal to \"standard\" or \"template\" (here = " << typeStr << ") ", typeStr=="standard" || typeStr=="template" || typeStr=="parameters" );
+        OSLM_ASSERT("Sorry, xml elment \"type\" must be equal to \"standard\", \"template\" or \"parameters\" (here = "
+                    << typeStr << ") ", typeStr=="standard" || typeStr=="template" || typeStr=="parameters" );
         AppInfo::ConfigType type;
         if ( typeStr == "standard" )
         {
@@ -110,7 +112,8 @@ void AppConfig::addAppInfo
     const AppInfo::ParamatersType & parameters,
     ::fwRuntime::ConfigurationElement::csptr config)
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::WriteLock lock(m_registryMutex);
+
     OSLM_DEBUG( "New app config registring : "
             << " configId =" << configId
             << " type=" << type
@@ -131,14 +134,13 @@ void AppConfig::addAppInfo
 
 AppConfig::AppConfig()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void AppConfig::clearRegistry()
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
 }
 
@@ -146,7 +148,7 @@ void AppConfig::clearRegistry()
 
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getStandardConfig( const std::string & configId ) const
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
     return iter->second->config;
@@ -156,10 +158,10 @@ void AppConfig::clearRegistry()
 
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & fieldAdaptors ) const
 {
-    // Get config template
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    // Get config template    
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
-
 
     // Adapt config
     ::fwRuntime::ConfigurationElement::sptr newConfig;
@@ -208,6 +210,7 @@ void AppConfig::clearRegistry()
 
 std::vector< std::string > AppConfig::getAllConfigs() const
 {
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
     BOOST_FOREACH( Registry::value_type elem, m_reg )
     {
@@ -220,6 +223,7 @@ std::vector< std::string > AppConfig::getAllConfigs() const
 
 std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & group) const
 {
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
     BOOST_FOREACH( Registry::value_type elem, m_reg )
     {
@@ -249,6 +253,7 @@ AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Compos
 
 std::string AppConfig::getUniqueIdentifier( std::string _serviceUid, bool _useCpt )
 {
+    ::fwCore::mt::ScopedLock lock(s_idMutex);
     std::string id;
     static unsigned int srvCpt = 1;
     std::stringstream sstr;
