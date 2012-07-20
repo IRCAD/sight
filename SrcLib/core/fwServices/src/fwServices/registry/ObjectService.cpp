@@ -13,7 +13,6 @@
 
 #include <fwCore/LogicStamp.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/fwID.hpp>
 
 #include "fwServices/IService.hpp"
@@ -118,14 +117,21 @@ namespace registry
 
 void  ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
 {
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    this->internalRegisterService(object, service);
+}
+
+//------------------------------------------------------------------------------
+
+void  ObjectService::internalRegisterService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
+{
     OSLM_ASSERT("Sorry, this service "<< service->getClassname()
-                << " is not valid for object " << object->getClassname(),
-                ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
-                );
+            << " is not valid for object " << object->getClassname(),
+            ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
+    );
 
     OSLM_ASSERT("Service "<< service->getID()<<" already registered",
             m_container.right.find(service) == m_container.right.end());
-
     OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object" ,
             service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
 
@@ -144,8 +150,9 @@ void ObjectService::swapService( ::fwData::Object::sptr objSrc,
     OSLM_ASSERT("Service "<< service->getID()<<" is not registered in OSR",
                     m_container.right.find(service) != m_container.right.end());
 
+    ::fwCore::mt::WriteLock lock(m_containerMutex);
     m_container.right.erase(service);
-    this->registerService(objDst, service);
+    this->internalRegisterService(objDst, service);
 }
 
 //------------------------------------------------------------------------------
@@ -164,6 +171,7 @@ void ObjectService::unregisterService( ::fwServices::IService::sptr service )
 void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
 {
     SLM_TRACE_FUNC();
+    ::fwCore::mt::WriteLock lock(m_containerMutex);
     OSLM_ASSERT("Unknown service "<<service->getID()<<" in OSR",
             m_container.right.find(service) != m_container.right.end());
     m_container.right.erase(service);
@@ -173,24 +181,18 @@ void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
 
 ObjectService::ObjectVectorType ObjectService::getObjects() const
 {
-    ObjectVectorType lobjects;
+    ObjectVectorType objects;
+    ::fwCore::mt::ReadLock lock(m_containerMutex);
     const ServiceContainerType::right_map & right = m_container.right;
     BOOST_FOREACH( const ServiceContainerType::right_map::value_type &elt, right)
     {
-        if ( std::find(lobjects.begin(), lobjects.end(), elt.first->getObject()) == lobjects.end() )
+        if ( std::find(objects.begin(), objects.end(), elt.first->getObject()) == objects.end() )
         {
-            lobjects.push_back( elt.first->getObject() ) ;
+            objects.push_back( elt.first->getObject() ) ;
         }
     }
-    SLM_WARN_IF( "No object registered for the requested type of service", lobjects.empty() );
-    return lobjects;
-}
-
-//------------------------------------------------------------------------------
-
-const ObjectService::ServiceContainerType  & ObjectService::getServiceContainer() const
-{
-    return m_container;
+    SLM_WARN_IF( "No object registered for the requested type of service", objects.empty() );
+    return objects;
 }
 
 //------------------------------------------------------------------------------
@@ -199,7 +201,7 @@ std::string ObjectService::getRegistryInformation() const
 {
     std::stringstream info;
     ::fwCore::LogicStamp::LogicStampType previousKey = -1;
-
+    ::fwCore::mt::ReadLock lock(m_containerMutex);
     BOOST_FOREACH( const ServiceContainerType::left_map::value_type &objSrvMap, m_container.left)
     {
         // TODO FIXME getObject() fail if there are expired object in OSR
@@ -242,7 +244,8 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
 ObjectService::ServiceVectorType ObjectService::getServices( const std::string & serviceType ) const
 {
     ServiceVectorType services;
-    const ServiceContainerType::right_map right = this->getServiceContainer().right;
+    ::fwCore::mt::ReadLock lock(m_containerMutex);
+    const ServiceContainerType::right_map right = m_container.right;
     BOOST_FOREACH( ServiceContainerType::right_map::value_type elt, right)
     {
         ::fwServices::IService::sptr service = elt.first;
@@ -260,6 +263,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( const std::string &
 ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj ) const
 {
     ServiceVectorType services;
+    ::fwCore::mt::ReadLock lock(m_containerMutex);
     if(m_container.left.find(obj->getOSRKey()->getLogicStamp()) != m_container.left.end())
     {
         ServiceContainerType::left_map::const_iterator iter;
@@ -279,6 +283,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
 bool ObjectService::has( ::fwData::Object::sptr obj , const std::string & srvType) const
 {
     bool hasServices = false;
+    ::fwCore::mt::ReadLock lock(m_containerMutex);
     if( m_container.left.find(obj->getOSRKey()->getLogicStamp()) != m_container.left.end())
     {
         ServiceContainerType::left_map::const_iterator iter;
@@ -301,6 +306,7 @@ bool ObjectService::has( ::fwData::Object::sptr obj , const std::string & srvTyp
 
 bool ObjectService::hasKey( ::fwCore::LogicStamp::csptr key ) const
 {
+    ::fwCore::mt::ReadLock lock(m_containerMutex);
     return (m_container.left.find(key->getLogicStamp()) != m_container.left.end());
 }
 

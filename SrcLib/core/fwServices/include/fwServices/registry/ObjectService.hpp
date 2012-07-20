@@ -17,11 +17,11 @@
 #include <boost/bimap/unordered_set_of.hpp>
 #include <boost/bimap/multiset_of.hpp>
 
+#include <fwCore/mt/types.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/LogicStamp.hpp>
 #include <fwCore/util/LazyInstantiator.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
 
@@ -51,7 +51,7 @@ public:
 
     /**
      * @brief Service container
-     * keeps relation between objects identifiers and atteched services
+     * keeps relation between objects identifiers and attached services
      */
     typedef ::boost::bimaps::bimap<
             ::boost::bimaps::multiset_of< ::fwCore::LogicStamp::LogicStampType >,
@@ -153,11 +153,6 @@ public:
      */
      FWSERVICES_API ObjectVectorType getObjects() const;
 
-     /**
-     * @brief Return a reference on m_container
-     */
-     FWSERVICES_API const ServiceContainerType & getServiceContainer() const;
-
     //@}
 
      /**
@@ -202,6 +197,18 @@ protected :
      * @warning Do not use smart pointers for ::fwData::Object, otherwise they will never destroy
      */
     ServiceContainerType m_container ;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_containerMutex;
+
+private:
+
+    /**
+     * @brief Register the service (service) for the object (obj)
+     * It also updates IService::m_associatedObject of service to point to obj
+     * removal at obj destruction.
+     * @warning not thread-safe
+     */
+    void internalRegisterService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service );
 
 };
 

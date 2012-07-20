@@ -17,6 +17,8 @@
 
 #include <boost/tuple/tuple.hpp>
 
+#include <fwCore/mt/types.hpp>
+
 #include "fwServices/config.hpp"
 
 #if defined(_WIN32) && _MSC_VER > 1499 // Visual C++ 2008 only
@@ -144,13 +146,13 @@ private :
 
     /**
      * @brief print services informations
-     * not thread-safe
+     * @warning not thread-safe
      */
     void printInfoMap( const SrvRegContainer & src ) const;
 
     /**
      * @brief Trace services not declared in plugin.xml
-     * not thread-safe
+     * @warning not thread-safe
      */
     void checkServicesNotDeclaredInPluginXml() const;
 };

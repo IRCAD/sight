@@ -7,7 +7,6 @@
 #include <vector>
 
 #include <fwCore/util/LazyInstantiator.hpp>
-#include <fwCore/mt/types.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Runtime.hpp>

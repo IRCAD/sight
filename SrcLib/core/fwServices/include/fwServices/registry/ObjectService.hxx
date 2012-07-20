@@ -4,14 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <sstream>
-#include <iterator>
-
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassFactoryRegistry.hpp>
 
 #include <fwServices/IService.hpp>
 
