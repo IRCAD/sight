@@ -22,20 +22,19 @@ namespace fwServices
 namespace registry
 {
 
+AppConfigParameters::sptr AppConfigParameters::s_appConfigParameters = AppConfigParameters::New();
+
 //-----------------------------------------------------------------------------
 
 AppConfigParameters::sptr AppConfigParameters::getDefault()
 {
-    SLM_TRACE_FUNC();
-    static AppConfigParameters::sptr m_instance = AppConfigParameters::New();
-    return m_instance;
+    return s_appConfigParameters;
 }
 
 //-----------------------------------------------------------------------------
 
 AppConfigParameters::~AppConfigParameters()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +58,10 @@ void AppConfigParameters::parseBundleInformation()
             std::string val = paramConfig->getExistingAttributeValue("value");
             parameters[name] = val;
         }
-
+        ::fwCore::mt::WriteLock lock(m_registryMutex);
+        Registry::const_iterator iter = m_reg.find( extensionId );
+        SLM_ASSERT("Sorry, the id " <<  extensionId
+                   << " already exists in the application configuration parameter registry", iter == m_reg.end());
         m_reg[extensionId] = parameters;
     }
 }
@@ -68,14 +70,13 @@ void AppConfigParameters::parseBundleInformation()
 
 AppConfigParameters::AppConfigParameters()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void AppConfigParameters::clearRegistry()
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
 }
 
@@ -83,7 +84,7 @@ void AppConfigParameters::clearRegistry()
 
 const AppConfig::FieldAdaptorType & AppConfigParameters::getParameters( const std::string & extensionId ) const
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
     SLM_ASSERT("Sorry, the id " <<  extensionId << " is not found in the application configuration parameter registry", iter != m_reg.end());
     return iter->second;

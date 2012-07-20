@@ -83,7 +83,8 @@ public:
 
     /**
      * @brief Parses bundle information to retrieve configuration declaration.
-     * @note This method is thread safe
+     * @warning This method must be launch only once. The same extension will not be parsed twice.
+     * @note This method is thread safe.
      */
     FWSERVICES_API void parseBundleInformation();
 
