@@ -16,7 +16,6 @@
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/fwID.hpp>
 
-#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/op/Com.hpp"
 #include "fwServices/GlobalEventManager.hpp"
@@ -25,100 +24,158 @@
 #include "fwServices/registry/ServiceFactory.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 
+#include "fwServices/registry/ObjectService.hpp"
+
 namespace fwServices
 {
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+namespace OSR
+{
+
+::fwServices::registry::ObjectService::sptr get()
+{
+    return ::fwCore::util::LazyInstantiator< ::fwServices::registry::ObjectService >::getInstance();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::registry::ObjectService::ObjectVectorType getObjects()
+{
+    return ::fwServices::OSR::get()->getObjects();
+}
+
+//------------------------------------------------------------------------------
+
+std::string getRegistryInformation()
+{
+    return ::fwServices::OSR::get()->getRegistryInformation();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::registry::ObjectService::ServiceVectorType getServices( const std::string &serviceType )
+{
+    return ::fwServices::OSR::get()->getServices(serviceType);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj,
+                                                                      const std::string &serviceType )
+{
+    return ::fwServices::OSR::get()->getServices(obj, serviceType);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj )
+{
+    return ::fwServices::OSR::get()->getServices(obj);
+}
+
+//------------------------------------------------------------------------------
+
+bool has( ::fwData::Object::sptr obj , const std::string &srvType)
+{
+    return ::fwServices::OSR::get()->has(obj, srvType);
+}
+
+//------------------------------------------------------------------------------
+
+void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service )
+{
+    return ::fwServices::OSR::get()->registerService(obj, service);
+}
+
+//------------------------------------------------------------------------------
+
+void swapService( ::fwData::Object::sptr objSrc, ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
+{
+    return ::fwServices::OSR::get()->swapService(objSrc, objDst, service);
+}
+
+//------------------------------------------------------------------------------
+
+void unregisterService(  ::fwServices::IService::sptr service )
+{
+    return ::fwServices::OSR::get()->unregisterService(service);
+}
+
+} //namespace OSR
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+
+
+
 namespace registry
 {
 
-//------------------------------------------------------------------------------
-
-ObjectService::sptr ObjectService::m_instance;
-
-//------------------------------------------------------------------------------
-
-const std::string ObjectService::CONFIG_EXTENSION_POINT = "::fwServices::registry::AppConfig";
-
-//------------------------------------------------------------------------------
-
-ObjectService::ObjectService()
-{}
-
-//------------------------------------------------------------------------------
-
-ObjectService::~ObjectService()
-{
-    m_instance.reset() ;
-}
-
-//------------------------------------------------------------------------------
-
-ObjectService::sptr ObjectService::getDefault()
-{
-    if ( m_instance==0 )
-    {
-        m_instance = ObjectService::sptr(new ObjectService() );
-    }
-    return m_instance;
-}
-
-//------------------------------------------------------------------------------
-
 void  ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
 {
-    OSLM_ASSERT("Sorry, this service "<< service->getClassname() << " is not valid for object " << object->getClassname(),
-                ::fwServices::registry::ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname()));
+    OSLM_ASSERT("Sorry, this service "<< service->getClassname()
+                << " is not valid for object " << object->getClassname(),
+                ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
+                );
 
     OSLM_ASSERT("Service "<< service->getID()<<" already registered",
-            getDefault()->m_container.right.find(service) == getDefault()->m_container.right.end());
+            m_container.right.find(service) == m_container.right.end());
 
     OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object" ,
             service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
 
     service->m_associatedObject = object;
-    getDefault()->m_container.insert( KSContainer::value_type( object->getOSRKey()->getLogicStamp(), service ) );
+    m_container.insert( ServiceContainerType::value_type( object->getOSRKey()->getLogicStamp(), service ) );
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectService::swapService(  ::fwData::Object::sptr  _objSrc, ::fwData::Object::sptr  _objDst, ::fwServices::IService::sptr _service )
+void ObjectService::swapService( ::fwData::Object::sptr objSrc,
+                                 ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
 {
-    OSLM_ASSERT("Object "<< _objSrc->getID()<<" is not registered in OSR",
-                getDefault()->m_container.left.find(_objSrc->getOSRKey()->getLogicStamp()) != getDefault()->m_container.left.end());
+    OSLM_ASSERT("Object "<< objSrc->getID()<<" is not registered in OSR",
+                m_container.left.find(objSrc->getOSRKey()->getLogicStamp()) != m_container.left.end());
 
-    OSLM_ASSERT("Service "<< _service->getID()<<" is not registered in OSR",
-                    getDefault()->m_container.right.find(_service) != getDefault()->m_container.right.end());
+    OSLM_ASSERT("Service "<< service->getID()<<" is not registered in OSR",
+                    m_container.right.find(service) != m_container.right.end());
 
-    getDefault()->m_container.right.erase(_service);
-    getDefault()->registerService(_objDst, _service);
+    m_container.right.erase(service);
+    this->registerService(objDst, service);
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectService::unregisterService( ::fwServices::IService::sptr _service )
+void ObjectService::unregisterService( ::fwServices::IService::sptr service )
 {
     SLM_TRACE_FUNC();
-    OSLM_ASSERT( "Sorry, the service ( "<< _service->getID() <<" ) must be stop before unregister it.", _service->isStopped() );
+    OSLM_ASSERT( "Sorry, the service ( "<< service->getID() <<" ) must be stop before unregister it.",
+                 service->isStopped() );
     // TODO verify that there are no com channel on this service.
-    removeFromContainer( _service );
+    this->removeFromContainer( service );
 }
 
 //------------------------------------------------------------------------------
 
-void ObjectService::removeFromContainer( ::fwServices::IService::sptr _service )
+void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
 {
     SLM_TRACE_FUNC();
-    OSLM_ASSERT("Unknown service "<<_service->getID()<<" in OSR",
-            getDefault()->m_container.right.find(_service) != getDefault()->m_container.right.end());
-    getDefault()->m_container.right.erase(_service);
+    OSLM_ASSERT("Unknown service "<<service->getID()<<" in OSR",
+            m_container.right.find(service) != m_container.right.end());
+    m_container.right.erase(service);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwData::Object::sptr > ObjectService::getObjects()
+ObjectService::ObjectVectorType ObjectService::getObjects() const
 {
-    std::vector< ::fwData::Object::sptr >   lobjects;
-    ObjectService::KSContainer::right_map & right = getDefault()->m_container.right;
-    BOOST_FOREACH( ObjectService::KSContainer::right_map::value_type elt, right)
+    ObjectVectorType lobjects;
+    const ServiceContainerType::right_map & right = m_container.right;
+    BOOST_FOREACH( const ServiceContainerType::right_map::value_type &elt, right)
     {
         if ( std::find(lobjects.begin(), lobjects.end(), elt.first->getObject()) == lobjects.end() )
         {
@@ -131,27 +188,27 @@ std::vector< ::fwData::Object::sptr > ObjectService::getObjects()
 
 //------------------------------------------------------------------------------
 
-const ObjectService::KSContainer  & ObjectService::getKSContainer()
+const ObjectService::ServiceContainerType  & ObjectService::getServiceContainer() const
 {
-    return getDefault()->m_container;
+    return m_container;
 }
 
 //------------------------------------------------------------------------------
 
-std::string ObjectService::getRegistryInformation()
+std::string ObjectService::getRegistryInformation() const
 {
     std::stringstream info;
     ::fwCore::LogicStamp::LogicStampType previousKey = -1;
 
-    BOOST_FOREACH( KSContainer::left_map::value_type objSrvMap, getDefault()->m_container.left)
+    BOOST_FOREACH( const ServiceContainerType::left_map::value_type &objSrvMap, m_container.left)
     {
-        // TODO FIXME getObject() failed if there are expired object in OSR
+        // TODO FIXME getObject() fail if there are expired object in OSR
         ::fwCore::LogicStamp::LogicStampType key = objSrvMap.first;
 
         if ( previousKey != key )
         {
             info    << "Object ( key = "<<key<<" ) has "
-                    << getDefault()->m_container.left.count(key) <<" services." << std::endl;
+                    << m_container.left.count(key) <<" services." << std::endl;
             previousKey = key;
         }
         ::fwServices::IService::sptr service = objSrvMap.second;
@@ -163,10 +220,11 @@ std::string ObjectService::getRegistryInformation()
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwServices::IService::sptr > ObjectService::getServices( ::fwData::Object::sptr obj , std::string serviceType )
+ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj,
+                                                             const std::string & serviceType ) const
 {
-    std::vector< ::fwServices::IService::sptr > allServices = ::fwServices::OSR::getServices(obj);
-    std::vector< ::fwServices::IService::sptr > services ;
+    ServiceVectorType allServices = this->getServices(obj);
+    ServiceVectorType services ;
 
     // Search should be optimized
     BOOST_FOREACH(::fwServices::IService::sptr srv, allServices)
@@ -181,52 +239,52 @@ std::vector< ::fwServices::IService::sptr > ObjectService::getServices( ::fwData
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwServices::IService::sptr > ObjectService::getServices( std::string serviceType )
+ObjectService::ServiceVectorType ObjectService::getServices( const std::string & serviceType ) const
 {
-    std::vector< ::fwServices::IService::sptr >  lfwServices;
-    ::fwServices::OSR::KSContainer::right_map right = ::fwServices::OSR::getKSContainer().right;
-    BOOST_FOREACH( ::fwServices::OSR::KSContainer::right_map::value_type elt, right)
+    ServiceVectorType services;
+    const ServiceContainerType::right_map right = this->getServiceContainer().right;
+    BOOST_FOREACH( ServiceContainerType::right_map::value_type elt, right)
     {
         ::fwServices::IService::sptr service = elt.first;
         if ( service->isA(serviceType) )
         {
-            lfwServices.push_back( service ) ;
+            services.push_back( service ) ;
         }
     }
-    SLM_DEBUG_IF("No service registered", lfwServices.empty());
-    return lfwServices;
+    SLM_DEBUG_IF("No service registered", services.empty());
+    return services;
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwServices::IService::sptr > ObjectService::getServices( ::fwData::Object::sptr obj )
+ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj ) const
 {
-    std::vector< ::fwServices::IService::sptr >  lfwServices;
-    if(getDefault()->m_container.left.find(obj->getOSRKey()->getLogicStamp()) != getDefault()->m_container.left.end())
+    ServiceVectorType services;
+    if(m_container.left.find(obj->getOSRKey()->getLogicStamp()) != m_container.left.end())
     {
-        ObjectService::KSContainer::left_map::iterator iter;
+        ServiceContainerType::left_map::const_iterator iter;
         ::fwCore::LogicStamp::LogicStampType key = obj->getOSRKey()->getLogicStamp();
-        ObjectService::KSContainer::left_map::iterator firstElement = getDefault()->m_container.left.find(key);
-        ObjectService::KSContainer::left_map::iterator lastElement = getDefault()->m_container.left.upper_bound(key);
+        ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(key);
+        ServiceContainerType::left_map::const_iterator lastElement  = m_container.left.upper_bound(key);
         for (iter = firstElement ; iter != lastElement ; ++iter)
         {
-            lfwServices.push_back( iter->second ) ;
+            services.push_back( iter->second ) ;
         }
     }
-    return lfwServices;
+    return services;
 }
 
 //------------------------------------------------------------------------------
 
-bool ObjectService::has( ::fwData::Object::sptr obj , const std::string & srvType)
+bool ObjectService::has( ::fwData::Object::sptr obj , const std::string & srvType) const
 {
     bool hasServices = false;
-    if( ObjectService::getDefault()->m_container.left.find(obj->getOSRKey()->getLogicStamp()) != ObjectService::getDefault()->m_container.left.end())
+    if( m_container.left.find(obj->getOSRKey()->getLogicStamp()) != m_container.left.end())
     {
-        ObjectService::KSContainer::left_map::iterator iter;
+        ServiceContainerType::left_map::const_iterator iter;
         ::fwCore::LogicStamp::LogicStampType key = obj->getOSRKey()->getLogicStamp();
-        ObjectService::KSContainer::left_map::iterator firstElement = getDefault()->m_container.left.find(key);
-        ObjectService::KSContainer::left_map::iterator lastElement = getDefault()->m_container.left.upper_bound(key);
+        ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(key);
+        ServiceContainerType::left_map::const_iterator lastElement = m_container.left.upper_bound(key);
         for (iter = firstElement ; iter != lastElement ; ++iter)
         {
             if( iter->second->isA(srvType))
@@ -241,9 +299,9 @@ bool ObjectService::has( ::fwData::Object::sptr obj , const std::string & srvTyp
 
 //------------------------------------------------------------------------------
 
-bool ObjectService::hasKey( ::fwCore::LogicStamp::csptr key )
+bool ObjectService::hasKey( ::fwCore::LogicStamp::csptr key ) const
 {
-    return (ObjectService::getDefault()->m_container.left.find(key->getLogicStamp()) != ObjectService::getDefault()->m_container.left.end());
+    return (m_container.left.find(key->getLogicStamp()) != m_container.left.end());
 }
 
 //------------------------------------------------------------------------------
