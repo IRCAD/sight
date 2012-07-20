@@ -29,7 +29,7 @@ namespace opSofa
 {
 
 
-REGISTER_SERVICE( ::io::IWriter, ::opSofa::SofaSceneWriterSrv, ::fwData::Acquisition );
+fwServicesRegisterMacro( ::io::IWriter, ::opSofa::SofaSceneWriterSrv, ::fwData::Acquisition );
 
 /**
  * @brief Constructor

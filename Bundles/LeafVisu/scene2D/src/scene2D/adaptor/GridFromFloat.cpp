@@ -13,7 +13,7 @@
 #include "scene2D/adaptor/GridFromFloat.hpp"
 #include "scene2D/data/InitQtPen.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::GridFromFloat  , ::fwData::Float ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::GridFromFloat  , ::fwData::Float ) ;
 
 
 namespace scene2D

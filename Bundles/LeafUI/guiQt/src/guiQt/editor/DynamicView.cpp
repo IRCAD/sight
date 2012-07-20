@@ -50,7 +50,7 @@ namespace guiQt
 namespace editor
 {
 
-REGISTER_SERVICE( ::gui::view::IView , ::guiQt::editor::DynamicView , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::gui::view::IView , ::guiQt::editor::DynamicView , ::fwData::Object ) ;
 
 DynamicView::DynamicView() throw()
 {

@@ -18,7 +18,7 @@
 #include <fwComEd/PointListMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -28,7 +28,7 @@
 
 #include "visuVTKAdaptor/PointList.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList ) ;
 
 namespace visuVTKAdaptor
 {

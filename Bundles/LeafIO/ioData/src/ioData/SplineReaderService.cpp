@@ -22,7 +22,7 @@
 
 #include "ioData/SplineReaderService.hpp"
 
-REGISTER_SERVICE( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline ) ;
 
 namespace ioData
 {

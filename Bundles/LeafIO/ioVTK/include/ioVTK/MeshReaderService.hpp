@@ -31,12 +31,14 @@ namespace ioVTK
  * Service reading a VTK mesh using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh )
  */
 class IOVTK_CLASS_API MeshReaderService : public ::io::IReader
 {
 
 public :
+    ~MeshReaderService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)( ::io::IReader) ) ;
 
     /**
@@ -49,17 +51,6 @@ public :
 
 
 protected:
-
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API MeshReaderService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~MeshReaderService() throw();
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 

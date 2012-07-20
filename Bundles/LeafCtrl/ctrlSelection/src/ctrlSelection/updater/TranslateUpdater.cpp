@@ -25,7 +25,7 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::TranslateUpdater, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::TranslateUpdater, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 

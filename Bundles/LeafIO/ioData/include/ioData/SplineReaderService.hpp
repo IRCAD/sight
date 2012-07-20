@@ -29,7 +29,7 @@ namespace ioData
  * @li Use update() to read the spline and notify observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline )
  */
 class IODATA_CLASS_API SplineReaderService : public ::io::IReader
 {

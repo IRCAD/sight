@@ -35,7 +35,7 @@ namespace uiPatientDB
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::ExportPatient , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiPatientDB::action::ExportPatient , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

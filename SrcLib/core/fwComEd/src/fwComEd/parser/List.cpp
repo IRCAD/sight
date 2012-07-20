@@ -8,13 +8,13 @@
 #include <fwTools/Factory.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwData/List.hpp>
 
 #include "fwComEd/parser/List.hpp"
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::List, ::fwData::List );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::List, ::fwData::List );
 
 namespace fwComEd
 {

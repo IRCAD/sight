@@ -17,7 +17,7 @@
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::io::IWriter, ::uiPatientDB::SPatientDBInserter, ::fwData::Object );
+fwServicesRegisterMacro( ::io::IWriter, ::uiPatientDB::SPatientDBInserter, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 

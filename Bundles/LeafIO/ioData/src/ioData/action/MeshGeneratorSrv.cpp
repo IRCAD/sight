@@ -25,7 +25,7 @@ namespace ioData
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::ioData::action::MeshGeneratorSrv , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::ioData::action::MeshGeneratorSrv , ::fwData::Mesh ) ;
 
 //-----------------------------------------------------------------------------
 

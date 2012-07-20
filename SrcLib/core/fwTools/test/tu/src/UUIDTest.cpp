@@ -24,7 +24,7 @@ namespace ut
 void UUIDTest::setUp()
 {
     // Set up context before running a test.
-    m_object = ::fwTools::Object::New();
+    m_object = ::boost::make_shared< ::fwTools::Object >();
     m_uuid = ::fwTools::UUID::generateUUID();
 }
 
@@ -41,7 +41,7 @@ void UUIDTest::objectUUIDTest()
 {
     const std::string UUID = "myUUID" ;
 
-    ::fwTools::Object::sptr obj = ::fwTools::Object::New() ;
+    ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID) == false);
 
@@ -51,7 +51,7 @@ void UUIDTest::objectUUIDTest()
     CPPUNIT_ASSERT_EQUAL(  UUID, ::fwTools::UUID::get(obj) );
     CPPUNIT_ASSERT_EQUAL( obj, ::fwTools::UUID::get(UUID) );
 
-    ::fwTools::Object::sptr obj2 = ::fwTools::Object::New() ;
+    ::fwTools::Object::sptr obj2 = ::boost::make_shared< ::fwTools::Object >();
     std::string uuid = ::fwTools::UUID::get(obj2);
     CPPUNIT_ASSERT_EQUAL( obj2, ::fwTools::UUID::get(uuid) );
 }
@@ -92,7 +92,7 @@ void UUIDTest::runUUIDCreation()
 {
     std::string UUID = ::fwTools::UUID::generateUUID();
 
-    ::fwTools::Object::sptr obj = ::fwTools::Object::New() ;
+    ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT( ::fwTools::UUID::exist(UUID) == false);
 
@@ -102,7 +102,7 @@ void UUIDTest::runUUIDCreation()
     CPPUNIT_ASSERT_EQUAL( UUID, ::fwTools::UUID::get(obj) );
     CPPUNIT_ASSERT_EQUAL( obj, ::fwTools::UUID::get(UUID) );
 
-    ::fwTools::Object::sptr obj2 = ::fwTools::Object::New() ;
+    ::fwTools::Object::sptr obj2 = ::boost::make_shared< ::fwTools::Object >();
     std::string uuid = ::fwTools::UUID::get(obj2);
     CPPUNIT_ASSERT_EQUAL( obj2, ::fwTools::UUID::get(uuid) );
 }

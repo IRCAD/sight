@@ -35,7 +35,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Normals, ::fwData::TriangularMesh ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Normals, ::fwData::TriangularMesh ) ;
 
 namespace visuVTKAdaptor
 {

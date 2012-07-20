@@ -30,17 +30,7 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh ) ;
-
-//------------------------------------------------------------------------------
-
-TriangularMeshWriterService::TriangularMeshWriterService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-TriangularMeshWriterService::~TriangularMeshWriterService() throw()
-{}
+fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh ) ;
 
 //------------------------------------------------------------------------------
 

@@ -18,7 +18,7 @@ namespace uiPython
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPython::action::Test , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiPython::action::Test , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

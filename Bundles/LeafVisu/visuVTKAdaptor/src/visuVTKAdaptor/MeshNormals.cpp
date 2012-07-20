@@ -24,7 +24,7 @@
 
 #include "visuVTKAdaptor/MeshNormals.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh ) ;
 
 
 namespace visuVTKAdaptor

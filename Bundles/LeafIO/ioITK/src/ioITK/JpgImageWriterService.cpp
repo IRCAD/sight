@@ -34,7 +34,7 @@
 namespace ioITK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioITK::JpgImageWriterService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioITK::JpgImageWriterService , ::fwData::Image ) ;
 
 //------------------------------------------------------------------------------
 

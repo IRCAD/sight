@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwData/Object.hpp>
+#include <fwData/Float.hpp>
 
 #include "dataReg/Plugin.hpp"
 
@@ -20,7 +20,7 @@ Plugin::~Plugin() throw()
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     //Hack: force link with fwData
-    ::fwData::Object::NewSptr obj;
+    ::fwData::Float::NewSptr obj;
     obj->getClassname();
 }
 

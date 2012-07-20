@@ -41,7 +41,7 @@ public :
     FWCOMED_API Image( ::fwData::Image::sptr image );
 
     /// Destrucotr. Do nothing.
-    FWCOMED_API ~Image();
+    FWCOMED_API virtual ~Image();
 
     /**
      * @brief Create landmark fields if not exist, NOT GENERATE MESSAGE.

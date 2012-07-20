@@ -32,7 +32,7 @@
 namespace ioVtkGdcm
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVtkGdcm::DicomPatientDBWriterService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioVtkGdcm::DicomPatientDBWriterService , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

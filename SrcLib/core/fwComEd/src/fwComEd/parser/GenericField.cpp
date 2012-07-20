@@ -8,7 +8,7 @@
 #include <fwTools/Factory.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwData/GenericField.hpp>
 #include <fwData/Boolean.hpp>
@@ -19,13 +19,13 @@
 #include "fwComEd/parser/GenericField.hpp"
 
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::BooleanParser, ::fwData::Boolean );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::BooleanParser, ::fwData::Boolean );
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::IntegerParser, ::fwData::Integer );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::IntegerParser, ::fwData::Integer );
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::FloatParser, ::fwData::Float );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::FloatParser, ::fwData::Float );
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::StringParser, ::fwData::String );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::StringParser, ::fwData::String );
 
 
 namespace fwComEd

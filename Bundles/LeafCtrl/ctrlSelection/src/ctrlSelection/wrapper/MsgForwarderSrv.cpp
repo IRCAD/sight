@@ -19,7 +19,7 @@ namespace wrapper
 {
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgForwarderSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgForwarderSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 

@@ -15,9 +15,6 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/helper/Image.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/Factory.hpp>
-
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/Base.hpp>
 
@@ -44,7 +41,7 @@
 #include "visuVTKAdaptor/ImageText.hpp"
 #include "visuVTKAdaptor/ImagesProbeCursor.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesProbeCursor, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesProbeCursor, ::fwData::Composite ) ;
 
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent

@@ -39,7 +39,7 @@
 namespace uiReconstruction
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiReconstruction::OrganMaterialEditor , ::fwData::Reconstruction ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::OrganMaterialEditor , ::fwData::Reconstruction ) ;
 
 
 OrganMaterialEditor::OrganMaterialEditor() throw()

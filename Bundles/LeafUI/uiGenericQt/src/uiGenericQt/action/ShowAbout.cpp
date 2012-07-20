@@ -30,7 +30,7 @@ namespace uiGeneric
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::ShowAbout , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiGeneric::action::ShowAbout , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 

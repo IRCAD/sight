@@ -13,7 +13,7 @@
 #include <fwData/Color.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/PointMsg.hpp>
@@ -34,7 +34,7 @@
 #include "visuVTKAdaptor/Point.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane ) ;
 
 namespace visuVTKAdaptor
 {

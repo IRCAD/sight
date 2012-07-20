@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/make_shared.hpp>
+
 #include <fwTools/fwID.hpp>
 #include <fwTools/UUID.hpp>
 #include <fwTools/Failed.hpp>
@@ -26,7 +28,7 @@ namespace ut
 void FwIDTest::setUp()
 {
     // Set up context before running a test.
-    m_object = ::fwTools::Object::New();
+    m_object = ::boost::make_shared< ::fwTools::Object >();
 }
 
 //-----------------------------------------------------------------------------
@@ -42,7 +44,7 @@ void FwIDTest::objectFwIDTest()
 {
     const std::string fwID = "myID" ;
 
-    ::fwTools::Object::sptr obj = ::fwTools::Object::New() ;
+    ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwID) == false);
 
@@ -52,7 +54,7 @@ void FwIDTest::objectFwIDTest()
     CPPUNIT_ASSERT_EQUAL(  fwID, obj->getID() );
     CPPUNIT_ASSERT_EQUAL( obj, ::fwTools::fwID::getObject(fwID) );
 
-    ::fwTools::Object::sptr obj2 = ::fwTools::Object::New() ;
+    ::fwTools::Object::sptr obj2 = ::boost::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT(obj2->hasID() == false);
     CPPUNIT_ASSERT_THROW (obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);
@@ -106,7 +108,7 @@ void FwIDTest::runFwIDCreation()
 {
     const std::string fwID = ::fwTools::UUID::generateUUID() ;
 
-    ::fwTools::Object::sptr obj = ::fwTools::Object::New() ;
+    ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwID) == false);
 
@@ -118,7 +120,7 @@ void FwIDTest::runFwIDCreation()
 
     CPPUNIT_ASSERT_EQUAL( obj, ::fwTools::fwID::getObject(fwID) );
 
-    ::fwTools::Object::sptr obj2 = ::fwTools::Object::New() ;
+    ::fwTools::Object::sptr obj2 = ::boost::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT(obj2->hasID() == false);
     CPPUNIT_ASSERT_THROW (obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);

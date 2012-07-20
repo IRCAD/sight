@@ -28,14 +28,10 @@
 
 #include "ioData/MeshReaderService.hpp"
 
-REGISTER_SERVICE( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh ) ;
 
 namespace ioData
 {
-
-MeshReaderService::MeshReaderService()
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -52,12 +48,6 @@ std::vector< std::string > MeshReaderService::getSupportedExtensions()
     std::vector< std::string > extensions ;
     extensions.push_back(".trian");
     return extensions ;
-}
-
-//-----------------------------------------------------------------------------
-
-MeshReaderService::~MeshReaderService() throw()
-{
 }
 
 //------------------------------------------------------------------------------

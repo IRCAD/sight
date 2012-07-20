@@ -32,12 +32,14 @@ namespace ioVTK
  * Service reading a VTK Image using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image )
  */
 class IOVTK_CLASS_API ImageReaderService : public ::io::IReader
 {
 
 public :
+    ~ImageReaderService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader) ) ;
 
     /**
@@ -50,16 +52,6 @@ public :
 
 
 protected:
-
-    /**
-     * @brief Service constructor, default parameter initialization
-     * @post ImageReaderService::m_bServiceIsConfigured is equal to false : service not configured
-     * @post ImageReaderService::m_fsImgPath is empty : path to read not defined
-     */
-    IOVTK_API ImageReaderService() throw();
-
-    /// Destructor, do nothing.
-    IOVTK_API virtual ~ImageReaderService() throw();
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 

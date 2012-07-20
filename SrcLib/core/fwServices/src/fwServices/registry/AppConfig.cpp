@@ -64,7 +64,7 @@ void AppConfig::parseBundleInformation()
 
         // get type
         std::string typeStr = ext->findConfigurationElement("type")->getValue();
-        OSLM_ASSERT("Sorry, xml elment \"type\" must be equal to \"standard\", \"template\" or \"parameters\" (here = "
+        OSLM_ASSERT("Sorry, xml element \"type\" must be equal to \"standard\", \"template\" or \"parameters\" (here = "
                     << typeStr << ") ", typeStr=="standard" || typeStr=="template" || typeStr=="parameters" );
         AppInfo::ConfigType type;
         if ( typeStr == "standard" )
@@ -80,7 +80,7 @@ void AppConfig::parseBundleInformation()
             type = AppInfo::PARAMETERS;
         }
 
-        // Get parmeters
+        // Get parameters
         AppInfo::ParamatersType parameters;
         if ( ext->hasConfigurationElement("parameters") )
         {
@@ -114,7 +114,7 @@ void AppConfig::addAppInfo
 {
     ::fwCore::mt::WriteLock lock(m_registryMutex);
 
-    OSLM_DEBUG( "New app config registring : "
+    OSLM_DEBUG( "New app config registering : "
             << " configId =" << configId
             << " type=" << type
     );
@@ -159,7 +159,7 @@ void AppConfig::clearRegistry()
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & fieldAdaptors ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
-    // Get config template    
+    // Get config template
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
 

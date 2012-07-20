@@ -67,7 +67,7 @@ static const char * eye_xpm[] = {
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiPatientDB::PatientDBGuiSelectorService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiPatientDB::PatientDBGuiSelectorService , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

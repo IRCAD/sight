@@ -9,7 +9,7 @@
 #include <fwTools/Object.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -19,7 +19,7 @@
 
 #include "visuVTKAdaptor/InteractorStyle.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwData::Object ) ;
 
 namespace visuVTKAdaptor
 {

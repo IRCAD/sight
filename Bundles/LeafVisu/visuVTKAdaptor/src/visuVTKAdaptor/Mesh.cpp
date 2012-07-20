@@ -12,7 +12,7 @@
 #include <fwData/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/MeshMsg.hpp>
@@ -42,7 +42,7 @@
 #include "visuVTKAdaptor/Mesh.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh ) ;
 
 namespace visuVTKAdaptor
 {
@@ -581,7 +581,7 @@ void Mesh::createTransformService()
     m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
         ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
                 fieldTransform,
-                "::visuVTKAdaptor::Transform" 
+                "::visuVTKAdaptor::Transform"
                 )
         );
     assert(m_transformService.lock());

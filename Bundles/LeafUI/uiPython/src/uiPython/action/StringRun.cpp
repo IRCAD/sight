@@ -22,7 +22,7 @@ namespace uiPython
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPython::action::StringRun , ::fwData::String ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiPython::action::StringRun , ::fwData::String ) ;
 
 //-----------------------------------------------------------------------------
 

@@ -37,7 +37,7 @@ namespace uiMeasurement
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::SaveLandmark , ::fwData::Image) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::SaveLandmark , ::fwData::Image) ;
 
 
 //------------------------------------------------------------------------------

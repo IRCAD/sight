@@ -34,7 +34,7 @@
 namespace ioGdcm
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioGdcm::DicomPatientWriterService , ::fwData::Patient ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioGdcm::DicomPatientWriterService , ::fwData::Patient ) ;
 
 //------------------------------------------------------------------------------
 

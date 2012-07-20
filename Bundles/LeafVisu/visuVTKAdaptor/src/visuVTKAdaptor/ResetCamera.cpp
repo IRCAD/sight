@@ -11,7 +11,7 @@
 #include <fwData/String.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 
@@ -26,7 +26,7 @@
 #include "visuVTKAdaptor/ResetCamera.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResetCamera, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResetCamera, ::fwData::Composite ) ;
 
 namespace visuVTKAdaptor
 {

@@ -30,17 +30,7 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwData::Acquisition ) ;
-
-//------------------------------------------------------------------------------
-
-ReconstructionWriterService::ReconstructionWriterService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-ReconstructionWriterService::~ReconstructionWriterService() throw()
-{}
+fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwData::Acquisition ) ;
 
 //------------------------------------------------------------------------------
 

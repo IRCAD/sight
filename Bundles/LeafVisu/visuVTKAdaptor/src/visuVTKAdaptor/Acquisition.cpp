@@ -16,7 +16,6 @@
 #include <fwComEd/AcquisitionMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -28,7 +27,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Acquisition, ::fwData::Acquisition ) ;
 
 namespace visuVTKAdaptor
 {

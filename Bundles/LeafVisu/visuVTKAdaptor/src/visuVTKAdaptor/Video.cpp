@@ -12,7 +12,7 @@
 #include <fwData/Boolean.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
@@ -36,7 +36,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Video, ::fwData::Video ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Video, ::fwData::Video ) ;
 
 
 namespace visuVTKAdaptor

@@ -33,12 +33,14 @@ namespace ioVTK
  * and inserting the image in the PatientDB.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkPatientDBReaderService , ::fwData::PatientDB )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::VtkPatientDBReaderService , ::fwData::PatientDB )
  */
 class IOVTK_CLASS_API VtkPatientDBReaderService : public ::io::IReader
 {
 
 public :
+    ~VtkPatientDBReaderService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (VtkPatientDBReaderService)( ::io::IReader) ) ;
 
     /**
@@ -51,17 +53,6 @@ public :
 
 
 protected:
-
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API VtkPatientDBReaderService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~VtkPatientDBReaderService() throw();
 
     /**
     * @brief Starting method : default does nothing.

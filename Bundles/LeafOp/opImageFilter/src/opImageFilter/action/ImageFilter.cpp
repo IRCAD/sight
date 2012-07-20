@@ -27,7 +27,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE(  ::fwGui::IActionSrv, ::opImageFilter::action::ImageFilter, ::fwData::Object ) ;
+fwServicesRegisterMacro(  ::fwGui::IActionSrv, ::opImageFilter::action::ImageFilter, ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

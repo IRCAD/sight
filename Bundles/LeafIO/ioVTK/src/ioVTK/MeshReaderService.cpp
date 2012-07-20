@@ -33,25 +33,16 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh ) ;
 
 //------------------------------------------------------------------------------
-
-MeshReaderService::MeshReaderService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-MeshReaderService::~MeshReaderService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
 
 ::io::IOPathType MeshReaderService::getIOPathType() const
 {
     return ::io::FILE;
-}//------------------------------------------------------------------------------
+}
+
+//------------------------------------------------------------------------------
 
 void MeshReaderService::configureWithIHM()
 {

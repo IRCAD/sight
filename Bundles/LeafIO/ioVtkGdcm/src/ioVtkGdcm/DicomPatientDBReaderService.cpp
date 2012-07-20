@@ -33,7 +33,7 @@
 namespace ioVtkGdcm
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioVtkGdcm::DicomPatientDBReaderService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioVtkGdcm::DicomPatientDBReaderService , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

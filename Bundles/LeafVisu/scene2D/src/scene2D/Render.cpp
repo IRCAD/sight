@@ -17,7 +17,7 @@
 #include "scene2D/Render.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 
-REGISTER_SERVICE( ::fwRender::IRender , ::scene2D::Render , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRender::IRender , ::scene2D::Render , ::fwData::Composite ) ;
 
 namespace scene2D
 {

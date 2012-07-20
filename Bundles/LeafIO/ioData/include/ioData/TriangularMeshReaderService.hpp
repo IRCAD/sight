@@ -26,7 +26,7 @@ namespace ioData
  * @li Use update() to read the mesh and notify observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::TriangularMeshReaderService , ::fwData::TriangularMesh )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::TriangularMeshReaderService , ::fwData::TriangularMesh )
  */
 class IODATA_CLASS_API TriangularMeshReaderService : public ::io::IReader
 {
@@ -60,16 +60,6 @@ public:
     IODATA_API virtual ::io::IOPathType getIOPathType() const;
 
 protected:
-
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API TriangularMeshReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~TriangularMeshReaderService() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{

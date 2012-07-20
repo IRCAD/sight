@@ -16,7 +16,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Cube, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Cube, ::fwData::Object ) ;
 
 namespace visuVTKAdaptor
 {
@@ -33,7 +33,7 @@ void Cube::doStart() throw(fwTools::Failed)
 }
 
 
-void Cube::doStop() throw(fwTools::Failed) 
+void Cube::doStop() throw(fwTools::Failed)
 {
     this->removeAllPropFromRenderer();
 }

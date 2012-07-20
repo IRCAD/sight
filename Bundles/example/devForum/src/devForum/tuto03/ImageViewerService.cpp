@@ -24,7 +24,7 @@ namespace tuto03
 //-----------------------------------------------------------------------------
 
 // Declare a new service of type IRender for render Image
-REGISTER_SERVICE( ::fwRender::IRender , ::devForum::tuto03::ImageViewerService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRender::IRender , ::devForum::tuto03::ImageViewerService , ::fwData::Image ) ;
 
 //-----------------------------------------------------------------------------
 

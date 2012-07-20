@@ -35,7 +35,7 @@
 #include "visuVTKAdaptor/ImagesBlend.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite ) ;
 
 namespace visuVTKAdaptor
 {

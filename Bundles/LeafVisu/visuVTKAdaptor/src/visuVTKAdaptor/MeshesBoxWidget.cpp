@@ -14,7 +14,7 @@
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
@@ -59,7 +59,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite ) ;
 
 namespace visuVTKAdaptor
 {

@@ -33,7 +33,7 @@
 namespace ioITK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioITK::InrImageReaderService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioITK::InrImageReaderService , ::fwData::Image ) ;
 
 //------------------------------------------------------------------------------
 

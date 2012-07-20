@@ -33,12 +33,14 @@ namespace ioVTK
  * Service writing a VTK Image using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image )
+ * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image )
  */
 class IOVTK_CLASS_API ImageWriterService : public ::io::IWriter
 {
 
 public :
+    ~ImageWriterService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (ImageWriterService)( ::io::IWriter) ) ;
 
     /**
@@ -50,17 +52,6 @@ public :
     IOVTK_API virtual void configureWithIHM();
 
 protected:
-
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API ImageWriterService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~ImageWriterService() throw();
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 

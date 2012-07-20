@@ -16,7 +16,7 @@
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/ComChannelService.hpp"
 #include "fwServices/registry/ObjectService.hpp"
-#include "fwServices/Factory.hpp"
+#include "fwServices/Base.hpp"
 
 namespace fwServices
 {

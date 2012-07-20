@@ -27,7 +27,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

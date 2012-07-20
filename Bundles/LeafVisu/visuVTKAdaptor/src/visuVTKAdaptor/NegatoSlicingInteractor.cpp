@@ -16,7 +16,7 @@
 #include <fwComEd/ImageMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -36,7 +36,7 @@
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ;
 
 
 namespace visuVTKAdaptor

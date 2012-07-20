@@ -21,7 +21,7 @@ namespace tuto02
 //-----------------------------------------------------------------------------
 
 // Declare a new service of type IReader for read an Image
-REGISTER_SERVICE( ::io::IReader , ::devForum::tuto02::ImageReaderService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IReader , ::devForum::tuto02::ImageReaderService , ::fwData::Image ) ;
 
 //-----------------------------------------------------------------------------
 

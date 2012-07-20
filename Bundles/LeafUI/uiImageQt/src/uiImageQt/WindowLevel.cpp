@@ -45,7 +45,7 @@
 namespace uiImage
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Image ) ;
 
 //------------------------------------------------------------------------------
 

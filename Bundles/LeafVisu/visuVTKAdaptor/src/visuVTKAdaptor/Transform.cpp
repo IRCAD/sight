@@ -14,7 +14,7 @@
 #include <fwData/Boolean.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -52,7 +52,7 @@ public:
 };
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ) ;
 
 namespace visuVTKAdaptor
 {

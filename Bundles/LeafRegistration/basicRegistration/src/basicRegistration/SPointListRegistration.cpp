@@ -36,7 +36,7 @@
 
 using fwTools::fwID;
 
-REGISTER_SERVICE( ::fwServices::IController, ::basicRegistration::SPointListRegistration, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IController, ::basicRegistration::SPointListRegistration, ::fwData::Composite );
 
 
 namespace basicRegistration

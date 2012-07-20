@@ -13,7 +13,7 @@ namespace fwServices
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwServices::IEditionService, ::fwServices::DefaultEditor, ::fwData::Object    ) ;
+fwServicesRegisterMacro( ::fwServices::IEditionService, ::fwServices::DefaultEditor, ::fwData::Object    ) ;
 
 //-----------------------------------------------------------------------------
 

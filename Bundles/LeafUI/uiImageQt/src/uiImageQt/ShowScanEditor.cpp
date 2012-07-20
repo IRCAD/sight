@@ -40,7 +40,7 @@
 namespace uiImage
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::ShowScanEditor , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ShowScanEditor , ::fwData::Image ) ;
 
 
 ShowScanEditor::ShowScanEditor() throw(): m_scanAreShown(true)

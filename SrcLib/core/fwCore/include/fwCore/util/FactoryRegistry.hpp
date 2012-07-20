@@ -28,14 +28,15 @@ namespace util
  * @brief FactoryRegistryBase is a class used to store factories
  * @note This class is thread safe.
  */
-template < typename FACTORY_SIGNATURE, typename KEY_TYPE = std::string >
+template < typename FACTORY_SIGNATURE, typename KEY_TYPE = std::string,
+         typename FACTORY_HOLDER = ::boost::function< FACTORY_SIGNATURE > >
 class FactoryRegistryBase
 {
 public:
     typedef FACTORY_SIGNATURE FactorySignatureType;
     typedef KEY_TYPE KeyType;
 
-    typedef ::boost::function< FactorySignatureType > FactoryType;
+    typedef FACTORY_HOLDER FactoryType;
     typedef std::map< KeyType, FactoryType > RegistryType;
     typedef std::vector<KeyType> KeyVectorType;
 
@@ -52,11 +53,11 @@ public:
     /**
      * @brief returns the factory associated with the key.
      */
-    virtual FactoryType getFactory(const KeyType& key)
+    virtual FactoryType getFactory(const KeyType& key) const
     {
         // get shared access
         ::fwCore::mt::ReadLock lock(m_mutex);
-        typename RegistryType::iterator iter = m_registry.find(key);
+        typename RegistryType::const_iterator iter = m_registry.find(key);
         FactoryType factory;
         if(iter != m_registry.end())
         {
@@ -78,16 +79,6 @@ public:
         return vectKeys;
     }
 
-    struct Registrar
-    {
-        typedef FactoryRegistryBase< FACTORY_SIGNATURE, KEY_TYPE > FactoryRegistryType;
-
-        Registrar(FactoryRegistryType &registry, const KeyType& name, FactoryType factory)
-        {
-            registry.addFactory(name, factory);
-        }
-    };
-
 protected:
 
     RegistryType m_registry;
@@ -97,14 +88,15 @@ protected:
 /**
  * @brief FactoryRegistry is a class used to store factories and create instance object with these factories.
  */
-template <typename F, typename KEY_TYPE = std::string >
+template <typename F, typename KEY_TYPE = std::string, typename FACTORY_HOLDER = ::boost::function< F > >
 class FactoryRegistry;
 
-template< typename RETURN_TYPE, typename KEY_TYPE  >
-class FactoryRegistry< RETURN_TYPE (), KEY_TYPE > : public FactoryRegistryBase < RETURN_TYPE (), KEY_TYPE >
+template< typename RETURN_TYPE, typename KEY_TYPE, typename FACTORY_HOLDER >
+class FactoryRegistry< RETURN_TYPE (), KEY_TYPE, FACTORY_HOLDER > :
+        public FactoryRegistryBase < RETURN_TYPE (), KEY_TYPE >
 {
     typedef RETURN_TYPE (FactorySignatureType)();
-    typedef ::boost::function<FactorySignatureType> FactoryType;
+    typedef FACTORY_HOLDER FactoryType;
     typedef RETURN_TYPE ReturnType;
     typedef KEY_TYPE KeyType;
 
@@ -114,7 +106,7 @@ public:
      * @brief Instantiates an object with the factory associated with the specified key.
      * @return Created instance.
      */
-    ReturnType create(const KeyType& key)
+    ReturnType create(const KeyType& key) const
     {
         FactoryType factory = this->getFactory(key);
 
@@ -127,12 +119,12 @@ public:
     }
 };
 
-template< typename RETURN_TYPE, typename ARG1_TYPE, typename KEY_TYPE  >
-class FactoryRegistry< RETURN_TYPE (ARG1_TYPE), KEY_TYPE > :
+template< typename RETURN_TYPE, typename ARG1_TYPE, typename KEY_TYPE, typename FACTORY_HOLDER >
+class FactoryRegistry< RETURN_TYPE (ARG1_TYPE), KEY_TYPE, FACTORY_HOLDER > :
             public FactoryRegistryBase < RETURN_TYPE (ARG1_TYPE), KEY_TYPE >
 {
     typedef RETURN_TYPE (FactorySignatureType)(ARG1_TYPE);
-    typedef ::boost::function<FactorySignatureType> FactoryType;
+    typedef FACTORY_HOLDER FactoryType;
     typedef RETURN_TYPE ReturnType;
     typedef ARG1_TYPE Arg1Type;
     typedef KEY_TYPE KeyType;
@@ -143,7 +135,7 @@ public:
      * @brief Instantiates an object with the factory associated with the specified key, passing arg1 to the factory.
      * @return Created instance.
      */
-    ReturnType create(const KeyType& key, Arg1Type &arg1)
+    ReturnType create(const KeyType& key, Arg1Type &arg1) const
     {
         FactoryType factory = this->getFactory(key);
         ReturnType obj;

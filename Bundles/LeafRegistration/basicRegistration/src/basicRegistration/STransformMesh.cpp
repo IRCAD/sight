@@ -34,7 +34,7 @@
 
 using fwTools::fwID;
 
-REGISTER_SERVICE( ::fwServices::IController, ::basicRegistration::STransformMesh, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IController, ::basicRegistration::STransformMesh, ::fwData::Composite );
 
 
 namespace basicRegistration

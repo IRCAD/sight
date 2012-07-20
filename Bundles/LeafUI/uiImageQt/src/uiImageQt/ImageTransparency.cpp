@@ -34,7 +34,7 @@
 namespace uiImage
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::ImageTransparency , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageTransparency , ::fwData::Image ) ;
 
 
 ImageTransparency::ImageTransparency() throw()

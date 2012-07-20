@@ -23,7 +23,7 @@
 
 #include "ioTuto/ExternalDataReaderService.hpp"
 
-REGISTER_SERVICE( ::io::IReader , ::ioTuto::ExternalDataReaderService , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioTuto::ExternalDataReaderService , ::fwData::Composite ) ;
 
 namespace ioTuto
 {

@@ -44,7 +44,7 @@
 namespace uiImage
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::SliceListEditor , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::SliceListEditor , ::fwData::Image ) ;
 
 
 SliceListEditor::SliceListEditor() throw()

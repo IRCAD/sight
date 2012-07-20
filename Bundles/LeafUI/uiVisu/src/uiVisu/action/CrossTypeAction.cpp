@@ -33,7 +33,7 @@ namespace uiVisu
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiVisu::action::CrossTypeAction , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::CrossTypeAction , ::fwData::Image ) ;
 
 
 std::map< std::string, float >

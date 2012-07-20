@@ -39,7 +39,7 @@
 
 using fwTools::fwID;
 
-REGISTER_SERVICE( ::gui::editor::IEditor, ::basicRegistration::SImagesSubstract, ::fwData::Composite );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::basicRegistration::SImagesSubstract, ::fwData::Composite );
 
 
 namespace basicRegistration

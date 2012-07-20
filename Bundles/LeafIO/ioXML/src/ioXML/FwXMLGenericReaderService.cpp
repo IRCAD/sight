@@ -14,7 +14,6 @@
 #include <fwData/Object.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include <fwServices/Factory.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -44,7 +43,7 @@
 namespace ioXML
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwData::Object );
+fwServicesRegisterMacro( ::io::IReader , ::ioXML::FwXMLGenericReaderService , ::fwData::Object );
 
 //------------------------------------------------------------------------------
 

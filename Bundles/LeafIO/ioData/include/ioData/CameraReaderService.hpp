@@ -28,7 +28,7 @@ namespace ioData
  * @li Use update() to load the file, create the camera object and notify reading to observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::CameraReaderService , ::fwData::Camera )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::CameraReaderService , ::fwData::Camera )
  */
 class IODATA_CLASS_API CameraReaderService : public ::io::IReader
 {
@@ -47,17 +47,6 @@ public:
 
 
 protected:
-
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API CameraReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~CameraReaderService() throw() ;
-
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{

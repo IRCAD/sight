@@ -14,7 +14,6 @@
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IEditionService.hpp>
-#include <fwServices/Factory.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -30,7 +29,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ServiceTest );
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwServices::ut::TestService , ::fwServices::ut::TestServiceImplementation , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::ut::TestService , ::fwServices::ut::TestServiceImplementation , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 

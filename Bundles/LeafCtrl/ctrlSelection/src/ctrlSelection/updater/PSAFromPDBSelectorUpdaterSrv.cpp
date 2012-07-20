@@ -28,7 +28,7 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 

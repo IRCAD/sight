@@ -93,7 +93,7 @@ public:
      * @param type the type of the added config. It can be TEMPLATE, STANDARD or PARAMETERS.
      * @param group the name of the group that owns the config.
      * @param desc the config description.
-     * @param parameters the list of template parametrs in the config.
+     * @param parameters the list of template parameters in the config.
      * @param config the registered config.
      * @note This method is thread safe
      */
@@ -171,7 +171,8 @@ private :
     FieldAdaptorType compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const;
 
     /// Adapts the configuration : replace field thanks to field adaptors
-    ::fwRuntime::EConfigurationElement::sptr adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem, const FieldAdaptorType & fieldAdaptors ) const;
+    ::fwRuntime::EConfigurationElement::sptr adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem,
+                                                          const FieldAdaptorType & fieldAdaptors ) const;
 
     /// Adapts field thanks to field adaptors
     std::string adaptField( const std::string & _str, const FieldAdaptorType & fieldAdaptors ) const;

@@ -33,12 +33,14 @@ namespace ioVTK
  * Service writing a VTK Mesh using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh )
+ * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh )
  */
 class IOVTK_CLASS_API TriangularMeshWriterService : public ::io::IWriter
 {
 
 public :
+    ~TriangularMeshWriterService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (TriangularMeshWriterService)( ::io::IWriter) ) ;
 
     /**
@@ -51,17 +53,6 @@ public :
 
 
 protected:
-
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API TriangularMeshWriterService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~TriangularMeshWriterService() throw();
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 

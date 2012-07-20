@@ -33,7 +33,7 @@ namespace uiVisu
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiVisu::action::CameraOrientationAction , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::CameraOrientationAction , ::fwData::Image ) ;
 
 
 CameraOrientationAction::CameraOrientationAction() throw() : m_orientation("axial")

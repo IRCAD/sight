@@ -21,7 +21,7 @@ namespace ctrlSelection
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImageSrv, ::fwData::Image ) ;
 
 //-----------------------------------------------------------------------------
 

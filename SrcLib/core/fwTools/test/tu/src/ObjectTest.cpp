@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/make_shared.hpp>
+
 #include <fwTools/Object.hpp>
 
 #include "ObjectTest.hpp"
@@ -31,7 +33,7 @@ void ObjectTest::idTest()
     const std::string UUID = "uid" ;
 
     // process
-    ::fwTools::Object::NewSptr obj;
+    ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
 
     obj->setID(UUID);
 

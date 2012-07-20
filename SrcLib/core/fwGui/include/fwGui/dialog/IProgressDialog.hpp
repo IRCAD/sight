@@ -17,6 +17,8 @@
 
 #include <fwData/location/ILocation.hpp>
 
+#include <fwTools/ClassFactoryRegistry.hpp>
+
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -81,7 +83,7 @@ protected :
 protected :
     static sptr progressDialogFactory()
     {
-        return ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IProgressDialog >( ::fwGui::dialog::IProgressDialog::REGISTRY_KEY);
+        return ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IProgressDialog >( ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
     }
 
 };

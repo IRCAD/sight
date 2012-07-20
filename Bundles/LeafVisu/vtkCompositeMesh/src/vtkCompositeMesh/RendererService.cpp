@@ -35,7 +35,7 @@
 #include "vtkCompositeMesh/RendererService.hpp"
 
 
-REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite );
 
 
 

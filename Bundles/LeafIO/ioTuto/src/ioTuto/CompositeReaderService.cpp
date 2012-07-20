@@ -22,7 +22,7 @@
 #include "ioTuto/CompositeReaderService.hpp"
 
 
-REGISTER_SERVICE( ::io::IReader , ::ioTuto::CompositeReaderService , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioTuto::CompositeReaderService , ::fwData::Composite ) ;
 
 namespace ioTuto
 {

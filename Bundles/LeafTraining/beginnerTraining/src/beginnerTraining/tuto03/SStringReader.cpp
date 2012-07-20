@@ -23,7 +23,7 @@
 
 #include "beginnerTraining/tuto03/SStringReader.hpp"
 
-REGISTER_SERVICE( ::io::IReader, ::beginnerTraining::tuto03::SStringReader, ::fwData::String );
+fwServicesRegisterMacro( ::io::IReader, ::beginnerTraining::tuto03::SStringReader, ::fwData::String );
 
 
 namespace beginnerTraining

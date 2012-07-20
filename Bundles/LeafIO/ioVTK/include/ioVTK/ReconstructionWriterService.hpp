@@ -32,12 +32,14 @@ namespace ioVTK
  * Service reading a VTK image using the vtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwData::Acquisition )
+ * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::ReconstructionWriterService , ::fwData::Acquisition )
  */
 class IOVTK_CLASS_API ReconstructionWriterService : public ::io::IWriter
 {
 
 public :
+    ~ReconstructionWriterService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (ReconstructionWriterService)( ::io::IWriter) ) ;
 
     /**
@@ -49,17 +51,6 @@ public :
     IOVTK_API virtual void configureWithIHM();
 
 protected:
-
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API ReconstructionWriterService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~ReconstructionWriterService() throw();
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 

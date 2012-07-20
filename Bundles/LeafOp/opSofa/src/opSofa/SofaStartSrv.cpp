@@ -9,7 +9,7 @@
 namespace opSofa
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::opSofa::SofaStartSrv, ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaStartSrv, ::fwData::Acquisition ) ;
 
 /**
  * @brief Constructor
@@ -29,7 +29,7 @@ SofaStartSrv::~SofaStartSrv() throw()
  * @brief Used to define the service parameters and analyze its configuration.
  */
 void SofaStartSrv::configuring() throw ( ::fwTools::Failed )
-{   
+{
 }
 
 /**

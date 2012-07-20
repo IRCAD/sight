@@ -16,7 +16,7 @@
 #include <fwComEd/TransferFunctionMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -30,7 +30,7 @@
 #include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
 #include <fwServices/IEditionService.hpp>
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor, ::fwData::Image ) ;
 
 
 #define START_WINDOWING_EVENT vtkCommand::RightButtonPressEvent

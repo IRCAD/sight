@@ -31,7 +31,7 @@ class UUID;
 class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject , protected ::fwTools::fwID
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Object), (()), new Object );
+    fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwCore::BaseObject) );
     fwCoreAllowSharedFromThis();
 
     friend class ::fwTools::UUID;

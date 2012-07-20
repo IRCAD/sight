@@ -35,12 +35,7 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D ) ;
-
-//-----------------------------------------------------------------------------
-
-TransformationMatrix3DReaderService::TransformationMatrix3DReaderService()
-{}
+fwServicesRegisterMacro( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D ) ;
 
 //------------------------------------------------------------------------------
 
@@ -72,11 +67,6 @@ void TransformationMatrix3DReaderService::starting( ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
-
-//-----------------------------------------------------------------------------
-
-TransformationMatrix3DReaderService::~TransformationMatrix3DReaderService() throw()
-{}
 
 //-----------------------------------------------------------------------------
 

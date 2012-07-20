@@ -27,20 +27,9 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh ) ;
 
 //------------------------------------------------------------------------------
-
-MeshWriterService::MeshWriterService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-MeshWriterService::~MeshWriterService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
 
 ::io::IOPathType MeshWriterService::getIOPathType() const
 {

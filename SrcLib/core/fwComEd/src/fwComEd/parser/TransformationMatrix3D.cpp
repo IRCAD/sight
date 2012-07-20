@@ -8,13 +8,13 @@
 #include <fwTools/Factory.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include "fwComEd/parser/TransformationMatrix3D.hpp"
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::TransformationMatrix3D, ::fwData::TransformationMatrix3D );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::TransformationMatrix3D, ::fwData::TransformationMatrix3D );
 
 namespace fwComEd
 {

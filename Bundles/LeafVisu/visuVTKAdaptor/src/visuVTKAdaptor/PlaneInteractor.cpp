@@ -15,7 +15,7 @@
 #include <fwComEd/PointMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -25,7 +25,7 @@
 #include "visuVTKAdaptor/PlaneInteractor.hpp"
 #include <fwServices/IEditionService.hpp>
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object ) ;
 
 namespace visuVTKAdaptor
 {

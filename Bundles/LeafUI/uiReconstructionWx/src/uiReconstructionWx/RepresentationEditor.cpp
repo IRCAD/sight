@@ -29,7 +29,7 @@
 namespace uiReconstruction
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiReconstruction::RepresentationEditor , ::fwData::Reconstruction ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::RepresentationEditor , ::fwData::Reconstruction ) ;
 
 
 RepresentationEditor::RepresentationEditor() throw()

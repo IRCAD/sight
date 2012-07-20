@@ -37,7 +37,7 @@
 namespace ioXML
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLPatientDBWriterService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioXML::FwXMLPatientDBWriterService , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

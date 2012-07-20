@@ -16,7 +16,7 @@
 
 #include "fwXML/ArrayFileFormatService.hpp"
 
-REGISTER_SERVICE( ::fwXML::IFileFormatService , ::fwXML::ArrayFileFormatService , ::fwData::Array);
+fwServicesRegisterMacro( ::fwXML::IFileFormatService , ::fwXML::ArrayFileFormatService , ::fwData::Array);
 
 namespace fwXML
 {
