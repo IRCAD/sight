@@ -30,8 +30,6 @@ class IOXML_CLASS_API FwXMLPatient2PatientDBWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (FwXMLPatient2PatientDBWriterService)(::io::IWriter) ) ;
 
-protected:
-
     /**
      * @brief   constructor
      *
@@ -42,6 +40,8 @@ protected:
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLPatient2PatientDBWriterService() throw();
+
+protected:
 
     /// Override
     IOXML_API virtual ::io::IOPathType getIOPathType() const;
