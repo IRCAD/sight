@@ -30,7 +30,6 @@ ServiceConfig::sptr ServiceConfig::getDefault()
 
 ServiceConfig::~ServiceConfig()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -99,7 +98,6 @@ void ServiceConfig::addServiceConfigInfo
 
 ServiceConfig::ServiceConfig()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

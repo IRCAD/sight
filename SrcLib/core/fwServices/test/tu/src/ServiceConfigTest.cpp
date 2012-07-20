@@ -96,12 +96,10 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
 
 ::fwRuntime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
 {
-    // Configuration on fwTools::Object which uid is objectUUID
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceCfg ( new ::fwRuntime::EConfigurationElement("config")) ;
     serviceCfg->setAttributeValue( "uid" , "serviceUUID") ;
     serviceCfg->setAttributeValue( "type" , "serviceType") ;
 
-    // Object's service A
     ::fwRuntime::EConfigurationElement::sptr cfg = serviceCfg->addConfigurationElement("param");
     cfg->setValue("Parameter") ;
 
