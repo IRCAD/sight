@@ -3,8 +3,10 @@ CLASSTEST=[
     'ServiceTest',
     'AppConfigTest',
     'ServiceConfigTest',
+    'AppConfigParametersTest',
     ]
 
 USE = ['boost']
+REQUIREMENTS = ['servicesReg']
 LIB = ['fwTools_0-1','fwCore_0-1','fwRuntime_0-3','fwData_0-1','fwServices_0-1','fwTest_0-1']
 CONSOLE='yes'
