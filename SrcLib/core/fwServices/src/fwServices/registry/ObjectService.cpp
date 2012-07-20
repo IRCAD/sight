@@ -91,9 +91,9 @@ void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr s
 
 //------------------------------------------------------------------------------
 
-void swapService( ::fwData::Object::sptr objSrc, ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
+void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
 {
-    return ::fwServices::OSR::get()->swapService(objSrc, objDst, service);
+    return ::fwServices::OSR::get()->swapService(objDst, service);
 }
 
 //------------------------------------------------------------------------------
@@ -141,16 +141,15 @@ void  ObjectService::internalRegisterService( ::fwData::Object::sptr object, ::f
 
 //------------------------------------------------------------------------------
 
-void ObjectService::swapService( ::fwData::Object::sptr objSrc,
-                                 ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
+void ObjectService::swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
 {
-    OSLM_ASSERT("Object "<< objSrc->getID()<<" is not registered in OSR",
-                m_container.left.find(objSrc->getOSRKey()->getLogicStamp()) != m_container.left.end());
+    ::fwCore::mt::WriteLock lock(m_containerMutex);
+    OSLM_ASSERT("Object "<< service->getObject()->getID()<<" is not registered in OSR",
+                m_container.left.find(service->getObject()->getOSRKey()->getLogicStamp()) != m_container.left.end());
 
     OSLM_ASSERT("Service "<< service->getID()<<" is not registered in OSR",
                     m_container.right.find(service) != m_container.right.end());
 
-    ::fwCore::mt::WriteLock lock(m_containerMutex);
     m_container.right.erase(service);
     this->internalRegisterService(objDst, service);
 }

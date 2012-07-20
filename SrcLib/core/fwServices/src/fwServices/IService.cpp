@@ -257,12 +257,12 @@ void IService::swap( ::fwData::Object::sptr _obj ) throw(::fwTools::Failed)
                 if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
                 {
                     comChannel->stop() ;
-                    ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , comChannel );
+                    ::fwServices::OSR::swapService(_obj , comChannel );
                     comChannel->start();
                 }
             }
         }
-        ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , this->getSptr() );
+        ::fwServices::OSR::swapService( _obj , this->getSptr() );
 
         this->swapping();
 

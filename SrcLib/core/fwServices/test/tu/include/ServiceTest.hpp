@@ -16,7 +16,8 @@ namespace ut
 {
 
 /**
- * @brief Test many methods to create service (with uuid, with configuration,...). And test service methods (start, stop and update).
+ * @brief Test many methods to create service (with uuid, with configuration,...).
+ * And test service methods (start, stop and update).
  */
 class ServiceTest : public CPPUNIT_NS::TestFixture
 {

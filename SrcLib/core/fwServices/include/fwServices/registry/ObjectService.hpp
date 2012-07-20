@@ -181,11 +181,10 @@ public:
     //@{
 
      /**
-     * @brief Move service (service) from object objSrc to object objDst in the m_container
+     * @brief Move service (service) to object objDst in the m_container
      * @author  IRCAD (Research and Development Team).
      */
-    FWSERVICES_API void swapService( ::fwData::Object::sptr objSrc, ::fwData::Object::sptr objDst,
-                                     ::fwServices::IService::sptr service );
+    FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
 
     //@}
 
@@ -278,8 +277,7 @@ FWSERVICES_API void registerService( ::fwData::Object::sptr obj, ::fwServices::I
 /**
  * @brief Wraps ObjectService::swapService
  */
-FWSERVICES_API void swapService( ::fwData::Object::sptr objSrc, ::fwData::Object::sptr objDst,
-                                 ::fwServices::IService::sptr service );
+FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
 
 /**
  * @brief Wraps ObjectService::unregisterService
