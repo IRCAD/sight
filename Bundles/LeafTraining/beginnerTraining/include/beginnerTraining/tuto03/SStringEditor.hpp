@@ -27,6 +27,16 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SStringEditor)(::gui::editor::IEditor) ) ;
 
+    BEGINNERTRAINING_API SStringEditor();
+
+    BEGINNERTRAINING_API virtual ~SStringEditor() throw();
+
+protected Q_SLOTS:
+
+    BEGINNERTRAINING_API void onTextChanged();
+
+protected :
+
     /// Overrides
     BEGINNERTRAINING_API virtual void configuring() throw ( ::fwTools::Failed );
 
@@ -44,18 +54,6 @@ public:
 
     /// Overrides
     BEGINNERTRAINING_API virtual void swapping() throw ( ::fwTools::Failed );
-
-protected Q_SLOTS:
-
-    BEGINNERTRAINING_API void onTextChanged();
-
-protected :
-
-    /// Constructor
-    BEGINNERTRAINING_API SStringEditor();
-
-    /// Destructor
-    BEGINNERTRAINING_API virtual ~SStringEditor() throw();
 
     /// Method to notify modification on data
     BEGINNERTRAINING_API void notifyMessage();

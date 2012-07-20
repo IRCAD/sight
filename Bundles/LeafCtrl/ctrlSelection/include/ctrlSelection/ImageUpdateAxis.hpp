@@ -32,13 +32,11 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (ImageUpdateAxis)(::fwServices::IController) ) ;
 
-protected:
-
-    /// Constructor.  Do nothing.
     CTRLSELECTION_API ImageUpdateAxis() throw() ;
 
-    /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~ImageUpdateAxis() throw() ;
+
+protected:
 
     /// Implements starting method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );

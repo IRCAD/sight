@@ -109,10 +109,8 @@ public :
 
 protected:
 
-    /// Constructor (by default does nothing)
     IO_API IWriter() throw() ;
 
-    /// Destructor
     IO_API virtual ~IWriter() throw() ;
 
     /**

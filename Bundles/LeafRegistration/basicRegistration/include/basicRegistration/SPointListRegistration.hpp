@@ -21,6 +21,12 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SPointListRegistration)(::fwServices::IController) ) ;
 
+    BASICREGISTRATION_API SPointListRegistration();
+
+    BASICREGISTRATION_API virtual ~SPointListRegistration();
+
+protected :
+
     /** Overrides
      *
      @verbatim
@@ -46,13 +52,8 @@ public:
     /// Overrides
     BASICREGISTRATION_API virtual void swapping() throw ( ::fwTools::Failed );
 
-protected :
 
-    /// Constructor
-    BASICREGISTRATION_API SPointListRegistration();
 
-    /// Destructor
-    BASICREGISTRATION_API virtual ~SPointListRegistration();
 
     /// Key source point list
     std::string m_registeredPointsKey;

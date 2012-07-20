@@ -94,12 +94,6 @@ private :
 
         public:
 
-        SceneAdaptor()
-        { }
-
-        ~SceneAdaptor()
-        { }
-
         SPTR (IVtkAdaptorService) getService()
         { return m_service.lock(); }
 

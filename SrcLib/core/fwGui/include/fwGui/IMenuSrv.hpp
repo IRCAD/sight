@@ -44,17 +44,12 @@ public :
     FWGUI_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
 
 protected :
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
-    /**
-     * @brief   Constructor. Initialize default values.
-     */
     FWGUI_API IMenuSrv() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUI_API virtual ~IMenuSrv() ;
+
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Initialize the layout and registry managers.

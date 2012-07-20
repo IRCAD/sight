@@ -39,18 +39,11 @@ public :
 
 protected :
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    /**
-     * @brief   Constructor. Initialize default values.
-     */
     FWGUI_API IFrameSrv() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUI_API virtual ~IFrameSrv() ;
 
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     /**
      * @brief Initialize frame managers.
      *

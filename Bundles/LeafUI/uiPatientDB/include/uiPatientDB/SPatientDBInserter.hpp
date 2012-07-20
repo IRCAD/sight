@@ -35,6 +35,16 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SPatientDBInserter)(::io::IWriter) ) ;
 
+    /// Constructor
+    UIPATIENTDB_API SPatientDBInserter();
+
+    /// Destructor
+    UIPATIENTDB_API virtual ~SPatientDBInserter() throw();
+
+
+
+protected :
+
     /**
      * @brief Overrides
      @verbatim
@@ -62,17 +72,7 @@ public:
     UIPATIENTDB_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Just call stopping/starting
-    UIPATIENTDB_API virtual void swapping() throw ( ::fwTools::Failed );
-
-protected :
-
-    /// Constructor
-    UIPATIENTDB_API SPatientDBInserter();
-
-    /// Destructor
-    UIPATIENTDB_API virtual ~SPatientDBInserter() throw();
-
-private :
+    UIPATIENTDB_API virtual void swapping() throw ( ::fwTools::Failed );private :
 
     /**
      * @brief Retrieves selected image, if we have not selected image or if the

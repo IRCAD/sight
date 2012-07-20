@@ -127,14 +127,8 @@ public :
 
 protected:
 
-    /**
-     * @brief   Constructor (by default does nothing)
-     */
     IO_API IReader() throw() ;
 
-    /**
-     * @brief   Destructor
-     */
     IO_API virtual ~IReader() throw() ;
 
     /**

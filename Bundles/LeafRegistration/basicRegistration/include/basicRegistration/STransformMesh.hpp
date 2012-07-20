@@ -21,6 +21,13 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (STransformMesh)(::fwServices::IController) ) ;
 
+
+    BASICREGISTRATION_API STransformMesh();
+
+    BASICREGISTRATION_API virtual ~STransformMesh();
+
+protected :
+
     BASICREGISTRATION_API virtual void configuring() throw ( ::fwTools::Failed );
 
     /// Overrides
@@ -38,13 +45,6 @@ public:
     /// Overrides
     BASICREGISTRATION_API virtual void swapping() throw ( ::fwTools::Failed );
 
-protected :
-
-    /// Constructor
-    BASICREGISTRATION_API STransformMesh();
-
-    /// Destructor
-    BASICREGISTRATION_API virtual ~STransformMesh();
 
 };
 

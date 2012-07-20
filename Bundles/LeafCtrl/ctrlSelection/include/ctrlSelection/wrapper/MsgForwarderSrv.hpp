@@ -34,13 +34,11 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (MsgForwarderSrv)(::ctrlSelection::IWrapperSrv) ) ;
 
-protected:
-
-    /// Constructor.  Do nothing.
     CTRLSELECTION_API MsgForwarderSrv() throw() ;
 
-    /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~MsgForwarderSrv() throw() ;
+
+protected:
 
     /// Implements starting method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );

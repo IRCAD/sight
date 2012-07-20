@@ -25,6 +25,10 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SDumpPolicy)(::fwServices::IController) ) ;
 
+    MEMORY_API SDumpPolicy();
+
+    MEMORY_API virtual ~SDumpPolicy();
+
     /**
      * Configuration example :
      * <service ...>
@@ -58,11 +62,6 @@ protected :
 
     typedef std::vector< std::pair< ::fwMemory::IPolicy::ParamNamesType::value_type, std::string > > ParametersType;
 
-    /// Constructor
-    MEMORY_API SDumpPolicy();
-
-    /// Destructor
-    MEMORY_API virtual ~SDumpPolicy();
 
     std::string m_policy;
     ParametersType m_policyParams;

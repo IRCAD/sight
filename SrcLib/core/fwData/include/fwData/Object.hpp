@@ -201,13 +201,12 @@ public:
 
     ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
 
+    FWDATA_API virtual ~Object() ;
+
 protected:
 
-    /// Constructor
     FWDATA_API Object();
 
-    /// Destructor
-    FWDATA_API virtual ~Object() ;
 
     /// Fields
     FieldMapType m_fields;

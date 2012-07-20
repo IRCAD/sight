@@ -27,6 +27,12 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SImagesSubstract)(::gui::editor::IEditor) ) ;
 
+    BASICREGISTRATION_API SImagesSubstract() throw();
+
+    BASICREGISTRATION_API virtual ~SImagesSubstract() throw();
+
+protected :
+
     BASICREGISTRATION_API virtual void configuring() throw ( ::fwTools::Failed );
 
     /// Overrides
@@ -44,13 +50,8 @@ public:
     /// Overrides
     BASICREGISTRATION_API virtual void swapping() throw ( ::fwTools::Failed );
 
-protected :
 
-    /// Constructor
-    BASICREGISTRATION_API SImagesSubstract() throw();
 
-    /// Destructor
-    BASICREGISTRATION_API virtual ~SImagesSubstract() throw();
 
 private Q_SLOTS:
 
