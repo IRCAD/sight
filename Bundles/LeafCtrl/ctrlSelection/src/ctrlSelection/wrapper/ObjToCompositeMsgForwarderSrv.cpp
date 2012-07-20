@@ -22,7 +22,7 @@ namespace wrapper
 {
 //-----------------------------------------------------------------------------
 
-f wServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::ObjToCompositeMsgForwarderSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::ObjToCompositeMsgForwarderSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
