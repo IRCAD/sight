@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/PlaneMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::PlaneMsg, ::fwComEd::PlaneMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::PlaneMsg );
 
 namespace fwComEd
 {
@@ -23,7 +23,7 @@ std::string PlaneMsg::WAS_DESELECTED          = "WAS_DESELECTED";
 
 //-----------------------------------------------------------------------------
 
-PlaneMsg::PlaneMsg() throw()
+PlaneMsg::PlaneMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

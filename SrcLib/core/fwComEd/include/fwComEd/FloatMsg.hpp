@@ -27,15 +27,17 @@ class FWCOMED_CLASS_API FloatMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((FloatMsg)(::fwServices::ObjectMsg), ( ( ) ), new FloatMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((FloatMsg)(::fwServices::ObjectMsg), ( ( ) ),
+                                           ::fwServices::factory::message::New< FloatMsg >);
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;
 
     /**
-     * @brief   Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API FloatMsg() throw();
+    FWCOMED_API FloatMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destructor : does nothing.

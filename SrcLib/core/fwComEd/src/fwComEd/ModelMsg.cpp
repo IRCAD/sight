@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/ModelMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::ModelMsg, ::fwComEd::ModelMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::ModelMsg );
 
 namespace fwComEd
 {
@@ -19,7 +19,7 @@ std::string ModelMsg::NEW_MODEL = "NEW_MODEL";
 
 //-----------------------------------------------------------------------------
 
-ModelMsg::ModelMsg() throw()
+ModelMsg::ModelMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

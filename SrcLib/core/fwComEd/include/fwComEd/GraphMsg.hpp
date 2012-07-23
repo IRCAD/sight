@@ -33,7 +33,8 @@ class FWCOMED_CLASS_API GraphMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((GraphMsg)(::fwServices::ObjectMsg), ( () ), new GraphMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((GraphMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< GraphMsg >);
 
     /**
      * @name Event identifier
@@ -61,9 +62,10 @@ public:
     /// @}
 
     /**
-      * @brief  Constructor : does nothing.
-      */
-    FWCOMED_API GraphMsg() throw();
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API GraphMsg(::fwServices::ObjectMsg::Key key);
 
     /**
       * @brief  Destuctor : does nothing.

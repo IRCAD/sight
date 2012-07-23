@@ -27,7 +27,8 @@ class FWCOMED_CLASS_API PlaneListMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((PlaneListMsg)(::fwServices::ObjectMsg), ( () ), new PlaneListMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PlaneListMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< PlaneListMsg >);
 
     /**
      * @name Event identifier
@@ -42,9 +43,10 @@ public:
     /// @}
 
     /**
-      * @brief  Constructor : does nothing.
-      */
-    FWCOMED_API PlaneListMsg() throw();
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API PlaneListMsg(::fwServices::ObjectMsg::Key key);
 
     /**
       * @brief  Destuctor : does nothing.

@@ -27,15 +27,17 @@ class FWCOMED_CLASS_API SplineMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((SplineMsg)(::fwServices::ObjectMsg), ( ( ) ), new SplineMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((SplineMsg)(::fwServices::ObjectMsg), ( ( ) ),
+                                           ::fwServices::factory::message::New< SplineMsg > );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_SPLINE;
 
     /**
-     * @brief   Constructor : do nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API SplineMsg() throw();
+    FWCOMED_API SplineMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : do nothing.

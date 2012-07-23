@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/SplineMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::SplineMsg, ::fwComEd::SplineMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::SplineMsg );
 
 namespace fwComEd
 {
@@ -19,7 +19,7 @@ std::string SplineMsg::NEW_SPLINE="NEW_SPLINE";
 
 //-----------------------------------------------------------------------------
 
-SplineMsg::SplineMsg() throw()
+SplineMsg::SplineMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

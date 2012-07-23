@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/TagMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::TagMsg, ::fwComEd::TagMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::TagMsg );
 
 namespace fwComEd
 {
@@ -19,7 +19,7 @@ std::string TagMsg::TAG_IS_MODIFIED="TAG_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-TagMsg::TagMsg() throw()
+TagMsg::TagMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

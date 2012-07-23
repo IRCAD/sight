@@ -8,11 +8,11 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/InteractionMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::InteractionMsg, ::fwComEd::InteractionMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::InteractionMsg );
 
 namespace fwComEd
 {
@@ -31,7 +31,7 @@ std::string InteractionMsg::MOUSE_MOVE               = "MOUSE_MOVE";
 
 //-----------------------------------------------------------------------------
 
-InteractionMsg::InteractionMsg() throw()
+InteractionMsg::InteractionMsg(::fwServices::ObjectMsg::Key key)
 {
     m_eventPoint = ::fwData::Point::New();
     m_modifiersStatus = NONE;

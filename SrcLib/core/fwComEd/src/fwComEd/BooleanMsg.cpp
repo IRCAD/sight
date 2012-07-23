@@ -4,14 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/BooleanMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::BooleanMsg, ::fwComEd::BooleanMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::BooleanMsg );
 
 namespace fwComEd
 {
+
 
 //-----------------------------------------------------------------------------
 
@@ -19,7 +20,7 @@ std::string BooleanMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-BooleanMsg::BooleanMsg() throw()
+BooleanMsg::BooleanMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

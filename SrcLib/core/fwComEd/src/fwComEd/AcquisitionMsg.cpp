@@ -4,11 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
+
+#include <fwServices/ObjectMsg.hpp>
 
 #include "fwComEd/AcquisitionMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::AcquisitionMsg, ::fwComEd::AcquisitionMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::AcquisitionMsg );
 
 namespace fwComEd
 {
@@ -23,7 +25,7 @@ std::string AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED = "NEW_RECONSTRUCTION_SE
 
 //-----------------------------------------------------------------------------
 
-AcquisitionMsg::AcquisitionMsg() throw()
+AcquisitionMsg::AcquisitionMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

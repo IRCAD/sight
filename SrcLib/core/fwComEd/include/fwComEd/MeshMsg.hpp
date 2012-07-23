@@ -26,7 +26,8 @@ class FWCOMED_CLASS_API MeshMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MeshMsg)(::fwServices::ObjectMsg), (( )) , new MeshMsg );
+    fwCoreClassDefinitionsWithFactoryMacro( (MeshMsg)(::fwServices::ObjectMsg), (( )) ,
+                                            ::fwServices::factory::message::New< MeshMsg > );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_MESH;
@@ -36,8 +37,11 @@ public:
     FWCOMED_API static std::string POINT_NORMALS_MODIFIED;
     FWCOMED_API static std::string CELL_NORMALS_MODIFIED;
 
-    /// Constructor. Do nothing.
-    FWCOMED_API MeshMsg() throw();
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API MeshMsg(::fwServices::ObjectMsg::Key key);
 
     /// Destructor. Do nothing.
     FWCOMED_API virtual ~MeshMsg() throw();

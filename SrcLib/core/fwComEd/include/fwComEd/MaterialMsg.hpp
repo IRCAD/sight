@@ -25,7 +25,8 @@ namespace fwComEd
 class FWCOMED_CLASS_API MaterialMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((MaterialMsg)(::fwServices::ObjectMsg), ( () ), new MaterialMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((MaterialMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< MaterialMsg >);
 
     /**
      * @name Event identifier
@@ -38,7 +39,7 @@ public:
     /**
      * @brief   Constructor : do nothing.
      */
-    FWCOMED_API MaterialMsg() throw();
+    FWCOMED_API MaterialMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : do nothing.

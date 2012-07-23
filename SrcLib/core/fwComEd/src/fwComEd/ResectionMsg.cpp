@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/ResectionMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::ResectionMsg, ::fwComEd::ResectionMsg );
+fwServicesMessageRegisterMacro(::fwComEd::ResectionMsg );
 
 namespace fwComEd
 {
@@ -23,7 +23,7 @@ std::string ResectionMsg::MODIFIED = "MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-ResectionMsg::ResectionMsg() throw()
+ResectionMsg::ResectionMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

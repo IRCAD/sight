@@ -14,7 +14,7 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 Composite::Composite( ::fwData::Composite::wptr _composite )
-    :   m_compositeMsg ( new ::fwComEd::CompositeMsg() ),
+    :   m_compositeMsg ( ::fwComEd::CompositeMsg::New() ),
         m_composite ( _composite )
 {}
 

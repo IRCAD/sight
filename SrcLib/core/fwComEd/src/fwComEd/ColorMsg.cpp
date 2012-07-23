@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/ColorMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::ColorMsg, ::fwComEd::ColorMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::ColorMsg );
 
 namespace fwComEd
 {
@@ -19,7 +19,7 @@ std::string ColorMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-ColorMsg::ColorMsg() throw()
+ColorMsg::ColorMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

@@ -27,15 +27,17 @@ class FWCOMED_CLASS_API IntegerMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((IntegerMsg)(::fwServices::ObjectMsg), ( ( ) ), new IntegerMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((IntegerMsg)(::fwServices::ObjectMsg), ( ( ) ),
+                                           ::fwServices::factory::message::New< IntegerMsg > );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;
 
     /**
-     * @brief   Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API IntegerMsg() throw();
+    FWCOMED_API IntegerMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destructor : does nothing.

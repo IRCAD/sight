@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/TriangularMeshMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::TriangularMeshMsg, ::fwComEd::TriangularMeshMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::TriangularMeshMsg );
 
 namespace fwComEd
 {
@@ -20,7 +20,7 @@ std::string TriangularMeshMsg::VERTEX_MODIFIED = "VERTEX_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-FWCOMED_API TriangularMeshMsg::TriangularMeshMsg() throw()
+TriangularMeshMsg::TriangularMeshMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

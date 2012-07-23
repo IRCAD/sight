@@ -27,15 +27,18 @@ class FWCOMED_CLASS_API ColorMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ColorMsg)(::fwServices::ObjectMsg), ( ( ) ), new ColorMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ColorMsg)(::fwServices::ObjectMsg), ( ( ) ),
+                                           ::fwServices::factory::message::New< ColorMsg > );
+
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;
 
     /**
-     * @brief   Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API ColorMsg() throw();
+    FWCOMED_API ColorMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destructor : does nothing.

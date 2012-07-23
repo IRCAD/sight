@@ -27,20 +27,24 @@ class FWCOMED_CLASS_API BooleanMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((BooleanMsg)(::fwServices::ObjectMsg), ( ( ) ), new BooleanMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((BooleanMsg)(::fwServices::ObjectMsg), ( ( ) ),
+                                           ::fwServices::factory::message::New< BooleanMsg > );
 
     /// Event identifier used to inform that the value is modified.
     FWCOMED_API static std::string VALUE_IS_MODIFIED;
 
     /**
-     * @brief   Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API BooleanMsg() throw();
+    FWCOMED_API BooleanMsg(::fwServices::ObjectMsg::Key key);
+
 
     /**
      * @brief   Destructor : does nothing.
      */
     FWCOMED_API virtual ~BooleanMsg() throw();
+
 };
 
 
