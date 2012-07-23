@@ -79,10 +79,8 @@ void ActionNotifyService::updating() throw( ::fwTools::Failed )
         {
             const std::string msgType = msg.get<0>();
             const std::string event   = msg.get<1>();
-            ::fwTools::Object::sptr obj = ::fwTools::Factory::New(msgType);
-            OSLM_ASSERT(msgType << " creation failed", obj);
-            ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::ObjectMsg::dynamicCast(obj);
-            OSLM_ASSERT(msgType << " dynamicCast failed", objectMsg);
+            ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::factory::message::New(msgType);
+            OSLM_ASSERT(msgType << " creation failed", objectMsg);
 
             ::fwData::Object::sptr srvObj = this->getObject();
             objectMsg->addEvent( event );
