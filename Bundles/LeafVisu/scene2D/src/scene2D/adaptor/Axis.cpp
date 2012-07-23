@@ -50,7 +50,7 @@ void Axis::doStart() throw( ::fwTools::Failed)
 void Axis::doStop() throw( ::fwTools::Failed)
 {
     m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    ::fwServices::OSR::unregisterService( m_comChannel );
 
     delete m_layer;
 }

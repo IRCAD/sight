@@ -7,6 +7,9 @@
 #ifndef _SCENE2D_DATA_AXIS_HPP_
 #define _SCENE2D_DATA_AXIS_HPP_
 
+#include <fwTools/Object.hpp>
+#include <fwTools/Factory.hpp>
+
 #include <fwData/Object.hpp>
 
 #include "scene2D/config.hpp"
@@ -39,19 +42,19 @@ public:
 
     /// Get m_origin attribute.
     SCENE2D_API float getOrigin();
-    
+
     /// Set m_origin attribute.
     SCENE2D_API void setOrigin (float _origin);
-    
+
     /// Get m_scale attribute.
     SCENE2D_API float getScale();
-    
+
     /// Set m_scale attribute.
     SCENE2D_API void setScale (float _scale);
 
     /// Get m_scaleType attribute.
     SCENE2D_API std::string getScaleType();
-    
+
     /// Set m_scaleType attribute.
     SCENE2D_API void setScaleType (std::string _scaleType);
 

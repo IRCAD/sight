@@ -448,7 +448,7 @@ void ScaleValues::doStop() throw ( ::fwTools::Failed )
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
     m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    ::fwServices::OSR::unregisterService( m_comChannel );
 }
 
 

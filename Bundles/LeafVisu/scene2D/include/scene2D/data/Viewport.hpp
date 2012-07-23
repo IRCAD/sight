@@ -8,6 +8,8 @@
 #define _SCENE2D_DATA_VIEWPORT_HPP_
 
 #include <fwData/Object.hpp>
+#include <fwTools/Object.hpp>
+#include <fwTools/Factory.hpp>
 
 #include "scene2D/config.hpp"
 

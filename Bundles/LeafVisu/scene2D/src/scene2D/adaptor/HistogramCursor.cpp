@@ -112,7 +112,7 @@ void HistogramCursor::doStop() throw( ::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    ::fwServices::OSR::unregisterService( m_comChannel );
 }
 
 //---------------------------------------------------------------------------------------------------------------

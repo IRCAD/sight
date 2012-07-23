@@ -10,7 +10,8 @@
 #ifndef _SCENE2D_DATA_EVENT_HPP_
 #define _SCENE2D_DATA_EVENT_HPP_
 
-#include <fwData/Object.hpp>
+#include <fwTools/Object.hpp>
+#include <fwTools/Factory.hpp>
 
 #include <Qt>
 

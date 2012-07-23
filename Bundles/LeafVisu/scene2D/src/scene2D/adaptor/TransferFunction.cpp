@@ -559,7 +559,7 @@ void TransferFunction::doStop() throw ( ::fwTools::Failed )
 {
     this->removeTFObserver();
     m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    ::fwServices::OSR::unregisterService( m_comChannel );
 
     // Clear the items vectors and remove the layer (and all its children) from the scene
     for (std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin() ; circleIt != m_circles.end() ; ++circleIt )

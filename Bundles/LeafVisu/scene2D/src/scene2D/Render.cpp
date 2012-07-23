@@ -522,7 +522,7 @@ void Render::stopAdaptor(AdaptorIDType _adaptorID)
     m_zValue2AdaptorID.erase( info.getService()->getZValue() );
 
     info.m_comChannel.lock()->stop();
-    ::fwServices::registry::ObjectService::unregisterService( info.m_comChannel.lock() );
+    ::fwServices::OSR::unregisterService( info.m_comChannel.lock() );
     info.m_comChannel.reset();
 
     info.getService()->stop();
