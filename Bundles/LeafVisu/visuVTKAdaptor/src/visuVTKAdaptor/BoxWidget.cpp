@@ -54,7 +54,7 @@ public:
 
 // BoxWidget
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, BoxWidget, ::fwData::TransformationMatrix3D );
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::BoxWidget, ::fwData::TransformationMatrix3D );
 
 //------------------------------------------------------------------------------
 

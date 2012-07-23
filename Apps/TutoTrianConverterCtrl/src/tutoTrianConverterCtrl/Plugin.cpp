@@ -88,10 +88,16 @@ void Plugin::stop() throw()
 
 void Plugin::uninitialize() throw()
 {
-    m_writerSrv->stop();
-    m_readerSrv->stop();
-    ::fwServices::OSR::unregisterService( m_readerSrv ) ;
-    ::fwServices::OSR::unregisterService( m_writerSrv ) ;
+    if (m_writerSrv)
+    {
+        m_writerSrv->stop();
+        ::fwServices::OSR::unregisterService( m_writerSrv ) ;
+    }
+    if(m_readerSrv)
+    {
+        m_readerSrv->stop();
+        ::fwServices::OSR::unregisterService( m_readerSrv ) ;
+    }
     m_mesh.reset();
 }
 
