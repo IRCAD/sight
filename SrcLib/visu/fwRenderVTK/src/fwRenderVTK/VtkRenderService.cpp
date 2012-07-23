@@ -7,6 +7,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/function.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <vtkActor.h>
 #include <vtkCellPicker.h>

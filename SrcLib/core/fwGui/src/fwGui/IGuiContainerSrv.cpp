@@ -8,6 +8,7 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/fwID.hpp>
+#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/Base.hpp>
 
 #include "fwGui/IGuiContainerSrv.hpp"

@@ -5,6 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwTools/ClassFactoryRegistry.hpp>
+
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/parser/Composite.hpp>
