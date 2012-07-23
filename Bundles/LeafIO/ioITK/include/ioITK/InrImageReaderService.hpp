@@ -26,18 +26,11 @@ class IOITK_CLASS_API InrImageReaderService : public ::io::IReader
 public :
     fwCoreServiceClassDefinitionsMacro ( (InrImageReaderService)( ::io::IReader) ) ;
 
-protected:
-
-    /**
-     * @brief   constructor
-     *
-     */
     IOITK_API InrImageReaderService() throw();
 
-    /**
-     * @brief   destructor
-     */
     IOITK_API virtual ~InrImageReaderService() throw();
+
+protected:
 
     /// Override
     virtual void starting() throw(::fwTools::Failed){};

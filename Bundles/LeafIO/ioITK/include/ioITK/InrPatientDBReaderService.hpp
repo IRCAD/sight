@@ -33,18 +33,11 @@ class IOITK_CLASS_API InrPatientDBReaderService : public ::io::IReader
 public :
     fwCoreServiceClassDefinitionsMacro ( (InrPatientDBReaderService)( ::io::IReader) ) ;
 
-protected:
-
-    /**
-     * @brief   constructor
-     *
-     */
     IOITK_API InrPatientDBReaderService() throw();
 
-    /**
-     * @brief   destructor
-     */
     IOITK_API virtual ~InrPatientDBReaderService() throw();
+
+protected:
 
     /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);
