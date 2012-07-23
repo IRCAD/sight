@@ -94,8 +94,8 @@ void MTLockTest::multipleLockTest()
     ::fwTest::helper::Thread thread(::boost::bind(&MTLockTest::runMultipleLock1, this));
     ::fwTest::helper::Thread thread2(::boost::bind(&MTLockTest::runMultipleLock2, this));
 
-    CPPUNIT_ASSERT(thread.timedJoin(2000));
-    CPPUNIT_ASSERT(thread2.timedJoin(2000));
+    CPPUNIT_ASSERT(thread.timedJoin(2500));
+    CPPUNIT_ASSERT(thread2.timedJoin(2500));
 
     CPPUNIT_ASSERT_MESSAGE(m_string->value(), m_string->value()=="lili" ||  m_string->value()=="toto");
 
