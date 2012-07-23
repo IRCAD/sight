@@ -199,11 +199,13 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
 {
 
 #ifdef _DEBUG
-    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
-    OSLM_ASSERT(
-                "Sorry, type of service must correspond. "
-                << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType,
-                _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType);
+    {
+        ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+        OSLM_ASSERT(
+                    "Sorry, type of service must correspond. "
+                    << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType,
+                    _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType);
+    }
 #endif //_DEBUG
 
     IService::sptr service = this->create(_srvImpl);
