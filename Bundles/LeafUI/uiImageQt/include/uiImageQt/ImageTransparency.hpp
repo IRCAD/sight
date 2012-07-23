@@ -39,15 +39,11 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (ImageTransparency)(::gui::editor::IEditor) ) ;
 
-
-protected:
-
-    /// Constructor. Do nothing.
     UIIMAGEQT_API ImageTransparency() throw() ;
 
-    /// Destructor. Do nothing.
     UIIMAGEQT_API virtual ~ImageTransparency() throw() ;
 
+protected:
     /// Starts editor.
     virtual void starting() throw(::fwTools::Failed);
 
