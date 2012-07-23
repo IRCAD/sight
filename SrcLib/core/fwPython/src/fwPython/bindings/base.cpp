@@ -59,7 +59,12 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
     def( "getSrv", &getSrv );
 
     // fwData::Object binding
-    class_< ::fwData::Object, bases<  ::fwTools::Object  > , ::fwData::Object::sptr, boost::noncopyable >("Object",no_init);
+    class_<
+        ::fwData::Object,
+        bases< ::fwTools::Object >,
+        ::fwData::Object::sptr,
+        boost::noncopyable
+            >("Object",no_init);
 
     // fwServices::IService binding
 
@@ -70,16 +75,31 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
         ;
 
     // fwData:: generic fields bindings
-    class_< ::fwData::Boolean, bases<  ::fwData::Object  >, ::fwData::Boolean::sptr, boost::noncopyable >("Boolean")
-              .add_property("value",  &::fwData::Boolean::getValue  ,  &::fwData::Boolean::setValue );
+    class_<
+        ::fwData::Boolean,
+        bases< ::fwData::Object >,
+        ::fwData::Boolean::sptr,
+        boost::noncopyable
+            >("Boolean", no_init)
+            .add_property("value",  &::fwData::Boolean::getValue  ,  &::fwData::Boolean::setValue );
 
-    class_< ::fwData::Float, bases<  ::fwData::Object  >, ::fwData::Float::sptr, boost::noncopyable >("Float")
+    class_< ::fwData::Float, bases< ::fwData::Object >, ::fwData::Float::sptr, boost::noncopyable >("Float", no_init)
               .add_property("value",  &::fwData::Float::getValue  ,  &::fwData::Float::setValue );
 
-    class_< ::fwData::Integer, bases<  ::fwData::Object  >, ::fwData::Integer::sptr , boost::noncopyable >("Integer")
+    class_<
+        ::fwData::Integer,
+        bases< ::fwData::Object >,
+        ::fwData::Integer::sptr,
+        boost::noncopyable
+            >("Integer", no_init)
               .add_property("value",  &::fwData::Integer::getValue  ,  &::fwData::Integer::setValue );
 
-    class_< ::fwData::String, bases<  ::fwData::Object  >, ::fwData::String::sptr , boost::noncopyable >("String")
+    class_<
+        ::fwData::String,
+        bases< ::fwData::Object >,
+        ::fwData::String::sptr,
+        boost::noncopyable
+            >("String", no_init)
               .add_property("value",  &::fwData::String::getValue  ,  &::fwData::String::setValue );
 
     ::fwPython::bindings::export_STLContainers();
