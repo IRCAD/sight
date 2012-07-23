@@ -6,12 +6,6 @@
 
 #include <fwTools/Object.hpp>
 
-<<<<<<< local
-#include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Video.hpp>
-=======
->>>>>>> other
 #include <fwData/String.hpp>
 
 #include <fwServices/IService.hpp>
