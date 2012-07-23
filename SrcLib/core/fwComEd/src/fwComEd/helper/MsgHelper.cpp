@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassFactoryRegistry.hpp>
-
 #include "fwComEd/helper/MsgHelper.hpp"
 
 namespace fwComEd
