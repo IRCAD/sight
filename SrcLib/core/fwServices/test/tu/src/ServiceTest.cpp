@@ -6,7 +6,6 @@
 
 #include <fwData/Object.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/Factory.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>

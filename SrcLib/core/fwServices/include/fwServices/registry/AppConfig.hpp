@@ -11,7 +11,6 @@
 
 #include <fwTools/Object.hpp>
 #include <fwTools/macros.hpp>
-#include <fwTools/Factory.hpp>
 
 #include <fwCore/mt/types.hpp>
 

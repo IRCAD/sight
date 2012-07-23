@@ -57,7 +57,7 @@ class FWSERVICES_CLASS_API ServiceInfo : public ::fwTools::Object
     public :
         typedef ::boost::function< SPTR(::fwServices::IService)() > FactoryType;
 
-        fwCoreClassDefinitionsWithFactoryMacro( (ServiceInfo)(::fwTools::Object), (()), ::fwTools::Factory::New< ServiceInfo > );
+        fwCoreClassDefinitionsWithFactoryMacro( (ServiceInfo)(::fwTools::Object), (()), ::boost::make_shared< ServiceInfo > );
 
         std::string serviceType;
         std::string objectImpl;

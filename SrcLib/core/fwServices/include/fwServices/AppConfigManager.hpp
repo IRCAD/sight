@@ -47,7 +47,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((AppConfigManager)(::fwTools::Object),
                                            (()),
-                                           ::fwTools::Factory::New< AppConfigManager >);
+                                           ::boost::make_shared< AppConfigManager >);
 
     /// Constructor. Do nothing.
     FWSERVICES_API AppConfigManager();

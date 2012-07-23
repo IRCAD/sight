@@ -13,7 +13,6 @@
 
 #include <fwTools/Object.hpp>
 #include <fwTools/macros.hpp>
-#include <fwTools/Factory.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>

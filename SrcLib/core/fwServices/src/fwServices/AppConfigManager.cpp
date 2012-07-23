@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <fwRuntime/operations.hpp>
 
