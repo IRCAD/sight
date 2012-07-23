@@ -6,9 +6,12 @@
 
 #include <fwTools/Object.hpp>
 
+<<<<<<< local
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Video.hpp>
+=======
+>>>>>>> other
 #include <fwData/String.hpp>
 
 #include <fwServices/IService.hpp>
@@ -52,10 +55,10 @@ void FieldHelperTest::testHelper()
     const std::string FIELD_ID2 = "FIELD_ID2";
     const std::string FIELD_ID3 = "FIELD_ID3";
 
-    ::fwData::String::sptr nullobj;
-    ::fwData::String::sptr obj = ::fwData::String::New();
-    ::fwData::String::sptr fieldObj1 = ::fwData::String::New();
-    ::fwData::String::sptr fieldObj2 = ::fwData::String::New();
+    ::fwData::Object::sptr nullobj;
+    ::fwData::Object::sptr obj = ::fwData::String::New();
+    ::fwData::Object::sptr fieldObj1 = ::fwData::String::New();
+    ::fwData::Object::sptr fieldObj2 = ::fwData::String::New();
 
     {
         ::fwComEd::helper::Field fieldHelper(obj);

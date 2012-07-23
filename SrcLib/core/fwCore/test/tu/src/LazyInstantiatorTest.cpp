@@ -102,7 +102,7 @@ struct CounterThread
 
 //-----------------------------------------------------------------------------
 
-void LazyInstantiatorTest::threadSafeTest()
+void LazyInstantiatorTest::threadSafetyTest()
 {
     const int NB_THREAD(100);
     CounterThread::CounterType::s_counter = 0;

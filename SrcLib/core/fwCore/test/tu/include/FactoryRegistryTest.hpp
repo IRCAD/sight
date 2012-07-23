@@ -20,6 +20,7 @@ class FactoryRegistryTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( pointerTest );
     CPPUNIT_TEST( valueTest );
     CPPUNIT_TEST( argTest );
+    CPPUNIT_TEST( threadSafetyTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -30,6 +31,7 @@ public:
     void pointerTest();
     void valueTest();
     void argTest();
+    void threadSafetyTest();
 
 };
 

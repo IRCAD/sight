@@ -40,6 +40,8 @@ public:
     typedef std::map< KeyType, FactoryType > RegistryType;
     typedef std::vector<KeyType> KeyVectorType;
 
+    FactoryRegistryBase(){}
+
     /**
      * @brief Add a factory to the registry.
      */

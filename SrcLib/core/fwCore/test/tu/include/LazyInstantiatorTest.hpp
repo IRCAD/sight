@@ -18,7 +18,7 @@ class LazyInstantiatorTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( LazyInstantiatorTest );
     CPPUNIT_TEST( lazyTest );
-    CPPUNIT_TEST( threadSafeTest );
+    CPPUNIT_TEST( threadSafetyTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,7 +27,7 @@ public:
     void tearDown();
 
     void lazyTest();
-    void threadSafeTest();
+    void threadSafetyTest();
 
 };
 

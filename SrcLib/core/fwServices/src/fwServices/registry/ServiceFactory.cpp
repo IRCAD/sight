@@ -247,6 +247,9 @@ void ServiceFactory::addFactory( ServiceInfo::FactoryType _factory,
                     << simpl << " ) is already register and has not the same oimpl. ( "
                     << oimpl << " != " << info->objectImpl <<" )",
                     oimpl == info->objectImpl );
+
+        ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
+        info->factory     = _factory ;
     }
     else
     {
@@ -255,9 +258,9 @@ void ServiceFactory::addFactory( ServiceInfo::FactoryType _factory,
         info = m_srvImplTosrvInfo[simpl] = ServiceInfo::New();
         info->serviceType = stype;
         info->objectImpl  = oimpl;
+        info->factory     = _factory ;
     }
 
-    info->factory     = _factory ;
 }
 
 
