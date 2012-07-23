@@ -177,7 +177,10 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
                      << " is still missing. Service declaration is missing (or misspelled) in a .cpp file ?",
                      ! info->bundle->isStarted() );
 
+        lock.unlock(); // bundle->start() may trigger calls to addFactory
         info->bundle->start();
+        lock.lock();
+
         ::fwRuntime::profile::getCurrentProfile()->setup();
 
         SLM_ASSERT( "Sorry after bundle loading ( "
