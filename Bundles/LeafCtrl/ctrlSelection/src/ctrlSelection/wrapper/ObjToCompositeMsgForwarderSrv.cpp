@@ -103,9 +103,8 @@ void ObjToCompositeMsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr mes
                     else if(message->hasEvent( event ))
                     {
 
-                        ::fwTools::Object::sptr msg = ::fwTools::Factory::New(msgType);
-                        OSLM_ASSERT(msgType << " creation failed", msg);
-                        ::fwServices::ObjectMsg::sptr forwardMsg = ::fwServices::ObjectMsg::dynamicCast(msg);
+                        ::fwServices::ObjectMsg::sptr forwardMsg = ::fwServices::factory::message::New(msgType);
+                        OSLM_ASSERT(msgType << " creation failed", forwardMsg);
                         forwardMsg->addEvent(event, message->getDataInfo(event));
                         ::fwServices::IEditionService::notify( this->getSptr(), composite, forwardMsg);
                     }

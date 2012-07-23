@@ -81,9 +81,8 @@ void MsgWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( :
 
         if(message->hasEvent( onEvent ))
         {
-            ::fwTools::Object::sptr msg = ::fwTools::Factory::New(msgType);
-            OSLM_ASSERT(msgType << " creation failed", msg);
-            ::fwServices::ObjectMsg::sptr wrappedMsg = ::fwServices::ObjectMsg::dynamicCast(msg);
+            ::fwServices::ObjectMsg::sptr wrappedMsg = ::fwServices::factory::message::New(msgType);
+            OSLM_ASSERT(msgType << " creation failed", wrappedMsg);
             wrappedMsg->addEvent(toEvent, message->getDataInfo(onEvent));
             ::fwServices::IEditionService::notify( this->getSptr(), this->getObject(), wrappedMsg);
         }
