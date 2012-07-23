@@ -7,7 +7,7 @@
 #include <QApplication>
 #include <QMainWindow>
 
-#include <fwData/Object.hpp>
+#include <fwData/String.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
@@ -47,7 +47,7 @@ void GuiQtTest::tearDown()
 
 void GuiQtTest::testDefaultFrame()
 {
-    ::fwData::Object::NewSptr object;
+    ::fwData::String::NewSptr object;
 
     ::fwServices::IService::ConfigType frameConfig;
 
