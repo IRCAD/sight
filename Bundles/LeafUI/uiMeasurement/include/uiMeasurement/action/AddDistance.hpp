@@ -26,6 +26,7 @@ class UIMEASUREMENT_CLASS_API AddDistance : public ::fwGui::IActionSrv
 {
 public:
     fwCoreServiceClassDefinitionsMacro ( (AddDistance)( ::fwGui::IActionSrv) ) ;
+
     UIMEASUREMENT_API AddDistance() throw() ;
 
     UIMEASUREMENT_API virtual ~AddDistance() throw() ;

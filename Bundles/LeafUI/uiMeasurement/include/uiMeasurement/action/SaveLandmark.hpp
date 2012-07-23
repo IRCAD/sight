@@ -21,11 +21,12 @@ class UIMEASUREMENT_CLASS_API SaveLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (SaveLandmark)( ::fwGui::IActionSrv) ) ;
 
-protected:
-
     UIMEASUREMENT_API SaveLandmark() throw() ;
 
     UIMEASUREMENT_API virtual ~SaveLandmark() throw() ;
+
+protected:
+
 
     void configuring() throw (::fwTools::Failed);
 

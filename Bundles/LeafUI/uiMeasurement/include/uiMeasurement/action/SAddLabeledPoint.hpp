@@ -29,11 +29,12 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SAddLabeledPoint)( ::fwGui::IActionSrv) ) ;
 
-protected:
-
     UIMEASUREMENT_API SAddLabeledPoint() throw() ;
 
     UIMEASUREMENT_API virtual ~SAddLabeledPoint() throw() ;
+
+protected:
+
 
     UIMEASUREMENT_API void configuring() throw (::fwTools::Failed);
 

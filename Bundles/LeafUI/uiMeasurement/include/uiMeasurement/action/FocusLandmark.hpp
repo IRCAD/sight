@@ -27,6 +27,7 @@ class UIMEASUREMENT_CLASS_API FocusLandmark : public ::fwGui::IActionSrv
 
 public:
     fwCoreServiceClassDefinitionsMacro ( (FocusLandmark)( ::fwGui::IActionSrv) ) ;
+
     UIMEASUREMENT_API FocusLandmark() throw() ;
 
     UIMEASUREMENT_API virtual ~FocusLandmark() throw() ;
