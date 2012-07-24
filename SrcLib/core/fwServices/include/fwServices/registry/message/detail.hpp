@@ -30,8 +30,6 @@ typedef std::string KeyType;
 
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwServices::ObjectMsg) () , KeyType > Type;
 
-FWSERVICES_TEMPLATE_API template class FWSERVICES_API ::fwCore::util::LazyInstantiator< Type >;
-
 typedef ::fwCore::util::LazyInstantiator< Type > InstantiatorType;
 
 } // namespace message
@@ -39,6 +37,9 @@ typedef ::fwCore::util::LazyInstantiator< Type > InstantiatorType;
 } // namespace registry
 
 } // namespace fwServices
+
+FWSERVICES_TEMPLATE_API template class FWSERVICES_API ::fwCore::util::LazyInstantiator<
+                                                            ::fwServices::registry::message::Type >;
 
 #endif /* __FWSERVICES_REGISTRY_MESSAGE_DETAIL_HPP__ */
 
