@@ -147,6 +147,7 @@ void MeshNormals::updateMeshNormals()
             vtkSmartPointer<vtkMaskPoints> ptMask = vtkSmartPointer<vtkMaskPoints>::New();
             ptMask->SetOnRatio(1);
             ptMask->RandomModeOn();
+            ptMask->SetMaximumNumberOfPoints(mesh->getNumberOfPoints());
             algo = ptMask;
         }
 
