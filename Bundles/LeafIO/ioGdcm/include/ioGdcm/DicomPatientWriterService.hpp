@@ -29,8 +29,6 @@ class IOGDCM_CLASS_API DicomPatientWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (DicomPatientWriterService)( ::io::IWriter) ) ;
 
-protected:
-
     /**
      * @brief   constructor
      *
@@ -41,6 +39,8 @@ protected:
      * @brief   destructor
      */
     IOGDCM_API virtual ~DicomPatientWriterService() throw();
+
+protected:
 
     /// Override
     IOGDCM_API virtual void starting() throw(::fwTools::Failed);

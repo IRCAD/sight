@@ -29,8 +29,6 @@ class IOGDCM_CLASS_API DicomPatientDBReaderService : public ::io::IReader
 public :
     fwCoreServiceClassDefinitionsMacro ( (DicomPatientDBReaderService)( ::io::IReader) ) ;
 
-protected:
-
     /**
      * @brief   constructor
      *
@@ -42,6 +40,7 @@ protected:
      */
     IOGDCM_API virtual ~DicomPatientDBReaderService() throw();
 
+protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 

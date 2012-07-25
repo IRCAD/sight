@@ -30,8 +30,6 @@ class IOGDCM_CLASS_API DicomPatientDBWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (DicomPatientDBWriterService)( ::io::IWriter) ) ;
 
-protected:
-
     /**
      * @brief   constructor
      *
@@ -42,6 +40,8 @@ protected:
      * @brief   destructor
      */
     IOGDCM_API virtual ~DicomPatientDBWriterService() throw();
+
+protected:
 
     /// Override
     IOGDCM_API virtual void starting() throw(::fwTools::Failed);
