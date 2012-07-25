@@ -7,8 +7,6 @@
 #ifndef _GDCMIO_DICOMDICTIONARYSEGMENT_HPP_
 #define _GDCMIO_DICOMDICTIONARYSEGMENT_HPP_
 
-#include <fwTools/Singleton.hpp>
-
 #include "gdcmIO/config.hpp"
 #include "gdcmIO/DicomCodedAttribute.hpp"
 
@@ -30,7 +28,7 @@ namespace gdcmIO
  * @author  IRCAD (Research and Development Team).
  * @date    2011.
  */
-class GDCMIO_CLASS_API DicomDictionarySegment : public ::fwTools::Singleton< DicomDictionarySegment >
+class GDCMIO_CLASS_API DicomDictionarySegment
 {
 public:
 

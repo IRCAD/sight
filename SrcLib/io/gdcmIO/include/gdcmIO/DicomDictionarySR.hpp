@@ -7,8 +7,6 @@
 #ifndef _GDCMIO_DICOMDICTIONARYSR_HPP_
 #define _GDCMIO_DICOMDICTIONARYSR_HPP_
 
-#include <fwTools/Singleton.hpp>
-
 #include <gdcmIO/config.hpp>
 
 namespace gdcmIO
@@ -23,7 +21,7 @@ namespace gdcmIO
  * @author  IRCAD (Research and Development Team).
  * @date    2011.
  */
-class GDCMIO_CLASS_API DicomDictionarySR : public ::fwTools::Singleton< DicomDictionarySR >
+class GDCMIO_CLASS_API DicomDictionarySR
 {
 public:
 

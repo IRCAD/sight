@@ -9,6 +9,8 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <fwData/Acquisition.hpp>
 
 #include "gdcmIO/writer/DicomModuleWriter.hxx"

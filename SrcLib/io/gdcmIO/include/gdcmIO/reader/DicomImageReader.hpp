@@ -7,6 +7,8 @@
 #ifndef _GDCMIO_DICOMIMAGEREADER_HPP_
 #define _GDCMIO_DICOMIMAGEREADER_HPP_
 
+#include <fwTools/Failed.hpp>
+
 #include <fwData/Acquisition.hpp>
 
 #include "gdcmIO/reader/DicomInstanceReader.hxx"

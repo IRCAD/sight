@@ -8,6 +8,7 @@
 #define _GDCMIO_DICOMGLOBALWRITERMANAGER_HPP_
 
 #include <fwTools/ProgressAdviser.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 

@@ -7,6 +7,8 @@
 #ifndef _GDCMIO_DICOMPATIENTREADER_HPP_
 #define _GDCMIO_DICOMPATIENTREADER_HPP_
 
+#include <fwTools/Failed.hpp>
+
 #include <fwData/Patient.hpp>
 
 #include "gdcmIO/reader/DicomFilesReader.hxx"

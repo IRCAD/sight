@@ -9,6 +9,8 @@
 
 #include <gdcmSegment.h>
 
+#include <fwTools/Failed.hpp>
+
 #include <fwData/Acquisition.hpp>
 
 #include "gdcmIO/reader/DicomFilesReader.hxx"
