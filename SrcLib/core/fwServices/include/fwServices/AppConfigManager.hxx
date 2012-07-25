@@ -9,7 +9,10 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
+namespace fwData
+{
+    class Object;
+}
 
 namespace fwServices
 {
@@ -17,9 +20,10 @@ namespace fwServices
 template<class CLASSNAME>
 SPTR(CLASSNAME) AppConfigManager::getConfigRoot() const
 {
-    SPTR(CLASSNAME) myObject = ::boost::dynamic_pointer_cast< CLASSNAME >( this->getConfigRoot() ) ;
-    SLM_ASSERT("Sorry, this object cannot be autocast.", myObject);
-    return myObject;
+    SPTR(::fwData::Object) obj = this->getConfigRoot();
+    SPTR(CLASSNAME) rootObject = CLASSNAME::dynamicCast( obj ) ;
+    SLM_ASSERT("Unable to cast root object to " << CLASSNAME::classname(), rootObject);
+    return rootObject;
 }
 
 
