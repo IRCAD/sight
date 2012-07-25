@@ -9,6 +9,8 @@
 
 #include <string>
 
+#include <boost/make_shared.hpp>
+
 #include <fwTools/macros.hpp>
 
 #include "fwServices/config.hpp"

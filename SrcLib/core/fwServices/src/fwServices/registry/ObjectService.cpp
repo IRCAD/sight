@@ -12,6 +12,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/LogicStamp.hpp>
+#include <fwCore/util/LazyInstantiator.hpp>
 
 #include <fwTools/fwID.hpp>
 

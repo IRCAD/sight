@@ -63,7 +63,7 @@ public:
     public:
         Registrar()
         {
-            ::fwServices::registry::message::InstantiatorType::getInstance()->addFactory(T::classname(), &::fwServices::factory::message::New<T>);
+            ::fwServices::registry::message::get()->addFactory(T::classname(), &::fwServices::factory::message::New<T>);
         }
     };
 

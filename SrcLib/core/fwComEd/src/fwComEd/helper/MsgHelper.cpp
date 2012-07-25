@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwServices/factory/message/new.hpp>
+
 #include "fwComEd/helper/MsgHelper.hpp"
 
 namespace fwComEd
@@ -37,7 +39,7 @@ const std::string MsgHelper::getAssociatedMsgType( ::fwData::Object::csptr _obj)
     // TODO: improve association system
     std::string objMsgType = "::fwComEd::" + objType + "Msg";
     // check if instantiation of msgType is possible, standard Factory stop application if type is unknown
-    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::registry::message::InstantiatorType::getInstance()->create( objMsgType ) ;
+    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::factory::message::New( objMsgType ) ;
     OSLM_WARN_IF("No specific ObjectMsg type found for Object "<<objType
             << " type "<<objMsgType<<" is unknown.", !objMsg);
     if(objMsg)

@@ -20,7 +20,6 @@
 #include <fwCore/mt/types.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/LogicStamp.hpp>
-#include <fwCore/util/LazyInstantiator.hpp>
 
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>

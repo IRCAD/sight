@@ -55,7 +55,7 @@ public:
     public:
         Registrar()
         {
-            ::fwData::registry::InstantiatorType::getInstance()->addFactory(T::classname(), &::fwData::factory::New<T>);
+            ::fwData::registry::get()->addFactory(T::classname(), &::fwData::factory::New<T>);
         }
     };
 

@@ -20,7 +20,7 @@ namespace message
 
 ::fwServices::ObjectMsg::sptr New( const ::fwServices::registry::message::KeyType & classname )
 {
-    ::fwServices::ObjectMsg::sptr obj = ::fwServices::registry::message::InstantiatorType::getInstance()->create(classname);
+    ::fwServices::ObjectMsg::sptr obj = ::fwServices::registry::message::get()->create(classname);
     return obj;
 }
 

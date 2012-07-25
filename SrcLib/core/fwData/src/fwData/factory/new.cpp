@@ -15,14 +15,10 @@ namespace fwData
 namespace factory
 {
 
-// template ::fwData::registry::Type;
-// template ::fwData::registry::InstantiatorType;
-
 ::fwData::Object::sptr New( const ::fwData::registry::KeyType & classname )
 {
-    return ::fwData::registry::InstantiatorType::getInstance()->create(classname);
+    return ::fwData::registry::get()->create(classname);
 }
-
 
 } // namespace factory
 

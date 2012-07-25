@@ -10,7 +10,6 @@
 #include <string>
 
 #include <fwCore/macros.hpp>
-#include <fwCore/util/LazyInstantiator.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
 
 #include "fwData/config.hpp"
@@ -27,14 +26,11 @@ typedef std::string KeyType;
 
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwData::Object) () , KeyType > Type;
 
-typedef ::fwCore::util::LazyInstantiator< Type > InstantiatorType;
+FWDATA_API SPTR(Type) get();
 
 } // namespace registry
 
 } // namespace fwData
-
-FWDATA_TEMPLATE_API template class FWDATA_API ::fwCore::util::LazyInstantiator<
-                                                            ::fwData::registry::Type >;
 
 #endif /* __FWDATA_REGISTRY_DETAIL_HPP__ */
 
