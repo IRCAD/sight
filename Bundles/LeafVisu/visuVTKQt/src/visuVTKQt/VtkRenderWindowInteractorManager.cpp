@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwTools/ClassRegistrar.hpp>
+
 #include <QVBoxLayout>
 
 #include <QVTKWidget.h>
@@ -11,8 +13,6 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-
-#include <fwTools/ClassRegistrar.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
