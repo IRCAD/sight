@@ -12,10 +12,10 @@
 
     #ifdef FWSERVICES_EXPORTS
     #define FWSERVICES_API __declspec(dllexport)
-    #define FWSERVICES_TEMPLATE_API extern
+    #define FWSERVICES_TEMPLATE_API
     #else
     #define FWSERVICES_API __declspec(dllimport)
-    #define FWSERVICES_TEMPLATE_API
+    #define FWSERVICES_TEMPLATE_API extern
     #endif
 
     #define FWSERVICES_CLASS_API

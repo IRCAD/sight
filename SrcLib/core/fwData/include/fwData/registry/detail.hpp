@@ -33,6 +33,9 @@ typedef ::fwCore::util::LazyInstantiator< Type > InstantiatorType;
 
 } // namespace fwData
 
+FWDATA_TEMPLATE_API template class FWDATA_API ::fwCore::util::LazyInstantiator<
+                                                            ::fwData::registry::Type >;
+
 #endif /* __FWDATA_REGISTRY_DETAIL_HPP__ */
 
 
