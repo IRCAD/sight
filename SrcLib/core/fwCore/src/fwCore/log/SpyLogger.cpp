@@ -45,7 +45,8 @@ SpyLogger::SpyLogger()
 {
     ::boost::log::core::get()->set_filter
     (
-        ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity") >= ::boost::log::trivial::trace
+        ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity")
+                                                                >= ::boost::log::trivial::trace
     );
     this->createBasicConfiguration();
 }
@@ -109,7 +110,8 @@ void SpyLogger::setLevel(LevelType level)
 {
     ::boost::log::core::get()->set_filter
     (
-        ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity") >= level
+        ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity")
+                                            >= static_cast < ::boost::log::trivial::severity_level > (level)
     );
 }
 
