@@ -16,14 +16,14 @@ namespace data
 
 fwDataRegisterMacro( ::scene2D::data::Viewport );
 
-Viewport::Viewport(::fwData::Object::Key key) throw()
+Viewport::Viewport(::fwData::Object::Key key)
 : m_x (200),
   m_y (200),
   m_width (400),
   m_height (400)
 {}
 
-Viewport::~Viewport() throw()
+Viewport::~Viewport()
 {
 }
 
