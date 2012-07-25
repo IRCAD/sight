@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwData/registry/macros.hpp>
 
 #include "scene2D/data/Viewport.hpp"
 
@@ -14,9 +14,9 @@ namespace scene2D
 namespace data
 {
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::scene2D::data::Viewport, ::scene2D::data::Viewport );
+fwDataRegisterMacro( ::scene2D::data::Viewport );
 
-Viewport::Viewport() throw()
+Viewport::Viewport(::fwData::Object::Key key) throw()
 : m_x (200),
   m_y (200),
   m_width (400),

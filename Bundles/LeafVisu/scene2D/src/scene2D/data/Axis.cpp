@@ -5,7 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+
+#include <fwData/registry/macros.hpp>
 
 #include "scene2D/data/Axis.hpp"
 
@@ -14,15 +15,15 @@ namespace scene2D
 namespace data
 {
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::scene2D::data::Axis, ::scene2D::data::Axis );
+fwDataRegisterMacro( ::scene2D::data::Axis );
 
-Axis::Axis() throw()
+Axis::Axis( ::fwData::Object::Key key )
 : m_origin (0),
   m_scale (1),
   m_scaleType (LINEAR)
 {}
 
-Axis::~Axis() throw()
+Axis::~Axis()
 {
 }
 

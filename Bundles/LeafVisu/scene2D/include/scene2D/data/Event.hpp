@@ -11,7 +11,6 @@
 #define _SCENE2D_DATA_EVENT_HPP_
 
 #include <fwTools/Object.hpp>
-#include <fwTools/Factory.hpp>
 
 #include <Qt>
 
@@ -26,7 +25,7 @@ namespace data
 
 //-----------------------------------------------------------------------------
 
-class SCENE2D_CLASS_API Event : public ::fwTools::Object
+class SCENE2D_CLASS_API Event : public ::fwData::Object
 {
 
 public:
@@ -60,10 +59,14 @@ public:
     } Modifier;
 
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwTools::Object), (()), ::fwTools::Factory::New< Event >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwData::Object), (()), ::fwData::factory::New< Event >) ;
 
-    SCENE2D_API Event() throw();
-    SCENE2D_API virtual ~Event() throw();
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    SCENE2D_API Event( ::fwData::Object::Key key );
+    SCENE2D_API virtual ~Event();
 
     fwGettersSettersDocMacro(OldSize, oldSize, Size, no comment);
     fwGettersSettersDocMacro(Size, size, Size, no comment);

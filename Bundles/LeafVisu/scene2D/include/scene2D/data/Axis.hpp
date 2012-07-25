@@ -8,8 +8,6 @@
 #define _SCENE2D_DATA_AXIS_HPP_
 
 #include <fwTools/Object.hpp>
-#include <fwTools/Factory.hpp>
-
 #include <fwData/Object.hpp>
 
 #include "scene2D/config.hpp"
@@ -26,7 +24,7 @@ class SCENE2D_CLASS_API Axis : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Axis)(::fwData::Object), (()), ::fwTools::Factory::New< Axis >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Axis)(::fwData::Object), (()), ::fwData::factory::New< Axis >) ;
 
     typedef enum
    {
@@ -34,11 +32,14 @@ public:
       LOG
    }  ScaleType;
 
-    /// Constructor, set origin to 0, scale to 1 and type to LINEAR.
-    SCENE2D_API Axis() throw();
+   /**
+    * @brief Constructor, set origin to 0, scale to 1 and type to LINEAR.
+    * @param key Private construction key
+    */
+    SCENE2D_API Axis( ::fwData::Object::Key key );
 
     /// Basic destructor, do nothing.
-    SCENE2D_API virtual ~Axis() throw();
+    SCENE2D_API virtual ~Axis();
 
     /// Get m_origin attribute.
     SCENE2D_API float getOrigin();
