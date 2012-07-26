@@ -81,15 +81,6 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
     currentServiceConfig->clearRegistry();
     std::vector< std::string > allCconfigs = currentServiceConfig->getAllConfigForService("::fwServices::ut::TestService");
     CPPUNIT_ASSERT(allCconfigs.empty());
-
-
-    for (int i=0 ; i<nbThreads ; ++i)
-    {
-        if (threads[i]->hasFailed())
-        {
-            throw threads[i]->getException();
-        }
-    }
 }
 
 //------------------------------------------------------------------------------

@@ -46,20 +46,25 @@ public:
     FWTEST_API virtual ~Thread();
 
     /// Waits the thread execution to complete
-    FWTEST_API void join();
+    FWTEST_API void join(bool raise = true);
 
     /**
      * @brief Waits the thread of execution to complete
      * @param time time to waits for the thread stop
      * @return true if the thread of execution has completed before the call times out
      */
-    FWTEST_API bool timedJoin(int time);
+    FWTEST_API bool timedJoin(int time, bool raise = true);
 
     /// Return the exception raised in function launched by thread
     CPPUNIT_NS::Exception getException() {return m_exception;}
 
     /// Return true if function launched by thread raised exception
     bool hasFailed() {return m_hasFailed;}
+
+    /**
+     * @brief If any, throws the exception raised by the thread function.
+     */
+    void throwException();
 
 private :
 

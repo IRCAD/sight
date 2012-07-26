@@ -21,14 +21,31 @@ Thread::~Thread()
 {
 }
 
-void Thread::join()
+void Thread::join(bool raise)
 {
     m_thread.join();
+    if (raise)
+    {
+        this->throwException();
+    }
 }
 
-bool Thread::timedJoin(int time)
+bool Thread::timedJoin(int time, bool raise)
 {
-   return m_thread.timed_join(boost::posix_time::milliseconds(time));
+    bool joined = m_thread.timed_join(boost::posix_time::milliseconds(time));
+    if (raise)
+    {
+        this->throwException();
+    }
+    return joined;
+}
+
+void Thread::throwException()
+{
+    if (this->hasFailed())
+    {
+        throw this->getException();
+    }
 }
 
 void Thread::run(FunctionType f)

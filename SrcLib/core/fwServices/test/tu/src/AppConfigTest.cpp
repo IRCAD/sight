@@ -186,14 +186,6 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     std::vector< std::string > allCconfigs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
     CPPUNIT_ASSERT(allCconfigs.empty());
 
-
-    for (int i=0 ; i<nbThreads*3 ; ++i)
-    {
-        if (threads[i]->hasFailed())
-        {
-            throw threads[i]->getException();
-        }
-    }
 }
 
 //------------------------------------------------------------------------------

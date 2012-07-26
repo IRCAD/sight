@@ -98,15 +98,6 @@ void MTLockTest::multipleLockTest()
     CPPUNIT_ASSERT(thread2.timedJoin(2500));
 
     CPPUNIT_ASSERT_MESSAGE(m_string->value(), m_string->value()=="lili" ||  m_string->value()=="toto");
-
-    if (thread.hasFailed())
-    {
-        throw thread.getException();
-    }
-    if (thread2.hasFailed())
-    {
-        throw thread2.getException();
-    }
 }
 
 //-----------------------------------------------------------------------------

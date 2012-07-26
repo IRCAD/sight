@@ -102,13 +102,6 @@ void AppConfigParametersTest::concurentAccessToAppConfigParametersTest()
         CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
     }
 
-    for (int i=0 ; i<nbThreads ; ++i)
-    {
-        if (threads[i]->hasFailed())
-        {
-            throw threads[i]->getException();
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
