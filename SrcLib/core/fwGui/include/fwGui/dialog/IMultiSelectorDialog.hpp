@@ -7,6 +7,7 @@
 #ifndef FWGUI_IMULTISELECTORDIALOG_HPP_
 #define FWGUI_IMULTISELECTORDIALOG_HPP_
 
+#include <map>
 #include <vector>
 #include <fwCore/base.hpp>
 
