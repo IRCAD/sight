@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <map>
 #include <list>
 #include <set>
 #include <boost/foreach.hpp>
