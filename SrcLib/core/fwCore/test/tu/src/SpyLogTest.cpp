@@ -13,6 +13,7 @@
 #include <boost/thread.hpp>
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
+#include <boost/make_shared.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/regex.hpp>
@@ -84,6 +85,9 @@ struct LogProducerThread
 {
     typedef ::boost::shared_ptr< LogProducerThread > sptr;
     typedef std::vector< std::string > LogContainerType;
+
+    LogProducerThread()
+    {}
 
     void run(LogContainerType& logs, size_t nbLogs, size_t offset)
     {

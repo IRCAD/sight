@@ -91,8 +91,11 @@ struct thread_counter_tag {} ;
 struct CounterThread
 {
     typedef StaticCounter<5> CounterType;
-
     typedef ::boost::shared_ptr< CounterThread > sptr;
+
+    CounterThread()
+    {}
+
     void run ()
     {
         CounterType::sptr counter;
