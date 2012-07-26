@@ -26,6 +26,13 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SStringEditor)(::gui::editor::IEditor) ) ;
 
+    BEGINNERTRAINING_API SStringEditor();
+
+    BEGINNERTRAINING_API virtual ~SStringEditor() throw();
+
+protected :
+
+
     /// Overrides
     BEGINNERTRAINING_API virtual void configuring() throw ( ::fwTools::Failed );
 
@@ -44,13 +51,6 @@ public:
     /// Overrides
     BEGINNERTRAINING_API virtual void swapping() throw ( ::fwTools::Failed );
 
-protected :
-
-    /// Constructor
-    BEGINNERTRAINING_API SStringEditor();
-
-    /// Destructor
-    BEGINNERTRAINING_API virtual ~SStringEditor() throw();
 
     /// Text editor manage by the service
     QTextEdit * m_textEditor;

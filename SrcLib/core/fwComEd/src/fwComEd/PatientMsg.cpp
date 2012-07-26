@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/PatientMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::PatientMsg, ::fwComEd::PatientMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::PatientMsg );
 
 namespace fwComEd
 {
@@ -20,7 +20,7 @@ std::string PatientMsg::NEW_MATERIAL_FOR_RECONSTRUCTION = "NEW_MATERIAL_FOR_RECO
 
 //------------------------------------------------------------------------------
 
-PatientMsg::PatientMsg() throw()
+PatientMsg::PatientMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //------------------------------------------------------------------------------

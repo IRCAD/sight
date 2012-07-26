@@ -8,7 +8,7 @@
 namespace opKinect
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::opKinect::KinectSrv, ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opKinect::KinectSrv, ::fwData::Acquisition ) ;
 
 /**
  * @brief Constructor
@@ -29,7 +29,7 @@ KinectSrv::~KinectSrv() throw()
  */
 void KinectSrv::configuring() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();    
+    SLM_TRACE_FUNC();
 }
 
 /**

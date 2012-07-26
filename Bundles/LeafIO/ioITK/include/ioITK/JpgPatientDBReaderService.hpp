@@ -27,18 +27,11 @@ class IOITK_CLASS_API JpgPatientDBReaderService : public ::io::IReader
 public :
     fwCoreServiceClassDefinitionsMacro ( (JpgPatientDBReaderService)( ::io::IReader) ) ;
 
-protected:
-
-    /**
-     * @brief   constructor
-     *
-     */
     IOITK_API JpgPatientDBReaderService() throw();
 
-    /**
-     * @brief   destructor
-     */
     IOITK_API virtual ~JpgPatientDBReaderService() throw();
+
+protected:
 
     /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);

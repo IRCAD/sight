@@ -9,8 +9,6 @@
 
 #include <list>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 #include <fwTools/Object.hpp>
 
 

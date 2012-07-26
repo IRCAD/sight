@@ -12,7 +12,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
 
 
@@ -30,9 +30,18 @@ class FWDATA_CLASS_API Line : public Object
 
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
-        (()), ::fwData::Factory::New< Line >) ;
+        (()), ::fwData::factory::New< Line >) ;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Line(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Line();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Line::csptr _source );
@@ -47,15 +56,6 @@ public :
     fwGettersSettersDocMacro(Direction, direction, ::fwData::Point::sptr, a point direction);
 
 protected :
-
-    /// Constructor
-    FWDATA_API Line();
-
-    /// Build a Line from 2 points.
-    FWDATA_API Line(::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction);
-
-    /// Destructor
-    FWDATA_API virtual ~Line();
 
     //! Points container
     ::fwData::Point::sptr m_position;

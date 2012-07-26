@@ -11,7 +11,7 @@
 
 #include "scene2D/adaptor/Square.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Square  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Square  , ::fwData::Composite ) ;
 
 
 namespace scene2D

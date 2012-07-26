@@ -9,6 +9,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/fwID.hpp>
+#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/Base.hpp>
 
 #include "fwGui/GuiRegistry.hpp"

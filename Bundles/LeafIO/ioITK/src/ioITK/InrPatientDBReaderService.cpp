@@ -32,7 +32,7 @@
 namespace ioITK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioITK::InrPatientDBReaderService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioITK::InrPatientDBReaderService , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

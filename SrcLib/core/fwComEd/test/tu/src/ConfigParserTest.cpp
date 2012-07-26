@@ -25,8 +25,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ::fwComEd::ut::ConfigParserTest );
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwComEd::ut::TestService , ::fwComEd::ut::TestServiceImplementationComposite , ::fwData::Composite ) ;
-REGISTER_SERVICE( ::fwComEd::ut::TestService , ::fwComEd::ut::TestServiceImplementationImage , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwComEd::ut::TestService , ::fwComEd::ut::TestServiceImplementationComposite , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwComEd::ut::TestService , ::fwComEd::ut::TestServiceImplementationImage , ::fwData::Image ) ;
 
 namespace fwComEd
 {

@@ -27,7 +27,8 @@ class FWCOMED_CLASS_API PointMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((PointMsg)(::fwServices::ObjectMsg), ( () ), new PointMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PointMsg)(::fwServices::ObjectMsg), ( () ),
+                                            ::fwServices::factory::message::New< PointMsg > );
 
     /**
      * @name Event identifier
@@ -40,9 +41,10 @@ public:
     /// @}
 
     /**
-      * @brief  Constructor : does nothing.
-      */
-    FWCOMED_API PointMsg() throw();
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API PointMsg(::fwServices::ObjectMsg::Key key);
 
     /**
       * @brief  Destuctor : does nothing.

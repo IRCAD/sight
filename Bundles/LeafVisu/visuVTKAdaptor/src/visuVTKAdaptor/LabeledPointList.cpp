@@ -12,7 +12,7 @@
 #include <fwData/Point.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
@@ -34,7 +34,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList ) ;
 
 namespace visuVTKAdaptor
 {

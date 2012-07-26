@@ -13,7 +13,7 @@
 #include "scene2D/data/InitQtPen.hpp"
 
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Line  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Line  , ::fwData::Composite ) ;
 
 
 namespace scene2D
@@ -44,7 +44,7 @@ void Line::configuring() throw ( ::fwTools::Failed )
     m_x2 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("x2") );
     m_y1 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("y1") );
     m_y2 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("y2") );
-    
+
     // If the corresponding attributes are present in the config, set the color of the line
     if (!m_configuration->getAttributeValue("color").empty())
     {

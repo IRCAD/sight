@@ -14,7 +14,7 @@
 #include <fwData/Node.hpp>
 #include <fwData/Edge.hpp>
 #include <fwData/Port.hpp>
-#include "GraphTest.h"
+#include "GraphTest.hpp"
 
 
 

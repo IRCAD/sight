@@ -23,7 +23,7 @@
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 
@@ -34,7 +34,7 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor, ::fwData::PointList ) ;
 
 namespace visuVTKAdaptor
 {

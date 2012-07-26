@@ -21,7 +21,7 @@
 #include "scene2D/data/InitQtPen.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Histogram, ::fwData::Histogram);
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Histogram, ::fwData::Histogram);
 
 namespace scene2D
 {
@@ -66,7 +66,7 @@ void Histogram::configuring() throw( ::fwTools::Failed)
     }
 
     m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");
-    
+
     OSLM_WARN_IF("If an histogram cursor is used with this histogram, m_histogramPointUID must be set in order to "
             << "inform about the position that the cursor should use.", m_histogramPointUID.empty());
 }
@@ -149,10 +149,10 @@ void Histogram::doUpdate() throw( ::fwTools::Failed)
 void Histogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
 {
     SLM_TRACE_FUNC();
-    
+
     SLM_ASSERT("m_histogramPointUID must be defined in order to update the related ::fwData::Point data.",
             !m_histogramPointUID.empty());
-    
+
     ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue = histogram->getMinValue();
@@ -224,14 +224,14 @@ void Histogram::processInteraction( ::scene2D::data::Event::sptr _event)
 
         //_event->setAccepted( true );
         m_yAxis->setScale( m_scale );
-        
+
         updatePointedPos = true;
     }
     else if( _event->getType() == ::scene2D::data::Event::MouseMove )
     {
         updatePointedPos = true;
     }
-    
+
     if( !m_histogramPointUID.empty() && updatePointedPos )
     {
         updateCurrentPoint( _event );

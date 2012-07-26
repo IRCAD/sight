@@ -13,6 +13,7 @@
 #include <fwComEd/FloatMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/PatientDBMsg.hpp>
+#include <fwComEd/helper/MsgHelper.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -99,6 +100,16 @@ void MessagesTest::testPatientDBMsg()
     ::fwData::Image::sptr img = ::fwData::Image::dynamicCast(obj);
     CPPUNIT_ASSERT(img);
     CPPUNIT_ASSERT_EQUAL(image, img);
+}
+
+//------------------------------------------------------------------------------
+
+void MessagesTest::messageCreationTest()
+{
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwServices::ObjectMsg::sptr msg = ::fwComEd::helper::MsgHelper::createAssociatedMsg(image);
+    CPPUNIT_ASSERT(msg);
+    CPPUNIT_ASSERT(::fwComEd::ImageMsg::dynamicCast(msg));
 }
 
 //------------------------------------------------------------------------------

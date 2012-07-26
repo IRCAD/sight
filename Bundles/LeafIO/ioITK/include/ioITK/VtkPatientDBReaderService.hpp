@@ -24,18 +24,11 @@ class IOITK_CLASS_API VtkPatientDBReaderService : public ::io::IReader
 public :
     fwCoreServiceClassDefinitionsMacro ( (VtkPatientDBReaderService)( ::io::IReader) ) ;
 
-protected:
-
-    /**
-     * @brief   constructor
-     *
-     */
     IOITK_API VtkPatientDBReaderService() throw();
 
-    /**
-     * @brief   destructor
-     */
     IOITK_API virtual ~VtkPatientDBReaderService() throw();
+
+protected:
 
     IOITK_API virtual void configuring() throw(::fwTools::Failed) ;
 

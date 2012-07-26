@@ -7,6 +7,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/function.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <vtkActor.h>
 #include <vtkCellPicker.h>
@@ -39,7 +40,7 @@
 #include "fwRenderVTK/VtkRenderService.hpp"
 
 
-REGISTER_SERVICE( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite ) ;
 
 using namespace fwServices;
 

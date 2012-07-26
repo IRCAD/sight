@@ -50,7 +50,7 @@ namespace uiTF
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor, ::fwData::Composite );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 

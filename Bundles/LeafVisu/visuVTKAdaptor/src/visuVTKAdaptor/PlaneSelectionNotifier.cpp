@@ -15,7 +15,7 @@
 #include <fwData/PlaneList.hpp>
 #include <fwData/Boolean.hpp>
 
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 
@@ -26,7 +26,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier, ::fwData::Composite ) ;
 
 namespace visuVTKAdaptor
 {

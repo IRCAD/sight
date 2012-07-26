@@ -12,8 +12,10 @@
 
     #ifdef FWSERVICES_EXPORTS
     #define FWSERVICES_API __declspec(dllexport)
+    #define FWSERVICES_TEMPLATE_API
     #else
     #define FWSERVICES_API __declspec(dllimport)
+    #define FWSERVICES_TEMPLATE_API extern
     #endif
 
     #define FWSERVICES_CLASS_API
@@ -25,15 +27,18 @@
         #ifdef FWSERVICES_EXPORTS
         #define FWSERVICES_API __attribute__ ((visibility("default")))
         #define FWSERVICES_CLASS_API __attribute__ ((visibility("default")))
+        #define FWSERVICES_TEMPLATE_API extern
         #else
         #define FWSERVICES_API __attribute__ ((visibility("hidden")))
         #define FWSERVICES_CLASS_API __attribute__ ((visibility("hidden")))
+        #define FWSERVICES_TEMPLATE_API extern
         #endif
 
 #else
 
     #define FWSERVICES_API
     #define FWSERVICES_CLASS_API
+    #define FWSERVICES_TEMPLATE_API extern
 
 #endif
 

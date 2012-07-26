@@ -21,7 +21,7 @@ namespace operators
 //------------------------------------------------------------------------------
 
 LabelingParameterEditor::LabelingParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Labeling parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Labeling parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_iBackground ( 0 ),
     m_dThreshold ( 1.0 )
 {
@@ -36,8 +36,8 @@ LabelingParameterEditor::~LabelingParameterEditor(){}
 
 void LabelingParameterEditor::createContent()
 {
-    wxStaticText * pBackgroundInfo = new wxStaticText( this, wxID_ANY, _(" Background color : ") );
-    wxStaticText * pThresholdInfo = new wxStaticText( this, wxID_ANY, _(" Threshold distance : ") );
+    wxStaticText * pBackgroundInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Background color : ") );
+    wxStaticText * pThresholdInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Threshold distance : ") );
 
     wxTextCtrl * pBackground = new wxTextCtrl( this, wxID_ANY );
     wxTextCtrl * pThreshold = new wxTextCtrl( this, wxID_ANY );

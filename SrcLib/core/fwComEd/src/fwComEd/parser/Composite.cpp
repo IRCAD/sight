@@ -4,17 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
-
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include "fwComEd/parser/Composite.hpp"
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::Composite, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::Composite, ::fwData::Composite );
 
 namespace fwComEd
 {

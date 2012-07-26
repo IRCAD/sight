@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
 #include <fwServices/Base.hpp>
 
 #include <fwRuntime/Runtime.hpp>
@@ -15,7 +14,7 @@
 #include "gui/aspect/DefaultMenuSrv.hpp"
 
 
-REGISTER_SERVICE( ::fwGui::IMenuSrv , ::gui::aspect::DefaultMenuSrv , ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IMenuSrv , ::gui::aspect::DefaultMenuSrv , ::fwData::Object );
 
 namespace gui
 {

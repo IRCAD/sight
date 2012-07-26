@@ -30,7 +30,7 @@
 namespace uiReconstruction
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiReconstruction::OrganMaterialEditor , ::fwData::Reconstruction ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::OrganMaterialEditor , ::fwData::Reconstruction ) ;
 
 
 OrganMaterialEditor::OrganMaterialEditor() throw()
@@ -57,7 +57,7 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     m_colourButton->SetToolTip(_T("Selected organ's color"));
     m_colourButton->SetMinSize(wxSize(120,35));
 
-    wxStaticText* transparencyST = new wxStaticText( container, wxID_ANY, _("Transparency : "));
+    wxStaticText* transparencyST = new wxStaticText( container, wxID_ANY, wxGetTranslation("Transparency : "));
     m_opacitySlider = new wxSlider( container, wxNewId(), 100, 0, 100, wxDefaultPosition, wxDefaultSize , wxSL_BOTH|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP ) ;
     m_opacitySlider->SetToolTip(_T("Selected organ's opacity"));
 

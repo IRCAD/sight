@@ -26,18 +26,11 @@ class IOITK_CLASS_API JpgImageWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (JpgImageWriterService)( ::io::IWriter) ) ;
 
-protected:
-
-    /**
-     * @brief   constructor
-     *
-     */
     IOITK_API JpgImageWriterService() throw();
 
-    /**
-     * @brief   destructor
-     */
     IOITK_API virtual ~JpgImageWriterService() throw();
+
+protected:
 
     /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);

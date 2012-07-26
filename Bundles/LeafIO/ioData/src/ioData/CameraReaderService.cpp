@@ -18,16 +18,10 @@
 
 #include "ioData/CameraReaderService.hpp"
 
-REGISTER_SERVICE( ::io::IReader , ::ioData::CameraReaderService , ::fwData::Camera ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioData::CameraReaderService , ::fwData::Camera ) ;
 
 namespace ioData
 {
-
-//-----------------------------------------------------------------------------
-
-CameraReaderService::CameraReaderService()
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -45,11 +39,6 @@ std::vector< std::string > CameraReaderService::getSupportedExtensions()
     extensions.push_back(".cal");
     return extensions ;
 }
-
-//-----------------------------------------------------------------------------
-
-CameraReaderService::~CameraReaderService() throw()
-{}
 
 //------------------------------------------------------------------------------
 

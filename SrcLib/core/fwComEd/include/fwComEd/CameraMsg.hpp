@@ -25,7 +25,9 @@ class FWCOMED_CLASS_API CameraMsg : public ::fwServices::ObjectMsg
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((CameraMsg)(::fwServices::ObjectMsg), (( )) , new CameraMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((CameraMsg)(::fwServices::ObjectMsg), (( )) ,
+                                           ::fwServices::factory::message::New< CameraMsg > );
+
 
     /// Event identifier used to inform that a new camera is created
     FWCOMED_API static std::string NEW_CAMERA;
@@ -34,9 +36,10 @@ public:
     FWCOMED_API static std::string CAMERA_MOVING;
 
     /**
-    * @brief    Constructor.
-    */
-    FWCOMED_API CameraMsg() throw();
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API CameraMsg(::fwServices::ObjectMsg::Key key);
 
     /**
     * @brief    Destuctor : does nothing.

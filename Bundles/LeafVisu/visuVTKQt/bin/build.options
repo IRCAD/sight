@@ -11,6 +11,10 @@ LIB = [
     'fwGuiQt_0-1',
     'fwRenderVTK_0-1',
     ]
+
+REQUIREMENTS = [
+                'visuVTK_0-1',
+                ]
 TYPE = 'bundle'
 VERSION = '0-1'
 

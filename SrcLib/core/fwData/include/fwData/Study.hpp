@@ -11,7 +11,7 @@
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Acquisition.hpp"
 
 namespace fwData
@@ -33,9 +33,18 @@ class FWDATA_CLASS_API Study : public Object
 
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwData::Factory::New< Study >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwData::factory::New< Study >) ;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Study(::fwData::Object::Key key);
+
+    /// @brief Destructor
+    FWDATA_API virtual ~Study();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Study::csptr _source );
@@ -76,12 +85,6 @@ public:
     fwGettersSettersDocMacro(Description, description, std::string, the study description );
 
 protected :
-
-    /// @brief Constructor
-    FWDATA_API Study();
-
-    /// @brief Destructor
-    FWDATA_API virtual ~Study();
 
     /// Hospital name (eg : RADIOLOGIE URGENCE CHUV LAUSANNE)
     std::string m_sHospital;

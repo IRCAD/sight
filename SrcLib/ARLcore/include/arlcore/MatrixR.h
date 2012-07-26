@@ -11,6 +11,8 @@
 #include <vector>
 #include <string>
 
+#include <fwCore/macros.hpp>
+
 #include <vgl/vgl_line_3d_2_points.h>
 #include <vgl/vgl_line_segment_3d.h>
 
@@ -251,10 +253,10 @@ namespace arlCore
          * Warning Only if size(A)==size(B) and with pairs of visible points
          * @return False if size(A)!=size(B) or there are lesser than 3 pairs of visible points
          */
-        ARLCORE_API bool register3D3D( const PointList &A, const PointList &B, bool computeRMS );
+        ARLCORE_API bool register3D3D( CSPTR(PointList) A, CSPTR(PointList) B, bool computeRMS );
 
         //! @brief Same method as the previous one
-        ARLCORE_API bool register3D3D( const std::vector<const Point*> &A, const std::vector<const Point*> &B, bool computeRMS );
+        //ARLCORE_API bool register3D3D( const std::vector< CSPTR(Point)  > &A, const std::vector< CSPTR(Point) > &B, bool computeRMS );
 
         /**
          * @brief Iterative optimization of sum trp(TxA_i - B_i). sigma_3D_Bi^(-1) . (TxA_i - B_i)
@@ -268,7 +270,7 @@ namespace arlCore
          * @param[out] log[0] = end_error of the optimization (TODO still has to be divided by the number of point and sqrt)
          * @param[out] log[1] = start_error of the optimization (TODO still has to be divided by the number of point and sqrt)
          */
-        ARLCORE_API bool register3D3DUncertainty( const PointList&a, const PointList&b, ARLCORE_REGISTER3D3D, std::vector<double> optimiserParameters, std::vector<double> &log/*, unsigned int numberOfPoints=0*/ );
+        ARLCORE_API bool register3D3DUncertainty( CSPTR(PointList) a, CSPTR(PointList) b, ARLCORE_REGISTER3D3D, std::vector<double> optimiserParameters, std::vector<double> &log/*, unsigned int numberOfPoints=0*/ );
 
         /**
          * @brief Evaluation of the register RMS and the standard deviation
@@ -280,7 +282,7 @@ namespace arlCore
          * distance di between Bi and T*Ai : sqrt (sum (||di - average(di) ||^2)/ n) )
          * @param[out] errors is a double vector that contains the distance between Bi and T*A_i for each point
          */
-        ARLCORE_API bool RMS3D3D( const PointList&src, const PointList&dst, std::vector<double> &errors );
+        ARLCORE_API bool RMS3D3D( CSPTR(PointList) src, CSPTR(PointList) dst, std::vector<double> &errors );
 
         /**
          * @brief Registration of two 3D points sets. The correspondences between the points
@@ -291,7 +293,7 @@ namespace arlCore
          * @param[in] decimage ]0,1] 1:Use whole information 0.6:Use only 60% of information (faster)
          * @param[out] B = this * A
          */
-        ARLCORE_API bool register3D3DwithoutMatching( const PointList &A, const PointList &B, bool computeRMS=false, double gaussianError=0.0, double decimage=1.0 );
+        ARLCORE_API bool register3D3DwithoutMatching( CSPTR(PointList) A, CSPTR(PointList) B, bool computeRMS=false, double gaussianError=0.0, double decimage=1.0 );
 
         /**
          * @brief Registration of 2 clouds of 3D points
@@ -309,30 +311,30 @@ namespace arlCore
          * Warning : Respect the order : Model / Point cloud
          * Model devra etre surechantillonne
          */
-        ARLCORE_API bool registerICP( const PointList &Model, const PointList &cloud,
+        ARLCORE_API bool registerICP( CSPTR(PointList) Model, CSPTR(PointList) cloud,
                         double &firstRMS, double &lastRMS, unsigned int &iterations, bool justVisible=false, double RMSMax=0.01, unsigned int iterationsMax=500 );
 
         //! @brief Deprecated
-        ARLCORE_API bool oldRegisterICP( const PointList&a, const PointList&b,
+        ARLCORE_API bool oldRegisterICP( CSPTR(PointList) a, CSPTR(PointList) b,
                         double &RMS, unsigned int &iterations, double RMSMax=0.01, unsigned int iterationsMax=500 );
 
         //! @brief Compute matrix of changement of plane with cordinates of new Origin, unit X & Z
-        ARLCORE_API bool chgPlaneOXZ( const arlCore::Point &O, const arlCore::Point &X, const arlCore::Point &Z );
+        ARLCORE_API bool chgPlaneOXZ( CSPTR( Point ) O, CSPTR( Point ) X, CSPTR( Point ) Z );
 
         //! @return pt2 <- this * pt1
-        ARLCORE_API bool trf( const Point &pt1, Point &pt2 ) const;
+        ARLCORE_API bool trf( CSPTR( Point ) pt1, SPTR( Point ) pt2 ) const;
 
         //! @return pt <- this * pt
-        ARLCORE_API bool trf( Point &pt ) const;
+        ARLCORE_API bool trf( SPTR( Point ) pt ) const;
 
         //! @return For each i, Bi <- this * Ai
-        ARLCORE_API unsigned int trf( const PointList &A, PointList &B ) const;
+        ARLCORE_API unsigned int trf( CSPTR(PointList) A, SPTR(PointList) B ) const;
 
         //! @return For each i, Ai <- this * Ai
-        ARLCORE_API unsigned int trf( PointList &A ) const;
+        ARLCORE_API unsigned int trf( SPTR(PointList) A ) const;
 
         //! @return For each i, Bi <- this * Ai
-        ARLCORE_API unsigned int trf( const std::vector< const Point* >&A, std::vector< const Point* >&B ) const;
+        ARLCORE_API unsigned int trf( const std::vector< CSPTR(Point) > &A, std::vector< CSPTR(Point) >&B ) const;
 
         //! @return Change the plane of the line equation : line2 <- this * line1
         ARLCORE_API bool trf( const vgl_line_3d_2_points<double> &line1, vgl_line_3d_2_points<double> &line2 ) const;

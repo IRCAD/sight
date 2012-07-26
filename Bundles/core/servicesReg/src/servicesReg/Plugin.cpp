@@ -5,6 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwTools/ClassFactoryRegistry.hpp>
+
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/parser/Composite.hpp>
@@ -12,6 +15,7 @@
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/AppConfigParameters.hpp>
 #include <fwServices/GlobalEventManager.hpp>
 
 #include "servicesReg/Plugin.hpp"
@@ -35,6 +39,7 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
     ::fwServices::registry::ServiceFactory::getDefault()->parseBundleInformation();
     ::fwServices::registry::ServiceConfig::getDefault()->parseBundleInformation();
     ::fwServices::registry::AppConfig::getDefault()->parseBundleInformation();
+    ::fwServices::registry::AppConfigParameters::getDefault()->parseBundleInformation();
 }
 
 //-----------------------------------------------------------------------------
@@ -54,6 +59,9 @@ void Plugin::uninitialize() throw( ::fwRuntime::RuntimeException )
 
     // Clear all app configuration
     ::fwServices::registry::AppConfig::getDefault()->clearRegistry();
+
+    // Clear all app configuration parameters
+    ::fwServices::registry::AppConfigParameters::getDefault()->clearRegistry();
 
     // Clear all service factories
     ::fwServices::registry::ServiceFactory::getDefault()->clearFactory();

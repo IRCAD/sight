@@ -14,7 +14,7 @@
 #include <fwData/Acquisition.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
-#include "AcquisitionTest.h"
+#include "AcquisitionTest.hpp"
 
 
 // Registers the fixture into the 'registry'

@@ -16,14 +16,14 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList ()
+PlaneList::PlaneList(::fwData::Object::Key key)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-PlaneList::~PlaneList ()
+PlaneList::~PlaneList()
 {
     SLM_TRACE_FUNC();
 }

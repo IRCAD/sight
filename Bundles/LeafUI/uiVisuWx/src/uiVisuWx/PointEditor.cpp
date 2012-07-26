@@ -36,7 +36,7 @@
 namespace uiVisu
 {
 
-    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::PointEditor , ::fwData::Composite ) ;
+    fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::PointEditor , ::fwData::Composite ) ;
 
 
     PointEditor::PointEditor() throw() :  m_valueX(0), m_valueY(0), m_valueZ(0)

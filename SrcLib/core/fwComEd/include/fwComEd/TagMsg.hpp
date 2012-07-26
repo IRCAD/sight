@@ -27,15 +27,17 @@ class FWCOMED_CLASS_API TagMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((TagMsg)(::fwServices::ObjectMsg), ( () ), new TagMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((TagMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< TagMsg >);
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string TAG_IS_MODIFIED;
 
     /**
-      * @brief  Constructor : do nothing.
-      */
-    FWCOMED_API TagMsg() throw();
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API TagMsg(::fwServices::ObjectMsg::Key key);
 
     /**
       * @brief  Destuctor : do nothing.

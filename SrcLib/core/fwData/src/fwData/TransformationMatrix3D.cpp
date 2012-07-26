@@ -15,8 +15,8 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3D::TransformationMatrix3D() :
-m_vCoefficients(16)
+TransformationMatrix3D::TransformationMatrix3D(::fwData::Object::Key key) :
+                        m_vCoefficients(16)
 {
     //default init
     for(int l = 0; l < 4; l++)

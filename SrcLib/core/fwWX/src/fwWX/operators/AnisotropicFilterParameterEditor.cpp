@@ -21,7 +21,7 @@ namespace operators
 //------------------------------------------------------------------------------
 
 AnisotropicFilterParameterEditor::AnisotropicFilterParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Anisotropic parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Anisotropic parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_dTimeStep ( 0.05 ),
     m_iNbIterations ( 5 ),
     m_dConductance ( 25 )
@@ -38,9 +38,9 @@ AnisotropicFilterParameterEditor::~AnisotropicFilterParameterEditor(){}
 void AnisotropicFilterParameterEditor::createContent()
 {
 
-    wxStaticText * pTimeStepInfo = new wxStaticText( this, wxID_ANY, _(" Time step : ") );
-    wxStaticText * pNbIterationsInfo = new wxStaticText( this, wxID_ANY, _(" Number of iterations : ") );
-    wxStaticText * pConductanceInfo = new wxStaticText( this, wxID_ANY, _(" Coefficient diffusion : ") );
+    wxStaticText * pTimeStepInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Time step : ") );
+    wxStaticText * pNbIterationsInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Number of iterations : ") );
+    wxStaticText * pConductanceInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Coefficient diffusion : ") );
 
 
     wxTextCtrl * pTimeStep = new wxTextCtrl( this, wxID_ANY );

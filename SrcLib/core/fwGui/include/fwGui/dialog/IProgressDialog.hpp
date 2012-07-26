@@ -12,7 +12,12 @@
 #include <boost/signals.hpp>
 
 #include <fwCore/base.hpp>
+
+#include <fwTools/ClassFactoryRegistry.hpp>
+
 #include <fwData/location/ILocation.hpp>
+
+#include <fwTools/ClassFactoryRegistry.hpp>
 
 #include "fwGui/config.hpp"
 
@@ -78,7 +83,7 @@ protected :
 protected :
     static sptr progressDialogFactory()
     {
-        return ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IProgressDialog >( ::fwGui::dialog::IProgressDialog::REGISTRY_KEY);
+        return ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IProgressDialog >( ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
     }
 
 };

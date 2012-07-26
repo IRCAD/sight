@@ -28,7 +28,8 @@ namespace fwComEd
 class FWCOMED_CLASS_API TransferFunctionMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((TransferFunctionMsg)(::fwServices::ObjectMsg), ( () ), new TransferFunctionMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((TransferFunctionMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< TransferFunctionMsg >);
 
     /**
      * @name Event identifier
@@ -40,9 +41,10 @@ public:
     /// @}
 
     /**
-     * @brief Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API TransferFunctionMsg() throw();
+    FWCOMED_API TransferFunctionMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : does nothing.

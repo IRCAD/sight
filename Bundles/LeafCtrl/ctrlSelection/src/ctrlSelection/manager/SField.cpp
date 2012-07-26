@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -23,7 +24,7 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -346,7 +347,7 @@ void SField::removeField( const FieldNameType& fieldName )
 
         SubServicesVecType subServices = m_fieldsSubServices[fieldName];
         ::fwData::Object::sptr dummyObj;
-        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(fieldType));
+        dummyObj = ::fwData::factory::New(fieldType);
         BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
             OSLM_ASSERT("SubService on " << fieldName <<" expired !", subSrv->getService() );
@@ -402,7 +403,7 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
         OSLM_TRACE ( "'"<< fieldName << "' nonexistent'");
 
         ::fwData::Object::sptr dummyObj;
-        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(fieldType));
+        dummyObj = ::fwData::factory::New(fieldType);
         SubServicesVecType subVecSrv;
         std::vector< ConfigurationType > services = conf->find("service");
         BOOST_FOREACH( ConfigurationType cfg, services)

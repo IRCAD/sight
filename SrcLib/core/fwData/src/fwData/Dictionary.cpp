@@ -18,7 +18,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Dictionary::Dictionary()
+Dictionary::Dictionary( ::fwData::Object::Key key )
 {
 }
 

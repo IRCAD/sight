@@ -46,7 +46,7 @@
 namespace ioGdcm
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioGdcm::DicomdirPatientDBReaderService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioGdcm::DicomdirPatientDBReaderService , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

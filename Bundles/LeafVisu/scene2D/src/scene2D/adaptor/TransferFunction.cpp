@@ -30,7 +30,7 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/data/ViewportMsg.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::TransferFunction  , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::TransferFunction  , ::fwData::Image ) ;
 
 
 namespace scene2D
@@ -559,7 +559,7 @@ void TransferFunction::doStop() throw ( ::fwTools::Failed )
 {
     this->removeTFObserver();
     m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    ::fwServices::OSR::unregisterService( m_comChannel );
 
     // Clear the items vectors and remove the layer (and all its children) from the scene
     for (std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin() ; circleIt != m_circles.end() ; ++circleIt )

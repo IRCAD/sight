@@ -11,7 +11,6 @@
 #include <fwData/Material.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/ComChannelService.hpp>
@@ -35,7 +34,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList ) ;
 
 namespace visuVTKAdaptor
 {

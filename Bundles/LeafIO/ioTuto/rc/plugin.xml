@@ -12,21 +12,21 @@
         <info text="Tuto(Ircad)"/>
     </extension> -->
 
-    <!-- REGISTER_SERVICE( ::io::IReader , ::ioTuto::ExternalDataReaderService , ::fwData::Composite ) ;-->
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioTuto::ExternalDataReaderService</service>
         <object>::fwData::Composite</object>
     </extension>
 
-        <!-- REGISTER_SERVICE( ::io::IReader , ::ioTuto::CompositeReaderService , ::fwData::Composite ) ;-->
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioTuto::CompositeReaderService</service>
         <object>::fwData::Composite</object>
     </extension>
 
-    <!-- REGISTER_SERVICE( ::io::IWriter , ::ioTuto::CompositeWriterService , ::fwData::Composite ) ;-->
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioTuto::CompositeWriterService</service>

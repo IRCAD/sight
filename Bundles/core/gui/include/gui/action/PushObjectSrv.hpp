@@ -37,13 +37,14 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (PushObjectSrv)(::fwGui::IActionSrv) ) ;
 
-protected:
-
     /// Constructor. Do nothing.
     GUI_API PushObjectSrv() throw() ;
 
     /// Destructor. Do nothing.
     GUI_API virtual ~PushObjectSrv() throw() ;
+
+protected:
+
 
     virtual void starting() throw(::fwTools::Failed);
 

@@ -18,7 +18,7 @@
 #include <fwServices/IEditionService.hpp>
 
 
-REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::ImageWrapperSrv, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::ImageWrapperSrv, ::fwData::Image ) ;
 
 namespace ctrlSelection
 {

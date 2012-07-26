@@ -113,6 +113,9 @@ void Field::buildMessage(
             ::boost::bind(& ::fwData::Object::FieldMapType::value_type::first, _1)
     );
 
+    std::sort(oldFieldNames.begin(), oldFieldNames.end());
+    std::sort(newFieldNames.begin(), newFieldNames.end());
+
     ::fwData::Object::FieldNameVectorType added;   // new - old
     ::fwData::Object::FieldNameVectorType changed; // old & new
     ::fwData::Object::FieldNameVectorType removed; // old - new

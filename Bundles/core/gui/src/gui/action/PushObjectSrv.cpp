@@ -23,7 +23,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::PushObjectSrv, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::PushObjectSrv, ::fwData::Composite );
 
 //------------------------------------------------------------------------------
 

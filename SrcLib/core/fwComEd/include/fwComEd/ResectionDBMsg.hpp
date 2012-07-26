@@ -28,7 +28,8 @@ namespace fwComEd
 class FWCOMED_CLASS_API ResectionDBMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ResectionDBMsg)(::fwServices::ObjectMsg), ( () ), new ResectionDBMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ResectionDBMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< ResectionDBMsg >);
 
     /**
      * @name Event identifier
@@ -46,9 +47,10 @@ public:
     /// @}
 
     /**
-     * @brief   Constructor : do nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API ResectionDBMsg() throw();
+    FWCOMED_API ResectionDBMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : do nothing.

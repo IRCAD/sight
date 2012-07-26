@@ -31,9 +31,9 @@ public:
     /**
     * @brief    Constructor
     */
-    FWWX_API wxDialogMonitor(wxWindow* parent, wxMonitor::MapObjectServicesNamesType map_string, wxString title = _("Objects and Services Database")) ;
+    FWWX_API wxDialogMonitor(wxWindow* parent, wxMonitor::MapObjectServicesNamesType map_string, wxString title = wxGetTranslation("Objects and Services Database")) ;
 
-    FWWX_API wxDialogMonitor(wxWindow* parent, wxMonitor::string_map map_string, wxString title = _("Objects and Services Database")) ;
+    FWWX_API wxDialogMonitor(wxWindow* parent, wxMonitor::string_map map_string, wxString title = wxGetTranslation("Objects and Services Database")) ;
 
     FWWX_API void setOnSelectionCallback( wxMonitorCallback::ptr callback);
 

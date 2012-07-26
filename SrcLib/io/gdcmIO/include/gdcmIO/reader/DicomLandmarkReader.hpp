@@ -7,6 +7,8 @@
 #ifndef _GDCMIO_DICOMLANDMARKREADER_HPP_
 #define _GDCMIO_DICOMLANDMARKREADER_HPP_
 
+#include <fwTools/Failed.hpp>
+
 #include <gdcmIO/reader/DicomInstanceReader.hxx>
 #include <gdcmIO/DicomLandmark.hpp>
 

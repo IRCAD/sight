@@ -30,13 +30,12 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (MedicalImageSrv)(::fwServices::IController) ) ;
 
-protected:
 
-    /// Constructor.  Do nothing.
     CTRLSELECTION_API MedicalImageSrv() throw() ;
 
-    /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~MedicalImageSrv() throw() ;
+
+protected:
 
     /// Implements starting method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );

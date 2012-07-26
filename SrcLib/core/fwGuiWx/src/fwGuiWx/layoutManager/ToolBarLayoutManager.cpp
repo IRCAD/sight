@@ -74,7 +74,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         {
             if ( !image.LoadFile(::fwWX::std2wx( actionInfo.m_icon )))
             {
-                wxLogError(_("Couldn't load image from '%s'."), ::fwWX::std2wx( actionInfo.m_icon ));
+                wxLogError(wxGetTranslation("Couldn't load image from '%s'."), ::fwWX::std2wx( actionInfo.m_icon ));
             }
         }
 
@@ -122,7 +122,7 @@ void ToolBarLayoutManager::destroyLayout()
 
 void ToolBarLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
-    SLM_FATAL("TODO : ToolBarLayoutManager::actionIsVisible not yet implemented.")
+    SLM_FATAL("TODO : ToolBarLayoutManager::actionIsVisible not yet implemented.");
 }
 
 //-----------------------------------------------------------------------------

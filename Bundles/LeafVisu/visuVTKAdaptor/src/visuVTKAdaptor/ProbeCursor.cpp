@@ -18,10 +18,8 @@
 #include <fwComEd/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkAbstractPropPicker.h>
@@ -45,7 +43,7 @@
 
 #include "visuVTKAdaptor/ProbeCursor.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image ) ;
 
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent

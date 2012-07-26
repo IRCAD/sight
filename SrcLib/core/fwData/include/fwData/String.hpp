@@ -9,7 +9,7 @@
 
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/GenericField.hpp"
 
 namespace fwData
@@ -30,23 +30,23 @@ public:
 
     fwDataObjectMacro();
 
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API String(::fwData::Object::Key key) throw();
+
+    /**
+     * @brief Destructor.
+     */
+    FWDATA_API virtual ~String() throw();
+
     /// Defines shallow copy
     FWDATA_API void shallowCopy( String::csptr _source );
 
     /// Defines deep copy
     FWDATA_API void deepCopy( String::csptr _source );
 
-protected:
-    /**
-     * @brief Constructor.
-     * @param[in] value The initial value.
-     */
-    FWDATA_API String(const std::string _value="" ) throw();
-
-    /**
-     * @brief Destructor.
-     */
-    FWDATA_API virtual ~String() throw();
 };
 
 }

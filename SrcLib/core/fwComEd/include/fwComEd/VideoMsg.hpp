@@ -28,7 +28,8 @@ class FWCOMED_CLASS_API VideoMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((VideoMsg)(::fwServices::ObjectMsg), ( () ), new VideoMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((VideoMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< VideoMsg >);
 
     /**
      * @name Event identifier
@@ -40,9 +41,10 @@ public:
     /// @}
 
     /**
-      * @brief  Constructor : do nothing.
-      */
-    FWCOMED_API VideoMsg() throw();
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API VideoMsg(::fwServices::ObjectMsg::Key key);
 
     /**
       * @brief  Destuctor : do nothing.

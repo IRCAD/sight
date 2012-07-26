@@ -11,7 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -31,11 +31,20 @@ public :
     typedef ::boost::array<ColorType,4> ColorArray;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object),
-       ((::fwData::Factory::New< Color > ,() ))
+       ((::fwData::factory::New< Color > ,() ))
        ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
        );
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Color( ::fwData::Object::Key key );
+
+    /// Destructor
+    FWDATA_API virtual ~Color();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Color::csptr _source );
@@ -80,13 +89,6 @@ public :
 
 protected :
 
-    /// Constructor
-    FWDATA_API Color();
-    /// Constructor
-    FWDATA_API Color(ColorType red, ColorType green=1.0, ColorType blue=1.0, ColorType alpha=1.0);
-
-    /// Destructor
-    FWDATA_API virtual ~Color();
 
     FWDATA_API static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
 

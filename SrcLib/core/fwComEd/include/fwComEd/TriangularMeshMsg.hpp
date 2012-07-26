@@ -27,14 +27,18 @@ class FWCOMED_CLASS_API TriangularMeshMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMeshMsg)(::fwServices::ObjectMsg), (( )) , new TriangularMeshMsg );
+    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMeshMsg)(::fwServices::ObjectMsg), (( )) ,
+                                             ::fwServices::factory::message::New< TriangularMeshMsg > );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_MESH;
     FWCOMED_API static std::string VERTEX_MODIFIED;
 
-    /// Constructor. Do nothing.
-    FWCOMED_API TriangularMeshMsg() throw();
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API TriangularMeshMsg(::fwServices::ObjectMsg::Key key);
 
     /// Destructor. Do nothing.
     FWCOMED_API virtual ~TriangularMeshMsg() throw();

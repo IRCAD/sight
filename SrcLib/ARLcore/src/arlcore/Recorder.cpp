@@ -7,12 +7,12 @@
 #include <arlcore/Recorder.h>
 
 arlCore::Recorder::Recorder( void ):
-m_recorderDirectory(""),
-m_fullRecorderDirectory(""),
-m_recorderFullName(""),
 m_recorderFlag(false),
 m_recorderAfterRender(false),
-m_nbSnapshots(-1)
+m_nbSnapshots(-1),
+m_recorderDirectory(""),
+m_fullRecorderDirectory(""),
+m_recorderFullName("")
 {}
 
 arlCore::Recorder::~Recorder( void )

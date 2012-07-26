@@ -5,16 +5,18 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 #include <fwTools/fwID.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
+#include <fwRuntime/Convert.hpp>
 
 #include "fwServices/IService.hpp"
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/ComChannelService.hpp"
 #include "fwServices/registry/ObjectService.hpp"
-#include "fwServices/Factory.hpp"
+#include "fwServices/Base.hpp"
 
 namespace fwServices
 {
@@ -53,19 +55,51 @@ void IService::info( std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
+void displayPt(::boost::property_tree::ptree &pt, std::string indent = "")
+{
+    OSLM_ERROR(indent << " data : '" << pt.data() << "'" );
+
+    BOOST_FOREACH( ::boost::property_tree::ptree::value_type &v, pt)
+    {
+        OSLM_ERROR((indent + "  '") << v.first << "':" );
+        displayPt(v.second , indent + "      ");
+
+    }
+}
+
 void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _cfgElement)
 {
     SLM_ASSERT( "Invalid ConfigurationElement", _cfgElement ) ;
     m_configuration = _cfgElement ;
-    m_configurationState = UNCONFIGURED ;
 }
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::sptr IService::getConfiguration()
+void IService::setConfiguration( const ConfigType &ptree )
+{
+    ::fwRuntime::ConfigurationElement::sptr ce;
+
+    ce = ::fwRuntime::Convert::fromPropertyTree(ptree);
+
+    SLM_ASSERT( "Invalid ConfigurationElement", ce );
+
+    this->setConfiguration(ce);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwRuntime::ConfigurationElement::sptr IService::getConfiguration() const
 {
     return m_configuration ;
 }
+
+//-----------------------------------------------------------------------------
+
+IService::ConfigType IService::getConfigTree() const
+{
+    return ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
+}
+
 
 ////-----------------------------------------------------------------------------
 //
@@ -223,12 +257,12 @@ void IService::swap( ::fwData::Object::sptr _obj ) throw(::fwTools::Failed)
                 if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
                 {
                     comChannel->stop() ;
-                    ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , comChannel );
+                    ::fwServices::OSR::swapService(_obj , comChannel );
                     comChannel->start();
                 }
             }
         }
-        ::fwServices::OSR::swapService(m_associatedObject.lock(), _obj , this->getSptr() );
+        ::fwServices::OSR::swapService( _obj , this->getSptr() );
 
         this->swapping();
 

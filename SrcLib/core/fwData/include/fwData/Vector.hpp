@@ -11,7 +11,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
 
 namespace fwData
@@ -32,9 +32,7 @@ class FWDATA_CLASS_API Vector : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::Factory::New< Vector >) ;
-
-
+    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::factory::New< Vector >) ;
 
     typedef std::vector< Object::sptr > ContainerType;
 
@@ -46,6 +44,15 @@ public:
     typedef ContainerType::reverse_iterator ReverseIteratorType;
     typedef ContainerType::const_reverse_iterator ConstReverseIteratorType;
     typedef ContainerType::size_type SizeType;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Vector(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Vector();
 
     /// boost_foreach/stl compatibility
     /// @{
@@ -124,11 +131,6 @@ public:
     }
 
 protected:
-    /// Constructor
-    FWDATA_API Vector();
-
-    /// Destructor
-    FWDATA_API virtual ~Vector();
 
     ContainerType m_attrContainer;
 };

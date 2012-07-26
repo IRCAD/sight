@@ -8,6 +8,8 @@
 #define _SCENE2D_DATA_VIEWPORT_HPP_
 
 #include <fwData/Object.hpp>
+#include <fwTools/Object.hpp>
+#include <fwTools/Factory.hpp>
 
 #include "scene2D/config.hpp"
 
@@ -23,10 +25,14 @@ class SCENE2D_CLASS_API Viewport : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Viewport)(::fwData::Object), (()), ::fwTools::Factory::New< Viewport >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Viewport)(::fwData::Object), (()), ::fwData::factory::New< Viewport >) ;
 
-    SCENE2D_API Viewport() throw();
-    SCENE2D_API virtual ~Viewport() throw();
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    SCENE2D_API Viewport( ::fwData::Object::Key key );
+    SCENE2D_API virtual ~Viewport();
 
     SCENE2D_API float getX();
     SCENE2D_API void setX (float _x);

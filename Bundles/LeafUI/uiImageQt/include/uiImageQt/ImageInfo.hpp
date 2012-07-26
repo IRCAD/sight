@@ -37,14 +37,11 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (ImageInfo)(::gui::editor::IEditor) ) ;
 
-
-protected:
-
-    /// Constructor. Do nothing.
     UIIMAGEQT_API ImageInfo() throw() ;
 
-    /// Destructor. Do nothing.
     UIIMAGEQT_API virtual ~ImageInfo() throw() ;
+
+protected:
 
     /// Starts editor.
     virtual void starting() throw(::fwTools::Failed);

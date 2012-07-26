@@ -31,11 +31,12 @@ class UIMEASUREMENT_CLASS_API RemoveLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (RemoveLandmark)( ::fwGui::IActionSrv) ) ;
 
-protected:
-
     UIMEASUREMENT_API RemoveLandmark() throw() ;
 
     UIMEASUREMENT_API virtual ~RemoveLandmark() throw() ;
+
+protected:
+
 
     void configuring() throw (::fwTools::Failed);
 

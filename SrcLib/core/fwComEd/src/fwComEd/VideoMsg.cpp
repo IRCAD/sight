@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/VideoMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::VideoMsg, ::fwComEd::VideoMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::VideoMsg );
 
 namespace fwComEd
 {
@@ -20,7 +20,7 @@ std::string VideoMsg::VIDEO_IS_INITIALIZED="VIDEO_IS_INITIALIZED";
 
 //-----------------------------------------------------------------------------
 
-VideoMsg::VideoMsg() throw()
+VideoMsg::VideoMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

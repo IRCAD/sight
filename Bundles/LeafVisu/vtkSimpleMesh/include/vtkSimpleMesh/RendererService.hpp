@@ -35,7 +35,7 @@ namespace vtkSimpleMesh
  * Service rendering a ::fwData::Mesh using VTK.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::Mesh)
+ * fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::Mesh)
  */
 class VTKSIMPLEMESH_CLASS_API RendererService : public fwRender::IRender
 {

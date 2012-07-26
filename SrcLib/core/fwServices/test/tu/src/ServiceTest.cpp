@@ -6,14 +6,13 @@
 
 #include <fwData/Object.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/Factory.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IEditionService.hpp>
-#include <fwServices/Factory.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -29,7 +28,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ServiceTest );
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwServices::ut::TestService , ::fwServices::ut::TestServiceImplementation , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::ut::TestService , ::fwServices::ut::TestServiceImplementation , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 
@@ -54,7 +53,7 @@ void ServiceTest::tearDown()
 
 void ServiceTest::testServiceCreation()
 {
-    ::fwData::Object::sptr obj = ::fwData::Object::New();
+    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
     ::fwServices::IService::sptr service;
 
     // Test if the object support the service
@@ -67,7 +66,7 @@ void ServiceTest::testServiceCreation()
     // Test getting the service its object
     service = ::fwServices::get(obj, "::fwServices::ut::TestService");
     CPPUNIT_ASSERT(service);
-    CPPUNIT_ASSERT_EQUAL(obj, service->getObject());
+    CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwData::Integer >());
 
     // Test erasing service
     ::fwServices::OSR::unregisterService(service);
@@ -78,7 +77,7 @@ void ServiceTest::testServiceCreation()
 
 void ServiceTest::testServiceCreationWithTemplateMethods()
 {
-    ::fwData::Object::sptr obj = ::fwData::Object::New();
+    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
     ::fwServices::ut::TestService::sptr service;
 
     // Test if the object support the service
@@ -91,7 +90,7 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     // Test getting the service its object
     service = ::fwServices::get< ::fwServices::ut::TestService >(obj);
     CPPUNIT_ASSERT(service);
-    CPPUNIT_ASSERT_EQUAL(obj, service->getObject());
+    CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwData::Integer >());
 
     // Test erasing service
     ::fwServices::OSR::unregisterService(service);
@@ -107,7 +106,7 @@ void ServiceTest::testServiceCreationWithUUID()
     const std::string myUUID3 = "myUUID3";
     size_t nbServices = 0;
 
-    ::fwData::Object::sptr obj = ::fwData::Object::New();
+    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
     ::fwServices::IService::sptr service;
     ::fwServices::IService::sptr service2;
 
@@ -126,7 +125,7 @@ void ServiceTest::testServiceCreationWithUUID()
     service2 = ::fwServices::get(myUUID2);
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT(service2);
-    CPPUNIT_ASSERT_EQUAL(obj, service2->getObject());
+    CPPUNIT_ASSERT_EQUAL(obj, service2->getObject< ::fwData::Integer >());
     CPPUNIT_ASSERT_EQUAL(myUUID2, service2 ->getID());
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(myUUID3) == NULL );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::fwServices::ut::TestService").size() );
@@ -144,7 +143,7 @@ void ServiceTest::testStartStopUpdate()
 {
     const std::string myUUID = "myUUID";
 
-    ::fwData::Object::NewSptr obj;
+    ::fwData::Integer::NewSptr obj;
     ::fwServices::ut::TestService::sptr service;
 
     // Add service

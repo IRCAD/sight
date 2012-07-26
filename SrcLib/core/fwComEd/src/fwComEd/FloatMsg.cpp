@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/FloatMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::FloatMsg, ::fwComEd::FloatMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::FloatMsg );
 
 namespace fwComEd
 {
@@ -19,7 +19,7 @@ std::string FloatMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-FloatMsg::FloatMsg() throw()
+FloatMsg::FloatMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

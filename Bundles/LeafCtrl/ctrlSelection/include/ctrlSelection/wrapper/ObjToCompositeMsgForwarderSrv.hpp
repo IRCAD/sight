@@ -34,13 +34,12 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (ObjToCompositeMsgForwarderSrv)(::ctrlSelection::IWrapperSrv) ) ;
 
-protected:
 
-    /// Constructor.  Do nothing.
     CTRLSELECTION_API ObjToCompositeMsgForwarderSrv() throw() ;
 
-    /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~ObjToCompositeMsgForwarderSrv() throw() ;
+
+protected:
 
     /// Implements starting method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );

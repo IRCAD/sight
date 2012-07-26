@@ -13,7 +13,7 @@
 #include "scene2D/adaptor/GridFromFloat.hpp"
 #include "scene2D/data/InitQtPen.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::GridFromFloat  , ::fwData::Float ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::GridFromFloat  , ::fwData::Float ) ;
 
 
 namespace scene2D
@@ -47,7 +47,7 @@ void GridFromFloat::configuring() throw ( ::fwTools::Failed )
     m_xMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xMax") );
     m_yMin = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMin") );
     m_yMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMax") );
-   
+
     // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between the lines and color of the lines
     if (!m_configuration->getAttributeValue("xSpacing").empty())
     {
@@ -67,8 +67,8 @@ void GridFromFloat::draw()
 {
     SLM_TRACE_FUNC();
 
-    SLM_ASSERT("m_xSpacing can not equal 0", m_xSpacing != 0)
-    SLM_ASSERT("m_ySpacing can not equal 0", m_ySpacing != 0)
+    SLM_ASSERT("m_xSpacing can not equal 0", m_xSpacing != 0);
+    SLM_ASSERT("m_ySpacing can not equal 0", m_ySpacing != 0);
 
     // Remove all lines from the scene
     for (std::vector<QGraphicsItem*>::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
@@ -161,7 +161,7 @@ void GridFromFloat::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwToo
             // Set the xSpacing the float object value
             m_xSpacing = this->getObject< ::fwData::Float >()->getValue();
         }
-        
+
         this->draw();
     }
 }

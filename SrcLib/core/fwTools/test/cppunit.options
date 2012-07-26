@@ -7,12 +7,13 @@ CLASSTEST=[
     'RandomTest'              ,
     'TypeTest'                ,
     'StringizerTest'          ,
-    'UUIDTEST'                ,
+    'UUIDTest'                ,
     'BufferObjectTest'        ,
     'ByteSizeTest'            ,
     'NumericRoundCastTest'    ,
+    'FwIDTest'                ,
     ]
 
 USE = ['boost']
-LIB = ['fwTools_0-1', 'fwCore_0-1']
+LIB = ['fwTools_0-1', 'fwCore_0-1','fwTest_0-1']
 CONSOLE='yes'

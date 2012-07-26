@@ -12,7 +12,7 @@
 #include <fwData/TriangularMesh.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/TriangularMeshMsg.hpp>
@@ -41,7 +41,7 @@
 #include "visuVTKAdaptor/TriangularMesh.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::TriangularMesh, ::fwData::TriangularMesh ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::TriangularMesh, ::fwData::TriangularMesh ) ;
 
 namespace visuVTKAdaptor
 {

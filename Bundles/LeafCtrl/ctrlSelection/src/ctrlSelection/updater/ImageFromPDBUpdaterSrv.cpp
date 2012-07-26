@@ -22,7 +22,7 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ImageFromPDBUpdaterSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ImageFromPDBUpdaterSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 

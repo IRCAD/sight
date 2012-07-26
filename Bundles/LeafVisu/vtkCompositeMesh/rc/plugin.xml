@@ -1,13 +1,12 @@
 <plugin id="vtkCompositeMesh" class="::vtkCompositeMesh::Plugin" >
-    
-    
+
+
     <library name="vtkCompositeMesh" />
 
-    <!--     REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite) ;    -->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
         <service>::vtkCompositeMesh::RendererService</service>
         <object>::fwData::Composite</object>
     </extension>
-        
+
 </plugin>

@@ -27,7 +27,7 @@ namespace uiVisu
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiVisu::action::SSnapshot , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::SSnapshot , ::fwData::Object ) ;
 
 
 SSnapshot::SSnapshot() throw()
@@ -90,7 +90,7 @@ void SSnapshot::updating() throw(::fwTools::Failed)
         ::fwData::Composite::sptr composite = service->getObject< ::fwData::Composite >();
         SLM_ASSERT("SnapshotEditor sceneUID " << m_scenesUID.at(i) <<" isn't a GenericScene?" , composite);
 
-        ::fwData::Object::NewSptr dataInfo;
+        ::fwData::String::NewSptr dataInfo;
 
         ::fwData::String::NewSptr sceneID;
         sceneID->value() = m_scenesUID.at(i);

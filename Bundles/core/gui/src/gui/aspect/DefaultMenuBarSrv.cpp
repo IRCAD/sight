@@ -9,7 +9,6 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
 #include <fwServices/Base.hpp>
 
 #include <fwRuntime/Runtime.hpp>
@@ -19,7 +18,7 @@
 #include "gui/aspect/DefaultMenuBarSrv.hpp"
 
 
-REGISTER_SERVICE( ::fwGui::IMenuBarSrv , ::gui::aspect::DefaultMenuBarSrv , ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IMenuBarSrv , ::gui::aspect::DefaultMenuBarSrv , ::fwData::Object );
 
 namespace gui
 {

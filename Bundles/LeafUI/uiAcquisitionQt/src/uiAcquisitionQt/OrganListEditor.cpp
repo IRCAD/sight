@@ -38,7 +38,7 @@
 namespace uiAcquisition
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiAcquisition::OrganListEditor , ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiAcquisition::OrganListEditor , ::fwData::Acquisition ) ;
 
 
 OrganListEditor::OrganListEditor() throw()

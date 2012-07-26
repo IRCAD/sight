@@ -22,7 +22,7 @@
 
 #include "ioData/MeshWriterService.hpp"
 
-REGISTER_SERVICE( ::io::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh ) ;
 
 namespace ioData
 {

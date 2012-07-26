@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DATA_LOCATION_MULTIFILES_HPP_
-#define _DATA_LOCATION_MULTIFILES_HPP_
+#ifndef _FWDATA_LOCATION_MULTIFILES_HPP_
+#define _FWDATA_LOCATION_MULTIFILES_HPP_
 
 #include <vector>
 #include <boost/filesystem/path.hpp>
@@ -20,14 +20,20 @@ namespace location
 {
 /**
  * @class MultiFiles
- * @brief This class defines a multi files %location.
+ * @brief This class defines a multi files location.
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API MultiFiles  : public ILocation
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MultiFiles)(ILocation), (()), new MultiFiles ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (MultiFiles)(ILocation), (()),  ::fwData::factory::New< MultiFiles > ) ;
+
+    /// Constructor
+    FWDATA_API MultiFiles( ::fwData::Object::Key key );
+
+    /// Destructor
+    FWDATA_API virtual ~MultiFiles();
 
     /// Set file system paths
     FWDATA_API void setPaths( std::vector< ::boost::filesystem::path>  paths );
@@ -37,12 +43,6 @@ public:
 
 protected :
 
-    /// Constructor
-    FWDATA_API MultiFiles();
-
-    /// Destructor
-    FWDATA_API virtual ~MultiFiles();
-
     /// file system paths
     std::vector< ::boost::filesystem::path> m_paths;
 
@@ -50,7 +50,7 @@ protected :
 
 /**
  * @struct enableMultiFiles
- * @brief This class is derivated by reader/writer.
+ * @brief This class is derived by reader/writer.
  *
  * Reader/Writer classes should only need to implement get/setLocation
  *
@@ -88,4 +88,4 @@ private :
 }
 }
 
-#endif /* _DATA_LOCATION_MULTIFILES_HPP_ */
+#endif /* _FWDATA_LOCATION_MULTIFILES_HPP_ */

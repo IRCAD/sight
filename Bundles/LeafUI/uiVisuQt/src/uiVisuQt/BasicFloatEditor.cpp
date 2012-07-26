@@ -30,7 +30,7 @@
 namespace uiVisu
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::BasicFloatEditor , ::fwData::Float ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::BasicFloatEditor , ::fwData::Float ) ;
 
 
 BasicFloatEditor::BasicFloatEditor() throw()

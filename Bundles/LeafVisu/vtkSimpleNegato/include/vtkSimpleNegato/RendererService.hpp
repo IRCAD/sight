@@ -30,7 +30,7 @@ namespace vtkSimpleNegato
 * Service rendering a ::fwData::Image using VTK.
 *
 * Service registered details : \n
-* REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image)
+* fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image)
 */
 class VTKSIMPLENEGATO_CLASS_API RendererService : public fwRender::IRender
 {

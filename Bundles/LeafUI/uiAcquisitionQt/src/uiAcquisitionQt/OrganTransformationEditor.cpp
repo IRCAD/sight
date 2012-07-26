@@ -38,7 +38,7 @@ namespace uiAcquisition
 
 // OrganTransformationEditor
 
-REGISTER_SERVICE( ::gui::editor::IEditor, OrganTransformationEditor, ::fwData::Acquisition );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiAcquisition::OrganTransformationEditor, ::fwData::Acquisition );
 
 OrganTransformationEditor::OrganTransformationEditor() throw()
 :   ::gui::editor::IEditor(),

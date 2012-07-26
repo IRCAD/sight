@@ -32,7 +32,7 @@
 
 #include "visuVTKAdaptor/SlicesCursor.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {

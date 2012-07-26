@@ -28,7 +28,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySendingConfigTemplate, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySendingConfigTemplate, ::fwData::Composite );
 
 //------------------------------------------------------------------------------
 
@@ -78,70 +78,56 @@ void ConfigActionSrvWithKeySendingConfigTemplate::stopping() throw(::fwTools::Fa
 
 void ConfigActionSrvWithKeySendingConfigTemplate::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    SLM_ASSERT("Sorry you must have one (and only one) <config id=... /> element.",
+               this->getConfigTree().get_child("service").count("config") == 1 );
+
+    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType &config = srvconfig.get_child("config");
+    const ::fwServices::IService::ConfigType &configAttr = config.get_child("<xmlattr>");
 
     this->::fwGui::IActionSrv::initialize();
 
-    std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
 
-    SLM_ASSERT("Sorry you must have one (and only one) <config id=... /> element.", vectConfig.size() == 1 );
-    ::fwRuntime::ConfigurationElement::sptr configElement = vectConfig.at(0);
+    SLM_ASSERT( "Sorry, missing attribute 'id' in <config> xml element.", configAttr.count("id") == 1 );
+    SLM_ASSERT( "Sorry, missing attribute 'title' in <config> xml element.", configAttr.count("title") == 1 );
 
-    SLM_ASSERT( "Sorry, missing attribute id in <config> xml element.", configElement->hasAttribute("id") );
-    m_viewConfigId = configElement->getExistingAttributeValue("id");
+    m_viewConfigId    = configAttr.get<std::string>("id");
+    m_viewConfigTitle = configAttr.get<std::string>("title");
 
-    SLM_ASSERT( "Sorry, missing attribute title in <config> xml element.", configElement->hasAttribute("title") );
-    m_viewConfigTitle = configElement->getExistingAttributeValue("title");
+    m_iconConfigId             = configAttr.get<std::string>("icon", m_iconConfigId);
+    m_viewConfigTitlePrefixKey = configAttr.get<std::string>("titlePrefixKey", m_viewConfigTitlePrefixKey);
+    m_tooltipConfigTitleKey    = configAttr.get<std::string>("tooltipKey", m_tooltipConfigTitleKey);
 
-    if(configElement->hasAttribute("icon"))
-    {
-        m_iconConfigId = configElement->getExistingAttributeValue("icon");
-    }
-    if( configElement->hasAttribute("titlePrefixKey") )
-    {
-        m_viewConfigTitlePrefixKey = configElement->getExistingAttributeValue("titlePrefixKey");
-    }
-    if( configElement->hasAttribute("tooltipKey") )
-    {
-        m_tooltipConfigTitleKey = configElement->getExistingAttributeValue("tooltipKey");
-    }
-    if( configElement->hasAttribute("unique") )
-    {
-        std::string unique_str = configElement->getExistingAttributeValue("unique");
-        m_isUnique = (unique_str == "true" || unique_str == "yes");
-        const std::set< std::string> uniqueMapValue = ::boost::assign::list_of("yes")("no")("true")("false");
-        OSLM_ASSERT("Wrong value for attribute 'unique': "<<unique_str, uniqueMapValue.find(unique_str) != uniqueMapValue.end());
-    }
+    std::string unique_str = configAttr.get("unique", "false");
+    OSLM_ASSERT("Wrong value for attribute 'unique': "<<unique_str,
+                unique_str == ("yes") || unique_str == ("no")|| unique_str == ("true")|| unique_str == ("false"));
+    m_isUnique = (unique_str == "true" || unique_str == "yes");
 
-    m_closableConfig = configElement->getAttributeValue("closable") != "no";
+    m_closableConfig = configAttr.get<std::string>("closable", "yes") != "no";
 
     SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", ! m_viewConfigId.empty() );
 
-    std::vector < ConfigurationType > replaceTagsConfig = m_configuration->find("replace");
     std::string adaptor("");
     std::string pattern("");
-    BOOST_FOREACH( ConfigurationType replaceItem, replaceTagsConfig)
+
+    BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v, srvconfig.equal_range("replace") )
     {
-        SLM_ASSERT("<replace> tag must have one attribut val.", replaceItem->hasAttribute("val"));
-        adaptor = replaceItem->getAttributeValue("val");
-        SLM_ASSERT("<replace> tag must have one attribut pattern.", replaceItem->hasAttribute("pattern"));
-        pattern = replaceItem->getAttributeValue("pattern");
+        const ::fwServices::IService::ConfigType &attr = v.second.get_child("<xmlattr>");
+        adaptor = attr.get("val","");
+        pattern = attr.get("pattern","");
+        SLM_ASSERT("<replace> tag must have one non-empty attribute 'val'.", !adaptor.empty());
+        SLM_ASSERT("<replace> tag must have one non-empty attribute 'pattern'.", !pattern.empty());
         (*m_fieldAdaptors)[pattern] = ::fwData::String::New(adaptor);
     }
 
-    std::vector < ConfigurationType > keyTagsConfig = m_configuration->find("key");
-    if(!keyTagsConfig.empty())
+    BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v, srvconfig.equal_range("key") )
     {
-        std::string adaptor("");
-        std::string pattern("");
-        BOOST_FOREACH( ConfigurationType keyItem, keyTagsConfig)
-        {
-            SLM_ASSERT("<key> tag must have one attribut val.", keyItem->hasAttribute("id"));
-            adaptor = keyItem->getAttributeValue("id");
-            SLM_ASSERT("<key> tag must have one attribut pattern.", keyItem->hasAttribute("pattern"));
-            pattern = keyItem->getAttributeValue("pattern");
-            m_keyAdaptors[pattern] = adaptor;
-        }
+        const ::fwServices::IService::ConfigType &attr = v.second.get_child("<xmlattr>");
+        adaptor = attr.get("id","");
+        pattern = attr.get("pattern","");
+        SLM_ASSERT("<replace> tag must have one non-empty attribute 'id'.", !adaptor.empty());
+        SLM_ASSERT("<replace> tag must have one non-empty attribute 'pattern'.", !pattern.empty());
+        m_keyAdaptors[pattern] = adaptor;
     }
 }
 

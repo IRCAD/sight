@@ -25,17 +25,19 @@ class SCENE2D_CLASS_API ViewportMsg : public ::fwServices::ObjectMsg
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ViewportMsg) ( ::fwServices::ObjectMsg), ( () ), new ViewportMsg );
+    fwCoreClassDefinitionsWithFactoryMacro( (ViewportMsg) ( ::fwServices::ObjectMsg), ( () ),
+                                            ::fwServices::factory::message::New<ViewportMsg> );
 
     /**
      * @brief Constructor : does nothing.
+     * @param key Private construction key
      */
-    SCENE2D_API ViewportMsg() throw();
+    SCENE2D_API ViewportMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : does nothing.
      */
-    SCENE2D_API virtual ~ViewportMsg() throw();
+    SCENE2D_API virtual ~ViewportMsg();
 
     /**
      * Event identifier used to inform for any modification among viewport parameters.

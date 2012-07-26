@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/DictionaryOrganMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::DictionaryOrganMsg, ::fwComEd::DictionaryOrganMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::DictionaryOrganMsg );
 
 namespace fwComEd
 {
@@ -22,7 +22,7 @@ std::string DictionaryOrganMsg::MESH_DATA_NODE_IS_MODIFIED = "MESH_DATA_NODE_IS_
 
 //-----------------------------------------------------------------------------
 
-DictionaryOrganMsg::DictionaryOrganMsg() throw()
+DictionaryOrganMsg::DictionaryOrganMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

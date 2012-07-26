@@ -10,4 +10,6 @@ LIB     = [
         'fwRenderVTK_0-1',
         'fwRender_0-1'
         ]
-
+REQUIREMENTS = [
+                'visu_0-1',
+                ]

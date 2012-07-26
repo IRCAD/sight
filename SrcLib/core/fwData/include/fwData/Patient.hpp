@@ -19,15 +19,13 @@
 #include "fwData/Object.hpp"
 #include "fwData/Study.hpp"
 #include "fwData/Composite.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
 
-/** \class Patient
- *********************
- * Namespace : data
- *********************
+/**
+ * @class Patient
  * @brief This class defines a medical firmware
  * object. Patient represents fundamental
  * object in the patient folder. This class
@@ -42,9 +40,18 @@ class FWDATA_CLASS_API Patient : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), (()), ::fwData::Factory::New< Patient >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Patient)(::fwData::Object), (()), ::fwData::factory::New< Patient >) ;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Patient(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Patient();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Patient::csptr _source );
@@ -118,11 +125,6 @@ public:
     fwGettersSettersDocMacro(DbID, i32DbID, ::boost::int32_t, database identifier );
 
 protected:
-
-    /// Constructor
-    FWDATA_API Patient ();
-    /// Destructor
-    FWDATA_API virtual ~Patient ();
 
     //! Patient's name
     std::string m_sName;

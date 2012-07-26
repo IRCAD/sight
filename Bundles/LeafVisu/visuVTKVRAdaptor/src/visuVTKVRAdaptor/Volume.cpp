@@ -44,7 +44,7 @@
 #include "visuVTKVRAdaptor/Volume.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKVRAdaptor::Volume, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKVRAdaptor::Volume, ::fwData::Image ) ;
 
 namespace visuVTKVRAdaptor
 {

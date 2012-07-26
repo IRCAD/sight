@@ -17,7 +17,7 @@
 #include "fwGuiWx/MessageHandler.hpp"
 
 
-REGISTER_SERVICE( ::fwServices::IDeliveryDelegate , ::fwGui::MessageHandler , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::IDeliveryDelegate , ::fwGui::MessageHandler , ::fwData::Object ) ;
 
 namespace fwGui
 {

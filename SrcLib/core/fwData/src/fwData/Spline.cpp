@@ -11,9 +11,10 @@ fwDataRegisterMacro( ::fwData::Spline );
 
 namespace fwData
 {
+
 //------------------------------------------------------------------------------
 
-Spline::Spline()
+Spline::Spline(::fwData::Object::Key key)
 {
     SLM_TRACE_FUNC();
 }

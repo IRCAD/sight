@@ -27,7 +27,8 @@ class FWCOMED_CLASS_API PatientDBMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((PatientDBMsg)(::fwServices::ObjectMsg), (()), new PatientDBMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PatientDBMsg)(::fwServices::ObjectMsg), (()),
+                                           ::fwServices::factory::message::New< PatientDBMsg > );
 
     /**
      * @name Event identifier
@@ -43,9 +44,10 @@ public:
     /// @}
 
     /**
-     * @brief Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API PatientDBMsg() throw();
+    FWCOMED_API PatientDBMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief Destructor : does nothing.

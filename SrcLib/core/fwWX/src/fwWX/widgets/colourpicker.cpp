@@ -36,50 +36,50 @@
 DEFINE_EVENT_TYPE(wxEVT_COMMAND_COLOUR_CHANGED)
 
 const wxColourElement wxColourPanel::ms_colorTable[ROWS][COLUMNS] = {
-    {{wxColour(0, 0, 0), _("Black")},
-     {wxColour(153, 51, 0), _("Brown")},
-     {wxColour(51, 51, 0), _("Olive drab")},
-     {wxColour(0, 51, 0), _("Dark green")},
-     {wxColour(0, 51, 102), _("Dark teal")},
-     {wxColour(0, 0, 128), _("Dark blue")},
-     {wxColour(51, 51, 153), _("Indigo")},
-     {wxColour(51, 51, 51), _("Grey 80%")}},
+    {{wxColour(0, 0, 0), wxGetTranslation("Black")},
+     {wxColour(153, 51, 0), wxGetTranslation("Brown")},
+     {wxColour(51, 51, 0), wxGetTranslation("Olive drab")},
+     {wxColour(0, 51, 0), wxGetTranslation("Dark green")},
+     {wxColour(0, 51, 102), wxGetTranslation("Dark teal")},
+     {wxColour(0, 0, 128), wxGetTranslation("Dark blue")},
+     {wxColour(51, 51, 153), wxGetTranslation("Indigo")},
+     {wxColour(51, 51, 51), wxGetTranslation("Grey 80%")}},
 
-    {{wxColour(128, 0, 0), _("Dark red")},
-     {wxColour(255, 102, 0), _("Orange")},
-     {wxColour(128, 128, 0), _("Dark yellow")},
-     {wxColour(0, 128, 0), _("Green")},
-     {wxColour(0, 128, 128), _("Teal")},
-     {wxColour(0, 0, 255), _("Blue")},
-     {wxColour(102, 102, 153), _("Blue-gray")},
-     {wxColour(128, 128, 128), _("Grey 50%")}},
+    {{wxColour(128, 0, 0), wxGetTranslation("Dark red")},
+     {wxColour(255, 102, 0), wxGetTranslation("Orange")},
+     {wxColour(128, 128, 0), wxGetTranslation("Dark yellow")},
+     {wxColour(0, 128, 0), wxGetTranslation("Green")},
+     {wxColour(0, 128, 128), wxGetTranslation("Teal")},
+     {wxColour(0, 0, 255), wxGetTranslation("Blue")},
+     {wxColour(102, 102, 153), wxGetTranslation("Blue-gray")},
+     {wxColour(128, 128, 128), wxGetTranslation("Grey 50%")}},
 
-    {{wxColour(255, 0, 0), _("Red")},
-     {wxColour(255, 153, 0), _("Light orange")},
-     {wxColour(153, 204, 0), _("Lime green")},
-     {wxColour(51, 153, 102), _("Sea green")},
-     {wxColour(51, 204, 204), _("Aqua")},
-     {wxColour(51, 102, 255), _("Light blue")},
-     {wxColour(128, 0, 128), _("Violet")},
-     {wxColour(152, 153, 153), _("Grey 40%")}},
+    {{wxColour(255, 0, 0), wxGetTranslation("Red")},
+     {wxColour(255, 153, 0), wxGetTranslation("Light orange")},
+     {wxColour(153, 204, 0), wxGetTranslation("Lime green")},
+     {wxColour(51, 153, 102), wxGetTranslation("Sea green")},
+     {wxColour(51, 204, 204), wxGetTranslation("Aqua")},
+     {wxColour(51, 102, 255), wxGetTranslation("Light blue")},
+     {wxColour(128, 0, 128), wxGetTranslation("Violet")},
+     {wxColour(152, 153, 153), wxGetTranslation("Grey 40%")}},
 
-    {{wxColour(255, 0, 255), _("Magenta")},
-     {wxColour(255, 204, 0), _("Gold")},
-     {wxColour(255, 255, 0), _("Yellow")},
-     {wxColour(0, 255, 0), _("Bright green")},
-     {wxColour(0, 255, 255), _("Turquoise")},
-     {wxColour(0, 204, 255), _("Sky blue")},
-     {wxColour(153, 51, 102), _("Plum")},
-     {wxColour(192, 192, 192), _("Grey 25%")}},
+    {{wxColour(255, 0, 255), wxGetTranslation("Magenta")},
+     {wxColour(255, 204, 0), wxGetTranslation("Gold")},
+     {wxColour(255, 255, 0), wxGetTranslation("Yellow")},
+     {wxColour(0, 255, 0), wxGetTranslation("Bright green")},
+     {wxColour(0, 255, 255), wxGetTranslation("Turquoise")},
+     {wxColour(0, 204, 255), wxGetTranslation("Sky blue")},
+     {wxColour(153, 51, 102), wxGetTranslation("Plum")},
+     {wxColour(192, 192, 192), wxGetTranslation("Grey 25%")}},
 
-    {{wxColour(255, 153, 204), _("Light pink")},
-     {wxColour(255, 205, 153), _("Sand")},
-     {wxColour(255, 255, 153), _("Light yellow")},
-     {wxColour(204, 255, 204), _("Light green")},
-     {wxColour(204, 255, 255), _("Light turquoise")},
-     {wxColour(153, 204, 255), _("Powder blue")},
-     {wxColour(204, 153, 255), _("Lavender")},
-     {wxColour(255, 255, 255), _("White")}}
+    {{wxColour(255, 153, 204), wxGetTranslation("Light pink")},
+     {wxColour(255, 205, 153), wxGetTranslation("Sand")},
+     {wxColour(255, 255, 153), wxGetTranslation("Light yellow")},
+     {wxColour(204, 255, 204), wxGetTranslation("Light green")},
+     {wxColour(204, 255, 255), wxGetTranslation("Light turquoise")},
+     {wxColour(153, 204, 255), wxGetTranslation("Powder blue")},
+     {wxColour(204, 153, 255), wxGetTranslation("Lavender")},
+     {wxColour(255, 255, 255), wxGetTranslation("White")}}
 };
 
 //----------------------------------------------------------------
@@ -371,7 +371,7 @@ void wxColourPanel::OnPaint(wxPaintEvent& WXUNUSED(e)){
         bdc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUTEXT));
 
     bdc.SetFont(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-    wxString msgMoreColours = _("More Colours...");
+    wxString msgMoreColours = wxGetTranslation("More Colours...");
     int w, h;
     bdc.GetTextExtent(msgMoreColours, &w, &h);
     bdc.DrawText(msgMoreColours, (size.x - w) / 2, paletteHeight + (size.y - paletteHeight - 6 - h) / 2);
@@ -395,7 +395,7 @@ void wxColourPanel::GetColourFromPoint(int x, int y, wxColour& colour, bool& mor
         colour = ms_colorTable[selY][selX].m_colour;
     }else if (x >= 6 && x < size.x - 6 && y >= paletteHeight && y < size.y - 6){
         more = true;
-        name = _("More colours");
+        name = wxGetTranslation("More colours");
     }
 }
 

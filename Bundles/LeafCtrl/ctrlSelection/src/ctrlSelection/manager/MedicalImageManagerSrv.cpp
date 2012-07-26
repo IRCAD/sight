@@ -24,7 +24,7 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::MedicalImageManagerSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::MedicalImageManagerSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 

@@ -12,7 +12,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Edge.hpp"
 #include "fwData/Node.hpp"
 
@@ -32,7 +32,7 @@ namespace fwData {
 class FWDATA_CLASS_API Graph : public ::fwData::Object {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwData::Factory::New< Graph >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwData::factory::New< Graph >) ;
 
     fwDataObjectMacro();
 
@@ -40,12 +40,21 @@ public:
     FWDATA_API static const bool DOWN_STREAM;
 
     typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
-    typedef std::set< Node::sptr >                                         NodeContainer;  //  Be carreful, if you change we use erase(it++)
+    typedef std::set< Node::sptr >                                         NodeContainer;  //  Be careful, if you change we use erase(it++)
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Graph(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Graph();
 
     /**
      * @brief add a node
      *
-     * @return true on sucess( node not already in graph)
+     * @return true on success( node not already in graph)
      */
     FWDATA_API bool addNode( Node::sptr _node);
 
@@ -191,12 +200,6 @@ public:
     FWDATA_API bool haveConnectedEdges(Node::csptr _node ) const;
 
 protected :
-
-    /// Constructor
-    FWDATA_API Graph();
-
-    /// Destructor
-    FWDATA_API virtual ~Graph();
 
     NodeContainer m_nodes;
     ConnectionContainer m_connections;

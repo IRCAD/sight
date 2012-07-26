@@ -133,7 +133,7 @@ void XMLPatch::PatchNoVersionToVersion1( xmlNodePtr node )
         }
         catch ( ::fwTools::Failed ef)
         {
-            OSLM_TRACE(" no protocol class for node->name=" << NodeName )
+            OSLM_TRACE(" no protocol class for node->name=" << NodeName );
         }
         // if protocol exist and contain ::dataIO:: replace it by fwDataIO
         if ( !protocolValue.empty() &&  ( protocolValue.find("::dataIO::") != std::string::npos ) )

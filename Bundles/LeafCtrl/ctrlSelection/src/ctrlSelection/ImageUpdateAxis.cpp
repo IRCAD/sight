@@ -25,7 +25,7 @@ namespace ctrlSelection
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwServices::IController, ::ctrlSelection::ImageUpdateAxis, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::ImageUpdateAxis, ::fwData::Image ) ;
 
 //-----------------------------------------------------------------------------
 

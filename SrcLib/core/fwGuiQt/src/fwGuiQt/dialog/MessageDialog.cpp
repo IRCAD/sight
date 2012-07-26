@@ -84,7 +84,7 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 ::fwGui::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
     MessageDialogQtIconsType::const_iterator iterIcon = messageDialogQtIcons.find(m_icon);
-    SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQtIcons.end())
+    SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQtIcons.end());
 
     QMessageBox::Icon icon = iterIcon->second;
     QString title = QString::fromStdString(m_title);

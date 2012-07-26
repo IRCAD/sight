@@ -8,13 +8,6 @@ LIB     = [
           'fwServices_0-1',
           'fwDataTools_0-1',
           ]
+GLOBAL_DEF = ['WXINTL_NO_GETTEXT_MACRO']
 TYPE    = 'shared'
 VERSION = '0-1'
- 
-import os
-import sys
-
-# DEF = ["PULSEPROGRESS_USE_THREAD"]
-
-if os.name == 'nt':
-    DEF += ['MULTI_ROOT']

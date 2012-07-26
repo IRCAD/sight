@@ -15,7 +15,7 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/data/ViewportMsg.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite ) ;
 
 
 namespace scene2D
@@ -448,7 +448,7 @@ void ScaleValues::doStop() throw ( ::fwTools::Failed )
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
     m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    ::fwServices::OSR::unregisterService( m_comChannel );
 }
 
 

@@ -26,14 +26,10 @@
 
 #include "ioData/TriangularMeshWriterService.hpp"
 
-REGISTER_SERVICE( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwData::TriangularMesh ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwData::TriangularMesh ) ;
 
 namespace ioData
 {
-
-TriangularMeshWriterService::TriangularMeshWriterService()
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -51,11 +47,6 @@ std::vector< std::string > TriangularMeshWriterService::getSupportedExtensions()
     extensions.push_back(".trian");
     return extensions ;
 }
-
-//-----------------------------------------------------------------------------
-
-TriangularMeshWriterService::~TriangularMeshWriterService() throw()
-{}
 
 //------------------------------------------------------------------------------
 

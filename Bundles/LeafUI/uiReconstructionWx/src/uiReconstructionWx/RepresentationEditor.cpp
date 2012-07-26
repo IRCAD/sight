@@ -29,7 +29,7 @@
 namespace uiReconstruction
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiReconstruction::RepresentationEditor , ::fwData::Reconstruction ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::RepresentationEditor , ::fwData::Reconstruction ) ;
 
 
 RepresentationEditor::RepresentationEditor() throw()
@@ -64,8 +64,8 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     m_radioBoxShading = new wxRadioBox( container, wxNewId(), wxT("Shading"), wxDefaultPosition, wxDefaultSize, radioBoxShadingNChoices, radioBoxShadingChoices, 1, wxRA_SPECIFY_COLS );
     m_radioBoxShading->SetSelection(0);
 
-    m_normalsCheckBox = new wxCheckBox( container, wxNewId(), _("Show normals"));
-    m_normalsCheckBox->SetToolTip(_("Show or hide normals"));
+    m_normalsCheckBox = new wxCheckBox( container, wxNewId(), wxGetTranslation("Show normals"));
+    m_normalsCheckBox->SetToolTip(wxGetTranslation("Show or hide normals"));
 
     int border = 3;
     sizer->Add( m_radioBoxRepresentation, 1, wxEXPAND|wxALL, border);

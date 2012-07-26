@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/** 
+/**
  * @file fwCore/concept_checks.hpp
  * @brief This file defines some fw4spl concept checks.
  *
@@ -14,6 +14,8 @@
 #define __FWCORE_CONCEPT_CHECK_HPP
 
 #include <boost/concept_check.hpp>
+
+#include <fwCore/macros.hpp>
 
 namespace fwCore
 {
@@ -31,9 +33,11 @@ struct SharedPtrTypedef
     {
         typename X::sptr::element_type *a;
         X *b;
+        FwCoreNotUsedMacro(a);
+        FwCoreNotUsedMacro(b);
         same_type(a,b);
     }
-    
+
  private:
 
     // Type deduction will fail unless the arguments have the same type.

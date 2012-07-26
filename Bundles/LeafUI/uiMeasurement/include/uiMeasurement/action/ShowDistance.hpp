@@ -27,13 +27,14 @@ class UIMEASUREMENT_CLASS_API ShowDistance : public ::fwGui::IActionSrv
 
 public:
     fwCoreServiceClassDefinitionsMacro ( (ShowDistance)( ::fwGui::IActionSrv) ) ;
+
     UIMEASUREMENT_API ShowDistance() throw() ;
 
     UIMEASUREMENT_API virtual ~ShowDistance() throw() ;
 
 protected:
 
-    // update its show/hide flag accordinf image ShowDistance field notification
+    // update its show/hide flag according image ShowDistance field notification
     UIMEASUREMENT_API void updating(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
 
     UIMEASUREMENT_API void swapping() throw(::fwTools::Failed) ;

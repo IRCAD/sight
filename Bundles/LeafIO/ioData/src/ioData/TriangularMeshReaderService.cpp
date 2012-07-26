@@ -28,14 +28,10 @@
 
 #include "ioData/TriangularMeshReaderService.hpp"
 
-REGISTER_SERVICE( ::io::IReader , ::ioData::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioData::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;
 
 namespace ioData
 {
-
-TriangularMeshReaderService::TriangularMeshReaderService()
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -52,12 +48,6 @@ std::vector< std::string > TriangularMeshReaderService::getSupportedExtensions()
     std::vector< std::string > extensions ;
     extensions.push_back(".trian");
     return extensions ;
-}
-
-//-----------------------------------------------------------------------------
-
-TriangularMeshReaderService::~TriangularMeshReaderService() throw()
-{
 }
 
 //------------------------------------------------------------------------------

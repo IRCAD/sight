@@ -26,7 +26,8 @@ namespace fwComEd
 class FWCOMED_CLASS_API PatientMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((PatientMsg)(::fwServices::ObjectMsg), ( () ), new PatientMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PatientMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< PatientMsg > );
 
     /// Event identifier used to inform new patient creation
     FWCOMED_API static std::string NEW_PATIENT;
@@ -35,9 +36,10 @@ public:
     FWCOMED_API static std::string NEW_MATERIAL_FOR_RECONSTRUCTION;
 
     /**
-     * @brief   Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API PatientMsg() throw();
+    FWCOMED_API PatientMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destructor : does nothing.

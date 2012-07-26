@@ -36,7 +36,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Image::Image() :
+Image::Image(::fwData::Object::Key key) :
         m_type(),
         m_attrWindowCenter(0),
         m_attrWindowWidth(0),

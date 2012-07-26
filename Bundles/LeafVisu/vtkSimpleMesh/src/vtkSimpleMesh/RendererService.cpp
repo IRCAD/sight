@@ -32,7 +32,7 @@
 
 #include "vtkSimpleMesh/RendererService.hpp"
 
-REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::Mesh );
 
 
 

@@ -35,12 +35,13 @@ class UIPATIENTDBQT_CLASS_API PatientDBGuiSelectorService : public QObject, publ
 public :
     fwCoreServiceClassDefinitionsMacro ( (PatientDBGuiSelectorService)(::gui::editor::IEditor) ) ;
 
-protected:
     /// Constructor
     UIPATIENTDBQT_API PatientDBGuiSelectorService();
 
     /// Destructor
     UIPATIENTDBQT_API virtual ~PatientDBGuiSelectorService() throw() ;
+
+protected:
 
     void starting() throw(::fwTools::Failed);
 

@@ -45,7 +45,7 @@ namespace uiPatientDB
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiPatientDB::PatientDBInfoEditor , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiPatientDB::PatientDBInfoEditor , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

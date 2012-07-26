@@ -32,7 +32,7 @@
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkModelReaderService , ::fwData::Model );
+fwServicesRegisterMacro( ::io::IReader , ::ioVTK::VtkModelReaderService , ::fwData::Model );
 
 //------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ VtkModelReaderService::VtkModelReaderService() throw():
     m_bServiceIsConfigured(false)
 {
     SLM_TRACE_FUNC();
-    m_color = ::fwData::Color::NewSptr();
+    m_color = ::fwData::Color::New();
     m_color->setRGBA( 0.5, 0.5, 0.5, 1.0 );
 }
 
@@ -64,12 +64,6 @@ std::vector< std::string > VtkModelReaderService::getSupportedExtensions()
     return extensions ;
 }
 
-//------------------------------------------------------------------------------
-
-VtkModelReaderService::~VtkModelReaderService() throw()
-{
-    SLM_TRACE_FUNC();
-}
 
 //------------------------------------------------------------------------------
 

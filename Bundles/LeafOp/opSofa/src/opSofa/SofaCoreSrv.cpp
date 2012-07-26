@@ -14,7 +14,7 @@
 namespace opSofa
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::opSofa::SofaCoreSrv, ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaCoreSrv, ::fwData::Acquisition ) ;
 
 /**
  * @brief Constructor

@@ -17,7 +17,7 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector, ::scene2D::data::Viewport);
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector, ::scene2D::data::Viewport);
 
 namespace scene2D
 {

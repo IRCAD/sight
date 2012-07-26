@@ -40,20 +40,9 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkPatientDBReaderService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioVTK::VtkPatientDBReaderService , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
-
-VtkPatientDBReaderService::VtkPatientDBReaderService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-VtkPatientDBReaderService::~VtkPatientDBReaderService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
 
 ::io::IOPathType VtkPatientDBReaderService::getIOPathType() const
 {

@@ -143,7 +143,7 @@ void DicomLandmark::setFromData(::fwData::Image::csptr a_image) throw (::fwTools
         else
         {
             ++illegalRefFrame;
-            OSLM_ERROR("Landmark with coordinates out of bounds")
+            OSLM_ERROR("Landmark with coordinates out of bounds");
         }
     }
 

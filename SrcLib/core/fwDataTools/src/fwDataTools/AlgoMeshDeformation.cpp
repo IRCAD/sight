@@ -79,6 +79,11 @@ void AlgoMeshDeformation::initSimu()
     m_originPoints->deepCopy( m_mesh.lock()->getPointsArray() );
     m_step = 0;
 
+    if ( ! m_mesh.lock()->getPointColorsArray() )
+    {
+        ::fwDataTools::MeshGenerator::colorizeMeshPoints( m_mesh.lock() );
+    }
+
     m_meshHelper = ::fwComEd::helper::Mesh::New(m_mesh.lock());
 
     float max = std::numeric_limits<float>::min();
@@ -94,11 +99,6 @@ void AlgoMeshDeformation::initSimu()
     }
 
     m_yCenter = (max - min) / 2 + min;
-
-    if ( ! m_mesh.lock()->getPointColorsArray() )
-    {
-        ::fwDataTools::MeshGenerator::colorizeMeshPoints( m_mesh.lock() );
-    }
 }
 
 //-----------------------------------------------------------------------------

@@ -38,7 +38,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwData::Object );
+fwServicesRegisterMacro( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwData::Object );
 
 //------------------------------------------------------------------------------
 

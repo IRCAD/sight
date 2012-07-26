@@ -17,7 +17,7 @@
 #include <fwDataIO/writer/TriangularMeshWriter.hpp>
 
 
-REGISTER_SERVICE( ::fwXML::IFileFormatService , ::fwXML::TriangularMeshFileFormatService , ::fwData::TriangularMesh);
+fwServicesRegisterMacro( ::fwXML::IFileFormatService , ::fwXML::TriangularMeshFileFormatService , ::fwData::TriangularMesh);
 
 namespace fwXML
 {

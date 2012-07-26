@@ -5,24 +5,19 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <boost/interprocess/sync/interprocess_mutex.hpp>
-#include <boost/interprocess/sync/scoped_lock.hpp>
-
+#include "fwCore/mt/types.hpp"
 #include "fwCore/LogicStamp.hpp"
 
 namespace fwCore
 {
 
 
-typedef ::boost::interprocess::interprocess_mutex    mutex;
-typedef ::boost::interprocess::scoped_lock< mutex >  scopedLock;
-
 void LogicStamp::modified()
 {
     static LogicStampType globalLogicStamp = 0;
-    static mutex globalLogicStampMutex;
+    static ::fwCore::mt::Mutex globalLogicStampMutex;
 
-    scopedLock lock(globalLogicStampMutex);
+    ::fwCore::mt::ScopedLock lock(globalLogicStampMutex);
 
     m_modifiedLogicalTime = ++globalLogicStamp;
 

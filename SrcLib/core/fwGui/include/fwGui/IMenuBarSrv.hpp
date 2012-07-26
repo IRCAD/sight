@@ -39,17 +39,12 @@ public :
     FWGUI_API void menuServiceStarting(std::string menuSrvSID);
 
 protected :
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
-    /**
-     * @brief   Constructor. Initialize default values.
-     */
     FWGUI_API IMenuBarSrv() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUI_API virtual ~IMenuBarSrv() ;
+
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Initialize the layout and registry managers.

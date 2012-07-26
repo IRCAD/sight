@@ -14,7 +14,7 @@
 #include "scene2D/adaptor/ViewportUpdater.hpp"
 
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportUpdater, ::scene2D::data::Viewport);
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportUpdater, ::scene2D::data::Viewport);
 
 namespace scene2D
 {

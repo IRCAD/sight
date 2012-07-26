@@ -28,18 +28,11 @@ class IOITK_CLASS_API InrImageWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (InrImageWriterService)( ::io::IWriter) ) ;
 
-protected:
-
-    /**
-     * @brief   constructor
-     *
-     */
     IOITK_API InrImageWriterService() throw();
 
-    /**
-     * @brief   destructor
-     */
     IOITK_API virtual ~InrImageWriterService() throw();
+
+protected:
 
     /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);

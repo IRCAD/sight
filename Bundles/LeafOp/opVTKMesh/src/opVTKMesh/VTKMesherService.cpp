@@ -35,7 +35,7 @@ namespace opVTKMesh
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::opVTKMesh::IMesher , ::opVTKMesh::VTKMesherService , ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::opVTKMesh::IMesher , ::opVTKMesh::VTKMesherService , ::fwData::Acquisition ) ;
 
 //-----------------------------------------------------------------------------
 

@@ -9,7 +9,6 @@
 #include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/Composite.hpp>
-#include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
@@ -28,7 +27,7 @@ namespace uiPatientDB
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiPatientDB::action::ErasePatientDB , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiPatientDB::action::ErasePatientDB , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

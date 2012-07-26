@@ -18,6 +18,7 @@
 
 #include <fwTools/Object.hpp>
 
+#include <fwData/Object.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -47,7 +48,7 @@
 namespace uiVisu
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::SnapshotEditor , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::SnapshotEditor , ::fwData::Object ) ;
 
 
 SnapshotEditor::SnapshotEditor() throw()
@@ -78,7 +79,7 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
     wxImage imageSnap;
     imageSnap.LoadFile(filenameSnap);
     wxBitmapButton* snapButton = new wxBitmapButton( container, m_idSnapButton, imageSnap, wxDefaultPosition, wxSize(25,-1) ) ;
-    snapButton->SetToolTip(_("Snapshot"));
+    snapButton->SetToolTip(wxGetTranslation("Snapshot"));
 
     wxSizer* sizer = new wxBoxSizer( wxVERTICAL );
     sizer->Add( snapButton, 1, wxALL|wxEXPAND, 1 );
@@ -166,7 +167,7 @@ void SnapshotEditor::onSnapButton( wxCommandEvent& event )
             ::fwData::Composite::sptr composite = service->getObject< ::fwData::Composite >();
             SLM_ASSERT("SnapshotEditor sceneUID " << m_scenesUID.at(i) <<" isn't a GenericScene?" , composite);
 
-            ::fwData::Object::NewSptr dataInfo;
+            ::fwData::String::NewSptr dataInfo;
 
             ::fwData::String::NewSptr sceneID;
             sceneID->value() = m_scenesUID.at(i);

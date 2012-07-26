@@ -7,7 +7,7 @@
 #include <QApplication>
 #include <QMainWindow>
 
-#include <fwData/Object.hpp>
+#include <fwData/String.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
@@ -47,24 +47,13 @@ void GuiQtTest::tearDown()
 
 void GuiQtTest::testDefaultFrame()
 {
-    ::fwData::Object::NewSptr object;
+    ::fwData::String::NewSptr object;
 
-    ::fwRuntime::EConfigurationElement::NewSptr frameCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr guiCfg("gui");
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameCfg("frame");
+    ::fwServices::IService::ConfigType frameConfig;
 
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameNameCfg("name");
-    guiFrameNameCfg->setValue("guiQtUnitTest");
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameMinSizeCfg("minSize");
-    guiFrameMinSizeCfg->setAttributeValue("width", "800");
-    guiFrameMinSizeCfg->setAttributeValue("height", "600");
-
-    guiFrameCfg->addConfigurationElement(guiFrameNameCfg);
-    guiFrameCfg->addConfigurationElement(guiFrameMinSizeCfg);
-    guiCfg->addConfigurationElement(guiFrameCfg);
-
-    frameCfg->addConfigurationElement(guiCfg);
-
+    frameConfig.put("service.gui.frame.name", "guiQtUnitTest");
+    frameConfig.put("service.gui.frame.minSize.<xmlattr>.width", "800");
+    frameConfig.put("service.gui.frame.minSize.<xmlattr>.height", "600");
 
     ::fwServices::IService::sptr srv;
     srv = ::fwServices::registry::ServiceFactory::getDefault()->create(  "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame" );
@@ -72,7 +61,7 @@ void GuiQtTest::testDefaultFrame()
 
     ::fwServices::OSR::registerService( object , srv );
 
-    srv->setConfiguration( frameCfg ) ;
+    srv->setConfiguration( frameConfig ) ;
     srv->configure();
     srv->start();
 

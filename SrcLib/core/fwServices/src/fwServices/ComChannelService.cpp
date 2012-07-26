@@ -23,7 +23,7 @@
 #include "fwServices/registry/ServiceFactory.hpp"
 
 
-REGISTER_SERVICE( ::fwServices::ICommunication , ::fwServices::ComChannelService , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::ICommunication , ::fwServices::ComChannelService , ::fwData::Object ) ;
 
 namespace fwServices
 {

@@ -20,7 +20,7 @@ namespace operators
 {
 
 SubSamplingParameterEditor::SubSamplingParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Image sub-sampling"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Image sub-sampling"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_frequence ( 2 ),
     m_direction ( 1 )
 {
@@ -58,10 +58,10 @@ SubSamplingParameterEditor::SubSamplingParameterEditor( wxWindow * parent ) :
             directionStaticText = new wxStaticText( this, wxID_ANY, _T("") )
             , 1, wxLEFT, 10 );
     //direction choices
-    wxString directionChoices[3] = { _("Sagittal"), _("Frontal"), _("Axial")} ;
+    wxString directionChoices[3] = { wxGetTranslation("Sagittal"), wxGetTranslation("Frontal"), wxGetTranslation("Axial")} ;
 
     dialogBoxFlexSizer->Add(
-            m_directionRadioBox = new wxRadioBox( this, wxID_ANY, _("Direction"),wxDefaultPosition, wxDefaultSize, 3, directionChoices )
+            m_directionRadioBox = new wxRadioBox( this, wxID_ANY, wxGetTranslation("Direction"),wxDefaultPosition, wxDefaultSize, 3, directionChoices )
             , 0, wxRIGHT, 10) ;
     m_directionRadioBox->SetSelection( 0 ) ;
 

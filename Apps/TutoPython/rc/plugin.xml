@@ -10,7 +10,7 @@
                 <item key="PythonString">
                     <object type="::fwData::String">
 
-                        <service type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                        <service uid="mainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
                             <gui>
                                 <frame>
                                     <name>TutoPython</name>
@@ -102,7 +102,7 @@ if image.buffer is not None:
                     </object>
                 </item>
 
-                <start type="::fwGui::IFrameSrv" />
+                <start uid="mainFrame" />
             </object>
         </config>
     </extension>

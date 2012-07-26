@@ -35,7 +35,7 @@
 namespace ioXML
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioXML::FwXMLGenericWriterService , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioXML::FwXMLGenericWriterService , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 

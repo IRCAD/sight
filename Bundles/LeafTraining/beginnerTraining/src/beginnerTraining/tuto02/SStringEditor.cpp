@@ -20,7 +20,7 @@
 
 #include "beginnerTraining/tuto02/SStringEditor.hpp"
 
-REGISTER_SERVICE( ::gui::editor::IEditor, ::beginnerTraining::tuto02::SStringEditor, ::fwData::String );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto02::SStringEditor, ::fwData::String );
 
 
 namespace beginnerTraining

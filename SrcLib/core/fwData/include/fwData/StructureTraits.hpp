@@ -9,7 +9,7 @@
 
 #include "fwData/Color.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -31,7 +31,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwData::Factory::New< StructureTraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwData::factory::New< StructureTraits >) ;
 
     /// Defines structure categories
     typedef enum
@@ -63,6 +63,15 @@ public:
         NO_CONSTRAINT
     }StructureClass;
 
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API StructureTraits(::fwData::Object::Key key);
+
+    /// Destructor. Does nothing.
+    FWDATA_API virtual ~StructureTraits();
+
     fwGettersSettersDocMacro(Type, type, std::string, the structure type);
 
     fwGettersSettersDocMacro(Categories, categories, CategoryContainer, the structure type);
@@ -84,14 +93,6 @@ public:
     fwGettersSettersDocMacro(PropertyCategory, propertyCategory, std::string, Dicom property category);
 
     fwGettersSettersDocMacro(PropertyType, propertyType, std::string, Dicom property type);
-
-protected :
-
-    /// Constructor
-    FWDATA_API StructureTraits();
-
-    /// Destructor. Does nothing.
-    FWDATA_API virtual ~StructureTraits();
 
 private:
 

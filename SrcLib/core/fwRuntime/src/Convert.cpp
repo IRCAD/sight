@@ -4,12 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRuntime/Convert.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
+#include <libxml/parser.h>
 
 #include <set>
-#include <fwRuntime/Bundle.hpp>
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/ExtensionPoint.hpp>
+
+#include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/Runtime.hpp"
+#include "fwRuntime/ExtensionPoint.hpp"
+#include "fwRuntime/io/BundleDescriptorReader.hpp"
+
+#include "fwRuntime/Convert.hpp"
 
 
 namespace fwRuntime
@@ -58,7 +65,7 @@ void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::C
     SLM_ASSERT( "ConfigurationElement should not have children("
                 << _cfgElement->size() <<") and a value ("
                 << nodeValue <<") at the same time.",
-                !(!nodeValue.empty() && _cfgElement->size())  )
+                !(!nodeValue.empty() && _cfgElement->size())  );
 
     for ( std::vector< ::fwRuntime::ConfigurationElement::sptr >::iterator iter_cfeC = _cfgElement->begin() ;
     iter_cfeC != _cfgElement->end() ;
@@ -209,6 +216,95 @@ xmlNodePtr Convert::toXml( ::fwRuntime::ConfigurationElement::sptr _cfgElement)
     xmlNodePtr tmp = xmlNewNode( NULL,  xmlCharStrdup( "Configurations_Elements" ) );
     ::fwRuntime::Convert::fromConfigurationElementToXml( _cfgElement, tmp) ;
     return tmp ;
+}
+
+
+std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgElement)
+{
+    xmlNodePtr node = toXml( _cfgElement );
+    xmlBufferPtr buffer = xmlBufferCreate();
+    xmlNodeDump( buffer, node->doc, xmlFirstElementChild(node), 0, 1 );
+
+    std::string result = reinterpret_cast<const char*>(buffer->content);
+
+    xmlFreeNode( node );
+    xmlBufferFree( buffer );
+    return result;
+}
+
+
+::boost::property_tree::ptree Convert::toPropertyTree( ::fwRuntime::ConfigurationElement::sptr _cfgElement)
+{
+    ::boost::property_tree::ptree pt;
+    ::boost::property_tree::ptree ptAttr;
+
+    std::string propertyName = _cfgElement->getName();
+    std::string propertyValue = _cfgElement->getValue();
+
+    typedef std::map<std::string, std::string> AttributeMatType;
+
+    if(!propertyValue.empty())
+    {
+        pt.put(propertyName, propertyValue);
+    }
+
+    AttributeMatType attr = _cfgElement->getAttributes() ;
+
+    for ( AttributeMatType::iterator iter = attr.begin() ; iter!= attr.end(); ++iter)
+    {
+        ptAttr.put(iter->first,iter->second);
+    }
+
+    if(!ptAttr.empty())
+    {
+        pt.put_child(propertyName + ".<xmlattr>", ptAttr);
+    }
+
+    for ( ::fwRuntime::ConfigurationElementContainer::Iterator iterElement = _cfgElement->begin() ;
+          iterElement != _cfgElement->end() ;
+          ++iterElement )
+    {
+        std::string childName = (*iterElement)->getName();
+        ::boost::property_tree::ptree ptChild;
+
+        ptChild = toPropertyTree (*iterElement);
+
+        boost::optional< ::boost::property_tree::ptree & > child = ptChild.get_child_optional(childName) ;
+
+        if(child)
+        {
+            ptChild = *child;
+        }
+
+        pt.add_child( propertyName + "." + childName  , ptChild );
+    }
+    return pt;
+}
+
+::fwRuntime::ConfigurationElement::sptr Convert::fromPropertyTree( ::boost::property_tree::ptree pt )
+{
+    std::stringstream sstr;
+    ::boost::property_tree::write_xml(sstr, pt);
+
+    std::string xml = sstr.str();
+
+    xmlDocPtr doc = xmlParseMemory(xml.c_str(), xml.size());
+
+    if (doc == NULL)
+    {
+        return ::fwRuntime::ConfigurationElement::sptr();
+    }
+
+    xmlNodePtr root = xmlDocGetRootElement(doc);
+
+
+    ::fwRuntime::ConfigurationElement::sptr ce;
+    ce = ::fwRuntime::io::BundleDescriptorReader::processConfigurationElement(root, SPTR(Bundle)());
+
+
+    xmlFreeDoc(doc);
+
+    return ce;
 }
 
 //------------------------------------------------------------------------------

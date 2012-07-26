@@ -26,18 +26,11 @@ class IOITK_CLASS_API DicomPatientDBReaderService : public ::io::IReader
 public :
     fwCoreServiceClassDefinitionsMacro ( (DicomPatientDBReaderService)( ::io::IReader) ) ;
 
-protected:
-
-    /**
-     * @brief   constructor
-     *
-     */
     IOITK_API DicomPatientDBReaderService() throw();
 
-    /**
-     * @brief   destructor
-     */
     IOITK_API virtual ~DicomPatientDBReaderService() throw();
+
+protected:
 
     /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);

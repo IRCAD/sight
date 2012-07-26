@@ -8,6 +8,7 @@
 #define _GDCMIO_DICOMPATIENTDBREADER_HPP_
 
 #include <fwTools/ProgressAdviser.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 

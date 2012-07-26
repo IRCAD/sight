@@ -16,7 +16,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Study::Study() :
+Study::Study(::fwData::Object::Key key) :
     m_sHospital(""),
     m_sModality(""),
     m_sAcquisitionZone(""),

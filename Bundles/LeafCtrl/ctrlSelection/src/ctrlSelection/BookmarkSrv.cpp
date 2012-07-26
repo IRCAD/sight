@@ -21,7 +21,7 @@ namespace ctrlSelection
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwServices::IController, ::ctrlSelection::BookmarkSrv, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::BookmarkSrv, ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

@@ -11,7 +11,7 @@
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Color.hpp"
 
 namespace fwData
@@ -25,7 +25,7 @@ namespace fwData
 class FWDATA_CLASS_API Spline : public Object
 {
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwData::Factory::New< Spline >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwData::factory::New< Spline >) ;
 
     /**
      * @struct point
@@ -60,6 +60,17 @@ public :
     typedef std::vector< point > Points ;
 
     /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Spline(::fwData::Object::Key key);
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Spline() ;
+
+    /**
      * @brief returns editable point container
      */
     FWDATA_API Points &points() ;
@@ -71,16 +82,6 @@ public :
     fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
 
 protected :
-
-    /**
-     * @brief constructor
-     */
-    FWDATA_API Spline();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~Spline() ;
 
     /// Points container
     Points      m_points ;

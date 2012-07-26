@@ -39,7 +39,6 @@ void IsTypeOfTest::tearDown()
 
 void IsTypeOfTest::methode1()
 {
-    ::fwData::Object::NewSptr            dataObject ;
     ::fwData::Composite::NewSptr         dataComposite ;
     ::fwData::Boolean::NewSptr           dataBoolean ;
     ::fwData::Float::NewSptr             dataFloat ;
@@ -48,13 +47,12 @@ void IsTypeOfTest::methode1()
     ::fwData::TransferFunction::NewSptr dataTransferFunction ;
     ::fwData::Patient::NewSptr           dataPatient ;
 
-    ::fwData::Object::isTypeOf            ( "::fwData::Object" );
     ::fwData::Composite::isTypeOf         ( "::fwData::Object" );
     ::fwData::Boolean::isTypeOf           ( "::fwData::Object" );
     ::fwData::Float::isTypeOf             ( "::fwData::Object" );
     ::fwData::Integer::isTypeOf           ( "::fwData::Object" );
     ::fwData::Image::isTypeOf             ( "::fwData::Object" );
-    ::fwData::TransferFunction::isTypeOf ( "::fwData::Object" );
+    ::fwData::TransferFunction::isTypeOf  ( "::fwData::Object" );
     ::fwData::Patient::isTypeOf           ( "::fwData::Object" );
 
     ::fwData::Composite::isTypeOf         ( "::fwData::Composite"         );
@@ -62,16 +60,15 @@ void IsTypeOfTest::methode1()
     ::fwData::Float::isTypeOf             ( "::fwData::Float"             );
     ::fwData::Integer::isTypeOf           ( "::fwData::Integer"           );
     ::fwData::Image::isTypeOf             ( "::fwData::Image"             );
-    ::fwData::TransferFunction::isTypeOf ( "::fwData::TransferFunction" );
+    ::fwData::TransferFunction::isTypeOf  ( "::fwData::TransferFunction"  );
     ::fwData::Patient::isTypeOf           ( "::fwData::Patient"           );
 
-    CPPUNIT_ASSERT( dataObject           ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( dataComposite        ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( dataBoolean          ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( dataFloat            ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( dataInteger          ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( dataImage            ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( dataTransferFunction->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( dataTransferFunction ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( dataPatient          ->isA("::fwData::Object") );
 
     CPPUNIT_ASSERT( dataComposite        ->isA("::fwData::Composite") );
@@ -79,7 +76,7 @@ void IsTypeOfTest::methode1()
     CPPUNIT_ASSERT( dataFloat            ->isA("::fwData::Float") );
     CPPUNIT_ASSERT( dataInteger          ->isA("::fwData::Integer") );
     CPPUNIT_ASSERT( dataImage            ->isA("::fwData::Image") );
-    CPPUNIT_ASSERT( dataTransferFunction->isA("::fwData::TransferFunction") );
+    CPPUNIT_ASSERT( dataTransferFunction ->isA("::fwData::TransferFunction") );
     CPPUNIT_ASSERT( dataPatient          ->isA("::fwData::Patient") );
 
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataComposite)        ->isA("::fwData::Object") );
@@ -87,7 +84,7 @@ void IsTypeOfTest::methode1()
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataFloat)            ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataInteger)          ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataImage)            ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataTransferFunction)->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataTransferFunction) ->isA("::fwData::Object") );
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataPatient)          ->isA("::fwData::Object") );
 
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataComposite         )->isA( "::fwData::Composite"         ) ) ;
@@ -95,16 +92,15 @@ void IsTypeOfTest::methode1()
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataFloat             )->isA( "::fwData::Float"             ) ) ;
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataInteger           )->isA( "::fwData::Integer"           ) ) ;
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataImage             )->isA( "::fwData::Image"             ) ) ;
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataTransferFunction )->isA( "::fwData::TransferFunction" ) ) ;
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataTransferFunction  )->isA( "::fwData::TransferFunction"  ) ) ;
     CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataPatient           )->isA( "::fwData::Patient"           ) ) ;
 
-    CPPUNIT_ASSERT( ! dataObject           ->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataComposite        ->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataBoolean          ->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataFloat            ->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataInteger          ->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataImage            ->isA("::fwData::Boolean") );
-    CPPUNIT_ASSERT( ! dataTransferFunction->isA("::fwData::Image") );
+    CPPUNIT_ASSERT( ! dataTransferFunction ->isA("::fwData::Image") );
     CPPUNIT_ASSERT( ! dataPatient          ->isA("::fwData::Image") );
 }
 

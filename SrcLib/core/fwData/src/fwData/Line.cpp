@@ -18,18 +18,9 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Line::Line ()
+Line::Line (::fwData::Object::Key key)
 {
     SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-Line::Line( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction)
-: m_position(_position),
-  m_direction(_direction)
-{
-
 }
 
 //------------------------------------------------------------------------------

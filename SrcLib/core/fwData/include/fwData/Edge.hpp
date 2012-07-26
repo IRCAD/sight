@@ -11,7 +11,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 namespace fwData
 {
@@ -27,10 +27,20 @@ namespace fwData
 class FWDATA_CLASS_API Edge : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Edge)(::fwData::Object), (()), ::fwData::Factory::New< Edge >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Edge)(::fwData::Object), (()), ::fwData::factory::New< Edge >) ;
 
     FWDATA_API static std::string NATURE_FLOW;
     FWDATA_API static std::string NATURE_DATA;
+
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Edge( ::fwData::Object::Key key );
+    /// Destructor
+    FWDATA_API virtual ~Edge();
+
 
     /// @brief do a shallow copy of edge
     FWDATA_API void shallowCopy( Edge::csptr _source );
@@ -68,11 +78,6 @@ public:
     FWDATA_API const std::string &getNature() const;
 
 protected :
-
-    /// Constructor
-    FWDATA_API Edge();
-    /// Destructor
-    FWDATA_API virtual ~Edge();
 
     std::string m_fromPortIdentifier; // "ID_SIZEX" , ...
     std::string m_toPortIdentifier; // "ID_SIZEX" , ...

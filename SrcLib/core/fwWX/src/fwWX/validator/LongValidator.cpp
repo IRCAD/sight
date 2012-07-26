@@ -82,7 +82,7 @@ bool LongValidator::TransferFromWindow()
 bool LongValidator::TransferToWindow()
 {
     wxTextCtrl  * textCtrl = wxStaticCast( GetWindow(), wxTextCtrl );
-    wxString    value = wxString::Format( _("%ld"), this->m_value );
+    wxString    value = wxString::Format( wxGetTranslation("%ld"), this->m_value );
 
     if( textCtrl->GetValue() != value )
     {
@@ -111,7 +111,7 @@ bool LongValidator::Validate( wxWindow * parent )
 
         ::wxMessageBox(
                 ::fwWX::std2wx( ss.str() ),
-                _("Invalid value"),
+                wxGetTranslation("Invalid value"),
                 wxOK|wxICON_ERROR,
                 parent );
         GetWindow()->SetFocus();

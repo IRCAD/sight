@@ -31,7 +31,7 @@ namespace uiMeasurement
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::SAddLabeledPoint , ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::SAddLabeledPoint , ::fwData::PointList ) ;
 
 
 //------------------------------------------------------------------------------

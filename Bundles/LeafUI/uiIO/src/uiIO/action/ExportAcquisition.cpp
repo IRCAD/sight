@@ -26,7 +26,7 @@ namespace uiIO
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv, ::uiIO::action::ExportAcquisition , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::ExportAcquisition , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

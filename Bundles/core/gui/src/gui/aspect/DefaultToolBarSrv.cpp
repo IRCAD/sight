@@ -9,7 +9,7 @@
 
 #include "gui/aspect/DefaultToolBarSrv.hpp"
 
-REGISTER_SERVICE( ::fwGui::IToolBarSrv , ::gui::aspect::DefaultToolBarSrv , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IToolBarSrv , ::gui::aspect::DefaultToolBarSrv , ::fwData::Object ) ;
 
 namespace gui
 {

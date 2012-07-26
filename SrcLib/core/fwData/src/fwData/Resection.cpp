@@ -18,7 +18,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Resection::Resection ()
+Resection::Resection (::fwData::Object::Key key)
 : m_isSafePart(true),
   m_isValid(false),
   m_isVisible(true)

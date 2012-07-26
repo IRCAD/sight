@@ -21,7 +21,7 @@ namespace operators
 //------------------------------------------------------------------------------
 
 ConnectedComponentParameterEditor::ConnectedComponentParameterEditor( wxWindow * parent ) :
-    wxDialog( parent, wxID_ANY, _("Connected component"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Connected component"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_iBackground ( 0 ),
     m_dThreshold ( 1.0 ),
     m_iNbComponent ( 2 )
@@ -37,9 +37,9 @@ ConnectedComponentParameterEditor::~ConnectedComponentParameterEditor(){}
 
 void ConnectedComponentParameterEditor::createContent()
 {
-    wxStaticText * pBackgroundInfo = new wxStaticText( this, wxID_ANY, _(" Background color : ") );
-    wxStaticText * pThresholdInfo = new wxStaticText( this, wxID_ANY, _(" Threshold distance : ") );
-    wxStaticText * pNbComponentInfo = new wxStaticText( this, wxID_ANY, _(" Number of Connected components : ") );
+    wxStaticText * pBackgroundInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Background color : ") );
+    wxStaticText * pThresholdInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Threshold distance : ") );
+    wxStaticText * pNbComponentInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Number of Connected components : ") );
 
     wxTextCtrl * pBackground = new wxTextCtrl( this, wxID_ANY );
     wxTextCtrl * pThreshold = new wxTextCtrl( this, wxID_ANY );

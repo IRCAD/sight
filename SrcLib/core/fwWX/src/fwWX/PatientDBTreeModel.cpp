@@ -214,15 +214,9 @@ void PatientDBTreeModel::AddPatient( ::fwData::Patient::sptr _patient )
 
     m_root->Append( patient_node );
     // notify control
-#ifndef MULTI_ROOT
-    // notify control
     wxDataViewItem child( (void*) patient_node );
     wxDataViewItem parent( (void*) m_root.get() );
     ItemAdded( parent, child );
-#else
-    wxDataViewItem child( (void*) patient_node );
-    ItemAdded( NULL, child );
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -411,12 +405,8 @@ unsigned int PatientDBTreeModel::GetChildren( const wxDataViewItem &parent,
     fwDataNode *node = (fwDataNode*) parent.GetID();
     if (!node)
     {
-#ifndef MULTI_ROOT
         array.Add( wxDataViewItem( (void*) m_root.get() ) );
         return 1;
-#else
-        return GetChildren(m_root.get(), array);
-#endif
     }
 
     if (node->GetChildCount() == 0)

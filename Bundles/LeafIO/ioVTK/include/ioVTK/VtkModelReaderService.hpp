@@ -29,11 +29,13 @@ namespace ioVTK
  * (for .vtk at this time).
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkModelReaderService , ::fwData::Model )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::VtkModelReaderService , ::fwData::Model )
  */
 class IOVTK_CLASS_API VtkModelReaderService : public ::io::IReader
 {
 public:
+    ~VtkModelReaderService() throw() {}
+
 
     fwCoreServiceClassDefinitionsMacro ( (VtkModelReaderService)( ::io::IReader) ) ;
 
@@ -54,18 +56,12 @@ public:
     */
     IOVTK_API virtual std::vector< std::string > getSupportedExtensions();
 
-
-protected:
-
     /**
      * @brief   Constructor
      */
     IOVTK_API VtkModelReaderService() throw() ;
 
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API ~VtkModelReaderService() throw() ;
+protected:
 
     /**
     * @brief Starting method : default does nothing.

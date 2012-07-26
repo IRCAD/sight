@@ -14,7 +14,7 @@
 
 #include <fwData/Patient.hpp>
 #include <fwData/Study.hpp>
-#include "PatientTest.h"
+#include "PatientTest.hpp"
 
 
 // Registers the fixture into the 'registry'

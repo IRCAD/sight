@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwCore/base.hpp>
+
 #include "gdcmIO/DicomDictionarySR.hpp"
 
 namespace gdcmIO
@@ -67,7 +69,7 @@ static const char * ContinuityStrings[] = {
 
 const char * DicomDictionarySR::getCodeValue(SRContent a_type)
 {
-    assert( a_type <= SRCONTENT_END );
+    SLM_ASSERT("Bad type", a_type <= SRCONTENT_END );
     return CVStrings[(unsigned int)a_type];
 }
 
@@ -75,7 +77,7 @@ const char * DicomDictionarySR::getCodeValue(SRContent a_type)
 
 const char * DicomDictionarySR::getCodeScheme(SRContent a_type)
 {
-    assert( a_type <= SRCONTENT_END );
+    SLM_ASSERT("Bad type",  a_type <= SRCONTENT_END );
     return "DCM";   // TODO : adapt if SRContent has others coding schemes
 }
 
@@ -83,7 +85,7 @@ const char * DicomDictionarySR::getCodeScheme(SRContent a_type)
 
 const char * DicomDictionarySR::getCodeMeaning(SRContent a_type)
 {
-    assert( a_type <= SRCONTENT_END );
+    SLM_ASSERT("Bad type",  a_type <= SRCONTENT_END );
     return CMStrings[(unsigned int)a_type];
 }
 
@@ -91,7 +93,7 @@ const char * DicomDictionarySR::getCodeMeaning(SRContent a_type)
 
 const char * DicomDictionarySR::getTypeString(SRType a_type)
 {
-    assert( a_type <= SRTYPE_END );
+    SLM_ASSERT("Bad type",  a_type <= SRTYPE_END );
     return TypeStrings[(unsigned int)a_type];
 }
 
@@ -99,7 +101,7 @@ const char * DicomDictionarySR::getTypeString(SRType a_type)
 
 const char * DicomDictionarySR::getRelationshipString(SRRelationship a_type)
 {
-    assert( a_type <= SRRELATIONSHIP_END );
+    SLM_ASSERT("Bad type",  a_type <= SRRELATIONSHIP_END );
     return RelationshipStrings[(unsigned int)a_type];
 }
 
@@ -107,7 +109,7 @@ const char * DicomDictionarySR::getRelationshipString(SRRelationship a_type)
 
 const char * DicomDictionarySR::getGraphicTypeString(SRGraphicType a_type)
 {
-    assert( a_type <= SRGRAPHICTYPE_END );
+    SLM_ASSERT("Bad type",  a_type <= SRGRAPHICTYPE_END );
     return GraphicTypeStrings[(unsigned int)a_type];
 }
 
@@ -115,7 +117,7 @@ const char * DicomDictionarySR::getGraphicTypeString(SRGraphicType a_type)
 
 const char * DicomDictionarySR::getContinuityString(SRContinuity a_type)
 {
-    assert( a_type <= SRCONTINUITY_END );
+    SLM_ASSERT("Bad type",  a_type <= SRCONTINUITY_END );
     return ContinuityStrings[(unsigned int)a_type];
 }
 

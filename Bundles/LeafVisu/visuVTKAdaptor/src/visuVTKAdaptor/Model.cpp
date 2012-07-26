@@ -12,7 +12,7 @@
 #include <fwComEd/ModelMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include "visuVTKAdaptor/Model.hpp"
@@ -20,7 +20,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Model, ::fwData::Model ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Model, ::fwData::Model ) ;
 
 namespace visuVTKAdaptor
 {

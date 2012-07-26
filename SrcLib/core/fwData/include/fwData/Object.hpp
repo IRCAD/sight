@@ -13,10 +13,13 @@
 #include <boost/enable_shared_from_this.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwCore/mt/types.hpp>
 
 #include <fwTools/Object.hpp>
 #include <fwTools/DynamicAttributes.hxx>
-#include <fwTools/Factory.hpp>
+
+#include "fwData/factory/new.hpp"
+#include "fwData/registry/detail.hpp"
 
 #include "fwData/macros.hpp"
 #include "fwData/config.hpp"
@@ -37,7 +40,28 @@ namespace fwData
 class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwTools::Factory::New< Object > );
+
+    typedef ::fwData::factory::Key Key;
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar()
+        {
+            ::fwData::registry::get()->addFactory(T::classname(), &::fwData::factory::New<T>);
+        }
+    };
+
+
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwTools::Object) );
     fwCoreAllowSharedFromThis();
 
     typedef std::string FieldNameType;
@@ -173,16 +197,21 @@ public:
         castDest->DATA_TYPE::deepCopy( castSource );
     }
 
+    //-----------------------------------------------------------------------------
+
+    ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
+
+    FWDATA_API virtual ~Object() ;
+
 protected:
 
-    /// Constructor
     FWDATA_API Object();
 
-    /// Destructor
-    FWDATA_API virtual ~Object() ;
 
     /// Fields
     FieldMapType m_fields;
+
+    ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 
 

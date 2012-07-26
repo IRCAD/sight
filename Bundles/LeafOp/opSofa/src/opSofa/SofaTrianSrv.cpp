@@ -13,7 +13,7 @@
 namespace opSofa
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::opSofa::SofaTrianSrv, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaTrianSrv, ::fwData::Object ) ;
 
 /**
  * Constructor

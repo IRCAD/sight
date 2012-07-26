@@ -28,7 +28,7 @@ namespace gui
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::ModifyLayoutActionSrv , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::gui::action::ModifyLayoutActionSrv , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

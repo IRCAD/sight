@@ -13,7 +13,7 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/DictionaryOrgan.hpp"
 
 namespace fwData
@@ -30,9 +30,18 @@ class FWDATA_CLASS_API Dictionary : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwData::Factory::New< Dictionary >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwData::factory::New< Dictionary >) ;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Dictionary( ::fwData::Object::Key key );
+
+    /// Destructor
+    FWDATA_API virtual ~Dictionary();
 
     /**
      * @brief Check if the organ is in dictionary
@@ -78,11 +87,6 @@ public :
     /** @} */
 
 protected:
-    /// Constructor
-    FWDATA_API Dictionary();
-
-    /// Destructor
-    FWDATA_API virtual ~Dictionary();
 
     DictionaryOrganContainerType m_attrDictionaryOrgans;
 };

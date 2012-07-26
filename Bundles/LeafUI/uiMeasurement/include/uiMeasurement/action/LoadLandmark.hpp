@@ -21,11 +21,11 @@ class UIMEASUREMENT_CLASS_API LoadLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (LoadLandmark)( ::fwGui::IActionSrv) ) ;
 
-protected:
-
     UIMEASUREMENT_API LoadLandmark() throw() ;
 
     UIMEASUREMENT_API virtual ~LoadLandmark() throw() ;
+
+protected:
 
     void configuring() throw (::fwTools::Failed);
 

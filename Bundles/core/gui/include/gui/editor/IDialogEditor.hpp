@@ -36,12 +36,8 @@ public :
 
 protected :
 
-    /**
-     * @brief   Constructor. Do nothing.
-     */
     GUI_API IDialogEditor() throw() ;
 
-    /// Destructor. Do nothing.
     GUI_API virtual ~IDialogEditor() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )

@@ -10,7 +10,7 @@
 #include "scene2D/adaptor/Sin.hpp"
 #include "scene2D/data/InitQtPen.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Sin  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Sin  , ::fwData::Composite ) ;
 
 
 namespace scene2D

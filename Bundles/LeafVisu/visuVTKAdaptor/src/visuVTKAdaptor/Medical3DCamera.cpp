@@ -12,7 +12,7 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
@@ -26,7 +26,7 @@
 #include "visuVTKAdaptor/Medical3DCamera.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {

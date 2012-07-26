@@ -19,8 +19,6 @@
 #include <fwComEd/ImageMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
-
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/Base.hpp>
 
@@ -38,7 +36,7 @@
 
 #include "visuVTKAdaptor/Image3DCursor.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image ) ;
 
 
 namespace visuVTKAdaptor

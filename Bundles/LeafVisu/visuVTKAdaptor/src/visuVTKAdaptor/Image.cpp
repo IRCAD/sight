@@ -31,7 +31,7 @@
 #include "visuVTKAdaptor/Image.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {

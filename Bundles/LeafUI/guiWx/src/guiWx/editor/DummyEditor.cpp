@@ -33,7 +33,7 @@ namespace gui
 namespace editor
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::gui::editor::DummyEditor , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::gui::editor::DummyEditor , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

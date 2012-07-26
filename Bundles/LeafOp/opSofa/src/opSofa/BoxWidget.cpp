@@ -54,7 +54,7 @@ public:
 
 // BoxWidget
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, BoxWidget, ::fwData::TransformationMatrix3D );
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, BoxWidget, ::fwData::TransformationMatrix3D );
 
 BoxWidget::BoxWidget() throw()
 : ::fwRenderVTK::IVtkAdaptorService(),
@@ -186,12 +186,12 @@ void BoxWidget::updateFromVtk()
 
 void BoxWidget::doUpdate() throw( ::fwTools::Failed )
 {
-   
+
 }
 
 void BoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
-  
+
 }
 
 } // namespace visuVTKAdaptor

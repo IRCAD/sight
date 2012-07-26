@@ -1,9 +1,10 @@
-<profile name="Tuto08GenericScene" version="0.1" check-single-instance="true"> 
+<profile name="Tuto08GenericScene" version="0.1" check-single-instance="true">
 
     <activate id="dataReg" version="0-1" />
-    <activate id="servicesReg" version="0-1" /> 
+    <activate id="servicesReg" version="0-1" />
     <activate id="io" version="0-1" />
     <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
 
     <activate id="gui" version="0-1" />
@@ -22,7 +23,7 @@
     <activate id="uiIO" version="0-1" />
     <activate id="uiVisuQt" version="0-1" />
     <activate id="uiImageQt" version="0-1" />
- 
+
     <start id="visuVTK" />
     <start id="visuVTKAdaptor" />
     <start id="visuVTKQt" />

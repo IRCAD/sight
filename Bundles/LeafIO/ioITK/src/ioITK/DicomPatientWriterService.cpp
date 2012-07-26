@@ -32,7 +32,7 @@
 namespace ioITK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioITK::DicomPatientWriterService , ::fwData::Patient ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioITK::DicomPatientWriterService , ::fwData::Patient ) ;
 
 //------------------------------------------------------------------------------
 

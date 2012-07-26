@@ -32,12 +32,8 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::io::IWriter , ::ioData::TransformationMatrix3DWriterService , ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioData::TransformationMatrix3DWriterService , ::fwData::TransformationMatrix3D ) ;
 
-//-----------------------------------------------------------------------------
-
-TransformationMatrix3DWriterService::TransformationMatrix3DWriterService()
-{}
 
 //-----------------------------------------------------------------------------
 
@@ -63,10 +59,6 @@ void TransformationMatrix3DWriterService::starting( ) throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 }
 
-//-----------------------------------------------------------------------------
-
-TransformationMatrix3DWriterService::~TransformationMatrix3DWriterService() throw()
-{}
 
 //------------------------------------------------------------------------------
 

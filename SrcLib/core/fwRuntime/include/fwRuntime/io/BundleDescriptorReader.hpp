@@ -75,6 +75,17 @@ struct BundleDescriptorReader
      */
     static const BundleContainer createBundles(const boost::filesystem::path& location) throw(RuntimeException);
 
+    /**
+     * @brief   Processes a configuration element XML node.
+     *
+     * @param   node    a pointer to the XML node that represents a configuration element
+     * @param   bundle  a pointer to the bundle the extension will be attached to
+     *
+     * @return  a pointer to the created configuration element
+     */
+    static ::boost::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
+
+
 
 private:
 
@@ -90,17 +101,6 @@ private:
     static std::string SCHEMA;          ///< Defines the schema XML element name.
     static std::string VERSION;         ///< Defines the version XML element name.
     static std::string POINT;           ///< Defines the version XML element name.
-
-
-    /**
-     * @brief   Processes a configuration element XML node.
-     *
-     * @param   node    a pointer to the XML node that represents a configuration element
-     * @param   bundle  a pointer to the bundle the extension will be attached to
-     *
-     * @return  a pointer to the created configuration element
-     */
-    static ::boost::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
 
     /**
      * @brief   Processes an extension XML node.

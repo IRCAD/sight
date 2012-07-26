@@ -46,7 +46,7 @@ PatientEditorDialog::PatientEditorDialog(
             ::boost::shared_ptr< ::fwData::Patient > _pPatient,
             ::boost::shared_ptr< ::fwData::Study > _pStudy,
             ::boost::shared_ptr< ::fwData::Acquisition > _pAcquisition ) :
-            wxDialog( parent, wxID_ANY, _("Patient properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
+            wxDialog( parent, wxID_ANY, wxGetTranslation("Patient properties"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
             m_pPatient(_pPatient),
             m_pStudy(_pStudy),
             m_pAcquisition(_pAcquisition)
@@ -68,9 +68,9 @@ void PatientEditorDialog::createContent()
 {
     SLM_DEBUG("PatientEditorDialog::createContent");
 
-    wxStaticText * patientInfo          = new wxStaticText(this, wxID_ANY, _("PATIENT PROPERTIES"));
-    wxStaticText * studyInfo            = new wxStaticText(this, wxID_ANY, _("STUDY PROPERTIES"));
-    wxStaticText * acquisitionInfo      = new wxStaticText(this, wxID_ANY, _("ACQUISITION PROPERTIES"));
+    wxStaticText * patientInfo          = new wxStaticText(this, wxID_ANY, wxGetTranslation("PATIENT PROPERTIES"));
+    wxStaticText * studyInfo            = new wxStaticText(this, wxID_ANY, wxGetTranslation("STUDY PROPERTIES"));
+    wxStaticText * acquisitionInfo      = new wxStaticText(this, wxID_ANY, wxGetTranslation("ACQUISITION PROPERTIES"));
 
     // Left sizer ( Patient & Study )
     wxSizer *   leftSizer   ( new wxBoxSizer( wxVERTICAL ) );
@@ -113,13 +113,13 @@ wxSizer * PatientEditorDialog::createPatientSizer()
 {
 
     // Ctrl
-    wxStaticText * textName         = new wxStaticText(this, wxID_ANY, _("Name"));
-    m_Name                          = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textName         = new wxStaticText(this, wxID_ANY, wxGetTranslation("Name"));
+    m_Name                          = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textFirstname    = new wxStaticText(this, wxID_ANY, _("FirstName"));
-    m_Firstname                     = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textFirstname    = new wxStaticText(this, wxID_ANY, wxGetTranslation("FirstName"));
+    m_Firstname                     = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textBirthdate    = new wxStaticText(this, wxID_ANY, _("Birthdate"));
+    wxStaticText * textBirthdate    = new wxStaticText(this, wxID_ANY, wxGetTranslation("Birthdate"));
     wxDateTime dateInit = wxDateTime::Today();
     dateInit.SetCountry(wxDateTime::France);
     m_Birthdate                     = new wxDatePickerCtrl( this, wxID_ANY, dateInit) ;
@@ -137,18 +137,18 @@ wxSizer * PatientEditorDialog::createPatientSizer()
     m_Birthdate->SetRange(rangeStart, rangeEnd);
 
 
-    wxStaticText * textSex          = new wxStaticText(this, wxID_ANY, _("Sex"));
+    wxStaticText * textSex          = new wxStaticText(this, wxID_ANY, wxGetTranslation("Sex"));
     wxArrayString sexTags;
-    sexTags.Add(_("M"));
-    sexTags.Add(_("F"));
+    sexTags.Add(wxGetTranslation("M"));
+    sexTags.Add(wxGetTranslation("F"));
     m_Sex                           = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, sexTags) ;
     m_Sex->SetSelection(0);
 
-    wxStaticText * textIDDicom      = new wxStaticText(this, wxID_ANY, _("IDDicom"));
-    m_IDDicom                       = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textIDDicom      = new wxStaticText(this, wxID_ANY, wxGetTranslation("IDDicom"));
+    m_IDDicom                       = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textDbID         = new wxStaticText(this, wxID_ANY, _("DbID"));
-    m_DbID                          = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textDbID         = new wxStaticText(this, wxID_ANY, wxGetTranslation("DbID"));
+    m_DbID                          = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
 
     // Sizer
@@ -181,7 +181,7 @@ wxSizer * PatientEditorDialog::createPatientSizer()
 wxSizer * PatientEditorDialog::createStudySizer()
 {
     // Ctrl
-    wxStaticText * textHospital         = new wxStaticText(this, wxID_ANY, _("Hospital"));
+    wxStaticText * textHospital         = new wxStaticText(this, wxID_ANY, wxGetTranslation("Hospital"));
 /*
     dbmfo::dbmfo db;
     wxArrayString hospitalTags;
@@ -195,85 +195,85 @@ wxSizer * PatientEditorDialog::createStudySizer()
     */
 
 
-    m_Hospital                          = new wxTextCtrl( this, wxID_ANY, _("Unknow") ) ;
+    m_Hospital                          = new wxTextCtrl( this, wxID_ANY, wxGetTranslation("Unknow") ) ;
 
 
-    wxStaticText * textModality         = new wxStaticText(this, wxID_ANY, _("Modality"));
+    wxStaticText * textModality         = new wxStaticText(this, wxID_ANY, wxGetTranslation("Modality"));
     wxArrayString modalityTags;
-    modalityTags.Add(_("CT"));
-    modalityTags.Add(_("MRI"));
+    modalityTags.Add(wxGetTranslation("CT"));
+    modalityTags.Add(wxGetTranslation("MRI"));
     m_Modality                          = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, modalityTags) ;
     m_Modality->SetSelection(0);
 
-//  wxStaticText * textAcquisitionZone  = new wxStaticText(this, wxID_ANY, _("AcquisitionZone"));
-//  m_AcquisitionZone                   = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+//  wxStaticText * textAcquisitionZone  = new wxStaticText(this, wxID_ANY, wxGetTranslation("AcquisitionZone"));
+//  m_AcquisitionZone                   = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textAcquisitionZone_zone         = new wxStaticText(this, wxID_ANY, _("Acquisition zone"));
-    wxStaticText * textAcquisitionZone_organ        = new wxStaticText(this, wxID_ANY, _("Organ"));
-    wxStaticText * textAcquisitionZone_injection    = new wxStaticText(this, wxID_ANY, _("Injection type"));
+    wxStaticText * textAcquisitionZone_zone         = new wxStaticText(this, wxID_ANY, wxGetTranslation("Acquisition zone"));
+    wxStaticText * textAcquisitionZone_organ        = new wxStaticText(this, wxID_ANY, wxGetTranslation("Organ"));
+    wxStaticText * textAcquisitionZone_injection    = new wxStaticText(this, wxID_ANY, wxGetTranslation("Injection type"));
 
     wxArrayString zoneTags;
-    zoneTags.Add(_("Head"));
-    zoneTags.Add(_("Thorax"));
-    zoneTags.Add(_("Abdomen"));
-    zoneTags.Add(_("Pelvis"));
-    zoneTags.Add(_("Abdo Thorax"));
+    zoneTags.Add(wxGetTranslation("Head"));
+    zoneTags.Add(wxGetTranslation("Thorax"));
+    zoneTags.Add(wxGetTranslation("Abdomen"));
+    zoneTags.Add(wxGetTranslation("Pelvis"));
+    zoneTags.Add(wxGetTranslation("Abdo Thorax"));
     m_AcquisitionZone_zone = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, zoneTags) ;
     m_AcquisitionZone_zone->SetSelection(0);
     wxArrayString organTags;
-//  organTags.Add(_("Acquisition"));
-    organTags.Add(_("Artery"));
-    organTags.Add(_("BiliarySystem"));
-    organTags.Add(_("Bladder"));
-    organTags.Add(_("Bone"));
-    organTags.Add(_("Bronchus"));
-    organTags.Add(_("Calcium"));
-    organTags.Add(_("Colon"));
-    organTags.Add(_("Cyst"));
-    organTags.Add(_("Duodenum"));
-    organTags.Add(_("Gallbladder"));
-    organTags.Add(_("Heart"));
-    organTags.Add(_("Kidneys"));
-//  organTags.Add(_("Landmark"));
-    organTags.Add(_("Liver"));
-    organTags.Add(_("Lungs"));
-    organTags.Add(_("Muscles"));
-//  organTags.Add(_("Object"));
-    organTags.Add(_("Oesophagus"));
-    organTags.Add(_("Pancreas"));
-    organTags.Add(_("ParathyroidGland"));
-    organTags.Add(_("PortalVein"));
-    organTags.Add(_("Prostate"));
-//  organTags.Add(_("Skin with validity"));
-    organTags.Add(_("SmallIntestin"));
-    organTags.Add(_("Spleen"));
-    organTags.Add(_("Stomach"));
-    organTags.Add(_("SurrenalGland"));
-    organTags.Add(_("ThyroidGland"));
-    organTags.Add(_("Trachea"));
-    organTags.Add(_("Tumor"));
-    organTags.Add(_("Ureter"));
-    organTags.Add(_("VenaCava"));
-    organTags.Add(_("VenousSystem"));
+//  organTags.Add(wxGetTranslation("Acquisition"));
+    organTags.Add(wxGetTranslation("Artery"));
+    organTags.Add(wxGetTranslation("BiliarySystem"));
+    organTags.Add(wxGetTranslation("Bladder"));
+    organTags.Add(wxGetTranslation("Bone"));
+    organTags.Add(wxGetTranslation("Bronchus"));
+    organTags.Add(wxGetTranslation("Calcium"));
+    organTags.Add(wxGetTranslation("Colon"));
+    organTags.Add(wxGetTranslation("Cyst"));
+    organTags.Add(wxGetTranslation("Duodenum"));
+    organTags.Add(wxGetTranslation("Gallbladder"));
+    organTags.Add(wxGetTranslation("Heart"));
+    organTags.Add(wxGetTranslation("Kidneys"));
+//  organTags.Add(wxGetTranslation("Landmark"));
+    organTags.Add(wxGetTranslation("Liver"));
+    organTags.Add(wxGetTranslation("Lungs"));
+    organTags.Add(wxGetTranslation("Muscles"));
+//  organTags.Add(wxGetTranslation("Object"));
+    organTags.Add(wxGetTranslation("Oesophagus"));
+    organTags.Add(wxGetTranslation("Pancreas"));
+    organTags.Add(wxGetTranslation("ParathyroidGland"));
+    organTags.Add(wxGetTranslation("PortalVein"));
+    organTags.Add(wxGetTranslation("Prostate"));
+//  organTags.Add(wxGetTranslation("Skin with validity"));
+    organTags.Add(wxGetTranslation("SmallIntestin"));
+    organTags.Add(wxGetTranslation("Spleen"));
+    organTags.Add(wxGetTranslation("Stomach"));
+    organTags.Add(wxGetTranslation("SurrenalGland"));
+    organTags.Add(wxGetTranslation("ThyroidGland"));
+    organTags.Add(wxGetTranslation("Trachea"));
+    organTags.Add(wxGetTranslation("Tumor"));
+    organTags.Add(wxGetTranslation("Ureter"));
+    organTags.Add(wxGetTranslation("VenaCava"));
+    organTags.Add(wxGetTranslation("VenousSystem"));
     m_AcquisitionZone_organ = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, organTags) ;
     m_AcquisitionZone_organ->SetSelection(0);
 
     wxArrayString injectionTags;
-    injectionTags.Add(_("Vein injection"));
-    injectionTags.Add(_("Arterial injection"));
-    injectionTags.Add(_("No injection"));
+    injectionTags.Add(wxGetTranslation("Vein injection"));
+    injectionTags.Add(wxGetTranslation("Arterial injection"));
+    injectionTags.Add(wxGetTranslation("No injection"));
     m_AcquisitionZone_injection = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, injectionTags) ;
     m_AcquisitionZone_injection->SetSelection(0);
 
 
-    wxStaticText * textUID              = new wxStaticText(this, wxID_ANY, _("UID"));
-    m_UID                               = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textUID              = new wxStaticText(this, wxID_ANY, wxGetTranslation("UID"));
+    m_UID                               = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textDbIDS            = new wxStaticText(this, wxID_ANY, _("DbID"));
-    m_DbIDS                             = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textDbIDS            = new wxStaticText(this, wxID_ANY, wxGetTranslation("DbID"));
+    m_DbIDS                             = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textRISID            = new wxStaticText(this, wxID_ANY, _("RISID"));
-    m_RISID                             = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textRISID            = new wxStaticText(this, wxID_ANY, wxGetTranslation("RISID"));
+    m_RISID                             = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
     // Sizer
     wxFlexGridSizer * studySizer = new wxFlexGridSizer( 0, 2, 2, 10 );
@@ -311,10 +311,10 @@ wxSizer * PatientEditorDialog::createStudySizer()
 wxSizer * PatientEditorDialog::createAcquisitionSizer()
 {
     // Ctrl
-    wxStaticText * textLaboID           = new wxStaticText(this, wxID_ANY, _("LaboID"));
-    m_LaboID                            = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textLaboID           = new wxStaticText(this, wxID_ANY, wxGetTranslation("LaboID"));
+    m_LaboID                            = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textDate             = new wxStaticText(this, wxID_ANY, _("Examen date"));
+    wxStaticText * textDate             = new wxStaticText(this, wxID_ANY, wxGetTranslation("Examen date"));
     m_Date                              = new wxDatePickerCtrl( this, wxID_ANY, wxDateTime::Today());
 
     // Range start
@@ -329,41 +329,41 @@ wxSizer * PatientEditorDialog::createAcquisitionSizer()
     // Set range
     m_Date->SetRange(rangeStart, rangeEnd);
 
-    wxStaticText * textTime             = new wxStaticText(this, wxID_ANY, _("Examen time"));
-    m_Time                              = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textTime             = new wxStaticText(this, wxID_ANY, wxGetTranslation("Examen time"));
+    m_Time                              = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textIndex            = new wxStaticText(this, wxID_ANY, _("Index"));
-    m_Index                             = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textIndex            = new wxStaticText(this, wxID_ANY, wxGetTranslation("Index"));
+    m_Index                             = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textImageType        = new wxStaticText(this, wxID_ANY, _("ImageType"));
-    m_ImageType                         = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textImageType        = new wxStaticText(this, wxID_ANY, wxGetTranslation("ImageType"));
+    m_ImageType                         = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textImageFormat      = new wxStaticText(this, wxID_ANY, _("ImageFormat"));
-    m_ImageFormat                       = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textImageFormat      = new wxStaticText(this, wxID_ANY, wxGetTranslation("ImageFormat"));
+    m_ImageFormat                       = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textWidth            = new wxStaticText(this, wxID_ANY, _("Width"));
-    m_Width                             = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textWidth            = new wxStaticText(this, wxID_ANY, wxGetTranslation("Width"));
+    m_Width                             = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textHeight           = new wxStaticText(this, wxID_ANY, _("Height"));
-    m_Height                            = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textHeight           = new wxStaticText(this, wxID_ANY, wxGetTranslation("Height"));
+    m_Height                            = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textSliceThickness   = new wxStaticText(this, wxID_ANY, _("SliceThickness"));
-    m_SliceThickness                    = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textSliceThickness   = new wxStaticText(this, wxID_ANY, wxGetTranslation("SliceThickness"));
+    m_SliceThickness                    = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textVoxelSize        = new wxStaticText(this, wxID_ANY, _("VoxelSize"));
-    m_VoxelSize                         = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textVoxelSize        = new wxStaticText(this, wxID_ANY, wxGetTranslation("VoxelSize"));
+    m_VoxelSize                         = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textAxe              = new wxStaticText(this, wxID_ANY, _("Axe"));
-    m_Axe                               = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textAxe              = new wxStaticText(this, wxID_ANY, wxGetTranslation("Axe"));
+    m_Axe                               = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textFrameNumber      = new wxStaticText(this, wxID_ANY, _("FrameNumber"));
-    m_FrameNumber                       = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textFrameNumber      = new wxStaticText(this, wxID_ANY, wxGetTranslation("FrameNumber"));
+    m_FrameNumber                       = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textBitsPerPixel     = new wxStaticText(this, wxID_ANY, _("BitsPerPixel"));
-    m_BitsPerPixel                      = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textBitsPerPixel     = new wxStaticText(this, wxID_ANY, wxGetTranslation("BitsPerPixel"));
+    m_BitsPerPixel                      = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
-    wxStaticText * textDbIDA            = new wxStaticText(this, wxID_ANY, _("DbID"));
-    m_DbIDA                             = new wxTextCtrl(this,wxID_ANY,_("Unknow"));
+    wxStaticText * textDbIDA            = new wxStaticText(this, wxID_ANY, wxGetTranslation("DbID"));
+    m_DbIDA                             = new wxTextCtrl(this,wxID_ANY,wxGetTranslation("Unknow"));
 
 
     // Sizer
@@ -500,7 +500,7 @@ void PatientEditorDialog::importPatientData()
 //  }
 //  else
 //  {
-//      OSLM_WARN("PatientEditorDialog::importStudyData : the Sex ( "<< wxStringToString(value) <<" ) is not reconized, and set it to default value.")
+//      OSLM_WARN("PatientEditorDialog::importStudyData : the Sex ( "<< wxStringToString(value) <<" ) is not reconized, and set it to default value.");
 //  }
 
     if (m_pPatient->getIsMale())
@@ -540,7 +540,9 @@ void PatientEditorDialog::importStudyData()
     }
     else
     {
-        OSLM_WARN("PatientEditorDialog::importStudyData : the Modality ( "<< wxStringToString(value) <<" ) is not reconized, and set it to default value.")
+        OSLM_WARN("PatientEditorDialog::importStudyData : the Modality ( "
+                  << wxStringToString(value) <<
+                  " ) is not recognized, and set it to default value.");
     }
 
 
@@ -548,7 +550,7 @@ void PatientEditorDialog::importStudyData()
     //m_AcquisitionZone->SetValue(value);
     std::string zone = m_pStudy->getAcquisitionZone();
 #if defined(_USE_BOOST_REGEX) || defined(__MACOSX__) || defined(WIN32)
-    boost::regex e ("([a-z A-Z]+)_([a-z A-Z]+)_([a-z A-Z]+)");
+    boost::regex e ("([a-z A-Z]+)wxGetTranslation([a-z A-Z]+)wxGetTranslation([a-z A-Z]+)");
     if ( regex_match(zone, e) )
     {
         std::string formatKey1 = "\\1";
@@ -616,12 +618,12 @@ void PatientEditorDialog::importAcquisitionData()
     //m_Height->SetValue(value);
 
     //value = intToWxString(m_pAcquisition->getSliceThickness());
-    value = wxString::Format( _("%f"),m_pAcquisition->getSliceThickness());
+    value = wxString::Format( wxGetTranslation("%f"),m_pAcquisition->getSliceThickness());
     m_SliceThickness->SetValue(value);
 
     //value = intToWxString(m_pAcquisition->getVoxelSize());
     std::vector< double > voxelSize( m_pAcquisition->getImage()->getSpacing() );
-    value = wxString::Format( _("%f x %f x %f"), voxelSize[0], voxelSize[1], voxelSize[2] );
+    value = wxString::Format( wxGetTranslation("%f x %f x %f"), voxelSize[0], voxelSize[1], voxelSize[2] );
     m_VoxelSize->SetValue(value);
 
     value = intToWxString(m_pAcquisition->getAxe());
@@ -663,7 +665,7 @@ void PatientEditorDialog::exportPatientData()
     m_pPatient->setCRefFirstname(value);
 
     wxDateTime date = m_Birthdate->GetValue();
-    wxString dateStr = date.Format(_("%Y%m%d"));
+    wxString dateStr = date.Format(wxGetTranslation("%Y%m%d"));
     value = (const char*)dateStr.mb_str(wxConvUTF8);
     ::boost::gregorian::date birthdate ( ::boost::gregorian::from_undelimited_string( value ) );
     ::boost::posix_time::time_duration td;
@@ -729,7 +731,7 @@ void PatientEditorDialog::exportAcquisitionData()
     m_pAcquisition->setLaboID( laboId );
 
     wxDateTime date = m_Date->GetValue();
-    wxString dateStr = date.Format(_("%Y%m%d"));
+    wxString dateStr = date.Format(wxGetTranslation("%Y%m%d"));
 //  value = (const char*)dateStr.mb_str(wxConvUTF8);
     value = wx2std(dateStr);
     ::boost::gregorian::date birthdate ( ::boost::gregorian::from_undelimited_string( value ) );

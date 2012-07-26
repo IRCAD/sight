@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwCore/base.hpp>
+
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/ImageMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::ImageMsg, ::fwComEd::ImageMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::ImageMsg );
 
 namespace fwComEd
 {
@@ -36,7 +36,7 @@ std::string ImageMsg::VISIBILITY = "VISIBILITY";
 
 //-----------------------------------------------------------------------------
 
-ImageMsg::ImageMsg() throw()
+ImageMsg::ImageMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

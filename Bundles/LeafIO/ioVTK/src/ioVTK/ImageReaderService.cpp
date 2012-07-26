@@ -13,7 +13,7 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
@@ -38,22 +38,7 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of ::fwData::Image
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image );
-
-//------------------------------------------------------------------------------
-
-ImageReaderService::ImageReaderService() throw()
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-ImageReaderService::~ImageReaderService() throw()
-{
-    SLM_TRACE_FUNC();
-    // This method does nothing
-}
+fwServicesRegisterMacro( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image );
 
 //------------------------------------------------------------------------------
 

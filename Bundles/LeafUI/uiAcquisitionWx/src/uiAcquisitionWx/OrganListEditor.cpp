@@ -33,7 +33,7 @@
 namespace uiAcquisition
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiAcquisition::OrganListEditor , ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiAcquisition::OrganListEditor , ::fwData::Acquisition ) ;
 
 
 OrganListEditor::OrganListEditor() throw()
@@ -58,8 +58,8 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
     wxWindow* const container = wxContainer->getWxContainer();
     SLM_ASSERT("container not instanced", container);
 
-    m_showCheckBox = new wxCheckBox( container, wxNewId(), _("Hide all organs"));
-    m_showCheckBox->SetToolTip(_("Show or hide all organs"));
+    m_showCheckBox = new wxCheckBox( container, wxNewId(), wxGetTranslation("Hide all organs"));
+    m_showCheckBox->SetToolTip(wxGetTranslation("Show or hide all organs"));
     m_organChoice = new wxCheckListBox( container, wxNewId(), wxDefaultPosition, wxDefaultSize) ;
 
 #ifdef __MACOSX__

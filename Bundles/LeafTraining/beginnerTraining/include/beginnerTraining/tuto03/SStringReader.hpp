@@ -21,7 +21,17 @@ class BEGINNERTRAINING_CLASS_API SStringReader : public ::io::IReader
 
 public:
 
+
     fwCoreServiceClassDefinitionsMacro ( (SStringReader)(::io::IReader) ) ;
+
+
+    /// Constructor
+    BEGINNERTRAINING_API SStringReader();
+
+    /// Destructor
+    BEGINNERTRAINING_API virtual ~SStringReader() throw();
+
+protected :
 
     /// Overrides
     BEGINNERTRAINING_API virtual void starting() throw ( ::fwTools::Failed );
@@ -47,13 +57,6 @@ public:
     /// Notify modification of associated data
     BEGINNERTRAINING_API void notifyMessage();
 
-protected :
-
-    /// Constructor
-    BEGINNERTRAINING_API SStringReader();
-
-    /// Destructor
-    BEGINNERTRAINING_API virtual ~SStringReader() throw();
 };
 
 

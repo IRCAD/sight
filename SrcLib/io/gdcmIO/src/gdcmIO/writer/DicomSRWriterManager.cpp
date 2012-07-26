@@ -35,7 +35,7 @@ void DicomSRWriterManager::write(::gdcm::DataSet & a_gDs, const ::boost::filesys
     ::fwData::Image::sptr image = this->getConcreteObject();
     SLM_ASSERT("fwData::Image not instanced", image);
 
-    SLM_ASSERT("gdcmIO::DicomInstance not set",this->getDicomInstance().get())
+    SLM_ASSERT("gdcmIO::DicomInstance not set",this->getDicomInstance().get());
 
     //*****     Handle SR document      *****//
     DicomSRWriter   docSRWriter;

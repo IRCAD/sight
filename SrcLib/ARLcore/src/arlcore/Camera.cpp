@@ -38,30 +38,31 @@
 #include <arlcore/File.h>
 
 arlCore::Camera::Camera( PlaneSystem &universe ):
-Object(ARLCORE_CLASS_CAMERA),
+//VAG Object(ARLCORE_CLASS_CAMERA),
 Particle( universe )
 {
     m_cameraGUID.Low=0;
     m_cameraGUID.High=0;
     init();
-    universe.setPlaneName(getPlane(), Object::getName());
+    universe.setPlaneName(getPlane(), universe.Object::getName());
 }
 
 arlCore::Camera::Camera( PlaneSystem &universe, const uint32HL &GUID ):
-Object(ARLCORE_CLASS_CAMERA),
+//VAG Object(ARLCORE_CLASS_CAMERA),
 Particle( universe )
 {
     m_cameraGUID.Low = GUID.Low;
     m_cameraGUID.High = GUID.High;
     init();
-    universe.setPlaneName(getPlane(), Object::getName());
+    universe.setPlaneName(getPlane(),  universe.Object::getName());
 }
 
 arlCore::Camera::Camera( const arlCore::Camera& c ):
-Object( ARLCORE_CLASS_CAMERA, c.Object::getName() ),
+//VAG Object( ARLCORE_CLASS_CAMERA, c.Object::getName() ),
 Particle( c.getPlaneSystem(), c.Particle::getName() )
 {
     copy(c);
+    setName( c.Object::getName() );
 }
 
 arlCore::Camera& arlCore::Camera::operator=(const arlCore::Camera& c)
@@ -73,9 +74,7 @@ arlCore::Camera& arlCore::Camera::operator=(const arlCore::Camera& c)
 void arlCore::Camera::copy(const Camera& c)
 {
     if(this==&c) return;
-    arlCore::Object *a=this;
-    const arlCore::Object *b=&c;
-    *a = *b;
+    this->Object::copy(c);
     m_cameraGUID = c.m_cameraGUID;
     m_noCalibration = c.m_noCalibration;
     m_extrinsic = c.m_extrinsic;
@@ -314,8 +313,8 @@ bool arlCore::Camera::load( const std::string &fileName )
     // Principal point : Position du centre optique u0 ; v0
     setcx(M[2]); // u0
     setcy(M[3]); // v0
-    setAlphaC(M[4]); // skew (Orthogonalité de la plaque CCD)
-    // Radial 1er ordre ; 2ème ordre ; Tangentiel 1er ordre ; 2ème ordre ; Radial 3ème ordre
+    setAlphaC(M[4]); // skew (OrthogonalitÃ© de la plaque CCD)
+    // Radial 1er ordre ; 2Ã¨me ordre ; Tangentiel 1er ordre ; 2Ã¨me ordre ; Radial 3Ã¨me ordre
     for( i=0 ; i<5 ; ++i )
     {
         f>>M[i];
@@ -325,7 +324,19 @@ bool arlCore::Camera::load( const std::string &fileName )
     setOK(true);
     m_log<<fileName<<" loaded";
     log(ARLCORE_LOG_INFO_LEVEL2);
-
+    int fringe=0;
+    std::string token;
+    while(!f.eof())
+    {
+        f>>token;
+        if(token=="Fringe")
+        {
+            f>>fringe;
+            for( i=0 ; i<5 ; ++i )
+                f>>M[i];
+            vgl_plane_3d< double >p(M[0], M[1], M[2], M[3]);
+        }
+    }
     f.close();
     return true;
 }
@@ -346,13 +357,15 @@ bool arlCore::Camera::save( const std::string &fileName, bool overwrite ) const
     fprintf( file, "%lf %lf\n", getfx(), getfy() );
     // Principal point : Position du centre optique u0 ; v0
     fprintf( file, "%lf %lf\n", getcx(), getcy() );
-    // alphaC=skew (Orthogonalité de la plaque CCD)
+    // alphaC=skew (OrthogonalitÃ© de la plaque CCD)
     fprintf( file, "%lf\n",getAlphaC() );
-    // Radial 1er ordre ; 2ème ordre ; Tangentiel 1er ordre ; 2ème ordre ; Radial 3ème ordre
+    // Radial 1er ordre ; 2Ã¨me ordre ; Tangentiel 1er ordre ; 2Ã¨me ordre ; Radial 3Ã¨me ordre
     for( i=0 ; i<5 ; ++i )
         fprintf( file, "%lf ", m_distortionCoeffs[i] );
     fprintf( file, "0.0\n" );
-
+    double a,b,c,d,rms;
+    int fringe;
+    
     fclose( file );
     return true;
 }
@@ -560,40 +573,40 @@ bool arlCore::Camera::setExtrinsic( const vnl_rigid_matrix& T )
 }
 
 ///////////////////////////FONCTIONS PROJECTIONS//////////////////////////
-unsigned int arlCore::Camera::project3DPoint(const PointList& list3D, PointList& list2D, bool focalPlane) const
+unsigned int arlCore::Camera::project3DPoint(PointList::csptr list3D, PointList::sptr list2D, bool focalPlane) const
 {
-    list2D.clear();
-    list2D.setDimension(2);
-    Point point2D(2);
+    list2D->clear();
+    list2D->setDimension(2);
+    Point::sptr point2D = Point::New(2);
     unsigned int i, n=0;
-    for( i=0 ; i<list3D.size() ; ++i )
-        if(project3DPoint(*(list3D[i]),point2D,focalPlane))
+    for( i=0 ; i<list3D->size() ; ++i )
+        if(project3DPoint( (*list3D)[i] , point2D, focalPlane ) )
         {
-            list2D.push_back(point2D);
+            list2D->push_back(point2D);
             ++n;
         }
         else
         {
-            //std::cout<<"ERROR dans project3DPoint(const PointList& list3D, PointList& list2D, bool focalPlane)"<<std::endl;
+            //std::cout<<"ERROR dans project3DPoint(PointList::csptr list3D, PointList& list2D, bool focalPlane)"<<std::endl;
             //std::cerr<<"project3DPoint ERROR on "<<i<<"th point\n";
         }
     return n;
 }
 
-bool arlCore::Camera::project3DPoint(const Point& pt3D, Point& pt2D, bool focalPlane) const
+bool arlCore::Camera::project3DPoint(Point::csptr  pt3D, Point::sptr pt2D, bool focalPlane) const
 {
-    assert(pt3D.size()==3 && pt2D.size()==2);
-    if(pt3D.size()<3 || pt2D.size()<2) return false;
+    assert(pt3D->size()==3 && pt2D->size()==2);
+    if(pt3D->size()<3 || pt2D->size()<2) return false;
     unsigned int i;
     vnl_vector_fixed<double,4> point3D;
     for( i=0 ; i<3 ; ++i )
-        point3D(i)=pt3D[i];
+        point3D(i)=(*pt3D)[i];
     point3D(3)=1.0;
     vnl_vector_fixed<double,2> point2D;
     if(project3DPoint (point3D, point2D, focalPlane))
     {
         for( i=0 ; i<2 ; ++i )
-            pt2D.set(i,point2D(i));
+            pt2D->set(i,point2D(i));
         return true;
     }else return false;
 }
@@ -611,14 +624,14 @@ bool arlCore::Camera::project3DPoint(const vnl_vector_fixed<double,4> &point3D, 
         // on applique la matrice extrinseque au point3D pour le placer dans le
         // repere de la camera : Matrix4x4 * HVec4
         vnl_vector_fixed<double,4> point3DRepCam = getExtrinsic() * point3D;
-        // on calcule les coordonnees normalisées de la projection de point3DRepCam
-        // dans le plan focal image de la caméra
+        // on calcule les coordonnees normalisÃ©es de la projection de point3DRepCam
+        // dans le plan focal image de la camÃ©ra
         if(point3DRepCam.get(2)==0)
         {
             //std::cout<<"ERROR dans project3DPoint(const vnl_vector_fixed<double,4> &point3D, vnl_vector_fixed<double,2> &pt2D, bool focalPlane)"<<std::endl;
             return false;
         }
-        assert(point3DRepCam.get(2)!=0); // Le point est dans le plan parallèle à la focale passant par le centre optique
+        assert(point3DRepCam.get(2)!=0); // Le point est dans le plan parallÃ¨le Ã  la focale passant par le centre optique
         xn_x = point3DRepCam.get(0)/point3DRepCam.get(2);
         xn_y = point3DRepCam.get(1)/point3DRepCam.get(2);
     }else
@@ -627,7 +640,7 @@ bool arlCore::Camera::project3DPoint(const vnl_vector_fixed<double,4> &point3D, 
         xn_x = point3D(0);
         xn_y = point3D(1);
     }
-    // on calcule en avance r² = x²+y²
+    // on calcule en avance rÂ² = xÂ²+yÂ²
     r2 = xn_x * xn_x + xn_y * xn_y;
     r4 = r2*r2;
     r6 = r4*r2;
@@ -635,22 +648,23 @@ bool arlCore::Camera::project3DPoint(const vnl_vector_fixed<double,4> &point3D, 
     radial_disto = 1 + getkc(0)* r2 + getkc(1)* r4 + getkc(4)* r6;
     tang_disto_x = 2 * getkc(2) * xn_x * xn_y + getkc(3) * (r2 + 2 * xn_x * xn_x);
     tang_disto_y = getkc(2) * (r2 + 2 * xn_y * xn_y) + 2 * getkc(3) * xn_x * xn_y;
-    // en fait [ xd_x ] = (1+kc(1)*r² + kc(2)*r²*r² + kc(5)*r²*r²*r²)* [ xn_x ] + [ tang_disto_x ]
+    // en fait [ xd_x ] = (1+kc(1)*rÂ² + kc(2)*rÂ²*rÂ² + kc(5)*rÂ²*rÂ²*rÂ²)* [ xn_x ] + [ tang_disto_x ]
     //         [ xd_y ]   (                                         )  [ xn_y ]   [ tang_disto_y ]
     xd_x = radial_disto * xn_x + tang_disto_x;
     xd_y = radial_disto * xn_y + tang_disto_y;
-    // application de la matrice intrinsèque
+    // application de la matrice intrinsÃ¨que
     pt2D.put(0,getfx() * (xd_x + getAlphaC() * xd_y) + getcx());
     pt2D.put(1,getfy() * xd_y + getcy());
     return true;
 }
 
-bool arlCore::Camera::undistort2DPoint(const Point& p2D, Point& p2D_undistorted) const
+bool arlCore::Camera::undistort2DPoint(Point::csptr  p2D, Point::sptr p2D_undistorted) const
 {
     const double pixSquareMax = 1e-50;
     const unsigned int IterationsMax = 50;
-    if(!p2D.isVisible() || p2D.size()<2) return false;
-    double pinit[3]={p2D.x(),p2D.y(),1.0};
+    if(!p2D->isVisible() || p2D->size()<2) return false;
+    const double tol=1e-12;
+    double pinit[3]={p2D->x(),p2D->y(),1.0};
     vnl_vector<double> points2DH(3,3,pinit),points2DH_undistorted(3);
     unsigned int i, nbIterations=0;
     double xn_x, xn_y, xd_x, xd_y;
@@ -661,10 +675,10 @@ bool arlCore::Camera::undistort2DPoint(const Point& p2D, Point& p2D_undistorted)
     vnl_vector_fixed<double,3> result = getInvIntrinsicMatrix() * points2DH;
     xn_x = result(0);
     xn_y = result(1);
-    // prise en compte de la distorsion de manière non linéaire et non précise
+    // prise en compte de la distorsion de maniÃ¨re non linÃ©aire et non prÃ©cise
     // on calcule le point non-distordu en approximant la distorsion
     if(true)
-    {   // on calcule en avance r² = x²+y²
+    {   // on calcule en avance rÂ² = xÂ²+yÂ²
         double tmp_x = xn_x, tmp_y = xn_y;
         r2 = xn_x * xn_x + xn_y * xn_y;
         r4 = r2*r2;
@@ -677,11 +691,11 @@ bool arlCore::Camera::undistort2DPoint(const Point& p2D, Point& p2D_undistorted)
             ++nbIterations;
             tmp_x = xn_x;
             tmp_y = xn_y;
-            // calcul de la distortion à appliquer
+            // calcul de la distortion Ã  appliquer
             radial_disto = 1 + kc[0]* r2 + kc[1]* r4 + kc[4]* r6;
             tang_disto_x = 2 * kc[2] * xn_x * xn_y + kc[3] * (r2 + 2 * xn_x * xn_x);
             tang_disto_y = kc[2] * (r2 + 2 * xn_y * xn_y) + 2 * kc[3] * xn_x * xn_y;
-            // en fait [ xd_x ] = (1+kc(1)*r² + kc(2)*r²*r² + kc(5)*r²*r²*r²)* [ xn_x ] + [ tang_disto_x ]
+            // en fait [ xd_x ] = (1+kc(1)*rÂ² + kc(2)*rÂ²*rÂ² + kc(5)*rÂ²*rÂ²*rÂ²)* [ xn_x ] + [ tang_disto_x ]
             //         [ xd_y ]   (                                         )  [ xn_y ]   [ tang_disto_y ]
             xn_x = (xd_x - tang_disto_x)/radial_disto;
             xn_y = (xd_y - tang_disto_y)/radial_disto;
@@ -692,8 +706,8 @@ bool arlCore::Camera::undistort2DPoint(const Point& p2D, Point& p2D_undistorted)
         points2DH_undistorted.put(0, xn_x);
         points2DH_undistorted.put(1, xn_y);
         points2DH_undistorted.put(2, 1.0);
-        p2D_undistorted.set(0, (getIntrinsicMatrix() * points2DH_undistorted)(0));
-        p2D_undistorted.set(1, (getIntrinsicMatrix() * points2DH_undistorted)(1));
+        p2D_undistorted->set(0, (getIntrinsicMatrix() * points2DH_undistorted)(0));
+        p2D_undistorted->set(1, (getIntrinsicMatrix() * points2DH_undistorted)(1));
         //cerr << "sans correction parfaite : " << result[i] << endl;
     }
     return true;
@@ -722,34 +736,34 @@ bool arlCore::Camera::unitFocalPlaneToPixelPlane( const vgl_point_2d<double>&p1,
     double radial_disto, tang_disto_x, tang_disto_y;
     xn_x = p1.x();
     xn_y = p1.y();
-    // on calcule en avance r² = x²+y²
+    // on calcule en avance rÂ² = xÂ²+yÂ²
     r2 = xn_x*xn_x + xn_y*xn_y;
     r4 = r2*r2;
     r6 = r4*r2;
     radial_disto = 1 + getkc(0) * r2 + getkc(1) * r4 + getkc(4) * r6;
     tang_disto_x = 2 * getkc(2) * xn_x * xn_y + getkc(3) * (r2 + 2 * xn_x * xn_x);
     tang_disto_y = 2 * getkc(3) * xn_x * xn_y + getkc(2) * (r2 + 2 * xn_y * xn_y);
-    // en fait [ xd_x ] = (1+kc(1)*r² + kc(2)*r²*r² + kc(5)*r²*r²*r²)* [ xn_x ] + [ tang_disto_x ]
+    // en fait [ xd_x ] = (1+kc(1)*rÂ² + kc(2)*rÂ²*rÂ² + kc(5)*rÂ²*rÂ²*rÂ²)* [ xn_x ] + [ tang_disto_x ]
     //         [ xd_y ]   (                                         )  [ xn_y ]   [ tang_disto_y ]
     xd_x = radial_disto * xn_x + tang_disto_x;
     xd_y = radial_disto * xn_y + tang_disto_y;
-    // application de la matrice intrinsèque
+    // application de la matrice intrinsÃ¨que
     p2.x()=getfx() * (xd_x + getAlphaC() * xd_y) + getcx();
     p2.y()=getfy() * xd_y + getcy();
     return true;
 }
 
-bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p2D, arlCore::Point& p3D, bool perfectDisto ) const
+bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p2D, Point::sptr p3D, bool perfectDisto ) const
 {
-    assert(p2D.size()==2);
-    assert(p3D.size()==3);
+    assert(p2D->size()==2);
+    assert(p3D->size()==3);
     const double pixSquareMax = 1e-50;
     const unsigned int IterationsMax = 50;
-    if(!p2D.isVisible() || p2D.size()<2) return false;
+    if(!p2D->isVisible() || p2D->size()<2) return false;
     const double tol=1e-12;
-    p3D.fill(0.0);
-    if(p3D.size()>2) p3D.set(2, 1.0);
-    double pinit[3]={p2D.x(),p2D.y(),1.0};
+    p3D->fill(0.0);
+    if(p3D->size()>2) p3D->set(2, 1.0);
+    double pinit[3]={p2D->x(),p2D->y(),1.0};
     vnl_vector<double> points2DH(3,3,pinit);
     unsigned int i;
     vnl_matrix_fixed<double,3,3> Intrinseq, var;
@@ -767,10 +781,10 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p2D, arl
     vnl_vector_fixed<double,3> result = getInvIntrinsicMatrix() * points2DH;
     xn_x = result(0);
     xn_y = result(1);
-    // prise en compte de la distorsion de manière non linéaire et non précise
+    // prise en compte de la distorsion de maniï¿½re non linï¿½aire et non prï¿½cise
     // on calcule le point non-distordu en approximant la distorsion
     if(!perfectDisto)
-    {   // on calcule en avance r² = x²+y²
+    {   // on calcule en avance rï¿½ = xï¿½+yï¿½
         double tmp_x = xn_x, tmp_y = xn_y;
         r2 = xn_x * xn_x + xn_y * xn_y;
         r4 = r2*r2;
@@ -783,11 +797,11 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p2D, arl
             i++;
             tmp_x = xn_x;
             tmp_y = xn_y;
-            // calcul de la distortion à appliquer
+            // calcul de la distortion ï¿½ appliquer
             radial_disto = 1 + kc[0]* r2 + kc[1]* r4 + kc[4]* r6;
             tang_disto_x = 2 * kc[2] * xn_x * xn_y + kc[3] * (r2 + 2 * xn_x * xn_x);
             tang_disto_y = kc[2] * (r2 + 2 * xn_y * xn_y) + 2 * kc[3] * xn_x * xn_y;
-            // en fait [ xd_x ] = (1+kc(1)*r² + kc(2)*r²*r² + kc(5)*r²*r²*r²)* [ xn_x ] + [ tang_disto_x ]
+            // en fait [ xd_x ] = (1+kc(1)*rï¿½ + kc(2)*rï¿½*rï¿½ + kc(5)*rï¿½*rï¿½*rï¿½)* [ xn_x ] + [ tang_disto_x ]
             //         [ xd_y ]   (                                         )  [ xn_y ]   [ tang_disto_y ]
             xn_x = (xd_x - tang_disto_x)/radial_disto;
             xn_y = (xd_y - tang_disto_y)/radial_disto;
@@ -796,11 +810,11 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p2D, arl
             r6 = r4*r2;
         }while( (tmp_x-xn_x)*(tmp_x-xn_x)*getfx()*getfx() + (tmp_y-xn_y)*(tmp_y-xn_y)*getfy()*getfy() > pixSquareMax && i<IterationsMax );
         //cerr<< "NOMBRE D'ITERATIONS : " << i << endl;
-        p3D.set(0, xn_x);
-        p3D.set(1, xn_y);
+        p3D->set(0, xn_x);
+        p3D->set(1, xn_y);
         //cerr << "sans correction parfaite : " << result[i] << endl;
     }
-    // recherche des valeurs exactes non distordues avec une résolution polynomiale
+    // recherche des valeurs exactes non distordues avec une rï¿½solution polynomiale
     // xd = x + k[0]. x^3+ k[0].y^2.x +k[1]x^5 +2k[1]x^3y^2 +k[1]y^4.x +2.k[2]x.y +3k[3]x^2 +k[3]y^2
     // yd = y + k[0]. y^3+ k[0].x^2.y +k[1]y^5 +2k[1]y^3x^2 +k[1]x^4.y +2.k[3]x.y +3k[2]y^2 +k[2]x^2
     if(perfectDisto)
@@ -848,8 +862,8 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p2D, arl
         roots = Solve.realroots(tol);
         if(roots.size()>0)
         {   // Pas de racines : FIXME
-            p3D.set(0, roots[0]->get(0));
-            p3D.set(1, roots[0]->get(1));
+            p3D->set(0, roots[0]->get(0));
+            p3D->set(1, roots[0]->get(1));
         }else std::cerr<<"Camera::pixelPlaneToUnitFocalPlane : No root\n";
         PolyToSolve.clear();
         roots.clear();
@@ -857,35 +871,35 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p2D, arl
     return true;
 }
 
-bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p, vnl_vector_fixed<double,3>& r, bool perfectDisto ) const
+bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p, vnl_vector_fixed<double,3>& r, bool perfectDisto ) const
 {
     unsigned int i;
-    Point p2(3);
+    Point::sptr p2 = Point::New(3);
     bool b=pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
     for( i=0 ; i<3 ; ++i )
-        r.put(i, p2[i]);
+        r.put(i, (*p2)[i]);
     return b;
 }
 
-bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p, vgl_point_3d<double>& r, bool perfectDisto ) const
+bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p, vgl_point_3d<double>& r, bool perfectDisto ) const
 {
-    Point p2(3);
+    Point::sptr p2 = Point::New(3);
     bool b=pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
-    r.set(p2.x(), p2.y(), p2.z());
+    r.set(p2->x(), p2->y(), p2->z());
     return b;
 }
 
-bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const arlCore::Point& p, vgl_point_2d<double>& r, bool perfectDisto ) const
+bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p, vgl_point_2d<double>& r, bool perfectDisto ) const
 {
-    Point p2(3);
+    Point::sptr p2 = Point::New(3);
     bool b=pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
-    r.set(p2.x(), p2.y());
+    r.set(p2->x(), p2->y());
     return b;
 }
 
 bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const vgl_point_2d<double>& p, vgl_point_3d<double>& r, bool perfectDisto ) const
 {
-    return pixelPlaneToUnitFocalPlane(Point(p.x(), p.y()), r, perfectDisto);
+    return pixelPlaneToUnitFocalPlane(Point::New( p.x(), p.y() ), r, perfectDisto);
 }
 
 bool arlCore::Camera::focalFrameToExtrinsicFrame( const vnl_vector_fixed< double, 3 >& uff, vnl_vector_fixed< double, 3 >& ef ) const
@@ -915,39 +929,36 @@ bool arlCore::Camera::focalFrameToExtrinsicFrame( const vgl_point_3d< double >& 
 }
 
 
-
-
-
-bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::Point &pt1, arlCore::Point &pt2 ) const
+bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::Point::sptr pt1, arlCore::Point::sptr pt2 ) const
 {
     // FIXME : Cas gal actuel : Droite relativement horizontale : Intersection avec les bords gauche et droit de la ROI
     // Traiter les autres cas : Intersection avec les bords haut et bas, pour les 2 points
     // Soient G, bord gauche, D, droit, H Haut, B, Bas
-    // 7 cas : G-D G-H G-B H-B B-H H-D B-D, cas déjà traité : G-D
+    // 7 cas : G-D G-H G-B H-B B-H H-D B-D, cas dÃ©jÃ  traitÃ© : G-D
     // Traiter d'urgence H-B B-H
 
     // Si l'equation de la droite dans le plan focal est ax+by+c=0
     // x = (u -u0)/alpha_u    et  y = (v -v0)/alpha_v
-    // calcul de l'ordonnée pour u=pt1.x
-    pt1.y( getfy()/b *(-1*a*pt1.x()/getfx() + a*getcx()/getfx() +b*getcy()/getfy() - c) );
-    // calcul de l'ordonnée pour u=pt2.x
-    pt2.y( getfy()/b *(-1*a*pt2.x()/getfx() + a*getcx()/getfx() +b*getcy()/getfy() - c) );
+    // calcul de l'ordonnÃ©e pour u=pt1->x
+    pt1->y( getfy()/b *(-1*a*pt1->x()/getfx() + a*getcx()/getfx() +b*getcy()/getfy() - c) );
+    // calcul de l'ordonnÃ©e pour u=pt2->x
+    pt2->y( getfy()/b *(-1*a*pt2->x()/getfx() + a*getcx()/getfx() +b*getcy()/getfy() - c) );
     return true;
 }
 
-bool arlCore::Camera::focalToPixelLine( double a, double b, double c, const arlCore::Point &pixOrg, const arlCore::Point &pixDst, PointList &pl, unsigned int nbSegments ) const
+bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::Point::csptr pixOrg, arlCore::Point::csptr pixDst, PointList::sptr pl, unsigned int nbSegments ) const
 {
     const bool PerfectDisto = true;
     unsigned int i, n=nbSegments;
-    pl.clear();
+    pl->clear();
     vgl_point_2d<double> focOrg, focDst, pixCur;
     if(!pixelPlaneToUnitFocalPlane( pixOrg, focOrg, PerfectDisto )) return false;
     if(!pixelPlaneToUnitFocalPlane( pixDst, focDst, PerfectDisto )) return false;
-    vnl_vector_fixed<double,2> AB( focDst.x()-focOrg.x(), focDst.y()-focOrg.y() );
+    vnl_vector_fixed<double,2> AB( focDst.y()-focOrg.x(), focDst.y()-focOrg.y() );
     if(n<1)
     {
-        const double DeltaX = fabs(pixDst.x()-pixOrg.x());
-        const double DeltaY = fabs(pixDst.y()-pixOrg.y());
+        const double DeltaX = fabs(pixDst->x()-pixOrg->x());
+        const double DeltaY = fabs(pixDst->y()-pixOrg->y());
         if(DeltaX>DeltaY) n = (unsigned int)DeltaX;
         else n = (unsigned int)DeltaY;
         if( n<1 ) return false;
@@ -955,14 +966,14 @@ bool arlCore::Camera::focalToPixelLine( double a, double b, double c, const arlC
     const double Step = ((double)AB.two_norm()) / (double)n;
     double next = Step;
     const vnl_vector_fixed<double,2> N = AB.normalize();
-    pl.push_back(pixOrg);
+    pl->push_back(pixOrg);
     for( i=0 ; i<n-1 ; ++i, next+=Step )
     {
         vgl_point_2d<double> focCur( focOrg.x()+next*N[0], focOrg.y()+next*N[1] );
         if(!unitFocalPlaneToPixelPlane( focCur, pixCur )) return false;
-        pl.push_back( Point(pixCur.x(), pixCur.y()) );
+        pl->push_back( Point::New(pixCur.x(), pixCur.y()) );
     }
-    pl.push_back(pixDst);
+    pl->push_back(pixDst);
     return true;
 }
 
@@ -983,16 +994,16 @@ bool arlCore::Camera::pixelToFocalLine( const vgl_line_2d<double> &line2D, vgl_l
     return false;
 }
 
-bool arlCore::getEpipolar(const arlCore::Point &p, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b, double &c)
+bool arlCore::getEpipolar( arlCore::Point::csptr p, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b, double &c)
 {
-    if(p.size()<2) return false;
-    vnl_vector_fixed<double,3> v(p.x(),p.y(),1.0);
+    if(p->size()<2) return false;
+    vnl_vector_fixed<double,3> v(p->x(),p->y(),1.0);
     return getEpipolar( v, PM, a, b, c );
 }
 
 bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b, double &c)
 {   // PM=cams[1]->getExtrinsic()).as_matrix()*vnl_matrix_inverse<double>(cams[0]->getExtrinsic());
-    // Calcul la droite épipolaire dans la camera 1 du point de la caméra 0
+    // Calcul la droite Ã©pipolaire dans la camera 1 du point de la camÃ©ra 0
     // cf livre horaud p192 - La droite se situe dans le plan focal (x,y,1.0)
     const double x = point(0);
     const double y = point(1);
@@ -1011,10 +1022,10 @@ bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_mat
     return true;
 }
 
-bool arlCore::getEpipolar(const arlCore::Point &p, const vnl_matrix_fixed<double,4,4> &PM, vgl_line_2d< double > &d)
+bool arlCore::getEpipolar( arlCore::Point::csptr p, const vnl_matrix_fixed<double,4,4> &PM, vgl_line_2d< double > &d)
 {
-    if(p.size()<2) return false;
-    vnl_vector_fixed<double,3> v(p.x(),p.y(),1.0);
+    if(p->size()<2) return false;
+    vnl_vector_fixed<double,3> v(p->x(),p->y(),1.0);
     return getEpipolar( v, PM, d );
 }
 
@@ -1038,7 +1049,7 @@ bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_mat
     return true;
 }
 
-// Methode : le vecteur [viewPoint;center] définit l'axe Z du repere lie au centre optique
+// Methode : le vecteur [viewPoint;center] dÃ©finit l'axe Z du repere lie au centre optique
 // de la camera. Pour choisir les axes X et Y (y en a pas de bon par defaut), il faut choisir
 // un vecteur dans le plan normal a [viewPoint;center] passant par viewPoint
 // l'equation de ce plan normal est ax+by+cz+d = 0
@@ -1053,61 +1064,66 @@ bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_mat
 // On a donc definit un repere lie au centre optique. Reste a calculer la transformation
 // rigide entre ce repere et le repere monde. Pour cela, on effectue un recalage 3D3D
 // entre deux reperes. Simpliste !
-bool arlCore::Camera::syntheticCamera( const arlCore::Point& center, const arlCore::Point& viewPoint, const std::vector< double > & intrinsicParams)
+bool arlCore::Camera::syntheticCamera( Point::csptr center, Point::csptr viewPoint, const std::vector< double > & intrinsicParams)
 {
     setOK(false);
     assert(intrinsicParams.size()==10);
-    arlCore::Point XaxisPoint(3), ZaxisPoint(3);
-    arlCore::Point O_monde(0,0,0), Ox_monde(1,0,0), Oz_monde(0,0,1);
-    std::vector< const arlCore::Point* > points_source, points_cible;
+    arlCore::Point::sptr  XaxisPoint = arlCore::Point::New(3);
+    arlCore::Point::sptr  ZaxisPoint = arlCore::Point::New(3);
+    arlCore::Point::sptr O_monde = arlCore::Point::New(0,0,0);
+    arlCore::Point::sptr Ox_monde = arlCore::Point::New(1,0,0);
+    arlCore::Point::sptr Oz_monde = arlCore::Point::New(0,0,1);
+
+    arlCore::PointList::sptr points_source  = arlCore::PointList::New();
+    arlCore::PointList::sptr points_cible   = arlCore::PointList::New();
     vnl_vector_fixed<double,3> vecteur_normal, vecteur_Ox_camera;
     double d=0, test_egalite;
     unsigned int i;
-    test_egalite = (center.x()-viewPoint.x())*(center.x()-viewPoint.x())
-                 + (center.y()-viewPoint.y())*(center.y()-viewPoint.y())
-                 + (center.z()-viewPoint.z())*(center.z()-viewPoint.z());
+    test_egalite = (center->x()-viewPoint->x())*(center->x()-viewPoint->x())
+                 + (center->y()-viewPoint->y())*(center->y()-viewPoint->y())
+                 + (center->z()-viewPoint->z())*(center->z()-viewPoint->z());
     if( test_egalite < 1e-4 ) //TODO si c des mm alors on devrait mettre 1 mm
         return false;
     // a<=>vecteur_normal[0], b<=>vecteur_normal[1] et c<=>vecteur_normal[2]
     for( i=0 ; i<3 ; ++i )
     {
-        vecteur_normal.put(i,center[i] - viewPoint[i]);
-        d += -vecteur_normal[i]*viewPoint[i];
+        vecteur_normal.put(i,(*center)[i] - (*viewPoint)[i]);
+        d += -vecteur_normal[i]*(*viewPoint)[i];
     }
     //std::cerr << "vecteur_normal = " <<  vecteur_normal << std::endl;
     //std::cerr << "d = " <<  d << std::endl;
-    XaxisPoint.fill(1.0);
+    XaxisPoint->fill(1.0);
     if( vecteur_normal[0] != 0 )
-        XaxisPoint.set(0, (-d-vecteur_normal[1]-vecteur_normal[2])/ vecteur_normal[0]);
+        XaxisPoint->set(0, (-d-vecteur_normal[1]-vecteur_normal[2])/ vecteur_normal[0]);
     else // Le vecteur normal est parallele au plan yOz du repere monde
         if( vecteur_normal[1] != 0 )
-            XaxisPoint.set(1,(-d-vecteur_normal[2])/vecteur_normal[1]);
+            XaxisPoint->set(1,(-d-vecteur_normal[2])/vecteur_normal[1]);
         else // Le vecteur normal est parallele a l'axe Oz du repere monde
-            XaxisPoint.set(2,-d/vecteur_normal[2]);
+            XaxisPoint->set(2,-d/vecteur_normal[2]);
     // Creation du vecteur Ox dans repere optique
     for( i=0 ; i<3 ; ++i )
-        vecteur_Ox_camera.put(i, XaxisPoint[i]-viewPoint[i]);
+        vecteur_Ox_camera.put(i, (*XaxisPoint)[i]-(*viewPoint)[i]);
     vecteur_Ox_camera.normalize();
     vecteur_normal.normalize();
     //std::cerr << "vecteur_Ox_camera normalise = " <<  vecteur_Ox_camera << std::endl;
     for( i=0 ; i<3 ; ++i )
     {
-        XaxisPoint.set(i, viewPoint[i]+vecteur_Ox_camera[i]);
+        XaxisPoint->set(i, (*viewPoint)[i]+vecteur_Ox_camera[i]);
         // Calcul du point sur l'axe z du repere optique eloigne de 1 unite du centre optique
-        ZaxisPoint.set(i, viewPoint[i]+vecteur_normal[i]);
+        ZaxisPoint->set(i, (*viewPoint)[i]+vecteur_normal[i]);
     }
-    //std::cerr << "XaxisPoint = " <<  XaxisPoint.getString() << std::endl;
+    //std::cerr << "XaxisPoint = " <<  XaxisPoint->getString() << std::endl;
     //std::cerr << "vecteur_normal normalise = " <<  vecteur_normal << std::endl;
     //std::cerr << "ZaxisPoint = " <<  ZaxisPoint.getString() << std::endl;
     // On a maintenant 3 points du repere optique (center, XaxisPoint, ZaxisPoint)
     // a mettre en correspondance avec 3 points du repere monde
     // Le recalage de ces 3 points nous fournit la transformation extrinseque recherchee
-    points_source.push_back(&O_monde);
-    points_source.push_back(&Ox_monde);
-    points_source.push_back(&Oz_monde);
-    points_cible.push_back(&viewPoint);
-    points_cible.push_back(&XaxisPoint);
-    points_cible.push_back(&ZaxisPoint);
+    points_source->push_back( O_monde );
+    points_source->push_back( Ox_monde );
+    points_source->push_back( Oz_monde );
+    points_cible->push_back( viewPoint );
+    points_cible->push_back( XaxisPoint );
+    points_cible->push_back( ZaxisPoint );
     vnl_rigid_matrix extrinsic_trsf;
     extrinsic_trsf.register3D3D( points_cible, points_source, false );
     //initialisation des parametres de la camera

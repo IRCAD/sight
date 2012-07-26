@@ -7,6 +7,7 @@
         <xs:sequence>
             <xs:element name="id" type="xs:string" />
             <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="parameters" type="ParametersType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="desc" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="config" type="ConfigType" />
@@ -14,6 +15,17 @@
         <xs:anyAttribute processContents="skip" />
     </xs:complexType>
 
+    <xs:complexType name="ParametersType">
+        <xs:sequence>
+            <xs:element name="param" type="ParamType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ParamType">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='default' type='xs:string' />
+    </xs:complexType>
+    
     <xs:complexType name="ConfigType">
         <xs:sequence>
             <xs:element name="object" type="ObjectType" />

@@ -37,20 +37,9 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image ) ;
 
 //------------------------------------------------------------------------------
-
-ImageWriterService::ImageWriterService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-ImageWriterService::~ImageWriterService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
 
 ::io::IOPathType ImageWriterService::getIOPathType() const
 {

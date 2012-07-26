@@ -32,7 +32,7 @@
 namespace ioITK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioITK::DicomImageWriterService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioITK::DicomImageWriterService , ::fwData::Image ) ;
 
 //------------------------------------------------------------------------------
 

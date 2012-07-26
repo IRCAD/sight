@@ -41,7 +41,7 @@ wxDirTraverseResult wxDirTraverserZIP::OnFile( const wxString & _filename )
         }
 
         wxString extension = newFileName.GetExt();
-        if( extension == _("trian") || extension == _("vtk") )
+        if( extension == wxGetTranslation("trian") || extension == wxGetTranslation("vtk") )
         {
             m_stream.SetLevel(9);
             m_stream.Write(in);

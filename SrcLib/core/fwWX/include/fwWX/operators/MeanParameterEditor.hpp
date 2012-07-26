@@ -31,7 +31,7 @@ class FWWX_CLASS_API MeanParameterEditor : public wxDialog
 
 public :
 
-    FWWX_API MeanParameterEditor( wxWindow * parent, wxString title=_("Mean image") );
+    FWWX_API MeanParameterEditor( wxWindow * parent, wxString title=wxGetTranslation("Mean image") );
 
     FWWX_API ~MeanParameterEditor();
 

@@ -28,7 +28,7 @@ namespace ioData
  * @li Use stop() to stop service before to destroy it.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D )
  */
 class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::io::IReader
 {
@@ -61,16 +61,6 @@ public:
     IODATA_API virtual ::io::IOPathType getIOPathType() const;
 
 protected:
-
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API TransformationMatrix3DReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~TransformationMatrix3DReaderService() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{

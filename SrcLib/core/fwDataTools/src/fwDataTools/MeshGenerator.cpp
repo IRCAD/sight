@@ -621,7 +621,7 @@ void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
                           mesh, _1, _2),
                          nbOfPoints);
 
-
+        meshHelper.reset();
         mesh->setCellNormalsArray(oldCellNormals);
     }
 }

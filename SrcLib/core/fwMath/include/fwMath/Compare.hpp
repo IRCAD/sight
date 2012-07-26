@@ -7,6 +7,8 @@
 #ifndef __FWMATH_COMPARE_HPP__
 #define __FWMATH_COMPARE_HPP__
 
+#include <cmath>
+
 namespace fwMath
 {
 

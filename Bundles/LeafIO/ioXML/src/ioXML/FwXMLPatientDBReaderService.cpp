@@ -13,7 +13,6 @@
 #include <fwData/PatientDB.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include <fwServices/Factory.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -42,7 +41,7 @@
 namespace ioXML
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioXML::FwXMLPatientDBReaderService , ::fwData::PatientDB );
+fwServicesRegisterMacro( ::io::IReader , ::ioXML::FwXMLPatientDBReaderService , ::fwData::PatientDB );
 
 //------------------------------------------------------------------------------
 

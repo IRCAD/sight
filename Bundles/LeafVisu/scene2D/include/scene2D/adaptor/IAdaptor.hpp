@@ -58,7 +58,6 @@ public:
     /// Interact with the mouse events catched on the IAdaptor (virtual function, its behavior is only defined in the specific adaptors).
     SCENE2D_API virtual void processInteraction( ::scene2D::data::Event::sptr _event );
 
-
 protected:
 
     /// Constructor, set the zValue to 0.
@@ -66,6 +65,7 @@ protected:
 
     /// Basic destructor, do nothing.
     SCENE2D_API virtual ~IAdaptor() throw();
+
 
     /// ToDo IM
     SCENE2D_API virtual void info(std::ostream &_sstream ) ;

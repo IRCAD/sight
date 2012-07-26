@@ -7,6 +7,8 @@
 #ifndef _FWSERVICES_ISERVICE_HPP_
 #define _FWSERVICES_ISERVICE_HPP_
 
+#include <boost/property_tree/ptree.hpp>
+
 #include <deque>
 
 #include <fwTools/Failed.hpp>
@@ -46,6 +48,7 @@ class FWSERVICES_CLASS_API IService : public ::fwTools::Object
     friend class IEditionService;
 
 public :
+    typedef ::boost::property_tree::ptree ConfigType;
 
     fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object) ) ;
 
@@ -106,6 +109,13 @@ public :
      * @post m_configurationState == UNCONFIGURED
      */
     FWSERVICES_API void setConfiguration( const ::fwRuntime::ConfigurationElement::sptr _cfgElement ) ;
+
+    /**
+     * @brief Affect the configuration, using a boost property tree
+     * @param[in] ptree property tree
+     * @post m_configurationState == UNCONFIGURED
+     */
+    FWSERVICES_API void setConfiguration( const ConfigType &ptree ) ;
 
     /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does nothing otherwise.
@@ -252,10 +262,14 @@ public :
     /**
      * @brief Return the configuration, in an xml format read using runtime library
      * @return m_configuration, a structure which represents the service configuration
-     * @todo getConfiguration() must not be virtual.
-     * @todo getConfiguration() must be const.
      */
-    FWSERVICES_API virtual ::fwRuntime::ConfigurationElement::sptr getConfiguration() ;
+    FWSERVICES_API ::fwRuntime::ConfigurationElement::sptr getConfiguration() const;
+
+    /**
+     * @brief Return the configuration, in an boost property tree
+     */
+    FWSERVICES_API ConfigType getConfigTree() const ;
+
 
 //    /**
 //     * @brief Check the configuration using XSD if possible

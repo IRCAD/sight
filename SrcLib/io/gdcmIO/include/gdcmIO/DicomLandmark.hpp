@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include <fwTools/Failed.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/macros.hpp>
 

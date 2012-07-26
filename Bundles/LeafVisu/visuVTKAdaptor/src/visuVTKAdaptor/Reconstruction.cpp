@@ -9,7 +9,7 @@
 #include <fwData/Material.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwComEd/ReconstructionMsg.hpp>
 
 #include <vtkActor.h>
@@ -36,7 +36,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction, ::fwData::Reconstruction ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction, ::fwData::Reconstruction ) ;
 
 namespace visuVTKAdaptor
 {

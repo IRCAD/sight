@@ -8,12 +8,11 @@
 
 #include <boost/regex.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include "fwServices/ObjectMsg.hpp"
 #include "fwServices/IService.hpp"
+#include "fwServices/registry/message/macros.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwServices::ObjectMsg, ::fwServices::ObjectMsg );
+fwServicesMessageRegisterMacro( ::fwServices::ObjectMsg );
 
 namespace fwServices
 {
@@ -25,6 +24,11 @@ std::string ObjectMsg::DELETE_OBJECT  = "ObjectMsg::DELETE_OBJECT";
 std::string ObjectMsg::ADDED_FIELDS   = "ADDED_FIELDS";
 std::string ObjectMsg::REMOVED_FIELDS = "REMOVED_FIELDS";
 std::string ObjectMsg::CHANGED_FIELDS = "CHANGED_FIELDS";
+
+//-----------------------------------------------------------------------------
+
+ObjectMsg::ObjectMsg(::fwServices::ObjectMsg::Key key) : m_hasCallback (false)
+{}
 
 //-----------------------------------------------------------------------------
 

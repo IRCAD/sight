@@ -11,12 +11,12 @@
 #include <arlcore/Misc.h>
 
 arlCore::File::File( const std::string &fullFileName, const std::string &fileType ):
-m_ok(false),
-m_version(0.0),
 m_fileType(fileType),
-m_error(""),
 m_fullFilename(fullFileName),
-m_position(0)
+m_error(""),
+m_version(0.0),
+m_position(0),
+m_ok(false)
 {
     if(m_fullFilename=="") return;
     arlString::splitFilename( m_fullFilename, m_folder, m_filename, m_extension );

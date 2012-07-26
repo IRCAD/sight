@@ -3,14 +3,15 @@
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
     <activate id="io" version="0-1" />
-    
+
     <!-- The visu bundle (visualization) is needed to use the vtkSimpleNegato bundle. -->
     <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
 
     <activate id="gui" version="0-1" />
     <activate id="guiQt" version="0-1" />
-    
+
     <activate id="Tuto02DataServiceBasic" />
     <activate id="appXml" version="0-1" >
         <param id="config" value="tutoDataServiceBasicConfig" />
@@ -25,8 +26,8 @@
 
     <start id="dataReg" />
     <start id="visuVTKQt" />
-    <start id="guiQt" />  
+    <start id="guiQt" />
     <start id="appXml" />
-    
-       
+
+
 </profile>

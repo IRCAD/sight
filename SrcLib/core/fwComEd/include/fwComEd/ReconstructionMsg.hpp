@@ -25,7 +25,8 @@ namespace fwComEd
 class FWCOMED_CLASS_API ReconstructionMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ReconstructionMsg)(::fwServices::ObjectMsg), ( () ), new ReconstructionMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ReconstructionMsg)(::fwServices::ObjectMsg), ( () ),
+                                            ::fwServices::factory::message::New< ReconstructionMsg >);
 
     /**
      * @name Event identifier
@@ -37,9 +38,10 @@ public:
     /// @}
 
     /**
-     * @brief   Constructor : do nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API ReconstructionMsg() throw();
+    FWCOMED_API ReconstructionMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : do nothing.

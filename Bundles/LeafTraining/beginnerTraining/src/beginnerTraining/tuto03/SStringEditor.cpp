@@ -21,7 +21,7 @@
 
 #include "beginnerTraining/tuto03/SStringEditor.hpp"
 
-REGISTER_SERVICE( ::gui::editor::IEditor, ::beginnerTraining::tuto03::SStringEditor, ::fwData::String );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto03::SStringEditor, ::fwData::String );
 
 
 namespace beginnerTraining

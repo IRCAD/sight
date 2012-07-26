@@ -20,7 +20,7 @@ namespace operators
 //------------------------------------------------------------------------------
 
 BoxCroppingParameterEditor::BoxCroppingParameterEditor( wxWindow * parent, ::fwData::Image::sptr pImage ) :
-    wxDialog( parent, wxID_ANY, _("Box cropping parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
+    wxDialog( parent, wxID_ANY, wxGetTranslation("Box cropping parameter editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ),
     m_xMin ( 0 ),
     m_yMin ( 0 ),
     m_zMin ( 0 ),
@@ -40,12 +40,12 @@ BoxCroppingParameterEditor::~BoxCroppingParameterEditor(){}
 
 void BoxCroppingParameterEditor::createContent()
 {
-    wxStaticText * pXMinInfo = new wxStaticText( this, wxID_ANY, _(" Sagittal slice min : ") );
-    wxStaticText * pXMaxInfo = new wxStaticText( this, wxID_ANY, _(" Sagittal slice max : ") );
-    wxStaticText * pYMinInfo = new wxStaticText( this, wxID_ANY, _(" Frontal slice min : ") );
-    wxStaticText * pYMaxInfo = new wxStaticText( this, wxID_ANY, _(" Frontal slice max : ") );
-    wxStaticText * pZMinInfo = new wxStaticText( this, wxID_ANY, _(" Axial slice min : ") );
-    wxStaticText * pZMaxInfo = new wxStaticText( this, wxID_ANY, _(" Axial slice max : ") );
+    wxStaticText * pXMinInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Sagittal slice min : ") );
+    wxStaticText * pXMaxInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Sagittal slice max : ") );
+    wxStaticText * pYMinInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Frontal slice min : ") );
+    wxStaticText * pYMaxInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Frontal slice max : ") );
+    wxStaticText * pZMinInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Axial slice min : ") );
+    wxStaticText * pZMaxInfo = new wxStaticText( this, wxID_ANY, wxGetTranslation(" Axial slice max : ") );
 
     wxTextCtrl * pZMin = new wxTextCtrl( this, wxID_ANY);
     wxTextCtrl * pZMax = new wxTextCtrl( this, wxID_ANY);

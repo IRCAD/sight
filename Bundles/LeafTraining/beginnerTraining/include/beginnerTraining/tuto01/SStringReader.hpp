@@ -23,6 +23,13 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SStringReader)(::io::IReader) ) ;
 
+    BEGINNERTRAINING_API SStringReader();
+
+    BEGINNERTRAINING_API virtual ~SStringReader() throw();
+
+protected :
+
+
     /// Overrides
     BEGINNERTRAINING_API virtual void starting() throw ( ::fwTools::Failed );
 
@@ -44,13 +51,7 @@ public:
     /// Overrides io method
     BEGINNERTRAINING_API virtual ::io::IOPathType getIOPathType() const;
 
-protected :
 
-    /// Constructor
-    BEGINNERTRAINING_API SStringReader();
-
-    /// Destructor
-    BEGINNERTRAINING_API virtual ~SStringReader() throw();
 };
 
 

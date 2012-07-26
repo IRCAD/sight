@@ -24,7 +24,7 @@ namespace guiQt
 namespace editor
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::guiQt::editor::Code , ::fwData::String ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::guiQt::editor::Code , ::fwData::String ) ;
 
 //------------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ void Code::starting() throw(::fwTools::Failed)
     }
     else
     {
-        OSLM_WARN("Language "<<m_language<<" not yet supported.")
+        OSLM_WARN("Language "<<m_language<<" not yet supported.");
     }
 
     container->setLayout( layout );

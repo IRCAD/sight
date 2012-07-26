@@ -44,10 +44,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
     // Reader service
     m_readerSrv = ::fwServices::add(m_image, "::io::IReader", "::ioVTK::ImageReaderService");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "service" );
-    ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "file" );
-    readerFilenameCfg->setValue("./TutoData/patient1.vtk");
-    readerCfg->addConfigurationElement(readerFilenameCfg);
+    ::fwServices::IService::ConfigType readerCfg;
+    readerCfg.put("service.file", "./TutoData/patient1.vtk");
     m_readerSrv->setConfiguration( readerCfg ) ;
     m_readerSrv->configure();
 
@@ -62,32 +60,17 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     // Frame service
     m_frameSrv = ::fwServices::add(m_image, "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame");
 
-    ::fwRuntime::EConfigurationElement::NewSptr frameCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr guiCfg("gui");
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameCfg("frame");
+    ::fwServices::IService::ConfigType frameConfig;
 
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameNameCfg("name");
-    guiFrameNameCfg->setValue("tutoDataServiceBasic");
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameIconCfg("icon");
-    guiFrameIconCfg->setValue("Bundles/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameMinSizeCfg("minSize");
-    guiFrameMinSizeCfg->setAttributeValue("width", "800");
-    guiFrameMinSizeCfg->setAttributeValue("height", "600");
-    guiFrameCfg->addConfigurationElement(guiFrameNameCfg);
-    guiFrameCfg->addConfigurationElement(guiFrameIconCfg);
-    guiFrameCfg->addConfigurationElement(guiFrameMinSizeCfg);
-    guiCfg->addConfigurationElement(guiFrameCfg);
+    frameConfig.put("service.gui.frame.name", "tutoDataServiceBasic");
+    frameConfig.put("service.gui.frame.icon", "Bundles/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
+    frameConfig.put("service.gui.frame.minSize.<xmlattr>.width" , "800");
+    frameConfig.put("service.gui.frame.minSize.<xmlattr>.height", "600");
 
-    ::fwRuntime::EConfigurationElement::NewSptr registryCfg("registry");
-    ::fwRuntime::EConfigurationElement::NewSptr registryViewCfg("view");
-    registryViewCfg->setAttributeValue("sid", "myRenderingTuto");
-    registryViewCfg->setAttributeValue("start", "yes");
-    registryCfg->addConfigurationElement(registryViewCfg);
+    frameConfig.put("service.registry.view.<xmlattr>.sid"  , "myRenderingTuto");
+    frameConfig.put("service.registry.view.<xmlattr>.start", "yes");
 
-    frameCfg->addConfigurationElement(guiCfg);
-    frameCfg->addConfigurationElement(registryCfg);
-
-    m_frameSrv->setConfiguration( frameCfg ) ;
+    m_frameSrv->setConfiguration( frameConfig ) ;
     m_frameSrv->configure();
 
     // Start app

@@ -27,7 +27,7 @@
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image) ;
+fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image) ;
 
 //-----------------------------------------------------------------------------
 

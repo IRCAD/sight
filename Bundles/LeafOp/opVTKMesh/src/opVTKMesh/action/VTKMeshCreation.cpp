@@ -36,7 +36,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::opVTKMesh::action::VTKMeshCreation , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opVTKMesh::action::VTKMeshCreation , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

@@ -24,19 +24,12 @@ class IOITK_CLASS_API DicomImageWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (DicomImageWriterService)( ::io::IWriter) ) ;
 
+    IOITK_API DicomImageWriterService() throw();
+
+    IOITK_API virtual ~DicomImageWriterService() throw();
 
 protected:
 
-    /**
-     * @brief   constructor
-     *
-     */
-    IOITK_API DicomImageWriterService() throw();
-
-    /**
-     * @brief   destructor
-     */
-    IOITK_API virtual ~DicomImageWriterService() throw();
 
     /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);

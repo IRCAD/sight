@@ -28,7 +28,7 @@
 namespace uiVisu
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::TransformationMatrixEditor , ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::TransformationMatrixEditor , ::fwData::TransformationMatrix3D ) ;
 
 
 TransformationMatrixEditor::TransformationMatrixEditor() throw()

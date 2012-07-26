@@ -25,18 +25,11 @@ class IOITK_CLASS_API DicomPatientWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (DicomPatientWriterService)( ::io::IWriter) ) ;
 
-protected:
-
-    /**
-     * @brief   constructor
-     *
-     */
     IOITK_API DicomPatientWriterService() throw();
 
-    /**
-     * @brief   destructor
-     */
     IOITK_API virtual ~DicomPatientWriterService() throw();
+
+protected:
 
     /// Override
     IOITK_API virtual void starting() throw(::fwTools::Failed);

@@ -9,7 +9,7 @@
 #include <fwData/Material.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwComEd/MaterialMsg.hpp>
 
 #include <vtkRenderer.h>
@@ -20,7 +20,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material ) ;
 
 namespace visuVTKAdaptor
 {

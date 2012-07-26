@@ -34,7 +34,7 @@
 namespace ioVtkGdcm
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVtkGdcm::DicomImageWriterService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioVtkGdcm::DicomImageWriterService , ::fwData::Image ) ;
 
 //------------------------------------------------------------------------------
 

@@ -39,7 +39,7 @@ namespace uiMeasurement
 namespace editor
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiMeasurement::editor::Distance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMeasurement::editor::Distance , ::fwData::Image ) ;
 
 
 Distance::Distance() throw()

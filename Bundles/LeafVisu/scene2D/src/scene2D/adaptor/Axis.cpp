@@ -17,7 +17,7 @@
 #include "scene2D/adaptor/Axis.hpp"
 
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
 
 namespace scene2D
 {
@@ -50,7 +50,7 @@ void Axis::doStart() throw( ::fwTools::Failed)
 void Axis::doStop() throw( ::fwTools::Failed)
 {
     m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    ::fwServices::OSR::unregisterService( m_comChannel );
 
     delete m_layer;
 }

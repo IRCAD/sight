@@ -16,7 +16,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Color::Color ()
+Color::Color ( ::fwData::Object::Key key )
 {
     SLM_TRACE_FUNC();
     m_vRGBA[0] = 1.0;
@@ -24,16 +24,6 @@ Color::Color ()
     m_vRGBA[2] = 1.0;
     m_vRGBA[3] = 1.0;
 }
-
-Color::Color(Color::ColorType red, Color::ColorType green, Color::ColorType blue, Color::ColorType alpha)
-{
-    SLM_TRACE_FUNC();
-    m_vRGBA[0] = red;
-    m_vRGBA[1] = green;
-    m_vRGBA[2] = blue;
-    m_vRGBA[3] = alpha;
-}
-
 
 //------------------------------------------------------------------------------
 Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Color::ColorType blue, Color::ColorType alpha)

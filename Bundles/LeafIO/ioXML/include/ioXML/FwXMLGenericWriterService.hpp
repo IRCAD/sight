@@ -31,8 +31,6 @@ class IOXML_CLASS_API FwXMLGenericWriterService : public ::io::IWriter
 public :
     fwCoreServiceClassDefinitionsMacro ( (FwXMLGenericWriterService)(::io::IWriter) ) ;
 
-protected:
-
     /**
      * @brief   constructor
      *
@@ -43,6 +41,9 @@ protected:
      * @brief   destructor
      */
     IOXML_API virtual ~FwXMLGenericWriterService() throw();
+
+protected:
+
 
     /** Search if archive extension is changed
      * @verbatim

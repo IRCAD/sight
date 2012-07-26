@@ -31,7 +31,7 @@ namespace uiMeasurement
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::AddDistance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::AddDistance , ::fwData::Image ) ;
 
 
 //------------------------------------------------------------------------------

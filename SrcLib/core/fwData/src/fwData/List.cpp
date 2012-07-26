@@ -17,7 +17,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-List::List()
+List::List(::fwData::Object::Key key)
 {
     SLM_TRACE_FUNC();
 }

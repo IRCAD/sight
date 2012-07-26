@@ -27,7 +27,7 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SwapperSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SwapperSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -352,7 +352,7 @@ void SwapperSrv::removeObject( const std::string objectId )
 
         SubServicesVecType subServices = m_objectsSubServices[objectId];
         ::fwData::Object::sptr dummyObj;
-        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(objectType));
+        dummyObj = ::fwData::factory::New(objectType);
         BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
             OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
@@ -406,7 +406,7 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
         OSLM_TRACE ( "'"<< objectId << "' nonexistent'");
 
         ::fwData::Object::sptr dummyObj;
-        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(objectType));
+        dummyObj = ::fwData::factory::New(objectType);
         SubServicesVecType subVecSrv;
         std::vector < ConfigurationType > confVec = conf->find("service");
         BOOST_FOREACH( ConfigurationType cfg, confVec )

@@ -8,6 +8,7 @@
 #define _FWTOOLS_IBUFFERMANAGER_HPP_
 
 #include <fwCore/base.hpp>
+#include <fwCore/mt/types.hpp>
 
 #include "fwTools/BufferAllocationPolicy.hpp"
 #include "fwTools/config.hpp"
@@ -176,16 +177,17 @@ public:
 
     /**
      * @brief Returns the current BufferManager instance
+     * @note This method is thread-safe.
      */
-    static IBufferManager::sptr getCurrent(){ return s_currentManager; }
+    FWTOOLS_API static IBufferManager::sptr getCurrent();
 
     /**
      * @brief sets the current BufferManager instance
      *
      * @param currentManager BufferManager instance
-     *
+     * @note This method is thread-safe.
      */
-    static void setCurrent( IBufferManager::sptr currentManager ){ s_currentManager = currentManager; }
+    FWTOOLS_API static void setCurrent( IBufferManager::sptr currentManager );
 
 
     /**
@@ -193,12 +195,15 @@ public:
      */
     virtual std::string toString() const { return ""; };
 
+
 protected:
 
     IBufferManager(){};
     virtual ~IBufferManager(){};
 
     FWTOOLS_API static IBufferManager::sptr s_currentManager;
+
+    static ::fwCore::mt::ReadWriteMutex s_mutex;
 };
 
 

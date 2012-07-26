@@ -26,6 +26,7 @@ class UIMEASUREMENT_CLASS_API AddLandmark : public ::fwGui::IActionSrv
 {
 public:
     fwCoreServiceClassDefinitionsMacro ( (AddLandmark)( ::fwGui::IActionSrv) ) ;
+
     UIMEASUREMENT_API AddLandmark() throw() ;
 
     UIMEASUREMENT_API virtual ~AddLandmark() throw() ;

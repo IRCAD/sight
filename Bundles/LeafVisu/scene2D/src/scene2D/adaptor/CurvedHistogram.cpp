@@ -22,7 +22,7 @@
 #include "scene2D/data/InitQtPen.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::CurvedHistogram, ::fwData::Histogram);
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::CurvedHistogram, ::fwData::Histogram);
 
 
 #define PI 3.14159265
@@ -465,7 +465,7 @@ void CurvedHistogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
 
     SLM_ASSERT("m_histogramPointUID must be defined in order to update the related ::fwData::Point data.",
             !m_histogramPointUID.empty());
- 
+
     ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue = histogram->getMinValue();

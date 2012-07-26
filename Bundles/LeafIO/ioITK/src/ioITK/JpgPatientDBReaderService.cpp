@@ -28,7 +28,7 @@
 namespace ioITK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioITK::JpgPatientDBReaderService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioITK::JpgPatientDBReaderService , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 

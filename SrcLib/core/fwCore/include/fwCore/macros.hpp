@@ -3,6 +3,8 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+#ifndef __FWCORE_MACROS_HPP__
+#define __FWCORE_MACROS_HPP__
 
 /**
  * @file fwCore/macros.hpp
@@ -19,28 +21,21 @@
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
-#include <boost/preprocessor/comparison/greater.hpp>
 #include <boost/preprocessor/control/expr_if.hpp>
 #include <boost/preprocessor/control/if.hpp>
-#include <boost/preprocessor/control/while.hpp>
 #include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
-#include <boost/preprocessor/facilities/identity.hpp>
 #include <boost/preprocessor/logical/and.hpp>
 #include <boost/preprocessor/logical/not.hpp>
-#include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/seq/cat.hpp>
-#include <boost/preprocessor/seq/enum.hpp>
-#include <boost/preprocessor/seq/fold_right.hpp>
+#include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/fold_right.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_i.hpp>
-#include <boost/preprocessor/seq/reverse.hpp>
 #include <boost/preprocessor/seq/seq.hpp>
+#include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/to_tuple.hpp>
 #include <boost/preprocessor/seq/transform.hpp>
-#include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>
 
 #include "fwCore/Demangler.hpp"
@@ -408,7 +403,7 @@
     { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getLeafClassname<SelfType>());};             \
     /** @brief return object's classname given by ::fwCore::Demangler::getClassname()  */        \
     virtual const std::string& getClassname() const                                              \
-    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getClassname());};          \
+    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getClassname<SelfType>());};          \
     static  const std::string& classname()                                                       \
     { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getClassname<SelfType>());};                 \
     /** @brief return object's classname given by ::fwCore::Demangler::getFullClassname()  */    \
@@ -473,7 +468,7 @@ namespace boost{
 namespace python{
 namespace objects {
 template <class, class>
-class pointer_holder;
+struct pointer_holder;
 }}}
 
 /**
@@ -482,7 +477,7 @@ class pointer_holder;
 #define fwCoreFriendClassFactoryMacro()                                      \
     friend class ::boost::serialization::access;                             \
     template<class, class>                                                   \
-    friend class ::boost::python::objects::pointer_holder;                   \
+    friend struct ::boost::python::objects::pointer_holder;                  \
     template<typename _FWCORE_CHECKED_DELETE_T_ >                            \
     friend void ::boost::checked_delete(_FWCORE_CHECKED_DELETE_T_ *x);       \
     template<class, class, class>                                            \
@@ -606,4 +601,5 @@ class pointer_holder;
 
 
 /**  @} */
+#endif // __FWCORE_MACROS_HPP__
 

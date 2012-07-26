@@ -4,17 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwCore/spyLog.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
+#include <fwServices/registry/message/macros.hpp>
+
 #include "fwComEd/CompositeMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::CompositeMsg, ::fwComEd::CompositeMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::CompositeMsg );
 
 namespace fwComEd
 {
@@ -27,7 +27,7 @@ std::string CompositeMsg::CHANGED_KEYS = "CHANGED_KEYS";
 
 //-------------------------------------------------------------------------
 
-CompositeMsg::CompositeMsg() throw()
+CompositeMsg::CompositeMsg(::fwServices::ObjectMsg::Key key)
 {
     m_removedKeys    = ::fwData::Composite::New();
     m_addedKeys      = ::fwData::Composite::New();

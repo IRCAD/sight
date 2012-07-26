@@ -10,15 +10,19 @@
 #include "fwData/GenericField.hpp"
 #include "fwData/Float.hpp"
 
-
 fwDataRegisterMacro( ::fwData::Float );
 
 namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Float::Float( const float value ) throw()
-:   GenericField< float >( value )
+Float::Float( ) throw()
+{}
+
+
+//------------------------------------------------------------------------------
+
+Float::Float( ::fwData::Object::Key key ) throw()
 {}
 
 //------------------------------------------------------------------------------

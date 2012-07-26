@@ -25,7 +25,7 @@ namespace memory
 {
 
 
-REGISTER_SERVICE( ::fwServices::IController, ::memory::SDumpPolicy, ::fwData::Object );
+fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, ::fwData::Object );
 
 SDumpPolicy::SDumpPolicy()
 {}

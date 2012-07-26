@@ -72,7 +72,7 @@ void MenuBarLayoutManager::destroyLayout()
 
 void MenuBarLayoutManager::menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu, bool isVisible)
 {
-    SLM_FATAL("TODO : MenuBarLayoutManager::menuIsVisible not yet implemented.")
+    SLM_FATAL("TODO : MenuBarLayoutManager::menuIsVisible not yet implemented.");
 }
 
 //-----------------------------------------------------------------------------

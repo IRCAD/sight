@@ -10,7 +10,7 @@
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Resection.hpp"
 
 namespace fwData
@@ -27,9 +27,19 @@ class FWDATA_CLASS_API ResectionDB : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwData::Factory::New< ResectionDB >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwData::factory::New< ResectionDB >) ;
 
     fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API ResectionDB(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~ResectionDB();
+
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( ResectionDB::csptr _source );
@@ -54,12 +64,6 @@ public:
     fwGettersSettersDocMacro(SafeResection, safeResection, ::fwData::Resection::sptr, Get the safe part of the resections);
 
 protected:
-
-    /// Constructor
-    FWDATA_API ResectionDB ();
-
-    /// Destructor
-    FWDATA_API virtual ~ResectionDB ();
 
     ::fwData::Resection::sptr m_safeResection;
 

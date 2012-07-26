@@ -16,6 +16,7 @@
 
 #include "ctrlSelection/updater/TranslateUpdater.hpp"
 
+#include <boost/property_tree/xml_parser.hpp>
 namespace ctrlSelection
 {
 
@@ -24,7 +25,7 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::TranslateUpdater, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::TranslateUpdater, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -110,30 +111,31 @@ void TranslateUpdater::stopping()  throw ( ::fwTools::Failed )
 
 void TranslateUpdater::configuring()  throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
+    const ::fwServices::IService::ConfigType conf = this->getConfigTree().get_child("service");
 
-    ::fwRuntime::ConfigurationElementContainer handleTranslations = m_configuration->findAllConfigurationElement("translate");
+    SLM_ASSERT("Problem with configuration for ObjFromMsgUpdaterSrv type, missing element \"translate\"",
+               conf.count("translate") > 0);
 
-    SLM_ASSERT("Problem with configuration for ObjFromMsgUpdaterSrv type, missing element \"translate\"", handleTranslations.size() != 0 );
-    OSLM_DEBUG( "handleEvents.size() = " << handleTranslations.size() );
+    OSLM_DEBUG( "nb of translations = " << conf.count("translate") );
     m_managedTranslations.clear();
-    for(    ::fwRuntime::ConfigurationElementContainer::Iterator item = handleTranslations.begin();
-            item != handleTranslations.end();
-            ++item )
+    BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v, conf.equal_range("translate") )
     {
-        SLM_FATAL_IF( "Sorry, attribute \"fromKey\" is missing", !(*item)->hasAttribute("fromKey") );
-        std::string fromKey =  (*item)->getExistingAttributeValue("fromKey");
+        const ::fwServices::IService::ConfigType &translate = v.second;
+        const ::fwServices::IService::ConfigType xmlattr = translate.get_child("<xmlattr>");
 
-        SLM_FATAL_IF( "Sorry, attribute \"toKey\" is missing", !(*item)->hasAttribute("toKey") );
-        std::string toKey =  (*item)->getExistingAttributeValue("toKey");
+        SLM_FATAL_IF( "Sorry, attribute \"fromKey\" is missing", xmlattr.count("fromKey") != 1 );
+        SLM_FATAL_IF( "Sorry, attribute \"toKey\" is missing", xmlattr.count("toKey") != 1 );
+        SLM_FATAL_IF( "Sorry, attribute \"fromUID\" is missing", xmlattr.count("fromUID") != 1 );
 
-        SLM_FATAL_IF( "Sorry, attribute \"fromUID\" is missing", !(*item)->hasAttribute("fromUID") );
-        std::string fromUID =  (*item)->getExistingAttributeValue("fromUID");
+        std::string fromKey = xmlattr.get<std::string>("fromKey");
+        std::string toKey   = xmlattr.get<std::string>("toKey");
+        std::string fromUID = xmlattr.get<std::string>("fromUID");
 
         OSLM_INFO( "Manage translation from this object "<< fromUID <<", from "<< fromKey << " to "<< toKey <<" in my composite.");
         ::boost::tuple< std::string, std::string, std::string > managedTranslation (fromUID, fromKey, toKey);
         m_managedTranslations.push_back( managedTranslation );
     }
+
 }
 
 //-----------------------------------------------------------------------------

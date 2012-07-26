@@ -18,7 +18,6 @@
 #include "fwRuntime/ExtensionPoint.hpp"
 #include "fwRuntime/dl/Library.hpp"
 #include "fwRuntime/io/BundleDescriptorReader.hpp"
-#include "fwRuntime/io/XMLSubstitute.hpp"
 #include "fwRuntime/io/Validator.hpp"
 
 namespace fwRuntime
@@ -111,11 +110,16 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     }
 
     // Get the document.
-    xmlDocPtr document = ::fwRuntime::io::XMLSubstitute::getDefault()->load(descriptorLocation);
+#if BOOST_FILESYSTEM_VERSION > 2
+    xmlDocPtr document = xmlParseFile(  descriptorLocation.string().c_str() );
+#else
+    xmlDocPtr document = xmlParseFile(  descriptorLocation.native_file_string().c_str() );
+#endif
     if(document == 0)
     {
         throw RuntimeException("Unable to read the bundle descriptor file.");
     }
+
 
     try
     {
@@ -180,7 +184,11 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     }
 
     // Get the document.
-    xmlDocPtr document = ::fwRuntime::io::XMLSubstitute::getDefault()->load(descriptorLocation);
+#if BOOST_FILESYSTEM_VERSION > 2
+    xmlDocPtr document = xmlParseFile(  descriptorLocation.string().c_str() );
+#else
+    xmlDocPtr document = xmlParseFile(  descriptorLocation.native_file_string().c_str() );
+#endif
     if(document == 0)
     {
         throw RuntimeException("Unable to read the bundle descriptor file.");
@@ -241,7 +249,7 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
         {
             std::string value((const char*) curChild->content);
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
-            OSLM_WARN_IF("Bundle : " << bundle->getIdentifier() << ", node: " << name << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
+            OSLM_WARN_IF("Bundle : " << ( bundle ? bundle->getIdentifier() : "<None>" ) << ", node: " << name << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
                     (value.find("\n")!=std::string::npos || value.find("\t")!=std::string::npos));
 
             configurationElement->setValue( configurationElement->getValue() + value );

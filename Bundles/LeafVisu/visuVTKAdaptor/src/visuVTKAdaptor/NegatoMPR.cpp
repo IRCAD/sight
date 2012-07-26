@@ -9,8 +9,7 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwData/Image.hpp>
@@ -27,7 +26,7 @@
 #include "visuVTKAdaptor/NegatoMPR.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {

@@ -182,21 +182,21 @@ fwProgressDialog::fwProgressDialog(const wxString& title,
     {
         nTimeLabels++;
 
-        m_elapsed = CreateLabel(_("Elapsed time:"), sizerLabels);
+        m_elapsed = CreateLabel(wxGetTranslation("Elapsed time:"), sizerLabels);
     }
 
     if ( style & wxPD_ESTIMATED_TIME )
     {
         nTimeLabels++;
 
-        m_estimated = CreateLabel(_("Estimated time:"), sizerLabels);
+        m_estimated = CreateLabel(wxGetTranslation("Estimated time:"), sizerLabels);
     }
 
     if ( style & wxPD_REMAINING_TIME )
     {
         nTimeLabels++;
 
-        m_remaining = CreateLabel(_("Remaining time:"), sizerLabels);
+        m_remaining = CreateLabel(wxGetTranslation("Remaining time:"), sizerLabels);
     }
     sizerTop->Add(sizerLabels, 0, wxALIGN_CENTER_HORIZONTAL | wxTOP, LAYOUT_MARGIN);
 
@@ -208,7 +208,7 @@ fwProgressDialog::fwProgressDialog(const wxString& title,
 
 #if defined(__SMARTPHONE__)
     if ( m_hasSkipButton )
-        SetRightMenu(wxID_SKIP, _("Skip"));
+        SetRightMenu(wxID_SKIP, wxGetTranslation("Skip"));
     if ( m_hasAbortButton )
         SetLeftMenu(wxID_CANCEL);
 #else
@@ -228,7 +228,7 @@ fwProgressDialog::fwProgressDialog(const wxString& title,
 
     if ( m_hasSkipButton )
     {
-        m_btnSkip = new wxButton(this, wxID_SKIP, _("&Skip"));
+        m_btnSkip = new wxButton(this, wxID_SKIP, wxGetTranslation("&Skip"));
 
         buttonSizer->Add(m_btnSkip, 0, sizerFlags, LAYOUT_MARGIN);
     }
@@ -276,7 +276,7 @@ wxStaticText *
 fwProgressDialog::CreateLabel(const wxString& text, wxSizer *sizer)
 {
     wxStaticText *label = new wxStaticText(this, wxID_ANY, text);
-    wxStaticText *value = new wxStaticText(this, wxID_ANY, _("unknown"));
+    wxStaticText *value = new wxStaticText(this, wxID_ANY, wxGetTranslation("unknown"));
 
     // select placement most native or nice on target GUI
 #if defined(__SMARTPHONE__)
@@ -390,7 +390,7 @@ fwProgressDialog::Update(int value, const wxString& newmsg, bool *skip)
             if ( newmsg.empty() )
             {
                 // also provide the finishing message if the application didn't
-                m_msg->SetLabel(_("Done."));
+                m_msg->SetLabel(wxGetTranslation("Done."));
             }
 
             wxCHECK_MSG(wxEventLoopBase::GetActive(), false,
@@ -613,7 +613,7 @@ static void SetTimeLabel(unsigned long val, wxStaticText *label)
         }
         else
         {
-            s = _("Unknown");
+            s = wxGetTranslation("Unknown");
         }
 
         if ( s != label->GetLabel() )
@@ -627,7 +627,7 @@ void fwProgressDialog::EnableSkip(bool enable)
     {
 #ifdef __SMARTPHONE__
         if(enable)
-            SetRightMenu(wxID_SKIP, _("Skip"));
+            SetRightMenu(wxID_SKIP, wxGetTranslation("Skip"));
         else
             SetRightMenu();
 #else
@@ -658,12 +658,12 @@ void fwProgressDialog::EnableClose()
     if(m_hasAbortButton)
     {
 #ifdef __SMARTPHONE__
-        SetLeftMenu(wxID_CANCEL, _("Close"));
+        SetLeftMenu(wxID_CANCEL, wxGetTranslation("Close"));
 #else
         if(m_btnAbort)
         {
             m_btnAbort->Enable();
-            m_btnAbort->SetLabel(_("Close"));
+            m_btnAbort->SetLabel(wxGetTranslation("Close"));
         }
 #endif
     }

@@ -19,7 +19,7 @@ namespace fwData
 {
 
 
-Composite::Composite()
+Composite::Composite( ::fwData::Object::Key key )
 {
     SLM_TRACE_FUNC();
 }

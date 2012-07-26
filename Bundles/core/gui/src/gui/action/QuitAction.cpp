@@ -8,7 +8,6 @@
 
 #include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/RootManager.hpp>
 
 #include <fwGui/Application.hpp>
 #include <fwGui/Cursor.hpp>
@@ -20,7 +19,7 @@ namespace gui
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::QuitAction , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::gui::action::QuitAction , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 

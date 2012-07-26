@@ -8,7 +8,7 @@
 #include <fwData/Resection.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/ResectionDBMsg.hpp>
@@ -18,7 +18,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB ) ;
 
 namespace visuVTKAdaptor
 {

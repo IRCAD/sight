@@ -36,17 +36,7 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;
-
-//------------------------------------------------------------------------------
-
-TriangularMeshReaderService::TriangularMeshReaderService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-TriangularMeshReaderService::~TriangularMeshReaderService() throw()
-{}
+fwServicesRegisterMacro( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;
 
 //------------------------------------------------------------------------------
 

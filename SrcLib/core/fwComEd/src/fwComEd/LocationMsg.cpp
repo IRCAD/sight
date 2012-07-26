@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/LocationMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::LocationMsg, ::fwComEd::LocationMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::LocationMsg );
 
 namespace fwComEd
 {
@@ -19,7 +19,7 @@ std::string LocationMsg::LOCATION_IS_MODIFIED = "LOCATION_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-LocationMsg::LocationMsg() throw()
+LocationMsg::LocationMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

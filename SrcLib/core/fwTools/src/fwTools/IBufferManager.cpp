@@ -11,8 +11,22 @@ namespace fwTools
 
 IBufferManager::sptr IBufferManager::s_currentManager = IBufferManager::New();
 
+::fwCore::mt::ReadWriteMutex IBufferManager::s_mutex;
+
+//-----------------------------------------------------------------------------
+
+IBufferManager::sptr IBufferManager::getCurrent()
+{
+    ::fwCore::mt::ReadLock lock(s_mutex);
+    return s_currentManager;
+}
+
+//-----------------------------------------------------------------------------
+
+void IBufferManager::setCurrent( IBufferManager::sptr currentManager )
+{
+    ::fwCore::mt::WriteLock lock(s_mutex);
+    s_currentManager = currentManager;
+}
 
 } //namespace fwTools
-
-
-

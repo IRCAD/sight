@@ -15,7 +15,7 @@
 namespace opSofa
 {
 
-REGISTER_SERVICE( ::io::IReader, ::opSofa::SofaSceneReaderSrv, ::fwData::Acquisition );
+fwServicesRegisterMacro( ::io::IReader, ::opSofa::SofaSceneReaderSrv, ::fwData::Acquisition );
 
 /**
  * @brief Constructor

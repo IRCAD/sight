@@ -26,7 +26,7 @@ namespace ioData
  * @li Use update() to read the mesh and notify observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh )
  */
 class IODATA_CLASS_API MeshReaderService : public ::io::IReader
 {
@@ -61,17 +61,6 @@ public:
     IODATA_API virtual ::io::IOPathType getIOPathType() const;
 
 protected:
-
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API MeshReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~MeshReaderService() throw() ;
-
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{

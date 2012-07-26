@@ -25,7 +25,7 @@
 #include <sstream>
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageText, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageText, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {
