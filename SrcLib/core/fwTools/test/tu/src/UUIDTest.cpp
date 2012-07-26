@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/make_shared.hpp>
+
 #include <fwTools/UUID.hpp>
 #include <fwTools/Object.hpp>
 
