@@ -11,7 +11,6 @@
 #include <string>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/log/core.hpp>
 
 #include "fwCore/BaseObject.hpp"
 #include "fwCore/config.hpp"
@@ -30,7 +29,6 @@ class SpyLogger : public ::fwCore::BaseObject
 {
 
 public :
-    // fwCoreClassDefinitionsWithFactoryMacro( (SpyLogger)(BaseObject), (()), new SpyLogger) ;
 
     enum LevelType
     {
@@ -63,6 +61,8 @@ public :
     FWCORE_API void error(const std::string & mes, const char * file = 0, int line = -1);
 
     FWCORE_API void fatal(const std::string & mes, const char * file = 0, int line = -1);
+
+    FWCORE_API void log(const std::string & mes, const char * file = 0, int line = -1);
 
     static SpyLogger &getSpyLogger() {return s_spyLogger;}
 

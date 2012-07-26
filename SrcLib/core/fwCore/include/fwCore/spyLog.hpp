@@ -61,8 +61,6 @@
 # include <cassert>
 # include <sstream>
 
-#include <boost/log/trivial.hpp>
-
 # include "fwCore/config.hpp"
 
 # include "fwCore/log/SpyLogger.hpp"
@@ -389,8 +387,11 @@
 
 /** @{ */
 /** Log message macros.  */
-#define OSLM_LOG(msg) __FWCORE_EXPR_BLOCK(                                                 \
-        BOOST_LOG_TRIVIAL(error) << "[LOG] "<< __FILE__ << ":" << __LINE__ << ": "<< msg ; \
+#define OSLM_LOG(message)                                          \
+         __FWCORE_EXPR_BLOCK(                                      \
+        std::stringstream stream;                                  \
+        stream << message;                                         \
+        _SPYLOG_SPYLOGGER_.log(stream.str(), __FILE__, __LINE__);  \
         )
 /**  @} */
 

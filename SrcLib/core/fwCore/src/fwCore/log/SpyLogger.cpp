@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwCore/macros.hpp"
-#include "fwCore/log/SpyLogger.hpp"
+#ifdef _MSC_VER
+#pragma warning(disable : 4996) // warning for sprintf() in Boost.log
+#endif // _MSC_VER
 
 #include <boost/log/trivial.hpp>
 #include <boost/log/filters.hpp>
@@ -14,6 +15,9 @@
 #include <boost/log/utility/init/common_attributes.hpp>
 #include <boost/log/attributes/named_scope.hpp>
 #include <boost/log/utility/init/formatter_parser.hpp>
+
+#include "fwCore/macros.hpp"
+#include "fwCore/log/SpyLogger.hpp"
 
 #ifndef SPYLOG_NO_LOG
 
@@ -155,6 +159,13 @@ void SpyLogger::error(const std::string & mes, const char * file, int line)
 void SpyLogger::fatal(const std::string & mes, const char * file, int line)
 {
     BOOST_LOG_TRIVIAL(fatal) << "  [FATAL] "<< file << ":" << line << ": "<< mes ;
+}
+
+//-----------------------------------------------------------------------------
+
+void SpyLogger::log(const std::string & mes, const char * file, int line)
+{
+    BOOST_LOG_TRIVIAL(error) << "[LOG] "<< file << ":" << line << ": "<< mes ;
 }
 
 //-----------------------------------------------------------------------------
