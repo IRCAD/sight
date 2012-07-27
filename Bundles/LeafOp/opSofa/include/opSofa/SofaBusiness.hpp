@@ -1,13 +1,17 @@
 #ifndef OPSOFA_SOFABUSINESS_HPP_
 #define OPSOFA_SOFABUSINESS_HPP_
 
+#include <sofa/component/typedef/Sofa_typedef.h>
+#include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/simulation/tree/treeSimulation.h>
+#include <sofa/simulation/tree/GNode.h>
+
 #include <fwServices/IEditionService.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/PatientDB.hpp>
-#include <sofa/component/typedef/Sofa_typedef.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/forcefield/StiffSpringForceField.h>
+
 #include "opSofa/SofaThread.hpp"
+
 
 using namespace sofa::simulation::tree;
 using sofa::component::visualmodel::OglModel;
@@ -46,7 +50,7 @@ private:
     /**
      * @brief Pointer to the GNode object containing the physical parameters
      */
-    GNode *groot;
+    GNode::SPtr groot;
 
     /**
      * @brief Data containing the step of deformation
@@ -61,7 +65,7 @@ private:
     /**
      * @brief Vector to mesh object
      */
-    std::vector<fwData::Mesh::sptr> *meshs;
+    std::vector< ::fwData::Mesh::sptr > *meshs;
 
     /**
      * @brief map to StiffSpringForceField3 object
