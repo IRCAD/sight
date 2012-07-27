@@ -12,6 +12,7 @@
 #include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
+#include <fwTools/DynamicAttributes.hxx>
 
 #include "fwData/config.hpp"
 #include "fwData/registry/detail.hpp"
@@ -46,8 +47,9 @@ FWDATA_API SPTR( ::fwData::Object ) New( const ::fwData::registry::KeyType & cla
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
     SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
-    SPTR(::fwData::Object) baseObj = obj;
-    baseObj->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();
+
+    ::fwTools::DynamicAttributesBase *dynAttr = obj.get();
+    dynAttr->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();
 
     return obj;
 }

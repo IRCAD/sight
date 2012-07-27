@@ -7,6 +7,7 @@
 #ifndef _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
 #define _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
 
+#include <map>
 #include <vector>
 
 #include <boost/ref.hpp>
@@ -19,8 +20,15 @@
 
 namespace fwTools {
 
+class DynamicAttributesBase
+{
+public:
+
+    virtual fwToolsRegisterAttributeSignatureMacro() = 0;
+};
+
 template<class CLASS>
-class DynamicAttributes
+class DynamicAttributes : public DynamicAttributesBase
 {
 
 public:
