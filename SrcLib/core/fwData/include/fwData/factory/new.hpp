@@ -46,8 +46,8 @@ FWDATA_API SPTR( ::fwData::Object ) New( const ::fwData::registry::KeyType & cla
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
     SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
-
-    obj->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();
+    ::fwData::Object::sptr baseObj = obj;
+    baseObj->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();
 
     return obj;
 }

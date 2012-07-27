@@ -496,7 +496,7 @@ struct pointer_holder;
  *                      - where types_param_factoryX can be :
  *                        - for a 0-arg factory : ()
  *                        - for a 1-arg of T type factory : ((T)) or ((T)(d))
- *                          where d is a defautl value
+ *                          where d is a default value
  *                        - for a N-parameters factory : ((type0)) ((type1)) ... ((typeN)(default_value))
  *                      - Several types_param_factory can be declared if a factory have several signatures
  *                        - Example for several signatures : () ( ((int)) ) ( ((int)) ((std::string)("default")) )
@@ -537,7 +537,7 @@ struct pointer_holder;
  *                          - where types_param_factoryX can be :
  *                            - for a 0-arg factory : ()
  *                            - for a 1-arg of T type factory : ((T)) or ((T)(d))
- *                              where d is a defautl value
+ *                              where d is a default value
  *                            - for a N-parameters factory : ((type0)) ((type1)) ... ((typeN)(default_value))
  *
  */
@@ -584,7 +584,7 @@ struct pointer_holder;
 
 
 /**
- * @brief Generate common code for Non Instanciable classes (Interfaces, Abstrat classes, ...)
+ * @brief Generate common code for Non Instanciable classes (Interfaces, Abstract classes, ...)
  *
 
  * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
