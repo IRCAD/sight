@@ -79,6 +79,8 @@ class FWSERVICES_CLASS_API ServiceFactory : public ::fwCore::BaseObject
 
 public:
 
+    typedef std::string KeyType;
+    typedef std::vector<KeyType> KeyVectorType;
     typedef std::pair<std::string, std::string> StringPair;
 
 #ifdef linux
@@ -131,9 +133,14 @@ public:
      */
     FWSERVICES_API bool support(const std::string & object, const std::string & srvType, const std::string & srvImpl) const;
 
+    /**
+     * @brief returns the registered factory keys.
+     */
+    FWSERVICES_API virtual KeyVectorType getFactoryKeys() const;
+
 protected :
 
-    typedef std::map< std::string, ServiceInfo::sptr > SrvRegContainer;
+    typedef std::map< KeyType, ServiceInfo::sptr > SrvRegContainer;
 
     /// Container of service information
     SrvRegContainer m_srvImplTosrvInfo;

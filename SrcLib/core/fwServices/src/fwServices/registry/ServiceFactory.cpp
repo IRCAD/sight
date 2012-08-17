@@ -454,6 +454,17 @@ bool ServiceFactory::support(const std::string & object, const std::string & srv
 
 //-----------------------------------------------------------------------------
 
+ServiceFactory::KeyVectorType ServiceFactory::getFactoryKeys() const
+{
+    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    KeyVectorType vectKeys;
+    std::transform( m_srvImplTosrvInfo.begin(), m_srvImplTosrvInfo.end(),
+            std::back_inserter(vectKeys),
+            ::boost::bind(& SrvRegContainer::value_type::first,_1) );
+    return vectKeys;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace registry
 } // namespace fwServices
