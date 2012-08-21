@@ -7,17 +7,13 @@
 #ifndef _FWDATA_PATIENTDB_HPP_
 #define _FWDATA_PATIENTDB_HPP_
 
-
 #include <vector>
 #include <boost/cstdint.hpp>
-
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Patient.hpp"
-
-#include "fwData/Factory.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(PatientDB), FWDATA_API);
 

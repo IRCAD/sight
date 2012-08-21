@@ -1,8 +1,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
 
-
-
 #include <fwCamp/Mapper/ValueMapper.hpp>
 #include <fwData/camp/mapper.hpp>
 #include <fwData/Array.hpp>
@@ -23,9 +21,9 @@
 #include "fwMetaConversion/camp/ValueMapper.hpp"
 
 
-
 namespace fwMetaConversion
 {
+
 
 //-----------------------------------------------------------------------------
 
@@ -34,11 +32,13 @@ DataVisitor::DataVisitor(::fwData::Object::sptr data,
                                                                 m_helper(helper)
 {
     std::string type = data->getClassname();
-    m_obj = ::fwCamp::UserObjectFactory::create(type, data.get());
+    const camp::Class& metaclass = camp::classByName(type);
+
+    m_obj = new camp::UserObject(data.get(), type);
+
     m_metaObject = ::fwMetaData::Object::New();
     m_metaObject->setType(type);
 
-    const camp::Class& metaclass = camp::classByName(type);
 
     std::size_t tagCount = metaclass.tagCount();
     if( tagCount > 0)
@@ -51,10 +51,10 @@ DataVisitor::DataVisitor(::fwData::Object::sptr data,
              value = metaclass.tag(key).to< std::string>();
              m_metaObject->addMetaInfo(key, value);
         }
-
     }
 }
 
+//-----------------------------------------------------------------------------
 
 DataVisitor::~DataVisitor()
 {
@@ -154,7 +154,7 @@ void DataVisitor::visit(const camp::UserProperty& property)
 
 void DataVisitor::visit(const camp::Function& function)
 {
-    OSLM_WARN("function visitation not implemented");
+    SLM_WARN("function visitation not implemented");
 }
 
 //-----------------------------------------------------------------------------
@@ -212,7 +212,6 @@ void DataVisitor::visit(const camp::Function& function)
     }
 
     return base;
-
 }
 
 //-----------------------------------------------------------------------------

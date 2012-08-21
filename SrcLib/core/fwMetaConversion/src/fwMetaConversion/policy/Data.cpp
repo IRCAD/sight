@@ -1,31 +1,31 @@
-#include <fwData/Factory.hpp>
 #include <fwTools/BufferObject.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwDataCamp/Factory.hpp>
 
 #include <fwMetaData/MetaVisitor.hpp>
 #include <fwMetaData/Object.hpp>
 #include <fwMetaData/Sequence.hpp>
 #include <fwMetaData/Blob.hpp>
 
-
 #include "fwMetaConversion/policy/Data.hpp"
 #include "fwMetaConversion/policy/DataHelper.hpp"
 #include "fwMetaConversion/camp/ValueMapper.hpp"
 
+namespace fwMetaConversion
+{
+namespace policy
+{
 
-namespace fwMetaConversion {
-namespace policy {
+//-----------------------------------------------------------------------------
 
 Data::Data(::fwMetaConversion::MetaHelper& helper) : m_helper(helper)
 {
-
 }
 
+//-----------------------------------------------------------------------------
 
 void Data::processAttributes(const Attributes & attributes)
 {
-
     Attributes::const_iterator cIt = attributes.begin();
     std::string name;
     ::fwMetaData::Base::sptr attribut;
@@ -41,18 +41,21 @@ void Data::processAttributes(const Attributes & attributes)
         }
         else
         {
-            OSLM_WARN("the property with name :" << name << " is not supported")
+            OSLM_WARN("the property with name :" << name << " is not supported");
         }
     }
 }
 
+//-----------------------------------------------------------------------------
+
 void Data::processMetaInfos(const ::fwMetaData::Object::MetaInfos& metaInfos)
 {
-
     std::string type = metaInfos.find("type")->second;
-    fwData::Object::sptr obj = fwData::Factory::New(type);
+    ::fwData::Object::sptr obj = fwData::factory::New(type);
     m_object = obj;
 }
+
+//-----------------------------------------------------------------------------
 
 void Data::processAttribut(const std::string & name, const Attributes::mapped_type & attribut)
 {
@@ -60,8 +63,10 @@ void Data::processAttribut(const std::string & name, const Attributes::mapped_ty
     const ::camp::Property& p = metaclass.property(name);
 
     std::string classname = m_object->getClassname();
-    camp::UserObject* userObject = ::fwCamp::UserObjectFactory::create(classname,
-                                                                       m_object.get());
+    ::fwCamp::UserObjectFactory::create(classname, m_object.get());
+
+    OSLM_WARN("classname : " << classname);
+    camp::UserObject* userObject = new camp::UserObject(m_object.get(), classname);
 
     int type= p.type();
     switch(type)
@@ -93,10 +98,10 @@ void Data::processAttribut(const std::string & name, const Attributes::mapped_ty
             }
         break;
     }
-
     delete userObject;
 }
 
+//-----------------------------------------------------------------------------
 
 }  // namespace policy
 }  // namespace fwMetaConversion

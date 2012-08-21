@@ -84,25 +84,25 @@ xmlNodePtr DictionaryOrganXMLTranslator::getXMLFrom( ::fwData::Object::sptr obj 
 
     xmlNodePtr roi4OrganDataNode = xmlNewNode(NULL, BAD_CAST "Roi4OrganDataNode");
     xmlAddChild(node, roi4OrganDataNode);
-    if (!dicoOrgan->getCRefRoi4OrganDataNode().expired())
+    if (!dicoOrgan->getCRefRoi4OrganDataNode())
     {
-        xmlNodePtr subRoi4OrganDataNode = XMLTH::toXMLRecursive( dicoOrgan->getCRefRoi4OrganDataNode().lock() );
+        xmlNodePtr subRoi4OrganDataNode = XMLTH::toXMLRecursive( dicoOrgan->getCRefRoi4OrganDataNode() );
         xmlAddChild(roi4OrganDataNode,subRoi4OrganDataNode);
     }
 
     xmlNodePtr maskDataNode = xmlNewNode(NULL, BAD_CAST "MaskDataNode");
     xmlAddChild(node, maskDataNode);
-    if (!dicoOrgan->getCRefMaskDataNode().expired())
+    if (!dicoOrgan->getCRefMaskDataNode())
     {
-        xmlNodePtr subMaskDataNode= XMLTH::toXMLRecursive( dicoOrgan->getCRefMaskDataNode().lock() );
+        xmlNodePtr subMaskDataNode= XMLTH::toXMLRecursive( dicoOrgan->getCRefMaskDataNode() );
         xmlAddChild(maskDataNode,subMaskDataNode);
     }
 
     xmlNodePtr meshDataNode = xmlNewNode(NULL, BAD_CAST "MeshDataNode");
     xmlAddChild(node, meshDataNode);
-    if (!dicoOrgan->getCRefMeshDataNode().expired())
+    if (!dicoOrgan->getCRefMeshDataNode())
     {
-        xmlNodePtr subMeshDataNode = XMLTH::toXMLRecursive( dicoOrgan->getCRefMeshDataNode().lock() );
+        xmlNodePtr subMeshDataNode = XMLTH::toXMLRecursive( dicoOrgan->getCRefMeshDataNode() );
         xmlAddChild(meshDataNode,subMeshDataNode);
     }
 

@@ -14,8 +14,6 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
-#include "fwData/Factory.hpp"
-
 fwCampAutoDeclareDataMacro((fwData)(TransformationMatrix3D), FWDATA_API);
 
 namespace fwData

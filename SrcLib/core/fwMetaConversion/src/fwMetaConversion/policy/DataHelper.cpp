@@ -1,4 +1,3 @@
-
 #include <fwMetaData/Sequence.hpp>
 #include <fwMetaData/Object.hpp>
 #include <fwMetaData/Map.hpp>
@@ -12,18 +11,23 @@
 #include <fwTools/camp/mapper.hpp>
 
 
-
-namespace fwMetaConversion {
-namespace policy {
+namespace fwMetaConversion
+{
+namespace policy
+{
 
 DataHelper::DataHelper(::fwMetaConversion::MetaHelper& helper) : m_helper(helper)
 {
 }
 
+//-----------------------------------------------------------------------------
+
 void DataHelper::processSimpleProperty(const std::string & property, camp::UserObject & userObj, const Attribut & attribut)
 {
     userObj.set(property, attribut->getString());
 }
+
+//-----------------------------------------------------------------------------
 
 void DataHelper::processArrayProperty(const std::string& property, camp::UserObject & userObj, const Attribut & attribut)
 {
@@ -74,6 +78,8 @@ void DataHelper::processArrayProperty(const std::string& property, camp::UserObj
     }
 }
 
+//-----------------------------------------------------------------------------
+
 void DataHelper::processUserProperty(const std::string & property, camp::UserObject & userObj, const Attribut & attribut)
 {
     ::fwMetaData::Object::sptr metaObject;
@@ -85,13 +91,15 @@ void DataHelper::processUserProperty(const std::string & property, camp::UserObj
     }
     else if (metaObject.get() != NULL)
     {
-        OSLM_FATAL("Object could not be null : " << property)
+        OSLM_FATAL("Object could not be null : " << property);
     }
     else
     {
-        OSLM_FATAL("Object type could not be empty: " << property)
+        OSLM_FATAL("Object type could not be empty: " << property);
     }
 }
+
+//-----------------------------------------------------------------------------
 
 void DataHelper::processMappingProperty(const std::string & property, camp::UserObject & userObj, const Attribut & attribut)
 {
@@ -133,9 +141,10 @@ void DataHelper::processMappingProperty(const std::string & property, camp::User
     }
 }
 
+//-----------------------------------------------------------------------------
+
 DataHelper::~DataHelper()
 {
-    // TODO Auto-generated destructor stub
 }
 
 } // namespace policy

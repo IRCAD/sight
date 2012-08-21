@@ -1,4 +1,3 @@
-
 #ifndef __FWDATA_CAMP_MAPPER_HPP__
 #define __FWDATA_CAMP_MAPPER_HPP__
 
@@ -59,12 +58,10 @@ struct ValueMapper< ::fwData::TransferFunction::TFColor >
         }
         else
         {
-            OSLM_WARN("Your tf color is not correctly setted, nb of component : " << result.size())
+            OSLM_WARN("Your tf color is not correctly setted, nb of component : " << result.size());
         }
         return tfColor;
     }
-
-
 };
 
 

@@ -11,7 +11,6 @@
 #include <fwMetaConversion/MetaHelper.hpp>
 #include <fwMetaData/Object.hpp>
 
-
 #include "fwMetaConversion/config.hpp"
 
 namespace fwMetaConversion
@@ -33,9 +32,8 @@ public:
      * @return the mapped metaData
      */
     FWMETACONVERSION_API virtual ::fwMetaData::Object::sptr
-                                  toMeta(::fwData::Object::sptr object,
-                                        ::fwMetaConversion::MetaHelper& metaHelper)
-                                        { return ::fwMetaData::Object::New();}
+                                  toMeta( ::fwData::Object::sptr object,
+                                          ::fwMetaConversion::MetaHelper& metaHelper) = 0;
 
     /**
      * Convert MetaData to fwData
@@ -45,17 +43,16 @@ public:
      * @return the new fwData
      **/
     FWMETACONVERSION_API virtual ::fwData::Object::sptr
-                                 fromMeta(::fwMetaData::Object::sptr meta,
-                                        ::fwMetaConversion::MetaHelper& metaHelper)
-                                        { return ::fwData::Object::New();}
+                                 fromMeta( ::fwMetaData::Object::sptr meta,
+                                           ::fwMetaConversion::MetaHelper& metaHelper) = 0;
 
 protected:
-    ::fwMetaData::Object::sptr computeMinimalInfos(::fwData::Object::sptr object,
-                                                         ::fwMetaConversion::MetaHelper& metaHelper
-                                                         );
-    ::fwData::Object::sptr computeMinimalInfos(::fwMetaData::Object::sptr object,
-                                                     ::fwMetaConversion::MetaHelper& metaHelper
-                                                         );
+
+    ::fwMetaData::Object::sptr computeMinimalInfos( ::fwData::Object::sptr object,
+                                                    ::fwMetaConversion::MetaHelper& metaHelper);
+
+    ::fwData::Object::sptr computeMinimalInfos( ::fwMetaData::Object::sptr object,
+                                                ::fwMetaConversion::MetaHelper& metaHelper);
 
 }; // Value Object
 

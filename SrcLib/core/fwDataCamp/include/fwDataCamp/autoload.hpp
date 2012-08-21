@@ -45,7 +45,6 @@
 #include "fwDataCamp/Tag.hpp"
 #include "fwDataCamp/TransferFunction.hpp"
 #include "fwDataCamp/TransformationMatrix3D.hpp"
-#include "fwDataCamp/TriangularMesh.hpp"
 #include "fwDataCamp/Vector.hpp"
 #include "fwDataCamp/Video.hpp"
 #include "fwDataCamp/location/Folder.hpp"

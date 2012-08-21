@@ -14,8 +14,6 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
 
-#include "fwData/Factory.hpp"
-
 fwCampAutoDeclareDataMacro((fwData)(PointList), FWDATA_API);
 
 namespace fwData
