@@ -11,6 +11,7 @@
 #include <gdcmFileMetaInformation.h>
 
 #include <fwCore/spyLog.hpp>        // for SLM_TRACE_FUNC()
+#include <fwTools/Failed.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
