@@ -2,6 +2,8 @@
 #define _FWPYTHON_INTERPRETER_HPP_
 
 #include <boost/python.hpp>
+#undef tolower //defined by python, conflicting with std::lower
+
 #include <string>
 
 #include <fwTools/Object.hpp>
@@ -25,7 +27,7 @@ public :
    // create a python interpretor
    FWPYTHON_API Interpreter();
 
-    
+
    // a destroy the  python interpretor
    FWPYTHON_API ~Interpreter();
 

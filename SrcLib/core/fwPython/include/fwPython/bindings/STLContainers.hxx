@@ -1,6 +1,8 @@
 #include <boost/python.hpp>
 #include <boost/python/tuple.hpp>
 
+#undef tolower //defined by python, conflicting with std::lower
+
 namespace fwPython {
 namespace bindings {
 
