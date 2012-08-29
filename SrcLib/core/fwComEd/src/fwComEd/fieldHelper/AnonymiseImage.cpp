@@ -77,6 +77,8 @@ void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisi
 {
     ::fwData::Patient::NewSptr pNewPatient;
     pNewPatient->shallowCopy( _pPatient );
+    ::fwData::Patient::StudyContainerType emptyStudies;
+    pNewPatient->setStudies(emptyStudies);
 
     std::map< ::fwData::Acquisition::sptr, ::fwData::Acquisition::sptr > acquisitionMap;
 
@@ -86,6 +88,8 @@ void AnonymiseImage::anonymiseAcquisition( ::fwData::Acquisition::sptr _pAcquisi
         pNewPatient->addStudy(pNewStudy);
 
         pNewStudy->shallowCopy( pStudy );
+        ::fwData::Study::AcquisitionContainerType emptyAcq;
+        pNewStudy->setAcquisitions(emptyAcq);
 
         BOOST_FOREACH( ::fwData::Acquisition::sptr pAcquisition, pStudy->getAcquisitions() )
         {
