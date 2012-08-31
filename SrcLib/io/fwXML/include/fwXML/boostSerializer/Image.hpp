@@ -38,6 +38,8 @@ void save(Archive & ar, const ::fwData::Image &_image, const unsigned int versio
     ar &  ::boost::serialization::make_nvp( "WindowCenter" , windowCenter );
     ar &  ::boost::serialization::make_nvp( "WindowWidth" , windowWidth );
 
+    size_t nbOfComponents = _image.getNumberOfComponents();
+    ar &  ::boost::serialization::make_nvp( "NumberOfComponents"  , nbOfComponents );
 }
 
 template<class Archive>
