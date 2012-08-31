@@ -104,6 +104,12 @@ public:
      */
     fwDataGetSetMacro(WindowWidth , double);
 
+
+    /**
+     * @brief Get/set prefered window center
+     */
+    fwDataGetSetMacro(NumberOfComponents, size_t);
+
     /**
      * @brief set data array
      *
@@ -137,11 +143,10 @@ public:
      *
      * @return Allocated size in bytes
      */
-    FWDATA_API size_t allocate()
-        throw(::fwData::Exception);
-    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z, const ::fwTools::Type &type)
-        throw(::fwData::Exception);
-    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type)
+    FWDATA_API size_t allocate() throw(::fwData::Exception);
+    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
+                               const ::fwTools::Type &type, size_t numberOfComponents = 1) throw(::fwData::Exception);
+    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1)
         throw(::fwData::Exception);
     // @}
 
@@ -180,6 +185,9 @@ protected :
     double m_attrWindowCenter;
     double m_attrWindowWidth;
     ///@}
+
+    //! Number of components
+    size_t m_attrNumberOfComponents;
 
     //! image buffer
     ::fwData::Array::sptr m_dataArray;
