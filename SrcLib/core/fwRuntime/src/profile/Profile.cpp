@@ -208,6 +208,12 @@ void Profile::setParams(int argc, char** argv)
 }
 
 //------------------------------------------------------------------------------
+void Profile::setParams(const Profile::ParamsContainer &params)
+{
+    m_params = params;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace profile
 

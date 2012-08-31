@@ -153,6 +153,7 @@ public:
 
     FWRUNTIME_API ParamsContainer getParams();
 
+    FWRUNTIME_API void setParams(const ParamsContainer &params);
     FWRUNTIME_API void setParams(int argc, char** argv);
 
     FWRUNTIME_API char** getRawParams();
