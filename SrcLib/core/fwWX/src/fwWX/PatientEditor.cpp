@@ -19,9 +19,7 @@
 #include <wx/encconv.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#if defined(_USE_BOOST_REGEX) || defined(__MACOSX__) || defined(WIN32)
 #include <boost/regex.hpp>
-#endif
 
 #include <fwData/PatientDB.hpp>
 #include <fwData/Patient.hpp>
@@ -549,7 +547,6 @@ void PatientEditorDialog::importStudyData()
     //value = stringToWxString(m_pStudy->getAcquisitionZone());
     //m_AcquisitionZone->SetValue(value);
     std::string zone = m_pStudy->getAcquisitionZone();
-#if defined(_USE_BOOST_REGEX) || defined(__MACOSX__) || defined(WIN32)
     boost::regex e ("([a-z A-Z]+)wxGetTranslation([a-z A-Z]+)wxGetTranslation([a-z A-Z]+)");
     if ( regex_match(zone, e) )
     {
@@ -572,7 +569,6 @@ void PatientEditorDialog::importStudyData()
     {
         OSLM_WARN("The field AcquisitionZone : \""<< zone <<"\" does not match with this regex : \""<< e << "\". set AcquisitionZone to defalut value");
     }
-#endif
 
 
     value = std2wx(m_pStudy->getUID());
