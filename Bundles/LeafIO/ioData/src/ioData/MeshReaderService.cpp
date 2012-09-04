@@ -18,6 +18,7 @@
 #include <fwData/location/SingleFile.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
@@ -98,12 +99,33 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
         ::fwDataIO::reader::MeshReader reader;
         reader.setObject( mesh );
         reader.setFile(this->getFile());
-        reader.read();
 
-        // Notify reading
-        ::fwComEd::MeshMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-        ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+        try
+        {
+            // Launch reading process
+            reader.read();
+            // Notify reading
+            ::fwComEd::MeshMsg::NewSptr msg;
+            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
+            ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+        }
+        catch (const std::exception & e)
+        {
+            std::stringstream ss;
+            ss << "Warning during loading : " << e.what();
+
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    ss.str(),
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+        }
+        catch( ... )
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Warning during loading.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+        }
     }
 }
 
