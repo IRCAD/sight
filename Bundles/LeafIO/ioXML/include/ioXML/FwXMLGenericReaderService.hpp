@@ -11,6 +11,7 @@
 #include <string>
 #include <boost/filesystem/path.hpp>
 
+#include <fwComEd/helper/Composite.hpp>
 #include <fwXML/reader/FwXMLObjectReader.hpp>
 #include <io/IReader.hpp>
 #include <fwTools/Object.hpp>
@@ -106,6 +107,8 @@ private :
     ::fwXML::reader::FwXMLObjectReader m_reader;
 
     std::string m_archiveExtenstion;
+    
+    std::string m_inject;
 };
 
 } // namespace ioXML

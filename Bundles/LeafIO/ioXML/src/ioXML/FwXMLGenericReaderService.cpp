@@ -67,6 +67,7 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
 
     typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
     ConfigurationElementContainer extension = m_configuration->find("archiveExtension");
+    ConfigurationElementContainer inject = m_configuration->find("inject");
 
     SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() <= 1 );
 
@@ -76,6 +77,11 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
         SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", extension.size() == 1 );
         SLM_ASSERT("The <"<< (*iter)->getName() <<"> element value can not be empty.", !(*iter)->getValue().empty() );
         m_archiveExtenstion =  (*iter)->getValue();
+
+    }
+    if(inject.size() > 0)
+    {
+        m_inject = inject.at(0)->getValue();
     }
 
 }
@@ -223,20 +229,40 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
             ::fwData::Object::sptr associatedObject = this->getObject();
             SLM_ASSERT("associatedObject not instanced", associatedObject);
 
-            if(obj->getClassname() != associatedObject->getClassname())
+            if(m_inject.empty() ||  associatedObject->getClassname().compare("::fwData::Composite"))
             {
-                std::stringstream stream;
-                stream << "Sorry, the file "<<m_reader.getFile()<< " contains a "
-                        << obj->getRootedClassname() << ", and you need a "
-                        << associatedObject->getRootedClassname();
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                if(obj->getClassname() == associatedObject->getClassname())
+                {
+                    associatedObject->shallowCopy( obj );
+                    notificationOfUpdate();
+                }
+                else
+                {
+
+                    std::stringstream stream;
+                    stream << "Sorry, the file "<<m_reader.getFile()<< " contains a "
+                            << obj->getRootedClassname() << ", and you need a "
+                            << associatedObject->getRootedClassname();
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                             stream.str(),
                             ::fwGui::dialog::IMessageDialog::WARNING);
+                }
+
             }
             else
             {
-                associatedObject->shallowCopy( obj );
-                notificationOfUpdate();
+                ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(associatedObject);
+                ::fwComEd::helper::Composite helper(composite);
+
+                if(composite->find(m_inject) != composite->end())
+                {
+                    helper.swap(m_inject, obj);
+                }
+                else
+                {
+                    helper.add(m_inject, obj);
+                }
+                helper.notify(this->getSptr());
             }
         }
         else

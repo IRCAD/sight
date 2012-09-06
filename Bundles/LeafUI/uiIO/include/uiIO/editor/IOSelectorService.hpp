@@ -115,6 +115,8 @@ private :
 
     /// Map that specifies a configuration extension for a service
     std::map< std::string, std::string > m_serviceToConfig;
+
+    std::string m_inject;
 };
 
 } // namespace editor

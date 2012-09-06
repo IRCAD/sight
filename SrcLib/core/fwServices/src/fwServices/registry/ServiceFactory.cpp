@@ -378,6 +378,18 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
 
 //-----------------------------------------------------------------------------
 
+std::string ServiceFactory::getObjectImplementation(const std::string& srvImpl) const
+{
+    std::string objImpl;
+    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
+    SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
+    objImpl = iter->second->objectImpl;
+    return objImpl;
+}
+
+//-----------------------------------------------------------------------------
+
 std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) const
 {
     std::string srvDescription;

@@ -14,6 +14,8 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/Composite.hpp>
+#include <fwComEd/helper/Composite.hpp>
 #include <fwTools/Object.hpp>
 
 #include <fwServices/Base.hpp>
@@ -113,6 +115,15 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
             std::string configSrv = (*iter)->getExistingAttributeValue("service") ;
             m_serviceToConfig[ configSrv ] = configId;
         }
+
+    }
+
+    typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
+    ConfigurationElementContainer inject = m_configuration->find("inject");
+
+    if(inject.size() > 0)
+    {
+        m_inject = inject.at(0)->getValue();
     }
 
 }
@@ -237,7 +248,31 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             // Configure and start service
             if ( m_mode == READER_MODE )
             {
-                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( this->getObject() , extensionId ) ;
+                ::fwData::Object::sptr object;
+                if(m_inject.empty() ||  this->getObject()->getClassname().compare("::fwData::Composite") )
+                {
+                    object = this->getObject< ::fwData::Object >();
+                }
+                else
+                {
+                    ::fwServices::registry::ServiceFactory::sptr services = ::fwServices::registry::ServiceFactory::getDefault();
+                    std::string objType = services->getObjectImplementation(extensionId);
+                    if(!objType.compare("::fwData::Object"))
+                    {
+                        object = this->getObject< ::fwData::Composite>();
+                    }
+                    else
+                    {
+                        object = ::fwData::factory::New(objType);
+                        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite>();
+                        ::fwComEd::helper::Composite helper(composite);
+                        helper.add(m_inject, object);
+
+                        helper.notify(this->getSptr());
+                    }
+                }
+
+                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( object , extensionId ) ;
                 if ( hasConfigForService )
                 {
                     reader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );

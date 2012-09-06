@@ -94,14 +94,13 @@ public:
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();
 
-    /// Parse bundle information to retreive service declaration
+    /// Parse bundle information to retrieve service declaration
     FWSERVICES_API void parseBundleInformation( );
 
-    FWSERVICES_API void addFactory
-    (   ServiceInfo::FactoryType _factory,
-        const std::string & simpl,
-        const std::string & stype,
-        const std::string & oimpl);
+    FWSERVICES_API void addFactory( ServiceInfo::FactoryType _factory,
+                                    const std::string & simpl,
+                                    const std::string & stype,
+                                    const std::string & oimpl);
 
     FWSERVICES_API SPTR(IService) create( const std::string & _srvImpl ) const;
 
@@ -114,6 +113,9 @@ public:
 
     /// return the default service implementation for an object
     FWSERVICES_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& object, const std::string& type ) const;
+
+    /// return the associated object implementation.
+    FWSERVICES_API  std::string getObjectImplementation(const std::string& srvImpl) const;
 
     /// return the service description.
     FWSERVICES_API  std::string getServiceDescription(const std::string& srvImpl) const;
