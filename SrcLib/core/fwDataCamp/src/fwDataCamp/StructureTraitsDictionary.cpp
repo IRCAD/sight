@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/StructureTraitsDictionary.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/StructureTraitsDictionary.hpp"
 
 fwCampImplementDataMacro((fwData)(StructureTraitsDictionary))
 {

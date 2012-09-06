@@ -12,6 +12,6 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(Array), FWDATACAMP_API)
 fwCampDeclareAccessor((fwData)(Array), (fwTools)(BufferObject));
+
 #endif /* __FWDATACAMP_ARRAY_HPP__ */

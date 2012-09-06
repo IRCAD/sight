@@ -12,7 +12,6 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATACAMP_API)
-
 fwCampDeclareAccessor((fwData)(Mesh), (fwData)(Array));
+
 #endif /* __FWDATACAMP_MESH_HPP__ */

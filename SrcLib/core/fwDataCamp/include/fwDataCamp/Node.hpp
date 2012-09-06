@@ -12,7 +12,6 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(Node), FWDATACAMP_API)
-
 fwCampDeclareAccessor((fwData)(Node), (fwData)(Object));
+
 #endif /* __FWDATACAMP_NODE_HPP__ */

@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/Float.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/Float.hpp"
 
 fwCampImplementDataMacro((fwData)(Float))
 {

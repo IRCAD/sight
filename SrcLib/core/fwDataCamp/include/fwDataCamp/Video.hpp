@@ -12,8 +12,6 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(Video), FWDATACAMP_API)
-
 fwCampDeclareAccessor((fwData)(Video), (fwData)(Camera));
 
 #endif /* __FWDATACAMP_VIDEO_HPP__ */

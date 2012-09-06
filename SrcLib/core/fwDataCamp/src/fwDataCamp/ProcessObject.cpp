@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/ProcessObject.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/ProcessObject.hpp"
 
 fwCampImplementDataMacro((fwData)(ProcessObject))
 {

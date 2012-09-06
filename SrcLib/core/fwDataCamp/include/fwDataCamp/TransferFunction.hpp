@@ -12,7 +12,6 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATACAMP_API)
-
 fwCampAutoDeclareEnumMacro((fwData)(TransferFunction)(InterpolationMode));
+
 #endif /* __FWDATACAMP_TRANSFERFUNCTION_HPP__ */

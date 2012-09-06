@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/String.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/String.hpp"
 
 fwCampImplementDataMacro((fwData)(String))
 {

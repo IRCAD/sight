@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/location/SingleFile.hpp>
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/location/SingleFile.hpp"
 
 fwCampImplementDataMacro((fwData)(location)(SingleFile))
 {

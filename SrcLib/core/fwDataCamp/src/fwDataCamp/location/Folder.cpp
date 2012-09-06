@@ -4,10 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDataCamp/Factory.hpp"
 #include <fwData/camp/mapper.hpp>
-#include "fwDataCamp/location/Folder.hpp"
+#include <fwData/location/Folder.hpp>
 
+#include "fwDataCamp/Factory.hpp"
 
 fwCampImplementDataMacro((fwData)(location)(Folder))
 {

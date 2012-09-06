@@ -4,10 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwData/Graph.hpp>
 #include <fwData/camp/mapper.hpp>
 #include <fwCamp/Mapper/ArrayMapper.hpp>
-#include "fwDataCamp/Graph.hpp"
+
+#include "fwDataCamp/Factory.hpp"
 
 fwCampImplementDataMacro((fwData)(Graph))
 {

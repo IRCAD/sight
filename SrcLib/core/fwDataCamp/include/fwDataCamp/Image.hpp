@@ -12,7 +12,6 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(Image), FWDATACAMP_API)
-
 fwCampDeclareAccessor((fwData)(Image), (fwData)(Array));
+
 #endif /* __FWDATACAMP_IMAGE_HPP__ */

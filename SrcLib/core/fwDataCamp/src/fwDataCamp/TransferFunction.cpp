@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDataCamp/Factory.hpp"
 #include <fwData/camp/mapper.hpp>
+
+#include "fwDataCamp/Factory.hpp"
 #include "fwDataCamp/TransferFunction.hpp"
 
 fwCampImplementDataMacro((fwData)(TransferFunction))
@@ -22,8 +23,6 @@ fwCampImplementDataMacro((fwData)(TransferFunction))
         .property("interpolation_mode", &::fwData::TransferFunction::m_attrInterpolationMode)
         .property("is_clamped", &::fwData::TransferFunction::m_attrIsClamped)
         ;
-
-
 }
 
 fwCampImplementEnumMacro((fwData)(TransferFunction)(InterpolationMode))

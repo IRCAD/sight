@@ -12,7 +12,6 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(Tag), FWDATACAMP_API)
-
 fwCampDeclareAccessor((fwData)(Tag), (fwData)(PointList));
+
 #endif /* __FWDATACAMP_TAG_HPP__ */

@@ -12,7 +12,7 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(StructureTraits), FWDATACAMP_API)
 fwCampAutoDeclareEnumMacro((fwData)(StructureTraits)(Category));
 fwCampAutoDeclareEnumMacro((fwData)(StructureTraits)(StructureClass));
+
 #endif /* __FWDATACAMP_STRUCTURETRAITS_HPP__ */

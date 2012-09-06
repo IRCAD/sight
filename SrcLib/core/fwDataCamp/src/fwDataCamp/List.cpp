@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/List.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/List.hpp"
 
 fwCampImplementDataMacro((fwData)(List))
 {
@@ -15,4 +16,3 @@ fwCampImplementDataMacro((fwData)(List))
         .property("values", &::fwData::List::m_attrContainer)
         ;
 }
-

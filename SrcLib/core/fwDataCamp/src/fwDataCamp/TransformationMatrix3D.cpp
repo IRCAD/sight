@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/TransformationMatrix3D.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/TransformationMatrix3D.hpp"
 
 fwCampImplementDataMacro((fwData)(TransformationMatrix3D))
 {

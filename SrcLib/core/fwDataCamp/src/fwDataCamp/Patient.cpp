@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/Patient.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/Patient.hpp"
 
 fwCampImplementDataMacro((fwData)(Patient))
 {

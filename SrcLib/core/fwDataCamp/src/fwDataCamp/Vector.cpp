@@ -4,14 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/Vector.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/Vector.hpp"
 
 fwCampImplementDataMacro((fwData)(Vector))
 {
     builder
         .tag("object_version", "1")
         .tag("lib_name", "fwData")
-    .base< ::fwData::Object>()
-           .property("values", &::fwData::Vector::m_attrContainer);
+        .base< ::fwData::Object>()
+        .property("values", &::fwData::Vector::m_attrContainer);
 }

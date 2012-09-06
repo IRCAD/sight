@@ -12,8 +12,8 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(Reconstruction), FWDATACAMP_API)
 fwCampDeclareAccessor((fwData)(Reconstruction), (fwData)(Mesh));
 fwCampDeclareAccessor((fwData)(Reconstruction), (fwData)(Image));
 fwCampDeclareAccessor((fwData)(Reconstruction), (fwData)(Material));
+
 #endif /* __FWDATACAMP_RECONSTRUCTION_HPP__ */

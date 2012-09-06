@@ -4,10 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/Edge.hpp>
 
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/Edge.hpp"
-
 
 fwCampImplementDataMacro((fwData)(Edge))
 {

@@ -12,8 +12,6 @@
 
 #include "fwDataCamp/config.hpp"
 
-// fwCampAutoDeclareDataMacro((fwData)(ResectionDB), FWDATACAMP_API)
-
 fwCampDeclareAccessor((fwData)(ResectionDB), (fwData)(Resection));
 
 #endif /* __FWDATACAMP_RESECTIONDB_HPP__ */

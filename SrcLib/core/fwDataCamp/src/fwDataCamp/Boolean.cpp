@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDataCamp/Boolean.hpp"
+#include <fwData/Boolean.hpp>
 #include "fwDataCamp/Factory.hpp"
 
 fwCampImplementDataMacro((fwData)(Boolean))

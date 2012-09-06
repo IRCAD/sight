@@ -4,10 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/PatientDB.hpp>
 
 #include "fwDataCamp/Factory.hpp"
 #include "fwData/camp/mapper.hpp"
-#include "fwDataCamp/PatientDB.hpp"
 
 fwCampImplementDataMacro((fwData)(PatientDB))
 {

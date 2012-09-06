@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/PointList.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/PointList.hpp"
 
 fwCampImplementDataMacro((fwData)(PointList))
 {

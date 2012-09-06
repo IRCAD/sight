@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/PlaneList.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include "fwDataCamp/PlaneList.hpp"
 
 fwCampImplementDataMacro((fwData)(PlaneList))
 {
