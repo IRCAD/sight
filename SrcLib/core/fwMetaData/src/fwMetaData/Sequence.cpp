@@ -1,5 +1,14 @@
 #include "fwMetaData/Sequence.hpp"
 
+fwCampImplementMacro((fwMetaData)(Sequence))
+{
+    builder
+        .tag("object_version", "1")
+        .tag("lib_name", "fwMetaData")
+        .base< ::fwMetaData::Base >()
+        .property("value", &::fwMetaData::Sequence::getValue);
+}
+
 namespace fwMetaData
 {
 
@@ -29,7 +38,8 @@ Sequence::cIterator Sequence::cEnd() const
     return m_value.end();
 }
 
-const Sequence::SequenceType& Sequence::getValue()
+//const Sequence::SequenceType& Sequence::getValue()
+Sequence::SequenceType& Sequence::getValue()
 {
     return m_value;
 }

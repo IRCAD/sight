@@ -1,8 +1,7 @@
 #ifndef __FWABSTRACTDATA_CAMP_DECLARE_HPP__
 #define __FWABSTRACTDATA_CAMP_DECLARE_HPP__
 
-#include "fwMetaData/Object.hpp"
-#include "fwMetaData/Blob.hpp"
+#include "fwMetaData/Types.hpp"
 
 #include "fwMetaData/config.hpp"
 
@@ -14,7 +13,13 @@ struct runner
     runner()
     {
         localDeclarefwMetaDataBase();
+        localDeclarefwMetaDataString();
+        localDeclarefwMetaDataNumeric();
+        localDeclarefwMetaDataBoolean();
         localDeclarefwMetaDataObject();
+        localDeclarefwMetaDataMap();
+        localDeclarefwMetaDataSequence();
+        localDeclarefwMetaDataBlob();
     }
 
     static runner r;

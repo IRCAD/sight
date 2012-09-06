@@ -1,5 +1,13 @@
 #include "fwMetaData/Numeric.hpp"
 
+fwCampImplementMacro((fwMetaData)(Numeric))
+{
+    builder
+        .tag("object_version", "1")
+        .tag("lib_name", "fwMetaData")
+        .base< ::fwMetaData::Base >()
+        .property("value", &::fwMetaData::Numeric::getString, &::fwMetaData::Numeric::setString);
+}
 
 namespace fwMetaData
 {

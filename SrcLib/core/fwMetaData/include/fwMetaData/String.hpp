@@ -3,8 +3,13 @@
 
 #include <string>
 
+#include <fwCamp/Mapper/ValueMapper.hpp>
+#include <fwCamp/macros.hpp>
+
 #include "fwMetaData/config.hpp"
 #include "fwMetaData/Base.hpp"
+
+fwCampAutoDeclareMacro((fwMetaData)(String), FWMETADATA_API);
 
 namespace fwMetaData
 {
@@ -22,6 +27,7 @@ public:
     FWMETADATA_API virtual bool isString() const {return true;};
     FWMETADATA_API virtual std::string getString() const {return m_value;};
 
+    virtual void setString( const std::string value ){m_value=value;};
 
     /**
      * @brief Construct a new Object represented a string.

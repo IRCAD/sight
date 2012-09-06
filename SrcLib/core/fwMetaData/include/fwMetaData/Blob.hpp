@@ -8,6 +8,8 @@
 
 #include <fwCamp/macros.hpp>
 
+fwCampAutoDeclareMacro((fwMetaData)(Blob), FWMETADATA_API);
+
 namespace fwMetaData
 {
 /**

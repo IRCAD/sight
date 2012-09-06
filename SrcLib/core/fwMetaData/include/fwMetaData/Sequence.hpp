@@ -7,7 +7,7 @@
 #include "fwMetaData/config.hpp"
 #include "fwMetaData/Base.hpp"
 
-
+fwCampAutoDeclareMacro((fwMetaData)(Sequence), FWMETADATA_API);
 
 namespace fwMetaData
 {
@@ -54,7 +54,8 @@ public:
 
 
     //! Retrieve internal vector
-    FWMETADATA_API const SequenceType& getValue();
+    //FWMETADATA_API const SequenceType& getValue();
+    FWMETADATA_API SequenceType& getValue();
 
 
     //! access an element in position index

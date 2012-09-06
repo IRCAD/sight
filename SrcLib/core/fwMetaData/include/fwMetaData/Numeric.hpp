@@ -4,8 +4,13 @@
 
 #include <string>
 
+#include <fwCamp/Mapper/ValueMapper.hpp>
+#include <fwCamp/macros.hpp>
+
 #include "fwMetaData/config.hpp"
 #include "fwMetaData/Base.hpp"
+
+fwCampAutoDeclareMacro((fwMetaData)(Numeric), FWMETADATA_API);
 
 namespace fwMetaData
 {

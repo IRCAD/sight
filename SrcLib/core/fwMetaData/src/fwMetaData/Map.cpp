@@ -1,6 +1,15 @@
 #include "fwTools/Factory.hpp"
 #include "fwMetaData/Map.hpp"
 
+fwCampImplementMacro((fwMetaData)(Map))
+{
+    builder
+        .tag("object_version", "1")
+        .tag("lib_name", "fwMetaData")
+        .base< ::fwMetaData::Base>()
+        .property("value", &::fwMetaData::Map::getValue);
+}
+
 namespace fwMetaData
 {
 
@@ -35,10 +44,10 @@ Map::cIterator Map::cEnd() const
     return m_value.end();
 }
 
-const Map::MapType& Map::getValue() const
-{
-    return m_value;
-}
+//const Map::MapType& Map::getValue() const
+//{
+//    return m_value;
+//}
 
 Map::MapType& Map::getValue()
 {

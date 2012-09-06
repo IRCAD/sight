@@ -1,5 +1,14 @@
 #include "fwMetaData/Boolean.hpp"
 
+fwCampImplementMacro((fwMetaData)(Boolean))
+{
+    builder
+        .tag("object_version", "1")
+        .tag("lib_name", "fwMetaData")
+        .base< ::fwMetaData::Base >()
+        .property("value", &::fwMetaData::Boolean::getString, &::fwMetaData::Boolean::setString);
+}
+
 namespace fwMetaData
 {
 

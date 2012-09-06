@@ -7,6 +7,8 @@
 #include "fwMetaData/config.hpp"
 #include "fwMetaData/Base.hpp"
 
+fwCampAutoDeclareMacro((fwMetaData)(Boolean), FWMETADATA_API);
+
 namespace fwMetaData
 {
 

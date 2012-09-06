@@ -1,4 +1,13 @@
 #include "fwMetaData/Blob.hpp"
+
+fwCampImplementMacro((fwMetaData)(Blob))
+{
+    builder
+        .tag("object_version", "1")
+        .tag("lib_name", "fwMetaData")
+        .base< ::fwMetaData::Base >();
+}
+
 namespace fwMetaData
 {
 

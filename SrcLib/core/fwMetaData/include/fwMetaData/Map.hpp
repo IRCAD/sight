@@ -9,6 +9,8 @@
 #include "fwMetaData/Base.hpp"
 #include "fwMetaData/Object.hpp"
 
+fwCampAutoDeclareMacro((fwMetaData)(Map), FWMETADATA_API);
+
 namespace fwMetaData
 {
 
@@ -75,7 +77,7 @@ public:
      */
     FWMETADATA_API bool isEmpty() const;
 
-    FWMETADATA_API const MapType& getValue() const;
+    //FWMETADATA_API const MapType& getValue() const;
     FWMETADATA_API MapType& getValue();
 
 

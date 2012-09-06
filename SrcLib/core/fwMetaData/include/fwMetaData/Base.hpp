@@ -31,6 +31,8 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro((Base), (()), new Base );
     fwCoreAllowSharedFromThis();
 
+    /// return the sub class classname : an alias of this->getClassname
+    std::string className() const { return this->getClassname(); };
 
     /**
      * @brief clone a data.
