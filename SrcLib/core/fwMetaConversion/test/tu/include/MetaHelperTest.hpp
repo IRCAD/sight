@@ -13,6 +13,9 @@ class MetaHelperTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE( MetaHelperTest );
     CPPUNIT_TEST( dataToMeta );
     CPPUNIT_TEST( metaToData );
+    CPPUNIT_TEST( visitPatientDataTest );
+    CPPUNIT_TEST( visitPatientMetaDataTest );
+    CPPUNIT_TEST( visitCompositeDataTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -22,6 +25,11 @@ public:
 
     void dataToMeta();
     void metaToData();
+    void visitPatientDataTest();
+    void visitPatientMetaDataTest();
+    void visitCompositeDataTest();
+
+    void visitCampObject( const camp::UserObject & campObj );
 
 };
 

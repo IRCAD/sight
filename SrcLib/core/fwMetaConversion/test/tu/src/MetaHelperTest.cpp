@@ -1,4 +1,6 @@
 #include <fwMetaConversion/MetaHelper.hpp>
+#include <fwMetaConversion/CampObjectVisitor.hpp>
+#include <fwMetaConversion/CampObjectPrinterVisitor.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
@@ -20,8 +22,10 @@
 #include <fwData/PointList.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/TransferFunction.hpp>
+
 #include <fwDataTools/Patient.hpp>
 #include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Image.hpp>
 
 #include "MetaHelperTest.hpp"
 
@@ -160,6 +164,63 @@ void MetaHelperTest::metaToData()
     bool patientComparison = ::fwDataTools::Patient::comparePatient(patient, patientResultat);
 
     CPPUNIT_ASSERT_MESSAGE("Patient Not equal" , patientComparison);
+}
+
+void MetaHelperTest::visitCampObject( const camp::UserObject & campObj )
+{
+    //::fwMetaConversion::CampObjectVisitor visitor( campObj );
+    ::fwMetaConversion::CampObjectPrinterVisitor visitor( campObj );
+    campObj.getClass().visit(visitor);
+}
+
+void MetaHelperTest::visitPatientDataTest()
+{
+    // Generate data
+    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
+    ::fwDataTools::Patient::generatePatient(patient, 1, 1, 1);
+
+    // Convert in camp object
+    ::camp::UserObject campObj ( patient.get() );
+
+    // visite camp object
+    this->visitCampObject( campObj );
+}
+
+void MetaHelperTest::visitPatientMetaDataTest()
+{
+    // Generate data
+    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
+    ::fwDataTools::Patient::generatePatient(patient, 1, 1, 1);
+
+    // Convert in meta data
+    fwMetaConversion::MetaHelper metaHelper;
+    ::fwMetaData::Object::sptr metaObject = metaHelper.dataToMeta( patient );
+
+    // Convert in camp object
+    ::camp::UserObject campObj ( metaObject.get() );
+
+    // visite camp object
+    this->visitCampObject( campObj );
+}
+
+void MetaHelperTest::visitCompositeDataTest()
+{
+    // Generate data
+    ::fwData::Image::NewSptr img1;
+    ::fwDataTools::Image::generateRandomImage(img1, ::fwTools::Type::create("int16"));
+
+    ::fwData::Image::NewSptr img2;
+    ::fwDataTools::Image::generateRandomImage(img2, ::fwTools::Type::create("uint8"));
+
+    ::fwData::Composite::NewSptr composite;
+    composite->getContainer()["img1"]=img1;
+    composite->getContainer()["img2"]=img2;
+
+    // Convert in camp object
+    ::camp::UserObject campObj ( composite.get() );
+
+    // visite camp object
+    this->visitCampObject( campObj );
 }
 
 }  // namespace ut

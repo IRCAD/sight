@@ -9,7 +9,8 @@
 
 fwCampImplementMacro((fwTools)(BufferObject))
 {
-    builder.tag("buffer");
+    builder.tag("buffer")
+           .function("classname", &::fwTools::BufferObject::className);
 }
 
 namespace fwTools

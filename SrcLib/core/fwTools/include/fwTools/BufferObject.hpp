@@ -50,7 +50,11 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((BufferObject), (()), new BufferObject );
     fwCoreAllowSharedFromThis();
-    FWTOOLS_API  virtual void* getBuffer() { return m_buffer;};
+
+    /// return the sub class classname : an alias of this->getClassname
+    std::string className() const { return this->getClassname(); };
+
+    virtual void* getBuffer() { return m_buffer;};
 
     /**
      * @brief base class for BufferObject Lock
