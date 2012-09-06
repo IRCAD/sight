@@ -445,6 +445,7 @@ bool VtkRenderService::isShownOnScreen()
 void VtkRenderService::startContext()
 {
     m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+    m_interactorManager->setRenderService(this->getSptr());
     m_interactorManager->installInteractor( this->getContainer() );
 
     // For Depth peeling (translucent rendering)

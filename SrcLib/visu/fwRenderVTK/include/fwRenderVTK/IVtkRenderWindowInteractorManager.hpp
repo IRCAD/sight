@@ -8,6 +8,7 @@
 #define _FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP_
 
 #include <string>
+#include <fwServices/IService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 
@@ -55,6 +56,11 @@ public:
     /// Return a pointer on interactor
     FWRENDERVTK_API virtual ::vtkRenderWindowInteractor * getInteractor() = 0;
 
+    virtual void setRenderService(::fwServices::IService::sptr srv){m_renderService = srv;}
+
+
+protected:
+    ::fwServices::IService::wptr m_renderService;
 };
 
 } // namespace fwRenderVTK
