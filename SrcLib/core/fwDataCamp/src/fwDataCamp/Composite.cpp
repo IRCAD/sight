@@ -5,10 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/Composite.hpp>
+#include <fwData/camp/mapper.hpp>
 
 #include <fwCamp/Mapper/ValueMapper.hpp>
+
 #include "fwDataCamp/Factory.hpp"
-#include <fwData/camp/mapper.hpp>
 
 
 fwCampImplementDataMacro((fwData)(Composite))
