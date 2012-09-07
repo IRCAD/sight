@@ -27,6 +27,8 @@ fwMetaData::Object::sptr MetaHelper::fromFwData(fwData::Object::sptr object)
     return metaObject;
 }
 
+//-----------------------------------------------------------------------------
+
 fwMetaData::Object::sptr MetaHelper::dataToMeta(fwData::Object::sptr object)
 {
 
@@ -60,11 +62,10 @@ fwMetaData::Object::sptr MetaHelper::dataToMeta(fwData::Object::sptr object)
         metaObj->setId(id);
         m_metaCache[id] =  metaObj;
     }
-
-
     return metaObj;
 }
 
+//-----------------------------------------------------------------------------
 
 ::fwData::Object::sptr MetaHelper::toFwData(fwMetaData::Object::sptr object)
 {
@@ -73,6 +74,8 @@ fwMetaData::Object::sptr MetaHelper::dataToMeta(fwData::Object::sptr object)
     this->clearCache();
     return dataObject;
 }
+
+//-----------------------------------------------------------------------------
 
 ::fwData::Object::sptr MetaHelper::metaToData(fwMetaData::Object::sptr object)
 {
@@ -108,25 +111,34 @@ fwMetaData::Object::sptr MetaHelper::dataToMeta(fwData::Object::sptr object)
     return dataObject;
 }
 
+//-----------------------------------------------------------------------------
 
 MetaHelper::MetaHelper()
 {
     m_nbProcessObject = 0;
 }
 
+//-----------------------------------------------------------------------------
+
 MetaHelper::~MetaHelper()
 {
 }
+
+//-----------------------------------------------------------------------------
 
 void MetaHelper::clearCache()
 {
     this->m_cache.clear();
 }
 
+//-----------------------------------------------------------------------------
+
 void MetaHelper::clearMetaCache()
 {
     this->m_metaCache.clear();
 }
+
+//-----------------------------------------------------------------------------
 
 unsigned int MetaHelper::getNbProcessObject()
 {

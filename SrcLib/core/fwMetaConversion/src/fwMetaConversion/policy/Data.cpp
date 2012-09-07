@@ -71,7 +71,7 @@ void Data::processAttribut(const std::string & name, const Attributes::mapped_ty
     std::string classname = m_object->getClassname();
     ::fwCamp::UserObjectFactory::create(classname, m_object.get());
 
-    OSLM_WARN("classname : " << classname);
+    OSLM_TRACE("classname : " << classname);
     camp::UserObject* userObject = new camp::UserObject(m_object.get(), classname);
 
     int type= p.type();

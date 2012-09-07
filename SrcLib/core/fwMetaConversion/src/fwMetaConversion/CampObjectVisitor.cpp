@@ -235,8 +235,8 @@ std::string CampObjectVisitor::getCampType( const ::camp::Type & type )
             strType = "noType";
             break;
         default :
-            strType = "unknow";
-            SLM_WARN("Camp type not definied.");
+            strType = "unknown";
+            SLM_WARN("Camp type not defined.");
             break;
     }
 

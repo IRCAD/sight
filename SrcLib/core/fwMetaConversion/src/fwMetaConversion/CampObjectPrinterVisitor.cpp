@@ -36,7 +36,6 @@ namespace fwMetaConversion
 
 struct StringValueVisitor : public camp::ValueVisitor<std::string>
 {
-
     std::string operator()(camp::NoType value)
     {
         SLM_FATAL("Case not managed");

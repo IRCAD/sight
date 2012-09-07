@@ -37,8 +37,6 @@ void DataHelper::processSimpleProperty(const std::string & property, camp::UserO
 
 void DataHelper::processArrayProperty(const std::string& property, camp::UserObject & userObj, const Attribut & attribut)
 {
-
-
     ::fwMetaData::Object::sptr metaObject;
     ::fwMetaData::Sequence::sptr sequence;
     ::fwMetaData::Base::sptr element;
