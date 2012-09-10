@@ -96,14 +96,14 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
         ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
         SLM_ASSERT("mesh not instanced", mesh);
 
-        ::fwDataIO::reader::MeshReader reader;
-        reader.setObject( mesh );
-        reader.setFile(this->getFile());
+        ::fwDataIO::reader::MeshReader::NewSptr reader;
+        reader->setObject( mesh );
+        reader->setFile(this->getFile());
 
         try
         {
             // Launch reading process
-            reader.read();
+            reader->read();
             // Notify reading
             ::fwComEd::MeshMsg::NewSptr msg;
             msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );

@@ -113,10 +113,10 @@ void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
         SLM_ASSERT("matrix not instanced", matrix);
 
-        ::fwDataIO::reader::TransformationMatrix3DReader reader;
-        reader.setObject( matrix );
-        reader.setFile(this->getFile());
-        reader.read();
+        ::fwDataIO::reader::TransformationMatrix3DReader::NewSptr reader;
+        reader->setObject( matrix );
+        reader->setFile(this->getFile());
+        reader->read();
 
         // Notify reading
         ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;

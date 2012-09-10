@@ -63,16 +63,16 @@ void CompositeReaderService::updating( ) throw(::fwTools::Failed)
     ::fwData::Composite::sptr pComposite = this->getObject< ::fwData::Composite >();
     SLM_ASSERT("pComposite not instanced", pComposite);
 
-    ::fwXML::reader::FwXMLObjectReader myReader;
+    ::fwXML::reader::FwXMLObjectReader::NewSptr myReader;
 
-    myReader.setFile(m_fsExternalDataPath);
+    myReader->setFile(m_fsExternalDataPath);
     if (m_fsExternalDataPath != "")
     {
         try
         {
-            myReader.read();
+            myReader->read();
             ::fwData::Composite::sptr newCompo;
-            newCompo = ::fwData::Composite::dynamicCast( myReader.getObject() );
+            newCompo = ::fwData::Composite::dynamicCast( myReader->getObject() );
             pComposite->shallowCopy(newCompo);
         }
         catch (const std::exception & e)

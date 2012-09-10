@@ -64,16 +64,16 @@ void CompositeWriterService::updating( ) throw(::fwTools::Failed)
     ::fwData::Composite::sptr pComposite = this->getObject< ::fwData::Composite >();
     SLM_ASSERT("pComposite not instanced", pComposite);
 
-    ::fwXML::writer::FwXMLObjectWriter myWriter;
+    ::fwXML::writer::FwXMLObjectWriter::NewSptr myWriter;
 
     if (m_fsExternalDataPath != "")
     {
-        myWriter.setObject(pComposite);
-        myWriter.setFile(m_fsExternalDataPath);
+        myWriter->setObject(pComposite);
+        myWriter->setFile(m_fsExternalDataPath);
 
         try
         {
-            myWriter.write();
+            myWriter->write();
         }
         catch (const std::exception & e)
         {

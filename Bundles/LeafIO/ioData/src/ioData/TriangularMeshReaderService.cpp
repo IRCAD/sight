@@ -95,10 +95,10 @@ void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
         SLM_ASSERT("mesh not instanced", mesh);
 
-        ::fwDataIO::reader::TriangularMeshReader reader;
-        reader.setObject( mesh );
-        reader.setFile(this->getFile());
-        reader.read();
+        ::fwDataIO::reader::TriangularMeshReader::NewSptr reader;
+        reader->setObject( mesh );
+        reader->setFile(this->getFile());
+        reader->read();
 
         // Notify reading
         ::fwComEd::TriangularMeshMsg::NewSptr msg;
