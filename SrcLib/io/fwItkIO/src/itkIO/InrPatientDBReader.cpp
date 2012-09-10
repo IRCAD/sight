@@ -14,7 +14,8 @@
 #include <fwData/Study.hpp>
 #include <fwData/Acquisition.hpp>
 #include <fwData/Image.hpp>
-#include <fwTools/Factory.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include <itkIO/ImageReader.hpp>
 
@@ -23,9 +24,11 @@
 namespace itkIO
 {
 
+fwDataIOReaderRegisterMacro( ::itkIO::InrPatientDBReader );
+
 //------------------------------------------------------------------------------
 
-InrPatientDBReader::InrPatientDBReader() :
+InrPatientDBReader::InrPatientDBReader(::fwDataIO::reader::IObjectReader::Key key) :
 ::fwData::location::enableSingleFile< IObjectReader >(this),
 ::fwData::location::enableMultiFiles< IObjectReader >(this),
 ::fwData::location::enableFolder< IObjectReader >(this)

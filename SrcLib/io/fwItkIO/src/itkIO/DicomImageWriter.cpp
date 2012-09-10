@@ -14,16 +14,18 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwDataIO/writer/registry/macros.hpp>
+
 #include "itkIO/DicomImageWriter.hpp"
 #include "itkIO/DicomPatientWriter.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::itkIO::DicomImageWriter, ::itkIO::DicomImageWriter );
+fwDataIOWriterRegisterMacro( ::itkIO::DicomImageWriter );
 
 namespace itkIO
 {
 //------------------------------------------------------------------------------
 
-DicomImageWriter::DicomImageWriter() :
+DicomImageWriter::DicomImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
         ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();

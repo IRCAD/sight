@@ -20,18 +20,20 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwDataIO/writer/registry/macros.hpp>
+
 #include "itkIO/helper/ProgressItkToFw.hpp"
 #include "itkIO/ImageWriter.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::itkIO::ImageWriter, ::itkIO::ImageWriter );
+fwDataIOWriterRegisterMacro( ::itkIO::ImageWriter );
 
 
 namespace itkIO
 {
 //------------------------------------------------------------------------------
 
-ImageWriter::ImageWriter()
+ImageWriter::ImageWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();

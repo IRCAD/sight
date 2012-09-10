@@ -30,17 +30,15 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((JpgPatientDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >),
                                            (()),
-                                           new JpgPatientDBReader
+                                           ::fwDataIO::reader::factory::New< JpgPatientDBReader >
                                           );
     fwCoreAllowSharedFromThis();
 
-    FWITKIO_API void read();
-
-protected:
-
-    FWITKIO_API JpgPatientDBReader();
+    FWITKIO_API JpgPatientDBReader(::fwDataIO::reader::IObjectReader::Key key);
 
     FWITKIO_API ~JpgPatientDBReader();
+
+    FWITKIO_API void read();
 
 private :
 

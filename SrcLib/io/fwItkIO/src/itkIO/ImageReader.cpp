@@ -18,14 +18,15 @@
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/TypeInfoKeyTypeMapping.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include "inr2itk/itkInrImageIOFactory.h"
 
 #include "itkIO/ImageReader.hpp"
 #include "itkIO/helper/ProgressItkToFw.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::itkIO::ImageReader,  ::itkIO::ImageReader );
+fwDataIOReaderRegisterMacro( ::itkIO::ImageReader );
 
 
 namespace itkIO
@@ -33,7 +34,7 @@ namespace itkIO
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader()  : ::fwData::location::enableSingleFile< IObjectReader >(this)
+ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key key)  : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }

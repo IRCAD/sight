@@ -28,19 +28,17 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((JpgImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>),
                                            (()),
-                                           new  JpgImageWriter
+                                           ::fwDataIO::writer::factory::New< JpgImageWriter >
                                           );
     fwCoreAllowSharedFromThis();
+
+    FWITKIO_API JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    FWITKIO_API ~JpgImageWriter();
 
     FWITKIO_API void write();
 
     FWITKIO_API std::string  extension();
-
-protected:
-
-    FWITKIO_API JpgImageWriter();
-
-    FWITKIO_API ~JpgImageWriter();
 };
 
 } // namespace itkIO

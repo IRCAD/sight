@@ -28,20 +28,18 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::PatientDB>),
                                             (()),
-                                            new  DicomPatientDBWriter
+                                            ::fwDataIO::writer::factory::New< DicomPatientDBWriter >
                                           );
 
     fwCoreAllowSharedFromThis();
 
+    FWITKIO_API DicomPatientDBWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    FWITKIO_API ~DicomPatientDBWriter();
+
     FWITKIO_API void write();
 
     FWITKIO_API std::string  extension();
-
-protected:
-
-    FWITKIO_API DicomPatientDBWriter();
-
-    FWITKIO_API ~DicomPatientDBWriter();
 };
 
 } // namespace itkIO

@@ -28,19 +28,17 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((DicomImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>),
                                            (()),
-                                           new  DicomImageWriter
+                                           ::fwDataIO::writer::factory::New< DicomImageWriter >
                                           );
     fwCoreAllowSharedFromThis();
+
+    FWITKIO_API DicomImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    FWITKIO_API ~DicomImageWriter();
 
     FWITKIO_API void write();
 
     FWITKIO_API std::string  extension();
-
-protected:
-
-    FWITKIO_API DicomImageWriter();
-
-    FWITKIO_API ~DicomImageWriter();
 };
 
 } // namespace itkIO

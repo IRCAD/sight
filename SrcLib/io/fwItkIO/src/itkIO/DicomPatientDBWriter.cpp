@@ -11,21 +11,21 @@
 
 #include <itkImageSeriesReader.h>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwCore/base.hpp>
 
 #include "itkIO/DicomPatientDBWriter.hpp"
 #include "itkIO/DicomPatientWriter.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::itkIO::DicomPatientDBWriter, ::itkIO::DicomPatientDBWriter );
+fwDataIOWriterRegisterMacro( ::itkIO::DicomPatientDBWriter );
 
 
 namespace itkIO
 {
 //------------------------------------------------------------------------------
 
-DicomPatientDBWriter::DicomPatientDBWriter()
+DicomPatientDBWriter::DicomPatientDBWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();

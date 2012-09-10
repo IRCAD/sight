@@ -29,17 +29,15 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((ImageReader)(::fwDataIO::reader::GenericObjectReader< ::fwData::Image>),
                                             (()),
-                                            new  ImageReader
+                                            ::fwDataIO::reader::factory::New< ImageReader >
                                            );
     fwCoreAllowSharedFromThis();
 
-    FWITKIO_API void read();
-
-protected :
-
-    FWITKIO_API ImageReader();
+    FWITKIO_API ImageReader(::fwDataIO::reader::IObjectReader::Key key);
 
     FWITKIO_API ~ImageReader();
+
+    FWITKIO_API void read();
 };
 
 } // namespace itkIO

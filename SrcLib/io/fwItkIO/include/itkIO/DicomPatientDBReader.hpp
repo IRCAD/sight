@@ -13,6 +13,8 @@
 
 #include <itkGDCMImageIO.h>
 
+#include <fwDataIO/reader/factory/new.hpp>
+
 #include "itkIO/config.hpp"
 
 
@@ -28,17 +30,18 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >),
                                                (()),
-                                               new DicomPatientDBReader
+                                               ::fwDataIO::reader::factory::New< DicomPatientDBReader >
                                               );
     fwCoreAllowSharedFromThis();
 
     FWITKIO_API void read();
 
+    FWITKIO_API DicomPatientDBReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWITKIO_API ~DicomPatientDBReader();
+
 protected:
 
-    FWITKIO_API DicomPatientDBReader();
 
-    FWITKIO_API ~DicomPatientDBReader();
 
 private :
 

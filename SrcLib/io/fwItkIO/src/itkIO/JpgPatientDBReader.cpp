@@ -14,7 +14,8 @@
 #include <fwData/Study.hpp>
 #include <fwData/Acquisition.hpp>
 #include <fwData/Image.hpp>
-#include <fwTools/Factory.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include "itkIO/ImageReader.hpp"
 #include "itkIO/JpgPatientDBReader.hpp"
@@ -22,9 +23,11 @@
 namespace itkIO
 {
 
+fwDataIOReaderRegisterMacro( ::itkIO::JpgPatientDBReader );
+
 //------------------------------------------------------------------------------
 
-JpgPatientDBReader::JpgPatientDBReader() :
+JpgPatientDBReader::JpgPatientDBReader(::fwDataIO::reader::IObjectReader::Key key) :
 ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
