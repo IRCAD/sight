@@ -28,20 +28,18 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::PatientDB>),
                                            (()),
-                                           new  DicomPatientDBWriter
+                                           ::fwDataIO::writer::factory::New< DicomPatientDBWriter >
                                           );
     fwCoreAllowSharedFromThis();
 
 
+    VTKGDCMIO_API DicomPatientDBWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    VTKGDCMIO_API ~DicomPatientDBWriter();
+
     VTKGDCMIO_API void write();
 
     VTKGDCMIO_API std::string  extension();
-
-protected:
-
-    VTKGDCMIO_API DicomPatientDBWriter();
-
-    VTKGDCMIO_API ~DicomPatientDBWriter();
 };
 
 } // namespace vtkGdcmIO

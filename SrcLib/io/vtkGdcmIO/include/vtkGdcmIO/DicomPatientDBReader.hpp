@@ -31,17 +31,15 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >),
                                            (()),
-                                           new DicomPatientDBReader
+                                           ::fwDataIO::reader::factory::New< DicomPatientDBReader >
                                           );
     fwCoreAllowSharedFromThis();
 
-    VTKGDCMIO_API void read();
-
-protected:
-
-    VTKGDCMIO_API DicomPatientDBReader();
+    VTKGDCMIO_API DicomPatientDBReader(::fwDataIO::reader::IObjectReader::Key key);
 
     VTKGDCMIO_API ~DicomPatientDBReader();
+
+    VTKGDCMIO_API void read();
 
 private :
 

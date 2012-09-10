@@ -28,19 +28,17 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (DicomImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>),
                                             (()),
-                                            new  DicomImageWriter
+                                            ::fwDataIO::writer::factory::New< DicomImageWriter >
                                           );
     fwCoreAllowSharedFromThis();
+
+    VTKGDCMIO_API DicomImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    VTKGDCMIO_API ~DicomImageWriter();
 
     VTKGDCMIO_API void write();
 
     VTKGDCMIO_API std::string  extension();
-
-protected:
-
-    VTKGDCMIO_API DicomImageWriter();
-
-    VTKGDCMIO_API ~DicomImageWriter();
 };
 
 } // namespace vtkGdcmIO
