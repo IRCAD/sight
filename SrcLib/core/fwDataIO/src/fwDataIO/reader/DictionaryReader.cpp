@@ -47,10 +47,11 @@
 #include <fwData/StructureTraitsHelper.hpp>
 
 #include "fwDataIO/reader/DictionaryReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 #include <string>
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::DictionaryReader, ::fwDataIO::reader::DictionaryReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::DictionaryReader );
 
 
 namespace fwDataIO
@@ -254,7 +255,7 @@ std::pair<bool,std::string> parse(Iterator first,  Iterator last, std::string& b
 
 //------------------------------------------------------------------------------
 
-DictionaryReader::DictionaryReader()
+DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key key)
     : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
 }

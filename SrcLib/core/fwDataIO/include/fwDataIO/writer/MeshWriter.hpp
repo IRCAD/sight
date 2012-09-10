@@ -44,10 +44,10 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((MeshWriter)(GenericObjectWriter< ::fwData::Mesh >),
                                            (()),
-                                           new  MeshWriter
+                                           ::fwDataIO::writer::factory::New< MeshWriter >
                                            );
     /// Constructor. Do nothing.
-    FWDATAIO_API MeshWriter( );
+    FWDATAIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~MeshWriter();

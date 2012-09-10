@@ -16,10 +16,10 @@
 #include <fwComEd/helper/Image.hpp>
 
 #include "fwDataIO/writer/GzBufferImageWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
 
-
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::GzBufferImageWriter,  ::fwDataIO::writer::GzBufferImageWriter);
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::GzBufferImageWriter);
 
 
 namespace fwDataIO
@@ -30,7 +30,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-GzBufferImageWriter::GzBufferImageWriter()
+GzBufferImageWriter::GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 

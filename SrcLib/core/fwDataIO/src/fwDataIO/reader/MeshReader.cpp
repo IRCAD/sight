@@ -30,9 +30,10 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/reader/MeshReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::MeshReader, ::fwDataIO::reader::MeshReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::MeshReader );
 
 
 namespace fwDataIO
@@ -196,7 +197,7 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-MeshReader::MeshReader()
+MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key key)
 : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 

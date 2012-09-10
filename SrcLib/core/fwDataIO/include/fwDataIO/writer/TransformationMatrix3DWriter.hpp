@@ -38,10 +38,10 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3DWriter)(GenericObjectWriter< ::fwData::TransformationMatrix3D >),
                                             (()),
-                                            new  TransformationMatrix3DWriter
+                                            ::fwDataIO::writer::factory::New< TransformationMatrix3DWriter >
                                            );
     /// Constructor. Do nothing.
-    FWDATAIO_API TransformationMatrix3DWriter();
+    FWDATAIO_API TransformationMatrix3DWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~TransformationMatrix3DWriter();

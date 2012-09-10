@@ -43,11 +43,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (MeshReader)(GenericObjectReader< ::fwData::Mesh >),
                                             (()),
-                                            new  MeshReader
+                                            ::fwDataIO::reader::factory::New< MeshReader >
                                             );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API MeshReader();
+    FWDATAIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~MeshReader();

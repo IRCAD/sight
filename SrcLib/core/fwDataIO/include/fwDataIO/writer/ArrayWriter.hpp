@@ -36,11 +36,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((ArrayWriter)(GenericObjectWriter< ::fwData::Array>),
                                            (()),
-                                           new  ArrayWriter
+                                           ::fwDataIO::writer::factory::New< ArrayWriter >
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API ArrayWriter( );
+    FWDATAIO_API ArrayWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~ArrayWriter();

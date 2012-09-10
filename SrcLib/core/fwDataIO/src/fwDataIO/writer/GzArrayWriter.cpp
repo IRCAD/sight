@@ -15,9 +15,10 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/writer/GzArrayWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::GzArrayWriter,  ::fwDataIO::writer::GzArrayWriter);
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::GzArrayWriter);
 
 namespace fwDataIO
 {
@@ -26,7 +27,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-GzArrayWriter::GzArrayWriter()
+GzArrayWriter::GzArrayWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 

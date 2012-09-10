@@ -17,10 +17,10 @@
 
 
 #include "fwDataIO/writer/TransformationMatrix3DWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
 
-
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::TransformationMatrix3DWriter , ::fwDataIO::writer::TransformationMatrix3DWriter);
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::TransformationMatrix3DWriter);
 
 
 namespace fwDataIO
@@ -31,7 +31,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3DWriter::TransformationMatrix3DWriter()
+TransformationMatrix3DWriter::TransformationMatrix3DWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 

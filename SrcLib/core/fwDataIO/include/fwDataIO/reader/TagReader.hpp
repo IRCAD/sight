@@ -42,10 +42,10 @@ class FWDATAIO_CLASS_API TagReader :
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TagReader)(GenericObjectReader< ::fwData::Tag >),
                                             (()),
-                                            new  TagReader
+                                            ::fwDataIO::reader::factory::New< TagReader >
                                            );
     /// Constructor. Do nothing.
-    FWDATAIO_API TagReader();
+    FWDATAIO_API TagReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~TagReader();

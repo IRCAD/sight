@@ -22,9 +22,10 @@
 #include <fwData/location/SingleFile.hpp>
 
 #include "fwDataIO/reader/TriangularMeshReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::TriangularMeshReader, ::fwDataIO::reader::TriangularMeshReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::TriangularMeshReader );
 
 
 namespace fwDataIO
@@ -88,7 +89,7 @@ bool parseTrian(Iterator first, Iterator last, ::fwData::TriangularMesh::PointCo
 
 //------------------------------------------------------------------------------
 
-TriangularMeshReader::TriangularMeshReader()
+TriangularMeshReader::TriangularMeshReader(::fwDataIO::reader::IObjectReader::Key key)
 : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 

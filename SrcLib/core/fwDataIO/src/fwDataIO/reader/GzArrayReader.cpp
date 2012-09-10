@@ -14,9 +14,10 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/reader/GzArrayReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::GzArrayReader, ::fwDataIO::reader::GzArrayReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::GzArrayReader );
 
 
 namespace fwDataIO
@@ -27,7 +28,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzArrayReader::GzArrayReader() : ::fwData::location::enableSingleFile< IObjectReader >(this)
+GzArrayReader::GzArrayReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 
 //------------------------------------------------------------------------------

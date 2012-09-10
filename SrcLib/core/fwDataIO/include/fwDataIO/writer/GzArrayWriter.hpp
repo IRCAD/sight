@@ -37,11 +37,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((GzArrayWriter)(GenericObjectWriter< ::fwData::Array>),
                                            (()),
-                                           new  GzArrayWriter
+                                           ::fwDataIO::writer::factory::New< GzArrayWriter >
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API GzArrayWriter( );
+    FWDATAIO_API GzArrayWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~GzArrayWriter();

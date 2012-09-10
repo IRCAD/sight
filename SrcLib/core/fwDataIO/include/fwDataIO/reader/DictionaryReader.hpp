@@ -44,11 +44,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (DictionaryReader)(GenericObjectReader< ::fwData::StructureTraitsDictionary >),
                                             (()),
-                                            new  DictionaryReader
+                                            ::fwDataIO::reader::factory::New< DictionaryReader >
                                             );
 
     /// Constructor. Do nothing .
-    FWDATAIO_API DictionaryReader();
+    FWDATAIO_API DictionaryReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~DictionaryReader();

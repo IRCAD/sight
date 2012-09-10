@@ -37,11 +37,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((ArrayReader)(GenericObjectReader< ::fwData::Array>),
                                            (()),
-                                           new  ArrayReader
+                                           ::fwDataIO::reader::factory::New<ArrayReader>
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API ArrayReader();
+    FWDATAIO_API ArrayReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~ArrayReader();

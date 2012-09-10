@@ -36,11 +36,11 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((TransformationMatrix3DReader)(GenericObjectReader< ::fwData::TransformationMatrix3D >),
                                            (()),
-                                           new  TransformationMatrix3DReader
+                                           ::fwDataIO::reader::factory::New< TransformationMatrix3DReader >
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API TransformationMatrix3DReader();
+    FWDATAIO_API TransformationMatrix3DReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~TransformationMatrix3DReader();

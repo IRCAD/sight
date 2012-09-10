@@ -15,8 +15,9 @@
 #include <fwTools/ClassRegistrar.hpp>
 
 #include "fwDataIO/writer/TriangularMeshWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::TriangularMeshWriter, ::fwDataIO::writer::TriangularMeshWriter );
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::TriangularMeshWriter );
 
 
 namespace fwDataIO
@@ -27,7 +28,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-TriangularMeshWriter::TriangularMeshWriter()
+TriangularMeshWriter::TriangularMeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 

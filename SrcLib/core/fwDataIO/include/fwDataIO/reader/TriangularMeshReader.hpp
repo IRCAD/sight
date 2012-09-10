@@ -46,11 +46,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (TriangularMeshReader)(GenericObjectReader< ::fwData::TriangularMesh >),
                                             (()),
-                                            new  TriangularMeshReader
+                                            ::fwDataIO::reader::factory::New< TriangularMeshReader >
                                             );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API TriangularMeshReader();
+    FWDATAIO_API TriangularMeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~TriangularMeshReader();

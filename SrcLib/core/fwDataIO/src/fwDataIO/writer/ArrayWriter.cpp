@@ -15,9 +15,10 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/writer/ArrayWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::ArrayWriter,  ::fwDataIO::writer::ArrayWriter);
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::ArrayWriter);
 
 namespace fwDataIO
 {
@@ -26,7 +27,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-ArrayWriter::ArrayWriter()
+ArrayWriter::ArrayWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 

@@ -18,9 +18,10 @@
 #include <fwComEd/helper/Image.hpp>
 
 #include "fwDataIO/reader/GzBufferImageReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::GzBufferImageReader, ::fwDataIO::reader::GzBufferImageReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::GzBufferImageReader );
 
 
 namespace fwDataIO
@@ -31,7 +32,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzBufferImageReader::GzBufferImageReader() : ::fwData::location::enableSingleFile< IObjectReader >(this)
+GzBufferImageReader::GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 
 //------------------------------------------------------------------------------

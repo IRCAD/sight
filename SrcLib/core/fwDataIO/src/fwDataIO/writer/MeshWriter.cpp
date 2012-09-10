@@ -17,8 +17,9 @@
 #include <fwDataTools/MeshGenerator.hpp>
 
 #include "fwDataIO/writer/MeshWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::MeshWriter, ::fwDataIO::writer::MeshWriter );
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::MeshWriter );
 
 
 namespace fwDataIO
@@ -29,7 +30,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter()
+MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 

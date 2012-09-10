@@ -13,9 +13,10 @@
 #include <fwData/location/SingleFile.hpp>
 
 #include "fwDataIO/reader/TransformationMatrix3DReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::TransformationMatrix3DReader, ::fwDataIO::reader::TransformationMatrix3DReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::TransformationMatrix3DReader );
 
 
 namespace fwDataIO
@@ -23,7 +24,8 @@ namespace fwDataIO
 namespace reader
 {
 
-TransformationMatrix3DReader::TransformationMatrix3DReader() : ::fwData::location::enableSingleFile< IObjectReader >(this)
+TransformationMatrix3DReader::TransformationMatrix3DReader(::fwDataIO::reader::IObjectReader::Key key) :
+        ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 
 //------------------------------------------------------------------------------

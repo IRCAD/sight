@@ -39,11 +39,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((GzBufferImageReader)(GenericObjectReader< ::fwData::Image>),
                                            (()),
-                                           new  GzBufferImageReader
+                                           ::fwDataIO::reader::factory::New< GzBufferImageReader >
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API GzBufferImageReader();
+    FWDATAIO_API GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~GzBufferImageReader();

@@ -16,9 +16,10 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/reader/ArrayReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::ArrayReader, ::fwDataIO::reader::ArrayReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::ArrayReader );
 
 
 namespace fwDataIO
@@ -29,7 +30,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-ArrayReader::ArrayReader() : ::fwData::location::enableSingleFile< IObjectReader >(this)
+ArrayReader::ArrayReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 
 //------------------------------------------------------------------------------
