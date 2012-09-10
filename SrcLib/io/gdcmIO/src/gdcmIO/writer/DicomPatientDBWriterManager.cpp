@@ -10,13 +10,13 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include "gdcmIO/writer/DicomPatientDBWriterManager.hpp"
 #include "gdcmIO/writer/DicomGlobalWriterManager.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::gdcmIO::writer::DicomPatientDBWriterManager, ::gdcmIO::writer::DicomPatientDBWriterManager );
+fwDataIOWriterRegisterMacro( ::gdcmIO::writer::DicomPatientDBWriterManager );
 
 
 namespace gdcmIO
@@ -27,7 +27,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBWriterManager::DicomPatientDBWriterManager():
+DicomPatientDBWriterManager::DicomPatientDBWriterManager(::fwDataIO::writer::IObjectWriter::Key key):
         ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();

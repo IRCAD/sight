@@ -38,8 +38,13 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (DicomPatientDBWriterManager)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::PatientDB >),
                                             (()),
-                                            new  DicomPatientDBWriterManager
+                                            ::fwDataIO::writer::factory::New< DicomPatientDBWriterManager >
                                           );
+
+
+    GDCMIO_API DicomPatientDBWriterManager(::fwDataIO::writer::IObjectWriter::Key key);
+
+    GDCMIO_API ~DicomPatientDBWriterManager();
 
     /**
      * @brief    Manage writing tools to save all patients.
@@ -53,13 +58,6 @@ public :
      * @brief   Do nothing
      */
     GDCMIO_API std::string extension();
-
-
-protected :
-
-    GDCMIO_API DicomPatientDBWriterManager();
-
-    GDCMIO_API ~DicomPatientDBWriterManager();
 };
 
 }   // namespace writer

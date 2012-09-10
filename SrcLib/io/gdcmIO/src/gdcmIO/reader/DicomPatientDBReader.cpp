@@ -9,14 +9,13 @@
 #include <gdcmScanner.h>
 #include <gdcmAttribute.h>
 
-// fwTools
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include "gdcmIO/reader/DicomPatientDBReader.hpp"
 #include "gdcmIO/reader/DicomPatientReader.hpp"
 #include "gdcmIO/helper/GdcmHelper.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader, ::gdcmIO::reader::DicomPatientDBReader, ::gdcmIO::reader::DicomPatientDBReader );
+fwDataIOReaderRegisterMacro( ::gdcmIO::reader::DicomPatientDBReader );
 
 namespace gdcmIO
 {
@@ -26,7 +25,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBReader::DicomPatientDBReader() :
+DicomPatientDBReader::DicomPatientDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableFolder< IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
