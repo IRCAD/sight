@@ -9,22 +9,23 @@
 #include <vtkZLibDataCompressor.h>
 #include <vtkSmartPointer.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwCore/base.hpp>
+
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/VtiImageWriter.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::VtiImageWriter, ::vtkIO::VtiImageWriter );
+fwDataIOWriterRegisterMacro( ::vtkIO::VtiImageWriter );
 
 
 namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-VtiImageWriter::VtiImageWriter() : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+VtiImageWriter::VtiImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+        ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();
 }

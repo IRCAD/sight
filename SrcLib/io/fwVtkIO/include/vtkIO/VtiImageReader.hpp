@@ -36,24 +36,22 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((VtiImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
                                            (()),
-                                           new VtiImageReader
+                                           ::fwDataIO::reader::factory::New< VtiImageReader >
                                           );
 
     fwCoreAllowSharedFromThis();
+
+    //! @brief Constructor.
+    VTKIO_API VtiImageReader(::fwDataIO::reader::IObjectReader::Key key);
+
+    //! @brief Destructor.
+    VTKIO_API ~VtiImageReader();
 
     //! @brief Reading operator.
     VTKIO_API void read();
 
     /// @return ".vtk"
     VTKIO_API  std::string extension();
-
-protected:
-
-    //! @brief Constructor.
-    VTKIO_API VtiImageReader();
-
-    //! @brief Destructor.
-    VTKIO_API ~VtiImageReader();
 };
 
 } // namespace vtkIO

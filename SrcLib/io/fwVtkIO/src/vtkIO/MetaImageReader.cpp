@@ -8,22 +8,22 @@
 #include <vtkMetaImageReader.h>
 #include <vtkImageData.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwCore/base.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/MetaImageReader.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::MetaImageReader, ::vtkIO::MetaImageReader );
+fwDataIOReaderRegisterMacro( ::vtkIO::MetaImageReader );
 
 
 namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-MetaImageReader::MetaImageReader()
+MetaImageReader::MetaImageReader(::fwDataIO::reader::IObjectReader::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();

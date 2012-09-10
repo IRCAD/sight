@@ -40,9 +40,15 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((ReconstructionWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Acquisition >),
                                            (()),
-                                           new ReconstructionWriter
+                                           ::fwDataIO::writer::factory::New< ReconstructionWriter >
                                           );
     fwCoreAllowSharedFromThis();
+
+    //! @brief Constructor.
+    VTKIO_API ReconstructionWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    //! @brief Destructor.
+    VTKIO_API ~ReconstructionWriter();
 
     //! @brief Writing operator.
     VTKIO_API void write();
@@ -51,12 +57,6 @@ public :
     VTKIO_API  std::string extension();
 
 protected:
-
-    //! @brief Constructor.
-    VTKIO_API ReconstructionWriter();
-
-    //! @brief Destructor.
-    VTKIO_API ~ReconstructionWriter();
 
     /*!
      * @brief Create a vtkActor* from a ::fwData::Reconstruction::sptr.

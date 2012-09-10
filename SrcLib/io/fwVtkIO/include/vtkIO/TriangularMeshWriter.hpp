@@ -37,23 +37,21 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((TriangularMeshWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::TriangularMesh >),
                                            (()),
-                                           new TriangularMeshWriter
+                                           ::fwDataIO::writer::factory::New< TriangularMeshWriter >
                                           );
     fwCoreAllowSharedFromThis();
+
+    //! @brief Constructor.
+    VTKIO_API TriangularMeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    //! @brief Destructor.
+    VTKIO_API ~TriangularMeshWriter();
 
     //! @brief Reading operator.
     VTKIO_API void write();
 
     /// @return ".trian"
     VTKIO_API  std::string extension();
-
-protected:
-
-    //! @brief Constructor.
-    VTKIO_API TriangularMeshWriter();
-
-    //! @brief Destructor.
-    VTKIO_API ~TriangularMeshWriter();
 };
 
 } // namespace vtkIO

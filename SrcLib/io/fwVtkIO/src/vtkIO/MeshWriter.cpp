@@ -8,22 +8,22 @@
 #include <vtkGenericDataObjectWriter.h>
 #include <vtkSmartPointer.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwCore/base.hpp>
+
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include "vtkIO/helper/Mesh.hpp"
 #include "vtkIO/MeshWriter.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::MeshWriter, ::vtkIO::MeshWriter );
+fwDataIOWriterRegisterMacro( ::vtkIO::MeshWriter );
 
 
 namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter()
+MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();

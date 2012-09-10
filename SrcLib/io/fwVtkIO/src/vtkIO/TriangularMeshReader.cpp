@@ -8,22 +8,22 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwCore/base.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/TriangularMeshReader.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::vtkIO::TriangularMeshReader, ::vtkIO::TriangularMeshReader );
+fwDataIOReaderRegisterMacro( ::vtkIO::TriangularMeshReader );
 
 
 namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-TriangularMeshReader::TriangularMeshReader() :
+TriangularMeshReader::TriangularMeshReader(::fwDataIO::reader::IObjectReader::Key key) :
                 ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();

@@ -36,23 +36,21 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((MetaImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
                                            (()),
-                                           new MetaImageWriter
+                                           ::fwDataIO::writer::factory::New< MetaImageWriter >
                                           );
     fwCoreAllowSharedFromThis();
+
+    //! @brief Constructor.
+    VTKIO_API MetaImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    //! @brief Destructor.
+    VTKIO_API ~MetaImageWriter();
 
     //! @brief Writing operator.
     VTKIO_API void write();
 
     /// @return ".mhd"
     VTKIO_API  std::string extension();
-
-protected:
-
-    //! @brief Constructor.
-    VTKIO_API MetaImageWriter();
-
-    //! @brief Destructor.
-    VTKIO_API ~MetaImageWriter();
 };
 
 } // namespace vtkIO

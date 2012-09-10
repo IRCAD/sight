@@ -38,23 +38,21 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((ImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
                                            (()),
-                                           new ImageWriter
+                                           ::fwDataIO::writer::factory::New< ImageWriter >
                                           );
     fwCoreAllowSharedFromThis();
+
+    //! @brief Constructor.
+    VTKIO_API ImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    //! @brief Destructor.
+    VTKIO_API ~ImageWriter();
 
     //! @brief Writing operator.
     VTKIO_API void write();
 
     /// @return ".vtk"
     VTKIO_API  std::string extension();
-
-protected:
-
-    //! @brief Constructor.
-    VTKIO_API ImageWriter();
-
-    //! @brief Destructor.
-    VTKIO_API ~ImageWriter();
 };
 
 } // namespace vtkIO
