@@ -164,10 +164,10 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
                 std::stringstream meshPath;
                 meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
                 filename = ::boost::filesystem::path(meshPath.str());
-                ::fwDataIO::writer::MeshWriter writer;
-                writer.setObject(mesh);
-                writer.setFile(filename);
-                writer.write();
+                ::fwDataIO::writer::MeshWriter::NewSptr writer;
+                writer->setObject(mesh);
+                writer->setFile(filename);
+                writer->write();
             }
 
             // Parse nodeTemplate

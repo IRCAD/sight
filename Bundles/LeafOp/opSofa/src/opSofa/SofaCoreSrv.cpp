@@ -204,10 +204,10 @@ void SofaCoreSrv::addMesh(std::string meshPath, std::string meshName)
     // Create mesh
     ::fwData::Mesh::NewSptr mesh;
     mesh->setName(meshName);
-    ::fwDataIO::reader::MeshReader reader1;
-    reader1.setObject(mesh);
-    reader1.setFile(meshPath);
-    reader1.read();
+    ::fwDataIO::reader::MeshReader::NewSptr reader1;
+    reader1->setObject(mesh);
+    reader1->setFile(meshPath);
+    reader1->read();
 
     // Create reconstruction
     ::fwData::Reconstruction::NewSptr reconstruction;
