@@ -205,18 +205,16 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
 
     if( this->hasLocationDefined() )
     {
-
-        m_reader.setFile( this->getFile() );
-
         ::fwData::Object::sptr obj; // object loaded
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        m_reader.setFile( this->correctFileFormat( m_reader.getFile() ));
-        if ( this->isAnFwxmlArchive( m_reader.getFile() ) )
+        ::boost::filesystem::path path = this->correctFileFormat( this->getFile() );
+
+        if ( this->isAnFwxmlArchive( path ) )
         {
-            obj = this->manageZipAndLoadData( m_reader.getFile() );
+            obj = this->manageZipAndLoadData( path );
         }
         else
         {
@@ -240,7 +238,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
                 {
 
                     std::stringstream stream;
-                    stream << "Sorry, the file "<<m_reader.getFile()<< " contains a "
+                    stream << "Sorry, the file "<< path << " contains a "
                             << obj->getRootedClassname() << ", and you need a "
                             << associatedObject->getRootedClassname();
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
@@ -268,7 +266,7 @@ void FwXMLGenericReaderService::updating() throw(::fwTools::Failed)
         else
         {
             std::stringstream stream;
-            stream << "Sorry, reader failed to read the file "<<m_reader.getFile();
+            stream << "Sorry, reader failed to read the file "<<path;
             ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
                     stream.str(),
                     ::fwGui::dialog::IMessageDialog::WARNING);

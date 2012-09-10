@@ -104,8 +104,6 @@ private :
     ::fwData::Object::sptr manageZipAndLoadData( const ::boost::filesystem::path path );
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
 
-    ::fwXML::reader::FwXMLObjectReader m_reader;
-
     std::string m_archiveExtenstion;
     
     std::string m_inject;

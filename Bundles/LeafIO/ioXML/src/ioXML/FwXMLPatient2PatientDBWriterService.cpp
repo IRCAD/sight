@@ -110,16 +110,16 @@ void FwXMLPatient2PatientDBWriterService::info(std::ostream &_sstream )
 void FwXMLPatient2PatientDBWriterService::savePatientDB( const ::boost::filesystem::path inrFileDir, ::fwData::PatientDB::sptr _pPatient )
 {
     SLM_TRACE_FUNC();
-    ::fwXML::writer::FwXMLObjectWriter myWriter;
+    ::fwXML::writer::FwXMLObjectWriter::NewSptr myWriter;
 
-    myWriter.setObject(_pPatient);
-    myWriter.setFile(inrFileDir);
+    myWriter->setObject(_pPatient);
+    myWriter->setFile(inrFileDir);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Image ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
     }
     catch (const std::exception & e)
     {

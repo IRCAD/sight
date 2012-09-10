@@ -85,9 +85,6 @@ private :
     void manageZipAndSaveData( const ::boost::filesystem::path path, ::fwTools::Object::sptr _obj );
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
 
-    ::fwXML::writer::FwXMLObjectWriter m_writer;
-
-
     std::string m_archiveExtenstion;
 };
 

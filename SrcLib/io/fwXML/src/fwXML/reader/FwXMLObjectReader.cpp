@@ -19,9 +19,13 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <fwDataIO/reader/registry/macros.hpp>
+
 #include "fwXML/reader/FwXMLObjectReader.hpp"
 #include "fwXML/writer/fwxmlextension.hpp"
 #include "fwXML/Serializer.hpp"
+
+fwDataIOReaderRegisterMacro( ::fwXML::reader::FwXMLObjectReader );
 
 namespace fwXML
 {
@@ -29,9 +33,11 @@ namespace fwXML
 namespace reader
 {
 
+
 //------------------------------------------------------------------------------
 
-FwXMLObjectReader::FwXMLObjectReader()  : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
+FwXMLObjectReader::FwXMLObjectReader(::fwDataIO::reader::IObjectReader::Key key)  :
+        ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }

@@ -36,10 +36,10 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro(     (FwXMLObjectReader)(::fwDataIO::reader::IObjectReader),
                                                  (()),
-                                                 new  FwXMLObjectReader
+                                                 ::fwDataIO::reader::factory::New< FwXMLObjectReader >
                                             );
 
-    FWXML_API FwXMLObjectReader();
+    FWXML_API FwXMLObjectReader(::fwDataIO::reader::IObjectReader::Key key);
 
     FWXML_API ~FwXMLObjectReader();
 

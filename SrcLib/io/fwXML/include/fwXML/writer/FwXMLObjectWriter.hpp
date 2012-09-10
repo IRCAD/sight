@@ -12,8 +12,10 @@
 
 #include <fwTools/ProgressAdviser.hpp>
 
-#include "fwXML/config.hpp"
 #include <fwDataIO/writer/IObjectWriter.hpp>
+#include <fwDataIO/writer/factory/new.hpp>
+
+#include "fwXML/config.hpp"
 #include <fwData/location/SingleFile.hpp>
 
 
@@ -34,12 +36,12 @@ class FWXML_CLASS_API FwXMLObjectWriter : public ::fwDataIO::writer::IObjectWrit
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro(     (FwXMLObjectWriter)(::fwDataIO::writer::IObjectWriter),
-                                                 (( (bool)(true) )),
-                                                 new  FwXMLObjectWriter
-                                            );
+    fwCoreClassDefinitionsWithNFactoriesMacro( (FwXMLObjectWriter)(::fwDataIO::writer::IObjectWriter),
+                                              ((::fwDataIO::writer::factory::New< FwXMLObjectWriter > ,() ))
+                                              (( ObjectWriterFactory, ((bool)) ))
+                                             );
 
-    FWXML_API FwXMLObjectWriter(bool saveSchema = true);
+    FWXML_API FwXMLObjectWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     FWXML_API ~FwXMLObjectWriter();
 
@@ -47,6 +49,9 @@ public :
 
     FWXML_API std::string  extension();
 protected:
+
+    FWXML_API static sptr ObjectWriterFactory(bool saveSchema);
+
     bool m_saveSchema;
 
 };
