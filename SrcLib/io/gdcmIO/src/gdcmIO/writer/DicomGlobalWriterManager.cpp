@@ -9,10 +9,9 @@
 // fwComEd
 #include <fwComEd/Dictionary.hpp>
 
-// fwTools
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/PointList.hpp>
+
+#include <fwDataIO/writer/registry/macros.hpp>
 
 // gdcmIO
 #include "gdcmIO/writer/DicomGlobalWriterManager.hpp"
@@ -24,7 +23,7 @@
 #include "gdcmIO/writer/DicomSRWriterManager.hpp"
 #include "gdcmIO/writer/DicomRTWriterManager.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::gdcmIO::writer::DicomGlobalWriterManager, ::gdcmIO::writer::DicomGlobalWriterManager );
+fwDataIOWriterRegisterMacro( ::gdcmIO::writer::DicomGlobalWriterManager );
 
 namespace gdcmIO
 {
@@ -34,7 +33,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-DicomGlobalWriterManager::DicomGlobalWriterManager():
+DicomGlobalWriterManager::DicomGlobalWriterManager(::fwDataIO::writer::IObjectWriter::Key key):
         ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
         m_patientID(1)
 {
