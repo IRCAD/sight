@@ -8,9 +8,9 @@
 #define _FWCOMMAND_PAINTCOMMAND_HPP_
 
 #include <boost/cstdint.hpp>
+#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
-#include <fwTools/Factory.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -27,8 +27,9 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API PaintCommand : public ICommand
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), ::fwTools::Factory::New< PaintCommand > );
+    fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), ::boost::make_shared< PaintCommand > );
 
+    FWCOMMAND_API PaintCommand();
 
     // Overrides.
     FWCOMMAND_API const boost::uint32_t  getSize() const;
@@ -52,9 +53,6 @@ public:
     FWCOMMAND_API void postPaint();
 
     FWCOMMAND_API void setImage( ::fwData::Image::sptr  image );
-
-protected:
-    FWCOMMAND_API PaintCommand();
 
 private :
 

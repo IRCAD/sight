@@ -11,9 +11,6 @@
 namespace fwCommand
 {
 
-//-----------------------------------------------------------------------------
-
-REGISTER_BINDING_BYCLASSNAME( ::fwCommand::ICommand, ::fwCommand::Empty, ::fwCommand::Empty );
 
 //-----------------------------------------------------------------------------
 

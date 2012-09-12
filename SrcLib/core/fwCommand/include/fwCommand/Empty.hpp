@@ -7,8 +7,9 @@
 #ifndef _FWCOMMAND_EMPTY_HPP_
 #define _FWCOMMAND_EMPTY_HPP_
 
+#include <boost/make_shared.hpp>
+
 #include <fwTools/macros.hpp>
-#include <fwTools/Factory.hpp>
 
 #include "fwCommand/ICommand.hpp"
 
@@ -23,7 +24,7 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API Empty : public ICommand
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Empty)(ICommand), (( )), ::fwTools::Factory::New< Empty > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Empty)(ICommand), (( )), ::boost::make_shared< Empty > );
 
     // Overrides.
     FWCOMMAND_API const boost::uint32_t  getSize() const;

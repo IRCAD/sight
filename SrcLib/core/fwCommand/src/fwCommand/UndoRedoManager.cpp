@@ -17,9 +17,6 @@
 namespace fwCommand
 {
 
-//-----------------------------------------------------------------------------
-
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwCommand::UndoRedoManager, ::fwCommand::UndoRedoManager );
 
 //-----------------------------------------------------------------------------
 
