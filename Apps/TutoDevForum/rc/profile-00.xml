@@ -4,7 +4,7 @@
     <activate id="servicesReg" version="0-1" />
 
     <activate id="gui" version="0-1" />
-    <activate id="guiWx" version="0-1" />
+    <activate id="guiQt" version="0-1" />
 
     <activate id="TutoDevForum" />
     <activate id="appXml" version="0-1">
@@ -12,6 +12,6 @@
     </activate>
 
     <start id="appXml" />
-    <start id="guiWx" />
+    <start id="guiQt" />
 
 </profile>
