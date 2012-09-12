@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/CardinalLayoutManager.hpp"
 
@@ -76,7 +76,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
         if(viewInfo.m_caption.first)
         {
             paneInfo.CaptionVisible( true );
-            paneInfo.Caption( ::fwWX::std2wx(viewInfo.m_caption.second) );
+            paneInfo.Caption( ::fwGuiWx::std2wx(viewInfo.m_caption.second) );
         }
         else
         {

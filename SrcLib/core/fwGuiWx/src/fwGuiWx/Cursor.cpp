@@ -9,7 +9,7 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/Cursor.hpp"
 

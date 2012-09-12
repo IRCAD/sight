@@ -10,7 +10,7 @@
 #include <fwTools/ClassRegistrar.hpp>
 #include <fwData/String.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/dialog/InputDialog.hpp"
 
@@ -44,12 +44,12 @@ void InputDialog::setInput(const std::string &text)
 /// Get the input text in the input field
 std::string InputDialog::getInput()
 {
-    wxString title = ::fwWX::std2wx(m_title);
-    wxString message = ::fwWX::std2wx(m_message);
-    wxString inputText = ::fwWX::std2wx(m_input);
+    wxString title = ::fwGuiWx::std2wx(m_title);
+    wxString message = ::fwGuiWx::std2wx(m_message);
+    wxString inputText = ::fwGuiWx::std2wx(m_input);
     ::fwData::String::NewSptr url;
     wxString text =  wxGetTextFromUser( wxGetTranslation(message), wxGetTranslation(title), wxGetTranslation(inputText));
-    return (::fwWX::wx2std(text));
+    return (::fwGuiWx::wx2std(text));
 }
 
 } // namespace dialog

@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/TabLayoutManager.hpp"
 
@@ -61,7 +61,7 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
         subContainer->setWxContainer(viewPanel);
         m_subViews.push_back(subContainer);
 
-        m_notebook->AddPage( viewPanel, ::fwWX::std2wx(viewInfo.m_caption), viewInfo.m_isSelect );
+        m_notebook->AddPage( viewPanel, ::fwGuiWx::std2wx(viewInfo.m_caption), viewInfo.m_isSelect );
     }
     wxContainer->Layout();
 }

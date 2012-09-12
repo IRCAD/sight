@@ -5,7 +5,6 @@ LIB     = [
           'fwTools_0-1',
           'fwCore_0-1',
           'fwServices_0-1',
-          'fwWX_0-1'
           ]
 TYPE    = 'shared'
 VERSION = '0-1'

@@ -8,7 +8,7 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 #include "fwGuiWx/dialog/MessageDialog.hpp"
 
 
@@ -74,7 +74,7 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 ::fwGui::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
     ::fwGui::dialog::IMessageDialog::Buttons result;
-    int wxResult = wxMessageBox( ::fwWX::std2wx(m_message), ::fwWX::std2wx(m_title), m_buttons|m_icon );
+    int wxResult = wxMessageBox( ::fwGuiWx::std2wx(m_message), ::fwGuiWx::std2wx(m_title), m_buttons|m_icon );
 
     if (wxResult == wxOK)
     {

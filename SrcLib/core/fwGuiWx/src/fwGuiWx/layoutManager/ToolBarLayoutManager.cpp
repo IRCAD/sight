@@ -18,7 +18,7 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/ActionCallback.hpp"
 #include "fwGuiWx/container/WxToolBarContainer.hpp"
@@ -72,15 +72,15 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         wxImage image = wxNullImage ;
         if(!actionInfo.m_icon.empty())
         {
-            if ( !image.LoadFile(::fwWX::std2wx( actionInfo.m_icon )))
+            if ( !image.LoadFile(::fwGuiWx::std2wx( actionInfo.m_icon )))
             {
-                wxLogError(wxGetTranslation("Couldn't load image from '%s'."), ::fwWX::std2wx( actionInfo.m_icon ));
+                wxLogError(wxGetTranslation("Couldn't load image from '%s'."), ::fwGuiWx::std2wx( actionInfo.m_icon ));
             }
         }
 
         if(!actionInfo.m_isSeparator)
         {
-            wxToolBarToolBase * toolBarToolBase = toolBar->AddTool(actionIdInMenu, ::fwWX::std2wx(actionInfo.m_name), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, ::fwWX::std2wx( actionInfo.m_name));
+            wxToolBarToolBase * toolBarToolBase = toolBar->AddTool(actionIdInMenu, ::fwGuiWx::std2wx(actionInfo.m_name), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, ::fwGuiWx::std2wx( actionInfo.m_name));
 
             menuItem->setWxToolItem(toolBarToolBase);
             m_menuItems.push_back(menuItem);

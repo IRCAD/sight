@@ -16,7 +16,7 @@
 #include <fwData/location/MultiFiles.hpp>
 
 #include <fwGui/dialog/ILocationDialog.hpp>
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/dialog/LocationDialog.hpp"
 
@@ -41,8 +41,8 @@ LocationDialog::LocationDialog() :
 {
     ::fwData::location::ILocation::sptr location;
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
-    wxString path = ::fwWX::std2wx( defaultPath.parent_path().string() );
-    wxString title = ::fwWX::std2wx(this->getTitle());
+    wxString path = ::fwGuiWx::std2wx( defaultPath.parent_path().string() );
+    wxString title = ::fwGuiWx::std2wx(this->getTitle());
 
     if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
     {
@@ -57,7 +57,7 @@ LocationDialog::LocationDialog() :
 
         if( file.IsEmpty() == false )
         {
-            ::boost::filesystem::path bpath( ::fwWX::wx2std(file) );
+            ::boost::filesystem::path bpath( ::fwGuiWx::wx2std(file) );
             location = ::fwData::location::SingleFile::New(bpath);
         }
     }
@@ -72,7 +72,7 @@ LocationDialog::LocationDialog() :
 
         if( file.IsEmpty() == false )
         {
-            ::boost::filesystem::path bpath( ::fwWX::wx2std(file) );
+            ::boost::filesystem::path bpath( ::fwGuiWx::wx2std(file) );
             location = ::fwData::location::Folder::New(bpath);
         }
     }
@@ -92,7 +92,7 @@ LocationDialog::LocationDialog() :
             std::vector < ::boost::filesystem::path > vPaths;
             for (unsigned int i=0 ; i< paths.GetCount() ; i++)
             {
-                ::boost::filesystem::path bpath( ::fwWX::wx2std(paths[i]) );
+                ::boost::filesystem::path bpath( ::fwGuiWx::wx2std(paths[i]) );
                 vPaths.push_back(bpath);
             }
             ::fwData::location::MultiFiles::NewSptr multiFiles;
@@ -170,7 +170,7 @@ wxString LocationDialog::fileFilters()
         }
         result += filterName +" (" +  wildcards +")|" + wildcards;
     }
-    return ::fwWX::std2wx(result);
+    return ::fwGuiWx::std2wx(result);
 }
 
 } // namespace dialog

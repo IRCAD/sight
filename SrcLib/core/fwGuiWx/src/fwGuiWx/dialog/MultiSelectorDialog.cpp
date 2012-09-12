@@ -18,7 +18,7 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/dialog/MultiSelectorDialog.hpp"
 
@@ -57,14 +57,14 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 ::fwGui::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
-    wxDialog* dialog = new wxDialog( wxTheApp->GetTopWindow(), wxNewId(), ::fwWX::std2wx(this->m_title),
+    wxDialog* dialog = new wxDialog( wxTheApp->GetTopWindow(), wxNewId(), ::fwGuiWx::std2wx(this->m_title),
             wxDefaultPosition, wxDefaultSize,
             wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX );
 
     wxArrayString items;
     BOOST_FOREACH( Selections::value_type selection, m_selections)
     {
-        items.Add( ::fwWX::std2wx(selection.first) );
+        items.Add( ::fwGuiWx::std2wx(selection.first) );
     }
 
     wxCheckListBox* typeCtrl = new wxCheckListBox(dialog, wxNewId(), wxDefaultPosition, wxDefaultSize, items) ;
@@ -91,7 +91,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     wxSizer * rootSizer = new wxBoxSizer( wxVERTICAL );
     if(!m_message.empty())
     {
-        wxStaticText* msgText = new wxStaticText(dialog, wxNewId(), ::fwWX::std2wx(m_message));
+        wxStaticText* msgText = new wxStaticText(dialog, wxNewId(), ::fwGuiWx::std2wx(m_message));
         rootSizer->Add( msgText, 0, wxGROW|wxALL, 10 );
     }
     rootSizer->Add( typeCtrl, 1, wxALL|wxEXPAND, 10 );

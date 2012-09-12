@@ -17,7 +17,7 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/dialog/SelectorDialog.hpp"
 
@@ -56,14 +56,14 @@ void SelectorDialog::setTitle(std::string _title)
 
 std::string SelectorDialog::show()
 {
-    wxDialog* dialog = new wxDialog( wxTheApp->GetTopWindow(), wxNewId(), ::fwWX::std2wx(this->m_title),
+    wxDialog* dialog = new wxDialog( wxTheApp->GetTopWindow(), wxNewId(), ::fwGuiWx::std2wx(this->m_title),
             wxDefaultPosition, wxDefaultSize,
             wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX );
 
     wxArrayString items;
     BOOST_FOREACH( std::string selection, m_selections)
     {
-        items.Add( ::fwWX::std2wx(selection) );
+        items.Add( ::fwGuiWx::std2wx(selection) );
     }
 
     // Creates the static fields.
@@ -85,7 +85,7 @@ std::string SelectorDialog::show()
     wxSizer * rootSizer = new wxBoxSizer( wxVERTICAL );
     if(!m_message.empty())
     {
-        wxStaticText* msgText = new wxStaticText(dialog, wxNewId(), ::fwWX::std2wx(m_message));
+        wxStaticText* msgText = new wxStaticText(dialog, wxNewId(), ::fwGuiWx::std2wx(m_message));
         rootSizer->Add( msgText, 0, wxGROW|wxALL, 10 );
     }
     rootSizer->Add( typeCtrl, 0, wxGROW|wxALL, 10 );

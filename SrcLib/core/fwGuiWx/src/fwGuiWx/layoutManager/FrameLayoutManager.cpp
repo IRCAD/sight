@@ -16,7 +16,7 @@
 
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/FrameLayoutManager.hpp"
 
@@ -63,7 +63,7 @@ void FrameLayoutManager::createFrame()
 
     m_wxFrame = new wxFrame(wxTheApp->GetTopWindow(),
             wxNewId(),
-            ::fwWX::std2wx(frameInfo.m_name),
+            ::fwGuiWx::std2wx(frameInfo.m_name),
              wxDefaultPosition,
              wxSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second),
              FWSTYLE_TO_WXSTYLE.find(frameInfo.m_style)->second );
@@ -76,7 +76,7 @@ void FrameLayoutManager::createFrame()
 
     if(!frameInfo.m_iconPath.empty())
     {
-        wxIcon icon( ::fwWX::std2wx(frameInfo.m_iconPath.string()), wxBITMAP_TYPE_ICO );
+        wxIcon icon( ::fwGuiWx::std2wx(frameInfo.m_iconPath.string()), wxBITMAP_TYPE_ICO );
         OSLM_ASSERT("Sorry, unable to create an icon instance from " << frameInfo.m_iconPath.string(), icon.Ok());
         m_wxFrame->SetIcon( icon );
     }

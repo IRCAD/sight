@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/LineLayoutManager.hpp"
 
@@ -67,7 +67,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 #ifndef __MACOSX__
             if(viewInfo.m_caption.first)
             {
-                wxStaticBoxSizer* sizer = new wxStaticBoxSizer( wxOrientation, wxContainer, ::fwWX::std2wx(viewInfo.m_caption.second));
+                wxStaticBoxSizer* sizer = new wxStaticBoxSizer( wxOrientation, wxContainer, ::fwGuiWx::std2wx(viewInfo.m_caption.second));
                 sizer->Add( viewPanel, 1, wxALL|wxEXPAND, viewInfo.m_border);
                 boxSizer->Add(sizer, viewInfo.m_proportion, wxALL|wxEXPAND);
             }

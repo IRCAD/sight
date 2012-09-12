@@ -16,7 +16,7 @@
 
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/ActionCallback.hpp"
 #include "fwGuiWx/container/WxMenuContainer.hpp"
@@ -94,7 +94,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
             ::fwGuiWx::Shortcut::sptr shortcut =  ::fwGuiWx::Shortcut::New( actionInfo.m_shortcut );
             actionNameInMenu += "\t" + shortcut->toString();
         }
-        menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionNameInMenu ),wxGetTranslation(""), kind ) ;
+        menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwGuiWx::std2wx( actionNameInMenu ),wxGetTranslation(""), kind ) ;
         menu->Append( menuItemWx );
         menuItem->setWxMenuItem(menuItemWx);
 

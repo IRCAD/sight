@@ -31,8 +31,8 @@
 
 #include <fwRuntime/RuntimeException.hpp>
 
-#include <fwWX/convert.hpp>
-#include <fwWX/LoggerInitializer.hpp>
+#include <fwGuiWx/convert.hpp>
+#include <fwGuiWx/LoggerInitializer.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -69,7 +69,7 @@ void App::usage( const std::string & mes ) const
 
 bool App::OnInit()
 {
-    ::fwWX::LoggerInitializer::initialize();
+    ::fwGuiWx::LoggerInitializer::initialize();
 
     m_profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", m_profile);
@@ -79,7 +79,7 @@ bool App::OnInit()
     ::boost::filesystem::path pathLauncher;
     pathLauncher = ::boost::filesystem::current_path() / "share" / "launcher_0-1" / "locale" ;
 
-    wxLocale::AddCatalogLookupPathPrefix( ::fwWX::std2wx( pathLauncher.string() ));
+    wxLocale::AddCatalogLookupPathPrefix( ::fwGuiWx::std2wx( pathLauncher.string() ));
     m_locale->Init(GetUILanguage());
     m_locale->AddCatalog(_T("launcher"));
     m_locale->AddCatalog(_T("runtime"));
@@ -93,9 +93,9 @@ bool App::OnInit()
 
     std::string appName = m_profile->getName();
 #ifndef TDVPM_COMPLIANT
-    m_locale->AddCatalog(::fwWX::std2wx(appName), wxLANGUAGE_FRENCH, _T("utf-8"));
+    m_locale->AddCatalog(::fwGuiWx::std2wx(appName), wxLANGUAGE_FRENCH, _T("utf-8"));
 #endif
-    SetAppName( ::fwWX::std2wx(appName) );
+    SetAppName( ::fwGuiWx::std2wx(appName) );
 
     std::string checkerPath = ::fwTools::os::getUserDataDir("IRCAD", appName, true);
 
@@ -112,10 +112,10 @@ bool App::OnInit()
     m_checker = new wxSingleInstanceChecker();
     if (m_profile->getCheckSingleInstance())
     {
-        m_checker->Create( ::fwWX::std2wx(appName) + wxGetTranslation(".pid"), ::fwWX::std2wx(checkerPath));
+        m_checker->Create( ::fwGuiWx::std2wx(appName) + wxGetTranslation(".pid"), ::fwGuiWx::std2wx(checkerPath));
         if ( m_checker->IsAnotherRunning() )
         {
-            wxLogError(wxGetTranslation("Another " + ::fwWX::std2wx(appName) + wxGetTranslation(" instance is already running, aborting.")));
+            wxLogError(wxGetTranslation("Another " + ::fwGuiWx::std2wx(appName) + wxGetTranslation(" instance is already running, aborting.")));
             return false;
         }
     }

@@ -13,8 +13,8 @@
 #include <fwCore/base.hpp>
 #include <fwTools/ClassRegistrar.hpp>
 
-#include <fwWX/convert.hpp>
-#include <fwWX/widgets/fwProgressDialog.hpp>
+#include <fwGuiWx/convert.hpp>
+#include <fwGuiWx/widgets/fwProgressDialog.hpp>
 
 #include "fwGuiWx/dialog/PulseProgressDialog.hpp"
 
@@ -135,7 +135,7 @@ void PulseProgressDialog::show()
     this->Bind( wxEVT_LOCALTHREAD_COMPLETED , &PulseProgressDialog::onComplete , this);
 
     m_wxpd = new wxProgressDialog(
-                                    ::fwWX::std2wx(m_title),
+                                    ::fwGuiWx::std2wx(m_title),
                                     "                                             ", // sinon pas de place pour ecrire definit espace initial
                                     100 /*percent*/,
                                     NULL, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_SMOOTH);
