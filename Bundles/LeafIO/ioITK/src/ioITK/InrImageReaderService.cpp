@@ -23,8 +23,6 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwTools/Factory.hpp>
-
 #include <itkIO/ImageReader.hpp>
 
 #include "ioITK/InrImageReaderService.hpp"

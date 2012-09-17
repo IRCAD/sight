@@ -9,7 +9,6 @@
 #include <fwRuntime/helper.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 #include <fwTools/System.hpp>
 
 #include <fwMemory/BufferManager.hpp>

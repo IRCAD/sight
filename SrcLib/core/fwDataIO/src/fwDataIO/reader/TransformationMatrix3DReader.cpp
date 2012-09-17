@@ -9,7 +9,6 @@
 
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
 #include <fwData/location/SingleFile.hpp>
 
 #include "fwDataIO/reader/TransformationMatrix3DReader.hpp"

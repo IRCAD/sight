@@ -27,8 +27,6 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
-#include <fwTools/Factory.hpp>
-
 #include <fwDataIO/reader/IObjectReader.hpp>
 #include <vtkIO/ImageReader.hpp>
 #include <vtkIO/MetaImageReader.hpp>

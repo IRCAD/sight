@@ -11,8 +11,6 @@
 
 #include <fwCore/Exception.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/reader/ArrayReader.hpp"

@@ -9,8 +9,6 @@
 
 #include <boost/cstdint.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Mesh.hpp>
 #include <fwComEd/helper/Array.hpp>
 

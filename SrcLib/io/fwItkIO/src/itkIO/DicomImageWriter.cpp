@@ -8,8 +8,6 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <itkIO/itk.hpp>
 
 #include <fwCore/base.hpp>

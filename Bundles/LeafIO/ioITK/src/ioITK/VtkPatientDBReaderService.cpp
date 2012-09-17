@@ -22,8 +22,6 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwTools/Factory.hpp>
-
 #include <itkIO/ImageReader.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>

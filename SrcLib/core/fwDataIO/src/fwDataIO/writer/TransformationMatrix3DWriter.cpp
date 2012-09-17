@@ -11,11 +11,6 @@
 
 #include <boost/filesystem/convenience.hpp>
 
-
-
-#include <fwTools/ClassRegistrar.hpp>
-
-
 #include "fwDataIO/writer/TransformationMatrix3DWriter.hpp"
 #include "fwDataIO/writer/registry/macros.hpp"
 

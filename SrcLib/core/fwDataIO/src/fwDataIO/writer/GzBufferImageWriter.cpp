@@ -11,8 +11,6 @@
 #include <fwData/Object.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Image.hpp>
 
 #include "fwDataIO/writer/GzBufferImageWriter.hpp"
@@ -68,7 +66,7 @@ void GzBufferImageWriter::write()
     size_t writtenBytes = 0;
 
     int uncompressedbyteswrited;
-    
+
     while ( writtenBytes < imageSizeInBytes
            && (uncompressedbyteswrited = gzwrite(rawFile, ptr+writtenBytes, imageSizeInBytes-writtenBytes)) > 0 )
     {

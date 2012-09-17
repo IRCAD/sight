@@ -18,8 +18,6 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 
-#include <fwTools/Factory.hpp>
-
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>

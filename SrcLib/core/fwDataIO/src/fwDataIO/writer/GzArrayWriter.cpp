@@ -10,8 +10,6 @@
 
 #include <zlib.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/writer/GzArrayWriter.hpp"

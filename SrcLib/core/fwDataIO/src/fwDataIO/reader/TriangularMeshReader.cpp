@@ -15,8 +15,6 @@
 #include <boost/spirit/home/phoenix/statement/sequence.hpp>
 #include <boost/spirit/home/phoenix/container.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/location/SingleFile.hpp>

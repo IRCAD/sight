@@ -14,8 +14,6 @@
 
 #include <fwMath/MeshFunctions.hpp>
 
-#include <fwTools/Factory.hpp>
-
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>

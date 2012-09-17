@@ -38,8 +38,6 @@
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>

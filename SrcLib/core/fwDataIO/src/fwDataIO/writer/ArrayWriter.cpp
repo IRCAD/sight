@@ -10,8 +10,6 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/cstdint.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/writer/ArrayWriter.hpp"

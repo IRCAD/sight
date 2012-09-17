@@ -9,8 +9,6 @@
 #include <limits>
 #include <stdexcept>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include "fwCommand/Manager.hpp"
 #include "fwCommand/Empty.hpp"
 

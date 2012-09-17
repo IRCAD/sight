@@ -8,8 +8,6 @@
 
 #include <fwData/PatientDB.hpp>
 
-#include <fwTools/Factory.hpp>
-
 #include <fwServices/Base.hpp>
 
 #include <fwComEd/fieldHelper/BackupHelper.hpp>

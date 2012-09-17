@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwTools/Factory.hpp"
 #include "fwMetaData/Map.hpp"
 
 fwCampImplementMacro((fwMetaData)(Map))
@@ -24,31 +23,42 @@ void Map::insert(const Base::sptr key, Base::sptr value)
     m_value[key] = value;
 }
 
+//------------------------------------------------------------------------------
+
 unsigned int Map::getSize()
 {
     return m_value.size();
 }
 
-Map::Iterator Map::begin()
+//------------------------------------------------------------------------------
 
+Map::Iterator Map::begin()
 {
     return m_value.begin();
 }
+
+//------------------------------------------------------------------------------
 
 Map::cIterator Map::cBegin() const
 {
     return m_value.begin();
 }
 
+//------------------------------------------------------------------------------
+
 Map::Iterator Map::end()
 {
     return m_value.end();
 }
 
+//------------------------------------------------------------------------------
+
 Map::cIterator Map::cEnd() const
 {
     return m_value.end();
 }
+
+//------------------------------------------------------------------------------
 
 //const Map::MapType& Map::getValue() const
 //{
@@ -60,10 +70,14 @@ Map::MapType& Map::getValue()
     return m_value;
 }
 
+//------------------------------------------------------------------------------
+
 bool Map::isEmpty() const
 {
     return m_value.empty();
 }
+
+//------------------------------------------------------------------------------
 
 Base::sptr Map::operator[](std::string index)
 {
@@ -78,11 +92,8 @@ Base::sptr Map::operator[](std::string index)
             break;
         }
     }
-
     return result;
 }
-
-
 
 //------------------------------------------------------------------------------
 
@@ -91,12 +102,14 @@ Base::sptr Map::clone()
     return this->getSptr();
 }
 
+//------------------------------------------------------------------------------
 
 Map::MapType::const_iterator Map::find(Base::sptr key) const
 {
     return m_value.find(key);
-
 }
+
+//------------------------------------------------------------------------------
 
 size_t Map::size()
 {

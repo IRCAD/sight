@@ -9,8 +9,6 @@
 
 #include <zlib.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/location/SingleFile.hpp>

@@ -11,7 +11,6 @@
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 
 #include <itkIO/itk.hpp>
 

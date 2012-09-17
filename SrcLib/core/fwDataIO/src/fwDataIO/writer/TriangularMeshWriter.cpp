@@ -12,8 +12,6 @@
 #include <fwData/Object.hpp>
 #include <fwData/TriangularMesh.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include "fwDataIO/writer/TriangularMeshWriter.hpp"
 #include "fwDataIO/writer/registry/macros.hpp"
 

@@ -9,8 +9,6 @@
 #include <limits>
 #include <stdexcept>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include "fwCommand/UndoRedoManager.hpp"
 #include "fwCommand/Empty.hpp"
 

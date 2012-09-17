@@ -19,8 +19,6 @@
 #include <boost/spirit/home/phoenix/core/argument.hpp>
 #include <boost/spirit/home/phoenix/operator/bitwise.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Mesh.hpp>

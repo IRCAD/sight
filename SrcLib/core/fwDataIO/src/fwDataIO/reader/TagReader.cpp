@@ -9,8 +9,6 @@
 
 #include <boost/cstdint.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwMath/IntrasecTypes.hpp>
 
 #include <fwData/Tag.hpp>

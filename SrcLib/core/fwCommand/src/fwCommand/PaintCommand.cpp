@@ -12,7 +12,6 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>

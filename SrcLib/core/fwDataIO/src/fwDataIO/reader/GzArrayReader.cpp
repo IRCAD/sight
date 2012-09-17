@@ -9,8 +9,6 @@
 
 #include <zlib.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/reader/GzArrayReader.hpp"
@@ -28,7 +26,8 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzArrayReader::GzArrayReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile< IObjectReader >(this)
+GzArrayReader::GzArrayReader(::fwDataIO::reader::IObjectReader::Key key) :
+        ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 
 //------------------------------------------------------------------------------

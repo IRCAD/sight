@@ -6,7 +6,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <fwRuntime/helper.hpp>
