@@ -12,6 +12,8 @@
 #include <fwCore/base.hpp>
 #include <fwData/Object.hpp>
 
+#include "fwXML/factory/new.hpp"
+#include "fwXML/registry/detail.hpp"
 #include "fwXML/config.hpp"
 
 namespace fwXML
@@ -26,6 +28,22 @@ namespace fwXML
 class FWXML_CLASS_API XMLTranslator : public ::fwCore::BaseObject
 {
 public:
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar(std::string functorKey)
+        {
+            ::fwXML::registry::get()->addFactory(functorKey, &::fwXML::factory::New<T>);
+        }
+    };
 
     fwCoreNonInstanciableClassDefinitionsMacro( (XMLTranslator)(::fwCore::BaseObject) )
 

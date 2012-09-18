@@ -5,10 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/UUID.hpp>
-#include <fwTools/Factory.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwData/factory/new.hpp>
-
 
 #include "fwXML/XML/XMLParser.hpp"
 #include "fwXML/ObjectTracker.hpp"

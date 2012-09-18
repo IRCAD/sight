@@ -7,7 +7,7 @@
 #include <cstring>
 
 #include <boost/lexical_cast.hpp>
-#include <fwTools/ClassFactoryRegistry.hpp>
+
 #include <fwTools/UUID.hpp>
 
 #include <fwData/Graph.hpp>

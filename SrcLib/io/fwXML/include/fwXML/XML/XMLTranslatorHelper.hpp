@@ -17,8 +17,6 @@
 
 #include <fwCore/Demangler.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
-
 #include <fwData/Vector.hpp>
 #include <fwData/Composite.hpp>
 

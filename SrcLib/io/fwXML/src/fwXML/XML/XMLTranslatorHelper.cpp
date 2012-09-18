@@ -57,7 +57,7 @@ void XMLTranslatorHelper::fromXML( ::fwData::Object::sptr toUpdate, xmlNodePtr s
     SLM_ASSERT("XML node not correspond to object classname", toUpdate->getLeafClassname() ==  nameInXML );
 
     ::fwXML::XMLTranslator::sptr translator;
-    translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  toUpdate->getRootedClassname() );
+    translator = ::fwXML::factory::New( toUpdate->getRootedClassname() );
 
     if ( translator.get() )
     {

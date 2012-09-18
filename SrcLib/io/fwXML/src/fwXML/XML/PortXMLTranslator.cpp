@@ -6,8 +6,6 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
-
 #include <fwData/Port.hpp>
 
 #include "fwXML/XML/PortXMLTranslator.hpp"

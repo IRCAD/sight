@@ -4,10 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwCore/base.hpp>
 
-#include <fwXML/visitor/accept.hpp>
+#include "fwXML/visitor/accept.hpp"
 
 #include "fwXML/visitor/Serialize.hpp"
 #include "fwXML/XML/XMLHierarchy.hpp"
@@ -74,7 +73,7 @@ const std::string ObjectToStream::toString( ::fwData::Object::sptr object, unsig
     else if ( option == 0 )
     {
 
-        ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  typeid(*object)  );
+        ::fwXML::XMLTranslator::sptr translator = ::fwXML::factory::New(  object->className()  );
 
         if ( translator == NULL )
         {

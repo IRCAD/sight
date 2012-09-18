@@ -9,7 +9,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/pathDifference.hpp>
 #include <fwData/Object.hpp>
 
@@ -120,7 +119,7 @@ xmlDocPtr XMLAggregator::getXMLDoc()
     for ( Elements::iterator o = m_objects.begin(); o != m_objects.end(); ++o  )
     {
         ::fwData::Object::sptr dobj = (*o).lock();
-        ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  dobj->getClassname()  );
+        ::fwXML::XMLTranslator::sptr translator = ::fwXML::factory::New( dobj->getClassname() );
         //SLM_ASSERT("translator not instanced", translator);
         if (translator==NULL)
         {

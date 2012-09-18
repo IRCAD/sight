@@ -7,7 +7,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/UUID.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>

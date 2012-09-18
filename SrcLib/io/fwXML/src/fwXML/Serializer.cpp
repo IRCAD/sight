@@ -21,7 +21,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwTools/Factory.hpp>
+
 #include <fwTools/Failed.hpp>
 #include <fwCore/Demangler.hpp>
 
@@ -30,7 +30,7 @@
 #include <fwMemory/policy/BarrierDump.hpp>
 #include <fwMemory/tools/MemoryMonitorTools.hpp>
 
-#include <fwXML/visitor/accept.hpp>
+#include "fwXML/visitor/accept.hpp"
 
 #include "fwXML/visitor/Serialize.hpp"
 #include "fwXML/XML/XMLAggregator.hpp"
@@ -271,7 +271,7 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
     }
 
     // update data form XML
-    ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  newObject->getClassname()  );
+    ::fwXML::XMLTranslator::sptr translator = ::fwXML::factory::New( newObject->getClassname() );
 
     OSLM_DEBUG("ObjectsFromXml : Looking for XMLTranslator for "<< newObject->getClassname());
     if (translator.get() )
