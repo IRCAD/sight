@@ -4,13 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
-
 #ifndef _SCENE2D_DATA_EVENT_HPP_
 #define _SCENE2D_DATA_EVENT_HPP_
-
-#include <fwTools/Object.hpp>
 
 #include <Qt>
 

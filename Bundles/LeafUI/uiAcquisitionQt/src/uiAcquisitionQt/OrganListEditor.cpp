@@ -12,7 +12,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <fwData/Acquisition.hpp>

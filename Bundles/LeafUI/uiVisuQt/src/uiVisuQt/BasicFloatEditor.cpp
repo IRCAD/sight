@@ -10,8 +10,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwData/Float.hpp>
 #include <fwData/String.hpp>
 

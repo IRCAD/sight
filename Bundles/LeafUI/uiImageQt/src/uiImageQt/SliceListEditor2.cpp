@@ -16,7 +16,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <fwData/Image.hpp>

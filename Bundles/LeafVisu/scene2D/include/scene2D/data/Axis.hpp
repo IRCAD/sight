@@ -7,7 +7,6 @@
 #ifndef _SCENE2D_DATA_AXIS_HPP_
 #define _SCENE2D_DATA_AXIS_HPP_
 
-#include <fwTools/Object.hpp>
 #include <fwData/Object.hpp>
 
 #include "scene2D/config.hpp"

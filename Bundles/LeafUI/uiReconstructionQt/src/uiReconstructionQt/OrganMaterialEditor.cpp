@@ -16,8 +16,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwData/Reconstruction.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>

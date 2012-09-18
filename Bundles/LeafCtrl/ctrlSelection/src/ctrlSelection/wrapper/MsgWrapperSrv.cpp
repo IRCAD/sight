@@ -9,8 +9,6 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwComEd/GraphMsg.hpp>
 
 

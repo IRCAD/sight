@@ -18,11 +18,9 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Object.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include "visuVTKAdaptor/PlaneSelectionNotifier.hpp"
-#include <fwServices/IEditionService.hpp>
 
 
 

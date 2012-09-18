@@ -12,7 +12,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>

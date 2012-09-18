@@ -13,7 +13,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>

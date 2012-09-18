@@ -6,8 +6,6 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
-
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/parser/Composite.hpp>
@@ -65,9 +63,6 @@ void Plugin::uninitialize() throw( ::fwRuntime::RuntimeException )
 
     // Clear all service factories
     ::fwServices::registry::ServiceFactory::getDefault()->clearFactory();
-
-    // Clear all factories before stop application.
-    ::fwTools::ClassFactoryRegistry::getFactories().clear();
 }
 
 //-----------------------------------------------------------------------------

@@ -12,8 +12,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwData/Image.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>

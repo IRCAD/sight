@@ -16,7 +16,6 @@
 
 #include <fwData/Composite.hpp>
 #include <fwComEd/helper/Composite.hpp>
-#include <fwTools/Object.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>

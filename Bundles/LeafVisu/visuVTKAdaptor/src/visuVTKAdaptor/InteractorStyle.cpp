@@ -6,7 +6,7 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>

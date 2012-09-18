@@ -7,7 +7,6 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/Bookmarks.hpp>
-#include <fwTools/Object.hpp>
 
 #include <fwData/String.hpp>
 

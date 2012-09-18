@@ -16,17 +16,11 @@
 
 #include "fwPython/config.hpp"
 
-
-
-
 namespace fwPython
 {
 
-
-
-
-
-class FWPYTHON_CLASS_API Interpreter {
+class FWPYTHON_CLASS_API Interpreter
+{
 
 public :
 

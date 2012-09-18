@@ -11,8 +11,6 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
-
 
 #include <fwData/String.hpp>
 #include <fwData/Integer.hpp>

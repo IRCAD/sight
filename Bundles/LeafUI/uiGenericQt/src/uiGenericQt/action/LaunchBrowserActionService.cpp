@@ -8,7 +8,7 @@
 #include <QDesktopServices>
 
 #include <fwCore/base.hpp>
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>

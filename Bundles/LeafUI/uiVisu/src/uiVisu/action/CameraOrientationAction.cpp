@@ -10,7 +10,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 

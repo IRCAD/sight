@@ -17,8 +17,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 

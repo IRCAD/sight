@@ -8,8 +8,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwData/String.hpp>
 
 #include <fwServices/Base.hpp>

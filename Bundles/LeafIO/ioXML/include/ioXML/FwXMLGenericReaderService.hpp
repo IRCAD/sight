@@ -14,7 +14,6 @@
 #include <fwComEd/helper/Composite.hpp>
 #include <fwXML/reader/FwXMLObjectReader.hpp>
 #include <io/IReader.hpp>
-#include <fwTools/Object.hpp>
 
 #include "ioXML/config.hpp"
 
@@ -105,7 +104,7 @@ private :
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
 
     std::string m_archiveExtenstion;
-    
+
     std::string m_inject;
 };
 
