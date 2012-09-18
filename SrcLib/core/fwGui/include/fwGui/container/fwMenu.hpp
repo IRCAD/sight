@@ -7,8 +7,7 @@
 #ifndef _FWGUI_FWMENU_HPP_
 #define _FWGUI_FWMENU_HPP_
 
-#include <fwCore/base.hpp>
-
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -22,12 +21,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API fwMenu : public ::fwCore::BaseObject
+class FWGUI_CLASS_API fwMenu : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (fwMenu)(::fwCore::BaseObject) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (fwMenu)(::fwGui::GuiBaseObject) ) ;
 
     FWGUI_API virtual void clean() = 0;
     FWGUI_API virtual void destroyContainer() = 0;

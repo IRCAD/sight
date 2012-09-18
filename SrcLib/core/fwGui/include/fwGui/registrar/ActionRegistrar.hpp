@@ -7,9 +7,9 @@
 #ifndef _FWGUI_REGISTRAR_ACTIONREGISTRYMANAGER_HPP_
 #define _FWGUI_REGISTRAR_ACTIONREGISTRYMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/config.hpp"
@@ -26,12 +26,12 @@ namespace registrar
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ActionRegistrar : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ActionRegistrar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ActionRegistrar)(::fwCore::BaseObject), (( (const std::string) )), new ActionRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ActionRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new ActionRegistrar );
 
     /// Constructor.
     FWGUI_API ActionRegistrar( const std::string sid);

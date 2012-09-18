@@ -10,11 +10,11 @@
 #include <boost/filesystem.hpp>
 
 #include <string>
-#include <fwCore/base.hpp>
 
 #include <fwData/location/ILocation.hpp>
 #include <fwData/Composite.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -28,12 +28,12 @@ namespace dialog
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ILocationDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ILocationDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ILocationDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (ILocationDialog)(::fwGui::GuiBaseObject) )
 
     typedef enum {
         NONE            = 0,

@@ -7,8 +7,7 @@
 #ifndef _FWGUI_IMENUITEMCALLBACK_HPP_
 #define _FWGUI_IMENUITEMCALLBACK_HPP_
 
-#include <fwCore/base.hpp>
-
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -21,12 +20,12 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMenuItemCallback : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMenuItemCallback : public ::fwGui::GuiBaseObject
 {
 
 public :
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IMenuItemCallback)(::fwCore::BaseObject) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IMenuItemCallback)(::fwGui::GuiBaseObject) ) ;
 
     /**
      * @brief  Called method when callback is executed.

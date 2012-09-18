@@ -10,9 +10,9 @@
 #include <string>
 #include <boost/function.hpp>
 
-#include <fwCore/base.hpp>
 #include <fwData/location/ILocation.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -27,12 +27,12 @@ namespace dialog
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IPulseProgressDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IPulseProgressDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IPulseProgressDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IPulseProgressDialog)(::fwGui::GuiBaseObject) )
 
     typedef std::string FactoryRegistryKeyType;
 

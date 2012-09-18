@@ -7,8 +7,8 @@
 #ifndef _FWGUI_GUIREGISTRY_HPP_
 #define _FWGUI_GUIREGISTRY_HPP_
 
-#include <fwCore/base.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/container/fwMenuBar.hpp"
@@ -26,7 +26,7 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API GuiRegistry : public ::fwCore::BaseObject
+class FWGUI_CLASS_API GuiRegistry : public ::fwGui::GuiBaseObject
 {
 
 public :
@@ -38,7 +38,7 @@ public :
     typedef std::vector< std::string >                           ParentSidsType;
     typedef std::map< std::string , ParentSidsType > ActionToParentMapType;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (GuiRegistry)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (GuiRegistry)(::fwGui::GuiBaseObject) )
 
     /**
      * @brief   Constructor.

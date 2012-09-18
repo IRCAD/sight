@@ -4,9 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 
 #include "fwGui/dialog/LocationDialog.hpp"
 
@@ -18,7 +16,8 @@ namespace dialog
 
 LocationDialog::LocationDialog()
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::ILocationDialog>( ::fwGui::dialog::ILocationDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
 }
 
 //------------------------------------------------------------------------------

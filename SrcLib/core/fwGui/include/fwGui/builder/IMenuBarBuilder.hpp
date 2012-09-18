@@ -7,9 +7,9 @@
 #ifndef _FWGUI_BUILDER_IMENUBARBUILDER_HPP_
 #define _FWGUI_BUILDER_IMENUBARBUILDER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwMenuBar.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
@@ -26,10 +26,10 @@ namespace builder
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMenuBarBuilder : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMenuBarBuilder : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMenuBarBuilder)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMenuBarBuilder)(::fwGui::GuiBaseObject) )
 
     typedef std::string RegistryKeyType;
 

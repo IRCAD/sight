@@ -8,7 +8,6 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/Base.hpp>
 
 #include "fwGui/IMenuItemCallback.hpp"
@@ -144,7 +143,9 @@ void IToolBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
             layoutConfig->getName() == "layout");
 
-    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IToolBarLayoutManager >( ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
+                                                 ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY);
+    m_layoutManager = ::fwGui::layoutManager::IToolBarLayoutManager::dynamicCast(guiObj);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY, m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);

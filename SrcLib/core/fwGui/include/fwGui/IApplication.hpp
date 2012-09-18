@@ -7,8 +7,7 @@
 #ifndef _FWGUI_IAPPLICATION_HPP_
 #define _FWGUI_IAPPLICATION_HPP_
 
-#include <fwCore/base.hpp>
-
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -21,10 +20,10 @@ namespace fwGui
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IApplication : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IApplication : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IApplication)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IApplication)(::fwGui::GuiBaseObject) )
 
     /// Constructor. Do nothing.
     FWGUI_API IApplication();

@@ -7,8 +7,7 @@
 #ifndef _FWGUI_INPUTDIALOG_HPP_
 #define _FWGUI_INPUTDIALOG_HPP_
 
-#include <fwCore/base.hpp>
-
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/dialog/IInputDialog.hpp"
 #include "fwGui/config.hpp"
 

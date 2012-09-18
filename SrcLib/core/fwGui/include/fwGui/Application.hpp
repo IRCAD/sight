@@ -8,7 +8,6 @@
 #define _FWGUI_APPLICATION_HPP_
 
 #include <fwCore/base.hpp>
-#include <fwTools/Factory.hpp>
 
 #include "fwGui/IApplication.hpp"
 #include "fwGui/config.hpp"
@@ -32,15 +31,13 @@ public:
 
     FWGUI_API static Application::sptr getDefault();
 
-
 protected:
-
 
     /// Application factory, returning the registered instance of Application. Manage a Singleton.
     FWGUI_API static Application::sptr factory();
 
-    FWGUI_API Application();
-    FWGUI_API virtual ~Application();
+    Application(){};
+    virtual ~Application(){};
 
 
 };

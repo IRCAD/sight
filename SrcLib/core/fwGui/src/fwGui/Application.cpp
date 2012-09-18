@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/Factory.hpp>
 
 #include "fwGui/Application.hpp"
 
@@ -13,19 +12,10 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-Application::Application()
-{}
-
-//-----------------------------------------------------------------------------
-
-Application::~Application()
-{}
-
-//-----------------------------------------------------------------------------
-
 Application::sptr Application::factory()
 {
-    static Application::sptr app = ::fwTools::ClassFactoryRegistry::create< ::fwGui::Application >( ::fwGui::IApplication::REGISTRY_KEY );
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IApplication::REGISTRY_KEY);
+    static Application::sptr app = ::fwGui::Application::dynamicCast(guiObj);
     SLM_ASSERT("no implementation of " << ::fwGui::IApplication::REGISTRY_KEY, app );
     return app;
 }

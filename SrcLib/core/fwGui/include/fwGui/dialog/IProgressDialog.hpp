@@ -11,14 +11,9 @@
 #include <boost/function.hpp>
 #include <boost/signals.hpp>
 
-#include <fwCore/base.hpp>
-
-#include <fwTools/ClassFactoryRegistry.hpp>
-
 #include <fwData/location/ILocation.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
-
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -33,12 +28,12 @@ namespace dialog
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IProgressDialog : public ::fwCore::BaseObject, public ::boost::signals::trackable // to autoDisconnect if handler is destroyed before the notifier
+class FWGUI_CLASS_API IProgressDialog : public ::fwGui::GuiBaseObject, public ::boost::signals::trackable // to autoDisconnect if handler is destroyed before the notifier
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (IProgressDialog)(::fwCore::BaseObject), (()), progressDialogFactory);
+    fwCoreClassDefinitionsWithFactoryMacro( (IProgressDialog)(::fwGui::GuiBaseObject), (()), progressDialogFactory);
 
     typedef std::string FactoryRegistryKeyType;
     typedef boost::function< void () >  CancelCallbackType;
@@ -83,7 +78,9 @@ protected :
 protected :
     static sptr progressDialogFactory()
     {
-        return ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IProgressDialog >( ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
+        ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::dialog::IProgressDialog::REGISTRY_KEY);
+        ::fwGui::dialog::IProgressDialog::sptr progressDlg = ::fwGui::dialog::IProgressDialog::dynamicCast(guiObj);
+        return progressDlg;
     }
 
 };

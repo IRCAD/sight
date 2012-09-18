@@ -7,8 +7,7 @@
 #ifndef _FWGUI_FWTOOLBAR_HPP_
 #define _FWGUI_FWTOOLBAR_HPP_
 
-#include <fwCore/base.hpp>
-
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -22,12 +21,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API fwToolBar : public ::fwCore::BaseObject
+class FWGUI_CLASS_API fwToolBar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (fwToolBar)(::fwCore::BaseObject) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (fwToolBar)(::fwGui::GuiBaseObject) ) ;
 
     FWGUI_API virtual void clean() = 0;
     FWGUI_API virtual void destroyContainer() = 0;

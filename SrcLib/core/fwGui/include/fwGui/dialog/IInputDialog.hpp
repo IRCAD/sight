@@ -8,8 +8,8 @@
 #define _FWGUI_IINPUTDIALOG_HPP_
 
 #include <string>
-#include <fwCore/base.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -23,12 +23,12 @@ namespace dialog
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IInputDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IInputDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IInputDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IInputDialog)(::fwGui::GuiBaseObject) )
 
     /// Constructor. Do nothing.
     FWGUI_API IInputDialog();

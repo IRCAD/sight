@@ -15,7 +15,8 @@ namespace dialog
 
 ProgressDialog::ProgressDialog(const std::string &title,const std::string &message)
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IProgressDialog>( ::fwGui::dialog::IProgressDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IProgressDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::IProgressDialog::dynamicCast(guiObj);
     if(m_implementation)
     {
         m_implementation->setTitle(title);

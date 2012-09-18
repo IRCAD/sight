@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 
 #include "fwGui/dialog/MultiSelectorDialog.hpp"
 
@@ -16,7 +15,8 @@ namespace dialog
 
 MultiSelectorDialog::MultiSelectorDialog()
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMultiSelectorDialog>( ::fwGui::dialog::IMultiSelectorDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMultiSelectorDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::IMultiSelectorDialog::dynamicCast(guiObj);
 }
 
 //-----------------------------------------------------------------------------

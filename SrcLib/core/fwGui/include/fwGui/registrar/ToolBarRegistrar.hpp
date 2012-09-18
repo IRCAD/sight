@@ -7,9 +7,9 @@
 #ifndef _FWGUI_REGISTRAR_TOOLBARREGISTRYMANAGER_HPP_
 #define _FWGUI_REGISTRAR_TOOLBARREGISTRYMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
@@ -30,12 +30,12 @@ namespace registrar
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ToolBarRegistrar : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ToolBarRegistrar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwCore::BaseObject), (( (const std::string) )), new ToolBarRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new ToolBarRegistrar );
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.

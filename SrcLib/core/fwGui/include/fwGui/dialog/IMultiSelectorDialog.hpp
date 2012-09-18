@@ -9,8 +9,8 @@
 
 #include <map>
 #include <vector>
-#include <fwCore/base.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
@@ -26,12 +26,12 @@ namespace dialog
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  */
-class FWGUI_CLASS_API IMultiSelectorDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMultiSelectorDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMultiSelectorDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMultiSelectorDialog)(::fwGui::GuiBaseObject) )
 
     typedef std::map< std::string, bool > Selections;
     typedef std::string FactoryRegistryKeyType;

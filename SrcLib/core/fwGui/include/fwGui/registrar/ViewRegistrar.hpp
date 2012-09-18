@@ -7,9 +7,9 @@
 #ifndef _FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_
 #define _FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenuBar.hpp"
 #include "fwGui/container/fwContainer.hpp"
@@ -28,12 +28,12 @@ namespace registrar
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ViewRegistrar : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ViewRegistrar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistrar)(::fwCore::BaseObject), (( (const std::string) )), new ViewRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new ViewRegistrar );
 
     /// Constructor.
     FWGUI_API ViewRegistrar( const std::string sid);

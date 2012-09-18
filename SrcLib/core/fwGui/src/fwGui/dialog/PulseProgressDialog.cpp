@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 
 #include "fwGui/dialog/PulseProgressDialog.hpp"
 
@@ -16,7 +15,8 @@ namespace dialog
 
 PulseProgressDialog::PulseProgressDialog( const std::string &title, ::fwGui::dialog::IPulseProgressDialog::Stuff stuff, const std::string &msg, ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IPulseProgressDialog>( ::fwGui::dialog::IPulseProgressDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IPulseProgressDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
     if (m_implementation)
     {
         m_implementation->setStuff(stuff);
