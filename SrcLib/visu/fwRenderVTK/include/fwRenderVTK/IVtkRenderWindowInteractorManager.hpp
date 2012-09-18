@@ -16,6 +16,8 @@
 
 #include <fwGui/container/fwContainer.hpp>
 
+#include "fwRenderVTK/factory/new.hpp"
+#include "fwRenderVTK/registry/detail.hpp"
 #include "fwRenderVTK/config.hpp"
 
 namespace fwRenderVTK
@@ -32,6 +34,25 @@ class FWRENDERVTK_CLASS_API IVtkRenderWindowInteractorManager : public ::fwCore:
 {
 
 public:
+
+    typedef ::fwRenderVTK::factory::Key Key;
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar(std::string functorKey)
+        {
+            ::fwRenderVTK::registry::get()->addFactory(functorKey, &::fwRenderVTK::factory::New<T>);
+        }
+    };
+
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IVtkRenderWindowInteractorManager)(::fwCore::BaseObject) )
 
