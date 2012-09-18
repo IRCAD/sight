@@ -7,20 +7,20 @@
 #include <wx/intl.h>
 #include <wx/textdlg.h>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 #include <fwData/String.hpp>
 
 #include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/dialog/InputDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::dialog::IInputDialog, ::fwGuiWx::dialog::InputDialog, ::fwGui::dialog::IInputDialog::FactoryRegistryKeyType , ::fwGui::dialog::IInputDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::dialog::InputDialog, ::fwGui::dialog::IInputDialog::REGISTRY_KEY );
 
 namespace fwGuiWx
 {
 namespace dialog
 {
-InputDialog::InputDialog():m_input(""), m_title(""), m_message("")
+InputDialog::InputDialog(::fwGui::GuiBaseObject::Key key) : m_input(""), m_title(""), m_message("")
 {}
 
 

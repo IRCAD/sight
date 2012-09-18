@@ -10,7 +10,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
@@ -21,7 +21,7 @@
 #include "fwGuiWx/dialog/LocationDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::dialog::ILocationDialog, ::fwGuiWx::dialog::LocationDialog, ::fwGui::dialog::ILocationDialog::FactoryRegistryKeyType , ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::dialog::LocationDialog, ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
 
 
 namespace fwGuiWx
@@ -30,7 +30,7 @@ namespace dialog
 {
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog() :
+LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         m_style(wxFD_DEFAULT_STYLE),
         m_type(::fwGui::dialog::ILocationDialog::SINGLE_FILE)
 {}

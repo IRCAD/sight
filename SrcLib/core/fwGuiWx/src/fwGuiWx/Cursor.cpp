@@ -7,20 +7,20 @@
 #include <wx/utils.h>
 #include <wx/cursor.h>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/Cursor.hpp"
 
 
-REGISTER_BINDING( ::fwGui::ICursor, ::fwGuiWx::Cursor, ::fwGui::ICursor::FactoryRegistryKeyType , ::fwGui::ICursor::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::Cursor, ::fwGui::ICursor::REGISTRY_KEY );
 
 namespace fwGuiWx
 {
 //-----------------------------------------------------------------------------
 
-Cursor::Cursor()
+Cursor::Cursor(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

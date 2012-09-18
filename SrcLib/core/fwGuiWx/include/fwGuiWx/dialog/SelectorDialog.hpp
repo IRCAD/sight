@@ -30,10 +30,11 @@ class FWGUIWX_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog), (()), new SelectorDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog),
+                                            (()),
+                                            ::fwGui::factory::New< SelectorDialog > );
 
-    /// Default constructor.
-    FWGUIWX_API SelectorDialog() ;
+    FWGUIWX_API SelectorDialog(::fwGui::GuiBaseObject::Key key) ;
 
     FWGUIWX_API virtual ~SelectorDialog();
 

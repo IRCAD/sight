@@ -31,12 +31,12 @@ namespace builder
 class FWGUIWX_CLASS_API MenuBarBuilder : public ::fwGui::builder::IMenuBarBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarBuilder)(::fwGui::builder::IMenuBarBuilder) ,(()), new MenuBarBuilder);
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarBuilder)(::fwGui::builder::IMenuBarBuilder),
+                                            (()),
+                                            ::fwGui::factory::New< MenuBarBuilder > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API MenuBarBuilder();
+    FWGUIWX_API MenuBarBuilder(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~MenuBarBuilder();
 
     /**

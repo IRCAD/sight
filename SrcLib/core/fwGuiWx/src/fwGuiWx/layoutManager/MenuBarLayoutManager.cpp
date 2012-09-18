@@ -7,7 +7,7 @@
 #include <wx/menu.h>
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 
@@ -15,10 +15,7 @@
 #include "fwGuiWx/layoutManager/MenuBarLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IMenuBarLayoutManager,
-        ::fwGui::layoutManager::MenuBarLayoutManager,
-         ::fwGui::layoutManager::IMenuBarLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro(::fwGui::layoutManager::MenuBarLayoutManager, ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -27,7 +24,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-MenuBarLayoutManager::MenuBarLayoutManager()
+MenuBarLayoutManager::MenuBarLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

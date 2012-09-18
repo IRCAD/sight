@@ -13,7 +13,7 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-WxMenuItemContainer::WxMenuItemContainer() throw() : m_menuItem(0)
+WxMenuItemContainer::WxMenuItemContainer(::fwGui::GuiBaseObject::Key key) throw() : m_menuItem(0)
 {}
 
 //-----------------------------------------------------------------------------

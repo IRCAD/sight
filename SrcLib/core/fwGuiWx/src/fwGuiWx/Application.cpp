@@ -6,12 +6,12 @@
 
 #include <wx/app.h>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiWx/Application.hpp"
 
 
-REGISTER_BINDING( ::fwGui::Application, ::fwGuiWx::Application, ::fwGui::IApplication::FactoryRegistryKeyType , ::fwGui::IApplication::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::Application, ::fwGui::IApplication::REGISTRY_KEY );
 
 namespace fwGuiWx
 {

@@ -12,7 +12,7 @@
 #include <boost/assign/list_of.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -21,10 +21,7 @@
 #include "fwGuiWx/layoutManager/FrameLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IFrameLayoutManager,
-        ::fwGui::FrameLayoutManager,
-         ::fwGui::layoutManager::IFrameLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::FrameLayoutManager, ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -38,7 +35,7 @@ const std::map< ::fwGui::layoutManager::IFrameLayoutManager::Style, long> FrameL
 
 //-----------------------------------------------------------------------------
 
-FrameLayoutManager::FrameLayoutManager()
+FrameLayoutManager::FrameLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

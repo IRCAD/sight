@@ -28,16 +28,12 @@ class FWGUIWX_CLASS_API ActionCallback : public ::fwGui::ActionCallbackBase
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ActionCallback)(::fwGui::ActionCallbackBase), (()), new ActionCallback );
+    fwCoreClassDefinitionsWithFactoryMacro( (ActionCallback)(::fwGui::ActionCallbackBase),
+                                            (()),
+                                            ::fwGui::factory::New< ActionCallback > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIWX_API ActionCallback() ;
+    FWGUIWX_API ActionCallback(::fwGui::GuiBaseObject::Key key) ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIWX_API virtual ~ActionCallback() ;
 
     /**

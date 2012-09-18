@@ -10,17 +10,14 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/LineLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
-        ::fwGui::LineLayoutManager,
-         ::fwGui::layoutManager::LineLayoutManagerBase::RegistryKeyType,
-          ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -28,7 +25,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-LineLayoutManager::LineLayoutManager()
+LineLayoutManager::LineLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

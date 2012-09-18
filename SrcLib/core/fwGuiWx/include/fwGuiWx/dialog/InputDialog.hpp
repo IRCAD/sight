@@ -30,7 +30,9 @@ class FWGUIWX_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), (()), new InputDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog),
+                                            (()),
+                                            ::fwGui::factory::New< InputDialog > );
 
     /** @brief Constructor. Do nothing.\n
      * Example of use: \n
@@ -43,8 +45,8 @@ public:
      @endverbatim
      */
 
-    FWGUIWX_API InputDialog();
-    /// Destructor. Do nothing.
+    FWGUIWX_API InputDialog(::fwGui::GuiBaseObject::Key key);
+
     FWGUIWX_API virtual ~InputDialog();
 
     /// Set the title of the message box.

@@ -6,7 +6,7 @@
 
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 #include <fwGuiWx/widgets/fwProgressDialog.hpp>
@@ -14,7 +14,7 @@
 #include "fwGuiWx/dialog/ProgressDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::dialog::IProgressDialog, ::fwGuiWx::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::FactoryRegistryKeyType , ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
 
 
 namespace fwGuiWx
@@ -23,7 +23,7 @@ namespace dialog
 {
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( const std::string title, const std::string message)
+ProgressDialog::ProgressDialog(::fwGui::GuiBaseObject::Key key, const std::string title, const std::string message)
 {
     fwProgressDialog *wxpd = new fwProgressDialog(
                                     ::fwGuiWx::std2wx(title),

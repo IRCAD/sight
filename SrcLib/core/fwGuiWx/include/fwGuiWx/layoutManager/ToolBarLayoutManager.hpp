@@ -31,12 +31,12 @@ namespace layoutManager
 class FWGUIWX_CLASS_API ToolBarLayoutManager : public ::fwGui::layoutManager::IToolBarLayoutManager
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarLayoutManager)(::fwGui::layoutManager::IToolBarLayoutManager) ,(()), new ToolBarLayoutManager);
+    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarLayoutManager)(::fwGui::layoutManager::IToolBarLayoutManager),
+                                            (()),
+                                            ::fwGui::factory::New< ToolBarLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API ToolBarLayoutManager();
+    FWGUIWX_API ToolBarLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~ToolBarLayoutManager();
 
     /**

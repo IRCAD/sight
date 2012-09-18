@@ -17,7 +17,7 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-WxContainer::WxContainer() throw() : m_container(0)
+WxContainer::WxContainer(::fwGui::GuiBaseObject::Key key) throw() : m_container(0)
 {}
 
 //-----------------------------------------------------------------------------

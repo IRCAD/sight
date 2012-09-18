@@ -31,12 +31,12 @@ class FWGUIWX_CLASS_API TabLayoutManager : public ::fwGui::layoutManager::TabLay
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TabLayoutManager)(::fwGui::layoutManager::TabLayoutManagerBase), (()), new TabLayoutManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (TabLayoutManager)(::fwGui::layoutManager::TabLayoutManagerBase),
+                                            (()),
+                                            ::fwGui::factory::New< TabLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API TabLayoutManager();
+    FWGUIWX_API TabLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~TabLayoutManager();
 
     /**

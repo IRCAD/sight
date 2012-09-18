@@ -32,12 +32,12 @@ namespace layoutManager
 class FWGUIWX_CLASS_API MenuBarLayoutManager : public ::fwGui::layoutManager::IMenuBarLayoutManager
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarLayoutManager)(::fwGui::layoutManager::IMenuBarLayoutManager) ,(()), new MenuBarLayoutManager);
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarLayoutManager)(::fwGui::layoutManager::IMenuBarLayoutManager),
+                                            (()),
+                                            ::fwGui::factory::New< MenuBarLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API MenuBarLayoutManager();
+    FWGUIWX_API MenuBarLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~MenuBarLayoutManager();
 
     /**

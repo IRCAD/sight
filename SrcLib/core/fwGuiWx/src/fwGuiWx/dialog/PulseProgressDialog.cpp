@@ -11,14 +11,14 @@
 #include <wx/evtloop.h>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 #include <fwGuiWx/widgets/fwProgressDialog.hpp>
 
 #include "fwGuiWx/dialog/PulseProgressDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::dialog::IPulseProgressDialog, ::fwGuiWx::dialog::PulseProgressDialog, ::fwGui::dialog::IPulseProgressDialog::FactoryRegistryKeyType , ::fwGui::dialog::IPulseProgressDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::dialog::PulseProgressDialog, ::fwGui::dialog::IPulseProgressDialog::REGISTRY_KEY );
 
 
 namespace fwGuiWx
@@ -88,7 +88,7 @@ wxThread::ExitCode PulseProgressDialog::LocalThread::Entry()
 
 //------------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog()
+PulseProgressDialog::PulseProgressDialog(::fwGui::GuiBaseObject::Key key)
 {
     m_wxpd = NULL;
 }

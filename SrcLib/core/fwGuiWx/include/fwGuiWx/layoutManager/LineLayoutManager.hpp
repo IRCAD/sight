@@ -29,12 +29,12 @@ class FWGUIWX_CLASS_API LineLayoutManager : public ::fwGui::layoutManager::LineL
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LineLayoutManager)(::fwGui::layoutManager::LineLayoutManagerBase), (()), new LineLayoutManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (LineLayoutManager)(::fwGui::layoutManager::LineLayoutManagerBase),
+                                            (()),
+                                            ::fwGui::factory::New< LineLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API LineLayoutManager();
+    FWGUIWX_API LineLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~LineLayoutManager();
 
     /**

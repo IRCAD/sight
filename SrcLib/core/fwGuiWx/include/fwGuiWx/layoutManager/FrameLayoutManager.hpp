@@ -31,12 +31,12 @@ class FWGUIWX_CLASS_API FrameLayoutManager : public ::fwGui::layoutManager::IFra
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (FrameLayoutManager)(::fwGui::layoutManager::IFrameLayoutManager), (()), new FrameLayoutManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (FrameLayoutManager)(::fwGui::layoutManager::IFrameLayoutManager),
+                                            (()),
+                                            ::fwGui::factory::New< FrameLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API FrameLayoutManager();
+    FWGUIWX_API FrameLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~FrameLayoutManager();
 
     /**

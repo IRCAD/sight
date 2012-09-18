@@ -32,11 +32,12 @@ class FWGUIWX_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog),
+                                            (()),
+                                            ::fwGui::factory::New< MessageDialog > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API MessageDialog();
-    /// Destructor. Do nothing.
+    FWGUIWX_API MessageDialog(::fwGui::GuiBaseObject::Key key);
+
     FWGUIWX_API virtual ~MessageDialog();
 
     /// Set the title of the message box

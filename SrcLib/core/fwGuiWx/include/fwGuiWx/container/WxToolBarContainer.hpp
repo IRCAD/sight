@@ -33,16 +33,12 @@ class FWGUIWX_CLASS_API WxToolBarContainer : public ::fwGui::container::fwToolBa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (WxToolBarContainer)(::fwGui::container::fwToolBar), (()), new WxToolBarContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (WxToolBarContainer)(::fwGui::container::fwToolBar),
+                                            (()),
+                                            ::fwGui::factory::New< WxToolBarContainer > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIWX_API WxToolBarContainer() throw() ;
+    FWGUIWX_API WxToolBarContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIWX_API virtual ~WxToolBarContainer() throw() ;
 
 

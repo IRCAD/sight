@@ -10,16 +10,13 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiWx/container/WxContainer.hpp"
 #include "fwGuiWx/container/WxToolBarContainer.hpp"
 #include "fwGuiWx/builder/ToolBarBuilder.hpp"
 
-REGISTER_BINDING( ::fwGui::builder::IToolBarBuilder,
-        ::fwGui::builder::ToolBarBuilder,
-         ::fwGui::builder::IToolBarBuilder::RegistryKeyType,
-          ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::builder::ToolBarBuilder, ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -28,7 +25,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ToolBarBuilder::ToolBarBuilder()
+ToolBarBuilder::ToolBarBuilder(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

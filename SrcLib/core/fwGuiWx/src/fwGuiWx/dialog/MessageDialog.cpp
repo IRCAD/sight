@@ -6,19 +6,20 @@
 
 #include <wx/msgdlg.h>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 #include "fwGuiWx/dialog/MessageDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::dialog::IMessageDialog, ::fwGuiWx::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::FactoryRegistryKeyType , ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
 
 namespace fwGuiWx
 {
 namespace dialog
 {
-MessageDialog::MessageDialog() : m_buttons(0)
+
+MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key) : m_title(""), m_message(""), m_buttons(0)
 {}
 
 

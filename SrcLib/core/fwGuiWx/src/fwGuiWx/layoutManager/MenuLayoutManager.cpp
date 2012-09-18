@@ -14,7 +14,7 @@
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 
@@ -25,10 +25,7 @@
 #include "fwGuiWx/Shortcut.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IMenuLayoutManager,
-        ::fwGui::layoutManager::MenuLayoutManager,
-         ::fwGui::layoutManager::IMenuLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::layoutManager::MenuLayoutManager, ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -44,7 +41,7 @@ const std::map< ::fwGui::layoutManager::IMenuLayoutManager::ActionType, int> Men
 
 //-----------------------------------------------------------------------------
 
-MenuLayoutManager::MenuLayoutManager()
+MenuLayoutManager::MenuLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

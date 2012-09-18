@@ -38,9 +38,6 @@ public:
     class LocalThread : public wxThread
     {
     public :
-
-
-
         LocalThread( Stuff &stuff );
         ~LocalThread();
         virtual wxThread::ExitCode  Entry ();
@@ -55,14 +52,14 @@ public:
          * catched during execution of stuff
          */
         std::string m_errorMessage;
-
-
     };
 
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog), (()), new PulseProgressDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog),
+                                            (()),
+                                            ::fwGui::factory::New< PulseProgressDialog > );
 
-    FWGUIWX_API PulseProgressDialog();
+    FWGUIWX_API PulseProgressDialog(::fwGui::GuiBaseObject::Key key);
 
     FWGUIWX_API virtual ~PulseProgressDialog();
 

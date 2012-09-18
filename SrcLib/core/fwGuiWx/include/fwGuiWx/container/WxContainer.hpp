@@ -33,16 +33,12 @@ class FWGUIWX_CLASS_API WxContainer : public ::fwGui::container::fwContainer
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (WxContainer)(::fwGui::container::fwContainer), (()), new WxContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (WxContainer)(::fwGui::container::fwContainer),
+                                            (()),
+                                            ::fwGui::factory::New< WxContainer >  );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIWX_API WxContainer() throw() ;
+    FWGUIWX_API WxContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIWX_API virtual ~WxContainer() throw() ;
 
 

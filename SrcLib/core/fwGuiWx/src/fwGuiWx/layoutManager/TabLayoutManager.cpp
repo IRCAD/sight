@@ -10,17 +10,14 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/TabLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
-        ::fwGui::TabLayoutManager,
-         ::fwGui::layoutManager::TabLayoutManagerBase::RegistryKeyType,
-          ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::TabLayoutManager, ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -28,7 +25,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-TabLayoutManager::TabLayoutManager()
+TabLayoutManager::TabLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

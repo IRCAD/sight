@@ -9,17 +9,14 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiWx/container/WxContainer.hpp"
 #include "fwGuiWx/builder/ContainerBuilder.hpp"
 
 
 
-REGISTER_BINDING( ::fwGui::builder::IContainerBuilder,
-        ::fwGui::builder::ContainerBuilder,
-        ::fwGui::builder::IContainerBuilder::RegistryKeyType,
-        ::fwGui::builder::IContainerBuilder::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::builder::ContainerBuilder, ::fwGui::builder::IContainerBuilder::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -29,7 +26,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ContainerBuilder::ContainerBuilder()
+ContainerBuilder::ContainerBuilder(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

@@ -16,7 +16,7 @@
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwGuiWx/convert.hpp>
 
@@ -27,10 +27,8 @@
 #include "fwGuiWx/Shortcut.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IToolBarLayoutManager,
-        ::fwGui::layoutManager::ToolBarLayoutManager,
-         ::fwGui::layoutManager::IToolBarLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::layoutManager::ToolBarLayoutManager,
+                    ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -39,7 +37,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-ToolBarLayoutManager::ToolBarLayoutManager()
+ToolBarLayoutManager::ToolBarLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
