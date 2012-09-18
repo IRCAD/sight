@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwDataCamp/Version.hpp>
 
 #include <fwMetaData/Object.hpp>
 #include <fwMetaData/MetaVisitor.hpp>
@@ -116,13 +117,13 @@ fwMetaData::Object::sptr MetaHelper::dataToMeta(fwData::Object::sptr object)
 MetaHelper::MetaHelper()
 {
     m_nbProcessObject = 0;
+    FW_RAISE_IF("fwDataCamp version not correspond.", ::fwDataCamp::Version::s_CURRENT_VERSION != 1 );
 }
 
 //-----------------------------------------------------------------------------
 
 MetaHelper::~MetaHelper()
-{
-}
+{}
 
 //-----------------------------------------------------------------------------
 
