@@ -10,12 +10,12 @@
 #include <QApplication>
 #include <QMessageBox>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/dialog/MessageDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::dialog::IMessageDialog, ::fwGuiQt::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::FactoryRegistryKeyType , ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
@@ -41,7 +41,7 @@ MessageDialogQtButtonType messageDialogQtButton =
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog() :
+MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key) :
     m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON),
     m_icon(::fwGui::dialog::IMessageDialog::NONE)
 {}

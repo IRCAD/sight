@@ -35,10 +35,11 @@ class FWGUIQT_CLASS_API MultiSelectorDialog : public ::fwGui::dialog::IMultiSele
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog), (()), new MultiSelectorDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog),
+                                            (()),
+                                            ::fwGui::factory::New< MultiSelectorDialog > );
 
-    /// Default constructor.
-    FWGUIQT_API MultiSelectorDialog() ;
+    FWGUIQT_API MultiSelectorDialog(::fwGui::GuiBaseObject::Key key) ;
 
     FWGUIQT_API virtual ~MultiSelectorDialog();
 

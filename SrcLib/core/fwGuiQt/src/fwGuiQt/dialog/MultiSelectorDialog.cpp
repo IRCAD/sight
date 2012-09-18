@@ -16,11 +16,11 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/dialog/MultiSelectorDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::dialog::IMultiSelectorDialog, ::fwGuiQt::dialog::MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog::FactoryRegistryKeyType , ::fwGui::dialog::IMultiSelectorDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::dialog::MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
@@ -29,7 +29,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-MultiSelectorDialog::MultiSelectorDialog() 
+MultiSelectorDialog::MultiSelectorDialog(::fwGui::GuiBaseObject::Key key)
     : m_message(""),
     m_title("")
 {}

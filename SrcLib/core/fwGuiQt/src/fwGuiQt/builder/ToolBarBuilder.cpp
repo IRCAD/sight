@@ -10,7 +10,7 @@
 #include <QToolBar>
 #include <QHBoxLayout>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
@@ -18,10 +18,7 @@
 
 
 
-REGISTER_BINDING( ::fwGui::builder::IToolBarBuilder,
-        ::fwGui::builder::ToolBarBuilder,
-        ::fwGui::builder::IToolBarBuilder::RegistryKeyType,
-        ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::builder::ToolBarBuilder, ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
 
 
 namespace fwGui
@@ -31,7 +28,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ToolBarBuilder::ToolBarBuilder()
+ToolBarBuilder::ToolBarBuilder(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

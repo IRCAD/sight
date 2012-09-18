@@ -16,11 +16,11 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/dialog/SelectorDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::dialog::ISelectorDialog, ::fwGuiQt::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::FactoryRegistryKeyType , ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
@@ -29,9 +29,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog()
-    : m_message(""),
-    m_title("")
+SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key) : m_message(""),  m_title("")
 {}
 
 //------------------------------------------------------------------------------

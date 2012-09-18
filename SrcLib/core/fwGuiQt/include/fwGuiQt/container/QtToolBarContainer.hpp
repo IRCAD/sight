@@ -39,16 +39,12 @@ class FWGUIQT_CLASS_API QtToolBarContainer : public ::fwGui::container::fwToolBa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtToolBarContainer)(::fwGui::container::fwToolBar), (()), new QtToolBarContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtToolBarContainer)(::fwGui::container::fwToolBar),
+                                            (()),
+                                            ::fwGui::factory::New< QtToolBarContainer > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIQT_API QtToolBarContainer() throw() ;
+    FWGUIQT_API QtToolBarContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIQT_API virtual ~QtToolBarContainer() throw() ;
 
 

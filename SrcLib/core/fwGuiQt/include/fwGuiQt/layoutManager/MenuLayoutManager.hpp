@@ -31,12 +31,12 @@ namespace layoutManager
 class FWGUIQT_CLASS_API MenuLayoutManager : public ::fwGui::layoutManager::IMenuLayoutManager
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuLayoutManager)(::fwGui::layoutManager::IMenuLayoutManager) ,(()), new MenuLayoutManager);
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuLayoutManager)(::fwGui::layoutManager::IMenuLayoutManager),
+                                            (()),
+                                            ::fwGui::factory::New< MenuLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API MenuLayoutManager();
+    FWGUIQT_API MenuLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIQT_API virtual ~MenuLayoutManager();
 
     /**

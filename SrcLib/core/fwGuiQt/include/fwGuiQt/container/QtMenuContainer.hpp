@@ -39,16 +39,12 @@ class FWGUIQT_CLASS_API QtMenuContainer : public ::fwGui::container::fwMenu
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuContainer)(::fwGui::container::fwMenu), (()), new QtMenuContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuContainer)(::fwGui::container::fwMenu),
+                                            (()),
+                                            ::fwGui::factory::New< QtMenuContainer > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIQT_API QtMenuContainer() throw() ;
+    FWGUIQT_API QtMenuContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIQT_API virtual ~QtMenuContainer() throw() ;
 
 

@@ -30,12 +30,12 @@ namespace builder
 class FWGUIQT_CLASS_API ContainerBuilder : public ::fwGui::builder::IContainerBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ContainerBuilder)(::fwGui::builder::IContainerBuilder) ,(()), new ContainerBuilder);
+    fwCoreClassDefinitionsWithFactoryMacro( (ContainerBuilder)(::fwGui::builder::IContainerBuilder),
+                                            (()),
+                                            ::fwGui::factory::New< ContainerBuilder > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API ContainerBuilder();
+    FWGUIQT_API ContainerBuilder(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIQT_API virtual ~ContainerBuilder();
 
     /**

@@ -28,7 +28,9 @@ class FWGUIQT_CLASS_API Application : public ::fwGui::Application
 
 public:
 
-    //fwCoreClassDefinitionsWithFactoryMacro( (Application)(::fwGui::IApplication), (()), new Application );
+    Application(::fwGui::GuiBaseObject::Key key){};
+
+    virtual ~Application(){};
 
     /// Tells the application to exit with a returncode
     FWGUIQT_API virtual void exit( int returncode = 0);

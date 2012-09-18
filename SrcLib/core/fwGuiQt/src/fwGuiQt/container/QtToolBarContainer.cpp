@@ -16,7 +16,7 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QtToolBarContainer::QtToolBarContainer() throw()
+QtToolBarContainer::QtToolBarContainer(::fwGui::GuiBaseObject::Key key) throw()
 {}
 
 //-----------------------------------------------------------------------------

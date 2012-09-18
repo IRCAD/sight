@@ -6,18 +6,18 @@
 
 #include <QApplication>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/Cursor.hpp"
 
 
-REGISTER_BINDING( ::fwGui::ICursor, ::fwGuiQt::Cursor, ::fwGui::ICursor::FactoryRegistryKeyType , ::fwGui::ICursor::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::Cursor, ::fwGui::ICursor::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
 //-----------------------------------------------------------------------------
 
-Cursor::Cursor()
+Cursor::Cursor(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

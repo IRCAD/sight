@@ -9,7 +9,7 @@
 #include <QMainWindow>
 #include <QMenuBar>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/container/QtMenuBarContainer.hpp"
@@ -17,10 +17,7 @@
 
 
 
-REGISTER_BINDING( ::fwGui::builder::IMenuBarBuilder,
-        ::fwGui::builder::MenuBarBuilder,
-        ::fwGui::builder::IMenuBarBuilder::RegistryKeyType,
-        ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY );
+fwGuiRegisterMacro(::fwGui::builder::MenuBarBuilder, ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY);
 
 
 namespace fwGui
@@ -30,7 +27,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-MenuBarBuilder::MenuBarBuilder()
+MenuBarBuilder::MenuBarBuilder(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

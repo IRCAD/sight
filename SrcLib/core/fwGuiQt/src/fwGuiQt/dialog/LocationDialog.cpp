@@ -11,7 +11,7 @@
 #include <QString>
 #include <QApplication>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
@@ -22,10 +22,7 @@
 
 
 
-REGISTER_BINDING( ::fwGui::dialog::ILocationDialog,
-        ::fwGuiQt::dialog::LocationDialog,
-        ::fwGui::dialog::ILocationDialog::FactoryRegistryKeyType ,
-        ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::dialog::LocationDialog, ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
 
 
 namespace fwGuiQt
@@ -35,7 +32,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog() :
+LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         m_style(::fwGui::dialog::ILocationDialog::NONE),
         m_type(::fwGui::dialog::ILocationDialog::SINGLE_FILE)
 {}

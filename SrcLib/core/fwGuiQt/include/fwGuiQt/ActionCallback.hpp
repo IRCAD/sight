@@ -32,16 +32,12 @@ class FWGUIQT_CLASS_API ActionCallback :  public QObject, public ::fwGui::Action
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ActionCallback)(::fwGui::ActionCallbackBase), (()), new ActionCallback );
+    fwCoreClassDefinitionsWithFactoryMacro( (ActionCallback)(::fwGui::ActionCallbackBase),
+                                            (()),
+                                            ::fwGui::factory::New< ActionCallback > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIQT_API ActionCallback() ;
+    FWGUIQT_API ActionCallback(::fwGui::GuiBaseObject::Key key) ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIQT_API virtual ~ActionCallback() ;
 
     /**

@@ -4,22 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/ActionCallback.hpp"
 
 
-REGISTER_BINDING( ::fwGui::ActionCallbackBase,
-        ::fwGuiQt::ActionCallback,
-         ::fwGui::ActionCallbackBase::RegistryKeyType,
-          ::fwGui::ActionCallbackBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::ActionCallback, ::fwGui::ActionCallbackBase::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
 
 //-----------------------------------------------------------------------------
 
-ActionCallback::ActionCallback()
+ActionCallback::ActionCallback(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

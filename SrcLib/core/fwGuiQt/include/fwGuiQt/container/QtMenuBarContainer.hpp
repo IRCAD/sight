@@ -40,16 +40,12 @@ class FWGUIQT_CLASS_API QtMenuBarContainer : public ::fwGui::container::fwMenuBa
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuBarContainer)(::fwGui::container::fwMenuBar), (()), new QtMenuBarContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuBarContainer)(::fwGui::container::fwMenuBar),
+                                            (()),
+                                            ::fwGui::factory::New< QtMenuBarContainer > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIQT_API QtMenuBarContainer() throw() ;
+    FWGUIQT_API QtMenuBarContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIQT_API virtual ~QtMenuBarContainer() throw() ;
 
 

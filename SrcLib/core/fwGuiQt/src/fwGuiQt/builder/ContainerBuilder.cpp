@@ -10,18 +10,13 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/builder/ContainerBuilder.hpp"
 
 
-
-REGISTER_BINDING( ::fwGui::builder::IContainerBuilder,
-        ::fwGui::builder::ContainerBuilder,
-        ::fwGui::builder::IContainerBuilder::RegistryKeyType,
-        ::fwGui::builder::IContainerBuilder::REGISTRY_KEY );
-
+fwGuiRegisterMacro(::fwGui::builder::ContainerBuilder, ::fwGui::builder::IContainerBuilder::REGISTRY_KEY);
 
 namespace fwGui
 {
@@ -30,7 +25,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ContainerBuilder::ContainerBuilder()
+ContainerBuilder::ContainerBuilder(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

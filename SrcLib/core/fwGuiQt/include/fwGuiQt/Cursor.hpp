@@ -28,11 +28,12 @@ class FWGUIQT_CLASS_API Cursor : public ::fwGui::ICursor
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor), (()), new Cursor );
+    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor),
+                                            (()),
+                                            ::fwGui::factory::New< Cursor > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API Cursor();
-    /// Destructor. Do nothing.
+    FWGUIQT_API Cursor(::fwGui::GuiBaseObject::Key key);
+
     FWGUIQT_API virtual ~Cursor();
 
     /// Set the cursor

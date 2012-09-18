@@ -10,16 +10,14 @@
 #include <QMenuBar>
 #include <QString>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/container/QtMenuContainer.hpp"
 #include "fwGuiQt/layoutManager/MenuBarLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IMenuBarLayoutManager,
-        ::fwGui::layoutManager::MenuBarLayoutManager,
-         ::fwGui::layoutManager::IMenuBarLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::layoutManager::MenuBarLayoutManager,
+                    ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -28,7 +26,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-MenuBarLayoutManager::MenuBarLayoutManager()
+MenuBarLayoutManager::MenuBarLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

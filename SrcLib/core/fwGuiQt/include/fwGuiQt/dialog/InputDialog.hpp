@@ -38,11 +38,12 @@ class FWGUIQT_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), (()), new InputDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog),
+                                            (()),
+                                            ::fwGui::factory::New< InputDialog > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API InputDialog();
-    /// Destructor. Do nothing.
+    FWGUIQT_API InputDialog(::fwGui::GuiBaseObject::Key key);
+
     FWGUIQT_API virtual ~InputDialog();
 
     /// Set the title of the message box

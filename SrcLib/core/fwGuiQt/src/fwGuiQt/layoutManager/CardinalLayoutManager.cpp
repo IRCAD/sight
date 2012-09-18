@@ -13,15 +13,13 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/layoutManager/CardinalLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
-        ::fwGui::CardinalLayoutManager,
-        ::fwGui::layoutManager::CardinalLayoutManagerBase::RegistryKeyType,
-        ::fwGui::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::CardinalLayoutManager,
+                    ::fwGui::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -29,7 +27,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-CardinalLayoutManager::CardinalLayoutManager()
+CardinalLayoutManager::CardinalLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

@@ -11,16 +11,13 @@
 #include <QStyle>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 
 #include "fwGuiQt/layoutManager/ToolboxLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
-        ::fwGui::ToolboxLayoutManager,
-        ::fwGui::layoutManager::ToolboxLayoutManagerBase::RegistryKeyType,
-        ::fwGui::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::ToolboxLayoutManager, ::fwGui::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -28,7 +25,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-ToolboxLayoutManager::ToolboxLayoutManager()
+ToolboxLayoutManager::ToolboxLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

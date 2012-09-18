@@ -21,7 +21,7 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QtContainer::QtContainer() throw() : m_container(0)
+QtContainer::QtContainer(::fwGui::GuiBaseObject::Key key) throw() : m_container(0)
 {}
 
 //-----------------------------------------------------------------------------

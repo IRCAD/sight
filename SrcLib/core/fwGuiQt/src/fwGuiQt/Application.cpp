@@ -6,12 +6,12 @@
 
 #include <QApplication>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/Application.hpp"
 
 
-REGISTER_BINDING( ::fwGui::Application, ::fwGuiQt::Application, ::fwGui::IApplication::FactoryRegistryKeyType , ::fwGui::IApplication::REGISTRY_KEY );
+fwGuiRegisterMacro(::fwGuiQt::Application, ::fwGui::IApplication::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
