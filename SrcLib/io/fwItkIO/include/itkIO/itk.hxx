@@ -10,7 +10,6 @@
 #include <itkImageRegion.h>
 
 #include <fwTools/DynamicType.hpp>
-#include <fwTools/Factory.hpp>
 
 #include <fwComEd/helper/Image.hpp>
 #include <fwComEd/helper/Array.hpp>

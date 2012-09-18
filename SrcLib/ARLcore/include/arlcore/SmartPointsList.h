@@ -7,6 +7,8 @@
 #ifndef _ARLCORE_SMARTPOINTLIST_H
 #define _ARLCORE_SMARTPOINTLIST_H
 
+#include <boost/make_shared.hpp>
+
 #include <arlcore/Common.h>
 
 #include <vector>
@@ -53,7 +55,9 @@ namespace arlCore
     {
     public:
 
-        fwCoreClassDefinitionsWithFactoryMacro( (SmartPointList)(::fwTools::Object), (()), ::fwTools::Factory::New< SmartPointList >) ;
+        fwCoreClassDefinitionsWithFactoryMacro( (SmartPointList)(::fwTools::Object),
+                                                (()),
+                                                ::boost::make_shared< SmartPointList >) ;
         //! @brief Default constructor of an empty list
         ARLCORE_API SmartPointList( void );
 

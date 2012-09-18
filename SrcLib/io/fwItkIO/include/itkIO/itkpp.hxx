@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/DynamicType.hpp>
-#include <fwTools/Factory.hpp>
 
 #include <assert.h>
 

@@ -6,6 +6,9 @@
 
 #ifndef _ARLCORE_MESH_H
 #define _ARLCORE_MESH_H
+
+#include <boost/make_shared.hpp>
+
 #include <fwCore/macros.hpp>
 #include <arlcore/Common.h>
 
@@ -32,7 +35,7 @@ namespace arlCore
     public:
 
         fwCoreClassDefinitionsWithNFactoriesMacro( (Mesh)(::fwTools::Object),
-                                                   ((::fwTools::Factory::New< Mesh > ,() ))
+                                                   ((::boost::make_shared< Mesh > ,() ))
                                                    );
 
         //! @brief Constructor (Value of scalar for each point)
