@@ -39,12 +39,11 @@ class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVT
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)(::fwRenderVTK::IVtkRenderWindowInteractorManager) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)
+                                                (::fwRenderVTK::IVtkRenderWindowInteractorManager) )
 
-    /// Constructor. Do nothing.
-    VISUVTKQT_API VtkRenderWindowInteractorManager();
+    VISUVTKQT_API VtkRenderWindowInteractorManager(::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key);
 
-    /// Destructor. Do nothing.
     VISUVTKQT_API virtual ~VtkRenderWindowInteractorManager();
 
     /// Creates an interactor and installs it in window.

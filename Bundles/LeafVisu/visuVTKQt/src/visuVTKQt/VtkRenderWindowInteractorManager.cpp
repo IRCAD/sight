@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <QVBoxLayout>
 #include <QEvent>
 #include <QDropEvent>
@@ -23,6 +21,7 @@
 #include <fwServices/GlobalEventManager.hpp>
 #include <fwServices/IEditionService.hpp>
 
+#include <fwRenderVTK/registry/macros.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include "visuVTKQt/VtkRenderWindowInteractorManager.hpp"
@@ -66,10 +65,8 @@ class DropFilter : public QObject
 
 //-----------------------------------------------------------------------------
 
-REGISTER_BINDING(   ::fwRenderVTK::IVtkRenderWindowInteractorManager,
-        ::visuVTKQt::VtkRenderWindowInteractorManager,
-        ::fwRenderVTK::IVtkRenderWindowInteractorManager::FactoryRegistryKeyType,
-        ::fwRenderVTK::IVtkRenderWindowInteractorManager::REGISTRY_KEY );
+ fwRenderVTKRegisterMacro( ::visuVTKQt::VtkRenderWindowInteractorManager,
+                           ::fwRenderVTK::IVtkRenderWindowInteractorManager::REGISTRY_KEY );
 
 //-----------------------------------------------------------------------------
 
@@ -78,7 +75,8 @@ namespace visuVTKQt
 
 //-----------------------------------------------------------------------------
 
-VtkRenderWindowInteractorManager::VtkRenderWindowInteractorManager()
+VtkRenderWindowInteractorManager::VtkRenderWindowInteractorManager(
+        ::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key )
 {}
 
 //-----------------------------------------------------------------------------
