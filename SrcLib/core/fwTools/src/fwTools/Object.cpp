@@ -6,10 +6,8 @@
 
 #include <fwCore/HiResClock.hpp>
 
-#include "fwTools/ClassRegistrar.hpp"
 #include "fwTools/Object.hpp"
 #include "fwTools/UUID.hpp"
-#include "fwTools/Factory.hpp"
 
 namespace fwTools
 {
@@ -28,9 +26,7 @@ Object::Object() :
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{
-    ::fwTools::Factory::uninitData(m_OSRKey);
-}
+{}
 
 //------------------------------------------------------------------------------
 
