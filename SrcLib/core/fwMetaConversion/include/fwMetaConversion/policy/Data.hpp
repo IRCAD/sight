@@ -18,8 +18,10 @@
 #include "fwMetaConversion/MetaHelper.hpp"
 #include "fwMetaConversion/policy/DataHelper.hpp"
 
-namespace fwMetaConversion {
-namespace policy {
+namespace fwMetaConversion
+{
+namespace policy
+{
 
 
 class FWMETACONVERSION_CLASS_API Data : public ::fwMetaData::Policy
@@ -31,7 +33,6 @@ public:
 
     ::fwData::Object::sptr getObject(){ return m_object;};
 private:
-
 
     void processAttribut(const std::string& name, const Attributes::mapped_type& attribut);
     ::fwData::Object::sptr m_object;

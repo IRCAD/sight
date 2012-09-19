@@ -41,8 +41,7 @@ public:
     FWMETACONVERSION_API void visit(const camp::Function& function);
     FWMETACONVERSION_API virtual void visit(const camp::MapProperty& property);
 
-    FWMETACONVERSION_API ::fwMetaData::Base::sptr matchCampType(camp::Type type,
-                                                const camp::Value& value);
+    FWMETACONVERSION_API ::fwMetaData::Base::sptr matchCampType(camp::Type type, const camp::Value& value);
 
     FWMETACONVERSION_API ::fwMetaData::Object::sptr getMetaObject();
 
@@ -57,9 +56,6 @@ private:
     ::fwMetaData::Object::sptr m_metaObject;
 
     References m_refMap;
-
-    unsigned int m_bufferSize;
-
 };
 
 }

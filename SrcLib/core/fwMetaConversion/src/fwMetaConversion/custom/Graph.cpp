@@ -16,28 +16,28 @@ namespace fwMetaConversion
 namespace custom
 {
 
+//-----------------------------------------------------------------------------
 
-MetaData::Object::sptr Graph::toMeta(::fwData::Object::sptr object,
+::fwMetaData::Object::sptr Graph::toMeta(::fwData::Object::sptr object,
                                     ::fwMetaConversion::MetaHelper& metaHelper)
-
 {
     typedef ::fwData::Graph::ConnectionContainer GraphConnections;
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(object);
-    MetaData::Object::sptr meta = this->computeMinimalInfos(graph,metaHelper);
+    ::fwMetaData::Object::sptr meta = this->computeMinimalInfos(graph,metaHelper);
 
-    MetaData::Map::sptr metaMap = MetaData::Map::New();
+    ::fwMetaData::Map::sptr metaMap = ::fwMetaData::Map::New();
 
 
     const GraphConnections& connections = graph->getCRefConnections();
     GraphConnections::const_iterator cIt = connections.begin();
 
 
-    MetaData::Object::sptr key;
-    MetaData::Object::sptr value;
+    ::fwMetaData::Object::sptr key;
+    ::fwMetaData::Object::sptr value;
     for(;cIt != connections.end(); ++cIt)
     {
         key = metaHelper.dataToMeta(cIt->first);
-        value = MetaData::Object::New();
+        value = ::fwMetaData::Object::New();
 
         value->addAttribut("source", metaHelper.dataToMeta(cIt->second.first));
         value->addAttribut("destination", metaHelper.dataToMeta(cIt->second.second));
@@ -49,10 +49,11 @@ MetaData::Object::sptr Graph::toMeta(::fwData::Object::sptr object,
     return meta;
 }
 
-::fwData::Object::sptr Graph::fromMeta(MetaData::Object::sptr meta,
+//-----------------------------------------------------------------------------
+
+::fwData::Object::sptr Graph::fromMeta(::fwMetaData::Object::sptr meta,
                                      ::fwMetaConversion::MetaHelper& metaHelper)
 {
-
     ::fwData::Object::sptr object= this->computeMinimalInfos(meta,metaHelper);
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(object);
 
@@ -83,10 +84,10 @@ MetaData::Object::sptr Graph::toMeta(::fwData::Object::sptr object,
 
         graph->addEdge(key, source ,target);
     }
-
     return graph;
 }
 
-}
+//-----------------------------------------------------------------------------
 
-}
+} //namespace custom
+} //namespace fwMetaConversion

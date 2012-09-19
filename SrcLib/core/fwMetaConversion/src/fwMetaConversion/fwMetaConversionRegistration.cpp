@@ -4,10 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwMetaConversion/autoload.hpp"
+#include "fwMetaConversion/custom/registry/macros.hpp"
+#include "fwMetaConversion/custom/Graph.hpp"
+
 namespace fwMetaConversion
 {
 
-runner runner::r;
+fwMetaConversionRegisterMacro( ::fwMetaConversion::custom::Graph, ::fwData::Graph);
 
 } //fwMetaConversion

@@ -14,8 +14,10 @@
 #include "fwMetaConversion/config.hpp"
 #include "fwMetaConversion/MetaHelper.hpp"
 
-namespace fwMetaConversion {
-namespace policy {
+namespace fwMetaConversion
+{
+namespace policy
+{
 
 /**
  * @brief Helper to parse property.
@@ -31,7 +33,9 @@ public:
      * @param userObj the setted userObejct.
      * @param the attribut value
      */
-    FWMETACONVERSION_API  void processSimpleProperty(const std::string& property, ::camp::UserObject& userObj, const Attribut& attribut);
+    FWMETACONVERSION_API  void processSimpleProperty(const std::string& property,
+                                                     ::camp::UserObject& userObj,
+                                                     const Attribut& attribut);
 
     /**
      * @brief Process an array property.
@@ -39,7 +43,9 @@ public:
      * @param userObj the setted userObejct.
      * @param the attribut value
      */
-    FWMETACONVERSION_API  void processArrayProperty(const std::string& property, ::camp::UserObject& userObj,const Attribut& attribut);
+    FWMETACONVERSION_API  void processArrayProperty(const std::string& property,
+                                                    ::camp::UserObject& userObj,
+                                                    const Attribut& attribut);
 
     /**
      * @brief Process an user property.
@@ -47,7 +53,9 @@ public:
      * @param userObj the setted userObejct.
      * @param the attribut value
      */
-    FWMETACONVERSION_API  void processUserProperty(const std::string& property, ::camp::UserObject& userObj, const Attribut& attribut);
+    FWMETACONVERSION_API  void processUserProperty(const std::string& property,
+                                                   ::camp::UserObject& userObj,
+                                                   const Attribut& attribut);
 
     /**
      * @brief Process a mapping property.
@@ -55,7 +63,9 @@ public:
      * @param userObj the setted userObejct.
      * @param the attribut value
      */
-    FWMETACONVERSION_API  void processMappingProperty(const std::string& property, ::camp::UserObject& userObj, const Attribut& attribut);
+    FWMETACONVERSION_API  void processMappingProperty(const std::string& property,
+                                                      ::camp::UserObject& userObj,
+                                                      const Attribut& attribut);
 
 
     DataHelper(::fwMetaConversion::MetaHelper& helper);

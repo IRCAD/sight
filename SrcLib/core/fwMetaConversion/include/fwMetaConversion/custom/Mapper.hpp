@@ -17,6 +17,7 @@
 #include <fwMetaConversion/MetaHelper.hpp>
 #include <fwMetaData/Object.hpp>
 
+#include "fwMetaConversion/custom/factory/new.hpp"
 #include "fwMetaConversion/config.hpp"
 
 namespace fwMetaConversion
@@ -30,6 +31,27 @@ namespace custom
 class FWMETACONVERSION_CLASS_API Mapper
 {
 public:
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar(std::string functorKey)
+        {
+            ::fwMetaConversion::custom::registry::get()->addFactory(
+                    functorKey,
+                    &::fwMetaConversion::custom::factory::New<T>
+                    );
+        }
+    };
+
+    virtual ~Mapper(){};
+
     /**
      * Convert fwData to MetaData
      * @param object the origin fwData

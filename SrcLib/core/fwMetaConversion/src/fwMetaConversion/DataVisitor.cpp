@@ -10,7 +10,7 @@
 #include <fwCamp/Mapper/ValueMapper.hpp>
 #include <fwData/camp/mapper.hpp>
 #include <fwData/Array.hpp>
-#include "fwDataCamp/Factory.hpp"
+
 #include <fwMetaData/Sequence.hpp>
 #include <fwMetaData/Map.hpp>
 #include <fwMetaData/Blob.hpp>
@@ -30,12 +30,9 @@
 namespace fwMetaConversion
 {
 
-
 //-----------------------------------------------------------------------------
 
-DataVisitor::DataVisitor(::fwData::Object::sptr data,
-                         ::fwMetaConversion::MetaHelper& helper) :
-                                                                m_helper(helper)
+DataVisitor::DataVisitor(::fwData::Object::sptr data, ::fwMetaConversion::MetaHelper& helper) : m_helper(helper)
 {
     std::string type = data->getClassname();
     const camp::Class& metaclass = camp::classByName(type);

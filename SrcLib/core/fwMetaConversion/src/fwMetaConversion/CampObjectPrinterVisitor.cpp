@@ -7,12 +7,10 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
 
-
-
 #include <fwCamp/Mapper/ValueMapper.hpp>
 #include <fwData/camp/mapper.hpp>
 #include <fwData/Array.hpp>
-#include "fwDataCamp/Factory.hpp"
+
 #include <fwMetaData/Sequence.hpp>
 #include <fwMetaData/Map.hpp>
 #include <fwMetaData/Blob.hpp>
@@ -27,7 +25,6 @@
 #include "fwMetaConversion/CampObjectPrinterVisitor.hpp"
 
 #include "fwMetaConversion/camp/ValueMapper.hpp"
-
 
 
 namespace fwMetaConversion

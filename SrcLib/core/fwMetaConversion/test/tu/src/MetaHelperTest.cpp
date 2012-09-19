@@ -57,6 +57,8 @@ void MetaHelperTest::tearDown()
     // Clean up after the test run.
 }
 
+//-----------------------------------------------------------------------------
+
 void MetaHelperTest::dataToMeta()
 {
     ::fwData::Patient::sptr patient = ::fwData::Patient::New();
@@ -136,12 +138,10 @@ void MetaHelperTest::dataToMeta()
                     break;
                 }
         }
-
-
-
-
     }
 }
+
+//-----------------------------------------------------------------------------
 
 void MetaHelperTest::metaToData()
 {
@@ -172,12 +172,16 @@ void MetaHelperTest::metaToData()
     CPPUNIT_ASSERT_MESSAGE("Patient Not equal" , patientComparison);
 }
 
+//-----------------------------------------------------------------------------
+
 void MetaHelperTest::visitCampObject( const camp::UserObject & campObj )
 {
     //::fwMetaConversion::CampObjectVisitor visitor( campObj );
     ::fwMetaConversion::CampObjectPrinterVisitor visitor( campObj );
     campObj.getClass().visit(visitor);
 }
+
+//-----------------------------------------------------------------------------
 
 void MetaHelperTest::visitPatientDataTest()
 {
@@ -188,9 +192,11 @@ void MetaHelperTest::visitPatientDataTest()
     // Convert in camp object
     ::camp::UserObject campObj ( patient.get() );
 
-    // visite camp object
+    // visit camp object
     this->visitCampObject( campObj );
 }
+
+//-----------------------------------------------------------------------------
 
 void MetaHelperTest::visitPatientMetaDataTest()
 {
@@ -205,9 +211,11 @@ void MetaHelperTest::visitPatientMetaDataTest()
     // Convert in camp object
     ::camp::UserObject campObj ( metaObject.get() );
 
-    // visite camp object
+    // visit camp object
     this->visitCampObject( campObj );
 }
+
+//-----------------------------------------------------------------------------
 
 void MetaHelperTest::visitCompositeDataTest()
 {
@@ -225,9 +233,11 @@ void MetaHelperTest::visitCompositeDataTest()
     // Convert in camp object
     ::camp::UserObject campObj ( composite.get() );
 
-    // visite camp object
+    // visit camp object
     this->visitCampObject( campObj );
 }
+
+//-----------------------------------------------------------------------------
 
 }  // namespace ut
 }  // namespace fwMetaConversion
