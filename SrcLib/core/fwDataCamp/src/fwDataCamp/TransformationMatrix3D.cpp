@@ -6,7 +6,7 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(TransformationMatrix3D))
 {

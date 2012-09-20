@@ -7,10 +7,8 @@
 #include <fwData/Composite.hpp>
 #include <fwData/camp/mapper.hpp>
 
+#include <fwCamp/UserObject.hpp>
 #include <fwCamp/Mapper/ValueMapper.hpp>
-
-#include "fwDataCamp/Factory.hpp"
-
 
 fwCampImplementDataMacro((fwData)(Composite))
 {

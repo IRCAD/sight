@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/Boolean.hpp>
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(Boolean))
 {

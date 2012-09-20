@@ -6,7 +6,7 @@
 
 #include <fwData/camp/mapper.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 #include "fwDataCamp/TransferFunction.hpp"
 
 fwCampImplementDataMacro((fwData)(TransferFunction))

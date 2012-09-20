@@ -5,8 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/camp/mapper.hpp>
+#include <fwCamp/UserObject.hpp>
+
 #include "fwDataCamp/Array.hpp"
-#include "fwDataCamp/Factory.hpp"
 
 //------------------------------------------------------------------------------
 

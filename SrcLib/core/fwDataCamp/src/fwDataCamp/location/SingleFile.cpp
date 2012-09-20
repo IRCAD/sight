@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/location/SingleFile.hpp>
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(location)(SingleFile))
 {

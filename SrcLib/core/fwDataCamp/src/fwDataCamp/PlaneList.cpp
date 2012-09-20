@@ -6,7 +6,7 @@
 
 #include <fwData/PlaneList.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(PlaneList))
 {

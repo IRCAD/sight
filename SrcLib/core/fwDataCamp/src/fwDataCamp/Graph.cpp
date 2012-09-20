@@ -8,7 +8,7 @@
 #include <fwData/camp/mapper.hpp>
 #include <fwCamp/Mapper/ArrayMapper.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(Graph))
 {

@@ -11,11 +11,11 @@
 
 namespace fwDataCamp
 {
-    /// Class to manage fwDataCamp version
-    struct Version
-    {
-        FWDATACAMP_API static const int s_CURRENT_VERSION;
-    };
+/// Class to manage fwDataCamp version
+struct Version
+{
+    FWDATACAMP_API static const int s_CURRENT_VERSION;
+};
 }
 
 #endif // __FWDATACAMP_VERSION_HPP__

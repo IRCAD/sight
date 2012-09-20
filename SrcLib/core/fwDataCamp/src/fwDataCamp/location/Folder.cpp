@@ -7,7 +7,7 @@
 #include <fwData/camp/mapper.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(location)(Folder))
 {

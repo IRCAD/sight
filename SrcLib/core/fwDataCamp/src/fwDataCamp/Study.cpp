@@ -6,7 +6,7 @@
 
 #include <fwData/Study.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(Study))
 {

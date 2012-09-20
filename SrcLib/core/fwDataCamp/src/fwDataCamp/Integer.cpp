@@ -6,7 +6,7 @@
 
 #include <fwData/Integer.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(Integer))
 {

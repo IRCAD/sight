@@ -6,7 +6,7 @@
 
 #include <fwData/Port.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 
 fwCampImplementDataMacro((fwData)(Port))
 {

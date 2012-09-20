@@ -6,7 +6,7 @@
 
 #include <fwTools/camp/mapper.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 #include "fwDataCamp/Image.hpp"
 
 

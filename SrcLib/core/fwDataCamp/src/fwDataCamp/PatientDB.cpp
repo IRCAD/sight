@@ -6,7 +6,7 @@
 
 #include <fwData/PatientDB.hpp>
 
-#include "fwDataCamp/Factory.hpp"
+#include <fwCamp/UserObject.hpp>
 #include "fwData/camp/mapper.hpp"
 
 fwCampImplementDataMacro((fwData)(PatientDB))
