@@ -14,8 +14,6 @@
 namespace camp
 {
 
-
-
 class FWCAMP_CLASS_API ExtendedClassVisitor : public ClassVisitor
 {
 public:

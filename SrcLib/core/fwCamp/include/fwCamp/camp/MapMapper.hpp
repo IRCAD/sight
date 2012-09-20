@@ -32,8 +32,6 @@ struct MapMapper< MAP , typename boost::enable_if_c<camp::isMapping<MAP>::value>
        return map.size();
    }
 
-
-
    static const ValueType& get(const MapType& map, std::size_t index)
    {
        typename MapType::const_iterator it = map.begin();

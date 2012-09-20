@@ -55,7 +55,7 @@ MapPropertyImpl<A>::map(const UserObject& object) const
 }
 
 /*
- * Instanciate map properties
+ * Instantiate map properties
  */
 template <typename A>
 struct PropertyMapper<A, camp::mappingType>
@@ -65,6 +65,6 @@ struct PropertyMapper<A, camp::mappingType>
 
 
 } // namespace detail
-}  // namespace camp
+} // namespace camp
 
 #endif /* __FWCAMP_CAMP_MAPPROPERTYIMPL_HXX__*/

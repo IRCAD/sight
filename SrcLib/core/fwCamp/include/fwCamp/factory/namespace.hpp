@@ -4,12 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @brief       All necessary for camp binding with simple types.
- * @namespace   fwCamp
- * @author      IRCAD (Research and Development Team).
- * @date        2009-2012
- */
+#ifndef __FWCAMP_FACTORY_NAMESPACE_HPP__
+#define __FWCAMP_FACTORY_NAMESPACE_HPP__
+
+
 namespace fwCamp
 {
-}  // namespace fwCamp
+
+/**
+ * @brief       Contains fwCamp::factory utilities
+ * @namespace   factory
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2012
+ *
+ */
+namespace factory
+{
+} // namespace factory
+
+} // namespace fwCamp
+
+#endif /* __FWCAMP_FACTORY_NAMESPACE_HPP__ */

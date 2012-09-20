@@ -8,22 +8,21 @@
 #include "fwCamp/camp/MapProperty.hpp"
 #include "fwCamp/camp/ExtendedClassVisitor.hpp"
 
-namespace camp {
-
-
-
-
+namespace camp
+{
 
 MapProperty::MapProperty(const std::string& name, Type elementType):
             Property(name, (::camp::Type) mappingType),
             m_elementType(elementType)
-{
+{}
 
-}
+//-----------------------------------------------------------------------------
 
 MapProperty::~MapProperty()
 {
 }
+
+//-----------------------------------------------------------------------------
 
 void MapProperty::accept(ClassVisitor& visitor) const
 {
@@ -38,16 +37,21 @@ void MapProperty::accept(ClassVisitor& visitor) const
     }
 }
 
+//-----------------------------------------------------------------------------
+
 Value MapProperty::getValue(const UserObject& object) const
 {
     return getElement(object, 0);
 }
 
+//-----------------------------------------------------------------------------
 
 void MapProperty::setValue(const UserObject& object, const Value& value) const
 {
-    //FIXME XXX TODO DO somethings
+    //FIXME XXX TODO DO something
 }
+
+//-----------------------------------------------------------------------------
 
 Type MapProperty::elementType() const
 {

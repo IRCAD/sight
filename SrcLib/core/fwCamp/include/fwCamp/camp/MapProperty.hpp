@@ -14,9 +14,8 @@
 
 #include "fwCamp/config.hpp"
 
-namespace camp {
-
-
+namespace camp
+{
 
 class FWCAMP_CLASS_API MapProperty : public Property
 {

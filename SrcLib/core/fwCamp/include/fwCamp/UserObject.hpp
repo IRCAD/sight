@@ -11,16 +11,11 @@
 
 #include <fwCore/macros.hpp>
 
-#include "fwCamp/Factory.hpp"
-
-fwCorePredeclare((fwTools)(Object));
-
+#include "fwCamp/factory/new.hpp"
+#include "fwCamp/registry/detail.hpp"
 
 namespace fwCamp
 {
-
-typedef Factory< ::camp::UserObject * (*)( ::fwTools::Object * ) > UserObjectFactory;
-
 
 /**
  * @brief Helper to register and manage the conversion between an fwData::Object and a camp::userObject
@@ -31,16 +26,12 @@ struct UserObjectRegistrar
     /**
      * @brief Register an object of type name in factory.
      */
-    UserObjectRegistrar( const std::string &name );
-
-    /**
-     * @brief create a camp::UserObject from a fwTools::Object
-     */
-    static ::camp::UserObject *create( ::fwTools::Object *object );
-
+    UserObjectRegistrar( const std::string &name )
+    {
+        ::fwCamp::registry::get()->addFactory(name, &::fwCamp::factory::New<T>);
+    }
 };
 
 }
 
-#include "fwCamp/UserObject.hxx"
 #endif

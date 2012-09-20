@@ -54,7 +54,6 @@ struct ArrayMapper<std::set<T> >
 
     static void remove(std::set<T>& arr, std::size_t index)
     {
-
         typename std::set<T>::const_iterator cIt = arr.begin();
         for(int i =0;i < index; ++i)
         {

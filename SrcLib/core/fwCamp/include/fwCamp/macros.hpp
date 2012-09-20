@@ -33,12 +33,6 @@
 #define __FWCAMP_AUTO_TYPE_NONCOPYABLE(type, registerFunc)\
     CAMP_TYPE_NONCOPYABLE( type)
 
-#define __FWCAMP_REGISTRAR_OBJECT_CALL(desc)\
-    (::fwCamp::UserObjectRegistrar< __FWCAMP_NAMESPACE_NAME(desc) >) (__FWCAMP_NAMESPACE_NAME(desc)::reg( BOOST_PP_STRINGIZE(__FWCAMP_NAMESPACE_NAME(desc))))
-
-#define __FWCAMP_REGISTRAR_OBJECT(desc) \
-    static ::fwCamp::UserObjectRegistrar< __FWCAMP_NAMESPACE_NAME(desc) > reg
-
 #define __FWCAMP__AUTO__DECLARE__MACRO(desc) \
     void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &);\
     inline void __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)() \
@@ -62,7 +56,6 @@
  * fwCampMakeFriendMacro((a)(b)(c)) expands to : Friend void ::fwCampDeclareabc(camp::ClassBuilder< ::a::b::c > &builder)
  */
 #define fwCampMakeFriendDataMacro(desc) \
-    __FWCAMP_REGISTRAR_OBJECT(desc);\
     friend void ::__FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder);\
 
 //----------------------------------------------------------------------------
