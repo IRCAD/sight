@@ -6,12 +6,12 @@
 
 #include <fwTools/BufferObject.hpp>
 
-#include <fwDataCamp/Factory.hpp>
-
 #include <fwMetaData/MetaVisitor.hpp>
 #include <fwMetaData/Object.hpp>
 #include <fwMetaData/Sequence.hpp>
 #include <fwMetaData/Blob.hpp>
+
+#include <fwCamp/factory/new.hpp>
 
 #include "fwMetaConversion/policy/Data.hpp"
 #include "fwMetaConversion/policy/DataHelper.hpp"
@@ -69,10 +69,9 @@ void Data::processAttribut(const std::string & name, const Attributes::mapped_ty
     const ::camp::Property& p = metaclass.property(name);
 
     std::string classname = m_object->getClassname();
-    ::fwCamp::UserObjectFactory::create(classname, m_object.get());
 
     OSLM_TRACE("classname : " << classname);
-    camp::UserObject* userObject = new camp::UserObject(m_object.get(), classname);
+    SPTR(camp::UserObject) userObject = ::fwCamp::factory::New(classname, m_object.get());
 
     int type= p.type();
     switch(type)
@@ -104,7 +103,6 @@ void Data::processAttribut(const std::string & name, const Attributes::mapped_ty
             }
         break;
     }
-    delete userObject;
 }
 
 //-----------------------------------------------------------------------------

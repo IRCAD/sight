@@ -7,7 +7,10 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
 
+
+#include <fwCamp/factory/new.hpp>
 #include <fwCamp/Mapper/ValueMapper.hpp>
+
 #include <fwData/camp/mapper.hpp>
 #include <fwData/Array.hpp>
 
@@ -37,7 +40,7 @@ DataVisitor::DataVisitor(::fwData::Object::sptr data, ::fwMetaConversion::MetaHe
     std::string type = data->getClassname();
     const camp::Class& metaclass = camp::classByName(type);
 
-    m_obj = new camp::UserObject(data.get(), type);
+    m_obj = ::fwCamp::factory::New(type, data.get());
 
     m_metaObject = ::fwMetaData::Object::New();
     m_metaObject->setType(type);
@@ -60,9 +63,7 @@ DataVisitor::DataVisitor(::fwData::Object::sptr data, ::fwMetaConversion::MetaHe
 //-----------------------------------------------------------------------------
 
 DataVisitor::~DataVisitor()
-{
-    delete m_obj;
-}
+{}
 
 //-----------------------------------------------------------------------------
 

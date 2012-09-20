@@ -49,7 +49,7 @@ private:
 
     ::fwMetaData::Base::sptr processObject(const ::camp::Value& value);
 
-    const camp::UserObject* m_obj;
+    CSPTR(camp::UserObject) m_obj;
     ::fwMetaConversion::MetaHelper& m_helper;
 
 
