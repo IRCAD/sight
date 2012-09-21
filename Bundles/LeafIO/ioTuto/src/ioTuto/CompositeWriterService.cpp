@@ -23,7 +23,7 @@
 namespace ioTuto
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ioTuto::CompositeWriterService , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioTuto::CompositeWriterService , ::fwData::Composite ) ;
 
 //------------------------------------------------------------------------------
 
