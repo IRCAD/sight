@@ -12,15 +12,15 @@
 #include <arlcore/vnl_rotation3d_vector.h>
 
 arlCore::Scene::Scene( PlaneSystem &universe ):
-m_universe(universe),
-m_cameras(universe)
+m_cameras(universe),
+m_universe(universe)
 {
     m_tags = arlCore::Tags::New( universe , std::string() );
 }
 
 arlCore::Scene::Scene( PlaneSystem &universe, Tags::sptr tags ):
-m_universe(universe),
-m_cameras(universe)
+m_cameras(universe),
+m_universe(universe)
 {
     //VAG FIXMEm_tags->copy(tags);
     assert(false); //VAG
@@ -75,7 +75,7 @@ bool arlCore::Scene::plot( void ) const
     f2.close();
     system(GNUPLOT_EXE );
     //exec("d:/gnuplot/bin/wgnuplot", "c:/000000.dem" );
-    
+
     */
     return true;
 }
@@ -267,7 +267,7 @@ unsigned int arlCore::Scene::detection( unsigned int camNo, unsigned int tagNo, 
     assert(m_tags->getTag(tagNo)!=0);
     PointList::sptr tagPoints=m_tags->getTag(tagNo)->getGeometry();
     vnl_rigid_matrix T;
-    const bool Transfo = m_universe.getTrf( m_tags->getTag(tagNo)->getPlane(), m_cameras[camNo-1].getPlane(), T );
+    // const bool Transfo = m_universe.getTrf( m_tags->getTag(tagNo)->getPlane(), m_cameras[camNo-1].getPlane(), T );
     //T.invert();
     for( i=0 ; i<tagPoints->size() ; ++i )
     {

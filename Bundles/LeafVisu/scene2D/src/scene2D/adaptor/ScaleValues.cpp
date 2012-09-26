@@ -236,7 +236,6 @@ void ScaleValues::doUpdate() throw ( ::fwTools::Failed )
 void ScaleValues::rescaleValues()
 {
     const double viewportX = m_viewport->getX();
-    const double viewportY = m_viewport->getY();
     const double viewportWidth = m_viewport->getWidth();
     const double viewportHeight = m_viewport->getHeight();
 
@@ -332,7 +331,7 @@ void ScaleValues::rescaleValues()
 
         double textPosY = (m_align == "bottom")
             ? m_viewport->getY()
-            : textPosY = viewportHeight * 0.9;
+            : viewportHeight * 0.9;
 
         for(int i = 0; i < valuesSize; ++i, val += m_interval)
         {

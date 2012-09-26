@@ -113,7 +113,6 @@ CurvedHistogram::Points CurvedHistogram::getControlPoints( ::fwData::Histogram::
     ::fwData::Histogram::fwHistogramValues histogramValues = _histogram->getValues();
     const float binsWidth = _histogram->getBinsWidth();
     const float histogramMin = _histogram->getMinValue();
-    const float histogramMinValue = _histogram->getMinValue();
 
     Point p;
     Points controlPoints;
@@ -465,7 +464,7 @@ void CurvedHistogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
 
     SLM_ASSERT("m_histogramPointUID must be defined in order to update the related ::fwData::Point data.",
             !m_histogramPointUID.empty());
- 
+
     ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue = histogram->getMinValue();

@@ -186,6 +186,7 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img ) throw(::fwTools::F
     //*****     Get all file names      *****//
     std::vector< std::string > & imageFiles = this->getRefFileNames(); // files which define one image (2D or 3D)
     OSLM_TRACE("Number of files for an image : " << imageFiles.size());
+    FwCoreNotUsedMacro(imageFiles);
 
     // DicomInstance is necessary for SR reading
     ::boost::shared_ptr< DicomInstance > dicomInstance = this->getDicomInstance();

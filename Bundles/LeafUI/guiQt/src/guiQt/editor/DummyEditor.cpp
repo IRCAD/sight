@@ -68,8 +68,7 @@ void DummyEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SLM_ASSERT("container not instanced", qtContainer->getQtContainer());
 
     m_staticText->deleteLater();
     qtContainer->clean();
