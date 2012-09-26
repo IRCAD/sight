@@ -74,6 +74,4 @@ public:
 
 };
 
-WPTR(InitializeVtkOutputWindow) reg = SPTR(InitializeVtkOutputWindow)(new InitializeVtkOutputWindow) ;
-
-
+static InitializeVtkOutputWindow _vtkOutputWindowInstantiator;
