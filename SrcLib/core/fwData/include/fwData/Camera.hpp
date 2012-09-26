@@ -92,7 +92,7 @@ namespace fwData
         void setFy(::fwData::TransformationMatrix3D::TM3DType fy)
         { m_intrinsicMatrix->setCoefficient(1, 1, fy); };
 
-        void setDistortionCoefficient(
+        FWDATA_API void setDistortionCoefficient(
             double k1, double k2, double p1, double p2, double k3);
         fwDataGetSetCRefMacro(DistortionCoefficient, DistArray);
 
