@@ -108,6 +108,7 @@ protected:
 
     ServiceContainer m_createdSrv;
     ServiceContainer m_startedSrv;
+    ServiceContainer m_createdComChannels;
     ServiceContainer m_startedComChannels;
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(

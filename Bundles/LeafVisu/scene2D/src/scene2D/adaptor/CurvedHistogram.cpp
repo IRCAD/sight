@@ -113,7 +113,6 @@ CurvedHistogram::Points CurvedHistogram::getControlPoints( ::fwData::Histogram::
     ::fwData::Histogram::fwHistogramValues histogramValues = _histogram->getValues();
     const float binsWidth = _histogram->getBinsWidth();
     const float histogramMin = _histogram->getMinValue();
-    const float histogramMinValue = _histogram->getMinValue();
 
     Point p;
     Points controlPoints;

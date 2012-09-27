@@ -200,6 +200,7 @@ bool BufferManager::lockBuffer(const void * const * buffer)
     {
         bool restored = this->restoreBuffer( buffer );
         OSLM_ASSERT( "restore not OK ( "<< restored << " && " << *buffer <<" != 0 ).", restored && *buffer != 0 );
+        FwCoreNotUsedMacro(restored);
     }
 
     m_lastAccess.modified();

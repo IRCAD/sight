@@ -25,22 +25,22 @@ arlCore::ICP::ICP( arlCore::PointList::csptr model, arlCore::PointList::csptr cl
 m_point2PointMode(true),
 m_modelMesh(),
 m_cloud(),
-m_justVisible(justVisible),
-m_maxIterations(50),
-m_nbIterations(0),
-m_startError(-1),
-m_endError(-1),
 m_initialization(false),
-m_ANNtree(0),
+m_justVisible(justVisible),
+m_modelSize(0),
+m_cloudSize(0),
 m_modelPoints(0),
 m_cloudPoints(0),
 m_Pk(0),
 m_Yk(0),
 m_Pi(0),
+m_ANNtree(0),
 m_nn_idx(0),
 m_squaredDists(0),
-m_modelSize(0),
-m_cloudSize(0)
+m_maxIterations(50),
+m_nbIterations(0),
+m_startError(-1),
+m_endError(-1)
 {
     m_solution.setIdentity();
 #ifdef ANN
@@ -100,23 +100,25 @@ m_cloudSize(0)
 }
 
 arlCore::ICP::ICP( arlCore::Mesh::csptr model, arlCore::PointList::csptr cloud, bool justVisible ):
-m_point2PointMode(false),
-m_modelMesh(model),
-m_cloud(cloud),
-m_justVisible(justVisible),
-m_maxIterations(50),
-m_nbIterations(0),
-m_startError(-1),
-m_endError(-1),
+m_point2PointMode(true),
+m_modelMesh(),
+m_cloud(),
 m_initialization(false),
-m_ANNtree(0),
+m_justVisible(justVisible),
+m_modelSize(0),
+m_cloudSize(0),
 m_modelPoints(0),
 m_cloudPoints(0),
 m_Pk(0),
 m_Yk(0),
 m_Pi(0),
+m_ANNtree(0),
 m_nn_idx(0),
-m_squaredDists(0)
+m_squaredDists(0),
+m_maxIterations(50),
+m_nbIterations(0),
+m_startError(-1),
+m_endError(-1)
 {
     m_solution.setIdentity();
     if(justVisible) m_modelSize = model->getPointList()->visibleSize();

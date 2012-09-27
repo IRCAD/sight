@@ -116,6 +116,20 @@ void DynamicView::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
+
+    std::vector< ::fwRuntime::ConfigurationElement::sptr > vectMode =
+            m_configuration->find("config");
+
+    if (!vectMode.empty())
+    {
+        ::fwRuntime::ConfigurationElement::sptr config = vectMode.at(0);
+
+        if (config->hasAttribute("dynamicConfigStartStop"))
+        {
+            std::string dynamicConfig = config->getAttributeValue("dynamicConfigStartStop");
+            m_dynamicConfigStartStop = (dynamicConfig == "true");
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

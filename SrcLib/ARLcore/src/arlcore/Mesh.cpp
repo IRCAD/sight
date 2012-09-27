@@ -247,7 +247,6 @@ bool arlCore::Mesh::generate( unsigned int axis, double width, double length, do
 
 bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
 {
-    const bool Verbose = true;
     clear();
     if(fileName=="") return false;
     std::string extractFolder, extractFile, ext;

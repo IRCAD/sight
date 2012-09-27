@@ -60,10 +60,9 @@ arlCore::vnl_rotation3d_matrix& arlCore::vnl_rotation3d_matrix::operator=( const
 }
 
 bool arlCore::vnl_rotation3d_matrix::is_rotation( void ) const
-{   
+{
     vnl_matrix_fixed<double,3,3> test_Identity;
     test_Identity = (*this) * this->transpose(); //on verifie d'abord pour le produit
-    double det = vnl_det( *this ); //calcul du determinant qui doit etre egal a 1 et pas -1
     if( test_Identity.is_identity(1e-8) || fabs(vnl_det( *this ) -1) < 1e-6  ) return true;
     else return false;
 }
@@ -72,26 +71,25 @@ vnl_matrix<double> arlCore::vnl_rotation3d_matrix::as_matrix( void )
 {
     vnl_matrix<double> tmp(3,3);
     unsigned int i, j;
-    for(i=0; i<3; i++) 
+    for(i=0; i<3; i++)
         for(j=0; j<3; j++)
              tmp(i,j) = (*this)(i,j);
     return tmp;
 }
 
 bool arlCore::vnl_rotation3d_matrix::closest_rotation( void )
-{   
+{
     unsigned int i,j, dim = 3;
     double small_val = 1e-12; //TODO c'est 1e-6 en float, il faut trouver la relation et la generaliser
     vnl_matrix_fixed<double,3,3> V, tmp2;
     vnl_matrix<double> tmp(3,3);
-    tmp = this->as_matrix();    
-    vnl_svd<double> svd_T_matrix( tmp );    
+    tmp = this->as_matrix();
+    vnl_svd<double> svd_T_matrix( tmp );
     V = svd_T_matrix.V();
 //  V.transpose();
     tmp2 = svd_T_matrix.U() * V.transpose();
 //  this->Mul(U,V);  // R = U.Vtrp
   double det = vnl_det( tmp2 );
-  double det_test = fabs( fabs ( det ) - 1 );
   // If s = det(U.Vtrp) id not +1 or -1 : error
 //  if( det_test >  small_val )
 //      {
@@ -112,16 +110,16 @@ bool arlCore::vnl_rotation3d_matrix::closest_rotation( void )
     //        i_dmax = i;
     //      }
 
-    // in vxl : singular value are ranked from the largest to the smallest in svd_T_matrix.W() 
+    // in vxl : singular value are ranked from the largest to the smallest in svd_T_matrix.W()
     // Multiply the sing. val and the corresponding row in V by -1
 //    w(i_dmax) *= -1.0;
-        for(i=0;i<dim;i++) 
+        for(i=0;i<dim;i++)
             V(i,2) *= -1.0;
         // and recompute the rotation
         //this->Mul( U, V);  // R = U.Vtrp
         tmp2 = svd_T_matrix.U() * V.transpose();
     }
-    for(i=0; i<3; i++) 
+    for(i=0; i<3; i++)
         for(j=0; j<3; j++)
              (*this)(i,j) = tmp2(i,j);
   // Grep for the number of singular (0) values
@@ -147,7 +145,7 @@ bool arlCore::vnl_rotation3d_matrix::closest_rotation( void )
     for(i=0;i<dim;i++)
       residue += svd_T_matrix.W(i,i);
     return residue;
-  }*/       
+  }*/
     return true;
 }
 
@@ -204,7 +202,7 @@ double arlCore::vnl_rotation3d_matrix::sq_rieman_dist ( const vnl_rotation3d_mat
 
 double arlCore::vnl_rotation3d_matrix::average_rotation3d (const std::vector<vnl_rotation3d_matrix*> &rotation_list)
 {
-    
+
     arlCore::averageRotation_cost_function average_dist(rotation_list);
     average_dist.set_matrix_list(rotation_list);
     vnl_powell compute_average(&average_dist);
@@ -236,7 +234,7 @@ void arlCore::vnl_rotation3d_matrix::copy_in( const vnl_rotation3d_vector& rv )
         k1 = s / theta;
         k2 = (1 - c) / theta2;
     }
-    else 
+    else
     {   // Lim. Dev around theta = 0
         k2 = 1.0/2.0 - theta2/24.0;
         c = 1.0 - theta2*k2;

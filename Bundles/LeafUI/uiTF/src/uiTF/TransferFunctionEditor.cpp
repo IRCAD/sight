@@ -164,7 +164,6 @@ void TransferFunctionEditor::updating() throw( ::fwTools::Failed )
 
 void TransferFunctionEditor::updating(::fwServices::ObjectMsg::csptr msg) throw( ::fwTools::Failed )
 {
-    bool needUpdate = false;
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
     if(compositeMsg)
     {

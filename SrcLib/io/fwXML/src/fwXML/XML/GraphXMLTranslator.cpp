@@ -102,7 +102,8 @@ void GraphXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
 
             // insert edge
             bool success = graph->addEdge(edge,srcNode, dstNode);
-            SLM_ASSERT("success not instanced", success);
+            SLM_ASSERT("success not instanced",success);
+            FwCoreNotUsedMacro(success);
 
             // go to next element
             connectionNode = XMLParser::nextXMLElement(connectionNode->next);

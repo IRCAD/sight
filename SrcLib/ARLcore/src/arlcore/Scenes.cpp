@@ -126,8 +126,6 @@ Scene(universe)
     assert(m_Centre);
 
     const double ChessSize = 120;
-    const double cubicSize = 1000;
-    const unsigned int nbParameters = 8;
     arlCore::Point::sptr Origin =  arlCore::Point::New();
     Origin->fill(0.0);
     arlCore::Point::sptr zero_monde =  arlCore::Point::New();

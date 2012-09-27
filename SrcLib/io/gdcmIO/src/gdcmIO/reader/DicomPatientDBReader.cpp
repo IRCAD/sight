@@ -52,6 +52,7 @@ void DicomPatientDBReader::read() throw(::fwTools::Failed)
     ::gdcm::Directory           dir;
     const unsigned int          nbFiles     = dir.Load(rootPath, true); // Get all files from specified folder and its sub folders
     OSLM_TRACE("Number of files load : " << nbFiles);
+    FwCoreNotUsedMacro(nbFiles);
 
     // TODO: (optional) Filter filenames with extension : .dcm, .dicom, nothing
 
