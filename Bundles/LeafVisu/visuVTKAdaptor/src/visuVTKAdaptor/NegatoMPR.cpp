@@ -116,8 +116,8 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
         this->addAdaptor("::visuVTKAdaptor::NegatoWindowingInteractor");
         this->addAdaptor("::visuVTKAdaptor::NegatoSlicingInteractor", m_orientation);
-        this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
         this->addAdaptor("::visuVTKAdaptor::SlicesCursor", m_orientation);
+        this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
     }
     if(this->is3dModeEnabled())
     {
