@@ -4,9 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwMetaConversion/MetaHelper.hpp>
-#include <fwMetaConversion/CampObjectVisitor.hpp>
-#include <fwMetaConversion/CampObjectPrinterVisitor.hpp>
+#include <fwCore/log/SpyLogger.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
@@ -33,6 +31,11 @@
 #include <fwDataTools/MeshGenerator.hpp>
 #include <fwDataTools/Image.hpp>
 
+#include <fwMetaConversion/MetaHelper.hpp>
+#include <fwMetaConversion/CampObjectVisitor.hpp>
+#include <fwMetaConversion/CampObjectPrinterVisitor.hpp>
+#include <fwMetaConversion/RetreiveObjectVisitor.hpp>
+
 #include "MetaHelperTest.hpp"
 
 
@@ -43,12 +46,11 @@ namespace fwMetaConversion
 namespace ut
 {
 
+//-----------------------------------------------------------------------------
+
+// Set up context before running a test.
 void MetaHelperTest::setUp()
-{
-
-};
-    // Set up context before running a test.
-
+{};
 
 //-----------------------------------------------------------------------------
 
@@ -235,6 +237,48 @@ void MetaHelperTest::visitCompositeDataTest()
 
     // visit camp object
     this->visitCampObject( campObj );
+}
+
+
+//-----------------------------------------------------------------------------
+
+void MetaHelperTest::retreiveCampObjectVisitorTest()
+{
+    // Visit 1
+    ::fwData::Image::NewSptr img1;
+    ::fwDataTools::Image::generateRandomImage(img1, ::fwTools::Type::create("int16"));
+    ::fwData::Image::NewSptr img2;
+    ::fwDataTools::Image::generateRandomImage(img2, ::fwTools::Type::create("uint8"));
+    ::fwData::Composite::NewSptr composite;
+    composite->getContainer()["img1"]=img1;
+    composite->getContainer()["img2"]=img2;
+    ::fwData::Object::sptr subObj1 = ::fwMetaConversion::getSubObject( composite, "@values.img2" );
+    CPPUNIT_ASSERT_MESSAGE("Image must be equal" , subObj1 == img2);
+
+    // Visit 2
+    ::fwData::Float::sptr zspacing = ::fwMetaConversion::getSubObject< ::fwData::Float >( composite, "@values.img2.spacing.2" );
+    CPPUNIT_ASSERT_MESSAGE("spacing must be equal" , img2->getSpacing()[2] - 0.001 < zspacing->value() && zspacing->value() < img2->getSpacing()[2] + 0.001 );
+
+    // Visit 3
+    ::fwData::Patient::NewSptr patient1;
+    patient1->setFirstname( "toto" );
+    ::fwData::String::sptr str= ::fwMetaConversion::getSubObject< ::fwData::String >( patient1, "@firstname" );
+    CPPUNIT_ASSERT_MESSAGE("Firstname must be equal" , patient1->getFirstname() == str->value() );
+
+    // Visit 4
+    ::fwData::Patient::NewSptr patient2;
+    ::fwDataTools::Patient::generatePatient(patient2, 2, 1, 2);
+    ::fwData::Reconstruction::sptr rec = ::fwMetaConversion::getSubObject< ::fwData::Reconstruction >( patient2, "@studies.1.acquisitions.0.reconstructions.1" );
+    ::fwData::Study::sptr study = patient2->getStudies()[1];
+    ::fwData::Acquisition::sptr acq = study->getAcquisitions()[0];
+    ::fwData::Reconstruction::sptr rec2 = acq->getReconstructions()[1];
+    CPPUNIT_ASSERT_MESSAGE("Reconstruction must be equal" , rec ==  rec2 );
+
+    // Visit 5
+    composite->setField("toto",img1);
+    img1->setField("titi",img2);
+    ::fwData::Object::sptr subObj2 = ::fwMetaConversion::getSubObject( composite, "@fields.toto.fields.titi" );
+    CPPUNIT_ASSERT_MESSAGE("Image must be equal" , subObj2 == img2 );
 }
 
 //-----------------------------------------------------------------------------
