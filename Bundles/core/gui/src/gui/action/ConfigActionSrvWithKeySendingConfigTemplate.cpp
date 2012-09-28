@@ -7,17 +7,20 @@
 #include <set>
 #include <boost/assign/list_of.hpp>
 
+#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+#include <fwData/Boolean.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwTools/UUID.hpp>
-#include <fwTools/fwID.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Boolean.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 
+#include <fwMetaConversion/RetreiveObjectVisitor.hpp>
 
 #include "gui/action/ConfigActionSrvWithKeySendingConfigTemplate.hpp"
 
@@ -234,20 +237,18 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     ::fwData::String::NewSptr title;
 
     std::stringstream ss;
-    if (    ! m_viewConfigTitlePrefixKey.empty() &&
-            composite->find( m_viewConfigTitlePrefixKey ) != composite->end() )
+    if (  ! m_viewConfigTitlePrefixKey.empty() )
     {
-        ::fwData::String::sptr prefix = ::fwData::String::dynamicCast( (*composite)[m_viewConfigTitlePrefixKey] );
+        ::fwData::String::sptr prefix = ::fwMetaConversion::getSubObject< ::fwData::String >( composite, m_viewConfigTitlePrefixKey );
         ss << prefix->getValue() << " - " << m_viewConfigTitle;
     }
     else
     {
         ss << m_viewConfigTitle;
     }
-    if ( ! m_tooltipConfigTitleKey.empty() &&
-            composite->find( m_tooltipConfigTitleKey ) != composite->end() )
+    if ( ! m_tooltipConfigTitleKey.empty() )
     {
-        ::fwData::String::sptr tooltip = ::fwData::String::dynamicCast( (*composite)[m_tooltipConfigTitleKey] );
+        ::fwData::String::sptr tooltip = ::fwMetaConversion::getSubObject< ::fwData::String >( composite, m_tooltipConfigTitleKey );
         title->setField( tooltipFieldID, tooltip );
     }
 
