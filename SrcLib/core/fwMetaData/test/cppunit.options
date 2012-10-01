@@ -1,9 +1,0 @@
-
-CLASSTEST=[
-    'NumericTest',
-    'BooleanTest',
-    'StringTest',
-]
-
-LIB = ['fwTools_0-1','fwCore_0-1', 'fwMetaData_0-1']
-CONSOLE = 'yes'

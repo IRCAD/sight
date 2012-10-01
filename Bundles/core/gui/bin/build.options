@@ -9,7 +9,7 @@ LIB      = [
             'fwData_0-1',
             'fwComEd_0-1',
             'fwGui_0-1',
-            'fwMetaConversion_0-1'
+            'fwAtomConversion_0-1'
             ]
 
 

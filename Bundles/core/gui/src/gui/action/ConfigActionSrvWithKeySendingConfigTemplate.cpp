@@ -20,7 +20,7 @@
 
 #include <fwComEd/CompositeMsg.hpp>
 
-#include <fwMetaConversion/RetreiveObjectVisitor.hpp>
+#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 
 #include "gui/action/ConfigActionSrvWithKeySendingConfigTemplate.hpp"
 
@@ -239,7 +239,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     std::stringstream ss;
     if (  ! m_viewConfigTitlePrefixKey.empty() )
     {
-        ::fwData::String::sptr prefix = ::fwMetaConversion::getSubObject< ::fwData::String >( composite, m_viewConfigTitlePrefixKey );
+        ::fwData::String::sptr prefix = ::fwAtomConversion::getSubObject< ::fwData::String >( composite, m_viewConfigTitlePrefixKey );
         ss << prefix->getValue() << " - " << m_viewConfigTitle;
     }
     else
@@ -248,7 +248,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     }
     if ( ! m_tooltipConfigTitleKey.empty() )
     {
-        ::fwData::String::sptr tooltip = ::fwMetaConversion::getSubObject< ::fwData::String >( composite, m_tooltipConfigTitleKey );
+        ::fwData::String::sptr tooltip = ::fwAtomConversion::getSubObject< ::fwData::String >( composite, m_tooltipConfigTitleKey );
         title->setField( tooltipFieldID, tooltip );
     }
 

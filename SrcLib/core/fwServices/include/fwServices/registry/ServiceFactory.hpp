@@ -9,11 +9,7 @@
 
 #include <map>
 
-#ifdef linux
 #include <boost/unordered_map.hpp>
-#else
-#include <boost/tr1/unordered_map.hpp>
-#endif
 
 #include <boost/tuple/tuple.hpp>
 
@@ -83,11 +79,7 @@ public:
     typedef std::vector<KeyType> KeyVectorType;
     typedef std::pair<std::string, std::string> StringPair;
 
-#ifdef linux
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
-#else
-    typedef std::tr1::unordered_map< StringPair, bool > SupportMapType;
-#endif
 
     fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory) ;
 

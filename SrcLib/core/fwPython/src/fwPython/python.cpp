@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <boost/python.hpp>
+#undef tolower  //defined by python, conflicting with std::lower
 
 #include <fwTools/Object.hpp>
 
