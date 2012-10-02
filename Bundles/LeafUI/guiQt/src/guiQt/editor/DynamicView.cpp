@@ -163,13 +163,16 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
         }
         bool closable;
         std::string icon;
-        std::string tooltip;
+        std::string tooltip("");
         std::string viewConfigID;
         ::fwData::Composite::sptr fieldAdaptors;
 
         closable      = titleData->getField("closable", ::fwData::Boolean::New(true))->value();
         icon          = titleData->getField("icon", ::fwData::String::New(""))->value();
-        tooltip       = titleData->getField("tooltip", ::fwData::String::New(""))->value();
+        if(titleData->getField("tooltip"))
+        {
+            tooltip       = titleData->getField("tooltip", ::fwData::String::New(""))->value();
+        }
         viewConfigID  = titleData->getField("viewConfigID", ::fwData::String::New(""))->value();
         fieldAdaptors = titleData->getField("::fwServices::registry::AppConfig", ::fwData::Composite::New());
 

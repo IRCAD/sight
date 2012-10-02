@@ -240,7 +240,11 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     if (  ! m_viewConfigTitlePrefixKey.empty() )
     {
         ::fwData::String::sptr prefix = ::fwAtomConversion::getSubObject< ::fwData::String >( composite, m_viewConfigTitlePrefixKey );
-        ss << prefix->getValue() << " - " << m_viewConfigTitle;
+        if(prefix)
+        {
+            ss << prefix->getValue() << " - " ;
+        }
+        ss << m_viewConfigTitle;
     }
     else
     {
