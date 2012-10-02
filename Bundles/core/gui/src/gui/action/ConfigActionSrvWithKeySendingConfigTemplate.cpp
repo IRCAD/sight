@@ -253,7 +253,10 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     if ( ! m_tooltipConfigTitleKey.empty() )
     {
         ::fwData::String::sptr tooltip = ::fwAtomConversion::getSubObject< ::fwData::String >( composite, m_tooltipConfigTitleKey );
-        title->setField( tooltipFieldID, tooltip );
+        if(tooltip)
+        {
+            title->setField( tooltipFieldID, tooltip );
+        }
     }
 
     title->value() = ss.str();
