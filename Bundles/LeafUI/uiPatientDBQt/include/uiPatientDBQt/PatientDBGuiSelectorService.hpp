@@ -67,6 +67,9 @@ protected Q_SLOTS:
     */
     void onSelectionChange(QTreeWidgetItem * current, QTreeWidgetItem * previous);
 
+    /// This method is called when an item is double cliked, and open a comment editor
+    void onItemDoubleClicked ( QTreeWidgetItem * item, int column );
+
 private :
 
     // The selector panel

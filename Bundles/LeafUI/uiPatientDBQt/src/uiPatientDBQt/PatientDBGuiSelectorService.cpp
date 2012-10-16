@@ -36,6 +36,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <fwGui/dialog/InputDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include "uiPatientDBQt/PatientDBGuiSelectorService.hpp"
@@ -132,6 +133,7 @@ void PatientDBGuiSelectorService::starting() throw(::fwTools::Failed)
     container->setLayout( layout );
 
     QObject::connect(m_pSelectorPanel, SIGNAL(currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* )), this, SLOT(onSelectionChange( QTreeWidgetItem*, QTreeWidgetItem* )));
+    QObject::connect(m_pSelectorPanel, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int )), this, SLOT(onItemDoubleClicked( QTreeWidgetItem*, int )));
 
     this->updating();
 }
@@ -164,6 +166,7 @@ void PatientDBGuiSelectorService::updating( ::fwServices::ObjectMsg::csptr _msg 
 void PatientDBGuiSelectorService::stopping() throw(::fwTools::Failed)
 {
     QObject::disconnect(m_pSelectorPanel, SIGNAL(currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* )), this, SLOT(onSelectionChange( QTreeWidgetItem*, QTreeWidgetItem* )));
+    QObject::disconnect(m_pSelectorPanel, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int )), this, SLOT(onItemDoubleClicked( QTreeWidgetItem*, int )));
 
     this->getContainer()->clean();
     this->::fwGui::IGuiContainerSrv::destroy();
@@ -352,4 +355,35 @@ void PatientDBGuiSelectorService::selectLastAddedImage(int patientIndex)
 
 //------------------------------------------------------------------------------
 
+void PatientDBGuiSelectorService::onItemDoubleClicked ( QTreeWidgetItem * item, int column )
+{
+    // Test if item is an image
+    if( item->childCount() == 0 )
+    {
+        // /!\ Item is already selected after a double click ( see onSelectionChange )
+        // and thus getSelectedImage can be used
+        ::fwData::PatientDB::sptr pPatientDB = this->getObject< ::fwData::PatientDB >();
+        ::fwData::Image::sptr img = ::fwComEd::fieldHelper::BackupHelper::getSelectedImage( pPatientDB );
+        if( img )
+        {
+            ::fwData::String::sptr comment;
+            comment = img->setDefaultField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId,
+                    ::fwData::String::New(""));
+            std::string result;
+            result = ::fwGui::dialog::InputDialog::showInputDialog("Image comment", "Enter comment", comment->value());
+            if( ! result.empty() )
+            {
+                comment->value() = result;
+
+                std::string finalComment =
+                        img->getField< ::fwData::String >( ::fwComEd::Dictionary::m_imageLabelId )->value();
+                finalComment += " : " + result;
+                item->setText(6, QString::fromStdString(finalComment));
+
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
 } // namespace uiPatientDB
