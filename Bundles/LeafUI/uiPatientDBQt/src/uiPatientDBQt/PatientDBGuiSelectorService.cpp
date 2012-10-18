@@ -10,6 +10,8 @@
 #include <QList>
 #include <QIcon>
 #include <QPixmap>
+#include <QEvent>
+#include <QKeyEvent>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/foreach.hpp>
@@ -25,18 +27,21 @@
 
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
-
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/PatientDBMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/fieldHelper/BackupHelper.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwDataTools/Patient.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include "uiPatientDBQt/PatientDBGuiSelectorService.hpp"
@@ -134,6 +139,7 @@ void PatientDBGuiSelectorService::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_pSelectorPanel, SIGNAL(currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* )), this, SLOT(onSelectionChange( QTreeWidgetItem*, QTreeWidgetItem* )));
     QObject::connect(m_pSelectorPanel, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int )), this, SLOT(onItemDoubleClicked( QTreeWidgetItem*, int )));
+    m_pSelectorPanel->installEventFilter(this);
 
     this->updating();
 }
@@ -165,6 +171,7 @@ void PatientDBGuiSelectorService::updating( ::fwServices::ObjectMsg::csptr _msg 
 
 void PatientDBGuiSelectorService::stopping() throw(::fwTools::Failed)
 {
+    m_pSelectorPanel->removeEventFilter(this);
     QObject::disconnect(m_pSelectorPanel, SIGNAL(currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* )), this, SLOT(onSelectionChange( QTreeWidgetItem*, QTreeWidgetItem* )));
     QObject::disconnect(m_pSelectorPanel, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int )), this, SLOT(onItemDoubleClicked( QTreeWidgetItem*, int )));
 
@@ -386,4 +393,120 @@ void PatientDBGuiSelectorService::onItemDoubleClicked ( QTreeWidgetItem * item, 
 }
 
 //------------------------------------------------------------------------------
+
+bool PatientDBGuiSelectorService::eventFilter(QObject *object, QEvent *event)
+{
+    if ( event->type() == QEvent::KeyPress )
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if ( keyEvent->key() == Qt::Key_Delete )
+        {
+            this->erase();
+            return true;
+        }
+        else
+        {
+            // standard event processing
+            return QObject::eventFilter(object, event);
+        }
+    }
+    else
+    {
+        // standard event processing
+        return QObject::eventFilter(object, event);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void PatientDBGuiSelectorService::erase()
+{
+    SLM_TRACE_FUNC();
+
+    ::fwData::PatientDB::sptr pPatientDB = this->getObject<  ::fwData::PatientDB > ();
+
+    if ( ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(pPatientDB) )
+    {
+        ::fwGui::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Erase selected data");
+        messageBox.setMessage( "Are you sure to erase selected data ?" );
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
+        ::fwGui::dialog::IMessageDialog::Buttons answer = messageBox.show();
+
+        if ( answer != ::fwGui::dialog::IMessageDialog::OK )
+        {
+            return;
+        }
+
+        QList<QTreeWidgetItem*> items = m_pSelectorPanel->selectedItems();
+        if ( items[0]->childCount() == 0 )
+        {
+            PatientDBGuiSelectorService::eraseSelectedAcquisition( pPatientDB );
+        }
+        else
+        {
+            PatientDBGuiSelectorService::eraseSelectedPatient( pPatientDB );
+        }
+
+        ::fwComEd::PatientDBMsg::NewSptr msg;
+        msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
+        ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
+
+        this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void PatientDBGuiSelectorService::eraseSelectedAcquisition( ::fwData::PatientDB::sptr pdb )
+{
+    ::fwData::Patient::sptr patient = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pdb);
+    ::fwData::Study::sptr study = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudy(pdb);
+    ::fwData::Acquisition::sptr acquisition = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisition(pdb);
+    ::fwData::Image::sptr image = ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(pdb);
+
+    ::fwComEd::fieldHelper::BackupHelper::SelectionIdType myIntPat, myIntStu, myIntAcq;
+    myIntPat = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatientIdx(pdb);
+    myIntStu = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudyIdx(pdb);
+    myIntAcq = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisitionIdx(pdb);
+
+    // Erase acquisition
+    ::fwDataTools::Patient::removeAcquisition(study, acquisition);
+    myIntAcq--;
+    if( study->getAcquisitions().empty() )
+    {
+        // Erase study
+        ::fwDataTools::Patient::removeStudy(patient, study);
+        myIntStu--;
+        if ( patient->getStudies().empty() )
+        {
+            // Erase patient
+            ::fwDataTools::Patient::removePatient(pdb, patient);
+            myIntPat--;
+        }
+    }
+
+    ::fwComEd::fieldHelper::BackupHelper::setSelection(pdb, myIntPat, myIntStu, myIntAcq);
+}
+
+//------------------------------------------------------------------------------
+
+void PatientDBGuiSelectorService::eraseSelectedPatient( ::fwData::PatientDB::sptr pdb )
+{
+    ::fwData::Patient::sptr patient = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pdb);
+
+    ::fwComEd::fieldHelper::BackupHelper::SelectionIdType myIntPat;
+    myIntPat = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatientIdx(pdb);
+
+    // Erase patient
+    ::fwDataTools::Patient::removePatient(pdb, patient);
+    myIntPat--;
+
+    ::fwComEd::fieldHelper::BackupHelper::setSelection(pdb, myIntPat, 0, 0);
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace uiPatientDB

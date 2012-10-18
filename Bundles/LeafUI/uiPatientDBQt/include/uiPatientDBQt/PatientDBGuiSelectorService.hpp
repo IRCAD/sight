@@ -13,6 +13,7 @@
 #include <QMetaType>
 
 #include <fwData/Patient.hpp>
+#include <fwData/PatientDB.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -59,6 +60,18 @@ protected:
 
     /// Updated the PatientDB m_imageSelectedId field with the last added image of the patient given by its index in PatientDB
     void selectLastAddedImage(int patientIndex);
+
+    /// Receives event sended by m_pSelectorPanel
+    bool eventFilter(QObject *object, QEvent *event);
+
+    /// Erases selected data
+    void erase();
+
+    /// Helper to erase selected acquisition
+    static void eraseSelectedAcquisition( ::fwData::PatientDB::sptr pdb );
+
+    /// Helper to erase selected patient
+    static void eraseSelectedPatient( ::fwData::PatientDB::sptr pdb );
 
 protected Q_SLOTS:
 
