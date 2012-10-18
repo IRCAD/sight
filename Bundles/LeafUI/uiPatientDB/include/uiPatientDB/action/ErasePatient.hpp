@@ -31,6 +31,8 @@ public:
 
     UIPATIENTDB_API virtual ~ErasePatient() throw() ;
 
+    UIPATIENTDB_API static void eraseSelectedAcquisition( ::fwData::PatientDB::sptr pdb );
+
 protected:
 
     /// Configure action
