@@ -1,3 +1,16 @@
+=== fw4spl_0.9.0.2 ( diff from fw4spl_0.9.0.1 ) 02/11/2012 ===
+
+ * General
+  * renamed fwMetaData library to fwAtoms
+  * few fixes, refactoring
+
+ * Editor :
+  * PatientDBGuiSelectorService : now it is possible to erase an acquisition OR a patient (with key del)
+  * PatientDBGuiSelectorService : image comment edition is now possible from mouse double-clicking on item
+
+ * Log :
+  * Update application log : check if default log dir is unreachable before create log file
+
 === fw4spl_0.9.0.1 ( diff from fw4spl_0.9.0.0 ) 28/09/2012 ===
 
  * Merge :
