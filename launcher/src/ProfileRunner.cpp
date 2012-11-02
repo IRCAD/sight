@@ -8,6 +8,7 @@
 #include <windows.h>
 #endif
 
+#include <stdio.h>
 #include <ostream>
 #include <vector>
 
@@ -130,6 +131,7 @@ int main(int argc, char* argv[])
     bool consoleLog = CONSOLE_LOG;
     bool fileLog = FILE_LOG;
     std::string logFile;
+    const std::string defaultLogFile = "SLM.log";
 
     typedef ::fwCore::log::SpyLogger SpyLogger;
     int logLevel = SpyLogger::SL_TRACE;
@@ -140,7 +142,7 @@ int main(int argc, char* argv[])
         ("no-clog", po::value(&consoleLog)->implicit_value(false)->zero_tokens(), "Disable log output to console")
         ("flog", po::value(&fileLog)->implicit_value(true)->zero_tokens(), "Enable log output to file")
         ("no-flog", po::value(&fileLog)->implicit_value(false)->zero_tokens(), "Disable log output to file")
-        ("log-output", po::value(&logFile)->default_value(std::string("SLM.log")), "Log output filename")
+        ("log-output", po::value(&logFile)->default_value(defaultLogFile), "Log output filename")
 
         ("log-trace", po::value(&logLevel)->implicit_value(SpyLogger::SL_TRACE)->zero_tokens(), "Set loglevel to trace")
         ("log-debug", po::value(&logLevel)->implicit_value(SpyLogger::SL_DEBUG)->zero_tokens(), "Set loglevel to debug")
@@ -204,7 +206,30 @@ int main(int argc, char* argv[])
 
     if(fileLog)
     {
-        logger.addFileAppender(logFile);
+        FILE * pFile = fopen(logFile.c_str(), "w");
+        if (pFile==NULL)
+        {
+            ::boost::system::error_code err;
+            PathType sysTmp = fs::temp_directory_path(err);
+            if(err.value() != 0)
+            {
+                // replace log file appender by stream appender: default dir and temp dir unreachable
+                logger.addStreamAppender();
+            }
+            else
+            {
+                // creates SLM.log in temp directory: default dir unreachable
+                sysTmp = sysTmp / "SLM.log";
+                logFile = sysTmp.string();
+                logger.addFileAppender(logFile);
+            }
+        }
+        else
+        {
+            // creates SLM.log in default logFile directory
+            fclose(pFile);
+            logger.addFileAppender(logFile);
+        }
     }
 
     logger.setLevel(static_cast<SpyLogger::LevelType>(logLevel));
