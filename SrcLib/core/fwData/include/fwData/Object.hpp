@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,15 @@
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
 
+#include <fwCamp/macros.hpp>
+#include <fwCamp/camp/customtype.hpp>
+#include <fwCamp/camp/MapProperty.hpp>
+#include <fwCamp/camp/MapMapper.hpp>
+#include <fwCamp/camp/MapValueMapper.hpp>
+#include <fwCamp/Mapper/ArrayMapper.hpp>
+#include <fwCamp/camp/detail/MapPropertyImpl.hpp>
+#include <fwCamp/camp/ExtendedClassVisitor.hpp>
+
 #include <fwTools/Object.hpp>
 #include <fwTools/DynamicAttributes.hxx>
 
@@ -23,6 +32,8 @@
 
 #include "fwData/macros.hpp"
 #include "fwData/config.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Object), FWDATA_API);
 
 namespace fwData
 {
@@ -63,6 +74,7 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwTools::Object) );
     fwCoreAllowSharedFromThis();
+    fwCampMakeFriendDataMacro((fwData)(Object));
 
     typedef std::string FieldNameType;
     typedef std::vector<FieldNameType> FieldNameVectorType;

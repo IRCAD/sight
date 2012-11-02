@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,6 +31,10 @@ inline boost::mpl::true_ * boost_foreach_is_noncopyable( ::fwData::Composite *&,
 #endif //BOOST_VERSION >= 104700
 
 
+
+fwCampAutoDeclareDataMacro((fwData)(Composite), FWDATA_API);
+
+
 namespace fwData
 {
 
@@ -48,6 +52,7 @@ class FWDATA_CLASS_API Composite : public Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::factory::New< Composite >) ;
+    fwCampMakeFriendDataMacro((fwData)(Composite));
 
     typedef std::map< std::string, ::fwData::Object::sptr > ContainerType;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -95,10 +95,10 @@ void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
         SLM_ASSERT("mesh not instanced", mesh);
 
-        ::fwDataIO::reader::TriangularMeshReader reader;
-        reader.setObject( mesh );
-        reader.setFile(this->getFile());
-        reader.read();
+        ::fwDataIO::reader::TriangularMeshReader::NewSptr reader;
+        reader->setObject( mesh );
+        reader->setFile(this->getFile());
+        reader->read();
 
         // Notify reading
         ::fwComEd::TriangularMeshMsg::NewSptr msg;

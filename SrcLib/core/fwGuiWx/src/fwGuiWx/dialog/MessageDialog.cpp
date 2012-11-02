@@ -1,24 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <wx/msgdlg.h>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 #include "fwGuiWx/dialog/MessageDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::dialog::IMessageDialog, ::fwGuiWx::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::FactoryRegistryKeyType , ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
 
 namespace fwGuiWx
 {
 namespace dialog
 {
-MessageDialog::MessageDialog() : m_buttons(0)
+
+MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key) : m_title(""), m_message(""), m_buttons(0)
 {}
 
 
@@ -74,7 +75,7 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 ::fwGui::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
     ::fwGui::dialog::IMessageDialog::Buttons result;
-    int wxResult = wxMessageBox( ::fwWX::std2wx(m_message), ::fwWX::std2wx(m_title), m_buttons|m_icon );
+    int wxResult = wxMessageBox( ::fwGuiWx::std2wx(m_message), ::fwGuiWx::std2wx(m_title), m_buttons|m_icon );
 
     if (wxResult == wxOK)
     {

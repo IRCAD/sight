@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 
 #include <fwDataIO/writer/IObjectWriter.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
+#include <fwDataIO/reader/factory/new.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 
@@ -132,7 +133,7 @@ void ArrayXMLTranslator::manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwDat
 
         // get new reader
         ::fwDataIO::reader::IObjectReader::sptr reader;
-        reader = ::fwTools::ClassFactoryRegistry::create< ::fwDataIO::reader::IObjectReader >(pseudoReader);
+        reader = ::fwDataIO::reader::factory::New(pseudoReader);
         SLM_ASSERT("reader not instanced", reader);
 
         // assign to FileFormatService

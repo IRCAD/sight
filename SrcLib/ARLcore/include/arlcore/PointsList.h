@@ -1,11 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef _ARLCORE_POINTLIST_H
 #define _ARLCORE_POINTLIST_H
+
+#include <boost/make_shared.hpp>
+
 #include <arlcore/Common.h>
 
 #include <vector>
@@ -55,11 +58,9 @@ namespace arlCore
      */
     public:
 
-        //fwCoreClassDefinitionsWithFactoryMacro( (PointList)(::fwTools::Object), (()), ::fwTools::Factory::New< PointList >);
-
 
         fwCoreClassDefinitionsWithNFactoriesMacro( (PointList)(::fwTools::Object),
-                                                   ((::fwTools::Factory::New< PointList > ,() ))
+                                                   ((::boost::make_shared< PointList > ,() ))
                                                    ((PointListFactory ,((int)) ))
                                                    ((PointListFactory ,(( const std::vector< Point::csptr >&)) ))
                                                  );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 #include <boost/lambda/lambda.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -22,10 +22,7 @@
 #include "fwGuiQt/layoutManager/FrameLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IFrameLayoutManager,
-        ::fwGui::FrameLayoutManager,
-        ::fwGui::layoutManager::IFrameLayoutManager::RegistryKeyType,
-        ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::FrameLayoutManager, ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -33,7 +30,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-FrameLayoutManager::FrameLayoutManager()
+FrameLayoutManager::FrameLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

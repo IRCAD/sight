@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #ifndef _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
 #define _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
 
+#include <map>
 #include <vector>
 
 #include <boost/ref.hpp>
@@ -19,8 +20,15 @@
 
 namespace fwTools {
 
+class DynamicAttributesBase
+{
+public:
+
+    virtual fwToolsRegisterAttributeSignatureMacro() = 0;
+};
+
 template<class CLASS>
-class DynamicAttributes
+class DynamicAttributes : public DynamicAttributesBase
 {
 
 public:

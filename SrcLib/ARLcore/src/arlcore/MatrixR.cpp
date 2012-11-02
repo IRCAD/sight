@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -181,6 +181,7 @@ double arlCore::vnl_rigid_matrix::distance2( const vnl_rigid_matrix &T, ARLCORE_
             errors2.push_back(w1->distance2(w2));
             break;
         }
+    default: break;
     }
     for( i=0 ; i<errors2.size() ; ++i )
         distance2+=errors2[i];
@@ -978,7 +979,6 @@ bool arlCore::vnl_rigid_matrix::registerICP(PointList::csptr pointsListA,PointLi
     // ********************** ICP Initialisation ************************
     // ** P={pi} points de données (Np) et X={xi} points de modèle (Nx) *
     vnl_vector<double> gravityY(Dimension);
-    int index = 0;
     double oldRMS = FLT_MAX;
     firstRMS = -1;
     vnl_matrix<double> Id3(3,3);    Id3.set_identity();
@@ -1256,7 +1256,6 @@ bool arlCore::vnl_rigid_matrix::oldRegisterICP(PointList::csptr pointsListA,Poin
     return false;*/
 #define  SQR( x ) ((x)*(x))
     const unsigned int dim = 3;
-    const double tau = 0.0;
     //Model (scanner) = pointsListA ; Points cloud (Acquisition) = pointsListB
     PointList::csptr plA = pointsListA;
     PointList::csptr plB = pointsListB;
@@ -1268,7 +1267,6 @@ bool arlCore::vnl_rigid_matrix::oldRegisterICP(PointList::csptr pointsListA,Poin
 */
     ANNpointArray modelPoints, dataPoints;
     ANNpointArray Pk,Yk,Pi;
-    double eps = 0.0;// error bound
     unsigned int i,j,k;
     unsigned int modelSize, acquisitionSize;
     ANNpoint gravityA = annAllocPt( dim, 0.0 );
@@ -1837,6 +1835,7 @@ double getCoeff( double time, arlCore::ARLCORE_TRF_FILTER_TYPE filterType )
     case arlCore::ARLCORE_TRF_FILTER_LOG: return log(1.0+time*LogRange);
     case arlCore::ARLCORE_TRF_FILTER_SQUARE: return time*time;
     case arlCore::ARLCORE_TRF_FILTER_CUBIC: return time*time*time;
+    default: break;
     }
     return 1.0;
 }
@@ -1847,7 +1846,6 @@ unsigned int arlCore::filter( const std::vector<const arlCore::vnl_rigid_matrix*
     if(Size==0) return 0;
     assert(list.back());
     average.setTime(list.back()->getDate(), list.back()->getTime());
-    const double MatrixTime = (double)average.getTime();
     const double CurrentTime = (double)average.getTime(); // FIXME Planesystem time
     assert(list[0]);
     const double LastTime = (double)list[0]->getTime(); // FIXME Planesystem time - duration

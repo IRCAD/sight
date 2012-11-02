@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/fwID.hpp>
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/Base.hpp>
 
 #include "fwGui/GuiRegistry.hpp"
@@ -77,7 +76,8 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
             m_actionSids[sid] = SIDToolBarMapType::mapped_type(index, start);
 
             ::fwGui::ActionCallbackBase::sptr callback ;
-            callback = ::fwTools::ClassFactoryRegistry::create< ::fwGui::ActionCallbackBase >( ::fwGui::ActionCallbackBase::REGISTRY_KEY );
+            ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ActionCallbackBase::REGISTRY_KEY);
+            callback = ::fwGui::ActionCallbackBase::dynamicCast(guiObj);
             OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::ActionCallbackBase::REGISTRY_KEY, callback);
 
             callback->setSID(sid);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,6 +20,11 @@
 #include "fwData/Array.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Image), FWDATA_API);
+
+
+
+
 namespace fwData
 {
 
@@ -37,6 +42,7 @@ class FWDATA_CLASS_API Image : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
+    fwCampMakeFriendDataMacro((fwData)(Image));
 
     /**
      * @brief Image size type
@@ -115,6 +121,12 @@ public:
      */
     fwDataGetSetMacro(WindowWidth , double);
 
+
+    /**
+     * @brief Get/set prefered window center
+     */
+    fwDataGetSetMacro(NumberOfComponents, size_t);
+
     /**
      * @brief set data array
      *
@@ -148,11 +160,10 @@ public:
      *
      * @return Allocated size in bytes
      */
-    FWDATA_API size_t allocate()
-        throw(::fwData::Exception);
-    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z, const ::fwTools::Type &type)
-        throw(::fwData::Exception);
-    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type)
+    FWDATA_API size_t allocate() throw(::fwData::Exception);
+    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
+                               const ::fwTools::Type &type, size_t numberOfComponents = 1) throw(::fwData::Exception);
+    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1)
         throw(::fwData::Exception);
     // @}
 
@@ -182,13 +193,15 @@ protected :
     double m_attrWindowWidth;
     ///@}
 
+    //! Number of components
+    size_t m_attrNumberOfComponents;
+
     //! image buffer
     ::fwData::Array::sptr m_dataArray;
 };
 
 
 } // namespace fwData
-
 
 #endif //_FWDATA_IMAGE_HPP_
 

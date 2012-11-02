@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <sstream>
 #include <fstream>
 
@@ -158,10 +164,10 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
                 std::stringstream meshPath;
                 meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
                 filename = ::boost::filesystem::path(meshPath.str());
-                ::fwDataIO::writer::MeshWriter writer;
-                writer.setObject(mesh);
-                writer.setFile(filename);
-                writer.write();
+                ::fwDataIO::writer::MeshWriter::NewSptr writer;
+                writer->setObject(mesh);
+                writer->setFile(filename);
+                writer->write();
             }
 
             // Parse nodeTemplate

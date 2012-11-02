@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,9 +15,9 @@
 #ifndef _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
 #define _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/container/fwMenu.hpp"
@@ -37,10 +37,10 @@ namespace layoutManager
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IToolBarLayoutManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IToolBarLayoutManager : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IToolBarLayoutManager)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IToolBarLayoutManager)(::fwGui::GuiBaseObject) )
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;

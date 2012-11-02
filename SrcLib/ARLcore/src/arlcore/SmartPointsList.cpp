@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -66,7 +66,6 @@ std::string arlCore::SmartPointList::getString( void ) const
         for( j=0 ; j<m_listsByCam[i].size() ; ++j )
         {
             s<<m_listsByCam[i][j]->getString();
-            unsigned int h=(unsigned int)m_listsByCam[i].size();
         }
     }
     s<<"\n";
@@ -383,8 +382,6 @@ unsigned int arlCore::SmartPointList::getInvisiblePoints( std::vector< arlCore::
 
 bool arlCore::SmartPointList::clear( void )
 {
-    unsigned int i,j;
-
     m_listsByCam.clear();
     m_mapOfLists.clear();
     m_listOfLists.clear();
@@ -416,9 +413,7 @@ unsigned int arlCore::epipolarMatching( const std::vector<Camera>& cameras, Smar
     // Actuellement inutile car l'algo actuel prend en compte le premier et le second
 
     // On retient que les 'Best'*100% points les plus proches de la droite epipolaire
-    const double Best = 0.1; //]0,1]
     // Garde au minimum les BestMin premiers quelque soit le pourcentage
-    const unsigned int BestMin = 100;
 
     // Cas avec 2 cameras - TODO : avec n cameras
     // distanceTab[no point de la cam0][no point de la cam 1]

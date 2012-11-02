@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,8 @@
 #include <iostream>
 
 arlCore::Parameters::Parameters( const std::string &name, const std::string &fileName ):
-m_name(name),
-m_paramFile(fileName)
+m_paramFile(fileName),
+m_name(name)
 {}
 
 arlCore::Parameters::~Parameters( void )

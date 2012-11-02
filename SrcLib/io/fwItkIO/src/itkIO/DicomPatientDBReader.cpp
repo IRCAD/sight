@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,22 +25,22 @@
 #include <fwData/Acquisition.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwTools/Factory.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 #include <fwTools/dateAndTime.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include "itkIO/DicomPatientDBReader.hpp"
 #include "itkIO/itk.hpp"
 #include "itkIO/helper/ProgressItkToFw.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::itkIO::DicomPatientDBReader, ::itkIO::DicomPatientDBReader );
+fwDataIOReaderRegisterMacro( ::itkIO::DicomPatientDBReader );
 
 namespace itkIO
 {
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBReader::DicomPatientDBReader() :
+DicomPatientDBReader::DicomPatientDBReader(::fwDataIO::reader::IObjectReader::Key key) :
 ::fwData::location::enableFolder< IObjectReader >(this)
 {
     SLM_TRACE_FUNC();

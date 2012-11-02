@@ -1,31 +1,33 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef _FWPYTHON_INTERPRETER_HPP_
 #define _FWPYTHON_INTERPRETER_HPP_
 
 #include <boost/python.hpp>
+#undef tolower //defined by python, conflicting with std::lower
+
 #include <string>
 
 #include <fwTools/Object.hpp>
 
 #include "fwPython/config.hpp"
 
-
-
-
 namespace fwPython
 {
 
-
-
-
-
-class FWPYTHON_CLASS_API Interpreter {
+class FWPYTHON_CLASS_API Interpreter
+{
 
 public :
 
    // create a python interpretor
    FWPYTHON_API Interpreter();
 
-    
+
    // a destroy the  python interpretor
    FWPYTHON_API ~Interpreter();
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,7 @@
 #include <cstring>
 
 #include <boost/lexical_cast.hpp>
-#include <fwTools/ClassFactoryRegistry.hpp>
+
 #include <fwTools/UUID.hpp>
 
 #include <fwData/Graph.hpp>
@@ -102,7 +102,8 @@ void GraphXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
 
             // insert edge
             bool success = graph->addEdge(edge,srcNode, dstNode);
-            SLM_ASSERT("success not instanced", success);
+            SLM_ASSERT("success not instanced",success);
+            FwCoreNotUsedMacro(success);
 
             // go to next element
             connectionNode = XMLParser::nextXMLElement(connectionNode->next);

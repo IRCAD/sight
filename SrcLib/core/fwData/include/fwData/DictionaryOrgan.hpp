@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,6 +17,9 @@
 #include "fwData/Node.hpp"
 #include "fwData/String.hpp"
 
+
+fwCampAutoDeclareDataMacro((fwData)(DictionaryOrgan), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -32,6 +35,7 @@ class FWDATA_CLASS_API DictionaryOrgan : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (DictionaryOrgan)(::fwData::Object), (()), ::fwData::factory::New< DictionaryOrgan >) ;
 
+    fwCampMakeFriendDataMacro((fwData)(DictionaryOrgan));
 
     /**
      * @brief Constructor
@@ -96,11 +100,11 @@ public:
 
     fwGettersSettersDocMacro(Roi4OrganExp, roi4OrganExp, ::fwData::String::sptr, the string indicating the expression that describes the roi used to segment organ);
 
-    fwGettersSettersDocMacro(Roi4OrganDataNode, roi4OrganDataNode, ::fwData::Node::wptr, the node that represents the roi for organ used to segment organ);
+    fwGettersSettersDocMacro(Roi4OrganDataNode, roi4OrganDataNode, ::fwData::Node::sptr, the node that represents the roi for organ used to segment organ);
 
-    fwGettersSettersDocMacro(MaskDataNode, maskDataNode, ::fwData::Node::wptr, the node that represents the organ mask);
+    fwGettersSettersDocMacro(MaskDataNode, maskDataNode, ::fwData::Node::sptr, the node that represents the organ mask);
 
-    fwGettersSettersDocMacro(MeshDataNode, meshDataNode, ::fwData::Node::wptr, the node that represents the organ mesh);
+    fwGettersSettersDocMacro(MeshDataNode, meshDataNode, ::fwData::Node::sptr, the node that represents the organ mesh);
 
 protected :
 
@@ -108,13 +112,13 @@ protected :
     ::fwData::String::sptr m_organName;
 
     /// the node that represents the roi for organ used to segment organ;
-    ::fwData::Node::wptr m_roi4OrganDataNode;
+    ::fwData::Node::sptr m_roi4OrganDataNode;
 
     /// the node that represents the organ mask
-    ::fwData::Node::wptr m_maskDataNode;
+    ::fwData::Node::sptr m_maskDataNode;
 
     /// the node that represents the organ mesh
-    ::fwData::Node::wptr m_meshDataNode;
+    ::fwData::Node::sptr m_meshDataNode;
 
     /// the string indicating the native expression that describes the roi used to segment organ
     ::fwData::String::sptr m_roi4OrganNativeExp;

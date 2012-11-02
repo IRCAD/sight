@@ -1,15 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/HiResClock.hpp>
 
-#include "fwTools/ClassRegistrar.hpp"
 #include "fwTools/Object.hpp"
 #include "fwTools/UUID.hpp"
-#include "fwTools/Factory.hpp"
 
 namespace fwTools
 {
@@ -28,9 +26,7 @@ Object::Object() :
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{
-    ::fwTools::Factory::uninitData(m_OSRKey);
-}
+{}
 
 //------------------------------------------------------------------------------
 

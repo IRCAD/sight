@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,20 +28,18 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::PatientDB>),
                                             (()),
-                                            new  DicomPatientDBWriter
+                                            ::fwDataIO::writer::factory::New< DicomPatientDBWriter >
                                           );
 
     fwCoreAllowSharedFromThis();
 
+    FWITKIO_API DicomPatientDBWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    FWITKIO_API ~DicomPatientDBWriter();
+
     FWITKIO_API void write();
 
     FWITKIO_API std::string  extension();
-
-protected:
-
-    FWITKIO_API DicomPatientDBWriter();
-
-    FWITKIO_API ~DicomPatientDBWriter();
 };
 
 } // namespace itkIO

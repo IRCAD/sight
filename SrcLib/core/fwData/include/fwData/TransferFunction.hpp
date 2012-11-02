@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,8 @@
 #include "fwData/macros.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API);
 
 namespace fwData
 {
@@ -36,6 +38,8 @@ public :
 
     /// Macro for deep and shallow copies
     fwDataObjectMacro();
+
+    fwCampMakeFriendDataMacro((fwData)(TransferFunction));
 
 
     /// Defines color structure for TF
@@ -213,5 +217,6 @@ private :
 }; // end class TransferFunction
 
 } // end namespace fwData
+
 
 #endif // _FWDATA_TRANSFERFUNCTION_HPP_

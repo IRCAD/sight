@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -236,7 +236,6 @@ void ScaleValues::doUpdate() throw ( ::fwTools::Failed )
 void ScaleValues::rescaleValues()
 {
     const double viewportX = m_viewport->getX();
-    const double viewportY = m_viewport->getY();
     const double viewportWidth = m_viewport->getWidth();
     const double viewportHeight = m_viewport->getHeight();
 
@@ -332,7 +331,7 @@ void ScaleValues::rescaleValues()
 
         double textPosY = (m_align == "bottom")
             ? m_viewport->getY()
-            : textPosY = viewportHeight * 0.9;
+            : viewportHeight * 0.9;
 
         for(int i = 0; i < valuesSize; ++i, val += m_interval)
         {

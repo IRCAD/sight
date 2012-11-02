@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Edge.hpp"
 #include "fwData/Node.hpp"
+
+
+fwCampAutoDeclareDataMacro((fwData)(Graph), FWDATA_API);
 
 namespace fwData {
 /**
@@ -35,6 +38,7 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwData::factory::New< Graph >) ;
 
     fwDataObjectMacro();
+    fwCampMakeFriendDataMacro((fwData)(Graph));
 
     FWDATA_API static const bool UP_STREAM;
     FWDATA_API static const bool DOWN_STREAM;

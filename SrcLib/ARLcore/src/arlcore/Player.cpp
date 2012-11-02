@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,10 @@
 arlCore::Player::Player( void ):
 m_playerDirectory(""),
 m_playerFullName(""),
+m_afterHeader(0),
 m_isReady(false),
-m_loop(false),
 m_eof(false),
-m_afterHeader(0)
+m_loop(false)
 {}
 
 arlCore::Player::~Player( void )
@@ -44,7 +44,7 @@ bool arlCore::Player::getEOF( void ) const
 }
 
 unsigned int arlCore::Player::initPlayer( const std::string &fileName )
-{   
+{
     m_playerFullName = fileName;
     m_afterHeader = 0;
     if(!readHeader(fileName)) return 0;

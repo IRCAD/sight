@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -116,8 +116,8 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
         this->addAdaptor("::visuVTKAdaptor::NegatoWindowingInteractor");
         this->addAdaptor("::visuVTKAdaptor::NegatoSlicingInteractor", m_orientation);
-        this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
         this->addAdaptor("::visuVTKAdaptor::SlicesCursor", m_orientation);
+        this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
     }
     if(this->is3dModeEnabled())
     {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,23 +38,21 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((ImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
                                            (()),
-                                           new ImageWriter
+                                           ::fwDataIO::writer::factory::New< ImageWriter >
                                           );
     fwCoreAllowSharedFromThis();
+
+    //! @brief Constructor.
+    VTKIO_API ImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+
+    //! @brief Destructor.
+    VTKIO_API ~ImageWriter();
 
     //! @brief Writing operator.
     VTKIO_API void write();
 
     /// @return ".vtk"
     VTKIO_API  std::string extension();
-
-protected:
-
-    //! @brief Constructor.
-    VTKIO_API ImageWriter();
-
-    //! @brief Destructor.
-    VTKIO_API ~ImageWriter();
 };
 
 } // namespace vtkIO

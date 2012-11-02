@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/GenericField.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(String), FWDATA_API);
 
 namespace fwData
 {
@@ -27,7 +29,7 @@ class FWDATA_CLASS_API String : public GenericField< std::string >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ), GenericFieldFactory< String >) ;
-
+    fwCampMakeFriendDataMacro((fwData)(String));
     fwDataObjectMacro();
 
     /**
@@ -49,7 +51,8 @@ public:
 
 };
 
-}
 
+
+}
 
 #endif /*_FWDATA_STRING_HPP_*/

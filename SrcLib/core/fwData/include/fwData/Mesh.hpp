@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,19 @@
 #ifndef _FWDATA_MESH_HPP_
 #define _FWDATA_MESH_HPP_
 
+#include <camp/class.hpp>
+
+#include <fwCore/macros.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/multi_array.hpp>
 #include "fwData/Array.hpp"
 #include "fwData/Exception.hpp"
-#include "fwData/Mesh.hpp"
 #include "fwData/factory/new.hpp"
 
 #include "fwData/config.hpp"
+#include "fwData/Array.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
 
 namespace fwData
 {
@@ -76,6 +81,8 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >) ;
 
     fwDataObjectMacro();
+
+    fwCampMakeFriendDataMacro((fwData)(Mesh));
 
 
     typedef std::map< std::string, ::fwData::Array::sptr > ArrayMapType;

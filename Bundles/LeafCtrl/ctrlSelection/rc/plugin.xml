@@ -142,6 +142,12 @@
         <service>::ctrlSelection::wrapper::MsgWrapperSrv</service>
         <object>::fwData::Object</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::SDrop</service>
+        <object>::fwData::Composite</object>
+    </extension>
 
 </plugin>
 

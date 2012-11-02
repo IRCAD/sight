@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,6 +62,7 @@ std::string arlCore::PlaneSystem::getString( void ) const
                 case STATE_CALIBRATION: s<<" C ";break;
                 case STATE_IDENTITY:    s<<" 1 ";break;
                 case STATE_COMPUTED:    s<<" = ";break;
+                default: break;
                 }
             }
         s<<"\n";
@@ -725,8 +726,8 @@ bool arlCore::PlaneSystem::Path::pop_back( void )
 arlCore::TransformationFilter::TransformationFilter( const PlaneSystem& universe, long int duration, ARLCORE_TRF_FILTER_TYPE type ):
 m_universe(universe),
 m_duration(duration*10), //ms
-m_filterType(type),
-m_lastTime(0)
+m_lastTime(0),
+m_filterType(type)
 {}
 
 arlCore::TransformationFilter::TransformationFilter( const TransformationFilter& TF ):

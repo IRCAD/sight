@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,6 +16,8 @@
 #include <fwData/location/ILocation.hpp>
 
 #include "fwDataIO/config.hpp"
+#include "fwDataIO/writer/factory/new.hpp"
+#include "fwDataIO/writer/registry/detail.hpp"
 
 namespace fwDataIO
 {
@@ -43,11 +45,24 @@ public :
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IObjectWriter) );
 
-    /// Constructor. Do nothing.
-    FWDATAIO_API IObjectWriter();
 
-    /// Destructor. Do nothing.
-    FWDATAIO_API virtual ~IObjectWriter();
+    typedef ::fwDataIO::writer::factory::Key Key;
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar()
+        {
+            ::fwDataIO::writer::registry::get()->addFactory(T::classname(), &::fwDataIO::writer::factory::New<T>);
+        }
+    };
 
     /**
      * @brief Defines an writer interface.
@@ -94,6 +109,12 @@ public :
     FWDATAIO_API virtual std::string  extension()=0;
 
 protected :
+
+    /// Constructor. Do nothing.
+    FWDATAIO_API IObjectWriter();
+
+    /// Destructor. Do nothing.
+    FWDATAIO_API virtual ~IObjectWriter();
 
     /**
      * @brief Object write on filesystem by the process.

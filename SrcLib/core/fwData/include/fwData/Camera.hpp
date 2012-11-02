@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,6 +16,9 @@
 #include "fwData/TransformationMatrix3D.hpp"
 #include "fwData/factory/new.hpp"
 
+
+fwCampAutoDeclareDataMacro((fwData)(Camera), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -27,6 +30,7 @@ namespace fwData
 class FWDATA_CLASS_API Camera : public Object
 {
 public:
+    fwCampMakeFriendDataMacro((fwData)(Camera));
     fwCoreClassDefinitionsWithFactoryMacro(
             (Camera)(::fwData::Object),
             (()),
@@ -103,7 +107,7 @@ public:
     void setFy(::fwData::TransformationMatrix3D::TM3DType fy)
     { m_intrinsicMatrix->setCoefficient(1, 1, fy); };
 
-    void setDistortionCoefficient(
+    FWDATA_API void setDistortionCoefficient(
             double k1, double k2, double p1, double p2, double k3);
     fwDataGetSetCRefMacro(DistortionCoefficient, DistArray);
 

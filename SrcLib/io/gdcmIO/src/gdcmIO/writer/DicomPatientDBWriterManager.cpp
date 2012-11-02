@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2012-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,13 +10,13 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include "gdcmIO/writer/DicomPatientDBWriterManager.hpp"
 #include "gdcmIO/writer/DicomGlobalWriterManager.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::gdcmIO::writer::DicomPatientDBWriterManager, ::gdcmIO::writer::DicomPatientDBWriterManager );
+fwDataIOWriterRegisterMacro( ::gdcmIO::writer::DicomPatientDBWriterManager );
 
 
 namespace gdcmIO
@@ -27,7 +27,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBWriterManager::DicomPatientDBWriterManager():
+DicomPatientDBWriterManager::DicomPatientDBWriterManager(::fwDataIO::writer::IObjectWriter::Key key):
         ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();

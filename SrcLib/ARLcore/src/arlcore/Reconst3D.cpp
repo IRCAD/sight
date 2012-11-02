@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -179,6 +179,7 @@ bool simpleRecons3D( arlCore::Point::sptr point3D, const vnl_vector_fixed<double
             point3D->setError(error);
             return true;
         }
+    default: break;
     }
     return false;
 }
@@ -265,6 +266,7 @@ bool reconstruction3D( const vector<arlCore::Point::csptr> &points2D, const vect
         log.push_back(compute_reconstruction.get_start_error() / points2D.size());
     return true;
     }
+    default: break;
     }
     return false;
 }
@@ -565,7 +567,6 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
     if(methode==arlCore::ARLCORE_PR_ISPPC_LM)
     {
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        unsigned int nb_visible_point=0;
         for( i=0 ; i<Model3DSize ; ++i )
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
         arlCore::vnl_rigid_vector vec(T);

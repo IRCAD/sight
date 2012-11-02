@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,9 +14,9 @@
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/ActionCallback.hpp"
 #include "fwGuiWx/container/WxMenuContainer.hpp"
@@ -25,10 +25,7 @@
 #include "fwGuiWx/Shortcut.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IMenuLayoutManager,
-        ::fwGui::layoutManager::MenuLayoutManager,
-         ::fwGui::layoutManager::IMenuLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::layoutManager::MenuLayoutManager, ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -44,7 +41,7 @@ const std::map< ::fwGui::layoutManager::IMenuLayoutManager::ActionType, int> Men
 
 //-----------------------------------------------------------------------------
 
-MenuLayoutManager::MenuLayoutManager()
+MenuLayoutManager::MenuLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -94,7 +91,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
             ::fwGuiWx::Shortcut::sptr shortcut =  ::fwGuiWx::Shortcut::New( actionInfo.m_shortcut );
             actionNameInMenu += "\t" + shortcut->toString();
         }
-        menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwWX::std2wx( actionNameInMenu ),wxGetTranslation(""), kind ) ;
+        menuItemWx = new wxMenuItem(menu, actionIdInMenu , ::fwGuiWx::std2wx( actionNameInMenu ),wxGetTranslation(""), kind ) ;
         menu->Append( menuItemWx );
         menuItem->setWxMenuItem(menuItemWx);
 

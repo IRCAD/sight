@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,6 +63,19 @@ void ImageXMLTranslator::updateDataFromXML( ::fwData::Object::sptr toUpdate,  xm
 
     GenericXMLTranslator< ::fwData::Image > img2xmlbase;
     img2xmlbase.updateDataFromXML(toUpdate, source);
+
+
+    xmlNodePtr numberOfComponentsNode = XMLParser::findChildNamed( source, std::string("NumberOfComponents") );
+    if( numberOfComponentsNode )
+    {
+        std::string numberOfComponentsStr ( (char *)xmlNodeGetContent(numberOfComponentsNode)) ;
+        size_t nbOfComponents = ::boost::lexical_cast< size_t >(  numberOfComponentsStr );
+        pImage->setNumberOfComponents(nbOfComponents);
+    }
+    else
+    {
+        pImage->setNumberOfComponents(1);
+    }
 
     xmlNodePtr compositeNode = XMLParser::findChildNamed( source, std::string("Composite") );
 

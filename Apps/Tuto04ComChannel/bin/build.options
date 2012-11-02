@@ -16,10 +16,3 @@ BUNDLES = [
     'uiIO_0-1'              ,
     'appXml_0-1'            ,
  ]
-
-if not (PLATFORM, ARCH) == ('osx', '64'):
-    BUNDLES += [
-            'guiWx_0-1'    ,
-            'visuVTKWx_0-1',
-            ]
-

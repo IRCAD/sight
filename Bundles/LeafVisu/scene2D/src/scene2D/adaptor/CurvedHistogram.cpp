@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -113,7 +113,6 @@ CurvedHistogram::Points CurvedHistogram::getControlPoints( ::fwData::Histogram::
     ::fwData::Histogram::fwHistogramValues histogramValues = _histogram->getValues();
     const float binsWidth = _histogram->getBinsWidth();
     const float histogramMin = _histogram->getMinValue();
-    const float histogramMinValue = _histogram->getMinValue();
 
     Point p;
     Points controlPoints;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,15 @@
 #ifndef _FWDATA_PATIENTDB_HPP_
 #define _FWDATA_PATIENTDB_HPP_
 
-
 #include <vector>
 #include <boost/cstdint.hpp>
-
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Patient.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(PatientDB), FWDATA_API);
 
 namespace fwData
 {
@@ -32,6 +32,7 @@ class FWDATA_CLASS_API PatientDB : public Object
 
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwData::factory::New< PatientDB >) ;
+    fwCampMakeFriendDataMacro((fwData)(PatientDB));
 
     fwDataObjectMacro();
 

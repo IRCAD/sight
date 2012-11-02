@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,10 @@
 
 #include <deque>
 #include <boost/cstdint.hpp>
+#include <boost/make_shared.hpp>
 
 #include <fwTools/Object.hpp>
 #include <fwTools/macros.hpp>
-#include <fwTools/Factory.hpp>
 
 #include "fwCommand/config.hpp"
 #include "fwCommand/ICommand.hpp"
@@ -30,7 +30,7 @@ class FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
 public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Manager)(::fwTools::Object),
-           ((::fwTools::Factory::New< Manager > ,() ))
+           ((::boost::make_shared< Manager > ,() ))
            ((ManagerFactory ,((::boost::uint32_t)) ((::boost::uint32_t)) ((::boost::uint32_t))  ))
            );
 

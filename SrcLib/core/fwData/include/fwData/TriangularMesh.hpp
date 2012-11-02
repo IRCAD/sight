@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,6 +17,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(TriangularMesh), FWDATA_API);
 namespace fwData
 {
 /**
@@ -33,6 +34,8 @@ class FWDATA_CLASS_API TriangularMesh : public Object
 {
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwData::factory::New< TriangularMesh >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(TriangularMesh));
 
     /// 3D point container
     typedef std::vector< std::vector< float > >         PointContainer ;

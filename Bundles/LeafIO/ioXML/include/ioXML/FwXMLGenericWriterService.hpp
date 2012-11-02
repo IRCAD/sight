@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -84,9 +84,6 @@ private :
     bool isAnFwxmlArchive( const ::boost::filesystem::path filePath );
     void manageZipAndSaveData( const ::boost::filesystem::path path, ::fwTools::Object::sptr _obj );
     ::boost::filesystem::path correctFileFormat( const ::boost::filesystem::path _filePath ) const;
-
-    ::fwXML::writer::FwXMLObjectWriter m_writer;
-
 
     std::string m_archiveExtenstion;
 };

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,23 +38,21 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >),
                                            (()),
-                                           new MeshReader
+                                           ::fwDataIO::reader::factory::New< MeshReader >
                                           );
     fwCoreAllowSharedFromThis();
+
+    //! @brief Constructor.
+    VTKIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);
+
+    //! @brief Destructor.
+    VTKIO_API ~MeshReader();
 
     //! @brief Reading operator.
     VTKIO_API void read();
 
     /// @return ".vtk"
     VTKIO_API  std::string extension();
-
-protected:
-
-    //! @brief Constructor.
-    VTKIO_API MeshReader();
-
-    //! @brief Destructor.
-    VTKIO_API ~MeshReader();
 };
 
 } // namespace vtkIO

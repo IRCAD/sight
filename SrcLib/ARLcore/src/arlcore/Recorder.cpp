@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,12 @@
 #include <arlcore/Recorder.h>
 
 arlCore::Recorder::Recorder( void ):
-m_recorderFlag(false),
-m_recorderAfterRender(false),
-m_nbSnapshots(-1),
 m_recorderDirectory(""),
 m_fullRecorderDirectory(""),
-m_recorderFullName("")
+m_recorderFullName(""),
+m_recorderFlag(false),
+m_recorderAfterRender(false),
+m_nbSnapshots(-1)
 {}
 
 arlCore::Recorder::~Recorder( void )

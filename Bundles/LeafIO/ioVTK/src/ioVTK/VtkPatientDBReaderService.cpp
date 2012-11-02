@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,8 +26,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/Cursor.hpp>
-
-#include <fwTools/Factory.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
 #include <vtkIO/ImageReader.hpp>

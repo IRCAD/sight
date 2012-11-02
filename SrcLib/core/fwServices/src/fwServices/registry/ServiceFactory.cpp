@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -378,6 +378,18 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
 
 //-----------------------------------------------------------------------------
 
+std::string ServiceFactory::getObjectImplementation(const std::string& srvImpl) const
+{
+    std::string objImpl;
+    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
+    SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
+    objImpl = iter->second->objectImpl;
+    return objImpl;
+}
+
+//-----------------------------------------------------------------------------
+
 std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) const
 {
     std::string srvDescription;
@@ -454,6 +466,17 @@ bool ServiceFactory::support(const std::string & object, const std::string & srv
 
 //-----------------------------------------------------------------------------
 
+ServiceFactory::KeyVectorType ServiceFactory::getFactoryKeys() const
+{
+    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    KeyVectorType vectKeys;
+    std::transform( m_srvImplTosrvInfo.begin(), m_srvImplTosrvInfo.end(),
+            std::back_inserter(vectKeys),
+            ::boost::bind(& SrvRegContainer::value_type::first,_1) );
+    return vectKeys;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace registry
 } // namespace fwServices

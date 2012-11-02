@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,6 @@
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/Dispatcher.hpp>
-#include <fwTools/ClassRegistrar.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
@@ -29,11 +28,13 @@
 
 #include <itkIO/itk.hpp>
 
+#include <fwDataIO/writer/registry/macros.hpp>
+
 #include "itkIO/helper/ProgressItkToFw.hpp"
 #include "itkIO/JpgImageWriter.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::itkIO::JpgImageWriter, ::itkIO::JpgImageWriter );
+fwDataIOWriterRegisterMacro( ::itkIO::JpgImageWriter );
 
 
 namespace itkIO
@@ -41,7 +42,7 @@ namespace itkIO
 
 //------------------------------------------------------------------------------
 
-JpgImageWriter::JpgImageWriter() :
+JpgImageWriter::JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
         ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();

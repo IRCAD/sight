@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ void ROITraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
     ::fwData::Node::sptr opNode;
     if ( m_evaluatedExp != "W" ) // Thus mask op node must be assigned
     {
-        opNode = m_maskOpNode.lock();
+        opNode = m_maskOpNode;
     }
     return opNode;
 }
@@ -54,7 +54,7 @@ void ROITraits::setStructureTraits( ::fwData::StructureTraits::sptr structureTra
 
 ::fwData::StructureTraits::sptr ROITraits::getStructureTraits()
 {
-    return m_structureTraits.lock();
+    return m_structureTraits;
 }
 
 //------------------------------------------------------------------------------

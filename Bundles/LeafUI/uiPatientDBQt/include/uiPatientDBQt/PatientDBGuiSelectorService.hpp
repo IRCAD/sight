@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,6 +13,7 @@
 #include <QMetaType>
 
 #include <fwData/Patient.hpp>
+#include <fwData/PatientDB.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -60,12 +61,27 @@ protected:
     /// Updated the PatientDB m_imageSelectedId field with the last added image of the patient given by its index in PatientDB
     void selectLastAddedImage(int patientIndex);
 
+    /// Receives event sended by m_pSelectorPanel
+    bool eventFilter(QObject *object, QEvent *event);
+
+    /// Erases selected data
+    void erase();
+
+    /// Helper to erase selected acquisition
+    static void eraseSelectedAcquisition( ::fwData::PatientDB::sptr pdb );
+
+    /// Helper to erase selected patient
+    static void eraseSelectedPatient( ::fwData::PatientDB::sptr pdb );
+
 protected Q_SLOTS:
 
     /**
     * @brief This method is called when the value change.
     */
     void onSelectionChange(QTreeWidgetItem * current, QTreeWidgetItem * previous);
+
+    /// This method is called when an item is double cliked, and open a comment editor
+    void onItemDoubleClicked ( QTreeWidgetItem * item, int column );
 
 private :
 

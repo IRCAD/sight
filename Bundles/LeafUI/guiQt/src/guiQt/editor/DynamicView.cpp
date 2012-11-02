@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,6 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
-
 
 #include <fwData/String.hpp>
 #include <fwData/Integer.hpp>
@@ -118,6 +116,20 @@ void DynamicView::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
+
+    std::vector< ::fwRuntime::ConfigurationElement::sptr > vectMode =
+            m_configuration->find("config");
+
+    if (!vectMode.empty())
+    {
+        ::fwRuntime::ConfigurationElement::sptr config = vectMode.at(0);
+
+        if (config->hasAttribute("dynamicConfigStartStop"))
+        {
+            std::string dynamicConfig = config->getAttributeValue("dynamicConfigStartStop");
+            m_dynamicConfigStartStop = (dynamicConfig == "true");
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -151,7 +163,7 @@ void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTool
         }
         bool closable;
         std::string icon;
-        std::string tooltip;
+        std::string tooltip("");
         std::string viewConfigID;
         ::fwData::Composite::sptr fieldAdaptors;
 

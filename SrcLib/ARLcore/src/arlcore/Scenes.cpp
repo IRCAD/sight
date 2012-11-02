@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -126,8 +126,6 @@ Scene(universe)
     assert(m_Centre);
 
     const double ChessSize = 120;
-    const double cubicSize = 1000;
-    const unsigned int nbParameters = 8;
     arlCore::Point::sptr Origin =  arlCore::Point::New();
     Origin->fill(0.0);
     arlCore::Point::sptr zero_monde =  arlCore::Point::New();

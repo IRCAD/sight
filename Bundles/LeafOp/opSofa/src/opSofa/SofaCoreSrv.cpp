@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <fwTools/UUID.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -198,10 +204,10 @@ void SofaCoreSrv::addMesh(std::string meshPath, std::string meshName)
     // Create mesh
     ::fwData::Mesh::NewSptr mesh;
     mesh->setName(meshName);
-    ::fwDataIO::reader::MeshReader reader1;
-    reader1.setObject(mesh);
-    reader1.setFile(meshPath);
-    reader1.read();
+    ::fwDataIO::reader::MeshReader::NewSptr reader1;
+    reader1->setObject(mesh);
+    reader1->setFile(meshPath);
+    reader1->read();
 
     // Create reconstruction
     ::fwData::Reconstruction::NewSptr reconstruction;

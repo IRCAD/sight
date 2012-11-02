@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,22 +8,22 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <itkIO/itk.hpp>
 
 #include <fwCore/base.hpp>
 
+#include <fwDataIO/writer/registry/macros.hpp>
+
 #include "itkIO/DicomImageWriter.hpp"
 #include "itkIO/DicomPatientWriter.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::itkIO::DicomImageWriter, ::itkIO::DicomImageWriter );
+fwDataIOWriterRegisterMacro( ::itkIO::DicomImageWriter );
 
 namespace itkIO
 {
 //------------------------------------------------------------------------------
 
-DicomImageWriter::DicomImageWriter() :
+DicomImageWriter::DicomImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
         ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();

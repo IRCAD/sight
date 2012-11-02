@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/Mesh.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
 #include <typeinfo>
 
 #include "fwXML/config.hpp"
@@ -74,6 +73,8 @@
 #include "fwXML/XML/DictionaryXMLTranslator.hpp"
 #include "fwXML/XML/ProcessObjectXMLTranslator.hpp"
 
+#include "fwXML/registry/macros.hpp"
+
 INSTANTIATE_SERIALIZER(::fwData::Object);
 INSTANTIATE_SERIALIZER(::fwData::Acquisition);
 INSTANTIATE_SERIALIZER(::fwData::Array);
@@ -101,48 +102,47 @@ INSTANTIATE_SERIALIZER(::fwTools::Type);
 namespace fwXML
 {
 
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Object>                 ,  ::fwData::Object                );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Histogram>              ,  ::fwData::Histogram              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransformationMatrix3D> ,  ::fwData::TransformationMatrix3D );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Color>                  ,  ::fwData::Color                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::Point >                 ,  ::fwData::Point                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GenericXMLTranslator< ::fwData::TransferFunction >,  ::fwData::TransferFunction );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , IntegerXMLTranslator                                    ,  ::fwData::Integer                );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ImageXMLTranslator                                      ,  ::fwData::Image                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StringXMLTranslator                                     ,  ::fwData::String                 );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PatientDBXMLTranslator                                  ,  ::fwData::PatientDB              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PatientXMLTranslator                                    ,  ::fwData::Patient                );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StudyXMLTranslator                                      ,  ::fwData::Study                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , NodeXMLTranslator                                       ,  ::fwData::Node                   );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , GraphXMLTranslator                                      ,  ::fwData::Graph                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PortXMLTranslator                                       ,  ::fwData::Port                   );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , EdgeXMLTranslator                                       ,  ::fwData::Edge                   );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , TriangularMeshXMLTranslator                             ,  ::fwData::TriangularMesh         );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , CompositeXMLTranslator                                  ,  ::fwData::Composite              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , VectorXMLTranslator                                     ,  ::fwData::Vector                 );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ListXMLTranslator                                       ,  ::fwData::List                   );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PointListXMLTranslator                                  ,  ::fwData::PointList              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionDBXMLTranslator                                ,  ::fwData::ResectionDB            );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ResectionXMLTranslator                                  ,  ::fwData::Resection              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneXMLTranslator                                      ,  ::fwData::Plane                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , PlaneListXMLTranslator                                  ,  ::fwData::PlaneList              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , SingleFileXMLTranslator                                 ,  ::fwData::location::SingleFile   );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , FolderXMLTranslator                                     ,  ::fwData::location::Folder       );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryXMLTranslator                                 ,  ::fwData::Dictionary             );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , DictionaryOrganXMLTranslator                            ,  ::fwData::DictionaryOrgan        );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ArrayXMLTranslator                                      ,  ::fwData::Array                  );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MeshXMLTranslator                                       ,  ::fwData::Mesh                   );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , MaterialXMLTranslator                                   ,  ::fwData::Material               );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionXMLTranslator                             ,  ::fwData::Reconstruction         );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , AcquisitionXMLTranslator                                ,  ::fwData::Acquisition            );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsXMLTranslator                            ,  ::fwData::StructureTraits        );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ROITraitsXMLTranslator                                  ,  ::fwData::ROITraits              );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ReconstructionTraitsXMLTranslator                       ,  ::fwData::ReconstructionTraits   );
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , StructureTraitsDictionaryXMLTranslator                  ,  ::fwData::StructureTraitsDictionary);
-REGISTER_BINDING_BYCLASSNAME( XMLTranslator , ProcessObjectXMLTranslator                              ,  ::fwData::ProcessObject          );
-
+fwXMLRegisterMacro( GenericXMLTranslator< ::fwData::Object>                 ,  ::fwData::Object                   );
+fwXMLRegisterMacro( GenericXMLTranslator< ::fwData::Boolean>                ,  ::fwData::Boolean                  );
+fwXMLRegisterMacro( GenericXMLTranslator< ::fwData::Float>                  ,  ::fwData::Float                    );
+fwXMLRegisterMacro( GenericXMLTranslator< ::fwData::Histogram>              ,  ::fwData::Histogram                );
+fwXMLRegisterMacro( GenericXMLTranslator< ::fwData::TransformationMatrix3D> ,  ::fwData::TransformationMatrix3D   );
+fwXMLRegisterMacro( GenericXMLTranslator< ::fwData::Color>                  ,  ::fwData::Color                    );
+fwXMLRegisterMacro( GenericXMLTranslator< ::fwData::Point >                 ,  ::fwData::Point                    );
+fwXMLRegisterMacro( GenericXMLTranslator< ::fwData::TransferFunction >      ,  ::fwData::TransferFunction         );
+fwXMLRegisterMacro( IntegerXMLTranslator                                    ,  ::fwData::Integer                  );
+fwXMLRegisterMacro( ImageXMLTranslator                                      ,  ::fwData::Image                    );
+fwXMLRegisterMacro( StringXMLTranslator                                     ,  ::fwData::String                   );
+fwXMLRegisterMacro( PatientDBXMLTranslator                                  ,  ::fwData::PatientDB                );
+fwXMLRegisterMacro( PatientXMLTranslator                                    ,  ::fwData::Patient                  );
+fwXMLRegisterMacro( StudyXMLTranslator                                      ,  ::fwData::Study                    );
+fwXMLRegisterMacro( NodeXMLTranslator                                       ,  ::fwData::Node                     );
+fwXMLRegisterMacro( GraphXMLTranslator                                      ,  ::fwData::Graph                    );
+fwXMLRegisterMacro( PortXMLTranslator                                       ,  ::fwData::Port                     );
+fwXMLRegisterMacro( EdgeXMLTranslator                                       ,  ::fwData::Edge                     );
+fwXMLRegisterMacro( TriangularMeshXMLTranslator                             ,  ::fwData::TriangularMesh           );
+fwXMLRegisterMacro( CompositeXMLTranslator                                  ,  ::fwData::Composite                );
+fwXMLRegisterMacro( VectorXMLTranslator                                     ,  ::fwData::Vector                   );
+fwXMLRegisterMacro( ListXMLTranslator                                       ,  ::fwData::List                     );
+fwXMLRegisterMacro( PointListXMLTranslator                                  ,  ::fwData::PointList                );
+fwXMLRegisterMacro( ResectionDBXMLTranslator                                ,  ::fwData::ResectionDB              );
+fwXMLRegisterMacro( ResectionXMLTranslator                                  ,  ::fwData::Resection                );
+fwXMLRegisterMacro( PlaneXMLTranslator                                      ,  ::fwData::Plane                    );
+fwXMLRegisterMacro( PlaneListXMLTranslator                                  ,  ::fwData::PlaneList                );
+fwXMLRegisterMacro( SingleFileXMLTranslator                                 ,  ::fwData::location::SingleFile     );
+fwXMLRegisterMacro( FolderXMLTranslator                                     ,  ::fwData::location::Folder         );
+fwXMLRegisterMacro( DictionaryXMLTranslator                                 ,  ::fwData::Dictionary               );
+fwXMLRegisterMacro( DictionaryOrganXMLTranslator                            ,  ::fwData::DictionaryOrgan          );
+fwXMLRegisterMacro( ArrayXMLTranslator                                      ,  ::fwData::Array                    );
+fwXMLRegisterMacro( MeshXMLTranslator                                       ,  ::fwData::Mesh                     );
+fwXMLRegisterMacro( MaterialXMLTranslator                                   ,  ::fwData::Material                 );
+fwXMLRegisterMacro( ReconstructionXMLTranslator                             ,  ::fwData::Reconstruction           );
+fwXMLRegisterMacro( AcquisitionXMLTranslator                                ,  ::fwData::Acquisition              );
+fwXMLRegisterMacro( StructureTraitsXMLTranslator                            ,  ::fwData::StructureTraits          );
+fwXMLRegisterMacro( ROITraitsXMLTranslator                                  ,  ::fwData::ROITraits                );
+fwXMLRegisterMacro( ReconstructionTraitsXMLTranslator                       ,  ::fwData::ReconstructionTraits     );
+fwXMLRegisterMacro( StructureTraitsDictionaryXMLTranslator                  ,  ::fwData::StructureTraitsDictionary);
+fwXMLRegisterMacro( ProcessObjectXMLTranslator                              ,  ::fwData::ProcessObject            );
 
 }
 

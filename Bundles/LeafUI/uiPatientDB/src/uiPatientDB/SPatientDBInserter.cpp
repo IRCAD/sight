@@ -8,10 +8,14 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <fwData/String.hpp>
+
+#include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
+#include <fwGui/dialog/InputDialog.hpp>
 
 #include "uiPatientDB/SPatientDBInserter.hpp"
 
@@ -130,6 +134,13 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
         {
             ::fwData::Acquisition::NewSptr copy;
             copy->deepCopy(acq);
+            ::fwData::Image::sptr copyImg = copy->getImage();
+            ::fwData::String::sptr comment;
+            comment = copyImg->setDefaultField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId,
+                                                                    ::fwData::String::New(""));
+            std::string result;
+            result = ::fwGui::dialog::InputDialog::showInputDialog("Image comment", "Enter comment", comment->value());
+            comment->value() = result;
             pPDB = this->createPDB(copy);
         }
         else if(img)
@@ -150,6 +161,14 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
             {
                 ::fwData::Image::NewSptr copy;
                 copy->deepCopy(img);
+                ::fwComEd::fieldHelper::MedicalImageHelpers::checkComment(copy);
+                ::fwData::String::sptr comment;
+                comment = copy->setDefaultField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId,
+                                                              ::fwData::String::New(""));
+                std::string result;
+                result = ::fwGui::dialog::InputDialog::showInputDialog("Image comment", "Enter comment",
+                                                                       comment->value());
+                comment->value() = result;
                 pPDB = this->createPDB(copy);
             }
         }

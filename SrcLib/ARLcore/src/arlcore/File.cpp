@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,12 +11,12 @@
 #include <arlcore/Misc.h>
 
 arlCore::File::File( const std::string &fullFileName, const std::string &fileType ):
-m_fileType(fileType),
-m_fullFilename(fullFileName),
-m_error(""),
+m_ok(false),
 m_version(0.0),
-m_position(0),
-m_ok(false)
+m_fileType(fileType),
+m_error(""),
+m_fullFilename(fullFileName),
+m_position(0)
 {
     if(m_fullFilename=="") return;
     arlString::splitFilename( m_fullFilename, m_folder, m_filename, m_extension );

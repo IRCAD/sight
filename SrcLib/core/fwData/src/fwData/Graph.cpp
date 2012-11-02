@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -316,6 +316,7 @@ void Graph::deepCopy( Graph::csptr _source )
         newNode->deepCopy( Node::constCast(node) );
         bool addOK =this->addNode(newNode);
         OSLM_ASSERT("Node "<<newNode->getID() <<" can't be deepCopy ", addOK );
+        FwCoreNotUsedMacro(addOK);
         correspondenceBetweenNodes.insert(std::make_pair(node, newNode));
     }
 

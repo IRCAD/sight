@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,6 +12,8 @@
 #include <fwCore/base.hpp>
 #include <fwData/Object.hpp>
 
+#include "fwXML/factory/new.hpp"
+#include "fwXML/registry/detail.hpp"
 #include "fwXML/config.hpp"
 
 namespace fwXML
@@ -26,6 +28,22 @@ namespace fwXML
 class FWXML_CLASS_API XMLTranslator : public ::fwCore::BaseObject
 {
 public:
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar(std::string functorKey)
+        {
+            ::fwXML::registry::get()->addFactory(functorKey, &::fwXML::factory::New<T>);
+        }
+    };
 
     fwCoreNonInstanciableClassDefinitionsMacro( (XMLTranslator)(::fwCore::BaseObject) )
 

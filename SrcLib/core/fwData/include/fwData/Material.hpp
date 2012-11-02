@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,8 @@
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
 #include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Material), FWDATA_API);
 
 namespace fwData
 {
@@ -29,6 +31,7 @@ class FWDATA_CLASS_API Material : public Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::factory::New< Material >) ;
+    fwCampMakeFriendDataMacro((fwData)(Material));
 
     fwDataObjectMacro();
 
@@ -101,11 +104,17 @@ public:
         MODE_EDGE      = 5, //MODE_SURFACE|MODE_WIREFRAME -> 101
     } REPRESENTATION_MODE;
 
+
+
+
     fwGettersSettersDocMacro(ShadingMode, shadingMode, SHADING_MODE, the shading models(flat, gouraud, phong).);
     fwGettersSettersDocMacro(RepresentationMode, representationMode, REPRESENTATION_MODE, the representation models(edge, point, wireframe, surface).);
     fwGettersSettersDocMacro(OptionsMode, optionsMode, OPTIONS_MODE, the option representation (Standard, normals).);
 
+
+
 protected :
+
 
     SHADING_MODE m_shadingMode;
     REPRESENTATION_MODE m_representationMode;
@@ -115,6 +124,6 @@ protected :
     Color::sptr m_diffuse;
 };
 
-}
+} //namespace fwData
 
 #endif /* _DATA_MATERIAL_HPP_ */

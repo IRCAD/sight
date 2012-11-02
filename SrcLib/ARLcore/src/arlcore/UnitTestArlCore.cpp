@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -79,8 +79,10 @@ bool printErrors( const std::string &name, const vnl_vector<double>& error, long
             std::cerr<<"* "<<name<<"["<<i<<"]="<<error[i]<<"\n";
     std::cerr<<"* "<<name<<" : ";
     if(tolerance>=0)
+    {
         if(test) std::cerr<<"OK OK";
         else std::cerr<<"ERROR";
+    }
     std::cerr<<"\n*  Mean/Std = {"<<mean<<" , "<<stdDev<<"}\n";
     std::cerr<<"*  Min/Max  = ["<<error.min_value()<<" , "<<error.max_value()<<"]\n";
     double p=0;
@@ -92,7 +94,7 @@ bool printErrors( const std::string &name, const vnl_vector<double>& error, long
 bool printErrors( const std::string &name, const vnl_vector_fixed<double,5>& stat, long int robustnessOK, long int robustnessTotal, double tolerance, bool Verbose=false)
 {
     double min, max, mean, stdDev, RMS;
-    const double n = arlCore::computeStat( stat, min, max, mean, stdDev, RMS );
+    arlCore::computeStat( stat, min, max, mean, stdDev, RMS );
     const unsigned int Precision=4;
     const bool Test = max<tolerance;
     std::cerr<<std::setprecision(Precision);
@@ -110,7 +112,6 @@ bool printErrors( const std::string &name, const vnl_vector_fixed<double,5>& sta
 
 bool printFooter( unsigned int nbIterations, bool test )
 {
-    double a = (double)m_date;
     double b = (double)m_time;
     m_date = arlTime::getNowDate();
     m_time = arlTime::getNowTime();
@@ -133,7 +134,6 @@ bool arlCore::testRegistration3D3D( long int nbIterations, double tolerance )
 {
     const bool Verbose = false;
     const double VolumeSize = 500.0;
-    const double GaussianNoise3D = 0.0;
     printHeader("Registration 3D/3D",nbIterations, tolerance);
     vnl_vector<double> errorRotation(nbIterations);
     vnl_vector<double> errorTranslation(nbIterations);
@@ -260,7 +260,6 @@ bool arlCore::testICPRegistration( long int nbIterations, double tolerance )
         trfName<<"../init"<<compteur<<".trf";
         T2.save(trfName.str());
         //T2.invert();
-        const double RmsMax=-1;
         const bool JustVisible = false;
         const unsigned int NbIterationsMax = 500;
         arlCore::ICP icp( model, cloud, JustVisible);
@@ -307,9 +306,7 @@ bool arlCore::testICPRegistration( long int nbIterations, double tolerance )
 // testRegistration3D3DUncertainty
 bool arlCore::testRegistration3D3DUncertainty( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
     const double VolumeSize = 500.0;
-    const double rangeGaussianNoise3D = 0.0;
     printHeader("Registration Uncertainty 3D/3D",nbIterations, tolerance);
     vnl_vector<double> errorRotation(nbIterations);
     vnl_vector<double> errorTranslation(nbIterations);
@@ -367,7 +364,6 @@ bool arlCore::testRegistration3D3DUncertainty( long int nbIterations, double tol
 // testProjectiveRegistration
 bool arlCore::testProjectiveRegistration( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
     const double TransfVolumeSize = 500.0;
     const double GaussianNoise2D = 0.0;
     const unsigned int nbTypes = arlCore::ARLCORE_PR_NBTYPES;
@@ -441,10 +437,8 @@ bool arlCore::testProjectiveRegistration( long int nbIterations, double toleranc
 // testHomographyRegistration
 bool arlCore::testHomographyRegistration( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
     const double VolumeSize = 500.0;
     const double GaussianNoise2D = 0.0;
-    const double GaussianNoise3D = 0.0;
     printHeader("Homography registration",nbIterations, tolerance);
     vnl_vector_fixed<double,5> errorRotation(0.0);
     vnl_vector_fixed<double,5> errorTranslation(0.0);
@@ -577,7 +571,6 @@ bool arlCore::testReconstructionPolyscopicUncertainty( long int nbIterations, do
     printHeader("Polyscopic reconstruction uncertainty",nbIterations, tolerance);
     const bool Verbose = false;
     const double rangeGaussianNoise2D_x=2.0, rangeGaussianNoise2D_y=2.0;
-    const double rangeGaussianNoise2D=2.0;
     std::vector<double> log;
     std::vector< std::vector<double> > index_mu(6);//(nbIterations);
     std::vector< vnl_vector<double> > errorVector;
@@ -772,10 +765,8 @@ bool arlCore::testReconstructionPolyscopicUncertainty( long int nbIterations, do
 // testEpipolarMatching
 bool arlCore::testEpipolarMatching( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
     const double VolumeSize = 2000.0;
     const double GaussianNoise2D = 0.0;
-    const double GaussianNoise3D = 0.0;
     printHeader("Epipolar matching",nbIterations, tolerance);
     arlCore::Point::sptr reprojection2D = arlCore::Point::New(2);
     arlCore::Point::csptr p;
@@ -842,9 +833,6 @@ bool arlCore::testEpipolarMatching( long int nbIterations, double tolerance )
 // testInitIntrinsicCalibration
 bool arlCore::testInitIntrinsicCalibration( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
-    const double GaussianNoise2D = 0.0;
-    const double GaussianNoise3D = 0.0;
     const unsigned int nb_Cameras_MAX = 1, nb_Poses_MAX=30;
     printHeader("Intrinsic calibration initialization",nbIterations, tolerance);
     vnl_vector_fixed<double,5> errorRotation(0.0);
@@ -935,9 +923,7 @@ bool arlCore::testInitIntrinsicCalibration( long int nbIterations, double tolera
 // testIntrinsicCalibration
 bool arlCore::testIntrinsicCalibration( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
     const double GaussianNoise2D = 0.0;
-    const double GaussianNoise3D = 0.0;
     const unsigned int nbParameters = 8, nb_Cameras_MAX=1, nb_Poses_MAX=30;
     printHeader("Intrinsic calibration",nbIterations, tolerance);
 
@@ -1088,9 +1074,8 @@ bool arlCore::testInitExtrinsicCalibration( long int nbIterations, double tolera
 // l'objet pose 0 est visible par toutes les cameras en meme temps) alors:
 // mk_j_i = T_ext_cam_j * T_alea_k * Mk_i = Ts_j * Te_0 = Ts_j * T_ext_cam_0 * T_alea_k * Mk_i
 // donc    T_ext_cam_j = Ts_j * T_ext_cam_0        donc     Ts_j  = T_ext_cam_j * T_ext_cam_0^(-1)
-    const bool verbose = false;
     const double gaussianNoise2D = 0.0;
-    const unsigned int nbParameters = 8, nb_Cameras_MAX = 10, nb_Poses_MAX=10;
+    const unsigned int nb_Cameras_MAX = 10, nb_Poses_MAX=10;
     printHeader("Extrinsic initialization calibration",nbIterations, tolerance);
 
     vnl_vector_fixed<double,5> errorRotation(0.0);
@@ -1215,10 +1200,8 @@ bool arlCore::testExtrinsicCalibration( long int nbIterations, double tolerance 
 // A SAVOIR : visiblement l'algorithme de calibrage extrinseque a du mal a s'arreter
 // lorsqu'on cree plus de 8 cameras. Il faudra peut etre ajouter une condition temporelle
 // pour forcer l'algorithme a s'arreter lorsque les erreurs stagnent
-    const bool Verbose = false;
     const double gaussianNoise2D = 0.0;
-    const double gaussianNoise3D = 0.0;
-    const unsigned int nbParameters = 8, nb_Cameras_MAX=8, nb_Poses_MAX=10;
+    const unsigned int nb_Cameras_MAX=8, nb_Poses_MAX=10;
     printHeader("Extrinsic calibration",nbIterations, tolerance);
 
     vnl_vector_fixed<double,5> errorRotation(0.0);
@@ -1386,7 +1369,6 @@ bool arlCore::testRigidTransfo( unsigned int nbIterations, double tolerance )
 // testRegistration3D3DwithoutMatching
 bool arlCore::testRegistration3D3DwithoutMatching( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
     // Constantes de recalage
     const double GaussianNoise3D = 0.0;
     const double decimage = 1.0;
@@ -1436,7 +1418,6 @@ bool arlCore::testRegistration3D3DwithoutMatching( long int nbIterations, double
 // test3D3DMatching
 bool arlCore::test3D3DMatching( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
     // Constantes de matching
     const double GaussianNoise3D = 0.0;
     const double Decimage = 0.8;
@@ -1531,7 +1512,7 @@ bool arlCore::testRegistrationCriteriaComparison( long int nbIterations, std::ve
     const double TransfVolumeSize = 500.0;
     const double rangeGaussianNoise3D_X = parameters[9], rangeGaussianNoise3D_Y = parameters[10], rangeGaussianNoise3D_Z = parameters[11];
     const double rangeGaussianNoise2D_X = parameters[12], rangeGaussianNoise2D_Y = parameters[13];
-    double GaussianNoise3D_X, GaussianNoise3D_Y, GaussianNoise3D_Z, GaussianNoise2D_X, GaussianNoise2D_Y, RSB_3D, RSB_2D;
+    double GaussianNoise3D_X, GaussianNoise3D_Y, GaussianNoise3D_Z, GaussianNoise2D_X, GaussianNoise2D_Y, RSB_3D=0.0, RSB_2D=0.0;
     const unsigned int nbTypes = arlCore::ARLCORE_PR_NBTYPES;
     //printHeader("Projective registration",nbIterations, tolerance);
 //  std::vector< vnl_vector<double> > erreur_recalage_methode(nbMethode);
@@ -1584,7 +1565,6 @@ bool arlCore::testRegistrationCriteriaComparison( long int nbIterations, std::ve
         arlCore::SceneCriterionComparison scene(universe, parameters, staticStatus, noiseValues, RSB_3D, RSB_2D);
         const unsigned int nbCameras = (unsigned int)scene.getCameras().size();
         const unsigned int nbModelPoints = scene.getTags().getTag(0)->getGeometry()->size();
-        const unsigned int nbControlPoints = scene.getTags().getTag(1)->getGeometry()->size();
         const std::vector<arlCore::Camera> &cameras = scene.getCameras().getList();
        PointList::csptr regPoints     = scene.getTags().getTag(0)->getGeometry();
        PointList::csptr controlPoints = scene.getTags().getTag(1)->getGeometry();
@@ -1862,8 +1842,8 @@ bool arlCore::testSphereCenterEstimation( long int nbIterations, double toleranc
             T.trf(surface_points, surface_points_rotated);
             T.trf(center);
             //if(Verbose) std::cerr<< "centre = "<<center->print() <<std::endl;
-            for( unsigned int i=0 ; i<surface_points_rotated->size() ; ++i )
-                (*surface_points_rotated)[i]->addGaussianNoise(GaussianNoise3D);
+            for( unsigned int j=0 ; j<surface_points_rotated->size() ; ++j )
+                (*surface_points_rotated)[j]->addGaussianNoise(GaussianNoise3D);
             arlCore::ARLCORE_SCE type = (arlCore::ARLCORE_SCE)enum_method;
             if( surface_points_rotated->sphereCenterEstimation( center_estimation, radius_estimation, type, optimiser_parameter, log) )
             {
@@ -1892,8 +1872,6 @@ bool arlCore::testSphereCenterEstimation( long int nbIterations, double toleranc
 // testPolynomialFieldDistortion
 bool arlCore::testPolynomialFieldDistortion( long int nbIterations, double tolerance )
 {
-    const bool Verbose = false;
-    const double GaussianNoise3D = 0.0; //0.001;
     const double CubeRadius = 4.0;
     std::vector< vnl_vector_fixed<double,5> >errorCorrection;
     printHeader("Polynomial field distorsion",nbIterations, tolerance);
@@ -1950,7 +1928,7 @@ bool arlCore::testPolynomialFieldDistortion( long int nbIterations, double toler
             for( i=0 ; i<distorded->size() ; ++i )
             {
                 arlCore::Point::sptr undistorded = arlCore::Point::New(3);
-                bool b = fc.correct( (*distorded)[i], undistorded );
+                fc.correct( (*distorded)[i], undistorded );
                 addValue( errorCorrection[n], undistorded->distance( (*real)[i]) );
 
             }

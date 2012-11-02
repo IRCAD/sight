@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,9 +21,9 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwWX/convert.hpp>
 #include <fwTools/fwID.hpp>
 
+#include <fwGuiWx/convert.hpp>
 #include <fwGuiWx/container/WxContainer.hpp>
 
 #include "guiWx/editor/DummyEditor.hpp"
@@ -59,7 +59,7 @@ void DummyEditor::starting() throw(::fwTools::Failed)
     wxBoxSizer* bSizer;
     bSizer = new wxBoxSizer( wxVERTICAL );
     std::string text = m_text.empty() ? this->getID() : m_text;
-    m_staticText = new wxStaticText( container, wxID_ANY, ::fwWX::std2wx(text), wxDefaultPosition, wxDefaultSize, 0 );
+    m_staticText = new wxStaticText( container, wxID_ANY, ::fwGuiWx::std2wx(text), wxDefaultPosition, wxDefaultSize, 0 );
     m_staticText->SetBackgroundColour(wxColour(rand()%256, rand()%256, rand()%256));
     bSizer->Add( m_staticText, 1, wxALL|wxEXPAND, 5 );
 

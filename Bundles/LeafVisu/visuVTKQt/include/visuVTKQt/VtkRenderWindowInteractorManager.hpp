@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,12 +39,11 @@ class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVT
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)(::fwRenderVTK::IVtkRenderWindowInteractorManager) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)
+                                                (::fwRenderVTK::IVtkRenderWindowInteractorManager) )
 
-    /// Constructor. Do nothing.
-    VISUVTKQT_API VtkRenderWindowInteractorManager();
+    VISUVTKQT_API VtkRenderWindowInteractorManager(::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key);
 
-    /// Destructor. Do nothing.
     VISUVTKQT_API virtual ~VtkRenderWindowInteractorManager();
 
     /// Creates an interactor and installs it in window.

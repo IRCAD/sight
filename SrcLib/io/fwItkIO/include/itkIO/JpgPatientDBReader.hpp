@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,17 +30,15 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((JpgPatientDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >),
                                            (()),
-                                           new JpgPatientDBReader
+                                           ::fwDataIO::reader::factory::New< JpgPatientDBReader >
                                           );
     fwCoreAllowSharedFromThis();
 
-    FWITKIO_API void read();
-
-protected:
-
-    FWITKIO_API JpgPatientDBReader();
+    FWITKIO_API JpgPatientDBReader(::fwDataIO::reader::IObjectReader::Key key);
 
     FWITKIO_API ~JpgPatientDBReader();
+
+    FWITKIO_API void read();
 
 private :
 

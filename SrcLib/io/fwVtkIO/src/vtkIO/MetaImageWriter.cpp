@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,22 +8,23 @@
 #include <vtkImageData.h>
 #include <vtkMetaImageWriter.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwCore/base.hpp>
+
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include "vtkIO/vtk.hpp"
 #include "vtkIO/MetaImageWriter.hpp"
 #include "vtkIO/helper/ProgressVtkToFw.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::vtkIO::MetaImageWriter, ::vtkIO::MetaImageWriter );
+fwDataIOWriterRegisterMacro( ::vtkIO::MetaImageWriter );
 
 
 namespace vtkIO
 {
 //------------------------------------------------------------------------------
 
-MetaImageWriter::MetaImageWriter() : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+MetaImageWriter::MetaImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+        ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();
 }

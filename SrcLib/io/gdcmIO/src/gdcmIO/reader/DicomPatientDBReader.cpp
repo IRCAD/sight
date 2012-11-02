@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2012-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,13 @@
 #include <gdcmScanner.h>
 #include <gdcmAttribute.h>
 
-// fwTools
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include "gdcmIO/reader/DicomPatientDBReader.hpp"
 #include "gdcmIO/reader/DicomPatientReader.hpp"
 #include "gdcmIO/helper/GdcmHelper.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader, ::gdcmIO::reader::DicomPatientDBReader, ::gdcmIO::reader::DicomPatientDBReader );
+fwDataIOReaderRegisterMacro( ::gdcmIO::reader::DicomPatientDBReader );
 
 namespace gdcmIO
 {
@@ -26,7 +25,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBReader::DicomPatientDBReader() :
+DicomPatientDBReader::DicomPatientDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableFolder< IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
@@ -53,6 +52,7 @@ void DicomPatientDBReader::read() throw(::fwTools::Failed)
     ::gdcm::Directory           dir;
     const unsigned int          nbFiles     = dir.Load(rootPath, true); // Get all files from specified folder and its sub folders
     OSLM_TRACE("Number of files load : " << nbFiles);
+    FwCoreNotUsedMacro(nbFiles);
 
     // TODO: (optional) Filter filenames with extension : .dcm, .dicom, nothing
 

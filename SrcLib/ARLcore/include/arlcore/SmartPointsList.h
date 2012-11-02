@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef _ARLCORE_SMARTPOINTLIST_H
 #define _ARLCORE_SMARTPOINTLIST_H
+
+#include <boost/make_shared.hpp>
 
 #include <arlcore/Common.h>
 
@@ -53,7 +55,9 @@ namespace arlCore
     {
     public:
 
-        fwCoreClassDefinitionsWithFactoryMacro( (SmartPointList)(::fwTools::Object), (()), ::fwTools::Factory::New< SmartPointList >) ;
+        fwCoreClassDefinitionsWithFactoryMacro( (SmartPointList)(::fwTools::Object),
+                                                (()),
+                                                ::boost::make_shared< SmartPointList >) ;
         //! @brief Default constructor of an empty list
         ARLCORE_API SmartPointList( void );
 

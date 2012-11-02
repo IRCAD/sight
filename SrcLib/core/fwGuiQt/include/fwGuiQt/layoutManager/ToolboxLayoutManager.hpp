@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,12 +30,12 @@ class FWGUIQT_CLASS_API ToolboxLayoutManager : public ::fwGui::layoutManager::To
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolboxLayoutManager)(::fwGui::layoutManager::ToolboxLayoutManagerBase), (()), new ToolboxLayoutManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (ToolboxLayoutManager)(::fwGui::layoutManager::ToolboxLayoutManagerBase),
+                                            (()),
+                                            ::fwGui::factory::New< ToolboxLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API ToolboxLayoutManager();
+    FWGUIQT_API ToolboxLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIQT_API virtual ~ToolboxLayoutManager();
 
     /**

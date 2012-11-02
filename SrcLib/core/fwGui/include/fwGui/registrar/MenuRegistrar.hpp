@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef _FWGUI_REGISTRAR_MENUREGISTRYMANAGER_HPP_
 #define _FWGUI_REGISTRAR_MENUREGISTRYMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/ActionCallbackBase.hpp"
@@ -28,12 +28,12 @@ namespace registrar
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API MenuRegistrar : public ::fwCore::BaseObject
+class FWGUI_CLASS_API MenuRegistrar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwCore::BaseObject), (( (const std::string) )), new MenuRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new MenuRegistrar );
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.

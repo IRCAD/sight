@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -168,34 +168,32 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
 {
     CPPUNIT_ASSERT_EQUAL(logMessagesRef.size(), logMessages.size());
 
-    const std::string countPattern("(\\[[0-9]+\\])");
-    const std::string processPattern("(\\[.+\\])");
-    const std::string threadPattern("(\\[.+\\])");
+    const std::string linePattern("([0-9]+\\])");
     const std::string timePattern("(\\[.+\\])");
-    const std::string levelPattern("( *\\[[A-Z]+\\])");
+    const std::string levelPattern("( *\\[[a-z]+\\])");
     const std::string filePattern("( .*:)");
-    const std::string linePattern("([0-9]+: )");
+    const std::string fileLinePattern("([0-9]+: )");
     const std::string messagePattern("(.*)$");
 
     ::boost::regex re(
-            countPattern
-            + processPattern
-            + threadPattern
-            + timePattern
-            + levelPattern
-            + filePattern
-            + linePattern
-            + messagePattern
-            );
+                linePattern
+                + timePattern
+                + levelPattern
+                + filePattern
+                + fileLinePattern
+                + messagePattern );
+
     ::boost::smatch match;
     std::string regexMessage;
     size_t i=0;
+
     BOOST_FOREACH(const std::string &log, logMessages)
     {
         bool doMatch = boost::regex_match(log, match, re);
+
         CPPUNIT_ASSERT_MESSAGE(log + " don't match regex.", doMatch);
 
-        regexMessage.assign(match[8].first, match[8].second);
+        regexMessage.assign(match[6].first, match[6].second);
 
         CPPUNIT_ASSERT_EQUAL(logMessagesRef[i], regexMessage);
         ++i;

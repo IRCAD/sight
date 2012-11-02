@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,8 +38,6 @@
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
@@ -47,10 +45,11 @@
 #include <fwData/StructureTraitsHelper.hpp>
 
 #include "fwDataIO/reader/DictionaryReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 #include <string>
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::DictionaryReader, ::fwDataIO::reader::DictionaryReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::DictionaryReader );
 
 
 namespace fwDataIO
@@ -254,7 +253,7 @@ std::pair<bool,std::string> parse(Iterator first,  Iterator last, std::string& b
 
 //------------------------------------------------------------------------------
 
-DictionaryReader::DictionaryReader()
+DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key key)
     : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
 }

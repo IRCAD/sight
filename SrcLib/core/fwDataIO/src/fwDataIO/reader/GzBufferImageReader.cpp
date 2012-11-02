@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,6 @@
 
 #include <zlib.h>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -18,9 +16,10 @@
 #include <fwComEd/helper/Image.hpp>
 
 #include "fwDataIO/reader/GzBufferImageReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::GzBufferImageReader, ::fwDataIO::reader::GzBufferImageReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::GzBufferImageReader );
 
 
 namespace fwDataIO
@@ -31,7 +30,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzBufferImageReader::GzBufferImageReader() : ::fwData::location::enableSingleFile< IObjectReader >(this)
+GzBufferImageReader::GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 
 //------------------------------------------------------------------------------

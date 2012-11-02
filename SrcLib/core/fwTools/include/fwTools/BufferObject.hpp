@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,10 +11,13 @@
 #include <boost/type_traits/is_const.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwCamp/macros.hpp>
 
 #include "fwTools/BufferAllocationPolicy.hpp"
 #include "fwTools/IBufferManager.hpp"
 #include "fwTools/config.hpp"
+
+fwCampAutoDeclareMacro((fwTools)(BufferObject), FWTOOLS_API)
 
 namespace fwTools
 {
@@ -48,6 +51,11 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro((BufferObject), (()), new BufferObject );
     fwCoreAllowSharedFromThis();
 
+    /// return the sub class classname : an alias of this->getClassname
+    std::string className() const { return this->getClassname(); };
+
+    virtual void* getBuffer() { return m_buffer;};
+
     /**
      * @brief base class for BufferObject Lock
      *
@@ -64,6 +72,8 @@ public:
     public:
 
         typedef typename ::boost::conditional< ::boost::is_const< T >::value, const void*, void* >::type BufferType;
+
+
 
 
         /**
@@ -348,5 +358,6 @@ protected :
 };
 
 }
+
 
 #endif /* _FWTOOLS_BUFFEROBJECT_HPP_ */

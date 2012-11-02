@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -109,7 +109,7 @@ std::string ObjectMsg::getGeneralInfo() const
     std::string msgUUID    = convertToLightString( const_cast< ObjectMsg * >(this)->getID() );
 
     std::string sourceUUID = convertToLightString( source? source->getID():"[source died]" );
-    std::string destUUID   = convertToLightString( m_subject.lock()->getID() );
+    std::string destUUID   = convertToLightString( m_subject.expired()?"[subject died]":m_subject.lock()->getID());
 
     std::stringstream eventstream;
     for(    std::map< std::string, ::fwData::Object::csptr >::const_iterator itEvent2Data = m_eventId2DataInfo.begin();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,8 @@
 #include "fwData/GenericField.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Integer), FWDATA_API);
 
 namespace fwData
 {
@@ -28,7 +30,7 @@ class FWDATA_CLASS_API Integer : public GenericField< int >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object),( ((const int)(0)) ), GenericFieldFactory< Integer >) ;
-
+    fwCampMakeFriendDataMacro((fwData)(Integer));
     fwDataObjectMacro();
 
     /**
@@ -50,5 +52,7 @@ public:
 };
 
 } // namespace fwData
+
+
 
 #endif // _FWDATA_INTEGER_HPP_

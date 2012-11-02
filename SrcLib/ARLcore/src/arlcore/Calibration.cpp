@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -138,6 +138,7 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList::c
     if(liste_extrinsic.size()!=(unsigned int)points2DList.size()) return false;
     bool Verbose_1 = false, Verbose_2 = false; // default
     if(optimiserParameters.size()>1)
+    {
         if(optimiserParameters[1] == 1)
             Verbose_1 = true;
         else if(optimiserParameters[1] == 2)
@@ -145,6 +146,7 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList::c
             Verbose_1 = true;
             Verbose_2 = true;
         }
+    }
     if(Verbose_1) std::cerr<<"debut refineIntrinsicCalibration "<<std::endl;
     double Method = 0; // Default
     if(optimiserParameters.size()>0) Method = optimiserParameters[0];
@@ -191,11 +193,15 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList::c
         if(optimiserParameters.size()>2) refineIntrinsic.set_f_tolerance(optimiserParameters[2]);
         else refineIntrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) � 1e-3 pr�s
         if(optimiserParameters.size()>3)
+        {
             if(optimiserParameters[3] == 0){}//1e-8 default
             else {refineIntrinsic.set_x_tolerance(optimiserParameters[3]);}
+        }
         if(optimiserParameters.size()>4)
+        {
             if(optimiserParameters[4] == 0){}//1e-5 default
             else {refineIntrinsic.set_g_tolerance(optimiserParameters[4]);}
+        }
         if(Verbose_1)
         {
             std::cerr<<"f tolerance ="<<refineIntrinsic.get_f_tolerance()<<std::endl;
@@ -257,11 +263,15 @@ bool arlCore::refineIntrinsicCalibration(const std::vector<arlCore::PointList::c
         if(optimiserParameters.size()>2) refineIntrinsic.set_f_tolerance(optimiserParameters[2]);
         else refineIntrinsic.set_f_tolerance(1e-10);
         if(optimiserParameters.size()>3)
+        {
             if(optimiserParameters[3] == 0){}//1e-8 default
             else {refineIntrinsic.set_x_tolerance(optimiserParameters[3]);}
+        }
         if(optimiserParameters.size()>4)
+        {
             if(optimiserParameters[4] == 0){}//1e-5 default
             else {refineIntrinsic.set_g_tolerance(optimiserParameters[4]);}
+        }
         if(Verbose_1)
         {
             std::cerr<<"f tolerance ="<<refineIntrinsic.get_f_tolerance()<<std::endl;
@@ -527,11 +537,15 @@ bool arlCore::refineExtrinsicCalibration( const std::vector<PointList::csptr>& m
         if(optimiserParameters.size()>2) refineExtrinsic.set_f_tolerance(optimiserParameters[2]);
         else refineExtrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) � 1e-3 pr�s
         if(optimiserParameters.size()>3)
+        {
             if(optimiserParameters[3] == 0){}//1e-8 default
             else {refineExtrinsic.set_x_tolerance(optimiserParameters[3]);}
+        }
         if(optimiserParameters.size()>4)
+        {
             if(optimiserParameters[4] == 0){}//1e-5 default
             else {refineExtrinsic.set_g_tolerance(optimiserParameters[4]);}
+        }
         Extrinsic_cost_func.setObserver(true);
         if(Verbose) std::cerr<<"debut minimize "<<std::endl;
         refineExtrinsic.minimize_using_gradient(init);
@@ -553,11 +567,15 @@ bool arlCore::refineExtrinsicCalibration( const std::vector<PointList::csptr>& m
         if(optimiserParameters.size()>2) refineExtrinsic.set_f_tolerance(optimiserParameters[2]);
         else refineExtrinsic.set_f_tolerance(1e-6); // Erreur de reprojection stable (sqrt(m_error)) � 1e-3 pr�s
         if(optimiserParameters.size()>3)
+        {
             if(optimiserParameters[3] == 0){}//1e-8 default
             else {refineExtrinsic.set_x_tolerance(optimiserParameters[3]);}
+        }
         if(optimiserParameters.size()>4)
+        {
             if(optimiserParameters[4] == 0){}//1e-5 default
             else {refineExtrinsic.set_g_tolerance(optimiserParameters[4]);}
+        }
         Extrinsic_cost_func.setObserver(true);
         if(Verbose) std::cerr<<"debut minimize "<<std::endl;
         refineExtrinsic.minimize(init);

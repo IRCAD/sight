@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,9 @@
 #include "fwData/Node.hpp"
 #include "fwData/StructureTraits.hpp"
 #include "fwData/factory/new.hpp"
+
+
+fwCampAutoDeclareDataMacro((fwData)(ROITraits), FWDATA_API);
 
 namespace fwData
 {
@@ -32,6 +35,7 @@ class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::factory::New< ROITraits >) ;
+    fwCampMakeFriendDataMacro((fwData)(ROITraits));
 
     /**
      * @brief Constructor
@@ -66,10 +70,10 @@ private:
     std::string m_identifier;
 
     /// mask node used for ROITraits
-    ::fwData::Node::wptr m_maskOpNode;
+    ::fwData::Node::sptr m_maskOpNode;
 
     /// associated structure traits
-    ::fwData::StructureTraits::wptr m_structureTraits;
+    ::fwData::StructureTraits::sptr m_structureTraits;
 
     /// roi evaluated expression
     StructureTraits::ROIExpression m_evaluatedExp;

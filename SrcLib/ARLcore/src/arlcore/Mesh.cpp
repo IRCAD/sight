@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -247,7 +247,6 @@ bool arlCore::Mesh::generate( unsigned int axis, double width, double length, do
 
 bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
 {
-    const bool Verbose = true;
     clear();
     if(fileName=="") return false;
     std::string extractFolder, extractFile, ext;

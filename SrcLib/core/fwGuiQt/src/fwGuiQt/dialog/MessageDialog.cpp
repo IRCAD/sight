@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,12 +10,12 @@
 #include <QApplication>
 #include <QMessageBox>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/dialog/MessageDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::dialog::IMessageDialog, ::fwGuiQt::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::FactoryRegistryKeyType , ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
@@ -41,7 +41,7 @@ MessageDialogQtButtonType messageDialogQtButton =
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog() :
+MessageDialog::MessageDialog(::fwGui::GuiBaseObject::Key key) :
     m_buttons(::fwGui::dialog::IMessageDialog::NOBUTTON),
     m_icon(::fwGui::dialog::IMessageDialog::NONE)
 {}

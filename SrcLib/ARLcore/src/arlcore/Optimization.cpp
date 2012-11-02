@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,10 +26,10 @@ using namespace std;
 double arlCore::CostFunction::m_errorMax = 9e99;
 
 arlCore::CostFunction::CostFunction():
-m_observer(false),
-m_iterations(0),
 m_errorMin(m_errorMax),
-m_firstIteration(true)
+m_firstIteration(true),
+m_observer(false),
+m_iterations(0)
 {}
 
 double arlCore::CostFunction::getCriterion( const vnl_vector<double> &x )
@@ -255,7 +255,6 @@ double arlCore::OptimisePivot::f(vnl_vector< double > const &x)
     for( i=0 ; i<m_points->size() ; i++ )
         distances[i] = (*m_points)[i]->distance(center);
     m_radius = distances.mean();
-    double stdDev = 0;
     for( i=0 ; i<distances.size() ; ++i )
         m_error += (distances[i]-m_radius)*(distances[i]-m_radius);
     return observe(x);
@@ -584,8 +583,9 @@ void arlCore::OptimiseVideoRobotXZ_LS::gradf(vnl_vector< double > const &x, vnl_
 // OptimiseReprojection
 arlCore::OptimiseReprojection::OptimiseReprojection(const vector<const arlCore::Camera*> &cameras, const vector<arlCore::Point::csptr> &points2D):
 vnl_cost_function(3),
-m_points2D(points2D),
-m_cameras(cameras){}
+m_cameras(cameras),
+m_points2D(points2D)
+{}
 
 arlCore::OptimiseReprojection::~OptimiseReprojection(){}
 
@@ -693,7 +693,7 @@ double arlCore::Dornaika_cost_function::f(vnl_vector< double > const &x)
     sum1.fill(0.0);
     sum2.fill(0.0);
     vnl_rigid_matrix X;
-    double norme=0.0, a=0.0, frob;
+    double norme=0.0, frob;
     for( i=0 ; i<m_A_matrix.size() ; ++i )
     {
         //extraction des vecteurs rotation et translation
@@ -759,7 +759,7 @@ void arlCore::Dornaika_LS_cost_function::f(vnl_vector< double > const &x, vnl_ve
     sum1.fill(0.0);
     sum2.fill(0.0);
     vnl_rigid_matrix X;
-    double norme=0.0, a=0.0, frob, temp;
+    double norme=0.0, frob, temp;
     for( i=0 ; i<m_A_matrix.size()  ; ++i )
     {
         temp=0;
@@ -807,10 +807,10 @@ void arlCore::Dornaika_LS_cost_function::gradf(vnl_vector< double > const &x, vn
 
 // Polynomial_cost_function
 arlCore::Polynomial_cost_function::Polynomial_cost_function( PointList::csptr real, PointList::csptr distorded, unsigned int degree ) :
-m_nbEquations(3),
 vnl_cost_function(nbPolynomialParameters(degree, m_nbEquations)),
 m_real(real),
 m_distorded(distorded),
+m_nbEquations(3),
 m_degree(degree){}
 
 arlCore::Polynomial_cost_function::~Polynomial_cost_function(){}
@@ -843,8 +843,8 @@ unsigned int arlCore::Polynomial_cost_function::getNbParameters()
 // OptimiseReprojectionUncertainty
 arlCore::OptimiseReprojectionUncertainty::OptimiseReprojectionUncertainty(const vector<const arlCore::Camera*> &cameras, const vector<arlCore::Point::csptr> &points2D):
 vnl_cost_function(3),
-m_points2D(points2D),
-m_cameras(cameras)
+m_cameras(cameras),
+m_points2D(points2D)
 {
     unsigned int i;
     //m_inv_cov_matrix.resize(m_cameras.size());
@@ -1076,9 +1076,9 @@ arlCore::ISPPC_cost_function::ISPPC_cost_function(const std::vector<const Camera
             const std::vector< vnl_vector_fixed<double,4> > &points3D,
             const std::vector< std::vector<Point::csptr> > &points2D, bool noise_feature):
 vnl_cost_function(6),
-m_cameras(a),
 m_points3D(points3D),
 m_points2D(points2D),
+m_cameras(a),
 m_noise_feature(noise_feature)
 {
     if(m_noise_feature == true)
@@ -1167,9 +1167,9 @@ arlCore::ISPPC_LS_cost_function::ISPPC_LS_cost_function(const std::vector<const 
             unsigned int number_of_unknowns,
             unsigned int number_of_residuals, UseGradient g, bool noise_feature):
 vnl_least_squares_function(number_of_unknowns, number_of_residuals, g),
-m_cameras(a),
 m_points3D(points3D),
 m_points2D(points2D),
+m_cameras(a),
 m_noise_feature(noise_feature)
 {
     if(m_noise_feature == true)
@@ -1198,7 +1198,7 @@ void arlCore::ISPPC_LS_cost_function::f(vnl_vector< double > const &x, vnl_vecto
     assert(x.size()==6);
     vnl_vector_fixed<double,2> projPoint2D;
     unsigned int i,j, index=0;
-    double errorX, errorY, toto=0;
+    double errorX, errorY;
     arlCore::vnl_rigid_vector vec(x);
     arlCore::vnl_rigid_matrix trsf(vec);
     m_error = 0.0;
@@ -1262,9 +1262,9 @@ arlCore::OSPPC_cost_function::OSPPC_cost_function(const std::vector<const arlCor
     const std::vector< Point::csptr  > &points3D,
     const std::vector< std::vector<arlCore::Point::csptr> > &points2D):
 vnl_cost_function(6),
-m_cameras(a),
 m_points3D(points3D),
-m_points2D(points2D)
+m_points2D(points2D),
+m_cameras(a)
 {
     unsigned int i,j;
     m_extPoints2D.resize(m_cameras.size());
@@ -1315,9 +1315,9 @@ arlCore::OSPPC_LS_cost_function::OSPPC_LS_cost_function(const std::vector<const 
                                                         const std::vector< Point::csptr  > &points3D, const std::vector< std::vector<Point::csptr> > &points2D,
     unsigned int number_of_unknowns, unsigned int number_of_residuals, UseGradient g):
 vnl_least_squares_function(number_of_unknowns, number_of_residuals, g),
-m_cameras(a),
 m_points3D(points3D),
-m_points2D(points2D)
+m_points2D(points2D),
+m_cameras(a)
 {
     unsigned int i,j;
     m_extPoints2D.resize(m_cameras.size());
@@ -1585,7 +1585,7 @@ arlCore::Extrinsic_cost_function::~Extrinsic_cost_function(){}
 unsigned int arlCore::Extrinsic_cost_function::addPattern(const std::vector<std::vector<Point::csptr > >& points2D, const std::vector<Point::csptr >& model3D)
 {// faire addPattern pour chaque pattern rigide et chaque pose
     //assert(points2D.size()==model3D.size());
-    unsigned int i, j, size = (unsigned int)m_3DpatternsList.size();
+    unsigned int i, j;
 
     std::vector<std::vector<Point::csptr > > patternsList2D;
     std::vector< Point::csptr  > patternsList3D(model3D.size());
@@ -1692,7 +1692,7 @@ void arlCore::ExtrinsicLS_cost_function::setVerbose(bool verbose)
 unsigned int arlCore::ExtrinsicLS_cost_function::addPattern( const std::vector<std::vector<Point::csptr > >& points2D, const std::vector<Point::csptr >& model3D )
 {// faire addPattern pour chaque pattern rigide et chaque pose
     //assert(points2D.size()==model3D.size());
-    unsigned int i, j, size = (unsigned int)m_3DpatternsList.size();
+    unsigned int i, j;
 
     std::vector<std::vector<Point::csptr > > patternsList2D;
     std::vector< Point::csptr  > patternsList3D(model3D.size());

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,6 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/Base.hpp>
 
 #include "fwGui/IGuiContainerSrv.hpp"
@@ -78,8 +77,11 @@ void IGuiContainerSrv::create()
     ::fwGui::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
     SLM_ASSERT("Parent container is unknown.", parent);
 
-    m_containerBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IContainerBuilder >( ::fwGui::builder::IContainerBuilder::REGISTRY_KEY );
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IContainerBuilder::REGISTRY_KEY, m_containerBuilder);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IContainerBuilder::REGISTRY_KEY);
+    m_containerBuilder = ::fwGui::builder::IContainerBuilder::dynamicCast(guiObj);
+
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IContainerBuilder::REGISTRY_KEY,
+                m_containerBuilder);
     m_containerBuilder->createContainer(parent);
 
     ::fwGui::container::fwContainer::sptr container = m_containerBuilder->getContainer();
@@ -129,7 +131,8 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
     const std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
 
-    m_viewLayoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IViewLayoutManager >( layoutManagerClassName);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(layoutManagerClassName);
+    m_viewLayoutManager = ::fwGui::layoutManager::IViewLayoutManager::dynamicCast(guiObj);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_viewLayoutManager);
 
     m_viewLayoutManager->initialize(layoutConfig);
@@ -142,8 +145,10 @@ void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
     OSLM_ASSERT("Bad configuration name "<<toolBarConfig->getName()<< ", must be toolBar",
                 toolBarConfig->getName() == "toolBar");
 
-    m_toolBarBuilder = ::fwTools::ClassFactoryRegistry::create< ::fwGui::builder::IToolBarBuilder >( ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY, m_toolBarBuilder);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
+    m_toolBarBuilder = ::fwGui::builder::IToolBarBuilder::dynamicCast(guiObj);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY,
+                m_toolBarBuilder);
 
     m_toolBarBuilder->initialize(toolBarConfig);
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 #define _FWGUI_IMESSAGEBOX_HPP_
 
 #include <string>
-#include <fwCore/base.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -23,12 +23,12 @@ namespace dialog
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMessageDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMessageDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMessageDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMessageDialog)(::fwGui::GuiBaseObject) )
 
     /// Icon type
     typedef enum {

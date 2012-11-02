@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -113,10 +113,10 @@ void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
         SLM_ASSERT("matrix not instanced", matrix);
 
-        ::fwDataIO::reader::TransformationMatrix3DReader reader;
-        reader.setObject( matrix );
-        reader.setFile(this->getFile());
-        reader.read();
+        ::fwDataIO::reader::TransformationMatrix3DReader::NewSptr reader;
+        reader->setObject( matrix );
+        reader->setFile(this->getFile());
+        reader->read();
 
         // Notify reading
         ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;

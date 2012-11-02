@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,16 +34,12 @@ class FWGUIWX_CLASS_API WxMenuItemContainer : public ::fwGui::container::fwMenuI
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (WxMenuItemContainer)(::fwGui::container::fwMenuItem), (()), new WxMenuItemContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (WxMenuItemContainer)(::fwGui::container::fwMenuItem),
+                                            (()),
+                                            ::fwGui::factory::New< WxMenuItemContainer > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIWX_API WxMenuItemContainer() throw() ;
+    FWGUIWX_API WxMenuItemContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIWX_API virtual ~WxMenuItemContainer() throw() ;
 
 

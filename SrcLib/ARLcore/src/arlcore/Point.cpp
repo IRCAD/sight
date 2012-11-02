@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,9 +23,9 @@ m_type(type),
 m_confidence(0),
 m_visibility(true),
 m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+m_scalar(-1.0),
 m_isColored(false),
 m_colour(0,0,0),
-m_scalar(-1.0),
 m_ponderation(1.0),
 m_error(-1.0)
 {
@@ -46,9 +46,9 @@ m_type(type),
 m_confidence(0),
 m_visibility(true),
 m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+m_scalar(-1.0),
 m_isColored(false),
 m_colour(0,0,0),
-m_scalar(-1.0),
 m_ponderation(1.0),
 m_error(-1.0)
 {
@@ -70,9 +70,9 @@ m_type(type),
 m_confidence(0),
 m_visibility(true),
 m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+m_scalar(-1.0),
 m_isColored(false),
 m_colour(0,0,0),
-m_scalar(-1.0),
 m_ponderation(1.0),
 m_error(-1.0)
 {
@@ -92,7 +92,6 @@ m_error(-1.0)
 void arlCore::Point::init( unsigned int dim )
 {
     modified();
-    long int date=0,time=0;
     unsigned int i;
     //VAG setTime(date,time);
     m_type=ARLCORE_POINT_TYPE_UNKNOWN;
@@ -226,6 +225,7 @@ std::string arlCore::Point::getString( void ) const
     case ARLCORE_POINT_TYPE_TIP : t="TIP";break;
     case ARLCORE_POINT_TYPE_LINE : t="LINE";break;
     case ARLCORE_POINT_TYPE_SIFT : t="SIFT";break;
+    default: break;
     }
     unsigned int i;
     std::stringstream s;
@@ -246,6 +246,7 @@ std::string arlCore::Point::getString( void ) const
     case ARLCORE_POINT_STATUS_ESTIMATE : s<<" (Estimate)";break;
     case ARLCORE_POINT_STATUS_CLOUD : s<<" (Cloud)";break;
     case ARLCORE_POINT_REPROJECTION : s<<" (Reproj)";break;
+    default: break;
     }
     s<<" Error="<<m_error<<"\n";
     //TODO Display m_covMatrix
@@ -856,6 +857,7 @@ bool arlCore::Point::shapeRandom( arlCore::ARLCORE_SHAPE type, const double size
         set(1, get(1) + yy);
         set(2, get(2) + zz);
         return true;
+    default: break;
     }
     return false;
 }

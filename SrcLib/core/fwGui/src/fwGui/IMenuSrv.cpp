@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,6 @@
 
 #include <fwCore/base.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwServices/Base.hpp>
 
 #include "fwGui/IMenuItemCallback.hpp"
@@ -142,8 +141,11 @@ void IMenuSrv::initializeLayoutManager(ConfigurationType layoutConfig)
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
             layoutConfig->getName() == "layout");
 
-    m_layoutManager = ::fwTools::ClassFactoryRegistry::create< ::fwGui::layoutManager::IMenuLayoutManager >( ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY, m_layoutManager);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
+                                                 ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY);
+    m_layoutManager = ::fwGui::layoutManager::IMenuLayoutManager::dynamicCast(guiObj);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY,
+                m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

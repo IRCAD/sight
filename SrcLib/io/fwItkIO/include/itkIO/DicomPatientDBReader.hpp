@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,6 +12,8 @@
 #include <fwData/location/Folder.hpp>
 
 #include <itkGDCMImageIO.h>
+
+#include <fwDataIO/reader/factory/new.hpp>
 
 #include "itkIO/config.hpp"
 
@@ -28,17 +30,18 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((DicomPatientDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::PatientDB >),
                                                (()),
-                                               new DicomPatientDBReader
+                                               ::fwDataIO::reader::factory::New< DicomPatientDBReader >
                                               );
     fwCoreAllowSharedFromThis();
 
     FWITKIO_API void read();
 
+    FWITKIO_API DicomPatientDBReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWITKIO_API ~DicomPatientDBReader();
+
 protected:
 
-    FWITKIO_API DicomPatientDBReader();
 
-    FWITKIO_API ~DicomPatientDBReader();
 
 private :
 

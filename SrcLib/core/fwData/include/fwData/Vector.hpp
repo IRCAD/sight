@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,15 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <camp/class.hpp>
 
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
+
+fwCorePredeclare((fwData)(Vector))
+
+fwCampAutoDeclareDataMacro((fwData)(Vector), FWDATA_API);
 
 namespace fwData
 {
@@ -33,6 +38,7 @@ class FWDATA_CLASS_API Vector : public Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::factory::New< Vector >) ;
+    fwCampMakeFriendDataMacro((fwData)(Vector));
 
     typedef std::vector< Object::sptr > ContainerType;
 
@@ -95,6 +101,7 @@ public:
     ContainerType &getContainer(){ return m_attrContainer; };
     fwDataGetSetCRefMacro(Container, ContainerType);
     /// @}
+
 
 
     fwDataObjectMacro();

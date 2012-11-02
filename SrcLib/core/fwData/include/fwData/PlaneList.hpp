@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Plane.hpp"
 
-
+fwCampAutoDeclareDataMacro((fwData)(PlaneList), FWDATA_API);
 namespace fwData
 {
 /**
@@ -30,6 +30,8 @@ class FWDATA_CLASS_API PlaneList : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object),
         (()), ::fwData::factory::New< PlaneList >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(PlaneList));
 
     typedef std::vector< ::fwData::Plane::sptr > PlaneListContainer;
 

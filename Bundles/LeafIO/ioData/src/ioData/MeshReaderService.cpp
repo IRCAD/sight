@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,6 +18,7 @@
 #include <fwData/location/SingleFile.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
@@ -95,15 +96,36 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
         ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
         SLM_ASSERT("mesh not instanced", mesh);
 
-        ::fwDataIO::reader::MeshReader reader;
-        reader.setObject( mesh );
-        reader.setFile(this->getFile());
-        reader.read();
+        ::fwDataIO::reader::MeshReader::NewSptr reader;
+        reader->setObject( mesh );
+        reader->setFile(this->getFile());
 
-        // Notify reading
-        ::fwComEd::MeshMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-        ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+        try
+        {
+            // Launch reading process
+            reader->read();
+            // Notify reading
+            ::fwComEd::MeshMsg::NewSptr msg;
+            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
+            ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+        }
+        catch (const std::exception & e)
+        {
+            std::stringstream ss;
+            ss << "Warning during loading : " << e.what();
+
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    ss.str(),
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+        }
+        catch( ... )
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Warning during loading.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+        }
     }
 }
 

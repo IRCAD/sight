@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,11 +39,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((GzBufferImageWriter)(GenericObjectWriter< ::fwData::Image>),
                                            (()),
-                                           new  GzBufferImageWriter
+                                           ::fwDataIO::writer::factory::New< GzBufferImageWriter >
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API GzBufferImageWriter( );
+    FWDATAIO_API GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~GzBufferImageWriter();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -141,16 +141,16 @@ void FwXMLGenericWriterService::info(std::ostream &_sstream )
 void FwXMLGenericWriterService::saveData( const ::boost::filesystem::path path, ::fwTools::Object::sptr _obj )
 {
     SLM_TRACE_FUNC();
-    ::fwXML::writer::FwXMLObjectWriter myWriter;
+    ::fwXML::writer::FwXMLObjectWriter::NewSptr myWriter;
 
-    myWriter.setObject(_obj);
-    myWriter.setFile(path);
+    myWriter->setObject(_obj);
+    myWriter->setFile(path);
 
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving data ");
-        myWriter.addHandler( progressMeterGUI );
-        myWriter.write();
+        myWriter->addHandler( progressMeterGUI );
+        myWriter->write();
     }
     catch (const std::exception & e)
     {
@@ -181,10 +181,10 @@ void FwXMLGenericWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        m_writer.setFile( correctFileFormat( this->getFile() ));
-        if ( isAnFwxmlArchive( m_writer.getFile() ) )
+        ::boost::filesystem::path path = correctFileFormat( this->getFile() );
+        if ( isAnFwxmlArchive( path ) )
         {
-            manageZipAndSaveData( m_writer.getFile(), obj);
+            manageZipAndSaveData( path, obj);
         }
         else
         {

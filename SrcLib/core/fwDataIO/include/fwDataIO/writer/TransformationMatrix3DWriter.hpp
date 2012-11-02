@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,10 +38,10 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3DWriter)(GenericObjectWriter< ::fwData::TransformationMatrix3D >),
                                             (()),
-                                            new  TransformationMatrix3DWriter
+                                            ::fwDataIO::writer::factory::New< TransformationMatrix3DWriter >
                                            );
     /// Constructor. Do nothing.
-    FWDATAIO_API TransformationMatrix3DWriter();
+    FWDATAIO_API TransformationMatrix3DWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~TransformationMatrix3DWriter();

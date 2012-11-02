@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,6 +13,8 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(TransformationMatrix3D), FWDATA_API);
 
 namespace fwData
 {
@@ -29,6 +31,8 @@ class FWDATA_CLASS_API TransformationMatrix3D : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
             (()), ::fwData::factory::New< TransformationMatrix3D >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(TransformationMatrix3D));
 
     typedef double TM3DType;
     typedef std::vector<TM3DType> TMCoefArray;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,17 +9,14 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiWx/container/WxContainer.hpp"
 #include "fwGuiWx/builder/ContainerBuilder.hpp"
 
 
 
-REGISTER_BINDING( ::fwGui::builder::IContainerBuilder,
-        ::fwGui::builder::ContainerBuilder,
-        ::fwGui::builder::IContainerBuilder::RegistryKeyType,
-        ::fwGui::builder::IContainerBuilder::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::builder::ContainerBuilder, ::fwGui::builder::IContainerBuilder::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -29,7 +26,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ContainerBuilder::ContainerBuilder()
+ContainerBuilder::ContainerBuilder(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,6 +13,9 @@
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
 #include "fwData/factory/new.hpp"
+
+
+fwCampAutoDeclareDataMacro((fwData)(location)(Folder), FWDATA_API);
 
 namespace fwData
 {
@@ -35,6 +38,7 @@ public:
     );
 
     fwDataObjectMacro();
+    fwCampMakeFriendDataMacro((fwData)(location)(Folder));
 
     /// Constructor
     FWDATA_API Folder( ::fwData::Object::Key key );

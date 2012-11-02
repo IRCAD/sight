@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,11 +17,9 @@
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwDataIO/writer/registry/macros.hpp>
 
-
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwXML::writer::FwXMLObjectWriter,  ::fwXML::writer::FwXMLObjectWriter);
-
+fwDataIOWriterRegisterMacro( ::fwXML::writer::FwXMLObjectWriter);
 
 namespace fwXML
 {
@@ -31,9 +29,9 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-FwXMLObjectWriter::FwXMLObjectWriter(bool saveSchema)
+FwXMLObjectWriter::FwXMLObjectWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_saveSchema(saveSchema)
+  m_saveSchema(true)
 {
 }
 
@@ -41,6 +39,15 @@ FwXMLObjectWriter::FwXMLObjectWriter(bool saveSchema)
 
 FwXMLObjectWriter::~FwXMLObjectWriter()
 {
+}
+
+//------------------------------------------------------------------------------
+
+FwXMLObjectWriter::sptr FwXMLObjectWriter::ObjectWriterFactory(bool saveSchema)
+{
+    FwXMLObjectWriter::sptr writer = ::fwXML::writer::FwXMLObjectWriter::New();
+    writer->m_saveSchema = saveSchema;
+    return writer;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwTools/Factory.hpp>
+
 #include <fwTools/Failed.hpp>
 #include <fwCore/Demangler.hpp>
 
@@ -30,7 +30,7 @@
 #include <fwMemory/policy/BarrierDump.hpp>
 #include <fwMemory/tools/MemoryMonitorTools.hpp>
 
-#include <fwXML/visitor/accept.hpp>
+#include "fwXML/visitor/accept.hpp"
 
 #include "fwXML/visitor/Serialize.hpp"
 #include "fwXML/XML/XMLAggregator.hpp"
@@ -271,7 +271,7 @@ void Serializer::serialize( ::fwData::Object::sptr object, bool saveSchema) thro
     }
 
     // update data form XML
-    ::fwXML::XMLTranslator::sptr translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator  >(  newObject->getClassname()  );
+    ::fwXML::XMLTranslator::sptr translator = ::fwXML::factory::New( newObject->getClassname() );
 
     OSLM_DEBUG("ObjectsFromXml : Looking for XMLTranslator for "<< newObject->getClassname());
     if (translator.get() )

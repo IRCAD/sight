@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,14 +11,14 @@
 #include <wx/evtloop.h>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
-#include <fwWX/convert.hpp>
-#include <fwWX/widgets/fwProgressDialog.hpp>
+#include <fwGuiWx/convert.hpp>
+#include <fwGuiWx/widgets/fwProgressDialog.hpp>
 
 #include "fwGuiWx/dialog/PulseProgressDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::dialog::IPulseProgressDialog, ::fwGuiWx::dialog::PulseProgressDialog, ::fwGui::dialog::IPulseProgressDialog::FactoryRegistryKeyType , ::fwGui::dialog::IPulseProgressDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::dialog::PulseProgressDialog, ::fwGui::dialog::IPulseProgressDialog::REGISTRY_KEY );
 
 
 namespace fwGuiWx
@@ -88,7 +88,7 @@ wxThread::ExitCode PulseProgressDialog::LocalThread::Entry()
 
 //------------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog()
+PulseProgressDialog::PulseProgressDialog(::fwGui::GuiBaseObject::Key key)
 {
     m_wxpd = NULL;
 }
@@ -135,7 +135,7 @@ void PulseProgressDialog::show()
     this->Bind( wxEVT_LOCALTHREAD_COMPLETED , &PulseProgressDialog::onComplete , this);
 
     m_wxpd = new wxProgressDialog(
-                                    ::fwWX::std2wx(m_title),
+                                    ::fwGuiWx::std2wx(m_title),
                                     "                                             ", // sinon pas de place pour ecrire definit espace initial
                                     100 /*percent*/,
                                     NULL, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_SMOOTH);

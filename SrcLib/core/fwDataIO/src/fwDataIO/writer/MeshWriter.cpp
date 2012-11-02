@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,16 +9,15 @@
 
 #include <boost/cstdint.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Mesh.hpp>
 #include <fwComEd/helper/Array.hpp>
 
 #include <fwDataTools/MeshGenerator.hpp>
 
 #include "fwDataIO/writer/MeshWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::MeshWriter, ::fwDataIO::writer::MeshWriter );
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::MeshWriter );
 
 
 namespace fwDataIO
@@ -29,7 +28,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter()
+MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 

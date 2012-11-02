@@ -10,8 +10,4 @@ BUNDLES = [
     'launcher_0-1'          ,
  ]
 
-if not (PLATFORM, ARCH) == ('osx', '64'):
-    BUNDLES += [
-            'guiWx_0-1'    ,
-            ]
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,16 +37,12 @@ class FWGUIQT_CLASS_API QtMenuItemContainer : public ::fwGui::container::fwMenuI
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuItemContainer)(::fwGui::container::fwMenuItem), (()), new QtMenuItemContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuItemContainer)(::fwGui::container::fwMenuItem),
+                                            (()),
+                                            ::fwGui::factory::New< QtMenuItemContainer > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIQT_API QtMenuItemContainer() throw() ;
+    FWGUIQT_API QtMenuItemContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIQT_API virtual ~QtMenuItemContainer() throw() ;
 
 

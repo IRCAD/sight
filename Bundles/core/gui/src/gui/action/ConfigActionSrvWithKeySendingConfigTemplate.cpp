@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,20 @@
 #include <set>
 #include <boost/assign/list_of.hpp>
 
+#include <fwTools/UUID.hpp>
+#include <fwTools/fwID.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+#include <fwData/Boolean.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <fwTools/UUID.hpp>
-#include <fwTools/fwID.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Boolean.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 
+#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 
 #include "gui/action/ConfigActionSrvWithKeySendingConfigTemplate.hpp"
 
@@ -234,21 +237,26 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     ::fwData::String::NewSptr title;
 
     std::stringstream ss;
-    if (    ! m_viewConfigTitlePrefixKey.empty() &&
-            composite->find( m_viewConfigTitlePrefixKey ) != composite->end() )
+    if (  ! m_viewConfigTitlePrefixKey.empty() )
     {
-        ::fwData::String::sptr prefix = ::fwData::String::dynamicCast( (*composite)[m_viewConfigTitlePrefixKey] );
-        ss << prefix->getValue() << " - " << m_viewConfigTitle;
+        ::fwData::String::sptr prefix = ::fwAtomConversion::getSubObject< ::fwData::String >( composite, m_viewConfigTitlePrefixKey );
+        if(prefix)
+        {
+            ss << prefix->getValue() << " - " ;
+        }
+        ss << m_viewConfigTitle;
     }
     else
     {
         ss << m_viewConfigTitle;
     }
-    if ( ! m_tooltipConfigTitleKey.empty() &&
-            composite->find( m_tooltipConfigTitleKey ) != composite->end() )
+    if ( ! m_tooltipConfigTitleKey.empty() )
     {
-        ::fwData::String::sptr tooltip = ::fwData::String::dynamicCast( (*composite)[m_tooltipConfigTitleKey] );
-        title->setField( tooltipFieldID, tooltip );
+        ::fwData::String::sptr tooltip = ::fwAtomConversion::getSubObject< ::fwData::String >( composite, m_tooltipConfigTitleKey );
+        if(tooltip)
+        {
+            title->setField( tooltipFieldID, tooltip );
+        }
     }
 
     title->value() = ss.str();

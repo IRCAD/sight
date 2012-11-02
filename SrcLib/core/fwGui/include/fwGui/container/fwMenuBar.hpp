@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,7 @@
 #ifndef _FWGUI_FWMENUBAR_HPP_
 #define _FWGUI_FWMENUBAR_HPP_
 
-#include <fwCore/base.hpp>
-
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -22,12 +21,12 @@ namespace container
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API fwMenuBar : public ::fwCore::BaseObject
+class FWGUI_CLASS_API fwMenuBar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (fwMenuBar)(::fwCore::BaseObject) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (fwMenuBar)(::fwGui::GuiBaseObject) ) ;
 
     FWGUI_API virtual void clean() = 0;
     FWGUI_API virtual void destroyContainer() = 0;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2012-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,8 +38,13 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (DicomPatientDBWriterManager)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::PatientDB >),
                                             (()),
-                                            new  DicomPatientDBWriterManager
+                                            ::fwDataIO::writer::factory::New< DicomPatientDBWriterManager >
                                           );
+
+
+    GDCMIO_API DicomPatientDBWriterManager(::fwDataIO::writer::IObjectWriter::Key key);
+
+    GDCMIO_API ~DicomPatientDBWriterManager();
 
     /**
      * @brief    Manage writing tools to save all patients.
@@ -53,13 +58,6 @@ public :
      * @brief   Do nothing
      */
     GDCMIO_API std::string extension();
-
-
-protected :
-
-    GDCMIO_API DicomPatientDBWriterManager();
-
-    GDCMIO_API ~DicomPatientDBWriterManager();
 };
 
 }   // namespace writer

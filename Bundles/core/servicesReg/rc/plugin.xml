@@ -76,4 +76,11 @@
         <service>::fwServices::ComChannelService</service>
         <object>::fwData::Object</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::fwServices::SConfigController</service>
+        <object>::fwData::Object</object>
+    </extension>
+    
 </plugin>

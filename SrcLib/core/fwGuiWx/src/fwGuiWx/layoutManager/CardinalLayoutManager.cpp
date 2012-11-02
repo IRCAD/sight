@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,17 +10,14 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/CardinalLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
-        ::fwGui::CardinalLayoutManager,
-         ::fwGui::layoutManager::CardinalLayoutManagerBase::RegistryKeyType,
-          ::fwGui::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::CardinalLayoutManager, ::fwGui::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -28,7 +25,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-CardinalLayoutManager::CardinalLayoutManager()
+CardinalLayoutManager::CardinalLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -76,7 +73,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
         if(viewInfo.m_caption.first)
         {
             paneInfo.CaptionVisible( true );
-            paneInfo.Caption( ::fwWX::std2wx(viewInfo.m_caption.second) );
+            paneInfo.Caption( ::fwGuiWx::std2wx(viewInfo.m_caption.second) );
         }
         else
         {

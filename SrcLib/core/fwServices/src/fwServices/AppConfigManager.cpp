@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -151,7 +151,7 @@ namespace fwServices
         }
         comChannel->setPriority(priorityValue);
     }
-    m_startedComChannels.push_back(comChannel);
+    m_createdComChannels.push_back(comChannel);
     return comChannel;
 }
 
@@ -159,13 +159,14 @@ namespace fwServices
 
 void AppConfigManager::startComChannels()
 {
-    BOOST_FOREACH(::fwServices::IService::wptr w_srv, m_startedComChannels)
+    BOOST_FOREACH(::fwServices::IService::wptr w_srv, m_createdComChannels)
     {
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
         ::fwServices::IService::sptr srv = w_srv.lock();
         OSLM_ASSERT("Service " << srv->getID() << " already started.", !srv->isStarted());
         srv->start();
+        m_startedComChannels.push_back(srv);
     }
 }
 
@@ -196,7 +197,7 @@ void AppConfigManager::stopStartedServices()
         OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
         srv->stop();
     }
-    m_startedComChannels.clear();
+    m_startedSrv.clear();
 }
 
 // ------------------------------------------------------------------------
@@ -232,6 +233,9 @@ void AppConfigManager::processStartItems()
             OSLM_ASSERT("Service with UID \"" << uid << "\" doesn't exist.", ::fwTools::fwID::exist(uid));
 
             ::fwServices::IService::sptr srv = ::fwServices::get(uid);
+
+            OSLM_ASSERT("No service registered with UID \"" << uid << "\".", srv);
+
             srv->start();
             m_startedSrv.push_back(srv);
         }

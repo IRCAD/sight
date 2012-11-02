@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,11 +30,12 @@ class FWGUIQT_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog),
+                                            (()),
+                                            ::fwGui::factory::New< MessageDialog > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API MessageDialog();
-    /// Destructor. Do nothing.
+    FWGUIQT_API MessageDialog(::fwGui::GuiBaseObject::Key key);
+
     FWGUIQT_API virtual ~MessageDialog();
 
     /// Set the title of the message box

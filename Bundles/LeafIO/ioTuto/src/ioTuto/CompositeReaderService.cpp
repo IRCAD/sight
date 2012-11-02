@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,16 +63,16 @@ void CompositeReaderService::updating( ) throw(::fwTools::Failed)
     ::fwData::Composite::sptr pComposite = this->getObject< ::fwData::Composite >();
     SLM_ASSERT("pComposite not instanced", pComposite);
 
-    ::fwXML::reader::FwXMLObjectReader myReader;
+    ::fwXML::reader::FwXMLObjectReader::NewSptr myReader;
 
-    myReader.setFile(m_fsExternalDataPath);
+    myReader->setFile(m_fsExternalDataPath);
     if (m_fsExternalDataPath != "")
     {
         try
         {
-            myReader.read();
+            myReader->read();
             ::fwData::Composite::sptr newCompo;
-            newCompo = ::fwData::Composite::dynamicCast( myReader.getObject() );
+            newCompo = ::fwData::Composite::dynamicCast( myReader->getObject() );
             pComposite->shallowCopy(newCompo);
         }
         catch (const std::exception & e)

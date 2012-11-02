@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,12 +31,12 @@ namespace layoutManager
 class FWGUIWX_CLASS_API MenuLayoutManager : public ::fwGui::layoutManager::IMenuLayoutManager
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuLayoutManager)(::fwGui::layoutManager::IMenuLayoutManager) ,(()), new MenuLayoutManager);
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuLayoutManager)(::fwGui::layoutManager::IMenuLayoutManager),
+                                            (()),
+                                            ::fwGui::factory::New< MenuLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API MenuLayoutManager();
+    FWGUIWX_API MenuLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~MenuLayoutManager();
 
     /**

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -562,9 +562,9 @@ bool Patient::compareReconstruction(::fwData::Reconstruction::sptr reconstructio
     OSLM_ERROR_IF("Reconstructions have not same Type3D : " << reconstruction1->getType3D() << " != " << reconstruction2->getType3D(),
             reconstruction1->getType3D() != reconstruction2->getType3D());
 
-    compare &= (reconstruction1->getPath() == reconstruction2->getPath());
-    OSLM_ERROR_IF("Reconstructions have not same path : " << reconstruction1->getPath() << " != " << reconstruction2->getPath(),
-            reconstruction1->getPath() != reconstruction2->getPath());
+    //compare &= (reconstruction1->getPath() == reconstruction2->getPath());
+    //OSLM_ERROR_IF("Reconstructions have not same path : " << reconstruction1->getPath() << " != " << reconstruction2->getPath(),
+    //        reconstruction1->getPath() != reconstruction2->getPath());
 
     compare &= (reconstruction1->getDbID() == reconstruction2->getDbID());
     OSLM_ERROR_IF("Reconstructions have not same dbID : " << reconstruction1->getDbID() << " != " << reconstruction2->getDbID(),

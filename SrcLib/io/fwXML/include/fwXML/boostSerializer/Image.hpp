@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,6 +38,8 @@ void save(Archive & ar, const ::fwData::Image &_image, const unsigned int versio
     ar &  ::boost::serialization::make_nvp( "WindowCenter" , windowCenter );
     ar &  ::boost::serialization::make_nvp( "WindowWidth" , windowWidth );
 
+    size_t nbOfComponents = _image.getNumberOfComponents();
+    ar &  ::boost::serialization::make_nvp( "NumberOfComponents"  , nbOfComponents );
 }
 
 template<class Archive>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@
 #include <QStatusBar>
 #include <QString>
 
-#include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/IProgressDialog.hpp>
 
 #include "fwGuiQt/config.hpp"
 #include "fwGuiQt/container/QtContainer.hpp"
@@ -47,9 +47,13 @@ class FWGUIQT_CLASS_API ProgressDialog : public QObject, public ::fwGui::dialog:
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog), (()), new ProgressDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog),
+                                            (()),
+                                            ::fwGui::factory::New< ProgressDialog > );
 
-    FWGUIQT_API ProgressDialog( const std::string title="Progression", std::string message= std::string(86,' '));
+    FWGUIQT_API ProgressDialog( ::fwGui::GuiBaseObject::Key key,
+                                const std::string title="Progression",
+                                std::string message= std::string(86,' ') );
 
     FWGUIQT_API virtual ~ProgressDialog();
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,7 @@
 
 #include <boost/cstdint.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwMath/IntrasecTypes.hpp>
 
 #include <fwData/Tag.hpp>
 #include <fwData/PointList.hpp>
@@ -18,10 +18,10 @@
 #include <fwData/location/SingleFile.hpp>
 
 #include "fwDataIO/reader/TagReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwMath/IntrasecTypes.hpp>
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::TagReader, ::fwDataIO::reader::TagReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::TagReader );
 
 
 namespace fwDataIO
@@ -32,7 +32,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-TagReader::TagReader()
+TagReader::TagReader(::fwDataIO::reader::IObjectReader::Key key)
 : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 

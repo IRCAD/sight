@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <QApplication>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/Cursor.hpp"
 
 
-REGISTER_BINDING( ::fwGui::ICursor, ::fwGuiQt::Cursor, ::fwGui::ICursor::FactoryRegistryKeyType , ::fwGui::ICursor::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::Cursor, ::fwGui::ICursor::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
 //-----------------------------------------------------------------------------
 
-Cursor::Cursor()
+Cursor::Cursor(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

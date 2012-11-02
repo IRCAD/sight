@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,24 +36,22 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((MetaImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
                                            (()),
-                                           new MetaImageReader
+                                           ::fwDataIO::reader::factory::New< MetaImageReader >
                                           );
 
     fwCoreAllowSharedFromThis();
+
+    //! @brief Constructor.
+    VTKIO_API MetaImageReader(::fwDataIO::reader::IObjectReader::Key key);
+
+    //! @brief Destructor.
+    VTKIO_API ~MetaImageReader();
 
     //! @brief Reading operator.
     VTKIO_API void read();
 
     /// @return ".mhd"
     VTKIO_API  std::string extension();
-
-protected:
-
-    //! @brief Constructor.
-    VTKIO_API MetaImageReader();
-
-    //! @brief Destructor.
-    VTKIO_API ~MetaImageReader();
 };
 
 } // namespace vtkIO

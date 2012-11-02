@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@
 namespace ioTuto
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ioTuto::CompositeWriterService , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioTuto::CompositeWriterService , ::fwData::Composite ) ;
 
 //------------------------------------------------------------------------------
 
@@ -64,16 +64,16 @@ void CompositeWriterService::updating( ) throw(::fwTools::Failed)
     ::fwData::Composite::sptr pComposite = this->getObject< ::fwData::Composite >();
     SLM_ASSERT("pComposite not instanced", pComposite);
 
-    ::fwXML::writer::FwXMLObjectWriter myWriter;
+    ::fwXML::writer::FwXMLObjectWriter::NewSptr myWriter;
 
     if (m_fsExternalDataPath != "")
     {
-        myWriter.setObject(pComposite);
-        myWriter.setFile(m_fsExternalDataPath);
+        myWriter->setObject(pComposite);
+        myWriter->setFile(m_fsExternalDataPath);
 
         try
         {
-            myWriter.write();
+            myWriter->write();
         }
         catch (const std::exception & e)
         {

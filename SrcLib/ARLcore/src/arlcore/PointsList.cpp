@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -417,7 +417,7 @@ bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEst
         vnl_vector<double>radius_error( Size ), std_distance( Size );
         std::vector<double> dk;
         vnl_matrix_fixed<double,1,3> vector_sum(0.0), center, tmp;
-        unsigned int i, j, k=0;
+        unsigned int i, j;
         for( i=0 ; i<Size ; ++i )
             for( j=0 ; j<Size ; ++j )
                     if(j!=i)
@@ -664,6 +664,7 @@ unsigned int arlCore::PointList::shapeRandom( unsigned int nbPoints, ARLCORE_SHA
     case ARLCORE_SHAPE_EDGESQUARE: setName("Random points on a edge square");break;
     case ARLCORE_SHAPE_SOLIDANGLE: setName("Random points in a solid angle");break;
     case ARLCORE_SHAPE_SOLIDANGLE_SURFACE: setName("Random points on a solid angle surface");break;
+    default: break;
     }
     m_dimension=3;
     for( i=0 ; i<nbPoints ; ++i )
@@ -826,9 +827,11 @@ bool arlCore::PointList::save( const std::string &fileName, ARLCORE_POINT_SAVE_T
         for( i=0 ; i<size() ; ++i )
             if(m_pointList[i]!=0)
                 if(m_pointList[i]->isOK())
+                {
                     if(m_pointList[i]->isVisible())
                         file<<"1 ";
                     else file<<"0 ";
+                }
         if(getDimension()==3)
         {
             file<<"\n\nTENSORS covariance double\n";
@@ -1066,7 +1069,6 @@ void arlCore::PointList::pop_back( void )
 
 void arlCore::PointList::clear( void )
 {
-    unsigned int i;
     while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
     m_pointList.clear();
     unlockWriteMutex();
@@ -1315,7 +1317,6 @@ bool shapesProperties( double gaussianError, const std::vector<vnl_vector<double
 
 double shapesMatching( double gaussianError, const std::vector<vnl_vector<double> >& V1, const std::vector<vnl_vector<double> >& V2, std::vector<std::pair<double, vnl_vector_fixed<unsigned int,2> > > &matching)
 {
-    const double DiscrSommetTol = 1.0;
     if(V1.size()<=0 || V2.size()<=0) return 0.0;
     unsigned int ShapeDim = V2[0].size();
     vnl_vector<double> ratiosMin;

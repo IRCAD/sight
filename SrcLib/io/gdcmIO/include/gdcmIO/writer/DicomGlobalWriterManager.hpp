@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2012-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,9 +42,13 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (DicomGlobalWriterManager)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Patient >),
                                             (()),
-                                            new  DicomGlobalWriterManager
+                                            ::fwDataIO::writer::factory::New< DicomGlobalWriterManager >
                                            );
 
+
+    GDCMIO_API DicomGlobalWriterManager(::fwDataIO::writer::IObjectWriter::Key key);
+
+    GDCMIO_API ~DicomGlobalWriterManager();
 
     /**
      * @brief   Load and start appropriate writing tools.
@@ -67,11 +71,6 @@ public :
      */
     GDCMIO_API void setPatientID(const unsigned int a_id);
 
-protected :
-
-    GDCMIO_API DicomGlobalWriterManager();
-
-    GDCMIO_API ~DicomGlobalWriterManager();
 
 private :
 

@@ -1,30 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <QPaintEvent>
 
+#include <fwCore/base.hpp>
+
+#include <fwGui/registry/macros.hpp>
 #include <fwGui/container/fwContainer.hpp>
 #include <fwGui/IFrameSrv.hpp>
 
-
 #include "fwGuiQt/dialog/ProgressDialog.hpp"
 
-#include <QPaintEvent> // at the end due to the boost signal/ Qt signal problem.
-
-REGISTER_BINDING( ::fwGui::dialog::IProgressDialog, ::fwGuiQt::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::FactoryRegistryKeyType , ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
-
+fwGuiRegisterMacro( ::fwGuiQt::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
 namespace dialog
 {
+
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( const std::string title, const std::string message)
+ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string title, const std::string message)
 :   m_title (""),
     m_pdialog ( NULL ),
     m_pprogressbar ( NULL ),

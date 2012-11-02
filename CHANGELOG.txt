@@ -1,0 +1,369 @@
+=== fw4spl_0.9.0.2 ( diff from fw4spl_0.9.0.1 ) 02/11/2012 ===
+
+ * General
+  * renamed fwMetaData library to fwAtoms
+  * few fixes, refactoring
+
+ * Editor :
+  * PatientDBGuiSelectorService : now it is possible to erase an acquisition OR a patient (with key del)
+  * PatientDBGuiSelectorService : image comment edition is now possible from mouse double-clicking on item
+
+ * Log :
+  * Update application log : check if default log dir is unreachable before create log file
+
+=== fw4spl_0.9.0.1 ( diff from fw4spl_0.9.0.0 ) 28/09/2012 ===
+
+ * Merge :
+  * Merge from tag fw4spl_0.8.3.6
+
+ * General :
+  * /!\ Removed WxWidgets support in f4s apps (preserved in TutoGui)
+  * /!\ Removed old factory in fwTools
+  * Code cleaning : fix compilation, removed unused code, added missing include, removed verbose logging, added missing export
+  * Add new service ::fwServices::SConfigController to manage AppConfig without using an action
+  * Add new introspection tool in fwMetaConversion to find a subOject from an object and a path.
+  * ConfigActionSrvWithKeySendingConfigTemplate uses now data reflection to find tabPrefix and tabInfo
+  * Fixed fwData::factory::New (register attributes on fwData::Object)
+  * Fixed conflicts with python tolower define
+  * Fixed AnonymiseImage (doesn't duplicate images)
+  * Fixed PatientDBGuiSelectorService : doesn't re-set image label if it exists
+  * Fixed opSofa compilation
+  * Updated opsofa : Replaced EulerImplicitSolver by EulerSolver.
+
+ * Log :
+  * Updated launcher to parse options with boost program options ( added log options, added Bundle dir and runtime directory options )
+
+ * IO :
+  * Catched exception in mesh reader service to prevent bad file format error.
+  * Added reader inject mode in IOSelectorService to add an object in a composite
+  * Updated SPatientDBInserter : allows user to enter a comment on image
+
+ * Data introspection
+  * Added fwCamp Library, this library is used to introspect fwData
+  * Added Mapper for camp unsupported basic types
+  * Added fwData binding in new library fwDataCamp
+  * Added fwTools Buffer Object inplace binding
+  * Added new meta data in new library fwMetaData
+  * Added new library fwMetaConversion to convert fwData <-> fwMetaData Library.
+
+ * Visu :
+  * Added SDrop service and drag and drop support in GenericScene
+  * Updated NegatoMPR : fixed red cross bug
+
+ * New multi thread safe factories :
+  * Added new factory for IObjectReader and IObjectWriter and update readers/writers to use it
+  * Updated fwCommand : doesn't need to use factory
+  * Added new factory for fwXML
+  * Added new factory for VtkRenderWindowInteractorManager and updated visuVTKQt to use it
+  * Added new factory for fwMetaConversion
+  * Added new factory for fwCamp
+  * Added new factory for Gui objects and updated fwGuiQt/fwGuiWx to use new factory
+
+
+=== fw4spl_0.8.3.6 ( diff from fw4spl_0.8.3.5 ) 26/09/2012 ===
+
+ * General
+  * Fixed invalid free in fwRenderVTK/vtklogging.cpp
+  * Code cleanning : Removed several warnings, unused file, missing export
+  * Fixed small bug in AppConfigManager when starting and stopping ComChannels
+  * Fixed small bug in fwServices/ObjectMsg.cpp when subject has expired
+  * Added dynamicConfigStartStop attribute configuration in guiQt/editor/DynamicView.cpp
+
+ * 2D Scene
+  * 2D scene adaptor can now manage sub adaptors
+
+ * Vector fields
+  * Updated fwData::Image to allow multi-components images
+  * Added VectorField Adaptor example and TutoVectorField
+
+
+=== fw4spl_0.9.0.0 ( diff from fw4spl_0.8.3.5 ) 26/07/2012 ===
+
+ * General :
+  * Fixed few compilation warning
+  * Updated uuid generation using boost::uuid
+  * Added Thread helper to be used for unit test
+  * Removed old fwTools::Singleton
+  * Removed unused XMLSubstitute
+  * Removed unused RootManager
+  * Desable _( maccro to avoid conflict with boost and replace _( by wxGetTranslation(
+  * Now, it is not possible to create an ::fwData::Object
+
+ * Log :
+  * Added OSLM _LOG macro
+  * Changed log backend: log4cxx to boost.log
+  * Updated Spylog default configuration
+  * Fixed build errors with new spylog macros (mostly missing ';').
+  * Moved SpyLog in fwCore::log namespace
+
+ * Mutex :
+  * Removed old mutex in fwData::Video
+  * replace interprocess mutex by fwCore::mt::Mutex
+  * Added mutex typedef in fwCore
+  * Added helpers to lock fwData::Object for multi-threading
+
+ * Factories :
+  * Added FactoryRegistry and LazyInstantiator & UT
+  * Updated fwData to use fwCore/util factory registry
+  * Refactoring all data you must have specific constructor
+  * Updated ServiceFatory to use fwCore/util Instanciator and to be thread safe
+  * Refactoring all services constructors/destructor must become public
+  * Added new message factory
+  * Updated ActionNotifyService : used new message factory
+  * Updated ctrlSelection to use new data and message factories
+
+ * Thread-safe :
+  * Updated fwServices ServiceConfig to become thread safe
+  * Updated AppConfigParameters to become thread safe.
+  * Updated fwServices AppConfig to become thread safe.
+  * Updated fwID to become thread safe.
+  * Updated UUID to become thread-safe.
+  * Updated IBufferManager to become thread-safe
+
+
+=== fw4spl_0.8.3.5 ( diff from fw4spl_0.8.3.4 ) 26/07/2012 ===
+
+ * General :
+  * improved msvc2010 compatibility
+
+ * Application configuration :
+  * Add new type of app config : parameter, this type of config permits to declare template parameter and his default value.
+  * System manages now new extension point AppConfigParameters
+  * AppXml can use now a paremeter set to launch a config thanks to new extension point AppConfigParameters
+
+ * Service configuration :
+  * Updated fwRuntime and fwServices to accept boost property tree as configuration objects. The current implementation actually converts ptrees to ConfigurationElement and vice versa, but is fully functional.
+  * Added examples to show how to use a ptree to configure a service from c++.
+  * Added examples to show how to parse a service configuration with a ptree.
+
+ * Scene 2D :
+  * Fixed bug in scene 2d to manage better composite key removing
+  * Fixed scene 2D adaptor stopping : srv configuration was lost and zvalue was not correct after call swap (stop/start)
+  * Scene 2D adaptor can now manages sub adaptors
+  * Add new adaptor to interact with the viewport in 2D scene (zoom, translation)
+  * Fixed negato adaptor, it was not his job to manage zoom and translation in the view
+
+ * ARLcore :
+  * ARLcore now use fw4spl pointer
+  * Added unit tests
+
+
+=== fw4spl_0.8.3.4 ( diff from fw4spl_0.8.3.3 ) ===
+
+ * General :
+  * Remove some warnings : type conversion, useless exports, ...
+  * Fixed NumericRoundCast (wrong type) and add unit test
+  * Added fwTools::os::getEnv method
+  * Fixed zip file path creation
+  * Updated AppConfig : 'type' attribute is not required anymore in xml files for 'service' tag, but must be consitent with 'implementation' attribute
+
+ * Data :
+  * Modified the fwData::Camera class adding the skew and distortion coefficients.
+
+ * UI :
+  * Fixed OrganListEditor when reconstructions are removed
+  * Fixed a crash when a message dialog is shown without icon
+  * WindowLevel now uses floating precision to compute range width
+  * ImageTransparency : fixed focus on visibility checkbox (use QAction to set shortcut)
+
+ * IO :
+  * Fixed InrPatientDBReader problem, now it is possible to select a folder which contains inr images
+
+ * Visualization :
+  * Updated NegatoWindowingInteractor to parse TF config
+  * Updated transfer function helper : use image window width/center to create TF
+  * Add config option in Window Level editor to use image grey level tf instead of create new tf
+
+ * Python :
+  * python management of Image.size .spacing .origin as pyhton list
+  * Added handler for python outputs
+  * Binding Image::deepCopy
+
+
+=== fw4spl_0.8.3.3 ===
+
+ * General :
+  * Refactoring of fwService, now an IService work on a fwData::Object (instead of fwTools::Object)
+  * Disabled Qt keyword (avoid conflicts with boost signals and foreach)
+  * Continue adding array lock ( or image/mesh lock helper ) in different libs/bundles
+  * Fixed AppConfig (adaptField if cfg element value is not empty)
+  * Updated temporary folder management
+  * Refactoring of AppConfigManager to be more easily extended
+  * Added ByteSize object and unit tests : this class manages conversion between string and size_t
+  * Updated MenuLayoutManager to allow setting icon for actions in menu
+  * Added new service to substract two images SImagesSubstract
+
+ * Apps :
+  * Added Ex04ImagesRegistration which subtract two images with itk
+  * Updated Ex02ImageMix with TF selection
+
+ * Visualization :
+  * Fixed clipping plane visualization on meshes
+  * Fixed ImagesProbeCursor, manage now image origin
+  * Fixed ProbeCursor (problem with view reset)
+  * Fixed shakeNormals when array is null
+  * Updated Volume adaptor to support TF nearest mode
+  * Fixed RemoveDistance action
+  * Fixed ImageMultiDistances adaptor
+  * Fixed PlaneXMLTranslator (compute plane from points)
+
+ * Data :
+  * Updated Reconstruction, Mesh, Image, and Array API to be compatible with new dump system to maniplate a buffer, you must used Mesh/Image/Array helper (in fwComEd/helper)
+  * Updated Image and Mesh helpers
+  * Removed fwData::Image::setDataArray (keep existing data::Array in Image)
+  * Fixed Array deepCopy (copy array informations if buffer is empty)
+  * Added swap on fwData::Array
+  * Some evolution in ObjectLock : keep object reference, added copy constructor and operator implementation
+  * Updated Array : array is buffer owner on creation
+  * Updated Image, Mesh : not New on array when deepCopy or clear
+
+ * BufferObject / IBufferManager :
+  * Added documentation
+  * Added swap on fwTools::BufferObject
+  * Added fwTools::Exception on BufferAllocatePolicy allocate/reallocate
+
+ * Dump managment :
+  * Added documentation
+  * Introduced hysteresis offset in fwMemory::policy::ValveDump
+  * Updated fwMemory Policy API : added policy factory, added setParam API on dump policies
+  * Added service : SDumpService will help to configure the dump policy
+  * Fwxml writer dos not restore dumped image during serialization, just copy dumped file
+  * Try to hard link raw file instead of copy to serialize patient folder
+  * Fixed barrier limit to max(freeMemory/2, aliveMemory, 512Mo) during serialization
+
+ * IO :
+  * Updated fwXML FileFormatService system ( is not used in a separated process )
+  * FileFormatService is now called directly in ArrayXMLTranslator
+  * Updated ImageXMLTranslator and MeshXMLTranslator to use Array::swap method
+  * Fixed ResectionXMLTranslator (read "isValid" element)
+
+ * Test :
+  * Changed some namespace in different unittest libraries
+
+
+=== fw4spl_0.8.3.2 ===
+
+ * General :
+  * Fixed clang/icc compilation
+  * Fixed import fxz (fields in few structures were not managed).
+  * Fixed ImagesBlend Adaptor when there is twice the same image
+  * Fixed selected acquisition index in PatientDBGuiSelectorService
+  * New service SPatientDBInserter (io::IWriter type) that permits to push a structure (patientDB, patient, study, acquisition or image) in a patientDB. If destination pdb is not configured, a dialog box proposes to select a pdb from an active pdb list ( pdb registered in OSR )
+  * Added helper to compare float/double value with 'epsilon' error margin (fwMath/Comapre.hpp) and Upadte ImageBlend Adaptor to use it
+  * Unactivated minimized mode (in preference) for frames
+  * Update compression level for raw buffer ( low compression, hight speed )
+
+ * Apps :
+  * Added new example Ex01VolumeRendering to show different services that use or manipulate a TF
+  * Added new example Ex03Registration to show a registration between points by using ARLCore.
+
+ * Transfert function :
+  * Fixed issue with TransferFunctionEditor
+  * Fixed issue with last table color in fwVtkWindowLevelLookupTable
+  * Complete refactoring of TransferFunction adaptor (scene2D) to support now new TF structure ( manage NEAREST interpolation, manage clamping, manage negative window
+  * Support new TF structure for PoC06Scene2DTF
+  * Added TransferFunction helper to create a drawing TF
+
+ * BufferObject / IBufferManager
+  * Added fwTools::BufferObject : Base class for FW4SPL buffers. Keep a pointer to a buffer and it's allocation policy (new or malloc) without any cleverness about allocating/destroying the buffer. Users of this class needs to take care about allocation and destruction by themselves. BufferObject class has a BufferManager and Locks mechanism, Allowing to trigger special treatments on various events on BufferObjects (allocation, reallocation, destruction, swapping, locking, unlocking) (see doxygen for more information).
+  * Added fwTools::IBufferManager : Provides interface for a buffer manager. A BufferManager is able to hook BufferObjects actions an to change it's behaviors. (see doxygen for more information)
+  * Updated fwData::Array to use fwTools::BufferObject
+  * Added new helper fwdata::ObjectLock : a simple helper to lock specific object, manages : Image, Mesh, Array, Reconstruction and Acquisition.
+  * Removed few critical methods of basic structures (fwData::Array, fwData::Mesh and fwData::Image) according to buffer lock mecanism. These methods are now proposed by helpers (fwComEd::helper::Array, fwComEd::helper::Mesh, fwComEd::helper::Image) and manage buffer lock process.
+  * Support buffer lock process in many helpers/services ( MeshGenerator, vtk conversion, itk conversion, serialization, etc )
+
+ * Dump managment
+  * Added an implementation of fwTools::IBufferManager with fwMemory::BufferManager : This implementation purpose is to manage memory load, freeing memory and restoring freed buffers as needed. A dump policy is used to trigger memory freeing process. The restore process is always triggers when a lock is requested on a dumped buffer. Available policies :
+   * NeverDump : This policy will never take the initiative to free memory. This is the policy used when no automatic memory management is wanted. Memory will be dumped on demand.
+   * AlwaysDump : This policy will dump buffers as often as possible. As soon as a buffer is released (ie the lock count become zero), it will be dumped.
+   * BarrierDump : This policy defines a memory usage barrier and will try to keep the managed buffers memory usage under this barrier.
+   * ValveDump : This policy is monitoring system memory usage and will trigger memory dump when the amount of system free memory is lower than the minFreeMem parameter. An hysteresis parameter exists to free more memory when the process is triggered. If the free system memory amount is lower than the minFreeMem, this policy will try to reach minFreeMem + hysteresisOffset bytes of free memory.
+  * Updated darwin memory tool : take in account inactive memory as free memory
+  * Activate BarrierDump during fwXML serialization if fwMemory::BufferManager with NeverDump policy is used.
+
+
+=== fw4spl_0.8.3.0 ===
+
+ * New field API structure for data :
+  * Remove old field API on fwTools::Object ( impact on all fwData::Object / IService / ObjectMsg / etc )
+  * Add new field API on fwData::Object 
+
+ * New transfert function structure :
+  * Remove old transfert function structure
+  * Add new transfert function structure :
+   * a transfert function has its own window level
+   * window can be negative or null
+   * transfert function associate a value in double to a RGBA color
+  * Added reimplementation of vtkWindowLevelLooupTable, fwVtkWindowLevelLookupTable ( in fwRenderVTK ) managing negative window and out-of-range value clamp
+  * Method to convert a ::fwData::TransferFunction to vtk lookup table are added in vtkIO::helper::TransfertFunction
+  * It's possible now for negato or volume rendering or window level interactor to work only on a specific transfert function
+  * All image messages concerning window/level or transfer function has been removed, no messages are send directly on the tf
+  * Evolution of ::fwComEd::helper::MedicalImageAdaptor to provide some helpers to manipulate transfer function in your service
+
+ * Other :
+  * Add new macros API to generate getter/setter for fwData
+   * fwDataGetSetCRefMacro( Param, Type ) generate :
+    * const Type & getParam() const;
+    * void setParam( const Type & attrParam );
+    * User must declare Type m_attrParam;
+   * fwDataGetSetSptrMacro( Param, Type ) generate :
+    * Type getParam() const;
+    * void setParam( Type attrParam );
+    * User must declare Type m_attrParam;
+  * fwData introduces new maccro to register data in factory fwDataRegisterMacro ( ex : fwDataRegisterMacro( ::fwData::Image ) ) instead of REGISTER_BINDING_BYCLASSNAME
+  * fwData provides a new factory helper (::fwData::Factory) to build ::fwData::Object, use it instead ::fwTools::Factory to build class of type ::fwData::Object
+  * Support change in fwXML, and thus increment .yaf version (3->4) to support new structures (old yaf version are not compatible)
+  * Move ObjectGenerator/ObjectComparator from fwXML unit test to fwDataTools to merge helper to create and compare data
+  * Moved data visitors from fwData to fwXML
+  * New API and events on ObjectMsg (ADDED/CHANGED/REMOVED FIELDS)
+  * Updated CompositeMsg API ( xxx_FIELDS -> xxx_KEYS )
+  * New Field helper : as for composite helper, build a message with fields modifications
+  * New Field Manager : Works the same way as the composite helper, but for fields
+
+
+=== fw4spl_0.8.2.3 ===
+
+ * General :
+  * Added new helper fwTools::Type to manage different system type
+  * Image structure refactoring
+   * Replaced IBufferDelegate by ::fwData::Array
+   * fwTools::Type to defin the image type
+  * Support new image structure in the system
+  * Improve origin image management : reader/writer, visualization 2D/3D/VR, pipeline, registration, resection
+  * Fixed libxml memory managment (source of different problems in VRMed)
+  * Updated ImagesBlend adaptor to check if images have the same size, spacing and origin. Show a message dialog if image have not same size, spacing or origin. Added tolerance for spacing and origin comparison
+  * Modified Pulse dialog to work when guiQt is disable
+  * Add new function in class Array to setBuffer with all parameters instead of allocating it
+  * Updated API to convert itk image to or from a fwData image (fwItkIO), updates unit tests
+  * Added CDATA section parsing in xml app configuration ( used by python tuto )
+  * Clean code: removed depreciated USE_BOOST_REGEX define in dateAndTime helpers
+  * Fixed libxml call to xmlCleanupParser (see http://xmlsoft.org/html/libxml-parser.html#xmlCleanupParser)
+
+ * IO :
+  * Evolution of patient folder version, now is v3 and replace fwXML archive default extension .fxz by .yaf to avoid user problem
+  * IWriter/IReader refactoring, these classes propose now new API to regroup common source code
+  * Added some unit tests and fixed few io problems
+  * Added ioBasic to read/write .bio file
+  * Reintroduced bad managment of rescale data with gdcm
+
+ * Testing :
+  * Added some unit test on bunldes (io)
+  * Added some unit test on lib (io)
+  * Added fwDataTools::Image to generate and test image and added unit test
+  * Added new project fwTest that propose few helpers used in different UT ( for exemple management of data path ) 
+  * Added helper in fwTest to check patient struct after a dicom file parsing to regroup test concerning dicom format
+e sptr )
+  * Updated object comparator/generator in fwDataTools for test
+
+ * Apps :
+  * Updated Tutorials build.options : disable wx on osx64
+  * Updated TutoDevForum : use new image API and use generic gui
+  * Added a basic python code usage sample with TutoPython
+  * Added new tuto dedicated to fw4spl beginner training
+
+
+=== fw4spl_0.8.1.2 ===
+
+
+=== fw4spl_0.8.0.0 ===
+

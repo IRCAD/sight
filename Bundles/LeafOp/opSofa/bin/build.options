@@ -4,14 +4,12 @@ USE     = [
           'boost',
           'boostFilesystem',
           'qtCore',
+          'sofaComponent',
+          'sofacore',
+          'sofadefaulttype',
           'sofasimulation',
-          'sofacomponentodesolver',
-          'sofacomponentvisualmodel',
           'sofatree',
-          'sofacomponentconstraint',
-          'sofacomponentbehaviormodel',
-          'sofacomponent',
-          'sofahelper'
+          'sofahelper',
           ]
 LIB     = [
           'fwTools_0-1',

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,13 +12,13 @@
 #include <arlcore/Optimization.h>
 
 arlCore::FieldCorrector::FieldCorrector( void ):
-m_correction( false ),
-m_degree( 0 )
+m_degree( 0 ),
+m_correction( false )
 {}
 
 arlCore::FieldCorrector::FieldCorrector( unsigned int degree ):
-m_correction( false ),
-m_degree( degree )
+m_degree( degree ),
+m_correction( false )
 {
     const unsigned int NbEquations = 3;
     m_parameters.set_size(nbPolynomialParameters(degree, NbEquations));
@@ -50,7 +50,6 @@ bool arlCore::FieldCorrector::copy( const FieldCorrector& O )
 std::string arlCore::FieldCorrector::getString( void ) const
 {
     std::stringstream s;
-    const unsigned int NbEquations = 3;
     s<<"Polynomial of degree "<<m_degree<<" Nb parameters="<<m_parameters.size()<<"\n";
     s<<m_parameters<<"\n";
     // TODO Display equations

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/UUID.hpp>
 
 #include <fwDataIO/writer/IObjectWriter.hpp>
@@ -46,7 +45,7 @@ void SerializeXML::visit( ::fwData::Object::sptr obj)
 
     // get XMLTranslator
     ::fwXML::XMLTranslator::sptr translator;
-    translator = ::fwTools::ClassFactoryRegistry::create< ::fwXML::XMLTranslator >( obj->className()  );
+    translator = ::fwXML::factory::New( obj->className()  );
     if (!translator)
     {
         translator = ::fwXML::TrivialXMLTranslator::New();

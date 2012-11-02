@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -101,7 +101,6 @@ bool arlCore::computePolynomial( unsigned int degree, const vnl_vector<double> &
     result.set_size(NbEquations);
     result.fill(0.0);
     unsigned int i, j, k, l, m=0;
-    const vnl_vector<double> &C = parameters;
     for( i=0 ; i<=degree ; ++i )
         for( j=0 ; j<=degree ; ++j )
             for( k=0 ; k<=degree ; ++k )

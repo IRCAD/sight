@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,12 +31,12 @@ namespace builder
 class FWGUIWX_CLASS_API ToolBarBuilder : public ::fwGui::builder::IToolBarBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarBuilder)(::fwGui::builder::IToolBarBuilder) ,(()), new ToolBarBuilder);
+    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarBuilder)(::fwGui::builder::IToolBarBuilder),
+                                            (()),
+                                            ::fwGui::factory::New< ToolBarBuilder >);
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API ToolBarBuilder();
+    FWGUIWX_API ToolBarBuilder(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~ToolBarBuilder();
 
     /**

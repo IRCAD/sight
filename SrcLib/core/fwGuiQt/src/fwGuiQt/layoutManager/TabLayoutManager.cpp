@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,15 +11,12 @@
 #include <QScrollArea>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/layoutManager/TabLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
-        ::fwGui::TabLayoutManager,
-        ::fwGui::layoutManager::TabLayoutManagerBase::RegistryKeyType,
-        ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::TabLayoutManager, ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -27,7 +24,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-TabLayoutManager::TabLayoutManager()
+TabLayoutManager::TabLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------

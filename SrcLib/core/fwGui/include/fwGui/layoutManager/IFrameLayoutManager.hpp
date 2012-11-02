@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,11 +20,11 @@
 #include <boost/function.hpp>
 #include <boost/filesystem/path.hpp>
 
-#include <fwCore/base.hpp>
 #include <fwData/Composite.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
@@ -40,12 +40,12 @@ namespace layoutManager
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IFrameLayoutManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IFrameLayoutManager : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IFrameLayoutManager)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IFrameLayoutManager)(::fwGui::GuiBaseObject) )
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 

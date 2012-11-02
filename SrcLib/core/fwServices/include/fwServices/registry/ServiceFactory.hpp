@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,11 +9,7 @@
 
 #include <map>
 
-#ifdef linux
 #include <boost/unordered_map.hpp>
-#else
-#include <boost/tr1/unordered_map.hpp>
-#endif
 
 #include <boost/tuple/tuple.hpp>
 
@@ -79,27 +75,24 @@ class FWSERVICES_CLASS_API ServiceFactory : public ::fwCore::BaseObject
 
 public:
 
+    typedef std::string KeyType;
+    typedef std::vector<KeyType> KeyVectorType;
     typedef std::pair<std::string, std::string> StringPair;
 
-#ifdef linux
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
-#else
-    typedef std::tr1::unordered_map< StringPair, bool > SupportMapType;
-#endif
 
     fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory) ;
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();
 
-    /// Parse bundle information to retreive service declaration
+    /// Parse bundle information to retrieve service declaration
     FWSERVICES_API void parseBundleInformation( );
 
-    FWSERVICES_API void addFactory
-    (   ServiceInfo::FactoryType _factory,
-        const std::string & simpl,
-        const std::string & stype,
-        const std::string & oimpl);
+    FWSERVICES_API void addFactory( ServiceInfo::FactoryType _factory,
+                                    const std::string & simpl,
+                                    const std::string & stype,
+                                    const std::string & oimpl);
 
     FWSERVICES_API SPTR(IService) create( const std::string & _srvImpl ) const;
 
@@ -112,6 +105,9 @@ public:
 
     /// return the default service implementation for an object
     FWSERVICES_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& object, const std::string& type ) const;
+
+    /// return the associated object implementation.
+    FWSERVICES_API  std::string getObjectImplementation(const std::string& srvImpl) const;
 
     /// return the service description.
     FWSERVICES_API  std::string getServiceDescription(const std::string& srvImpl) const;
@@ -131,9 +127,14 @@ public:
      */
     FWSERVICES_API bool support(const std::string & object, const std::string & srvType, const std::string & srvImpl) const;
 
+    /**
+     * @brief returns the registered factory keys.
+     */
+    FWSERVICES_API virtual KeyVectorType getFactoryKeys() const;
+
 protected :
 
-    typedef std::map< std::string, ServiceInfo::sptr > SrvRegContainer;
+    typedef std::map< KeyType, ServiceInfo::sptr > SrvRegContainer;
 
     /// Container of service information
     SrvRegContainer m_srvImplTosrvInfo;

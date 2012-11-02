@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,8 +25,8 @@ Event::Event(::fwData::Object::Key key)
 :   m_type(NoType),
     m_button(NoButton),
     m_modifier(NoModifier),
-    m_key(Qt::Key_unknown),
-    m_accepted(false)
+    m_accepted(false),
+    m_key(Qt::Key_unknown)
 {}
 
 //-----------------------------------------------------------------------------

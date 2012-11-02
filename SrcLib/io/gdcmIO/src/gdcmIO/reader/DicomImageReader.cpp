@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2012-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -186,6 +186,7 @@ void DicomImageReader::readImage( ::fwData::Image::sptr img ) throw(::fwTools::F
     //*****     Get all file names      *****//
     std::vector< std::string > & imageFiles = this->getRefFileNames(); // files which define one image (2D or 3D)
     OSLM_TRACE("Number of files for an image : " << imageFiles.size());
+    FwCoreNotUsedMacro(imageFiles);
 
     // DicomInstance is necessary for SR reading
     ::boost::shared_ptr< DicomInstance > dicomInstance = this->getDicomInstance();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,34 +54,45 @@ void ErasePatient::info(std::ostream &_sstream )
 void ErasePatient::updating( ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+
     ::fwData::PatientDB::sptr pPatientDB = this->getObject<  ::fwData::PatientDB > ();
-    ::fwData::Patient::sptr patient = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pPatientDB);
-    ::fwData::Study::sptr study = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudy(pPatientDB);
-    ::fwData::Acquisition::sptr acquisition = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisition(pPatientDB);
-    ::fwData::Image::sptr image = ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(pPatientDB);
 
-    if(!image)
+    if ( ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(pPatientDB) )
     {
-        return;
-    }
+        ::fwGui::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Erase selected data");
+        messageBox.setMessage( "Are you sure to erase selected data ?" );
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
+        ::fwGui::dialog::IMessageDialog::Buttons answer = messageBox.show();
 
-    ::fwGui::dialog::MessageDialog messageBox;
-    messageBox.setTitle("Erase selected data");
-    messageBox.setMessage( "Are you sure to erase selected data ?" );
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
-    ::fwGui::dialog::IMessageDialog::Buttons answer = messageBox.show();
+        if ( answer != ::fwGui::dialog::IMessageDialog::OK )
+        {
+            return;
+        }
 
-    if ( answer != ::fwGui::dialog::IMessageDialog::OK )
-    {
-        return;
+        ErasePatient::eraseSelectedAcquisition( pPatientDB );
+
+        ::fwComEd::PatientDBMsg::NewSptr msg;
+        msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
+        ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void ErasePatient::eraseSelectedAcquisition( ::fwData::PatientDB::sptr pdb )
+{
+    ::fwData::Patient::sptr patient = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatient(pdb);
+    ::fwData::Study::sptr study = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudy(pdb);
+    ::fwData::Acquisition::sptr acquisition = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisition(pdb);
+    ::fwData::Image::sptr image = ::fwComEd::fieldHelper::BackupHelper::getSelectedImage(pdb);
 
     ::fwComEd::fieldHelper::BackupHelper::SelectionIdType myIntPat, myIntStu, myIntAcq;
-    myIntPat = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatientIdx(pPatientDB);
-    myIntStu = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudyIdx(pPatientDB);
-    myIntAcq = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisitionIdx(pPatientDB);
+    myIntPat = ::fwComEd::fieldHelper::BackupHelper::getSelectedPatientIdx(pdb);
+    myIntStu = ::fwComEd::fieldHelper::BackupHelper::getSelectedStudyIdx(pdb);
+    myIntAcq = ::fwComEd::fieldHelper::BackupHelper::getSelectedAcquisitionIdx(pdb);
 
     // Erase acquisition
     ::fwDataTools::Patient::removeAcquisition(study, acquisition);
@@ -94,15 +105,12 @@ void ErasePatient::updating( ) throw(::fwTools::Failed)
         if ( patient->getStudies().empty() )
         {
             // Erase patient
-            ::fwDataTools::Patient::removePatient(pPatientDB, patient);
+            ::fwDataTools::Patient::removePatient(pdb, patient);
             myIntPat--;
         }
     }
 
-    ::fwComEd::fieldHelper::BackupHelper::setSelection(pPatientDB, myIntPat, myIntStu, myIntAcq);
-    ::fwComEd::PatientDBMsg::NewSptr msg;
-    msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
-    ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
+    ::fwComEd::fieldHelper::BackupHelper::setSelection(pdb, myIntPat, myIntStu, myIntAcq);
 }
 
 //------------------------------------------------------------------------------

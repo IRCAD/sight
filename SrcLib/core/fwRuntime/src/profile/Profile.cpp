@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -205,6 +205,12 @@ void Profile::setParams(int argc, char** argv)
         std::string arg = argv[i];
         m_params.push_back( arg );
     }
+}
+
+//------------------------------------------------------------------------------
+void Profile::setParams(const Profile::ParamsContainer &params)
+{
+    m_params = params;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,10 +30,11 @@ class FWGUIWX_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog), (()), new SelectorDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog),
+                                            (()),
+                                            ::fwGui::factory::New< SelectorDialog > );
 
-    /// Default constructor.
-    FWGUIWX_API SelectorDialog() ;
+    FWGUIWX_API SelectorDialog(::fwGui::GuiBaseObject::Key key) ;
 
     FWGUIWX_API virtual ~SelectorDialog();
 
