@@ -4,3 +4,7 @@ LIB     = [
           ]
 TYPE    = 'shared'
 VERSION = '0-1'
+
+
+if os.name == "nt" :
+    GLOBAL_DEF = ['WIN32_LEAN_AND_MEAN']

@@ -9,16 +9,21 @@
 namespace fwThread
 {
 
-void WorkerThread( boost::asio::io_service & io_service )
+ThreadIdType getCurrentThreadId()
 {
-    SLM_TRACE("Thread " << boost::this_thread::get_id() <<" Start");
+    return ::boost::this_thread::get_id();
+}
+
+void Worker::WorkerThread( ::boost::asio::io_service & io_service )
+{
+    OSLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
     io_service.run();
-    SLM_TRACE("Thread " << boost::this_thread::get_id() <<" Finish");
+    OSLM_TRACE("Thread " << getCurrentThreadId() <<" Finish");
 }
 
 Worker::Worker(): m_ioService(),
-    m_work( ::boost::make_shared< WorkType >(boost::ref(m_ioService)) ),
-    m_thread( ::boost::bind(&WorkerThread, boost::ref(m_ioService)) )
+    m_work( ::boost::make_shared< WorkType >(::boost::ref(m_ioService)) ),
+    m_thread( ::boost::bind(&WorkerThread, ::boost::ref(m_ioService)) )
 {
 }
 
@@ -37,7 +42,7 @@ void Worker::stop()
     m_thread.join();
 }
 
-::boost::thread::id Worker::getThreadId() const
+ThreadIdType Worker::getThreadId() const
 {
     return m_thread.get_id();
 }
