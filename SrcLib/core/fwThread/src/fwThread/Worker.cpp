@@ -38,7 +38,6 @@ Worker::~Worker()
 void Worker::stop()
 {
     m_work.reset();
-    m_ioService.stop();
     m_thread.join();
 }
 
