@@ -1,0 +1,3 @@
+﻿<plugin id="Tuto15MultithreadCtrl">
+    <requirement id="servicesReg" />
+</plugin>
