@@ -1,0 +1,6 @@
+USE     = ['boost', 'boostThread',]
+LIB     = [
+          'fwCore_0-1',
+          ]
+TYPE    = 'shared'
+VERSION = '0-1'

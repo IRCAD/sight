@@ -1,0 +1,45 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#include "fwThread/Worker.hpp"
+
+namespace fwThread
+{
+
+void WorkerThread( boost::asio::io_service & io_service )
+{
+    SLM_TRACE("Thread " << boost::this_thread::get_id() <<" Start");
+    io_service.run();
+    SLM_TRACE("Thread " << boost::this_thread::get_id() <<" Finish");
+}
+
+Worker::Worker(): m_ioService(),
+    m_work( ::boost::make_shared< WorkType >(boost::ref(m_ioService)) ),
+    m_thread( ::boost::bind(&WorkerThread, boost::ref(m_ioService)) )
+{
+}
+
+Worker::~Worker()
+{
+    if(!m_ioService.stopped())
+    {
+        this->stop();
+    }
+}
+
+void Worker::stop()
+{
+    m_work.reset();
+    m_ioService.stop();
+    m_thread.join();
+}
+
+::boost::thread::id Worker::getThreadId() const
+{
+    return m_thread.get_id();
+}
+
+} //namespace fwThread
