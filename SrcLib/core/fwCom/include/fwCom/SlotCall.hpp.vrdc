@@ -1,0 +1,45 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+#ifndef __FWCOM_SLOTCALL_HPP__
+#define __FWCOM_SLOTCALL_HPP__
+
+#include <fwThread/Worker.hpp>
+
+#include "fwCom/SlotRun.hpp"
+
+namespace fwCom
+{
+
+template< typename F >
+struct SlotCall;
+
+template< typename R, typename ...A >
+struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
+{
+    typedef R SignatureType(A...);
+    typedef SlotCall< SignatureType > SelfType;
+    typedef SPTR( SelfType ) sptr;
+    typedef WPTR( SelfType ) wptr;
+
+    typedef ::boost::shared_future< R > SharedFutureType;
+
+    SlotCall() :  SlotRun< void ( A... ) >() {}
+
+    virtual R call(A...) const = 0;
+
+    virtual SharedFutureType asyncCall( const ::fwThread::Worker::sptr &worker, A... args ) const;
+
+    virtual SharedFutureType asyncCall( A... args ) const;
+
+protected:
+    virtual ::boost::function< R() > bindCall( A...args  ) const;
+};
+
+
+} // namespace fwCom
+
+#endif /* __FWCOM_SLOTCALL_HPP__ */
+

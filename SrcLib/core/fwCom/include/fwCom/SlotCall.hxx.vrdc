@@ -1,0 +1,65 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+#ifndef __FWCOM_SLOTCALL_HXX__
+#define __FWCOM_SLOTCALL_HXX__
+
+#ifndef __FWCOM_SLOTCALL_HPP__
+#error fwCom/SlotCall.hpp not included
+#endif
+
+#include <boost/thread/future.hpp>
+
+#include <fwThread/TaskHandler.hpp>
+
+#include "fwCom/exception/NoWorker.hpp"
+
+#include "fwCom/util/WeakCall.hpp"
+
+#include "fwCom/SlotRun.hxx"
+
+namespace fwCom
+{
+
+
+template< typename R, typename ...A >
+::boost::function< R() > SlotCall< R (A...) >::bindCall( A...args  ) const
+{
+    return ::boost::bind( ( R (SlotCall< R (A...) >::*)( A... )const ) &SlotCall< R (A...) >::call, this, args... );
+}
+
+template< typename R, typename ...A >
+    typename SlotCall< R (A...) >::SharedFutureType
+    SlotCall< R (A...) >::asyncCall( const ::fwThread::Worker::sptr &worker, A... args ) const
+{
+    if(!worker)
+    {
+        throw ::fwCom::exception::NoWorker("Slot has no worker set.");
+    }
+
+    ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args... ) ) );
+    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
+    worker->post(f);
+
+    return ::boost::move(ufuture);
+}
+
+
+template< typename R, typename ... A >
+typename SlotCall< R (A...) >::SharedFutureType
+SlotCall< R (A...) >::asyncCall(A... args) const
+{
+    typename SlotCall< R (A...) >::SharedFutureType ufuture;
+    ufuture = this->asyncCall(this->m_worker, args...);
+    return ufuture;
+}
+
+
+
+} // namespace fwCom
+
+#endif /* __FWCOM_SLOTCALL_HXX__ */
+

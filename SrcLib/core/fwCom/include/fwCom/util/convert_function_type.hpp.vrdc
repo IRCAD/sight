@@ -1,0 +1,61 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+#ifndef __FWCOM_UTIL_CONVERT_FUNCTION_TYPE_HPP__
+#define __FWCOM_UTIL_CONVERT_FUNCTION_TYPE_HPP__
+
+#include <boost/function.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+
+
+namespace fwCom
+{
+
+
+namespace util
+{
+
+
+
+/// Convert Class member method type to equivalent function type
+template <typename F>
+struct convert_function_type;
+
+template <typename R, typename C, typename ...Args >
+struct convert_function_type< R (C::*) ( Args... )  >
+{
+    typedef R type( Args... ) ;
+};
+
+template <typename R, typename C, typename ...Args >
+struct convert_function_type< R (C::*) ( Args... ) const  >
+{
+    typedef R type( Args... ) ;
+};
+
+//extract function type from a boost function
+template <typename F>
+struct convert_function_type< ::boost::function< F > >
+{
+    typedef F type;
+};
+
+template <typename F>
+struct convert_function_type
+{
+    typedef typename ::boost::remove_pointer<F>::type type;
+};
+
+
+
+
+} //namespace util
+
+} //namespace fwCom
+
+#endif /* __FWCOM_UTIL_CONVERT_FUNCTION_TYPE_HPP__ */
+
+
+
