@@ -51,7 +51,7 @@ public :
      * @brief Get a worker registered with key, if the key does not exist a null sptr is returned
      * @note This method is thread safe.
      */
-    ::fwThread::Worker::sptr getWorker( const WorkerKeyType & key ) const;
+    FWSERVICES_API ::fwThread::Worker::sptr getWorker( const WorkerKeyType & key ) const;
 
     /**
      * @brief Registers a worker
