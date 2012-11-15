@@ -53,7 +53,7 @@ fwServicesRegisterMacro( ::gui::view::IView , ::guiQt::editor::DynamicView , ::f
 DynamicView::DynamicView() throw()
 {
     m_dynamicConfigStartStop = false;
-    addNewHandledEvent( "NEW_CONFIGURATION_HELPER" );
+    //addNewHandledEvent( "NEW_CONFIGURATION_HELPER" );
 }
 
 //------------------------------------------------------------------------------

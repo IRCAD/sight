@@ -26,8 +26,8 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWith
 
 ConfigActionSrvWithKey::ConfigActionSrvWithKey() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
 }
 
 //------------------------------------------------------------------------------

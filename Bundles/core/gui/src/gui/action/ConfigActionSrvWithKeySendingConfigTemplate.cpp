@@ -43,8 +43,8 @@ ConfigActionSrvWithKeySendingConfigTemplate::ConfigActionSrvWithKeySendingConfig
         m_fieldAdaptors(::fwData::Composite::New())
 {
     m_closableConfig = true;
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
 }
 
 //------------------------------------------------------------------------------

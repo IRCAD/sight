@@ -39,7 +39,7 @@ const std::string Code::CPP    = "Cpp";
 
 Code::Code() throw() : m_language(PYTHON)
 {
-    addNewHandledEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED);
+    //addNewHandledEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------

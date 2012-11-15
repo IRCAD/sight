@@ -32,7 +32,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService
 
 ActionNotifyService::ActionNotifyService() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------

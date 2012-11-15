@@ -26,7 +26,7 @@ ConfigActionSrv::ConfigActionSrv() throw() :
     m_viewConfigId(""),
     m_configIsRunning(false)
 {
-    addNewHandledEvent("WINDOW_CLOSED");
+    //addNewHandledEvent("WINDOW_CLOSED");
 }
 
 //------------------------------------------------------------------------------
