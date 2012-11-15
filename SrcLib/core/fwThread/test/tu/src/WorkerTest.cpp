@@ -47,6 +47,7 @@ struct TestHandler
 
     void nextStep()
     {
+        ::boost::this_thread::sleep(::boost::posix_time::seconds(1));
         m_threadCheckOk &= (m_constructorThreadId != ::fwThread::getCurrentThreadId());
         m_threadCheckOk &= (m_workerThreadId == ::fwThread::getCurrentThreadId());
         ++m_step;
