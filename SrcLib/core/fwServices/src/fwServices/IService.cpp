@@ -163,12 +163,12 @@ void IService::stop() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void IService::update( ::fwServices::ObjectMsg::csptr _msg )
+void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
 {
     OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
     OSLM_TRACE("Service" << this->className() <<" is on IDLE state ==> treatment of message: " << _msg->getGeneralInfo());
-    this->updating( _msg ) ;
+    this->receiving( _msg ) ;
 }
 
 //-----------------------------------------------------------------------------
@@ -218,6 +218,13 @@ void IService::swap( ::fwData::Object::sptr _obj ) throw(::fwTools::Failed)
     }
 
     OSLM_WARN_IF( "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(), m_globalState != STARTED);
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+{
+    SLM_FATAL("TODO : This method must be implemented");
 }
 
 //-----------------------------------------------------------------------------

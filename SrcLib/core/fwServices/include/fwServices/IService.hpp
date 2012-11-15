@@ -139,7 +139,7 @@ public :
      * @pre m_globalState == STARTED
      * @pre m_notificationState == IDLE
      */
-    FWSERVICES_API void update( fwServices::ObjectMsg::csptr _msg )  ;
+    FWSERVICES_API void receive( fwServices::ObjectMsg::csptr _msg )  ;
 
     /**
      * @brief Associate the service to another object
@@ -342,9 +342,9 @@ protected :
     /**
      * @brief Perform some computations according to modifications specified in the _msg parameter. _msg generally indicates modification to occur (or having occured) on the object the service
      * is attached to.
-     * @see update(fwServices::ObjectMsg::csptr )
+     * @see receive(fwServices::ObjectMsg::csptr )
      */
-    FWSERVICES_API virtual void updating( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed ) = 0 ;
+    FWSERVICES_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /**
      * @brief Write information in a stream.
