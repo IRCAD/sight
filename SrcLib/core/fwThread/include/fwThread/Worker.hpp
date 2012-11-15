@@ -71,10 +71,10 @@ public:
 protected:
 
     /// Copy constructor forbidden
-    Worker( const Worker& );
+    Worker( const Worker& ){};
 
     /// Copy constructor forbidden
-    Worker& operator=( const Worker& );
+    Worker& operator=( const Worker& ){};
 
 
     /// Class provides functionality to manipulate asynchronous tasks.

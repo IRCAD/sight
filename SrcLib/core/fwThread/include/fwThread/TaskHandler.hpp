@@ -7,7 +7,7 @@
 #ifndef __FWTHREAD_TASKHANDLER_HPP__
 #define __FWTHREAD_TASKHANDLER_HPP__
 
-#include <boost/asio/io_service.hpp>
+#include <boost/thread/future.hpp>
 
 namespace fwThread
 {
@@ -15,28 +15,27 @@ namespace fwThread
 template <typename R>
 struct TaskHandler
 {
-    TaskHandler(boost::packaged_task<R>& task) : m_Task(boost::move(task))
-    {}
+    TaskHandler(::boost::packaged_task<R>& task);
 
-    TaskHandler(const TaskHandler& that) : m_Task(boost::move(that.m_Task))
-    {}
+    TaskHandler(const TaskHandler& that);
 
-    void operator ()()
-    {
-        this->m_Task();
-    }
+    void operator ()() const;
+
+protected:
+
+    /// Copy constructor forbidden
+    TaskHandler& operator=( const TaskHandler& ){};
 
 private:
-    mutable boost::packaged_task<R> m_Task;
+    mutable ::boost::packaged_task<R> m_task;
 };
 
 
 template <typename R>
-inline ::boost::function< void() > moveTaskIntoFunction(boost::packaged_task<R>& task)
-{
-    return TaskHandler<R>(task);
-}
+inline ::boost::function< void() > moveTaskIntoFunction(::boost::packaged_task<R>& task);
 
 } //namespace fwThread
+
+#include <fwThread/TaskHandler.hxx>
 
 #endif //__FWTHREAD_TASKHANDLER_HPP__
