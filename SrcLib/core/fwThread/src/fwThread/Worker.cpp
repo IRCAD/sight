@@ -46,4 +46,12 @@ ThreadIdType Worker::getThreadId() const
     return m_thread.get_id();
 }
 
+Worker::Worker( const Worker& )
+{}
+
+Worker& Worker::operator=( const Worker& )
+{
+    return *this;
+}
+
 } //namespace fwThread
