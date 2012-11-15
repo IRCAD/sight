@@ -14,6 +14,7 @@
 
 #include <fwThread/Worker.hpp>
 
+#include "fwCom/config.hpp"
 #include "fwCom/util/convert_function_type.hpp"
 
 namespace fwCom
@@ -25,7 +26,7 @@ struct SlotRun;
 template< typename F >
 struct Slot;
 
-struct SlotBase : virtual fwCore::BaseObject
+struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
 {
 
     typedef SPTR( SlotBase ) sptr;
@@ -51,7 +52,7 @@ struct SlotBase : virtual fwCore::BaseObject
     template< typename A1, typename A2, typename A3 > void run(A1 a1, A2 a2, A3 a3) const;
     template< typename A1, typename A2 > void run(A1 a1, A2 a2) const;
     template< typename A1 > void run(A1 a1) const;
-    void run() const;
+    FWCOM_API void run() const;
 
     template< typename R, typename A1, typename A2, typename A3 > R call(A1 a1, A2 a2, A3 a3) const;
     template< typename R, typename A1, typename A2 > R call(A1 a1, A2 a2) const;
@@ -61,7 +62,7 @@ struct SlotBase : virtual fwCore::BaseObject
     template< typename A1, typename A2, typename A3 > VoidSharedFutureType asyncRun(A1 a1, A2 a2, A3 a3) const;
     template< typename A1, typename A2 > VoidSharedFutureType asyncRun(A1 a1, A2 a2) const;
     template< typename A1 > VoidSharedFutureType asyncRun(A1 a1) const;
-    VoidSharedFutureType asyncRun() const;
+    FWCOM_API VoidSharedFutureType asyncRun() const;
 
     template< typename R, typename A1, typename A2, typename A3 > ::boost::shared_future< R > asyncCall(A1 a1, A2 a2, A3 a3) const;
     template< typename R, typename A1, typename A2 > ::boost::shared_future< R > asyncCall(A1 a1, A2 a2) const;
