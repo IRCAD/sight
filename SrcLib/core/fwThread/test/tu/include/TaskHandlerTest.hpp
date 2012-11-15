@@ -18,6 +18,7 @@ class TaskHandlerTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( TaskHandlerTest );
     CPPUNIT_TEST( basicTest );
+    CPPUNIT_TEST( exceptionTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -26,6 +27,7 @@ public:
     void tearDown();
 
     void basicTest();
+    void exceptionTest();
 
 };
 

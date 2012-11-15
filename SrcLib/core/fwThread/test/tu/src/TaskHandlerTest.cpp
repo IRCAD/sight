@@ -42,6 +42,13 @@ int copy(int val)
 
 //-----------------------------------------------------------------------------
 
+void throwException()
+{
+    throw std::exception();
+}
+
+//-----------------------------------------------------------------------------
+
 void TaskHandlerTest::basicTest()
 {
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
@@ -92,6 +99,34 @@ void TaskHandlerTest::basicTest()
     CPPUNIT_ASSERT( future4.has_value() );
     CPPUNIT_ASSERT( !future4.has_exception() );
     CPPUNIT_ASSERT_EQUAL( 8, future4.get() );
+}
+
+//-----------------------------------------------------------------------------
+
+void TaskHandlerTest::exceptionTest()
+{
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+
+    ::boost::packaged_task<void> task( ::boost::bind( &throwException ) );
+    ::boost::unique_future< void > future = task.get_future();
+    ::boost::function< void () > f = moveTaskIntoFunction(task);
+
+    worker->post(f);
+
+    future.wait();
+    worker->stop();
+
+    bool exceptionIsCatched = false;
+    CPPUNIT_ASSERT( future.has_exception() );
+    try
+    {
+        future.get();
+    }
+    catch (std::exception &)
+    {
+        exceptionIsCatched = true;
+    }
+    CPPUNIT_ASSERT(exceptionIsCatched);
 }
 
 //-----------------------------------------------------------------------------
