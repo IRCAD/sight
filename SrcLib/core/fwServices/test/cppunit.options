@@ -5,6 +5,7 @@ CLASSTEST=[
     'ServiceConfigTest',
     'AppConfigParametersTest',
     'ObjectServiceTest',
+    'ActiveWorkersTest',
     ]
 
 USE = ['boost']
