@@ -77,8 +77,8 @@ private:
 RendererService::RendererService() throw()
 : m_render( 0 ), m_bPipelineIsInit(false), m_isCamMaster(false)
 {
-    this->addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    this->addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
+    //this->addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
+    //this->addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
 }
 
 //-----------------------------------------------------------------------------
