@@ -26,13 +26,10 @@ namespace fwServices
 IService::IService() :
     m_configuration ( new ::fwRuntime::EConfigurationElement("EmptyConfigurationElement") ),
     m_globalState ( STOPPED ),
-    m_notificationState ( IDLE ),
     m_updatingState ( NOTUPDATING ),
-    m_configurationState ( UNCONFIGURED ),
-    m_isHandlingAllEvents ( true )
+    m_configurationState ( UNCONFIGURED )
 {
     // by default a weak_ptr have a use_count == 0
-    m_msgDeque.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -170,56 +167,8 @@ void IService::update( ::fwServices::ObjectMsg::csptr _msg )
 {
     OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
-    if(m_notificationState == SENDING_MSG /* state during the service notifies to listeners a message */
-            || m_notificationState == RECEIVING_WITH_SENDING_MSG /*  state during the service notifies to listeners a message when it is already receiving a message */
-            || m_notificationState == RECEIVING_MSG ) /* state during the service receives a message and analyzed it */
-    {
-        m_msgDeque.push_back(_msg);
-        OSLM_TRACE("m_msgDeque size: " << m_msgDeque.size());
-    }
-    else /* IDLE: state when service do nothing */
-    {
-        OSLM_TRACE("Service" << this->className() <<" is on IDLE state ==> treatment of message: " << _msg->getGeneralInfo());
-        m_notificationState = RECEIVING_MSG ;
-        this->updating( _msg ) ;
-        m_notificationState = IDLE ;
-        this->processingPendingMessages();
-    }
-
-    //  OSLM_ASSERT("INVOKING update(msg) WHILE NOT IDLED ("<<m_notificationState<<") on this = " << this->className(), m_notificationState == IDLE );
-    //  OSLM_ASSERT("simple loop detection on "<< this->getSptr()->getClassname(), this->getSptr() !=  _msg->getSource().lock());
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::handlingEventOff()
-{
-    SLM_ASSERT( "Handling event vector must be empty", m_handledEvents.size() == 0 );
-    m_isHandlingAllEvents = false;
-    m_handledEvents.push_back( "TOTO" ); //HACK FIXME
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::addNewHandledEvent( std::string _eventId )
-{
-    m_isHandlingAllEvents = false;
-    m_handledEvents.push_back( _eventId );
-}
-
-//-----------------------------------------------------------------------------
-
-std::vector< std::string > IService::getHandledEvents()
-{
-    SLM_ASSERT( "ACH : This service handles all messages, why you use getHandledEvents() ? test isHandlingAllEvents() before.", !m_isHandlingAllEvents );
-    return m_handledEvents;
-}
-
-//-----------------------------------------------------------------------------
-
-bool IService::isHandlingAllEvents()
-{
-    return m_isHandlingAllEvents;
+    OSLM_TRACE("Service" << this->className() <<" is on IDLE state ==> treatment of message: " << _msg->getGeneralInfo());
+    this->updating( _msg ) ;
 }
 
 //-----------------------------------------------------------------------------
@@ -228,7 +177,6 @@ void IService::update() throw( ::fwTools::Failed)
 {
     OSLM_ASSERT("INVOKING update WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
     OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
-    OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_notificationState<<") on this = " << this->className(), !this->isSending() );
 
     m_updatingState = UPDATING ;
     this->updating( ) ;
@@ -295,13 +243,6 @@ bool IService::isStopped() const throw()
 
 //-----------------------------------------------------------------------------
 
-bool IService::isSending() const throw()
-{
-    return (m_notificationState == SENDING_MSG) || (m_notificationState == RECEIVING_WITH_SENDING_MSG) ;
-}
-
-//-----------------------------------------------------------------------------
-
 IService::ConfigurationStatus IService::getConfigurationStatus() const throw()
 {
     return m_configurationState ;
@@ -313,66 +254,6 @@ IService::UpdatingStatus IService::getUpdatingStatus() const throw()
 {
     return m_updatingState ;
 }
-
-//-----------------------------------------------------------------------------
-
-IService::NotificationStatus IService::getNotificationStatus() const throw()
-{
-    return m_notificationState ;
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::sendingModeOn()
-{
-    OSLM_ASSERT("INVOKING sendingModeOn WHILE NOT IDLED or RECEIVED ("<<m_notificationState<<") on this = " << this->className(),
-            m_notificationState == IDLE || m_notificationState == RECEIVING_MSG);
-
-    if(m_notificationState == RECEIVING_MSG)
-    {
-        m_notificationState = RECEIVING_WITH_SENDING_MSG;
-    }
-    else
-    {
-        m_notificationState = SENDING_MSG;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::sendingModeOff()
-{
-    OSLM_ASSERT("INVOKING sendingModeOff WHILE NOT SENT  or RECEIVED ("<<m_notificationState<<") on this = " << this->className(),
-            m_notificationState == SENDING_MSG || m_notificationState == RECEIVING_WITH_SENDING_MSG);
-
-    if(m_notificationState == RECEIVING_WITH_SENDING_MSG)
-    {
-        m_notificationState = RECEIVING_MSG;
-    }
-    else
-    {
-        m_notificationState = IDLE;
-        this->processingPendingMessages();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
- void IService::processingPendingMessages()
- {
-        OSLM_TRACE(" Processing " << m_msgDeque.size() << " pending message(s).");
-        // Processing of pending messages.
-        if(m_msgDeque.size() > 50)
-        {
-            OSLM_FATAL("The size of the queue is very hight " << m_msgDeque.size());
-        }
-        while (m_msgDeque.size() != 0)
-        {
-            ::fwServices::ObjectMsg::csptr msg = m_msgDeque.front();
-            m_msgDeque.pop_front();
-            this->update(msg);
-        }
- }
 
  //-----------------------------------------------------------------------------
 

@@ -420,9 +420,9 @@ void MedicalImageAdaptor::setLevel( double level )
 
 void MedicalImageAdaptor::installTFSelectionEventHandler( ::fwServices::IService* srv )
 {
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
+//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
+//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //------------------------------------------------------------------------------

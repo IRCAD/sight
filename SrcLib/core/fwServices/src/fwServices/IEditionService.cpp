@@ -125,13 +125,11 @@ void IEditionService::notify(
         ::fwServices::ComChannelService::MsgOptionsType options )
 {
 
-    _pSource->sendingModeOn();
     _pMsg->setSource(_pSource);
     _pMsg->setSubject(_pSubject);
     _pMsg->timeModified();
 
     GlobalEventManager::getDefault()->notify( _pMsg, options );
-    _pSource->sendingModeOff();
 }
 
 //-----------------------------------------------------------------------------
@@ -156,25 +154,9 @@ void IEditionService::attach( ::fwServices::ComChannelService::sptr observer) th
     // Get the service observer
     ::fwServices::IService::sptr service = observer->getDest();
 
-    // Test if this service handling all events or if it has a specific configuration
-    if ( service->isHandlingAllEvents() )
-    {
-        OSLM_WARN("Sorry, IService API to manage events has changed, this service "<< service->getClassname() <<" must define a list of handling message thanks to method IService::addNewHandledEvent() which must be used the service constructor.");
-        m_globalObservers.push_back( observer );
-        // sort the list to put the new element at the right place.
-        m_globalObservers.sort( Less );
-    }
-    else
-    {
-        OSLM_DEBUG("This service not handling all events : " << service->getClassname() );
-        std::vector< std::string > handlingEvents = service->getHandledEvents();
-        BOOST_FOREACH(std::string handlingEvent, handlingEvents)
-        {
-            ObserverContainer & specificObservers = m_event2SpecificObservers[ handlingEvent ];
-            specificObservers.push_back( observer );
-            specificObservers.sort( Less );
-        }
-    }
+    m_globalObservers.push_back( observer );
+    // sort the list to put the new element at the right place.
+    m_globalObservers.sort( Less );
 }
 
 //-----------------------------------------------------------------------------
@@ -188,20 +170,7 @@ void IEditionService::detach( ::fwServices::ComChannelService::sptr observer ) t
     // Get the service observer
     IService::sptr service = observer->getDest();
 
-    // Test if this service handling all events or if it has a specific configuration
-    if ( service->isHandlingAllEvents() )
-    {
-        m_globalObservers.remove_if( IsEqual(observer) );
-    }
-    else
-    {
-        std::vector< std::string > handlingEvents = service->getHandledEvents();
-        BOOST_FOREACH(std::string handlingEvent, handlingEvents)
-        {
-            ObserverContainer & specificObservers = m_event2SpecificObservers[ handlingEvent ];
-            specificObservers.remove_if( IsEqual(observer) );
-        }
-    }
+    m_globalObservers.remove_if( IsEqual(observer) );
 }
 
 //-----------------------------------------------------------------------------
@@ -214,30 +183,8 @@ const bool IEditionService::isAttached( ::fwServices::ComChannelService::sptr ob
     // Get the service observer
     ::fwServices::IService::sptr service = observer->getDest();
 
-    // Test if this service handling all events or if it has a specific configuration
-    if ( service->isHandlingAllEvents() )
-    {
-        isAttached = findObserver( m_globalObservers, observer ) != m_globalObservers.end();
-    }
-    else
-    {
-        std::vector< std::string > handlingEvents = service->getHandledEvents();
-        for (   std::vector< std::string >::iterator iter = handlingEvents.begin();
-                !isAttached && iter != handlingEvents.end();
-                ++iter )
-        {
-            std::string handlingEvent = *iter;
-            Event2ObserversContainer::const_iterator itOnSpecificObservers = m_event2SpecificObservers.find( handlingEvent );
-            if ( itOnSpecificObservers != m_event2SpecificObservers.end() )
-            {
-                isAttached = findObserver( itOnSpecificObservers->second, observer ) != itOnSpecificObservers->second.end();
-            }
-            else
-            {
-                isAttached = false;
-            }
-        }
-    }
+    isAttached = findObserver( m_globalObservers, observer ) != m_globalObservers.end();
+
     return isAttached;
 }
 

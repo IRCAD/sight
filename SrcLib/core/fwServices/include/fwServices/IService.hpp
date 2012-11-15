@@ -20,7 +20,6 @@
 
 namespace fwServices
 {
-class IEditionService;
 namespace registry
 {
 class ObjectService;
@@ -45,7 +44,6 @@ class FWSERVICES_CLASS_API IService : public ::fwTools::Object
 
     // to give to OSR an access on IService.m_associatedObject;
     friend class registry::ObjectService;
-    friend class IEditionService;
 
 public :
     typedef ::boost::property_tree::ptree ConfigType;
@@ -69,15 +67,6 @@ public :
         STOPPED,    /**< state after stop */
         STOPPING    /**< state during stop */
     } GlobalStatus;
-
-    /// Defines all possible service status concerning communication
-    typedef enum
-    {
-        SENDING_MSG,    /**< state during the service notifies to listeners a message */
-        RECEIVING_WITH_SENDING_MSG, /**< state during the service notifies to listeners a message when it is already receiving a message */
-        RECEIVING_MSG,  /**< state during the service receives a message and analyzed it*/
-        IDLE            /**< state when service do nothing */
-    } NotificationStatus;
 
     /// Defines all possible status for an update process
     typedef enum
@@ -169,41 +158,6 @@ public :
     //@}
 
     /**
-     * @name Management of event handler configuration
-     */
-
-    //@{
-
-    /**
-     * @brief this method permits to add a new event handled by the service.
-     * @param[in] a new id analyze by the service.
-     * @post isHandlingAllEvents() == false
-     */
-    FWSERVICES_API void addNewHandledEvent( std::string _eventId );
-
-    /**
-     * @brief Get a vector of the handling events.
-     * @param[out] the vector of events.
-     * @pre isHandlingAllEvents() == false
-     *
-     * This method returns a vector of the events which are handle by the services, by default all events are handle if this method is not overwritted.
-     */
-    FWSERVICES_API std::vector< std::string > getHandledEvents();
-
-    /// Return if this service analyse all events, if the value is equal to false, see the handling configuration with getHandledEvents() method.
-    FWSERVICES_API bool isHandlingAllEvents();
-
-    /**
-     * @brief When any handling event is defined in service, to not listen notifications event if the observation is set on.
-     * @pre m_handledEvents must be empty
-     * @post m_isHandlingAllEvents == false
-     */
-    FWSERVICES_API void handlingEventOff();
-
-    //@}
-
-
-    /**
      * @name All concerning status access
      */
 
@@ -228,22 +182,10 @@ public :
     FWSERVICES_API bool isStopped() const throw() ;
 
     /**
-     * @brief Test if the service is sending message.
-     * @return true if m_notificationState == SENDING or RECEIVING_WITH_SENDING_MSG
-     */
-    FWSERVICES_API bool isSending() const throw() ;
-
-    /**
      * @brief Return the configuration process status
      * @return m_configurationState
      */
     FWSERVICES_API ConfigurationStatus getConfigurationStatus() const throw() ;
-
-    /**
-     * @brief Return the communication state of the service
-     * @return m_notificationState
-     */
-    FWSERVICES_API NotificationStatus getNotificationStatus() const throw() ;
 
     /**
      * @brief Return the update process status
@@ -433,11 +375,6 @@ private :
     GlobalStatus m_globalState;
 
     /**
-     * @brief Defines if the service is receiving or/and sending message.
-     */
-    NotificationStatus m_notificationState;
-
-    /**
      * @brief Defines if the service is updating.
      */
     UpdatingStatus m_updatingState;
@@ -446,38 +383,6 @@ private :
      * @brief Defines if the service is configured or not.
      */
     ConfigurationStatus m_configurationState;
-
-    std::deque< ::fwServices::ObjectMsg::csptr > m_msgDeque;
-
-    /// Specific event configuration, by default this vector is empty and m_isHandlingAllEvents is set to true.
-    std::vector< std::string > m_handledEvents;
-
-    /// To know if service listens all events (default value) or if it has a specific event configuration.
-    bool m_isHandlingAllEvents;
-
-
-    /**
-     * @brief Switch communication status as SENDING_MSG ( if current state is IDLE ) or RECEIVING_WITH_SENDING_MSG ( if current state is RECEIVING_MSG ).
-     * @pre this->isSending() == false
-     * @see isSending()
-     * @post this->isSending() == true
-     */
-    void sendingModeOn();
-
-    /**
-     * @brief Switch communication status as IDLE ( if current state is SENDING_MSG ) or RECEIVING_MSG ( if current state is RECEIVING_WITH_SENDING_MSG ).
-     * @pre this->isSending() == true
-     * @see isSending()
-     * @post this->isSending() == false
-     */
-    void sendingModeOff();
-
-    /**
-     * @brief process the message(s) which are in the waiting queue(m_msgDeque).
-     * @pre
-     * @post m_msgDeque will be empty.
-     */
-    void processingPendingMessages();
 
 };
 
