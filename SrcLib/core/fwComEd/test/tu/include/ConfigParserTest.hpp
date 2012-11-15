@@ -110,7 +110,7 @@ public :
         SLM_TRACE_FUNC();
     };
     virtual void updating() throw(::fwTools::Failed) { m_isUpdated = true; };
-    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::CompositeMsg::csptr compositeMessage = ::fwComEd::CompositeMsg::dynamicConstCast( _msg );
         if (compositeMessage && compositeMessage->hasEvent(::fwComEd::CompositeMsg::MODIFIED_KEYS))
@@ -137,7 +137,7 @@ public :
     virtual void starting() throw(::fwTools::Failed) {};
     virtual void stopping() throw(::fwTools::Failed) {};
     virtual void updating() throw(::fwTools::Failed) { m_isUpdated = true; };
-    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
+    virtual void receiving( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
         if (imageMessage && imageMessage->hasEvent(::fwComEd::ImageMsg::SLICE_INDEX))
