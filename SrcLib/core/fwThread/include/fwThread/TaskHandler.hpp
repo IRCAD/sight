@@ -12,25 +12,36 @@
 namespace fwThread
 {
 
+/**
+ * @class   TaskHandler.
+ * @brief   This class encapsulates packaged task and provides a copy constructor.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date   2012.
+ */
 template <typename R>
 struct TaskHandler
 {
+    /// Constructor, moves task.
     TaskHandler(::boost::packaged_task<R>& task);
 
+    /// Copy constructor, moves task.
     TaskHandler(const TaskHandler& that);
 
+    /// Executes intern packaged task.
     void operator ()() const;
 
 protected:
 
-    /// Copy constructor forbidden
+    /// Copy constructor forbidden.
     TaskHandler& operator=( const TaskHandler& ){};
 
 private:
+    /// Encapsulated packaged task.
     mutable ::boost::packaged_task<R> m_task;
 };
 
-
+/// Encapsulate a packaged_task into a boost function to be easily posted on a worker.
 template <typename R>
 inline ::boost::function< void() > moveTaskIntoFunction(::boost::packaged_task<R>& task);
 
