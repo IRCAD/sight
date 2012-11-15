@@ -53,7 +53,7 @@ namespace fwRenderVTK
 VtkRenderService::VtkRenderService() throw() :
      m_pendingRenderRequest(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
