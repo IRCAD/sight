@@ -44,6 +44,10 @@ struct Signal< R (A...) > : SignalBase
 
     static sptr New();
 
+    ~Signal()
+    {
+        this->disconnectAll();
+    }
 
     Connection connect ( SlotBase::sptr slot );
 
@@ -55,6 +59,7 @@ struct Signal< R (A...) > : SignalBase
 
     void asyncEmit( A...a ) const;
 
+    size_t getNumberOfConnections() { return m_slots.size(); }
 
 protected:
 
