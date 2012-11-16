@@ -34,9 +34,7 @@ Slot< Slot< R ( A1, A2, A3 ) > >::Slot( SPTR( SlotRun< F > ) slot )
                     ::boost::function_types::function_arity< F >::value
                 >::wrap( &SlotRun< F >::run, slot )
                                                         )
-{
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
-}
+{ }
 
 
 
@@ -50,9 +48,7 @@ Slot< Slot< R ( A1, A2 ) > >::Slot( SPTR( SlotRun< F > ) slot )
                     ::boost::function_types::function_arity< F >::value
                 >::wrap( &SlotRun< F >::run, slot )
                                                         )
-{
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
-}
+{ }
 
 
 
@@ -66,9 +62,7 @@ Slot< Slot< R ( A1 ) > >::Slot( SPTR( SlotRun< F > ) slot )
                     ::boost::function_types::function_arity< F >::value
                 >::wrap( &SlotRun< F >::run, slot )
                                                         )
-{
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
-}
+{ }
 
 
 
@@ -82,9 +76,7 @@ Slot< Slot< R () > >::Slot( SPTR( SlotRun< F > ) slot )
                     ::boost::function_types::function_arity< F >::value
                 >::wrap( &SlotRun< F >::run, slot )
                                                         )
-{
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
-}
+{ }
 
 
 
@@ -103,9 +95,7 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( SlotRun< F > ) slot )
                     ::boost::function_types::function_arity< F >::value
                 >::wrap( &SlotRun< F >::run, slot )
                                                         )
-{
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
-}
+{ }
 
 
 
