@@ -297,7 +297,7 @@ void SignalTest::emitTest()
 
 void SignalTest::autoSlotDisconnectTest()
 {
-    typedef void Signature();
+    typedef void Signature(float);
     SignalTestClass testObject;
 
     ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
@@ -307,6 +307,16 @@ void SignalTest::autoSlotDisconnectTest()
             = ::fwCom::newSlot(&SignalTestClass::method0, &testObject);
 
         sig->connect(slot0);
+
+        CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
+        {
+            ::fwCom::Slot< float(float) >::sptr slot1
+                = ::fwCom::newSlot(&SignalTestClass::method1, &testObject);
+
+            sig->connect(slot1);
+            CPPUNIT_ASSERT_EQUAL((size_t)2, sig->getNumberOfConnections());
+        }
+
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
 
         {
@@ -318,6 +328,8 @@ void SignalTest::autoSlotDisconnectTest()
         }
 
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
+
+
     }
 
     CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
@@ -340,20 +352,19 @@ void SignalTest::argumentLossTest()
     ::fwCom::Slot< float(float, double, std::string) >::sptr slot3
         = ::fwCom::newSlot(&SignalTestClass::method3, &testObject);
 
-    // sig->connect(slot0); // FIXME
-    // CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
+    sig->connect(slot0);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
 
-    //sig->connect(slot1); // FIXME
-    //CPPUNIT_ASSERT_EQUAL((size_t)2, sig->getNumberOfConnections());
+    sig->connect(slot1);
+    CPPUNIT_ASSERT_EQUAL((size_t)2, sig->getNumberOfConnections());
 
     sig->connect(slot3);
-    //CPPUNIT_ASSERT_EQUAL((size_t)3, sig->getNumberOfConnections());   // see FIXME
-    CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
+    CPPUNIT_ASSERT_EQUAL((size_t)3, sig->getNumberOfConnections());
 
     sig->emit(21.0f, 42.0, "emit");
 
-    //CPPUNIT_ASSERT(testObject.m_method0); // see FIXME
-    //CPPUNIT_ASSERT(testObject.m_method1); // see FIXME
+    CPPUNIT_ASSERT(testObject.m_method0);
+    CPPUNIT_ASSERT(testObject.m_method1);
     CPPUNIT_ASSERT(testObject.m_method3);
 
     sig->disconnectAll();

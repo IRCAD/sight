@@ -33,7 +33,7 @@ Slot< Slot< R ( A1, A2, A3 ) > >::Slot( SPTR( SlotRun< F > ) slot )
             ::fwCom::util::AutoBind<
                     SignatureType,
                     ::boost::function_types::function_arity< F >::value
-                >::wrap( &SlotRun< F >::run, slot )
+                >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
@@ -49,7 +49,7 @@ Slot< Slot< R ( A1, A2 ) > >::Slot( SPTR( SlotRun< F > ) slot )
             ::fwCom::util::AutoBind<
                     SignatureType,
                     ::boost::function_types::function_arity< F >::value
-                >::wrap( &SlotRun< F >::run, slot )
+                >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
@@ -65,7 +65,7 @@ Slot< Slot< R ( A1 ) > >::Slot( SPTR( SlotRun< F > ) slot )
             ::fwCom::util::AutoBind<
                     SignatureType,
                     ::boost::function_types::function_arity< F >::value
-                >::wrap( &SlotRun< F >::run, slot )
+                >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
@@ -81,7 +81,7 @@ Slot< Slot< R () > >::Slot( SPTR( SlotRun< F > ) slot )
             ::fwCom::util::AutoBind<
                     SignatureType,
                     ::boost::function_types::function_arity< F >::value
-                >::wrap( &SlotRun< F >::run, slot )
+                >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
@@ -102,7 +102,7 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( SlotRun< F > ) slot )
             ::fwCom::util::AutoBind<
                     SignatureType,
                     ::boost::function_types::function_arity< F >::value
-                >::wrap( &SlotRun< F >::run, slot )
+                >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
@@ -124,7 +124,7 @@ Slot< Slot< R ( A1, A2, A3 ) > >::Slot( SPTR( Slot< F > ) slot )
         ::fwCom::util::AutoBind<
                 SignatureType,
                 ::boost::function_types::function_arity< F >::value
-            >::wrap( &Slot< F >::call, slot )
+            >::wrap( &Slot< F >::call, slot.get() )
                                                     )
 { }
 
@@ -139,7 +139,7 @@ Slot< Slot< R ( A1, A2 ) > >::Slot( SPTR( Slot< F > ) slot )
         ::fwCom::util::AutoBind<
                 SignatureType,
                 ::boost::function_types::function_arity< F >::value
-            >::wrap( &Slot< F >::call, slot )
+            >::wrap( &Slot< F >::call, slot.get() )
                                                     )
 { }
 
@@ -154,7 +154,7 @@ Slot< Slot< R ( A1 ) > >::Slot( SPTR( Slot< F > ) slot )
         ::fwCom::util::AutoBind<
                 SignatureType,
                 ::boost::function_types::function_arity< F >::value
-            >::wrap( &Slot< F >::call, slot )
+            >::wrap( &Slot< F >::call, slot.get() )
                                                     )
 { }
 
@@ -169,7 +169,7 @@ Slot< Slot< R () > >::Slot( SPTR( Slot< F > ) slot )
         ::fwCom::util::AutoBind<
                 SignatureType,
                 ::boost::function_types::function_arity< F >::value
-            >::wrap( &Slot< F >::call, slot )
+            >::wrap( &Slot< F >::call, slot.get() )
                                                     )
 { }
 
@@ -189,7 +189,7 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( Slot< F > ) slot )
         ::fwCom::util::AutoBind<
                 SignatureType,
                 ::boost::function_types::function_arity< F >::value
-            >::wrap( &Slot< F >::call, slot )
+            >::wrap( &Slot< F >::call, slot.get() )
                                                     )
 { }
 

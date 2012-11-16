@@ -572,7 +572,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
         }
         else
         {
-            connection = this->connect< typename ::fwCom::util::remove_last_arg< R ( A1, A2, A3 ) >::type >( slot );
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< FROM_F >::type >( slot );
         }
 
     }
@@ -635,7 +635,7 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
         }
         else
         {
-            connection = this->connect< typename ::fwCom::util::remove_last_arg< R ( A1, A2 ) >::type >( slot );
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< FROM_F >::type >( slot );
         }
 
     }
@@ -698,7 +698,7 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
         }
         else
         {
-            connection = this->connect< typename ::fwCom::util::remove_last_arg< R ( A1 ) >::type >( slot );
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< FROM_F >::type >( slot );
         }
 
     }
@@ -761,7 +761,7 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
         }
         else
         {
-            connection = this->connect< typename ::fwCom::util::remove_last_arg< R () >::type >( slot );
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< FROM_F >::type >( slot );
         }
 
     }
@@ -829,7 +829,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
         }
         else
         {
-            connection = this->connect< typename ::fwCom::util::remove_last_arg< R (A...) >::type >( slot );
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< FROM_F >::type >( slot );
         }
 
     }

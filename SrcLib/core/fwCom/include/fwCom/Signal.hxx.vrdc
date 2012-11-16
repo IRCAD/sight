@@ -155,7 +155,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
         }
         else
         {
-            connection = this->connect< typename ::fwCom::util::remove_last_arg< R (A...) >::type >( slot );
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< FROM_F >::type >( slot );
         }
 
     }
