@@ -18,7 +18,7 @@ namespace exception
 
 struct BadRun : ::fwCore::Exception
 {
-    FWCOM_API BadRun ( const std::string &err ) : ::fwCore::Exception(err) {} ;
+    FWCOM_API BadRun ( const std::string &err ) ;
 };
 
 } // namespace exception

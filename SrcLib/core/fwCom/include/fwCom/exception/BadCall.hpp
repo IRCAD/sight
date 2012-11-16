@@ -18,7 +18,7 @@ namespace exception
 
 struct BadCall : ::fwCore::Exception
 {
-    FWCOM_API BadCall ( const std::string &err ) : ::fwCore::Exception(err) {} ;
+    FWCOM_API BadCall ( const std::string &err ) ;
 };
 
 } // namespace exception

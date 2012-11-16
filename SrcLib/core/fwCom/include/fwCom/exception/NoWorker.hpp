@@ -17,7 +17,7 @@ namespace exception
 
 struct NoWorker : ::fwCore::Exception
 {
-    FWCOM_API NoWorker ( const std::string &err ) : ::fwCore::Exception(err) {} ;
+    FWCOM_API NoWorker ( const std::string &err ) ;
 };
 
 } // namespace exception
