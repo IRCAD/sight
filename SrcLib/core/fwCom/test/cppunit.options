@@ -2,6 +2,7 @@ CLASSTEST=[
     'SlotTest',
     'SignalTest',
     'UtilTest',
+    'SlotsTest',
 ]
 
 USE = [
