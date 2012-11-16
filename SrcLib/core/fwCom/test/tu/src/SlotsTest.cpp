@@ -10,6 +10,7 @@
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+#include <fwCom/HasSlots.hpp>
 
 #include "SlotsTest.hpp"
 
@@ -93,5 +94,37 @@ void SlotsTest::buildTest()
 
 //-----------------------------------------------------------------------------
 
+struct SlotsTestHasSlots : public HasSlots
+{
+    typedef Slot< int()> GetValueSlotType;
+
+    SlotsTestHasSlots()
+    {
+        GetValueSlotType::sptr slotGetValue = ::fwCom::newSlot( &SlotsTestHasSlots::getValue, this );
+        HasSlots::m_slots("sum", &SlotsTestHasSlots::sum, this)
+                         ("getValue", slotGetValue );
+    }
+
+    int sum(int a, int b)
+    {
+        return a+b;
+    }
+
+    int getValue()
+    {
+        return 4;
+    }
+};
+
+//-----------------------------------------------------------------------------
+
+void SlotsTest::hasSlotsTest()
+{
+    SlotsTestHasSlots obj;
+    CPPUNIT_ASSERT_EQUAL(14, obj.slot("sum")->call<int>(5,9));
+    CPPUNIT_ASSERT_EQUAL(4, obj.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
+}
+
+//-----------------------------------------------------------------------------
 } //namespace ut
 } //namespace fwCom

@@ -19,15 +19,17 @@ class SlotsTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE( SlotsTest );
 
     CPPUNIT_TEST( buildTest );
+    CPPUNIT_TEST( hasSlotsTest );
 
     CPPUNIT_TEST_SUITE_END();
 
 public:
-    // interface
+
     void setUp();
     void tearDown();
 
-    void buildTest ();
+    void buildTest();
+    void hasSlotsTest();
 
 };
 
