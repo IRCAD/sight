@@ -22,12 +22,13 @@ namespace fwCom
 {
 
 template< typename ... A >
-::boost::function< void() > SlotRun< void (A...) >::bindRun( A...args  ) const
+inline ::boost::function< void() > SlotRun< void (A...) >::bindRun( A...args  ) const
 {
     return ::boost::bind( ( void (SelfType::*)( A... ) const ) &SelfType::run, this, args... );
 }
 
 template< typename ... A >
+inline
 SlotBase::VoidSharedFutureType
 SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... args ) const
 {
@@ -44,7 +45,7 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
 }
 
 template< typename ... A >
-SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
+inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
 {
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args...);

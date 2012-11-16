@@ -16,6 +16,7 @@
 
 #include "fwCom/config.hpp"
 #include "fwCom/util/convert_function_type.hpp"
+#include "fwCom/SlotConnectionBase.hpp"
 
 namespace fwCom
 {
@@ -35,11 +36,11 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     typedef WPTR( SlotBase const ) cwptr;
 
     typedef ::boost::shared_future< void > VoidSharedFutureType;
-    // typedef std::set< SlotConnectionBase::csptr > ConnectionSetType;
+    typedef std::set< SlotConnectionBase::csptr > ConnectionSetType;
 
     virtual ~SlotBase() {};
 
-    int arity() const
+    unsigned int arity() const
     {
         return m_arity;
     }
@@ -76,7 +77,7 @@ protected:
     friend struct SlotConnection;
 
     template < typename F >
-    friend struct SignalImpl;
+    friend struct Signal;
 
 
     template < typename F >
@@ -86,18 +87,18 @@ protected:
         return signature;
     }
 
-    SlotBase(int arity) : m_arity(arity) {};
+    SlotBase(unsigned int arity) : m_arity(arity) {};
 
 
 
 
     std::string m_signature;
 
-    const int m_arity;
+    const unsigned int m_arity;
 
     ::fwThread::Worker::sptr m_worker;
 
-    // ConnectionSetType m_connections;
+    ConnectionSetType m_connections;
 
 };
 

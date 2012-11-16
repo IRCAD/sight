@@ -25,28 +25,28 @@ namespace fwCom
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename A1, typename A2, typename A3 >
-::boost::function< void() > SlotRun< void ( A1, A2, A3 ) >::bindRun( A1 args1, A2 args2, A3 args3 ) const
+inline ::boost::function< void() > SlotRun< void ( A1, A2, A3 ) >::bindRun( A1 args1, A2 args2, A3 args3 ) const
 {
     return ::boost::bind( ( void (SelfType::*)( A1, A2, A3 ) const ) &SelfType::run, this, args1, args2, args3 );
 }
 
 
 template< typename A1, typename A2 >
-::boost::function< void() > SlotRun< void ( A1, A2 ) >::bindRun( A1 args1, A2 args2 ) const
+inline ::boost::function< void() > SlotRun< void ( A1, A2 ) >::bindRun( A1 args1, A2 args2 ) const
 {
     return ::boost::bind( ( void (SelfType::*)( A1, A2 ) const ) &SelfType::run, this, args1, args2 );
 }
 
 
 template< typename A1 >
-::boost::function< void() > SlotRun< void ( A1 ) >::bindRun( A1 args1 ) const
+inline ::boost::function< void() > SlotRun< void ( A1 ) >::bindRun( A1 args1 ) const
 {
     return ::boost::bind( ( void (SelfType::*)( A1 ) const ) &SelfType::run, this, args1 );
 }
 
 
 
-::boost::function< void() > SlotRun< void () >::bindRun() const
+inline ::boost::function< void() > SlotRun< void () >::bindRun() const
 {
     return ::boost::bind( ( void (SelfType::*)() const ) &SelfType::run, this);
 }
@@ -58,7 +58,7 @@ template< typename A1 >
 
 #else  // BOOST_NO_VARIADIC_TEMPLATES
 template< typename ... A >
-::boost::function< void() > SlotRun< void (A...) >::bindRun( A...args  ) const
+inline ::boost::function< void() > SlotRun< void (A...) >::bindRun( A...args  ) const
 {
     return ::boost::bind( ( void (SelfType::*)( A... ) const ) &SelfType::run, this, args... );
 }
@@ -71,6 +71,7 @@ template< typename ... A >
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename A1, typename A2, typename A3 >
+inline
 SlotBase::VoidSharedFutureType
 SlotRun< void ( A1, A2, A3 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1 args1, A2 args2, A3 args3 ) const
 {
@@ -88,6 +89,7 @@ SlotRun< void ( A1, A2, A3 ) >::asyncRun( const ::fwThread::Worker::sptr &worker
 
 
 template< typename A1, typename A2 >
+inline
 SlotBase::VoidSharedFutureType
 SlotRun< void ( A1, A2 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1 args1, A2 args2 ) const
 {
@@ -105,6 +107,7 @@ SlotRun< void ( A1, A2 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1
 
 
 template< typename A1 >
+inline
 SlotBase::VoidSharedFutureType
 SlotRun< void ( A1 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1 args1 ) const
 {
@@ -122,6 +125,7 @@ SlotRun< void ( A1 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1 arg
 
 
 
+inline
 SlotBase::VoidSharedFutureType
 SlotRun< void () >::asyncRun( const ::fwThread::Worker::sptr &worker) const
 {
@@ -144,6 +148,7 @@ SlotRun< void () >::asyncRun( const ::fwThread::Worker::sptr &worker) const
 
 #else  // BOOST_NO_VARIADIC_TEMPLATES
 template< typename ... A >
+inline
 SlotBase::VoidSharedFutureType
 SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... args ) const
 {
@@ -167,7 +172,7 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename A1, typename A2, typename A3 >
-SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2, A3 ) >::asyncRun( A1 args1, A2 args2, A3 args3 ) const
+inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2, A3 ) >::asyncRun( A1 args1, A2 args2, A3 args3 ) const
 {
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args1, args2, args3 );
@@ -178,7 +183,7 @@ SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2, A3 ) >::asyncRun( A1 args
 
 
 template< typename A1, typename A2 >
-SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2 ) >::asyncRun( A1 args1, A2 args2 ) const
+inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2 ) >::asyncRun( A1 args1, A2 args2 ) const
 {
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args1, args2 );
@@ -189,7 +194,7 @@ SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2 ) >::asyncRun( A1 args1, A
 
 
 template< typename A1 >
-SlotBase::VoidSharedFutureType SlotRun< void ( A1 ) >::asyncRun( A1 args1 ) const
+inline SlotBase::VoidSharedFutureType SlotRun< void ( A1 ) >::asyncRun( A1 args1 ) const
 {
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args1 );
@@ -200,7 +205,7 @@ SlotBase::VoidSharedFutureType SlotRun< void ( A1 ) >::asyncRun( A1 args1 ) cons
 
 
 
-SlotBase::VoidSharedFutureType SlotRun< void () >::asyncRun() const
+inline SlotBase::VoidSharedFutureType SlotRun< void () >::asyncRun() const
 {
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker);
@@ -216,7 +221,7 @@ SlotBase::VoidSharedFutureType SlotRun< void () >::asyncRun() const
 
 #else  // BOOST_NO_VARIADIC_TEMPLATES
 template< typename ... A >
-SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
+inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
 {
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args...);

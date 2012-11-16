@@ -85,9 +85,9 @@ void SlotTest::buildTest ()
     CPPUNIT_ASSERT( slot3 );
 
 
-    CPPUNIT_ASSERT_EQUAL( 2 , slot1->arity() );
-    CPPUNIT_ASSERT_EQUAL( 0 , slot2->arity() );
-    CPPUNIT_ASSERT_EQUAL( 1 , slot3->arity() );
+    CPPUNIT_ASSERT_EQUAL( (unsigned int) 2 , slot1->arity() );
+    CPPUNIT_ASSERT_EQUAL( (unsigned int) 0 , slot2->arity() );
+    CPPUNIT_ASSERT_EQUAL( (unsigned int) 1 , slot3->arity() );
 
 
 

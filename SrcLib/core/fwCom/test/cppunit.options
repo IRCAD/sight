@@ -1,5 +1,6 @@
 CLASSTEST=[
     'SlotTest',
+    'SignalTest',
     'UtilTest',
 ]
 

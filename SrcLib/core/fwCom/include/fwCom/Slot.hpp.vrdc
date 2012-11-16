@@ -6,8 +6,6 @@
 #ifndef __FWCOM_SLOT_HPP__
 #define __FWCOM_SLOT_HPP__
 
-#include <boost/type_traits/is_same.hpp>
-
 #include <boost/function.hpp>
 
 #include "fwCom/SlotCall.hpp"

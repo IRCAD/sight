@@ -1,0 +1,853 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+#ifndef __FWCOM_SIGNAL_HXX__
+#define __FWCOM_SIGNAL_HXX__
+
+#ifndef __FWCOM_SIGNAL_HPP__
+#error fwCom/Signal.hpp not included
+#endif
+
+#include <boost/foreach.hpp>
+#include <boost/function_types/function_arity.hpp>
+#include <boost/make_shared.hpp>
+
+#include "fwCom/exception/BadSlot.hpp"
+#include "fwCom/SlotConnection.hpp"
+#include "fwCom/SlotConnection.hxx"
+#include "fwCom/Slot.hpp"
+#include "fwCom/Slot.hxx"
+#include "fwCom/util/remove_last_arg.hpp"
+
+
+
+namespace fwCom
+{
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3 >
+typename Signal< R ( A1, A2, A3 ) >::sptr Signal< R ( A1, A2, A3 ) >::New()
+{
+    return ::boost::make_shared< Signal< R ( A1, A2, A3 ) > > () ;
+}
+
+
+
+
+template < typename R, typename A1, typename A2 >
+typename Signal< R ( A1, A2 ) >::sptr Signal< R ( A1, A2 ) >::New()
+{
+    return ::boost::make_shared< Signal< R ( A1, A2 ) > > () ;
+}
+
+
+
+
+template < typename R, typename A1 >
+typename Signal< R ( A1 ) >::sptr Signal< R ( A1 ) >::New()
+{
+    return ::boost::make_shared< Signal< R ( A1 ) > > () ;
+}
+
+
+
+
+template < typename R>
+typename Signal< R () >::sptr Signal< R () >::New()
+{
+    return ::boost::make_shared< Signal< R () > > () ;
+}
+
+
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template < typename R, typename ...A >
+typename Signal< R (A...) >::sptr Signal< R (A...) >::New()
+{
+    return ::boost::make_shared< Signal< R (A...) > > () ;
+}
+
+
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3 >
+Connection Signal< R ( A1, A2, A3 ) >::connect( SlotBase::sptr slot )
+{
+    return this->connect< SignatureType >(slot);
+}
+
+
+template < typename R, typename A1, typename A2 >
+Connection Signal< R ( A1, A2 ) >::connect( SlotBase::sptr slot )
+{
+    return this->connect< SignatureType >(slot);
+}
+
+
+template < typename R, typename A1 >
+Connection Signal< R ( A1 ) >::connect( SlotBase::sptr slot )
+{
+    return this->connect< SignatureType >(slot);
+}
+
+
+template < typename R>
+Connection Signal< R () >::connect( SlotBase::sptr slot )
+{
+    return this->connect< SignatureType >(slot);
+}
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template < typename R, typename ...A >
+Connection Signal< R (A...) >::connect( SlotBase::sptr slot )
+{
+    return this->connect< SignatureType >(slot);
+}
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3 >
+void Signal< R ( A1, A2, A3 ) >::disconnect( SlotBase::sptr slot )
+{
+    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+
+    if (iter != m_connections.end())
+    {
+        SlotConnectionBase::sptr connection ( iter->second.lock() );
+        SLM_ASSERT( "Connection has been previously destroyed", connection );
+        if (connection)
+        {
+            connection->disconnect();
+            // m_connections.erase(slot.get()); // done in connection->disconnect
+        }
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+    }
+}
+
+
+
+template < typename R, typename A1, typename A2 >
+void Signal< R ( A1, A2 ) >::disconnect( SlotBase::sptr slot )
+{
+    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+
+    if (iter != m_connections.end())
+    {
+        SlotConnectionBase::sptr connection ( iter->second.lock() );
+        SLM_ASSERT( "Connection has been previously destroyed", connection );
+        if (connection)
+        {
+            connection->disconnect();
+            // m_connections.erase(slot.get()); // done in connection->disconnect
+        }
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+    }
+}
+
+
+
+template < typename R, typename A1 >
+void Signal< R ( A1 ) >::disconnect( SlotBase::sptr slot )
+{
+    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+
+    if (iter != m_connections.end())
+    {
+        SlotConnectionBase::sptr connection ( iter->second.lock() );
+        SLM_ASSERT( "Connection has been previously destroyed", connection );
+        if (connection)
+        {
+            connection->disconnect();
+            // m_connections.erase(slot.get()); // done in connection->disconnect
+        }
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+    }
+}
+
+
+
+template < typename R>
+void Signal< R () >::disconnect( SlotBase::sptr slot )
+{
+    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+
+    if (iter != m_connections.end())
+    {
+        SlotConnectionBase::sptr connection ( iter->second.lock() );
+        SLM_ASSERT( "Connection has been previously destroyed", connection );
+        if (connection)
+        {
+            connection->disconnect();
+            // m_connections.erase(slot.get()); // done in connection->disconnect
+        }
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+    }
+}
+
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template < typename R, typename ...A >
+void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
+{
+    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+
+    if (iter != m_connections.end())
+    {
+        SlotConnectionBase::sptr connection ( iter->second.lock() );
+        SLM_ASSERT( "Connection has been previously destroyed", connection );
+        if (connection)
+        {
+            connection->disconnect();
+            // m_connections.erase(slot.get()); // done in connection->disconnect
+        }
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+    }
+}
+
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3 >
+void Signal< R ( A1, A2, A3 ) >::disconnectAll()
+{
+    ConnectionMapType connections = m_connections;
+    BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
+    {
+        SlotConnectionBase::sptr connection( conn.second.lock() );
+
+        if(connection)
+        {
+            connection->disconnect();
+        }
+    }
+}
+
+
+template < typename R, typename A1, typename A2 >
+void Signal< R ( A1, A2 ) >::disconnectAll()
+{
+    ConnectionMapType connections = m_connections;
+    BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
+    {
+        SlotConnectionBase::sptr connection( conn.second.lock() );
+
+        if(connection)
+        {
+            connection->disconnect();
+        }
+    }
+}
+
+
+template < typename R, typename A1 >
+void Signal< R ( A1 ) >::disconnectAll()
+{
+    ConnectionMapType connections = m_connections;
+    BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
+    {
+        SlotConnectionBase::sptr connection( conn.second.lock() );
+
+        if(connection)
+        {
+            connection->disconnect();
+        }
+    }
+}
+
+
+template < typename R>
+void Signal< R () >::disconnectAll()
+{
+    ConnectionMapType connections = m_connections;
+    BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
+    {
+        SlotConnectionBase::sptr connection( conn.second.lock() );
+
+        if(connection)
+        {
+            connection->disconnect();
+        }
+    }
+}
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template < typename R, typename ...A >
+void Signal< R (A...) >::disconnectAll()
+{
+    ConnectionMapType connections = m_connections;
+    BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
+    {
+        SlotConnectionBase::sptr connection( conn.second.lock() );
+
+        if(connection)
+        {
+            connection->disconnect();
+        }
+    }
+}
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3 >
+void Signal< R ( A1, A2, A3 ) >::emit( A1 a1, A2 a2, A3 a3 ) const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->run( a1, a2, a3 );
+        }
+    }
+}
+
+
+template < typename R, typename A1, typename A2 >
+void Signal< R ( A1, A2 ) >::emit( A1 a1, A2 a2 ) const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->run( a1, a2 );
+        }
+    }
+}
+
+
+template < typename R, typename A1 >
+void Signal< R ( A1 ) >::emit( A1 a1 ) const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->run( a1 );
+        }
+    }
+}
+
+
+template < typename R>
+void Signal< R () >::emit() const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->run();
+        }
+    }
+}
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template < typename R, typename ...A >
+void Signal< R (A...) >::emit( A...a ) const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->run(a...);
+        }
+    }
+}
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3 >
+void Signal< R ( A1, A2, A3 ) >::asyncEmit( A1 a1, A2 a2, A3 a3 ) const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->asyncRun( a1, a2, a3 );
+        }
+    }
+}
+
+
+
+template < typename R, typename A1, typename A2 >
+void Signal< R ( A1, A2 ) >::asyncEmit( A1 a1, A2 a2 ) const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->asyncRun( a1, a2 );
+        }
+    }
+}
+
+
+
+template < typename R, typename A1 >
+void Signal< R ( A1 ) >::asyncEmit( A1 a1 ) const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->asyncRun( a1 );
+        }
+    }
+}
+
+
+
+template < typename R>
+void Signal< R () >::asyncEmit() const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->asyncRun();
+        }
+    }
+}
+
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template < typename R, typename ...A >
+void Signal< R (A...) >::asyncEmit( A...a ) const
+{
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->asyncRun(a...);
+        }
+    }
+}
+
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3 >
+template< typename FROM_F >
+Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
+{
+    typedef SlotConnection< void( A1, A2, A3 ) > ConnectionType;
+    Connection connection;
+
+    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    if ( sigArity == slot->arity() )
+    {
+        SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
+        if(slotToConnect)
+        {
+            typename Signal< R( A1, A2, A3 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1, A2, A3 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slotToConnect);
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+        }
+    }
+    else if ( sigArity > slot->arity() )
+    {
+
+        typedef SlotRun< FROM_F > WrappedSlotRunType;
+        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+
+        if(wrappedSlot)
+        {
+            SlotSptr slotToConnect = fwCom::newSlot< void ( A1, A2, A3 ) >(wrappedSlot);
+            typename Signal< R( A1, A2, A3 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1, A2, A3 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slot, slotToConnect );
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< R ( A1, A2, A3 ) >::type >( slot );
+        }
+
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+    }
+
+    return connection;
+
+}
+
+
+
+
+template < typename R, typename A1, typename A2 >
+template< typename FROM_F >
+Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
+{
+    typedef SlotConnection< void( A1, A2 ) > ConnectionType;
+    Connection connection;
+
+    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    if ( sigArity == slot->arity() )
+    {
+        SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
+        if(slotToConnect)
+        {
+            typename Signal< R( A1, A2 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1, A2 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slotToConnect);
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+        }
+    }
+    else if ( sigArity > slot->arity() )
+    {
+
+        typedef SlotRun< FROM_F > WrappedSlotRunType;
+        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+
+        if(wrappedSlot)
+        {
+            SlotSptr slotToConnect = fwCom::newSlot< void ( A1, A2 ) >(wrappedSlot);
+            typename Signal< R( A1, A2 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1, A2 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slot, slotToConnect );
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< R ( A1, A2 ) >::type >( slot );
+        }
+
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+    }
+
+    return connection;
+
+}
+
+
+
+
+template < typename R, typename A1 >
+template< typename FROM_F >
+Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
+{
+    typedef SlotConnection< void( A1 ) > ConnectionType;
+    Connection connection;
+
+    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    if ( sigArity == slot->arity() )
+    {
+        SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
+        if(slotToConnect)
+        {
+            typename Signal< R( A1 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slotToConnect);
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+        }
+    }
+    else if ( sigArity > slot->arity() )
+    {
+
+        typedef SlotRun< FROM_F > WrappedSlotRunType;
+        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+
+        if(wrappedSlot)
+        {
+            SlotSptr slotToConnect = fwCom::newSlot< void ( A1 ) >(wrappedSlot);
+            typename Signal< R( A1 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slot, slotToConnect );
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< R ( A1 ) >::type >( slot );
+        }
+
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+    }
+
+    return connection;
+
+}
+
+
+
+
+template < typename R>
+template< typename FROM_F >
+Connection Signal< R() >::connect ( SlotBase::sptr slot )
+{
+    typedef SlotConnection< void() > ConnectionType;
+    Connection connection;
+
+    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    if ( sigArity == slot->arity() )
+    {
+        SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
+        if(slotToConnect)
+        {
+            typename Signal< R() >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R() > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slotToConnect);
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+        }
+    }
+    else if ( sigArity > slot->arity() )
+    {
+
+        typedef SlotRun< FROM_F > WrappedSlotRunType;
+        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+
+        if(wrappedSlot)
+        {
+            SlotSptr slotToConnect = fwCom::newSlot< void () >(wrappedSlot);
+            typename Signal< R() >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R() > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slot, slotToConnect );
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< R () >::type >( slot );
+        }
+
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+    }
+
+    return connection;
+
+}
+
+
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template < typename R, typename ...A >
+template< typename FROM_F >
+Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
+{
+    typedef SlotConnection< void( A... ) > ConnectionType;
+    Connection connection;
+
+    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    if ( sigArity == slot->arity() )
+    {
+        SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
+        if(slotToConnect)
+        {
+            typename Signal< R( A... ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slotToConnect);
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+        }
+    }
+    else if ( sigArity > slot->arity() )
+    {
+
+        typedef SlotRun< FROM_F > WrappedSlotRunType;
+        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+
+        if(wrappedSlot)
+        {
+            SlotSptr slotToConnect = fwCom::newSlot< void (A...) >(wrappedSlot);
+            typename Signal< R( A... ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection =
+                ConnectionType::New( sig, slot, slotToConnect );
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            slotConnection->connect();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< R (A...) >::type >( slot );
+        }
+
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+    }
+
+    return connection;
+
+}
+
+
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+} // namespace fwCom
+
+#endif /* __FWCOM_SIGNAL_HXX__ */
+
+

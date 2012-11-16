@@ -13,6 +13,7 @@
 #include <boost/function_types/function_arity.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/type_traits/is_same.hpp>
 
 #include "fwCom/util/AutoBind.hpp"
 #include "fwCom/util/AutoBind.hxx"
