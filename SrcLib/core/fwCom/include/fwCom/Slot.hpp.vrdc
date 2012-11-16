@@ -57,10 +57,6 @@ struct Slot< Slot< R ( A... ) > > : Slot< boost::function < R ( A... ) > >
     template< typename F >
         Slot( SPTR( Slot< F > ) slot );
 
-private:
-
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
-
 };
 
 

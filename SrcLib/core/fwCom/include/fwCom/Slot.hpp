@@ -139,10 +139,6 @@ struct Slot< Slot< R ( A1, A2, A3 ) > > : Slot< boost::function < R ( A1, A2, A3
     template< typename F >
         Slot( SPTR( Slot< F > ) slot );
 
-private:
-
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
-
 };
 template<typename R, typename A1, typename A2 >
 struct Slot< Slot< R ( A1, A2 ) > > : Slot< boost::function < R ( A1, A2 ) > >
@@ -159,10 +155,6 @@ struct Slot< Slot< R ( A1, A2 ) > > : Slot< boost::function < R ( A1, A2 ) > >
 
     template< typename F >
         Slot( SPTR( Slot< F > ) slot );
-
-private:
-
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
 
 };
 template<typename R, typename A1 >
@@ -181,10 +173,6 @@ struct Slot< Slot< R ( A1 ) > > : Slot< boost::function < R ( A1 ) > >
     template< typename F >
         Slot( SPTR( Slot< F > ) slot );
 
-private:
-
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
-
 };
 template<typename R>
 struct Slot< Slot< R () > > : Slot< boost::function < R () > >
@@ -201,10 +189,6 @@ struct Slot< Slot< R () > > : Slot< boost::function < R () > >
 
     template< typename F >
         Slot( SPTR( Slot< F > ) slot );
-
-private:
-
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
 
 };
 //===================================== END =====================================
@@ -227,10 +211,6 @@ struct Slot< Slot< R ( A... ) > > : Slot< boost::function < R ( A... ) > >
 
     template< typename F >
         Slot( SPTR( Slot< F > ) slot );
-
-private:
-
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
 
 };
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
