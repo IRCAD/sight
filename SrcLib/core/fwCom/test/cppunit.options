@@ -3,6 +3,7 @@ CLASSTEST=[
     'SignalTest',
     'UtilTest',
     'SlotsTest',
+    'SignalsTest',
 ]
 
 USE = [
