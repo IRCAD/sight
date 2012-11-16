@@ -8,6 +8,8 @@
 
 #include <fwCore/Exception.hpp>
 
+#include "fwCom/config.hpp"
+
 namespace fwCom
 {
 namespace exception
