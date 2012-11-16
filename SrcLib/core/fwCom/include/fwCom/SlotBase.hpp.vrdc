@@ -49,6 +49,11 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     {
         m_worker = worker;
     }
+    
+    ::fwThread::Worker::sptr getWorker() const 
+    {
+        return m_worker;
+    }
 
     template< typename A1, typename A2, typename A3 > void run(A1 a1, A2 a2, A3 a3) const;
     template< typename A1, typename A2 > void run(A1 a1, A2 a2) const;
