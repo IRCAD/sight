@@ -133,9 +133,8 @@ R SlotBase::call() const
     {
         return fun->call();
     }
-    std::string err = "failed to call : " + m_signature + " with " + SlotBase::getTypeName< R() >() ;
-    OSLM_ERROR( err );
-    throw fwCom::exception::BadCall( err );
+    OSLM_ERROR( "failed to call : " + m_signature + " with " + SlotBase::getTypeName< R() >() );
+    throw fwCom::exception::BadCall( "Failed to find right signature for call" );
 }
 
 //------------------------------------------------------------------------------
@@ -249,9 +248,8 @@ template< typename R >
     }
     else
     {
-        std::string err = "failed to asyncCall : " + m_signature + " with " + SlotBase::getTypeName< R() >() ;
-        OSLM_ERROR( err );
-        throw fwCom::exception::BadCall( err );
+        OSLM_ERROR( "failed to asyncCall : " + m_signature + " with " + SlotBase::getTypeName< R() >() );
+        throw fwCom::exception::BadCall( "Failed to find right signature for asyncCall" );
     }
 }
 

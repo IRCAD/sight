@@ -23,9 +23,8 @@ void SlotBase::run() const
     }
     else
     {
-        std::string err = "failed to run : " + m_signature + " with " + SlotBase::getTypeName< void() >();
-        OSLM_ERROR( err );
-        throw fwCom::exception::BadRun( err );
+        OSLM_ERROR( "failed to run : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
+        throw fwCom::exception::BadRun( "Failed to find right signature for run"  );
     }
 }
 
@@ -39,9 +38,8 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun() const
     }
     else
     {
-        std::string err = "failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName< void() >();
-        OSLM_ERROR( err );
-        throw fwCom::exception::BadRun( err );
+        OSLM_ERROR( "failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
+        throw fwCom::exception::BadRun( "Failed to find right signature for asyncRun"  );
     }
 }
 

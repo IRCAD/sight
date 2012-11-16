@@ -12,6 +12,10 @@
 
 #include <fwThread/Worker.hpp>
 
+#include "fwCom/exception/BadCall.hpp"
+#include "fwCom/exception/BadRun.hpp"
+#include "fwCom/exception/NoWorker.hpp"
+
 #include "fwCom/util/AutoBind.hpp"
 #include "fwCom/util/AutoBind.hxx"
 
@@ -226,10 +230,6 @@ void SlotTest::asyncTest ()
 
 //-----------------------------------------------------------------------------
 
-void v ()
-{
-};
-
 void SlotTest::slotBaseTest ()
 {
     A a;
@@ -309,6 +309,21 @@ void SlotTest::slotBaseTest ()
 
 //-----------------------------------------------------------------------------
 
+void SlotTest::exceptionTest ()
+{
+
+    ::fwCom::SlotBase::sptr slot = ::fwCom::newSlot( &sum );
+
+    CPPUNIT_ASSERT_THROW(slot->run(), fwCom::exception::BadRun);
+    CPPUNIT_ASSERT_THROW(slot->call<int>(), fwCom::exception::BadCall);
+    CPPUNIT_ASSERT_THROW(slot->call<void>(3,4), fwCom::exception::BadCall);
+    CPPUNIT_ASSERT_THROW(slot->asyncRun(), fwCom::exception::BadRun);
+    CPPUNIT_ASSERT_THROW(slot->asyncCall<int>(), fwCom::exception::BadCall);
+    CPPUNIT_ASSERT_THROW(slot->asyncRun(5,6), fwCom::exception::NoWorker);
+    CPPUNIT_ASSERT_THROW(slot->asyncCall<int>(4,5), fwCom::exception::NoWorker);
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace ut
 } //namespace fwCore

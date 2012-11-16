@@ -23,6 +23,7 @@ class SlotTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( callTest );
     CPPUNIT_TEST( asyncTest );
     CPPUNIT_TEST( slotBaseTest );
+    CPPUNIT_TEST( exceptionTest );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -36,6 +37,7 @@ public:
     void callTest ();
     void asyncTest ();
     void slotBaseTest ();
+    void exceptionTest ();
 
 };
 
