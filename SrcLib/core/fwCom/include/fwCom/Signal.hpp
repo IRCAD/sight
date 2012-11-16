@@ -47,6 +47,10 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
 
     static sptr New();
 
+    ~Signal()
+    {
+        this->disconnectAll();
+    }
 
     Connection connect ( SlotBase::sptr slot );
 
@@ -58,6 +62,7 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
 
     void asyncEmit( A1 a1, A2 a2, A3 a3 ) const;
 
+    size_t getNumberOfConnections() { return m_slots.size(); }
 
 protected:
 
@@ -95,6 +100,10 @@ struct Signal< R ( A1, A2 ) > : SignalBase
 
     static sptr New();
 
+    ~Signal()
+    {
+        this->disconnectAll();
+    }
 
     Connection connect ( SlotBase::sptr slot );
 
@@ -106,6 +115,7 @@ struct Signal< R ( A1, A2 ) > : SignalBase
 
     void asyncEmit( A1 a1, A2 a2 ) const;
 
+    size_t getNumberOfConnections() { return m_slots.size(); }
 
 protected:
 
@@ -143,6 +153,10 @@ struct Signal< R ( A1 ) > : SignalBase
 
     static sptr New();
 
+    ~Signal()
+    {
+        this->disconnectAll();
+    }
 
     Connection connect ( SlotBase::sptr slot );
 
@@ -154,6 +168,7 @@ struct Signal< R ( A1 ) > : SignalBase
 
     void asyncEmit( A1 a1 ) const;
 
+    size_t getNumberOfConnections() { return m_slots.size(); }
 
 protected:
 
@@ -191,6 +206,10 @@ struct Signal< R () > : SignalBase
 
     static sptr New();
 
+    ~Signal()
+    {
+        this->disconnectAll();
+    }
 
     Connection connect ( SlotBase::sptr slot );
 
@@ -202,6 +221,7 @@ struct Signal< R () > : SignalBase
 
     void asyncEmit() const;
 
+    size_t getNumberOfConnections() { return m_slots.size(); }
 
 protected:
 
@@ -244,6 +264,10 @@ struct Signal< R (A...) > : SignalBase
 
     static sptr New();
 
+    ~Signal()
+    {
+        this->disconnectAll();
+    }
 
     Connection connect ( SlotBase::sptr slot );
 
@@ -255,6 +279,7 @@ struct Signal< R (A...) > : SignalBase
 
     void asyncEmit( A...a ) const;
 
+    size_t getNumberOfConnections() { return m_slots.size(); }
 
 protected:
 
