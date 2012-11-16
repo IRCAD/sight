@@ -9,7 +9,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwCore
+namespace fwCom
 {
 namespace ut
 {
@@ -42,5 +42,5 @@ public:
 };
 
 } //namespace ut
-} //namespace fwCore
+} //namespace fwCom
 #endif //__FWCOM_UT_UTILTEST_HPP__

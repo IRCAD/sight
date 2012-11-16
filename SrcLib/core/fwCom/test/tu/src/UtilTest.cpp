@@ -18,9 +18,9 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCore::ut::UtilTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::UtilTest );
 
-namespace fwCore
+namespace fwCom
 {
 namespace ut
 {
@@ -111,4 +111,4 @@ void UtilTest::removeLastArgTest ()
 
 
 } //namespace ut
-} //namespace fwCore
+} //namespace fwCom

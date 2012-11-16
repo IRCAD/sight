@@ -26,9 +26,9 @@
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCore::ut::SlotTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::SlotTest );
 
-namespace fwCore
+namespace fwCom
 {
 namespace ut
 {
@@ -326,4 +326,4 @@ void SlotTest::exceptionTest ()
 //-----------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace fwCore
+} //namespace fwCom
