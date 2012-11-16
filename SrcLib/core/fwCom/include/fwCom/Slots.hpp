@@ -10,11 +10,16 @@
 #include "fwCom/Slot.hpp"
 #include "fwCom/config.hpp"
 
-//-----------------------------------------------------------------------------
-
 namespace fwCom
 {
 
+/**
+ * @class   Slots.
+ * @brief   This class proposes a mapping between a SlotKeyType and a SlotBase.
+ *
+ * @author IRCAD (Research and Development Team).
+ * @date   2012.
+ */
 class FWCOM_CLASS_API Slots
 {
 public:
@@ -23,11 +28,13 @@ public:
     typedef std::map< SlotKeyType, SlotBase::sptr > SlotMapType;
     typedef std::vector < SlotKeyType > SlotKeyContainerType;
 
+    /// Constructor, does nothing
     FWCOM_API Slots();
 
-    FWCOM_API void setWorker( const ::fwThread::Worker::sptr &worker );
-
+    /// Registers SlotBase in m_slots
     FWCOM_API Slots& operator()( const SlotKeyType &key, const SlotBase::sptr &slot );
+
+    /// Registers Slot  in m_slots
 #ifdef BOOST_NO_VARIADIC_TEMPLATES
 //===============================================================================
 //===============================================================================
@@ -58,7 +65,7 @@ template<typename R, typename ...A>
 
 
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
-
+/// Creates in intern a new slot from function and registers it in m_slots
 #ifdef BOOST_NO_VARIADIC_TEMPLATES
 //===============================================================================
 //===============================================================================
@@ -89,21 +96,27 @@ template<typename F, typename ...A>
 
 
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
-FWCOM_API SlotBase::sptr operator[]( const SlotKeyType &key ) const;
+/// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
+    FWCOM_API SlotBase::sptr operator[]( const SlotKeyType &key ) const;
 
+    /// Assigns the worker to all slots stored in m_slots
+    FWCOM_API void setWorker( const ::fwThread::Worker::sptr &worker );
+
+    /// Returns all SlotKeyType registered in m_slots
     FWCOM_API SlotKeyContainerType getSlotKeys() const;
+
 protected:
+
     /// Copy constructor forbidden
     Slots( const Slots& );
 
     /// Copy constructor forbidden
     Slots& operator=( const Slots& );
 
+    /// Association < key , SlotBase::sptr >
     SlotMapType m_slots;
 };
 
 } // namespace fwCom
-
-//-----------------------------------------------------------------------------
 
 #endif //__FWCOM_SLOTS_HPP__
