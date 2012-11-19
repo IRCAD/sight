@@ -65,6 +65,9 @@ struct SignalsTestHasSignals : public HasSignals
     {
         SignalType::sptr signal = SignalType::New();
         HasSignals::m_signals("sig", signal);
+#ifdef COM_LOG
+        signal->setID("sig");
+#endif
     }
 };
 
@@ -90,7 +93,9 @@ void SignalsTest::hasSignalsTest()
     SignalsTestHasSignals obj;
     SignalsTestA srv;
     Slot< void()>::sptr slot = ::fwCom::newSlot( &SignalsTestA::changeStatus, &srv );
-
+#ifdef COM_LOG
+    slot->setID("changeStatus");
+#endif
     obj.signal("sig")->connect( slot );
     obj.signal< SignalsTestHasSignals::SignalType >("sig")->emit();
 

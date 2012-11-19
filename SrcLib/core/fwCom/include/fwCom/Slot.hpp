@@ -9,6 +9,7 @@
 #include <boost/function.hpp>
 
 #include "fwCom/SlotCall.hpp"
+#include "fwCom/util/log.hpp"
 
 namespace fwCom
 {
@@ -31,8 +32,17 @@ struct Slot< ::boost::function< R ( A1, A2, A3 ) > > : Slot< R ( A1, A2, A3 ) >
         Slot( FUNCTOR f ) : Slot< R ( A1, A2, A3 ) >(),  m_func(f)
     { }
 
-    virtual void run( A1 a1, A2 a2, A3 a3 ) const {        m_func( a1, a2, a3 ); };
-    virtual R   call( A1 a1, A2 a2, A3 a3 ) const { return m_func( a1, a2, a3 ); };
+    virtual void run( A1 a1, A2 a2, A3 a3 ) const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        m_func( a1, a2, a3 );
+    };
+
+    virtual R   call( A1 a1, A2 a2, A3 a3 ) const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        return m_func( a1, a2, a3 );
+    };
 
 
 protected:
@@ -49,8 +59,17 @@ struct Slot< ::boost::function< R ( A1, A2 ) > > : Slot< R ( A1, A2 ) >
         Slot( FUNCTOR f ) : Slot< R ( A1, A2 ) >(),  m_func(f)
     { }
 
-    virtual void run( A1 a1, A2 a2 ) const {        m_func( a1, a2 ); };
-    virtual R   call( A1 a1, A2 a2 ) const { return m_func( a1, a2 ); };
+    virtual void run( A1 a1, A2 a2 ) const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        m_func( a1, a2 );
+    };
+
+    virtual R   call( A1 a1, A2 a2 ) const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        return m_func( a1, a2 );
+    };
 
 
 protected:
@@ -67,8 +86,17 @@ struct Slot< ::boost::function< R ( A1 ) > > : Slot< R ( A1 ) >
         Slot( FUNCTOR f ) : Slot< R ( A1 ) >(),  m_func(f)
     { }
 
-    virtual void run( A1 a1 ) const {        m_func( a1 ); };
-    virtual R   call( A1 a1 ) const { return m_func( a1 ); };
+    virtual void run( A1 a1 ) const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        m_func( a1 );
+    };
+
+    virtual R   call( A1 a1 ) const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        return m_func( a1 );
+    };
 
 
 protected:
@@ -85,8 +113,17 @@ struct Slot< ::boost::function< R () > > : Slot< R () >
         Slot( FUNCTOR f ) : Slot< R () >(),  m_func(f)
     { }
 
-    virtual void run() const {        m_func(); };
-    virtual R   call() const { return m_func(); };
+    virtual void run() const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        m_func();
+    };
+
+    virtual R   call() const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        return m_func();
+    };
 
 
 protected:
@@ -108,8 +145,17 @@ struct Slot< ::boost::function< R ( A... ) > > : Slot< R ( A... ) >
         Slot( FUNCTOR f ) : Slot< R ( A... ) >(),  m_func(f)
     { }
 
-    virtual void run(A...a) const {        m_func(a...); };
-    virtual R   call(A...a) const { return m_func(a...); };
+    virtual void run(A...a) const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        m_func(a...);
+    };
+
+    virtual R   call(A...a) const
+    {
+        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        return m_func(a...);
+    };
 
 
 protected:

@@ -20,7 +20,7 @@
 #include "fwCom/Slot.hpp"
 #include "fwCom/Slot.hxx"
 #include "fwCom/util/remove_last_arg.hpp"
-
+#include "fwCom/util/log.hpp"
 
 
 namespace fwCom
@@ -88,6 +88,7 @@ void Signal< R (A...) >::emit( A...a ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run(a...);
         }
     }
@@ -102,6 +103,7 @@ void Signal< R (A...) >::asyncEmit( A...a ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun(a...);
         }
     }

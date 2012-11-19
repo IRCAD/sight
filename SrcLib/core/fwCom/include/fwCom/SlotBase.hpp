@@ -10,6 +10,11 @@
 
 #include <boost/thread/future.hpp>
 
+#ifdef COM_LOG
+#include <boost/lexical_cast.hpp>
+#include <fwCore/mt/types.hpp>
+#endif
+
 #include <fwCore/BaseObject.hpp>
 
 #include <fwThread/Worker.hpp>
@@ -95,7 +100,13 @@ protected:
         return signature;
     }
 
-    SlotBase(unsigned int arity) : m_arity(arity) {};
+    SlotBase(unsigned int arity) : m_arity(arity)
+    {
+#ifdef COM_LOG
+        ::fwCore::mt::ScopedLock lock(s_mutexCounter);
+        m_id = "Slot-" + ::boost::lexical_cast<std::string>(s_idCount++);
+#endif
+    };
 
 
 
@@ -108,6 +119,36 @@ protected:
 
     ConnectionSetType m_connections;
 
+#ifdef COM_LOG
+
+public :
+
+    typedef std::string IDType;
+
+    /// Gets current m_id
+    IDType getID() const
+    {
+        return m_id;
+    }
+
+    /// Sets new m_id
+    void setID( IDType newId )
+    {
+        m_id = newId;
+    }
+
+private :
+
+    /// Id of signal (not mandatory)
+    IDType m_id;
+
+    /// Id counter
+    static size_t s_idCount;
+
+    /// Mutex to protect id counter
+    static ::fwCore::mt::Mutex s_mutexCounter;
+
+#endif
 };
 
 } // namespace fwCom

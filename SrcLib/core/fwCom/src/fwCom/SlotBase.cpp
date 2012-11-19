@@ -13,6 +13,11 @@
 namespace fwCom
 {
 
+#ifdef COM_LOG
+size_t SlotBase::s_idCount = 0;
+::fwCore::mt::Mutex SlotBase::s_mutexCounter;
+#endif
+
 void SlotBase::run() const
 {
     typedef SlotRun< void() > SlotFuncType;

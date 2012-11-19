@@ -13,6 +13,7 @@
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 
+#include "fwCom/util/log.hpp"
 
 namespace fwCom
 {
@@ -360,6 +361,7 @@ inline void SlotConnection< void ( A1, A2, A3 ) >::connect()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
+    OSLM_COM("Connect signal '"<< sig->getID() <<"' <=> slot '"<< m_connectedSlot.lock()->getID() <<"'");
 }
 
 
@@ -370,6 +372,7 @@ inline void SlotConnection< void ( A1, A2 ) >::connect()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
+    OSLM_COM("Connect signal '"<< sig->getID() <<"' <=> slot '"<< m_connectedSlot.lock()->getID() <<"'");
 }
 
 
@@ -380,6 +383,7 @@ inline void SlotConnection< void ( A1 ) >::connect()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
+    OSLM_COM("Connect signal '"<< sig->getID() <<"' <=> slot '"<< m_connectedSlot.lock()->getID() <<"'");
 }
 
 
@@ -390,6 +394,7 @@ inline void SlotConnection< void () >::connect()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
+    OSLM_COM("Connect signal '"<< sig->getID() <<"' <=> slot '"<< m_connectedSlot.lock()->getID() <<"'");
 }
 
 
@@ -405,6 +410,7 @@ inline void SlotConnection< void (A...) >::connect()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
+    OSLM_COM("Connect signal '"<< sig->getID() <<"' <=> slot '"<< m_connectedSlot.lock()->getID() <<"'");
 }
 
 
@@ -428,6 +434,7 @@ inline void SlotConnection< void ( A1, A2, A3 ) >::disconnect()
         sig->m_slots.remove( &m_pair );
         if(slot)
         {
+            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
             sig->m_connections.erase(slot.get());
         }
     }
@@ -465,6 +472,7 @@ inline void SlotConnection< void ( A1, A2 ) >::disconnect()
         sig->m_slots.remove( &m_pair );
         if(slot)
         {
+            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
             sig->m_connections.erase(slot.get());
         }
     }
@@ -502,6 +510,7 @@ inline void SlotConnection< void ( A1 ) >::disconnect()
         sig->m_slots.remove( &m_pair );
         if(slot)
         {
+            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
             sig->m_connections.erase(slot.get());
         }
     }
@@ -539,6 +548,7 @@ inline void SlotConnection< void () >::disconnect()
         sig->m_slots.remove( &m_pair );
         if(slot)
         {
+            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
             sig->m_connections.erase(slot.get());
         }
     }
@@ -581,6 +591,7 @@ inline void SlotConnection< void (A...) >::disconnect()
         sig->m_slots.remove( &m_pair );
         if(slot)
         {
+            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
             sig->m_connections.erase(slot.get());
         }
     }

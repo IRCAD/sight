@@ -20,7 +20,7 @@
 #include "fwCom/Slot.hpp"
 #include "fwCom/Slot.hxx"
 #include "fwCom/util/remove_last_arg.hpp"
-
+#include "fwCom/util/log.hpp"
 
 
 namespace fwCom
@@ -357,6 +357,7 @@ void Signal< R ( A1, A2, A3 ) >::emit( A1 a1, A2 a2, A3 a3 ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run( a1, a2, a3 );
         }
     }
@@ -372,6 +373,7 @@ void Signal< R ( A1, A2 ) >::emit( A1 a1, A2 a2 ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run( a1, a2 );
         }
     }
@@ -387,6 +389,7 @@ void Signal< R ( A1 ) >::emit( A1 a1 ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run( a1 );
         }
     }
@@ -402,6 +405,7 @@ void Signal< R () >::emit() const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run();
         }
     }
@@ -422,6 +426,7 @@ void Signal< R (A...) >::emit( A...a ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run(a...);
         }
     }
@@ -443,6 +448,7 @@ void Signal< R ( A1, A2, A3 ) >::asyncEmit( A1 a1, A2 a2, A3 a3 ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun( a1, a2, a3 );
         }
     }
@@ -459,6 +465,7 @@ void Signal< R ( A1, A2 ) >::asyncEmit( A1 a1, A2 a2 ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun( a1, a2 );
         }
     }
@@ -475,6 +482,7 @@ void Signal< R ( A1 ) >::asyncEmit( A1 a1 ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun( a1 );
         }
     }
@@ -491,6 +499,7 @@ void Signal< R () >::asyncEmit() const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun();
         }
     }
@@ -512,6 +521,7 @@ void Signal< R (A...) >::asyncEmit( A...a ) const
     {
         if ((*iter)->first)
         {
+            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun(a...);
         }
     }
