@@ -455,6 +455,9 @@ inline void SlotConnection< void ( A1, A2, A3 ) >::disconnect()
             // shared_ptr from connections
         }
     }
+
+    m_signal.reset();
+    m_connectedSlot.reset();
 }
 
 
@@ -493,6 +496,9 @@ inline void SlotConnection< void ( A1, A2 ) >::disconnect()
             // shared_ptr from connections
         }
     }
+
+    m_signal.reset();
+    m_connectedSlot.reset();
 }
 
 
@@ -531,6 +537,9 @@ inline void SlotConnection< void ( A1 ) >::disconnect()
             // shared_ptr from connections
         }
     }
+
+    m_signal.reset();
+    m_connectedSlot.reset();
 }
 
 
@@ -569,6 +578,9 @@ inline void SlotConnection< void () >::disconnect()
             // shared_ptr from connections
         }
     }
+
+    m_signal.reset();
+    m_connectedSlot.reset();
 }
 
 
@@ -612,6 +624,9 @@ inline void SlotConnection< void (A...) >::disconnect()
             // shared_ptr from connections
         }
     }
+
+    m_signal.reset();
+    m_connectedSlot.reset();
 }
 
 
