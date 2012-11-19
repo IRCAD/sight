@@ -27,6 +27,10 @@
 #include <fwTools/Object.hpp>
 #include <fwTools/DynamicAttributes.hxx>
 
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include "fwData/factory/new.hpp"
 #include "fwData/registry/detail.hpp"
 
@@ -34,6 +38,8 @@
 #include "fwData/config.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(Object), FWDATA_API);
+
+fwCorePredeclare( (fwServices)(ObjectMsg) );
 
 namespace fwData
 {
@@ -48,7 +54,8 @@ namespace fwData
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
-class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >
+class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >,
+                                 public ::fwCom::HasSignals
 {
 public:
 
@@ -215,6 +222,12 @@ public:
 
     FWDATA_API virtual ~Object() ;
 
+    /// Type of signal m_sigObjectModified
+    typedef ::fwCom::Signal< void ( CSPTR( ::fwServices::ObjectMsg ) ) > ObjectModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigObjectModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_MODIFIED_SIG;
+
 protected:
 
     FWDATA_API Object();
@@ -224,6 +237,9 @@ protected:
     FieldMapType m_fields;
 
     ::fwCore::mt::ReadWriteMutex m_mutex;
+
+    /// Signal that emits ObjectMsg when object is modified
+    FWDATA_API ObjectModifiedSignalType::sptr m_sigObjectModified;
 };
 
 

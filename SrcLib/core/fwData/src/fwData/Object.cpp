@@ -16,8 +16,20 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
+const ::fwCom::Signals::SignalKeyType Object::s_OBJECT_MODIFIED_SIG = "objectModified";
+
+//------------------------------------------------------------------------------
+
 Object::Object()
-{}
+{
+    // Init
+    m_sigObjectModified = ObjectModifiedSignalType::New();
+#ifdef COM_LOG
+    m_sigObjectModified->setID( s_OBJECT_MODIFIED_SIG );
+#endif
+    // Register
+    m_signals[ s_OBJECT_MODIFIED_SIG ] = m_sigObjectModified;
+}
 
 //------------------------------------------------------------------------------
 

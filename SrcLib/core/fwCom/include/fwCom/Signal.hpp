@@ -297,9 +297,6 @@ private:
 
 };
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
-
-
-
 } // namespace fwCom
 
 #endif /* __FWCOM_SIGNAL_HPP__ */
