@@ -76,7 +76,7 @@ protected:
     ConnectionMapType m_connections;
 
 private:
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 
 };
 template < typename R, typename A1, typename A2 >
@@ -129,7 +129,7 @@ protected:
     ConnectionMapType m_connections;
 
 private:
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 
 };
 template < typename R, typename A1 >
@@ -182,7 +182,7 @@ protected:
     ConnectionMapType m_connections;
 
 private:
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 
 };
 template < typename R>
@@ -235,7 +235,7 @@ protected:
     ConnectionMapType m_connections;
 
 private:
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 
 };
 //===================================== END =====================================
@@ -293,10 +293,13 @@ protected:
     ConnectionMapType m_connections;
 
 private:
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 
 };
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+
+
 } // namespace fwCom
 
 #endif /* __FWCOM_SIGNAL_HPP__ */

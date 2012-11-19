@@ -73,7 +73,7 @@ protected:
     ConnectionMapType m_connections;
 
 private:
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 
 };
 
