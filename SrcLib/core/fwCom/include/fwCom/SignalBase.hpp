@@ -64,10 +64,10 @@ private :
     IDType m_id;
 
     /// Id counter
-    static size_t s_idCount;
+    FWCOM_API static size_t s_idCount;
 
     /// Mutex to protect id counter
-    static ::fwCore::mt::Mutex s_mutexCounter;
+    FWCOM_API static ::fwCore::mt::Mutex s_mutexCounter;
 
 #endif
 
