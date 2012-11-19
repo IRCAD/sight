@@ -7,12 +7,22 @@
 #include <boost/foreach.hpp>
 
 #include "fwCom/Signals.hpp"
-
+#include "fwCom/exception/BadDisconnect.hpp"
 namespace fwCom
 {
 
 Signals::Signals(){}
 
+
+Signals::~Signals()
+{
+#ifdef DEBUG
+    BOOST_FOREACH( SignalMapType::value_type elem, m_signals )
+    {
+        OSLM_ASSERT( "Signal '"<< elem.first <<"' has connected slots", elem.second->getNumberOfConnections() == 0 );
+    }
+#endif
+}
 
 Signals& Signals::operator()( const SignalKeyType &key, const SignalBase::sptr &Signal )
 {

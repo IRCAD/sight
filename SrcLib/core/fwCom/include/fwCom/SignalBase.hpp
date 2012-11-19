@@ -24,6 +24,7 @@ struct SignalBase : virtual fwCore::BaseObject
     virtual ~SignalBase(){};
     virtual Connection connect ( SlotBase::sptr slot ) = 0;
     virtual void disconnect ( SlotBase::sptr slot ) = 0;
+    virtual size_t getNumberOfConnections() const = 0;
 };
 
 } // namespace fwCom

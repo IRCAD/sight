@@ -75,6 +75,10 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     template< typename R, typename A1 > ::boost::shared_future< R > asyncCall(A1 a1) const;
     template< typename R > ::boost::shared_future< R > asyncCall() const;
 
+    size_t getNumberOfConnections() const
+    {
+        return m_connections.size();
+    }
 
 protected:
 

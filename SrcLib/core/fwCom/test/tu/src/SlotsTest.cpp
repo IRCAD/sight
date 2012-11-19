@@ -6,6 +6,8 @@
 
 #include <boost/foreach.hpp>
 
+#include <fwTest/Exception.hpp>
+
 #include <fwThread/Worker.hpp>
 
 #include <fwCom/Slots.hpp>
@@ -22,6 +24,8 @@ namespace fwCom
 {
 namespace ut
 {
+
+static ::fwTest::Exception fwTestException(""); // force link with fwTest
 
 void SlotsTest::setUp()
 {

@@ -31,6 +31,9 @@ public:
     /// Constructor, does nothing
     FWCOM_API Slots();
 
+    /// Constructor, check if all slots are disconnected
+    FWCOM_API virtual ~Slots();
+
     /// Registers SlotBase in m_slots
     FWCOM_API Slots& operator()( const SlotKeyType &key, const SlotBase::sptr &slot );
 

@@ -59,7 +59,7 @@ struct Signal< R (A...) > : SignalBase
 
     void asyncEmit( A...a ) const;
 
-    size_t getNumberOfConnections() { return m_slots.size(); }
+    size_t getNumberOfConnections() const { return m_slots.size(); }
 
 protected:
 

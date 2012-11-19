@@ -31,6 +31,9 @@ public:
     /// Constructor, does nothing
     FWCOM_API Signals();
 
+    /// Constructor, check if all signals are disconnected
+    FWCOM_API virtual ~Signals();
+
     /// Registers SignalBase in m_signals
     FWCOM_API Signals& operator()( const SignalKeyType &key, const SignalBase::sptr &Signal );
 

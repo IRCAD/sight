@@ -62,7 +62,7 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
 
     void asyncEmit( A1 a1, A2 a2, A3 a3 ) const;
 
-    size_t getNumberOfConnections() { return m_slots.size(); }
+    size_t getNumberOfConnections() const { return m_slots.size(); }
 
 protected:
 
@@ -115,7 +115,7 @@ struct Signal< R ( A1, A2 ) > : SignalBase
 
     void asyncEmit( A1 a1, A2 a2 ) const;
 
-    size_t getNumberOfConnections() { return m_slots.size(); }
+    size_t getNumberOfConnections() const { return m_slots.size(); }
 
 protected:
 
@@ -168,7 +168,7 @@ struct Signal< R ( A1 ) > : SignalBase
 
     void asyncEmit( A1 a1 ) const;
 
-    size_t getNumberOfConnections() { return m_slots.size(); }
+    size_t getNumberOfConnections() const { return m_slots.size(); }
 
 protected:
 
@@ -221,7 +221,7 @@ struct Signal< R () > : SignalBase
 
     void asyncEmit() const;
 
-    size_t getNumberOfConnections() { return m_slots.size(); }
+    size_t getNumberOfConnections() const { return m_slots.size(); }
 
 protected:
 
@@ -279,7 +279,7 @@ struct Signal< R (A...) > : SignalBase
 
     void asyncEmit( A...a ) const;
 
-    size_t getNumberOfConnections() { return m_slots.size(); }
+    size_t getNumberOfConnections() const { return m_slots.size(); }
 
 protected:
 
@@ -297,9 +297,6 @@ private:
 
 };
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
-
-
-
 } // namespace fwCom
 
 #endif /* __FWCOM_SIGNAL_HPP__ */
