@@ -67,23 +67,14 @@ SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot
     return ::boost::make_shared< Slot< FunctionType > > ( func );
 }
 
-
-template<typename F, typename F_IN >
-SPTR( Slot< F > ) newSlot( SPTR( SlotRun< F_IN > ) slot )
+template<typename R, typename ...A >
+template<typename F_IN >
+SPTR( Slot< R ( A... ) > ) Slot< Slot< R ( A... ) > >::New( SPTR( SlotRun< F_IN > ) slot )
 {
     assert (
-        ::boost::function_types::function_arity< F_IN >::value <= ::boost::function_types::function_arity< F >::value
+        ::boost::function_types::function_arity< F_IN >::value <= ::boost::function_types::function_arity< R ( A... ) >::value
         );
-    return boost::make_shared< Slot< Slot< F > > > ( slot );
-}
-
-template<typename F, typename F_IN >
-SPTR( Slot< F > ) newSlot( SPTR( Slot< F_IN > ) slot )
-{
-    assert (
-        ::boost::function_types::function_arity< F_IN >::value <= ::boost::function_types::function_arity< F >::value
-        );
-    return ::boost::make_shared< Slot< Slot< F > > > ( slot );
+    return boost::make_shared< Slot< Slot< R ( A... ) > > > ( slot );
 }
 
 

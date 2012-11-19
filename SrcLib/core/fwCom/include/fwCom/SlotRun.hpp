@@ -95,7 +95,7 @@ struct SlotRun< void () > : SlotBase
     typedef SPTR( SelfType ) sptr;
     typedef WPTR( SelfType ) wptr;
 
-    SlotRun() : SlotBase(0) {}
+    SlotRun() : SlotBase( 0 ) {}
 
     virtual void run() const = 0;
 

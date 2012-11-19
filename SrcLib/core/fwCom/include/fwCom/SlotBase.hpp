@@ -88,7 +88,6 @@ protected:
     template < typename F >
     friend struct Signal;
 
-
     template < typename F >
     std::string getTypeName() const
     {

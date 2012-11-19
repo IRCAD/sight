@@ -125,68 +125,68 @@ template<typename R, typename A1, typename A2, typename A3 >
 struct Slot< Slot< R ( A1, A2, A3 ) > > : Slot< boost::function < R ( A1, A2, A3 ) > >
 {
 
+
     typedef R SignatureType ( A1, A2, A3 ) ;
     typedef ::boost::function< SignatureType > FunctionType;
 
-
-
     template< typename F >
-        Slot( SPTR( SlotRun< F > ) slot );
-
-
+    Slot( SPTR( SlotRun< F > ) slot );
     template< typename F >
-        Slot( SPTR( Slot< F > ) slot );
+    Slot( SPTR( Slot< F > ) slot );
+
+    template< typename F_IN >
+    static SPTR( Slot< R( A1, A2, A3 ) > ) New( SPTR( SlotRun< F_IN > ) slot ); //{}
 
 };
 template<typename R, typename A1, typename A2 >
 struct Slot< Slot< R ( A1, A2 ) > > : Slot< boost::function < R ( A1, A2 ) > >
 {
 
+
     typedef R SignatureType ( A1, A2 ) ;
     typedef ::boost::function< SignatureType > FunctionType;
 
-
-
     template< typename F >
-        Slot( SPTR( SlotRun< F > ) slot );
-
-
+    Slot( SPTR( SlotRun< F > ) slot );
     template< typename F >
-        Slot( SPTR( Slot< F > ) slot );
+    Slot( SPTR( Slot< F > ) slot );
+
+    template< typename F_IN >
+    static SPTR( Slot< R( A1, A2 ) > ) New( SPTR( SlotRun< F_IN > ) slot ); //{}
 
 };
 template<typename R, typename A1 >
 struct Slot< Slot< R ( A1 ) > > : Slot< boost::function < R ( A1 ) > >
 {
 
+
     typedef R SignatureType ( A1 ) ;
     typedef ::boost::function< SignatureType > FunctionType;
 
-
-
     template< typename F >
-        Slot( SPTR( SlotRun< F > ) slot );
-
-
+    Slot( SPTR( SlotRun< F > ) slot );
     template< typename F >
-        Slot( SPTR( Slot< F > ) slot );
+    Slot( SPTR( Slot< F > ) slot );
+
+    template< typename F_IN >
+    static SPTR( Slot< R( A1 ) > ) New( SPTR( SlotRun< F_IN > ) slot ); //{}
 
 };
 template<typename R>
 struct Slot< Slot< R () > > : Slot< boost::function < R () > >
 {
 
+
     typedef R SignatureType () ;
     typedef ::boost::function< SignatureType > FunctionType;
 
-
-
     template< typename F >
-        Slot( SPTR( SlotRun< F > ) slot );
-
-
+    Slot( SPTR( SlotRun< F > ) slot );
     template< typename F >
-        Slot( SPTR( Slot< F > ) slot );
+    Slot( SPTR( Slot< F > ) slot );
+
+    template< typename F_IN >
+    static SPTR( Slot< R() > ) New( SPTR( SlotRun< F_IN > ) slot ); //{}
 
 };
 //===================================== END =====================================
@@ -198,17 +198,17 @@ template<typename R, typename ...A >
 struct Slot< Slot< R ( A... ) > > : Slot< boost::function < R ( A... ) > >
 {
 
+
     typedef R SignatureType ( A... ) ;
     typedef ::boost::function< SignatureType > FunctionType;
 
-
-
     template< typename F >
-        Slot( SPTR( SlotRun< F > ) slot );
-
-
+    Slot( SPTR( SlotRun< F > ) slot );
     template< typename F >
-        Slot( SPTR( Slot< F > ) slot );
+    Slot( SPTR( Slot< F > ) slot );
+
+    template< typename F_IN >
+    static SPTR( Slot< R(A...) > ) New( SPTR( SlotRun< F_IN > ) slot ); //{}
 
 };
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
@@ -307,16 +307,24 @@ template<typename F, typename Bindings1, typename Bindings2, typename Bindings3 
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1, Bindings2  bindings2, Bindings3  bindings3 ); //{}
 
 
+
+
 template<typename F, typename Bindings1, typename Bindings2 >
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1, Bindings2  bindings2 ); //{}
+
+
 
 
 template<typename F, typename Bindings1 >
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1 ); //{}
 
 
+
+
 template<typename F>
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f); //{}
+
+
 
 
 //===================================== END =====================================
@@ -328,17 +336,9 @@ template<typename F, typename ...Bindings>
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings ...bindings); //{}
 
 
+
+
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
-template<typename F, typename F_IN >
-SPTR( Slot< F > ) newSlot( SPTR( SlotRun< F_IN > ) slot ); //{}
-
-template<typename F, typename F_IN >
-SPTR( Slot< F > ) newSlot( SPTR( Slot< F_IN > ) slot ); //{}
-
-
-
-
-
 } // namespace fwCom
 
 #endif /* __FWCOM_SLOT_HPP__ */

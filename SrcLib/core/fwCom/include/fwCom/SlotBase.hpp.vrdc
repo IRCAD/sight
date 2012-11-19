@@ -49,8 +49,8 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     {
         m_worker = worker;
     }
-    
-    ::fwThread::Worker::sptr getWorker() const 
+
+    ::fwThread::Worker::sptr getWorker() const
     {
         return m_worker;
     }
@@ -87,7 +87,6 @@ protected:
 
     template < typename F >
     friend struct Signal;
-
 
     template < typename F >
     std::string getTypeName() const

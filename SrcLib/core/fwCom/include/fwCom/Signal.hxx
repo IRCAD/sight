@@ -532,7 +532,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
     typedef SlotConnection< void( A1, A2, A3 ) > ConnectionType;
     Connection connection;
 
-    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
     if ( sigArity == slot->arity() )
     {
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
@@ -560,7 +560,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
-            SlotSptr slotToConnect = fwCom::newSlot< void ( A1, A2, A3 ) >(wrappedSlot);
+            SlotSptr slotToConnect = Slot < Slot < void ( A1, A2, A3 ) > >::New(wrappedSlot);
             typename Signal< R( A1, A2, A3 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2, A3 ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
@@ -595,7 +595,7 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
     typedef SlotConnection< void( A1, A2 ) > ConnectionType;
     Connection connection;
 
-    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
     if ( sigArity == slot->arity() )
     {
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
@@ -623,7 +623,7 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
-            SlotSptr slotToConnect = fwCom::newSlot< void ( A1, A2 ) >(wrappedSlot);
+            SlotSptr slotToConnect = Slot < Slot < void ( A1, A2 ) > >::New(wrappedSlot);
             typename Signal< R( A1, A2 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2 ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
@@ -658,7 +658,7 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
     typedef SlotConnection< void( A1 ) > ConnectionType;
     Connection connection;
 
-    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
     if ( sigArity == slot->arity() )
     {
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
@@ -686,7 +686,7 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
-            SlotSptr slotToConnect = fwCom::newSlot< void ( A1 ) >(wrappedSlot);
+            SlotSptr slotToConnect = Slot < Slot < void ( A1 ) > >::New(wrappedSlot);
             typename Signal< R( A1 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1 ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
@@ -721,7 +721,7 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
     typedef SlotConnection< void() > ConnectionType;
     Connection connection;
 
-    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
     if ( sigArity == slot->arity() )
     {
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
@@ -749,7 +749,7 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
-            SlotSptr slotToConnect = fwCom::newSlot< void () >(wrappedSlot);
+            SlotSptr slotToConnect = Slot < Slot < void () > >::New(wrappedSlot);
             typename Signal< R() >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R() > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
@@ -789,7 +789,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
     typedef SlotConnection< void( A... ) > ConnectionType;
     Connection connection;
 
-    const unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
     if ( sigArity == slot->arity() )
     {
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
@@ -817,7 +817,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
-            SlotSptr slotToConnect = fwCom::newSlot< void (A...) >(wrappedSlot);
+            SlotSptr slotToConnect = Slot < Slot < void (A...) > >::New(wrappedSlot);
             typename Signal< R( A... ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
