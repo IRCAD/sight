@@ -9,6 +9,8 @@
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include "fwCom/exception/BadSlot.hpp"
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -205,6 +207,37 @@ void SignalTest::connectTest()
         CPPUNIT_ASSERT(connection.expired());
         CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
     }
+
+    {
+        typedef void Signature(std::string);
+        ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
+
+        CPPUNIT_ASSERT_THROW( sig->connect(slot1), fwCom::exception::BadSlot);
+        CPPUNIT_ASSERT_THROW( sig->connect(slot2), fwCom::exception::BadSlot);
+        CPPUNIT_ASSERT_THROW( sig->connect(slot3), fwCom::exception::BadSlot);
+    }
+
+    {
+        typedef void Signature(std::string);
+        ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
+
+
+        CPPUNIT_ASSERT_THROW( sig->disconnect(slot1), fwCom::exception::BadSlot);
+        CPPUNIT_ASSERT_THROW( sig->disconnect(slot2), fwCom::exception::BadSlot);
+        CPPUNIT_ASSERT_THROW( sig->disconnect(slot3), fwCom::exception::BadSlot);
+
+        sig->connect(slot0);
+
+        CPPUNIT_ASSERT_THROW( sig->disconnect(slot1), fwCom::exception::BadSlot);
+        CPPUNIT_ASSERT_THROW( sig->disconnect(slot2), fwCom::exception::BadSlot);
+        CPPUNIT_ASSERT_THROW( sig->disconnect(slot3), fwCom::exception::BadSlot);
+
+        sig->disconnect(slot0);
+
+    }
+
+
+
 }
 
 //-----------------------------------------------------------------------------

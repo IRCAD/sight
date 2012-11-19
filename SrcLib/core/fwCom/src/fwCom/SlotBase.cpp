@@ -24,7 +24,7 @@ void SlotBase::run() const
     else
     {
         OSLM_ERROR( "failed to run : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
-        throw fwCom::exception::BadRun( "Failed to find right signature for run"  );
+        FW_RAISE_EXCEPTION( fwCom::exception::BadRun( "Failed to find right signature for run"  ) );
     }
 }
 
@@ -39,7 +39,7 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun() const
     else
     {
         OSLM_ERROR( "failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
-        throw fwCom::exception::BadRun( "Failed to find right signature for asyncRun"  );
+        FW_RAISE_EXCEPTION( fwCom::exception::BadRun( "Failed to find right signature for asyncRun"  ) );
     }
 }
 

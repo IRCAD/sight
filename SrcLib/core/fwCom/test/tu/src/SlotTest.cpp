@@ -241,11 +241,11 @@ void SlotTest::slotBaseTest ()
     lastSumResult = 0;
 
     slot1->run(40,2);
-    // slot2->run(); // FIXME
+    slot2->run();
     slot3->run(2.1f);
 
     CPPUNIT_ASSERT_EQUAL( 42, lastSumResult );
-    //CPPUNIT_ASSERT( a.m_method0 ); //FIXME
+    CPPUNIT_ASSERT( a.m_method0 );
     CPPUNIT_ASSERT( a.m_method1 );
 
     lastSumResult = 0;
@@ -270,11 +270,11 @@ void SlotTest::slotBaseTest ()
     slot3->setWorker(w);
 
     slot1->asyncRun(40, 2).wait();
-    // slot2->asyncRun(); // FIXME
+    slot2->asyncRun();
     slot3->asyncRun(2.1f).wait();
 
     CPPUNIT_ASSERT_EQUAL( 42, lastSumResult );
-    // CPPUNIT_ASSERT( a.m_method0 ); //FIXME
+    CPPUNIT_ASSERT( a.m_method0 );
     CPPUNIT_ASSERT( a.m_method1 );
 
     lastSumResult = 0;

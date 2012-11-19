@@ -36,7 +36,7 @@ template< typename R, typename ...A >
 {
     if(!worker)
     {
-        throw ::fwCom::exception::NoWorker("Slot has no worker set.");
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
     }
 
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args... ) ) );
