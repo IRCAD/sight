@@ -81,6 +81,8 @@ def unpack_variadic_template(tpl, dim, max_dim=-1):
     void = 'boost::mpl::void_'
 
     subs = []
+    subs_nocomma = []
+
     if max_dim == -1:
         max_dim = dim
 
@@ -170,9 +172,6 @@ def unpack_variadic_template(tpl, dim, max_dim=-1):
             (variadic_declaration_reg,
                 ', '.join(variadic_declaration_sub.format(i) for i in r)),
 
-#variadic sizeof
-            ('sizeof\.\.\.\(\w+\)', str(dim)),
-
 #function apply ( some_func(a)... )
             ('(?P<func>\w+) *\((?P<id>\w+)\) *\.\.\.',
                 ', '.join("\g<func>( \g<id>{0} )".format(i) for i in r)),
@@ -190,6 +189,14 @@ def unpack_variadic_template(tpl, dim, max_dim=-1):
 
     ]
 
+    subs_nocomma += [
+#variadic sizeof
+            ('sizeof\.\.\.\(\w+\)', str(dim)),
+            ]
+
+
+    for reg, sub in subs_nocomma:
+            tpl = re.sub(reg, sub, tpl)
 
     for reg, sub in subs:
         if isinstance(sub, basestring):
