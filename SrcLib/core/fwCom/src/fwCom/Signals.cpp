@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 
 #include "fwCom/Signals.hpp"
-#include "fwCom/exception/BadDisconnect.hpp"
+
 namespace fwCom
 {
 
