@@ -15,6 +15,11 @@
 #include <fwTools/Object.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include <fwThread/Worker.hpp>
+
+#include <fwCom/Slots.hpp>
+#include <fwCom/HasSlots.hpp>
+
 #include "fwServices/config.hpp"
 #include "fwServices/ObjectMsg.hpp"
 
@@ -39,7 +44,7 @@ typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
  * @todo Refactoring of SWAPPING status. Perhaps must be a special status as UPDATING or UPDATING must be another GlobalStatus. it must be homogeneous.
  * @todo Add a new method to test if m_associatedObject has expired
  */
-class FWSERVICES_CLASS_API IService : public ::fwTools::Object
+class FWSERVICES_CLASS_API IService : public ::fwTools::Object, public ::fwCom::HasSlots
 {
 
     // to give to OSR an access on IService.m_associatedObject;
@@ -87,6 +92,32 @@ public :
 
 
     /**
+     * @name Slot API
+     */
+    //@{
+    typedef ::boost::shared_future< void > SharedFutureType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_SLOT;
+    typedef ::fwCom::Slot<SharedFutureType()> StartSlotType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOP_SLOT;
+    typedef ::fwCom::Slot<SharedFutureType()> StopSlotType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLOT;
+    typedef ::fwCom::Slot<SharedFutureType()> UpdateSlotType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_RECEIVE_SLOT;
+    typedef ::fwCom::Slot<void(ObjectMsg::csptr)> ReceiveSlotType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SWAP_SLOT;
+    typedef ::fwCom::Slot<SharedFutureType(::fwData::Object::sptr)> SwapSlotType;
+
+    /// Initializes m_associatedWorker and associates this worker to all service slots
+    FWSERVICES_API void setWorker( ::fwThread::Worker::sptr worker );
+
+    //@}
+
+    /**
      * @name Key service API
      */
 
@@ -118,7 +149,7 @@ public :
      * @brief Invoke starting() if m_globalState == STOPPED. Does nothing otherwise.
      * @post m_globalState == STARTED
      */
-    FWSERVICES_API void start() throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType start() throw( ::fwTools::Failed );
 
     /**
      * @brief Invoke stopping() if m_globalState == STARTED. Does nothing otherwise. Stops all observations (ICommunication for which this is destination).
@@ -126,13 +157,13 @@ public :
      * @post m_globalState == STOPPED
      *
      */
-    FWSERVICES_API void stop() throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType stop() throw( ::fwTools::Failed );
 
     /**
      * @brief Invoke updating() if m_globalState == STARTED. Does nothing otherwise.
      * @pre m_globalState == STARTED
      */
-    FWSERVICES_API void update() throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType update() throw( ::fwTools::Failed );
 
     /**
      * @brief Invoke updating(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
@@ -153,7 +184,7 @@ public :
      * @author IRCAD (Research and Development Team).
      * @author  IRCAD (Research and Development Team).
      */
-    FWSERVICES_API void swap( ::fwData::Object::sptr _obj ) throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType swap( ::fwData::Object::sptr _obj ) throw( ::fwTools::Failed );
 
     //@}
 
@@ -366,6 +397,31 @@ protected :
      * @todo this field must be private
      */
     ::fwData::Object::wptr m_associatedObject;
+
+    /**
+     * @name Slot API
+     */
+    //@{
+
+    /// Slot to call start method
+    StartSlotType::sptr m_slotStart;
+
+    /// Slot to call stop method
+    StopSlotType::sptr m_slotStop;
+
+    /// Slot to call update method
+    UpdateSlotType::sptr m_slotUpdate;
+
+    /// Slot to call receive method
+    ReceiveSlotType::sptr m_slotReceive;
+
+    /// Slot to call swap method
+    SwapSlotType::sptr m_slotSwap;
+
+    /// Associated worker
+    ::fwThread::Worker::sptr m_associatedWorker;
+
+    //@}
 
 private :
 

@@ -12,14 +12,28 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/Convert.hpp>
 
+#include <fwCom/Slot.hpp>
+
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include "fwServices/IService.hpp"
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/ComChannelService.hpp"
 #include "fwServices/registry/ObjectService.hpp"
+#include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/Base.hpp"
 
 namespace fwServices
 {
+
+//-----------------------------------------------------------------------------
+
+const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT = "start";
+const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT = "stop";
+const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT = "update";
+const ::fwCom::Slots::SlotKeyType IService::s_RECEIVE_SLOT = "receive";
+const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT = "swap";
 
 //-----------------------------------------------------------------------------
 
@@ -30,6 +44,21 @@ IService::IService() :
     m_configurationState ( UNCONFIGURED )
 {
     // by default a weak_ptr have a use_count == 0
+    m_slotStart    = ::fwCom::newSlot( &IService::start     , this ) ;
+    m_slotStop     = ::fwCom::newSlot( &IService::stop      , this ) ;
+    m_slotUpdate   = ::fwCom::newSlot( &IService::update    , this ) ;
+    m_slotReceive  = ::fwCom::newSlot( &IService::receive   , this ) ;
+    m_slotSwap     = ::fwCom::newSlot( &IService::swap      , this ) ;
+
+    ::fwCom::HasSlots::m_slots
+                 ( s_START_SLOT   , m_slotStart   )
+                 ( s_STOP_SLOT    , m_slotStop    )
+                 ( s_UPDATE_SLOT  , m_slotUpdate  )
+                 ( s_RECEIVE_SLOT , m_slotReceive )
+                 ( s_SWAP_SLOT    , m_slotSwap    )
+                 ;
+
+    this->setWorker( registry::ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -137,27 +166,43 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IService::start() throw( ::fwTools::Failed)
+IService::SharedFutureType IService::start() throw( ::fwTools::Failed)
 {
-    OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
-    if( m_globalState == STOPPED )
+    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        m_globalState = STARTING ;
-        this->starting() ;
-        m_globalState = STARTED ;
+        OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
+        if( m_globalState == STOPPED )
+        {
+            m_globalState = STARTING ;
+            this->starting() ;
+            m_globalState = STARTED ;
+        }
+        return SharedFutureType();
+    }
+    else
+    {
+        return m_slotStart->asyncRun();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void IService::stop() throw( ::fwTools::Failed)
+IService::SharedFutureType IService::stop() throw( ::fwTools::Failed)
 {
-    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
-    if( m_globalState == STARTED )
+    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        m_globalState = STOPPING ;
-        this->stopping() ;
-        m_globalState = STOPPED ;
+        OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
+        if( m_globalState == STARTED )
+        {
+            m_globalState = STOPPING ;
+            this->stopping() ;
+            m_globalState = STOPPED ;
+        }
+        return SharedFutureType();
+    }
+    else
+    {
+        return m_slotStop->asyncRun();
     }
 }
 
@@ -165,59 +210,83 @@ void IService::stop() throw( ::fwTools::Failed)
 
 void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
 {
-    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
-
-    OSLM_TRACE("Service" << this->className() <<" is on IDLE state ==> treatment of message: " << _msg->getGeneralInfo());
-    this->receiving( _msg ) ;
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::update() throw( ::fwTools::Failed)
-{
-    OSLM_ASSERT("INVOKING update WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
-    OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
-
-    m_updatingState = UPDATING ;
-    this->updating( ) ;
-    m_updatingState = NOTUPDATING ;
-
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::swap( ::fwData::Object::sptr _obj ) throw(::fwTools::Failed)
-{
-    OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(), m_associatedObject.lock() != _obj );
-
-    if( m_globalState == STARTED ) // FIXME ???
+    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        m_globalState = SWAPPING ;
+        OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
-        if( ::fwServices::OSR::has(m_associatedObject.lock(), "::fwServices::IEditionService") )
+        OSLM_TRACE("Service" << this->className() <<" is on IDLE state ==> treatment of message: " << _msg->getGeneralInfo());
+        this->receiving( _msg );
+    }
+    else
+    {
+        m_slotReceive->asyncRun(_msg);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::update() throw( ::fwTools::Failed)
+{
+    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    {
+        OSLM_ASSERT("INVOKING update WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
+        OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
+
+        m_updatingState = UPDATING ;
+        this->updating( ) ;
+        m_updatingState = NOTUPDATING ;
+
+        return SharedFutureType();
+    }
+    else
+    {
+        return m_slotUpdate->asyncRun();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) throw(::fwTools::Failed)
+{
+    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    {
+        OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(), m_associatedObject.lock() != _obj );
+
+        if( m_globalState == STARTED ) // FIXME ???
         {
-            ::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock());
-            typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
-            OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
-            BOOST_FOREACH(::fwServices::ComChannelService::sptr comChannel, obs)
+            m_globalState = SWAPPING ;
+
+            if( ::fwServices::OSR::has(m_associatedObject.lock(), "::fwServices::IEditionService") )
             {
-                /// Check if _service is the subject (IEditionService) or the destination service
-                if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
+                ::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock());
+                typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
+                OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
+                BOOST_FOREACH(::fwServices::ComChannelService::sptr comChannel, obs)
                 {
-                    comChannel->stop() ;
-                    ::fwServices::OSR::swapService(_obj , comChannel );
-                    comChannel->start();
+                    /// Check if _service is the subject (IEditionService) or the destination service
+                    if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
+                    {
+                        comChannel->stop() ;
+                        ::fwServices::OSR::swapService(_obj , comChannel );
+                        comChannel->start();
+                    }
                 }
             }
+            ::fwServices::OSR::swapService( _obj , this->getSptr() );
+
+            this->swapping();
+
+            m_globalState = STARTED ;
         }
-        ::fwServices::OSR::swapService( _obj , this->getSptr() );
 
-        this->swapping();
+        OSLM_WARN_IF( "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(), m_globalState != STARTED);
 
-        m_globalState = STARTED ;
+        return SharedFutureType();
     }
-
-    OSLM_WARN_IF( "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(), m_globalState != STARTED);
+    else
+    {
+        return m_slotSwap->asyncRun( _obj );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -262,7 +331,15 @@ IService::UpdatingStatus IService::getUpdatingStatus() const throw()
     return m_updatingState ;
 }
 
- //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+void IService::setWorker( ::fwThread::Worker::sptr worker )
+{
+    m_associatedWorker = worker;
+    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+}
+
+//-----------------------------------------------------------------------------
 
 /**
  * @brief Streaming a service
