@@ -19,6 +19,7 @@
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/HasSlots.hpp>
+#include <fwCom/HasSignals.hpp>
 
 #include "fwServices/config.hpp"
 #include "fwServices/ObjectMsg.hpp"
@@ -44,7 +45,7 @@ typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
  * @todo Refactoring of SWAPPING status. Perhaps must be a special status as UPDATING or UPDATING must be another GlobalStatus. it must be homogeneous.
  * @todo Add a new method to test if m_associatedObject has expired
  */
-class FWSERVICES_CLASS_API IService : public ::fwTools::Object, public ::fwCom::HasSlots
+class FWSERVICES_CLASS_API IService : public ::fwTools::Object, public ::fwCom::HasSlots, public ::fwCom::HasSignals
 {
 
     // to give to OSR an access on IService.m_associatedObject;
@@ -307,7 +308,7 @@ protected :
      * @brief IService constructor.
      *
      * This constructor does nothing. By default, m_associatedObject is null and
-     * service is considered as STOPPED, IDLE and UNCONFIGURED.
+     * service is considered as STOPPED, NOTUPDATING and UNCONFIGURED.
      */
     FWSERVICES_API IService() ;
 

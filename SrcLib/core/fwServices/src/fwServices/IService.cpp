@@ -57,6 +57,13 @@ IService::IService() :
                  ( s_RECEIVE_SLOT , m_slotReceive )
                  ( s_SWAP_SLOT    , m_slotSwap    )
                  ;
+#ifdef COM_LOG
+    m_slotStart->setID( s_START_SLOT );
+    m_slotStop->setID( s_STOP_SLOT );
+    m_slotUpdate->setID( s_UPDATE_SLOT );
+    m_slotReceive->setID( s_RECEIVE_SLOT );
+    m_slotSwap->setID( s_SWAP_SLOT );
+#endif
 
     this->setWorker( registry::ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER ) );
 }
