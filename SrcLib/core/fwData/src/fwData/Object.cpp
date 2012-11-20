@@ -28,7 +28,7 @@ Object::Object()
     m_sigObjectModified->setID( s_OBJECT_MODIFIED_SIG );
 #endif
     // Register
-    m_signals[ s_OBJECT_MODIFIED_SIG ] = m_sigObjectModified;
+    m_signals( s_OBJECT_MODIFIED_SIG,  m_sigObjectModified);
 }
 
 //------------------------------------------------------------------------------
