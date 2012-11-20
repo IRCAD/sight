@@ -66,10 +66,14 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
      * @brief Connects the given slot.
      *
      * @return an object managing the connection.
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     Connection connect ( SlotBase::sptr slot );
 
-    /// Disconnects the given slot.
+    /**
+     * @brief Disconnects the given slot.
+     * @throws BadSlot If given slot is not found in current connections.
+     */
     void disconnect ( SlotBase::sptr slot );
 
     /// Disconnects all slots.
@@ -94,6 +98,8 @@ protected:
      * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
      * returns a connection on succes, otherwise try to connect
      * the same slot with the type R (A1, A2, ..., Am).
+     *
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
@@ -143,10 +149,14 @@ struct Signal< R ( A1, A2 ) > : SignalBase
      * @brief Connects the given slot.
      *
      * @return an object managing the connection.
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     Connection connect ( SlotBase::sptr slot );
 
-    /// Disconnects the given slot.
+    /**
+     * @brief Disconnects the given slot.
+     * @throws BadSlot If given slot is not found in current connections.
+     */
     void disconnect ( SlotBase::sptr slot );
 
     /// Disconnects all slots.
@@ -171,6 +181,8 @@ protected:
      * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
      * returns a connection on succes, otherwise try to connect
      * the same slot with the type R (A1, A2, ..., Am).
+     *
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
@@ -220,10 +232,14 @@ struct Signal< R ( A1 ) > : SignalBase
      * @brief Connects the given slot.
      *
      * @return an object managing the connection.
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     Connection connect ( SlotBase::sptr slot );
 
-    /// Disconnects the given slot.
+    /**
+     * @brief Disconnects the given slot.
+     * @throws BadSlot If given slot is not found in current connections.
+     */
     void disconnect ( SlotBase::sptr slot );
 
     /// Disconnects all slots.
@@ -248,6 +264,8 @@ protected:
      * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
      * returns a connection on succes, otherwise try to connect
      * the same slot with the type R (A1, A2, ..., Am).
+     *
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
@@ -297,10 +315,14 @@ struct Signal< R () > : SignalBase
      * @brief Connects the given slot.
      *
      * @return an object managing the connection.
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     Connection connect ( SlotBase::sptr slot );
 
-    /// Disconnects the given slot.
+    /**
+     * @brief Disconnects the given slot.
+     * @throws BadSlot If given slot is not found in current connections.
+     */
     void disconnect ( SlotBase::sptr slot );
 
     /// Disconnects all slots.
@@ -325,6 +347,8 @@ protected:
      * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
      * returns a connection on succes, otherwise try to connect
      * the same slot with the type R (A1, A2, ..., Am).
+     *
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
@@ -379,10 +403,14 @@ struct Signal< R (A...) > : SignalBase
      * @brief Connects the given slot.
      *
      * @return an object managing the connection.
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     Connection connect ( SlotBase::sptr slot );
 
-    /// Disconnects the given slot.
+    /**
+     * @brief Disconnects the given slot.
+     * @throws BadSlot If given slot is not found in current connections.
+     */
     void disconnect ( SlotBase::sptr slot );
 
     /// Disconnects all slots.
@@ -407,6 +435,8 @@ protected:
      * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
      * returns a connection on succes, otherwise try to connect
      * the same slot with the type R (A1, A2, ..., Am).
+     *
+     * @throws BadSlot If given slot doesn't match signal type.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );

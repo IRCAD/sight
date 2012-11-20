@@ -52,6 +52,7 @@ struct SlotRun< void (A...) > : SlotBase
      * @param args run arguments.
      *
      * @return a shared_future object associated with Slot's run result.
+     * @throws NoWorker if given worker is not valid.
      */
     virtual SlotBase::VoidSharedFutureType asyncRun( const ::fwThread::Worker::sptr &worker, A... args ) const;
 
@@ -61,6 +62,7 @@ struct SlotRun< void (A...) > : SlotBase
      * @pre Slot's worker must be set.
      *
      * @return a shared_future object associated with Slot's run result.
+     * @throws NoWorker if slot has no worker set.
      */
     virtual SlotBase::VoidSharedFutureType asyncRun(A... args) const;
 

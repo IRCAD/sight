@@ -11,18 +11,33 @@
 #include "fwCom/util/convert_function_type.hpp"
 
 
+/**
+ * @brief fwCom
+ */
 namespace fwCom
 {
 
 
+    /**
+     * @brief util
+     */
 namespace util
 {
 
 
+/**
+ * @class AutoBind
+ * @brief Automatic binding class.
+ * This class allow to bind automatically a function/method with the right number of arguments.
+ *
+ * @tparam F Desired binding signature.
+ * @tparam PLACEHOLDERS_NB number of placeholders to use.
+ */
 template< typename F, int PLACEHOLDERS_NB >
 struct AutoBind;
 
 
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 0 >
 {
@@ -52,7 +67,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 1 >
 {
@@ -81,7 +96,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 2 >
 {
@@ -110,7 +125,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 3 >
 {
@@ -139,7 +154,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 4 >
 {
@@ -168,7 +183,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 5 >
 {
@@ -197,7 +212,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 6 >
 {
@@ -226,7 +241,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 7 >
 {
@@ -255,7 +270,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 8 >
 {
@@ -284,7 +299,7 @@ template< typename W, typename ...A >
 };
 
 
-
+/// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 9 >
 {
@@ -311,6 +326,16 @@ template< typename W, typename ...A >
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
 
 };
+
+
+/**
+ * @brief Automatic bind of given function
+ *
+ * @return a boost function of type F if F is a function type, of type *F if F is a function pointer,
+ * or of the corresponding function type if F is a member method pointer (like R (C::*)(A1, A2, ..))
+ * If F is a member method pointer, autobind takes the object on wich we desire to call the method
+ * as second argument.
+ */
 #ifdef BOOST_NO_VARIADIC_TEMPLATES
 //===============================================================================
 //===============================================================================

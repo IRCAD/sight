@@ -18,10 +18,10 @@ namespace util
 {
 
 
-
-/// Convert Class member method type to equivalent function type
 template <typename F>
 struct convert_function_type;
+
+/// Convert class member method type to equivalent function type.
 #ifdef BOOST_NO_VARIADIC_TEMPLATES
 //===============================================================================
 //===============================================================================
@@ -58,6 +58,8 @@ struct convert_function_type< R (C::*) ( Args... )  >
 };
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
 
+
+/// Convert class const member method type to equivalent function type.
 #ifdef BOOST_NO_VARIADIC_TEMPLATES
 //===============================================================================
 //===============================================================================
@@ -95,13 +97,14 @@ struct convert_function_type< R (C::*) ( Args... ) const  >
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
 
 
-//extract function type from a boost function
+/// Extract function type from a boost function.
 template <typename F>
 struct convert_function_type< ::boost::function< F > >
 {
     typedef F type;
 };
 
+/// Convert function pointer type to function type.
 template <typename F>
 struct convert_function_type
 {
@@ -109,13 +112,9 @@ struct convert_function_type
 };
 
 
-
-
 } //namespace util
 
 } //namespace fwCom
 
 #endif /* __FWCOM_UTIL_CONVERT_FUNCTION_TYPE_HPP__ */
-
-
 

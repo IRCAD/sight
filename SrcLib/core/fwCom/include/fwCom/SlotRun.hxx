@@ -77,7 +77,7 @@ SlotRun< void ( A1, A2, A3 ) >::asyncRun( const ::fwThread::Worker::sptr &worker
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1, args2, args3 ) ));
     ::boost::unique_future< void > ufuture = task.get_future();
@@ -95,7 +95,7 @@ SlotRun< void ( A1, A2 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1, args2 ) ));
     ::boost::unique_future< void > ufuture = task.get_future();
@@ -113,7 +113,7 @@ SlotRun< void ( A1 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1 arg
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1 ) ));
     ::boost::unique_future< void > ufuture = task.get_future();
@@ -131,7 +131,7 @@ SlotRun< void () >::asyncRun( const ::fwThread::Worker::sptr &worker) const
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun() ));
     ::boost::unique_future< void > ufuture = task.get_future();
@@ -154,7 +154,7 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args... ) ));
     ::boost::unique_future< void > ufuture = task.get_future();

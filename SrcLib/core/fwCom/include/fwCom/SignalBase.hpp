@@ -44,10 +44,16 @@ struct SignalBase : virtual fwCore::BaseObject
 
     virtual ~SignalBase(){};
 
-    /// Connects the given slot.
+    /**
+     * @brief Connects the given slot.
+     * @throws BadSlot If given slot doesn't match signal type.
+     */
     virtual Connection connect ( SlotBase::sptr slot ) = 0;
 
-    /// Disconnects the given slot.
+    /**
+     * @brief Disconnects the given slot.
+     * @throws BadSlot If given slot is not found in current connections.
+     */
     virtual void disconnect ( SlotBase::sptr slot ) = 0;
 
     /// Returns number of connections.

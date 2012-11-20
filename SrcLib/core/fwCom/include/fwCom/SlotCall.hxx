@@ -78,7 +78,7 @@ template< typename R, typename A1, typename A2, typename A3 >
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args1, args2, args3 ) ) );
@@ -97,7 +97,7 @@ template< typename R, typename A1, typename A2 >
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args1, args2 ) ) );
@@ -116,7 +116,7 @@ template< typename R, typename A1 >
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args1 ) ) );
@@ -135,7 +135,7 @@ template< typename R>
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall() ) );
@@ -159,7 +159,7 @@ template< typename R, typename ...A >
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args... ) ) );

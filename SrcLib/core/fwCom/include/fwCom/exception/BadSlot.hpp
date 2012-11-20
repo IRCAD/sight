@@ -16,6 +16,7 @@ namespace fwCom
 namespace exception
 {
 
+/// Bad slot exception.
 struct BadSlot : ::fwCore::Exception
 {
     FWCOM_API BadSlot ( const std::string &err ) ;

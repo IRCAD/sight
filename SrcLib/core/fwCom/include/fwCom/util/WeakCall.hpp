@@ -12,6 +12,14 @@ namespace fwCom
 namespace util
 {
 
+/**
+ * @brief Weak functor class.
+ * Store a zero-arg-function and a weak pointer on an object. When the weak
+ * functor operator() is called, the stored function is called only if the
+ * stored weak pointer is not expired.
+ * @tparam T Stored object type.
+ * @tparam R Stored function return type.
+ */
 template< typename T, typename R >
 struct WeakCall
 {
@@ -32,7 +40,7 @@ protected:
 };
 
 
-
+/// Returns weak call from given object and function.
 template <typename T, typename R >
 WeakCall<T, R> weakcall( const ::boost::shared_ptr< T const > &ptr, ::boost::function< R() > f)
 {
@@ -40,16 +48,9 @@ WeakCall<T, R> weakcall( const ::boost::shared_ptr< T const > &ptr, ::boost::fun
 }
 
 
-
-
 } // namespace util
-
-
 
 } // namespace fwCom
 
 #endif /* __FWCOM_UTIL_WEAKCALL_HPP__ */
-
-
-
 

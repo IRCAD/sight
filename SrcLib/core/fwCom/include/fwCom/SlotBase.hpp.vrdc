@@ -78,8 +78,11 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     }
 
     /**
+     * @brief  Run the Slot.
+     * @throw  BadRun if given arguments do not match the slot implementation
+     */
+    /**
      * @name Run helpers
-     * Run the Slot.
      * @{ */
     template< typename A1, typename A2, typename A3 > void run(A1 a1, A2 a2, A3 a3) const;
     template< typename A1, typename A2 > void run(A1 a1, A2 a2) const;
@@ -88,8 +91,11 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /**  @} */
 
     /**
+     * @brief  Call the Slot (with return value).
+     * @throw  BadCall if given arguments do not match the slot implementation
+     */
+    /**
      * @name Call helpers
-     * Call the Slot (with return value).
      * @{ */
     template< typename R, typename A1, typename A2, typename A3 > R call(A1 a1, A2 a2, A3 a3) const;
     template< typename R, typename A1, typename A2 > R call(A1 a1, A2 a2) const;
@@ -98,8 +104,12 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /**  @} */
 
     /**
+     * @brief  Run the Slot asynchronously.
+     * @throw  BadRun if given arguments do not match the slot implementation
+     * @throws NoWorker if given worker is not valid.
+     */
+    /**
      * @name Asynchronous run helpers
-     * Run the Slot asynchronously.
      * @{ */
     template< typename A1, typename A2, typename A3 > VoidSharedFutureType asyncRun(A1 a1, A2 a2, A3 a3) const;
     template< typename A1, typename A2 > VoidSharedFutureType asyncRun(A1 a1, A2 a2) const;
@@ -108,8 +118,12 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /**  @} */
 
     /**
+     * @brief  Call the Slot asynchronously (with return value).
+     * @throw  BadCall if given arguments do not match the slot implementation
+     * @throws NoWorker if given worker is not valid.
+     */
+    /**
      * @name Asynchronous call helpers
-     * Call the Slot asynchronously (with return value).
      * @{ */
     template< typename R, typename A1, typename A2, typename A3 > ::boost::shared_future< R > asyncCall(A1 a1, A2 a2, A3 a3) const;
     template< typename R, typename A1, typename A2 > ::boost::shared_future< R > asyncCall(A1 a1, A2 a2) const;
@@ -124,7 +138,6 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     }
     
 protected:
-
 
     /**
      * @name SlotBase's friends

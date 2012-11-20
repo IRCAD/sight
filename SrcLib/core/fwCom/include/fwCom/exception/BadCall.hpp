@@ -16,6 +16,7 @@ namespace fwCom
 namespace exception
 {
 
+/// Bad call exception.
 struct BadCall : ::fwCore::Exception
 {
     FWCOM_API BadCall ( const std::string &err ) ;

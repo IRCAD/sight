@@ -34,7 +34,7 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args... ) ));
     ::boost::unique_future< void > ufuture = task.get_future();

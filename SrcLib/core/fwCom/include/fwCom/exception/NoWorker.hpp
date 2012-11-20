@@ -15,6 +15,7 @@ namespace fwCom
 namespace exception
 {
 
+/// No worker exception.
 struct NoWorker : ::fwCore::Exception
 {
     FWCOM_API NoWorker ( const std::string &err ) ;
