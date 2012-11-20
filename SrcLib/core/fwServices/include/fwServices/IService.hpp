@@ -149,7 +149,7 @@ public :
      * @brief Invoke starting() if m_globalState == STOPPED. Does nothing otherwise.
      * @post m_globalState == STARTED
      */
-    FWSERVICES_API SharedFutureType start() throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType start(); //throw( ::fwTools::Failed );
 
     /**
      * @brief Invoke stopping() if m_globalState == STARTED. Does nothing otherwise. Stops all observations (ICommunication for which this is destination).
@@ -157,13 +157,13 @@ public :
      * @post m_globalState == STOPPED
      *
      */
-    FWSERVICES_API SharedFutureType stop() throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType stop(); //throw( ::fwTools::Failed );
 
     /**
      * @brief Invoke updating() if m_globalState == STARTED. Does nothing otherwise.
      * @pre m_globalState == STARTED
      */
-    FWSERVICES_API SharedFutureType update() throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType update(); //throw( ::fwTools::Failed );
 
     /**
      * @brief Invoke updating(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
@@ -184,7 +184,7 @@ public :
      * @author IRCAD (Research and Development Team).
      * @author  IRCAD (Research and Development Team).
      */
-    FWSERVICES_API SharedFutureType swap( ::fwData::Object::sptr _obj ) throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType swap( ::fwData::Object::sptr _obj ); //throw( ::fwTools::Failed );
 
     //@}
 

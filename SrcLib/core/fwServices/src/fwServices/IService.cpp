@@ -13,7 +13,6 @@
 #include <fwRuntime/Convert.hpp>
 
 #include <fwCom/Slot.hpp>
-
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
@@ -44,6 +43,7 @@ IService::IService() :
     m_configurationState ( UNCONFIGURED )
 {
     // by default a weak_ptr have a use_count == 0
+
     m_slotStart    = ::fwCom::newSlot( &IService::start     , this ) ;
     m_slotStop     = ::fwCom::newSlot( &IService::stop      , this ) ;
     m_slotUpdate   = ::fwCom::newSlot( &IService::update    , this ) ;
@@ -166,9 +166,9 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::start() throw( ::fwTools::Failed)
+IService::SharedFutureType IService::start() //throw( ::fwTools::Failed)
 {
-    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
         if( m_globalState == STOPPED )
@@ -187,9 +187,9 @@ IService::SharedFutureType IService::start() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::stop() throw( ::fwTools::Failed)
+IService::SharedFutureType IService::stop() //throw( ::fwTools::Failed)
 {
-    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
         if( m_globalState == STARTED )
@@ -210,7 +210,7 @@ IService::SharedFutureType IService::stop() throw( ::fwTools::Failed)
 
 void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
 {
-    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
@@ -225,9 +225,9 @@ void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::update() throw( ::fwTools::Failed)
+IService::SharedFutureType IService::update() //throw( ::fwTools::Failed)
 {
-    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_ASSERT("INVOKING update WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
         OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
@@ -246,9 +246,9 @@ IService::SharedFutureType IService::update() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) throw(::fwTools::Failed)
+IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) //throw(::fwTools::Failed)
 {
-    if( ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(), m_associatedObject.lock() != _obj );
 
