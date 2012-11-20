@@ -82,6 +82,13 @@ struct Slot< R ( A... ) > : SlotCall< R (A...) >
         // 'this->' is needed by gcc 4.2
         this->SlotBase::m_signature = SlotBase::getTypeName< R ( A... ) >();
     }
+
+    template< typename F >
+    static SPTR( Slot< R(A...) > ) New( F f ); //{}
+
+    template< typename F, typename O >
+    static SPTR( Slot< R(A...) > ) New( F f, O o ); //{}
+
 };
 
 
