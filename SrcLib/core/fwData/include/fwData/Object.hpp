@@ -239,7 +239,7 @@ protected:
     ::fwCore::mt::ReadWriteMutex m_mutex;
 
     /// Signal that emits ObjectMsg when object is modified
-    FWDATA_API ObjectModifiedSignalType::sptr m_sigObjectModified;
+    ObjectModifiedSignalType::sptr m_sigObjectModified;
 };
 
 
