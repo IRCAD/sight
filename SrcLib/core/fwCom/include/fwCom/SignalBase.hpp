@@ -22,10 +22,17 @@
 namespace fwCom
 {
 
+/**
+ * @brief Signal base class.
+ */
 struct SignalBase : virtual fwCore::BaseObject
 {
+    /**
+     * @name Typedefs
+     * @{ */
     typedef SPTR( SignalBase ) sptr;
     typedef WPTR( SignalBase )   wptr;
+    /**  @} */
 
     SignalBase()
     {
@@ -36,8 +43,14 @@ struct SignalBase : virtual fwCore::BaseObject
     };
 
     virtual ~SignalBase(){};
+
+    /// Connects the given slot.
     virtual Connection connect ( SlotBase::sptr slot ) = 0;
+
+    /// Disconnects the given slot.
     virtual void disconnect ( SlotBase::sptr slot ) = 0;
+
+    /// Returns number of connections.
     virtual size_t getNumberOfConnections() const = 0;
 
 #ifdef COM_LOG

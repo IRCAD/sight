@@ -15,15 +15,17 @@
 namespace fwCom
 {
 
+/// Class managing Signal-Slot connections.
 struct Connection
 {
-
+    /// Class allowing to block a Connection.
     struct Blocker
     {
         Blocker( Connection & connection )
             : m_blocker(connection.getBlocker())
         { }
 
+        /// Unblock the related Connection.
         void reset()
         {
             m_blocker.reset();
@@ -41,6 +43,7 @@ struct Connection
     {
     }
 
+    /// Disconnect related Connection.
     void disconnect()
     {
         SlotConnectionBase::sptr connection(m_connectionBase.lock());
@@ -50,6 +53,7 @@ struct Connection
         }
     };
 
+    /// Returns whether this Connection is expired or not.
     bool expired() const
     {
         return m_connectionBase.expired();
@@ -57,6 +61,7 @@ struct Connection
 
 protected:
 
+    /// Returns a Blocker.
     SlotConnectionBase::BlockerSptrType getBlocker()
     {
         SlotConnectionBase::BlockerSptrType blocker;

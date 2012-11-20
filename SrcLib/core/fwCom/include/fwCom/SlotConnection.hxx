@@ -646,9 +646,9 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void ( A1, A2, A3 ) >
     if( !blocker )
     {
         blocker = SlotConnectionBase::BlockerSptrType(
-                                                  (void*)NULL,
-                                                  boost::bind( &SlotConnection< void ( A1, A2, A3 ) >::unblock, this )
-                                                  );
+                          (void*)NULL,
+                          boost::bind( &SlotConnection< void ( A1, A2, A3 ) >::unblock, this )
+                          );
         m_weakBlocker = blocker;
         // TODO lock signal
         m_pair.first = false;
@@ -667,9 +667,9 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void ( A1, A2 ) >::ge
     if( !blocker )
     {
         blocker = SlotConnectionBase::BlockerSptrType(
-                                                  (void*)NULL,
-                                                  boost::bind( &SlotConnection< void ( A1, A2 ) >::unblock, this )
-                                                  );
+                          (void*)NULL,
+                          boost::bind( &SlotConnection< void ( A1, A2 ) >::unblock, this )
+                          );
         m_weakBlocker = blocker;
         // TODO lock signal
         m_pair.first = false;
@@ -688,9 +688,9 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void ( A1 ) >::getBlo
     if( !blocker )
     {
         blocker = SlotConnectionBase::BlockerSptrType(
-                                                  (void*)NULL,
-                                                  boost::bind( &SlotConnection< void ( A1 ) >::unblock, this )
-                                                  );
+                          (void*)NULL,
+                          boost::bind( &SlotConnection< void ( A1 ) >::unblock, this )
+                          );
         m_weakBlocker = blocker;
         // TODO lock signal
         m_pair.first = false;
@@ -709,9 +709,9 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void () >::getBlocker
     if( !blocker )
     {
         blocker = SlotConnectionBase::BlockerSptrType(
-                                                  (void*)NULL,
-                                                  boost::bind( &SlotConnection< void () >::unblock, this )
-                                                  );
+                          (void*)NULL,
+                          boost::bind( &SlotConnection< void () >::unblock, this )
+                          );
         m_weakBlocker = blocker;
         // TODO lock signal
         m_pair.first = false;
@@ -735,9 +735,9 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A...) >::getBlo
     if( !blocker )
     {
         blocker = SlotConnectionBase::BlockerSptrType(
-                                                  (void*)NULL,
-                                                  boost::bind( &SlotConnection< void (A...) >::unblock, this )
-                                                  );
+                          (void*)NULL,
+                          boost::bind( &SlotConnection< void (A...) >::unblock, this )
+                          );
         m_weakBlocker = blocker;
         // TODO lock signal
         m_pair.first = false;

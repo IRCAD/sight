@@ -32,54 +32,92 @@ struct SlotRun;
 template< typename F >
 struct Slot;
 
+/**
+ * @brief Base class for Slot implementations.
+ */
 struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
 {
 
+    /**
+     * @name typedefs
+     * @{ 
+     * Slot pointer types. */
     typedef SPTR( SlotBase ) sptr;
     typedef WPTR( SlotBase ) wptr;
     typedef SPTR( SlotBase const ) csptr;
     typedef WPTR( SlotBase const ) cwptr;
+    /**  @} */
 
+    /// SlotBase::asyncRun return type.
     typedef ::boost::shared_future< void > VoidSharedFutureType;
+
+    /// Connections container type
     typedef std::set< SlotConnectionBase::csptr > ConnectionSetType;
     
     virtual ~SlotBase() {};
 
+    /**
+     * @brief Returns Slot's arity.
+     * The arity defines the number of parameters in Slot signature.
+     */
     unsigned int arity() const
     {
         return m_arity;
     }
 
+    /// Sets Slot's Worker.
     void setWorker(const ::fwThread::Worker::sptr &worker)
     {
         m_worker = worker;
     }
 
+    /// Returns Slot's Worker.
     ::fwThread::Worker::sptr getWorker() const
     {
         return m_worker;
     }
 
+    /**
+     * @name Run helpers
+     * Run the Slot.
+     * @{ */
     template< typename A1, typename A2, typename A3 > void run(A1 a1, A2 a2, A3 a3) const;
     template< typename A1, typename A2 > void run(A1 a1, A2 a2) const;
     template< typename A1 > void run(A1 a1) const;
     FWCOM_API void run() const;
+    /**  @} */
 
+    /**
+     * @name Call helpers
+     * Call the Slot (with return value).
+     * @{ */
     template< typename R, typename A1, typename A2, typename A3 > R call(A1 a1, A2 a2, A3 a3) const;
     template< typename R, typename A1, typename A2 > R call(A1 a1, A2 a2) const;
     template< typename R, typename A1 > R call(A1 a1) const;
     template< typename R > R call() const;
+    /**  @} */
 
+    /**
+     * @name Asynchronous run helpers
+     * Run the Slot asynchronously.
+     * @{ */
     template< typename A1, typename A2, typename A3 > VoidSharedFutureType asyncRun(A1 a1, A2 a2, A3 a3) const;
     template< typename A1, typename A2 > VoidSharedFutureType asyncRun(A1 a1, A2 a2) const;
     template< typename A1 > VoidSharedFutureType asyncRun(A1 a1) const;
     FWCOM_API VoidSharedFutureType asyncRun() const;
+    /**  @} */
 
+    /**
+     * @name Asynchronous call helpers
+     * Call the Slot asynchronously (with return value).
+     * @{ */
     template< typename R, typename A1, typename A2, typename A3 > ::boost::shared_future< R > asyncCall(A1 a1, A2 a2, A3 a3) const;
     template< typename R, typename A1, typename A2 > ::boost::shared_future< R > asyncCall(A1 a1, A2 a2) const;
     template< typename R, typename A1 > ::boost::shared_future< R > asyncCall(A1 a1) const;
     template< typename R > ::boost::shared_future< R > asyncCall() const;
+    /**  @} */
 
+    /// Returns number of connections.
     size_t getNumberOfConnections() const
     {
         return m_connections.size();
@@ -87,12 +125,19 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     
 protected:
 
+
+    /**
+     * @name SlotBase's friends
+     * @{ */
     template < typename F >
     friend struct SlotConnection;
 
     template < typename F >
     friend struct Signal;
+    /**  @} */
 
+    
+    /// Returns F typeid name.
     template < typename F >
     std::string getTypeName() const
     {
@@ -109,14 +154,16 @@ protected:
     };
 
 
-
-
+    /// Slot's signature based on typeid.
     std::string m_signature;
 
+    /// Slot's arity.
     const unsigned int m_arity;
 
+    /// Slot's Worker.
     ::fwThread::Worker::sptr m_worker;
 
+    /// Container of current connections.
     ConnectionSetType m_connections;
     
 #ifdef COM_LOG

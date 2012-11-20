@@ -11,6 +11,7 @@
 #endif
 
 #include <boost/function_types/function_arity.hpp>
+#include <boost/function_types/result_type.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -36,7 +37,7 @@ Slot< Slot< R ( A1, A2, A3 ) > >::Slot( SPTR( SlotRun< F > ) slot )
                 >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 }
 
 
@@ -52,7 +53,7 @@ Slot< Slot< R ( A1, A2 ) > >::Slot( SPTR( SlotRun< F > ) slot )
                 >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 }
 
 
@@ -68,7 +69,7 @@ Slot< Slot< R ( A1 ) > >::Slot( SPTR( SlotRun< F > ) slot )
                 >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 }
 
 
@@ -84,7 +85,7 @@ Slot< Slot< R () > >::Slot( SPTR( SlotRun< F > ) slot )
                 >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 }
 
 
@@ -105,7 +106,7 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( SlotRun< F > ) slot )
                 >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 }
 
 
@@ -203,8 +204,8 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( Slot< F > ) slot )
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
-template<typename F, typename Bindings1, typename Bindings2, typename Bindings3 >
-SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1, Bindings2  bindings2, Bindings3  bindings3 )
+template<typename F, typename BINDING1, typename BINDING2, typename BINDING3 >
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, BINDING1  binding1, BINDING2  binding2, BINDING3  binding3 )
 {
 #ifndef BOOST_NO_VARIADIC_TEMPLATES
     BOOST_STATIC_ASSERT( 3 < 2 );
@@ -212,13 +213,13 @@ SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot
     SLM_ASSERT( "Too many arguments", ( 3 < 2 ) );
 #endif
     typedef ::boost::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
-    FunctionType func = ::fwCom::util::autobind(f, bindings1, bindings2, bindings3 );
+    FunctionType func = ::fwCom::util::autobind(f, binding1, binding2, binding3 );
     return ::boost::make_shared< Slot< FunctionType > > ( func );
 }
 
 
-template<typename F, typename Bindings1, typename Bindings2 >
-SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1, Bindings2  bindings2 )
+template<typename F, typename BINDING1, typename BINDING2 >
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, BINDING1  binding1, BINDING2  binding2 )
 {
 #ifndef BOOST_NO_VARIADIC_TEMPLATES
     BOOST_STATIC_ASSERT( 2 < 2 );
@@ -226,13 +227,13 @@ SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot
     SLM_ASSERT( "Too many arguments", ( 2 < 2 ) );
 #endif
     typedef ::boost::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
-    FunctionType func = ::fwCom::util::autobind(f, bindings1, bindings2 );
+    FunctionType func = ::fwCom::util::autobind(f, binding1, binding2 );
     return ::boost::make_shared< Slot< FunctionType > > ( func );
 }
 
 
-template<typename F, typename Bindings1 >
-SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1 )
+template<typename F, typename BINDING1 >
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, BINDING1  binding1 )
 {
 #ifndef BOOST_NO_VARIADIC_TEMPLATES
     BOOST_STATIC_ASSERT( 1 < 2 );
@@ -240,7 +241,7 @@ SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot
     SLM_ASSERT( "Too many arguments", ( 1 < 2 ) );
 #endif
     typedef ::boost::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
-    FunctionType func = ::fwCom::util::autobind(f, bindings1 );
+    FunctionType func = ::fwCom::util::autobind(f, binding1 );
     return ::boost::make_shared< Slot< FunctionType > > ( func );
 }
 
@@ -264,18 +265,130 @@ SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot
 //===============================================================================
 
 #else  // BOOST_NO_VARIADIC_TEMPLATES
-template<typename F, typename ...Bindings>
-SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings ...bindings)
+template<typename F, typename ...BINDING>
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, BINDING ...binding)
 {
 #ifndef BOOST_NO_VARIADIC_TEMPLATES
-    BOOST_STATIC_ASSERT( sizeof...(bindings) < 2 );
+    BOOST_STATIC_ASSERT( sizeof...(binding) < 2 );
 #else
-    SLM_ASSERT( "Too many arguments", ( sizeof...(bindings) < 2 ) );
+    SLM_ASSERT( "Too many arguments", ( sizeof...(binding) < 2 ) );
 #endif
     typedef ::boost::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
-    FunctionType func = ::fwCom::util::autobind(f, bindings...);
+    FunctionType func = ::fwCom::util::autobind(f, binding...);
     return ::boost::make_shared< Slot< FunctionType > > ( func );
 }
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3 >
+template<typename F>
+SPTR( Slot< R ( A1, A2, A3 ) > ) Slot< R ( A1, A2, A3 ) >::New( F f )
+{
+    return newSlot(f);
+}
+
+
+
+template<typename R, typename A1, typename A2 >
+template<typename F>
+SPTR( Slot< R ( A1, A2 ) > ) Slot< R ( A1, A2 ) >::New( F f )
+{
+    return newSlot(f);
+}
+
+
+
+template<typename R, typename A1 >
+template<typename F>
+SPTR( Slot< R ( A1 ) > ) Slot< R ( A1 ) >::New( F f )
+{
+    return newSlot(f);
+}
+
+
+
+template<typename R>
+template<typename F>
+SPTR( Slot< R () > ) Slot< R () >::New( F f )
+{
+    return newSlot(f);
+}
+
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template<typename R, typename ...A >
+template<typename F>
+SPTR( Slot< R ( A... ) > ) Slot< R ( A... ) >::New( F f )
+{
+    return newSlot(f);
+}
+
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3 >
+template<typename F, typename O>
+SPTR( Slot< R ( A1, A2, A3 ) > ) Slot< R ( A1, A2, A3 ) >::New( F f, O o )
+{
+    return newSlot(f, o);
+}
+
+
+
+template<typename R, typename A1, typename A2 >
+template<typename F, typename O>
+SPTR( Slot< R ( A1, A2 ) > ) Slot< R ( A1, A2 ) >::New( F f, O o )
+{
+    return newSlot(f, o);
+}
+
+
+
+template<typename R, typename A1 >
+template<typename F, typename O>
+SPTR( Slot< R ( A1 ) > ) Slot< R ( A1 ) >::New( F f, O o )
+{
+    return newSlot(f, o);
+}
+
+
+
+template<typename R>
+template<typename F, typename O>
+SPTR( Slot< R () > ) Slot< R () >::New( F f, O o )
+{
+    return newSlot(f, o);
+}
+
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template<typename R, typename ...A >
+template<typename F, typename O>
+SPTR( Slot< R ( A... ) > ) Slot< R ( A... ) >::New( F f, O o )
+{
+    return newSlot(f, o);
+}
+
 
 
 #endif  // BOOST_NO_VARIADIC_TEMPLATES

@@ -11,6 +11,7 @@
 #endif
 
 #include <boost/function_types/function_arity.hpp>
+#include <boost/function_types/result_type.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -35,7 +36,7 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( SlotRun< F > ) slot )
                 >::wrap( &SlotRun< F >::run, slot.get() )
                                                         )
 {
-    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::type::value) );
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
 }
 
 
@@ -54,18 +55,34 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( Slot< F > ) slot )
 
 
 
-template<typename F, typename ...Bindings>
-SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings ...bindings)
+template<typename F, typename ...BINDING>
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, BINDING ...binding)
 {
 #ifndef BOOST_NO_VARIADIC_TEMPLATES
-    BOOST_STATIC_ASSERT( sizeof...(bindings) < 2 );
+    BOOST_STATIC_ASSERT( sizeof...(binding) < 2 );
 #else
-    SLM_ASSERT( "Too many arguments", ( sizeof...(bindings) < 2 ) );
+    SLM_ASSERT( "Too many arguments", ( sizeof...(binding) < 2 ) );
 #endif
     typedef ::boost::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
-    FunctionType func = ::fwCom::util::autobind(f, bindings...);
+    FunctionType func = ::fwCom::util::autobind(f, binding...);
     return ::boost::make_shared< Slot< FunctionType > > ( func );
 }
+
+template<typename R, typename ...A >
+template<typename F>
+SPTR( Slot< R ( A... ) > ) Slot< R ( A... ) >::New( F f )
+{
+    return newSlot(f);
+}
+
+
+template<typename R, typename ...A >
+template<typename F, typename O>
+SPTR( Slot< R ( A... ) > ) Slot< R ( A... ) >::New( F f, O o )
+{
+    return newSlot(f, o);
+}
+
 
 template<typename R, typename ...A >
 template<typename F_IN >

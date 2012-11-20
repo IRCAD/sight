@@ -13,8 +13,15 @@
 namespace fwCom
 {
 
+/**
+ * @brief Base class for Slot connection implementation.
+ * This class is for internal use purpose.
+ */
 struct SlotConnectionBase: virtual fwCore::BaseObject
 {
+    /**
+     * @name Typedefs
+     * @{ */
     typedef ::boost::shared_ptr< SlotConnectionBase > sptr;
     typedef ::boost::shared_ptr< SlotConnectionBase const > csptr;
     typedef ::boost::weak_ptr< SlotConnectionBase > wptr;
@@ -22,13 +29,17 @@ struct SlotConnectionBase: virtual fwCore::BaseObject
 
     typedef boost::shared_ptr< void > BlockerSptrType;
     typedef boost::weak_ptr< void >   BlockerWptrType;
+    /**  @} */
 
 
+    /// Disconnect a Slot from this connection.
     virtual void disconnect() = 0;
 
+    /// Returns a .. to block this connection.
     virtual BlockerSptrType getBlocker() = 0;
 
 protected:
+    /// Connect the related Signal and Slot together.
     virtual void connect() = 0;
 };
 

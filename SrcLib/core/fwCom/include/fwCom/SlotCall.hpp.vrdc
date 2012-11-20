@@ -16,25 +16,58 @@ namespace fwCom
 template< typename F >
 struct SlotCall;
 
+/**
+ * @brief Slot call interface (call with return value).
+ *
+ * @tparam R Slot's return type.
+ * @tparam A Slot's arguments types.
+ */
 template< typename R, typename ...A >
 struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
 {
+    /**
+     * @name Typedefs
+     * @{ */
     typedef R SignatureType(A...);
     typedef SlotCall< SignatureType > SelfType;
     typedef SPTR( SelfType ) sptr;
     typedef WPTR( SelfType ) wptr;
-
     typedef ::boost::shared_future< R > SharedFutureType;
+    /**  @} */
+
 
     SlotCall() :  SlotRun< void ( A... ) >() {}
 
+    /**
+     * @brief Call the Slot with the given parameters.
+     */
     virtual R call(A...) const = 0;
 
+    /**
+     * @brief Call the Slot with the given parameters asynchronously.
+     *
+     * @param worker Worker that will run the Slot.
+     * @param args run arguments.
+     *
+     * @return a shared_future object associated with Slot's call result.
+     */
     virtual SharedFutureType asyncCall( const ::fwThread::Worker::sptr &worker, A... args ) const;
 
+    /**
+     * @brief Call the Slot with the given parameters asynchronously.
+     * The execution of this slot will occur on it's own worker. 
+     * @pre Slot's worker must be set.
+     *
+     * @return a shared_future object associated with Slot's call result.
+     */
     virtual SharedFutureType asyncCall( A... args ) const;
 
 protected:
+    /**
+     * @brief Binds the given parameters to the call method within a R() function.
+     *
+     * @return a R() function.
+     */
     virtual ::boost::function< R() > bindCall( A...args  ) const;
 };
 

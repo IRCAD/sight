@@ -23,10 +23,16 @@ namespace fwCom
 template < typename F >
 struct Signal;
 
+/**
+ * @brief Signal implementation. 
+ * Template parameter T must always be void.
+ */
 template < typename R, typename ...A >
 struct Signal< R (A...) > : SignalBase
 {
-
+    /**
+     * @name Typedefs
+     * @{ */
     typedef R SignatureType(A...);
 
     typedef Signal< SignatureType > SelfType;
@@ -41,24 +47,37 @@ struct Signal< R (A...) > : SignalBase
     typedef std::list< PairType* > SlotContainerType;
 
     typedef std::map< SlotBase*, SlotConnectionBase::wptr > ConnectionMapType;
+    /**  @} */
 
+    /// Construct a new Signal of type Signal<R(A...)>.
     static sptr New();
 
+    /// Destructor : disconnects all remaining connections.
     ~Signal()
     {
         this->disconnectAll();
     }
 
+    /**
+     * @brief Connects the given slot.
+     *
+     * @return an object managing the connection.
+     */
     Connection connect ( SlotBase::sptr slot );
 
+    /// Disconnects the given slot.
     void disconnect ( SlotBase::sptr slot );
 
+    /// Disconnects all slots.
     void disconnectAll();
 
+    /// Request execution of slots with given arguments.
     void emit( A...a ) const;
 
+    /// Request asynchronous execution of slots with given arguments.
     void asyncEmit( A...a ) const;
 
+    /// Return number of connected slots.
     size_t getNumberOfConnections() const { return m_slots.size(); }
 
 protected:
@@ -66,10 +85,19 @@ protected:
     template < typename F >
     friend struct SlotConnection;
 
+    /**
+     * @brief Connects the given slot.
+     * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
+     * returns a connection on succes, otherwise try to connect
+     * the same slot with the type R (A1, A2, ..., Am).
+     */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
 
+    /// Connected slots.
     SlotContainerType m_slots;
+
+    /// Container of current connections.
     ConnectionMapType m_connections;
 
 private:
