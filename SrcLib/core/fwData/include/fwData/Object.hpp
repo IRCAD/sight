@@ -228,6 +228,15 @@ public:
     /// Key in m_signals map of signal m_sigObjectModified
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_MODIFIED_SIG;
 
+#ifdef COM_LOG
+    /**
+      * @brief Set a newID  for the object, the oldest one is released.
+      * @warning Cannot set a empty ID.
+      * @note This method is thread-safe. This method is used to better trace communication between signals and slots
+      */
+    FWDATA_API void setID( ::fwTools::fwID::IDType newID );
+#endif
+
 protected:
 
     FWDATA_API Object();

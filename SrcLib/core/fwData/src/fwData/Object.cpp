@@ -24,11 +24,13 @@ Object::Object()
 {
     // Init
     m_sigObjectModified = ObjectModifiedSignalType::New();
-#ifdef COM_LOG
-    m_sigObjectModified->setID( s_OBJECT_MODIFIED_SIG );
-#endif
+
     // Register
     m_signals( s_OBJECT_MODIFIED_SIG,  m_sigObjectModified);
+
+#ifdef COM_LOG
+    ::fwCom::HasSignals::m_signals.setID();
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -159,5 +161,20 @@ void Object::deepCopy( ::fwData::Object::csptr source )
     }
     return newObj;
 }
+
+//-----------------------------------------------------------------------------
+
+#ifdef COM_LOG
+void Object::setID( ::fwTools::fwID::IDType newID )
+{
+    if( ! this->hasID() ||
+        this->getID( ::fwTools::fwID::MUST_EXIST ) != newID )
+    {
+        this->::fwTools::fwID::setID( newID );
+    }
+
+    ::fwCom::HasSignals::m_signals.setID( newID + "::" );
+}
+#endif
 
 } // namespace fwData
