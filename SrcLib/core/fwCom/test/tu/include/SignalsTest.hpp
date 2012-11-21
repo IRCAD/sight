@@ -20,6 +20,7 @@ class SignalsTest : public CPPUNIT_NS::TestFixture
 
     CPPUNIT_TEST( buildTest );
     CPPUNIT_TEST( hasSignalsTest );
+    CPPUNIT_TEST( signalsIDTest );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,7 +31,7 @@ public:
 
     void buildTest();
     void hasSignalsTest();
-
+    void signalsIDTest();
 };
 
 } //namespace ut

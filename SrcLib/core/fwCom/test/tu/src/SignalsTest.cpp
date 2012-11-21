@@ -104,5 +104,31 @@ void SignalsTest::hasSignalsTest()
 }
 
 //-----------------------------------------------------------------------------
+
+void SignalsTest::signalsIDTest()
+{
+#ifdef COM_LOG
+    ::fwCom::Signals signals;
+
+    ::fwCom::Signal< void() >::sptr sig1 = ::fwCom::Signal< void() >::New();
+
+    typedef void Signature(int, float);
+    ::fwCom::Signal< Signature >::sptr sig2 = ::fwCom::Signal< Signature >::New();
+
+    signals("sig1", sig1)
+           ("sig2", sig2);
+
+    signals.setID();
+    CPPUNIT_ASSERT_EQUAL( std::string("sig1"), sig1->getID() );
+    CPPUNIT_ASSERT_EQUAL( std::string("sig2"), sig2->getID() );
+
+    signals.setID("prefix::");
+    CPPUNIT_ASSERT_EQUAL( std::string("prefix::sig1"), sig1->getID() );
+    CPPUNIT_ASSERT_EQUAL( std::string("prefix::sig2"), sig2->getID() );
+#endif
+}
+
+//-----------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwCom
