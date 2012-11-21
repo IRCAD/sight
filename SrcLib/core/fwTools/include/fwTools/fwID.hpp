@@ -82,7 +82,7 @@ protected :
       * @warning Cannot set a empty ID.
       * @note This method is thread-safe.
       */
-    FWTOOLS_API void   setID( IDType newID ); // cannot set a empty one
+    FWTOOLS_API virtual void   setID( IDType newID ); // cannot set a empty one
 
     /**
       * @brief Release the id for the object.
