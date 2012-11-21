@@ -192,6 +192,8 @@ void SignalTest::connectTest()
         connection.disconnect();
         CPPUNIT_ASSERT(connection.expired());
         CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
+
+        CPPUNIT_ASSERT_THROW(sig->getConnection(slot3), ::fwCom::exception::BadSlot);
     }
 
     {
