@@ -43,6 +43,11 @@ public:
     /// Returns all SignalKeyType registered in m_signals
     FWCOM_API SignalKeyContainerType getSignalKeys() const;
 
+#ifdef COM_LOG
+    /// Set new id for all signals using their key in m_signals, a prefix can be added
+    FWCOM_API void setID( const std::string prefix = "" );
+#endif
+
 protected:
 
     /// Copy constructor forbidden

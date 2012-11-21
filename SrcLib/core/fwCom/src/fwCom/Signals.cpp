@@ -60,5 +60,14 @@ Signals& Signals::operator=( const Signals& )
     return *this;
 }
 
+#ifdef COM_LOG
+void Signals::setID( const std::string prefix )
+{
+    BOOST_FOREACH( SignalMapType::value_type elem, m_signals )
+    {
+        elem.second->setID( prefix + elem.first );
+    }
+}
+#endif
 } // namespace fwCom
 

@@ -67,5 +67,15 @@ Slots& Slots::operator=( const Slots& )
     return *this;
 }
 
+#ifdef COM_LOG
+void Slots::setID( const std::string prefix )
+{
+    BOOST_FOREACH( SlotMapType::value_type elem, m_slots )
+    {
+        elem.second->setID( prefix + elem.first );
+    }
+}
+#endif
+
 } // namespace fwCom
 
