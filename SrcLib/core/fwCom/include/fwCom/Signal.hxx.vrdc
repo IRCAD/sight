@@ -15,6 +15,7 @@
 #include <boost/make_shared.hpp>
 
 #include "fwCom/exception/BadSlot.hpp"
+#include "fwCom/exception/AlreadyConnected.hpp"
 #include "fwCom/SlotConnection.hpp"
 #include "fwCom/SlotConnection.hxx"
 #include "fwCom/Slot.hpp"
@@ -109,11 +110,21 @@ void Signal< R (A...) >::asyncEmit( A...a ) const
     }
 }
 
+template < typename R, typename ...A >
+bool Signal< R( A... ) >::isConnected( SlotBase::sptr slot )
+{
+    return m_connections.find( slot ) != m_connections.end();
+}
 
 template < typename R, typename ...A >
 template< typename FROM_F >
 Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
 {
+    if(this->isConnected(slot))
+    {
+        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+    }
+
     typedef SlotConnection< void( A... ) > ConnectionType;
     Connection connection;
 

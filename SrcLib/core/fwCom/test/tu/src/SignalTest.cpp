@@ -10,6 +10,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "fwCom/exception/BadSlot.hpp"
+#include "fwCom/exception/AlreadyConnected.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -236,6 +237,15 @@ void SignalTest::connectTest()
 
     }
 
+    {
+        typedef void Signature();
+        ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
+
+        sig->connect(slot0);
+        CPPUNIT_ASSERT_THROW(sig->connect(slot0), fwCom::exception::AlreadyConnected);
+
+        CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
+    }
 
 
 }
@@ -361,7 +371,6 @@ void SignalTest::autoSlotDisconnectTest()
         }
 
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
-
 
     }
 

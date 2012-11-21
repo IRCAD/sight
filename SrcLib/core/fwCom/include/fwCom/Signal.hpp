@@ -67,6 +67,7 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
      *
      * @return an object managing the connection.
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     Connection connect ( SlotBase::sptr slot );
 
@@ -100,9 +101,13 @@ protected:
      * the same slot with the type R (A1, A2, ..., Am).
      *
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
+
+     /// Returns true if given slot is connected to this signal.
+    bool isConnected(SlotBase::sptr slot);
 
     /// Connected slots.
     SlotContainerType m_slots;
@@ -150,6 +155,7 @@ struct Signal< R ( A1, A2 ) > : SignalBase
      *
      * @return an object managing the connection.
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     Connection connect ( SlotBase::sptr slot );
 
@@ -183,9 +189,13 @@ protected:
      * the same slot with the type R (A1, A2, ..., Am).
      *
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
+
+     /// Returns true if given slot is connected to this signal.
+    bool isConnected(SlotBase::sptr slot);
 
     /// Connected slots.
     SlotContainerType m_slots;
@@ -233,6 +243,7 @@ struct Signal< R ( A1 ) > : SignalBase
      *
      * @return an object managing the connection.
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     Connection connect ( SlotBase::sptr slot );
 
@@ -266,9 +277,13 @@ protected:
      * the same slot with the type R (A1, A2, ..., Am).
      *
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
+
+     /// Returns true if given slot is connected to this signal.
+    bool isConnected(SlotBase::sptr slot);
 
     /// Connected slots.
     SlotContainerType m_slots;
@@ -316,6 +331,7 @@ struct Signal< R () > : SignalBase
      *
      * @return an object managing the connection.
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     Connection connect ( SlotBase::sptr slot );
 
@@ -349,9 +365,13 @@ protected:
      * the same slot with the type R (A1, A2, ..., Am).
      *
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
+
+     /// Returns true if given slot is connected to this signal.
+    bool isConnected(SlotBase::sptr slot);
 
     /// Connected slots.
     SlotContainerType m_slots;
@@ -404,6 +424,7 @@ struct Signal< R (A...) > : SignalBase
      *
      * @return an object managing the connection.
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     Connection connect ( SlotBase::sptr slot );
 
@@ -437,9 +458,13 @@ protected:
      * the same slot with the type R (A1, A2, ..., Am).
      *
      * @throws BadSlot If given slot doesn't match signal type.
+     * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
     Connection connect ( SlotBase::sptr slot );
+
+     /// Returns true if given slot is connected to this signal.
+    bool isConnected(SlotBase::sptr slot);
 
     /// Connected slots.
     SlotContainerType m_slots;

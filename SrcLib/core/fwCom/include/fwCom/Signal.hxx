@@ -15,6 +15,7 @@
 #include <boost/make_shared.hpp>
 
 #include "fwCom/exception/BadSlot.hpp"
+#include "fwCom/exception/AlreadyConnected.hpp"
 #include "fwCom/SlotConnection.hpp"
 #include "fwCom/SlotConnection.hxx"
 #include "fwCom/Slot.hpp"
@@ -455,7 +456,6 @@ void Signal< R ( A1, A2, A3 ) >::asyncEmit( A1 a1, A2 a2, A3 a3 ) const
 }
 
 
-
 template < typename R, typename A1, typename A2 >
 void Signal< R ( A1, A2 ) >::asyncEmit( A1 a1, A2 a2 ) const
 {
@@ -470,7 +470,6 @@ void Signal< R ( A1, A2 ) >::asyncEmit( A1 a1, A2 a2 ) const
         }
     }
 }
-
 
 
 template < typename R, typename A1 >
@@ -489,7 +488,6 @@ void Signal< R ( A1 ) >::asyncEmit( A1 a1 ) const
 }
 
 
-
 template < typename R>
 void Signal< R () >::asyncEmit() const
 {
@@ -504,7 +502,6 @@ void Signal< R () >::asyncEmit() const
         }
     }
 }
-
 
 
 //===================================== END =====================================
@@ -528,6 +525,51 @@ void Signal< R (A...) >::asyncEmit( A...a ) const
 }
 
 
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3 >
+bool Signal< R( A1, A2, A3 ) >::isConnected( SlotBase::sptr slot )
+{
+    return m_connections.find( slot ) != m_connections.end();
+}
+
+
+template < typename R, typename A1, typename A2 >
+bool Signal< R( A1, A2 ) >::isConnected( SlotBase::sptr slot )
+{
+    return m_connections.find( slot ) != m_connections.end();
+}
+
+
+template < typename R, typename A1 >
+bool Signal< R( A1 ) >::isConnected( SlotBase::sptr slot )
+{
+    return m_connections.find( slot ) != m_connections.end();
+}
+
+
+template < typename R>
+bool Signal< R() >::isConnected( SlotBase::sptr slot )
+{
+    return m_connections.find( slot ) != m_connections.end();
+}
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template < typename R, typename ...A >
+bool Signal< R( A... ) >::isConnected( SlotBase::sptr slot )
+{
+    return m_connections.find( slot ) != m_connections.end();
+}
+
 
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
 
@@ -539,6 +581,11 @@ template < typename R, typename A1, typename A2, typename A3 >
 template< typename FROM_F >
 Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
 {
+    if(this->isConnected(slot))
+    {
+        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+    }
+
     typedef SlotConnection< void( A1, A2, A3 ) > ConnectionType;
     Connection connection;
 
@@ -602,6 +649,11 @@ template < typename R, typename A1, typename A2 >
 template< typename FROM_F >
 Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
 {
+    if(this->isConnected(slot))
+    {
+        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+    }
+
     typedef SlotConnection< void( A1, A2 ) > ConnectionType;
     Connection connection;
 
@@ -665,6 +717,11 @@ template < typename R, typename A1 >
 template< typename FROM_F >
 Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
 {
+    if(this->isConnected(slot))
+    {
+        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+    }
+
     typedef SlotConnection< void( A1 ) > ConnectionType;
     Connection connection;
 
@@ -728,6 +785,11 @@ template < typename R>
 template< typename FROM_F >
 Connection Signal< R() >::connect ( SlotBase::sptr slot )
 {
+    if(this->isConnected(slot))
+    {
+        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+    }
+
     typedef SlotConnection< void() > ConnectionType;
     Connection connection;
 
@@ -796,6 +858,11 @@ template < typename R, typename ...A >
 template< typename FROM_F >
 Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
 {
+    if(this->isConnected(slot))
+    {
+        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+    }
+
     typedef SlotConnection< void( A... ) > ConnectionType;
     Connection connection;
 
