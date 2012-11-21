@@ -131,10 +131,70 @@ namespace util
  *     int result = future.get();
  *
  *
+ * @section Signals Signals
+ *
+ * Signal allows to perform grouped calls on slots.  In this purpose, Signal
+ * provides a mechanism to connect slots to itself.
+ *
+ * Examples:
+ *
+ * The following instruction declares a Signal able to execute slots of type
+ * `void()` :
+ *
+ *     ::fwCom::Signal< void() >::sptr signal = ::fwCom::Signal< void() >::New();
+ *
+ * This connects a Slot having the same type as the previously declared Signal,
+ * and connects the Slot to this Signal :
+ *
+ *     sig->connect(slotStart);
+ *
+ *
+ * Finally, the following instruction will trigger the execution of all slots
+ * connected to this Signal:
+ *
+ *     sig->emit();
+ *
+ * Thus, it is possible to connect multiple slots having the same type to the
+ * same Signal and trigger simultaneously their execution.
+ *
+ * Following the same idea, signals can take several arguments and be triggered
+ * by passing the right arguments to `emit`.
+ *
+ * The following will declare a Signal of type `void(int, int)` and connects it
+ * to slots of type `void (int)` and `int (int, int)`.
+ *
+ *     using namespace fwCom;
+ *     Signal< void(int, int) >::sptr throw2 = Signal< void(int, int) >::New();
+ *     Slot< int(int, int) >::sptr    catch1 = Slot< int(int, int) >::New(...);
+ *     Slot< void(int) >::sptr        catch2 = Slot< void(int) >::New(...);
+ *
+ *     throw2->connect(catch1);
+ *     throw2->connect(catch2);
+ *
+ *     throw2->emit(21, 42);
+ *
+ * In the latter example, 2 points need to highlighted :
+ *  - the return type of the Signal is `void`. Signal cannot return values, so
+ *  their return type is always declared as `void`. Thus, it is not possible to
+ *  retrieve catch2 Slot return value if it is executed using a Signal.
+ *  Therefore, both slots are run succesfully.
+ *  - the arguments types of catch1 slot doesn't match exactly throw2 Signal's
+ *  ones. The connection of catch1 slot and his execution remain successful (i.e
+ *  catch1 Slot did receive the value 21 as argument, 42 is ignored).
+ *
+ *
+ * @subsection SignalAsyncEmit Asynchronous emit
+ *
+ *
+ * As slots can work asynchronously, triggering a Signal with
+ * `asyncEmit` results in the execution of connected slots in their worker :
+ *
+ *     throw2->asyncEmit(21, 42);
+ *
+ * The instruction above has for consequence to run each connected slot in it's own
+ * worker. @note Each connected slot *must have* a worker set in order to use
+ * `asyncEmit`.
  */
-
-
-
 } // namespace fwCom
 
 #endif /* __FWCOM_NAMESPACE_HPP__ */
