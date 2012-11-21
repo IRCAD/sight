@@ -432,11 +432,8 @@ inline void SlotConnection< void ( A1, A2, A3 ) >::disconnect()
     if(sig)
     {
         sig->m_slots.remove( &m_pair );
-        if(slot)
-        {
-            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
-            sig->m_connections.erase(slot.get());
-        }
+        sig->m_connections.erase(slot);
+        OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< ((slot) ? slot->getID() : "<dead slot>") <<"'");
     }
 
     m_slotWrapper.reset();
@@ -473,11 +470,8 @@ inline void SlotConnection< void ( A1, A2 ) >::disconnect()
     if(sig)
     {
         sig->m_slots.remove( &m_pair );
-        if(slot)
-        {
-            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
-            sig->m_connections.erase(slot.get());
-        }
+        sig->m_connections.erase(slot);
+        OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< ((slot) ? slot->getID() : "<dead slot>") <<"'");
     }
 
     m_slotWrapper.reset();
@@ -514,11 +508,8 @@ inline void SlotConnection< void ( A1 ) >::disconnect()
     if(sig)
     {
         sig->m_slots.remove( &m_pair );
-        if(slot)
-        {
-            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
-            sig->m_connections.erase(slot.get());
-        }
+        sig->m_connections.erase(slot);
+        OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< ((slot) ? slot->getID() : "<dead slot>") <<"'");
     }
 
     m_slotWrapper.reset();
@@ -555,11 +546,8 @@ inline void SlotConnection< void () >::disconnect()
     if(sig)
     {
         sig->m_slots.remove( &m_pair );
-        if(slot)
-        {
-            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
-            sig->m_connections.erase(slot.get());
-        }
+        sig->m_connections.erase(slot);
+        OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< ((slot) ? slot->getID() : "<dead slot>") <<"'");
     }
 
     m_slotWrapper.reset();
@@ -601,11 +589,8 @@ inline void SlotConnection< void (A...) >::disconnect()
     if(sig)
     {
         sig->m_slots.remove( &m_pair );
-        if(slot)
-        {
-            OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< slot->getID() <<"'");
-            sig->m_connections.erase(slot.get());
-        }
+        sig->m_connections.erase(slot);
+        OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< ((slot) ? slot->getID() : "<dead slot>") <<"'");
     }
 
     m_slotWrapper.reset();

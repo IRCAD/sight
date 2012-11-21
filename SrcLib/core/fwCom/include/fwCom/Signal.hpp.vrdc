@@ -24,7 +24,7 @@ template < typename F >
 struct Signal;
 
 /**
- * @brief Signal implementation. 
+ * @brief Signal implementation.
  * Template parameter T must always be void.
  */
 template < typename R, typename ...A >
@@ -46,7 +46,7 @@ struct Signal< R (A...) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase*, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
     /// Construct a new Signal of type Signal<R(A...)>.
@@ -69,7 +69,7 @@ struct Signal< R (A...) > : SignalBase
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
-     */ 
+     */
     void disconnect ( SlotBase::sptr slot );
 
     /// Disconnects all slots.

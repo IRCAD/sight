@@ -50,7 +50,7 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase*, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
     /// Construct a new Signal of type Signal<R( A1, A2, A3 )>.
@@ -133,7 +133,7 @@ struct Signal< R ( A1, A2 ) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase*, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
     /// Construct a new Signal of type Signal<R( A1, A2 )>.
@@ -216,7 +216,7 @@ struct Signal< R ( A1 ) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase*, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
     /// Construct a new Signal of type Signal<R( A1 )>.
@@ -299,7 +299,7 @@ struct Signal< R () > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase*, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
     /// Construct a new Signal of type Signal<R()>.
@@ -387,7 +387,7 @@ struct Signal< R (A...) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase*, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
     /// Construct a new Signal of type Signal<R(A...)>.

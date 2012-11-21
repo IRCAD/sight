@@ -134,7 +134,7 @@ Connection Signal< R (A...) >::connect( SlotBase::sptr slot )
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::disconnect( SlotBase::sptr slot )
 {
-    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
     {
@@ -157,7 +157,7 @@ void Signal< R ( A1, A2, A3 ) >::disconnect( SlotBase::sptr slot )
 template < typename R, typename A1, typename A2 >
 void Signal< R ( A1, A2 ) >::disconnect( SlotBase::sptr slot )
 {
-    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
     {
@@ -180,7 +180,7 @@ void Signal< R ( A1, A2 ) >::disconnect( SlotBase::sptr slot )
 template < typename R, typename A1 >
 void Signal< R ( A1 ) >::disconnect( SlotBase::sptr slot )
 {
-    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
     {
@@ -203,7 +203,7 @@ void Signal< R ( A1 ) >::disconnect( SlotBase::sptr slot )
 template < typename R>
 void Signal< R () >::disconnect( SlotBase::sptr slot )
 {
-    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
     {
@@ -231,7 +231,7 @@ void Signal< R () >::disconnect( SlotBase::sptr slot )
 template < typename R, typename ...A >
 void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
 {
-    ConnectionMapType::const_iterator iter = m_connections.find(slot.get());
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
     {
@@ -553,7 +553,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -576,7 +576,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -616,7 +616,7 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -639,7 +639,7 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -679,7 +679,7 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -702,7 +702,7 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -742,7 +742,7 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -765,7 +765,7 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -810,7 +810,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
@@ -833,7 +833,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
-            m_connections.insert( typename ConnectionMapType::value_type( slot.get(), slotConnection ) );
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connect();
             connection = Connection(slotConnection);
         }
