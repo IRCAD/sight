@@ -48,7 +48,7 @@ void SlotsSignalsTest::basicTest()
     ActiveWorkers::sptr activeWorkers = ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
-    SBasicTest::sptr basicTestSrv = ::boost::make_shared<SBasicTest>();
+    SBasicTest::sptr basicTestSrv = ::fwServices::factory::New<SBasicTest>();
     ::fwServices::OSR::registerService(buffer, basicTestSrv);
 
     IService::SharedFutureType startFuture = basicTestSrv->start();
@@ -91,10 +91,10 @@ void SlotsSignalsTest::comObjectServiceTest()
 
     {
 
-        SReaderTest::sptr readerTestSrv = ::boost::make_shared<SReaderTest>();
+        SReaderTest::sptr readerTestSrv = ::fwServices::factory::New<SReaderTest>();
         ::fwServices::OSR::registerService(buffer, readerTestSrv);
 
-        SShowTest::sptr showTestSrv = ::boost::make_shared<SShowTest>();
+        SShowTest::sptr showTestSrv = ::fwServices::factory::New<SShowTest>();
         ::fwServices::OSR::registerService(buffer, showTestSrv);
         showTestSrv->setWorker(worker1);
 
@@ -119,14 +119,14 @@ void SlotsSignalsTest::comObjectServiceTest()
     }
 
     {
-        SReaderTest::sptr readerTestSrv = ::boost::make_shared<SReaderTest>();
+        SReaderTest::sptr readerTestSrv = ::fwServices::factory::New<SReaderTest>();
         ::fwServices::OSR::registerService(buffer, readerTestSrv);
 
-        SReaderTest::sptr reader2TestSrv = ::boost::make_shared<SReaderTest>();
+        SReaderTest::sptr reader2TestSrv = ::fwServices::factory::New<SReaderTest>();
         ::fwServices::OSR::registerService(buffer, reader2TestSrv);
         reader2TestSrv->setWorker(worker2);
 
-        SShowTest::sptr showTestSrv = ::boost::make_shared<SShowTest>();
+        SShowTest::sptr showTestSrv = ::fwServices::factory::New<SShowTest>();
         ::fwServices::OSR::registerService(buffer, showTestSrv);
         showTestSrv->setWorker(worker1);
 
@@ -170,10 +170,10 @@ void SlotsSignalsTest::comServiceToServiceTest()
     ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
     activeWorkers->addWorker("worker1",worker1);
 
-    SReader2Test::sptr readerTestSrv = ::boost::make_shared<SReader2Test>();
+    SReader2Test::sptr readerTestSrv = ::fwServices::factory::New<SReader2Test>();
     ::fwServices::OSR::registerService(buffer, readerTestSrv);
 
-    SShowTest::sptr showTestSrv = ::boost::make_shared<SShowTest>();
+    SShowTest::sptr showTestSrv = ::fwServices::factory::New<SShowTest>();
     ::fwServices::OSR::registerService(buffer, showTestSrv);
     showTestSrv->setWorker(worker1);
 
@@ -210,10 +210,10 @@ void SlotsSignalsTest::blockConnectionTest()
     ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
     activeWorkers->addWorker("worker1",worker1);
 
-    SReaderTest::sptr readerTestSrv = ::boost::make_shared<SReaderTest>();
+    SReaderTest::sptr readerTestSrv = ::fwServices::factory::New<SReaderTest>();
     ::fwServices::OSR::registerService(buffer, readerTestSrv);
 
-    SShow2Test::sptr showTestSrv = ::boost::make_shared<SShow2Test>();
+    SShow2Test::sptr showTestSrv = ::fwServices::factory::New<SShow2Test>();
     ::fwServices::OSR::registerService(buffer, showTestSrv);
     showTestSrv->setWorker(worker1);
 

@@ -58,11 +58,8 @@ IService::IService() :
                  ( s_SWAP_SLOT    , m_slotSwap    )
                  ;
 #ifdef COM_LOG
-    m_slotStart->setID( s_START_SLOT );
-    m_slotStop->setID( s_STOP_SLOT );
-    m_slotUpdate->setID( s_UPDATE_SLOT );
-    m_slotReceive->setID( s_RECEIVE_SLOT );
-    m_slotSwap->setID( s_SWAP_SLOT );
+    ::fwCom::HasSlots::m_slots.setID();
+    ::fwCom::HasSignals::m_signals.setID();
 #endif
 
     this->setWorker( registry::ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER ) );
@@ -345,6 +342,22 @@ void IService::setWorker( ::fwThread::Worker::sptr worker )
     m_associatedWorker = worker;
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
+
+//-----------------------------------------------------------------------------
+
+#ifdef COM_LOG
+void IService::setID( ::fwTools::fwID::IDType newID )
+{
+    if( ! this->hasID() ||
+        this->getID( ::fwTools::fwID::MUST_EXIST ) != newID )
+    {
+        this->::fwTools::fwID::setID( newID );
+    }
+
+    ::fwCom::HasSlots::m_slots.setID( newID + "::" );
+    ::fwCom::HasSignals::m_signals.setID( newID + "::" );
+}
+#endif
 
 //-----------------------------------------------------------------------------
 

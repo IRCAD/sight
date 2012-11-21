@@ -23,7 +23,9 @@ namespace factory
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
     SPTR(CLASSNAME) srv = ::boost::make_shared< CLASSNAME >();
-
+#ifdef COM_LOG
+    srv->setID(srv->getID());
+#endif
     return srv;
 }
 

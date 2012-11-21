@@ -23,6 +23,7 @@
 
 #include "fwServices/config.hpp"
 #include "fwServices/ObjectMsg.hpp"
+#include "fwServices/factory/new.hpp"
 
 namespace fwServices
 {
@@ -55,7 +56,6 @@ public :
     typedef ::boost::property_tree::ptree ConfigType;
 
     fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object) ) ;
-
     fwCoreAllowSharedFromThis();
 
     /**
@@ -295,6 +295,15 @@ public :
     FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, IService & _service) ;
 
     //@}
+
+#ifdef COM_LOG
+    /**
+      * @brief Set a newID  for the service, the oldest one is released.
+      * @warning Cannot set a empty ID.
+      * @note This method is thread-safe. This method is used to better trace communication between signals and slots
+      */
+    FWSERVICES_API void setID( ::fwTools::fwID::IDType newID );
+#endif
 
 protected :
 
