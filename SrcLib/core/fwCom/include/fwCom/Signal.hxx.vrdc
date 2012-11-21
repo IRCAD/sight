@@ -192,6 +192,22 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
 }
 
 
+template < typename R, typename ...A >
+Connection Signal< R( A... ) >::getConnection( SlotBase::sptr slot )
+{
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
+
+    if (iter == m_connections.end())
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+    }
+
+    SlotConnectionBase::sptr slotConnection (m_connections[slot]);
+    return Connection( slotConnection );
+
+}
 
 } // namespace fwCom
 

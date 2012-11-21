@@ -184,6 +184,20 @@ void SignalTest::connectTest()
         typedef void Signature();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
+        sig->connect(slot0);
+        connection = sig->getConnection(slot0);
+
+        CPPUNIT_ASSERT(!connection.expired());
+        CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
+        connection.disconnect();
+        CPPUNIT_ASSERT(connection.expired());
+        CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
+    }
+
+    {
+        typedef void Signature();
+        ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
+
         connection = sig->connect(slot0);
         CPPUNIT_ASSERT(!connection.expired());
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
@@ -200,12 +214,14 @@ void SignalTest::connectTest()
             = ::fwCom::newSlot(&SignalTestClass::method0, &testObject);
 
         connection = sig->connect(slot0);
-        ::fwCom::Connection connection = sig->connect(slot);
+        ::fwCom::Connection connection2 = sig->connect(slot);
 
         CPPUNIT_ASSERT(!connection.expired());
+        CPPUNIT_ASSERT(!connection2.expired());
         CPPUNIT_ASSERT_EQUAL((size_t)2, sig->getNumberOfConnections());
         sig->disconnectAll();
         CPPUNIT_ASSERT(connection.expired());
+        CPPUNIT_ASSERT(connection2.expired());
         CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
     }
 

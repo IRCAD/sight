@@ -51,7 +51,7 @@ struct Signal< R (A...) > : SignalBase
     typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
-    /// Construct a new Signal of type Signal<R(A...)>.
+    /// Constructs a new Signal of type Signal<R(A...)>.
     static sptr New();
 
     /// Destructor : disconnects all remaining connections.
@@ -78,18 +78,25 @@ struct Signal< R (A...) > : SignalBase
     /// Disconnects all slots.
     void disconnectAll();
 
-    /// Request execution of slots with given arguments.
+    /// Requests execution of slots with given arguments.
     void emit( A...a ) const;
 
-    /// Request asynchronous execution of slots with given arguments.
+    /// Requests asynchronous execution of slots with given arguments.
     void asyncEmit( A...a ) const;
 
-    /// Return number of connected slots.
+    /// Returns number of connected slots.
     size_t getNumberOfConnections() const
     {
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();
     }
+
+
+    /**
+     * @brief Returns the connection handler matching given slot.
+     * @throws BadSlot if given slot is not connected.
+     */
+    Connection getConnection( SlotBase::sptr slot );
 
 protected:
 

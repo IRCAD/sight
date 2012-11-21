@@ -55,7 +55,7 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
     typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
-    /// Construct a new Signal of type Signal<R( A1, A2, A3 )>.
+    /// Constructs a new Signal of type Signal<R( A1, A2, A3 )>.
     static sptr New();
 
     /// Destructor : disconnects all remaining connections.
@@ -82,18 +82,25 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
     /// Disconnects all slots.
     void disconnectAll();
 
-    /// Request execution of slots with given arguments.
+    /// Requests execution of slots with given arguments.
     void emit( A1 a1, A2 a2, A3 a3 ) const;
 
-    /// Request asynchronous execution of slots with given arguments.
+    /// Requests asynchronous execution of slots with given arguments.
     void asyncEmit( A1 a1, A2 a2, A3 a3 ) const;
 
-    /// Return number of connected slots.
+    /// Returns number of connected slots.
     size_t getNumberOfConnections() const
     {
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();
     }
+
+
+    /**
+     * @brief Returns the connection handler matching given slot.
+     * @throws BadSlot if given slot is not connected.
+     */
+    Connection getConnection( SlotBase::sptr slot );
 
 protected:
 
@@ -146,7 +153,7 @@ struct Signal< R ( A1, A2 ) > : SignalBase
     typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
-    /// Construct a new Signal of type Signal<R( A1, A2 )>.
+    /// Constructs a new Signal of type Signal<R( A1, A2 )>.
     static sptr New();
 
     /// Destructor : disconnects all remaining connections.
@@ -173,18 +180,25 @@ struct Signal< R ( A1, A2 ) > : SignalBase
     /// Disconnects all slots.
     void disconnectAll();
 
-    /// Request execution of slots with given arguments.
+    /// Requests execution of slots with given arguments.
     void emit( A1 a1, A2 a2 ) const;
 
-    /// Request asynchronous execution of slots with given arguments.
+    /// Requests asynchronous execution of slots with given arguments.
     void asyncEmit( A1 a1, A2 a2 ) const;
 
-    /// Return number of connected slots.
+    /// Returns number of connected slots.
     size_t getNumberOfConnections() const
     {
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();
     }
+
+
+    /**
+     * @brief Returns the connection handler matching given slot.
+     * @throws BadSlot if given slot is not connected.
+     */
+    Connection getConnection( SlotBase::sptr slot );
 
 protected:
 
@@ -237,7 +251,7 @@ struct Signal< R ( A1 ) > : SignalBase
     typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
-    /// Construct a new Signal of type Signal<R( A1 )>.
+    /// Constructs a new Signal of type Signal<R( A1 )>.
     static sptr New();
 
     /// Destructor : disconnects all remaining connections.
@@ -264,18 +278,25 @@ struct Signal< R ( A1 ) > : SignalBase
     /// Disconnects all slots.
     void disconnectAll();
 
-    /// Request execution of slots with given arguments.
+    /// Requests execution of slots with given arguments.
     void emit( A1 a1 ) const;
 
-    /// Request asynchronous execution of slots with given arguments.
+    /// Requests asynchronous execution of slots with given arguments.
     void asyncEmit( A1 a1 ) const;
 
-    /// Return number of connected slots.
+    /// Returns number of connected slots.
     size_t getNumberOfConnections() const
     {
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();
     }
+
+
+    /**
+     * @brief Returns the connection handler matching given slot.
+     * @throws BadSlot if given slot is not connected.
+     */
+    Connection getConnection( SlotBase::sptr slot );
 
 protected:
 
@@ -328,7 +349,7 @@ struct Signal< R () > : SignalBase
     typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
-    /// Construct a new Signal of type Signal<R()>.
+    /// Constructs a new Signal of type Signal<R()>.
     static sptr New();
 
     /// Destructor : disconnects all remaining connections.
@@ -355,18 +376,25 @@ struct Signal< R () > : SignalBase
     /// Disconnects all slots.
     void disconnectAll();
 
-    /// Request execution of slots with given arguments.
+    /// Requests execution of slots with given arguments.
     void emit() const;
 
-    /// Request asynchronous execution of slots with given arguments.
+    /// Requests asynchronous execution of slots with given arguments.
     void asyncEmit() const;
 
-    /// Return number of connected slots.
+    /// Returns number of connected slots.
     size_t getNumberOfConnections() const
     {
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();
     }
+
+
+    /**
+     * @brief Returns the connection handler matching given slot.
+     * @throws BadSlot if given slot is not connected.
+     */
+    Connection getConnection( SlotBase::sptr slot );
 
 protected:
 
@@ -424,7 +452,7 @@ struct Signal< R (A...) > : SignalBase
     typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
     /**  @} */
 
-    /// Construct a new Signal of type Signal<R(A...)>.
+    /// Constructs a new Signal of type Signal<R(A...)>.
     static sptr New();
 
     /// Destructor : disconnects all remaining connections.
@@ -451,18 +479,25 @@ struct Signal< R (A...) > : SignalBase
     /// Disconnects all slots.
     void disconnectAll();
 
-    /// Request execution of slots with given arguments.
+    /// Requests execution of slots with given arguments.
     void emit( A...a ) const;
 
-    /// Request asynchronous execution of slots with given arguments.
+    /// Requests asynchronous execution of slots with given arguments.
     void asyncEmit( A...a ) const;
 
-    /// Return number of connected slots.
+    /// Returns number of connected slots.
     size_t getNumberOfConnections() const
     {
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();
     }
+
+
+    /**
+     * @brief Returns the connection handler matching given slot.
+     * @throws BadSlot if given slot is not connected.
+     */
+    Connection getConnection( SlotBase::sptr slot );
 
 protected:
 
