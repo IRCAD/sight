@@ -20,6 +20,7 @@ class SlotsSignalsTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( basicTest );
     CPPUNIT_TEST( comObjectServiceTest );
     CPPUNIT_TEST( comServiceToServiceTest );
+    CPPUNIT_TEST( blockConnectionTest );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -31,6 +32,7 @@ public:
     void basicTest();
     void comObjectServiceTest();
     void comServiceToServiceTest();
+    void blockConnectionTest();
 
 };
 

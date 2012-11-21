@@ -31,6 +31,7 @@ fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SBasic
 fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SReaderTest , ::fwServices::ut::Buffer ) ;
 fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SShowTest , ::fwServices::ut::Buffer ) ;
 fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SReader2Test , ::fwServices::ut::Buffer ) ;
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SShow2Test , ::fwServices::ut::Buffer ) ;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -141,6 +142,37 @@ void SReader2Test::updating() throw ( ::fwTools::Failed )
     SReader2Test::ChangedSignalType::sptr sig;
     sig = this->signal< SReader2Test::ChangedSignalType >( SReader2Test::s_CHANGED_SIG );
     sig->emit();
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+SShow2Test::SShow2Test() : m_receiveCount(0)
+{}
+
+//------------------------------------------------------------------------------
+
+void SShow2Test::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+{
+    Buffer::sptr buffer = this->getObject<Buffer>();
+    ::boost::this_thread::sleep(m_receiveRetarder);
+    ::fwData::mt::ObjectWriteLock lock(buffer);
+    ++m_receiveCount;
+
+    //this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void SShow2Test::updating() throw ( ::fwTools::Failed )
+{
+    Buffer::sptr buff = this->getObject< Buffer >();
+
+    // Emit object Modified
+    ObjectMsg::NewSptr msg;
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    sig->asyncEmit( msg );
 }
 
 //------------------------------------------------------------------------------

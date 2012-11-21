@@ -103,16 +103,19 @@ void SlotsSignalsTest::comObjectServiceTest()
         readerTestSrv->start();
         showTestSrv->start();
 
-        readerTestSrv->update();
+        readerTestSrv->update().wait();
 
         IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-        stopReaderFuture.wait();
         IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+        stopReaderFuture.wait();
         stopShowFuture.wait();
 
         CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
         buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+
+        ::fwServices::OSR::unregisterService(readerTestSrv);
+        ::fwServices::OSR::unregisterService(showTestSrv);
     }
 
     {
@@ -133,19 +136,25 @@ void SlotsSignalsTest::comObjectServiceTest()
         reader2TestSrv->start();
         showTestSrv->start();
 
-        readerTestSrv->update();
-        reader2TestSrv->update();
+        IService::SharedFutureType updateReaderFuture = readerTestSrv->update();
+        IService::SharedFutureType updateReader2Future = reader2TestSrv->update();
+        updateReaderFuture.wait();
+        updateReader2Future.wait();
 
         IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-        stopReaderFuture.wait();
         IService::SharedFutureType stopReader2Future = reader2TestSrv->stop();
-        stopReader2Future.wait();
         IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+        stopReaderFuture.wait();
+        stopReader2Future.wait();
         stopShowFuture.wait();
 
         buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
 
         CPPUNIT_ASSERT_EQUAL(2, showTestSrv->m_receiveCount);
+
+        ::fwServices::OSR::unregisterService(readerTestSrv);
+        ::fwServices::OSR::unregisterService(reader2TestSrv);
+        ::fwServices::OSR::unregisterService(showTestSrv);
     }
     activeWorkers->clearRegistry();
 }
@@ -173,16 +182,60 @@ void SlotsSignalsTest::comServiceToServiceTest()
     readerTestSrv->start();
     showTestSrv->start();
 
-    readerTestSrv->update();
+    readerTestSrv->update().wait();
 
     IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-    stopReaderFuture.wait();
     IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+    stopReaderFuture.wait();
     stopShowFuture.wait();
 
     readerTestSrv->signal(SReader2Test::s_CHANGED_SIG)->disconnect(showTestSrv->slot(SShowTest::s_CHANGE_SLOT));
 
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_changeCount);
+
+    ::fwServices::OSR::unregisterService(readerTestSrv);
+    ::fwServices::OSR::unregisterService(showTestSrv);
+
+    activeWorkers->clearRegistry();
+}
+
+//------------------------------------------------------------------------------
+
+void SlotsSignalsTest::blockConnectionTest()
+{
+    Buffer::NewSptr buffer;
+
+    registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
+    activeWorkers->initRegistry();
+    ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
+    activeWorkers->addWorker("worker1",worker1);
+
+    SReaderTest::sptr readerTestSrv = ::boost::make_shared<SReaderTest>();
+    ::fwServices::OSR::registerService(buffer, readerTestSrv);
+
+    SShow2Test::sptr showTestSrv = ::boost::make_shared<SShow2Test>();
+    ::fwServices::OSR::registerService(buffer, showTestSrv);
+    showTestSrv->setWorker(worker1);
+
+    ::fwCom::Connection connection;
+    connection = buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
+                                            connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+
+    readerTestSrv->start();
+    showTestSrv->start();
+
+    readerTestSrv->update();
+
+    ::boost::this_thread::sleep(::boost::posix_time::seconds(8));
+
+    IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
+    IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+    stopReaderFuture.wait();
+    stopShowFuture.wait();
+
+    connection.disconnect();
+
+    CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
     activeWorkers->clearRegistry();
 }

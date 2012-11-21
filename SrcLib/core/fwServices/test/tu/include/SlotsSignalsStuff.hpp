@@ -164,6 +164,29 @@ protected:
 
 //------------------------------------------------------------------------------
 
+class SShow2Test : public IBasicTest, public ServiceRetarder
+{
+public:
+
+    fwCoreServiceClassDefinitionsMacro ( (SShow2Test)(IBasicTest) ) ;
+
+
+    SShow2Test();
+
+    int m_receiveCount;
+
+protected:
+
+    virtual void configuring() throw ( ::fwTools::Failed ){}
+    virtual void starting() throw ( ::fwTools::Failed ){}
+    virtual void stopping() throw ( ::fwTools::Failed ){}
+    virtual void swapping() throw ( ::fwTools::Failed ){}
+    virtual void updating() throw ( ::fwTools::Failed );
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+};
+
+//------------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwServices
 
