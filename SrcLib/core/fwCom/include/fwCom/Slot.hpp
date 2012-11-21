@@ -277,6 +277,13 @@ struct Slot< R ( A1, A2, A3 ) > : SlotCall< R ( A1, A2, A3 ) >
         // 'this->' is needed by gcc 4.2
         this->SlotBase::m_signature = SlotBase::getTypeName< R ( A1, A2, A3 ) >();
     }
+
+    template< typename F >
+    static SPTR( Slot< R( A1, A2, A3 ) > ) New( F f ); //{}
+
+    template< typename F, typename O >
+    static SPTR( Slot< R( A1, A2, A3 ) > ) New( F f, O o ); //{}
+
 };
 template<typename R, typename A1, typename A2 >
 struct Slot< R ( A1, A2 ) > : SlotCall< R ( A1, A2 ) >
@@ -292,6 +299,13 @@ struct Slot< R ( A1, A2 ) > : SlotCall< R ( A1, A2 ) >
         // 'this->' is needed by gcc 4.2
         this->SlotBase::m_signature = SlotBase::getTypeName< R ( A1, A2 ) >();
     }
+
+    template< typename F >
+    static SPTR( Slot< R( A1, A2 ) > ) New( F f ); //{}
+
+    template< typename F, typename O >
+    static SPTR( Slot< R( A1, A2 ) > ) New( F f, O o ); //{}
+
 };
 template<typename R, typename A1 >
 struct Slot< R ( A1 ) > : SlotCall< R ( A1 ) >
@@ -307,6 +321,13 @@ struct Slot< R ( A1 ) > : SlotCall< R ( A1 ) >
         // 'this->' is needed by gcc 4.2
         this->SlotBase::m_signature = SlotBase::getTypeName< R ( A1 ) >();
     }
+
+    template< typename F >
+    static SPTR( Slot< R( A1 ) > ) New( F f ); //{}
+
+    template< typename F, typename O >
+    static SPTR( Slot< R( A1 ) > ) New( F f, O o ); //{}
+
 };
 template<typename R>
 struct Slot< R () > : SlotCall< R () >
@@ -322,6 +343,13 @@ struct Slot< R () > : SlotCall< R () >
         // 'this->' is needed by gcc 4.2
         this->SlotBase::m_signature = SlotBase::getTypeName< R () >();
     }
+
+    template< typename F >
+    static SPTR( Slot< R() > ) New( F f ); //{}
+
+    template< typename F, typename O >
+    static SPTR( Slot< R() > ) New( F f, O o ); //{}
+
 };
 //===================================== END =====================================
 //===============================================================================
@@ -342,6 +370,13 @@ struct Slot< R ( A... ) > : SlotCall< R (A...) >
         // 'this->' is needed by gcc 4.2
         this->SlotBase::m_signature = SlotBase::getTypeName< R ( A... ) >();
     }
+
+    template< typename F >
+    static SPTR( Slot< R(A...) > ) New( F f ); //{}
+
+    template< typename F, typename O >
+    static SPTR( Slot< R(A...) > ) New( F f, O o ); //{}
+
 };
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
 
