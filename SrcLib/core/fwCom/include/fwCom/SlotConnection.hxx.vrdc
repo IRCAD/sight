@@ -71,7 +71,7 @@ inline SlotConnection< void (A...) >::~SlotConnection()
 
 
 template < typename ...A >
-inline void SlotConnection< void (A...) >::connect()
+inline void SlotConnection< void (A...) >::connectNoLock()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
@@ -79,36 +79,78 @@ inline void SlotConnection< void (A...) >::connect()
 }
 
 
+template < typename ...A >
+inline void SlotConnection< void (A...) >::disconnectSignalNoLock(const SignalSptrType &sig)
+{
+    sig->m_slots.remove( &m_pair );
+    sig->m_connections.erase(m_connectedSlot);
+    OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"
+             << (m_connectedSlot.lock() ? m_connectedSlot.lock()->getID() : "<dead slot>") <<"'");
+}
+
+
+template < typename ...A >
+inline void SlotConnection< void (A...) >::disconnectSlotNoLock(const SlotBase::sptr &slot)
+{
+    try
+    {
+        boost::shared_ptr< const SlotConnection< void (A...) > > thisSptr =
+            boost::dynamic_pointer_cast< const SlotConnection< void (A...) > > ( this->shared_from_this() );
+        slot->m_connections.erase( thisSptr );
+    }
+    catch(const boost::bad_weak_ptr &e)
+    {
+        // SlotConnection destruction is under way, no need to remove
+        // shared_ptr from connections
+    }
+}
+
 
 template < typename ...A >
 inline void SlotConnection< void (A...) >::disconnect()
 {
+    ::fwCore::mt::WriteLock lock(m_mutex);
+
     SignalSptrType sig(m_signal.lock());
     SlotBase::sptr slot(m_connectedSlot.lock());
 
-
     if(sig)
     {
-        sig->m_slots.remove( &m_pair );
-        sig->m_connections.erase(slot);
-        OSLM_COM("Disconnect signal '"<< sig->getID() <<"' <=> slot '"<< ((slot) ? slot->getID() : "<dead slot>") <<"'");
+        ::fwCore::mt::WriteLock lock(sig->m_connectionsMutex);
+        this->disconnectSignalNoLock(sig);
     }
 
     m_slotWrapper.reset();
 
     if(slot)
     {
-        try
-        {
-            boost::shared_ptr< const SlotConnection< void (A...) > > thisSptr =
-                boost::dynamic_pointer_cast< const SlotConnection< void (A...) > > ( this->shared_from_this() );
-            slot->m_connections.erase( thisSptr );
-        }
-        catch(const boost::bad_weak_ptr &e)
-        {
-            // SlotConnection destruction is under way, no need to remove
-            // shared_ptr from connections
-        }
+        ::fwCore::mt::WriteLock lock(slot->m_connectionsMutex);
+        this->disconnectSlotNoLock(slot);
+    }
+
+    m_signal.reset();
+    m_connectedSlot.reset();
+}
+
+template < typename ...A >
+inline void SlotConnection< void (A...) >::disconnectWeakLock()
+{
+    ::fwCore::mt::WriteLock lock(m_mutex);
+
+    SignalSptrType sig(m_signal.lock());
+    SlotBase::sptr slot(m_connectedSlot.lock());
+
+    if(sig)
+    {
+        this->disconnectSignalNoLock(sig);
+    }
+
+    m_slotWrapper.reset();
+
+    if(slot)
+    {
+        ::fwCore::mt::WriteLock lock(slot->m_connectionsMutex);
+        this->disconnectSlotNoLock(slot);
     }
 
     m_signal.reset();
@@ -120,17 +162,28 @@ inline void SlotConnection< void (A...) >::disconnect()
 template < typename ...A >
 inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A...) >::getBlocker()
 {
-    // TODO lock connection
+    ::fwCore::mt::ReadToWriteLock lock(m_mutex);
+
     SlotConnectionBase::BlockerSptrType blocker(m_weakBlocker.lock());
     if( !blocker )
     {
-        blocker = SlotConnectionBase::BlockerSptrType(
-                          (void*)NULL,
-                          boost::bind( &SlotConnection< void (A...) >::unblock, this )
-                          );
-        m_weakBlocker = blocker;
-        // TODO lock signal
-        m_pair.first = false;
+        ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+
+        blocker = m_weakBlocker.lock();
+
+        if(!blocker)
+        {
+            blocker = SlotConnectionBase::BlockerSptrType(
+                              (void*)NULL,
+                              boost::bind( &SlotConnection< void (A...) >::unblock, this )
+                              );
+            m_weakBlocker = blocker;
+
+            // signal has to be locked : signal got a pointer on m_pair
+            SignalSptrType sig(m_signal);
+            ::fwCore::mt::ReadLock lock(sig->m_connectionsMutex);
+            m_pair.first = false;
+        }
     }
     return blocker;
 }
@@ -140,7 +193,10 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A...) >::getBlo
 template < typename ...A >
 inline void SlotConnection< void (A...) >::unblock()
 {
-    // TODO lock signal
+    ::fwCore::mt::WriteLock lock(m_mutex);
+    // signal has to be locked : signal got a pointer on m_pair
+    SignalSptrType sig(m_signal);
+    ::fwCore::mt::ReadLock connectionLock(sig->m_connectionsMutex);
     m_pair.first = true;
 }
 

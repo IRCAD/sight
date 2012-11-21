@@ -12,6 +12,8 @@
 
 #include <fwThread/TaskHandler.hpp>
 
+#include <fwCore/mt/types.hpp>
+
 #include "fwCom/exception/NoWorker.hpp"
 
 #include "fwCom/util/WeakCall.hpp"
@@ -47,10 +49,10 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
 template< typename ... A >
 inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args...);
     return ufuture;
-
 }
 
 

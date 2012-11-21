@@ -12,6 +12,8 @@
 
 #include <boost/thread/future.hpp>
 
+#include <fwCore/mt/types.hpp>
+
 #include <fwThread/TaskHandler.hpp>
 
 #include "fwCom/exception/NoWorker.hpp"
@@ -52,6 +54,7 @@ template< typename R, typename ... A >
 typename SlotCall< R (A...) >::SharedFutureType
 SlotCall< R (A...) >::asyncCall(A... args) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     typename SlotCall< R (A...) >::SharedFutureType ufuture;
     ufuture = this->asyncCall(this->m_worker, args...);
     return ufuture;

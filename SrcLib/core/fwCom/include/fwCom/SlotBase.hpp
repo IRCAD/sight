@@ -12,9 +12,9 @@
 
 #ifdef COM_LOG
 #include <boost/lexical_cast.hpp>
-#include <fwCore/mt/types.hpp>
 #endif
 
+#include <fwCore/mt/types.hpp>
 #include <fwCore/BaseObject.hpp>
 
 #include <fwThread/Worker.hpp>
@@ -46,6 +46,8 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     typedef WPTR( SlotBase ) wptr;
     typedef SPTR( SlotBase const ) csptr;
     typedef WPTR( SlotBase const ) cwptr;
+
+    typedef std::string IDType;
     /**  @} */
 
     /// SlotBase::asyncRun return type.
@@ -68,12 +70,15 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /// Sets Slot's Worker.
     void setWorker(const ::fwThread::Worker::sptr &worker)
     {
+        SLM_ASSERT("Changing worker on the fly is currently not supported", !m_worker || worker == m_worker);
+        ::fwCore::mt::WriteLock lock(m_workerMutex);
         m_worker = worker;
     }
 
     /// Returns Slot's Worker.
     ::fwThread::Worker::sptr getWorker() const
     {
+        ::fwCore::mt::ReadLock lock(m_workerMutex);
         return m_worker;
     }
 
@@ -134,8 +139,10 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /// Returns number of connections.
     size_t getNumberOfConnections() const
     {
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_connections.size();
     }
+
 
 protected:
 
@@ -179,11 +186,12 @@ protected:
     /// Container of current connections.
     ConnectionSetType m_connections;
 
+    mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
+    mutable ::fwCore::mt::ReadWriteMutex m_workerMutex;
+
 #ifdef COM_LOG
 
-public :
-
-    typedef std::string IDType;
+public:
 
     /// Gets current m_id
     IDType getID() const

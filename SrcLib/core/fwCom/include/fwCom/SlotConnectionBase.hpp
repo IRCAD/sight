@@ -39,8 +39,19 @@ struct SlotConnectionBase: virtual fwCore::BaseObject
     virtual BlockerSptrType getBlocker() = 0;
 
 protected:
-    /// Connect the related Signal and Slot together.
-    virtual void connect() = 0;
+    /**
+     * @name SlotConnectionBase's friends
+     * @{ */
+    template < typename F >
+    friend struct Signal;
+    /**  @} */
+
+    /// *NOT THREAD SAFE* Disconnect a Slot from this connection.
+    virtual void disconnectWeakLock() = 0;
+
+
+    /// *NOT THREAD SAFE* Connect the related Signal and Slot together.
+    virtual void connectNoLock() = 0;
 };
 
 } // namespace fwCom

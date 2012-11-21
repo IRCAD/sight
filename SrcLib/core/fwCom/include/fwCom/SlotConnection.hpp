@@ -83,7 +83,17 @@ protected:
     friend struct Signal;
 
     /// Connect the related Signal and Slot together.
-    void connect();
+    void connectNoLock();
+
+
+    /// *NOT THREAD SAFE* Diconnect the related signal.
+    void disconnectSignalNoLock(const SignalSptrType &sig);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot.
+    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    void disconnectWeakLock();
 
     /**
      * @brief Returns a blocker on the connection.
@@ -111,6 +121,8 @@ protected:
 
     /// Connection blocker.
     SlotConnectionBase::BlockerWptrType m_weakBlocker;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 template < typename A1, typename A2 >
 struct SlotConnection< void ( A1, A2 ) > : SlotConnectionBase
@@ -167,7 +179,17 @@ protected:
     friend struct Signal;
 
     /// Connect the related Signal and Slot together.
-    void connect();
+    void connectNoLock();
+
+
+    /// *NOT THREAD SAFE* Diconnect the related signal.
+    void disconnectSignalNoLock(const SignalSptrType &sig);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot.
+    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    void disconnectWeakLock();
 
     /**
      * @brief Returns a blocker on the connection.
@@ -195,6 +217,8 @@ protected:
 
     /// Connection blocker.
     SlotConnectionBase::BlockerWptrType m_weakBlocker;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 template < typename A1 >
 struct SlotConnection< void ( A1 ) > : SlotConnectionBase
@@ -251,7 +275,17 @@ protected:
     friend struct Signal;
 
     /// Connect the related Signal and Slot together.
-    void connect();
+    void connectNoLock();
+
+
+    /// *NOT THREAD SAFE* Diconnect the related signal.
+    void disconnectSignalNoLock(const SignalSptrType &sig);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot.
+    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    void disconnectWeakLock();
 
     /**
      * @brief Returns a blocker on the connection.
@@ -279,6 +313,8 @@ protected:
 
     /// Connection blocker.
     SlotConnectionBase::BlockerWptrType m_weakBlocker;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 template <>
 struct SlotConnection< void () > : SlotConnectionBase
@@ -335,7 +371,17 @@ protected:
     friend struct Signal;
 
     /// Connect the related Signal and Slot together.
-    void connect();
+    void connectNoLock();
+
+
+    /// *NOT THREAD SAFE* Diconnect the related signal.
+    void disconnectSignalNoLock(const SignalSptrType &sig);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot.
+    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    void disconnectWeakLock();
 
     /**
      * @brief Returns a blocker on the connection.
@@ -363,6 +409,8 @@ protected:
 
     /// Connection blocker.
     SlotConnectionBase::BlockerWptrType m_weakBlocker;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 //===================================== END =====================================
 //===============================================================================
@@ -424,7 +472,17 @@ protected:
     friend struct Signal;
 
     /// Connect the related Signal and Slot together.
-    void connect();
+    void connectNoLock();
+
+
+    /// *NOT THREAD SAFE* Diconnect the related signal.
+    void disconnectSignalNoLock(const SignalSptrType &sig);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot.
+    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    void disconnectWeakLock();
 
     /**
      * @brief Returns a blocker on the connection.
@@ -452,6 +510,8 @@ protected:
 
     /// Connection blocker.
     SlotConnectionBase::BlockerWptrType m_weakBlocker;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
 

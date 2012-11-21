@@ -12,6 +12,8 @@
 
 #include <fwThread/TaskHandler.hpp>
 
+#include <fwCore/mt/types.hpp>
+
 #include "fwCom/exception/NoWorker.hpp"
 
 #include "fwCom/util/WeakCall.hpp"
@@ -174,10 +176,10 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
 template< typename A1, typename A2, typename A3 >
 inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2, A3 ) >::asyncRun( A1 args1, A2 args2, A3 args3 ) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args1, args2, args3 );
     return ufuture;
-
 }
 
 
@@ -185,10 +187,10 @@ inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2, A3 ) >::asyncRun( 
 template< typename A1, typename A2 >
 inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2 ) >::asyncRun( A1 args1, A2 args2 ) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args1, args2 );
     return ufuture;
-
 }
 
 
@@ -196,10 +198,10 @@ inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2 ) >::asyncRun( A1 a
 template< typename A1 >
 inline SlotBase::VoidSharedFutureType SlotRun< void ( A1 ) >::asyncRun( A1 args1 ) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args1 );
     return ufuture;
-
 }
 
 
@@ -207,10 +209,10 @@ inline SlotBase::VoidSharedFutureType SlotRun< void ( A1 ) >::asyncRun( A1 args1
 
 inline SlotBase::VoidSharedFutureType SlotRun< void () >::asyncRun() const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker);
     return ufuture;
-
 }
 
 
@@ -223,10 +225,10 @@ inline SlotBase::VoidSharedFutureType SlotRun< void () >::asyncRun() const
 template< typename ... A >
 inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     SlotBase::VoidSharedFutureType ufuture;
     ufuture = this->asyncRun(m_worker, args...);
     return ufuture;
-
 }
 
 

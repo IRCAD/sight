@@ -12,6 +12,8 @@
 
 #include <boost/thread/future.hpp>
 
+#include <fwCore/mt/types.hpp>
+
 #include <fwThread/TaskHandler.hpp>
 
 #include "fwCom/exception/NoWorker.hpp"
@@ -182,6 +184,7 @@ template< typename R, typename A1, typename A2, typename A3 >
 typename SlotCall< R ( A1, A2, A3 ) >::SharedFutureType
 SlotCall< R ( A1, A2, A3 ) >::asyncCall( A1 args1, A2 args2, A3 args3 ) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     typename SlotCall< R ( A1, A2, A3 ) >::SharedFutureType ufuture;
     ufuture = this->asyncCall(this->m_worker, args1, args2, args3 );
     return ufuture;
@@ -194,6 +197,7 @@ template< typename R, typename A1, typename A2 >
 typename SlotCall< R ( A1, A2 ) >::SharedFutureType
 SlotCall< R ( A1, A2 ) >::asyncCall( A1 args1, A2 args2 ) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     typename SlotCall< R ( A1, A2 ) >::SharedFutureType ufuture;
     ufuture = this->asyncCall(this->m_worker, args1, args2 );
     return ufuture;
@@ -206,6 +210,7 @@ template< typename R, typename A1 >
 typename SlotCall< R ( A1 ) >::SharedFutureType
 SlotCall< R ( A1 ) >::asyncCall( A1 args1 ) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     typename SlotCall< R ( A1 ) >::SharedFutureType ufuture;
     ufuture = this->asyncCall(this->m_worker, args1 );
     return ufuture;
@@ -218,6 +223,7 @@ template< typename R>
 typename SlotCall< R () >::SharedFutureType
 SlotCall< R () >::asyncCall() const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     typename SlotCall< R () >::SharedFutureType ufuture;
     ufuture = this->asyncCall(this->m_worker);
     return ufuture;
@@ -235,6 +241,7 @@ template< typename R, typename ... A >
 typename SlotCall< R (A...) >::SharedFutureType
 SlotCall< R (A...) >::asyncCall(A... args) const
 {
+    ::fwCore::mt::ReadLock lock(this->m_workerMutex);
     typename SlotCall< R (A...) >::SharedFutureType ufuture;
     ufuture = this->asyncCall(this->m_worker, args...);
     return ufuture;

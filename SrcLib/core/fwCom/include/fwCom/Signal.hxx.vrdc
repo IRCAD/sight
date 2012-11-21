@@ -46,6 +46,8 @@ Connection Signal< R (A...) >::connect( SlotBase::sptr slot )
 template < typename R, typename ...A >
 void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
 {
+    ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
+
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
@@ -54,7 +56,8 @@ void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
         SLM_ASSERT( "Connection has been previously destroyed", connection );
         if (connection)
         {
-            connection->disconnect();
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            connection->disconnectWeakLock();
             // m_connections.erase(slot.get()); // done in connection->disconnect
         }
     }
@@ -68,21 +71,26 @@ void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
 template < typename R, typename ...A >
 void Signal< R (A...) >::disconnectAll()
 {
+    ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+
     ConnectionMapType connections = m_connections;
+
     BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
     {
         SlotConnectionBase::sptr connection( conn.second.lock() );
 
         if(connection)
         {
-            connection->disconnect();
+            connection->disconnectWeakLock();
         }
     }
+
 }
 
 template < typename R, typename ...A >
 void Signal< R (A...) >::emit( A...a ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -98,6 +106,7 @@ void Signal< R (A...) >::emit( A...a ) const
 template < typename R, typename ...A >
 void Signal< R (A...) >::asyncEmit( A...a ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -110,19 +119,18 @@ void Signal< R (A...) >::asyncEmit( A...a ) const
     }
 }
 
-template < typename R, typename ...A >
-bool Signal< R( A... ) >::isConnected( SlotBase::sptr slot )
-{
-    return m_connections.find( slot ) != m_connections.end();
-}
 
 template < typename R, typename ...A >
 template< typename FROM_F >
-Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
+Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
 {
-    if(this->isConnected(slot))
     {
-        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+        if(m_connections.find( slot ) != m_connections.end())
+        {
+            FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        }
     }
 
     typedef SlotConnection< void( A... ) > ConnectionType;
@@ -134,13 +142,14 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
         if(slotToConnect)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A... ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -156,6 +165,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             SlotSptr slotToConnect = Slot < Slot < void (A...) > >::New(wrappedSlot);
             typename Signal< R( A... ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
@@ -163,7 +173,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else

@@ -12,6 +12,8 @@
 
 #include <boost/type_traits/is_same.hpp>
 
+#include <fwCore/mt/types.hpp>
+
 #include "fwCom/SignalBase.hpp"
 #include "fwCom/SlotConnectionBase.hpp"
 #include "fwCom/SlotRun.hpp"
@@ -87,7 +89,11 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
     void asyncEmit( A1 a1, A2 a2, A3 a3 ) const;
 
     /// Return number of connected slots.
-    size_t getNumberOfConnections() const { return m_slots.size(); }
+    size_t getNumberOfConnections() const
+    {
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+        return m_slots.size();
+    }
 
 protected:
 
@@ -104,16 +110,15 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect ( SlotBase::sptr slot );
-
-     /// Returns true if given slot is connected to this signal.
-    bool isConnected(SlotBase::sptr slot);
+    Connection connect( SlotBase::sptr slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
 
     /// Container of current connections.
     ConnectionMapType m_connections;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
 
 private:
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
@@ -175,7 +180,11 @@ struct Signal< R ( A1, A2 ) > : SignalBase
     void asyncEmit( A1 a1, A2 a2 ) const;
 
     /// Return number of connected slots.
-    size_t getNumberOfConnections() const { return m_slots.size(); }
+    size_t getNumberOfConnections() const
+    {
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+        return m_slots.size();
+    }
 
 protected:
 
@@ -192,16 +201,15 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect ( SlotBase::sptr slot );
-
-     /// Returns true if given slot is connected to this signal.
-    bool isConnected(SlotBase::sptr slot);
+    Connection connect( SlotBase::sptr slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
 
     /// Container of current connections.
     ConnectionMapType m_connections;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
 
 private:
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
@@ -263,7 +271,11 @@ struct Signal< R ( A1 ) > : SignalBase
     void asyncEmit( A1 a1 ) const;
 
     /// Return number of connected slots.
-    size_t getNumberOfConnections() const { return m_slots.size(); }
+    size_t getNumberOfConnections() const
+    {
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+        return m_slots.size();
+    }
 
 protected:
 
@@ -280,16 +292,15 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect ( SlotBase::sptr slot );
-
-     /// Returns true if given slot is connected to this signal.
-    bool isConnected(SlotBase::sptr slot);
+    Connection connect( SlotBase::sptr slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
 
     /// Container of current connections.
     ConnectionMapType m_connections;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
 
 private:
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
@@ -351,7 +362,11 @@ struct Signal< R () > : SignalBase
     void asyncEmit() const;
 
     /// Return number of connected slots.
-    size_t getNumberOfConnections() const { return m_slots.size(); }
+    size_t getNumberOfConnections() const
+    {
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+        return m_slots.size();
+    }
 
 protected:
 
@@ -368,16 +383,15 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect ( SlotBase::sptr slot );
-
-     /// Returns true if given slot is connected to this signal.
-    bool isConnected(SlotBase::sptr slot);
+    Connection connect( SlotBase::sptr slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
 
     /// Container of current connections.
     ConnectionMapType m_connections;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
 
 private:
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
@@ -444,7 +458,11 @@ struct Signal< R (A...) > : SignalBase
     void asyncEmit( A...a ) const;
 
     /// Return number of connected slots.
-    size_t getNumberOfConnections() const { return m_slots.size(); }
+    size_t getNumberOfConnections() const
+    {
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+        return m_slots.size();
+    }
 
 protected:
 
@@ -461,16 +479,15 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect ( SlotBase::sptr slot );
-
-     /// Returns true if given slot is connected to this signal.
-    bool isConnected(SlotBase::sptr slot);
+    Connection connect( SlotBase::sptr slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
 
     /// Container of current connections.
     ConnectionMapType m_connections;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
 
 private:
     BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );

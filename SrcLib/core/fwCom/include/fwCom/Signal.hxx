@@ -135,6 +135,8 @@ Connection Signal< R (A...) >::connect( SlotBase::sptr slot )
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::disconnect( SlotBase::sptr slot )
 {
+    ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
+
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
@@ -143,7 +145,8 @@ void Signal< R ( A1, A2, A3 ) >::disconnect( SlotBase::sptr slot )
         SLM_ASSERT( "Connection has been previously destroyed", connection );
         if (connection)
         {
-            connection->disconnect();
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            connection->disconnectWeakLock();
             // m_connections.erase(slot.get()); // done in connection->disconnect
         }
     }
@@ -158,6 +161,8 @@ void Signal< R ( A1, A2, A3 ) >::disconnect( SlotBase::sptr slot )
 template < typename R, typename A1, typename A2 >
 void Signal< R ( A1, A2 ) >::disconnect( SlotBase::sptr slot )
 {
+    ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
+
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
@@ -166,7 +171,8 @@ void Signal< R ( A1, A2 ) >::disconnect( SlotBase::sptr slot )
         SLM_ASSERT( "Connection has been previously destroyed", connection );
         if (connection)
         {
-            connection->disconnect();
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            connection->disconnectWeakLock();
             // m_connections.erase(slot.get()); // done in connection->disconnect
         }
     }
@@ -181,6 +187,8 @@ void Signal< R ( A1, A2 ) >::disconnect( SlotBase::sptr slot )
 template < typename R, typename A1 >
 void Signal< R ( A1 ) >::disconnect( SlotBase::sptr slot )
 {
+    ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
+
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
@@ -189,7 +197,8 @@ void Signal< R ( A1 ) >::disconnect( SlotBase::sptr slot )
         SLM_ASSERT( "Connection has been previously destroyed", connection );
         if (connection)
         {
-            connection->disconnect();
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            connection->disconnectWeakLock();
             // m_connections.erase(slot.get()); // done in connection->disconnect
         }
     }
@@ -204,6 +213,8 @@ void Signal< R ( A1 ) >::disconnect( SlotBase::sptr slot )
 template < typename R>
 void Signal< R () >::disconnect( SlotBase::sptr slot )
 {
+    ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
+
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
@@ -212,7 +223,8 @@ void Signal< R () >::disconnect( SlotBase::sptr slot )
         SLM_ASSERT( "Connection has been previously destroyed", connection );
         if (connection)
         {
-            connection->disconnect();
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            connection->disconnectWeakLock();
             // m_connections.erase(slot.get()); // done in connection->disconnect
         }
     }
@@ -232,6 +244,8 @@ void Signal< R () >::disconnect( SlotBase::sptr slot )
 template < typename R, typename ...A >
 void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
 {
+    ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
+
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
     if (iter != m_connections.end())
@@ -240,7 +254,8 @@ void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
         SLM_ASSERT( "Connection has been previously destroyed", connection );
         if (connection)
         {
-            connection->disconnect();
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            connection->disconnectWeakLock();
             // m_connections.erase(slot.get()); // done in connection->disconnect
         }
     }
@@ -261,64 +276,80 @@ void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::disconnectAll()
 {
+    ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+
     ConnectionMapType connections = m_connections;
+
     BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
     {
         SlotConnectionBase::sptr connection( conn.second.lock() );
 
         if(connection)
         {
-            connection->disconnect();
+            connection->disconnectWeakLock();
         }
     }
+
 }
 
 
 template < typename R, typename A1, typename A2 >
 void Signal< R ( A1, A2 ) >::disconnectAll()
 {
+    ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+
     ConnectionMapType connections = m_connections;
+
     BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
     {
         SlotConnectionBase::sptr connection( conn.second.lock() );
 
         if(connection)
         {
-            connection->disconnect();
+            connection->disconnectWeakLock();
         }
     }
+
 }
 
 
 template < typename R, typename A1 >
 void Signal< R ( A1 ) >::disconnectAll()
 {
+    ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+
     ConnectionMapType connections = m_connections;
+
     BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
     {
         SlotConnectionBase::sptr connection( conn.second.lock() );
 
         if(connection)
         {
-            connection->disconnect();
+            connection->disconnectWeakLock();
         }
     }
+
 }
 
 
 template < typename R>
 void Signal< R () >::disconnectAll()
 {
+    ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+
     ConnectionMapType connections = m_connections;
+
     BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
     {
         SlotConnectionBase::sptr connection( conn.second.lock() );
 
         if(connection)
         {
-            connection->disconnect();
+            connection->disconnectWeakLock();
         }
     }
+
 }
 
 
@@ -330,16 +361,20 @@ void Signal< R () >::disconnectAll()
 template < typename R, typename ...A >
 void Signal< R (A...) >::disconnectAll()
 {
+    ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+
     ConnectionMapType connections = m_connections;
+
     BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
     {
         SlotConnectionBase::sptr connection( conn.second.lock() );
 
         if(connection)
         {
-            connection->disconnect();
+            connection->disconnectWeakLock();
         }
     }
+
 }
 
 
@@ -352,6 +387,7 @@ void Signal< R (A...) >::disconnectAll()
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::emit( A1 a1, A2 a2, A3 a3 ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -368,6 +404,7 @@ void Signal< R ( A1, A2, A3 ) >::emit( A1 a1, A2 a2, A3 a3 ) const
 template < typename R, typename A1, typename A2 >
 void Signal< R ( A1, A2 ) >::emit( A1 a1, A2 a2 ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -384,6 +421,7 @@ void Signal< R ( A1, A2 ) >::emit( A1 a1, A2 a2 ) const
 template < typename R, typename A1 >
 void Signal< R ( A1 ) >::emit( A1 a1 ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -400,6 +438,7 @@ void Signal< R ( A1 ) >::emit( A1 a1 ) const
 template < typename R>
 void Signal< R () >::emit() const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -421,6 +460,7 @@ void Signal< R () >::emit() const
 template < typename R, typename ...A >
 void Signal< R (A...) >::emit( A...a ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -443,6 +483,7 @@ void Signal< R (A...) >::emit( A...a ) const
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::asyncEmit( A1 a1, A2 a2, A3 a3 ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -456,9 +497,11 @@ void Signal< R ( A1, A2, A3 ) >::asyncEmit( A1 a1, A2 a2, A3 a3 ) const
 }
 
 
+
 template < typename R, typename A1, typename A2 >
 void Signal< R ( A1, A2 ) >::asyncEmit( A1 a1, A2 a2 ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -472,9 +515,11 @@ void Signal< R ( A1, A2 ) >::asyncEmit( A1 a1, A2 a2 ) const
 }
 
 
+
 template < typename R, typename A1 >
 void Signal< R ( A1 ) >::asyncEmit( A1 a1 ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -488,9 +533,11 @@ void Signal< R ( A1 ) >::asyncEmit( A1 a1 ) const
 }
 
 
+
 template < typename R>
 void Signal< R () >::asyncEmit() const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -504,6 +551,7 @@ void Signal< R () >::asyncEmit() const
 }
 
 
+
 //===================================== END =====================================
 //===============================================================================
 //===============================================================================
@@ -512,6 +560,7 @@ void Signal< R () >::asyncEmit() const
 template < typename R, typename ...A >
 void Signal< R (A...) >::asyncEmit( A...a ) const
 {
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -525,51 +574,6 @@ void Signal< R (A...) >::asyncEmit( A...a ) const
 }
 
 
-#endif  // BOOST_NO_VARIADIC_TEMPLATES
-
-#ifdef BOOST_NO_VARIADIC_TEMPLATES
-//===============================================================================
-//===============================================================================
-//==================================== BEGIN ====================================
-template < typename R, typename A1, typename A2, typename A3 >
-bool Signal< R( A1, A2, A3 ) >::isConnected( SlotBase::sptr slot )
-{
-    return m_connections.find( slot ) != m_connections.end();
-}
-
-
-template < typename R, typename A1, typename A2 >
-bool Signal< R( A1, A2 ) >::isConnected( SlotBase::sptr slot )
-{
-    return m_connections.find( slot ) != m_connections.end();
-}
-
-
-template < typename R, typename A1 >
-bool Signal< R( A1 ) >::isConnected( SlotBase::sptr slot )
-{
-    return m_connections.find( slot ) != m_connections.end();
-}
-
-
-template < typename R>
-bool Signal< R() >::isConnected( SlotBase::sptr slot )
-{
-    return m_connections.find( slot ) != m_connections.end();
-}
-
-
-//===================================== END =====================================
-//===============================================================================
-//===============================================================================
-
-#else  // BOOST_NO_VARIADIC_TEMPLATES
-template < typename R, typename ...A >
-bool Signal< R( A... ) >::isConnected( SlotBase::sptr slot )
-{
-    return m_connections.find( slot ) != m_connections.end();
-}
-
 
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
 
@@ -579,11 +583,15 @@ bool Signal< R( A... ) >::isConnected( SlotBase::sptr slot )
 //==================================== BEGIN ====================================
 template < typename R, typename A1, typename A2, typename A3 >
 template< typename FROM_F >
-Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
+Connection Signal< R( A1, A2, A3 ) >::connect( SlotBase::sptr slot )
 {
-    if(this->isConnected(slot))
     {
-        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+        if(m_connections.find( slot ) != m_connections.end())
+        {
+            FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        }
     }
 
     typedef SlotConnection< void( A1, A2, A3 ) > ConnectionType;
@@ -595,13 +603,14 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
         if(slotToConnect)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A1, A2, A3 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2, A3 ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -617,6 +626,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             SlotSptr slotToConnect = Slot < Slot < void ( A1, A2, A3 ) > >::New(wrappedSlot);
             typename Signal< R( A1, A2, A3 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2, A3 ) > > ( this->shared_from_this() );
@@ -624,7 +634,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -647,11 +657,15 @@ Connection Signal< R( A1, A2, A3 ) >::connect ( SlotBase::sptr slot )
 
 template < typename R, typename A1, typename A2 >
 template< typename FROM_F >
-Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
+Connection Signal< R( A1, A2 ) >::connect( SlotBase::sptr slot )
 {
-    if(this->isConnected(slot))
     {
-        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+        if(m_connections.find( slot ) != m_connections.end())
+        {
+            FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        }
     }
 
     typedef SlotConnection< void( A1, A2 ) > ConnectionType;
@@ -663,13 +677,14 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
         if(slotToConnect)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A1, A2 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2 ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -685,6 +700,7 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             SlotSptr slotToConnect = Slot < Slot < void ( A1, A2 ) > >::New(wrappedSlot);
             typename Signal< R( A1, A2 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2 ) > > ( this->shared_from_this() );
@@ -692,7 +708,7 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -715,11 +731,15 @@ Connection Signal< R( A1, A2 ) >::connect ( SlotBase::sptr slot )
 
 template < typename R, typename A1 >
 template< typename FROM_F >
-Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
+Connection Signal< R( A1 ) >::connect( SlotBase::sptr slot )
 {
-    if(this->isConnected(slot))
     {
-        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+        if(m_connections.find( slot ) != m_connections.end())
+        {
+            FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        }
     }
 
     typedef SlotConnection< void( A1 ) > ConnectionType;
@@ -731,13 +751,14 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
         if(slotToConnect)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A1 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1 ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -753,6 +774,7 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             SlotSptr slotToConnect = Slot < Slot < void ( A1 ) > >::New(wrappedSlot);
             typename Signal< R( A1 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1 ) > > ( this->shared_from_this() );
@@ -760,7 +782,7 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -783,11 +805,15 @@ Connection Signal< R( A1 ) >::connect ( SlotBase::sptr slot )
 
 template < typename R>
 template< typename FROM_F >
-Connection Signal< R() >::connect ( SlotBase::sptr slot )
+Connection Signal< R() >::connect( SlotBase::sptr slot )
 {
-    if(this->isConnected(slot))
     {
-        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+        if(m_connections.find( slot ) != m_connections.end())
+        {
+            FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        }
     }
 
     typedef SlotConnection< void() > ConnectionType;
@@ -799,13 +825,14 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
         if(slotToConnect)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R() >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R() > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -821,6 +848,7 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             SlotSptr slotToConnect = Slot < Slot < void () > >::New(wrappedSlot);
             typename Signal< R() >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R() > > ( this->shared_from_this() );
@@ -828,7 +856,7 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -856,11 +884,15 @@ Connection Signal< R() >::connect ( SlotBase::sptr slot )
 #else  // BOOST_NO_VARIADIC_TEMPLATES
 template < typename R, typename ...A >
 template< typename FROM_F >
-Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
+Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
 {
-    if(this->isConnected(slot))
     {
-        FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+        if(m_connections.find( slot ) != m_connections.end())
+        {
+            FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        }
     }
 
     typedef SlotConnection< void( A... ) > ConnectionType;
@@ -872,13 +904,14 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
         SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
         if(slotToConnect)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A... ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection =
                 ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else
@@ -894,6 +927,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
 
         if(wrappedSlot)
         {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             SlotSptr slotToConnect = Slot < Slot < void (A...) > >::New(wrappedSlot);
             typename Signal< R( A... ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
@@ -901,7 +935,7 @@ Connection Signal< R( A... ) >::connect ( SlotBase::sptr slot )
                 ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
-            slotConnection->connect();
+            slotConnection->connectNoLock();
             connection = Connection(slotConnection);
         }
         else

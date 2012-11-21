@@ -79,7 +79,17 @@ protected:
     friend struct Signal;
 
     /// Connect the related Signal and Slot together.
-    void connect();
+    void connectNoLock();
+
+
+    /// *NOT THREAD SAFE* Diconnect the related signal.
+    void disconnectSignalNoLock(const SignalSptrType &sig);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot.
+    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+
+    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    void disconnectWeakLock();
 
     /**
      * @brief Returns a blocker on the connection.
@@ -107,6 +117,8 @@ protected:
 
     /// Connection blocker.
     SlotConnectionBase::BlockerWptrType m_weakBlocker;
+
+    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 
 
