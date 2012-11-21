@@ -406,6 +406,79 @@ void SignalTest::argumentLossTest()
 
 //-----------------------------------------------------------------------------
 
+void SignalTest::blockTest()
+{
+    typedef void Signature(float, double, std::string);
+    SignalTestClass testObject;
+
+    ::fwCom::Connection connection;
+
+    ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
+
+    ::fwCom::Slot< void() >::sptr slot0
+        = ::fwCom::newSlot(&SignalTestClass::method0, &testObject);
+    ::fwCom::Slot< float(float) >::sptr slot1
+        = ::fwCom::newSlot(&SignalTestClass::method1, &testObject);
+    ::fwCom::Slot< float(float, double, std::string) >::sptr slot3
+        = ::fwCom::newSlot(&SignalTestClass::method3, &testObject);
+
+    sig->connect(slot0);
+    connection = sig->connect(slot1);
+    sig->connect(slot3);
+
+    CPPUNIT_ASSERT_EQUAL((size_t)3, sig->getNumberOfConnections());
+
+    sig->emit(21.0f, 42.0, "emit");
+
+    CPPUNIT_ASSERT(testObject.m_method0);
+    CPPUNIT_ASSERT(testObject.m_method1);
+    CPPUNIT_ASSERT(testObject.m_method3);
+
+    testObject.m_method0 = false;
+    testObject.m_method1 = false;
+    testObject.m_method3 = false;
+
+    {
+        ::fwCom::Connection::Blocker block(connection);
+        sig->emit(21.0f, 42.0, "emit");
+    }
+
+
+    CPPUNIT_ASSERT(testObject.m_method0);
+    CPPUNIT_ASSERT(!testObject.m_method1);
+    CPPUNIT_ASSERT(testObject.m_method3);
+
+    testObject.m_method0 = false;
+    testObject.m_method1 = false;
+    testObject.m_method3 = false;
+
+    sig->emit(21.0f, 42.0, "emit");
+
+    CPPUNIT_ASSERT(testObject.m_method0);
+    CPPUNIT_ASSERT(testObject.m_method1);
+    CPPUNIT_ASSERT(testObject.m_method3);
+
+
+    testObject.m_method0 = false;
+    testObject.m_method1 = false;
+    testObject.m_method3 = false;
+
+    {
+        ::fwCom::Connection::Blocker block(connection);
+        block.reset();
+        sig->emit(21.0f, 42.0, "emit");
+    }
+
+
+    CPPUNIT_ASSERT(testObject.m_method0);
+    CPPUNIT_ASSERT(testObject.m_method1);
+    CPPUNIT_ASSERT(testObject.m_method3);
+
+
+}
+
+//-----------------------------------------------------------------------------
+
 void SignalTest::asyncEmitTest()
 {
     ::fwCom::Connection connection;

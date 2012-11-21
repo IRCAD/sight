@@ -22,6 +22,7 @@ class SignalTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( connectTest );
     CPPUNIT_TEST( emitTest );
     CPPUNIT_TEST( autoSlotDisconnectTest );
+    CPPUNIT_TEST( blockTest );
     CPPUNIT_TEST( argumentLossTest );
     CPPUNIT_TEST( asyncEmitTest );
 
@@ -36,6 +37,7 @@ public:
     void connectTest ();
     void emitTest ();
     void autoSlotDisconnectTest();
+    void blockTest();
     void argumentLossTest();
     void asyncEmitTest ();
 };
