@@ -345,6 +345,15 @@ void IService::setWorker( ::fwThread::Worker::sptr worker )
 
 //-----------------------------------------------------------------------------
 
+IService::KeyConnectionsType IService::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Object::s_OBJECT_MODIFIED_SIG, s_RECEIVE_SLOT ) );
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 #ifdef COM_LOG
 void IService::setID( ::fwTools::fwID::IDType newID )
 {

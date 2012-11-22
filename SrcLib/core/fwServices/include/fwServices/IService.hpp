@@ -24,6 +24,7 @@
 #include "fwServices/config.hpp"
 #include "fwServices/ObjectMsg.hpp"
 #include "fwServices/factory/new.hpp"
+#include "fwServices/helper/SigSlotConnection.hpp"
 
 namespace fwServices
 {
@@ -280,6 +281,20 @@ public :
 
     //@}
 
+    /**
+     * @name Communication connection between object::signals and service::slots
+     */
+    //@{
+
+    typedef ::fwServices::helper::SigSlotConnection::KeyConnectionsType KeyConnectionsType;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     */
+    virtual KeyConnectionsType getObjSrvConnections() const;
+
+    //@}
 
     /**
      * @name Misc
