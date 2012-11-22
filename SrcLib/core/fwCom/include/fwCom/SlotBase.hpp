@@ -70,7 +70,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /// Sets Slot's Worker.
     void setWorker(const ::fwThread::Worker::sptr &worker)
     {
-        SLM_ASSERT("Changing worker on the fly is currently not supported", !m_worker || worker == m_worker);
+        SLM_ERROR_IF("Changing worker on the fly is currently not supported", m_worker && worker != m_worker);
         ::fwCore::mt::WriteLock lock(m_workerMutex);
         m_worker = worker;
     }
