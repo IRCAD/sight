@@ -25,6 +25,8 @@ class HasSlots
 
 public:
 
+    typedef ::boost::shared_ptr< HasSlots > sptr;
+
     SlotBase::sptr slot( const Slots::SlotKeyType & key ) const
     {
         return m_slots[key];

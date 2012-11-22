@@ -25,6 +25,8 @@ class HasSignals
 
 public:
 
+    typedef ::boost::shared_ptr< HasSignals > sptr;
+
     SignalBase::sptr signal( const Signals::SignalKeyType & key ) const
     {
         return m_signals[key];
