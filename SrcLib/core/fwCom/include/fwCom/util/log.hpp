@@ -13,16 +13,16 @@
 # ifdef COM_LOG
 /** Communication message macros.  */
 #  define SLM_COM(message)                      \
-    SL_INFO(_SPYLOG_SPYLOGGER_, message)
+    SL_ERROR(_SPYLOG_SPYLOGGER_, message)
 /** Com stringstream message macros.  */
 #  define OSLM_COM(message)                     \
-    OSL_INFO(_SPYLOG_SPYLOGGER_, message)
+    OSL_ERROR(_SPYLOG_SPYLOGGER_, message)
 /** Conditionnal com message macros.  */
 #  define SLM_COM_IF(message, cond)                     \
-    SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
+    SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
 /** Conditionnal com stringstream message macros.  */
 #  define OSLM_COM_IF(message, cond)                    \
-    OSL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
+    OSL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
 # else
 /** Communication message macros.  */
 #  define SLM_COM(message) // nothing
