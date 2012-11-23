@@ -958,73 +958,105 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
 //===============================================================================
 //==================================== BEGIN ====================================
 template < typename R, typename A1, typename A2, typename A3 >
-Connection Signal< R( A1, A2, A3 ) >::getConnection( SlotBase::sptr slot )
+Connection Signal< R( A1, A2, A3 ) >::getConnection( SlotBase::sptr slot, bool throws )
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    Connection connection;
 
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
-    if (iter == m_connections.end())
+    if (iter == m_connections.end() )
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        if(throws)
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        }
+    }
+    else
+    {
+        SlotConnectionBase::sptr slotConnection (iter->second);
+        connection = Connection( slotConnection );
     }
 
-    SlotConnectionBase::sptr slotConnection (m_connections[slot]);
-    return Connection( slotConnection );
+    return connection;
 
 }
 
 
 template < typename R, typename A1, typename A2 >
-Connection Signal< R( A1, A2 ) >::getConnection( SlotBase::sptr slot )
+Connection Signal< R( A1, A2 ) >::getConnection( SlotBase::sptr slot, bool throws )
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    Connection connection;
 
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
-    if (iter == m_connections.end())
+    if (iter == m_connections.end() )
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        if(throws)
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        }
+    }
+    else
+    {
+        SlotConnectionBase::sptr slotConnection (iter->second);
+        connection = Connection( slotConnection );
     }
 
-    SlotConnectionBase::sptr slotConnection (m_connections[slot]);
-    return Connection( slotConnection );
+    return connection;
 
 }
 
 
 template < typename R, typename A1 >
-Connection Signal< R( A1 ) >::getConnection( SlotBase::sptr slot )
+Connection Signal< R( A1 ) >::getConnection( SlotBase::sptr slot, bool throws )
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    Connection connection;
 
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
-    if (iter == m_connections.end())
+    if (iter == m_connections.end() )
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        if(throws)
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        }
+    }
+    else
+    {
+        SlotConnectionBase::sptr slotConnection (iter->second);
+        connection = Connection( slotConnection );
     }
 
-    SlotConnectionBase::sptr slotConnection (m_connections[slot]);
-    return Connection( slotConnection );
+    return connection;
 
 }
 
 
 template < typename R>
-Connection Signal< R() >::getConnection( SlotBase::sptr slot )
+Connection Signal< R() >::getConnection( SlotBase::sptr slot, bool throws )
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    Connection connection;
 
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
-    if (iter == m_connections.end())
+    if (iter == m_connections.end() )
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        if(throws)
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        }
+    }
+    else
+    {
+        SlotConnectionBase::sptr slotConnection (iter->second);
+        connection = Connection( slotConnection );
     }
 
-    SlotConnectionBase::sptr slotConnection (m_connections[slot]);
-    return Connection( slotConnection );
+    return connection;
 
 }
 
@@ -1035,19 +1067,27 @@ Connection Signal< R() >::getConnection( SlotBase::sptr slot )
 
 #else  // BOOST_NO_VARIADIC_TEMPLATES
 template < typename R, typename ...A >
-Connection Signal< R( A... ) >::getConnection( SlotBase::sptr slot )
+Connection Signal< R( A... ) >::getConnection( SlotBase::sptr slot, bool throws )
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    Connection connection;
 
     ConnectionMapType::const_iterator iter = m_connections.find(slot);
 
-    if (iter == m_connections.end())
+    if (iter == m_connections.end() )
     {
-        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        if(throws)
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        }
+    }
+    else
+    {
+        SlotConnectionBase::sptr slotConnection (iter->second);
+        connection = Connection( slotConnection );
     }
 
-    SlotConnectionBase::sptr slotConnection (m_connections[slot]);
-    return Connection( slotConnection );
+    return connection;
 
 }
 

@@ -21,7 +21,7 @@ struct Connection
     /// Class allowing to block a Connection.
     struct Blocker
     {
-        Blocker( Connection & connection )
+        Blocker( Connection connection )
             : m_blocker(connection.getBlocker())
         { }
 

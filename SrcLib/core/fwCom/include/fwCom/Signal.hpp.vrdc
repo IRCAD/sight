@@ -94,9 +94,9 @@ struct Signal< R (A...) > : SignalBase
 
     /**
      * @brief Returns the connection handler matching given slot.
-     * @throws BadSlot if given slot is not connected.
+     * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot );
+    Connection getConnection( SlotBase::sptr slot, bool throws = false );
 
 protected:
 

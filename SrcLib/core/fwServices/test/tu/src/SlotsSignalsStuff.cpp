@@ -7,6 +7,8 @@
 #include <fwData/registry/macros.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwCom/Connection.hpp>
+
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
@@ -80,6 +82,8 @@ void SReaderTest::updating() throw ( ::fwTools::Failed )
     ObjectMsg::NewSptr msg;
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+
+    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
     sig->asyncEmit( msg );
 }
 
@@ -159,7 +163,7 @@ void SShow2Test::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTo
     ::fwData::mt::ObjectWriteLock lock(buffer);
     ++m_receiveCount;
 
-    //this->updating();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -172,6 +176,7 @@ void SShow2Test::updating() throw ( ::fwTools::Failed )
     ObjectMsg::NewSptr msg;
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
     sig->asyncEmit( msg );
 }
 

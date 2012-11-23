@@ -98,9 +98,9 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
 
     /**
      * @brief Returns the connection handler matching given slot.
-     * @throws BadSlot if given slot is not connected.
+     * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot );
+    Connection getConnection( SlotBase::sptr slot, bool throws = false );
 
 protected:
 
@@ -196,9 +196,9 @@ struct Signal< R ( A1, A2 ) > : SignalBase
 
     /**
      * @brief Returns the connection handler matching given slot.
-     * @throws BadSlot if given slot is not connected.
+     * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot );
+    Connection getConnection( SlotBase::sptr slot, bool throws = false );
 
 protected:
 
@@ -294,9 +294,9 @@ struct Signal< R ( A1 ) > : SignalBase
 
     /**
      * @brief Returns the connection handler matching given slot.
-     * @throws BadSlot if given slot is not connected.
+     * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot );
+    Connection getConnection( SlotBase::sptr slot, bool throws = false );
 
 protected:
 
@@ -392,9 +392,9 @@ struct Signal< R () > : SignalBase
 
     /**
      * @brief Returns the connection handler matching given slot.
-     * @throws BadSlot if given slot is not connected.
+     * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot );
+    Connection getConnection( SlotBase::sptr slot, bool throws = false );
 
 protected:
 
@@ -495,9 +495,9 @@ struct Signal< R (A...) > : SignalBase
 
     /**
      * @brief Returns the connection handler matching given slot.
-     * @throws BadSlot if given slot is not connected.
+     * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot );
+    Connection getConnection( SlotBase::sptr slot, bool throws = false );
 
 protected:
 
