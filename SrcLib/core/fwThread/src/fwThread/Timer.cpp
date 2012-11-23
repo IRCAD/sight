@@ -61,11 +61,11 @@ void Timer::call(const ::boost::system::error_code & error)
         if (!m_oneShot)
         {
             this->rearmNoLock(m_duration);
-            m_functor();
+            m_function();
         }
         else
         {
-            m_functor();
+            m_function();
             m_running = false;
         }
     }

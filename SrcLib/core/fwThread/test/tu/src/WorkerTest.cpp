@@ -120,7 +120,7 @@ void WorkerTest::timerTest()
 
     ::boost::posix_time::time_duration duration = ::boost::posix_time::milliseconds(100) ;
 
-    timer->setFunctor(  ::boost::bind( &TestHandler::nextStepNoSleep, &handler)  );
+    timer->setFunction(  ::boost::bind( &TestHandler::nextStepNoSleep, &handler)  );
     timer->setDuration(duration);
 
     CPPUNIT_ASSERT(!timer->isRunning());
