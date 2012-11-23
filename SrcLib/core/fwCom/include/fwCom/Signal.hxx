@@ -388,13 +388,13 @@ template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::emit( A1 a1, A2 a2, A3 a3 ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("emit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run( a1, a2, a3 );
         }
     }
@@ -405,13 +405,13 @@ template < typename R, typename A1, typename A2 >
 void Signal< R ( A1, A2 ) >::emit( A1 a1, A2 a2 ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("emit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run( a1, a2 );
         }
     }
@@ -422,13 +422,13 @@ template < typename R, typename A1 >
 void Signal< R ( A1 ) >::emit( A1 a1 ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("emit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run( a1 );
         }
     }
@@ -439,13 +439,13 @@ template < typename R>
 void Signal< R () >::emit() const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("emit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run();
         }
     }
@@ -461,13 +461,13 @@ template < typename R, typename ...A >
 void Signal< R (A...) >::emit( A...a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("emit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run(a...);
         }
     }
@@ -484,13 +484,13 @@ template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::asyncEmit( A1 a1, A2 a2, A3 a3 ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("asyncEmit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun( a1, a2, a3 );
         }
     }
@@ -502,13 +502,13 @@ template < typename R, typename A1, typename A2 >
 void Signal< R ( A1, A2 ) >::asyncEmit( A1 a1, A2 a2 ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("asyncEmit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun( a1, a2 );
         }
     }
@@ -520,13 +520,13 @@ template < typename R, typename A1 >
 void Signal< R ( A1 ) >::asyncEmit( A1 a1 ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("asyncEmit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun( a1 );
         }
     }
@@ -538,13 +538,13 @@ template < typename R>
 void Signal< R () >::asyncEmit() const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("asyncEmit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun();
         }
     }
@@ -561,13 +561,13 @@ template < typename R, typename ...A >
 void Signal< R (A...) >::asyncEmit( A...a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("asyncEmit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun(a...);
         }
     }

@@ -34,13 +34,13 @@ struct Slot< ::boost::function< R ( A1, A2, A3 ) > > : Slot< R ( A1, A2, A3 ) >
 
     virtual void run( A1 a1, A2 a2, A3 a3 ) const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        OSLM_COM("run slot '"<< this->getID() <<"'");
         m_func( a1, a2, a3 );
     };
 
     virtual R   call( A1 a1, A2 a2, A3 a3 ) const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        OSLM_COM("call slot '"<< this->getID() <<"'");
         return m_func( a1, a2, a3 );
     };
 
@@ -61,13 +61,13 @@ struct Slot< ::boost::function< R ( A1, A2 ) > > : Slot< R ( A1, A2 ) >
 
     virtual void run( A1 a1, A2 a2 ) const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        OSLM_COM("run slot '"<< this->getID() <<"'");
         m_func( a1, a2 );
     };
 
     virtual R   call( A1 a1, A2 a2 ) const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        OSLM_COM("call slot '"<< this->getID() <<"'");
         return m_func( a1, a2 );
     };
 
@@ -88,13 +88,13 @@ struct Slot< ::boost::function< R ( A1 ) > > : Slot< R ( A1 ) >
 
     virtual void run( A1 a1 ) const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        OSLM_COM("run slot '"<< this->getID() <<"'");
         m_func( a1 );
     };
 
     virtual R   call( A1 a1 ) const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        OSLM_COM("call slot '"<< this->getID() <<"'");
         return m_func( a1 );
     };
 
@@ -115,13 +115,13 @@ struct Slot< ::boost::function< R () > > : Slot< R () >
 
     virtual void run() const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        OSLM_COM("run slot '"<< this->getID() <<"'");
         m_func();
     };
 
     virtual R   call() const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        OSLM_COM("call slot '"<< this->getID() <<"'");
         return m_func();
     };
 
@@ -147,13 +147,13 @@ struct Slot< ::boost::function< R ( A... ) > > : Slot< R ( A... ) >
 
     virtual void run(A...a) const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (run)");
+        OSLM_COM("run slot '"<< this->getID() <<"'");
         m_func(a...);
     };
 
     virtual R   call(A...a) const
     {
-        OSLM_COM("Executes slot '"<< this->getID() <<"' (call)");
+        OSLM_COM("call slot '"<< this->getID() <<"'");
         return m_func(a...);
     };
 

@@ -91,13 +91,13 @@ template < typename R, typename ...A >
 void Signal< R (A...) >::emit( A...a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("emit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'run' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->run(a...);
         }
     }
@@ -107,13 +107,13 @@ template < typename R, typename ...A >
 void Signal< R (A...) >::asyncEmit( A...a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("asyncEmit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            OSLM_COM("Signal '"<< this->getID() <<"' calls 'asyncRun' method on slot '"<< (*iter)->second->getID() <<"'");
             (*iter)->second->asyncRun(a...);
         }
     }
