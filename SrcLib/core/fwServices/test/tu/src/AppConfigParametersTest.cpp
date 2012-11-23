@@ -37,6 +37,10 @@ void AppConfigParametersTest::setUp()
     runtime->addBundles(bundlesLocation);
 
     ::boost::filesystem::path location = ::boost::filesystem::current_path() / "share/tu_exec_fwServices_0-0";
+    if( ! ::boost::filesystem::exists( location ) )
+    {
+        location = ::boost::filesystem::current_path() / "share/tu_xml_fwServices_0-0";
+    }
     CPPUNIT_ASSERT(::boost::filesystem::exists(location));
 
     runtime->addBundles(location);
