@@ -217,8 +217,6 @@ void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
-
-        OSLM_TRACE("Service" << this->className() <<" is on IDLE state ==> treatment of message: " << _msg->getGeneralInfo());
         this->receiving( _msg );
     }
     else
@@ -260,22 +258,6 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) //throw
         {
             m_globalState = SWAPPING ;
 
-            if( ::fwServices::OSR::has(m_associatedObject.lock(), "::fwServices::IEditionService") )
-            {
-                ::fwServices::IEditionService::sptr oldEditor = ::fwServices::get< ::fwServices::IEditionService >( m_associatedObject.lock());
-                typedef std::vector< ::fwServices::ComChannelService::sptr > OContainerType;
-                OContainerType obs = ::fwServices::OSR::getServices< ::fwServices::ComChannelService >() ;
-                BOOST_FOREACH(::fwServices::ComChannelService::sptr comChannel, obs)
-                {
-                    /// Check if _service is the subject (IEditionService) or the destination service
-                    if( comChannel->getDest() == this->getSptr() && comChannel->getSrc() == oldEditor )
-                    {
-                        comChannel->stop() ;
-                        ::fwServices::OSR::swapService(_obj , comChannel );
-                        comChannel->start();
-                    }
-                }
-            }
             ::fwServices::OSR::swapService( _obj , this->getSptr() );
 
             this->swapping();
@@ -363,8 +345,10 @@ void IService::setID( ::fwTools::fwID::IDType newID )
         this->::fwTools::fwID::setID( newID );
     }
 
-    ::fwCom::HasSlots::m_slots.setID( newID + "::" );
-    ::fwCom::HasSignals::m_signals.setID( newID + "::" );
+    std::string lightID = this->getLightID( ::fwTools::fwID::MUST_EXIST );
+
+    ::fwCom::HasSlots::m_slots.setID( lightID + "::" );
+    ::fwCom::HasSignals::m_signals.setID( lightID + "::" );
 }
 #endif
 

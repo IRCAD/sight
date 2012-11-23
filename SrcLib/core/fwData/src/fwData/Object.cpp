@@ -173,7 +173,9 @@ void Object::setID( ::fwTools::fwID::IDType newID )
         this->::fwTools::fwID::setID( newID );
     }
 
-    ::fwCom::HasSignals::m_signals.setID( newID + "::" );
+    std::string lightID = this->getLightID( ::fwTools::fwID::MUST_EXIST );
+
+    ::fwCom::HasSignals::m_signals.setID( lightID + "::" );
 }
 #endif
 
