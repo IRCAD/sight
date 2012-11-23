@@ -1,3 +1,6 @@
-﻿<plugin id="Tuto15MultithreadCtrl">
+﻿<plugin id="Tuto15MultithreadCtrl" class="::Tuto15MultithreadCtrl::Plugin">
+
     <requirement id="servicesReg" />
+    <library name="Tuto15MultithreadCtrl" />
+
 </plugin>
