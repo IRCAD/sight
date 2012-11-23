@@ -14,7 +14,7 @@ ThreadIdType getCurrentThreadId()
     return ::boost::this_thread::get_id();
 }
 
-void Worker::WorkerThread( ::boost::asio::io_service & io_service )
+void WorkerThread( ::boost::asio::io_service & io_service )
 {
     OSLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
     io_service.run();

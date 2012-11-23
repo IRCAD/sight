@@ -65,15 +65,14 @@ public:
     /// Returns the m_thread id
     FWTHREAD_API ThreadIdType getThreadId() const;
 
-    /// Helper to trace the creation of the thread during worker construction.
-    static void WorkerThread( ::boost::asio::io_service & io_service );
-
 protected:
+
+    friend class Timer;
 
     /// Copy constructor forbidden
     Worker( const Worker& );
 
-    /// Copy constructor forbidden
+    /// Copy operator forbidden
     Worker& operator=( const Worker& );
 
     /// Class provides functionality to manipulate asynchronous tasks.

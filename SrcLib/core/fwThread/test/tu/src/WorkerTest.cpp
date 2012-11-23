@@ -12,6 +12,7 @@
 #include <fwTest/Exception.hpp>
 
 #include <fwThread/Worker.hpp>
+#include <fwThread/Timer.hpp>
 
 #include "WorkerTest.hpp"
 
@@ -47,7 +48,13 @@ struct TestHandler
 
     void nextStep()
     {
-        ::boost::this_thread::sleep(::boost::posix_time::seconds(1));
+        ::boost::this_thread::sleep(::boost::posix_time::milliseconds(50));
+        this->nextStepNoSleep();
+    }
+
+    void nextStepNoSleep()
+    {
+
         m_threadCheckOk &= (m_constructorThreadId != ::fwThread::getCurrentThreadId());
         m_threadCheckOk &= (m_workerThreadId == ::fwThread::getCurrentThreadId());
         ++m_step;
@@ -68,17 +75,190 @@ struct TestHandler
 
 void WorkerTest::basicTest()
 {
+    {
+        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+
+        TestHandler handler;
+        handler.setWorkerId(worker->getThreadId());
+        worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
+        worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
+        worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
+
+        worker->stop();
+        CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
+        CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
+    }
+
+    {
+        ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+
+        TestHandler handler;
+        handler.setWorkerId(worker->getThreadId());
+        worker->post( ::boost::bind( &TestHandler::nextStepNoSleep, &handler) );
+        worker->post( ::boost::bind( &TestHandler::nextStepNoSleep, &handler) );
+        worker->post( ::boost::bind( &TestHandler::nextStepNoSleep, &handler) );
+
+        worker->stop();
+        CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
+        CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+
+void WorkerTest::timerTest()
+{
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+
 
     TestHandler handler;
     handler.setWorkerId(worker->getThreadId());
-    worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
-    worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
-    worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
+
+
+    ::fwThread::Timer::sptr timer = ::fwThread::Timer::New(worker);
+
+    ::boost::posix_time::time_duration duration = ::boost::posix_time::milliseconds(100) ;
+
+    timer->setFunctor(  ::boost::bind( &TestHandler::nextStepNoSleep, &handler)  );
+    timer->setDuration(duration);
+
+    CPPUNIT_ASSERT(!timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+
+    timer->start();
+
+    CPPUNIT_ASSERT(timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+
+    ::boost::this_thread::sleep( duration/10. );
+
+    for (int i = 1 ; i < 50 ; ++i)
+    {
+        ::boost::this_thread::sleep( duration );
+
+        CPPUNIT_ASSERT(timer->isRunning());
+        CPPUNIT_ASSERT(handler.m_threadCheckOk);
+        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
+
+    }
+
+    timer->stop();
+
+    ::boost::this_thread::sleep( duration*3 );
+
+    CPPUNIT_ASSERT(!timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
+
+
+    // test start after stop
+    handler.m_step = 0;
+
+    timer->start();
+
+    CPPUNIT_ASSERT(timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+
+    ::boost::this_thread::sleep( duration/10. );
+
+    for (int i = 1 ; i < 50 ; ++i)
+    {
+        ::boost::this_thread::sleep( duration );
+
+        CPPUNIT_ASSERT(timer->isRunning());
+        CPPUNIT_ASSERT(handler.m_threadCheckOk);
+        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
+
+    }
+
+    timer->stop();
+
+    ::boost::this_thread::sleep( duration*3 );
+
+    CPPUNIT_ASSERT(!timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
+
+
+
+
+
+    // change timer duration on the fly
+    // change timer duration
+    handler.m_step = 0;
+
+    timer->start();
+
+    CPPUNIT_ASSERT(timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+
+    ::boost::this_thread::sleep( duration/10. );
+
+    for (int i = 1 ; i < 25 ; ++i)
+    {
+        ::boost::this_thread::sleep( duration );
+
+        CPPUNIT_ASSERT(timer->isRunning());
+        CPPUNIT_ASSERT(handler.m_threadCheckOk);
+        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
+
+    }
+
+    duration = ::boost::posix_time::milliseconds(50);
+    timer->setDuration(duration);
+
+    for (int i = 24 ; i < 50 ; ++i)
+    {
+        ::boost::this_thread::sleep( duration );
+
+        CPPUNIT_ASSERT(timer->isRunning());
+        CPPUNIT_ASSERT(handler.m_threadCheckOk);
+        CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
+
+    }
+
+
+    timer->stop();
+
+    ::boost::this_thread::sleep( duration*3 );
+
+    CPPUNIT_ASSERT(!timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
+
+
+
+
+
+    // one shot test
+    handler.m_step = 0;
+
+    duration = ::boost::posix_time::milliseconds(10);
+    timer->setDuration(duration);
+    timer->setOneShot(true);
+
+    timer->start();
+
+    CPPUNIT_ASSERT(timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+
+    ::boost::this_thread::sleep( duration*10 );
+
+    CPPUNIT_ASSERT(!timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(1, handler.m_step);
+
+
 
     worker->stop();
-    CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
-    CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
+    // CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
+    // CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
 }
 
 //-----------------------------------------------------------------------------
