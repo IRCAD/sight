@@ -80,7 +80,7 @@ void SReaderTest::updating() throw ( ::fwTools::Failed )
     ObjectMsg::NewSptr msg;
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    sig->emit( msg );
+    sig->asyncEmit( msg );
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ void SReader2Test::updating() throw ( ::fwTools::Failed )
     // Emit object Modified
     SReader2Test::ChangedSignalType::sptr sig;
     sig = this->signal< SReader2Test::ChangedSignalType >( SReader2Test::s_CHANGED_SIG );
-    sig->emit();
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

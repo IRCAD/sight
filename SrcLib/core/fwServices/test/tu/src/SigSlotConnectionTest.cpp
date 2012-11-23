@@ -39,6 +39,7 @@ void SigSlotConnectionTest::tearDown()
 
 void SigSlotConnectionTest::basicTest()
 {
+    SLM_TRACE_FUNC();
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
