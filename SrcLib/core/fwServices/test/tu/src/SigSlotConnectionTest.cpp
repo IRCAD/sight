@@ -7,6 +7,7 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwTest/Exception.hpp>
 
@@ -52,18 +53,19 @@ void SigSlotConnectionTest::basicTest()
             buffer->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
     ::fwServices::ObjectMsg::NewSptr msg;
+    msg->addEvent(ObjectMsg::NEW_OBJECT);
 
     ::fwServices::helper::SigSlotConnection::NewSptr helper;
 
     helper->connect( buffer, showTestSrv, showTestSrv->getObjSrvConnections() );
     showTestSrv->start().wait();
-    sig->asyncEmit( msg);
+    fwServicesNotifyMsgMacro("SigSlotConnectionTest::basicTest()", sig, msg);
     showTestSrv->stop().wait();
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
     helper->disconnect();
     showTestSrv->start().wait();
-    sig->asyncEmit( msg);
+    fwServicesNotifyMsgMacro("SigSlotConnectionTest::basicTest()", sig, msg);
     showTestSrv->stop().wait();
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 

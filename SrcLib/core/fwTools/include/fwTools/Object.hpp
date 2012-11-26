@@ -41,6 +41,9 @@ public:
     FWTOOLS_API using  ::fwTools::fwID::getID;
     FWTOOLS_API using  ::fwTools::fwID::setID;
     FWTOOLS_API using  ::fwTools::fwID::resetID;
+#ifdef COM_LOG
+    FWTOOLS_API using  ::fwTools::fwID::getLightID;
+#endif
 
     /// return the sub class classname : an alias of this->getClassname
     FWTOOLS_API std::string className() const;

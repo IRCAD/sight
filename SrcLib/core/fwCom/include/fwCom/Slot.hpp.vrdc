@@ -31,13 +31,13 @@ struct Slot< ::boost::function< R ( A... ) > > : Slot< R ( A... ) >
 
     virtual void run(A...a) const
     {
-        OSLM_COM("run slot '"<< this->getID() <<"'");
+        OSLM_COM("run '"<< this->getID() <<"' slot");
         m_func(a...);
     };
     
     virtual R   call(A...a) const
     {
-        OSLM_COM("call slot '"<< this->getID() <<"'");
+        OSLM_COM("call '"<< this->getID() <<"'  slot");
         return m_func(a...);
     };
 

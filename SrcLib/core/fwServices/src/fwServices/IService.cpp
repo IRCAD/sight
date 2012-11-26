@@ -217,6 +217,7 @@ void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
+        OSLM_COM("Receive " << _msg->getLightID() << "::" << _msg->getEventIds()[0]);
         this->receiving( _msg );
     }
     else

@@ -91,7 +91,7 @@ template < typename R, typename ...A >
 void Signal< R (A...) >::emit( A...a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
-    OSLM_COM("emit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
+    OSLM_COM("emit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )
@@ -107,7 +107,7 @@ template < typename R, typename ...A >
 void Signal< R (A...) >::asyncEmit( A...a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
-    OSLM_COM("asyncEmit sig '"<< this->getID() <<"' ( nb connected slots = " << m_slots.size() << " )" );
+    OSLM_COM("asyncEmit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin() ; iter != end; ++iter )

@@ -75,7 +75,7 @@ inline void SlotConnection< void (A...) >::connectNoLock()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
-    OSLM_COM("Connect signal '"<< sig->getID() <<"' <=> slot '"<< m_connectedSlot.lock()->getID() <<"'");
+    OSLM_COM("Connect '"<< sig->getID() <<"' sig <=> '"<< m_connectedSlot.lock()->getID() <<"' slot");
 }
 
 
@@ -84,8 +84,8 @@ inline void SlotConnection< void (A...) >::disconnectSignalNoLock(const SignalSp
 {
     sig->m_slots.remove( &m_pair );
     sig->m_connections.erase(m_connectedSlot);
-    OSLM_COM("Disconnect signal '"<< sig->getID()
-            <<"' <=> slot '"  << (m_connectedSlot.expired() ? "<dead slot>" : m_connectedSlot.lock()->getID()) <<"'" );
+    OSLM_COM("Disconnect '"<< sig->getID() <<"' sig <=> '"  << 
+            (m_connectedSlot.expired() ? "<dead slot>" : m_connectedSlot.lock()->getID()) <<"' slot" );
 }
 
 
@@ -97,9 +97,9 @@ inline void SlotConnection< void (A...) >::disconnectSlotNoLock(const SlotBase::
         boost::shared_ptr< const SlotConnection< void (A...) > > thisSptr =
             boost::dynamic_pointer_cast< const SlotConnection< void (A...) > > ( this->shared_from_this() );
         slot->m_connections.erase( thisSptr );
-        OSLM_COM("Disconnect signal '" 
+        OSLM_COM("Disconnect '" 
                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
-                <<"' <=> slot '"  <<  slot->getID() <<"'" );
+                <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
     catch(const boost::bad_weak_ptr &e)
     {

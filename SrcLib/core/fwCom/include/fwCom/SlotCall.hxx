@@ -85,7 +85,7 @@ template< typename R, typename A1, typename A2, typename A3 >
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncCall slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncCall '"<< this->getID() <<"' slot");
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args1, args2, args3 ) ) );
     ::boost::unique_future< R > ufuture = task.get_future();
     ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
@@ -105,7 +105,7 @@ template< typename R, typename A1, typename A2 >
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncCall slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncCall '"<< this->getID() <<"' slot");
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args1, args2 ) ) );
     ::boost::unique_future< R > ufuture = task.get_future();
     ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
@@ -125,7 +125,7 @@ template< typename R, typename A1 >
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncCall slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncCall '"<< this->getID() <<"' slot");
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args1 ) ) );
     ::boost::unique_future< R > ufuture = task.get_future();
     ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
@@ -145,7 +145,7 @@ template< typename R>
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncCall slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncCall '"<< this->getID() <<"' slot");
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall() ) );
     ::boost::unique_future< R > ufuture = task.get_future();
     ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
@@ -170,7 +170,7 @@ template< typename R, typename ...A >
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncCall slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncCall '"<< this->getID() <<"' slot");
     ::boost::packaged_task<R>   task( ::fwCom::util::weakcall( this->shared_from_this(), this->bindCall( args... ) ) );
     ::boost::unique_future< R > ufuture = task.get_future();
     ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);

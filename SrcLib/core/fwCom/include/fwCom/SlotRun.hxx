@@ -84,7 +84,7 @@ SlotRun< void ( A1, A2, A3 ) >::asyncRun( const ::fwThread::Worker::sptr &worker
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncRun slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1, args2, args3 ) ));
     ::boost::unique_future< void > ufuture = task.get_future();
     ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
@@ -104,7 +104,7 @@ SlotRun< void ( A1, A2 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncRun slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1, args2 ) ));
     ::boost::unique_future< void > ufuture = task.get_future();
     ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
@@ -124,7 +124,7 @@ SlotRun< void ( A1 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1 arg
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncRun slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1 ) ));
     ::boost::unique_future< void > ufuture = task.get_future();
     ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
@@ -144,7 +144,7 @@ SlotRun< void () >::asyncRun( const ::fwThread::Worker::sptr &worker) const
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncRun slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun() ));
     ::boost::unique_future< void > ufuture = task.get_future();
     ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
@@ -169,7 +169,7 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
 
-    OSLM_COM("asyncRun slot '"<< this->getID() <<"'");
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
     ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args... ) ));
     ::boost::unique_future< void > ufuture = task.get_future();
     ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);

@@ -80,11 +80,11 @@ void SReaderTest::updating() throw ( ::fwTools::Failed )
 
     // Emit object Modified
     ObjectMsg::NewSptr msg;
+    msg->addEvent(ObjectMsg::NEW_OBJECT);
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-    sig->asyncEmit( msg );
+    fwServicesBlockAndNotifyMsgMacro(this->getLightID(), sig, msg, m_slotReceive)
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ void SReader2Test::updating() throw ( ::fwTools::Failed )
     // Emit object Modified
     SReader2Test::ChangedSignalType::sptr sig;
     sig = this->signal< SReader2Test::ChangedSignalType >( SReader2Test::s_CHANGED_SIG );
-    sig->asyncEmit();
+    fwServicesNotifyMacro(this->getLightID(), sig, ());
 }
 
 //------------------------------------------------------------------------------
@@ -174,10 +174,10 @@ void SShow2Test::updating() throw ( ::fwTools::Failed )
 
     // Emit object Modified
     ObjectMsg::NewSptr msg;
+    msg->addEvent(ObjectMsg::NEW_OBJECT);
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-    sig->asyncEmit( msg );
+    fwServicesBlockAndNotifyMsgMacro(this->getLightID(), sig, msg, m_slotReceive);
 }
 
 //------------------------------------------------------------------------------
