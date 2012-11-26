@@ -21,7 +21,8 @@ BundleElement::BundleElement()
 :   m_bundle( Bundle::getLoadingBundle() ), m_enable(true)
 {
     // Post-condition
-    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
+
+    SLM_ASSERT("bundle '" << m_bundle->getIdentifier() << "' not initialized", m_bundle != 0 );
 }
 
 //------------------------------------------------------------------------------
@@ -30,7 +31,7 @@ BundleElement::BundleElement( ::boost::shared_ptr< Bundle > bundle )
 :   m_bundle( bundle ), m_enable(true)
 {
     // Post-condition
-    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
+    SLM_ASSERT("bundle '" << m_bundle->getIdentifier() << "' not initialized", m_bundle != 0 );
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +46,7 @@ BundleElement::BundleElement( ::boost::shared_ptr< Bundle > bundle )
 bool BundleElement::isEnable() const
 {
     // Pre-condition.
-    SLM_ASSERT("bundle not initialized", m_bundle != 0 );
+    SLM_ASSERT("bundle '" << m_bundle->getIdentifier() << "' not initialized", m_bundle != 0 );
     return m_bundle->isEnable() && m_enable;
 }
 
