@@ -9,7 +9,6 @@ BUNDLES = [
     'servicesReg_0-1'       ,
     'visu_0-1'              ,
     'visuVTKQt_0-1'         ,
-    'launcher_0-1'          ,
     'ioVTK_0-1'             ,
     'vtkSimpleMesh_0-1'     ,
     'uiIO_0-1'              ,
