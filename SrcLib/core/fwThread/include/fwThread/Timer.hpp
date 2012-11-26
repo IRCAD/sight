@@ -60,7 +60,7 @@ public:
     FWTHREAD_API void stop();
 
     /// Sets time duration.
-    void setDuration(TimeDurationType duration);
+    FWTHREAD_API void setDuration(TimeDurationType duration);
 
     /// Sets the function to be triggered when time duration expires.
     template< typename F >
@@ -123,7 +123,7 @@ protected:
     /// Timer's state.
     bool             m_running;
 
-    FWTHREAD_API mutable ::fwCore::mt::Mutex m_mutex;
+    mutable ::fwCore::mt::Mutex m_mutex;
 };
 
 } //namespace fwThread

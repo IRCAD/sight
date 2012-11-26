@@ -40,20 +40,20 @@ public:
     typedef std::vector< KeyConnectionType > KeyConnectionsType;
 
     /// Constructor, does nothing
-    SigSlotConnection();
+    FWSERVICES_API SigSlotConnection();
 
     /// Destructor, calls disconnect()
-    virtual ~SigSlotConnection();
+    FWSERVICES_API virtual ~SigSlotConnection();
 
     /// Connect signal to slot, and register this new connection in  m_connections
-    void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
+    FWSERVICES_API void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
                   ::fwCom::HasSlots::sptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey );
 
     /// Connect signals to slots, and register these new connections in  m_connections
-    void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::HasSlots::sptr hasSlots, const KeyConnectionsType & keyConnections );
+    FWSERVICES_API void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::HasSlots::sptr hasSlots, const KeyConnectionsType & keyConnections );
 
     /// Disconnect all registered connections and clear m_connections
-    void disconnect();
+    FWSERVICES_API void disconnect();
 
 protected :
 

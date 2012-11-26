@@ -292,7 +292,7 @@ public :
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
-    virtual KeyConnectionsType getObjSrvConnections() const;
+    FWSERVICES_API virtual KeyConnectionsType getObjSrvConnections() const;
 
     //@}
 
