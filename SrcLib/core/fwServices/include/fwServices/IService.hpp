@@ -168,13 +168,6 @@ public :
     FWSERVICES_API SharedFutureType update(); //throw( ::fwTools::Failed );
 
     /**
-     * @brief Invoke updating(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
-     * @pre m_globalState == STARTED
-     * @pre m_notificationState == IDLE
-     */
-    FWSERVICES_API void receive( fwServices::ObjectMsg::csptr _msg )  ;
-
-    /**
      * @brief Associate the service to another object
      * @param[in] _obj change association service from m_associatedObject to _obj
      * @pre m_globalState == STARTED
@@ -350,6 +343,12 @@ protected :
      */
 
     //@{
+
+    /**
+     * @brief Invoke updating(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
+     * @pre m_globalState == STARTED
+     */
+    FWSERVICES_API void receive( fwServices::ObjectMsg::csptr _msg ) ;
 
     /**
      * @brief Initialize the service activity.

@@ -129,7 +129,13 @@ void IEditionService::notify(
     _pMsg->setSubject(_pSubject);
     _pMsg->timeModified();
 
-    GlobalEventManager::getDefault()->notify( _pMsg, options );
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = _pSubject->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+
+    IService::ReceiveSlotType::sptr slot =  _pSource->slot< IService::ReceiveSlotType >( IService::s_RECEIVE_SLOT );
+
+    fwServicesBlockAndNotifyMsgMacro( _pSource->getLightID(), sig, _pMsg, slot );
+    //GlobalEventManager::getDefault()->notify( _pMsg, options );
 }
 
 //-----------------------------------------------------------------------------
