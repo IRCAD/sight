@@ -140,6 +140,33 @@ void IEditionService::notify(
 
 //-----------------------------------------------------------------------------
 
+void IEditionService::notify(
+        ::fwServices::IService::sptr _pSource,
+        ::fwData::Object::sptr _pSubject,
+        ::fwServices::ObjectMsg::sptr _pMsg,
+         bool _allowLoops )
+{
+
+    _pMsg->setSource(_pSource);
+    _pMsg->setSubject(_pSubject);
+    _pMsg->timeModified();
+
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = _pSubject->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+
+    if( _allowLoops )
+    {
+        fwServicesNotifyMsgMacro( _pSource->getLightID(), sig, _pMsg );
+    }
+    else
+    {
+        IService::ReceiveSlotType::sptr slot =  _pSource->slot< IService::ReceiveSlotType >( IService::s_RECEIVE_SLOT );
+        fwServicesBlockAndNotifyMsgMacro( _pSource->getLightID(), sig, _pMsg, slot );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 IEditionService::IEditionService()
 {}
 
