@@ -9,7 +9,10 @@
 
 #include <fwServices/IService.hpp>
 
+
 #include "Tuto15MultithreadCtrl/config.hpp"
+
+fwCorePredeclare((fwThread)(Timer));
 
 namespace Tuto15MultithreadCtrl
 {
@@ -22,6 +25,11 @@ public:
 
     TUTO15MULTITHREADCTRL_API SIncrementArray() throw();
     TUTO15MULTITHREADCTRL_API virtual ~SIncrementArray() throw();
+
+    void setPeriod( unsigned int period )
+    {
+        m_periodInMillisec = period ;
+    }
 
 protected:
 
@@ -39,6 +47,9 @@ protected:
 
     //virtual void info( std::ostream &_sstream ) ;
 
+    SPTR( fwThread::Timer ) m_timer;
+
+    unsigned int m_periodInMillisec;
 
 };
 

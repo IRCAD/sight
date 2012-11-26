@@ -46,7 +46,7 @@ void SReadArray::updating() throw( ::fwTools::Failed )
 
     ::fwData::Array::SizeType size(1, arraySize);
 
-    array->resize("uint8", size, 1, true);
+    array->resize("uint32", size, 1, true);
 
     ::fwComEd::helper::Array arrayHelper(array);
 

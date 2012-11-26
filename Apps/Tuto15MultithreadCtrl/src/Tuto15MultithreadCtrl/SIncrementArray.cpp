@@ -4,7 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/bind.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <fwComEd/helper/Array.hpp>
+
+#include <fwThread/Timer.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -18,7 +23,8 @@ fwServicesRegisterMacro( ::fwServices::IService , ::Tuto15MultithreadCtrl::SIncr
 namespace Tuto15MultithreadCtrl
 {
 
-SIncrementArray::SIncrementArray() throw()
+SIncrementArray::SIncrementArray() throw() :
+    m_periodInMillisec(500)
 {
 }
 
@@ -29,11 +35,14 @@ SIncrementArray::~SIncrementArray() throw()
 void SIncrementArray::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    m_timer = ::fwThread::Timer::New( m_associatedWorker );
+    m_timer->setFunction( ::boost::bind(&SIncrementArray::updating, this) );
+    m_timer->setDuration( ::boost::posix_time::milliseconds(m_periodInMillisec) );
 }
 
 void SIncrementArray::stopping() throw( ::fwTools::Failed )
 {
-
+    m_timer.reset();
 }
 
 void SIncrementArray::updating() throw( ::fwTools::Failed )
@@ -42,8 +51,9 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
     ::fwData::mt::ObjectWriteLock writeLock(array);
 
     SLM_ASSERT("No array.", array);
+    SLM_ASSERT("Array : bad number of dimensions.", array->getNumberOfDimensions() == 1 );
 
-    const int arraySize = 10;
+    const int arraySize = array->getSize()[0];
 
     ::fwComEd::helper::Array arrayHelper(array);
 
@@ -57,10 +67,9 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
     ::fwData::Object::ObjectModifiedSignalType::sptr sig
         = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-    ::fwServices::ObjectMsg::csptr msg;// = ::fwServices::ObjectMsg::sptr( (::fwServices::ObjectMsg*) NULL );
-    sig->emit(msg);
 
-
+    ::fwServices::ObjectMsg::csptr msg;
+    fwServicesBlockAndNotifyMsgMacro(this->getLightID(), sig, msg, m_slotReceive);
 }
 
 void SIncrementArray::configuring() throw( ::fwTools::Failed )
@@ -70,7 +79,7 @@ void SIncrementArray::configuring() throw( ::fwTools::Failed )
 
 void SIncrementArray::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
-
+    m_timer->start();
 }
 
 void SIncrementArray::swapping( ) throw( ::fwTools::Failed )

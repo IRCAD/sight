@@ -3,6 +3,7 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+#include <cmath>
 
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
@@ -69,11 +70,14 @@ int Plugin::run() throw()
     ::fwData::Array::NewSptr array;
 
     ::fwServices::IService::sptr srvRead =
-        ::fwServices::registry::ServiceFactory::getDefault()->create("::fwServices::IService", "::Tuto15MultithreadCtrl::SReadArray");
+        ::fwServices::registry::ServiceFactory::getDefault()
+        ->create("::fwServices::IService", "::Tuto15MultithreadCtrl::SReadArray");
     ::fwServices::IService::sptr srvShow =
-        ::fwServices::registry::ServiceFactory::getDefault()->create("::fwServices::IService", "::Tuto15MultithreadCtrl::SShowArray");
+        ::fwServices::registry::ServiceFactory::getDefault()
+        ->create("::fwServices::IService", "::Tuto15MultithreadCtrl::SShowArray");
     ::fwServices::IService::sptr srvIncrement =
-        ::fwServices::registry::ServiceFactory::getDefault()->create("::fwServices::IService", "::Tuto15MultithreadCtrl::SIncrementArray");
+        ::fwServices::registry::ServiceFactory::getDefault()
+        ->create("::fwServices::IService", "::Tuto15MultithreadCtrl::SIncrementArray");
 
     ::fwServices::OSR::registerService(array, srvRead);
     ::fwServices::OSR::registerService(array, srvShow);
@@ -87,10 +91,10 @@ int Plugin::run() throw()
     ::fwThread::Worker::NewSptr worker2;
     ::fwThread::Worker::NewSptr worker3;
 
-    ::fwServices::registry::ActiveWorkers::sptr workers = ::fwServices::registry::ActiveWorkers::getDefault();
-    workers->addWorker("worker1", worker1);
-    workers->addWorker("worker2", worker2);
-    workers->addWorker("worker3", worker3);
+    // ::fwServices::registry::ActiveWorkers::sptr workers = ::fwServices::registry::ActiveWorkers::getDefault();
+    // workers->addWorker("worker1", worker1);
+    // workers->addWorker("worker2", worker2);
+    // workers->addWorker("worker3", worker3);
 
     srvRead->setWorker(worker1);
     srvShow->setWorker(worker2);
@@ -99,36 +103,45 @@ int Plugin::run() throw()
     ::fwData::Object::ObjectModifiedSignalType::sptr sig
         = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-    ::fwCom::Connection readConnection = sig->connect(srvRead->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
     ::fwCom::Connection showConnection = sig->connect(srvShow->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
     ::fwCom::Connection incrementConnection = sig->connect(srvIncrement->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
 
-    srvRead->start();
-    srvShow->start();
-    srvIncrement->start();
 
-    srvRead->update();
+    srvRead->start().wait();
+    srvShow->start().wait();
+    srvIncrement->start().wait();
 
-    ::boost::this_thread::sleep( ::boost::posix_time::seconds(1));
-    srvIncrement->update();
-    ::boost::this_thread::sleep( ::boost::posix_time::seconds(1));
-    srvIncrement->update();
-    ::boost::this_thread::sleep( ::boost::posix_time::seconds(1));
-    srvIncrement->update();
+    srvRead->update().wait();
 
-    srvRead->stop();
-    srvShow->stop();
-    srvIncrement->stop();
+    unsigned long long count = 1<<30 ;
+    double d = 42<<42;
 
-    readConnection.disconnect();
+    OSLM_INFO("Computing " << count << " square roots.");
+
+    for (unsigned long long i = 0; i < count ; ++i)
+    {
+        d = std::sqrt(d);
+    }
+
+    OSLM_INFO("Done computing " << count << " square roots : " << d);
+
+    // ::boost::this_thread::sleep( ::boost::posix_time::seconds(10));
+
     showConnection.disconnect();
     incrementConnection.disconnect();
+
+    srvRead->stop().wait();
+    srvShow->stop().wait();
+    srvIncrement->stop().wait();
+
 
     ::fwServices::OSR::unregisterService(srvRead);
     ::fwServices::OSR::unregisterService(srvShow);
     ::fwServices::OSR::unregisterService(srvIncrement);
 
-    array.reset();
+    srvRead.reset();
+    srvShow.reset();
+    srvIncrement.reset();
 
     worker1->stop();
     worker2->stop();
