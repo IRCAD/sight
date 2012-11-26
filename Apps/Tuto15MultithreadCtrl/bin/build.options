@@ -14,3 +14,12 @@ BUNDLES = [
     'uiIO_0-1'              ,
     'appXml_0-1'            ,
  ]
+
+LIB = [
+    'fwData_0-1'        ,
+    'fwServices_0-1'    ,
+    'fwCom_0-1'         ,
+    'fwThread_0-1'      ,
+    'fwComEd_0-1'       ,
+ ]
+

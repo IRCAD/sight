@@ -37,6 +37,8 @@ public :
 
     TUTO15MULTITHREADCTRL_API void uninitialize() throw();
 
+    TUTO15MULTITHREADCTRL_API int run() throw();
+
 };
 
 } // namespace Tuto15MultithreadCtrl
