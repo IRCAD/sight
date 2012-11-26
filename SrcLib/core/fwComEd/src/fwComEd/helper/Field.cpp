@@ -93,7 +93,7 @@ void Field::notify(fwServices::IService::sptr _serviceSource)
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     if ( m_objectMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_object.lock(), m_objectMsg , ::fwServices::ComChannelService::NOTIFY_SOURCE );
+        ::fwServices::IEditionService::notify( _serviceSource, m_object.lock(), m_objectMsg , true );
     }
     SLM_INFO_IF("The message will not by notified because it has no event.", m_objectMsg->getEventIds().size() == 0);
 }

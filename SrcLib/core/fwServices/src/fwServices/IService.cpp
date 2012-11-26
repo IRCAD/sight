@@ -18,7 +18,6 @@
 
 #include "fwServices/IService.hpp"
 #include "fwServices/IEditionService.hpp"
-#include "fwServices/ComChannelService.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/Base.hpp"

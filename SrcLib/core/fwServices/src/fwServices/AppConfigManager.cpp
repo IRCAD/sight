@@ -129,60 +129,41 @@ namespace fwServices
 
 // ------------------------------------------------------------------------
 
-::fwServices::ComChannelService::sptr AppConfigManager::connectComChannel(
+void AppConfigManager::autoSigSlotConnection(
         ::fwData::Object::sptr obj,
         ::fwServices::IService::sptr srv,
         ConfigAttribute priority)
 {
-    ::fwServices::ComChannelService::sptr comChannel = ::fwServices::registerCommunicationChannel(obj, srv);
-    m_createdSrv.push_back(comChannel);
+    m_connections->connect( obj, srv, srv->getObjSrvConnections() );
 
-    // Add priority for the new comChannel, default is 0.5
-    if (::boost::get<1>(priority))
-    {
-        double priorityValue = ::boost::lexical_cast<double>(::boost::get<0>(priority));
-        if (priorityValue < 0.0)
-        {
-            priorityValue = 0.0;
-        }
-        else if (priorityValue > 1.0)
-        {
-            priorityValue = 1.0;
-        }
-        comChannel->setPriority(priorityValue);
-    }
-    m_createdComChannels.push_back(comChannel);
-    return comChannel;
+//    // Add priority for the new comChannel, default is 0.5
+//    if (::boost::get<1>(priority))
+//    {
+//        double priorityValue = ::boost::lexical_cast<double>(::boost::get<0>(priority));
+//        if (priorityValue < 0.0)
+//        {
+//            priorityValue = 0.0;
+//        }
+//        else if (priorityValue > 1.0)
+//        {
+//            priorityValue = 1.0;
+//        }
+//        comChannel->setPriority(priorityValue);
+//    }
 }
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::startComChannels()
+void AppConfigManager::startConnections()
 {
-    BOOST_FOREACH(::fwServices::IService::wptr w_srv, m_createdComChannels)
-    {
-        SLM_ASSERT("Service expired.", !w_srv.expired());
-
-        ::fwServices::IService::sptr srv = w_srv.lock();
-        OSLM_ASSERT("Service " << srv->getID() << " already started.", !srv->isStarted());
-        srv->start();
-        m_startedComChannels.push_back(srv);
-    }
+    /// Connections are already started
 }
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::stopComChannels()
+void AppConfigManager::stopConnections()
 {
-    BOOST_REVERSE_FOREACH(::fwServices::IService::wptr w_srv, m_startedComChannels)
-    {
-        SLM_ASSERT("Service expired.", !w_srv.expired());
-
-        ::fwServices::IService::sptr srv = w_srv.lock();
-        OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
-        srv->stop();
-    }
-    m_startedComChannels.clear();
+    m_connections->disconnect();
 }
 
 // ------------------------------------------------------------------------
@@ -473,7 +454,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     // Communication channel
     if (autoComChannel == "yes")
     {
-        this->connectComChannel(m_configuredObject, srv, priority);
+        this->autoSigSlotConnection(m_configuredObject, srv, priority);
     }
 
     // Check if user did not bind a service to another service
@@ -488,7 +469,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
 // Constructors / Destructors
 // ------------------------------------------------------------------------
 
-AppConfigManager::AppConfigManager() : m_state(STATE_DESTROYED)
+AppConfigManager::AppConfigManager() : m_state(STATE_DESTROYED), m_connections( helper::SigSlotConnection::New() )
 {}
 
 // ------------------------------------------------------------------------
@@ -518,7 +499,7 @@ void AppConfigManager::start()
 
     this->processStartItems() ;
     m_objectParser->startConfig();
-    this->startComChannels();
+    this->startConnections();
 
     m_state = STATE_STARTED;
 }
@@ -537,7 +518,7 @@ void AppConfigManager::stop()
 {
     SLM_ASSERT("Manager is not started, cannot stop.", m_state == STATE_STARTED);
 
-    this->stopComChannels();
+    this->stopConnections();
     m_objectParser->stopConfig();
     this->stopStartedServices();
 

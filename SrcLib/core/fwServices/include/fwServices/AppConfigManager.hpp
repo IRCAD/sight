@@ -19,7 +19,7 @@
 #include "fwServices/config.hpp"
 #include "fwServices/IXMLParser.hpp"
 #include "fwServices/IService.hpp"
-#include "fwServices/ComChannelService.hpp"
+#include "fwServices/helper/SigSlotConnection.hpp"
 
 namespace fwServices
 {
@@ -108,8 +108,8 @@ protected:
 
     ServiceContainer m_createdSrv;
     ServiceContainer m_startedSrv;
-    ServiceContainer m_createdComChannels;
-    ServiceContainer m_startedComChannels;
+    //ServiceContainer m_createdComChannels;
+    helper::SigSlotConnection::sptr m_connections;
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(
             ConfigAttribute type,
@@ -131,13 +131,13 @@ protected:
             ConfigAttribute uid,
             ConfigAttribute implType);
 
-    FWSERVICES_API ::fwServices::ComChannelService::sptr connectComChannel(
+    FWSERVICES_API void autoSigSlotConnection(
             ::fwData::Object::sptr obj,
             ::fwServices::IService::sptr srv,
             ConfigAttribute priority);
 
-    FWSERVICES_API void startComChannels();
-    FWSERVICES_API void stopComChannels();
+    FWSERVICES_API void startConnections();
+    FWSERVICES_API void stopConnections();
 
     FWSERVICES_API void stopStartedServices();
     FWSERVICES_API void destroyCreatedServices();

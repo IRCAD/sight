@@ -17,8 +17,6 @@
 #include <fwTools/fwID.hpp>
 
 #include "fwServices/IService.hpp"
-#include "fwServices/op/Com.hpp"
-#include "fwServices/GlobalEventManager.hpp"
 
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"

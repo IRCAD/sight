@@ -249,8 +249,8 @@ protected:
 
 private :
 
-    ::fwServices::IService::wptr m_tfSelectionComChannelSrv;
-    ::fwServices::IService::wptr m_tfComChannelSrv;
+    //::fwServices::IService::wptr m_tfSelectionComChannelSrv;
+    //::fwServices::IService::wptr m_tfComChannelSrv;
 
     /// Transfer function selection
     ::fwData::Composite::wptr m_tfSelection;
