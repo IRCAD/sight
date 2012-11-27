@@ -15,6 +15,7 @@
 #include <fwCore/mt/types.hpp>
 
 #include <fwThread/TaskHandler.hpp>
+#include <fwThread/Worker.hpp>
 
 #include "fwCom/exception/NoWorker.hpp"
 

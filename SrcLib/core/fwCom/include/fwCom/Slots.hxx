@@ -12,6 +12,7 @@
 #error fwCom/Slots.hpp not included
 #endif
 
+#include "fwCom/Slot.hpp"
 #include "fwCom/Slot.hxx"
 
 //-----------------------------------------------------------------------------
@@ -25,7 +26,7 @@ namespace fwCom
 template<typename R, typename A1, typename A2, typename A3 >
 Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R ( A1, A2, A3 ) >) slot )
 {
-    SlotBase::sptr slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
+    SPTR( SlotBase ) slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
     m_slots.insert( SlotMapType::value_type(key, slotBase) );
     return *this;
 }
@@ -34,7 +35,7 @@ Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R ( A1, A2, A3 ) >)
 template<typename R, typename A1, typename A2 >
 Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R ( A1, A2 ) >) slot )
 {
-    SlotBase::sptr slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
+    SPTR( SlotBase ) slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
     m_slots.insert( SlotMapType::value_type(key, slotBase) );
     return *this;
 }
@@ -43,7 +44,7 @@ Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R ( A1, A2 ) >) slo
 template<typename R, typename A1 >
 Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R ( A1 ) >) slot )
 {
-    SlotBase::sptr slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
+    SPTR( SlotBase ) slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
     m_slots.insert( SlotMapType::value_type(key, slotBase) );
     return *this;
 }
@@ -52,7 +53,7 @@ Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R ( A1 ) >) slot )
 template<typename R>
 Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R () >) slot )
 {
-    SlotBase::sptr slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
+    SPTR( SlotBase ) slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
     m_slots.insert( SlotMapType::value_type(key, slotBase) );
     return *this;
 }
@@ -66,7 +67,7 @@ Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R () >) slot )
 template<typename R, typename ...A>
 Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R (A...) >) slot )
 {
-    SlotBase::sptr slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
+    SPTR( SlotBase ) slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
     m_slots.insert( SlotMapType::value_type(key, slotBase) );
     return *this;
 }
@@ -81,7 +82,7 @@ Slots& Slots::operator()( const SlotKeyType &key, SPTR(Slot< R (A...) >) slot )
 template<typename F, typename A1, typename A2, typename A3 >
 Slots& Slots::operator()( const SlotKeyType &key, F f, A1 a1, A2 a2, A3 a3 )
 {
-    SlotBase::sptr slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a1, a2, a3 ) );
+    SPTR( SlotBase ) slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a1, a2, a3 ) );
     m_slots.insert( SlotMapType::value_type(key, slot) );
     return *this;
 }
@@ -91,7 +92,7 @@ Slots& Slots::operator()( const SlotKeyType &key, F f, A1 a1, A2 a2, A3 a3 )
 template<typename F, typename A1, typename A2 >
 Slots& Slots::operator()( const SlotKeyType &key, F f, A1 a1, A2 a2 )
 {
-    SlotBase::sptr slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a1, a2 ) );
+    SPTR( SlotBase ) slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a1, a2 ) );
     m_slots.insert( SlotMapType::value_type(key, slot) );
     return *this;
 }
@@ -101,7 +102,7 @@ Slots& Slots::operator()( const SlotKeyType &key, F f, A1 a1, A2 a2 )
 template<typename F, typename A1 >
 Slots& Slots::operator()( const SlotKeyType &key, F f, A1 a1 )
 {
-    SlotBase::sptr slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a1 ) );
+    SPTR( SlotBase ) slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a1 ) );
     m_slots.insert( SlotMapType::value_type(key, slot) );
     return *this;
 }
@@ -111,7 +112,7 @@ Slots& Slots::operator()( const SlotKeyType &key, F f, A1 a1 )
 template<typename F>
 Slots& Slots::operator()( const SlotKeyType &key, F f)
 {
-    SlotBase::sptr slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f) );
+    SPTR( SlotBase ) slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f) );
     m_slots.insert( SlotMapType::value_type(key, slot) );
     return *this;
 }
@@ -126,7 +127,7 @@ Slots& Slots::operator()( const SlotKeyType &key, F f)
 template<typename F, typename ...A>
 Slots& Slots::operator()( const SlotKeyType &key, F f, A...a )
 {
-    SlotBase::sptr slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a...) );
+    SPTR( SlotBase ) slot = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a...) );
     m_slots.insert( SlotMapType::value_type(key, slot) );
     return *this;
 }

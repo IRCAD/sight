@@ -6,8 +6,6 @@
 #ifndef __FWCOM_CONNECTION_HPP__
 #define __FWCOM_CONNECTION_HPP__
 
-#include <fwCore/BaseObject.hpp>
-
 #include "fwCom/config.hpp"
 
 #include "fwCom/SlotConnectionBase.hpp"

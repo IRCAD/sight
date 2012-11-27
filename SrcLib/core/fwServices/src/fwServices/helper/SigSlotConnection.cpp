@@ -6,6 +6,8 @@
 
 #include <boost/foreach.hpp>
 
+#include <fwCom/SignalBase.hpp>
+
 #include "fwServices/helper/SigSlotConnection.hpp"
 
 namespace fwServices

@@ -13,6 +13,9 @@
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 
+#include "fwCom/SlotBase.hpp"
+#include "fwCom/SlotRun.hpp"
+
 #include "fwCom/util/log.hpp"
 
 namespace fwCom
@@ -84,7 +87,7 @@ inline void SlotConnection< void (A...) >::disconnectSignalNoLock(const SignalSp
 {
     sig->m_slots.remove( &m_pair );
     sig->m_connections.erase(m_connectedSlot);
-    OSLM_COM("Disconnect '"<< sig->getID() <<"' sig <=> '"  << 
+    OSLM_COM("Disconnect '"<< sig->getID() <<"' sig <=> '"  <<
             (m_connectedSlot.expired() ? "<dead slot>" : m_connectedSlot.lock()->getID()) <<"' slot" );
 }
 
@@ -97,7 +100,7 @@ inline void SlotConnection< void (A...) >::disconnectSlotNoLock(const SlotBase::
         boost::shared_ptr< const SlotConnection< void (A...) > > thisSptr =
             boost::dynamic_pointer_cast< const SlotConnection< void (A...) > > ( this->shared_from_this() );
         slot->m_connections.erase( thisSptr );
-        OSLM_COM("Disconnect '" 
+        OSLM_COM("Disconnect '"
                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
                 <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
@@ -116,7 +119,7 @@ inline void SlotConnection< void (A...) >::disconnect()
 
     SignalSptrType sig(m_signal.lock());
     SlotBase::sptr slot(m_connectedSlot.lock());
-    
+
     if(sig)
     {
         ::fwCore::mt::WriteLock lock(sig->m_connectionsMutex);

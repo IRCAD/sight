@@ -6,9 +6,9 @@
 #ifndef __FWCOM_SLOTCALL_HPP__
 #define __FWCOM_SLOTCALL_HPP__
 
-#include <fwThread/Worker.hpp>
-
 #include "fwCom/SlotRun.hpp"
+
+fwCorePredeclare( (fwThread)(Worker) );
 
 namespace fwCom
 {
@@ -53,11 +53,11 @@ struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const ::fwThread::Worker::sptr &worker, A... args ) const;
+    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker, A... args ) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
-     * The execution of this slot will occur on it's own worker. 
+     * The execution of this slot will occur on it's own worker.
      * @pre Slot's worker must be set.
      *
      * @return a shared_future object associated with Slot's call result.

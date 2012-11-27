@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwCom/SlotBase.hpp"
+#include "fwCom/SlotBase.hxx"
+
 #include "fwCom/SignalBase.hpp"
 
 namespace fwCom

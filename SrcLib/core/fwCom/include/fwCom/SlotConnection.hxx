@@ -13,6 +13,9 @@
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 
+#include "fwCom/SlotBase.hpp"
+#include "fwCom/SlotRun.hpp"
+
 #include "fwCom/util/log.hpp"
 
 namespace fwCom

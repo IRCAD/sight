@@ -31,6 +31,7 @@ struct SlotConnectionBase: virtual fwCore::BaseObject
     typedef boost::weak_ptr< void >   BlockerWptrType;
     /**  @} */
 
+    SlotConnectionBase(){}
 
     /// Disconnect a Slot from this connection.
     virtual void disconnect() = 0;
@@ -39,6 +40,13 @@ struct SlotConnectionBase: virtual fwCore::BaseObject
     virtual BlockerSptrType getBlocker() = 0;
 
 protected:
+
+    /// Copy constructor forbidden
+    SlotConnectionBase( const SlotConnectionBase& );
+
+    /// Copy operator forbiden
+    SlotConnectionBase& operator=( const SlotConnectionBase& );
+
     /**
      * @name SlotConnectionBase's friends
      * @{ */

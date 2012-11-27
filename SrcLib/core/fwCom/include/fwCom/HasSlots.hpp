@@ -13,6 +13,8 @@
 namespace fwCom
 {
 
+struct SlotBase;
+
 /**
  * @class   HasSlots
  * @brief   This class proposes a mapping between a SlotKeyType and a SlotBase.
@@ -27,7 +29,9 @@ public:
 
     typedef ::boost::shared_ptr< HasSlots > sptr;
 
-    SlotBase::sptr slot( const Slots::SlotKeyType & key ) const
+    HasSlots(){}
+
+    SPTR( SlotBase ) slot( const Slots::SlotKeyType & key ) const
     {
         return m_slots[key];
     }
@@ -41,6 +45,12 @@ public:
 
 
 protected:
+
+    /// Copy constructor forbidden
+    HasSlots( const HasSlots& );
+
+    /// Copy operator forbiden
+    HasSlots& operator=( const HasSlots& );
 
     Slots m_slots;
 };

@@ -16,11 +16,11 @@
 #include "fwCom/config.hpp"
 
 #include "fwCom/Connection.hpp"
-#include "fwCom/SlotBase.hpp"
-
 
 namespace fwCom
 {
+
+struct SlotBase;
 
 /**
  * @brief Signal base class.
@@ -48,16 +48,23 @@ struct SignalBase : virtual fwCore::BaseObject
      * @brief Connects the given slot.
      * @throws BadSlot If given slot doesn't match signal type.
      */
-    virtual Connection connect ( SlotBase::sptr slot ) = 0;
+    virtual Connection connect ( SPTR( SlotBase ) slot ) = 0;
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    virtual void disconnect ( SlotBase::sptr slot ) = 0;
+    virtual void disconnect ( SPTR( SlotBase ) slot ) = 0;
 
     /// Returns number of connections.
     virtual size_t getNumberOfConnections() const = 0;
+
+protected:
+    /// Copy constructor forbidden
+    SignalBase( const SignalBase& );
+
+    /// Copy operator forbiden
+    SignalBase& operator=( const SignalBase& );
 
 #ifdef COM_LOG
 

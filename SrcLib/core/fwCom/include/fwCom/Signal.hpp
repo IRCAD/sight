@@ -15,15 +15,18 @@
 #include <fwCore/mt/types.hpp>
 
 #include "fwCom/SignalBase.hpp"
-#include "fwCom/SlotConnectionBase.hpp"
-#include "fwCom/SlotRun.hpp"
-
 
 namespace fwCom
 {
 
+struct SlotConnectionBase;
+struct SlotBase;
+
 template < typename F >
 struct Signal;
+
+template < typename F >
+struct SlotRun;
 
 /**
  * @brief Signal implementation.
@@ -52,7 +55,7 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< WPTR( SlotBase ), WPTR( SlotConnectionBase ) > ConnectionMapType;
     /**  @} */
 
     /// Constructs a new Signal of type Signal<R( A1, A2, A3 )>.
@@ -71,13 +74,13 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    Connection connect ( SlotBase::sptr slot );
+    Connection connect ( SPTR( SlotBase ) slot );
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect ( SlotBase::sptr slot );
+    void disconnect ( SPTR( SlotBase ) slot );
 
     /// Disconnects all slots.
     void disconnectAll();
@@ -100,7 +103,7 @@ struct Signal< R ( A1, A2, A3 ) > : SignalBase
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot, bool throws = false );
+    Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
 
 protected:
 
@@ -117,7 +120,7 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect( SlotBase::sptr slot );
+    Connection connect( SPTR( SlotBase ) slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
@@ -150,7 +153,7 @@ struct Signal< R ( A1, A2 ) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< WPTR( SlotBase ), WPTR( SlotConnectionBase ) > ConnectionMapType;
     /**  @} */
 
     /// Constructs a new Signal of type Signal<R( A1, A2 )>.
@@ -169,13 +172,13 @@ struct Signal< R ( A1, A2 ) > : SignalBase
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    Connection connect ( SlotBase::sptr slot );
+    Connection connect ( SPTR( SlotBase ) slot );
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect ( SlotBase::sptr slot );
+    void disconnect ( SPTR( SlotBase ) slot );
 
     /// Disconnects all slots.
     void disconnectAll();
@@ -198,7 +201,7 @@ struct Signal< R ( A1, A2 ) > : SignalBase
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot, bool throws = false );
+    Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
 
 protected:
 
@@ -215,7 +218,7 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect( SlotBase::sptr slot );
+    Connection connect( SPTR( SlotBase ) slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
@@ -248,7 +251,7 @@ struct Signal< R ( A1 ) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< WPTR( SlotBase ), WPTR( SlotConnectionBase ) > ConnectionMapType;
     /**  @} */
 
     /// Constructs a new Signal of type Signal<R( A1 )>.
@@ -267,13 +270,13 @@ struct Signal< R ( A1 ) > : SignalBase
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    Connection connect ( SlotBase::sptr slot );
+    Connection connect ( SPTR( SlotBase ) slot );
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect ( SlotBase::sptr slot );
+    void disconnect ( SPTR( SlotBase ) slot );
 
     /// Disconnects all slots.
     void disconnectAll();
@@ -296,7 +299,7 @@ struct Signal< R ( A1 ) > : SignalBase
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot, bool throws = false );
+    Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
 
 protected:
 
@@ -313,7 +316,7 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect( SlotBase::sptr slot );
+    Connection connect( SPTR( SlotBase ) slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
@@ -346,7 +349,7 @@ struct Signal< R () > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< WPTR( SlotBase ), WPTR( SlotConnectionBase ) > ConnectionMapType;
     /**  @} */
 
     /// Constructs a new Signal of type Signal<R()>.
@@ -365,13 +368,13 @@ struct Signal< R () > : SignalBase
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    Connection connect ( SlotBase::sptr slot );
+    Connection connect ( SPTR( SlotBase ) slot );
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect ( SlotBase::sptr slot );
+    void disconnect ( SPTR( SlotBase ) slot );
 
     /// Disconnects all slots.
     void disconnectAll();
@@ -394,7 +397,7 @@ struct Signal< R () > : SignalBase
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot, bool throws = false );
+    Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
 
 protected:
 
@@ -411,7 +414,7 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect( SlotBase::sptr slot );
+    Connection connect( SPTR( SlotBase ) slot );
 
     /// Connected slots.
     SlotContainerType m_slots;
@@ -449,7 +452,7 @@ struct Signal< R (A...) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< SlotBase::wptr, SlotConnectionBase::wptr > ConnectionMapType;
+    typedef std::map< WPTR( SlotBase ), WPTR( SlotConnectionBase ) > ConnectionMapType;
     /**  @} */
 
     /// Constructs a new Signal of type Signal<R(A...)>.
@@ -468,13 +471,13 @@ struct Signal< R (A...) > : SignalBase
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    Connection connect ( SlotBase::sptr slot );
+    Connection connect ( SPTR( SlotBase ) slot );
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect ( SlotBase::sptr slot );
+    void disconnect ( SPTR( SlotBase ) slot );
 
     /// Disconnects all slots.
     void disconnectAll();
@@ -497,7 +500,7 @@ struct Signal< R (A...) > : SignalBase
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    Connection getConnection( SlotBase::sptr slot, bool throws = false );
+    Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
 
 protected:
 
@@ -514,7 +517,7 @@ protected:
      * @throws AlreadyConnected If given slot is already connected.
      */
     template< typename FROM_F >
-    Connection connect( SlotBase::sptr slot );
+    Connection connect( SPTR( SlotBase ) slot );
 
     /// Connected slots.
     SlotContainerType m_slots;

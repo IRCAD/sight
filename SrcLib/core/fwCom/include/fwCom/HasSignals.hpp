@@ -13,6 +13,8 @@
 namespace fwCom
 {
 
+struct SignalBase;
+
 /**
  * @class   HasSignals
  * @brief   This class proposes a mapping between a SignalKeyType and a SignalBase.
@@ -27,7 +29,9 @@ public:
 
     typedef ::boost::shared_ptr< HasSignals > sptr;
 
-    SignalBase::sptr signal( const Signals::SignalKeyType & key ) const
+    HasSignals(){}
+
+    SPTR( SignalBase ) signal( const Signals::SignalKeyType & key ) const
     {
         return m_signals[key];
     }
@@ -41,6 +45,12 @@ public:
 
 
 protected:
+
+    /// Copy constructor forbidden
+    HasSignals( const HasSignals& );
+
+    /// Copy operator forbiden
+    HasSignals& operator=( const HasSignals& );
 
     Signals m_signals;
 };

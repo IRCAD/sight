@@ -10,9 +10,9 @@
 
 #include <boost/function.hpp>
 
-#include <fwThread/Worker.hpp>
-
 #include "fwCom/SlotBase.hpp"
+
+fwCorePredeclare( (fwThread)(Worker) );
 
 namespace fwCom
 {
@@ -58,7 +58,7 @@ struct SlotRun< void ( A1, A2, A3 ) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const ::fwThread::Worker::sptr &worker, A1 args1, A2 args2, A3 args3 ) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker) &worker, A1 args1, A2 args2, A3 args3 ) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -109,7 +109,7 @@ struct SlotRun< void ( A1, A2 ) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const ::fwThread::Worker::sptr &worker, A1 args1, A2 args2 ) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker) &worker, A1 args1, A2 args2 ) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -160,7 +160,7 @@ struct SlotRun< void ( A1 ) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const ::fwThread::Worker::sptr &worker, A1 args1 ) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker) &worker, A1 args1 ) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -211,7 +211,7 @@ struct SlotRun< void () > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const ::fwThread::Worker::sptr &worker) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker) &worker) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -267,7 +267,7 @@ struct SlotRun< void (A...) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const ::fwThread::Worker::sptr &worker, A... args ) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker) &worker, A... args ) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.

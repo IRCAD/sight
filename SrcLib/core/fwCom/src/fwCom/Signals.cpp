@@ -6,6 +6,11 @@
 
 #include <boost/foreach.hpp>
 
+#ifdef DEBUG
+#include "fwCore/spyLog.hpp"
+#endif
+
+#include "fwCom/SignalBase.hpp"
 #include "fwCom/Signals.hpp"
 
 namespace fwCom

@@ -6,8 +6,6 @@
 #ifndef __FWCOM_SLOTCONNECTION_HPP__
 #define __FWCOM_SLOTCONNECTION_HPP__
 
-#include "fwCom/exception/BadSlot.hpp"
-#include "fwCom/SlotBase.hpp"
 #include "fwCom/SlotConnectionBase.hpp"
 
 
@@ -19,6 +17,8 @@ struct Signal;
 
 template < typename F >
 struct SlotConnection;
+
+struct SlotBase;
 
 /**
  * @brief Slot connection implementation.
@@ -57,7 +57,7 @@ struct SlotConnection< void ( A1, A2, A3 ) > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     static sptr New( const SignalSptrType &signal,
-                     const SlotBase::sptr &slot,
+                     const SPTR( SlotBase ) &slot,
                      const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -72,7 +72,7 @@ struct SlotConnection< void ( A1, A2, A3 ) > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     SlotConnection( const SignalSptrType &signal,
-                    const SlotBase::sptr &slot,
+                    const SPTR( SlotBase ) &slot,
                     const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -90,7 +90,7 @@ protected:
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
     /// *NOT THREAD SAFE* Diconnect the related slot.
-    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+    void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
     /// *NOT THREAD SAFE* Diconnect the related slot and signal.
     void disconnectWeakLock();
@@ -108,7 +108,7 @@ protected:
     SignalWptrType m_signal;
 
     /// Related Slot.
-    SlotBase::wptr m_connectedSlot;
+    WPTR( SlotBase ) m_connectedSlot;
 
     /// Slot wrapper.
     SlotWrapperSptrType m_slotWrapper;
@@ -153,7 +153,7 @@ struct SlotConnection< void ( A1, A2 ) > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     static sptr New( const SignalSptrType &signal,
-                     const SlotBase::sptr &slot,
+                     const SPTR( SlotBase ) &slot,
                      const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -168,7 +168,7 @@ struct SlotConnection< void ( A1, A2 ) > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     SlotConnection( const SignalSptrType &signal,
-                    const SlotBase::sptr &slot,
+                    const SPTR( SlotBase ) &slot,
                     const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -186,7 +186,7 @@ protected:
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
     /// *NOT THREAD SAFE* Diconnect the related slot.
-    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+    void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
     /// *NOT THREAD SAFE* Diconnect the related slot and signal.
     void disconnectWeakLock();
@@ -204,7 +204,7 @@ protected:
     SignalWptrType m_signal;
 
     /// Related Slot.
-    SlotBase::wptr m_connectedSlot;
+    WPTR( SlotBase ) m_connectedSlot;
 
     /// Slot wrapper.
     SlotWrapperSptrType m_slotWrapper;
@@ -249,7 +249,7 @@ struct SlotConnection< void ( A1 ) > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     static sptr New( const SignalSptrType &signal,
-                     const SlotBase::sptr &slot,
+                     const SPTR( SlotBase ) &slot,
                      const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -264,7 +264,7 @@ struct SlotConnection< void ( A1 ) > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     SlotConnection( const SignalSptrType &signal,
-                    const SlotBase::sptr &slot,
+                    const SPTR( SlotBase ) &slot,
                     const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -282,7 +282,7 @@ protected:
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
     /// *NOT THREAD SAFE* Diconnect the related slot.
-    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+    void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
     /// *NOT THREAD SAFE* Diconnect the related slot and signal.
     void disconnectWeakLock();
@@ -300,7 +300,7 @@ protected:
     SignalWptrType m_signal;
 
     /// Related Slot.
-    SlotBase::wptr m_connectedSlot;
+    WPTR( SlotBase ) m_connectedSlot;
 
     /// Slot wrapper.
     SlotWrapperSptrType m_slotWrapper;
@@ -345,7 +345,7 @@ struct SlotConnection< void () > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     static sptr New( const SignalSptrType &signal,
-                     const SlotBase::sptr &slot,
+                     const SPTR( SlotBase ) &slot,
                      const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -360,7 +360,7 @@ struct SlotConnection< void () > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     SlotConnection( const SignalSptrType &signal,
-                    const SlotBase::sptr &slot,
+                    const SPTR( SlotBase ) &slot,
                     const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -378,7 +378,7 @@ protected:
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
     /// *NOT THREAD SAFE* Diconnect the related slot.
-    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+    void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
     /// *NOT THREAD SAFE* Diconnect the related slot and signal.
     void disconnectWeakLock();
@@ -396,7 +396,7 @@ protected:
     SignalWptrType m_signal;
 
     /// Related Slot.
-    SlotBase::wptr m_connectedSlot;
+    WPTR( SlotBase ) m_connectedSlot;
 
     /// Slot wrapper.
     SlotWrapperSptrType m_slotWrapper;
@@ -446,7 +446,7 @@ struct SlotConnection< void (A...) > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     static sptr New( const SignalSptrType &signal,
-                     const SlotBase::sptr &slot,
+                     const SPTR( SlotBase ) &slot,
                      const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -461,7 +461,7 @@ struct SlotConnection< void (A...) > : SlotConnectionBase
 
     /// Build a new connection with the given signal, slot and wrapper.
     SlotConnection( const SignalSptrType &signal,
-                    const SlotBase::sptr &slot,
+                    const SPTR( SlotBase ) &slot,
                     const SlotWrapperSptrType &slotWrapper
                     );
 
@@ -479,7 +479,7 @@ protected:
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
     /// *NOT THREAD SAFE* Diconnect the related slot.
-    void disconnectSlotNoLock(const SlotBase::sptr &slot);
+    void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
     /// *NOT THREAD SAFE* Diconnect the related slot and signal.
     void disconnectWeakLock();
@@ -497,7 +497,7 @@ protected:
     SignalWptrType m_signal;
 
     /// Related Slot.
-    SlotBase::wptr m_connectedSlot;
+    WPTR( SlotBase ) m_connectedSlot;
 
     /// Slot wrapper.
     SlotWrapperSptrType m_slotWrapper;

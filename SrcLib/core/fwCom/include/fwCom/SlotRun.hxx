@@ -11,6 +11,7 @@
 #endif
 
 #include <fwThread/TaskHandler.hpp>
+#include <fwThread/Worker.hpp>
 
 #include <fwCore/mt/types.hpp>
 

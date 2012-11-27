@@ -7,6 +7,15 @@
 #ifndef FWSERVICES_HELPER_SIGSLOTCONNECTION_HPP_
 #define FWSERVICES_HELPER_SIGSLOTCONNECTION_HPP_
 
+#include <list>
+#include <utility>
+#include <vector>
+
+#include <boost/make_shared.hpp>
+
+#include <fwCore/BaseObject.hpp>
+
+#include <fwCom/Connection.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/HasSignals.hpp>
 
@@ -50,7 +59,8 @@ public:
                   ::fwCom::HasSlots::sptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey );
 
     /// Connect signals to slots, and register these new connections in  m_connections
-    FWSERVICES_API void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::HasSlots::sptr hasSlots, const KeyConnectionsType & keyConnections );
+    FWSERVICES_API void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::HasSlots::sptr hasSlots,
+                                 const KeyConnectionsType & keyConnections );
 
     /// Disconnect all registered connections and clear m_connections
     FWSERVICES_API void disconnect();

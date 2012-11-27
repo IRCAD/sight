@@ -10,9 +10,9 @@
 
 #include <boost/function.hpp>
 
-#include <fwThread/Worker.hpp>
-
 #include "fwCom/SlotBase.hpp"
+
+fwCorePredeclare( (fwThread)(Worker) );
 
 namespace fwCom
 {
@@ -54,11 +54,11 @@ struct SlotRun< void (A...) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const ::fwThread::Worker::sptr &worker, A... args ) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker) &worker, A... args ) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
-     * The execution of this slot will occur on it's own worker. 
+     * The execution of this slot will occur on it's own worker.
      * @pre Slot's worker must be set.
      *
      * @return a shared_future object associated with Slot's run result.

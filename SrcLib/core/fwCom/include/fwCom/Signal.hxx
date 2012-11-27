@@ -606,8 +606,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect( SlotBase::sptr slot )
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A1, A2, A3 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2, A3 ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slotToConnect);
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -622,7 +621,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect( SlotBase::sptr slot )
     {
 
         typedef SlotRun< FROM_F > WrappedSlotRunType;
-        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+        typename SPTR(WrappedSlotRunType) wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
 
         if(wrappedSlot)
         {
@@ -630,8 +629,7 @@ Connection Signal< R( A1, A2, A3 ) >::connect( SlotBase::sptr slot )
             SlotSptr slotToConnect = Slot < Slot < void ( A1, A2, A3 ) > >::New(wrappedSlot);
             typename Signal< R( A1, A2, A3 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2, A3 ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slot, slotToConnect );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -679,8 +677,7 @@ Connection Signal< R( A1, A2 ) >::connect( SlotBase::sptr slot )
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A1, A2 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2 ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slotToConnect);
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -695,7 +692,7 @@ Connection Signal< R( A1, A2 ) >::connect( SlotBase::sptr slot )
     {
 
         typedef SlotRun< FROM_F > WrappedSlotRunType;
-        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+        typename SPTR(WrappedSlotRunType) wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
 
         if(wrappedSlot)
         {
@@ -703,8 +700,7 @@ Connection Signal< R( A1, A2 ) >::connect( SlotBase::sptr slot )
             SlotSptr slotToConnect = Slot < Slot < void ( A1, A2 ) > >::New(wrappedSlot);
             typename Signal< R( A1, A2 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1, A2 ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slot, slotToConnect );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -752,8 +748,7 @@ Connection Signal< R( A1 ) >::connect( SlotBase::sptr slot )
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A1 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1 ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slotToConnect);
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -768,7 +763,7 @@ Connection Signal< R( A1 ) >::connect( SlotBase::sptr slot )
     {
 
         typedef SlotRun< FROM_F > WrappedSlotRunType;
-        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+        typename SPTR(WrappedSlotRunType) wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
 
         if(wrappedSlot)
         {
@@ -776,8 +771,7 @@ Connection Signal< R( A1 ) >::connect( SlotBase::sptr slot )
             SlotSptr slotToConnect = Slot < Slot < void ( A1 ) > >::New(wrappedSlot);
             typename Signal< R( A1 ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A1 ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slot, slotToConnect );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -825,8 +819,7 @@ Connection Signal< R() >::connect( SlotBase::sptr slot )
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R() >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R() > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slotToConnect);
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -841,7 +834,7 @@ Connection Signal< R() >::connect( SlotBase::sptr slot )
     {
 
         typedef SlotRun< FROM_F > WrappedSlotRunType;
-        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+        typename SPTR(WrappedSlotRunType) wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
 
         if(wrappedSlot)
         {
@@ -849,8 +842,7 @@ Connection Signal< R() >::connect( SlotBase::sptr slot )
             SlotSptr slotToConnect = Slot < Slot < void () > >::New(wrappedSlot);
             typename Signal< R() >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R() > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slot, slotToConnect );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -903,8 +895,7 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A... ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slotToConnect);
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();
@@ -919,7 +910,7 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
     {
 
         typedef SlotRun< FROM_F > WrappedSlotRunType;
-        typename WrappedSlotRunType::sptr wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+        typename SPTR(WrappedSlotRunType) wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
 
         if(wrappedSlot)
         {
@@ -927,8 +918,7 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
             SlotSptr slotToConnect = Slot < Slot < void (A...) > >::New(wrappedSlot);
             typename Signal< R( A... ) >::sptr sig =
                 boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
-            typename ConnectionType::sptr slotConnection =
-                ConnectionType::New( sig, slot, slotToConnect );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
             slotConnection->connectNoLock();

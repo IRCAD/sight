@@ -7,11 +7,22 @@
 #ifndef __FWCOM_SLOTS_HPP__
 #define __FWCOM_SLOTS_HPP__
 
-#include "fwCom/Slot.hpp"
+#include <map>
+#include <vector>
+#include <string>
+
+#include "fwCore/macros.hpp"
 #include "fwCom/config.hpp"
+
+fwCorePredeclare( (fwThread)(Worker) );
 
 namespace fwCom
 {
+
+struct SlotBase;
+
+template< typename F >
+struct Slot;
 
 /**
  * @class   Slots.
@@ -25,7 +36,7 @@ class FWCOM_CLASS_API Slots
 public:
 
     typedef std::string SlotKeyType;
-    typedef std::map< SlotKeyType, SlotBase::sptr > SlotMapType;
+    typedef std::map< SlotKeyType, SPTR( SlotBase ) > SlotMapType;
     typedef std::vector < SlotKeyType > SlotKeyContainerType;
 
     /// Constructor, does nothing
@@ -35,7 +46,7 @@ public:
     FWCOM_API virtual ~Slots();
 
     /// Registers SlotBase in m_slots
-    FWCOM_API Slots& operator()( const SlotKeyType &key, const SlotBase::sptr &slot );
+    FWCOM_API Slots& operator()( const SlotKeyType &key, const SPTR( SlotBase ) &slot );
 
     /// Registers Slot  in m_slots
 #ifdef BOOST_NO_VARIADIC_TEMPLATES
@@ -100,10 +111,10 @@ template<typename F, typename ...A>
 
 #endif  // BOOST_NO_VARIADIC_TEMPLATES
 /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
-    FWCOM_API SlotBase::sptr operator[]( const SlotKeyType &key ) const;
+    FWCOM_API SPTR( SlotBase ) operator[]( const SlotKeyType &key ) const;
 
     /// Assigns the worker to all slots stored in m_slots
-    FWCOM_API void setWorker( const ::fwThread::Worker::sptr &worker );
+    FWCOM_API void setWorker( const SPTR(::fwThread::Worker) &worker );
 
     /// Returns all SlotKeyType registered in m_slots
     FWCOM_API SlotKeyContainerType getSlotKeys() const;
@@ -121,7 +132,7 @@ protected:
     /// Copy constructor forbidden
     Slots& operator=( const Slots& );
 
-    /// Association < key , SlotBase::sptr >
+    /// Association < key , SPTR( SlotBase ) >
     SlotMapType m_slots;
 };
 

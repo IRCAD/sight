@@ -7,11 +7,16 @@
 #ifndef __FWCOM_SIGNALS_HPP__
 #define __FWCOM_SIGNALS_HPP__
 
-#include "fwCom/SignalBase.hpp"
+#include <map>
+#include <vector>
+
+#include "fwCore/macros.hpp"
 #include "fwCom/config.hpp"
 
 namespace fwCom
 {
+
+struct SignalBase;
 
 /**
  * @class   Signals.
@@ -25,7 +30,7 @@ class FWCOM_CLASS_API Signals
 public:
 
     typedef std::string SignalKeyType;
-    typedef std::map< SignalKeyType, SignalBase::sptr > SignalMapType;
+    typedef std::map< SignalKeyType, SPTR( SignalBase ) > SignalMapType;
     typedef std::vector < SignalKeyType > SignalKeyContainerType;
 
     /// Constructor, does nothing
@@ -35,10 +40,10 @@ public:
     FWCOM_API virtual ~Signals();
 
     /// Registers SignalBase in m_signals
-    FWCOM_API Signals& operator()( const SignalKeyType &key, const SignalBase::sptr &Signal );
+    FWCOM_API Signals& operator()( const SignalKeyType &key, const SPTR( SignalBase ) &Signal );
 
     /// Returns the SignalBase associated to the key, if key does not exist, the ptr is null
-    FWCOM_API SignalBase::sptr operator[]( const SignalKeyType &key ) const;
+    FWCOM_API SPTR( SignalBase ) operator[]( const SignalKeyType &key ) const;
 
     /// Returns all SignalKeyType registered in m_signals
     FWCOM_API SignalKeyContainerType getSignalKeys() const;
@@ -56,7 +61,7 @@ protected:
     /// Copy constructor forbidden
     Signals& operator=( const Signals& );
 
-    /// Association < key , SignalBase::sptr >
+    /// Association < key , SPTR( SignalBase ) >
     SignalMapType m_signals;
 };
 

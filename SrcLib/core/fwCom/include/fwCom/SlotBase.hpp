@@ -16,12 +16,12 @@
 
 #include <fwCore/mt/types.hpp>
 #include <fwCore/BaseObject.hpp>
-
-#include <fwThread/Worker.hpp>
+#include <fwCore/spyLog.hpp>
 
 #include "fwCom/config.hpp"
 #include "fwCom/util/convert_function_type.hpp"
-#include "fwCom/SlotConnectionBase.hpp"
+
+fwCorePredeclare( (fwThread)(Worker) );
 
 namespace fwCom
 {
@@ -31,6 +31,8 @@ struct SlotRun;
 
 template< typename F >
 struct Slot;
+
+struct SlotConnectionBase;
 
 /**
  * @brief Base class for Slot implementations.
@@ -54,7 +56,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     typedef ::boost::shared_future< void > VoidSharedFutureType;
 
     /// Connections container type
-    typedef std::set< SlotConnectionBase::csptr > ConnectionSetType;
+    typedef std::set< CSPTR( SlotConnectionBase ) > ConnectionSetType;
 
     virtual ~SlotBase() {};
 
@@ -68,7 +70,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     }
 
     /// Sets Slot's Worker.
-    void setWorker(const ::fwThread::Worker::sptr &worker)
+    void setWorker(const SPTR(::fwThread::Worker) &worker)
     {
         SLM_ERROR_IF("Changing worker on the fly is currently not supported", m_worker && worker != m_worker);
         ::fwCore::mt::WriteLock lock(m_workerMutex);
@@ -76,7 +78,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     }
 
     /// Returns Slot's Worker.
-    ::fwThread::Worker::sptr getWorker() const
+    SPTR(::fwThread::Worker) getWorker() const
     {
         ::fwCore::mt::ReadLock lock(m_workerMutex);
         return m_worker;
@@ -142,9 +144,13 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_connections.size();
     }
-
-
 protected:
+
+    /// Copy constructor forbidden
+    SlotBase( const SlotBase& );
+
+    /// Copy operator forbiden
+    SlotBase& operator=( const SlotBase& );
 
     /**
      * @name SlotBase's friends
@@ -181,7 +187,7 @@ protected:
     const unsigned int m_arity;
 
     /// Slot's Worker.
-    ::fwThread::Worker::sptr m_worker;
+    SPTR(::fwThread::Worker) m_worker;
 
     /// Container of current connections.
     ConnectionSetType m_connections;

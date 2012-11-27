@@ -6,9 +6,9 @@
 #ifndef __FWCOM_SLOTCALL_HPP__
 #define __FWCOM_SLOTCALL_HPP__
 
-#include <fwThread/Worker.hpp>
-
 #include "fwCom/SlotRun.hpp"
+
+fwCorePredeclare( (fwThread)(Worker) );
 
 namespace fwCom
 {
@@ -57,7 +57,7 @@ struct SlotCall< R ( A1, A2, A3 ) > : SlotRun< void ( A1, A2, A3 ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const ::fwThread::Worker::sptr &worker, A1 args1, A2 args2, A3 args3 ) const;
+    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker, A1 args1, A2 args2, A3 args3 ) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -108,7 +108,7 @@ struct SlotCall< R ( A1, A2 ) > : SlotRun< void ( A1, A2 ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const ::fwThread::Worker::sptr &worker, A1 args1, A2 args2 ) const;
+    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker, A1 args1, A2 args2 ) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -159,7 +159,7 @@ struct SlotCall< R ( A1 ) > : SlotRun< void ( A1 ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const ::fwThread::Worker::sptr &worker, A1 args1 ) const;
+    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker, A1 args1 ) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -210,7 +210,7 @@ struct SlotCall< R () > : SlotRun< void () >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const ::fwThread::Worker::sptr &worker) const;
+    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -266,7 +266,7 @@ struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const ::fwThread::Worker::sptr &worker, A... args ) const;
+    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker, A... args ) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
