@@ -10,6 +10,7 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/ObjectMsg.hpp>
 
 #include "Tuto15MultithreadCtrl/SReadArray.hpp"
 
@@ -60,7 +61,8 @@ void SReadArray::updating() throw( ::fwTools::Failed )
     ::fwData::Object::ObjectModifiedSignalType::sptr sig
         = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-    ::fwServices::ObjectMsg::csptr msg;// = ::fwServices::ObjectMsg::sptr( (::fwServices::ObjectMsg*) NULL );
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
+    msg->addEvent("MODIFIED_EVENT");
     sig->emit(msg);
 }
 

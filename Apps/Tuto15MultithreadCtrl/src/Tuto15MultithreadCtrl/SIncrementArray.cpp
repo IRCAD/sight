@@ -15,6 +15,7 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/ObjectMsg.hpp>
 
 #include "Tuto15MultithreadCtrl/SIncrementArray.hpp"
 
@@ -68,7 +69,8 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
         = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
 
-    ::fwServices::ObjectMsg::csptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
+    msg->addEvent("MODIFIED_EVENT");
     fwServicesBlockAndNotifyMsgMacro(this->getLightID(), sig, msg, m_slotReceive);
 }
 
