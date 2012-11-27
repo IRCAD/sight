@@ -7,14 +7,9 @@
 #ifndef __FWTHREAD_WORKER_HPP__
 #define __FWTHREAD_WORKER_HPP__
 
-#include <sstream>
-
-#include <boost/bind.hpp>
+#include <boost/asio/io_service.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
-
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/deadline_timer.hpp>
 #include <boost/thread.hpp>
 
 #include <fwCore/base.hpp>
