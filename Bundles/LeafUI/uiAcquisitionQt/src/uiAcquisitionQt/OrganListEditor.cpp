@@ -186,16 +186,20 @@ void OrganListEditor::onOrganChoiceSelection()
 
 void OrganListEditor::notifyOrganChoiceSelection()
 {
-    std::string organSelected = m_organChoice->currentItem()->text().toStdString();
-
-    if(m_map.find(organSelected) != m_map.end())
+    QListWidgetItem *currentItem = m_organChoice->currentItem();
+    if(currentItem)
     {
-        ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-        ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
+        std::string organSelected = currentItem->text().toStdString();
 
-        ::fwComEd::AcquisitionMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) ) ;
-        ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
+        if(m_map.find(organSelected) != m_map.end())
+        {
+            ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
+            ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
+
+            ::fwComEd::AcquisitionMsg::NewSptr msg;
+            msg->addEvent( ::fwComEd::AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) ) ;
+            ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
+        }
     }
 }
 
