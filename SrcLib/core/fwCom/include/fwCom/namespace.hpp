@@ -176,10 +176,10 @@ namespace util
  * In the latter example, 2 points need to highlighted :
  *  - the return type of the Signal is `void`. Signal cannot return values, so
  *  their return type is always declared as `void`. Thus, it is not possible to
- *  retrieve `slot2` Slot return value if it is executed using a Signal.
+ *  retrieve `slot1` Slot return value if it is executed using a Signal.
  *  Therefore, both slots are run succesfully.
- *  - the arguments types of `slot1` slot doesn't match exactly sig2 signature.
- *  `slot1` is nevertheless successfully connected and executed. `slot1` receive
+ *  - the arguments types of `slot2` slot doesn't match exactly sig2 signature.
+ *  `slot2` is nevertheless successfully connected and executed. `slot2` receive
  *  the value 21 as argument, 42 is ignored).
  *
  *
@@ -194,7 +194,7 @@ namespace util
  * worker. @note Each connected slot *must have* a worker set in order to use
  * `asyncEmit`.
  *
- * @subsection SignalDiconnect Diconnection
+ * @subsection SignalDisconnect Disconnection
  *
  * Finally, the `disconnect` method will cause the given Slot to be disconnected
  * from the Signal. Thus, the Slot won't be executed anymore each time the
