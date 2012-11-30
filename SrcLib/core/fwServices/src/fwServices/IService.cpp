@@ -174,13 +174,15 @@ IService::SharedFutureType IService::start() //throw( ::fwTools::Failed)
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
-        if( m_globalState == STOPPED )
-        {
-            m_globalState = STARTING ;
-            this->starting() ;
-            m_globalState = STARTED ;
-        }
-        return SharedFutureType();
+
+        PackagedTaskType task( ::boost::bind(&IService::starting, this) );
+        UniqueFutureType ufuture = task.get_future();
+
+        m_globalState = STARTING ;
+        task() ;
+        m_globalState = STARTED ;
+
+        return ::boost::move(ufuture);
     }
     else
     {
@@ -195,13 +197,15 @@ IService::SharedFutureType IService::stop() //throw( ::fwTools::Failed)
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
-        if( m_globalState == STARTED )
-        {
-            m_globalState = STOPPING ;
-            this->stopping() ;
-            m_globalState = STOPPED ;
-        }
-        return SharedFutureType();
+
+        PackagedTaskType task( ::boost::bind(&IService::stopping, this) );
+        UniqueFutureType ufuture = task.get_future();
+
+        m_globalState = STOPPING ;
+        task() ;
+        m_globalState = STOPPED ;
+
+        return ::boost::move(ufuture);
     }
     else
     {
@@ -234,11 +238,14 @@ IService::SharedFutureType IService::update() //throw( ::fwTools::Failed)
         OSLM_ASSERT("INVOKING update WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
         OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
 
+        PackagedTaskType task( ::boost::bind(&IService::updating, this) );
+        UniqueFutureType ufuture = task.get_future();
+
         m_updatingState = UPDATING ;
-        this->updating( ) ;
+        task() ;
         m_updatingState = NOTUPDATING ;
 
-        return SharedFutureType();
+        return ::boost::move(ufuture);
     }
     else
     {
@@ -253,21 +260,17 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) //throw
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(), m_associatedObject.lock() != _obj );
+        OSLM_FATAL_IF( "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(), m_globalState != STARTED);
 
-        if( m_globalState == STARTED ) // FIXME ???
-        {
-            m_globalState = SWAPPING ;
+        PackagedTaskType task( ::boost::bind(&IService::swapping, this) );
+        UniqueFutureType ufuture = task.get_future();
 
-            ::fwServices::OSR::swapService( _obj , this->getSptr() );
+        m_globalState = SWAPPING;
+        ::fwServices::OSR::swapService( _obj , this->getSptr() );
+        task() ;
+        m_globalState = STARTED;
 
-            this->swapping();
-
-            m_globalState = STARTED ;
-        }
-
-        OSLM_WARN_IF( "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(), m_globalState != STARTED);
-
-        return SharedFutureType();
+        return ::boost::move(ufuture);
     }
     else
     {
