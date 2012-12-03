@@ -72,6 +72,9 @@ struct SlotRun< void ( A1, A2, A3 ) > : SlotBase
 
 protected:
 
+    template< typename R, typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the run method within a void() function.
      *
@@ -122,6 +125,9 @@ struct SlotRun< void ( A1, A2 ) > : SlotBase
     virtual SlotBase::VoidSharedFutureType asyncRun( A1 args1, A2 args2 ) const;
 
 protected:
+
+    template< typename R, typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
 
     /**
      * @brief Binds the given parameters to the run method within a void() function.
@@ -174,6 +180,9 @@ struct SlotRun< void ( A1 ) > : SlotBase
 
 protected:
 
+    template< typename R, typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the run method within a void() function.
      *
@@ -224,6 +233,9 @@ struct SlotRun< void () > : SlotBase
     virtual SlotBase::VoidSharedFutureType asyncRun() const;
 
 protected:
+
+    template< typename R, typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
 
     /**
      * @brief Binds the given parameters to the run method within a void() function.
@@ -280,6 +292,9 @@ struct SlotRun< void (A...) > : SlotBase
     virtual SlotBase::VoidSharedFutureType asyncRun(A... args) const;
 
 protected:
+
+    template< typename R, typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
 
     /**
      * @brief Binds the given parameters to the run method within a void() function.

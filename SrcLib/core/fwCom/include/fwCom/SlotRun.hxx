@@ -10,6 +10,8 @@
 #error fwCom/SlotRun.hpp not included
 #endif
 
+#include <boost/thread/future.hpp>
+
 #include <fwThread/TaskHandler.hpp>
 #include <fwThread/Worker.hpp>
 
@@ -86,12 +88,14 @@ SlotRun< void ( A1, A2, A3 ) >::asyncRun( const ::fwThread::Worker::sptr &worker
     }
 
     OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
-    ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1, args2, args3 ) ));
-    ::boost::unique_future< void > ufuture = task.get_future();
-    ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
-    worker->post(f);
 
-    return ::boost::move(ufuture);
+    return postWeakCall< void >(
+                worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args1, args2, args3 )
+                        )
+                );
 }
 
 
@@ -106,12 +110,14 @@ SlotRun< void ( A1, A2 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1
     }
 
     OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
-    ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1, args2 ) ));
-    ::boost::unique_future< void > ufuture = task.get_future();
-    ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
-    worker->post(f);
 
-    return ::boost::move(ufuture);
+    return postWeakCall< void >(
+                worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args1, args2 )
+                        )
+                );
 }
 
 
@@ -126,12 +132,14 @@ SlotRun< void ( A1 ) >::asyncRun( const ::fwThread::Worker::sptr &worker, A1 arg
     }
 
     OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
-    ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args1 ) ));
-    ::boost::unique_future< void > ufuture = task.get_future();
-    ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
-    worker->post(f);
 
-    return ::boost::move(ufuture);
+    return postWeakCall< void >(
+                worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args1 )
+                        )
+                );
 }
 
 
@@ -146,12 +154,14 @@ SlotRun< void () >::asyncRun( const ::fwThread::Worker::sptr &worker) const
     }
 
     OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
-    ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun() ));
-    ::boost::unique_future< void > ufuture = task.get_future();
-    ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
-    worker->post(f);
 
-    return ::boost::move(ufuture);
+    return postWeakCall< void >(
+                worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun()
+                        )
+                );
 }
 
 
@@ -171,12 +181,14 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
     }
 
     OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
-    ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args... ) ));
-    ::boost::unique_future< void > ufuture = task.get_future();
-    ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
-    worker->post(f);
 
-    return ::boost::move(ufuture);
+    return postWeakCall< void >(
+                worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args... )
+                        )
+                );
 }
 
 
@@ -190,10 +202,24 @@ template< typename A1, typename A2, typename A3 >
 inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2, A3 ) >::asyncRun( A1 args1, A2 args2, A3 args3 ) const
 {
     ::fwCore::mt::ReadLock lock(this->m_workerMutex);
-    SlotBase::VoidSharedFutureType ufuture;
-    ufuture = this->asyncRun(m_worker, args1, args2, args3 );
-    return ufuture;
+
+    if(!this->m_worker)
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+    }
+
+
+    return postWeakCall< void >(
+                m_worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args1, args2, args3 ),
+                        this->m_workerMutex
+                        )
+                );
+
 }
+
 
 
 
@@ -201,10 +227,24 @@ template< typename A1, typename A2 >
 inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2 ) >::asyncRun( A1 args1, A2 args2 ) const
 {
     ::fwCore::mt::ReadLock lock(this->m_workerMutex);
-    SlotBase::VoidSharedFutureType ufuture;
-    ufuture = this->asyncRun(m_worker, args1, args2 );
-    return ufuture;
+
+    if(!this->m_worker)
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+    }
+
+
+    return postWeakCall< void >(
+                m_worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args1, args2 ),
+                        this->m_workerMutex
+                        )
+                );
+
 }
+
 
 
 
@@ -212,10 +252,24 @@ template< typename A1 >
 inline SlotBase::VoidSharedFutureType SlotRun< void ( A1 ) >::asyncRun( A1 args1 ) const
 {
     ::fwCore::mt::ReadLock lock(this->m_workerMutex);
-    SlotBase::VoidSharedFutureType ufuture;
-    ufuture = this->asyncRun(m_worker, args1 );
-    return ufuture;
+
+    if(!this->m_worker)
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+    }
+
+
+    return postWeakCall< void >(
+                m_worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args1 ),
+                        this->m_workerMutex
+                        )
+                );
+
 }
+
 
 
 
@@ -223,10 +277,24 @@ inline SlotBase::VoidSharedFutureType SlotRun< void ( A1 ) >::asyncRun( A1 args1
 inline SlotBase::VoidSharedFutureType SlotRun< void () >::asyncRun() const
 {
     ::fwCore::mt::ReadLock lock(this->m_workerMutex);
-    SlotBase::VoidSharedFutureType ufuture;
-    ufuture = this->asyncRun(m_worker);
-    return ufuture;
+
+    if(!this->m_worker)
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+    }
+
+
+    return postWeakCall< void >(
+                m_worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun(),
+                        this->m_workerMutex
+                        )
+                );
+
 }
+
 
 
 
@@ -239,9 +307,115 @@ template< typename ... A >
 inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
 {
     ::fwCore::mt::ReadLock lock(this->m_workerMutex);
-    SlotBase::VoidSharedFutureType ufuture;
-    ufuture = this->asyncRun(m_worker, args...);
-    return ufuture;
+
+    if(!this->m_worker)
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+    }
+
+
+    return postWeakCall< void >(
+                m_worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args... ),
+                        this->m_workerMutex
+                        )
+                );
+
+}
+
+
+
+
+#endif  // BOOST_NO_VARIADIC_TEMPLATES
+// Copied from fwThread::Worker because of issues with gcc 4.2 and template
+// keyword
+#ifdef BOOST_NO_VARIADIC_TEMPLATES
+//===============================================================================
+//===============================================================================
+//==================================== BEGIN ====================================
+template< typename A1, typename A2, typename A3 >
+template< typename R, typename WEAKCALL >
+::boost::shared_future< R > SlotRun< void ( A1, A2, A3 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+{
+    ::boost::packaged_task< R > task( f );
+    ::boost::unique_future< R > ufuture = task.get_future();
+
+    ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
+
+    worker->post(ftask);
+
+    return ::boost::move(ufuture);
+}
+
+
+
+template< typename A1, typename A2 >
+template< typename R, typename WEAKCALL >
+::boost::shared_future< R > SlotRun< void ( A1, A2 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+{
+    ::boost::packaged_task< R > task( f );
+    ::boost::unique_future< R > ufuture = task.get_future();
+
+    ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
+
+    worker->post(ftask);
+
+    return ::boost::move(ufuture);
+}
+
+
+
+template< typename A1 >
+template< typename R, typename WEAKCALL >
+::boost::shared_future< R > SlotRun< void ( A1 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+{
+    ::boost::packaged_task< R > task( f );
+    ::boost::unique_future< R > ufuture = task.get_future();
+
+    ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
+
+    worker->post(ftask);
+
+    return ::boost::move(ufuture);
+}
+
+
+
+
+template< typename R, typename WEAKCALL >
+::boost::shared_future< R > SlotRun< void () >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+{
+    ::boost::packaged_task< R > task( f );
+    ::boost::unique_future< R > ufuture = task.get_future();
+
+    ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
+
+    worker->post(ftask);
+
+    return ::boost::move(ufuture);
+}
+
+
+
+//===================================== END =====================================
+//===============================================================================
+//===============================================================================
+
+#else  // BOOST_NO_VARIADIC_TEMPLATES
+template< typename ... A >
+template< typename R, typename WEAKCALL >
+::boost::shared_future< R > SlotRun< void (A...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+{
+    ::boost::packaged_task< R > task( f );
+    ::boost::unique_future< R > ufuture = task.get_future();
+
+    ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
+
+    worker->post(ftask);
+
+    return ::boost::move(ufuture);
 }
 
 

@@ -10,6 +10,8 @@
 #error fwCom/SlotRun.hpp not included
 #endif
 
+#include <boost/thread/future.hpp>
+
 #include <fwThread/TaskHandler.hpp>
 #include <fwThread/Worker.hpp>
 
@@ -43,21 +45,54 @@ SlotRun< void (A...) >::asyncRun( const ::fwThread::Worker::sptr &worker, A... a
     }
 
     OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
-    ::boost::packaged_task<void>   task(::fwCom::util::weakcall( this->shared_from_this(), this->bindRun( args... ) ));
-    ::boost::unique_future< void > ufuture = task.get_future();
-    ::boost::function< void () >   f = ::fwThread::moveTaskIntoFunction(task);
-    worker->post(f);
 
-    return ::boost::move(ufuture);
+    return postWeakCall< void >(
+                worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args... )
+                        )
+                );
 }
 
 template< typename ... A >
 inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
 {
     ::fwCore::mt::ReadLock lock(this->m_workerMutex);
-    SlotBase::VoidSharedFutureType ufuture;
-    ufuture = this->asyncRun(m_worker, args...);
-    return ufuture;
+
+    if(!this->m_worker)
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
+    }
+
+
+    return postWeakCall< void >(
+                m_worker,
+                ::fwCom::util::weakcall(
+                        this->shared_from_this(),
+                        this->bindRun( args... ),
+                        this->m_workerMutex
+                        )
+                );
+
+}
+
+
+
+// Copied from fwThread::Worker because of issues with gcc 4.2 and template
+// keyword
+template< typename ... A >
+template< typename R, typename WEAKCALL >
+::boost::shared_future< R > SlotRun< void (A...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+{
+    ::boost::packaged_task< R > task( f );
+    ::boost::unique_future< R > ufuture = task.get_future();
+
+    ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
+
+    worker->post(ftask);
+
+    return ::boost::move(ufuture);
 }
 
 

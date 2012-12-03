@@ -4,6 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/thread/future.hpp>
+
+#include <fwThread/TaskHandler.hpp>
+
+
 namespace fwThread
 {
 
@@ -13,6 +18,19 @@ void Worker::post(Handler handler)
     m_ioService.post(handler);
 }
 
+
+template< typename R, typename TASK >
+::boost::shared_future< R > Worker::postTask(TASK f)
+{
+    ::boost::packaged_task< R > task( f );
+    ::boost::unique_future< R > ufuture = task.get_future();
+
+    ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
+
+    m_ioService.post(ftask);
+
+    return ::boost::move(ufuture);
+}
 
 } //namespace fwThread
 

@@ -54,8 +54,12 @@ public:
     FWTHREAD_API void stop();
 
     /// Requests the m_ioService to invoke on the worker thread the given handler and return immediately.
-    template< typename Handler>
+    template< typename Handler >
     void post(Handler handler);
+
+    /// Requests the m_ioService to invoke on the worker thread the given handler and return immediately.
+    template< typename R, typename TASK >
+    ::boost::shared_future< R > postTask(TASK f);
 
     /// Returns the m_thread id
     FWTHREAD_API ThreadIdType getThreadId() const;

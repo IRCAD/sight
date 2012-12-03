@@ -68,6 +68,9 @@ struct SlotRun< void (A...) > : SlotBase
 
 protected:
 
+    template< typename R, typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the run method within a void() function.
      *

@@ -7,7 +7,9 @@
 #define __FWCOM_SLOTBASE_HPP__
 
 #include <set>
+#include <queue>
 
+#include <boost/foreach.hpp>
 #include <boost/thread/future.hpp>
 
 #ifdef COM_LOG
@@ -72,8 +74,8 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /// Sets Slot's Worker.
     void setWorker(const SPTR(::fwThread::Worker) &worker)
     {
-        SLM_ERROR_IF("Changing worker on the fly is currently not supported", m_worker && worker != m_worker);
         ::fwCore::mt::WriteLock lock(m_workerMutex);
+
         m_worker = worker;
     }
 

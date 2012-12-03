@@ -66,6 +66,10 @@ struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
     virtual SharedFutureType asyncCall( A... args ) const;
 
 protected:
+
+    template< typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the call method within a R() function.
      *

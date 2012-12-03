@@ -70,6 +70,10 @@ struct SlotCall< R ( A1, A2, A3 ) > : SlotRun< void ( A1, A2, A3 ) >
     virtual SharedFutureType asyncCall( A1 args1, A2 args2, A3 args3 ) const;
 
 protected:
+
+    template< typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the call method within a R() function.
      *
@@ -121,6 +125,10 @@ struct SlotCall< R ( A1, A2 ) > : SlotRun< void ( A1, A2 ) >
     virtual SharedFutureType asyncCall( A1 args1, A2 args2 ) const;
 
 protected:
+
+    template< typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the call method within a R() function.
      *
@@ -172,6 +180,10 @@ struct SlotCall< R ( A1 ) > : SlotRun< void ( A1 ) >
     virtual SharedFutureType asyncCall( A1 args1 ) const;
 
 protected:
+
+    template< typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the call method within a R() function.
      *
@@ -223,6 +235,10 @@ struct SlotCall< R () > : SlotRun< void () >
     virtual SharedFutureType asyncCall() const;
 
 protected:
+
+    template< typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the call method within a R() function.
      *
@@ -279,6 +295,10 @@ struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
     virtual SharedFutureType asyncCall( A... args ) const;
 
 protected:
+
+    template< typename WEAKCALL >
+    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+
     /**
      * @brief Binds the given parameters to the call method within a R() function.
      *

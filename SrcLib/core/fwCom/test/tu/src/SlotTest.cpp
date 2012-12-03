@@ -12,6 +12,8 @@
 
 #include <fwThread/Worker.hpp>
 
+#include <fwCore/mt/types.hpp>
+
 #include "fwCom/exception/BadCall.hpp"
 #include "fwCom/exception/BadRun.hpp"
 #include "fwCom/exception/NoWorker.hpp"
@@ -36,8 +38,8 @@ namespace ut
 void SlotTest::setUp()
 {
     // Set up context before running a test.
-
 }
+
 void SlotTest::tearDown()
 {
     // Clean up after the test run.
@@ -131,7 +133,6 @@ void SlotTest::buildTest ()
 
 //-----------------------------------------------------------------------------
 
-
 void SlotTest::runTest ()
 {
     A a;
@@ -154,7 +155,6 @@ void SlotTest::runTest ()
 }
 //-----------------------------------------------------------------------------
 
-
 void SlotTest::callTest ()
 {
     A a;
@@ -171,7 +171,6 @@ void SlotTest::callTest ()
 }
 
 //-----------------------------------------------------------------------------
-
 
 void SlotTest::asyncTest ()
 {
@@ -325,5 +324,90 @@ void SlotTest::exceptionTest ()
 
 //-----------------------------------------------------------------------------
 
+struct B
+{
+    B() : m_threadId()
+    {
+    }
+
+    ::boost::thread::id waitSeconds(const unsigned int nbSeconds)
+    {
+        ::fwCore::mt::WriteLock lock(m_mutex);
+        ::boost::thread::id oldId = m_threadId;
+        m_threadId = ::boost::this_thread::get_id();
+
+        ::boost::this_thread::sleep( ::boost::posix_time::seconds(nbSeconds));
+
+        return oldId;
+    }
+
+    ::boost::thread::id m_threadId;
+
+    ::fwCore::mt::ReadWriteMutex m_mutex;
+};
+
+
+void SlotTest::workerSwapTest()
+{
+    {
+        typedef ::boost::thread::id Signature(const unsigned int);
+
+        B b;
+
+        ::fwThread::Worker::sptr w1 = ::fwThread::Worker::New();
+        ::fwThread::Worker::sptr w2 = ::fwThread::Worker::New();
+
+        ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
+
+        CPPUNIT_ASSERT(b.m_threadId == ::boost::thread::id());
+
+        m0->setWorker(w1);
+        ::fwCom::Slot< Signature >::VoidSharedFutureType future1 = m0->asyncRun(1);
+
+        m0->setWorker(w2);
+        future1.wait();
+        CPPUNIT_ASSERT(b.m_threadId == w1->getThreadId());
+
+        ::fwCom::Slot< Signature >::VoidSharedFutureType future2 = m0->asyncRun(1);
+
+        future2.wait();
+
+        CPPUNIT_ASSERT(b.m_threadId == w2->getThreadId());
+    }
+
+
+    {
+        typedef ::boost::thread::id Signature(const unsigned int);
+
+        B b;
+
+        ::fwThread::Worker::sptr w1 = ::fwThread::Worker::New();
+        ::fwThread::Worker::sptr w2 = ::fwThread::Worker::New();
+
+        ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
+
+        CPPUNIT_ASSERT(b.m_threadId == ::boost::thread::id());
+
+        m0->setWorker(w1);
+        ::fwCom::Slot< Signature >::SharedFutureType future1 = m0->asyncCall(1);
+
+        m0->setWorker(w2);
+        future1.wait();
+        CPPUNIT_ASSERT(b.m_threadId == w1->getThreadId());
+
+        ::fwCom::Slot< Signature >::SharedFutureType future2 = m0->asyncCall(1);
+
+        future2.wait();
+
+        CPPUNIT_ASSERT(b.m_threadId == w2->getThreadId());
+        CPPUNIT_ASSERT(future1.get() == ::boost::thread::id());
+        CPPUNIT_ASSERT(future2.get() == w1->getThreadId());
+
+    }
+
+}
+
 } //namespace ut
+
 } //namespace fwCom
+
