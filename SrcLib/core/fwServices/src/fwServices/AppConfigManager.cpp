@@ -6,6 +6,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 #include <fwRuntime/operations.hpp>
 
@@ -44,7 +45,9 @@ namespace fwServices
 
     if (::boost::get<1>(uid))
     {
+#ifndef COM_LOG
         OSLM_ASSERT("Object already has an UID.", !obj->hasID());
+#endif
 
         OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.",
                       ::fwTools::fwID::exist(::boost::get<0>(uid)));
@@ -116,7 +119,9 @@ namespace fwServices
         srv = srvFactory->create(typestr, ::boost::get<0>(implType));
     }
 
+#ifndef COM_LOG
     OSLM_ASSERT("Service already has an UID.", !srv->hasID());
+#endif
 
     OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.", ::fwTools::fwID::exist(::boost::get<0>(uid)));
     if (::boost::get<1>(uid))
@@ -170,15 +175,18 @@ void AppConfigManager::stopConnections()
 
 void AppConfigManager::stopStartedServices()
 {
+    std::vector< ::fwServices::IService::SharedFutureType > futures;
+
     BOOST_REVERSE_FOREACH(::fwServices::IService::wptr w_srv, m_startedSrv)
     {
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
         ::fwServices::IService::sptr srv = w_srv.lock();
         OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
-        srv->stop();
+        futures.push_back(srv->stop());
     }
     m_startedSrv.clear();
+    ::boost::wait_for_all(futures.begin(), futures.end());
 }
 
 // ------------------------------------------------------------------------
@@ -200,6 +208,8 @@ void AppConfigManager::destroyCreatedServices()
 
 void AppConfigManager::processStartItems()
 {
+    std::vector< ::fwServices::IService::SharedFutureType > futures;
+
     BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
     {
         if (elem->getName() == "start")
@@ -217,16 +227,19 @@ void AppConfigManager::processStartItems()
 
             OSLM_ASSERT("No service registered with UID \"" << uid << "\".", srv);
 
-            srv->start();
+            futures.push_back(srv->start());
             m_startedSrv.push_back(srv);
         }
     }
+    ::boost::wait_for_all(futures.begin(), futures.end());
 }
 
 // ------------------------------------------------------------------------
 
 void AppConfigManager::processUpdateItems()
 {
+    std::vector< ::fwServices::IService::SharedFutureType > futures;
+
     BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
     {
         if (elem->getName() == "update")
@@ -242,7 +255,7 @@ void AppConfigManager::processUpdateItems()
 
                 BOOST_FOREACH(::fwServices::IService::sptr srv, servicesToUpdate)
                 {
-                    srv->update();
+                    futures.push_back(srv->update());
                 }
             }
             else
@@ -252,10 +265,12 @@ void AppConfigManager::processUpdateItems()
 
                 OSLM_ASSERT("Service with UID \"" << uid << "\" doesn't exist.", ::fwTools::fwID::exist(uid));
 
-                ::fwServices::get(uid)->update();
+                futures.push_back(::fwServices::get(uid)->update());
             }
         }
     }
+
+    ::boost::wait_for_all(futures.begin(), futures.end());
 }
 
 // ------------------------------------------------------------------------
@@ -487,6 +502,7 @@ void AppConfigManager::create()
     SLM_ASSERT("Manager already running.", m_state == STATE_DESTROYED);
     m_configuredObject = this->createObject();
     this->createServices();
+    this->createConnections();
 
     m_state = STATE_CREATED;
 }
@@ -562,5 +578,73 @@ void AppConfigManager::stopAndDestroy()
     this->stop();
     this->destroy();
 }
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::createConnections()
+{
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  m_cfgElem->getElements())
+    {
+        if (elem->getName() == "connect")
+        {
+            this->createConnection(elem);
+        }
+    }
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::createConnection(::fwRuntime::ConfigurationElement::csptr connectionCfg)
+{
+    typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
+    typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
+    typedef std::vector< SlotInfoType > SlotInfoContainerType;
+
+    SignalInfoType signalInfo;
+    SlotInfoContainerType slotInfos;
+
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  connectionCfg->getElements())
+    {
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+                        !uid.empty() && !key.empty());
+
+            if (elem->getName() == "signal")
+            {
+                SLM_ASSERT("There must be only one signal by connection",
+                           signalInfo.first.empty() && signalInfo.second.empty());
+                signalInfo = std::make_pair(uid, key);
+            }
+            else if (elem->getName() == "slot")
+            {
+                slotInfos.push_back( std::make_pair(uid, key) );
+            }
+
+        }
+    }
+
+    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalInfo.first);
+    ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+
+
+    BOOST_FOREACH(SlotInfoType slotInfo,  slotInfos)
+    {
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
+        ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+
+        m_connections->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
+    }
+}
+
 
 }

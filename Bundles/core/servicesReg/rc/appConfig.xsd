@@ -49,6 +49,7 @@
             <xs:element name="item"  type="ItemType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="node"  type="NodeType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="edge"  type="EdgeType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="connect"  type="ConnectionType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
             <!-- <xs:element name="stop" minOccurs="0" maxOccurs="0" /> -->
@@ -77,6 +78,14 @@
         <xs:attribute name='implementation' type='xs:string' use="required" />
         <xs:attribute name='autoComChannel' type='ComChannelType' />
         <xs:attribute name='priority' type='xs:string' />
+    </xs:complexType>
+    
+        <!-- Connection Type -->
+    <xs:complexType name="ConnectionType">
+        <xs:sequence>
+            <xs:element name="signal"  type="xs:string"  minOccurs="1" maxOccurs="1" />
+            <xs:element name="slot"  type="xs:string"  minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
     </xs:complexType>
 
     <!-- Start/Update/stop Type -->
