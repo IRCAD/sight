@@ -12,9 +12,12 @@
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
+
+#include <fwTest/Exception.hpp>
 
 #include "ConfigParserTest.hpp"
 #include "CompositeMessageTest.hpp"
@@ -26,6 +29,8 @@ namespace fwComEd
 {
 namespace ut
 {
+
+static ::fwTest::Exception fwTestException(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 
@@ -45,6 +50,9 @@ void CompositeMessageTest::tearDown()
 
 void CompositeMessageTest::testCompositeMessage()
 {
+    ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
+    activeWorkers->initRegistry();
+
     const std::string objAUUID = "imageUUID";
     const std::string service1UUID = "myTestService1";
     const std::string service2UUID = "myTestService2";
@@ -76,8 +84,9 @@ void CompositeMessageTest::testCompositeMessage()
     CPPUNIT_ASSERT(serviceCompo2->isStarted());
 
     // register communication channel
-    ::fwServices::registerCommunicationChannel(compo, serviceCompo)->start();
-    ::fwServices::registerCommunicationChannel(compo, serviceCompo2)->start();
+    ::fwServices::helper::SigSlotConnection::NewSptr helper;
+    helper->connect( compo, serviceCompo, serviceCompo->getObjSrvConnections() );
+    helper->connect( compo, serviceCompo2, serviceCompo2->getObjSrvConnections() );
 
     // notify message
     std::vector< std::string > modifiedFields;
@@ -85,6 +94,9 @@ void CompositeMessageTest::testCompositeMessage()
     ::fwComEd::CompositeMsg::NewSptr compoMsg;
     compoMsg->addModifiedKeysEvent(modifiedFields);
     ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
+
+    // Wait a little notification system
+    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
 
     // test message is received
     CPPUNIT_ASSERT(serviceCompo->getIsUpdatedMessage());
@@ -100,77 +112,13 @@ void CompositeMessageTest::testCompositeMessage()
     CPPUNIT_ASSERT(std::find(vModifiedFields.begin(), vModifiedFields.end(),objAUUID) != vModifiedFields.end());
 
     // unregister communication channel
-    ::fwServices::unregisterCommunicationChannel( compo , serviceCompo );
-    ::fwServices::unregisterCommunicationChannel(compo, serviceCompo2);
+    helper->disconnect();
+    helper.reset();
 
     // stop services
     configManager->stopAndDestroy();
-}
 
-//------------------------------------------------------------------------------
-
-void CompositeMessageTest::testMessageNotification()
-{
-    const std::string objAUUID = "imageUUID";
-    const std::string ImageServiceUUID = "myImageService";
-    const std::string ImageService2UUID = "myImageService2";
-
-    ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildConfig() ;
-    // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager::NewSptr configManager;
-    configManager->setConfig( config );
-    configManager->create();
-    ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
-
-    ::fwComEd::ut::TestService::sptr serviceCompo;
-    serviceCompo = ::fwComEd::ut::TestService::dynamicCast( ::fwServices::add(compo, "::fwComEd::ut::TestService", "::fwComEd::ut::TestServiceImplementationComposite") );
-    CPPUNIT_ASSERT(serviceCompo);
-
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
-    ::fwComEd::ut::TestService::sptr serviceImage;
-    serviceImage = ::fwComEd::ut::TestService::dynamicCast( ::fwServices::add(image, "::fwComEd::ut::TestService", "::fwComEd::ut::TestServiceImplementationImage", ImageServiceUUID) );
-    CPPUNIT_ASSERT(serviceImage);
-
-    ::fwComEd::ut::TestService::sptr serviceImage2;
-    serviceImage2 = ::fwComEd::ut::TestService::dynamicCast( ::fwServices::add(image, "::fwComEd::ut::TestService", "::fwComEd::ut::TestServiceImplementationImage", ImageService2UUID) );
-    CPPUNIT_ASSERT(serviceImage2);
-
-
-    // start services
-    configManager->start();
-    serviceImage->start();
-    serviceImage2->start();
-
-    // start communication channel
-    ::fwServices::registerCommunicationChannel(image, serviceImage)->start();
-    ::fwServices::registerCommunicationChannel(image, serviceImage2)->start();
-    ::fwServices::registerCommunicationChannel(compo, serviceCompo)->start();
-
-    // notify message
-    ::fwComEd::ImageMsg::sptr imgMsg = ::fwComEd::ImageMsg::New();
-    imgMsg->addEvent(::fwComEd::ImageMsg::SLICE_INDEX);
-
-    ::fwServices::IEditionService::notify(serviceImage, image, imgMsg);
-
-    // test receiving message
-    CPPUNIT_ASSERT(serviceCompo->getIsUpdatedMessage());
-    CPPUNIT_ASSERT(serviceImage2->getIsUpdatedMessage());
-
-    ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::dynamicCast(serviceCompo->getMessage());
-    CPPUNIT_ASSERT(compositeMsg);
-
-    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::dynamicCast(serviceImage2->getMessage());
-    CPPUNIT_ASSERT(imageMsg);
-    CPPUNIT_ASSERT_EQUAL(imgMsg, imageMsg);
-
-    // stop services
-    ::fwServices::unregisterCommunicationChannel(image, serviceImage);
-    ::fwServices::unregisterCommunicationChannel(image, serviceImage2);
-    ::fwServices::unregisterCommunicationChannel(compo, serviceCompo);
-
-    serviceImage->stop();
-    serviceImage2->stop();
-    configManager->stopAndDestroy();
+    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
