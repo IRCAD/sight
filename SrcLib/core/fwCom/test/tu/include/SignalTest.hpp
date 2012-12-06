@@ -25,6 +25,7 @@ class SignalTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( blockTest );
     CPPUNIT_TEST( argumentLossTest );
     CPPUNIT_TEST( asyncEmitTest );
+    CPPUNIT_TEST( asyncArgumentLossTest );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -40,6 +41,7 @@ public:
     void blockTest();
     void argumentLossTest();
     void asyncEmitTest ();
+    void asyncArgumentLossTest();
 };
 
 } //namespace ut

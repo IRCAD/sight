@@ -431,6 +431,51 @@ void SignalTest::argumentLossTest()
     CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
 }
 
+
+
+//-----------------------------------------------------------------------------
+
+void SignalTest::asyncArgumentLossTest()
+{
+    typedef void Signature(float, double, std::string);
+    SignalTestClass testObject;
+
+    ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
+
+    ::fwCom::Slot< void() >::sptr slot0
+        = ::fwCom::newSlot(&SignalTestClass::method0, &testObject);
+    ::fwCom::Slot< float(float) >::sptr slot1
+        = ::fwCom::newSlot(&SignalTestClass::method1, &testObject);
+    ::fwCom::Slot< float(float, double, std::string) >::sptr slot3
+        = ::fwCom::newSlot(&SignalTestClass::method3, &testObject);
+
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    slot0->setWorker(worker);
+    slot1->setWorker(worker);
+    slot3->setWorker(worker);
+
+    sig->connect(slot0);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
+
+    sig->connect(slot1);
+    CPPUNIT_ASSERT_EQUAL((size_t)2, sig->getNumberOfConnections());
+
+    sig->connect(slot3);
+    CPPUNIT_ASSERT_EQUAL((size_t)3, sig->getNumberOfConnections());
+
+    sig->asyncEmit(21.0f, 42.0, "asyncEmit");
+
+    ::boost::this_thread::sleep(::boost::posix_time::milliseconds(100));
+
+    CPPUNIT_ASSERT(testObject.m_method0);
+    CPPUNIT_ASSERT(testObject.m_method1);
+    CPPUNIT_ASSERT(testObject.m_method3);
+
+
+    sig->disconnectAll();
+    CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
+}
+
 //-----------------------------------------------------------------------------
 
 void SignalTest::blockTest()
