@@ -69,13 +69,13 @@ void OrganListEditor::starting() throw(::fwTools::Failed)
     m_organChoice = new QListWidget() ;
 
     layout->addWidget( m_showCheckBox, 0 );
-    layout->addWidget( m_organChoice, 1);
+    layout->addWidget( m_organChoice, 1 );
 
     container->setLayout( layout );
 
     QObject::connect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
     QObject::connect(m_organChoice, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(onOrganChoiceVisibility(QListWidgetItem *)));
-    QObject::connect(m_organChoice, SIGNAL(itemSelectionChanged()), this, SLOT(onOrganChoiceSelection()));
+    QObject::connect(m_organChoice, SIGNAL(currentItemChanged ( QListWidgetItem *, QListWidgetItem * )), this, SLOT(onCurrentItemChanged ( QListWidgetItem * , QListWidgetItem * )));
     this->updating();
 }
 
@@ -86,7 +86,7 @@ void OrganListEditor::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
     QObject::disconnect(m_organChoice, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(onOrganChoiceVisibility(QListWidgetItem *)));
-    QObject::disconnect(m_organChoice, SIGNAL(itemSelectionChanged()), this, SLOT(onOrganChoiceSelection()));
+    QObject::disconnect(m_organChoice, SIGNAL(currentItemChanged ( QListWidgetItem *, QListWidgetItem * )), this, SLOT(onCurrentItemChanged ( QListWidgetItem * , QListWidgetItem * )));
 
     this->getContainer()->clean();
     this->destroy();
@@ -177,29 +177,21 @@ void OrganListEditor::updateReconstructions()
 
 //------------------------------------------------------------------------------
 
-void OrganListEditor::onOrganChoiceSelection()
+void OrganListEditor::onCurrentItemChanged( QListWidgetItem * current, QListWidgetItem * previous )
 {
-    this->notifyOrganChoiceSelection();
-}
+    SLM_ASSERT( "Current selected item is null", current );
 
-//------------------------------------------------------------------------------
+    QListWidgetItem * currentItem = m_organChoice->currentItem();
+    std::string organSelected = currentItem->text().toStdString();
 
-void OrganListEditor::notifyOrganChoiceSelection()
-{
-    QListWidgetItem *currentItem = m_organChoice->currentItem();
-    if(currentItem)
+    if( m_map.find(organSelected) != m_map.end() )
     {
-        std::string organSelected = currentItem->text().toStdString();
+        ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
+        ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
 
-        if(m_map.find(organSelected) != m_map.end())
-        {
-            ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-            ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
-
-            ::fwComEd::AcquisitionMsg::NewSptr msg;
-            msg->addEvent( ::fwComEd::AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) ) ;
-            ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
-        }
+        ::fwComEd::AcquisitionMsg::NewSptr msg;
+        msg->addEvent( ::fwComEd::AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) ) ;
+        ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
     }
 }
 
