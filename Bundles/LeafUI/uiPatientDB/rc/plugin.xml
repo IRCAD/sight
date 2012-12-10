@@ -55,5 +55,11 @@
         <object>::fwData::Object</object>
         <desc>Insert object in PatientDB</desc>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::AnonymisePatient</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
         
 </plugin>
