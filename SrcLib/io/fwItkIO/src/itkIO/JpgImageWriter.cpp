@@ -78,7 +78,7 @@ struct JpgITKSaverFunctor
         // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le reader (voir *3*)
 
         // Reader IO (*1*)
-        typename itk::ImageIOBase::Pointer imageIOWrite = itk::ImageIOFactory::CreateImageIO( "image.png", itk::ImageIOFactory::WriteMode);
+        typename itk::ImageIOBase::Pointer imageIOWrite = itk::ImageIOFactory::CreateImageIO( "image.jpg", itk::ImageIOFactory::WriteMode);
         assert( imageIOWrite.IsNotNull() );
 
         // create writer
