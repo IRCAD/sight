@@ -1,5 +1,4 @@
 # Name;(R,G,B,A);Category(ies);Class;Attachement;NativeExp;NativeExpGeo;AnatomicRegion;PropertyCategory;PropertyType
-World;(0,0,0,100);Body;No_constraint;;;;;;
 Skin;(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body
 Bones;(242,242,217,100);Body;Organ;;;;Bone;Anat_Struct;Bone
 Muscles;(63,0,0,100);Body;Organ;;;;Entire_Body;Anat_Struct;Entire_Body
@@ -172,3 +171,4 @@ Transverse_Colon;(255,179,128,100);Abdomen;Functional;Colon;;;;;
 Left_Colon;(255,179,128,100);Abdomen;Functional;Colon;;;;;
 Table;(255,191,191,100);Other;Environment;;;;;Physic_Object;
 Clothes;(242,242,217,100);Other;Environment;;;;;Physic_Object;T_Clothing
+Lymph_Node;(250,100,255,100);Body;Organ;;;;;;
