@@ -114,7 +114,7 @@ int Plugin::run() throw()
     srvRead->update().wait();
 
     unsigned long long count = 1<<30 ;
-    double d = 42<<42;
+    double d = 4<<2;
 
     OSLM_INFO("Computing " << count << " square roots.");
 

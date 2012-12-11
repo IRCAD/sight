@@ -36,7 +36,7 @@ SIncrementArray::~SIncrementArray() throw()
 void SIncrementArray::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    m_timer = ::fwThread::Timer::New( m_associatedWorker );
+    m_timer = m_associatedWorker->createTimer();
     m_timer->setFunction( ::boost::bind(&SIncrementArray::updating, this) );
     m_timer->setDuration( ::boost::posix_time::milliseconds(m_periodInMillisec) );
 }
