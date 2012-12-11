@@ -15,7 +15,7 @@
 #include "fwServices/Base.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
-
+#include "fwServices/registry/Proxy.hpp"
 #include "fwServices/AppConfigManager.hpp"
 
 namespace fwServices
@@ -589,6 +589,10 @@ void AppConfigManager::createConnections()
         {
             this->createConnection(elem);
         }
+        else if (elem->getName() == "proxy")
+            {
+                this->createProxy(elem);
+            }
     }
 }
 
@@ -643,6 +647,52 @@ void AppConfigManager::createConnection(::fwRuntime::ConfigurationElement::csptr
         ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
 
         m_connections->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
+    }
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::createProxy(::fwRuntime::ConfigurationElement::csptr config)
+{
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+    SLM_ASSERT("Missing 'channel' attribute", config->hasAttribute("channel"));
+    std::string channel = config->getAttributeValue("channel");
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
+    {
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+                        !uid.empty() && !key.empty());
+
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+
+            if (elem->getName() == "signal")
+            {
+                ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::SignalBase::sptr sig = hasSignals->signal(key);
+                proxy->connect(channel, sig);
+
+            }
+            else if (elem->getName() == "slot")
+            {
+                ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::SlotBase::sptr slot = hasSlots->slot(key);
+                proxy->connect(channel, slot);
+            }
+
+        }
+
     }
 }
 

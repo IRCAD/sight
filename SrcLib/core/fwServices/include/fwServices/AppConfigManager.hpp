@@ -152,6 +152,7 @@ protected:
     FWSERVICES_API virtual void bindService(::fwRuntime::ConfigurationElement::csptr srvElem);
     FWSERVICES_API virtual void createConnections();
     FWSERVICES_API virtual void createConnection(::fwRuntime::ConfigurationElement::csptr connectionCfg);
+    FWSERVICES_API virtual void createProxy(::fwRuntime::ConfigurationElement::csptr config);
 };
 
 } // namespace fwServices

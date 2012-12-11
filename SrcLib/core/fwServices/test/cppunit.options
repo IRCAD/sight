@@ -9,6 +9,7 @@ CLASSTEST=[
     'SlotsSignalsTest',
     'SigSlotConnectionTest',
     'SlotsSignalsStuff',
+    'ProxyTest',
     ]
 
 USE = ['boost']
