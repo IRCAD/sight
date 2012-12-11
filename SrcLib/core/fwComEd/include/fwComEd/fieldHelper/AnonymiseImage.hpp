@@ -38,8 +38,13 @@ public:
      * 1400-01-01) and anonymise all his studies.
      *
      * @param[in]   _pPatient   patient to anonymise
+     * @param[in]   name        anonymous patient name, set to "anonymous" by default
+     * @param[in]   firstname   anonymous patient firstname, set to "anonymous" by default
      */
-    FWCOMED_API static void anonymisePatient( ::fwData::Patient::sptr _pPatient);
+    FWCOMED_API static void anonymisePatient(
+            ::fwData::Patient::sptr _pPatient,
+            std::string name = "anonymous",
+            std::string firstname = "anonymous" );
 
     /**
      * @brief   Anonymise each patient in the patientDB.
