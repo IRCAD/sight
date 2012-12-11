@@ -167,7 +167,7 @@ void SignalTest::connectTest()
 
     CPPUNIT_ASSERT(connection.expired());
 
-    // Diconnect
+    // Disconnect
     {
         typedef void Signature();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();

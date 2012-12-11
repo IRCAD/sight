@@ -61,7 +61,7 @@ struct SlotConnection< void ( A1, A2, A3 ) > : SlotConnectionBase
                      const SlotWrapperSptrType &slotWrapper
                     );
 
-    /// Diconnect the related slot.
+    /// Disconnect the related slot.
     void disconnect();
 
     ~SlotConnection();
@@ -86,13 +86,13 @@ protected:
     void connectNoLock();
 
 
-    /// *NOT THREAD SAFE* Diconnect the related signal.
+    /// *NOT THREAD SAFE* Disconnect the related signal.
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot.
+    /// *NOT THREAD SAFE* Disconnect the related slot.
     void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    /// *NOT THREAD SAFE* Disconnect the related slot and signal.
     void disconnectWeakLock();
 
     /**
@@ -157,7 +157,7 @@ struct SlotConnection< void ( A1, A2 ) > : SlotConnectionBase
                      const SlotWrapperSptrType &slotWrapper
                     );
 
-    /// Diconnect the related slot.
+    /// Disconnect the related slot.
     void disconnect();
 
     ~SlotConnection();
@@ -182,13 +182,13 @@ protected:
     void connectNoLock();
 
 
-    /// *NOT THREAD SAFE* Diconnect the related signal.
+    /// *NOT THREAD SAFE* Disconnect the related signal.
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot.
+    /// *NOT THREAD SAFE* Disconnect the related slot.
     void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    /// *NOT THREAD SAFE* Disconnect the related slot and signal.
     void disconnectWeakLock();
 
     /**
@@ -253,7 +253,7 @@ struct SlotConnection< void ( A1 ) > : SlotConnectionBase
                      const SlotWrapperSptrType &slotWrapper
                     );
 
-    /// Diconnect the related slot.
+    /// Disconnect the related slot.
     void disconnect();
 
     ~SlotConnection();
@@ -278,13 +278,13 @@ protected:
     void connectNoLock();
 
 
-    /// *NOT THREAD SAFE* Diconnect the related signal.
+    /// *NOT THREAD SAFE* Disconnect the related signal.
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot.
+    /// *NOT THREAD SAFE* Disconnect the related slot.
     void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    /// *NOT THREAD SAFE* Disconnect the related slot and signal.
     void disconnectWeakLock();
 
     /**
@@ -349,7 +349,7 @@ struct SlotConnection< void () > : SlotConnectionBase
                      const SlotWrapperSptrType &slotWrapper
                     );
 
-    /// Diconnect the related slot.
+    /// Disconnect the related slot.
     void disconnect();
 
     ~SlotConnection();
@@ -374,13 +374,13 @@ protected:
     void connectNoLock();
 
 
-    /// *NOT THREAD SAFE* Diconnect the related signal.
+    /// *NOT THREAD SAFE* Disconnect the related signal.
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot.
+    /// *NOT THREAD SAFE* Disconnect the related slot.
     void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    /// *NOT THREAD SAFE* Disconnect the related slot and signal.
     void disconnectWeakLock();
 
     /**
@@ -450,7 +450,7 @@ struct SlotConnection< void (A...) > : SlotConnectionBase
                      const SlotWrapperSptrType &slotWrapper
                     );
 
-    /// Diconnect the related slot.
+    /// Disconnect the related slot.
     void disconnect();
 
     ~SlotConnection();
@@ -475,13 +475,13 @@ protected:
     void connectNoLock();
 
 
-    /// *NOT THREAD SAFE* Diconnect the related signal.
+    /// *NOT THREAD SAFE* Disconnect the related signal.
     void disconnectSignalNoLock(const SignalSptrType &sig);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot.
+    /// *NOT THREAD SAFE* Disconnect the related slot.
     void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
-    /// *NOT THREAD SAFE* Diconnect the related slot and signal.
+    /// *NOT THREAD SAFE* Disconnect the related slot and signal.
     void disconnectWeakLock();
 
     /**
