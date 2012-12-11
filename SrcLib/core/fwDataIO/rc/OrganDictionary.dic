@@ -1,4 +1,5 @@
 # Name;(R,G,B,A);Category(ies);Class;Attachement;NativeExp;NativeExpGeo;AnatomicRegion;PropertyCategory;PropertyType
+World;(0,0,0,100);Body;No_constraint;;;;;;
 Skin;(255,179,140,100);Body;Environment;;;;Entire_Body;Anat_Struct;Entire_Body
 Bones;(242,242,217,100);Body;Organ;;;;Bone;Anat_Struct;Bone
 Muscles;(63,0,0,100);Body;Organ;;;;Entire_Body;Anat_Struct;Entire_Body
@@ -102,6 +103,18 @@ Segment_6;(255,255,128,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
 Segment_7;(188,255,188,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
 Segment_8;(255,65,0,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
 Segment_9;(128,0,0,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_4a;(255,0,255,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_4b;(180,0,180,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_4c;(203,97,255,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_4d;(125,60,158,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_5a;(255,128,255,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_5b;(255,194,39,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_5c;(203,161,34,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_5d;(235,255,8,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_8a;(255,65,0,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_8b;(255,115,69,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_8c;(173,43,0,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
+Segment_8d;(213,92,5,100);Liver_segments;Functional;Liver;;;Liver;;T_Liver
 Bladder;(255,255,150,100);Pelvis;Organ;;;;Bladder;Anat_Struct;Bladder
 Bladder_Tumor;(0,179,0,100);Pelvis;Lesion;Bladder;;;;Altered_Struct;
 Urethra;(255,255,190,100);Pelvis;Organ;;;;;Anat_Struct;
