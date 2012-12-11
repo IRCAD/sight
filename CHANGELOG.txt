@@ -1,6 +1,55 @@
+=== fw4spl_0.9.1.0 ( diff from fw4spl_0.9.0.2 ) 29/11/2012 ===
+
+ * Thread :
+  * Created new fwThread library that provides few tools to execute asynchronous tasks on different threads.
+  * Created fwThread::Worker. This class creates and manages a thread. Thanks to the post method it is possible to execute handlers on.
+  * Created fwThread::TaskHandler. This class encapsulates packaged task and it is used to post easily a task on a worker
+  * Created fwThread::Timer. The Timer class provides single-shot or repetitive timers. A Timer triggers a function once after a delay, or periodically, inside the worker loop. The delay or the period is defined by the duration attribute.
+
+ * Communication :
+  * Added new fwCom library. This library provides a set of tools dedicated to communication. These communications are based on Signal and slots concept (http://en.wikipedia.org/wiki/Signals_and_slots). fwCom provides the following features :
+   * function and method wrapping
+   * direct slot calling
+   * asynchronous slot calling
+   * ability to work with multiple threads
+   * auto-deconnection of slot and signals
+   * arguments loss between slots and signals
+  * fwCom::Slot is wrappers for a function or a class method that can be attached to a fwThread::Worker. The purpose of this class is to provide synchronous and asynchronous mecanisms for method and function calling.
+  * fwCom::Slots is a structure that contains a mapping between a key and a Slot
+  * fwCom::HasSlots manages a fwCom::Slots
+  * fwCom::Signal allows to perform grouped calls on slots.  In this purpose, Signal provides a mechanism to connect slots to itself.
+  * fwCom::Signals is a structure that contains a mapping between a key and a Signal
+  * fwCom::HasSignals manages a fwCom::Signals
+  * The connection of a Slot to a Signal returns a Connection handler. Connection provides a mechanism which allows to temporarily disable a Slot in a Signal. The slot stays connected to the Signal, but it will not be triggered while the Connection is blocked :
+  * Add new xxx.vrdc file that are parsed by a variadic_parser (fwCom/scripts/variadic_parser.py) to generate some hpp/hxx files (manipulation of template).
+
+ * fwData :
+  * Updated Object to inherit of HasSignal
+  * all objects have a signal objectModifiedSig to emit object modification
+
+ * fwServices :
+  * IService :
+   * Updated IService to have an associated worker and thus an associated thread
+   * Updated IService to inherit of HasSignal and HasSlots
+   * Updated IService to remove old communication system
+   * Updated IService to rename update(msg) to receive(msg)
+   * Added slots start, stop, receive, update, swap on IService. If these methods (receive excepted) are not call in thread associated to the service, the slot version is called.
+   * Add IService::getObjSrvConnections method to propose signal/slot connections between a service and his associated object
+  * Add new structure ActiveWorkers to register worker in f4s
+  * Added macros for notification : fwServicesNotifyMsgMacro and fwServicesBlockAndNotifyMsgMacro
+  * Modify IEditionService::notify to use this macros.
+
+ * Log :
+  * Add fwID::getLightId method used for log
+  * Initialized spylog in fwTest, to enable logs within unit tests
+  * Add communication info message, messages are enable if you define COM_LOG when you compiling f4s
+
+ * Tutorials :
+  * Create new tutorial Tuto15MultithreadCtrl that contains a few multithread examples.
+
 === fw4spl_0.9.0.2 ( diff from fw4spl_0.9.0.1 ) 02/11/2012 ===
 
- * General
+ * General :
   * renamed fwMetaData library to fwAtoms
   * few fixes, refactoring
 
