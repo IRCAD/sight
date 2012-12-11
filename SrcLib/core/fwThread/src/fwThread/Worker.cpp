@@ -16,44 +16,25 @@ ThreadIdType getCurrentThreadId()
     return ::boost::this_thread::get_id();
 }
 
-void WorkerThread( ::boost::asio::io_service & io_service )
-{
-    OSLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
-    io_service.run();
-    OSLM_TRACE("Thread " << getCurrentThreadId() <<" Finish");
-}
-
-Worker::Worker(): m_ioService(),
-    m_work( ::boost::make_shared< WorkType >(::boost::ref(m_ioService)) ),
-    m_thread( ::boost::bind(&WorkerThread, ::boost::ref(m_ioService)) )
+Worker::Worker()
 {
 }
 
 Worker::~Worker()
 {
-    if(!m_ioService.stopped())
-    {
-        this->stop();
-    }
 }
 
 void Worker::stop()
 {
-    m_work.reset();
-    m_thread.join();
+    m_thread->join();
 }
 
 ThreadIdType Worker::getThreadId() const
 {
-    return m_thread.get_id();
+    return m_thread->get_id();
 }
 
-Worker::Worker( const Worker& )
-{}
 
-Worker& Worker::operator=( const Worker& )
-{
-    return *this;
-}
+//SPTR(Worker) Worker::defaultFactory() => WorkerAsio.cpp
 
 } //namespace fwThread

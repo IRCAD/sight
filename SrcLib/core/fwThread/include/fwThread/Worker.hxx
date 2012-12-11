@@ -12,13 +12,6 @@
 namespace fwThread
 {
 
-template< typename Handler>
-void Worker::post(Handler handler)
-{
-    m_ioService.post(handler);
-}
-
-
 template< typename R, typename TASK >
 ::boost::shared_future< R > Worker::postTask(TASK f)
 {
@@ -27,7 +20,7 @@ template< typename R, typename TASK >
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
-    m_ioService.post(ftask);
+    this->post(ftask);
 
     return ::boost::move(ufuture);
 }

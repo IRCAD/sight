@@ -116,7 +116,7 @@ void WorkerTest::timerTest()
     handler.setWorkerId(worker->getThreadId());
 
 
-    ::fwThread::Timer::sptr timer = ::fwThread::Timer::New(worker);
+    ::fwThread::Timer::sptr timer = worker->createTimer();
 
     ::boost::posix_time::time_duration duration = ::boost::posix_time::milliseconds(100) ;
 

@@ -64,6 +64,9 @@ void TaskHandlerTest::basicTest()
     worker->post(f);
     worker->post(f2);
 
+    CPPUNIT_ASSERT( !future.is_ready() );
+    CPPUNIT_ASSERT( !future2.is_ready() );
+
     future.wait();
     CPPUNIT_ASSERT( future.is_ready() );
     CPPUNIT_ASSERT( future.has_value() );
@@ -87,6 +90,9 @@ void TaskHandlerTest::basicTest()
 
     worker->post(f3);
     worker->post(f4);
+
+    CPPUNIT_ASSERT( !future3.is_ready() );
+    CPPUNIT_ASSERT( !future4.is_ready() );
 
     worker->stop();
 

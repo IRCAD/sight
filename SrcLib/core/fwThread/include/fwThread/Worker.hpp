@@ -24,12 +24,12 @@ typedef ::boost::thread::id ThreadIdType;
 /// Returns the current thread id
 FWTHREAD_API ThreadIdType getCurrentThreadId();
 
-
+class Timer;
 
 /**
  * @class   Worker.
- * @brief   This class creates and manages a thread. Thanks to the post method it is possible to execute handlers on
- * this thread.
+ * @brief   This class creates and manages a thread.
+ * Thanks to the post method it is possible to execute handlers on this thread.
  *
  * @author IRCAD (Research and Development Team).
  * @date   2012.
@@ -37,12 +37,10 @@ FWTHREAD_API ThreadIdType getCurrentThreadId();
 class FWTHREAD_CLASS_API Worker : public ::fwCore::BaseObject
 {
 public:
-    typedef ::boost::asio::io_service IOServiceType;
-    typedef ::boost::asio::io_service::work WorkType;
-    typedef ::boost::shared_ptr< WorkType > WorkPtrType;
-    typedef ::boost::thread ThreadType;
+    typedef ::boost::thread             ThreadType;
+    typedef ::boost::function< void() > HandlerType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Worker)(::fwCore::BaseObject), (()), ::boost::make_shared< Worker > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Worker)(::fwCore::BaseObject), (()), defaultFactory );
 
     /// Constructor: creates thread dedicated to his m_ioService
     FWTHREAD_API Worker();
@@ -51,22 +49,25 @@ public:
     FWTHREAD_API virtual ~Worker();
 
     /// Stops his m_ioService
-    FWTHREAD_API void stop();
+    FWTHREAD_API virtual void stop();
 
-    /// Requests the m_ioService to invoke on the worker thread the given handler and return immediately.
-    template< typename Handler >
-    void post(Handler handler);
+    /// Requests invocation of the given handler and returns immediately.
+    virtual void post(HandlerType handler) = 0;
 
-    /// Requests the m_ioService to invoke on the worker thread the given handler and return immediately.
+    /// Requests invocation of the given task and returns a shared future immediately.
     template< typename R, typename TASK >
     ::boost::shared_future< R > postTask(TASK f);
 
     /// Returns the m_thread id
     FWTHREAD_API ThreadIdType getThreadId() const;
 
+    FWTHREAD_API virtual SPTR(::fwThread::Timer) createTimer() = 0;
+
 protected:
 
     friend class Timer;
+
+    FWTHREAD_API static SPTR(Worker) defaultFactory();
 
     /// Copy constructor forbidden
     Worker( const Worker& );
@@ -74,14 +75,9 @@ protected:
     /// Copy operator forbidden
     Worker& operator=( const Worker& );
 
-    /// Class provides functionality to manipulate asynchronous tasks.
-    IOServiceType m_ioService;
-
-    /// Class to inform the io_service when it has work to do.
-    WorkPtrType m_work;
-
     /// Thread created and managed by the worker.
-    ThreadType m_thread;
+    SPTR(ThreadType) m_thread;
+
 };
 
 } //namespace fwThread
