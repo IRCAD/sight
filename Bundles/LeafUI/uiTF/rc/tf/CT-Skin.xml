@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive>
-  <protocol version="4" />
+  <protocol version="4"/>
   <content>
-    <TransferFunction id="462d2ffd-bd50-4812-bc02-6c9254a59e3b" class="::fwData::TransferFunction">
-      <level>-258</level>
-      <window>1157</window>
+    <TransferFunction id="ba47fb47-27f0-4b58-beb5-06f4269b4350" class="::fwData::TransferFunction">
+      <level>-327.802</level>
+      <window>1296.6</window>
       <name>CT-Skin</name>
       <isClamped>0</isClamped>
       <interpolationMode>0</interpolationMode>
@@ -19,96 +19,83 @@
         </TFColor>
       </backgroundColor>
       <tfData>
-        <count>14</count>
+        <count>13</count>
         <item_version>0</item_version>
         <item>
-          <first>-837</first>
+          <first>-976.604</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>0</item>
-                <item>0</item>
-                <item>0</item>
-                <item>0</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>0</item>
+              <item>0</item>
+              <item>0</item>
+              <item>-0</item>
             </TFColor>
           </second>
         </item>
         <item>
-          <first>-698</first>
+          <first>-837.604</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>1</item>
-                <item>0.811765</item>
-                <item>0.72549</item>
-                <item>0.20362</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>1</item>
+              <item>1</item>
+              <item>1</item>
+              <item>-1.99493e-017</item>
             </TFColor>
           </second>
         </item>
         <item>
-          <first>-558</first>
+          <first>-745.129</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>0.980392</item>
-                <item>0.678431</item>
-                <item>0.270588</item>
-                <item>0.248869</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>0</item>
+              <item>0</item>
+              <item>0</item>
+              <item>0</item>
             </TFColor>
           </second>
         </item>
         <item>
-          <first>-388</first>
+          <first>-401.218</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>0.501961</item>
-                <item>0</item>
-                <item>0</item>
-                <item>0.237557</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>0</item>
+              <item>0</item>
+              <item>0</item>
+              <item>-0</item>
             </TFColor>
           </second>
         </item>
         <item>
-          <first>-223</first>
+          <first>-297.307</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>0</item>
-                <item>0</item>
-                <item>0</item>
-                <item>0</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>1</item>
+              <item>0.709804</item>
+              <item>0.411765</item>
+              <item>0.500206</item>
             </TFColor>
           </second>
         </item>
         <item>
-          <first>-128</first>
+          <first>-62.297</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>1</item>
-                <item>0.709804</item>
-                <item>0.415686</item>
-                <item>0.271493</item>
-            </TFColor>
-          </second>
-        </item>
-        <item>
-          <first>-92</first>
-          <second>
-            <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>1</item>
-                <item>0.501961</item>
-                <item>0.25098</item>
-                <item>0.303167</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>1</item>
+              <item>0.501961</item>
+              <item>0.247059</item>
+              <item>0.500692</item>
             </TFColor>
           </second>
         </item>
@@ -116,12 +103,12 @@
           <first>1</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>0</item>
-                <item>0</item>
-                <item>0</item>
-                <item>0</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>0</item>
+              <item>0</item>
+              <item>0</item>
+              <item>0</item>
             </TFColor>
           </second>
         </item>
@@ -129,12 +116,12 @@
           <first>36</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>0.501961</item>
-                <item>0</item>
-                <item>0</item>
-                <item>0.187783</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>0.501961</item>
+              <item>0</item>
+              <item>0</item>
+              <item>0.187783</item>
             </TFColor>
           </second>
         </item>
@@ -142,12 +129,12 @@
           <first>76</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>0.619608</item>
-                <item>0.227451</item>
-                <item>0.156863</item>
-                <item>0.395928</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>0.619608</item>
+              <item>0.227451</item>
+              <item>0.156863</item>
+              <item>0.395928</item>
             </TFColor>
           </second>
         </item>
@@ -155,12 +142,12 @@
           <first>120</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>1</item>
-                <item>0.34902</item>
-                <item>0.27451</item>
-                <item>0.556561</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>1</item>
+              <item>0.34902</item>
+              <item>0.27451</item>
+              <item>0.556561</item>
             </TFColor>
           </second>
         </item>
@@ -168,12 +155,12 @@
           <first>177</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>1</item>
-                <item>0</item>
-                <item>0</item>
-                <item>0.710407</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>1</item>
+              <item>0</item>
+              <item>0</item>
+              <item>0.710407</item>
             </TFColor>
           </second>
         </item>
@@ -181,12 +168,12 @@
           <first>221</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>1</item>
-                <item>1</item>
-                <item>0</item>
-                <item>0.79638</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>1</item>
+              <item>1</item>
+              <item>0</item>
+              <item>0.79638</item>
             </TFColor>
           </second>
         </item>
@@ -194,12 +181,12 @@
           <first>320</first>
           <second>
             <TFColor>
-                <count>4</count>
-                <item_version>0</item_version>
-                <item>1</item>
-                <item>1</item>
-                <item>1</item>
-                <item>0.875566</item>
+              <count>4</count>
+              <item_version>0</item_version>
+              <item>1</item>
+              <item>1</item>
+              <item>1</item>
+              <item>0.875566</item>
             </TFColor>
           </second>
         </item>
