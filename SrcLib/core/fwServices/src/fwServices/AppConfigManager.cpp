@@ -16,6 +16,7 @@
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/Proxy.hpp"
+#include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/AppConfigManager.hpp"
 
 namespace fwServices
@@ -415,6 +416,9 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
         ::boost::get<1>(implType) = true;
     }
 
+    // Type
+    std::string workerKey = srvElem->getAttributeValue("worker");
+
     // Config
     ConfigAttribute config("", false);
     if (srvElem->hasAttribute("config"))
@@ -451,6 +455,19 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     ::fwServices::IService::sptr srv = this->getNewService(type, uid, implType);
     ::fwServices::OSR::registerService(m_configuredObject, srv);
     m_createdSrv.push_back(srv);
+
+    if (!workerKey.empty())
+    {
+        ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
+        ::fwThread::Worker::sptr worker;
+        worker = activeWorkers->getWorker(workerKey);
+        if (!worker)
+        {
+            worker = ::fwThread::Worker::New();
+            activeWorkers->addWorker(workerKey, worker);
+        }
+        srv->setWorker(worker);
+    }
 
     // Get service configuration
     ::fwRuntime::ConfigurationElement::csptr cfgElem = srvElem;
