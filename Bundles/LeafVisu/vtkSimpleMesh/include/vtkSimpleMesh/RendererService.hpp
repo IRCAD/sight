@@ -137,7 +137,7 @@ private :
     *
     * This method is used to update the VTK pipeline.
     */
-    void updateVTKPipeline();
+    void updateVTKPipeline(bool resetCamera = true);
 
 
 

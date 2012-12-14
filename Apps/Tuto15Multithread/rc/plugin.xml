@@ -1,0 +1,136 @@
+﻿<plugin id="Tuto15Multithread">
+
+    <requirement id="servicesReg" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>tuto15MultithreadConfig</id>
+        <type>standard</type>
+        <config>
+
+
+            <!-- In tutoComChannel, the main data object type is ::fwData::Mesh. -->
+            <object type="::fwData::Mesh">
+
+                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                    <gui>
+                        <frame>
+                            <name>Tuto15Multithread</name>
+                            <icon>Bundles/Tuto15Multithread_0-1/tuto.ico</icon>
+                            <minSize width="720" height="600" />
+                        </frame>
+                        <menuBar />
+                    </gui>
+                    <registry>
+                        <menuBar sid="myMenuBar" start="yes" />
+                        <view sid="myDefaultView" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+                    <gui>
+                        <layout>
+                            <menu name="File" />
+                            <menu name="Deformation" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menu sid="menu_File" start="yes" />
+                        <menu sid="menu_deformation" start="yes" />
+                    </registry>
+                </service>
+
+                <!-- The application contains three different views. The different views are characterized by their associated service uid. Furthermore, a minimum window height and a width are given to the last two views. -->
+                <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                    <gui>
+                        <layout type="::fwGui::CardinalLayoutManager">
+                            <view caption="Rendering 1" align="center" />
+                            <view caption="Rendering 2" align="right" minWidth="400" minHeight="100" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="myRenderingTuto1" start="yes" />
+                        <view sid="myRenderingTuto2" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+                    <gui>
+                        <layout>
+                            <menuItem name="Open file" shortcut="Ctrl+O" />
+                            <separator />
+                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="action_openFile" start="yes" />
+                        <menuItem sid="action_quit" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="menu_deformation" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+                    <gui>
+                        <layout>
+                            <menuItem name="Start deformation" shortcut="Ctrl+D" />
+                            <menuItem name="Stop deformation" shortcut="Ctrl+F" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="action_startDeformation" start="yes" />
+                        <menuItem sid="action_stopDeformation" start="yes" />
+                    </registry>
+                </service>
+
+
+                <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                    <start uid="myReaderPathFile" />
+                </service>
+
+                <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+
+                <service uid="action_startDeformation" type="::fwGui::IActionSrv" implementation="::gui::action::SSlotCaller" autoComChannel="no">
+                    <slots>
+                        <slot>meshDeformation/startDeformation</slot>
+                    </slots>
+                </service>
+
+                <service uid="action_stopDeformation" type="::fwGui::IActionSrv" implementation="::gui::action::SSlotCaller" autoComChannel="no">
+                    <slots>
+                        <slot>meshDeformation/stopDeformation</slot>
+                    </slots>
+                </service>
+
+                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                    <type mode="reader" />
+                </service>
+
+                <!-- Visualization service for the first window. -->
+                <service uid="myRenderingTuto1" implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" autoComChannel="yes" />
+
+
+                <!-- Visualization service for the second window -->
+                <service uid="myRenderingTuto2" implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" autoComChannel="yes" />
+
+                <!-- Mesh deformation service. -->
+                <service uid="meshDeformation" implementation="::vtkSimpleMesh::SSimpleMeshDeformation" type="::fwServices::IController" autoComChannel="no" worker="DEFORMATION_WORKER" />
+
+
+                <!-- Connect the signal slot of the service to receive the updating of camera position -->
+                <connect>
+                    <signal>myRenderingTuto1/camUpdated</signal>
+                    <slot>myRenderingTuto2/updateCamPosition</slot>
+                </connect>
+
+                <connect>
+                    <signal>myRenderingTuto2/camUpdated</signal>
+                    <slot>myRenderingTuto1/updateCamPosition</slot>
+                </connect>
+
+
+                <start uid="myFrame" />
+                <start uid="meshDeformation" />
+
+            </object>
+
+        </config>
+    </extension>
+</plugin>

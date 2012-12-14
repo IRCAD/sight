@@ -17,6 +17,7 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -107,6 +108,7 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
         myReader->addHandler( progressMeterGUI );
+        ::fwData::mt::ObjectWriteLock lock(_pMesh);
         myReader->read();
     }
     catch (const std::exception & e)

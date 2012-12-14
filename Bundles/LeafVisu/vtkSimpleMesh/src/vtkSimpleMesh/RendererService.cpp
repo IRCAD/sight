@@ -18,6 +18,7 @@
 #include <vtkTransform.h>
 
 #include <fwData/Mesh.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwComEd/CameraMsg.hpp>
 #include <fwComEd/MeshMsg.hpp>
@@ -158,13 +159,18 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
     {
         if(!m_bPipelineIsInit)
         {
-            initVTKPipeline();
+            this->initVTKPipeline();
             m_bPipelineIsInit = true;
         }
         else
         {
-            updateVTKPipeline();
+            this->updateVTKPipeline();
         }
+        m_interactorManager->getInteractor()->Render();
+    }
+    else if ( meshMsg && meshMsg->hasEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED ) )
+    {
+        this->updateVTKPipeline(false);
         m_interactorManager->getInteractor()->Render();
     }
 
@@ -174,8 +180,13 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
 
 void RendererService::initVTKPipeline()
 {
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
     vtkSmartPointer<vtkPolyData> vtk_polyData = vtkSmartPointer<vtkPolyData>::New();
-    ::vtkIO::helper::Mesh::toVTKMesh( this->getObject< ::fwData::Mesh >(), vtk_polyData);
+
+    {
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        ::vtkIO::helper::Mesh::toVTKMesh( mesh, vtk_polyData);
+    }
 
     vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
 
@@ -203,16 +214,23 @@ void RendererService::initVTKPipeline()
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updateVTKPipeline()
+void RendererService::updateVTKPipeline(bool resetCamera)
 {
-    assert(this->getObject< ::fwData::Mesh >());
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
 
     vtkSmartPointer<vtkPolyData> vtk_polyData = vtkSmartPointer<vtkPolyData>::New();
-    ::vtkIO::helper::Mesh::toVTKMesh( this->getObject< ::fwData::Mesh >(), vtk_polyData);
+
+    {
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        ::vtkIO::helper::Mesh::toVTKMesh( mesh, vtk_polyData);
+    }
 
     m_normals->SetInput( vtk_polyData );
 
-    m_render->ResetCamera();
+    if (resetCamera)
+    {
+        m_render->ResetCamera();
+    }
 
 }
 

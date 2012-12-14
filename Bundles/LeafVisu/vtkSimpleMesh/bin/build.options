@@ -9,6 +9,7 @@ LIB     = [
           'fwVtkIO_0-1',
           'fwTools_0-1',
           'fwDataIO_0-2',
+          'fwDataTools_0-1',
           'fwRender_0-1',
           'fwRenderVTK_0-1',
           ]
