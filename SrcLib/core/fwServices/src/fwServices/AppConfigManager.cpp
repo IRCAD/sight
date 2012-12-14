@@ -736,6 +736,7 @@ void AppConfigManager::destroyProxies()
             proxy->disconnect(proxyConnections.m_channel, slot);
         }
     }
+    m_vectProxyCtns.clear();
 }
 
 }

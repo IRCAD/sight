@@ -107,11 +107,11 @@ protected:
         typedef std::pair<UIDType, KeyType> ProxyEltType;
         typedef std::vector<ProxyEltType> ProxyEltVectType;
 
-        const std::string m_channel;
+        std::string m_channel;
         ProxyEltVectType m_slots;
         ProxyEltVectType m_signals;
 
-        ProxyConnections(std::string channel) : m_channel(channel)
+        ProxyConnections(const std::string& channel) : m_channel(channel)
         {}
 
         ~ProxyConnections()
