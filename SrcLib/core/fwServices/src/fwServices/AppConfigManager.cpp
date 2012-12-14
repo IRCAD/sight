@@ -551,6 +551,7 @@ void AppConfigManager::stop()
 {
     SLM_ASSERT("Manager is not started, cannot stop.", m_state == STATE_STARTED);
 
+    this->destroyProxies();
     this->stopConnections();
     m_objectParser->stopConfig();
     this->stopStartedServices();
@@ -607,9 +608,9 @@ void AppConfigManager::createConnections()
             this->createConnection(elem);
         }
         else if (elem->getName() == "proxy")
-            {
-                this->createProxy(elem);
-            }
+        {
+            this->createProxy(elem);
+        }
     }
 }
 
@@ -650,7 +651,6 @@ void AppConfigManager::createConnection(::fwRuntime::ConfigurationElement::csptr
             {
                 slotInfos.push_back( std::make_pair(uid, key) );
             }
-
         }
     }
 
@@ -679,6 +679,7 @@ void AppConfigManager::createProxy(::fwRuntime::ConfigurationElement::csptr conf
 
     SLM_ASSERT("Missing 'channel' attribute", config->hasAttribute("channel"));
     std::string channel = config->getAttributeValue("channel");
+    ProxyConnections proxyCnt(channel);
 
     BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
     {
@@ -699,19 +700,42 @@ void AppConfigManager::createProxy(::fwRuntime::ConfigurationElement::csptr conf
                 ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
                 ::fwCom::SignalBase::sptr sig = hasSignals->signal(key);
                 proxy->connect(channel, sig);
-
+                proxyCnt.addSignalConnection(uid, key);
             }
             else if (elem->getName() == "slot")
             {
                 ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
                 ::fwCom::SlotBase::sptr slot = hasSlots->slot(key);
                 proxy->connect(channel, slot);
+                proxyCnt.addSlotConnection(uid, key);
             }
-
         }
-
     }
+    m_vectProxyCtns.push_back(proxyCnt);
 }
 
+// ------------------------------------------------------------------------
+
+void AppConfigManager::destroyProxies()
+{
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+    BOOST_FOREACH(ProxyConnectionsVectType::value_type proxyConnections,  m_vectProxyCtns)
+    {
+        BOOST_FOREACH(ProxyConnections::ProxyEltType signalElt, proxyConnections.m_signals)
+        {
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalElt.first);
+            ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+            ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
+            proxy->disconnect(proxyConnections.m_channel, sig);
+        }
+        BOOST_FOREACH(ProxyConnections::ProxyEltType slotElt, proxyConnections.m_slots)
+        {
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotElt.first);
+            ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+            ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
+            proxy->disconnect(proxyConnections.m_channel, slot);
+        }
+    }
+}
 
 }

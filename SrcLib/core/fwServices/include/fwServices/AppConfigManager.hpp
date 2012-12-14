@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <string>
+#include <utility>
 
 #include <boost/tuple/tuple.hpp>
 
@@ -99,10 +100,38 @@ public:
     FWSERVICES_API void stopAndDestroy();
 
 protected:
+    struct ProxyConnections
+    {
+        typedef std::string UIDType;
+        typedef std::string KeyType;
+        typedef std::pair<UIDType, KeyType> ProxyEltType;
+        typedef std::vector<ProxyEltType> ProxyEltVectType;
+
+        const std::string m_channel;
+        ProxyEltVectType m_slots;
+        ProxyEltVectType m_signals;
+
+        ProxyConnections(std::string channel) : m_channel(channel)
+        {}
+
+        ~ProxyConnections()
+        {}
+
+        void addSlotConnection(UIDType uid, KeyType key)
+        {
+            m_slots.push_back(std::make_pair(uid, key));
+        }
+        void addSignalConnection(UIDType uid, KeyType key)
+        {
+            m_signals.push_back(std::make_pair(uid, key));
+        }
+    };
+    typedef std::vector<ProxyConnections> ProxyConnectionsVectType;
 
     ::fwData::Object::sptr m_configuredObject;
     ::fwServices::IXMLParser::sptr m_objectParser;
     ::fwRuntime::ConfigurationElement::csptr m_cfgElem;
+    ProxyConnectionsVectType m_vectProxyCtns;
 
     ConfigState m_state;
 
@@ -153,6 +182,7 @@ protected:
     FWSERVICES_API virtual void createConnections();
     FWSERVICES_API virtual void createConnection(::fwRuntime::ConfigurationElement::csptr connectionCfg);
     FWSERVICES_API virtual void createProxy(::fwRuntime::ConfigurationElement::csptr config);
+    FWSERVICES_API virtual void destroyProxies();
 };
 
 } // namespace fwServices
