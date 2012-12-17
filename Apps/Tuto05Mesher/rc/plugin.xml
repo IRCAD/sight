@@ -165,9 +165,7 @@
                         Services associated to the Mesh data :
                         Visualization, reading and writing service creation.
                     -->
-                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes">
-                        <masterSlaveRelation>master</masterSlaveRelation>
-                    </service>
+                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes"/>
 
                     <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathMeshFile" autoComChannel="no">
                         <type mode="reader" />

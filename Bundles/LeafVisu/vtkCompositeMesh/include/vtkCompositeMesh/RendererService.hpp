@@ -44,6 +44,13 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) ) ;
 
+    VTKCOMPOSITEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
+    typedef ::fwCom::Slot<void(const double*, const double*, const double*)> UpdateCamPositionSlotType;
+
+    VTKCOMPOSITEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
+    typedef ::fwCom::Signal< void (const double*, const double*, const double*) > CamUpdatedSignalType;
+
+
     /**
     * @brief    Constructor
     */
@@ -59,8 +66,13 @@ public :
     *
     * This method is used to update the VTK camera position.
     */
-    void updateCamPosition();
+    void notifyCamPositionUpdated();
 
+    /**
+    * @brief Slot to receive message with new camera position. Update camera position.
+    * @param[in] _msg ::fwServices::ObjectMsg::csptr.
+    */
+    VTKCOMPOSITEMESH_API virtual void updateCamPosition(const double positionValue[3], const double focalValue[3], const double viewUpValue[3] );
 
 protected :
 
@@ -104,12 +116,12 @@ protected :
     VTKCOMPOSITEMESH_API virtual void updating() throw(fwTools::Failed);
 
     /**
-    * @brief Updating method (react on data modifications).
+    * @brief Receiving method (react on data modifications).
     * @param[in] _msg ::fwServices::ObjectMsg::csptr.
     *
     * This method is used to update the service.
     */
-    VTKCOMPOSITEMESH_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    VTKCOMPOSITEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// @brief vtk renderer
     vtkRenderer * m_render ;
@@ -155,7 +167,11 @@ private :
 
     vtkCommand* m_loc;
 
-    bool m_isCamMaster;
+    /// Slot to call updateCamPosition method
+    UpdateCamPositionSlotType::sptr m_slotUpdateCamPosition;
+
+    CamUpdatedSignalType::sptr m_sigCamUpdated;
+
 
 };
 

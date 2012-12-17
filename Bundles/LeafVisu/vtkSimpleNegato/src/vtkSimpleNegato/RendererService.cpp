@@ -112,7 +112,7 @@ void RendererService::updating() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
+void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
 {
     // If message is a ImageMsg
     ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg ) ;

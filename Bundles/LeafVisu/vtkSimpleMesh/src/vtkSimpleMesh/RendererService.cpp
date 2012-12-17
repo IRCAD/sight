@@ -18,14 +18,17 @@
 #include <vtkTransform.h>
 
 #include <fwData/Mesh.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwComEd/CameraMsg.hpp>
 #include <fwComEd/MeshMsg.hpp>
 
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <vtkIO/helper/Mesh.hpp>
 #include <vtkIO/vtk.hpp>
@@ -35,9 +38,11 @@
 fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::Mesh );
 
 
-
 namespace vtkSimpleMesh
 {
+
+const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
+const ::fwCom::Signals::SignalKeyType RendererService::s_CAM_UPDATED_SIG = "camUpdated";
 
 class vtkLocalCommand : public vtkCommand
 {
@@ -50,23 +55,18 @@ public:
     }
     void Execute(vtkObject* _caller, unsigned long _event, void* _obj)
     {
-        //OSLM_INFO("ail like to LEFT : _event " << _event );
-
         if (_event == vtkCommand::StartInteractionEvent )
         {
-            //SLM_INFO(" ________________START___________________________");
             this->m_isMousePressed = true;
         }
         else if (_event == vtkCommand::EndInteractionEvent )
         {
-            //SLM_INFO(" ________________END___________________________");
             this->m_isMousePressed = false;
         }
         else if ( (_event == vtkCommand::ModifiedEvent && this->m_isMousePressed)
                 || _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
         {
-            //SLM_INFO(" ______________________________________________");
-            m_service->updateCamPosition();
+            m_service->notifyCamPositionUpdated();
         }
     }
 private:
@@ -75,10 +75,24 @@ private:
 };
 
 RendererService::RendererService() throw()
-: m_render( 0 ), m_bPipelineIsInit(false), m_isCamMaster(false)
+: m_render( 0 ), m_bPipelineIsInit(false)
 {
     //this->addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
     //this->addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
+
+
+    m_slotUpdateCamPosition   = ::fwCom::newSlot( &RendererService::updateCamPosition, this ) ;
+    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT   , m_slotUpdateCamPosition );
+
+    m_sigCamUpdated = CamUpdatedSignalType::New();
+#ifdef COM_LOG
+    m_sigCamUpdated->setID( s_CAM_UPDATED_SIG );
+#endif
+    // Register
+    ::fwCom::HasSignals::m_signals( s_CAM_UPDATED_SIG,  m_sigCamUpdated);
+
+    this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
+                                 getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -108,11 +122,6 @@ void RendererService::starting() throw(fwTools::Failed)
 void RendererService::configuring() throw(::fwTools::Failed)
 {
     this->initialize();
-
-    if( m_configuration->findConfigurationElement("masterSlaveRelation") )
-    {
-        m_isCamMaster = ( m_configuration->findConfigurationElement("masterSlaveRelation")->getValue() == "master" );
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -121,10 +130,7 @@ void RendererService::stopping() throw(fwTools::Failed)
 {
     if( m_render == 0 ) return;
 
-    if ( m_isCamMaster )
-    {
-        m_interactorManager->getInteractor()->RemoveObserver(m_loc);
-    }
+    m_interactorManager->getInteractor()->RemoveObserver(m_loc);
 
     m_interactorManager->uninstallInteractor();
     m_interactorManager.reset();
@@ -145,7 +151,7 @@ void RendererService::updating() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
+void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
 {
     ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(_msg);
     if ( meshMsg && meshMsg->hasEvent( ::fwComEd::MeshMsg::NEW_MESH ) )
@@ -159,24 +165,9 @@ void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTo
         {
             updateVTKPipeline();
         }
+        m_interactorManager->getInteractor()->Render();
     }
-    else
-    {
-        if ( !m_isCamMaster )
-        {
-            ::fwComEd::CameraMsg::csptr camMsg = ::fwComEd::CameraMsg::dynamicConstCast(_msg);
-            if( camMsg && camMsg->hasEvent( ::fwComEd::CameraMsg::CAMERA_MOVING ) )
-            {
-                vtkCamera* camera = m_render->GetActiveCamera();
 
-                camera->SetPosition(camMsg->getPositionCamera());
-                camera->SetFocalPoint(camMsg->getFocalCamera());
-                camera->SetViewUp(camMsg->getViewUpCamera());
-                camera->SetClippingRange(0.1, 1000000);
-            }
-        }
-    }
-    m_interactorManager->getInteractor()->Render();
 }
 
 //-----------------------------------------------------------------------------
@@ -200,10 +191,9 @@ void RendererService::initVTKPipeline()
 
     m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
     m_loc = new vtkLocalCommand(this);
-    if ( m_isCamMaster )
-    {
-        m_interactorManager->getInteractor()->AddObserver(vtkCommand::AnyEvent, m_loc);
-    }
+
+    m_interactorManager->getInteractor()->AddObserver(vtkCommand::AnyEvent, m_loc);
+
 
     // Repaint and resize window
     m_render->ResetCamera();
@@ -228,20 +218,31 @@ void RendererService::updateVTKPipeline()
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updateCamPosition()
+void RendererService::notifyCamPositionUpdated()
 {
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-
     vtkCamera* camera = m_render->GetActiveCamera();
 
-    // Prepare message to be fired according to position modification
-    ::fwComEd::CameraMsg::NewSptr camMsg;
-    camMsg->addEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
-    camMsg->setPositionCamera(camera->GetPosition());
-    camMsg->setFocalCamera(camera->GetFocalPoint());
-    camMsg->setViewUpCamera(camera->GetViewUp());
+    const double *position = camera->GetPosition();
+    const double *focal = camera->GetFocalPoint();
+    const double *viewUp = camera->GetViewUp();
 
-    ::fwServices::IEditionService::notify(this->getSptr(), mesh, camMsg);
+    fwServicesBlockAndNotifyMacro( this->getLightID(), m_sigCamUpdated,
+                                   (position, focal, viewUp),
+                                   m_slotUpdateCamPosition );
+}
+
+//-----------------------------------------------------------------------------
+
+void RendererService::updateCamPosition(const double positionValue[3], const double focalValue[3], const double viewUpValue[3])
+{
+    vtkCamera* camera = m_render->GetActiveCamera();
+
+    camera->SetPosition(positionValue);
+    camera->SetFocalPoint(focalValue);
+    camera->SetViewUp(viewUpValue);
+    camera->SetClippingRange(0.1, 1000000);
+
+    m_interactorManager->getInteractor()->Render();
 }
 
 }

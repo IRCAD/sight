@@ -15,8 +15,6 @@
 
 #include <fwServices/ObjectMsg.hpp>
 
-#include <fwData/Image.hpp>
-
 #include "vtkSimpleMesh/config.hpp"
 
 // VTK
@@ -43,6 +41,12 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) ) ;
 
+    VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
+    typedef ::fwCom::Slot<void(const double*, const double*, const double*)> UpdateCamPositionSlotType;
+
+    VTKSIMPLEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
+    typedef ::fwCom::Signal< void (const double*, const double*, const double*) > CamUpdatedSignalType;
+
     /**
     * @brief    Constructor
     */
@@ -53,12 +57,16 @@ public :
     */
     VTKSIMPLEMESH_API virtual ~RendererService() throw() ;
 
+
+    /// Slot to receive message with new camera position. Update camera position with message information.
+    void updateCamPosition(const double positionValue[3], const double focalValue[3], const double viewUpValue[3]);
+
     /**
     * @brief VTK event managing of the VTK Camera position.
     *
     * This method is used to update the VTK camera position.
     */
-    void updateCamPosition();
+    void notifyCamPositionUpdated();
 
 
 protected :
@@ -78,7 +86,6 @@ protected :
     * XML configuration sample:
     * @verbatim
     <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" autoComChannel="yes" >
-            <masterSlaveRelation>master</masterSlaveRelation>
             <win guiContainerId="900"/>
     </service>
     @endverbatim
@@ -108,7 +115,7 @@ protected :
     *
     * This method is used to update the service.
     */
-    VTKSIMPLEMESH_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// @brief vtk renderer
     vtkRenderer * m_render ;
@@ -147,7 +154,10 @@ private :
 
     vtkCommand* m_loc;
 
-    bool m_isCamMaster;
+    /// Slot to call updateCamPosition method
+    UpdateCamPositionSlotType::sptr m_slotUpdateCamPosition;
+
+    CamUpdatedSignalType::sptr m_sigCamUpdated;
 
 };
 

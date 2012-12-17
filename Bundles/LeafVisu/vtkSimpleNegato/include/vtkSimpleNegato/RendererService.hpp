@@ -81,12 +81,12 @@ protected :
     VTKSIMPLENEGATO_API virtual void configuring() throw(::fwTools::Failed);
 
     /**
-    * @brief Updating method (react on data modifications).
+    * @brief Receiving method (react on data modifications).
     * @param[in] _msg ::fwServices::ObjectMsg::csptr.
     *
     * This method is used to update the service.
     */
-    VTKSIMPLENEGATO_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    VTKSIMPLENEGATO_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// @brief vtk renderer
     vtkRenderer * m_render ;

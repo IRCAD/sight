@@ -165,15 +165,7 @@
                         Services associated to the Mesh data :
                         Visualization, reading and writing service creation.
                     -->
-                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes">
-                        <masterSlaveRelation>master</masterSlaveRelation>
-                    </service>
-
-
-                    <service uid="MyComChannelSrv1" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
-                        <target>RenderingMesh</target>
-                    </service>
-
+                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes"/>
 
                 </object>
             </item>
@@ -189,26 +181,38 @@
                         Services associated to the Mesh data :
                         Visualization, reading and writing service creation.
                     -->
-                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes">
-                        <masterSlaveRelation>master</masterSlaveRelation>
-                    </service>
-
-
-                    <service uid="MyComChannelSrv2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
-                        <target>RenderingMesh</target>
-                    </service>
+                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes"/>
 
                 </object>
             </item>
+
+            <!-- Connect RenderingMesh 'updateCamPosition' slot to receive 'camUpdated' signal from RenderingMesh1 and RenderingMesh2 -->
+            <connect>
+                <signal>RenderingMesh1/camUpdated</signal>
+                <slot>RenderingMesh/updateCamPosition</slot>
+            </connect>
+
+            <connect>
+                <signal>RenderingMesh2/camUpdated</signal>
+                <slot>RenderingMesh/updateCamPosition</slot>
+            </connect>
+
+            <!-- Connect RenderingMesh 'receive' slot to receive 'objectModified' signal from myMesh1 and myMesh2 -->
+            <connect>
+                <signal>myMesh1/objectModified</signal>
+                <slot>RenderingMesh/receive</slot>
+            </connect>
+
+            <connect>
+                <signal>myMesh2/objectModified</signal>
+                <slot>RenderingMesh/receive</slot>
+            </connect>
 
             <!--
                 In order to start the different services, it does not need to follow the objects creation order. Note that the services associated to the Image and Mesh data are not started
                 between the tags corresponding to these two data definitions but, before the end of the Composite data definition.
             -->
             <start uid="myFrame" />
-
-            <start uid="MyComChannelSrv1" />
-            <start uid="MyComChannelSrv2" />
 
         </object>
 
