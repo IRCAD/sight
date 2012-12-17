@@ -121,7 +121,7 @@ namespace uiVisu
 
     //------------------------------------------------------------------------------
 
-    void PointEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+    void PointEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         SLM_TRACE_FUNC();
         ::fwComEd::InteractionMsg::csptr interactionMsg = ::fwComEd::InteractionMsg::dynamicConstCast(_msg);

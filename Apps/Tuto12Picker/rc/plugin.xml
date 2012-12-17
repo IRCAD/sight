@@ -114,15 +114,6 @@
                     <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                 </service>
                 <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-
-                <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                    <target>myUpdaterAcq</target>
-                </service>
-
-                <service uid="myUpdaterComCannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                    <target>myUpdaterImg</target>
-                </service>
-
             </object>
         </item>
 
@@ -142,7 +133,7 @@
                     <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
                 </service>
 
-                <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6"  >
+                <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
                     <mode type="stop" />
                     <config>
                         <object id="myImage" type="::fwData::Image">
@@ -186,6 +177,12 @@
                         </adaptor>
                     </scene>
                 </service>
+                <connect>
+                    <signal>myPatientDB/objectModified</signal>
+                    <slot>myUpdaterAcq/receive</slot>
+                    <slot>myUpdaterImg/receive</slot>
+                </connect>
+
             </object>
         </item>
 
@@ -193,8 +190,6 @@
         <start uid="myUpdaterAcq" />
         <start uid="myUpdaterImg" />
         <start uid="myManager" />
-        <start uid="myUpdaterComCannelAcq" />
-        <start uid="myUpdaterComCannelImg" />
         <start uid="newOBject2newPatientDB"/>
 
     </object>
