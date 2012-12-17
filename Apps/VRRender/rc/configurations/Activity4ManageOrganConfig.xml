@@ -7,7 +7,7 @@
         <object type="::fwData::Composite">
 
         <!-- MAIN FRAME -->
-            <service uid="GENERIC_UID_organManagerFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <service uid="GENERIC_UID_organManagerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>
@@ -22,7 +22,7 @@
                 </registry>
             </service>
 
-            <service uid="GENERIC_UID_multiViewOrgans" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="GENERIC_UID_multiViewOrgans" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -43,19 +43,19 @@
             <item key="selection">
                 <object type="::fwData::Composite">
 
-                    <service uid="GENERIC_UID_myUpdaterReconst" implementation="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                    <service uid="GENERIC_UID_myUpdaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                         <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
                         <update compositeKey="myReconstruction" onEvent="REMOVED_RECONSTRUCTIONS" fromUID="*" actionType="REMOVE_IF_PRESENT" />
                     </service>
 
-                    <service uid="GENERIC_UID_myManagerForOrgansFrame" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes">
+                    <service uid="GENERIC_UID_myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                         <mode type="dummy" />
                         <config>
 
                             <object id="myReconstruction" type="::fwData::Reconstruction">
-                                <service uid="GENERIC_UID_organMaterialEditor" implementation="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoComChannel="no" />
-                                <!--<service uid="GENERIC_UID_volumeEditor" implementation="::uiData::VolumeEditor" type="::gui::editor::IEditor" autoComChannel="no" />-->
-                                <service uid="GENERIC_UID_representationEditor" implementation="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoComChannel="no" />
+                                <service uid="GENERIC_UID_organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                                <!--<service uid="GENERIC_UID_volumeEditor" impl="::uiData::VolumeEditor" type="::gui::editor::IEditor" autoConnect="no" />-->
+                                <service uid="GENERIC_UID_representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
                             </object>
 
                         </config>
@@ -68,11 +68,11 @@
             <item key="myAcquisition">
                 <object uid="ORGAN_MANAGER_ACQUISITION" src="ref" type="::fwData::Acquisition">
 
-                    <service uid="GENERIC_UID_myUpdaterComChannelReconstFromAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                    <service uid="GENERIC_UID_myUpdaterComChannelReconstFromAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                         <target>GENERIC_UID_myUpdaterReconst</target>
                     </service>
 
-                    <service uid="GENERIC_UID_listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                    <service uid="GENERIC_UID_listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
 
                 </object>
             </item>

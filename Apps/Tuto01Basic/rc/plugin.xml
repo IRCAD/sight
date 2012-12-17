@@ -5,11 +5,11 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoBasicConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
             <object type="::fwData::Image">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>tutoBasicApplicationName</name>

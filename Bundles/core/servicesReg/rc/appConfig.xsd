@@ -57,7 +57,7 @@
             <!-- <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> -->
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='type' type='xs:string' use="required" />
+        <xs:attribute name='type' type='xs:string'/>
         <xs:attribute name='src' type='xs:string' />
     </xs:complexType>
     
@@ -76,9 +76,8 @@
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
         <xs:attribute name='type' type='xs:string' use="optional" />
-        <xs:attribute name='implementation' type='xs:string' use="required" />
-        <xs:attribute name='autoComChannel' type='ComChannelType' />
-        <xs:attribute name='priority' type='xs:string' />
+        <xs:attribute name='impl' type='xs:string' use="required" />
+        <xs:attribute name='autoConnect' type='AutoConnectType' />
         <xs:attribute name='worker' type='xs:string' />
     </xs:complexType>
 
@@ -110,7 +109,7 @@
         <xs:attribute name='type' type='xs:string' />
     </xs:complexType>
         
-    <xs:simpleType name="ComChannelType">
+    <xs:simpleType name="AutoConnectType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="yes" />
             <xs:enumeration value="no" />

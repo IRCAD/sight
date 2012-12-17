@@ -2,12 +2,12 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>BeginnerTraining02Config</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
 
             <object type="::fwData::String">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>BeginnerTraining02 App</name>
@@ -19,7 +19,7 @@
                     </registry>
                 </service>
 
-                <service uid="view" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+                <service uid="view" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />
@@ -33,10 +33,10 @@
                     </registry>
                 </service>
 
-                <service uid="myEditorA" type="::gui::editor::IEditor" implementation="::beginnerTraining::tuto02::SStringEditor" autoComChannel="no" />
-                <service uid="myEditorB" type="::gui::editor::IEditor" implementation="::beginnerTraining::tuto02::SStringEditor" autoComChannel="no" />
+                <service uid="myEditorA" type="::gui::editor::IEditor" impl="::beginnerTraining::tuto02::SStringEditor" autoConnect="no" />
+                <service uid="myEditorB" type="::gui::editor::IEditor" impl="::beginnerTraining::tuto02::SStringEditor" autoConnect="no" />
 
-                <service uid="myReader" type="::io::IReader" implementation="::beginnerTraining::tuto01::SStringReader" autoComChannel="no">
+                <service uid="myReader" type="::io::IReader" impl="::beginnerTraining::tuto01::SStringReader" autoConnect="no">
                     <file>Bundles/beginnerTraining_0-1/data.txt</file>
                 </service>
 

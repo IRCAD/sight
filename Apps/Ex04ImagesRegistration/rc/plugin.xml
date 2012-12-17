@@ -57,11 +57,11 @@ Detail of the ToolBar
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex04ImagesRegistrationConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
        <config>
            <object type="::fwData::Composite">
 
-            <service uid="MyMainFrame" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+            <service uid="MyMainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Ex04ImagesRegistration</name>
@@ -73,7 +73,7 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Main view" align="center" />
@@ -86,7 +86,7 @@ Detail of the ToolBar
                 </registry>
             </service>
             <!-- service which create a toolbar -->
-            <service uid="toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+            <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Load Image" icon="Bundles/Ex04ImagesRegistration_0-1/icons/icon-load1.png" />
@@ -106,7 +106,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager" >
                         <view caption="Image 1" selected="yes" />
@@ -122,7 +122,7 @@ Detail of the ToolBar
             </service>
 
             <!-- NEGATO 1 VIEW  (Content of the first Tab)-->
-            <service uid="multiView_negato1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView_negato1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -135,7 +135,7 @@ Detail of the ToolBar
                     <view sid="multiView_negato1_bottom" start="yes" />
                 </registry>
             </service>
-            <service uid="multiView_negato1_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView_negato1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -148,13 +148,13 @@ Detail of the ToolBar
                     <view sid="slider_negato1" start="no" />
                 </registry>
             </service>
-            <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+            <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
                 <snap>
                     <scene uid="negato1" />
                 </snap>
             </service>
             <!-- NEGATO 2 VIEW  (Content of the second Tab)-->
-            <service uid="multiView_negato2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView_negato2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -167,7 +167,7 @@ Detail of the ToolBar
                     <view sid="multiView_negato2_bottom" start="yes" />
                 </registry>
             </service>
-            <service uid="multiView_negato2_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView_negato2_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -180,13 +180,13 @@ Detail of the ToolBar
                     <view sid="slider_negato2" start="no" />
                 </registry>
             </service>
-            <service uid="snapshotNegato2Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+            <service uid="snapshotNegato2Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
                 <snap>
                     <scene uid="negato2" />
                 </snap>
             </service>
             <!-- NEGATO 3 VIEW  (Content of the third Tab)-->
-            <service uid="registrationView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="registrationView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>s
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -200,7 +200,7 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="multiView_negato3" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView_negato3" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>s
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -213,7 +213,7 @@ Detail of the ToolBar
                     <view sid="multiView_negato3_bottom" start="yes" />
                 </registry>
             </service>
-            <service uid="multiView_negato3_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView_negato3_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -229,45 +229,45 @@ Detail of the ToolBar
             </service>
             <!--  ACTIONS -->
             <!-- Action to load an image in the Tab 1-->
-            <service uid="openFile1" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="openFile1" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="readerFile1" />
             </service>
 
             <!-- Action to load an image in the Tab 2  -->
-            <service uid="openFile2" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="openFile2" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="readerFile2" />
             </service>
 
             <!-- Action to do Quit -->
-            <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
 
             <!-- GENERIC SCENE DEFINITION -->
             <item key="visuConfig">
                 <object uid="VisuComposite" type="::fwData::Composite">
-                <service uid="paramEditor" type="::gui::editor::IEditor" implementation="::basicRegistration::SImagesSubstract" autoComChannel="no"/>
+                <service uid="paramEditor" type="::gui::editor::IEditor" impl="::basicRegistration::SImagesSubstract" autoConnect="no"/>
 
-                <service uid="manager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6"  >
+                <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6"  >
                     <mode type="stop" />
                     <config>
                         <!--  Object to store the result of SImagesSubstract  -->
                         <object id="imageResult" type="::fwData::Image">
 
-                            <service uid="MedicalImageSrv3" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="yes" />
+                            <service uid="MedicalImageSrv3" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes" />
                             <!-- Editors for Negato1 -->
-                            <service uid="slider_negato3" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                            <service uid="slider_negato3" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>axial</sliceIndex>
                             </service>
-                            <service uid="snapshotNegato3Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+                            <service uid="snapshotNegato3Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
                                 <snap>
                                     <scene uid="negato3" />
                                 </snap>
                             </service>
                             <!-- Action to save an image in the Tab 3  -->
-                            <service uid="saveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                            <service uid="saveFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                                 <start uid="writerFile" />
                             </service>
-                            <service uid="writerFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                            <service uid="writerFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="writer" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericWriterService" />
@@ -278,7 +278,7 @@ Detail of the ToolBar
                 </service>
 
                     <!-- Generic Scene (Negato) for the first tab -->
-                <service uid="negato1" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                <service uid="negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                        <scene>
                             <picker id="negato1default" vtkclass="fwVtkCellPicker" />
 
@@ -308,7 +308,7 @@ Detail of the ToolBar
                    </service>
 
                     <!-- Generic Scene (Negato) for the second tab -->
-                    <service uid="negato2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <service uid="negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
                             <picker id="negato2default" vtkclass="fwVtkCellPicker" />
 
@@ -338,7 +338,7 @@ Detail of the ToolBar
                     </service>
 
                     <!-- Generic Scene (Negato) for the Third tab  -->
-                    <service uid="negato3" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <service uid="negato3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negato3default" vtkclass="fwVtkCellPicker" />
@@ -372,16 +372,16 @@ Detail of the ToolBar
                        <!-- Object to store the image loading in the first tab -->
                         <object uid="image1" type="::fwData::Image">
 
-                            <service uid="MedicalImageSrv1" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="yes"/>
+                            <service uid="MedicalImageSrv1" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes"/>
 
-                            <service uid="readerFile1" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                            <service uid="readerFile1" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="reader" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
                             </service>
 
                             <!-- Editors for Negato1 -->
-                            <service uid="slider_negato1" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                            <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>axial</sliceIndex>
                             </service>
                         </object>
@@ -391,16 +391,16 @@ Detail of the ToolBar
                        <!-- Object to store the image loading in the first tab -->
                         <object uid="image2" type="::fwData::Image">
 
-                            <service uid="MedicalImageSrv2" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="yes"/>
+                            <service uid="MedicalImageSrv2" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes"/>
 
-                            <service uid="readerFile2" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                            <service uid="readerFile2" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="reader" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
                             </service>
 
                             <!-- Editors for Negato2 -->
-                            <service uid="slider_negato2" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                            <service uid="slider_negato2" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>axial</sliceIndex>
                             </service>
                         </object>

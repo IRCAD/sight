@@ -1,13 +1,13 @@
 <extension implements="::fwServices::registry::AppConfig">
         <id>organManagerConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
         
 
     <object type="::fwData::Composite">
 
         <!-- MAIN FRAME -->
-        <service uid="organManagerFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="organManagerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -22,7 +22,7 @@
             </registry>
         </service>
 
-        <service uid="multiViewOrgans" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+        <service uid="multiViewOrgans" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -41,7 +41,7 @@
         <item key="myPatientDB">
             <object uid="myPatientDB" src="ref" type="::fwData::PatientDB">
 
-                <service uid="myUpdaterComChannelReconst" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                <service uid="myUpdaterComChannelReconst" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                     <target>myUpdaterReconst</target>
                 </service>
 
@@ -51,27 +51,27 @@
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">
 
-                <service uid="myManagerForOrgansFrameComChannel" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                <service uid="myManagerForOrgansFrameComChannel" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                     <target>myManagerForOrgansFrame</target>
                 </service>
 
-                <service uid="myManagerForOrgansFrame" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="no">
+                <service uid="myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="no">
                     <mode type="dummy" />
                     <config>
                         <object id="myAcquisition" type="::fwData::Acquisition">
-                            <service uid="myUpdaterComChannelReconstFromAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                            <service uid="myUpdaterComChannelReconstFromAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                                 <target>myUpdaterReconst</target>
                             </service>
-                            <service uid="listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                            <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
                         </object>
                         <object id="myReconstruction" type="::fwData::Reconstruction">
-                            <service uid="organMaterialEditor" implementation="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
-                            <service uid="representationEditor" implementation="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                            <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="yes" />
+                            <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="yes" />
                         </object>
                     </config>
                 </service>
 
-                <service uid="myUpdaterReconst" implementation="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                <service uid="myUpdaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                     <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
                     <update compositeKey="myReconstruction" onEvent="NEW_IMAGE_SELECTED" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT" />
                     <update compositeKey="myReconstruction" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT" />

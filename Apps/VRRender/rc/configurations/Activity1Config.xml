@@ -11,26 +11,26 @@
             <item key="myCompositeSelection">
                 <object uid="COMPOSITE_SELECTION" src="ref" type="::fwData::Composite">
 
-                    <service uid="GENERIC_UID_action_activity3" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoComChannel="yes">
+                    <service uid="GENERIC_UID_action_activity3" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoConnect="yes">
                         <config id="Activity3Config" title="Visu 2D" titlePrefixKey="tabPrefix" tooltipKey="tabInfo" icon="Bundles/VRRender_0-9/icons/icon-2D.png" />
                         <key id="myImage" pattern="SELECTED_UID_myImage" />
                         <replace val="UID_OF_SELECTED_PATIENT" pattern="SELECTED_UID_myPatientDB" />
                     </service>
                     
-                    <service uid="GENERIC_UID_action_vr_activity" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoComChannel="yes">
+                    <service uid="GENERIC_UID_action_vr_activity" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoConnect="yes">
                         <config id="VRActivityConfig" title="VR" titlePrefixKey="tabPrefix" tooltipKey="tabInfo" icon="Bundles/VRRender_0-9/icons/icon-VR.png" />
                         <key id="myImage" pattern="SELECTED_UID_myImage" />
                         <replace val="UID_OF_SELECTED_PATIENT" pattern="SELECTED_UID_myPatientDB" />
                     </service>
 
-                    <service uid="GENERIC_UID_action_activity4" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoComChannel="yes">
+                    <service uid="GENERIC_UID_action_activity4" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoConnect="yes">
                         <config id="Activity4Config" title="Visu 3D" titlePrefixKey="tabPrefix" tooltipKey="tabInfo" icon="Bundles/VRRender_0-9/icons/icon-3D.png" />
                         <key id="myImage" pattern="SELECTED_UID_myImage" />
                         <key id="myAcquisition" pattern="SELECTED_UID_myAcquisition" />
                     </service>
 
                 <!-- Generic Scene Negato -->
-                    <service uid="GENERIC_UID_negato1" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <service uid="GENERIC_UID_negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
                             <picker id="negato1default" vtkclass="fwVtkCellPicker" />
                             <renderer id="default" background="0.0" />
@@ -49,13 +49,13 @@
                         </scene>
                     </service>
 
-                    <service uid="GENERIC_UID_myManagerMainFrame" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6">
+                    <service uid="GENERIC_UID_myManagerMainFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6">
                         <mode type="dummy" />
                         <config>
                             <object id="myImage" type="::fwData::Image">
-                                <service uid="GENERIC_UID_MedicalImageSrv" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="no" />
+                                <service uid="GENERIC_UID_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
                             <!-- Editor for Negato -->
-                                <service uid="GENERIC_UID_slider_negato1" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                                <service uid="GENERIC_UID_slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                     <sliceIndex>axial</sliceIndex>
                                 </service>
 
@@ -68,26 +68,26 @@
 
             <item key="myPatientDB">
                 <object uid="UID_OF_SELECTED_PATIENT" src="ref" type="::fwData::PatientDB">
-                    <service uid="GENERIC_UID_selector" type="::gui::editor::IEditor" implementation="::uiPatientDB::PatientDBGuiSelectorService" autoComChannel="yes" />
-                    <service uid="GENERIC_UID_infoEditor" type="::gui::editor::IEditor" implementation="::uiPatientDB::PatientDBInfoEditor" autoComChannel="yes" />
+                    <service uid="GENERIC_UID_selector" type="::gui::editor::IEditor" impl="::uiPatientDB::PatientDBGuiSelectorService" autoConnect="yes" />
+                    <service uid="GENERIC_UID_infoEditor" type="::gui::editor::IEditor" impl="::uiPatientDB::PatientDBInfoEditor" autoConnect="yes" />
 
                 <!-- Actions on PatientDB -->
-                    <service uid="GENERIC_UID_action_CloneImage" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::CloneImage" autoComChannel="no" />
-                    <service uid="GENERIC_UID_action_importPatient" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::AddPatientDB" autoComChannel="no">
+                    <service uid="GENERIC_UID_action_CloneImage" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::CloneImage" autoConnect="no" />
+                    <service uid="GENERIC_UID_action_importPatient" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::AddPatientDB" autoConnect="no">
                         <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderPatientDBReader" />
                     </service>
   
-                    <service uid="GENERIC_UID_action_exportAllPatient" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::ExportPatientDB" autoComChannel="no">
+                    <service uid="GENERIC_UID_action_exportAllPatient" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::ExportPatientDB" autoConnect="no">
                         <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderPatientDBWriter" />
                     </service>
-                    <service uid="GENERIC_UID_action_exportSelPatient" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::ExportPatient" autoComChannel="no">
+                    <service uid="GENERIC_UID_action_exportSelPatient" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::ExportPatient" autoConnect="no">
                         <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderPatientDBWriter" />
                     </service>
-                    <service uid="GENERIC_UID_action_exportSelImage" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::ExportImage" autoComChannel="no">
+                    <service uid="GENERIC_UID_action_exportSelImage" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::ExportImage" autoConnect="no">
                         <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderPatientDBWriter" />
                     </service>
-                    <service uid="GENERIC_UID_action_eraseAllPatients" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::ErasePatientDB" autoComChannel="no" />
-                    <service uid="GENERIC_UID_action_eraseSelImage" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::ErasePatient" autoComChannel="no" />
+                    <service uid="GENERIC_UID_action_eraseAllPatients" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::ErasePatientDB" autoConnect="no" />
+                    <service uid="GENERIC_UID_action_eraseSelImage" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::ErasePatient" autoConnect="no" />
                 <!-- End of Actions on PatientDB -->
                 </object>
 

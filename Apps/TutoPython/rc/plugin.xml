@@ -4,13 +4,13 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoPythonConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
             <object type="::fwData::Composite">
                 <item key="PythonString">
                     <object type="::fwData::String">
 
-                        <service uid="mainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                             <gui>
                                 <frame>
                                     <name>TutoPython</name>
@@ -27,7 +27,7 @@
                             </registry>
                         </service>
 
-                        <service uid="toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+                        <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
                             <gui>
                                 <layout>
                                     <menuItem name="Test" icon="Bundles/TutoPython_0-1/icons/python.png" />
@@ -43,16 +43,16 @@
                         </service>
 
 
-                        <service uid="PyTest" type="::fwGui::IActionSrv" implementation="::uiPython::action::StringRun" autoComChannel="no">
+                        <service uid="PyTest" type="::fwGui::IActionSrv" impl="::uiPython::action::StringRun" autoConnect="no">
                             <state active="true" />
                             <!--<pyobjects> -->
                             <!--<item name="" id="" /> -->
                             <!--</pyobjects> -->
                         </service>
 
-                        <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+                        <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
-                        <service uid="codeEditor" type="::gui::editor::IEditor" implementation="::guiQt::editor::Code" autoComChannel="yes" />
+                        <service uid="codeEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::Code" autoConnect="yes" />
 
                         <value>
 <![CDATA[
@@ -89,12 +89,12 @@ if image.buffer is not None:
 
                 <item key="Image">
                     <object uid="anImage" type="::fwData::Image">
-                        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
-                        <service uid="anImageWriter" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                        <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
+                        <service uid="anImageWriter" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="writer" />
                         </service>
 
-                        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                             <start uid="myReaderPathFile" />
                         </service>
 

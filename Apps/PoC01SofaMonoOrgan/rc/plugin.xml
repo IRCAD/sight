@@ -7,12 +7,12 @@
     
     <extension implements="::fwServices::registry::AppConfig">
         <id>DemoComSofaConfigurationID</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config> <!-- /new -->
 
         <object uid="CompositeVisu" type="::fwData::Composite">
         
-        <service uid="RenderingMesh" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+        <service uid="RenderingMesh" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
                         <!--<picker id="myPicker" vtkclass="fwVtkCellPicker" />-->
 
@@ -33,7 +33,7 @@
         <object uid="myMesh" type="::fwData::Mesh">
 
             <!-- Mise en place de la fenetre pricipale  -->
-            <service uid="MyIHM" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <service uid="MyIHM" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Altran-Est - Medic@ : PoC 1 Demo integration SOFA-FW4SPL</name>
@@ -49,7 +49,7 @@
             </service>
 
             <!-- Mise en place de la partie visualisation  -->
-            <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -64,7 +64,7 @@
             <!-- ****************************************** -->
 
             <!-- Liste des menus -->
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menu name="Fichier" />
@@ -82,7 +82,7 @@
             <!-- ****************************************** -->
 
             <!-- Menu Fichier -->
-            <service uid="menuFile" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+            <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Ouvrir"/>
@@ -97,7 +97,7 @@
             </service>
 
             <!-- Menu Sofa -->
-            <service uid="menuSofa" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+            <service uid="menuSofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Deformer" />
@@ -109,7 +109,7 @@
             </service>
 
             <!-- Menu Apropos -->
-            <service uid="menuAbout" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+            <service uid="menuAbout" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="A propos" />
@@ -123,26 +123,26 @@
             <!-- ****************************************** -->
 
             <!-- Action Ouvrir -->
-            <service uid="actionOpen" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="actionOpen" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="readerPathMeshFile" />
             </service>
 
             <!-- Action Quitter -->
-            <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
             <!-- Action Deformer qui appelle SofaService -->
-            <service uid="actionDeform" type="::fwGui::IActionSrv" implementation="::opSofa::SofaTrianSrv" autoComChannel="no">
+            <service uid="actionDeform" type="::fwGui::IActionSrv" impl="::opSofa::SofaTrianSrv" autoConnect="no">
                 <mesh uid="myMesh" />
             </service>
 
             <!-- Action Apropos -->
-            <service uid="actionAbout" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="actionAbout" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
             </service>
 
             <!-- ****************************************** -->
 
             <!-- Service de rendu -->
-            <!--<service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes">-->
+            <!--<service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoConnect="yes">-->
                 <!--<masterSlaveRelation>master</masterSlaveRelation>-->
             <!--</service>-->
 
@@ -150,7 +150,7 @@
 
 
             <!-- Service de lecture du fichier -->
-            <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathMeshFile" autoComChannel="no">
+            <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathMeshFile" autoConnect="no">
                 <type mode="reader" />
             </service>
 

@@ -63,22 +63,10 @@ void AppConfig::parseBundleInformation()
         }
 
         // get type
-        std::string typeStr = ext->findConfigurationElement("type")->getValue();
-        OSLM_ASSERT("Sorry, xml element \"type\" must be equal to \"standard\", \"template\" or \"parameters\" (here = "
-                    << typeStr << ") ", typeStr=="standard" || typeStr=="template" || typeStr=="parameters" );
-        AppInfo::ConfigType type;
-        if ( typeStr == "standard" )
-        {
-            type = AppInfo::STANDARD;
-        }
-        else if ( typeStr == "template" )
-        {
-            type=  AppInfo::TEMPLATE;
-        }
-        else
-        {
-            type = AppInfo::PARAMETERS;
-        }
+        OSLM_ASSERT("Sorry, xml element \"type\" must be equal to \"parameters\" (here = "
+                    << ext->findConfigurationElement("type")->getValue() << ") ",
+                    ext->findConfigurationElement("type")->getValue()=="parameters" );
+        AppInfo::ConfigType type = AppInfo::PARAMETERS;
 
         // Get parameters
         AppInfo::ParamatersType parameters;

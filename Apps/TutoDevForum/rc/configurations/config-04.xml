@@ -1,11 +1,11 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>config04</id>
-    <type>standard</type>
+    <type>parameters</type>
     <config>
 
         <object type="::fwData::Image">
 
-            <service uid="myMainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <service uid="myMainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Tuto 04</name>
@@ -20,7 +20,7 @@
                 </registry>
             </service>
 
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -31,7 +31,7 @@
                 </registry>
             </service>
 
-            <service uid="myMenu" implementation="::gui::aspect::DefaultMenuSrv" type="::fwGui::IMenuSrv" autoComChannel="no">
+            <service uid="myMenu" impl="::gui::aspect::DefaultMenuSrv" type="::fwGui::IMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="New VTK Image" shortcut="Ctrl+O" />
@@ -45,11 +45,11 @@
                 </registry>
             </service>
 
-            <service uid="myAction" implementation="::devForum::tuto04::ImageReaderActionService" type="::fwGui::IActionSrv" autoComChannel="no" />
+            <service uid="myAction" impl="::devForum::tuto04::ImageReaderActionService" type="::fwGui::IActionSrv" autoConnect="no" />
 
-            <service uid="myViewer" implementation="::devForum::tuto03::ImageViewerService" type="::fwRender::IRender" autoComChannel="yes" />
+            <service uid="myViewer" impl="::devForum::tuto03::ImageViewerService" type="::fwRender::IRender" autoConnect="yes" />
 
-            <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
             <start uid="myMainFrame" />
             <start uid="myViewer" />

@@ -9,7 +9,7 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>PoC03MeshManualRegistration</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
 
 
@@ -17,7 +17,7 @@
 
                 <xi:include href="configurations/frameAndViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
                     <snap>
                         <scene uid="genericScene" />
                     </snap>
@@ -27,19 +27,19 @@
                 <item key="myPatientDB">
                     <object uid="myPatientDB" type="::fwData::PatientDB">
 
-                        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                        <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                             <selection mode="exclude" />
                             <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                         </service>
                         
-                        <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
+                        <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
                         
-                        <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                        <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                             <target>myUpdaterAcq</target>
                         </service>
                         
-                        <service uid="myUpdaterComCannelImg" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                        <service uid="myUpdaterComCannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                             <target>myUpdaterImg</target>
                         </service>
                         
@@ -50,37 +50,37 @@
                 <item key="myCompositeVisu">
                     <object uid="myCompositeVisu" type="::fwData::Composite">
 
-                        <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                        <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                             <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                             <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
                         </service>
                         
-                        <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                        <service uid="myUpdaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                             <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                             <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                             <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
                         </service>
 
-                        <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6">
+                        <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6">
                             <mode type="stop" />
                             <config>
                                 <object id="myImage" type="::fwData::Image">
                                     <!-- This service convert a simple fwData::Image to medical Image -->
-                                    <service uid="medicalImageConverter" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="no" />
-                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
+                                    <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
                                         <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
                                     </service>
-                                    <service uid="showScanEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
+                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
                                         <negatoAdaptor uid="MPRNegatoScene3D" />
                                     </service>
-                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceIndexPositionEditor" autoComChannel="yes">
+                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
                                 </object>
                             </config>
                         </service>
 
-                        <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <vtkObject id="myCam2PosMatrixTransform" class="vtkTransform" />
 
@@ -117,7 +117,7 @@
                             </scene>
                         </service>
                         
-                        <service uid="genericScene2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                        <service uid="genericScene2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <vtkObject id="myCam1PosMatrixTransform" class="vtkTransform" />
 
@@ -173,8 +173,8 @@
                         <item key="myCam2Mesh">
                             <object uid="myCam2Mesh" type="::fwData::Mesh">
 
-                                <service uid="myCamReaderFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
-                                <service uid="myCam2ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no">
+                                <service uid="myCamReaderFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
+                                <service uid="myCam2ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no">
                                     <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
                                 </service>
                             </object>
@@ -182,7 +182,7 @@
 
                         <item key="myCam1Mesh">
                             <object uid="myCam1Mesh" type="::fwData::Mesh">
-                                <service uid="myCam1ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no">
+                                <service uid="myCam1ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no">
                                     <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
                                 </service>
                             </object>

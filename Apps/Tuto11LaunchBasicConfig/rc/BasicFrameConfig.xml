@@ -1,11 +1,11 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>BasicFrameConfig</id>
-    <type>standard</type>
+    <type>parameters</type>
     <config>
 
         <object uid="SELECTED_UID_myImage" src="ref" type="::fwData::Image">
 
-            <service uid="GENERIC_UID_BasicViewerFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <service uid="GENERIC_UID_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>
@@ -18,7 +18,7 @@
                 </registry>
             </service>
 
-            <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="GENERIC_UID_SecondView" autoComChannel="yes">
+            <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="GENERIC_UID_SecondView" autoConnect="yes">
             </service>
 
             <start uid="GENERIC_UID_BasicViewerFrame" />

@@ -5,11 +5,11 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoScene2DConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
             <object type="::fwData::Image">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>TutoScene132D</name>
@@ -22,7 +22,7 @@
                     </registry>
                 </service>
 
-                <service uid="GENERIC_UID_GlobalView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                <service uid="GENERIC_UID_GlobalView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::LineLayoutManager" >
                             <orientation value="vertical" />
@@ -40,7 +40,7 @@
 
                     <object uid="myCompositeVisu" type="::fwData::Composite">
                         
-                        <service uid="GENERIC_UID_Scene2D" implementation="::scene2D::Render" type="::fwRender::IRender" autoComChannel="yes">
+                        <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
 
                             <scene>
 
@@ -100,7 +100,7 @@
 
                             <object uid="GENERIC_UID_Float" type="::fwData::Float">
 
-                                <service uid="GENERIC_UID_FloatEditor" implementation="::uiVisu::BasicFloatEditor" type="::gui::editor::IEditor" autoComChannel="yes"/>
+                                <service uid="GENERIC_UID_FloatEditor" impl="::uiVisu::BasicFloatEditor" type="::gui::editor::IEditor" autoConnect="yes"/>
                               
                             </object>
 

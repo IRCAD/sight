@@ -4,13 +4,13 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tuto</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
         
 
         <object type="::fwData::Composite" >
         
-            <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+            <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no" >
                 <gui>
                     <frame>
                         <name>Tuto10MatrixTransformInGS</name>
@@ -25,7 +25,7 @@
                 </registry>
             </service>
 
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
                 <gui>
                     <layout>
                         <menu name="File"/>
@@ -36,7 +36,7 @@
                 </registry>
             </service>
 
-            <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+            <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="OpenFile" shortcut="Ctrl+O" />
@@ -50,14 +50,14 @@
                 </registry>
             </service>
 
-            <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="myReaderPathFile" />
             </service>
 
-            <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
 
-            <service uid="multiView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager" >
                         <view align="center" />
@@ -70,7 +70,7 @@
                 </registry>
             </service>
 
-            <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+            <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                 <scene>
 
                     <renderer id="default" background="0.0" />
@@ -209,13 +209,13 @@
             
             <item key="matrixE">
                 <object uid="matrixE" type="::fwData::TransformationMatrix3D">
-                    <service uid="matrixEditor" implementation="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                    <service uid="matrixEditor" impl="::uiVisu::TransformationMatrixEditor" type="::gui::editor::IEditor" autoConnect="yes" />
                 </object>
             </item>
 
             <item key="mesh">
                 <object uid="mesh" type="::fwData::Mesh">
-                    <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
+                    <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
                 </object>
             </item>
             

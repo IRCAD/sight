@@ -143,15 +143,11 @@ void CompositeMessageTest::testCompositeMessage()
     // image's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService = objA->addConfigurationElement("service");
     imageService->setAttributeValue( "uid" , "myImageService" ) ;
-    imageService->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    imageService->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    imageService->setAttributeValue( "autoComChannel" , "no" ) ;
+    imageService->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
 
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService2 = objA->addConfigurationElement("service");
     imageService2->setAttributeValue( "uid" , "myImageService2" ) ;
-    imageService2->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    imageService2->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    imageService2->setAttributeValue( "autoComChannel" , "no" ) ;
+    imageService2->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
 
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
      itemB->setAttributeValue( "key" , "videoUUID") ;
@@ -166,9 +162,7 @@ void CompositeMessageTest::testCompositeMessage()
     // composite's service 1
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service = cfg->addConfigurationElement("service");
     service->setAttributeValue( "uid" , "myTestService1" ) ;
-    service->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    service->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
-    service->setAttributeValue( "autoComChannel" , "no" ) ;
+    service->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
 
     // start / stop / update on service 1
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > start = cfg->addConfigurationElement("start");
@@ -179,9 +173,7 @@ void CompositeMessageTest::testCompositeMessage()
     // composite's service 2
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
     service2->setAttributeValue( "uid" , "myTestService2" ) ;
-    service2->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    service2->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
-    service2->setAttributeValue( "autoComChannel" , "no" ) ;
+    service2->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
 
     // start / stop / update on service 2
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > start2 = cfg->addConfigurationElement("start");

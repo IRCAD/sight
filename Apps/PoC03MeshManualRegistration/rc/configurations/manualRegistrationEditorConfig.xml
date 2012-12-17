@@ -1,13 +1,13 @@
 <extension implements="::fwServices::registry::AppConfig">
         <id>manualRegistrationEditorConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
         
 
     <object type="::fwData::Composite">
 
         <!-- MAIN FRAME -->
-        <service uid="registrationEditorFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="registrationEditorFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -25,15 +25,15 @@
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">
             
-                <service uid="myManagerForManualRegistEditorComChannel" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                <service uid="myManagerForManualRegistEditorComChannel" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                     <target>myManagerForManualRegistEditor</target>
                 </service>
                 
-                <service uid="myManagerForManualRegistEditor" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="no">
+                <service uid="myManagerForManualRegistEditor" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="no">
                     <mode type="dummy" />
                     <config>
                         <object id="myAcquisition" type="::fwData::Acquisition">
-                            <service uid="listOrganTransformationEditor" implementation="::uiAcquisition::OrganTransformationEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                            <service uid="listOrganTransformationEditor" impl="::uiAcquisition::OrganTransformationEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <TMSUid>MyMeshDB</TMSUid>
                             </service>
                         </object>

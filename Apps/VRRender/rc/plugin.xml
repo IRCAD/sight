@@ -11,14 +11,14 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>VRRenderConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
 
             <object type="::fwData::Composite">
 
-                <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" implementation="::fwGui::MessageHandler" autoComChannel="no" />
+                <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" impl="::fwGui::MessageHandler" autoConnect="no" />
 
-                <service uid="mainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>VRRender 0.9.0</name>
@@ -38,13 +38,13 @@
                         <item key="patientDB">
                             <object uid="patientDB" type="::fwData::PatientDB">
 
-                                <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
+                                <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
 
-                                <service uid="myUpdaterComChannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                                <service uid="myUpdaterComChannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                                     <target>myUpdaterAcq</target>
                                 </service>
 
-                                <service uid="myUpdaterComChannelImg" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+                                <service uid="myUpdaterComChannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                                     <target>myUpdaterImg</target>
                                 </service>
 
@@ -56,9 +56,9 @@
                 <item key="myCompositeSelection">
                     <object uid="myCompositeSelection" type="::fwData::Composite">
 
-                        <service uid="multiTabView" type="::gui::view::IView" implementation="::guiQt::editor::DynamicView" autoComChannel="yes" />
+                        <service uid="multiTabView" type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes" />
 
-                        <service uid="action_activity1" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoComChannel="yes">
+                        <service uid="action_activity1" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoConnect="yes">
                             <config id="Activity1Config" title="PDB" closable="no" />
                             <key id="self" pattern="COMPOSITE_SELECTION" />
 
@@ -66,12 +66,12 @@
                             <replace val="medicalWorkspace" pattern="UID_OF_MEDICAL_WORKSPACE" />
                         </service>
 
-                        <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                        <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                             <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" patientInfoKey="tabInfo" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
                             <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" patientInfoKey="tabInfo" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
                         </service>
 
-                        <service uid="myUpdaterImg" implementation="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+                        <service uid="myUpdaterImg" impl="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                             <update compositeKey="myImage" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
                             <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
                         </service>

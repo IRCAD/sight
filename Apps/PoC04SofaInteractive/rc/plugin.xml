@@ -3,11 +3,11 @@
 
   <extension implements="::fwServices::registry::AppConfig">
     <id>PoC04SofaInteractive</id>
-    <type>standard</type>
+    <type>parameters</type>
     <config>
     <object type="::fwData::Composite">
 
-        <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+        <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
           <gui>
             <frame>
               <name>Altran Est - Medic@ : PoC 4 - Principe de simulation interactive temps reel avec Sofa</name>
@@ -22,7 +22,7 @@
           </registry>
         </service>
 
-        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
             <layout>
               <menu name="File" />
@@ -35,7 +35,7 @@
           </registry>
         </service>
 
-        <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
           <gui>
             <layout>
               <menuItem name="Load patient" shortcut="Ctrl+O" />
@@ -49,7 +49,7 @@
           </registry>
         </service>
 
-        <service uid="menu_Sofa" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="menu_Sofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
           <gui>
             <layout>
               <menuItem name="Start" shortcut="Ctrl+S" />
@@ -62,13 +62,13 @@
           </registry>
         </service>
 
-        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
           <start uid="myReaderPathFile" />
         </service>
 
-        <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+        <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
-        <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+        <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
           <gui>
             <layout type="::fwGui::CardinalLayoutManager">
               <view align="center" minWidth="200"/>
@@ -85,13 +85,13 @@
       <!-- myPatientDB description -->
       <item key="myPatientDB">
         <object uid="myPatientDB" type="::fwData::PatientDB">
-          <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+          <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
             <type mode="reader" />
             <selection mode="exclude" />
             <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
           </service>
-          <service implementation="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoComChannel="yes" />
-          <service uid="myUpdaterComCannelAcq" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+          <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
+          <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
             <target>myUpdaterAcq</target>
           </service>
         </object>
@@ -101,56 +101,56 @@
       <item key="myCompositeVisu">
         <object uid="myCompositeVisu" type="::fwData::Composite">
 
-          <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+          <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
             <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
             <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
           </service>
 
-          <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" priority="0.6"  >
+          <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6"  >
             <mode type="stop" />
             <config>
 
               <object id="myAcquisition" type="::fwData::Acquisition" >
 
-                <service uid="listOrganEditor" implementation="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoComChannel="yes" />
+                <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
 
                 <service uid="mySofaCore"
-                       implementation="::opSofa::SofaCoreSrv"
-                       type="::fwGui::IActionSrv" autoComChannel="yes" >
+                       impl="::opSofa::SofaCoreSrv"
+                       type="::fwGui::IActionSrv" autoConnect="yes" >
                 </service>
 
                 <service uid="mySofaWriter"
-                           implementation="::opSofa::SofaSceneWriterSrv"
-                         type="::io::IWriter" autoComChannel="no" >
+                           impl="::opSofa::SofaSceneWriterSrv"
+                         type="::io::IWriter" autoConnect="no" >
                   <writeTrian>yes</writeTrian>
                   <sceneTemplate>templatetools.xml</sceneTemplate>
                   <useTempPath>yes</useTempPath>
                 </service>
 
                 <service uid="mySofaWriterAction"
-                           implementation="::gui::action::StarterActionService"
-                           type="::fwGui::IActionSrv" autoComChannel="no" >
+                           impl="::gui::action::StarterActionService"
+                           type="::fwGui::IActionSrv" autoConnect="no" >
                   <start uid="mySofaWriter"/>
                   <start uid="mySofaStart"/>
                   <start uid="myUpdaterComCannelSofa"/>
                 </service>
 
                 <!-- <service uid="mySofaReader"
-                                     implementation="::opSofa::SofaSceneReaderSrv"
-                                   type="::io::IReader" autoComChannel="no" >
+                                     impl="::opSofa::SofaSceneReaderSrv"
+                                   type="::io::IReader" autoConnect="no" >
                         </service> -->
 
                 <!-- <service   uid="mySofaReaderAction"
-                                   implementation="::gui::action::StarterActionService"
-                                   type="::fwGui::IActionSrv" autoComChannel="no" >
+                                   impl="::gui::action::StarterActionService"
+                                   type="::fwGui::IActionSrv" autoConnect="no" >
                           <start uid="mySofaReader"/>
                           <start uid="mySofaStart"/>
                           <start uid="myUpdaterComCannelSofa"/>
                         </service> -->
 
                 <service uid="mySofaStart"
-                              implementation="::opSofa::SofaStartSrv"
-                              type="::fwGui::IActionSrv" autoComChannel="no" >
+                              impl="::opSofa::SofaStartSrv"
+                              type="::fwGui::IActionSrv" autoConnect="no" >
                 </service>
 
               </object>
@@ -159,7 +159,7 @@
             
           </service>
 
-          <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+          <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
             <scene>
               <picker id="myPicker" vtkclass="fwVtkCellPicker" />
               <renderer id="default" background="0.0" />
@@ -198,7 +198,7 @@
 
           <item key="view1">
             <object uid="view1" type="::fwData::TransformationMatrix3D">
-              <service uid="myUpdaterComCannelSofa" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
+              <service uid="myUpdaterComCannelSofa" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
                 <target>mySofaCore</target>
               </service>
             </object>
@@ -206,7 +206,7 @@
 
           <item key="tool1Mesh">
             <object uid="tool1Mesh" type="::fwData::Mesh">
-              <service uid="tool1ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no" >
+              <service uid="tool1ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no" >
                 <file>Bundles/opSofa_0-1/cam.trian</file>
               </service>
             </object>
@@ -214,7 +214,7 @@
 
           <item key="tool2Mesh">
             <object uid="tool2Mesh" type="::fwData::Mesh">
-              <service uid="tool2ReaderFile" implementation="::ioData::MeshReaderService" type="::io::IReader" autoComChannel="no" >
+              <service uid="tool2ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no" >
                 <file>Bundles/opSofa_0-1/mors2.trian</file>
               </service>
             </object>

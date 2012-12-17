@@ -408,10 +408,10 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
 
     // Implementation
     ConfigAttribute implType("", false);
-    if (srvElem->hasAttribute("implementation"))
+    if (srvElem->hasAttribute("impl"))
     {
-        ::boost::get<0>(implType) = srvElem->getExistingAttributeValue("implementation");
-        SLM_ASSERT("\"implementation\" attribute is empty.", !::boost::get<0>(implType).empty());
+        ::boost::get<0>(implType) = srvElem->getExistingAttributeValue("impl");
+        SLM_ASSERT("\"impl\" attribute is empty.", !::boost::get<0>(implType).empty());
 
         ::boost::get<1>(implType) = true;
     }
@@ -430,10 +430,11 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     }
 
     // AutoComChannel
-    SLM_ASSERT("Missing attribute \"autoComChannel\".", srvElem->hasAttribute("autoComChannel"));
-    std::string autoComChannel = srvElem->getExistingAttributeValue("autoComChannel");
-    SLM_ASSERT("\"autoComChannel\" attribute must be either \"yes\" or \"no\".",
-               autoComChannel == "yes" || autoComChannel == "no");
+    const ::fwRuntime::ConfigurationElement::AttributePair attribAutoConnect =
+            srvElem->getSafeAttributeValue("autoConnect");
+    std::string autoConnect = attribAutoConnect.second;
+    SLM_ASSERT("\"autoConnect\" attribute must be either \"yes\" or \"no\".",
+                (!attribAutoConnect.first) || autoConnect == "yes" || autoConnect == "no");
 
     // Priority
     ConfigAttribute priority("", false);
@@ -448,7 +449,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     // TODO: have a default implementation of service
     if (!::boost::get<1>(implType))
     {
-        OSLM_FATAL("Requesting default implementation for service of type "  << type << " is not implemented yet.");
+        OSLM_FATAL("Attribute \"impl\" is required for service "  << (::boost::get<1>(uid)?::boost::get<0>(uid):".") );
     }
 
     // Create and bind service
@@ -484,7 +485,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     srv->configure();
 
     // Communication channel
-    if (autoComChannel == "yes")
+    if (autoConnect == "yes")
     {
         this->autoSigSlotConnection(m_configuredObject, srv, priority);
     }

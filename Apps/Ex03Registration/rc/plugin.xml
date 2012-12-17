@@ -61,11 +61,11 @@ Detail of the ToolBar
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex03RegistrationConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
        <config>
            <object type="::fwData::Composite">
 
-            <service uid="MyMainFrame" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+            <service uid="MyMainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Ex03Registration</name>
@@ -77,7 +77,7 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="mainView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Negato1" align="center" />
@@ -90,7 +90,7 @@ Detail of the ToolBar
                 </registry>
             </service>
             <!-- service which create a toolbar -->
-            <service uid="toolBar" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+            <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Load Image" icon="Bundles/Ex03Registration_0-1/icons/icon-load1.png" />
@@ -119,7 +119,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager" >
                         <view caption="Point List 1" selected="yes" />
@@ -135,7 +135,7 @@ Detail of the ToolBar
             </service>
 
             <!-- NEGATO 1 VIEW  (Content of the first Tab)-->
-            <service uid="multiView_negato1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView_negato1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -148,7 +148,7 @@ Detail of the ToolBar
                     <view sid="multiView_negato1_bottom" start="yes" />
                 </registry>
             </service>
-            <service uid="multiView_negato1_bottom" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="multiView_negato1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -163,38 +163,38 @@ Detail of the ToolBar
                     <view sid="distanceNegato1Editor" start="yes" />
                 </registry>
             </service>
-            <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+            <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
                 <snap>
                     <scene uid="negato1" />
                 </snap>
             </service>
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
-            <service uid="actionOpenFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="actionOpenFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="readerPathFile" />
             </service>
 
             <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
-            <service uid="actionOpenMesh1" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="actionOpenMesh1" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="meshReader1" />
             </service>
             <!-- Action to load a mesh in the Tab 2 (Point list 2)  -->
-            <service uid="actionOpenMesh2" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="actionOpenMesh2" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="meshReader2" />
             </service>
 
             <!-- Action to do a fixed translation/rotation on mesh in Point list 2 -->
-            <service uid="TransformAction" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="TransformAction" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="TransformMesh" />
             </service>
 
             <!-- Action to do the registration -->
-            <service uid="RegisterAction" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="RegisterAction" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="PLRegistration" />
             </service>
 
             <!-- Action to do Quit -->
-            <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
 
             <!-- GENERIC SCENE DEFINITION -->
@@ -202,16 +202,16 @@ Detail of the ToolBar
                 <object uid="VisuComposite" type="::fwData::Composite">
 
                     <!-- Service which compute the registration -->
-                    <service uid="PLRegistration" type="::fwServices::IController" implementation="::basicRegistration::SPointListRegistration" autoComChannel="no">
+                    <service uid="PLRegistration" type="::fwServices::IController" impl="::basicRegistration::SPointListRegistration" autoConnect="no">
                         <registeredPoints compositeKey="pointList2" />
                         <referencePoints compositeKey="pointList1" />
                         <matrix compositeKey="registrationMatrix" />
                     </service>
 
-                    <service uid="TransformMesh" type="::fwServices::IController" implementation="::basicRegistration::STransformMesh" autoComChannel="no"/>
+                    <service uid="TransformMesh" type="::fwServices::IController" impl="::basicRegistration::STransformMesh" autoConnect="no"/>
 
                     <!-- Generic Scene (Negato) for the first tab -->
-                    <service uid="negato1" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <service uid="negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
                             <picker id="negato1default" vtkclass="fwVtkCellPicker" />
 
@@ -249,7 +249,7 @@ Detail of the ToolBar
                     </service>
 
                     <!-- Generic Scene (Negato) for the second tab -->
-                    <service uid="negato2" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <service uid="negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
                             <picker id="negato2default" vtkclass="fwVtkCellPicker" />
 
@@ -275,7 +275,7 @@ Detail of the ToolBar
                     </service>
 
                     <!-- Generic Scene (Negato) for the Third tab -->
-                    <service uid="negato3" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <service uid="negato3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negato3default" vtkclass="fwVtkCellPicker" />
@@ -315,20 +315,20 @@ Detail of the ToolBar
                        <!-- Object to store the image loading in the first tab -->
                         <object uid="myImage" type="::fwData::Image">
 
-                            <service uid="MedicalImageSrv" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoComChannel="no" />
+                            <service uid="MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
 
-                            <service uid="readerPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                            <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="reader" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
                             </service>
 
                             <!-- Editors for Negato1 -->
-                            <service uid="slider_negato1" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+                            <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>axial</sliceIndex>
                             </service>
 
-                            <service uid="distanceNegato1Editor" type="::gui::editor::IEditor" implementation="::uiMeasurement::editor::Distance" autoComChannel="no">
+                            <service uid="distanceNegato1Editor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
                                 <placeInScene uid="negato1" />
                             </service>
 
@@ -338,7 +338,7 @@ Detail of the ToolBar
                     <item key="meshOnNegato1">
                          <!-- Object to store the mesh loading in the first tab -->
                         <object uid="meshOnNegato1" type="::fwData::Mesh">
-                            <service uid="meshReader1" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" >
+                            <service uid="meshReader1" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" >
                                 <type mode="reader" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -349,7 +349,7 @@ Detail of the ToolBar
                     <item key="meshOnNegato2">
                         <!-- Object to store the mesh loading in the second tab -->
                         <object uid="myToolMesh" type="::fwData::Mesh">
-                            <service uid="meshReader2" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" >
+                            <service uid="meshReader2" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" >
                                 <type mode="reader" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -360,14 +360,14 @@ Detail of the ToolBar
                     <item key="pointList1">
                         <!-- Object to store the point put in the first tab -->
                         <object type="::fwData::PointList">
-                            <service uid="ActionNewLandmarkPL1" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::SAddLabeledPoint" autoComChannel="no" />
+                            <service uid="ActionNewLandmarkPL1" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::SAddLabeledPoint" autoConnect="no" />
                         </object>
                     </item>
 
                     <item key="pointList2">
                         <!-- Object to store the point put in the first tab -->
                         <object type="::fwData::PointList">
-                            <service uid="ActionNewLandmarkPL2" type="::fwGui::IActionSrv" implementation="::uiMeasurement::action::SAddLabeledPoint" autoComChannel="no" />
+                            <service uid="ActionNewLandmarkPL2" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::SAddLabeledPoint" autoConnect="no" />
                         </object>
                     </item>
 

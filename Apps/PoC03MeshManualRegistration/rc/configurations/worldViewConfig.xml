@@ -1,13 +1,13 @@
 <extension implements="::fwServices::registry::AppConfig">
         <id>worldViewConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
         
 
     <object type="::fwData::Composite">
 
         <!-- MAIN FRAME -->
-        <service uid="worldViewConfigFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="worldViewConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -25,7 +25,7 @@
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">
 
-                <service uid="genericWorld" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                <service uid="genericWorld" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
                         <picker id="myPicker" vtkclass="fwVtkCellPicker" />
 

@@ -1,11 +1,11 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>config02</id>
-    <type>standard</type>
+    <type>parameters</type>
     <config>
 
         <object type="::fwData::Image">
 
-            <service uid="myMainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <service uid="myMainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Tuto 02</name>
@@ -18,9 +18,9 @@
                 </registry>
             </service>
 
-            <service uid="myViewer" implementation="::devForum::tuto02::ImageViewerService" type="::fwRender::IRender" autoComChannel="no" />
+            <service uid="myViewer" impl="::devForum::tuto02::ImageViewerService" type="::fwRender::IRender" autoConnect="no" />
 
-            <service uid="myReader" implementation="::devForum::tuto02::ImageReaderService" type="::io::IReader" autoComChannel="no">
+            <service uid="myReader" impl="::devForum::tuto02::ImageReaderService" type="::io::IReader" autoConnect="no">
                 <filename id="./TutoData/patient1.vtk" />
             </service>
 
