@@ -30,8 +30,8 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager:
 
 MedicalImageManagerSrv::MedicalImageManagerSrv() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
 }
 
 //-----------------------------------------------------------------------------

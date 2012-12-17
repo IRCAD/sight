@@ -26,7 +26,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::BookmarkSrv
 
 BookmarkSrv::BookmarkSrv() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------

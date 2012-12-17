@@ -36,7 +36,7 @@ ImageFromPDBUpdaterSrv::~ImageFromPDBUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void ImageFromPDBUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void ImageFromPDBUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   ManagedEvents::iterator it = m_managedEvents.begin();

@@ -33,9 +33,9 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager:
 
 SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
+    //handlingEventOff ::fwComEd::CompositeMsg::ADDED_KEYS );
+    //handlingEventOff ::fwComEd::CompositeMsg::REMOVED_KEYS );
+    //handlingEventOff ::fwComEd::CompositeMsg::CHANGED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -45,29 +45,30 @@ SwapperSrv::~SwapperSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void SwapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
-    SLM_FATAL_IF("Received message must be compositeMsg", compositeMsg == 0 );
-
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+    if (compositeMsg)
     {
-        ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
-        this->addObjects( fields );
-    }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+        {
+            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
+            this->addObjects( fields );
+        }
 
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
-    {
-        ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
-        this->removeObjects( fields );
-    }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
+        {
+            ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
+            this->removeObjects( fields );
+        }
 
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
-    {
-        ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
-        this->swapObjects( fields );
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
+        {
+            ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
+            this->swapObjects( fields );
+        }
     }
 }
 
@@ -102,11 +103,9 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
         {
             OSLM_ASSERT("SubService on "<< iterMap->first <<" expired !", subSrv->getService() );
 
-            if( subSrv->m_hasComChannel )
+            if( subSrv->m_hasAutoConnection )
             {
-                subSrv->getComChannel()->stop();
-                ::fwServices::OSR::unregisterService(subSrv->getComChannel());
-                subSrv->m_comChannel.reset();
+                subSrv->m_connections->disconnect();
             }
             subSrv->getService()->stop();
             ::fwServices::OSR::unregisterService(subSrv->getService());
@@ -188,12 +187,12 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 {
     OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(), _elt->getName() == "service" ) ;
     SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") ) ;
-    SLM_ASSERT("Attribute \"implementation\" is missing", _elt->hasAttribute("implementation") ) ;
+    SLM_ASSERT("Attribute \"impl\" is missing", _elt->hasAttribute("impl") ) ;
 
     ::fwServices::IService::sptr service ;
 
     std::string serviceType = _elt->getExistingAttributeValue("type") ;
-    std::string implementationType = _elt->getExistingAttributeValue("implementation");
+    std::string implementationType = _elt->getExistingAttributeValue("impl");
 
     // Add service with possible id
     if( _elt->hasAttribute("uid")  )
@@ -218,26 +217,6 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
     // Configure
     service->configure();
 
-    // Standard communication management
-    SLM_ASSERT("autoComChannel attribute missing in service "<< service->getClassname(), _elt->hasAttribute("autoComChannel"));
-
-    std::string autoComChannel = _elt->getExistingAttributeValue("autoComChannel");
-    SLM_ASSERT("wrong autoComChannel definition", autoComChannel=="yes" || autoComChannel=="no");
-    if(autoComChannel=="yes")
-    {
-        ::fwServices::ComChannelService::sptr comChannel = ::fwServices::registerCommunicationChannel( obj , service);
-        // Add priority for the new comChannel if defined, otherwise the default value is 0.5
-        if( _elt->hasAttribute("priority"))
-        {
-            std::string priorityStr = _elt->getExistingAttributeValue("priority");
-            double priority = ::boost::lexical_cast< double >( priorityStr );
-            if(priority < 0.0) priority = 0.0;
-            if(priority > 1.0) priority = 1.0;
-            comChannel->setPriority(priority);
-        }
-        comChannel->start();
-    }
-
     // Return
     return service ;
 }
@@ -259,22 +238,29 @@ void SwapperSrv::addObject( const std::string objectId, ::fwData::Object::sptr o
         {
             ::fwServices::IService::sptr srv = this->add( object, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
-            srv->configure();
+
             SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
             subSrv->m_config = cfg;
             subSrv->m_service = srv;
+
+            // Standard communication management
+            SLM_ASSERT("autoConnect attribute missing in service "<< srv->getClassname(), cfg->hasAttribute("autoConnect"));
+
+            if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
+            {
+                subSrv->m_hasAutoConnection = true;
+                if (!subSrv->m_connections)
+                {
+                    subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
+                }
+                subSrv->m_connections->connect( object, srv, srv->getObjSrvConnections() );
+            }
 
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
             if (m_mode =="startAndUpdate")
             {
                 subSrv->getService()->update();
-            }
-
-            if ( cfg->hasAttribute("autoComChannel") && cfg->getExistingAttributeValue("autoComChannel") == "yes" )
-            {
-                subSrv->m_hasComChannel = true;
-                subSrv->m_comChannel = ::fwServices::getCommunicationChannel( object, srv);
             }
         }
         m_objectsSubServices[objectId] = subVecSrv;
@@ -314,6 +300,12 @@ void SwapperSrv::swapObject(const std::string objectId, ::fwData::Object::sptr o
                 {
                     subSrv->getService()->swap(object);
                     subSrv->m_dummy.reset();
+
+                    if (subSrv->m_hasAutoConnection)
+                    {
+                        subSrv->m_connections->disconnect();
+                        subSrv->m_connections->connect( object, subSrv->getService(), subSrv->getService()->getObjSrvConnections() );
+                    }
                 }
                 else
                 {
@@ -364,11 +356,9 @@ void SwapperSrv::removeObject( const std::string objectId )
             }
             else
             {
-                if( subSrv->m_hasComChannel )
+                if( subSrv->m_hasAutoConnection )
                 {
-                    subSrv->getComChannel()->stop();
-                    ::fwServices::OSR::unregisterService(subSrv->getComChannel());
-                    subSrv->m_comChannel.reset();
+                    subSrv->m_connections->disconnect();
                 }
 
                 subSrv->getService()->stop();
@@ -413,19 +403,19 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
         {
             ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
-            srv->configure();
+
             SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
             subSrv->m_config = cfg;
             subSrv->m_service = srv;
             subSrv->m_dummy = dummyObj;
+
+            if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
+            {
+                subSrv->m_hasAutoConnection = true;
+            }
+
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
-
-            if ( cfg->hasAttribute("autoComChannel") && cfg->getExistingAttributeValue("autoComChannel") == "yes" )
-            {
-                subSrv->m_hasComChannel = true;
-                subSrv->m_comChannel = ::fwServices::getCommunicationChannel( dummyObj, srv);
-            }
         }
         m_objectsSubServices[objectId] = subVecSrv;
     }

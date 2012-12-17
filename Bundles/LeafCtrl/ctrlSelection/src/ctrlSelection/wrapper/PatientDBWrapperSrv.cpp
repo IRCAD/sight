@@ -31,7 +31,7 @@ namespace wrapper
 PatientDBWrapperSrv::PatientDBWrapperSrv() throw()
 {
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::NEW_OBJECT );
-    addNewHandledEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
+    //handlingEventOff ::fwServices::ObjectMsg::UPDATED_OBJECT );
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::DELETE_OBJECT );
 }
 
@@ -42,7 +42,7 @@ PatientDBWrapperSrv::~PatientDBWrapperSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void PatientDBWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void PatientDBWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

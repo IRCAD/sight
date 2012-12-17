@@ -27,7 +27,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImag
 
 MedicalImageSrv::MedicalImageSrv() throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //handlingEventOff ::fwComEd::ImageMsg::BUFFER );
 }
 
 //-----------------------------------------------------------------------------

@@ -30,9 +30,9 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager:
 
 SField::SField() throw() : m_dummyStopMode(false)
 {
-    this->addNewHandledEvent( ::fwServices::ObjectMsg::ADDED_FIELDS );
-    this->addNewHandledEvent( ::fwServices::ObjectMsg::REMOVED_FIELDS );
-    this->addNewHandledEvent( ::fwServices::ObjectMsg::CHANGED_FIELDS );
+    //this->addNewHandledEvent( ::fwServices::ObjectMsg::ADDED_FIELDS );
+    //this->addNewHandledEvent( ::fwServices::ObjectMsg::REMOVED_FIELDS );
+    //this->addNewHandledEvent( ::fwServices::ObjectMsg::CHANGED_FIELDS );
 }
 
 //-----------------------------------------------------------------------------

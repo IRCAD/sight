@@ -32,7 +32,7 @@ fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater:
 
 SDrop::SDrop() throw()
 {
-    this->addNewHandledEvent("DROPPED_UUID");
+    //this->addNewHandledEvent("DROPPED_UUID");
 }
 
 //-----------------------------------------------------------------------------

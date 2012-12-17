@@ -31,7 +31,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::ImageUpdate
 
 ImageUpdateAxis::ImageUpdateAxis() throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //handlingEventOff ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //-----------------------------------------------------------------------------

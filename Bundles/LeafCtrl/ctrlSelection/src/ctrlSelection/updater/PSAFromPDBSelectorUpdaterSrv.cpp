@@ -156,7 +156,7 @@ void PSAFromPDBSelectorUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
         OSLM_INFO( "Manage event "<< onEvent <<" from this object "<< fromUID <<" and "<< actionType << " "<< patientKey << "  " << studyKey << "  " << acquisitionKey << "  " << patientNameKey << " in my composite.");
         PSAManagedEvent managedEvent (onEvent, fromUID, patientKey, studyKey, acquisitionKey, patientNameKey, patientInfoKey, action);
         m_psaManagedEvents.push_back( managedEvent );
-        addNewHandledEvent( onEvent );
+        //addNewHandledEvent( onEvent );
     }
 }
 

@@ -31,7 +31,7 @@ namespace wrapper
 GraphWrapperSrv::GraphWrapperSrv() throw()
 {
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::NEW_OBJECT );
-    addNewHandledEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
+    //handlingEventOff ::fwServices::ObjectMsg::UPDATED_OBJECT );
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::DELETE_OBJECT );
 }
 

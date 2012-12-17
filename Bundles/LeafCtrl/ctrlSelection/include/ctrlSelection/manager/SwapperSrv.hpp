@@ -8,7 +8,10 @@
 #define _CTRLSELECTION_MANAGER_SWAPPER_HPP_
 
 #include <fwRuntime/ConfigurationElement.hpp>
+
 #include <fwServices/IService.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
+
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
 
@@ -57,11 +60,11 @@ protected:
             <mode type="dummy" />
             <config>
                 <object id="myImage" type="::fwData::Image" >
-                    <service uid="myMedicalImageConverter" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoComChannel="no" />
-                    <service uid="myServices" implementation="..." type="..." autoComChannel="yes" />
+                    <service uid="myMedicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="no" />
+                    <service uid="myServices" impl="..." type="..." autoConnect="yes" />
                 </object>
                 <object id="myAcquisition" type="::fwData::Acquisition" >
-                    <service uid="myServices2" implementation="..." type="..." autoComChannel="yes" />
+                    <service uid="myServices2" impl="..." type="..." autoConnect="yes" />
                 </object>
             </config>
         </service>
@@ -83,7 +86,7 @@ protected:
 
     /// Reacts on specifics event (ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS) and start, stop or swap the managed services
     /// on the objects defined in the message or dummy objects
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -94,25 +97,20 @@ protected:
     {
     public:
 
-        SubService()
-        {
-            m_hasComChannel = false;
-        }
+        SubService() : m_hasAutoConnection(false)
+        {}
 
         ~SubService()
-        { }
+        {}
 
         SPTR (::fwServices::IService) getService()
                     { return m_service.lock(); }
 
-        SPTR (::fwServices::IService) getComChannel()
-                            { return m_comChannel.lock(); }
-
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        WPTR(::fwServices::ComChannelService) m_comChannel;
-        bool m_hasComChannel;
+        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        bool m_hasAutoConnection;
     };
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;

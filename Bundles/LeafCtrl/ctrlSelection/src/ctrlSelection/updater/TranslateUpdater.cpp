@@ -31,9 +31,9 @@ fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater:
 
 TranslateUpdater::TranslateUpdater() throw()
 {
-    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
+    //handlingEventOff::fwComEd::CompositeMsg::ADDED_KEYS);
+    //handlingEventOff::fwComEd::CompositeMsg::CHANGED_KEYS);
+    //handlingEventOff::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //-----------------------------------------------------------------------------

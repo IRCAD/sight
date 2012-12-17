@@ -33,8 +33,8 @@ fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater:
 
 SelectedNodeIOUpdaterSrv::SelectedNodeIOUpdaterSrv() throw()
 {
-    addNewHandledEvent( ::fwComEd::GraphMsg::UNSELECTED_NODE );
-    addNewHandledEvent( ::fwComEd::GraphMsg::SELECTED_NODE );
+    //handlingEventOff ::fwComEd::GraphMsg::UNSELECTED_NODE );
+    //handlingEventOff ::fwComEd::GraphMsg::SELECTED_NODE );
     m_upStream = false;
 }
 

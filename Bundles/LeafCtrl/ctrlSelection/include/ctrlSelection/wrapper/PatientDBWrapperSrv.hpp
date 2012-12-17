@@ -61,7 +61,7 @@ protected:
     /**
      * @brief Convert the Object message with "UPDATED_OBJECT" event sent on PatientDB by PatientDBMsg with "NEW_PATIENT" event
      */
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 
 };
