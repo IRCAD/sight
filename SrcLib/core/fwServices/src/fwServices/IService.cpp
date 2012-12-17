@@ -182,6 +182,10 @@ IService::SharedFutureType IService::start() //throw( ::fwTools::Failed)
         task() ;
         m_globalState = STARTED ;
 
+        if ( ufuture.has_exception() )
+        {
+            ufuture.get();
+        }
         return ::boost::move(ufuture);
     }
     else
@@ -205,6 +209,10 @@ IService::SharedFutureType IService::stop() //throw( ::fwTools::Failed)
         task() ;
         m_globalState = STOPPED ;
 
+        if ( ufuture.has_exception() )
+        {
+            ufuture.get();
+        }
         return ::boost::move(ufuture);
     }
     else
@@ -245,6 +253,10 @@ IService::SharedFutureType IService::update() //throw( ::fwTools::Failed)
         task() ;
         m_updatingState = NOTUPDATING ;
 
+        if ( ufuture.has_exception() )
+        {
+            ufuture.get();
+        }
         return ::boost::move(ufuture);
     }
     else
@@ -270,6 +282,10 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) //throw
         task() ;
         m_globalState = STARTED;
 
+        if ( ufuture.has_exception() )
+        {
+            ufuture.get();
+        }
         return ::boost::move(ufuture);
     }
     else
