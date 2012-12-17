@@ -107,7 +107,7 @@ fwID::IDType fwID::getLightID( Policy  policy ) const
     IDType id = this->getID( policy );
     IDType lightID = id;
 
-    ::boost::regex namespaceRegex ("[:A-Za-z]*::(.*)");
+    ::boost::regex namespaceRegex ("[:A-Za-z0-9]*::(.*)");
     const std::string machine_format("\\1");
     if ( ::boost::regex_match( id, namespaceRegex ) )
     {
