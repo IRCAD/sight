@@ -64,7 +64,7 @@
 
                 <service uid="actionLaunchConfig" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
                     <config id="BasicFrameConfig" />
-                    <replace val="myImage" pattern="SELECTED_UID_myImage" />
+                    <replace val="myImage" pattern="imageUid" />
                 </service>
 
                 <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="mainView" autoConnect="yes">
