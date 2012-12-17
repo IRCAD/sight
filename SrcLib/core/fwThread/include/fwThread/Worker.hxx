@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef __FWTHREAD_WORKER_HXX__
+#define __FWTHREAD_WORKER_HXX__
+
 #include <boost/thread/future.hpp>
 
 #include <fwThread/TaskHandler.hpp>
@@ -34,3 +37,4 @@ template< typename R, typename TASK >
 
 } //namespace fwThread
 
+#endif // __FWTHREAD_WORKER_HXX__
