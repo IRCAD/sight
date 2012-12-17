@@ -20,7 +20,14 @@ template< typename R, typename TASK >
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
-    this->post(ftask);
+    if( ::fwThread::getCurrentThreadId() == this->getThreadId())
+    {
+        ftask();
+    }
+    else
+    {
+        this->post(ftask);
+    }
 
     return ::boost::move(ufuture);
 }
