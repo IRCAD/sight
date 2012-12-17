@@ -97,14 +97,19 @@ protected:
 
 struct WorkerQtInstanciator
 {
-    WorkerQtInstanciator() :
+    WorkerQtInstanciator(bool reg = true) :
         m_qtWorker(::boost::make_shared< WorkerQt >())
     {
         m_qtWorker->init( boost::ref(s_argc), s_argv);
 
-        ::fwServices::registry::ActiveWorkers::getDefault()
-            ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_qtWorker);
+        if(reg)
+        {
+            ::fwServices::registry::ActiveWorkers::getDefault()
+                ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_qtWorker);
+        }
     }
+
+    SPTR(::fwThread::Worker) getWorker();
 
     SPTR(WorkerQt) m_qtWorker;
 
@@ -115,6 +120,11 @@ struct WorkerQtInstanciator
 int WorkerQtInstanciator::s_argc = 0 ;
 char** WorkerQtInstanciator::s_argv = NULL;
 
+
+SPTR(::fwThread::Worker) WorkerQtInstanciator::getWorker()
+{
+    return m_qtWorker;
+}
 
 ::fwThread::Worker::sptr getQtWorker( int &argc, char **argv )
 {
@@ -242,11 +252,15 @@ void WorkerQt::init( int &argc, char **argv )
 WorkerQt::~WorkerQt()
 {
     this->stop();
+    delete m_app;
 }
 
 
 ::fwThread::Worker::FutureType WorkerQt::getFuture()
 {
+    SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
+            ! m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
+
     if (! m_future.valid() )
     {
         ::boost::packaged_task< ExitReturnType > task( ::boost::bind(&QApplication::exec) );
