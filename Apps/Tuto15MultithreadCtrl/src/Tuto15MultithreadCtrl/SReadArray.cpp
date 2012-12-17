@@ -63,7 +63,7 @@ void SReadArray::updating() throw( ::fwTools::Failed )
 
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("MODIFIED_EVENT");
-    sig->emit(msg);
+    sig->asyncEmit(msg);
 }
 
 void SReadArray::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
