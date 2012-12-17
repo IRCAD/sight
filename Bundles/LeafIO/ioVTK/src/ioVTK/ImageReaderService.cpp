@@ -126,7 +126,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
         catch(::fwTools::Failed& e)
         {
             OSLM_TRACE("Error : " << e.what());
-            throw e;
+            FW_RAISE_EXCEPTION(e);
         }
 
         cursor.setDefaultCursor();
@@ -171,7 +171,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
     }
     else
     {
-        throw(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
     }
 
     // Set the image (already created, but empty) that will be modified

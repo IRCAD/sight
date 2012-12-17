@@ -133,7 +133,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path imgFile, ::b
     }
     else
     {
-        throw(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
     }
 
     myWriter->setObject(_pImg);
@@ -187,7 +187,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
         catch(::fwTools::Failed& e)
         {
             OSLM_TRACE("Error : " << e.what());
-            throw e;
+            FW_RAISE_EXCEPTION(e);
         }
         cursor.setDefaultCursor();
     }
