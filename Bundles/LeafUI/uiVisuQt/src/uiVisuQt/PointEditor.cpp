@@ -41,7 +41,7 @@ namespace uiVisu
 
     PointEditor::PointEditor() throw()
     {
-        addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
+//        addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
     }
 
     //------------------------------------------------------------------------------

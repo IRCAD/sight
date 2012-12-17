@@ -29,7 +29,7 @@ namespace visuVTKAdaptor
 InteractorStyle::InteractorStyle() throw()
 {
     m_interactorStyle = NULL;
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

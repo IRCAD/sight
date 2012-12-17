@@ -51,7 +51,7 @@ Video::Video() throw()
     m_texture = vtkTexture::New();
     bText_init  = false;
 
-    addNewHandledEvent( ::fwComEd::VideoMsg::VIDEO_IS_REFRESHED );
+    //addNewHandledEvent( ::fwComEd::VideoMsg::VIDEO_IS_REFRESHED );
 }
 
 //------------------------------------------------------------------------------

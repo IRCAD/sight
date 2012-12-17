@@ -48,11 +48,11 @@ ImagesBlend::ImagesBlend() throw()
     SLM_TRACE_FUNC();
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS           );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS         );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS         );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS           );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS         );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS         );
 }
 
 //------------------------------------------------------------------------------

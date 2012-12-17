@@ -173,9 +173,9 @@ LabeledPointList::LabeledPointList() throw():
     m_rightButtonCommand(0),
     m_needSubservicesDeletion(false)
 {
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 //------------------------------------------------------------------------------

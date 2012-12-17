@@ -49,7 +49,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::SliceListEditor , :
 SliceListEditor::SliceListEditor() throw()
 {
     m_nbSlice = 1;
-    addNewHandledEvent( "SCAN_SHOW" );
+//    addNewHandledEvent( "SCAN_SHOW" );
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ void SliceListEditor::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void SliceListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void SliceListEditor::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );

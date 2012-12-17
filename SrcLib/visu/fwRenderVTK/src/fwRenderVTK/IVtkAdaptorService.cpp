@@ -34,6 +34,7 @@ IVtkAdaptorService::IVtkAdaptorService() throw()
       m_transformId   (""), // by default no Transform
       m_propCollection ( vtkPropCollection::New() )
 {
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 IVtkAdaptorService::~IVtkAdaptorService() throw()
@@ -50,18 +51,7 @@ void IVtkAdaptorService::info(std::ostream &_sstream )
 void IVtkAdaptorService::starting() throw(fwTools::Failed)
 {
     /// Install observation
-    if(m_communicationChannelService.expired())
-    {
-        ::fwServices::IService::sptr          service;
-        ::fwServices::ComChannelService::sptr communicationChannelService;
-        service = ::fwServices::registerCommunicationChannel(this->getObject(), this->getSptr() );
-        communicationChannelService = ::fwServices::ComChannelService::dynamicCast(service);
-
-        communicationChannelService->setPriority(m_comChannelPriority);
-        communicationChannelService->start();
-
-        m_communicationChannelService = communicationChannelService;
-    }
+    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 
     assert( m_renderService.lock() );
 
@@ -74,11 +64,7 @@ void IVtkAdaptorService::starting() throw(fwTools::Failed)
 void IVtkAdaptorService::stopping() throw(fwTools::Failed)
 {
     /// Stop observation
-    if(!m_communicationChannelService.expired())
-    {
-        m_communicationChannelService.lock()->stop();
-        ::fwServices::OSR::unregisterService( m_communicationChannelService.lock() );
-    }
+    m_connections->disconnect();
     doStop();
     requestRender();
 }
@@ -86,6 +72,8 @@ void IVtkAdaptorService::stopping() throw(fwTools::Failed)
 
 void IVtkAdaptorService::swapping() throw(fwTools::Failed)
 {
+    m_connections->disconnect();
+    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
     requestRender();
 }
@@ -100,7 +88,7 @@ void IVtkAdaptorService::updating() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::updating(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void IVtkAdaptorService::receiving(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     doUpdate(msg);
     requestRender();

@@ -48,32 +48,11 @@ protected :
      * @{
      */
 
-    /// This method is used to initialize the container.
-    GUI_API virtual void configuring() throw( ::fwTools::Failed )  = 0 ;
-
-    /**
-     * @brief This method retrieves the container. It must be defined in GuiRegistry.
-     */
-    GUI_API virtual void starting() throw(::fwTools::Failed) = 0 ;
-
-    /// Stops the service and clean the container.
-    GUI_API virtual void stopping() throw(::fwTools::Failed) = 0 ;
-
     /**
      * @brief This method is used to give information about the service. Do nothing.
      * @todo Must be not implemented and class child declaration should be imposed.
      */
     GUI_API virtual void info(std::ostream &_sstream ) ;
-
-    /**
-     * @brief Update/refresh/execute the service on an observation/notification. Do nothing.
-     */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)  = 0 ;
-
-    /**
-     * @brief Update/refresh/execute the service. Do nothing.
-     */
-    GUI_API virtual void updating() throw(::fwTools::Failed)  = 0 ;
 
     ///@}
 

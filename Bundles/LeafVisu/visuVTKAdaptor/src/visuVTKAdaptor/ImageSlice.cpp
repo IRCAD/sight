@@ -57,11 +57,11 @@ ImageSlice::ImageSlice() throw()
     m_useImageTF = false;
 
     // Manage events
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER              );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
-    this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER              );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
+    //this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
 }
 
 //------------------------------------------------------------------------------

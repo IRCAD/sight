@@ -35,7 +35,7 @@ ResetCamera::ResetCamera() throw()
 {
     bCameraReseted = false;
     m_comChannelPriority = 0.1;
-    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+    //addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
 }
 
 //------------------------------------------------------------------------------

@@ -44,14 +44,14 @@ MeshNormals::MeshNormals() throw() : m_normalRepresentation(CELL_NORMAL)
 {
     m_actor = vtkActor::New();
 
-    addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
-    addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
+    //addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
 
-    addNewHandledEvent ("SHOW_CELL_NORMALS");
-    addNewHandledEvent ("SHOW_POINT_NORMALS");
-    addNewHandledEvent ("HIDE_NORMALS");
+    //addNewHandledEvent ("SHOW_CELL_NORMALS");
+    //addNewHandledEvent ("SHOW_POINT_NORMALS");
+    //addNewHandledEvent ("HIDE_NORMALS");
 }
 
 //------------------------------------------------------------------------------

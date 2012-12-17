@@ -37,9 +37,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageTransparency ,
 
 ImageTransparency::ImageTransparency() throw()
 {
-    addNewHandledEvent(::fwComEd::ImageMsg::TRANSPARENCY);
-    addNewHandledEvent(::fwComEd::ImageMsg::VISIBILITY);
-    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
+//    addNewHandledEvent(::fwComEd::ImageMsg::TRANSPARENCY);
+//    addNewHandledEvent(::fwComEd::ImageMsg::VISIBILITY);
+//    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
 }
 
 //------------------------------------------------------------------------------

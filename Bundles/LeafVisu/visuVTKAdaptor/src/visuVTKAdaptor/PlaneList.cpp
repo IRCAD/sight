@@ -170,9 +170,9 @@ protected :
 PlaneList::PlaneList() throw()
     : m_planeCollectionId("")
 {
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE );
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY );
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE );
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY );
 }
 
 //------------------------------------------------------------------------------

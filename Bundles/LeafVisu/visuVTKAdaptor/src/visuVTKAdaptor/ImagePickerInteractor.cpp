@@ -186,10 +186,10 @@ protected :
 ImagePickerInteractor::ImagePickerInteractor() throw()
     : m_priority(0.999)
 {
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    ////handlingEventOff();
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
 }
 
 //------------------------------------------------------------------------------

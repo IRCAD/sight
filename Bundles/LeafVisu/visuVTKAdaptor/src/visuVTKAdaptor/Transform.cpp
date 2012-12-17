@@ -63,7 +63,7 @@ Transform::Transform() throw()
 {
     m_transform = 0;
     m_transformCommand = TransformClallback::New(this);
-    addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------

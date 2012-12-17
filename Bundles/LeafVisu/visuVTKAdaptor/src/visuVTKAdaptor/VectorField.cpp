@@ -52,9 +52,9 @@ VectorField::VectorField() throw()
 
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
 }
 
 //------------------------------------------------------------------------------

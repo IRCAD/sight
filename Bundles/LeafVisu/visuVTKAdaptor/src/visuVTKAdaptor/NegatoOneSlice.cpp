@@ -42,10 +42,10 @@ NegatoOneSlice::NegatoOneSlice() throw()
     m_imageSource = NULL;
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------

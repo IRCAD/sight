@@ -145,7 +145,7 @@ protected :
 PointListInteractor::PointListInteractor() throw()
     : m_priority(0.999)
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

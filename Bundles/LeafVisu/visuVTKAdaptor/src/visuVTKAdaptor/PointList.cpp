@@ -37,9 +37,9 @@ namespace visuVTKAdaptor
 
 PointList::PointList() throw()
 {
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 //------------------------------------------------------------------------------

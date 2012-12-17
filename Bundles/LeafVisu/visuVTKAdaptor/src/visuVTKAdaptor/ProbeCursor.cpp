@@ -169,10 +169,10 @@ ProbeCursor::ProbeCursor() throw()
 , m_cursorMapper  ( vtkPolyDataMapper::New() )
 , m_cursorActor(    vtkActor::New() )
 {
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    ////handlingEventOff();
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
 }
 
 //------------------------------------------------------------------------------

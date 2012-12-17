@@ -396,7 +396,7 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::updating( ::fwServices::ObjectMsg::csptr message ) throw(::fwTools::Failed)
+void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

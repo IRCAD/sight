@@ -44,7 +44,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ShowScanEditor , ::
 
 ShowScanEditor::ShowScanEditor() throw(): m_scanAreShown(true)
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

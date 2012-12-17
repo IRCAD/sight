@@ -88,7 +88,7 @@ protected :
 PlaneInteractor::PlaneInteractor() throw()
 {
     m_priority = 1;
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

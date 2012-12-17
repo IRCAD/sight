@@ -28,8 +28,8 @@ Resection::Resection() throw()
     m_clippingPlanes = "";
     m_sharpEdgeAngle = 50;
     m_autoResetCamera = true;
-    addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
-    addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
+    //addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
+    //addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
 }
 
 //------------------------------------------------------------------------------

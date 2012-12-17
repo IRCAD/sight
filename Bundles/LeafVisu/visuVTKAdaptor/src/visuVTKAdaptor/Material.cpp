@@ -32,7 +32,7 @@ Material::Material() throw()
 {
     m_manageProperty = true;
     m_property = vtkProperty::New();
-    addNewHandledEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------

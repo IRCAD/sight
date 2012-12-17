@@ -33,7 +33,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::BasicFloatEditor , :
 
 BasicFloatEditor::BasicFloatEditor() throw()
 {
-    addNewHandledEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------

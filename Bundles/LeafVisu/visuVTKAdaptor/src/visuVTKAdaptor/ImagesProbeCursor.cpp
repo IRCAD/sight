@@ -167,7 +167,7 @@ ImagesProbeCursor::ImagesProbeCursor() throw()
 , m_cursorMapper  ( vtkPolyDataMapper::New() )
 , m_cursorActor(    vtkActor::New() )
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

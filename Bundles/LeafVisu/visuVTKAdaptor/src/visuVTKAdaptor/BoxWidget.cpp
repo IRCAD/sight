@@ -64,7 +64,7 @@ BoxWidget::BoxWidget() throw()
 {
     m_boxWidgetCommand = BoxClallback::New(this);
 
-    addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------

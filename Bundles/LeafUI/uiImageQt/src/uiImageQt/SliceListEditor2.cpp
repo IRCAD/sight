@@ -47,7 +47,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::SliceListEditor2 , 
 SliceListEditor2::SliceListEditor2() throw()
 {
     m_nbSlice = 1;
-    addNewHandledEvent( "SCAN_SHOW" );
+//    addNewHandledEvent( "SCAN_SHOW" );
 }
 
 //------------------------------------------------------------------------------

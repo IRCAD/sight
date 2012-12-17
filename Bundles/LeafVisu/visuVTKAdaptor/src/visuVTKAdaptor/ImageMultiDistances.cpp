@@ -143,9 +143,9 @@ ImageMultiDistances::ImageMultiDistances() throw():
     m_rightButtonCommand(0),
     m_needSubservicesDeletion(false)
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_DISTANCE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_DISTANCE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE );
 }
 
 //------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageInfo , ::fwDat
 
 ImageInfo::ImageInfo() throw()
 {
-    addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
+//    addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
 }
 
 //------------------------------------------------------------------------------

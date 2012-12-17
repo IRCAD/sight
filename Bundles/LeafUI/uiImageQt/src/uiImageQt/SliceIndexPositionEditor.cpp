@@ -51,9 +51,9 @@ const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 
 SliceIndexPositionEditor::SliceIndexPositionEditor() throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+//    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+//    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+//    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
 }
 
 //------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ void SliceIndexPositionEditor::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void SliceIndexPositionEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::ImageMsg::csptr imageMessage = fwComEd::ImageMsg::dynamicConstCast( _msg );
 

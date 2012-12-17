@@ -182,7 +182,7 @@ ImageLandmarks::ImageLandmarks() throw():
     m_rightButtonCommand(0),
     m_needSubservicesDeletion(false)
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
 }
 
 //------------------------------------------------------------------------------

@@ -68,10 +68,10 @@ namespace visuVTKAdaptor
 
 MeshesBoxWidget::MeshesBoxWidget() throw()
 {
-    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
-    addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-    addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
+    //addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+    //addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
+    //addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
+    //addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
 
     m_boxWidgetCommand = MeshesBoxClallback::New(this);
 }

@@ -46,9 +46,9 @@ namespace visuVTKAdaptor
 
 Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 {
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( "NEW_SPHERE_CONFIG" );
+    ////handlingEventOff();
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    //addNewHandledEvent( "NEW_SPHERE_CONFIG" );
 }
 
 //------------------------------------------------------------------------------

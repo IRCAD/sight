@@ -11,6 +11,7 @@
 
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include "fwRenderVTK/VtkRenderService.hpp"
 #include "fwRenderVTK/config.hpp"
@@ -90,7 +91,7 @@ protected :
     FWRENDERVTK_API void stopping() throw(fwTools::Failed);
     FWRENDERVTK_API void swapping() throw(fwTools::Failed);
     FWRENDERVTK_API void updating() throw(fwTools::Failed);
-    FWRENDERVTK_API void updating(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    FWRENDERVTK_API void receiving(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     //@}
 
 
@@ -104,7 +105,7 @@ protected :
     VtkRenderService::VtkObjectIdType  m_transformId;
     VtkRenderService::wptr             m_renderService;
 
-    IService::wptr m_communicationChannelService;
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 
 
     typedef std::vector < ::fwRenderVTK::IVtkAdaptorService::wptr > ServiceVector;

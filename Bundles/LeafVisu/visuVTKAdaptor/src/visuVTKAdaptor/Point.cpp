@@ -137,7 +137,7 @@ Point::Point() throw() :
     rep->GetMarkerProperty()->SetOpacity(.3);
     rep->SetHandleSize(7);
 
-    addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------

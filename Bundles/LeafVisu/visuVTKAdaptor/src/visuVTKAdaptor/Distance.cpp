@@ -66,7 +66,7 @@ Distance::Distance() throw():
     //m_distanceRepresentation->GetAxis()->GetMapper();
     //m_distanceRepresentation->GetAxis()->SetFontFactor(0.8);
 
-    addNewHandledEvent(::fwComEd::PointMsg::POINT_IS_MODIFIED);
+    //addNewHandledEvent(::fwComEd::PointMsg::POINT_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------

@@ -366,16 +366,16 @@ Mesh::Mesh() throw()
 
     m_transform = vtkTransform::New();
 
-    addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
-    addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
-    addNewHandledEvent ("SHOW_POINT_COLORS");
-    addNewHandledEvent ("SHOW_CELL_COLORS");
-    addNewHandledEvent ("HIDE_COLORS");
+    //addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
+    //addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
+    //addNewHandledEvent ("SHOW_POINT_COLORS");
+    //addNewHandledEvent ("SHOW_CELL_COLORS");
+    //addNewHandledEvent ("HIDE_COLORS");
 }
 
 //------------------------------------------------------------------------------

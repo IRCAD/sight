@@ -74,7 +74,7 @@ protected:
 
     FWRENDERVTK_API virtual void configuring() throw( ::fwTools::Failed) ;
 
-    FWRENDERVTK_API void updating( ::fwServices::ObjectMsg::csptr message ) throw( ::fwTools::Failed);
+    FWRENDERVTK_API void receiving( ::fwServices::ObjectMsg::csptr message ) throw( ::fwTools::Failed);
 
     FWRENDERVTK_API void updating() throw( ::fwTools::Failed);
 

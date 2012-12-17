@@ -60,8 +60,8 @@ WindowLevel::WindowLevel() throw()
     m_useImageGreyLevelTF = false;
 
     this->installTFSelectionEventHandler(this);
-    this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
-    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+//    this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
+//    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
 }
 
 //------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ namespace visuVTKAdaptor
 
 PlaneSelector::PlaneSelector() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

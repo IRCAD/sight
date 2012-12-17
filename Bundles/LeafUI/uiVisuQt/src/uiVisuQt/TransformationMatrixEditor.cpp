@@ -32,7 +32,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::TransformationMatrix
 
 TransformationMatrixEditor::TransformationMatrixEditor() throw()
 {
-    addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
+//    addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------

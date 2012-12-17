@@ -33,7 +33,7 @@ PointLabel::PointLabel() : Text()
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToWorld();
-    addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------

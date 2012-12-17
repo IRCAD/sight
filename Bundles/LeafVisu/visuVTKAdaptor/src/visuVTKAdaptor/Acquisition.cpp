@@ -38,9 +38,9 @@ Acquisition::Acquisition() throw()
 {
     m_clippingPlanes = "";
     m_autoResetCamera = true;
-    addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
-    addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
-    addNewHandledEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS);
+    //addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
+    //addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
+    //addNewHandledEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS);
 }
 
 //------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ void Acquisition::configuring() throw(fwTools::Failed)
 void Acquisition::doStart() throw(fwTools::Failed)
 {
     this->doUpdate();
-    addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
+    //addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
 }
 
 //------------------------------------------------------------------------------

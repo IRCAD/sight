@@ -380,9 +380,9 @@ TriangularMesh::TriangularMesh() throw()
 
     m_transform = vtkTransform::New();
 
-    addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
-    addNewHandledEvent (::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
+    //addNewHandledEvent (::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED );
 }
 
 //------------------------------------------------------------------------------

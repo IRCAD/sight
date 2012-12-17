@@ -41,9 +41,9 @@ NegatoMPR::NegatoMPR() throw() :
     m_allowAlphaInTF = false;
     m_interpolation  = true;
 
-    addNewHandledEvent("SLICE_MODE");
-    addNewHandledEvent("SCAN_SHOW");
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //addNewHandledEvent("SLICE_MODE");
+    //addNewHandledEvent("SCAN_SHOW");
+    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------

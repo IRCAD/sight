@@ -31,13 +31,13 @@ namespace visuVTKAdaptor
 
 PlaneSelectionNotifier::PlaneSelectionNotifier() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE);
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY);
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES );
-    addNewHandledEvent( ::fwComEd::PlaneMsg::START_PLANE_INTERACTION );
-    addNewHandledEvent( ::fwComEd::PlaneMsg::DESELECT_PLANE );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE);
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY);
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES );
+    //addNewHandledEvent( ::fwComEd::PlaneMsg::START_PLANE_INTERACTION );
+    //addNewHandledEvent( ::fwComEd::PlaneMsg::DESELECT_PLANE );
 }
 
 //------------------------------------------------------------------------------
