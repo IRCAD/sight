@@ -310,7 +310,7 @@ void NegatoSlicingInteractor::doStop() throw(fwTools::Failed)
     this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
     this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_vtkObserver);
     this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver);
-//  delete m_vtkObserver;
+    m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }

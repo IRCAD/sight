@@ -150,7 +150,7 @@ void PlaneInteractor::doStop() throw(fwTools::Failed)
         this->getInteractor()->RemoveObservers(vtkCommand::KeyReleaseEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver);
-
+        m_vtkObserver->Delete();
         m_vtkObserver = NULL;
     }
 }

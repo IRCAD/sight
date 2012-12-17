@@ -293,7 +293,7 @@ void ImagesProbeCursor::doStop() throw(fwTools::Failed)
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
-//  delete m_vtkObserver;
+    m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }

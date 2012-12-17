@@ -220,7 +220,7 @@ void NegatoWindowingInteractor::doStop() throw(fwTools::Failed)
     this->getInteractor()->RemoveObservers(START_WINDOWING_EVENT  , m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_WINDOWING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
-//  delete m_vtkObserver;
+    m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }
