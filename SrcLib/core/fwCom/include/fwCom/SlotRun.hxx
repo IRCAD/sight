@@ -208,6 +208,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2, A3 ) >::asyncRun( 
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
     }
 
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
 
     return postWeakCall< void >(
                 m_worker,
@@ -233,6 +234,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void ( A1, A2 ) >::asyncRun( A1 a
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
     }
 
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
 
     return postWeakCall< void >(
                 m_worker,
@@ -258,6 +260,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void ( A1 ) >::asyncRun( A1 args1
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
     }
 
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
 
     return postWeakCall< void >(
                 m_worker,
@@ -283,6 +286,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void () >::asyncRun() const
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
     }
 
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
 
     return postWeakCall< void >(
                 m_worker,
@@ -313,6 +317,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
     }
 
+    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
 
     return postWeakCall< void >(
                 m_worker,
