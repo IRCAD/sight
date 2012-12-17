@@ -21,6 +21,8 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include "fwGuiQt/App.hpp"
+#include "fwGuiQt/util/FuncSlot.hpp"
+
 #include "fwGuiQt/WorkerQt.hpp"
 
 namespace fwGuiQt
@@ -202,10 +204,11 @@ public:
         return m_timerQt->isActive();
     }
 
+protected Q_SLOTS:
+
+    void call();
+
 protected:
-
-    void call(const ::boost::system::error_code & code);
-
 
     /// Copy constructor forbidden.
     TimerQt( const TimerQt& );
@@ -213,8 +216,11 @@ protected:
     /// Copy operator forbidden.
     TimerQt& operator=( const TimerQt& );
 
+    void updatedFunction();
 
     QPointer< QTimer > m_timerQt;
+
+    QPointer< ::fwGuiQt::util::FuncSlot > m_qtFunc;
 };
 
 //------------------------------------------------------------------------------
@@ -289,8 +295,7 @@ void WorkerQt::stop()
 
 SPTR(::fwThread::Timer) WorkerQt::createTimer()
 {
-    return SPTR(::fwThread::Timer)();
-    // return ::boost::make_shared< TimerQt >( /*TODO*/ );
+    return ::boost::make_shared< TimerQt >();
 }
 
 void WorkerQt::post(TaskType handler)
@@ -305,10 +310,14 @@ void WorkerQt::post(TaskType handler)
 TimerQt::TimerQt() :
     m_timerQt( new QTimer(qApp) )
 {
+    m_qtFunc = new ::fwGuiQt::util::FuncSlot();
+    QObject::connect(m_timerQt, SIGNAL(timeout()), m_qtFunc, SLOT(trigger()));
 }
 
 TimerQt::~TimerQt()
 {
+    QObject::disconnect(m_timerQt, SIGNAL(timeout()), m_qtFunc, SLOT(trigger()));
+    m_qtFunc->deleteLater();
     m_timerQt->stop();
     m_timerQt->deleteLater();
 }
@@ -332,11 +341,16 @@ void TimerQt::stop()
 }
 
 
-void TimerQt::call(const ::boost::system::error_code & error)
+void TimerQt::call()
 {
     m_function();
 }
 
+
+void TimerQt::updatedFunction()
+{
+    m_qtFunc->setFunction(m_function);
+}
 
 
 } //namespace fwGuiQt

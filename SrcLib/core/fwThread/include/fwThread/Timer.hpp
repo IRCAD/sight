@@ -59,6 +59,7 @@ public:
     {
         ::fwCore::mt::ScopedLock lock(m_mutex);
         m_function = f;
+        updatedFunction();
     }
 
     /// Returns if the timer mode is 'one shot'.
@@ -83,6 +84,8 @@ protected:
 
     /// Copy operator forbidden.
     Timer& operator=( const Timer& );
+
+    FWTHREAD_API virtual void updatedFunction(){};
 
     /// Timer object.
     //::boost::asio::deadline_timer m_timer;
