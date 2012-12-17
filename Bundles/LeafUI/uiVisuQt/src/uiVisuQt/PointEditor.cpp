@@ -128,16 +128,19 @@ namespace uiVisu
 
         if (interactionMsg)
         {
-            ::fwData::Point::csptr point = interactionMsg->getEventPoint();
-            SLM_ASSERT("Sorry, the object is null", point);
-            if(point)
+            if ( interactionMsg->hasEvent( ::fwComEd::InteractionMsg::MOUSE_MOVE ) )
             {
-                fwVec3d  pointCoord = point->getCoord();
-                m_textCtrl_x->setText(QString("%1").arg(pointCoord[0], 0, 'f', 0));
-                m_textCtrl_y->setText(QString("%1").arg(pointCoord[1], 0, 'f', 0));
-                m_textCtrl_z->setText(QString("%1").arg(pointCoord[2], 0, 'f', 0));
+                ::fwData::Point::csptr point = interactionMsg->getEventPoint();
+                SLM_ASSERT("Sorry, the object is null", point);
+                if(point)
+                {
+                    fwVec3d  pointCoord = point->getCoord();
+                    m_textCtrl_x->setText(QString("%1").arg(pointCoord[0], 0, 'f', 0));
+                    m_textCtrl_y->setText(QString("%1").arg(pointCoord[1], 0, 'f', 0));
+                    m_textCtrl_z->setText(QString("%1").arg(pointCoord[2], 0, 'f', 0));
+                }
+                //        this->updating();
             }
-            //        this->updating();
         }
     }
 
