@@ -258,11 +258,11 @@ WorkerQt::~WorkerQt()
 
 ::fwThread::Worker::FutureType WorkerQt::getFuture()
 {
-    SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
-            ! m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
-
     if (! m_future.valid() )
     {
+        SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
+            ! m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
+
         ::boost::packaged_task< ExitReturnType > task( ::boost::bind(&QApplication::exec) );
 
         ::boost::unique_future< ExitReturnType > ufuture = task.get_future();
