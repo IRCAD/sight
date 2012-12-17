@@ -7,6 +7,7 @@
 #ifndef __FWTHREAD_WORKER_HPP__
 #define __FWTHREAD_WORKER_HPP__
 
+#include <boost/any.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
@@ -28,8 +29,8 @@ class Timer;
 
 /**
  * @class   Worker.
- * @brief   This class creates and manages a thread.
- * Thanks to the post method it is possible to execute handlers on this thread.
+ * @brief   This class creates and manages a task loop.
+ * The default implementation create a loop in a new thread.
  *
  * @author IRCAD (Research and Development Team).
  * @date   2012.
@@ -37,36 +38,48 @@ class Timer;
 class FWTHREAD_CLASS_API Worker : public ::fwCore::BaseObject
 {
 public:
-    typedef ::boost::thread             ThreadType;
-    typedef ::boost::function< void() > HandlerType;
+    typedef ::boost::function< void() > TaskType;
+    typedef ::boost::any                ExitReturnType;
+
+    typedef ::boost::shared_future< ExitReturnType > FutureType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (Worker)(::fwCore::BaseObject), (()), defaultFactory );
 
-    /// Constructor: creates thread dedicated to his m_ioService
-    FWTHREAD_API Worker();
+    Worker(){}
 
-    /// Destructor: stops his m_ioService if it is not stopped
-    FWTHREAD_API virtual ~Worker();
+    /// Waits for the last task to be processed and stops the loop
+    FWTHREAD_API virtual void stop() = 0;
 
-    /// Stops his m_ioService
-    FWTHREAD_API virtual void stop();
+    /// Requests invocation of the given task handler and returns immediately.
+    virtual void post(TaskType handler) = 0;
 
-    /// Requests invocation of the given handler and returns immediately.
-    virtual void post(HandlerType handler) = 0;
+    /**
+     * @brief Requests invocation of the given callable and returns a shared future immediately.
+     *
+     * @tparam R future's value type
+     * @tparam CALLABLE Any type wrappable with a boost::function< void() >
+     *
+     * @returns a boost::shared_future associated with the result of the given callable
+     */
+    template< typename R, typename CALLABLE >
+    ::boost::shared_future< R > postTask(CALLABLE f);
 
-    /// Requests invocation of the given task and returns a shared future immediately.
-    template< typename R, typename TASK >
-    ::boost::shared_future< R > postTask(TASK f);
+    /// Returns the worker's thread id
+    FWTHREAD_API virtual ThreadIdType getThreadId() const = 0;
 
-    /// Returns the m_thread id
-    FWTHREAD_API ThreadIdType getThreadId() const;
-
+    /// Creates and returns a ::fwThread::Timer running in this Worker
     FWTHREAD_API virtual SPTR(::fwThread::Timer) createTimer() = 0;
+
+    /// Returns a boost::shared_future associated with the execution of Worker's loop
+    FWTHREAD_API virtual FutureType getFuture()
+    {
+        return m_future;
+    }
 
 protected:
 
-    friend class Timer;
-
+    /// Creates and returns a new instance of Worker default implementation
+    /// (boost::Asio).
     FWTHREAD_API static SPTR(Worker) defaultFactory();
 
     /// Copy constructor forbidden
@@ -75,9 +88,9 @@ protected:
     /// Copy operator forbidden
     Worker& operator=( const Worker& );
 
-    /// Thread created and managed by the worker.
-    SPTR(ThreadType) m_thread;
 
+    /// Worker's loop future
+    FutureType m_future;
 };
 
 } //namespace fwThread

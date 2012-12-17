@@ -16,24 +16,6 @@ ThreadIdType getCurrentThreadId()
     return ::boost::this_thread::get_id();
 }
 
-Worker::Worker()
-{
-}
-
-Worker::~Worker()
-{
-}
-
-void Worker::stop()
-{
-    m_thread->join();
-}
-
-ThreadIdType Worker::getThreadId() const
-{
-    return m_thread->get_id();
-}
-
 
 //SPTR(Worker) Worker::defaultFactory() => WorkerAsio.cpp
 

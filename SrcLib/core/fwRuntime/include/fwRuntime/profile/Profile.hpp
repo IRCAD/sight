@@ -56,6 +56,8 @@ public:
      */
     FWRUNTIME_API Profile();
 
+    FWRUNTIME_API ~Profile();
+
     /**
      * @brief       Adds a new activator.
      *
@@ -156,6 +158,18 @@ public:
     FWRUNTIME_API void setParams(const ParamsContainer &params);
     FWRUNTIME_API void setParams(int argc, char** argv);
 
+    /**
+     * @brief Returns a reference on internal arg count.
+     * The returned int shall not be modified. This is provided for external
+     * library needs (QApplication contructor for example)
+     */
+    FWRUNTIME_API int& getRawArgCount();
+
+    /**
+     * @brief Returns a raw pointer on internal arguments.
+     * The returned data shall not be modified. This is provided for external
+     * library needs (QApplication contructor for example)
+     */
     FWRUNTIME_API char** getRawParams();
 
 private:
@@ -175,7 +189,10 @@ private:
     std::string         m_sName;        ///< name profile
     std::string         m_sVersion;     ///< profile app version
     bool                m_checkSingleInstance;
+
     ParamsContainer     m_params;
+    int                 m_argc;
+    char              **m_argv;
 
     RunCallbackType m_run;
 };

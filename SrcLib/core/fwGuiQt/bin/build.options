@@ -1,5 +1,19 @@
-USE        = ['boost','qtGui','qtIconenginesPlugins','qtImageformatsPlugins']
-LIB        = ['fwGui_0-1','fwData_0-1', 'fwTools_0-1', 'fwCore_0-1','fwServices_0-1']
+USE        = [
+        'boost',
+        'qtGui',
+        'qtIconenginesPlugins',
+        'qtImageformatsPlugins',
+    ]
+
+LIB        = [
+    'fwGui_0-1',
+    'fwData_0-1',
+    'fwTools_0-1',
+    'fwCore_0-1',
+    'fwServices_0-1',
+    'fwThread_0-1',
+    ]
+
 TYPE       = 'shared'
 GLOBAL_DEF = ['QT_NO_KEYWORDS']
 VERSION    = '0-1'

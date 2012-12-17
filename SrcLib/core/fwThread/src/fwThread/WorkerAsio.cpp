@@ -15,11 +15,12 @@
 namespace fwThread
 {
 
-void WorkerThread( ::boost::asio::io_service & io_service )
+std::size_t WorkerThread( ::boost::asio::io_service & io_service )
 {
     OSLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
-    io_service.run();
+    std::size_t res = io_service.run();
     OSLM_TRACE("Thread " << getCurrentThreadId() <<" Finish");
+    return res;
 }
 
 
@@ -41,14 +42,14 @@ public:
 
     void stop();
 
-    void post(HandlerType handler);
+    void post(TaskType handler);
+
+    ThreadIdType getThreadId() const;
+
+    SPTR(::fwThread::Timer) createTimer();
 
 
 protected:
-
-    friend class ::fwThread::Timer;
-
-    SPTR(::fwThread::Timer) createTimer();
 
     /// Copy constructor forbidden
     WorkerAsio( const WorkerAsio& );
@@ -61,6 +62,9 @@ protected:
 
     /// Class to inform the io_service when it has work to do.
     WorkPtrType m_work;
+
+    /// Thread created and managed by the worker.
+    SPTR(ThreadType) m_thread;
 };
 
 
@@ -146,11 +150,16 @@ protected:
 
 // ---------- WorkerAsio private implementation ----------
 
-WorkerAsio::WorkerAsio(): m_ioService(),
+WorkerAsio::WorkerAsio() :
+    m_ioService(),
     m_work( ::boost::make_shared< WorkType >(::boost::ref(m_ioService)) )
 {
-    m_thread = ::boost::make_shared< ThreadType >(
-            ::boost::bind(&WorkerThread, ::boost::ref(m_ioService)) );
+    ::boost::packaged_task< ::fwThread::Worker::ExitReturnType > task( ::boost::bind(&WorkerThread, ::boost::ref(m_ioService)) );
+    ::boost::unique_future< ::fwThread::Worker::ExitReturnType > ufuture = task.get_future();
+
+    m_thread = ::boost::make_shared< ThreadType >( ::boost::move( task ) );
+
+    m_future = ::boost::move(ufuture);
 }
 
 WorkerAsio::~WorkerAsio()
@@ -172,9 +181,15 @@ SPTR(::fwThread::Timer) WorkerAsio::createTimer()
     return ::boost::make_shared< TimerAsio >(::boost::ref(m_ioService));
 }
 
-void WorkerAsio::post(HandlerType handler)
+void WorkerAsio::post(TaskType handler)
 {
     m_ioService.post(handler);
+}
+
+
+ThreadIdType WorkerAsio::getThreadId() const
+{
+    return m_thread->get_id();
 }
 
 
