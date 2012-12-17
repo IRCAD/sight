@@ -85,10 +85,8 @@ protected:
     /// Copy operator forbidden.
     Timer& operator=( const Timer& );
 
+    /// This method is triggered when Timer's function is changed.
     FWTHREAD_API virtual void updatedFunction(){};
-
-    /// Timer object.
-    //::boost::asio::deadline_timer m_timer;
 
     /// Function object to execute each time the timer expires.
     FunctionType      m_function;

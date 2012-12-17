@@ -54,7 +54,10 @@ public:
     virtual void post(TaskType handler) = 0;
 
     /**
-     * @brief Requests invocation of the given callable and returns a shared future immediately.
+     * @brief Requests invocation of the given callable and returns a shared future.
+     *
+     * Returns immediately if called from another thread. Otherwise, the given callable is called
+     * immediately.
      *
      * @tparam R future's value type
      * @tparam CALLABLE Any type wrappable with a boost::function< void() >
@@ -70,7 +73,10 @@ public:
     /// Creates and returns a ::fwThread::Timer running in this Worker
     FWTHREAD_API virtual SPTR(::fwThread::Timer) createTimer() = 0;
 
-    /// Returns a boost::shared_future associated with the execution of Worker's loop
+    /**
+     * @brief Returns a boost::shared_future associated with the execution of Worker's loop
+     * @warning Calling getFuture() may be blocking if it is required by a specific implementation (for example, the Qt implementation).
+     */
     FWTHREAD_API virtual FutureType getFuture()
     {
         return m_future;
