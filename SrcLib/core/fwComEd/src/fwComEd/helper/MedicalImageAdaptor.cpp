@@ -429,35 +429,21 @@ void MedicalImageAdaptor::installTFSelectionEventHandler( ::fwServices::IService
 
 void MedicalImageAdaptor::installTFObserver( ::fwServices::IService::sptr srv )
 {
-   SLM_FATAL("ToDo support new communication system");
+    SLM_ASSERT( "TF connections already exist", !m_tfConnections);
+    m_tfConnections = ::fwServices::helper::SigSlotConnection::New();
 
-//   SLM_ASSERT( "Sorry TF pool observer already exist", m_tfSelectionComChannelSrv.expired() );
-//   SLM_ASSERT( "Sorry TF observer already exist", m_tfComChannelSrv.expired() );
-//
-//   ::fwServices::IService::sptr comChannel;
-//   comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunctionSelection(), srv );
-//   comChannel->start();
-//   m_tfSelectionComChannelSrv = comChannel;
-//
-//   comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunction(), srv );
-//   comChannel->start();
-//   m_tfComChannelSrv = comChannel;
+    m_tfConnections->connect(this->getTransferFunctionSelection(), ::fwData::Object::s_OBJECT_MODIFIED_SIG,
+                             srv, ::fwServices::IService::s_RECEIVE_SLOT);
+
+    m_tfConnections->connect(this->getTransferFunction(), ::fwData::Object::s_OBJECT_MODIFIED_SIG,
+                             srv, ::fwServices::IService::s_RECEIVE_SLOT);
 }
 
 //------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::removeTFObserver()
 {
-   SLM_FATAL("ToDo support new communication system");
-
-//   SLM_ASSERT( "Sorry, TF pool observer must exist", ! m_tfSelectionComChannelSrv.expired() );
-//   SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
-//
-//   m_tfSelectionComChannelSrv.lock()->stop();
-//   ::fwServices::OSR::unregisterService( m_tfSelectionComChannelSrv.lock() );
-//
-//   m_tfComChannelSrv.lock()->stop();
-//   ::fwServices::OSR::unregisterService( m_tfComChannelSrv.lock() );
+    m_tfConnections->disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -465,10 +451,10 @@ void MedicalImageAdaptor::removeTFObserver()
 bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, ::fwServices::IService::sptr srv)
 {
     bool needUpdate = false;
-    SLM_FATAL("ToDo support new communication system");
-//    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
-//    if(compositeMsg)
-//    {
+    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
+    if(compositeMsg)
+    {
+        SLM_FATAL("ToDo support new communication system");
 //        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
 //        {
 //            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
@@ -529,7 +515,7 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, :
 //                needUpdate = true;
 //            }
 //        }
-//    }
+    }
     return needUpdate;
 }
 

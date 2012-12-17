@@ -14,6 +14,8 @@
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
+#include <fwServices/helper/SigSlotConnection.hpp>
+
 #include "fwComEd/TransferFunctionMsg.hpp"
 #include "fwComEd/helper/ImageGetter.hpp"
 #include "fwComEd/export.hpp"
@@ -251,6 +253,7 @@ private :
 
     //::fwServices::IService::wptr m_tfSelectionComChannelSrv;
     //::fwServices::IService::wptr m_tfComChannelSrv;
+    ::fwServices::helper::SigSlotConnection::sptr m_tfConnections;
 
     /// Transfer function selection
     ::fwData::Composite::wptr m_tfSelection;
