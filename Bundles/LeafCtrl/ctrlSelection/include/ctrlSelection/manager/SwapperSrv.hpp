@@ -62,9 +62,22 @@ protected:
                 <object id="myImage" type="::fwData::Image" >
                     <service uid="myMedicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="no" />
                     <service uid="myServices" impl="..." type="..." autoConnect="yes" />
+
+                    <connect>
+                        <signal>key</signal>
+                        <slot>uid/key</slot>
+                    </connect>
+
                 </object>
                 <object id="myAcquisition" type="::fwData::Acquisition" >
                     <service uid="myServices2" impl="..." type="..." autoConnect="yes" />
+
+                    <proxy channel="...">
+                        <signal>...</signal>
+                        <signal>.../...</signal>
+                        <slot>.../...</slot>
+                        <slot>.../...</slot>
+                    </proxy>
                 </object>
             </config>
         </service>
@@ -116,6 +129,38 @@ protected:
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
     typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
 
+    /// Used to register proxy connection in order to properly disconnect it.
+    struct ProxyConnections
+    {
+        typedef std::string UIDType;
+        typedef std::string KeyType;
+        typedef std::pair<UIDType, KeyType> ProxyEltType;
+        typedef std::vector<ProxyEltType> ProxyEltVectType;
+
+        std::string m_channel;
+        ProxyEltVectType m_slots;
+        ProxyEltVectType m_signals;
+
+        ProxyConnections(const std::string& channel) : m_channel(channel)
+        {}
+
+        ~ProxyConnections()
+        {}
+
+        void addSlotConnection(UIDType uid, KeyType key)
+        {
+            m_slots.push_back(std::make_pair(uid, key));
+        }
+        void addSignalConnection(UIDType uid, KeyType key)
+        {
+            m_signals.push_back(std::make_pair(uid, key));
+        }
+    };
+    typedef std::vector<ProxyConnections> ProxyConnectionsVectType;
+    typedef std::map< ObjectIdType, ProxyConnectionsVectType > ProxyConnectionsMapType;
+    /// Proxy connection information map : used to properly disconnect proxies
+    ProxyConnectionsMapType m_proxyCtns;
+
 
     void initOnDummyObject( std::string objectId );
     void addObjects( ::fwData::Composite::sptr _composite );
@@ -125,7 +170,56 @@ protected:
     void removeObjects( ::fwData::Composite::sptr _composite );
     void removeObject( const std::string objectId );
 
+    /**
+     * @brief Manage all connections define in config associated to object.
+     * Call manageConnection()
+     *
+     * @param objectId Id of the object
+     * @param object Object associated with the id
+     * @param config configuration for this object
+     */
+    void manageConnections(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
+
+    /**
+     * @brief Manage a connection define in config associated to object.
+     *
+     * @param objectId Id of the object
+     * @param object Object associated with the id
+     * @param config configuration for a <connect> tag associated this object
+     */
+    void manageConnection(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
+
+    /// Disconnect all registred connection for objectId.
+    void removeConnections(const std::string &objectId);
+
+    /**
+     * @brief Manage all proxies connections define in config associated to object
+     * Call manageProxy()
+     *
+     * @param objectId Id of the object
+     * @param object Object associated with the id
+     * @param config configuration for this object
+     */
+    void manageProxies(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
+
+    /**
+     * @brief Manage proxy connections define in config associated to object
+     *
+     * @param objectId Id of the object
+     * @param object Object associated with the id
+     * @param config configuration for a <proxy> tag associated this object
+     */
+    void manageProxy(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
+
+    /// Disconnect all proxies associated to objectId;
+    void disconnectProxies(const std::string &objectId);
+
     ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+
+    typedef std::map< ObjectIdType, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+
+    /// Register connection associated to an object. Connections are connected/disconnected when the object is added/removed.
+    ObjectConnectionsMapType m_objectConnections;
 
 private:
 

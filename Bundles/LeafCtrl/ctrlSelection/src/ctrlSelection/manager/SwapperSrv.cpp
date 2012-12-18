@@ -5,6 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
+#include <boost/regex.hpp>
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/HasSlots.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -12,6 +16,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
+#include <fwServices/registry/Proxy.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwData/Composite.hpp>
@@ -96,12 +101,12 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    for( SubServicesMapType::iterator iterMap = m_objectsSubServices.begin(); iterMap != m_objectsSubServices.end(); ++iterMap )
+    BOOST_FOREACH(SubServicesMapType::value_type elt, m_objectsSubServices)
     {
-        SubServicesVecType subServices = iterMap->second;
+        SubServicesVecType subServices = elt.second;
         BOOST_REVERSE_FOREACH( SPTR(SubService) subSrv, subServices )
         {
-            OSLM_ASSERT("SubService on "<< iterMap->first <<" expired !", subSrv->getService() );
+            OSLM_ASSERT("SubService on "<< elt.first <<" expired !", subSrv->getService() );
 
             if( subSrv->m_hasAutoConnection )
             {
@@ -113,6 +118,18 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
         }
     }
     m_objectsSubServices.clear();
+
+    while( !m_objectConnections.empty())
+    {
+        this->removeConnections(m_objectConnections.begin()->first);
+    }
+    SLM_ASSERT("Connections must be empty", m_objectConnections.empty());
+
+    while( !m_proxyCtns.empty())
+    {
+        this->disconnectProxies(m_proxyCtns.begin()->first);
+    }
+    SLM_ASSERT("Proxy connections must be empty", m_proxyCtns.empty());
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +225,9 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
     ::fwRuntime::ConfigurationElement::sptr cfg = _elt;
     if( _elt->hasAttribute("config"))
     {
-        cfg = ::fwRuntime::ConfigurationElement::constCast( ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( _elt->getExistingAttributeValue("config") , implementationType ) );
+        cfg = ::fwRuntime::ConfigurationElement::constCast(
+                ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+                        _elt->getExistingAttributeValue("config") , implementationType ) );
     }
 
     // Set configuration
@@ -244,7 +263,8 @@ void SwapperSrv::addObject( const std::string objectId, ::fwData::Object::sptr o
             subSrv->m_service = srv;
 
             // Standard communication management
-            SLM_ASSERT("autoConnect attribute missing in service "<< srv->getClassname(), cfg->hasAttribute("autoConnect"));
+            SLM_ASSERT("autoConnect attribute missing in service "<< srv->getClassname(),
+                       cfg->hasAttribute("autoConnect"));
 
             if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
             {
@@ -264,6 +284,10 @@ void SwapperSrv::addObject( const std::string objectId, ::fwData::Object::sptr o
             }
         }
         m_objectsSubServices[objectId] = subVecSrv;
+
+
+        this->manageConnections(objectId, object, conf);
+        this->manageProxies(objectId, object, conf);
     }
     else
     {
@@ -284,42 +308,42 @@ void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
 
 void SwapperSrv::swapObject(const std::string objectId, ::fwData::Object::sptr object)
 {
-    if(m_objectsSubServices.find(objectId) != m_objectsSubServices.end())
+    std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
+    BOOST_FOREACH( ConfigurationType cfg, confVec )
     {
-        std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
-        BOOST_FOREACH( ConfigurationType cfg, confVec )
+        this->removeConnections(objectId);
+        this->disconnectProxies(objectId);
+
+        SubServicesVecType subServices = m_objectsSubServices[objectId];
+        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
-            SubServicesVecType subServices = m_objectsSubServices[objectId];
-            BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+            OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
+            OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
+
+            OSLM_TRACE("Swapping subService " << subSrv->getService()->getID() << " on "<< objectId );
+            if(subSrv->getService()->getObject() != object)
             {
-                OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
-                OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
+                subSrv->getService()->swap(object);
+                subSrv->m_dummy.reset();
 
-                OSLM_TRACE("Swapping subService " << subSrv->getService()->getID() << " on "<< objectId );
-                if(subSrv->getService()->getObject() != object)
+                if (subSrv->m_hasAutoConnection)
                 {
-                    subSrv->getService()->swap(object);
-                    subSrv->m_dummy.reset();
-
-                    if (subSrv->m_hasAutoConnection)
-                    {
-                        subSrv->m_connections->disconnect();
-                        subSrv->m_connections->connect( object, subSrv->getService(), subSrv->getService()->getObjSrvConnections() );
-                    }
-                }
-                else
-                {
-                    OSLM_WARN( subSrv->getService()->getID()
-                            << "'s object already is '"
-                            << subSrv->getService()->getObject()->getID()
-                            << "', no need to swap");
+                    subSrv->m_connections->disconnect();
+                    subSrv->m_connections->connect( object, subSrv->getService(),
+                                                    subSrv->getService()->getObjSrvConnections() );
                 }
             }
+            else
+            {
+                OSLM_WARN( subSrv->getService()->getID()
+                           << "'s object already is '"
+                           << subSrv->getService()->getObject()->getID()
+                           << "', no need to swap");
+            }
         }
-    }
-    else
-    {
-        OSLM_INFO("Object "<<objectId<<" not found in managed objects.");
+
+        this->manageConnections(objectId, object, cfg);
+        this->manageProxies(objectId, object, cfg);
     }
 }
 
@@ -341,6 +365,9 @@ void SwapperSrv::removeObject( const std::string objectId )
     {
         ConfigurationType conf = m_managerConfiguration->find("object", "id", objectId).at(0);
         const std::string objectType   = conf->getAttributeValue("type");
+
+        this->removeConnections(objectId);
+        this->disconnectProxies(objectId);
 
         SubServicesVecType subServices = m_objectsSubServices[objectId];
         ::fwData::Object::sptr dummyObj;
@@ -369,6 +396,11 @@ void SwapperSrv::removeObject( const std::string objectId )
         if(!m_dummyStopMode)
         {
             m_objectsSubServices.erase(objectId);
+        }
+        else
+        {
+            this->manageConnections(objectId, dummyObj, conf);
+            this->manageProxies(objectId, dummyObj, conf);
         }
     }
     else
@@ -412,6 +444,7 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
             if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
+                subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
             }
 
             subVecSrv.push_back(subSrv);
@@ -419,6 +452,203 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
         }
         m_objectsSubServices[objectId] = subVecSrv;
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::manageConnections(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
+{
+    BOOST_FOREACH(ConfigurationType connectCfg, config->find("connect"))
+    {
+        this->manageConnection(objectId, object, connectCfg);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::manageConnection(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
+{
+    typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
+    typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
+    typedef std::vector< SlotInfoType > SlotInfoContainerType;
+
+    SignalInfoType signalInfo;
+    SlotInfoContainerType slotInfos;
+
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
+    {
+        SLM_ASSERT("Bad tag '" <<elem->getName() << "', only <signal> or <slot> are allowed.",
+                   elem->getName() == "signal" || elem->getName() == "slot");
+
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+                        !uid.empty() && !key.empty());
+
+            if (elem->getName() == "signal")
+            {
+                SLM_ASSERT("There must be only one signal by connection",
+                           signalInfo.first.empty() && signalInfo.second.empty());
+                signalInfo = std::make_pair(uid, key);
+            }
+            else if (elem->getName() == "slot")
+            {
+                slotInfos.push_back( std::make_pair(uid, key) );
+            }
+        }
+        else
+        {
+            uid = object->getID();
+            key = src;
+            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            SLM_ASSERT("There must be only one signal by connection",
+                       signalInfo.first.empty() && signalInfo.second.empty());
+            signalInfo = std::make_pair(uid, key);
+        }
+    }
+
+    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalInfo.first);
+    ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+
+    ::fwServices::helper::SigSlotConnection::sptr connection;
+    ObjectConnectionsMapType::iterator iter = m_objectConnections.find(objectId);
+    if (iter != m_objectConnections.end())
+    {
+        connection = iter->second;
+    }
+    else
+    {
+        connection = ::fwServices::helper::SigSlotConnection::New();
+        m_objectConnections[objectId] = connection;
+    }
+
+    BOOST_FOREACH(SlotInfoType slotInfo,  slotInfos)
+    {
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
+        ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+
+        connection->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::removeConnections(const std::string &objectId)
+{
+    ObjectConnectionsMapType::iterator iter = m_objectConnections.find(objectId);
+    if (iter != m_objectConnections.end())
+    {
+        ::fwServices::helper::SigSlotConnection::sptr connection = iter->second;
+        connection->disconnect();
+    }
+    m_objectConnections.erase(objectId);
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::manageProxies(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
+{
+    BOOST_FOREACH(ConfigurationType proxyCfg, config->find("proxy"))
+    {
+        this->manageProxy(objectId, object, proxyCfg);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::manageProxy(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
+{
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+    SLM_ASSERT("Missing 'channel' attribute", config->hasAttribute("channel"));
+    const std::string channel = config->getExistingAttributeValue("channel");
+    ProxyConnections proxyCnt(channel);
+
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
+    {
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+                        !uid.empty() && !key.empty());
+
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+
+            if (elem->getName() == "signal")
+            {
+                ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::SignalBase::sptr sig = hasSignals->signal(key);
+                proxy->connect(channel, sig);
+                proxyCnt.addSignalConnection(uid, key);
+            }
+            else if (elem->getName() == "slot")
+            {
+                ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::SlotBase::sptr slot = hasSlots->slot(key);
+                proxy->connect(channel, slot);
+                proxyCnt.addSlotConnection(uid, key);
+            }
+        }
+        else
+        {
+            uid = object->getID();
+            key = src;
+            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            ::fwCom::SignalBase::sptr sig = object->signal(key);
+            proxy->connect(channel, sig);
+            proxyCnt.addSignalConnection(uid, key);
+        }
+    }
+    m_proxyCtns[objectId].push_back(proxyCnt);
+}
+
+//-----------------------------------------------------------------------------
+
+void SwapperSrv::disconnectProxies(const std::string &objectId)
+{
+    ProxyConnectionsMapType::iterator iter = m_proxyCtns.find(objectId);
+    if (iter != m_proxyCtns.end())
+    {
+        ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+        ProxyConnectionsVectType vectProxyConnections = iter->second;
+
+        BOOST_FOREACH(ProxyConnectionsVectType::value_type proxyConnections,  vectProxyConnections)
+        {
+            BOOST_FOREACH(ProxyConnections::ProxyEltType signalElt, proxyConnections.m_signals)
+            {
+                ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalElt.first);
+                ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
+                proxy->disconnect(proxyConnections.m_channel, sig);
+            }
+            BOOST_FOREACH(ProxyConnections::ProxyEltType slotElt, proxyConnections.m_slots)
+            {
+                ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotElt.first);
+                ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
+                proxy->disconnect(proxyConnections.m_channel, slot);
+            }
+        }
+        vectProxyConnections.clear();
+    }
+    m_proxyCtns.erase(objectId);
 }
 
 //-----------------------------------------------------------------------------
