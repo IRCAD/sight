@@ -12,6 +12,11 @@
 
 #include <fwCore/mt/types.hpp>
 
+#ifdef COM_LOG
+#include "fwCom/util/log.hpp"
+#include "fwCom/SlotBase.hpp"
+#endif // COM_LOG
+
 namespace fwCom
 {
 
@@ -34,17 +39,60 @@ struct WeakCall
     WeakCall( const ::boost::shared_ptr< T const > &ptr, ::boost::function< R() > f)
         : m_weakPtr(ptr), m_func(f)
     {
+        OSLM_COM("WeakCall object : " << ptr->getFullClassname() );
+#ifdef COM_LOG
+        this->m_objectType = ptr->getFullClassname();
+        ::fwCom::SlotBase::csptr slot = ::boost::dynamic_pointer_cast< const ::fwCom::SlotBase >(ptr);
+        if(slot)
+        {
+            this->m_objectId = slot->getID();
+        }
+#endif // COM_LOG
     }
 
     WeakCall( const ::boost::shared_ptr< T const > &ptr, ::boost::function< R() > f, ::fwCore::mt::ReadWriteMutex& m)
         : m_weakPtr(ptr), m_func(f), m_lock( ::boost::make_shared< ::fwCore::mt::ReadLock > (::boost::ref(m)) )
     {
+        OSLM_COM("WeakCall object : " << ptr->getFullClassname() );
+#ifdef COM_LOG
+        this->m_objectType = ptr->getFullClassname();
+        ::fwCom::SlotBase::csptr slot = ::boost::dynamic_pointer_cast< const ::fwCom::SlotBase >(ptr);
+        if(slot)
+        {
+            this->m_objectId = slot->getID();
+        }
+#endif // COM_LOG
+    }
+
+    ~WeakCall()
+    {
+
     }
 
     R operator ()() const
     {
-        // will throw an exception if m_weakPtr is expired
-        ::boost::shared_ptr< T const > ptr(this->m_weakPtr);
+        OSLM_COM("WeakCall : trying to execute WeakCall related to :"
+                 << this->m_objectType << ", " << this->m_objectId);
+
+        OSLM_COM_IF( "Failed to execute WeakCall related to :"
+                 << this->m_objectType << ", " << this->m_objectId,
+                 this->m_weakPtr.expired() );
+
+        ::boost::shared_ptr< T const > ptr(this->m_weakPtr.lock());
+
+        if (!ptr)
+        {
+            try
+            {
+                this->m_lock.reset();
+            }
+            catch(...)
+            {
+                // may throw an exception if pointed lock locks a destroyed mutex
+            }
+            // will throw an exception because m_weakPtr is expired
+            ::boost::shared_ptr< T const > ptr(this->m_weakPtr);
+        }
 
         ::boost::shared_ptr< ::fwCore::mt::ReadLock > lock(this->m_lock);
 
@@ -59,6 +107,11 @@ protected:
     mutable ::boost::weak_ptr< T const > m_weakPtr;
     ::boost::function< R() > m_func;
     mutable ::boost::shared_ptr< ::fwCore::mt::ReadLock > m_lock;
+
+#ifdef COM_LOG
+    std::string m_objectType;
+    std::string m_objectId;
+#endif // COM_LOG
 };
 
 
