@@ -139,13 +139,6 @@ private :
     */
     void updateVTKPipeline(bool resetCamera = true);
 
-
-
-    /**
-    * @brief Contains the mesh, and allows to compute normals.
-    */
-    vtkPolyDataNormals* m_normals;
-
     /**
     * @brief the m_bPipelineIsInit value is \b true
     * if the pipeline is initialized.
@@ -159,6 +152,14 @@ private :
 
     CamUpdatedSignalType::sptr m_sigCamUpdated;
 
+    /// To store the polyData
+    vtkSmartPointer<vtkPolyData> m_vtkPolyData;
+
+    /// Vtk mapper
+    vtkSmartPointer<vtkPolyDataMapper> m_mapper;
+
+    /// Hight resolution timer to log information about computing function time
+    ::fwCore::HiResTimer m_hiResTimer;
 };
 
 }

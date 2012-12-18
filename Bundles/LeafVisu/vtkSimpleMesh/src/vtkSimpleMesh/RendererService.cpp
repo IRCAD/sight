@@ -17,6 +17,8 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkTransform.h>
 
+#include <fwCore/HiResTimer.hpp>
+
 #include <fwData/Mesh.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
@@ -164,14 +166,29 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
         }
         else
         {
-            this->updateVTKPipeline();
+            m_vtkPolyData = vtkSmartPointer<vtkPolyData>::New();
+            ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+            {
+                ::fwData::mt::ObjectReadLock lock(mesh);
+                ::vtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
+            }
+            m_mapper->SetInput(m_vtkPolyData);
         }
         m_interactorManager->getInteractor()->Render();
     }
     else if ( meshMsg && meshMsg->hasEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED ) )
     {
+        m_hiResTimer.reset();
+        m_hiResTimer.start();
         this->updateVTKPipeline(false);
+        m_hiResTimer.stop();
+        OSLM_INFO("Vertex updating time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
+
+        m_hiResTimer.reset();
+        m_hiResTimer.start();
         m_interactorManager->getInteractor()->Render();
+        m_hiResTimer.stop();
+        OSLM_INFO("Render time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
     }
 
 }
@@ -181,21 +198,19 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
 void RendererService::initVTKPipeline()
 {
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-    vtkSmartPointer<vtkPolyData> vtk_polyData = vtkSmartPointer<vtkPolyData>::New();
+    m_vtkPolyData = vtkSmartPointer<vtkPolyData>::New();
 
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::vtkIO::helper::Mesh::toVTKMesh( mesh, vtk_polyData);
+        ::vtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
     }
 
-    vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+    m_mapper = vtkPolyDataMapper::New();
 
-    m_normals = vtkPolyDataNormals::New();
-    m_normals->SetInput(vtk_polyData);
-    mapper->SetInputConnection(m_normals->GetOutputPort());
+    m_mapper->SetInput(m_vtkPolyData);
 
     vtkActor* actor =  vtkActor::New();
-    actor->SetMapper( mapper);
+    actor->SetMapper(m_mapper);
 
     // Add the actors
     m_render->AddActor( actor);
@@ -208,8 +223,6 @@ void RendererService::initVTKPipeline()
 
     // Repaint and resize window
     m_render->ResetCamera();
-
-    mapper->Delete();
 }
 
 //-----------------------------------------------------------------------------
@@ -218,14 +231,13 @@ void RendererService::updateVTKPipeline(bool resetCamera)
 {
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
 
-    vtkSmartPointer<vtkPolyData> vtk_polyData = vtkSmartPointer<vtkPolyData>::New();
-
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::vtkIO::helper::Mesh::toVTKMesh( mesh, vtk_polyData);
+        ::vtkIO::helper::Mesh::updatePolyDataPoints(m_vtkPolyData, mesh);
+        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_vtkPolyData, mesh);
+        ::vtkIO::helper::Mesh::updatePolyDataPointColor(m_vtkPolyData, mesh);
+        ::vtkIO::helper::Mesh::updatePolyDataCellNormals(m_vtkPolyData, mesh);
     }
-
-    m_normals->SetInput( vtk_polyData );
 
     if (resetCamera)
     {
