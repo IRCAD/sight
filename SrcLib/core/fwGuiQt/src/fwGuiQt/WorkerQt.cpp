@@ -251,7 +251,7 @@ void WorkerQt::init( int &argc, char **argv )
         m_app->addLibraryPath(pluginDir.absolutePath());
     }
 
-    OSLM_TRACE("Init Qt" << getCurrentThreadId() <<" Finish");
+    OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
 
 }
 
