@@ -38,8 +38,8 @@ struct WorkerQtInstanciator
     SPTR(::fwThread::Worker) getWorker();
     SPTR(WorkerQt) m_qtWorker;
 
-    static int    s_argc;
-    static char **s_argv;
+    FWGUIQT_API static int    s_argc;
+    FWGUIQT_API static char **s_argv;
 };
 
 namespace ut

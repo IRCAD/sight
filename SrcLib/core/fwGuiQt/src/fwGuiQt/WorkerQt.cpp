@@ -97,9 +97,9 @@ protected:
 
 
 
-struct WorkerQtInstanciator
+struct FWGUIQT_CLASS_API WorkerQtInstanciator
 {
-    WorkerQtInstanciator(bool reg = true) :
+    FWGUIQT_API WorkerQtInstanciator(bool reg = true) :
         m_qtWorker(::boost::make_shared< WorkerQt >())
     {
         m_qtWorker->init( boost::ref(s_argc), s_argv);
@@ -111,12 +111,12 @@ struct WorkerQtInstanciator
         }
     }
 
-    SPTR(::fwThread::Worker) getWorker();
+    FWGUIQT_API SPTR(::fwThread::Worker) getWorker();
 
     SPTR(WorkerQt) m_qtWorker;
 
-    static int    s_argc;
-    static char **s_argv;
+    FWGUIQT_API static int    s_argc;
+    FWGUIQT_API static char **s_argv;
 };
 
 int WorkerQtInstanciator::s_argc = 0 ;

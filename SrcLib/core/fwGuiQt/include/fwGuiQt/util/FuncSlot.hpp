@@ -22,12 +22,12 @@ public:
     FWGUIQT_API FuncSlot();
 
     template< typename CALLABLE >
-    FWGUIQT_API FuncSlot(CALLABLE c) : m_func(c)
+    FuncSlot(CALLABLE c) : m_func(c)
     {
     }
 
     template< typename CALLABLE >
-    FWGUIQT_API void setFunction(CALLABLE c)
+    void setFunction(CALLABLE c)
     {
         m_func = c;
     }
