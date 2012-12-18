@@ -42,7 +42,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::OrganMater
 
 OrganMaterialEditor::OrganMaterialEditor() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

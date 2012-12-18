@@ -50,7 +50,7 @@ OrganTransformationEditor::OrganTransformationEditor() throw()
     mpReconstructionListBox( 0 ),
     mpTestButton( 0 )
 {
-    addNewHandledEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION );
+    //addNewHandledEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION );
     this->mSaveCount = 0;
 }
 

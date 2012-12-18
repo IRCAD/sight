@@ -42,9 +42,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiAcquisition::OrganListEdit
 
 OrganListEditor::OrganListEditor() throw()
 {
-    addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
-    addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
-    addNewHandledEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS);
+    //addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
+    //addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
+    //addNewHandledEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS);
 }
 
 //------------------------------------------------------------------------------
@@ -116,14 +116,20 @@ void OrganListEditor::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void OrganListEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void OrganListEditor::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
     if ( acquisitionMsg )
     {
-        if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) ||
-             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) ||
-             acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS))
+        if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) )
+        {
+            this->updating();
+        }
+        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+        {
+            this->updating();
+        }
+        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS) )
         {
             this->updating();
         }

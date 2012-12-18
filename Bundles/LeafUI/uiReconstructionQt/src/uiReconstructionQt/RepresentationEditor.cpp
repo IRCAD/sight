@@ -39,7 +39,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::Representa
 
 RepresentationEditor::RepresentationEditor() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -362,6 +362,7 @@ void RepresentationEditor::onShowNormals(int state )
     {
         case 0:
             m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
+            meshMsg->addEvent("HIDE_NORMALS");
             break;
         case 1:
             m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );

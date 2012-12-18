@@ -37,7 +37,7 @@ ReconstructionFromAcqUpdaterSrv::~ReconstructionFromAcqUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void ReconstructionFromAcqUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void ReconstructionFromAcqUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   ManagedEvents::iterator it = m_managedEvents.begin();
