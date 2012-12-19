@@ -59,9 +59,9 @@ WindowLevel::WindowLevel() throw()
     m_isNotifying = false;
     m_useImageGreyLevelTF = false;
 
-    this->installTFSelectionEventHandler(this);
-//    this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
-//    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    //this->installTFSelectionEventHandler(this);
+    //this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
+    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
 }
 
 //------------------------------------------------------------------------------
@@ -254,32 +254,51 @@ void WindowLevel::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void WindowLevel::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void WindowLevel::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->upadteTFObserver(msg, this->getSptr());
 
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-    if (imageIsValid)
+    if (msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
     {
-        this->updateImageInfos(image);
-        this->updateTransferFunction(image, this->getSptr());
-        this->upadteTFObserver(msg, this->getSptr());
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-        if(m_autoWindowing && msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
+        bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        if (imageIsValid)
         {
-            double min, max;
-            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-            this->updateImageWindowLevel(min, max);
+            this->updateImageInfos(image);
+            this->updateTransferFunction(image, this->getSptr());
+
+
+            if(m_autoWindowing)
+            {
+                double min, max;
+                ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+                this->updateImageWindowLevel(min, max);
+            }
+
+            ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
+            SLM_ASSERT("TransferFunction null pointer", pTF);
+            ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
+            this->onImageWindowLevelChanged( minMax.first, minMax.second );
         }
+        this->setEnabled(imageIsValid);
+
+    }
+    if (msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ))
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+
+        bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        SLM_ASSERT("Image is not valid",imageIsValid);
+        this->updateTransferFunction(image, this->getSptr());
 
         ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
         SLM_ASSERT("TransferFunction null pointer", pTF);
         ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
         this->onImageWindowLevelChanged( minMax.first, minMax.second );
     }
-    this->setEnabled(imageIsValid);
 }
 
 //------------------------------------------------------------------------------

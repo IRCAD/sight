@@ -164,12 +164,12 @@ Volume::Volume() throw() :
 
     // Manage events
     this->installTFSelectionEventHandler(this);
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
-    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-    this->addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
-    this->addNewHandledEvent( "RESET_BOX_WIDGET" );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    //this->addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
+    //this->addNewHandledEvent( "RESET_BOX_WIDGET" );
 }
 
 //------------------------------------------------------------------------------

@@ -67,7 +67,7 @@ void MsgWrapperSrv::configuring()  throw ( ::fwTools::Failed )
 }
 //-----------------------------------------------------------------------------
 
-void MsgWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void MsgWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

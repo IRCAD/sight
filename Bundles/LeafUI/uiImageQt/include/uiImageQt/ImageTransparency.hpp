@@ -51,7 +51,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Receive InteractionMsg and updates text informations
-    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 

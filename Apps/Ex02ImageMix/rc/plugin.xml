@@ -8,7 +8,7 @@
         <config>
 
             <object type="::fwData::Composite">
-                <service uid="MyMainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="MainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Ex02ImageMix</name>
@@ -18,11 +18,11 @@
                         <menuBar />
                     </gui>
                     <registry>
-                        <menuBar sid="myMenuBar" start="yes" />
+                        <menuBar sid="MenuBar" start="yes" />
                         <view sid="mainView" start="yes" />
                     </registry>
                 </service>
-                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <service uid="MenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -78,10 +78,10 @@
                 </service>
 
                 <service uid="action_openBackgroundFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                    <start uid="myReaderBackgroundPatientDB" />
+                    <start uid="readerBackgroundPatientDB" />
                 </service>
                 <service uid="action_openFrontFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                    <start uid="myReaderFrontPatientDB" />
+                    <start uid="readerFrontPatientDB" />
                 </service>
                 <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
@@ -136,67 +136,58 @@
                     </snap>
                 </service>
 
-                <!-- myBackgroundPatientDB description -->
-                <item key="myBackgroundPatientDB">
-                    <object uid="myBackgroundPatientDB" type="::fwData::PatientDB">
-                        <service uid="myReaderBackgroundPatientDB" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                <!-- backgroundPatientDB description -->
+                <item key="backgroundPatientDB">
+                    <object uid="backgroundPatientDB" type="::fwData::PatientDB">
+                        <service uid="readerBackgroundPatientDB" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                             <selection mode="exclude" />
                             <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                         </service>
                         <service uid="newOBject2newBgPatientDB" impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="yes" />
-                        <service uid="myUpdaterComChannelBgImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                            <target>myUpdaterImg</target>
-                        </service>
                     </object>
                 </item>
                 
-                <!-- myFrontPatientDB description -->
-                <item key="myFrontPatientDB">
-                    <object uid="myFrontPatientDB" type="::fwData::PatientDB">
-                        <service uid="myReaderFrontPatientDB" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                <!-- frontPatientDB description -->
+                <item key="frontPatientDB">
+                    <object uid="frontPatientDB" type="::fwData::PatientDB">
+                        <service uid="readerFrontPatientDB" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                             <selection mode="exclude" />
                             <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                         </service>
                         <service uid="newOBject2newFrontPatientDB" impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="yes" />
-                        <service uid="myUpdaterComChannelFrontImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                            <target>myUpdaterImg</target>
-                        </service>
                     </object>
                 </item>
 
                 <!-- CompositeVisu description -->
-                <item key="myCompositeVisu">
-                    <object uid="myCompositeVisu" type="::fwData::Composite">
+                <item key="compositeVisu">
+                    <object uid="compositeVisu" type="::fwData::Composite">
 
-                        <!-- Service to forward received message with specified event to the composite's object with specified key (myFrontImage)
+                        <!-- Service to forward received message with specified event to the composite's object with specified key (frontImage)
                              It is use to forward the slider changes from background image to front image. So the images slider are synchronized. -->
-                        <service uid="myForwarderMsg" impl="::ctrlSelection::wrapper::MsgForwarderSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
-                            <forward compositeKey="myFrontImage" onEvent="SLICE_INDEX" fromUID="*" msgType="::fwComEd::ImageMsg" />
-                            <forward compositeKey="myFrontImage" onEvent="CHANGE_SLICE_TYPE" fromUID="*" msgType="::fwComEd::ImageMsg" />
+                        <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::MsgForwarderSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
+                            <forward compositeKey="frontImage" onEvent="SLICE_INDEX" fromUID="*" msgType="::fwComEd::ImageMsg" />
+                            <forward compositeKey="frontImage" onEvent="CHANGE_SLICE_TYPE" fromUID="*" msgType="::fwComEd::ImageMsg" />
                         </service>
 
                         <!-- Service to add,remove or swap images in composite when a patient is loaded or emptied -->
-                        <service uid="myUpdaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="myBackgroundImage" onEvent="NEW_LOADED_PATIENT" fromUID="myBackgroundPatientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="myBackgroundImage" onEvent="NEW_PATIENT" fromUID="myBackgroundPatientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="myBackgroundImage" onEvent="CLEAR_PATIENT" fromUID="myBackgroundPatientDB" actionType="REMOVE" />
+                        <service uid="updaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="backgroundImage" onEvent="NEW_LOADED_PATIENT" fromUID="backgroundPatientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="backgroundImage" onEvent="NEW_PATIENT" fromUID="backgroundPatientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="backgroundImage" onEvent="CLEAR_PATIENT" fromUID="backgroundPatientDB" actionType="REMOVE" />
 
-                            <update compositeKey="myFrontImage" onEvent="NEW_LOADED_PATIENT" fromUID="myFrontPatientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="myFrontImage" onEvent="NEW_PATIENT" fromUID="myFrontPatientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="myFrontImage" onEvent="CLEAR_PATIENT" fromUID="myFrontPatientDB" actionType="REMOVE" />
+                            <update compositeKey="frontImage" onEvent="NEW_LOADED_PATIENT" fromUID="frontPatientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="frontImage" onEvent="NEW_PATIENT" fromUID="frontPatientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="frontImage" onEvent="CLEAR_PATIENT" fromUID="frontPatientDB" actionType="REMOVE" />
                         </service>
                         
                         <!-- Manager to start/stop/swap services when background/front images are added/deleted/swapped -->
-                        <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6">
+                        <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                             <mode type="stop" />
                             <config>
-                                <object id="myBackgroundImage" type="::fwData::Image">
-                                    <!-- Communication channel from background image to message forwarder service, so that it can receive slider changes message. -->
-                                    <service uid="myForwarderComChannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                                        <target>myForwarderMsg</target>
-                                    </service>
+                                <object id="backgroundImage" type="::fwData::Image">
+  
                                     <service uid="bgImgEditorsView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                                         <gui>
                                             <layout type="::fwGui::LineLayoutManager">
@@ -222,9 +213,14 @@
                                     <service uid="windowLevel" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
                                         <config selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
+                                    
+                                    <connect>
+                                        <signal>objectModified</signal>
+                                        <slot>forwarderMsg/receive</slot>
+                                    </connect>
                                 </object>
 
-                                <object id="myFrontImage" type="::fwData::Image">
+                                <object id="frontImage" type="::fwData::Image">
                                     <service uid="frontImgEditorsView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                                         <gui>
                                             <layout type="::fwGui::LineLayoutManager">
@@ -259,44 +255,44 @@
                         <!-- Generic scene to show merging of backgroung and front images -->
                         <service uid="blendGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
-                                <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                                <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <vtkObject id="imageBlend" class="vtkImageBlend" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                     <config renderer="default" picker="" />
                                 </adaptor>
-                                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myBackgroundImage">
-                                    <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
+                                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
+                                    <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
                                 </adaptor>
                                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                     <config renderer="default" style="InteractorStyle2DForNegato" />
                                 </adaptor>
-                                <adaptor id="bgImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="myBackgroundImage">
-                                    <config renderer="default" picker="myPicker" />
+                                <adaptor id="bgImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
+                                    <config renderer="default" picker="picker" />
                                 </adaptor>
-                                <adaptor id="frontImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="myFrontImage">
-                                    <config renderer="default" picker="myPicker" />
+                                <adaptor id="frontImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
+                                    <config renderer="default" picker="picker" />
                                 </adaptor>
                                 <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                     <config renderer="default" />
                                 </adaptor>
                                 
                                 <!-- Adaptor to show background and front image merge in the same view. -->
-                                <adaptor id="myImagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
+                                <adaptor id="imagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
                                     <config vtkimageregister="imageBlend">
-                                        <image objectId="myBackgroundImage" opacity="1.0" tfalpha="no"
+                                        <image objectId="backgroundImage" opacity="1.0" tfalpha="no"
                                             selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
-                                        <image objectId="myFrontImage" opacity="1.0" tfalpha="yes"
+                                        <image objectId="frontImage" opacity="1.0" tfalpha="yes"
                                             selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
                                     </config>
                                 </adaptor>
                                 
                                 <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
-                                <adaptor id="myImagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
-                                    <config renderer="default" picker="myPicker">
-                                        <image objectId="myBackgroundImage" name="background" />
-                                        <image objectId="myFrontImage" name="front" />
+                                <adaptor id="imagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
+                                    <config renderer="default" picker="picker">
+                                        <image objectId="backgroundImage" name="background" />
+                                        <image objectId="frontImage" name="front" />
                                     </config>
                                 </adaptor>
                             </scene>
@@ -305,21 +301,21 @@
                         <!-- Generic scene for background image -->
                         <service uid="BgImgGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
-                                <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                                <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                     <config renderer="default" picker="" />
                                 </adaptor>
-                                <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myBackgroundImage">
-                                    <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial"
+                                <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
+                                    <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial"
                                             selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
                                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                     <config renderer="default" style="InteractorStyle2DForNegato" />
                                 </adaptor>
-                                <adaptor id="imagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="myBackgroundImage">
-                                    <config renderer="default" picker="myPicker" />
+                                <adaptor id="imagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
+                                    <config renderer="default" picker="picker" />
                                 </adaptor>
                             </scene>
                         </service>
@@ -327,36 +323,40 @@
                         <!-- Generic scene for front image -->
                         <service uid="FrontImgGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
-                                <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                                <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                     <config renderer="default" picker="" />
                                 </adaptor>
-                                <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myFrontImage">
-                                    <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial"
+                                <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="frontImage">
+                                    <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial"
                                             selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
                                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                     <config renderer="default" style="InteractorStyle2DForNegato" />
                                 </adaptor>
-                                <adaptor id="imagePicker2" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="myFrontImage">
-                                    <config renderer="default" picker="myPicker" />
+                                <adaptor id="imagePicker2" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
+                                    <config renderer="default" picker="picker" />
                                 </adaptor>
                             </scene>
                         </service>
                         <item key="TFSelectionsKey">
                             <object uid="TFSelections" type="::fwData::Composite" />
                         </item>
+                        
+                        <proxy channel="updaterChannel">
+                            <signal>backgroundPatientDB/objectModified</signal>
+                            <signal>frontPatientDB/objectModified</signal>
+                            <slot>updaterImg/receive</slot>
+                        </proxy>
                     </object>
                 </item>
 
-                <start uid="MyMainFrame" />
-                <start uid="myUpdaterImg" />
-                <start uid="myManager" />
-                <start uid="myForwarderMsg" />
-                <start uid="myUpdaterComChannelBgImg" />
-                <start uid="myUpdaterComChannelFrontImg" />
+                <start uid="MainFrame" />
+                <start uid="updaterImg" />
+                <start uid="manager" />
+                <start uid="forwarderMsg" />
                 <start uid="newOBject2newBgPatientDB" />
                 <start uid="newOBject2newFrontPatientDB" />
 

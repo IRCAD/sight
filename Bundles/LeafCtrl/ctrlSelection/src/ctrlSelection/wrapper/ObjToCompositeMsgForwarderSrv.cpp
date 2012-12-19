@@ -36,7 +36,7 @@ ObjToCompositeMsgForwarderSrv::~ObjToCompositeMsgForwarderSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void ObjToCompositeMsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);

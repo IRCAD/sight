@@ -42,7 +42,7 @@ GraphWrapperSrv::~GraphWrapperSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void GraphWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void GraphWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

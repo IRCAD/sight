@@ -67,7 +67,7 @@ protected:
     /**
      * @brief Convert the Object message with "UPDATED_OBJECT" event sent on Graph by GraphMsg with "NEW_GRAPH" event
      */
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     // < onEvent, toEvent, msgType >
     typedef ::boost::tuple< std::string, std::string, std::string > EventType;

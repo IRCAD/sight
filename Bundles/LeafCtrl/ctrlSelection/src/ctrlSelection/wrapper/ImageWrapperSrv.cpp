@@ -42,7 +42,7 @@ ImageWrapperSrv::~ImageWrapperSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void ImageWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void ImageWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

@@ -103,12 +103,12 @@ void ImageInfo::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ImageInfo::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::InteractionMsg::csptr interactionMsg = ::fwComEd::InteractionMsg::dynamicConstCast(_msg);
 
-    if (interactionMsg)
+    if (interactionMsg && _msg->hasEvent(::fwComEd::InteractionMsg::MOUSE_MOVE))
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
         bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

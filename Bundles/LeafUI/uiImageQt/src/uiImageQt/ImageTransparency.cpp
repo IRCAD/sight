@@ -170,7 +170,7 @@ void ImageTransparency::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ImageTransparency::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
