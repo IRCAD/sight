@@ -1,460 +1,398 @@
 <plugin id="PoC06Scene2DTF">
 
-<requirement id="servicesReg" />
+    <requirement id="servicesReg" />
 
-<extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>tutoScene2DTFConfig</id>
         <type>parameters</type>
         <config>
 
 
-    <object type="::fwData::Composite">
-    
-        <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" impl="::fwGui::MessageHandler" autoConnect="no" />
-    
-        <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
-            <gui>
-                <frame>
-                    <name>PoC06Scene2DTF</name>
-                    <icon>Bundles/PoC06Scene2DTF_0-1/tuto.ico</icon>
-                    <minSize width="1024" height="600" />
-                </frame>
-                <menuBar />
-            </gui>
-            <registry>
-                <menuBar sid="myMenuBar" start="yes" />
-                <view sid="multiView" start="yes" />
-            </registry>
-        </service>
-        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
-            <gui>
-                <layout>
-                    <menu name="File" />
-                </layout>
-            </gui>
-            <registry>
-                <menu sid="menu_File" start="yes" />
-            </registry>
-        </service>
+            <object type="::fwData::Composite">
 
-        <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
-            <gui>
-                <layout>
-                    <menuItem name="Open file" shortcut="Ctrl+O" />
-                    <separator />
-                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                </layout>
-            </gui>
-            <registry>
-                <menuItem sid="action_openFile" start="yes" />
-                <menuItem sid="action_quit" start="yes" />
-            </registry>
-        </service>
+                <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" impl="::fwGui::MessageHandler" autoConnect="no" />
 
-        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-            <start uid="myReaderPathFile" />
-        </service>
-        <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
-
-        <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
-            <gui>
-                <layout type="::fwGui::CardinalLayoutManager" >
-                    <view align="left" />
-                    <view align="right" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="multiView_scene1" start="yes" />
-                <view sid="multiView_tabScene" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
-            <gui>
-                <layout type="::fwGui::CardinalLayoutManager" >
-                    <view align="center" />
-                    <view align="bottom" minWidth="400" minHeight="30" resizable="no" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="genericScene" start="yes" />
-                <view sid="multiView_scene1_bottom" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="multiView_tabScene" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
-            <gui>
-                <layout type="::fwGui::TabLayoutManager" >
-                    <view caption="TF" selected="yes" />
-                    <view caption="Negato"  />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="multiView_scene2" start="yes" />
-                <view sid="GENERIC_UID_Scene2DNegato" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="multiView_scene2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
-            <gui>
-                <layout type="::fwGui::LineLayoutManager" >
-                    <orientation value="vertical" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="GENERIC_UID_TFEditor" start="no" />
-                <view sid="GENERIC_UID_Scene2D_Shutter" start="no" />
-                <view sid="GENERIC_UID_Scene2D" start="no" />
-            </registry>
-        </service>
-
-        <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager" >
-                    <orientation value="horizontal" />
-                    <view proportion="0" minWidth="30" />
-                    <view proportion="0" minWidth="50" />
-                    <view proportion="1" />
-                    <view proportion="0" minWidth="30" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="sliceListEditor" start="no" />
-                <view sid="showScanEditor" start="no" />
-                <view sid="sliderIndexEditor" start="no" />
-                <view sid="snapshotScene1Editor" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-            <snap>
-                <scene uid="genericScene" />
-            </snap>
-        </service>
-
-        <!-- myPatientDB description -->
-        <item key="myPatientDB">
-            <object uid="myPatientDB" type="::fwData::PatientDB">
-
-                <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
-                    <type mode="reader" />
-                    <selection mode="exclude" />
-                    <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
+                <service uid="IHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                    <gui>
+                        <frame>
+                            <name>PoC06Scene2DTF</name>
+                            <icon>Bundles/PoC06Scene2DTF_0-1/tuto.ico</icon>
+                            <minSize width="1024" height="600" />
+                        </frame>
+                        <menuBar />
+                    </gui>
+                    <registry>
+                        <menuBar sid="menuBar" start="yes" />
+                        <view sid="multiView" start="yes" />
+                    </registry>
                 </service>
-                <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-
-                <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                    <target>myUpdaterAcq</target>
+                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                    <gui>
+                        <layout>
+                            <menu name="File" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menu sid="menu_File" start="yes" />
+                    </registry>
                 </service>
 
-                <service uid="myUpdaterComCannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                    <target>myUpdaterImg</target>
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                    <gui>
+                        <layout>
+                            <menuItem name="Open file" shortcut="Ctrl+O" />
+                            <separator />
+                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="action_openFile" start="yes" />
+                        <menuItem sid="action_quit" start="yes" />
+                    </registry>
                 </service>
 
-            </object>
-        </item>
+                <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                    <start uid="readerPathFile" />
+                </service>
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
-        <item key="TFSelectionsKey">
-            <object uid="TFSelections" type="::fwData::Composite" >
-
-            </object>
-        </item>
-
-        <!-- CompositeVisu description -->
-        <item key="myCompositeVisu">
-            <object uid="myCompositeVisu" type="::fwData::Composite">
-
-                <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
-
-                    <scene>
-
-                        <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true"/>
-
-                        <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
-
-                        <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                        <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                        <axis id="axeHistogramY" origin="0.0" scale="-0.0000025" scaleType="LINEAR" />
-
-                        <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
-                            <config xMin="-500" xMax="500" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" opacity="0.4"
-                                viewportUID="GENERIC_UID_Viewport" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="2"/>
-                        </adaptor>
-
-                        <!--
-                        <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                        </adaptor>
-
-                        <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                        </adaptor>
-                        -->
-
-                        <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
-                            <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5"
-                                pointSize="12" viewportUID="GENERIC_UID_Viewport"
-                                selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                        </adaptor>
-
-                        <!--
-                        <adaptor id="histogram" class="::scene2D::adaptor::Histogram" objectId="myHistogram">
-                            <config xAxis="xAxis" yAxis="axeHistogramY" zValue="1" color="red" opacity="0.5"/>
-                        </adaptor>
-                        -->
-
-                        <!--
-                        <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="myHistogram">
-                            <config xAxis="xAxis" yAxis="axeHistogramY" zValue="4" innerColor="gray" opacity="0.25"
-                                histogramPointUID="GENERIC_UID_HistogramPoint" borderColor="lightGray" borderWidth="3.0" />
-                        </adaptor>
-                        -->
-                       
-                        <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan"
-                                unit="%" align="left" min="0" max="1" step="0.1" viewportUID="GENERIC_UID_Viewport"/>
-                        </adaptor>
-
-                        <!--
-                        <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="myHistogram">
-                            <config xAxis="xAxis" yAxis="axeHistogramY" zValue="8" color="blue" pointSize="10"
-                                viewportUID="GENERIC_UID_Viewport" histogramPointUID="GENERIC_UID_HistogramPoint" />
-                        </adaptor>
-                        -->
-                        
-                        <!--
-                        <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="myHistogram">
-                            <config xAxis="xAxis" yAxis="axeHistogramY" zValue="6" viewportUID="GENERIC_UID_Viewport"
-                                fontSize="5" histogramPointUID="GENERIC_UID_HistogramPoint" />
-                        </adaptor>
-                        -->
-
-                        <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                            <config min="-900" max="1500" interval="100" fontSize="6" align="bottom" unit="Hfd."
-                                viewportUID="GENERIC_UID_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="10"/>
-                        </adaptor>
-
-                        <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                            <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="left" unit="%"
-                                viewportUID="GENERIC_UID_Viewport" color="cyan" xAxis="xAxis" yAxis="yAxis" zValue="10"/>
-                        </adaptor>
-
-                        
-                        <adaptor id="scaleValuesTop" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                            <config min="-900" max="1500" interval="100" fontSize="6" align="top" unit="Hfd."
-                                viewportUID="GENERIC_UID_Viewport" color="red" xAxis="xAxis" yAxis="yAxis" zValue="10"/>
-                        </adaptor>
-                       
-
-                        <adaptor id="scaleValuesRight" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                            <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="right" unit="%"
-                                viewportUID="GENERIC_UID_Viewport" color="yellow" xAxis="xAxis" yAxis="yAxis" zValue="10"/>
-                        </adaptor>
-
-
-                        <adaptor id="axisTestBottom" class="::scene2D::adaptor::Axis" objectId="self">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="bottom" color="red"
-                                tickSize="5" interval="100" viewportUID="GENERIC_UID_Viewport" />
-                        </adaptor>
-
-                        
-                        <adaptor id="axisTestTop" class="::scene2D::adaptor::Axis" objectId="self">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="top" color="green"
-                                tickSize="5" interval="100" viewportUID="GENERIC_UID_Viewport" />
-                        </adaptor>
-                       
-
-                        <adaptor id="axisTestLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="0" max="1.0" align="left" color="cyan"
-                                tickSize="5" interval="0.1" viewportUID="GENERIC_UID_Viewport" />
-                        </adaptor>
-
-                        <adaptor id="axisTestRight" class="::scene2D::adaptor::Axis" objectId="self">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="12" min="0" max="1.0" align="right" color="yellow"
-                                tickSize="5" interval="0.1" viewportUID="GENERIC_UID_Viewport" />
-                        </adaptor>
-
-                        <adaptor id="viewportUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="myViewport">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
-                        </adaptor>
-
-                    </scene>
-
+                <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::CardinalLayoutManager">
+                            <view align="left" />
+                            <view align="right" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="multiView_scene1" start="yes" />
+                        <view sid="multiView_tabScene" start="yes" />
+                    </registry>
                 </service>
 
-                <service uid="GENERIC_UID_Scene2D_Shutter" impl="::scene2D::Render" type="::fwRender::IRender" 
-                    autoConnect="yes">
-
-                    <scene>
-
-                        <scene x="-1100" y="-1.1" width="2100" height="1.2" />
-                        
-                        <viewport id="view1" x="-1100" y="-1.1" width="2100" height="1.2" />
-                        
-                        <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                        <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-                        
-                        <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
-                            <config xMin="-1100" xMax="3000" yMin="0.1" yMax="1.7" xSpacing="500" ySpacing="0.2"
-                                viewportUID="GENERIC_UID_Viewport"
-                                color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
-                        </adaptor>
-
-                        <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
-                        
-                        <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
-                            <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5"
-                                    pointSize="12" viewportUID="GENERIC_UID_Viewport"
-                                    selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                        </adaptor>
-                        
-                        <!--
-                        <adaptor id="histogram" class="::scene2D::adaptor::Histogram" objectId="myHistogram">
-                            <config xAxis="xAxis" yAxis="axeHistogramY" zValue="2" color="green" />
-                        </adaptor>
-                        -->
-
-                        <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="myViewport">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
-                        </adaptor>
-
-                    </scene>
-
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::CardinalLayoutManager">
+                            <view align="center" />
+                            <view align="bottom" minWidth="400" minHeight="30" resizable="no" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="genericScene" start="yes" />
+                        <view sid="multiView_scene1_bottom" start="yes" />
+                    </registry>
                 </service>
 
-                <service uid="GENERIC_UID_Scene2DNegato" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
-
-                    <scene>
-
-                        <scene x="-10" y="-10" width="310" height="310" />
-                        
-                        <viewport id="view1" x="-10" y="-10" width="310" height="310" />
-
-                        <adaptor id="negato" class="::scene2D::adaptor::Negato" objectId="myImage">
-                            <config zValue="0" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                        </adaptor>
-                        
-                        <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                            <config xMin="0" xMax="300" yMin="0" yMax="300" xSpacing="100" ySpacing="100" color="red" zValue="1"
-                                viewportUID="GENERIC_UID_Viewport" />
-                        </adaptor>
-                    </scene>
-
-                </service>
-                
-                <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                    <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
-                    <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+                <service uid="multiView_tabScene" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::TabLayoutManager">
+                            <view caption="TF" selected="yes" />
+                            <view caption="Negato" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="multiView_scene2" start="yes" />
+                        <view sid="GENERIC_UID_Scene2DNegato" start="yes" />
+                    </registry>
                 </service>
 
-                <service uid="myUpdaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                    <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
-                    <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
-                    <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+                <service uid="multiView_scene2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager">
+                            <orientation value="vertical" />
+                            <view proportion="0" />
+                            <view proportion="0" />
+                            <view proportion="1" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="GENERIC_UID_TFEditor" start="no" />
+                        <view sid="GENERIC_UID_Scene2D_Shutter" start="no" />
+                        <view sid="GENERIC_UID_Scene2D" start="no" />
+                    </registry>
                 </service>
 
-                <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6"  >
-                    <mode type="stop" />
-                    <config>
-                        <object id="myImage" type="::fwData::Image">
-                            
-                            <!-- This service convert a simple fwData::Image to medical Image -->
-                            <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="no" />
-                            
-                            <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
-                                <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
-                            </service>
-                            
-                            <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
-                                <negatoAdaptor uid="MPRNegatoScene3D" />
-                            </service>
-                            
-                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
-                                <sliceIndex>axial</sliceIndex>
-                            </service>
-
-                            <service impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
-                                <mode type="stop" />
-                                <config>
-                                    <field id="m_transferFunctionCompositeId" type="::fwData::Composite">
-                                        <service uid="GENERIC_UID_TFEditor" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes">
-                                            <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                                        </service>
-                                    </field>
-                                </config>
-                            </service>
-
-                            <!-- Compute the histogram of 'myImage' and stores it into 'myHistogram'    -->
-                            <!--
-                            <service uid="computeHistogramSrv" type="::fwServices::IController" impl="::scene2D::ComputeHistogramSrv" autoConnect="yes">
-                                <config compositeUID="myCompositeVisu" histogramKey="myHistogram" binsWidth="5.0" />
-                            </service>
-                            -->
-
-                        </object>
-                    </config>
+                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager">
+                            <orientation value="horizontal" />
+                            <view proportion="0" minWidth="30" />
+                            <view proportion="0" minWidth="50" />
+                            <view proportion="1" />
+                            <view proportion="0" minWidth="30" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="sliceListEditor" start="no" />
+                        <view sid="showScanEditor" start="no" />
+                        <view sid="sliderIndexEditor" start="no" />
+                        <view sid="snapshotScene1Editor" start="yes" />
+                    </registry>
                 </service>
 
-                <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
-                    <scene>
-                        <picker id="myPicker" vtkclass="fwVtkCellPicker" />
-
-                        <renderer id="default" background="0.0" />
-                        
-                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                            <config renderer="default" picker="" />
-                        </adaptor>
-
-                        <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
-                            <config renderer="default" picker="" />
-                        </adaptor>
-
-                        <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" 
-                                    selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                        </adaptor>
-                        
-                        <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
-                            <config renderer="default" />
-                        </adaptor>
-                        
-                        <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
-                            <config renderer="default" picker="negato2default" text=""
-                                    selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                        </adaptor>
-                        
-                    </scene>
+                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
+                    <snap>
+                        <scene uid="genericScene" />
+                    </snap>
                 </service>
 
-                <item key="myViewport">
-                    <object uid="GENERIC_UID_Viewport" type="::scene2D::data::Viewport" />
+                <!-- patientDB description -->
+                <item key="patientDB">
+                    <object uid="patientDB" type="::fwData::PatientDB">
+
+                        <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                            <type mode="reader" />
+                            <selection mode="exclude" />
+                            <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
+                        </service>
+                        <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
+
+                    </object>
                 </item>
-                
-                <!--
-                <item key="myHistogramPoint">
-                    <object uid="GENERIC_UID_HistogramPoint" type="::fwData::Point" />
+
+                <item key="TFSelectionsKey">
+                    <object uid="TFSelections" type="::fwData::Composite">
+
+                    </object>
                 </item>
-                -->
+
+                <!-- CompositeVisu description -->
+                <item key="compositeVisu">
+                    <object uid="compositeVisu" type="::fwData::Composite">
+
+                        <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+
+                            <scene>
+
+                                <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true" />
+
+                                <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
+
+                                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                                <axis id="axeHistogramY" origin="0.0" scale="-0.0000025" scaleType="LINEAR" />
+
+                                <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
+                                    <config xMin="-500" xMax="500" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" opacity="0.4" viewportUID="GENERIC_UID_Viewport" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                                </adaptor>
+
+                                <!-- <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self"> <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" /> </adaptor> <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self"> <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" 
+                                    zValue="3" /> </adaptor> -->
+
+                                <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
+                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" viewportUID="GENERIC_UID_Viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                </adaptor>
+
+                                <!-- <adaptor id="histogram" class="::scene2D::adaptor::Histogram" objectId="histogram"> <config xAxis="xAxis" yAxis="axeHistogramY" zValue="1" color="red" opacity="0.5"/> </adaptor> -->
+
+                                <!-- <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="histogram"> <config xAxis="xAxis" yAxis="axeHistogramY" zValue="4" innerColor="gray" opacity="0.25" histogramPointUID="GENERIC_UID_HistogramPoint" borderColor="lightGray" borderWidth="3.0" /> </adaptor> -->
+
+                                <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
+                                    <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" unit="%" align="left" min="0" max="1" step="0.1" viewportUID="GENERIC_UID_Viewport" />
+                                </adaptor>
+
+                                <!-- <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="histogram"> <config xAxis="xAxis" yAxis="axeHistogramY" zValue="8" color="blue" pointSize="10" viewportUID="GENERIC_UID_Viewport" histogramPointUID="GENERIC_UID_HistogramPoint" /> </adaptor> -->
+
+                                <!-- <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="histogram"> <config xAxis="xAxis" yAxis="axeHistogramY" zValue="6" viewportUID="GENERIC_UID_Viewport" fontSize="5" histogramPointUID="GENERIC_UID_HistogramPoint" /> </adaptor> -->
+
+                                <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                                    <config min="-900" max="1500" interval="100" fontSize="6" align="bottom" unit="Hfd." viewportUID="GENERIC_UID_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+                                </adaptor>
+
+                                <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                                    <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="left" unit="%" viewportUID="GENERIC_UID_Viewport" color="cyan" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+                                </adaptor>
+
+
+                                <adaptor id="scaleValuesTop" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                                    <config min="-900" max="1500" interval="100" fontSize="6" align="top" unit="Hfd." viewportUID="GENERIC_UID_Viewport" color="red" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+                                </adaptor>
+
+
+                                <adaptor id="scaleValuesRight" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                                    <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="right" unit="%" viewportUID="GENERIC_UID_Viewport" color="yellow" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+                                </adaptor>
+
+
+                                <adaptor id="axisTestBottom" class="::scene2D::adaptor::Axis" objectId="self">
+                                    <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="bottom" color="red" tickSize="5" interval="100" viewportUID="GENERIC_UID_Viewport" />
+                                </adaptor>
+
+
+                                <adaptor id="axisTestTop" class="::scene2D::adaptor::Axis" objectId="self">
+                                    <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="top" color="green" tickSize="5" interval="100" viewportUID="GENERIC_UID_Viewport" />
+                                </adaptor>
+
+
+                                <adaptor id="axisTestLeft" class="::scene2D::adaptor::Axis" objectId="self">
+                                    <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="0" max="1.0" align="left" color="cyan" tickSize="5" interval="0.1" viewportUID="GENERIC_UID_Viewport" />
+                                </adaptor>
+
+                                <adaptor id="axisTestRight" class="::scene2D::adaptor::Axis" objectId="self">
+                                    <config xAxis="xAxis" yAxis="yAxis" zValue="12" min="0" max="1.0" align="right" color="yellow" tickSize="5" interval="0.1" viewportUID="GENERIC_UID_Viewport" />
+                                </adaptor>
+
+                                <adaptor id="viewportUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
+                                    <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+                                </adaptor>
+
+                            </scene>
+
+                        </service>
+
+                        <service uid="GENERIC_UID_Scene2D_Shutter" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+
+                            <scene>
+
+                                <scene x="-1100" y="-1.1" width="2100" height="1.2" />
+
+                                <viewport id="view1" x="-1100" y="-1.1" width="2100" height="1.2" />
+
+                                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                                <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
+                                    <config xMin="-1100" xMax="3000" yMin="0.1" yMax="1.7" xSpacing="500" ySpacing="0.2" viewportUID="GENERIC_UID_Viewport" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                                </adaptor>
+
+                                <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
+
+                                <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
+                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" viewportUID="GENERIC_UID_Viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                </adaptor>
+
+                                <!-- <adaptor id="histogram" class="::scene2D::adaptor::Histogram" objectId="histogram"> <config xAxis="xAxis" yAxis="axeHistogramY" zValue="2" color="green" /> </adaptor> -->
+
+                                <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
+                                    <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
+                                </adaptor>
+
+                            </scene>
+
+                        </service>
+
+                        <service uid="GENERIC_UID_Scene2DNegato" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+
+                            <scene>
+
+                                <scene x="-10" y="-10" width="310" height="310" />
+
+                                <viewport id="view1" x="-10" y="-10" width="310" height="310" />
+
+                                <adaptor id="negato" class="::scene2D::adaptor::Negato" objectId="image">
+                                    <config zValue="0" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                </adaptor>
+
+                                <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                                    <config xMin="0" xMax="300" yMin="0" yMax="300" xSpacing="100" ySpacing="100" color="red" zValue="1" viewportUID="GENERIC_UID_Viewport" />
+                                </adaptor>
+                            </scene>
+
+                        </service>
+
+                        <service uid="updaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="acquisition" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="acquisition" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                        </service>
+
+                        <service uid="updaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="image" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="image" onEvent="NEW_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="image" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                        </service>
+
+                        <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                            <mode type="stop" />
+                            <config>
+                                <object id="image" type="::fwData::Image">
+
+                                    <!-- This service convert a simple fwData::Image to medical Image -->
+                                    <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+
+                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
+                                        <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                                    </service>
+
+                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
+                                        <negatoAdaptor uid="MPRNegatoScene3D" />
+                                    </service>
+
+                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                                        <sliceIndex>axial</sliceIndex>
+                                    </service>
+
+                                    <service impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                                        <mode type="stop" />
+                                        <config>
+                                            <field id="m_transferFunctionCompositeId" type="::fwData::Composite">
+                                                <service uid="GENERIC_UID_TFEditor" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes">
+                                                    <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                                </service>
+                                            </field>
+                                        </config>
+                                    </service>
+
+                                    <!-- Compute the histogram of 'image' and stores it into 'histogram' -->
+                                    <!-- <service uid="computeHistogramSrv" type="::fwServices::IController" impl="::scene2D::ComputeHistogramSrv" autoConnect="yes"> <config compositeUID="compositeVisu" histogramKey="histogram" binsWidth="5.0" /> </service> -->
+
+                                </object>
+                            </config>
+                        </service>
+
+                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                            <scene>
+                                <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                                <renderer id="default" background="0.0" />
+
+                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                                    <config renderer="default" picker="" />
+                                </adaptor>
+
+                                <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
+                                    <config renderer="default" picker="" />
+                                </adaptor>
+
+                                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                                    <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                </adaptor>
+
+                                <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                    <config renderer="default" />
+                                </adaptor>
+
+                                <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image">
+                                    <config renderer="default" picker="negato2default" text="" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                </adaptor>
+
+                            </scene>
+                        </service>
+
+                        <item key="viewport">
+                            <object uid="GENERIC_UID_Viewport" type="::scene2D::data::Viewport" />
+                        </item>
+
+                        <!-- <item key="histogramPoint"> <object uid="GENERIC_UID_HistogramPoint" type="::fwData::Point" /> </item> -->
+
+                        <connect>
+                            <signal>patientDB/objectModified</signal>
+                            <slot>updaterAcq/receive</slot>
+                            <slot>updaterImg/receive</slot>
+                        </connect>
+
+                    </object>
+                </item>
+
+                <start uid="messageHandler" />
+                <start uid="IHM" />
+                <start uid="GENERIC_UID_Scene2D_Shutter" />
+                <start uid="GENERIC_UID_Scene2D" />
+                <start uid="updaterAcq" />
+                <start uid="updaterImg" />
+                <start uid="manager" />
+                <start uid="newOBject2newPatientDB" />
 
             </object>
-        </item>
-
-        <start uid="messageHandler" />
-        <start uid="MyIHM" />
-        <start uid="GENERIC_UID_Scene2D_Shutter" />
-        <start uid="GENERIC_UID_Scene2D" />
-        <start uid="myUpdaterAcq" />
-        <start uid="myUpdaterImg" />
-        <start uid="myManager" />
-        <start uid="myUpdaterComCannelAcq" />
-        <start uid="myUpdaterComCannelImg" />
-        <start uid="newOBject2newPatientDB"/>
-
-    </object>
 
 
         </config>
