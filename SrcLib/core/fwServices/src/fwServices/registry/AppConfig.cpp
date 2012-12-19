@@ -134,7 +134,9 @@ void AppConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & fieldAdaptors ) const
+::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
+        const std::string & configId,
+        const FieldAdaptorType fieldAdaptors ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     // Get config template

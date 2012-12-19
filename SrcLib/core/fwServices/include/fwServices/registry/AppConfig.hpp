@@ -111,7 +111,8 @@ public:
      * @param replaceFields associations between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & replaceFields ) const;
+    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId,
+            const FieldAdaptorType replaceFields = FieldAdaptorType() ) const;
 
     /**
      * @brief  Return the adapted config with the identifier configId.
