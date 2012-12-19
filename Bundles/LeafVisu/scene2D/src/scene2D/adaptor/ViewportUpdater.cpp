@@ -24,7 +24,7 @@ namespace adaptor
 
 ViewportUpdater::ViewportUpdater() throw()
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //-----------------------------------------------------------------------------

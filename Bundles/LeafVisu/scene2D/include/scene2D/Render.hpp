@@ -14,7 +14,6 @@
 
 
 #include <fwRender/IRender.hpp>
-#include <fwServices/ComChannelService.hpp>
 #include <scene2D/data/Axis.hpp>
 #include <scene2D/data/Viewport.hpp>
 
@@ -170,7 +169,7 @@ protected:
 
     /// If the message is ADDED_KEYS, call the startAdaptorsFromComposite function to start all the adaptors contained
     //  in the message composite.
-    SCENE2D_API void updating( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void receiving( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// ToDo IM
     SCENE2D_API void swapping()    throw ( ::fwTools::Failed );
@@ -215,8 +214,6 @@ private:
         /// The adaptor service.
         WPTR(::scene2D::adaptor::IAdaptor) m_service;
 
-        /// The adaptor comChannel.
-        WPTR(::fwServices::ComChannelService) m_comChannel;
     };
 
     /// Create the QtContainer, the scene, the viewport, the view.

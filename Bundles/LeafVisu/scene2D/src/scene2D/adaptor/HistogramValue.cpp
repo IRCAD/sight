@@ -29,7 +29,7 @@ namespace adaptor
 HistogramValue::HistogramValue() throw()
 : m_color("white"), m_isInteracting(false), m_fontSize(8)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------

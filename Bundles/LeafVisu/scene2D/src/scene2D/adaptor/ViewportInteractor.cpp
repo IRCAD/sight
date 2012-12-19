@@ -23,7 +23,7 @@ namespace adaptor
 ViewportInteractor::ViewportInteractor() throw() :
         m_viewportIsTranslated(false)
 {
-    this->handlingEventOff();
+//    this->handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------

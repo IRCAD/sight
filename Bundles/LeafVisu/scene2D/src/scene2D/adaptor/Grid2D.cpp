@@ -24,7 +24,7 @@ namespace adaptor
 
 Grid2D::Grid2D() throw() : m_xSpacing(10), m_ySpacing(10)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------

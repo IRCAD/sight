@@ -27,7 +27,7 @@ namespace adaptor
 
 Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02), m_color("white")
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //--------------------------------------------------------------------------------------------------

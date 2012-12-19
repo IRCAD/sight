@@ -114,14 +114,17 @@ void BasicFloatEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void BasicFloatEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::FloatMsg::csptr floatMsg = ::fwComEd::FloatMsg::dynamicConstCast(_msg);
 
     if (floatMsg)
     {
-        this->updating();
+        if(floatMsg->hasEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED))
+        {
+            this->updating();
+        }
     }
 }
 

@@ -28,7 +28,7 @@ namespace adaptor
 HistogramCursor::HistogramCursor() throw()
 : m_color("red"), m_borderColor("gray"), m_opacity(0.8), m_pointSize(6)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------

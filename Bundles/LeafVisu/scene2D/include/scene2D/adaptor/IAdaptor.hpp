@@ -80,7 +80,7 @@ protected:
     SCENE2D_API void updating() throw ( ::fwTools::Failed );
 
     /// Call DoUpdate(_msg) function.
-    SCENE2D_API void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Start and stop the IAdaptor.
     SCENE2D_API void swapping() throw ( ::fwTools::Failed );
@@ -146,13 +146,13 @@ protected:
     // viewport is the same as preceding.
     ViewportSizeRatio m_viewportInitialSize;
 
-    typedef std::pair< ::scene2D::adaptor::IAdaptor::wptr, ::fwServices::ComChannelService::wptr > AdaptorAndComType;
+    typedef std::pair< ::scene2D::adaptor::IAdaptor::wptr, ::fwServices::helper::SigSlotConnection::sptr > AdaptorAndComType;
     typedef std::vector< AdaptorAndComType > ManagedAdaptorVector;
 
     /// Return all managed adaptor
     SCENE2D_API ManagedAdaptorVector & getRegisteredServices() { return m_managedAdaptors; };
 
-    /// Register new adaptor and create his communication channel
+    /// Register new adaptor and create his communication
     SCENE2D_API void registerService( ::fwData::Object::sptr obj, ::scene2D::adaptor::IAdaptor::sptr srv );
 
     /// Unregister all adaptors

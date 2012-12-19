@@ -8,6 +8,7 @@
 
 #include <fwData/Composite.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include "scene2D/adaptor/IAdaptor.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
@@ -262,7 +263,7 @@ void IAdaptor::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void IAdaptor::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     doUpdate(_msg);
 }
@@ -309,11 +310,12 @@ void IAdaptor::processInteraction( ::scene2D::data::Event::sptr _event )
 
 void IAdaptor::registerService( ::fwData::Object::sptr obj, ::scene2D::adaptor::IAdaptor::sptr srv )
 {
-    ::fwServices::ComChannelService::sptr comSrv;
-    comSrv = ::fwServices::registerCommunicationChannel( obj, srv );
-    comSrv->start();
+    ::fwServices::helper::SigSlotConnection::NewSptr connection;
+    connection->connect(obj, ::fwData::Object::s_OBJECT_MODIFIED_SIG,
+                        srv, ::fwServices::IService::s_RECEIVE_SLOT);
 
-    AdaptorAndComType info = std::make_pair( srv, comSrv );
+
+    AdaptorAndComType info = std::make_pair( srv, connection );
     m_managedAdaptors.push_back( info );
 }
 
@@ -322,9 +324,8 @@ void IAdaptor::registerService( ::fwData::Object::sptr obj, ::scene2D::adaptor::
 void IAdaptor::unregisterServices()
 {
     BOOST_FOREACH( ManagedAdaptorVector::value_type info, m_managedAdaptors )
-    {
-        info.second.lock()->stop();
-        ::fwServices::OSR::unregisterService( info.second.lock() );
+    {        
+        info.second->disconnect();
 
         info.first.lock()->stop();
         ::fwServices::OSR::unregisterService(info.first.lock());

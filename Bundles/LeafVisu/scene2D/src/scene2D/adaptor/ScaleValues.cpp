@@ -25,7 +25,7 @@ namespace adaptor
 
 ScaleValues::ScaleValues() throw() : m_interval(10), m_step(1), m_fontSize(8), m_displayedUnit(""), m_showUnit(true)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
