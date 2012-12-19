@@ -51,7 +51,7 @@ class SCENE2D_CLASS_API Histogram : public ::scene2D::adaptor::IAdaptor
         SCENE2D_API void configuring()  throw ( ::fwTools::Failed );
         SCENE2D_API void doStart()      throw ( ::fwTools::Failed );
         SCENE2D_API void doUpdate()     throw ( ::fwTools::Failed );
-        SCENE2D_API void doUpdate( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+        SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
         SCENE2D_API void doSwap()       throw ( ::fwTools::Failed );
         SCENE2D_API void doStop()       throw ( ::fwTools::Failed );
 

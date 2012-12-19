@@ -81,7 +81,7 @@ protected:
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
     /// Do nothing.
-    SCENE2D_API void doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Do nothing.
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
@@ -140,7 +140,10 @@ private:
     std::vector<QGraphicsItem*> m_values;
 
     /// Communication channel between this adaptor and the viewport.
-    ::fwServices::ComChannelService::sptr m_comChannel;
+    ::fwCom::Connection m_connection;
+
+    /// fWID of the viewport
+    std::string m_viewportID;
 
     /// The viewport that help us to scale the graphic items which represent axis values.
     ::scene2D::data::Viewport::sptr m_viewport;

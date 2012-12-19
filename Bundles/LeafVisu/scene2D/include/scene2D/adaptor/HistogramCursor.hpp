@@ -52,7 +52,7 @@ protected:
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
     SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-    SCENE2D_API void doUpdate( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
     SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
 
@@ -86,9 +86,13 @@ protected:
 
 private:
 
-    ::fwServices::ComChannelService::sptr m_comChannel;
-
     ::scene2D::data::Viewport::sptr m_viewport;
+
+    /// fWID of the viewport
+    std::string m_viewportID;
+
+    /// Connection to the viewport
+    ::fwCom::Connection m_connection;
 };
 
 

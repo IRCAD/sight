@@ -20,7 +20,9 @@ namespace adaptor
 
 
 IAdaptor::IAdaptor() throw() : m_zValue(0), m_opacity(1)
-{}
+{
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
+}
 
 //-----------------------------------------------------------------------------
 
@@ -251,6 +253,8 @@ void IAdaptor::initializeViewportSize()
 
 void IAdaptor::starting() throw ( ::fwTools::Failed )
 {
+    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+
     doStart();
 }
 
@@ -265,13 +269,15 @@ void IAdaptor::updating() throw ( ::fwTools::Failed )
 
 void IAdaptor::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
-    doUpdate(_msg);
+    doReceive(_msg);
 }
 
 //-----------------------------------------------------------------------------
 
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
+    m_connections->disconnect();
+    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
 }
 
@@ -279,6 +285,7 @@ void IAdaptor::swapping() throw(fwTools::Failed)
 
 void IAdaptor::stopping() throw ( ::fwTools::Failed )
 {
+    m_connections->disconnect();
     doStop();
 
     m_xAxis.reset();
@@ -308,27 +315,19 @@ void IAdaptor::processInteraction( ::scene2D::data::Event::sptr _event )
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::registerService( ::fwData::Object::sptr obj, ::scene2D::adaptor::IAdaptor::sptr srv )
+void IAdaptor::registerService( ::scene2D::adaptor::IAdaptor::sptr srv )
 {
-    ::fwServices::helper::SigSlotConnection::NewSptr connection;
-    connection->connect(obj, ::fwData::Object::s_OBJECT_MODIFIED_SIG,
-                        srv, ::fwServices::IService::s_RECEIVE_SLOT);
-
-
-    AdaptorAndComType info = std::make_pair( srv, connection );
-    m_managedAdaptors.push_back( info );
+    m_managedAdaptors.push_back( srv );
 }
 
 //-----------------------------------------------------------------------------
 
 void IAdaptor::unregisterServices()
 {
-    BOOST_FOREACH( ManagedAdaptorVector::value_type info, m_managedAdaptors )
+    BOOST_FOREACH( ManagedAdaptorVector::value_type adaptor, m_managedAdaptors )
     {        
-        info.second->disconnect();
-
-        info.first.lock()->stop();
-        ::fwServices::OSR::unregisterService(info.first.lock());
+        adaptor.lock()->stop();
+        ::fwServices::OSR::unregisterService(adaptor.lock());
     }
     m_managedAdaptors.clear();
 }

@@ -293,7 +293,7 @@ void Negato::doUpdate() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Negato::doUpdate( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
+void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     if( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE) && m_changeSliceTypeAllowed )

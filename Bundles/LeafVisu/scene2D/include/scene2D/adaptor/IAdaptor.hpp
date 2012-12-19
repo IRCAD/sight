@@ -95,7 +95,7 @@ protected:
     SCENE2D_API virtual void doUpdate() = 0;
 
     /// Pure virtual -> implemented in the subclasses
-    SCENE2D_API virtual void doUpdate( ::fwServices::ObjectMsg::csptr _msg ) = 0;
+    SCENE2D_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) = 0;
 
     /// Pure virtual -> implemented in the subclasses
     SCENE2D_API virtual void doSwap() = 0;
@@ -137,29 +137,31 @@ protected:
     /// Opacity of the adaptor. Default value set to 1 (opaque).
     float m_opacity;
 
-    // Initial size of the widget (view). The goal of keeping a reference on the initial size is to
-    // avoid unwanted scaling onto some objects (such as transfer function points, histogram cursor,
-    // etc) when a resize event is caught.
+    /// Initial size of the widget (view). The goal of keeping a reference on the initial size is to
+    /// avoid unwanted scaling onto some objects (such as transfer function points, histogram cursor,
+    /// etc) when a resize event is caught.
     ViewSizeRatio m_viewInitialSize;
 
-    // Initial size of the viewport. The goal of keeping a reference on the initial size of the
-    // viewport is the same as preceding.
+    /// Initial size of the viewport. The goal of keeping a reference on the initial size of the
+    /// viewport is the same as preceding.
     ViewportSizeRatio m_viewportInitialSize;
 
-    typedef std::pair< ::scene2D::adaptor::IAdaptor::wptr, ::fwServices::helper::SigSlotConnection::sptr > AdaptorAndComType;
-    typedef std::vector< AdaptorAndComType > ManagedAdaptorVector;
+    typedef std::vector< ::scene2D::adaptor::IAdaptor::wptr > ManagedAdaptorVector;
 
     /// Return all managed adaptor
     SCENE2D_API ManagedAdaptorVector & getRegisteredServices() { return m_managedAdaptors; };
 
-    /// Register new adaptor and create his communication
-    SCENE2D_API void registerService( ::fwData::Object::sptr obj, ::scene2D::adaptor::IAdaptor::sptr srv );
+    /// Register new adaptor
+    SCENE2D_API void registerService( ::scene2D::adaptor::IAdaptor::sptr srv );
 
     /// Unregister all adaptors
     SCENE2D_API void unregisterServices();
 private:
 
-    // All managed adaptors & their communication channel
+    /// Register automatic connection on object
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+
+    /// All managed adaptors
     ManagedAdaptorVector m_managedAdaptors;
 
     /// The render that manage the IAdaptor.

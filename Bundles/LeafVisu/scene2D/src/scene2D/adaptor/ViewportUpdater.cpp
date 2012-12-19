@@ -83,7 +83,7 @@ void ViewportUpdater::doUpdate() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ViewportUpdater::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
+void ViewportUpdater::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

@@ -61,10 +61,7 @@ void HistogramValue::configuring() throw( ::fwTools::Failed)
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewport = ::scene2D::data::Viewport::dynamicCast(
-                ::fwTools::fwID::getObject( m_configuration->getAttributeValue("viewportUID") ) );
-        m_comChannel = ::fwServices::registerCommunicationChannel( m_viewport , this->getSptr());
-        m_comChannel->start();
+        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
     }
 
     SLM_ASSERT("'histogramPointUID' attribute is missing.", !m_configuration->getAttributeValue("histogramPointUID").empty());
@@ -97,6 +94,11 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
 
+    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+
+    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+
     // Add the layer containing grid's lines to the scene
     this->getScene2DRender()->getScene()->addItem(m_layer);
 }
@@ -107,8 +109,7 @@ void HistogramValue::doStop() throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    m_comChannel->stop();
-    ::fwServices::OSR::unregisterService( m_comChannel );
+    m_connection.disconnect();
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -176,7 +177,7 @@ void HistogramValue::doUpdate() throw( ::fwTools::Failed)
 }
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
+void HistogramValue::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

@@ -187,7 +187,7 @@ void Grid2D::doUpdate() throw ( ::fwTools::Failed )
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void Grid2D::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

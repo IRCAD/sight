@@ -138,9 +138,6 @@ void GridFromFloat::doStart() throw ( ::fwTools::Failed )
     // Set the pen a style
     m_pen.setStyle(Qt::DashLine);
     this->draw();  
-
-    this->registerService(this->getObject< ::fwData::Float >(),
-                          ::boost::dynamic_pointer_cast< ::scene2D::adaptor::IAdaptor>(this->getSptr()));
 }
 
 void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
@@ -148,7 +145,7 @@ void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 }
 
-void GridFromFloat::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void GridFromFloat::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

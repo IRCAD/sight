@@ -179,7 +179,7 @@ void Histogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
+void Histogram::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

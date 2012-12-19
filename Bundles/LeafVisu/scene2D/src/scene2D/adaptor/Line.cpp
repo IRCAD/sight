@@ -90,7 +90,7 @@ void Line::doUpdate() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 }
 
-void Line::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void Line::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

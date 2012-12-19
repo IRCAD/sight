@@ -515,7 +515,7 @@ CurvedHistogram::Points CurvedHistogram::linearInterpolation( const Point _p1, c
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
+void CurvedHistogram::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

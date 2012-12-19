@@ -91,7 +91,7 @@ protected:
     *
     * Example of configuration
     * @verbatim
-    <service uid="GENERIC_UID_Scene2D" implementation="::scene2D::Render" type="::fwRender::IRender" autoComChannel="yes">
+    <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
 
         <scene>
 
@@ -248,15 +248,14 @@ private:
     void swapAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
 
     /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service corresponding to _object,
-    //  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map,
-    //  create the comChannel and start it.
+    ///  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map.
     void startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _object);
 
     /// Swap the SceneAdaptor2D to _object.
     void swapAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _object);
 
-    /// Stop the associated comChannel, unregister it, stop the adaptor service, unregister it, reset it and erase the SceneAdaptor2D in
-    //  the m_adaptorID2SceneAdaptor2D map.
+    /// Stops the adaptor service, unregister it, reset it and erase the SceneAdaptor2D in
+    ////  the m_adaptorID2SceneAdaptor2D map.
     void stopAdaptor(AdaptorIDType _adaptorID);
 
     typedef std::map< ObjectIDType, std::vector<AdaptorIDType> > ObjectsID2AdaptorIDVector;

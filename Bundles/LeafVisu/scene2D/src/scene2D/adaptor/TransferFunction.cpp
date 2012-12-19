@@ -77,13 +77,12 @@ void TransferFunction::configuring() throw ( ::fwTools::Failed )
         m_pointSize = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("pointSize") );
     }
 
-    SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.", !m_configuration->getAttributeValue("viewportUID").empty());
+    SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
+               !m_configuration->getAttributeValue("viewportUID").empty());
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_configuration->getAttributeValue("viewportUID") ) );
-        m_comChannel = ::fwServices::registerCommunicationChannel( m_viewport , this->getSptr());
-        m_comChannel->start();
+        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
     }
     this->parseTFConfig( m_configuration );
 }
@@ -510,6 +509,11 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
     m_circlePen.setCosmetic( true );
     m_circlePen.setWidthF( 0 );
 
+    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+
+    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+
     this->doUpdate();
     this->installTFObserver( this->getSptr() );
 }
@@ -531,7 +535,7 @@ void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doUpdate( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
+void TransferFunction::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
 {
     if(msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING )
             || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS )
@@ -558,8 +562,7 @@ void TransferFunction::doSwap() throw ( ::fwTools::Failed )
 void TransferFunction::doStop() throw ( ::fwTools::Failed )
 {
     this->removeTFObserver();
-    m_comChannel->stop();
-    ::fwServices::OSR::unregisterService( m_comChannel );
+    m_connection.disconnect();
 
     // Clear the items vectors and remove the layer (and all its children) from the scene
     for (std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin() ; circleIt != m_circles.end() ; ++circleIt )

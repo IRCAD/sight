@@ -83,7 +83,7 @@ protected:
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
     /// Do nothing.
-    SCENE2D_API void doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Do nothing.
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );

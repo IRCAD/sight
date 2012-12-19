@@ -71,7 +71,7 @@ protected:
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
     /// If the message is TRANSFERFUNCTION or WINDOWING, call DoUpdate().
-    SCENE2D_API void doUpdate( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// @todo
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
@@ -176,7 +176,11 @@ private:
     /// The captured circle.
     QGraphicsEllipseItem* m_capturedCircle;
 
-    ::fwServices::ComChannelService::sptr m_comChannel;
+    /// fWID of the viewport
+    std::string m_viewportID;
+
+    /// Connection to the viewport
+    ::fwCom::Connection m_connection;
 
     ::scene2D::data::Viewport::sptr m_viewport;
 
