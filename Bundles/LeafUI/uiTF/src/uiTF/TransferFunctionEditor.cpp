@@ -29,7 +29,6 @@
 #include <fwData/location/MultiFiles.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwComEd/Dictionary.hpp>
@@ -56,9 +55,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor,
 
 TransferFunctionEditor::TransferFunctionEditor() : m_selectedTFKey("")
 {
-    this->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-    this->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-    this->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
+//    this->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
+//    this->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+//    this->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -162,10 +161,13 @@ void TransferFunctionEditor::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::updating(::fwServices::ObjectMsg::csptr msg) throw( ::fwTools::Failed )
+void TransferFunctionEditor::receiving(::fwServices::ObjectMsg::csptr msg) throw( ::fwTools::Failed )
 {
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
-    if(compositeMsg)
+    if(compositeMsg &&
+            ( compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS) ||
+              compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS)   ||
+              compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS) ) )
     {
         this->updateTransferFunctionPreset();
     }

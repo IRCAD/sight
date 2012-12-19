@@ -67,7 +67,7 @@ protected:
     UITF_API virtual void updating() throw( ::fwTools::Failed );
 
     /// Update the TransferFunctionEditor when message, do nothing.
-    UITF_API virtual void updating(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed );
+    UITF_API virtual void receiving(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed );
 
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
     UITF_API virtual void stopping() throw( ::fwTools::Failed );
