@@ -57,21 +57,31 @@ protected:
     * Sample of declaration configuration for a simple swapper service
     *
     * @verbatim
-        <service uid="myFieldManager" implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
+        <service uid="FieldManager" implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
             <mode type="dummy" />
             <config>
                 <field id="TFSelection" type="::fwData::TransferFunction" >
-                    <service uid="myServices" implementation="..." type="..." autoComChannel="yes" />
+                    <service uid="myServices" impl="..." type="..." autoConnect="yes" />
+                    <connect>
+                        <signal>key</signal>
+                        <slot>uid/key</slot>
+                    </connect>
                 </field>
                 <field id="AxialSliceIndex" type="::fwData::Integer" >
-                    <service uid="myServices2" implementation="..." type="..." autoComChannel="yes" />
+                    <service uid="Services2" impl="..." type="..." autoConnect="yes" />
+                    <proxy channel="...">
+                        <signal>...</signal>
+                        <signal>.../...</signal>
+                        <slot>.../...</slot>
+                        <slot>.../...</slot>
+                    </proxy>
                 </field>
             </config>
         </service>
     @endverbatim
     * With:
     * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted but swap it on a dummy field.
-    * @li the fields and services tags are defined as same as the configuration of fields and services.
+    * @li the fields, services, connect and proxy tags are defined as same as the configuration of fields and services.
     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
@@ -99,7 +109,7 @@ protected:
 
         SubService()
         {
-            m_hasComChannel = false;
+            m_hasAutoConnection = false;
         }
 
         ~SubService()
@@ -108,14 +118,11 @@ protected:
         SPTR (::fwServices::IService) getService()
                     { return m_service.lock(); }
 
-        SPTR (::fwServices::IService) getComChannel()
-                            { return m_comChannel.lock(); }
-
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        WPTR(::fwServices::ComChannelService) m_comChannel;
-        bool m_hasComChannel;
+        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        bool m_hasAutoConnection;
     };
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
@@ -131,6 +138,89 @@ protected:
     void removeField( const FieldNameType& fieldName );
 
     ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+
+    /// Used to register proxy connection in order to properly disconnect it.
+    struct ProxyConnections
+    {
+        typedef std::string UIDType;
+        typedef std::string KeyType;
+        typedef std::pair<UIDType, KeyType> ProxyEltType;
+        typedef std::vector<ProxyEltType> ProxyEltVectType;
+
+        std::string m_channel;
+        ProxyEltVectType m_slots;
+        ProxyEltVectType m_signals;
+
+        ProxyConnections(const std::string& channel) : m_channel(channel)
+        {}
+
+        ~ProxyConnections()
+        {}
+
+        void addSlotConnection(UIDType uid, KeyType key)
+        {
+            m_slots.push_back(std::make_pair(uid, key));
+        }
+        void addSignalConnection(UIDType uid, KeyType key)
+        {
+            m_signals.push_back(std::make_pair(uid, key));
+        }
+    };
+    typedef std::vector<ProxyConnections> ProxyConnectionsVectType;
+    typedef std::map< FieldNameType, ProxyConnectionsVectType > ProxyConnectionsMapType;
+    /// Proxy connection information map : used to properly disconnect proxies
+    ProxyConnectionsMapType m_proxyCtns;
+
+    /**
+     * @brief Manage all connections define in config associated to object.
+     * Call manageConnection()
+     *
+     * @param fieldName Key of the object in the field
+     * @param object Object associated with the id
+     * @param config configuration for this object
+     */
+    void manageConnections(const std::string &fieldName, ::fwData::Object::sptr object, ConfigurationType config);
+
+    /**
+     * @brief Manage a connection define in config associated to object.
+     *
+     * @param fieldName Key of the object in the field
+     * @param object Object associated with the id
+     * @param config configuration for a <connect> tag associated this object
+     */
+    void manageConnection(const std::string &fieldName, ::fwData::Object::sptr object, ConfigurationType config);
+
+    /// Disconnect all registred connection for fieldName.
+    void removeConnections(const std::string &fieldName);
+
+    /**
+     * @brief Manage all proxies connections define in config associated to object
+     * Call manageProxy()
+     *
+     * @param fieldName Key of the object in the field
+     * @param object Object associated with the id
+     * @param config configuration for this object
+     */
+    void manageProxies(const std::string &fieldName, ::fwData::Object::sptr object, ConfigurationType config);
+
+    /**
+     * @brief Manage proxy connections define in config associated to object
+     *
+     * @param fieldName Key of the object in the field
+     * @param object Object associated with the id
+     * @param config configuration for a <proxy> tag associated this object
+     */
+    void manageProxy(const std::string &fieldName, ::fwData::Object::sptr object, ConfigurationType config);
+
+    /// Disconnect all proxies associated to fieldName;
+    void disconnectProxies(const std::string &fieldName);
+
+
+    typedef std::map< FieldNameType, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+
+    /// Register connection associated to an object. Connections are connected/disconnected when the object is added/removed.
+    ObjectConnectionsMapType m_objectConnections;
+
 
 private:
 

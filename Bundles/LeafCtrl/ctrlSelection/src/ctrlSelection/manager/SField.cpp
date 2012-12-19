@@ -6,6 +6,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -13,6 +14,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
+#include <fwServices/registry/Proxy.hpp>
 
 #include "ctrlSelection/manager/SField.hpp"
 
@@ -89,18 +91,16 @@ void SField::stopping()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    for( SubServicesMapType::iterator iterMap = m_fieldsSubServices.begin(); iterMap != m_fieldsSubServices.end(); ++iterMap )
+    BOOST_FOREACH(SubServicesMapType::value_type elt, m_fieldsSubServices)
     {
-        SubServicesVecType subServices = iterMap->second;
+        SubServicesVecType subServices = elt.second;
         BOOST_REVERSE_FOREACH( SPTR(SubService) subSrv, subServices )
         {
-            OSLM_ASSERT("SubService on "<< iterMap->first <<" expired !", subSrv->getService() );
+            OSLM_ASSERT("SubService on "<< elt.first <<" expired !", subSrv->getService() );
 
-            if( subSrv->m_hasComChannel )
+            if( subSrv->m_hasAutoConnection )
             {
-                subSrv->getComChannel()->stop();
-                ::fwServices::OSR::unregisterService(subSrv->getComChannel());
-                subSrv->m_comChannel.reset();
+                subSrv->m_connections->disconnect();
             }
             subSrv->getService()->stop();
             ::fwServices::OSR::unregisterService(subSrv->getService());
@@ -108,6 +108,18 @@ void SField::stopping()  throw ( ::fwTools::Failed )
         }
     }
     m_fieldsSubServices.clear();
+
+    while( !m_objectConnections.empty())
+    {
+        this->removeConnections(m_objectConnections.begin()->first);
+    }
+    SLM_ASSERT("Connections must be empty", m_objectConnections.empty());
+
+    while( !m_proxyCtns.empty())
+    {
+        this->disconnectProxies(m_proxyCtns.begin()->first);
+    }
+    SLM_ASSERT("Proxy connections must be empty", m_proxyCtns.empty());
 }
 
 //-----------------------------------------------------------------------------
@@ -183,12 +195,12 @@ void SField::addFields( const ModifiedFieldsContainerType& fields )
 {
     OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(), _elt->getName() == "service" ) ;
     SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") ) ;
-    SLM_ASSERT("Attribute \"implementation\" is missing", _elt->hasAttribute("implementation") ) ;
+    SLM_ASSERT("Attribute \"impl\" is missing", _elt->hasAttribute("impl") ) ;
 
     ::fwServices::IService::sptr service ;
 
     std::string serviceType = _elt->getExistingAttributeValue("type") ;
-    std::string implementationType = _elt->getExistingAttributeValue("implementation");
+    std::string implementationType = _elt->getExistingAttributeValue("impl");
 
     // Add service with possible id
     if( _elt->hasAttribute("uid")  )
@@ -212,26 +224,6 @@ void SField::addFields( const ModifiedFieldsContainerType& fields )
 
     // Configure
     service->configure();
-
-    // Standard communication management
-    SLM_ASSERT("autoComChannel attribute missing in service "<< service->getClassname(), _elt->hasAttribute("autoComChannel"));
-
-    std::string autoComChannel = _elt->getExistingAttributeValue("autoComChannel");
-    SLM_ASSERT("wrong autoComChannel definition", autoComChannel=="yes" || autoComChannel=="no");
-    if(autoComChannel=="yes")
-    {
-        ::fwServices::ComChannelService::sptr comChannel = ::fwServices::registerCommunicationChannel( obj , service);
-        // Add priority for the new comChannel if defined, otherwise the default value is 0.5
-        if( _elt->hasAttribute("priority"))
-        {
-            std::string priorityStr = _elt->getExistingAttributeValue("priority");
-            double priority = ::boost::lexical_cast< double >( priorityStr );
-            if(priority < 0.0) priority = 0.0;
-            if(priority > 1.0) priority = 1.0;
-            comChannel->setPriority(priority);
-        }
-        comChannel->start();
-    }
 
     // Return
     return service ;
@@ -259,20 +251,31 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
             subSrv->m_config = cfg;
             subSrv->m_service = srv;
 
+            // Standard communication management
+            SLM_ASSERT("autoConnect attribute missing in service "<< srv->getClassname(),
+                       cfg->hasAttribute("autoConnect"));
+
+            if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
+            {
+                subSrv->m_hasAutoConnection = true;
+                if (!subSrv->m_connections)
+                {
+                    subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
+                }
+                subSrv->m_connections->connect( field, srv, srv->getObjSrvConnections() );
+            }
+
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
             if (m_mode =="startAndUpdate")
             {
                 subSrv->getService()->update();
             }
-
-            if ( cfg->hasAttribute("autoComChannel") && cfg->getExistingAttributeValue("autoComChannel") == "yes" )
-            {
-                subSrv->m_hasComChannel = true;
-                subSrv->m_comChannel = ::fwServices::getCommunicationChannel( field, srv);
-            }
         }
         m_fieldsSubServices[fieldName] = subVecSrv;
+
+        this->manageConnections(fieldName, field, conf);
+        this->manageProxies(fieldName, field, conf);
     }
     else
     {
@@ -293,36 +296,38 @@ void SField::swapFields( const ModifiedFieldsContainerType& fields )
 
 void SField::swapField(const FieldNameType& fieldName, ::fwData::Object::sptr field)
 {
-    if(m_fieldsSubServices.find(fieldName) != m_fieldsSubServices.end())
+    std::vector< ConfigurationType > fields = m_managerConfiguration->find("field", "id", fieldName);
+    BOOST_FOREACH( ConfigurationType cfg, fields)
     {
-        std::vector< ConfigurationType > fields = m_managerConfiguration->find("field", "id", fieldName);
-        BOOST_FOREACH( ConfigurationType cfg, fields)
+        SubServicesVecType subServices = m_fieldsSubServices[fieldName];
+        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
-            SubServicesVecType subServices = m_fieldsSubServices[fieldName];
-            BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
-            {
-                OSLM_ASSERT("SubService on " << fieldName <<" expired !", subSrv->getService() );
-                OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
+            OSLM_ASSERT("SubService on " << fieldName <<" expired !", subSrv->getService() );
+            OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
 
-                OSLM_TRACE("Swapping subService " << subSrv->getService()->getID() << " on "<< fieldName );
-                if(subSrv->getService()->getObject() != field)
+            OSLM_TRACE("Swapping subService " << subSrv->getService()->getID() << " on "<< fieldName );
+            if(subSrv->getService()->getObject() != field)
+            {
+                subSrv->getService()->swap(field);
+                subSrv->m_dummy.reset();
+
+                if (subSrv->m_hasAutoConnection)
                 {
-                    subSrv->getService()->swap(field);
-                    subSrv->m_dummy.reset();
-                }
-                else
-                {
-                    OSLM_WARN( subSrv->getService()->getID()
-                            << "'s field already is '"
-                            << subSrv->getService()->getObject()->getID()
-                            << "', no need to swap");
+                    subSrv->m_connections->disconnect();
+                    subSrv->m_connections->connect( field, subSrv->getService(),
+                                                    subSrv->getService()->getObjSrvConnections() );
                 }
             }
+            else
+            {
+                OSLM_WARN( subSrv->getService()->getID()
+                           << "'s field already is '"
+                           << subSrv->getService()->getObject()->getID()
+                           << "', no need to swap");
+            }
         }
-    }
-    else
-    {
-        OSLM_INFO("Object "<<fieldName<<" not found in managed fields.");
+        this->manageConnections(fieldName, field, cfg);
+        this->manageProxies(fieldName, field, cfg);
     }
 }
 
@@ -345,6 +350,9 @@ void SField::removeField( const FieldNameType& fieldName )
         ConfigurationType conf = m_managerConfiguration->find("field", "id", fieldName).at(0);
         const std::string fieldType   = conf->getAttributeValue("type");
 
+        this->removeConnections(fieldName);
+        this->disconnectProxies(fieldName);
+
         SubServicesVecType subServices = m_fieldsSubServices[fieldName];
         ::fwData::Object::sptr dummyObj;
         dummyObj = ::fwData::factory::New(fieldType);
@@ -359,11 +367,9 @@ void SField::removeField( const FieldNameType& fieldName )
             }
             else
             {
-                if( subSrv->m_hasComChannel )
+                if( subSrv->m_hasAutoConnection )
                 {
-                    subSrv->getComChannel()->stop();
-                    ::fwServices::OSR::unregisterService(subSrv->getComChannel());
-                    subSrv->m_comChannel.reset();
+                    subSrv->m_connections->disconnect();
                 }
 
                 subSrv->getService()->stop();
@@ -374,6 +380,11 @@ void SField::removeField( const FieldNameType& fieldName )
         if(!m_dummyStopMode)
         {
             m_fieldsSubServices.erase(fieldName);
+        }
+        else
+        {
+            this->manageConnections(fieldName, dummyObj, conf);
+            this->manageProxies(fieldName, dummyObj, conf);
         }
     }
     else
@@ -418,10 +429,10 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
 
-            if ( cfg->hasAttribute("autoComChannel") && cfg->getExistingAttributeValue("autoComChannel") == "yes" )
+            if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
             {
-                subSrv->m_hasComChannel = true;
-                subSrv->m_comChannel = ::fwServices::getCommunicationChannel( dummyObj, srv);
+                subSrv->m_hasAutoConnection = true;
+                subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
             }
         }
         m_fieldsSubServices[fieldName] = subVecSrv;
@@ -429,6 +440,204 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
 }
 
 //-----------------------------------------------------------------------------
+
+void SField::manageConnections(const std::string &fieldName, ::fwData::Object::sptr object, ConfigurationType config)
+{
+    BOOST_FOREACH(ConfigurationType connectCfg, config->find("connect"))
+    {
+        this->manageConnection(fieldName, object, connectCfg);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SField::manageConnection(const std::string &fieldName, ::fwData::Object::sptr object, ConfigurationType config)
+{
+    typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
+    typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
+    typedef std::vector< SlotInfoType > SlotInfoContainerType;
+
+    SignalInfoType signalInfo;
+    SlotInfoContainerType slotInfos;
+
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
+    {
+        SLM_ASSERT("Bad tag '" <<elem->getName() << "', only <signal> or <slot> are allowed.",
+                   elem->getName() == "signal" || elem->getName() == "slot");
+
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+                        !uid.empty() && !key.empty());
+
+            if (elem->getName() == "signal")
+            {
+                SLM_ASSERT("There must be only one signal by connection",
+                           signalInfo.first.empty() && signalInfo.second.empty());
+                signalInfo = std::make_pair(uid, key);
+            }
+            else if (elem->getName() == "slot")
+            {
+                slotInfos.push_back( std::make_pair(uid, key) );
+            }
+        }
+        else
+        {
+            uid = object->getID();
+            key = src;
+            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            SLM_ASSERT("There must be only one signal by connection",
+                       signalInfo.first.empty() && signalInfo.second.empty());
+            signalInfo = std::make_pair(uid, key);
+        }
+    }
+
+    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalInfo.first);
+    ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+
+    ::fwServices::helper::SigSlotConnection::sptr connection;
+    ObjectConnectionsMapType::iterator iter = m_objectConnections.find(fieldName);
+    if (iter != m_objectConnections.end())
+    {
+        connection = iter->second;
+    }
+    else
+    {
+        connection = ::fwServices::helper::SigSlotConnection::New();
+        m_objectConnections[fieldName] = connection;
+    }
+
+    BOOST_FOREACH(SlotInfoType slotInfo,  slotInfos)
+    {
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
+        ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+
+        connection->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SField::removeConnections(const std::string &fieldName)
+{
+    ObjectConnectionsMapType::iterator iter = m_objectConnections.find(fieldName);
+    if (iter != m_objectConnections.end())
+    {
+        ::fwServices::helper::SigSlotConnection::sptr connection = iter->second;
+        connection->disconnect();
+    }
+    m_objectConnections.erase(fieldName);
+}
+
+//-----------------------------------------------------------------------------
+
+void SField::manageProxies(const std::string &fieldName, ::fwData::Object::sptr object, ConfigurationType config)
+{
+    BOOST_FOREACH(ConfigurationType proxyCfg, config->find("proxy"))
+    {
+        this->manageProxy(fieldName, object, proxyCfg);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SField::manageProxy(const std::string &fieldName, ::fwData::Object::sptr object, ConfigurationType config)
+{
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+    SLM_ASSERT("Missing 'channel' attribute", config->hasAttribute("channel"));
+    const std::string channel = config->getExistingAttributeValue("channel");
+    ProxyConnections proxyCnt(channel);
+
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
+    {
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+                        !uid.empty() && !key.empty());
+
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+
+            if (elem->getName() == "signal")
+            {
+                ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::SignalBase::sptr sig = hasSignals->signal(key);
+                proxy->connect(channel, sig);
+                proxyCnt.addSignalConnection(uid, key);
+            }
+            else if (elem->getName() == "slot")
+            {
+                ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::SlotBase::sptr slot = hasSlots->slot(key);
+                proxy->connect(channel, slot);
+                proxyCnt.addSlotConnection(uid, key);
+            }
+        }
+        else
+        {
+            uid = object->getID();
+            key = src;
+            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            ::fwCom::SignalBase::sptr sig = object->signal(key);
+            proxy->connect(channel, sig);
+            proxyCnt.addSignalConnection(uid, key);
+        }
+    }
+    m_proxyCtns[fieldName].push_back(proxyCnt);
+}
+
+//-----------------------------------------------------------------------------
+
+void SField::disconnectProxies(const std::string &fieldName)
+{
+    ProxyConnectionsMapType::iterator iter = m_proxyCtns.find(fieldName);
+    if (iter != m_proxyCtns.end())
+    {
+        ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+        ProxyConnectionsVectType vectProxyConnections = iter->second;
+
+        BOOST_FOREACH(ProxyConnectionsVectType::value_type proxyConnections,  vectProxyConnections)
+        {
+            BOOST_FOREACH(ProxyConnections::ProxyEltType signalElt, proxyConnections.m_signals)
+            {
+                ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalElt.first);
+                ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
+                proxy->disconnect(proxyConnections.m_channel, sig);
+            }
+            BOOST_FOREACH(ProxyConnections::ProxyEltType slotElt, proxyConnections.m_slots)
+            {
+                ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotElt.first);
+                ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
+                proxy->disconnect(proxyConnections.m_channel, slot);
+            }
+        }
+        vectProxyConnections.clear();
+    }
+    m_proxyCtns.erase(fieldName);
+}
+
+//-----------------------------------------------------------------------------
+
 
 } // manager
 } // ctrlSelection

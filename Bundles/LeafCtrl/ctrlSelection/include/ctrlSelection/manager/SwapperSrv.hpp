@@ -170,6 +170,8 @@ protected:
     void removeObjects( ::fwData::Composite::sptr _composite );
     void removeObject( const std::string objectId );
 
+    ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+
     /**
      * @brief Manage all connections define in config associated to object.
      * Call manageConnection()
@@ -214,7 +216,6 @@ protected:
     /// Disconnect all proxies associated to objectId;
     void disconnectProxies(const std::string &objectId);
 
-    ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
 
     typedef std::map< ObjectIdType, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
 

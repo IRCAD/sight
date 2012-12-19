@@ -42,54 +42,56 @@ SDrop::~SDrop() throw()
 
 void SDrop::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwData::Object::csptr msgObject = _msg->getDataInfo("DROPPED_UUID");
-
-    ::fwData::String::csptr id = ::fwData::String::dynamicConstCast(msgObject);
-
-    ::fwData::Object::sptr object = ::fwData::Object::dynamicCast(::fwTools::UUID::get(id->getValue()));
-    if(object)
+    if (_msg->hasEvent("DROPPED_UUID"))
     {
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        ::fwData::Object::csptr msgObject = _msg->getDataInfo("DROPPED_UUID");
 
-        ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
-        helper.clear();
-        if(object->isA("::fwData::Acquisition"))
+        ::fwData::String::csptr id = ::fwData::String::dynamicConstCast(msgObject);
+
+        ::fwData::Object::sptr object = ::fwData::Object::dynamicCast(::fwTools::UUID::get(id->getValue()));
+        if(object)
         {
-            ::fwData::Acquisition::sptr acq = ::fwData::Acquisition::dynamicCast(object);
-            helper.add("acquisition", object);
-            helper.add("image", acq->getImage());
+
+            ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+            helper.clear();
+            if(object->isA("::fwData::Acquisition"))
+            {
+                ::fwData::Acquisition::sptr acq = ::fwData::Acquisition::dynamicCast(object);
+                helper.add("acquisition", object);
+                helper.add("image", acq->getImage());
+            }
+            else if(object->isA("::fwData::Image"))
+            {
+                helper.add("image", object);
+            }
+            else if(object->isA("::fwData::Mesh"))
+            {
+                helper.add("mesh", object);
+            }
+            else if(object->isA("::fwData::Reconstruction"))
+            {
+                helper.add("reconstruction", object);
+            }
+            else if(object->isA("::fwData::Resection"))
+            {
+                helper.add("resection", object);
+            }
+            else if(object->isA("::fwData::ResectionDB"))
+            {
+                helper.add("resectionDB", object);
+            }
+            else if(object->isA("::fwData::Plane"))
+            {
+                helper.add("plane", object);
+            }
+            else if(object->isA("::fwData::PlaneList"))
+            {
+                helper.add("planeList", object);
+            }
+            helper.notify(this->getSptr());
         }
-        else if(object->isA("::fwData::Image"))
-        {
-            helper.add("image", object);
-        }
-        else if(object->isA("::fwData::Mesh"))
-        {
-            helper.add("mesh", object);
-        }
-        else if(object->isA("::fwData::Reconstruction"))
-        {
-            helper.add("reconstruction", object);
-        }
-        else if(object->isA("::fwData::Resection"))
-        {
-            helper.add("resection", object);
-        }
-        else if(object->isA("::fwData::ResectionDB"))
-        {
-            helper.add("resectionDB", object);
-        }
-        else if(object->isA("::fwData::Plane"))
-        {
-            helper.add("plane", object);
-        }
-        else if(object->isA("::fwData::PlaneList"))
-        {
-            helper.add("planeList", object);
-        }
-        helper.notify(this->getSptr());
     }
-
 }
 
 
