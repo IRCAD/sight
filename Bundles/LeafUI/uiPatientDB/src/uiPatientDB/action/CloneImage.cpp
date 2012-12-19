@@ -85,7 +85,7 @@ void CloneImage::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void CloneImage::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void CloneImage::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

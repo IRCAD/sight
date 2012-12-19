@@ -98,7 +98,7 @@ void ErasePatientDB::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ErasePatientDB::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ErasePatientDB::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

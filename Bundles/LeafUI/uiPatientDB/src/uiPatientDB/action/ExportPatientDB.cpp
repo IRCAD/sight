@@ -10,7 +10,6 @@
 #include <fwData/PatientDB.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -138,7 +137,7 @@ void ExportPatientDB::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ExportPatientDB::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ExportPatientDB::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

@@ -14,7 +14,6 @@
 
 #include <fwComEd/fieldHelper/BackupHelper.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
@@ -125,7 +124,7 @@ void ExportImage::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ExportImage::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ExportImage::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

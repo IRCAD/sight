@@ -15,7 +15,6 @@
 #include <fwMath/MeshFunctions.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -116,7 +115,7 @@ void AddPatientDB::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void AddPatientDB::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void AddPatientDB::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

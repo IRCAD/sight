@@ -65,7 +65,7 @@ protected:
     void updating() throw (::fwTools::Failed);
 
     /// Does nothing
-    void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     /// Stop action.
     void stopping() throw (::fwTools::Failed);

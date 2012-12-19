@@ -32,7 +32,7 @@ namespace uiPatientDB
 
 SPatientDBInserter::SPatientDBInserter() : m_patientDBfwID("")
 {
-    this->handlingEventOff();
+//    this->handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------
@@ -192,7 +192,7 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SPatientDBInserter::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SPatientDBInserter::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {}
 
 //-----------------------------------------------------------------------------

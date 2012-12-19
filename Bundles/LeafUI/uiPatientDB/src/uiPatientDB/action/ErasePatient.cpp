@@ -129,7 +129,7 @@ void ErasePatient::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ErasePatient::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ErasePatient::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

@@ -69,7 +69,7 @@ protected :
     UIPATIENTDB_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Overrides, does nothing
-    UIPATIENTDB_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    UIPATIENTDB_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Just call stopping/starting
     UIPATIENTDB_API virtual void swapping() throw ( ::fwTools::Failed );private :

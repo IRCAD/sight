@@ -15,7 +15,6 @@
 #include <gui/editor/IDialogEditor.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -156,7 +155,7 @@ void ExportPatient::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ExportPatient::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ExportPatient::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------
