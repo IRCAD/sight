@@ -9,7 +9,7 @@
         <config>
             <object type="::fwData::Image">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>TutoScene132D</name>
@@ -36,9 +36,9 @@
                     </registry>
                 </service>
                 
-                <item key="myCompositeVisu">
+                <item key="compositeVisu">
 
-                    <object uid="myCompositeVisu" type="::fwData::Composite">
+                    <object uid="compositeVisu" type="::fwData::Composite">
                         
                         <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
 
@@ -72,7 +72,7 @@
                                     <config xMin="-300" xMax="300" yMin="-300" yMax="300" xSpacing="10" ySpacing="10" color="blue" xAxis="axe1" yAxis="axe2" />
                                 </adaptor> -->
                               
-                                <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="myData">
+                                <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="data">
                                     <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
                                 </adaptor>
                               
@@ -96,7 +96,7 @@
 
                         </service>
                       
-                        <item key="myData">
+                        <item key="data">
 
                             <object uid="GENERIC_UID_Float" type="::fwData::Float">
 
@@ -111,7 +111,7 @@
 
                 </item>
 
-                <start uid="myFrame" />
+                <start uid="mainFrame" />
                 <start uid="GENERIC_UID_Scene2D" />
                 <start uid="GENERIC_UID_FloatEditor" />
               
