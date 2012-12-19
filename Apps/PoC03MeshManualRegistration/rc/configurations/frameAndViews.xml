@@ -1,6 +1,6 @@
 <serviceList>
 
-    <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+    <service uid="IHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
         <gui>
             <frame>
                 <name>PoC Mesh Manual Registration</name>
@@ -10,12 +10,12 @@
             <menuBar />
         </gui>
         <registry>
-            <menuBar sid="myMenuBar" start="yes" />
+            <menuBar sid="menuBar" start="yes" />
             <view sid="viewSplitter" start="yes" />
         </registry>
     </service>
 
-    <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+    <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
         <gui>
             <layout>
                 <menu name="File" />
@@ -79,11 +79,11 @@
     </service>
 
     <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-        <start uid="myReaderPathFile" />
+        <start uid="readerPathFile" />
     </service>
 
     <service uid="action_openCamFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-        <start uid="myCamReaderFile" />
+        <start uid="camReaderFile" />
     </service>
 
     <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />

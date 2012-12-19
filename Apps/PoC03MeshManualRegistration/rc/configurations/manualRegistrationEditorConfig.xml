@@ -22,19 +22,15 @@
             </registry>
         </service>
 
-        <item key="myCompositeVisu">
-            <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">
-            
-                <service uid="myManagerForManualRegistEditorComChannel" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                    <target>myManagerForManualRegistEditor</target>
-                </service>
-                
-                <service uid="myManagerForManualRegistEditor" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="no">
+        <item key="compositeVisu">
+            <object uid="compositeVisu" src="ref" type="::fwData::Composite">
+
+                <service uid="managerForManualRegistEditor" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                     <mode type="dummy" />
                     <config>
-                        <object id="myAcquisition" type="::fwData::Acquisition">
+                        <object id="acquisition" type="::fwData::Acquisition">
                             <service uid="listOrganTransformationEditor" impl="::uiAcquisition::OrganTransformationEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                <TMSUid>MyMeshDB</TMSUid>
+                                <TMSUid>meshDB</TMSUid>
                             </service>
                         </object>
                     </config>
@@ -44,8 +40,7 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="registrationEditorFrame" />
-        <start uid="myManagerForManualRegistEditor" />
-        <start uid="myManagerForManualRegistEditorComChannel" />
+        <start uid="managerForManualRegistEditor" />
 
     </object>
 

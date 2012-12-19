@@ -7,6 +7,8 @@
 #ifndef _VISUVTKADAPTOR_MESHESBOXWIDGET_HPP_
 #define _VISUVTKADAPTOR_MESHESBOXWIDGET_HPP_
 
+#include <fwCom/Connection.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
@@ -57,9 +59,11 @@ protected:
 
 private:
 
+    typedef std::map< std::string, ::fwCom::Connection > ConnectionMapType;
     typedef std::map< std::string, vtkActor* > MeshMapType;
 
     MeshMapType m_meshMap;
+    ConnectionMapType m_connections;
 
     vtkAssembly * m_assembly;
     vtkCommand* m_boxWidgetCommand;

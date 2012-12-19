@@ -1,94 +1,85 @@
 <extension implements="::fwServices::registry::AppConfig">
-        <id>organManagerConfig</id>
-        <type>parameters</type>
-        <config>
-        
-
-    <object type="::fwData::Composite">
-
-        <!-- MAIN FRAME -->
-        <service uid="organManagerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
-            <window onclose="notify" />
-            <gui>
-                <frame>
-                    <name>Organs Manager</name>
-                    <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
-                    <minSize width="400" height="600" />
-                    <style mode="STAY_ON_TOP" />
-                </frame>
-            </gui>
-            <registry>
-                <view sid="multiViewOrgans" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="multiViewOrgans" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view minHeight="80" proportion="0" />
-                    <view minHeight="220" proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="listOrganEditor" />
-                <view sid="organMaterialEditor" />
-                <view sid="representationEditor" />
-            </registry>
-        </service>
-
-        <item key="myPatientDB">
-            <object uid="myPatientDB" src="ref" type="::fwData::PatientDB">
-
-                <service uid="myUpdaterComChannelReconst" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                    <target>myUpdaterReconst</target>
-                </service>
-
-            </object>
-        </item>
-
-        <item key="myCompositeVisu">
-            <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">
-
-                <service uid="myManagerForOrgansFrameComChannel" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                    <target>myManagerForOrgansFrame</target>
-                </service>
-
-                <service uid="myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="no">
-                    <mode type="dummy" />
-                    <config>
-                        <object id="myAcquisition" type="::fwData::Acquisition">
-                            <service uid="myUpdaterComChannelReconstFromAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                                <target>myUpdaterReconst</target>
-                            </service>
-                            <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
-                        </object>
-                        <object id="myReconstruction" type="::fwData::Reconstruction">
-                            <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="yes" />
-                            <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="yes" />
-                        </object>
-                    </config>
-                </service>
-
-                <service uid="myUpdaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                    <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
-                    <update compositeKey="myReconstruction" onEvent="NEW_IMAGE_SELECTED" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT" />
-                    <update compositeKey="myReconstruction" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT" />
-                </service>
-
-            </object>
-        </item>
-
-        <!-- START AND STOP SERVICES -->
-        <start uid="organManagerFrame" />
-        <start uid="myUpdaterReconst" />
-        <start uid="myManagerForOrgansFrame" />
-        <start uid="myManagerForOrgansFrameComChannel" />
-        <start uid="myUpdaterComChannelReconst" />
-
-    </object>
+    <id>organManagerConfig</id>
+    <type>parameters</type>
+    <config>
 
 
-        </config>
-    </extension>
+        <object type="::fwData::Composite">
+
+            <!-- MAIN FRAME -->
+            <service uid="organManagerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Organs Manager</name>
+                        <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
+                        <minSize width="400" height="600" />
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="multiViewOrgans" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiViewOrgans" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view minHeight="80" proportion="0" />
+                        <view minHeight="220" proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="listOrganEditor" />
+                    <view sid="organMaterialEditor" />
+                    <view sid="representationEditor" />
+                </registry>
+            </service>
+
+            <item key="compositeVisu">
+                <object uid="compositeVisu" src="ref" type="::fwData::Composite">
+
+                    <service uid="managerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                        <mode type="dummy" />
+                        <config>
+                            <object id="acquisition" type="::fwData::Acquisition">
+                                <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
+
+                                <connect>
+                                    <signal>objectModified</signal>
+                                    <slot>updaterReconst/receive</slot>
+                                </connect>
+                            </object>
+                            <object id="reconstruction" type="::fwData::Reconstruction">
+                                <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="yes" />
+                                <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="yes" />
+                            </object>
+                        </config>
+                    </service>
+
+                    <service uid="updaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <update compositeKey="reconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
+                        <update compositeKey="reconstruction" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="REMOVE_IF_PRESENT" />
+                        <update compositeKey="reconstruction" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE_IF_PRESENT" />
+                    </service>
+
+                    <connect>
+                        <signal>patientDB/objectModified</signal>
+                        <slot>updaterReconst/receive</slot>
+                    </connect>
+
+                </object>
+            </item>
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="organManagerFrame" />
+            <start uid="updaterReconst" />
+            <start uid="managerForOrgansFrame" />
+
+        </object>
+
+
+    </config>
+</extension>

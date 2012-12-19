@@ -154,7 +154,8 @@ void MeshesBoxWidget::doStop() throw(fwTools::Failed)
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
         fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
-        ::fwServices::unregisterCommunicationChannel(fieldTransform, this->getSptr());
+        m_connections[elt.first].disconnect();
+        m_connections.erase(elt.first);
     }
     m_meshMap.clear();
 
@@ -184,7 +185,8 @@ void MeshesBoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTool
 
                 ::fwData::TransformationMatrix3D::sptr fieldTransform;
                 fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
-                ::fwServices::unregisterCommunicationChannel(fieldTransform, this->getSptr());
+                m_connections[elt.first].disconnect();
+                m_connections.erase(elt.first);
             }
         }
         if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS))
@@ -279,7 +281,9 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 
         if (m_meshMap.find(elt.first) == m_meshMap.end())
         {
-            ::fwServices::registerCommunicationChannel(fieldTransform, this->getSptr())->start();
+            ::fwCom::Connection connection = fieldTransform->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
+                                connect(this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+            m_connections[elt.first] = connection;
         }
 
         m_meshMap[elt.first] = meshActor;

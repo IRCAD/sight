@@ -22,44 +22,44 @@
             </registry>
         </service>
 
-        <item key="myCompositeVisu">
-            <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">
+        <item key="compositeVisu">
+            <object uid="compositeVisu" src="ref" type="::fwData::Composite">
 
                 <service uid="genericWorld" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
-                        <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                        <picker id="picker" vtkclass="fwVtkCellPicker" />
 
                         <renderer id="default" background="0.0" />
 
-                        <vtkObject id="myCam1PosMatrixTransform" class="vtkTransform" />
-                        <vtkObject id="myCam2PosMatrixTransform" class="vtkTransform" />
+                        <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
+                        <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
 
-                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                        <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
                         </adaptor>
 
-                        <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                        <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
                             <config renderer="default" picker="" autoresetcamera="no" />
                         </adaptor>
 
-                        <adaptor id="myCam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myCam1Mesh">
-                            <config renderer="default" picker="myPicker" transform="myCam1PosMatrixTransform" autoresetcamera="no" />
+                        <adaptor id="cam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam1Mesh">
+                            <config renderer="default" picker="picker" transform="cam1PosMatrixTransform" autoresetcamera="no" />
                         </adaptor>
 
-                        <adaptor id="myCam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myCam2Mesh">
-                            <config renderer="default" picker="myPicker" transform="myCam2PosMatrixTransform" autoresetcamera="no" />
+                        <adaptor id="cam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam2Mesh">
+                            <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
                         </adaptor>
-                        <adaptor id="myCamWidget1" class="::visuVTKAdaptor::BoxWidget" objectId="view1">
-                            <config renderer="default" transform="myCam1PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
+                        <adaptor id="camWidget1" class="::visuVTKAdaptor::BoxWidget" objectId="view1">
+                            <config renderer="default" transform="cam1PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
                         </adaptor>
-                        <adaptor id="myCamWidget2" class="::visuVTKAdaptor::BoxWidget" objectId="view2">
-                            <config renderer="default" transform="myCam2PosMatrixTransform" scaleFactor="2.0" enableScaling="no"/>
+                        <adaptor id="camWidget2" class="::visuVTKAdaptor::BoxWidget" objectId="view2">
+                            <config renderer="default" transform="cam2PosMatrixTransform" scaleFactor="2.0" enableScaling="no"/>
                         </adaptor>
-                        <adaptor id="myCam1Axes" class="::visuVTKAdaptor::Axes" objectId="self">
-                            <config renderer="default" transform="myCam1PosMatrixTransform" length="5" label="no" />
+                        <adaptor id="cam1Axes" class="::visuVTKAdaptor::Axes" objectId="self">
+                            <config renderer="default" transform="cam1PosMatrixTransform" length="5" label="no" />
                         </adaptor>
-                        <adaptor id="myCam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
-                            <config renderer="default" transform="myCam2PosMatrixTransform" length="5" label="no" />
+                        <adaptor id="cam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
+                            <config renderer="default" transform="cam2PosMatrixTransform" length="5" label="no" />
                         </adaptor>
 
                     </scene>

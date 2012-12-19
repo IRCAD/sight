@@ -22,35 +22,35 @@
             </registry>
         </service>
 
-        <item key="myCompositeVisu">
-            <object uid="myCompositeVisu" src="ref" type="::fwData::Composite">
+        <item key="compositeVisu">
+            <object uid="compositeVisu" src="ref" type="::fwData::Composite">
 
                 <service uid="genericScene3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
-                        <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                        <picker id="picker" vtkclass="fwVtkCellPicker" />
 
                         <renderer id="default" background="0.0" />
 
-                        <vtkObject id="myCamPosMatrixTransform" class="vtkTransform" />
+                        <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
 
-                        <adaptor id="myCamPosMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="myCamPosMatrix">
-                            <config renderer="default" picker="" transform="myCamPosMatrixTransform" />
+                        <adaptor id="camPosMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="camPosMatrix">
+                            <config renderer="default" picker="" transform="camPosMatrixTransform" />
                         </adaptor>
 
-                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                        <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
                         </adaptor>
 
-                        <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                        <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
                             <config renderer="default" picker="" />
                         </adaptor>
 
-                        <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                        <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                            <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
                         </adaptor>
 
-                        <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="myCamPosMatrix">
-                            <config renderer="default" picker="" transform="myCamPosMatrixTransform" />
+                        <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="camPosMatrix">
+                            <config renderer="default" picker="" transform="camPosMatrixTransform" />
                         </adaptor>
 
                     </scene>
