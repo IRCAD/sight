@@ -36,7 +36,7 @@ DataInfoFromMsgUpdaterSrv::~DataInfoFromMsgUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void DataInfoFromMsgUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void DataInfoFromMsgUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   ManagedEvents::iterator it = m_managedEvents.begin();

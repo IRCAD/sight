@@ -42,7 +42,7 @@ SField::~SField() throw()
 
 //-----------------------------------------------------------------------------
 
-void SField::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void SField::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

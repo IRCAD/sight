@@ -41,7 +41,7 @@ AcqFromPDBSelectorUpdaterSrv::~AcqFromPDBSelectorUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void AcqFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void AcqFromPDBSelectorUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   ManagedEvents::iterator it = m_managedEvents.begin();

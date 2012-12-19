@@ -70,7 +70,7 @@ protected:
      * Update the composite related to this service according to node port information
      * ( key= portID , value= data in dataNode ), port mode can be "input" or "output"
      */
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// to sepcify if the updater manage input (upStream=true) or output (default)
     bool  m_upStream;

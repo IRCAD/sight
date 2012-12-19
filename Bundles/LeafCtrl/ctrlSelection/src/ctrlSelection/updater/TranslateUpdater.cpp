@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/spyLog.hpp>
-
 #include <fwData/Composite.hpp>
 
 #include <fwTools/fwID.hpp>
@@ -43,7 +41,7 @@ TranslateUpdater::~TranslateUpdater() throw()
 
 //-----------------------------------------------------------------------------
 
-void TranslateUpdater::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void TranslateUpdater::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(_msg);
     SLM_ASSERT("Sorry, this service only manage compositeMsg", compositeMsg);

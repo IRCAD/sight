@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-#include <fwCore/spyLog.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Edge.hpp>
@@ -45,10 +44,8 @@ SelectedNodeIOUpdaterSrv::~SelectedNodeIOUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void SelectedNodeIOUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SelectedNodeIOUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
-    OSLM_TRACE("SelectedNodeIOUpdaterSrv::updating " <<  _msg->getGeneralInfo() );
-
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     ::fwData::Graph::csptr cgraph = ::fwData::Graph::dynamicConstCast( _msg->getSubject().lock() );
     ::fwData::Graph::sptr graph   = ::boost::const_pointer_cast< ::fwData::Graph >( cgraph );

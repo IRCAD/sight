@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/spyLog.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Acquisition.hpp>
@@ -42,7 +40,7 @@ SDrop::~SDrop() throw()
 
 //-----------------------------------------------------------------------------
 
-void SDrop::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SDrop::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     ::fwData::Object::csptr msgObject = _msg->getDataInfo("DROPPED_UUID");

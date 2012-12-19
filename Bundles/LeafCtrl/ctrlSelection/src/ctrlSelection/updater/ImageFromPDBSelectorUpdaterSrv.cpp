@@ -40,7 +40,7 @@ ImageFromPDBSelectorUpdaterSrv::~ImageFromPDBSelectorUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void ImageFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void ImageFromPDBSelectorUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   ManagedEvents::iterator it = m_managedEvents.begin();

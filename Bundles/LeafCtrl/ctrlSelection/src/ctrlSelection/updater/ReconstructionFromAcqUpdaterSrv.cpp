@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/spyLog.hpp>
 #include <fwComEd/AcquisitionMsg.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>

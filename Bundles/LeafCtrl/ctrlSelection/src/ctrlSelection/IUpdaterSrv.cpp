@@ -6,7 +6,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/helper/Composite.hpp>
 

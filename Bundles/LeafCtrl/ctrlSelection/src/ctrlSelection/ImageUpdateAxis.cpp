@@ -41,7 +41,7 @@ ImageUpdateAxis::~ImageUpdateAxis() throw()
 
 //-----------------------------------------------------------------------------
 
-void ImageUpdateAxis::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void ImageUpdateAxis::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(message);

@@ -59,7 +59,7 @@ void AcqFromPDBUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) thro
                 {
                     acq = this->getAcquisition(patientDB);
                 }
-                // Udapte the composite object referenced by the composite key ( it->get<2>() )
+                // Update the composite object referenced by the composite key ( it->get<2>() )
                 this->updateComposite(composite, acq, it->get<2>(), it->get<3>() );
             }
         }

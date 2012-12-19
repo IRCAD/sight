@@ -42,7 +42,7 @@ PSAFromPDBSelectorUpdaterSrv::~PSAFromPDBSelectorUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void PSAFromPDBSelectorUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void PSAFromPDBSelectorUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   PSAManagedEvents::iterator it = m_psaManagedEvents.begin();
