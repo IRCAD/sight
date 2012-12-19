@@ -13,9 +13,9 @@
 #include <fwCore/mt/types.hpp>
 
 #ifdef COM_LOG
-#include "fwCom/util/log.hpp"
 #include "fwCom/SlotBase.hpp"
 #endif // COM_LOG
+#include "fwCom/util/log.hpp"
 
 namespace fwCom
 {
