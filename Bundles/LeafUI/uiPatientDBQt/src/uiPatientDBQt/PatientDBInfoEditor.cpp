@@ -52,8 +52,8 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiPatientDB::PatientDBInfoEd
 PatientDBInfoEditor::PatientDBInfoEditor()
 {
     SLM_TRACE_FUNC();
-    addNewHandledEvent( ::fwComEd::PatientDBMsg::CLEAR_PATIENT );
-    addNewHandledEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED );
+//    addNewHandledEvent( ::fwComEd::PatientDBMsg::CLEAR_PATIENT );
+//    addNewHandledEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED );
 }
 
 //------------------------------------------------------------------------------
@@ -104,13 +104,15 @@ void PatientDBInfoEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PatientDBInfoEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void PatientDBInfoEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     // If message is a pPatientDBMsg
     ::fwComEd::PatientDBMsg::csptr pPatientDBMsg = ::fwComEd::PatientDBMsg::dynamicConstCast( _msg ) ;
-    if ( pPatientDBMsg )
+    if ( pPatientDBMsg &&
+            ( pPatientDBMsg->hasEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT) ||
+              pPatientDBMsg->hasEvent(::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED)))
     {
         this->updating();
     }

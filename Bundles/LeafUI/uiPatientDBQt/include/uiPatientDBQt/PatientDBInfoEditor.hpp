@@ -48,7 +48,7 @@ protected:
     virtual void updating() throw (::fwTools::Failed);
 
     /// Receives message and call updating()
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     virtual void info( std::ostream &_sstream ) ;
 

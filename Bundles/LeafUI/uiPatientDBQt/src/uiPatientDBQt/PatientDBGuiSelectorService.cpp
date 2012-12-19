@@ -80,9 +80,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiPatientDB::PatientDBGuiSel
 PatientDBGuiSelectorService::PatientDBGuiSelectorService()
 {
     SLM_TRACE_FUNC();
-    addNewHandledEvent( ::fwComEd::PatientDBMsg::ADD_PATIENT );
-    addNewHandledEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT );
-    addNewHandledEvent( ::fwComEd::PatientDBMsg::CLEAR_PATIENT );
+//    addNewHandledEvent( ::fwComEd::PatientDBMsg::ADD_PATIENT );
+//    addNewHandledEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT );
+//    addNewHandledEvent( ::fwComEd::PatientDBMsg::CLEAR_PATIENT );
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +118,8 @@ void PatientDBGuiSelectorService::starting() throw(::fwTools::Failed)
     m_pSelectorPanel->setAlternatingRowColors( true );
 
     QStringList labels;
-    labels << tr("Name") << tr("Modality") << tr("Acq. date") << tr("Image size") << tr("Voxel size") << tr("Position origin") << tr("Comment");
+    labels << tr("Name") << tr("Modality") << tr("Acq. date")
+           << tr("Image size") << tr("Voxel size") << tr("Position origin") << tr("Comment");
     m_pSelectorPanel->setHeaderLabels(labels);
 
     int cellWidthT1 = 80;
@@ -137,8 +138,10 @@ void PatientDBGuiSelectorService::starting() throw(::fwTools::Failed)
     layout->setContentsMargins(0,0,0,0);
     container->setLayout( layout );
 
-    QObject::connect(m_pSelectorPanel, SIGNAL(currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* )), this, SLOT(onSelectionChange( QTreeWidgetItem*, QTreeWidgetItem* )));
-    QObject::connect(m_pSelectorPanel, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int )), this, SLOT(onItemDoubleClicked( QTreeWidgetItem*, int )));
+    QObject::connect(m_pSelectorPanel, SIGNAL(currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* )),
+            this, SLOT(onSelectionChange( QTreeWidgetItem*, QTreeWidgetItem* )));
+    QObject::connect(m_pSelectorPanel, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int )),
+            this, SLOT(onItemDoubleClicked( QTreeWidgetItem*, int )));
     m_pSelectorPanel->installEventFilter(this);
 
     this->updating();
@@ -146,10 +149,8 @@ void PatientDBGuiSelectorService::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PatientDBGuiSelectorService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void PatientDBGuiSelectorService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     // If message is a pPatientDBMsg
     ::fwComEd::PatientDBMsg::csptr pPatientDBMsg = ::fwComEd::PatientDBMsg::dynamicConstCast( _msg ) ;
     if ( pPatientDBMsg )
@@ -163,7 +164,11 @@ void PatientDBGuiSelectorService::updating( ::fwServices::ObjectMsg::csptr _msg 
                 this->selectLastAddedImage(index->value());
             }
         }
-        this->updating();
+        else if(pPatientDBMsg->hasEvent(::fwComEd::PatientDBMsg::NEW_PATIENT) ||
+                pPatientDBMsg->hasEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT))
+        {
+            this->updating();
+        }
     }
 }
 
@@ -172,8 +177,10 @@ void PatientDBGuiSelectorService::updating( ::fwServices::ObjectMsg::csptr _msg 
 void PatientDBGuiSelectorService::stopping() throw(::fwTools::Failed)
 {
     m_pSelectorPanel->removeEventFilter(this);
-    QObject::disconnect(m_pSelectorPanel, SIGNAL(currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* )), this, SLOT(onSelectionChange( QTreeWidgetItem*, QTreeWidgetItem* )));
-    QObject::disconnect(m_pSelectorPanel, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int )), this, SLOT(onItemDoubleClicked( QTreeWidgetItem*, int )));
+    QObject::disconnect(m_pSelectorPanel, SIGNAL(currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* )),
+            this, SLOT(onSelectionChange( QTreeWidgetItem*, QTreeWidgetItem* )));
+    QObject::disconnect(m_pSelectorPanel, SIGNAL(itemDoubleClicked( QTreeWidgetItem*, int )),
+            this, SLOT(onItemDoubleClicked( QTreeWidgetItem*, int )));
 
     this->getContainer()->clean();
     this->::fwGui::IGuiContainerSrv::destroy();

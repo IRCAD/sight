@@ -54,7 +54,7 @@ protected:
     void updating() throw (::fwTools::Failed);
 
     /// Receives message and call updating()
-    void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    void receiving( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     void info( std::ostream &_sstream ) ;
 
