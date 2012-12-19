@@ -88,7 +88,7 @@ void ImageReaderActionService::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderActionService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void ImageReaderActionService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {}
 
 //-----------------------------------------------------------------------------

@@ -31,7 +31,7 @@ fwServicesRegisterMacro( ::fwRender::IRender , ::devForum::tuto03::ImageViewerSe
 ImageViewerService::ImageViewerService() throw()
     : ::devForum::tuto02::ImageViewerService()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
 }
 
 //-----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ void ImageViewerService::configuring() throw ( ::fwTools::Failed )
 }
 //-----------------------------------------------------------------------------
 
-void ImageViewerService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ImageViewerService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     // If message is a ImageMsg and if event is NEW IMAGE
     ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg ) ;

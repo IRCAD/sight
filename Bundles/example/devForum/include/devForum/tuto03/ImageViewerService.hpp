@@ -48,7 +48,7 @@ public :
 protected :
 
     /// This method is called on msg notification, force updating of vtk render from current image.
-    DEVFORUM_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    DEVFORUM_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
     DEVFORUM_API virtual void stopping() throw(::fwTools::Failed);
 

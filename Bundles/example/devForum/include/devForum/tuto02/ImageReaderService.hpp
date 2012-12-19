@@ -66,7 +66,7 @@ protected :
     DEVFORUM_API virtual void updating() throw(fwTools::Failed);
 
     /// This method is called on msg notification, here does nothing
-    DEVFORUM_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    DEVFORUM_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// Image path, location of image on filesystem.
     ::boost::filesystem::path m_fsImgPath;
