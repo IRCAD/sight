@@ -7,6 +7,8 @@
 #ifndef _VISUVTKADAPTOR_IMAGESLICE_HPP_
 #define _VISUVTKADAPTOR_IMAGESLICE_HPP_
 
+#include <fwCom/Connection.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -82,7 +84,7 @@ protected :
     vtkPolyDataMapper *m_planeOutlineMapper;
     vtkActor *m_planeOutlineActor;
 
-    ::fwServices::IService::wptr m_imageComChannel;
+    ::fwCom::Connection m_connection;
 
 };
 

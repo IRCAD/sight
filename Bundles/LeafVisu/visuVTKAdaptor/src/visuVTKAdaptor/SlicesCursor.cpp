@@ -376,6 +376,7 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
             this->updateImageInfos(image);
+            this->updating();
         }
         if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
         {
@@ -389,6 +390,7 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
                 m_isSelected = ( sliceMode->value() == "UPDATE_SLICING" );
             }
             this->updateSliceIndex(image);
+            this->updating();
         }
         if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
         {
@@ -408,6 +410,7 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
             {
                 setOrientation( static_cast< Orientation >( toSliceType ));
             }
+            this->updating();
         }
         if ( imageMsg->hasEvent( "CROSS_TYPE") )
         {
@@ -416,8 +419,8 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
             ::fwData::Float::csptr scale = ::fwData::Float::dynamicConstCast(dataInfo);
             SLM_ASSERT("dataInfo is missing", scale);
             this->setCrossScale( scale->value() );
+            this->updating();
         }
-        this->updating();
     }
 }
 

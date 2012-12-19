@@ -237,7 +237,9 @@ void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTool
             setOrientation( static_cast< Orientation >( toSliceType ));
         }
     }
-    else
+    else if (msg->hasEvent(::fwComEd::ImageMsg::BUFFER)
+              || msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE)
+              ||msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
     {
         this->doStop();
         this->doStart();

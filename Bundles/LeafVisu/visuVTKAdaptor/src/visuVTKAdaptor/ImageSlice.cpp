@@ -97,10 +97,9 @@ void ImageSlice::doStart() throw(fwTools::Failed)
 void ImageSlice::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (!m_imageComChannel.expired())
+    if (!m_connection.expired())
     {
-        m_imageComChannel.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_imageComChannel.lock());
+        m_connection.disconnect();
     }
     this->removeFromPicker(m_imageActor);
     this->removeAllPropFromRenderer();
@@ -144,13 +143,12 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
 
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
-    if (!m_imageComChannel.expired())
+    if (!m_connection.expired())
     {
-        m_imageComChannel.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_imageComChannel.lock());
+        m_connection.disconnect();
     }
-    m_imageComChannel = ::fwServices::registerCommunicationChannel(image, this->getSptr());
-    m_imageComChannel.lock()->start();
+    m_connection = image->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                    this->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
     if (imageIsValid)
     {
