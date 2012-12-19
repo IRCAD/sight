@@ -2,7 +2,7 @@
                  graphical application overview.
 
   =========================================================
-  |                   myMenuBar                           |
+  |                   menuBar                           |
   =========================================================
   |                           |         |     TFEditor    |
   |                           |         |=================|
@@ -43,7 +43,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" impl="::fwGui::MessageHandler" autoConnect="no" />
 
             <!--  Service entrance point for interface creation -->
-            <service uid="myIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+            <service uid="IHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Ex01VolumeRendering</name>
@@ -52,11 +52,11 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="myMenuBar" start="yes" />
+                    <menuBar sid="menuBar" start="yes" />
                     <view sid="multiView" start="yes" />
                 </registry>
             </service>
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -84,11 +84,11 @@ Comment: Name inside the drawing are the uid of the service defined below.
             </service>
 
             <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                <start uid="myReaderPathFile" />
+                <start uid="readerPathFile" />
             </service>
             
             <service uid="action_saveFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                <start uid="myWriterPathFile" />
+                <start uid="writerPathFile" />
             </service>
             
             <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
@@ -196,30 +196,22 @@ Comment: Name inside the drawing are the uid of the service defined below.
             </service>
 
             <!-- Definition of the PatientDB Object of the application with its associated services -->
-            <item key="myPatientDB">
-                <object uid="myPatientDB" type="::fwData::PatientDB">
+            <item key="patientDB">
+                <object uid="patientDB" type="::fwData::PatientDB">
 
-                    <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                    <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                         <type mode="reader" />
                         <selection mode="exclude" />
                         <addSelection service="::ioXML::FwXMLGenericReaderService" />
                     </service>
                     
-                    <service uid="myWriterPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                    <service uid="writerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                         <type mode="writer" />
                         <selection mode="exclude" />
                         <addSelection service="::ioXML::FwXMLGenericWriterService" />
                     </service>
                     
                     <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-
-                    <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                        <target>myUpdaterAcq</target>
-                    </service>
-
-                    <service uid="myUpdaterComCannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                        <target>myUpdaterImg</target>
-                    </service>
 
                 </object>
             </item>
@@ -231,27 +223,27 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 </object>
             </item>
             
-            <item key="myCompositeVisu">
-                <object uid="myCompositeVisu" type="::fwData::Composite">
+            <item key="compositeVisu">
+                <object uid="compositeVisu" type="::fwData::Composite">
 
                     <!-- Service to add,remove or swap acquiistion in composite when a patient is loaded or cleaned -->
-                    <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
-                        <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+                    <service uid="updaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <update compositeKey="acquisition" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                        <update compositeKey="acquisition" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
                     </service>
 
                     <!-- Service to add,remove or swap images in composite when a patient is loaded or cleaned -->
-                    <service uid="myUpdaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
-                        <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
-                        <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+                    <service uid="updaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <update compositeKey="image" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                        <update compositeKey="image" onEvent="NEW_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                        <update compositeKey="image" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
                     </service>
 
-                    <!-- Manager to start/stop/swap services when  myImage is added/deleted/swapped -->
-                    <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6"  >
-                        <mode type="stop" />  <!-- myManager stops all the services in its config when myImage desappears (and associated com channel if necessary) -->
+                    <!-- Manager to start/stop/swap services when  image is added/deleted/swapped -->
+                    <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+                        <mode type="stop" />  <!-- manager stops all the services in its config when image desappears (and associated com channel if necessary) -->
                         <config>
-                            <object id="myImage" type="::fwData::Image">
+                            <object id="image" type="::fwData::Image">
                                 
                                 <!-- This service convert a simple fwData::Image to medical Image -->
                                 <service  impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="no" />
@@ -272,7 +264,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                     <sliceIndex>axial</sliceIndex>
                                 </service>
 
-                                <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (myImage) -->
+                                <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
                                 <service impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
                                     <mode type="stop" />
                                     <config>
@@ -291,24 +283,24 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <!-- Comment: This generic scene (genericScene1) uses the transfert function stores with key = SelectedTF in TFSelections -->
                     <service uid="genericScene1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
-                            <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                            <picker id="picker" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-                            <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                 <config renderer="default" picker="" />
                             </adaptor>
 
-                            <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                            <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
                                 <config renderer="default" picker="" />
                             </adaptor>
 
-                            <!-- Adaptor to visualize the medical image (myImage) with volume rendering. -->
-                            <adaptor id="myVRAdaptor" class="::visuVTKVRAdaptor::Volume" objectId="myImage">
+                            <!-- Adaptor to visualize the medical image (image) with volume rendering. -->
+                            <adaptor id="vRAdaptor" class="::visuVTKVRAdaptor::Volume" objectId="image">
                                 <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                             </adaptor>
                             
-                            <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="myImage">
-                                <config renderer="default" picker="myPicker" text="" color="#FFFFFF" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                            <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                                <config renderer="default" picker="picker" text="" color="#FFFFFF" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                             </adaptor>
                             
                         </scene>
@@ -317,27 +309,27 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <!-- Comment: This generic scene (genericScene2) uses the default transfert function (CT-GreyLevel) -->
                     <service uid="genericScene2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
-                            <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                            <picker id="picker" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-                            <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                 <config renderer="default" picker="" />
                             </adaptor>
 
-                            <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                            <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
                                 <config renderer="default" picker="" />
                             </adaptor>
 
-                            <!-- Adaptor to visualize the medical image (myImage) in a 3D multi-planar rendering -->
-                            <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                                <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                            <!-- Adaptor to visualize the medical image (image) in a 3D multi-planar rendering -->
+                            <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                                <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
                             </adaptor>
                             
-                            <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="myImage">
-                                <config renderer="default" picker="myPicker" text="" color="#FFFFFF" />
+                            <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                                <config renderer="default" picker="picker" text="" color="#FFFFFF" />
                             </adaptor>
                             
-                            <adaptor id="cameraScene3DID" class="::visuVTKAdaptor::Medical3DCamera" objectId="myImage">
+                            <adaptor id="cameraScene3DID" class="::visuVTKAdaptor::Medical3DCamera" objectId="image">
                                 <config renderer="default" sliceIndex="axial" />
                             </adaptor>
                             
@@ -347,14 +339,14 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <!-- Comment: This negato (negato1) uses the transfert function stores with key = SelectedTF in TFSelections -->
                     <service uid="negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
-                            <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                            <picker id="picker" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-                            <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                 <config renderer="default" picker="" />
                             </adaptor>
 
-                            <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                            <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
                                 <config renderer="default" picker="" />
                             </adaptor>
 
@@ -362,12 +354,12 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
                             
-                            <adaptor id="MPRNegato2D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                                <config renderer="default" picker="myPicker" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                            <adaptor id="MPRNegato2D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                                <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                             </adaptor>
 
-                            <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="myImage">
-                                <config renderer="default" picker="myPicker" text="" color="#FFFFFF" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                            <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                                <config renderer="default" picker="picker" text="" color="#FFFFFF" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                             </adaptor>
                             
                         </scene>
@@ -376,14 +368,14 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <!-- Comment : This negato (negato2) uses the default transfert function (CT-GreyLevel) -->
                     <service uid="negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
-                            <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                            <picker id="picker" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-                            <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                 <config renderer="default" picker="" />
                             </adaptor>
 
-                            <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                            <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
                                 <config renderer="default" picker="" />
                             </adaptor>
                             
@@ -391,12 +383,12 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
                             
-                            <adaptor id="MPRNegato2D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
-                                <config renderer="default" picker="myPicker" mode="2d" slices="1" sliceIndex="axial" />
+                            <adaptor id="MPRNegato2D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                                <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
                             </adaptor>
 
-                            <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="myImage">
-                                <config renderer="default" picker="myPicker" text="" color="#FFFFFF" />
+                            <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                                <config renderer="default" picker="picker" text="" color="#FFFFFF" />
                             </adaptor>
                             
                         </scene>
@@ -421,7 +413,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                     yAxis="yAxis" zValue="2" />
                             </adaptor>
 
-                            <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
+                            <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
                                 <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" 
                                         yAxis="yAxis" zValue="5" pointSize="12" viewportUID="Viewport" 
                                         selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
@@ -464,7 +456,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 <config xAxis="xAxis" yAxis="yAxis" zValue="12" min="0" max="1.0" align="right" color="yellow" tickSize="5" interval="0.1" viewportUID="Viewport" />
                             </adaptor>
 
-                            <adaptor id="viewportUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="myViewport">
+                            <adaptor id="viewportUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
                                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
                             </adaptor>
 
@@ -489,13 +481,13 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
                             <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
 
-                            <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
+                            <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
                                 <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" 
                                         yAxis="yAxis" zValue="5" pointSize="12" viewportUID="Viewport"
                                         selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                             </adaptor>
 
-                            <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="myViewport">
+                            <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
                                 <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
                             </adaptor>
                         </scene>
@@ -503,21 +495,25 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     
                     
                     
-                    <item key="myViewport">
+                    <item key="viewport">
                         <object uid="Viewport" type="::scene2D::data::Viewport" />
                     </item>
+                    
+                    <connect>
+                        <signal>patientDB/objectModified</signal>
+                        <slot>updaterAcq/receive</slot>
+                        <slot>updaterImg/receive</slot>
+                    </connect>
                     
                     
                 </object>
             </item>
 
             <start uid="messageHandler" />
-            <start uid="myIHM" />
-            <start uid="myUpdaterAcq" />
-            <start uid="myUpdaterImg" />
-            <start uid="myManager" />
-            <start uid="myUpdaterComCannelImg" />
-            <start uid="myUpdaterComCannelAcq" />
+            <start uid="IHM" />
+            <start uid="updaterAcq" />
+            <start uid="updaterImg" />
+            <start uid="manager" />
             <start uid="newOBject2newPatientDB"/>
             
         </object>
