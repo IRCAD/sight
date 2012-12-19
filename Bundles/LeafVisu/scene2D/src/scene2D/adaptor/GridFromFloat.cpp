@@ -139,7 +139,8 @@ void GridFromFloat::doStart() throw ( ::fwTools::Failed )
     m_pen.setStyle(Qt::DashLine);
     this->draw();  
 
-    this->registerService(this->getObject< ::fwData::Float >(), ::boost::dynamic_pointer_cast<::scene2D::adaptor::IAdaptor>(this->getSptr()));
+    this->registerService(this->getObject< ::fwData::Float >(),
+                          ::boost::dynamic_pointer_cast< ::scene2D::adaptor::IAdaptor>(this->getSptr()));
 }
 
 void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
