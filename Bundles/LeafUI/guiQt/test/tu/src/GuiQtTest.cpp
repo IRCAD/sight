@@ -81,7 +81,7 @@ void GuiQtTest::testDefaultFrame()
 void GuiQtTest::testTuto01()
 {
     ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
-    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getStandardConfig( "tutoBasicConfig" );
+    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( "tutoBasicConfig" );
     appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
     appConfigMng->launch();
     appConfigMng->stopAndDestroy();
@@ -92,7 +92,7 @@ void GuiQtTest::testTuto01()
 void GuiQtTest::testTuto02()
 {
     ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
-    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getStandardConfig( "tutoDataServiceBasicConfig" );
+    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( "tutoDataServiceBasicConfig" );
     appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
     appConfigMng->launch();
     appConfigMng->stopAndDestroy();

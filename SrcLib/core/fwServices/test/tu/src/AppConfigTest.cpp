@@ -51,7 +51,7 @@ void AppConfigTest::standardConfigTest()
     std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
     CPPUNIT_ASSERT( ! configs.empty());
 
-    ::fwRuntime::ConfigurationElement::csptr configElt = currentAppConfig->getStandardConfig(configId);
+    ::fwRuntime::ConfigurationElement::csptr configElt = currentAppConfig->getAdaptedTemplateConfig(configId);
 
     std::string uidField = configElt->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL( std::string("TEST_IMAGE"), uidField );
