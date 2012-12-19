@@ -118,6 +118,19 @@ void RendererService::starting() throw(fwTools::Failed)
     // Renderer
     m_render = vtkRenderer::New();
     m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(m_render);
+
+    bool meshIsLoaded;
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        meshIsLoaded = mesh->getNumberOfPoints() > 0;
+    }
+
+    if ( meshIsLoaded )
+    {
+        this->initVTKPipeline();
+        m_bPipelineIsInit = true;
+    }
 }
 
 //-----------------------------------------------------------------------------
