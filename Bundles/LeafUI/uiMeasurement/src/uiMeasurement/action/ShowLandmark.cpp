@@ -39,7 +39,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::ShowLand
 
 ShowLandmark::ShowLandmark( ) throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
 }
 
 //------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ void ShowLandmark::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::updating(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ShowLandmark::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::LANDMARK ) )

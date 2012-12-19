@@ -40,7 +40,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::ShowDist
 
 ShowDistance::ShowDistance( ) throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
 }
 
 //------------------------------------------------------------------------------
@@ -87,13 +87,15 @@ void ShowDistance::updating() throw(::fwTools::Failed)
 
 void ShowDistance::swapping() throw(::fwTools::Failed)
 {
-    ::fwServices::ObjectMsg::sptr dummy;
-    this->updating(dummy);
+    ::fwData::Image::csptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Boolean::sptr showDistances = img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+
+    this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
 }
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ShowDistance::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );

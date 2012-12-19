@@ -32,7 +32,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::SSnapshot , ::f
 
 SSnapshot::SSnapshot() throw()
 {
-    this->handlingEventOff();
+    //this->handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

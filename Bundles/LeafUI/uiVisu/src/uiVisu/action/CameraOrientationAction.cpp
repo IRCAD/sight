@@ -37,7 +37,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::CameraOrientati
 
 CameraOrientationAction::CameraOrientationAction() throw() : m_orientation("axial")
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

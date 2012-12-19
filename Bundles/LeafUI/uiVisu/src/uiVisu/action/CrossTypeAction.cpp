@@ -43,7 +43,7 @@ CrossTypeAction::m_scaleConversion
 
 CrossTypeAction::CrossTypeAction() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

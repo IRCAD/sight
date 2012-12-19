@@ -35,7 +35,7 @@ public:
 protected:
 
     // update its show/hide flag according image ShowDistance field notification
-    UIMEASUREMENT_API void updating(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
+    UIMEASUREMENT_API void receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
 
     UIMEASUREMENT_API void swapping() throw(::fwTools::Failed) ;
 

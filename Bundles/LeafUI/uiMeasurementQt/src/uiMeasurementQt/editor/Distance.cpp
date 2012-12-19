@@ -43,7 +43,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMeasurement::editor::Dista
 
 Distance::Distance() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------

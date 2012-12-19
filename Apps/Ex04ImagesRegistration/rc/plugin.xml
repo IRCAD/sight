@@ -61,7 +61,7 @@ Detail of the ToolBar
        <config>
            <object type="::fwData::Composite">
 
-            <service uid="MyMainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+            <service uid="mainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Ex04ImagesRegistration</name>
@@ -247,7 +247,7 @@ Detail of the ToolBar
                 <object uid="VisuComposite" type="::fwData::Composite">
                 <service uid="paramEditor" type="::gui::editor::IEditor" impl="::basicRegistration::SImagesSubstract" autoConnect="no"/>
 
-                <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6"  >
+                <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
                     <mode type="stop" />
                     <config>
                         <!--  Object to store the result of SImagesSubstract  -->
@@ -410,7 +410,7 @@ Detail of the ToolBar
 
 
             <!-- START AND STOP SERVICES -->
-            <start uid="MyMainFrame" />
+            <start uid="mainFrame" />
             <start uid="MedicalImageSrv1" />
             <start uid="MedicalImageSrv2" />
             <start uid="manager" />

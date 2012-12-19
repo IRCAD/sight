@@ -65,7 +65,7 @@ Detail of the ToolBar
        <config>
            <object type="::fwData::Composite">
 
-            <service uid="MyMainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+            <service uid="mainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Ex03Registration</name>
@@ -388,7 +388,7 @@ Detail of the ToolBar
 
 
             <!-- START AND STOP SERVICES -->
-            <start uid="MyMainFrame" />
+            <start uid="mainFrame" />
             <start uid="MedicalImageSrv" />
             <start uid="slider_negato1" />
 
