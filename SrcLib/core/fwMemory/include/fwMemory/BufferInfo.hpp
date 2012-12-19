@@ -28,7 +28,6 @@ struct FWMEMORY_CLASS_API BufferInfo
     FWMEMORY_API BufferInfo()
     {
         this->size = 0;
-        this->lockCount = NULL;
         this->isDumped = false;
         this->lastAccess.modified();
     }
@@ -36,7 +35,7 @@ struct FWMEMORY_CLASS_API BufferInfo
     SizeType size;
     bool     isDumped;
     ::boost::filesystem::path dumpedFile;
-    long * lockCount;
+    ::fwTools::IBufferManager::LockCountFunctionType lockCount;
     ::fwCore::LogicStamp lastAccess;
     ::fwTools::BufferAllocationPolicy::sptr bufferPolicy;
 

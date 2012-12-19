@@ -7,6 +7,8 @@
 #ifndef _FWTOOLS_IBUFFERMANAGER_HPP_
 #define _FWTOOLS_IBUFFERMANAGER_HPP_
 
+#include <boost/function.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
 
@@ -36,6 +38,8 @@ class FWTOOLS_CLASS_API IBufferManager : public ::fwCore::BaseObject
 {
 public:
     typedef size_t SizeType;
+    typedef boost::function< long() > LockCountFunctionType;
+
 
     fwCoreClassDefinitionsWithFactoryMacro((IBufferManager), (()), new IBufferManager );
     fwCoreAllowSharedFromThis();
@@ -49,7 +53,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool registerBuffer(void ** buffer, long * lockCount){
+    virtual bool registerBuffer(void ** buffer, LockCountFunctionType lockCount){
         FwCoreNotUsedMacro(buffer);
         FwCoreNotUsedMacro(lockCount);
         return true;

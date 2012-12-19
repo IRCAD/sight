@@ -49,7 +49,7 @@ public:
      * @name implementation of ::fwTools::IBufferManager hooks
      * @{ */
 
-    FWMEMORY_API virtual bool registerBuffer(void ** buffer, long * lockCount);
+    FWMEMORY_API virtual bool registerBuffer(void ** buffer, IBufferManager::LockCountFunctionType lockCount);
     FWMEMORY_API virtual bool unregisterBuffer(void ** buffer);
 
     FWMEMORY_API virtual bool allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy);

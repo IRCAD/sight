@@ -4,7 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+
+#include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+
 #include <limits>
+
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
 
 #include <fwTools/BufferObject.hpp>
 #include <fwTools/BufferAllocationPolicy.hpp>
@@ -28,6 +35,12 @@ void BufferObjectTest::setUp()
 void BufferObjectTest::tearDown()
 {
     // Clean up after the test run.
+}
+
+
+template <typename T> bool isPointedValueConst( T )
+{
+    return ::boost::is_const< typename boost::remove_pointer< T >::type >::value;
 }
 
 void BufferObjectTest::allocateTest()
@@ -77,6 +90,8 @@ void BufferObjectTest::allocateTest()
         ::fwTools::BufferObject::csptr cbo = bo;
         ::fwTools::BufferObject::ConstLock clock(cbo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(3), bo->lockCount() );
+        CPPUNIT_ASSERT( isPointedValueConst( clock.getBuffer() ) );
+        CPPUNIT_ASSERT( isPointedValueConst( cbo->lock().getBuffer() ) );
     }
 
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
@@ -129,6 +144,45 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT_THROW( bo->allocate(150, ::fwTools::BufferNoAllocPolicy::New()), ::fwTools::Exception);
     CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwTools::Exception);
 }
+
+
+
+void stressLock(::fwTools::BufferObject::sptr bo, int nbLocks, int nbTest)
+{
+    std::vector< ::fwTools::BufferObject::Lock > m_locks;
+
+    for( int t = 0; t < nbTest ; ++t)
+    {
+        for( int i = 0; i < nbLocks ; ++i)
+        {
+            m_locks.push_back(bo->lock());
+        }
+
+        CPPUNIT_ASSERT( bo->lockCount() >= static_cast<long>(3) );
+
+        m_locks.clear();
+    }
+
+}
+
+void BufferObjectTest::lockThreadedStressTest()
+{
+    ::fwTools::BufferObject::sptr bo = ::fwTools::BufferObject::New();
+
+    boost::thread_group group;
+
+    group.create_thread( boost::bind( &stressLock, bo, 800, 600 ) );
+    group.create_thread( boost::bind( &stressLock, bo, 600, 800 ) );
+    group.create_thread( boost::bind( &stressLock, bo, 452, 692 ) );
+    group.create_thread( boost::bind( &stressLock, bo, 253, 345 ) );
+
+    group.join_all();
+
+    CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
+
+}
+
+
 
 } // namespace ut
 } // namespace fwTools

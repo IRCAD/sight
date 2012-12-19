@@ -36,7 +36,7 @@ BufferManager::~BufferManager()
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::registerBuffer(void ** buffer, long * lockCount)
+bool BufferManager::registerBuffer(void ** buffer, IBufferManager::LockCountFunctionType lockCount)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -241,7 +241,7 @@ bool BufferManager::dumpBuffer(const void * const *  buffer)
 bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, void ** buffer)
 {
     SLM_TRACE_FUNC();
-    if ( info.isDumped || *(info.lockCount) > 0 || info.size == 0 )
+    if ( info.isDumped || info.lockCount() > 0 || info.size == 0 )
     {
         return false;
     }
@@ -361,7 +361,7 @@ std::string BufferManager::toString() const
                 << std::setw(10) << info.size << " "
                 << std::setw(18) << info.bufferPolicy << " "
                 << std::setw(6) << info.lastAccess << " "
-                << std::setw(4) << *(info.lockCount) << " "
+                << std::setw(4) << info.lockCount() << " "
                 << ((info.isDumped)?"    dumped":"not dumped") << " "
                 << info.dumpedFile << " "
                 << std::endl;

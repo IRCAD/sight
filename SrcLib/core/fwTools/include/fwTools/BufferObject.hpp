@@ -9,7 +9,9 @@
 
 #include <boost/type_traits/conditional.hpp>
 #include <boost/type_traits/is_const.hpp>
+#include <boost/shared_ptr.hpp>
 
+#include <fwCore/mt/types.hpp>
 #include <fwCore/base.hpp>
 #include <fwCamp/macros.hpp>
 
@@ -21,6 +23,9 @@ fwCampAutoDeclareMacro((fwTools)(BufferObject), FWTOOLS_API)
 
 namespace fwTools
 {
+
+
+
 /**
  * @brief   Define Base class for FW4SPL buffers
  * @class   BufferObject
@@ -44,7 +49,18 @@ namespace fwTools
  */
 class FWTOOLS_CLASS_API BufferObject : public ::fwCore::BaseObject
 {
+
+    struct no_deleter
+    {
+        void operator()(void * x) const
+        {
+        }
+    } ;
+
 public:
+
+    typedef ::boost::shared_ptr< void > CounterType;
+    typedef ::boost::weak_ptr< void > WeakCounterType;
 
     typedef size_t SizeType;
 
@@ -79,8 +95,7 @@ public:
         /**
          * @brief Build an empty lock.
          */
-        LockBase() :
-            m_count(0)
+        LockBase()
         {
         }
 
@@ -92,13 +107,18 @@ public:
          * @param bo BufferObject to lock
          */
         LockBase( SPTR(T) bo ) :
-            m_count(0),
             m_bufferObject(bo)
         {
             SLM_ASSERT("Can't lock NULL object", bo);
-            m_count = bo->m_count;
-            SLM_ASSERT("Count pointer is NULL", m_count != 0);
-            ++(*m_count);
+
+            ::fwCore::mt::ScopedLock lock(bo->m_mutex);
+            m_count = bo->m_count.lock();
+            if ( ! m_count )
+            {
+                m_count = CounterType( (void*) 0x01, no_deleter() );
+                bo->m_count = m_count;
+            }
+
             this->lock();
         }
 
@@ -109,14 +129,12 @@ public:
          *
          * @param other Lock to copy
          */
-        LockBase( const LockBase &other ):
-            m_count(0)
+        LockBase( const LockBase &other )
+            : m_count(other.m_count)
         {
-            m_count = other.m_count;
             if (m_count)
             {
                 SLM_ASSERT("Can't lock NULL object", other.m_bufferObject.lock());
-                ++(*m_count);
                 m_bufferObject = other.m_bufferObject;
                 this->lock();
             }
@@ -131,8 +149,8 @@ public:
         {
             if (m_count)
             {
-                --(*m_count);
                 this->unlock();
+                m_count.reset();
             }
         }
 
@@ -150,13 +168,11 @@ public:
         {
             if (m_count)
             {
-                --(*m_count);
                 this->unlock();
             }
             m_count = other.m_count;
             if (m_count)
             {
-                ++(*m_count);
                 m_bufferObject = other.m_bufferObject;
                 this->lock();
             }
@@ -182,10 +198,9 @@ public:
         {
             if (m_count)
             {
-                --(*m_count);
                 this->unlock();
             }
-            m_count = 0;
+            m_count.reset();
             m_bufferObject.reset();
         }
 
@@ -196,7 +211,7 @@ public:
          */
         void lock()
         {
-            SLM_ASSERT("Count pointer is NULL", m_count != 0);
+            SLM_ASSERT("Count pointer is uninitialized", m_count != BufferObject::CounterType() );
             if( SPTR(T) bufferObject = m_bufferObject.lock() )
             {
                 if (fwTools::IBufferManager::sptr manager = bufferObject->m_bufferManager)
@@ -211,7 +226,7 @@ public:
          */
         void unlock()
         {
-            SLM_ASSERT("Count pointer is NULL", m_count != 0);
+            SLM_ASSERT("Count pointer is uninitialized", m_count != BufferObject::CounterType() );
             if( SPTR(T) bufferObject = m_bufferObject.lock() )
             {
                 if (fwTools::IBufferManager::sptr manager = bufferObject->m_bufferManager)
@@ -223,7 +238,8 @@ public:
 
 
 
-        long *m_count;
+        BufferObject::CounterType m_count;
+
         WPTR(T) m_bufferObject;
     };
 
@@ -329,7 +345,7 @@ public:
     /**
      * @brief Returns the number of locks on the BufferObject
      */
-    long lockCount() const { return *m_count; };
+    long lockCount() const { return m_count.use_count(); };
 
     /**
      * @brief Returns true if the buffer has any lock
@@ -350,7 +366,8 @@ protected :
 
     SizeType m_size;
 
-    long *m_count;
+    mutable WeakCounterType m_count;
+    mutable ::fwCore::mt::Mutex m_mutex;
 
     ::fwTools::IBufferManager::sptr m_bufferManager;
 
@@ -360,4 +377,4 @@ protected :
 }
 
 
-#endif /* _FWTOOLS_BUFFEROBJECT_HPP_ */
+#endif // _FWTOOLS_BUFFEROBJECT_HPP_

@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/bind.hpp>
+
 #include "fwTools/Exception.hpp"
 #include "fwTools/BufferObject.hpp"
 
@@ -21,20 +23,19 @@ namespace fwTools
 BufferObject::BufferObject():
     m_buffer(0),
     m_size(0),
-    m_count(new long(0)),
     m_bufferManager(::fwTools::IBufferManager::getCurrent()),
     m_allocPolicy(::fwTools::BufferNoAllocPolicy::New())
 {
-    m_bufferManager->registerBuffer(&m_buffer, m_count);
+    m_bufferManager->registerBuffer(&m_buffer, boost::bind(&BufferObject::lockCount, this));
 }
 
 //------------------------------------------------------------------------------
 
 BufferObject::~BufferObject()
 {
-    OSLM_ASSERT("There is still " << *m_count << " locks on this BufferObject (" << this << ")", *m_count == 0);
+    OSLM_ASSERT("There is still " << m_count.use_count() << " locks on this BufferObject (" << this << ")",
+                m_count.expired());
     m_bufferManager->unregisterBuffer(&m_buffer);
-    delete m_count;
 }
 
 //------------------------------------------------------------------------------

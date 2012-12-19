@@ -18,6 +18,7 @@ class BufferObjectTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( BufferObjectTest );
     CPPUNIT_TEST( allocateTest );
+    CPPUNIT_TEST( lockThreadedStressTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -26,6 +27,7 @@ public:
     void tearDown();
 
     void allocateTest();
+    void lockThreadedStressTest();
 };
 
 } // namespace ut

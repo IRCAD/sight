@@ -141,7 +141,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
         BOOST_FOREACH(const ::fwMemory::BufferInfo::MapType::value_type &elt, bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
-            if( ! ( info.size == 0 || *(info.lockCount) > 0 || info.isDumped )  )
+            if( ! ( info.size == 0 || info.lockCount() > 0 || info.isDumped )  )
             {
                 buffers.push_back(elt);
             }
