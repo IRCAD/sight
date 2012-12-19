@@ -49,7 +49,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
     if( m_parametersName.empty() )
     {
-        ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getStandardConfig( m_configurationName );
+        const ::fwServices::registry::AppConfig::FieldAdaptorType fields;
+        ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_configurationName, fields );
         m_appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
     }
     else

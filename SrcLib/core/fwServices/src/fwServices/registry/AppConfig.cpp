@@ -134,16 +134,6 @@ void AppConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr AppConfig::getStandardConfig( const std::string & configId ) const
-{
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
-    return iter->second->config;
-}
-
-//-----------------------------------------------------------------------------
-
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & fieldAdaptors ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
@@ -153,35 +143,29 @@ void AppConfig::clearRegistry()
 
     // Adapt config
     ::fwRuntime::ConfigurationElement::sptr newConfig;
-    if ( iter->second->type != AppInfo::PARAMETERS )
-    {
-        newConfig = this->adaptConfig(  iter->second->config, fieldAdaptors );
-    }
-    else
-    {
-        FieldAdaptorType fields;
-        AppInfo::ParamatersType parameters = iter->second->parameters;
-        BOOST_FOREACH( AppInfo::ParamatersType::value_type param, parameters )
-        {
-            FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
-            std::stringstream key;
-            key << "\\$\\{" << param.first << "\\}";
-            if ( iter != fieldAdaptors.end() )
-            {
-                fields[key.str()] = iter->second;
-            }
-            else if ( param.second != "" )
-            {
-                fields[key.str()] = param.second;
-            }
-            else
-            {
-                FW_RAISE("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<"'.");
-            }
-        }
-        newConfig = this->adaptConfig(  iter->second->config, fields );
-    }
+    SLM_ASSERT("Config has not good type, PARAMETERS type is required", iter->second->type == AppInfo::PARAMETERS );
 
+    FieldAdaptorType fields;
+    AppInfo::ParamatersType parameters = iter->second->parameters;
+    BOOST_FOREACH( AppInfo::ParamatersType::value_type param, parameters )
+    {
+        FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
+        std::stringstream key;
+        key << "\\$\\{" << param.first << "\\}";
+        if ( iter != fieldAdaptors.end() )
+        {
+            fields[key.str()] = iter->second;
+        }
+        else if ( param.second != "" )
+        {
+            fields[key.str()] = param.second;
+        }
+        else
+        {
+            FW_RAISE("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<"'.");
+        }
+    }
+    newConfig = this->adaptConfig(  iter->second->config, fields );
 
     return newConfig;
 }

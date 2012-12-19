@@ -106,13 +106,6 @@ public:
             ::fwRuntime::ConfigurationElement::csptr config);
 
     /**
-     * @brief  Return the config with the identifier configId.
-     * @param configId : the identifier of the requested config.
-     * @note This method is thread safe.
-     */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getStandardConfig( const std::string & configId ) const;
-
-    /**
      * @brief  Return the adapted config with the identifier configId.
      * @param configId the identifier of the requested config.
      * @param replaceFields associations between the value and the pattern to replace in the config.
