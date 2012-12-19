@@ -11,6 +11,11 @@
 
 #include "guiWx/config.hpp"
 
+namespace fwThread
+{
+    class Worker;
+} //namespace fwThread
+
 namespace guiWx
 {
 /**
@@ -34,6 +39,9 @@ public:
     GUIWX_API void stop() throw();
 
     GUIWX_API int run() throw();
+
+private:
+    SPTR(::fwThread::Worker) m_workerWx;
 };
 
 } // namespace guiWx

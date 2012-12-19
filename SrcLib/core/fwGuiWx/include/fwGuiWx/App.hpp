@@ -76,11 +76,6 @@ private:
      */
     wxLocale * m_locale;
 
-    /**
-     * @brief   Application Profile
-     */
-    ::fwRuntime::profile::Profile::sptr m_profile;
-
     wxSingleInstanceChecker * m_checker;
 };
 

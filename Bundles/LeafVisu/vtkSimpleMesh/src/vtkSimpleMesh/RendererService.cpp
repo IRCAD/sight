@@ -206,7 +206,7 @@ void RendererService::initVTKPipeline()
     }
 
     m_mapper = vtkPolyDataMapper::New();
-
+    m_mapper->ImmediateModeRenderingOn();
     m_mapper->SetInput(m_vtkPolyData);
 
     vtkActor* actor =  vtkActor::New();

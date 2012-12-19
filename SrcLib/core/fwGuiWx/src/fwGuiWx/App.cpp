@@ -43,7 +43,7 @@ namespace fwGuiWx
 
 //-----------------------------------------------------------------------------
 
-App::App()
+App::App() : m_locale(0), m_checker(0)
 {
     SetAppName( wxGetTranslation("launcher") );
 #ifdef __MACOSX__
@@ -71,8 +71,13 @@ bool App::OnInit()
 {
     ::fwGuiWx::LoggerInitializer::initialize();
 
-    m_profile = ::fwRuntime::profile::getCurrentProfile();
-    SLM_ASSERT("Profile is not initialized", m_profile);
+    setlocale(LC_ALL,"C"); // needed for mfo save process
+    std::string appName = "No name";
+    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    if (profile)
+    {
+        appName = profile->getName();
+    }
 
 #ifndef TDVPM_COMPLIANT
     m_locale = new wxLocale();
@@ -91,7 +96,6 @@ bool App::OnInit()
 
     wxApp::OnInit();
 
-    std::string appName = m_profile->getName();
 #ifndef TDVPM_COMPLIANT
     m_locale->AddCatalog(::fwGuiWx::std2wx(appName), wxLANGUAGE_FRENCH, _T("utf-8"));
 #endif
@@ -110,7 +114,7 @@ bool App::OnInit()
     SLM_ASSERT("Unable to find user's data dir.", !checkerPath.empty());
 
     m_checker = new wxSingleInstanceChecker();
-    if (m_profile->getCheckSingleInstance())
+    if (profile && profile->getCheckSingleInstance())
     {
         m_checker->Create( ::fwGuiWx::std2wx(appName) + wxGetTranslation(".pid"), ::fwGuiWx::std2wx(checkerPath));
         if ( m_checker->IsAnotherRunning() )
@@ -120,7 +124,7 @@ bool App::OnInit()
         }
     }
 
-    return TRUE;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +132,6 @@ bool App::OnInit()
 int App::OnExit()
 {
     SLM_TRACE_FUNC();
-
     delete m_checker;
     return 0;
 }
