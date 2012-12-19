@@ -498,7 +498,7 @@ inline void SlotConnection< void ( A1, A2, A3 ) >::disconnectSlotNoLock(const Sl
                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
                 <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
-    catch(const boost::bad_weak_ptr &e)
+    catch(const boost::bad_weak_ptr&)
     {
         // SlotConnection destruction is under way, no need to remove
         // shared_ptr from connections
@@ -519,7 +519,7 @@ inline void SlotConnection< void ( A1, A2 ) >::disconnectSlotNoLock(const SlotBa
                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
                 <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
-    catch(const boost::bad_weak_ptr &e)
+    catch(const boost::bad_weak_ptr&)
     {
         // SlotConnection destruction is under way, no need to remove
         // shared_ptr from connections
@@ -540,7 +540,7 @@ inline void SlotConnection< void ( A1 ) >::disconnectSlotNoLock(const SlotBase::
                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
                 <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
-    catch(const boost::bad_weak_ptr &e)
+    catch(const boost::bad_weak_ptr&)
     {
         // SlotConnection destruction is under way, no need to remove
         // shared_ptr from connections
@@ -561,7 +561,7 @@ inline void SlotConnection< void () >::disconnectSlotNoLock(const SlotBase::sptr
                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
                 <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
-    catch(const boost::bad_weak_ptr &e)
+    catch(const boost::bad_weak_ptr&)
     {
         // SlotConnection destruction is under way, no need to remove
         // shared_ptr from connections
@@ -587,7 +587,7 @@ inline void SlotConnection< void (A...) >::disconnectSlotNoLock(const SlotBase::
                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
                 <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
-    catch(const boost::bad_weak_ptr &e)
+    catch(const boost::bad_weak_ptr&)
     {
         // SlotConnection destruction is under way, no need to remove
         // shared_ptr from connections
@@ -1154,5 +1154,6 @@ inline void SlotConnection< void (A...) >::unblock()
 } // namespace fwCom
 
 #endif /* __FWCOM_SLOTCONNECTION_HXX__ */
+
 
 
