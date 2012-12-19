@@ -144,7 +144,7 @@ void DynamicView::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void DynamicView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void DynamicView::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     static int count = 0;
 

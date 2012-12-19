@@ -54,7 +54,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Management of observations ( overrides ). Update the value from the String object.
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /// Update the value from the String object.
     virtual void updating() throw(::fwTools::Failed);

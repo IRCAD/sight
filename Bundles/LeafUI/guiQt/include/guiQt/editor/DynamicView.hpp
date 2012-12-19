@@ -68,7 +68,7 @@ protected:
      * @brief Analyses received message with NEW_CONFIGURATION_HELPER helper.
      * Creates the view defines by the config given in message.
      */
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Update

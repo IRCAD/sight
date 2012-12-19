@@ -64,7 +64,7 @@ protected:
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUIQT_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    GUIQT_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
     /**
      * @brief This method is used to update services. Do nothing.

@@ -133,11 +133,11 @@ void Code::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void Code::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Code::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::StringMsg::csptr stringMsg = ::fwComEd::StringMsg::dynamicConstCast(_msg);
 
-    if (stringMsg)
+    if (stringMsg && stringMsg->hasEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED))
     {
         this->updating();
     }
