@@ -20,7 +20,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKey, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKey, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -42,13 +42,32 @@ void ConfigActionSrvWithKey::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     this->::gui::action::ConfigActionSrv::starting();
+
     bool executable = true;
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    std::map< std::string, std::string >::const_iterator itr;
-    for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+
+    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
+    if( composite )
     {
-       executable &= (composite->find(itr->second)!= composite->end());
+        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        {
+            if ( elem.second != "self" )
+            {
+                executable &= (composite->find(elem.second)!= composite->end());
+            }
+        }
     }
+    else
+    {
+        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        {
+            if ( elem.second != "self" )
+            {
+                executable &= (obj->getFields().find(elem.second)!= obj->getFields().end());
+            }
+        }
+    }
+
     this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 
@@ -93,30 +112,43 @@ void ConfigActionSrvWithKey::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ConfigActionSrvWithKey::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ConfigActionSrvWithKey::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    this->::gui::action::ConfigActionSrv::updating(_msg);
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    this->::gui::action::ConfigActionSrv::receiving(_msg);
+
     bool executable = true;
-    std::map< std::string, std::string >::const_iterator itr;
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast (_msg);
-    if(compositeMsg)
+
+    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
+    if( composite )
     {
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+        if ( _msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) ||
+             _msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS )  )
         {
-            for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+            BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
             {
-                executable &= (composite->find(itr->second)!= composite->end());
+                if ( elem.second != "self" )
+                {
+                    executable &= (composite->find(elem.second)!= composite->end());
+                }
             }
+            this->::fwGui::IActionSrv::setIsExecutable( executable );
         }
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
+    }
+    else
+    {
+        if ( _msg->hasEvent( ::fwServices::ObjectMsg::ADDED_FIELDS ) ||
+             _msg->hasEvent( ::fwServices::ObjectMsg::REMOVED_FIELDS ) )
         {
-            for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+            BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
             {
-                executable &= (composite->find(itr->second)!= composite->end());
+                if ( elem.second != "self" )
+                {
+                    executable &= (composite->find(elem.second)!= composite->end());
+                }
             }
+            this->::fwGui::IActionSrv::setIsExecutable( executable );
         }
-        this->::fwGui::IActionSrv::setIsExecutable( executable );
     }
 }
 
@@ -133,14 +165,38 @@ void ConfigActionSrvWithKey::startConfig()
     AddGenericUidToFieldApadtor();
     std::map< std::string, std::string > finalMap;
     finalMap = m_fieldAdaptors;
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    std::map< std::string, std::string >::const_iterator itr;
-    for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
+    if( composite )
     {
-        std::string key = itr->second;
-        std::string fwID = (*composite)[key]->getID() ;
-        finalMap[itr->first] = fwID;
+        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        {
+            std::string key = elem.second;
+            if ( key == "self" )
+            {
+                finalMap[elem.first] = composite->getID();
+            }
+            else
+            {
+                finalMap[elem.first] = (*composite)[key]->getID();
+            }
+        }
+    }
+    else
+    {
+        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        {
+            std::string key = elem.second;
+            if ( key == "self" )
+            {
+                finalMap[elem.first] = obj->getID();
+            }
+            else
+            {
+                finalMap[elem.first] = obj->getField(key)->getID();
+            }
+        }
     }
 
     // Init manager
@@ -152,8 +208,8 @@ void ConfigActionSrvWithKey::startConfig()
     // Launch config
     m_configTemplateManager->launch();
 
-    // Add com channel
-    ::fwServices::registerCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() )->start();
+    // Add connection
+    this->connectToConfigRoot();
 
     m_configIsRunning = true;
 
@@ -166,7 +222,7 @@ void ConfigActionSrvWithKey::stopConfig()
     if( m_configIsRunning )
     {
         // Remove com channel
-        ::fwServices::unregisterCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() );
+        this->disconnectToConfigRoot();
 
         // Delete manager
         m_configTemplateManager->stopAndDestroy();

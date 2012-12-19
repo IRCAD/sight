@@ -68,13 +68,13 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ConfigActionSrvWithKey</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ConfigActionSrvWithKeySendingConfigTemplate</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

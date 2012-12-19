@@ -78,7 +78,7 @@ protected:
      *
      * Set executable or not the action according to the key specified in configuration
      */
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Starts the view and initialize the operator.
@@ -132,10 +132,14 @@ private:
     /// Specify if the config view must be unique
     bool m_isUnique;
 
+    typedef std::map< std::string, std::string > KeyAdaptorType;
+
     /**
      * @brief keep the association between the PATTERN and the associated key as m_keyAdaptors[PATTERN] = AssociatedKey.
      */
-    std::map< std::string, std::string > m_keyAdaptors;
+    KeyAdaptorType m_keyAdaptors;
+
+
 
     /**
      * @brief keep the association between the PATTERN and the associated key  as fieldAdaptors[PATTERN] = AssociatedKey.

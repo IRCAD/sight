@@ -13,6 +13,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -91,7 +92,7 @@ protected:
      *
      * Stop configuration when it receives "WINDOW_CLOSED" event (ie. close the param view).
      */
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Starts the view and initialize the operator.
@@ -145,6 +146,14 @@ protected:
      */
     std::map< std::string, std::string > m_fieldAdaptors;
 
+    /// helper to connect tp config root
+    void connectToConfigRoot();
+
+    /// helper to disconnect tp config root
+    void disconnectToConfigRoot();
+
+    /// To manage connection to the config root
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 };
 
 } //action

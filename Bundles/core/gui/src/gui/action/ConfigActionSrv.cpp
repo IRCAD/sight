@@ -39,8 +39,8 @@ ConfigActionSrv::~ConfigActionSrv() throw()
 void ConfigActionSrv::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
     this->::fwGui::IActionSrv::actionServiceStarting();
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -56,6 +56,7 @@ void ConfigActionSrv::stopping() throw(::fwTools::Failed)
         this->stopConfig();
     }
 
+    m_connections.reset();
     this->::fwGui::IActionSrv::actionServiceStopping();
 }
 
@@ -112,7 +113,7 @@ void ConfigActionSrv::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ConfigActionSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ConfigActionSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     if ( _msg->hasEvent("WINDOW_CLOSED") )
     {
@@ -150,8 +151,8 @@ void ConfigActionSrv::startConfig()
     // Launch config
     m_configTemplateManager->launch();
 
-    // Add com channel
-    ::fwServices::registerCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() )->start();
+    // Add connection
+    this->connectToConfigRoot();
 
     m_configIsRunning = true;
 }
@@ -162,14 +163,29 @@ void ConfigActionSrv::stopConfig()
 {
     if( m_configIsRunning )
     {
-        // Remove com channel
-        ::fwServices::unregisterCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() );
+        // Remove connection
+        this->disconnectToConfigRoot();
 
         // Delete manager
         m_configTemplateManager->stopAndDestroy();
         m_configTemplateManager.reset();
     }
     m_configIsRunning = false;
+}
+
+//------------------------------------------------------------------------------
+
+void ConfigActionSrv::connectToConfigRoot()
+{
+    ::fwData::Object::sptr root = m_configTemplateManager->getConfigRoot();
+    m_connections->connect( root, this->getSptr(), this->getObjSrvConnections() );
+}
+
+//------------------------------------------------------------------------------
+
+void ConfigActionSrv::disconnectToConfigRoot()
+{
+    m_connections->disconnect();
 }
 
 //------------------------------------------------------------------------------

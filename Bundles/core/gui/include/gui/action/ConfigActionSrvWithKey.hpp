@@ -70,7 +70,7 @@ protected:
      *
      * Stop configuration when it receives "WINDOW_CLOSED" event (ie. close the param view).
      */
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Starts the view and initialize the operator.
@@ -110,10 +110,12 @@ private:
      */
     void stopConfig();
 
+    typedef std::map< std::string, std::string > KeyAdaptorType;
+
     /**
      * @brief keep the association between the PATTERN and the associated key as m_keyAdaptors[PATTERN] = AssociatedKey.
      */
-    std::map< std::string, std::string > m_keyAdaptors;
+    KeyAdaptorType m_keyAdaptors;
 
 };
 

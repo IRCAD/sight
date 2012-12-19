@@ -31,7 +31,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySendingConfigTemplate, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrvWithKeySendingConfigTemplate, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -59,13 +59,32 @@ void ConfigActionSrvWithKeySendingConfigTemplate::starting() throw(::fwTools::Fa
     SLM_TRACE_FUNC();
 
     actionServiceStarting();
+
     bool executable = true;
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    std::map< std::string, std::string >::const_iterator itr;
-    for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+
+    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
+    if( composite )
     {
-        executable &= (composite->find(itr->second)!= composite->end());
+        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        {
+            if ( elem.second != "self" )
+            {
+                executable &= (composite->find(elem.second)!= composite->end());
+            }
+        }
     }
+    else
+    {
+        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        {
+            if ( elem.second != "self" )
+            {
+                executable &= (obj->getFields().find(elem.second)!= obj->getFields().end());
+            }
+        }
+    }
+
     this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 
@@ -143,28 +162,42 @@ void ConfigActionSrvWithKeySendingConfigTemplate::updating() throw(::fwTools::Fa
 
 //------------------------------------------------------------------------------
 
-void ConfigActionSrvWithKeySendingConfigTemplate::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ConfigActionSrvWithKeySendingConfigTemplate::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    //this->::gui::action::ConfigActionSrv::updating(_msg);
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     bool executable = true;
-    std::map< std::string, std::string >::const_iterator itr;
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast (_msg);
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+
+    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
+    if( composite )
     {
-        for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+        if ( _msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) ||
+             _msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS )  )
         {
-            executable &= (composite->find(itr->second)!= composite->end());
+            BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+            {
+                if ( elem.second != "self" )
+                {
+                    executable &= (composite->find(elem.second)!= composite->end());
+                }
+            }
+            this->::fwGui::IActionSrv::setIsExecutable( executable );
         }
     }
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
+    else
     {
-        for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+        if ( _msg->hasEvent( ::fwServices::ObjectMsg::ADDED_FIELDS ) ||
+             _msg->hasEvent( ::fwServices::ObjectMsg::REMOVED_FIELDS ) )
         {
-            executable &= (composite->find(itr->second)!= composite->end());
+            BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+            {
+                if ( elem.second != "self" )
+                {
+                    executable &= (composite->find(elem.second)!= composite->end());
+                }
+            }
+            this->::fwGui::IActionSrv::setIsExecutable( executable );
         }
     }
-    this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 
 //------------------------------------------------------------------------------
@@ -185,21 +218,41 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
 
     ::fwData::Composite::NewSptr finalMap;
     finalMap->deepCopy( m_fieldAdaptors );
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    std::map< std::string, std::string >::const_iterator itr;
-    for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
+    if( composite )
     {
-        std::string key = itr->second;
-        if ( key == "self" )
+        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
         {
-            std::string fwID = composite->getID();
-            (*finalMap)[itr->first] = ::fwData::String::New(fwID);
+            std::string key = elem.second;
+            if ( key == "self" )
+            {
+                std::string fwID = composite->getID();
+                (*finalMap)[elem.first] = ::fwData::String::New(fwID);
+            }
+            else
+            {
+                std::string fwID = (*composite)[key]->getID() ;
+                (*finalMap)[elem.first] = ::fwData::String::New(fwID);
+            }
         }
-        else
+    }
+    else
+    {
+        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
         {
-            std::string fwID = (*composite)[key]->getID() ;
-            (*finalMap)[itr->first] = ::fwData::String::New(fwID);
+            std::string key = elem.second;
+            if ( key == "self" )
+            {
+                std::string fwID = obj->getID();
+                (*finalMap)[elem.first] = ::fwData::String::New(fwID);
+            }
+            else
+            {
+                std::string fwID = obj->getField(key)->getID() ;
+                (*finalMap)[elem.first] = ::fwData::String::New(fwID);
+            }
         }
     }
 
@@ -220,13 +273,27 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     if(m_isUnique)
     {
         tabID = "TABID";
-        std::map< std::string, std::string >::const_iterator itr;
-        for(itr = m_keyAdaptors.begin(); itr != m_keyAdaptors.end(); ++itr)
+        if(composite)
         {
-            ::fwData::Composite::ContainerType::iterator key = composite->find(itr->second);
-            OSLM_ASSERT("Missing key "<<itr->second<<" in composite", key!= composite->end());
-            ::fwTools::Object::sptr obj = key->second;
-            tabID += "_" + obj->getID();
+            BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+            {
+                std::string key = elem.second;
+                if ( key != "self" )
+                {
+                    tabID += "_" + (*composite)[key]->getID();
+                }
+            }
+        }
+        else
+        {
+            BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+            {
+                std::string key = elem.second;
+                if ( key != "self" )
+                {
+                    tabID += "_" + obj->getField(key)->getID();
+                }
+            }
         }
     }
     else
@@ -239,7 +306,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     std::stringstream ss;
     if (  ! m_viewConfigTitlePrefixKey.empty() )
     {
-        ::fwData::String::sptr prefix = ::fwAtomConversion::getSubObject< ::fwData::String >( composite, m_viewConfigTitlePrefixKey );
+        ::fwData::String::sptr prefix = ::fwAtomConversion::getSubObject< ::fwData::String >( obj, m_viewConfigTitlePrefixKey );
         if(prefix)
         {
             ss << prefix->getValue() << " - " ;
@@ -252,7 +319,7 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     }
     if ( ! m_tooltipConfigTitleKey.empty() )
     {
-        ::fwData::String::sptr tooltip = ::fwAtomConversion::getSubObject< ::fwData::String >( composite, m_tooltipConfigTitleKey );
+        ::fwData::String::sptr tooltip = ::fwAtomConversion::getSubObject< ::fwData::String >( obj, m_tooltipConfigTitleKey );
         if(tooltip)
         {
             title->setField( tooltipFieldID, tooltip );
