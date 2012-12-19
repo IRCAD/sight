@@ -40,21 +40,13 @@
 
                                 <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
 
-                                <service uid="myUpdaterComChannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                                    <target>myUpdaterAcq</target>
-                                </service>
-
-                                <service uid="myUpdaterComChannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                                    <target>myUpdaterImg</target>
-                                </service>
-
                             </object>
                         </item>
                     </object>
                 </item>
 
-                <item key="myCompositeSelection">
-                    <object uid="myCompositeSelection" type="::fwData::Composite">
+                <item key="compositeSelection">
+                    <object uid="compositeSelection" type="::fwData::Composite">
 
                         <service uid="multiTabView" type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes" />
 
@@ -63,28 +55,31 @@
                             <key id="self" pattern="COMPOSITE_SELECTION" />
 
                             <replace val="patientDB" pattern="UID_OF_SELECTED_PATIENT" />
-                            <replace val="medicalWorkspace" pattern="UID_OF_MEDICAL_WORKSPACE" />
                         </service>
 
-                        <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" patientInfoKey="tabInfo" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="tabPrefix" patientInfoKey="tabInfo" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                        <service uid="updaterAcq" impl="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="acquisition" patientNameKey="tabPrefix" patientInfoKey="tabInfo" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                            <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="acquisition" patientNameKey="tabPrefix" patientInfoKey="tabInfo" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
                         </service>
 
-                        <service uid="myUpdaterImg" impl="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="myImage" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                        <service uid="updaterImg" impl="::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="image" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                            <update compositeKey="image" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
                         </service>
 
+                        <proxy channel="updaters">
+                            <signal>patientDB/objectModified</signal>
+                            <slot>updaterAcq/receive</slot>
+                            <slot>updaterImg/receive</slot>
+                        </proxy>
+                        
                     </object>
                 </item>
 
                 <start uid="messageHandler" />
                 <start uid="mainFrame" />
-                <start uid="myUpdaterAcq" />
-                <start uid="myUpdaterImg" />
-                <start uid="myUpdaterComChannelAcq" />
-                <start uid="myUpdaterComChannelImg" />
+                <start uid="updaterAcq" />
+                <start uid="updaterImg" />
                 <start uid="newOBject2newPatientDB" />
                 <start uid="multiTabView" />
                 <start uid="action_activity1" />
