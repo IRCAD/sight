@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include <fwCom/Connection.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
@@ -251,9 +253,8 @@ protected:
 
 private :
 
-    //::fwServices::IService::wptr m_tfSelectionComChannelSrv;
-    //::fwServices::IService::wptr m_tfComChannelSrv;
-    ::fwServices::helper::SigSlotConnection::sptr m_tfConnections;
+    ::fwCom::Connection m_tfSelectionConnection;
+    ::fwCom::Connection m_tfConnection;
 
     /// Transfer function selection
     ::fwData::Composite::wptr m_tfSelection;
