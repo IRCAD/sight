@@ -41,12 +41,15 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-void notifyRemoveLandMark( ::fwServices::IService* _service, ::fwData::Point::sptr point )
+void notifyRemoveLandMark( ::fwData::Point::sptr point )
 {
-    SLM_ASSERT("NULL Service", _service);
     ::fwComEd::PointListMsg::NewSptr msgPointList;
     msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
-    ::fwServices::IEditionService::notify( _service->getSptr(), _service->getObject(), msgPointList, ::fwServices::ComChannelService::NOTIFY_SOURCE );
+
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = point->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+
+    fwServicesNotifyMsgMacro( point->getLightID(), sig, msgPointList );
 }
 
 //------------------------------------------------------------------------------
@@ -127,7 +130,7 @@ public :
             {
                 ::fwData::Point::sptr point = *itr;
                 m_pickedPointList.lock()->getRefPoints().erase(itr);
-                notifyRemoveLandMark( m_service, point );
+                notifyRemoveLandMark( point );
             }
         }
     }

@@ -19,8 +19,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwServices/ComChannelService.hpp>
-
 #include "tutoTrianConverterCtrl/Plugin.hpp"
 
 namespace tutoTrianConverterCtrl

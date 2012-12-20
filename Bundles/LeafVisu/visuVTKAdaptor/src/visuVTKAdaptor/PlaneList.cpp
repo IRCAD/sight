@@ -38,14 +38,15 @@ namespace visuVTKAdaptor
 
 
 
-void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwServices::IService* _service, ::fwData::Plane::sptr plane )
+void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwData::Plane::sptr plane )
 {
     ::fwComEd::PlaneListMsg::NewSptr msg;
     msg->addEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES );
     msg->addEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE, plane );
-    SLM_ASSERT("NULL Service", _service);
 
-    ::fwServices::IEditionService::notify( _service->getSptr(), planeList, msg, ::fwServices::ComChannelService::NOTIFY_SOURCE );
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = planeList->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    fwServicesNotifyMsgMacro( planeList->getLightID(), sig, msg );
 }
 
 class vtkPlaneDeleteCallBack : public vtkCommand
@@ -125,7 +126,7 @@ public :
             (
                     std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock())
             );
-            notifyDeletePlane(planeList, m_service, planeBackup);
+            notifyDeletePlane(planeList, planeBackup);
         }
     }
     bool getSelectedPlane()
