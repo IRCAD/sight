@@ -214,6 +214,26 @@ void Type::setType<char>()
 
 //-----------------------------------------------------------------------------
 
+#ifdef linux
+
+template <>
+void Type::setType<boost::int64_t>()
+{
+    this->setType<long long>();
+}
+
+//-----------------------------------------------------------------------------
+
+template <>
+void Type::setType<boost::uint64_t>()
+{
+    this->setType<unsigned long long>();
+}
+
+#endif
+
+//-----------------------------------------------------------------------------
+
 template <>
 void Type::setType<void>()
 {

@@ -269,6 +269,20 @@ FWTOOLS_API void Type::setType< char >();
 
 //-----------------------------------------------------------------------------
 
+#ifdef linux
+
+template <>
+FWTOOLS_API void Type::setType< ::boost::int64_t >();
+
+//-----------------------------------------------------------------------------
+
+template <>
+FWTOOLS_API void Type::setType< ::boost::uint64_t >();
+
+#endif
+
+//-----------------------------------------------------------------------------
+
 template <typename T>
 const std::string &Type::typeToString()
 {
