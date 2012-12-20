@@ -67,13 +67,15 @@ protected:
     typedef std::map< std::string, ::fwData::Reconstruction::sptr > OrganNameReconstruction;
 
     void updateReconstructions();
-    void notifyOrganChoiceSelection();
 
-    protected Q_SLOTS:
+protected Q_SLOTS:
+
+    /// Slot called when new current item is setted in m_organChoice
+    void onCurrentItemChanged ( QListWidgetItem * current, QListWidgetItem * previous );
 
     void onShowReconstructions(int state);
+
     void onOrganChoiceVisibility(QListWidgetItem * item);
-    void onOrganChoiceSelection();
 
 private:
 

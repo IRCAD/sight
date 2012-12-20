@@ -29,10 +29,10 @@ namespace fieldHelper
 
 //------------------------------------------------------------------------------
 
-void AnonymiseImage::anonymisePatient( ::fwData::Patient::sptr _pPatient)
+void AnonymiseImage::anonymisePatient( ::fwData::Patient::sptr _pPatient, std::string name, std::string firstname )
 {
-    _pPatient->setCRefName("anonymous");
-    _pPatient->setCRefFirstname("anonymous");
+    _pPatient->setCRefName(name);
+    _pPatient->setCRefFirstname(firstname);
     _pPatient->setCRefBirthdate( ::boost::date_time::min_date_time );
     _pPatient->setCRefIDDicom("");
 
@@ -43,7 +43,10 @@ void AnonymiseImage::anonymisePatient( ::fwData::Patient::sptr _pPatient)
 
 void AnonymiseImage::anonymisePatientDB( ::fwData::PatientDB::sptr _pPatientDB)
 {
-    std::for_each(_pPatientDB->getPatients().begin(), _pPatientDB->getPatients().end(), &AnonymiseImage::anonymisePatient );
+    BOOST_FOREACH( ::fwData::Patient::sptr patient, _pPatientDB->getPatients() )
+    {
+        AnonymiseImage::anonymisePatient( patient );
+    }
 }
 
 //------------------------------------------------------------------------------
