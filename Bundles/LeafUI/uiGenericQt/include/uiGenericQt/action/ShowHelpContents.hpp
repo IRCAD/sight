@@ -39,7 +39,7 @@ protected:
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::uiGeneric::ui::action::ShowHelpContents" type="::fwGui::IActionSrv">
+    <service impl="::uiGeneric::ui::action::ShowHelpContents" type="::fwGui::IActionSrv">
         <filename id=".../doc.qhc"/>
     </service>
     @endverbatim

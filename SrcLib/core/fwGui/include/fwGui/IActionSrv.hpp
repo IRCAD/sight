@@ -72,7 +72,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-           <service uid="item" type="::fwGui::IActionSrv" implementation="::gui::action::NothingActionSrv" autoComChannel="no" >
+           <service uid="item" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" >
               <state active="false" executable="false" />
               <confirmation value="yes" message="..." />
            </service>

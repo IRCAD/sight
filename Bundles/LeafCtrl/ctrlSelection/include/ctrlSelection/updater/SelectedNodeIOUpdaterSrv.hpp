@@ -49,7 +49,7 @@ protected:
      * @brief Implements configuring method derived from IService.
      *
      * @verbatim
-         <service uid="myUpdater" implementation="::ctrlSelection::updater::ResecFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+         <service uid="myUpdater" impl="::ctrlSelection::updater::ResecFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
              <mode>input</mode>
          </service>
       @endverbatim

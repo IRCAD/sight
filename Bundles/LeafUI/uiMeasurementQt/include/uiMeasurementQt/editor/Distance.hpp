@@ -71,7 +71,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-    <service uid="distanceEditor" type="::gui::editor::IEditor" implementation="::uiMeasurement::editor::Distance" autoComChannel="no">
+    <service uid="distanceEditor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
         <placeInScene uid="genericScene" />
     </service>
      @endverbatim

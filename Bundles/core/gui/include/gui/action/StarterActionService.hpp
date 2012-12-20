@@ -29,7 +29,7 @@ namespace action
  * This action can be :
  *   - Start a service :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <start uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -37,7 +37,7 @@ namespace action
  *
  *   - Start a service if exists :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <start_if_exists uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -45,7 +45,7 @@ namespace action
  *
  *   - Stop a service :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <stop uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -53,7 +53,7 @@ namespace action
  *
  *   - Stop a service if exists :  Test if the service exist before stopping it
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <stop_if_exists uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -61,7 +61,7 @@ namespace action
  *
  *   - Start or stop the service:
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <start_or_stop uid="Uid_of_the_service" />
            </service>
    @endverbatim

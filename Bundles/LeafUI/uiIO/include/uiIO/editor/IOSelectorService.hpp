@@ -68,7 +68,7 @@ protected:
      *
      * Sample of configuration :
      * @verbatim
-          <service uid="GENERIC_UID_writerMedicalWorkspace" type="::gui::editor::IDialogEditor" implementation="::uiIO::editor::IOSelectorService" autoComChannel="no">
+          <service uid="GENERIC_UID_writerMedicalWorkspace" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
               <type mode="writer" />
               <selection mode="include" />
               <addSelection service="::ioXML::FwXMLGenericWriterService" />

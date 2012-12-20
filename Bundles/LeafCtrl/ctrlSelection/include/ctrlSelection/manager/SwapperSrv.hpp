@@ -56,7 +56,7 @@ protected:
     * Sample of declaration configuration for a simple swapper service
     *
     * @verbatim
-        <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
+        <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
                 <object id="myImage" type="::fwData::Image" >

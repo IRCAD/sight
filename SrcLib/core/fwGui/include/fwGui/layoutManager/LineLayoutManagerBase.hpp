@@ -84,7 +84,7 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @verbatim
-       <service uid="subView2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+       <service uid="subView2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
            <gui>
               <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />

@@ -90,7 +90,7 @@ protected :
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" autoComChannel="yes" >
+    <service impl="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" autoConnect="yes" >
             <masterSlaveRelation>master</masterSlaveRelation>
             <win guiContainerId="900"/>
     </service>

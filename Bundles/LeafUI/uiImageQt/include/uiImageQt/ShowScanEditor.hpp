@@ -69,7 +69,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="showScanNegato3DEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
+     <service uid="showScanNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
          <negatoAdaptor uid="myNegatoMPR" />
      </service>
        @endverbatim

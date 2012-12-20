@@ -46,7 +46,7 @@ protected :
      * @brief Configuring method allows to configure a menu with several actions.
      * Here a sample of the DefaultMenuSrv service declaration with three actions:
      * @verbatim
-            <service name="File" uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+            <service name="File" uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <layout>
                     <menuItem name="Load file" shortcut="Ctrl+O"/>
                     <menuItem uid="Save file"/>

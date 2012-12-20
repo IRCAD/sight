@@ -12,7 +12,7 @@
     <object type="::fwData::Image">
 
         <!-- Reading service. Here, the service unique identifier (uid) is set to the myReaderPathFile value.
-        In this tutorial, this service does not need to receive information about its linked data. Therefore the autoComChannel is set to no.
+        In this tutorial, this service does not need to receive information about its linked data. Therefore the autoConnect is set to no.
         We are going to see in detail the use of communications in the tutoComChannel tutorial.
         Furthermore, in the filename tag, an attribut (id) allows also to clarify the location of the 3D medical image file. 
         In our case, the image must be stored in the MyInstallDir directory, in a sub-directory named TutoData.
@@ -24,14 +24,14 @@
         <!-- Visualization service of a 3D medical image.
         Here, the value of the service unique identifier (uid) is myRenderingTuto.
         In our tutorial, this service needs to receive information about its linked data,
-        indeed, it has to receive a message when the image is effectively loaded. Therefore, the autoComChannel value is fixed to yes.
+        indeed, it has to receive a message when the image is effectively loaded. Therefore, the autoConnect value is fixed to yes.
         Furthermore, a guiContainerId attribut is also associated to the service.-->
         <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoConnect="yes" />
         
         <!-- Description service of the HMI.
         Here, the container will be used by the 3D visualization service previously described. 
         The ::gui::frame::MainFrame service automaticly positions the different containers in the application main window.
-        In our tutorial, this service does not need to receive information about its linked data. Therefore the autoComChannel is set to no.
+        In our tutorial, this service does not need to receive information about its linked data. Therefore the autoConnect is set to no.
         Remember we will see in details the use of communications in the tutoComChannel tutorial.-->
         <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <gui>

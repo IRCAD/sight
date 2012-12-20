@@ -56,7 +56,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-        <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="My item 1" shortcut="1" style="check" />

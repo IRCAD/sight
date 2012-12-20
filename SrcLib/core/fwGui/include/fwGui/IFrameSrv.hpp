@@ -49,7 +49,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-        <service uid="mainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>

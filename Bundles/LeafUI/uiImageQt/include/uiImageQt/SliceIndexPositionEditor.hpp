@@ -71,7 +71,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="slider_negato1" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+     <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
         <sliceIndex>axial</sliceIndex>
      </service>
        @endverbatim

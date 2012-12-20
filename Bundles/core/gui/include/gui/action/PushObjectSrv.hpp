@@ -60,7 +60,7 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service implementation="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv">
+       <service impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv">
            <push src="COMPOSITE_UID[KEY]" key="KEY_IN_COMPOSITE" />
        </service>
         @endverbatim

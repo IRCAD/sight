@@ -42,7 +42,7 @@ protected:
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::uiGeneric::ui::action::ShowAbout" type="::fwGui::IActionSrv">
+    <service impl="::uiGeneric::ui::action::ShowAbout" type="::fwGui::IActionSrv">
         <filename id=".../aboutFile.html"/>
     </service>
     @endverbatim

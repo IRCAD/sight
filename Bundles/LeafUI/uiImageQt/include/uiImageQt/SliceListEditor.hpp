@@ -72,7 +72,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor" autoComChannel="yes">
+     <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
          <negatoAdaptor uid="myNegatoMPR" slices="1"/>
      </service>
        @endverbatim

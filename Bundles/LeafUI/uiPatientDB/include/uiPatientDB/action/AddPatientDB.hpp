@@ -26,7 +26,7 @@ namespace action
  *
  * The available reader can be configured
  * @verbatim
-    <service uid="action_addPatient" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::AddPatientDB" autoComChannel="no">
+    <service uid="action_addPatient" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::AddPatientDB" autoConnect="no">
         <IOSelectorSrvConfig name="myPatientDBImporterConfig" />
     </service>
    @endverbatim

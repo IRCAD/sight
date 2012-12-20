@@ -50,7 +50,7 @@ protected:
     *
     * Example of configuration
     * @verbatim
-    <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes" >
+    <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes" >
         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
     </service>
     @endverbatim

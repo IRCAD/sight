@@ -48,7 +48,7 @@ protected:
     /**
      * @brief Configure the services : declare the event to react.
      * @verbatim
-         <service uid="myUpdater" implementation="::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no"  >
+         <service uid="myUpdater" impl="::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no"  >
             <update compositeKey="myObject" onEvent="NEW_OBJECT" fromUID="myPatient" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myObject" onEvent="CLEAR_OBJECT" fromUID="myPatient" actionType="REMOVE"/>
         </service>

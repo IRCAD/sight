@@ -50,7 +50,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-        <service uid="subView1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />

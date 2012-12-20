@@ -85,7 +85,7 @@ protected :
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" autoComChannel="yes" >
+    <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" autoConnect="yes" >
             <win guiContainerId="900"/>
     </service>
     @endverbatim

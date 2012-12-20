@@ -46,7 +46,7 @@ protected :
      * @brief Configuring method allows to configure an application with menu bar.
      * Here a sample of the DefaultMenuBarSrv service declaration with two menus:
      * @verbatim
-        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
             <layout>
                 <menu name="File"/>
                 <menu name="Mesher" />

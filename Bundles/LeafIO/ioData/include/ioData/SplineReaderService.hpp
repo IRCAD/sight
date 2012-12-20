@@ -92,7 +92,7 @@ protected:
      *
      * XML configuration sample:
      * @verbatim
-     <service uid="tubeReader" type="::io::IReader" implementation="::ioData::SplineReaderService">
+     <service uid="tubeReader" type="::io::IReader" impl="::ioData::SplineReaderService">
        <spline id="0" matrix="../matrix.trf" nbSides="10" radius="10">
         <point id="0"/>
         <point id="4"/>

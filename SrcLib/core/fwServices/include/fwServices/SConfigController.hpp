@@ -36,7 +36,7 @@ namespace fwServices
  *
  * Example of this service configuration
  * @verbatim
-   <service implementation="::gui::action::SConfigController" type="::fwGui::IActionSrv">
+   <service impl="::gui::action::SConfigController" type="::fwGui::IActionSrv">
        <config id="IdOfTemplateConfig" />
        <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
        <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
@@ -78,7 +78,7 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service implementation="::fwServices::SConfigController" type="::fwServices::IController">
+       <service impl="::fwServices::SConfigController" type="::fwServices::IController">
            <config id="IdOfTemplateConfig" />
            <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
            <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />

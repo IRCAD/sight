@@ -57,7 +57,7 @@ protected:
     * Sample of declaration configuration for a simple swapper service
     *
     * @verbatim
-        <service uid="FieldManager" implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
+        <service uid="FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
                 <field id="TFSelection" type="::fwData::TransferFunction" >

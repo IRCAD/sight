@@ -38,7 +38,7 @@ namespace action
  *
  * Example of this service configuration
  * @verbatim
-   <service implementation="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
+   <service impl="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
        <config id="IdOfTemplateConfig" />
        <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
    </service>
@@ -52,7 +52,7 @@ namespace action
        <type>template</type>
        <config>
            <object uid="GENERIC_UID_myComposite" type="::fwData::Composite">
-               <service uid="GENERIC_UID_myService" type="..." implementation="..." autoComChannel="no" />
+               <service uid="GENERIC_UID_myService" type="..." impl="..." autoConnect="no" />
                <item key="myImage">
                    <object uid="PATTERN_TO_REPLACE_BY_VALUE" src="ref" type="::fwData::Image" />
                </item>
@@ -107,7 +107,7 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service implementation="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
+       <service impl="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
            <config id="IdOfTemplateConfig" />
            <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
        </service>

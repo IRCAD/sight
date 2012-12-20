@@ -51,7 +51,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>

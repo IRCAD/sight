@@ -41,7 +41,7 @@ protected:
     /**
      * @brief configure the action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiGeneric::action::ShowAcknowledgments" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
         <filename id=".../ack.html" />
     </service>
        @endverbatim

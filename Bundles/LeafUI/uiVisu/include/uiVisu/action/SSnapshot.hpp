@@ -63,7 +63,7 @@ protected:
     /**
      * @brief Configure action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiData::action::SSnapshot" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiData::action::SSnapshot" autoConnect="no">
         <snap>
             <scene uid="genericScene" />
         </snap>

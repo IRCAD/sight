@@ -73,7 +73,7 @@ protected:
      * Each icon has a size of 32x32 by default.
      * Here a sample of the DefaultToolBarSrv service declaration with two actions:
      * @verbatim
-        <service uid="toolBar" type="::gui::aspect::IToolBar" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no">
+        <service uid="toolBar" type="::gui::aspect::IToolBar" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
             <toolBitmapSize height="40" width="40" />
             <action uid="action_new" name="New file" icon="Bundles/MyApplication/icons/newFile.png"/>
             <separator/>

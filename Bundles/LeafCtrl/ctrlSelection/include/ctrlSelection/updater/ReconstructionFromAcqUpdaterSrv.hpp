@@ -49,7 +49,7 @@ protected:
     /**
      * @brief Configure the services : declare the event to react.
      * @verbatim
-         <service uid="myUpdater" implementation="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+         <service uid="myUpdater" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
             <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION" fromUID="myAcquisition" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION" fromUID="*" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myReconstruction" onEvent="CLEAR" fromUID="myAcquisition" actionType="REMOVE"/>

@@ -25,7 +25,7 @@ namespace action
  *
  * The available writer can be configured
  * @verbatim
-    <service uid="action_exportPatientDB" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::ExportPatientDB" autoComChannel="no">
+    <service uid="action_exportPatientDB" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::ExportPatientDB" autoConnect="no">
         <IOSelectorSrvConfig name="myPatientDBExporterConfig" />
     </service>
    @endverbatim

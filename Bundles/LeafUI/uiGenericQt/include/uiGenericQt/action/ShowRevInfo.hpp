@@ -53,7 +53,7 @@ protected:
     /**
      * @brief configure the action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiGeneric::action::ShowRevInfo" autoComChannel="no" />
+    <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowRevInfo" autoConnect="no" />
        @endverbatim
      */
     UIGENERICQT_API void configuring() throw( ::fwTools::Failed ) ;

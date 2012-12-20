@@ -49,7 +49,7 @@ protected:
     /**
      * @brief Configure the services : declare the event to react.
      * @verbatim
-            <service uid="myUpdaterAcq" implementation="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+            <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                 <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="PatientName" patientInfoKey="PatientInfo" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="ADD_OR_SWAP" />
                 <update patientKey="selectedPatient" studyKey="selectedStudy" acquisitionKey="myAcquisition" patientNameKey="PatientName" patientInfoKey="PatientInfo" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
             </service>

@@ -44,7 +44,7 @@ protected:
     /**
      * @brief Configure action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiData::action::CameraOrientationAction" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiData::action::CameraOrientationAction" autoConnect="no">
         <orientation>frontal</orientation>
     </service>
     @endverbatim

@@ -243,8 +243,8 @@ void ServiceTest::testCommunication()
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("service")) ;
     cfg->setAttributeValue( "uid" , "myTestService" ) ;
     cfg->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    cfg->setAttributeValue( "implementation" , "::fwServices::ut::TestServiceImplementation" ) ;
-    cfg->setAttributeValue( "autoComChannel" , "no" ) ;
+    cfg->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
+    cfg->setAttributeValue( "autoConnect" , "no" ) ;
 
     return cfg ;
 }
@@ -262,15 +262,15 @@ void ServiceTest::testCommunication()
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid" , "myTestService1" ) ;
     serviceA->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    serviceA->setAttributeValue( "implementation" , "::fwServices::ut::TestServiceImplementation" ) ;
-    serviceA->setAttributeValue( "autoComChannel" , "no" ) ;
+    serviceA->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
+    serviceA->setAttributeValue( "autoConnect" , "no" ) ;
 
     // Object's service B
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid" , "myTestService2" ) ;
     serviceB->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    serviceB->setAttributeValue( "implementation" , "::fwServices::ut::TestServiceImplementation" ) ;
-    serviceB->setAttributeValue( "autoComChannel" , "no" ) ;
+    serviceB->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
+    serviceB->setAttributeValue( "autoConnect" , "no" ) ;
 
     // Start method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");

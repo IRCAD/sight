@@ -82,7 +82,7 @@ protected:
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::ioVTK::ImageReaderService" type="::io::IReader">
+    <service impl="::ioVTK::ImageReaderService" type="::io::IReader">
         <filename id=".../imageTest.vtk"/>
     </service>
     @endverbatim

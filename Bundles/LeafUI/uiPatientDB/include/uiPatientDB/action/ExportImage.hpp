@@ -24,7 +24,7 @@ namespace action
  *
  * The available writer can be configured
  * @verbatim
-    <service uid="action_exportImage" type="::fwGui::IActionSrv" implementation="::uiPatientDB::action::ExportImage" autoComChannel="no">
+    <service uid="action_exportImage" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::ExportImage" autoConnect="no">
         <IOSelectorSrvConfig name="myImageExporterConfig" />
     </service>
    @endverbatim

@@ -69,7 +69,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-    <service uid="snapshotEditor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+    <service uid="snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
         <snap>
             <scene uid="genericScene" />
         </snap>

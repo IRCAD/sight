@@ -36,7 +36,7 @@ namespace action
  *
  * Example of this service configuration
  * @verbatim
-   <service implementation="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
+   <service impl="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
        <config id="IdOfTemplateConfig" />
        <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
        <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
@@ -85,7 +85,7 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service implementation="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
+       <service impl="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
            <config id="IdOfTemplateConfig" />
            <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
            <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />

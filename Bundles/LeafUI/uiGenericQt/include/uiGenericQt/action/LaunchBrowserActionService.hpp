@@ -44,7 +44,7 @@ protected:
     /**
      * @brief configure the action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiGeneric::action::LaunchBrowserActionService" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
         <url>http://www.ircad.fr</url>
     </service>
        @endverbatim

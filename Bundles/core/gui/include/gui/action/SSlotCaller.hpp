@@ -73,7 +73,7 @@ protected:
     /**
      * @brief This method is used to configure the service parameters: specifies which slots must be called.
      * @verbatim
-       <service uid="..." type="::fwGui::IActionSrv" implementation="::gui::action::SSlotCaller" autoComChannel="no">
+       <service uid="..." type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
           <slots>
               <slot>hasSlotsId/slotKey</slot>
           </slots>
