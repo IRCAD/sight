@@ -155,7 +155,7 @@ void SliceListEditor2::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void SliceListEditor2::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void SliceListEditor2::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );

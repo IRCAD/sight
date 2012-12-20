@@ -123,7 +123,7 @@ void ShowScanEditor::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void ShowScanEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ShowScanEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
