@@ -21,8 +21,6 @@ namespace ut
 class AppConfigTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( AppConfigTest );
-    CPPUNIT_TEST( standardConfigTest );
-    CPPUNIT_TEST( templateConfigTest );
     CPPUNIT_TEST( parametersConfigTest );
     CPPUNIT_TEST( concurentAccessToAppConfigTest );
     CPPUNIT_TEST_SUITE_END();
@@ -35,8 +33,6 @@ public:
 
 
     // fonctions de tests
-    void standardConfigTest();
-    void templateConfigTest();
     void parametersConfigTest();
     void concurentAccessToAppConfigTest();
 
