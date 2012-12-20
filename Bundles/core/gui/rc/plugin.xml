@@ -84,12 +84,6 @@
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IDeliveryDelegate</type>
-        <service>::fwGui::MessageHandler</service>
-        <object>::fwData::Object</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ActionNotifyService</service>
         <object>::fwData::Object</object>

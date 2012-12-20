@@ -40,7 +40,6 @@ Comment: Name inside the drawing are the uid of the service defined below.
         <config>
 
         <object type="::fwData::Composite">   <!--  Root object of the application -->
-            <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" impl="::fwGui::MessageHandler" autoConnect="no" />
 
             <!--  Service entrance point for interface creation -->
             <service uid="IHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
@@ -509,7 +508,6 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 </object>
             </item>
 
-            <start uid="messageHandler" />
             <start uid="IHM" />
             <start uid="updaterAcq" />
             <start uid="updaterImg" />

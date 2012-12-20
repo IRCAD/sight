@@ -10,8 +10,6 @@
 
             <object type="::fwData::Composite">
 
-                <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" impl="::fwGui::MessageHandler" autoConnect="no" />
-
                 <service uid="IHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
@@ -383,7 +381,6 @@
                     </object>
                 </item>
 
-                <start uid="messageHandler" />
                 <start uid="IHM" />
                 <start uid="GENERIC_UID_Scene2D_Shutter" />
                 <start uid="GENERIC_UID_Scene2D" />

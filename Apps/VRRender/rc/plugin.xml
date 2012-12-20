@@ -16,8 +16,6 @@
 
             <object type="::fwData::Composite">
 
-                <service uid="messageHandler" type="::fwServices::IDeliveryDelegate" impl="::fwGui::MessageHandler" autoConnect="no" />
-
                 <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
@@ -76,7 +74,6 @@
                     </object>
                 </item>
 
-                <start uid="messageHandler" />
                 <start uid="mainFrame" />
                 <start uid="updaterAcq" />
                 <start uid="updaterImg" />
