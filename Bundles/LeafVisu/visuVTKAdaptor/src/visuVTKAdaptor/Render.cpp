@@ -83,7 +83,7 @@ void Render::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Render::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Render::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

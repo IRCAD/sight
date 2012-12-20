@@ -54,6 +54,7 @@ Plane::Plane() throw()
     //addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
     //addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
 
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -134,7 +135,8 @@ void Plane::doStart() throw(fwTools::Failed)
 
         this->registerService(servicePoint);
 
-        ::fwServices::registerCommunicationChannel(point, this->getSptr() )->start();
+        m_connections->connect(point, ::fwData::Object::s_OBJECT_MODIFIED_SIG,
+                               this->getSptr(), ::fwServices::IService::s_RECEIVE_SLOT);
     }
 
     if (m_vtkPlaneCollection)
@@ -181,7 +183,7 @@ void Plane::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Plane::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Plane::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
@@ -234,13 +236,7 @@ void Plane::doStop() throw(fwTools::Failed)
         m_vtkImplicitPlane = 0;
     }
 
-    if (!m_pPlane.expired())
-    {
-        BOOST_FOREACH( ::fwData::Point::sptr point, m_pPlane.lock()->getPoints() )
-        {
-            ::fwServices::unregisterCommunicationChannel(point, this->getSptr() );
-        }
-    }
+    m_connections->disconnect();
 
     this->unregisterServices();
     this->removeAllPropFromRenderer();

@@ -300,7 +300,7 @@ void ImagesProbeCursor::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ImagesProbeCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

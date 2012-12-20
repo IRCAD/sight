@@ -94,7 +94,7 @@ void PlaneSelector::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneSelector::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneSelector::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

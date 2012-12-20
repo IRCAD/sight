@@ -157,7 +157,7 @@ void PlaneInteractor::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

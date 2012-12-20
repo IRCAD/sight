@@ -170,7 +170,7 @@ void MeshesBoxWidget::doStop() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void MeshesBoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void MeshesBoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg ) ;
     if (compositeMsg)

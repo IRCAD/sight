@@ -117,7 +117,7 @@ void SliceFollowerCamera::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void SliceFollowerCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

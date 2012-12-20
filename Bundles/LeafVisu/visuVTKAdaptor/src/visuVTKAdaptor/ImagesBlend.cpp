@@ -103,7 +103,7 @@ void ImagesBlend::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -279,14 +279,14 @@ void ImagesBlend::addImageAdaptors()
                 imageAdaptor->start();
             }
 
-            ::fwServices::ComChannelService::sptr comChannel;
-            comChannel = ::fwServices::getCommunicationChannel(img, this->getSptr());
-            if (!comChannel)
+            if (info->m_connections)
             {
-                info->m_comChannel = ::fwServices::registerCommunicationChannel(img, this->getSptr());
-                ::fwServices::ComChannelService::dynamicCast(info->m_comChannel.lock())->setPriority(0.56);
-                info->m_comChannel.lock()->start();
+                info->m_connections->disconnect();
+                info->m_connections.reset();
             }
+
+            info->m_connections = ::fwServices::helper::SigSlotConnection::New();
+            info->m_connections->connect(img, this->getSptr(), this->getObjSrvConnections());
         }
     }
 }
@@ -299,11 +299,10 @@ void ImagesBlend::removeImageAdaptors()
     {
         SPTR(ImageInfo) info = m_imagesInfo[id];
 
-        if ( !info->m_comChannel.expired())
+        if ( info->m_connections)
         {
-            info->m_comChannel.lock()->stop();
-            ::fwServices::OSR::unregisterService(info->m_comChannel.lock());
-            info->m_comChannel.reset();
+            info->m_connections->disconnect();
+            info->m_connections.reset();
         }
     }
     this->unregisterServices();

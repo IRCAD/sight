@@ -214,7 +214,7 @@ void Point::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Point::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Point::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_ASSERT("ACH : receive a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
     ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );

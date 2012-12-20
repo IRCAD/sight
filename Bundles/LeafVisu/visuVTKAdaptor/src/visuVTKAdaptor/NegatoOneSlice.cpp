@@ -215,7 +215,7 @@ void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void NegatoOneSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

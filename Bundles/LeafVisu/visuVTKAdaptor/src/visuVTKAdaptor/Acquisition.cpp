@@ -128,7 +128,7 @@ void Acquisition::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Acquisition::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Acquisition::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
     if ( acquisitionMsg )

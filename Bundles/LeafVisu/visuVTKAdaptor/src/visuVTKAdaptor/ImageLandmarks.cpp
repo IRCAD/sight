@@ -54,7 +54,9 @@ void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* 
 
     ::fwComEd::ImageMsg::NewSptr msgLandmark;
     msgLandmark->addEvent( ::fwComEd::ImageMsg::LANDMARK, point );
-    ::fwServices::IEditionService::notify( _service->getSptr(), image, msgLandmark, ::fwServices::ComChannelService::NOTIFY_SOURCE);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    fwServicesNotifyMsgMacro( image->getLightID(), sig, msgLandmark );
 }
 
 //------------------------------------------------------------------------------
@@ -272,7 +274,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageLandmarks::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ImageLandmarks::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
      ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );

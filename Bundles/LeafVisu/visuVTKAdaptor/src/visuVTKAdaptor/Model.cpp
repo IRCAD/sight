@@ -110,7 +110,7 @@ void Model::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Model::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw(fwTools::Failed)
+void Model::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw(fwTools::Failed)
 {
     ::fwComEd::ModelMsg::csptr msg = ::fwComEd::ModelMsg::dynamicConstCast(_msg);
 

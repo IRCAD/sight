@@ -97,7 +97,7 @@ void Medical3DCamera::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Medical3DCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
 

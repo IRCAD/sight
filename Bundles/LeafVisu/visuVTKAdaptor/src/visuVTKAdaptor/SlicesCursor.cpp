@@ -364,7 +364,7 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void SlicesCursor::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     m_isSelected = false;
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();

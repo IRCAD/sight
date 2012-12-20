@@ -110,7 +110,7 @@ void Material::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Material::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void Material::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
     if( materialMsg && materialMsg->hasEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED) )

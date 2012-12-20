@@ -123,7 +123,7 @@ void Camera2::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Camera2::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     if( msg->hasEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) )
     {

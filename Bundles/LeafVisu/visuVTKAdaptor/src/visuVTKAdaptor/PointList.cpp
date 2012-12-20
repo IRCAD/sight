@@ -80,7 +80,7 @@ void PointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointList::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PointList::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

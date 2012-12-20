@@ -46,7 +46,7 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     void selectPlane(bool select);
@@ -59,6 +59,9 @@ private:
 
     vtkPlane* m_vtkImplicitPlane;
     vtkPlaneCollection* m_vtkPlaneCollection;
+
+    /// register connections between plane's points and this service
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 };
 
 

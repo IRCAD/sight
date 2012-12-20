@@ -106,7 +106,7 @@ void VectorField::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void VectorField::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void VectorField::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

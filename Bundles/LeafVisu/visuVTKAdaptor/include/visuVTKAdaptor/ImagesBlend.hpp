@@ -7,6 +7,8 @@
 #ifndef _VISUVTKADAPTOR_IMAGESBLEND_HPP_
 #define _VISUVTKADAPTOR_IMAGESBLEND_HPP_
 
+#include <fwServices/helper/SigSlotConnection.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -61,14 +63,14 @@ protected :
         std::string m_tfSelectionFwID;
         std::string m_selectedTFKey;
 
-        ::fwServices::IService::wptr m_comChannel;
+        ::fwServices::helper::SigSlotConnection::sptr m_connections;
     };
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 

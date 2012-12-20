@@ -39,7 +39,7 @@ protected:
     VISUVTKADAPTOR_API virtual void doStop() throw(fwTools::Failed);
     virtual void doSwap() throw(fwTools::Failed){};
     virtual void doUpdate() throw(fwTools::Failed){};
-    virtual void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
+    virtual void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
     VISUVTKADAPTOR_API virtual void configuring() throw(fwTools::Failed);
  
 

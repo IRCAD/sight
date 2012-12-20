@@ -83,7 +83,7 @@ void Camera::doStop() throw(fwTools::Failed)
 }
 
 
-void Camera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Camera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
 
     ::fwComEd::CameraMsg::csptr cameraMsg = ::fwComEd::CameraMsg::dynamicConstCast( msg );

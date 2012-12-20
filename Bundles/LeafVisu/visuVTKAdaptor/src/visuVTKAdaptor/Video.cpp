@@ -146,7 +146,7 @@ void Video::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Video::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Video::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwData::Video::sptr video = this->getObject< ::fwData::Video >();
 

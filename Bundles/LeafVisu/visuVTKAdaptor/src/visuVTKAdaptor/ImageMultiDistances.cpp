@@ -119,7 +119,11 @@ public :
                         ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
                         ::fwComEd::ImageMsg::NewSptr msg;
                         msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, plist );
-                        ::fwServices::IEditionService::notify( m_service->getSptr(), image, msg , ::fwServices::ComChannelService::NOTIFY_SOURCE);
+
+                        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+                        fwServicesNotifyMsgMacro( image->getLightID(), sig, msg );
+
                         break;
                     }
                 }
@@ -413,7 +417,7 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ImageMultiDistances::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );

@@ -227,7 +227,7 @@ void NegatoWindowingInteractor::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void NegatoWindowingInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

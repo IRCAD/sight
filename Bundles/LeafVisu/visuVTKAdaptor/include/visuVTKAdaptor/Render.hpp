@@ -38,7 +38,7 @@ protected:
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     // manage only "ShowReconstructions" Field
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
 };
 

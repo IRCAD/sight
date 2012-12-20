@@ -90,7 +90,7 @@ void IVtkAdaptorService::updating() throw(fwTools::Failed)
 
 void IVtkAdaptorService::receiving(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    doUpdate(msg);
+    doReceive(msg);
     requestRender();
 }
 

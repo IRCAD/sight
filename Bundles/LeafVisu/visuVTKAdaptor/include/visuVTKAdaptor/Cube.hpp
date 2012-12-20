@@ -25,7 +25,7 @@ protected:
 
     void doSwap() throw(fwTools::Failed){};
     void doUpdate() throw(fwTools::Failed){};
-    void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
+    void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
     void configuring() throw(fwTools::Failed){};
  
 

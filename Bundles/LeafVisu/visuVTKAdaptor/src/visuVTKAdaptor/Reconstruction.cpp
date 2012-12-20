@@ -160,7 +160,7 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Reconstruction::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

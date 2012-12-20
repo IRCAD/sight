@@ -117,7 +117,7 @@ protected :
     FWRENDERVTK_API virtual void doStop() = 0;
     FWRENDERVTK_API virtual void doSwap() = 0;
     FWRENDERVTK_API virtual void doUpdate() = 0;
-    FWRENDERVTK_API virtual void doUpdate(::fwServices::ObjectMsg::csptr msg) = 0;
+    FWRENDERVTK_API virtual void doReceive(::fwServices::ObjectMsg::csptr msg) = 0;
 
 
     ServiceVector & getRegisteredServices() {return m_subServices;};

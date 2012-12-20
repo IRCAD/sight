@@ -76,18 +76,13 @@ void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
     ::fwData::PlaneList::sptr planeList = m_currentPlaneList.lock();
     if(planeList)
     {
-        //::fwServices::registerCommunicationChannel(planeList, this->getSptr() )->start();
-        ::fwServices::ComChannelService::sptr communicationChannelService;
-        ::fwServices::IService::sptr          service;
-        service = ::fwServices::registerCommunicationChannel(planeList, this->getSptr());
-        communicationChannelService = ::fwServices::ComChannelService::dynamicCast(service);
-
-        communicationChannelService->setPriority(0.2);
-        communicationChannelService->start();
+        m_plConnection = planeList->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                this->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
         BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
         {
-            ::fwServices::registerCommunicationChannel(plane, this->getSptr() )->start();
+            m_planeConnections[plane->getID()] = plane->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                                            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
         }
     }
 }
@@ -120,10 +115,10 @@ void PlaneSelectionNotifier::doStop() throw(fwTools::Failed)
 
         BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
         {
-            ::fwServices::unregisterCommunicationChannel(plane, this->getSptr() );
+            m_planeConnections[plane->getID()].disconnect();
         }
 
-        ::fwServices::unregisterCommunicationChannel(planeList, this->getSptr() );
+        m_plConnection.disconnect();
 
         m_currentPlaneList.reset();
     }
@@ -131,7 +126,7 @@ void PlaneSelectionNotifier::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneSelectionNotifier::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneSelectionNotifier::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -167,7 +162,8 @@ void PlaneSelectionNotifier::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw
                 ::fwData::Plane::sptr plane = *(planeList->getRefPlanes().rbegin());
                 this->selectPlane(plane);
 
-                ::fwServices::registerCommunicationChannel(plane, this->getSptr() )->start();
+                m_planeConnections[plane->getID()] = plane->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                                                this->slot(::fwServices::IService::s_RECEIVE_SLOT));
             }
             else if(showPlanes && planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY ))
             {
@@ -178,13 +174,13 @@ void PlaneSelectionNotifier::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw
         }
         if (planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE))
         {
-            //Remove comChannel
+            //Remove connections
             ::fwTools::Object::csptr dataInfo = planeListMsg->getDataInfo(::fwComEd::PlaneListMsg::REMOVE_PLANE);
 
             SLM_ASSERT("Sorry, Missing data info", dataInfo);
             ::fwData::Plane::sptr plane = ::fwData::Plane::dynamicCast(::fwTools::Object::constCast(dataInfo));
 
-            ::fwServices::unregisterCommunicationChannel(plane, this->getSptr() );
+            m_planeConnections[plane->getID()].disconnect();
         }
         if ( (!showPlanes && planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY ))
                 || planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES ) )

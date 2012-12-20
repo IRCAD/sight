@@ -54,7 +54,7 @@ protected :
 
     VISUVTKVRADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    VISUVTKVRADAPTOR_API void doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw (fwTools::Failed);
+    VISUVTKVRADAPTOR_API void doReceive( ::fwServices::ObjectMsg::csptr msg ) throw (fwTools::Failed);
 
     VISUVTKVRADAPTOR_API void configuring() throw(fwTools::Failed);
 

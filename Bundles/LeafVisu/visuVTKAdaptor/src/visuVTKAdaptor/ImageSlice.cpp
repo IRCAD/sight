@@ -161,7 +161,7 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ImageSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = m_ctrlImage.lock();

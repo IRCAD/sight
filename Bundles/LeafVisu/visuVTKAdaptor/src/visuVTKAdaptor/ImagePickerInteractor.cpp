@@ -246,7 +246,7 @@ void ImagePickerInteractor::doUpdate() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ImagePickerInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ImagePickerInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
     {

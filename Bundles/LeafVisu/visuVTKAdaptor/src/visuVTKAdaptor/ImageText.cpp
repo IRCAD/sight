@@ -34,7 +34,7 @@ namespace visuVTKAdaptor
 
 ImageText::ImageText() throw()
 {
-    this->installTFSelectionEventHandler(this);
+    //this->installTFSelectionEventHandler(this);
     //this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
     //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
     //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
@@ -110,7 +110,7 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageText::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ImageText::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );

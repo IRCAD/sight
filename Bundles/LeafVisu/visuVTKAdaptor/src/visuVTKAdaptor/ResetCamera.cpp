@@ -84,7 +84,7 @@ void ResetCamera::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ResetCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ResetCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg );
 

@@ -258,7 +258,7 @@ void Volume::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void Volume::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

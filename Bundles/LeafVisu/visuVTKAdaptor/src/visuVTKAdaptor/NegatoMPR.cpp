@@ -136,7 +136,7 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void NegatoMPR::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
 

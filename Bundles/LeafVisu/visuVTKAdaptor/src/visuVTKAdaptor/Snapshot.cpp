@@ -89,7 +89,7 @@ void Snapshot::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Snapshot::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Snapshot::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg );
 

@@ -190,7 +190,7 @@ void MeshNormals::updateMeshNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void MeshNormals::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(msg);

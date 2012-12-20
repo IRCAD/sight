@@ -135,7 +135,7 @@ void ResectionDB::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ResectionDB::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::ResectionDBMsg::csptr pResectionDBMsg = ::fwComEd::ResectionDBMsg::dynamicConstCast( msg ) ;
     if ( pResectionDBMsg )

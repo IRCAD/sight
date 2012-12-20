@@ -449,7 +449,7 @@ void TriangularMesh::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void TriangularMesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
     ::fwComEd::TriangularMeshMsg::csptr meshMsg = ::fwComEd::TriangularMeshMsg::dynamicConstCast(msg);

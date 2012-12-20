@@ -17,7 +17,7 @@ namespace visuVTKAdaptor
 /**
  * @brief   Do a reset camera.
  * @class   ResetCamera
- *    The priority  of the comChannel of this Adaptor is very low (0.1). The update of the GenericScene must be done before this reset.
+ * @note    The priority  of the comChannel of this Adaptor is very low (0.1). The update of the GenericScene must be done before this reset.
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
@@ -40,7 +40,7 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
 private:
 

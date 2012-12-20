@@ -186,7 +186,7 @@ void Normals::updateNormals()
 
 //------------------------------------------------------------------------------
 
-void Normals::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Normals::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

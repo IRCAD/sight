@@ -240,7 +240,7 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneList::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::PlaneListMsg::csptr planeListMsg = ::fwComEd::PlaneListMsg::dynamicConstCast( msg );

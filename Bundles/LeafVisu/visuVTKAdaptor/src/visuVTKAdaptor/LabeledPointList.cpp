@@ -258,7 +258,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void LabeledPointList::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
     ::fwComEd::PointListMsg::csptr plMsg =  ::fwComEd::PointListMsg::dynamicConstCast( msg );
