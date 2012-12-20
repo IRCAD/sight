@@ -44,7 +44,9 @@ struct RemoveTemporaryFolder
 
     ~RemoveTemporaryFolder()
     {
-        ::boost::filesystem::remove_all(m_path);
+        ::boost::system::error_code er;
+        ::boost::filesystem::remove_all(m_path, er);
+        OSLM_ERROR_IF( "Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
     }
     ::boost::filesystem::path m_path;
 };
@@ -253,7 +255,11 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
         if(pid && !isProcessRunning(pid))
         {
             OSLM_INFO("Removing old temp dir : " << foundTmpDir);
-            fs::remove_all(foundTmpDir);
+
+            ::boost::system::error_code er;
+            fs::remove_all(foundTmpDir, er);
+
+            OSLM_INFO_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
         }
     }
 
