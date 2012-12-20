@@ -27,6 +27,7 @@
 struct IServiceProxy
 {
     typedef SPTR(IServiceProxy) sptr ;
+
     IServiceProxy(const ::fwTools::Object::sptr obj)
     {
         ::fwServices::IService::sptr service;
@@ -74,7 +75,7 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
 
     // fwServices::IService binding
 
-    class_< IServiceProxy, boost::noncopyable >("IService",no_init)
+    class_< IServiceProxy >("IService",no_init)
         .def("update", &IServiceProxy::update)
         .def("start", &IServiceProxy::start)
         .def("stop", &IServiceProxy::stop)
