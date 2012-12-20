@@ -163,6 +163,7 @@ void PatientDBGuiSelectorService::receiving( ::fwServices::ObjectMsg::csptr _msg
                 ::fwData::Integer::csptr index = ::fwData::Integer::dynamicConstCast(dataInfo);
                 this->selectLastAddedImage(index->value());
             }
+            this->updating();
         }
         else if(pPatientDBMsg->hasEvent(::fwComEd::PatientDBMsg::NEW_PATIENT) ||
                 pPatientDBMsg->hasEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT))
