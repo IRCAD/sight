@@ -52,7 +52,7 @@ void ImageWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
         fwComEd::ImageMsg::NewSptr msg;
         msg->addEvent( fwComEd::ImageMsg::NEW_IMAGE , this->getObject() );
         msg->addEvent( fwComEd::ImageMsg::BUFFER , this->getObject() );
-        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg,::fwServices::ComChannelService::NOTIFY_SOURCE);
+        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
     }
     //TODO other event
 }

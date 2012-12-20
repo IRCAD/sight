@@ -46,12 +46,12 @@ void GraphWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
 {
     SLM_TRACE_FUNC();
 
-    if ( message->hasEvent( ::fwServices:: ObjectMsg::UPDATED_OBJECT ) )
+    if ( message->hasEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) )
     {
-        assert( message->getDataInfo( ::fwServices:: ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
+        assert( message->getDataInfo( ::fwServices::ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
         fwComEd::GraphMsg::NewSptr msg;
         msg->addEvent( fwComEd::GraphMsg::NEW_GRAPH , this->getObject() );
-        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg,::fwServices::ComChannelService::NOTIFY_SOURCE);
+        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
     }
     //TODO other event
 }

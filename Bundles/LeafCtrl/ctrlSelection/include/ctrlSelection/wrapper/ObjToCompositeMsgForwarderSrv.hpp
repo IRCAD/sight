@@ -67,9 +67,9 @@ private :
     typedef ::boost::tuple< std::string, std::string, std::string > EventType;
     typedef std::vector < EventType > ManagedEventsType;
 
-    /// Map to register objects comChannels
-    typedef std::map< std::string, ::fwServices::IService::wptr > ObjComChannelMap;
-    ObjComChannelMap m_objComChannel;
+    /// Map to register objects connections
+    typedef std::map< std::string, ::fwCom::Connection > ObjConnectionMap;
+    ObjConnectionMap m_objConnections;
     /// List of the managed event
     ManagedEventsType m_managedEvents;
 };

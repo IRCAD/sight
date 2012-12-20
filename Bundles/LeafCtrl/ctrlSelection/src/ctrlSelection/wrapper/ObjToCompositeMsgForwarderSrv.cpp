@@ -49,9 +49,10 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
                 std::string key = elt.first;
                 ::fwData::Object::sptr obj = elt.second;
 
-                ::fwServices::IService::sptr comChannel = ::fwServices::registerCommunicationChannel(obj ,this->getSptr());
-                comChannel->start();
-                m_objComChannel[key] = comChannel;
+                ::fwCom::Connection connection;
+                connection = obj->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                     this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+                m_objConnections[key] = connection;
             }
         }
         else if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
@@ -61,13 +62,11 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
                 std::string key = elt.first;
                 ::fwData::Object::sptr obj = elt.second;
 
-                ::fwServices::IService::sptr comChannel = m_objComChannel[key].lock();
-                comChannel->stop();
-                ::fwServices::OSR::unregisterService(comChannel);
-
-                comChannel = ::fwServices::registerCommunicationChannel(obj ,this->getSptr());
-                comChannel->start();
-                m_objComChannel[key] = comChannel;
+                m_objConnections[key].disconnect();
+                ::fwCom::Connection connection;
+                connection = obj->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                    this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+                m_objConnections[key] = connection;
             }
         }
         else if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
@@ -76,9 +75,8 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
             {
                 std::string key = elt.first;
 
-                ::fwServices::IService::sptr comChannel = m_objComChannel[key].lock();
-                comChannel->stop();
-                ::fwServices::OSR::unregisterService(comChannel);
+                m_objConnections[key].disconnect();
+                m_objConnections.erase(key);
             }
         }
     }
@@ -125,9 +123,10 @@ void ObjToCompositeMsgForwarderSrv::starting()  throw ( ::fwTools::Failed )
         std::string key = elt.first;
         ::fwData::Object::sptr obj = elt.second;
 
-        ::fwServices::IService::sptr comChannel = ::fwServices::registerCommunicationChannel(obj ,this->getSptr());
-        comChannel->start();
-        m_objComChannel[key] = comChannel;
+        ::fwCom::Connection connection;
+        connection = obj->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                             this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        m_objConnections[key] = connection;
     }
 }
 
@@ -135,12 +134,11 @@ void ObjToCompositeMsgForwarderSrv::starting()  throw ( ::fwTools::Failed )
 
 void ObjToCompositeMsgForwarderSrv::stopping()  throw ( ::fwTools::Failed )
 {
-    BOOST_FOREACH(ObjComChannelMap::value_type elt, m_objComChannel)
+    BOOST_FOREACH(ObjConnectionMap::value_type elt, m_objConnections)
     {
-        ::fwServices::IService::sptr comChannel = elt.second.lock();
-        comChannel->stop();
-        ::fwServices::OSR::unregisterService(comChannel);
+        m_objConnections[elt.first].disconnect();
     }
+    m_objConnections.clear();
 }
 
 //-----------------------------------------------------------------------------

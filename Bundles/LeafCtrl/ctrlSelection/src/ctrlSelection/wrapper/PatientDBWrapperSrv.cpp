@@ -57,7 +57,7 @@ void PatientDBWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) th
         msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT, pDPDB );
         msg->addEvent( ::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT );
 
-        ::fwServices::IEditionService::notify( this->getSptr(),  pDPDB, msg, ::fwServices::ComChannelService::NOTIFY_SOURCE );
+        ::fwServices::IEditionService::notify( this->getSptr(),  pDPDB, msg);
     }
     //TODO other event
 }
