@@ -24,16 +24,18 @@
 #include <vtkTransform.h>
 #include <vtkCamera.h>
 
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwComEd/CompositeMsg.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwData/Color.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
+#include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/CameraMsg.hpp>
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
@@ -48,19 +50,25 @@ using namespace fwServices;
 namespace fwRenderVTK
 {
 
+const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT = "render";
+
 //-----------------------------------------------------------------------------
 
 VtkRenderService::VtkRenderService() throw() :
      m_pendingRenderRequest(false)
 {
     //addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
+
+    m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
+    m_slotRender->setWorker(m_associatedWorker);
+
+    ::fwCom::HasSlots::m_slots(s_RENDER_SLOT, m_slotRender);
 }
 
 //-----------------------------------------------------------------------------
 
-VtkRenderService::~VtkRenderService() throw() {
-
-}
+VtkRenderService::~VtkRenderService() throw()
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -430,8 +438,8 @@ void VtkRenderService::updating() throw(fwTools::Failed)
 void VtkRenderService::render()
 {
     m_interactorManager->getInteractor()->Render();
+    this->setPendingRenderRequest(false);
 }
-
 
 //-----------------------------------------------------------------------------
 

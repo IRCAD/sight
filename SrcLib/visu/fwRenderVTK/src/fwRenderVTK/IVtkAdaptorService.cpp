@@ -126,18 +126,8 @@ void IVtkAdaptorService::requestRender()
     {
         if ( !this->getRenderService()->getPendingRenderRequest())
         {
-            if (!m_message)
-            {
-                m_message = ::fwServices::ObjectMsg::NewSptr();
-                ::fwData::String::NewSptr sceneID;
-                sceneID->value() = this->getRenderService()->getID() ;
-                m_message->addEvent( "SCENE_RENDER_REQUEST" , sceneID);
-            }
             this->getRenderService()->setPendingRenderRequest(true);
-            ::fwServices::IEditionService::notify( this->getSptr(), this->getRenderService()->getObject(),
-                    m_message//,
-                    //::fwServices::ComChannelService::IGNORE_BUSY_SERVICES
-                    );
+            this->getRenderService()->slot(VtkRenderService::s_RENDER_SLOT)->asyncRun();
         }
         m_vtkPipelineModified = false;
     }

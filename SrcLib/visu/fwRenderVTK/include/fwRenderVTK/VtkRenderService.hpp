@@ -49,13 +49,15 @@ public :
     typedef std::string AdaptorIdType;
     typedef std::string VtkObjectIdType;
 
+    FWRENDERVTK_API static const ::fwCom::Slots::SlotKeyType s_RENDER_SLOT;
+    typedef ::fwCom::Slot<void()> RenderSlotType;
+
     FWRENDERVTK_API VtkRenderService() throw() ;
 
     FWRENDERVTK_API virtual ~VtkRenderService() throw() ;
 
     FWRENDERVTK_API vtkRenderer * getRenderer(RendererIdType rendererId);
 
-    FWRENDERVTK_API void render();
     bool isShownOnScreen();
 
     FWRENDERVTK_API vtkAbstractPropPicker * getPicker(PickerIdType pickerId);
@@ -66,6 +68,8 @@ public :
     void setPendingRenderRequest(bool b){m_pendingRenderRequest=b;}
 
 protected:
+
+    FWRENDERVTK_API void render();
 
     /// Install observations : should be implemented in IService
     FWRENDERVTK_API virtual void starting() throw( ::fwTools::Failed);
@@ -80,6 +84,9 @@ protected:
 
     /// Add a vtk object in the VtkRenderService, referenced by a key.
     void addVtkObject( VtkObjectIdType _id, vtkObject * _vtkObj );
+
+    /// Slot to call render method
+    RenderSlotType::sptr m_slotRender;
 
 private :
 
