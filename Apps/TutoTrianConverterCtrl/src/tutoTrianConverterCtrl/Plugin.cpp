@@ -14,7 +14,6 @@
 
 #include <fwRuntime/profile/Profile.hpp>
 
-#include <fwServices/op/Com.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
