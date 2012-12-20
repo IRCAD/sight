@@ -12,8 +12,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwServices/ComChannelService.hpp>
-
 #include "tuto02DataServiceBasicCtrl/Plugin.hpp"
 
 
@@ -54,7 +52,6 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     m_renderSrv = ::fwServices::add(m_image, "::fwRender::IRender", "::vtkSimpleNegato::RendererService", "myRenderingTuto");
     m_renderSrv->configure();
 
-    // ComChannel service
     m_connection = m_image->signal( ::fwData::Object::s_OBJECT_MODIFIED_SIG)
         ->connect(m_renderSrv->slot( ::fwServices::IService::s_RECEIVE_SLOT));
 
