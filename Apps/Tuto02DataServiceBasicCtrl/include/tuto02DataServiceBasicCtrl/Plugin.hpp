@@ -9,7 +9,10 @@
 
 #include <fwRuntime/Plugin.hpp>
 
+#include <fwCom/Connection.hpp>
+
 #include <fwData/Image.hpp>
+
 #include <fwServices/IService.hpp>
 
 #include "tuto02DataServiceBasicCtrl/config.hpp"
@@ -44,7 +47,9 @@ public:
 
 private:
     ::fwData::Image::sptr m_image;
-    ::fwServices::IService::sptr m_comChannel;
+
+    ::fwCom::Connection m_connection;
+
     ::fwServices::IService::sptr m_frameSrv;
     ::fwServices::IService::sptr m_renderSrv;
     ::fwServices::IService::sptr m_readerSrv;
