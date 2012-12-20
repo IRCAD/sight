@@ -89,13 +89,13 @@ if image.buffer is not None:
 
                 <item key="Image">
                     <object uid="anImage" type="::fwData::Image">
-                        <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
+                        <service uid="anImageReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
                         <service uid="anImageWriter" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="writer" />
                         </service>
 
                         <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                            <start uid="myReaderPathFile" />
+                            <start uid="anImageReader" />
                         </service>
 
 
