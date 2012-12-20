@@ -429,7 +429,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
         ::boost::get<1>(config) = true;
     }
 
-    // AutoComChannel
+    // autoConnect
     const ::fwRuntime::ConfigurationElement::AttributePair attribAutoConnect =
             srvElem->getSafeAttributeValue("autoConnect");
     std::string autoConnect = attribAutoConnect.second;

@@ -137,7 +137,6 @@ protected:
 
     ServiceContainer m_createdSrv;
     ServiceContainer m_startedSrv;
-    //ServiceContainer m_createdComChannels;
     helper::SigSlotConnection::sptr m_connections;
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(

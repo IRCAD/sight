@@ -14,7 +14,6 @@
 #include "fwServices/macros.hpp"
 
 // For communications
-#include "fwServices/op/Com.hpp"
 #include "fwServices/ObjectMsg.hpp"
 
 

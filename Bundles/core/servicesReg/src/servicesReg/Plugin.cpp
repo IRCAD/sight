@@ -14,7 +14,6 @@
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
-#include <fwServices/GlobalEventManager.hpp>
 
 #include "servicesReg/Plugin.hpp"
 
@@ -49,9 +48,6 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
 void Plugin::uninitialize() throw( ::fwRuntime::RuntimeException )
 {
-    // Clear all messages
-    ::fwServices::GlobalEventManager::getDefault()->clearMessages();
-
     // Clear all service configs
     ::fwServices::registry::ServiceConfig::getDefault()->clearRegistry();
 

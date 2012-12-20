@@ -156,7 +156,7 @@ public :
     FWSERVICES_API SharedFutureType start(); //throw( ::fwTools::Failed );
 
     /**
-     * @brief Invoke stopping() if m_globalState == STARTED. Does nothing otherwise. Stops all observations (ICommunication for which this is destination).
+     * @brief Invoke stopping() if m_globalState == STARTED. Does nothing otherwise. Stops all observations.
      *
      * @post m_globalState == STOPPED
      *

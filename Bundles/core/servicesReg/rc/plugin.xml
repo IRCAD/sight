@@ -70,13 +70,7 @@
         <service>::fwComEd::parser::StringParser</service>
         <object>::fwData::String</object>
     </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::ICommunication</type>
-        <service>::fwServices::ComChannelService</service>
-        <object>::fwData::Object</object>
-    </extension>
-    
+     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::fwServices::SConfigController</service>

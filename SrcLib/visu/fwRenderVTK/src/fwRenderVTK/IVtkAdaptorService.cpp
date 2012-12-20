@@ -15,7 +15,6 @@
 #include <fwData/String.hpp>
 #include <fwTools/fwID.hpp>
 
-#include <fwServices/ComChannelService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
@@ -136,8 +135,8 @@ void IVtkAdaptorService::requestRender()
             }
             this->getRenderService()->setPendingRenderRequest(true);
             ::fwServices::IEditionService::notify( this->getSptr(), this->getRenderService()->getObject(),
-                    m_message,
-                    ::fwServices::ComChannelService::IGNORE_BUSY_SERVICES
+                    m_message//,
+                    //::fwServices::ComChannelService::IGNORE_BUSY_SERVICES
                     );
         }
         m_vtkPipelineModified = false;

@@ -18,7 +18,6 @@
 
 #include <fwTools/UUID.hpp>
 
-#include <fwServices/GlobalEventManager.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwRenderVTK/registry/macros.hpp>
