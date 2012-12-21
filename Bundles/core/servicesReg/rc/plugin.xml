@@ -18,12 +18,6 @@
 
     <!-- SPECIFIC SERVICES -->
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IEditionService</type>
-        <service>::fwServices::DefaultEditor</service>
-        <object>::fwData::Object</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwComEd::parser::Composite</service>
         <object>::fwData::Composite</object>
