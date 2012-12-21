@@ -87,7 +87,7 @@ void MeshGeneratorSrv::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void MeshGeneratorSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void MeshGeneratorSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

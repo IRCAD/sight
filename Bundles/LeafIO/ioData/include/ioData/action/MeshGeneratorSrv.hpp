@@ -70,7 +70,7 @@ protected:
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    IODATA_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    IODATA_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Process the action: generate the mesh using the selected functor.
