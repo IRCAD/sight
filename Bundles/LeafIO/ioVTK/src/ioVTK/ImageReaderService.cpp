@@ -207,7 +207,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw ( ::fwTools::Failed )
+void ImageReaderService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     // This method does nothing

@@ -82,7 +82,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::fwServices::ObjectMsg::csptr ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

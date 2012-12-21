@@ -53,7 +53,7 @@ protected:
      *
      * The stopping method is empty for this service.
      */
-IOTUTO_API virtual void stopping() throw(::fwTools::Failed){};
+    IOTUTO_API virtual void stopping() throw(::fwTools::Failed){};
 
 
     /**
