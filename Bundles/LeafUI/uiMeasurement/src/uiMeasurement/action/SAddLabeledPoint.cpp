@@ -123,7 +123,7 @@ void SAddLabeledPoint::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SAddLabeledPoint::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void SAddLabeledPoint::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

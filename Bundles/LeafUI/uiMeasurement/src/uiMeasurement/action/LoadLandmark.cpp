@@ -130,7 +130,7 @@ void LoadLandmark::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LoadLandmark::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void LoadLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

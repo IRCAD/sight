@@ -42,7 +42,7 @@ protected:
 
     UIMEASUREMENT_API void updating() throw (::fwTools::Failed);
 
-    UIMEASUREMENT_API void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    UIMEASUREMENT_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     UIMEASUREMENT_API void stopping() throw (::fwTools::Failed);
 

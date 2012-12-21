@@ -161,7 +161,7 @@ void RemoveLandmark::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void RemoveLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

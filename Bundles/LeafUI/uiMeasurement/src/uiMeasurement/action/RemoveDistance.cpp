@@ -189,7 +189,7 @@ void RemoveDistance::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void RemoveDistance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

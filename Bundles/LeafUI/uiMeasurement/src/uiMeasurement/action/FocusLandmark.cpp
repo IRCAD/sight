@@ -67,7 +67,7 @@ void FocusLandmark::configuring() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void FocusLandmark::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
+void FocusLandmark::receiving( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
 {
     // Do nothing. this method must be not used.
     SLM_FATAL("Action should not receive a message, correct your configuration");

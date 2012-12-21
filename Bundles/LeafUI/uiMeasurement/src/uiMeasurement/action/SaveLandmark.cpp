@@ -133,7 +133,7 @@ void SaveLandmark::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SaveLandmark::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void SaveLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

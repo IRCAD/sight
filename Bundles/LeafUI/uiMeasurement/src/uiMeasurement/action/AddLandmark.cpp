@@ -146,7 +146,7 @@ void AddLandmark::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void AddLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

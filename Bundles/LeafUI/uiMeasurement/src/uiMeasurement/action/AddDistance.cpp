@@ -111,7 +111,7 @@ void AddDistance::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void AddDistance::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void AddDistance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------
