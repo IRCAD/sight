@@ -114,24 +114,15 @@
                            <addSelection service="::ioXML::FwXMLPatientDBWriterService" />
                         </service>
                         <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-<!--                        <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
-                            <target>myUpdaterAcq</target>
-                        </service>
-                        <service uid="myUpdaterComCannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
-                            <target>myUpdaterImg</target>
-                        </service>
-                        <service uid="myUpdaterComCannelReconst" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
-                            <target>myUpdaterReconst</target>
-                        </service>-->
                     </object>
                 </item>
 
                 <!-- CompositeVisu description -->
                 <item key="myCompositeVisu">
                     <object uid="myCompositeVisu" type="::fwData::Composite">
-<!--                        <service uid="myMedicalImageManager" impl="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6">
+                        <service uid="myMedicalImageManager" impl="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                             <update imageCompositeKey="myImage" />
-                        </service>  -->
+                        </service>
                         <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                             <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
                             <update compositeKey="myAcquisition" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
@@ -176,17 +167,10 @@
                                              type="::io::IReader" autoConnect="no" >
                                   </service>
 
-<!--                                  <service uid="myUpdaterComCannelReconst2" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
-                                         <target>myUpdaterReconst</target>
-                                  </service> -->
                                   <proxy channel="UpdaterChannel">
                                       <signal>objectModified</signal>
                                   </proxy>
 
-<!--                                  <connect>
-                                    <signal>myAcquisition/objectModified</signal>
-                                    <slot>myUpdaterReconst/receive</slot>
-                                  </connect>-->
                                   <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
                                  </object>
                                  <object id="myImage" type="::fwData::Image" >
@@ -213,12 +197,6 @@
                             <slot>myUpdaterImg/receive</slot>
                             <slot>myUpdaterReconst/receive</slot>
                         </proxy>
-<!--                        <connect>
-                            <signal>myPatientDB/objectModified</signal>
-                            <slot>myUpdaterAcq/receive</slot>
-                            <slot>myUpdaterImg/receive</slot>
-                            <slot>myUpdaterReconst/receive</slot>
-                        </connect>-->
                     </object>
                 </item>
 
@@ -226,11 +204,8 @@
                 <start uid="myUpdaterAcq"/>
                 <start uid="myUpdaterImg"/>
                 <start uid="myUpdaterReconst"/>
-<!--                 <start uid="myMedicalImageManager"/>  -->
+                 <start uid="myMedicalImageManager"/>
                 <start uid="myManager"/>
-<!--                <start uid="myUpdaterComCannelAcq"/> -->
-<!--                <start uid="myUpdaterComCannelImg"/> -->
-<!--                <start uid="myUpdaterComCannelReconst"/> -->
                 <start uid="newOBject2newPatientDB"/>
 
             </object>
