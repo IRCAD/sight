@@ -120,7 +120,7 @@ void Distance::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void Distance::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Distance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
