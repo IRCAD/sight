@@ -70,7 +70,7 @@ void LaunchBrowserActionService::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void LaunchBrowserActionService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void LaunchBrowserActionService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

@@ -51,7 +51,7 @@ protected:
     void starting() throw (::fwTools::Failed);
 
     /// Does nothing
-    void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// Show the frame
     void updating() throw(::fwTools::Failed);

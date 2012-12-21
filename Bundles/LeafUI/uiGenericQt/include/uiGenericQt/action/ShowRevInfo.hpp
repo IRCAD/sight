@@ -65,7 +65,7 @@ protected:
     UIGENERICQT_API void updating() throw (::fwTools::Failed);
 
     /// Does nothing
-    UIGENERICQT_API void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    UIGENERICQT_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     /// Stops action
     UIGENERICQT_API void stopping() throw (::fwTools::Failed);

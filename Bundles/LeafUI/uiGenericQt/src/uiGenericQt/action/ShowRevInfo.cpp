@@ -115,7 +115,7 @@ void ShowRevInfo::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowRevInfo::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ShowRevInfo::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

@@ -118,7 +118,7 @@ void ShowAbout::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowAbout::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ShowAbout::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

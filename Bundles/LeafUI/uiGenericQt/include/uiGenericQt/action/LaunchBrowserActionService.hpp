@@ -55,7 +55,7 @@ protected:
     void starting() throw (::fwTools::Failed);
 
     /// Does nothing
-    void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Launch a browser on the url given in the configuration
     void updating() throw(::fwTools::Failed);
