@@ -107,7 +107,7 @@ void CrossTypeAction::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void CrossTypeAction::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 

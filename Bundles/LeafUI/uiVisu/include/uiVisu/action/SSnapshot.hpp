@@ -52,7 +52,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Does nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Show a file dialog and notify the scene which must be printed.
     void updating() throw(::fwTools::Failed);

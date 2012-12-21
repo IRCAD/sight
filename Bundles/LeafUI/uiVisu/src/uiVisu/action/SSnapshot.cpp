@@ -116,7 +116,7 @@ void SSnapshot::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void SSnapshot::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void SSnapshot::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 

@@ -107,7 +107,7 @@ void CameraOrientationAction::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void CameraOrientationAction::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void CameraOrientationAction::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
