@@ -33,7 +33,7 @@ class SofaMeshEditorSrv : public QWidget, public ::gui::editor::IEditor
         void starting() throw ( ::fwTools::Failed );
         void stopping() throw ( ::fwTools::Failed );
         void updating() throw ( ::fwTools::Failed );
-        void updating( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
+        void receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
 
     protected Q_SLOTS:
         void onStrengthSlider(int value);

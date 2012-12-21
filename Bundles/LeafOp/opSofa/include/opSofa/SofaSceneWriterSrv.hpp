@@ -30,7 +30,7 @@ class SofaSceneWriterSrv : public ::io::IWriter
         void starting() throw ( ::fwTools::Failed );
         void stopping() throw ( ::fwTools::Failed );
         void updating() throw ( ::fwTools::Failed );
-        void updating( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
+        void receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
         void info( std::ostream & ostr );
         void configureWithIHM();
 

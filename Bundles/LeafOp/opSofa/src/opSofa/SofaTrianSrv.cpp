@@ -71,7 +71,7 @@ void SofaTrianSrv::stopping() throw ( ::fwTools::Failed )
  * updating(_pMsg) is called by a data to notify a service.
  * @param _pMsg : Incoming message
  */
-void SofaTrianSrv::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
+void SofaTrianSrv::receiving( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
 {
 }
 

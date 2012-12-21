@@ -195,7 +195,7 @@ void BoxWidget::doUpdate() throw( ::fwTools::Failed )
 
 }
 
-void BoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
+void BoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
 
 }

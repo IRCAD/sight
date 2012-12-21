@@ -218,7 +218,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
  *
  * @param _pMsg : Incoming message
  */
-void SofaSceneWriterSrv::updating( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaSceneWriterSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {
 }
 

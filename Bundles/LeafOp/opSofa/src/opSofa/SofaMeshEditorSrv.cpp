@@ -107,7 +107,7 @@ void SofaMeshEditorSrv::updating() throw ( ::fwTools::Failed )
  *
  * @param _pMsg : Incoming message
  */
-void SofaMeshEditorSrv::updating( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaMeshEditorSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {
     if (msg->hasEvent("NEW_RECONSTRUCTION_SELECTED")) {
         idReconstruction = ::fwData::String::dynamicConstCast(msg->getDataInfo("NEW_RECONSTRUCTION_SELECTED"));

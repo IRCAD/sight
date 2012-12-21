@@ -1,226 +1,239 @@
 <plugin id="DemoComSofa">
 
 <requirement id="servicesReg" />
-    
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>DemoComSofaID</id>
         <type>parameters</type>
         <config>
-        
-        <object type="::fwData::Composite">
 
-            <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
-                <gui>
-                    <frame>
-                        <name>Altran-Est - Medic@ : PoC 2 Demo integration SOFA-FW4SPL</name>
-                        <icon>Bundles/PoC02SofaMultiOrgans_0-1/tuto.ico</icon>
-                    </frame>
-                    <menuBar />
-                </gui>
-                <registry>
-                    <menuBar sid="myMenuBar" start="yes" />
-                    <view sid="multiView_scene1" start="yes" />
-                </registry>
-            </service>
+            <object type="::fwData::Composite">
 
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
-                <gui>
-                    <layout>
-                        <menu name="File" />
-                        <menu name="Sofa" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menu sid="menu_File" start="yes" />
-                    <menu sid="menu_Sofa" start="yes" />
-                </registry>
-            </service>
+                <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                    <gui>
+                        <frame>
+                            <name>Altran-Est - Medic@ : PoC 2 Demo integration SOFA-FW4SPL</name>
+                            <icon>Bundles/PoC02SofaMultiOrgans_0-1/tuto.ico</icon>
+                        </frame>
+                        <menuBar />
+                    </gui>
+                    <registry>
+                        <menuBar sid="myMenuBar" start="yes" />
+                        <view sid="multiView_scene1" start="yes" />
+                    </registry>
+                </service>
 
-            <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::CardinalLayoutManager" >
-                        <view align="center" minWidth="200"/>
-                        <view align="right" minWidth="200" minHeight="200" position="0" />
-                        <view align="right" minWidth="200" minHeight="80" position="1" />
-                        <view align="right" minWidth="200" minHeight="200" position="2" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="genericScene" start="yes" />
-                    <view sid="listOrganEditor" />
-                    <view sid="multiView_scene1_bottom" start="yes" />
-                </registry>
-            </service>
-            <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view proportion="0" minWidth="30" />
-                        <view proportion="0" minWidth="50" />
-                        <view proportion="1" />
-                        <view proportion="0" minWidth="30" />
-                    </layout>
-                </gui>
-            </service>
+                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+                    <gui>
+                        <layout>
+                            <menu name="File" />
+                            <menu name="Sofa" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menu sid="menu_File" start="yes" />
+                        <menu sid="menu_Sofa" start="yes" />
+                    </registry>
+                </service>
 
-            <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
-                <gui>
-                    <layout>
-                        <menuItem name="Open file" shortcut="Ctrl+O" />
-                        <menuItem name="Save File" shortcut="Ctrl+S" />
-                        <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="action_openFile" start="yes" />
-                    <menuItem sid="action_saveFile" start="yes" />
-                    <menuItem sid="action_quit" start="yes" />
-                </registry>
-            </service>
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::CardinalLayoutManager" >
+                            <view align="center" minWidth="200"/>
+                            <view align="right" minWidth="200" minHeight="200" position="0" />
+                            <view align="right" minWidth="200" minHeight="80" position="1" />
+                            <view align="right" minWidth="200" minHeight="200" position="2" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="genericScene" start="yes" />
+                        <view sid="listOrganEditor" />
+                        <view sid="multiView_scene1_bottom" start="yes" />
+                    </registry>
+                </service>
+                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager">
+                            <orientation value="horizontal" />
+                            <view proportion="0" minWidth="30" />
+                            <view proportion="0" minWidth="50" />
+                            <view proportion="1" />
+                            <view proportion="0" minWidth="30" />
+                        </layout>
+                    </gui>
+                </service>
 
-            <service uid="menu_Sofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
-                <gui>
-                    <layout>
-                        <menuItem name="Create scene" />
-                        <menuItem name="Load scene" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="mySofaWriterAction" start="no" />
-                    <menuItem sid="mySofaReaderAction" start="no" />
-                </registry>
-            </service>
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+                    <gui>
+                        <layout>
+                            <menuItem name="Open file" shortcut="Ctrl+O" />
+                            <menuItem name="Save File" shortcut="Ctrl+S" />
+                            <separator />
+                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="action_openFile" start="yes" />
+                        <menuItem sid="action_saveFile" start="yes" />
+                        <menuItem sid="action_quit" start="yes" />
+                    </registry>
+                </service>
 
-            <service uid="action_openFile" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoConnect="no" >
-                <start uid="myReaderPathFile"/>
-            </service>
-            <service uid="action_saveFile" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoConnect="no" >
-                <start uid="myWriterPathFile"/>
-            </service>
-            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="menu_Sofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+                    <gui>
+                        <layout>
+                            <menuItem name="Create scene" />
+                            <menuItem name="Load scene" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="mySofaWriterAction" start="no" />
+                        <menuItem sid="mySofaReaderAction" start="no" />
+                    </registry>
+                </service>
 
-            <!-- myPatientDB description -->
-            <item key="myPatientDB">
-                <object uid="myPatientDB" type="::fwData::PatientDB">
-                    <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoConnect="no" >
-                        <type mode="reader" />
-                        <selection mode="exclude" />
-                        <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
-                    </service>
-                    <service uid="myWriterPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoConnect="no" >
-                       <type mode="writer"/>
-                       <selection mode="exclude" />
-                       <addSelection service="::ioXML::FwXMLPatientDBWriterService" />
-                    </service>
-                    <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-                    <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
-                        <target>myUpdaterAcq</target>
-                    </service>
-                    <service uid="myUpdaterComCannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
-                        <target>myUpdaterImg</target>
-                    </service>
-                    <service uid="myUpdaterComCannelReconst" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
-                        <target>myUpdaterReconst</target>
-                    </service>
-                </object>
-            </item>
+                <service uid="action_openFile" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoConnect="no" >
+                    <start uid="myReaderPathFile"/>
+                </service>
+                <service uid="action_saveFile" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoConnect="no" >
+                    <start uid="myWriterPathFile"/>
+                </service>
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
-            <!-- CompositeVisu description -->
-            <item key="myCompositeVisu">
-                <object uid="myCompositeVisu" type="::fwData::Composite">
-                    <service uid="myMedicalImageManager" impl="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6">
-                        <update imageCompositeKey="myImage" />
-                    </service>
-                    <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
-                        <update compositeKey="myAcquisition" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
-                        <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
-                    </service>
-                    <service uid="myUpdaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
-                        <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
-                        <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
-                    </service>
-                    <service uid="myUpdaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP"/>
-                        <update compositeKey="myReconstruction" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
-                        <update compositeKey="myReconstruction" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
-                        <update compositeKey="myReconstruction" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
-                    </service>
-                    <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                        <mode type="stop" />
-                        <config>
-                            <object id="myAcquisition" type="::fwData::Acquisition" >
-                              <service uid="mySofaCore"
-                                     impl="::opSofa::SofaCoreSrv"
-                                     type="::fwGui::IActionSrv" autoConnect="yes" >
-                              </service>
-                              <service   uid="mySofaWriterAction"
+                <!-- myPatientDB description -->
+                <item key="myPatientDB">
+                    <object uid="myPatientDB" type="::fwData::PatientDB">
+                        <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoConnect="no" >
+                            <type mode="reader" />
+                            <selection mode="exclude" />
+                            <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
+                        </service>
+                        <service uid="myWriterPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoConnect="no" >
+                           <type mode="writer"/>
+                           <selection mode="exclude" />
+                           <addSelection service="::ioXML::FwXMLPatientDBWriterService" />
+                        </service>
+                        <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
+<!--                        <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
+                            <target>myUpdaterAcq</target>
+                        </service>
+                        <service uid="myUpdaterComCannelImg" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
+                            <target>myUpdaterImg</target>
+                        </service>
+                        <service uid="myUpdaterComCannelReconst" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
+                            <target>myUpdaterReconst</target>
+                        </service>-->
+                    </object>
+                </item>
+
+                <!-- CompositeVisu description -->
+                <item key="myCompositeVisu">
+                    <object uid="myCompositeVisu" type="::fwData::Composite">
+<!--                        <service uid="myMedicalImageManager" impl="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6">
+                            <update imageCompositeKey="myImage" />
+                        </service>  -->
+                        <service uid="myUpdaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="myAcquisition" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+                            <update compositeKey="myAcquisition" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+                            <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
+                        </service>
+                        <service uid="myUpdaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="myImage" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+                            <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP"/>
+                            <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE"/>
+                        </service>
+                        <service uid="myUpdaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP"/>
+                            <update compositeKey="myReconstruction" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
+                            <update compositeKey="myReconstruction" onEvent="NEW_LOADED_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
+                            <update compositeKey="myReconstruction" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE_IF_PRESENT"/>
+                        </service>
+                        <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                            <mode type="stop" />
+                            <config>
+                                <object id="myAcquisition" type="::fwData::Acquisition" >
+                                  <service uid="mySofaCore"
+                                         impl="::opSofa::SofaCoreSrv"
+                                         type="::fwGui::IActionSrv" autoConnect="yes" >
+                                  </service>
+                                  <service   uid="mySofaWriterAction"
+                                                impl="::gui::action::StarterActionService"
+                                                type="::fwGui::IActionSrv" autoConnect="no" >
+                                        <start uid="mySofaWriter"/>
+                                  </service>
+                                  <service uid="mySofaWriter"
+                                           impl="::opSofa::SofaSceneWriterSrv"
+                                           type="::io::IWriter" autoConnect="no" >
+                                      <writeTrian>no</writeTrian>
+                                  </service>
+                                  <service  uid="mySofaReaderAction"
                                             impl="::gui::action::StarterActionService"
                                             type="::fwGui::IActionSrv" autoConnect="no" >
-                                    <start uid="mySofaWriter"/>
-                              </service>
-                              <service uid="mySofaWriter"
-                                       impl="::opSofa::SofaSceneWriterSrv"
-                                       type="::io::IWriter" autoConnect="no" >
-                                  <writeTrian>no</writeTrian>
-                              </service>
-                              <service  uid="mySofaReaderAction"
-                                        impl="::gui::action::StarterActionService"
-                                        type="::fwGui::IActionSrv" autoConnect="no" >
-                                  <start uid="mySofaReader"/>
-                              </service>
-                              <service uid="mySofaReader"
-                                           impl="::opSofa::SofaSceneReaderSrv"
-                                         type="::io::IReader" autoConnect="no" >
-                              </service>
-                          
-                              <service uid="myUpdaterComCannelReconst2" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
-                                     <target>myUpdaterReconst</target>
-                              </service>
-                              <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
-                                 <!--<service uid="mesher50ServiceUID" impl="::opVTKMesh::VTKMesherService" type="::opVTKMesh::IMesher" autoConnect="no" >
-                                     <percentReduction value="50"/>
-                                 </service>
-                                 <service uid="mesher80ServiceUID" impl="::opVTKMesh::VTKMesherService" type="::opVTKMesh::IMesher" autoConnect="no" >
-                                     <percentReduction value="80"/>
-                                 </service> -->
-                             </object>
-                             <object id="myImage" type="::fwData::Image" >
-                             </object>
-                             <object id="myReconstruction" type="::fwData::Reconstruction" >
-                             </object>
-                        </config>
-                    </service>
-                    <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
-                        <scene>
-                            <picker id="myPicker" vtkclass="fwVtkCellPicker" />
-                            <renderer id="default" background="0.0" />
-                            <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                                <config renderer="default" picker="" />
-                            </adaptor>
-                            <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
-                                <config renderer="default" picker="" />
-                            </adaptor>
-                        </scene>
-                    </service>
-                </object>
-            </item>
+                                      <start uid="mySofaReader"/>
+                                  </service>
+                                  <service uid="mySofaReader"
+                                               impl="::opSofa::SofaSceneReaderSrv"
+                                             type="::io::IReader" autoConnect="no" >
+                                  </service>
 
-            <start uid="MyIHM"/>
-            <start uid="myUpdaterAcq"/>
-            <start uid="myUpdaterImg"/>
-            <start uid="myUpdaterReconst"/>
-            <start uid="myMedicalImageManager"/>
-            <start uid="myManager"/>
-            <start uid="myUpdaterComCannelAcq"/>
-            <start uid="myUpdaterComCannelImg"/>
-            <start uid="myUpdaterComCannelReconst"/>
-            <start uid="newOBject2newPatientDB"/>
+<!--                                  <service uid="myUpdaterComCannelReconst2" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no" >
+                                         <target>myUpdaterReconst</target>
+                                  </service> -->
+                                  <proxy channel="UpdaterChannel">
+                                      <signal>objectModified</signal>
+                                  </proxy>
 
-        </object>
+<!--                                  <connect>
+                                    <signal>myAcquisition/objectModified</signal>
+                                    <slot>myUpdaterReconst/receive</slot>
+                                  </connect>-->
+                                  <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
+                                 </object>
+                                 <object id="myImage" type="::fwData::Image" >
+                                 </object>
+                                 <object id="myReconstruction" type="::fwData::Reconstruction" >
+                                 </object>
+                            </config>
+                        </service>
+                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                            <scene>
+                                <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                                <renderer id="default" background="0.0" />
+                                <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                                    <config renderer="default" picker="" />
+                                </adaptor>
+                                <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
+                                    <config renderer="default" picker="" />
+                                </adaptor>
+                            </scene>
+                        </service>
+                        <proxy channel="UpdaterChannel">
+                            <signal>myPatientDB/objectModified</signal>
+                            <slot>myUpdaterAcq/receive</slot>
+                            <slot>myUpdaterImg/receive</slot>
+                            <slot>myUpdaterReconst/receive</slot>
+                        </proxy>
+<!--                        <connect>
+                            <signal>myPatientDB/objectModified</signal>
+                            <slot>myUpdaterAcq/receive</slot>
+                            <slot>myUpdaterImg/receive</slot>
+                            <slot>myUpdaterReconst/receive</slot>
+                        </connect>-->
+                    </object>
+                </item>
+
+                <start uid="MyIHM"/>
+                <start uid="myUpdaterAcq"/>
+                <start uid="myUpdaterImg"/>
+                <start uid="myUpdaterReconst"/>
+<!--                 <start uid="myMedicalImageManager"/>  -->
+                <start uid="myManager"/>
+<!--                <start uid="myUpdaterComCannelAcq"/> -->
+<!--                <start uid="myUpdaterComCannelImg"/> -->
+<!--                <start uid="myUpdaterComCannelReconst"/> -->
+                <start uid="newOBject2newPatientDB"/>
+
+            </object>
         </config>
     </extension>
-
 </plugin>

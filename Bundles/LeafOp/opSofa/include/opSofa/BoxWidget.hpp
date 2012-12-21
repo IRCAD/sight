@@ -38,7 +38,7 @@ protected:
      virtual void doStop()      throw( ::fwTools::Failed );
      virtual void doSwap()      throw( ::fwTools::Failed );
      virtual void doUpdate()    throw( ::fwTools::Failed );
-     virtual void doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
+     virtual void doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
 
     vtkTransform* m_transform;
     WPTR(::visuVTKAdaptor::Transform) m_transformService;
