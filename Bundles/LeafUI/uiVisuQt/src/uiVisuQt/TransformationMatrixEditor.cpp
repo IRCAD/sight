@@ -101,9 +101,12 @@ void TransformationMatrixEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void TransformationMatrixEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    this->updating();
+    if(_msg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
+    {
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------
