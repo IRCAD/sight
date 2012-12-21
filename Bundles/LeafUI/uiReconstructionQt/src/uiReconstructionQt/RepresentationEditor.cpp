@@ -194,7 +194,7 @@ void RepresentationEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void RepresentationEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
