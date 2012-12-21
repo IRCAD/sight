@@ -136,7 +136,7 @@ void PushObjectSrv::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void PushObjectSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     //TODO
 }

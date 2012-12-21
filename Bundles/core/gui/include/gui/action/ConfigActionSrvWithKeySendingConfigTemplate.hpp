@@ -78,7 +78,7 @@ protected:
      *
      * Set executable or not the action according to the key specified in configuration
      */
-    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Starts the view and initialize the operator.

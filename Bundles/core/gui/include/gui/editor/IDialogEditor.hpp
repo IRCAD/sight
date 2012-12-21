@@ -41,19 +41,8 @@ protected :
     GUI_API virtual ~IDialogEditor() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )
-     * @{
+     *  @{
      */
-
-    /// This method is used to configure the service.
-    GUI_API virtual void configuring() throw( ::fwTools::Failed )  = 0 ;
-
-    /**
-     * Starts the service.
-     */
-    GUI_API virtual void starting() throw(::fwTools::Failed) = 0 ;
-
-    /// Stops the service.
-    GUI_API virtual void stopping() throw(::fwTools::Failed) = 0 ;
 
     /**
      * @brief This method is used to give information about the service. Do nothing.
@@ -61,18 +50,7 @@ protected :
      */
     GUI_API virtual void info(std::ostream &_sstream ) ;
 
-    /**
-     * @brief Update/refresh/execute the service on an observation/notification. Do nothing.
-     */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)  = 0 ;
-
-    /**
-     * @brief Update/refresh/execute the service. Do nothing.
-     */
-    GUI_API virtual void updating() throw(::fwTools::Failed)  = 0 ;
-
-    ///@}
-
+    /// @}
 };
 
 }

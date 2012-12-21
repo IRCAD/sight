@@ -47,7 +47,7 @@ protected:
 
     GUI_API void updating()throw (fwTools::Failed);
 
-    GUI_API void updating(::fwServices::ObjectMsg::csptr _msg )throw (fwTools::Failed);
+    GUI_API void receiving(::fwServices::ObjectMsg::csptr _msg )throw (::fwTools::Failed);
 
     /**
      * @brief Configure the message to send.

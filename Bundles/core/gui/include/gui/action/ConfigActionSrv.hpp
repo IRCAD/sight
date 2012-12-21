@@ -92,7 +92,7 @@ protected:
      *
      * Stop configuration when it receives "WINDOW_CLOSED" event (ie. close the param view).
      */
-    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Starts the view and initialize the operator.

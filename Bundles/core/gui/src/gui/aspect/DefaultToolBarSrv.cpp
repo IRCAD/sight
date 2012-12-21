@@ -58,7 +58,7 @@ void DefaultToolBarSrv::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultToolBarSrv::updating(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void DefaultToolBarSrv::receiving(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

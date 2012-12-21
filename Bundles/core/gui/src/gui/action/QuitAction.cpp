@@ -40,7 +40,7 @@ void QuitAction::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void QuitAction::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void QuitAction::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

@@ -60,7 +60,7 @@ void DefaultView::info(std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-void DefaultView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void DefaultView::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

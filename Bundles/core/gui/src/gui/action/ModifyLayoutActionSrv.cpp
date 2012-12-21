@@ -129,7 +129,7 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ModifyLayoutActionSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void ModifyLayoutActionSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
