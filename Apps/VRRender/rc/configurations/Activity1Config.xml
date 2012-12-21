@@ -33,6 +33,20 @@
                         <key id="image" pattern="SELECTED_UID_image" />
                         <key id="acquisition" pattern="SELECTED_UID_acquisition" />
                     </service>
+                    
+                    <service uid="${GENERIC_UID}_managerMainFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+                        <mode type="dummy" />
+                        <config>
+                            <object id="image" type="::fwData::Image">
+                                <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+                                <!-- Editor for Negato -->
+                                <service uid="${GENERIC_UID}_slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
+                                    <sliceIndex>axial</sliceIndex>
+                                </service>
+
+                            </object>
+                        </config>
+                    </service>
 
                     <!-- Generic Scene Negato -->
                     <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
@@ -52,20 +66,6 @@
                                 <config renderer="default" picker="negato1default" text="" />
                             </adaptor>
                         </scene>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_managerMainFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
-                        <mode type="dummy" />
-                        <config>
-                            <object id="image" type="::fwData::Image">
-                                <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-                                <!-- Editor for Negato -->
-                                <service uid="${GENERIC_UID}_slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                    <sliceIndex>axial</sliceIndex>
-                                </service>
-
-                            </object>
-                        </config>
                     </service>
 
                 </object>
