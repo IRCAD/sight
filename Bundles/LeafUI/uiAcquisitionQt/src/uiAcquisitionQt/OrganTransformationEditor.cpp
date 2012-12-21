@@ -137,28 +137,25 @@ void OrganTransformationEditor::stopping() throw( ::fwTools::Failed )
 
 void OrganTransformationEditor::swapping() throw( ::fwTools::Failed )
 {
-    updating();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
 void OrganTransformationEditor::updating() throw( ::fwTools::Failed )
 {
-    Refresh();
+    this->Refresh();
 }
 
 //------------------------------------------------------------------------------
 
-void OrganTransformationEditor::updating( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
+void OrganTransformationEditor::receiving( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
     ::fwComEd::AcquisitionMsg::csptr pMessage = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg );
 
-    if( pMessage )
+    if( pMessage && pMessage->hasEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION ) )
     {
-        if( pMessage->hasEvent( ::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION ) )
-        {
-            updating();
-        }
+        this->updating();
     }
 }
 
@@ -311,7 +308,6 @@ void OrganTransformationEditor::OnSaveClick()
         this->mpSaveSelectionComboBox->addItem(QString::fromStdString(tmpSaveName.str()));
         this->mSaveCount++;
     }
-
 }
 
 //------------------------------------------------------------------------------

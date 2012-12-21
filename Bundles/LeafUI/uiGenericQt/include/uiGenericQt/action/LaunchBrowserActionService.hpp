@@ -57,7 +57,7 @@ protected:
     /// Does nothing
     void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
-    /// Launch a brower on the url given in the configuration
+    /// Launch a browser on the url given in the configuration
     void updating() throw(::fwTools::Failed);
 
     /// Stops action

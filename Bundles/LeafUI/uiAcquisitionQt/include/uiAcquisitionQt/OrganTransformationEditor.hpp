@@ -46,7 +46,7 @@ protected:
     UIACQUISITIONQT_API virtual void stopping()    throw( ::fwTools::Failed );
     UIACQUISITIONQT_API virtual void swapping()    throw( ::fwTools::Failed );
     UIACQUISITIONQT_API virtual void updating()    throw( ::fwTools::Failed );
-    UIACQUISITIONQT_API virtual void updating( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
+    UIACQUISITIONQT_API virtual void receiving( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
     UIACQUISITIONQT_API virtual void info    ( ::std::ostream& stream );
 
 
