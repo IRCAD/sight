@@ -376,6 +376,11 @@ void SwapperSrv::removeObject( const std::string objectId )
         {
             OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
             OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
+
+            if (subSrv->m_hasAutoConnection)
+            {
+                subSrv->m_connections->disconnect();
+            }
             if(m_dummyStopMode)
             {
                 subSrv->getService()->swap(dummyObj);
@@ -383,11 +388,6 @@ void SwapperSrv::removeObject( const std::string objectId )
             }
             else
             {
-                if( subSrv->m_hasAutoConnection )
-                {
-                    subSrv->m_connections->disconnect();
-                }
-
                 subSrv->getService()->stop();
                 ::fwServices::OSR::unregisterService(subSrv->getService());
                 subSrv->m_service.reset();
