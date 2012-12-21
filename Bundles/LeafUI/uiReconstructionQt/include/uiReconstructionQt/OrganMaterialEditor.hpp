@@ -54,7 +54,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Managment of observations ( overides )
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 

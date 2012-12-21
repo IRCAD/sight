@@ -53,8 +53,8 @@
                                 </connect>
                             </object>
                             <object id="reconstruction" type="::fwData::Reconstruction">
-                                <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="yes" />
-                                <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="yes" />
+                                <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                                <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
                             </object>
                         </config>
                     </service>

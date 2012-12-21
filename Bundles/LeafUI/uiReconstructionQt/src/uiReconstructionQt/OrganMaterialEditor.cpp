@@ -131,7 +131,7 @@ void OrganMaterialEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void OrganMaterialEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
