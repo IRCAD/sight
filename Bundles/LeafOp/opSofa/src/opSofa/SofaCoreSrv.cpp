@@ -73,7 +73,7 @@ void SofaCoreSrv::stopping() throw ( ::fwTools::Failed )
  *
  * @param _pMsg : Incoming message
  */
-void SofaCoreSrv::receiving( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {
     if (msg->hasEvent("NEW_SOFA_SCENE")) {
 

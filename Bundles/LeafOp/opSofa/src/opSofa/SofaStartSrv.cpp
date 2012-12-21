@@ -57,7 +57,7 @@ void SofaStartSrv::stopping() throw ( ::fwTools::Failed )
  *
  * @param _pMsg : Incoming message
  */
-void SofaStartSrv::receiving( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaStartSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {
 }
 
