@@ -28,7 +28,7 @@ namespace fwTools
 {
 
 /**
- * @brief   Class defining an elementary C++ type aka unsigned char, signed char, .... signed long, float, double
+ * @brief   Class describing an elementary C++ type aka unsigned char, signed char, .... int, float, double
  * @class   Type
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
@@ -119,8 +119,8 @@ public:
 
     FWTOOLS_API std::string toString( const void * ) const;
 
-    template <typename T>
-    static const std::string &typeToString();
+    template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>
+    static const std::string &traitsToString();
 
     template <typename T>
     static Type create();
@@ -236,7 +236,8 @@ bool Type::isOfType() const
 template <typename T>
 void Type::setType()
 {
-    m_name = Type::typeToString<T>();
+    m_name = Type::traitsToString< sizeof(T), ::boost::is_signed<T>::value, ::boost::is_integral<T>::value >();
+
     m_sizeof = sizeof(T);
     m_isSigned = ::boost::is_signed<T>::value;
     m_isFixedPrecision = ::boost::is_integral<T>::value;
@@ -283,9 +284,12 @@ FWTOOLS_API void Type::setType< ::boost::uint64_t >();
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-const std::string &Type::typeToString()
+template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>
+const std::string &Type::traitsToString()
 {
+    OSLM_ERROR("unknown " << (SIGNED ? "signed" : "unsigned")
+              << " " << (ISINTEGRAL ? "integral" : "floating")
+              << " type with size : " << SIZEOF);
     return Type::s_UNSPECIFIED_TYPENAME;
 }
 
@@ -303,18 +307,18 @@ const std::pair<T,T> Type::minMax() const
 
 //-----------------------------------------------------------------------------
 
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::Int8Type  > ();
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::Int16Type > ();
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::Int32Type > ();
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::Int64Type > ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 1, true, true > ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 2, true, true > ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 4, true, true > ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 8, true, true > ();
 
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::UInt8Type  >();
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::UInt16Type >();
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::UInt32Type >();
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::UInt64Type >();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 1, false, true > ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 2, false, true > ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 4, false, true > ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 8, false, true > ();
 
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::FloatType  >  ();
-template<> FWTOOLS_API const std::string &Type::typeToString< ::fwTools::Type::DoubleType >  ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 4, false, false > ();
+template<> FWTOOLS_API const std::string &Type::traitsToString< 8, false, false > ();
 
 } //end namespace fwTools
 
