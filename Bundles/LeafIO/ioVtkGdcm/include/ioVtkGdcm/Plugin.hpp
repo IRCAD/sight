@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _ioVtkGdcm_PLUGIN_HPP_
-#define _ioVtkGdcm_PLUGIN_HPP_
+#ifndef _IOVTKGDCM_PLUGIN_HPP_
+#define _IOVTKGDCM_PLUGIN_HPP_
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -35,4 +35,4 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace ioVtkGdcm
 
-#endif //_ioVtkGdcm_PLUGIN_HPP_
+#endif //_IOVTKGDCM_PLUGIN_HPP_

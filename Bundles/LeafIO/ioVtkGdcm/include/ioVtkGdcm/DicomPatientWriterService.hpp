@@ -54,7 +54,7 @@ protected:
     IOVTKGDCM_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /// Override
     IOVTKGDCM_API void info(std::ostream &_sstream ) ;
@@ -70,8 +70,7 @@ protected:
 
 private :
 
-    void savePatient(   const ::boost::filesystem::path patientDBPath,
-            ::boost::shared_ptr< ::fwData::Patient > _pPatient );
+    void savePatient(   const ::boost::filesystem::path patientDBPath, SPTR(::fwData::Patient) _pPatient );
 
     bool m_bServiceIsConfigured;
 
