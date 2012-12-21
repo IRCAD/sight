@@ -145,7 +145,7 @@ void DicomdirPatientDBReaderService::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void DicomdirPatientDBReaderService::updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
+void DicomdirPatientDBReaderService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

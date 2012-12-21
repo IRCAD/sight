@@ -71,7 +71,7 @@ protected:
     IOGDCMQT_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOGDCMQT_API virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    IOGDCMQT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Override
     IOGDCMQT_API void info(std::ostream &_sstream ) ;
