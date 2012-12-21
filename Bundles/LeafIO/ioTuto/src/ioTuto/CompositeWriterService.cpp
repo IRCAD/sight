@@ -104,7 +104,7 @@ void CompositeWriterService::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void CompositeWriterService::updating(::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg) throw(::fwTools::Failed)
+void CompositeWriterService::receiving(::fwServices::ObjectMsg::csptr _msg) throw(::fwTools::Failed)
 {}
 
 //-----------------------------------------------------------------------------

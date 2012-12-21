@@ -103,7 +103,7 @@ void CompositeReaderService::updating( ) throw(::fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-void CompositeReaderService::updating( ::fwServices::ObjectMsg::csptr _msg) throw(::fwTools::Failed)
+void CompositeReaderService::receiving( ::fwServices::ObjectMsg::csptr _msg) throw(::fwTools::Failed)
 {
 }
 

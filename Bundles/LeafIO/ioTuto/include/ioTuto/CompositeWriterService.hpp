@@ -61,7 +61,7 @@ protected:
     /**
      * @brief React on modifications : does nothing.
      */
-    IOTUTO_API void updating(::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg) throw(::fwTools::Failed) ;
+    IOTUTO_API void receiving(CSPTR(::fwServices::ObjectMsg) _msg) throw(::fwTools::Failed) ;
 
     /**
      * @brief Give a short information about the action..
