@@ -9,7 +9,7 @@
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/simulation/tree/treeSimulation.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
 
 #include <fwServices/IEditionService.hpp>
