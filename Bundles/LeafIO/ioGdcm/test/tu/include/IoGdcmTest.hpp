@@ -48,6 +48,8 @@ public:
 private :
 
     void executeService( ::fwData::Object::sptr obj, std::string srvType, std::string srvImpl, ::fwRuntime::EConfigurationElement::sptr cfg );
+
+    std::stringstream m_gdcmTraceStream;
 };
 
 } // namespace ut

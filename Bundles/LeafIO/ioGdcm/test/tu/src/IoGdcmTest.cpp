@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <gdcmTrace.h>
+
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
@@ -40,6 +42,7 @@ namespace ut
 void IoGdcmTest::setUp()
 {
     // Set up context before running a test.
+    ::gdcm::Trace::SetStream(m_gdcmTraceStream);
 }
 
 //------------------------------------------------------------------------------
@@ -47,6 +50,8 @@ void IoGdcmTest::setUp()
 void IoGdcmTest::tearDown()
 {
     // Clean up after the test run.
+    SLM_WARN( m_gdcmTraceStream.str() );
+    m_gdcmTraceStream.str( std::string() );
 }
 
 //------------------------------------------------------------------------------
