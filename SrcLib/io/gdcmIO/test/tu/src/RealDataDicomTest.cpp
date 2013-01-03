@@ -22,6 +22,7 @@
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/Patient.hpp>
 
+#include <gdcmTrace.h>
 #include <gdcmIO/writer/DicomGlobalWriterManager.hpp>
 #include <gdcmIO/writer/DicomPatientDBWriterManager.hpp>
 #include <gdcmIO/reader/DicomPatientDBReader.hpp>
@@ -42,6 +43,8 @@ void RealDataDicomTest::setUp()
 {
     // Set up context before running a test.
     srand(time(NULL));
+
+    ::gdcm::Trace::SetStream(m_gdcmTraceStream);
 }
 
 //------------------------------------------------------------------------------
@@ -49,6 +52,8 @@ void RealDataDicomTest::setUp()
 void RealDataDicomTest::tearDown()
 {
     // Clean up after the test run.
+    SLM_WARN( m_gdcmTraceStream.str() );
+    m_gdcmTraceStream.str( std::string() );
 }
 
 //------------------------------------------------------------------------------
