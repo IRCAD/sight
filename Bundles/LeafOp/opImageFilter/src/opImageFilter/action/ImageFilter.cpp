@@ -59,7 +59,7 @@ void ImageFilter::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageFilter::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
+void ImageFilter::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
 {}
 
 //-----------------------------------------------------------------------------
