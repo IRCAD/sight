@@ -157,7 +157,7 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
     }
 }
 
-void SImagesSubstract::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SImagesSubstract::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {}
 
 void SImagesSubstract::swapping() throw ( ::fwTools::Failed )

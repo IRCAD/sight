@@ -68,7 +68,7 @@ protected:
     /**
      * @brief Do nothing.
      */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to configure the service parameters: specifies which slots must be called.

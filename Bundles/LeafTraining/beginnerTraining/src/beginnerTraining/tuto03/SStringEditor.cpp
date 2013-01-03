@@ -31,7 +31,7 @@ namespace tuto03
 
 SStringEditor::SStringEditor()
 {
-    addNewHandledEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
+//    addNewHandledEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
 }
 
 SStringEditor::~SStringEditor() throw()
@@ -88,15 +88,18 @@ void SStringEditor::updating() throw ( ::fwTools::Failed )
     m_textEditor->setPlainText( myAssociatedData->getValue().c_str() );
 }
 
-void SStringEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SStringEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
-    m_textEditor->blockSignals(true);
-    // If event is UPDATED_OBJECT
-    if ( _msg->hasEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT  ) )
+    if(_msg->hasEvent(::fwServices::ObjectMsg::UPDATED_OBJECT))
     {
-        this->updating();
+        m_textEditor->blockSignals(true);
+        // If event is UPDATED_OBJECT
+        if ( _msg->hasEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT  ) )
+        {
+            this->updating();
+        }
+        m_textEditor->blockSignals(false);
     }
-    m_textEditor->blockSignals(false);
 }
 
 void SStringEditor::swapping() throw ( ::fwTools::Failed )
@@ -112,7 +115,7 @@ void SStringEditor::onTextChanged()
     ::fwData::String::sptr myAssociatedData = this->getObject< ::fwData::String >();
     myAssociatedData->setValue( m_textEditor->toPlainText().toStdString() );
 
-    // Then, notifies listerners that the image has been modified
+    // Then, notifies listeners that the image has been modified
     notifyMessage();
 }
 

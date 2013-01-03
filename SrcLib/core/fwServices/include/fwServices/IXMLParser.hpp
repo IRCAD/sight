@@ -81,7 +81,7 @@ protected:
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void updating( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    FWSERVICES_API virtual void receiving( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
     /**
      * @brief Parse the XML configuration

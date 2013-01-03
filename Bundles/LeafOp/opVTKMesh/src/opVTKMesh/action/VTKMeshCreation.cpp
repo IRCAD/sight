@@ -69,7 +69,7 @@ void VTKMeshCreation::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void VTKMeshCreation::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
+void VTKMeshCreation::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
 {}
 
 //-----------------------------------------------------------------------------

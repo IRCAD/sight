@@ -81,7 +81,7 @@ void STransformMesh::updating() throw ( ::fwTools::Failed )
     ::fwServices::IEditionService::notify( this->getSptr(), mesh, msg );
 }
 
-void STransformMesh::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void STransformMesh::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {}
 
 void STransformMesh::swapping() throw ( ::fwTools::Failed )

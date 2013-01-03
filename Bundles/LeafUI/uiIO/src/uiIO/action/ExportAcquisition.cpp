@@ -139,7 +139,7 @@ void ExportAcquisition::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ExportAcquisition::updating(::fwServices::ObjectMsg::csptr _msg) throw(::fwTools::Failed)
+void ExportAcquisition::receiving(::fwServices::ObjectMsg::csptr _msg) throw(::fwTools::Failed)
 {
 }
 

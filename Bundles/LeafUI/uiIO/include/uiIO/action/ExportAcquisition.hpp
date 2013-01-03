@@ -64,7 +64,7 @@ protected:
     /**
      * @brief React on modifications : does nothing.
      */
-    UIIO_API void updating(::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg) throw(::fwTools::Failed) ;
+    UIIO_API void receiving(CSPTR(::fwServices::ObjectMsg) _msg) throw(::fwTools::Failed) ;
 
     /// Gives a short information about the action.
     UIIO_API void info(std::ostream &_sstream ) ;

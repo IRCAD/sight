@@ -39,6 +39,7 @@ class FWXML_CLASS_API IFileFormatService : public ::fwServices::IService, public
 {
 public:
     fwCoreNonInstanciableClassDefinitionsMacro ( (IFileFormatService)(::fwTools::Object) ) ;
+
     FWXML_API IFileFormatService();
 
     FWXML_API virtual ~IFileFormatService();
@@ -63,14 +64,13 @@ public:
     FWXML_API  SPTR(::fwDataIO::reader::IObjectReader) getReader();
     FWXML_API  SPTR(::fwDataIO::writer::IObjectWriter) getWriter();
 
-
 protected :
 
     virtual void starting() throw(::fwTools::Failed) {} ;
     virtual void stopping() throw(::fwTools::Failed) {} ;
     virtual void configuring() throw(::fwTools::Failed) {} ;
     virtual void updating() throw(::fwTools::Failed) {} ;
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed) {} ;
+    virtual void receiving( CSPTR( ::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed) {} ;
 
     // Override
     FWXML_API virtual void info(std::ostream &_sstream );

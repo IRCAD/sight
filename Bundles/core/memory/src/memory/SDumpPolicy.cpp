@@ -8,7 +8,6 @@
 
 #include <fwCore/base.hpp>
 
-
 // Service associated data
 #include <fwData/Object.hpp>
 
@@ -24,7 +23,6 @@
 namespace memory
 {
 
-
 fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, ::fwData::Object );
 
 SDumpPolicy::SDumpPolicy()
@@ -33,6 +31,7 @@ SDumpPolicy::SDumpPolicy()
 SDumpPolicy::~SDumpPolicy()
 {}
 
+//------------------------------------------------------------------------------
 
 void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
 {
@@ -64,8 +63,9 @@ void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
             }
         }
     }
-
 }
+
+//------------------------------------------------------------------------------
 
 void SDumpPolicy::starting() throw ( ::fwTools::Failed )
 {
@@ -91,10 +91,11 @@ void SDumpPolicy::starting() throw ( ::fwTools::Failed )
             manager->setDumpPolicy(policy);
             OSLM_INFO("Set dump policy to : " << m_policy);
         }
-        OSLM_ERROR_IF("Unable to instanciate '" << m_policy << "' dump policy", !policy);
+        OSLM_ERROR_IF("Unable to instantiate '" << m_policy << "' dump policy", !policy);
     }
-
 }
+
+//------------------------------------------------------------------------------
 
 void SDumpPolicy::stopping() throw ( ::fwTools::Failed )
 {}
@@ -102,8 +103,10 @@ void SDumpPolicy::stopping() throw ( ::fwTools::Failed )
 void SDumpPolicy::updating() throw ( ::fwTools::Failed )
 {}
 
-void SDumpPolicy::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SDumpPolicy::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {}
+
+//------------------------------------------------------------------------------
 
 void SDumpPolicy::swapping() throw ( ::fwTools::Failed )
 {

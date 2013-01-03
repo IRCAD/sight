@@ -47,7 +47,7 @@ protected :
     BASICREGISTRATION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Overrides
-    BASICREGISTRATION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Overrides
     BASICREGISTRATION_API virtual void swapping() throw ( ::fwTools::Failed );

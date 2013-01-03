@@ -136,7 +136,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
 
 // ----------------------------------------------------------------------------
 
-void SPointListRegistration::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SPointListRegistration::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {}
 
 // ----------------------------------------------------------------------------

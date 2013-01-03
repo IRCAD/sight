@@ -334,7 +334,8 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 }
 
 //------------------------------------------------------------------------------
-void IOSelectorService::updating( fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed )
+
+void IOSelectorService::receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

@@ -60,7 +60,7 @@ void VTKMesherService::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void VTKMesherService::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
+void VTKMesherService::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
 {}
 
 //-----------------------------------------------------------------------------

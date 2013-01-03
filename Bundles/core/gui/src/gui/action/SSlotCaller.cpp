@@ -88,7 +88,7 @@ void SSlotCaller::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SSlotCaller::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void SSlotCaller::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

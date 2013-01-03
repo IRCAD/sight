@@ -34,7 +34,7 @@ protected :
 
     /**
      * @brief install default policies if no explicitly set :
-     * @li firstt try to use INR RW : our application must provide libitkIO ( hard link, bundles started etc...)
+     * @li first try to use INR RW : our application must provide libitkIO ( hard link, bundles started etc...)
      * @li if not set and INR RW policy install failed use gzBufferRW
      */
     void RWPoliciesInstall();

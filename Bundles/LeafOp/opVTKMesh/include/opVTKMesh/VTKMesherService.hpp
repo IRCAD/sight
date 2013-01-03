@@ -30,7 +30,7 @@ protected:
 
     OPVTKMESH_API virtual void stopping() throw ( ::fwTools::Failed );
 
-    OPVTKMESH_API virtual void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+    OPVTKMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
 
     OPVTKMESH_API virtual void configuring() throw ( ::fwTools::Failed );
 

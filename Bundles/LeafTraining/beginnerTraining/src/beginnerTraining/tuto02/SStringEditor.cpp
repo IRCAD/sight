@@ -45,7 +45,7 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     this->create(); // start with this inherited function
 
-    // Retreive Qt container
+    // Retrieve Qt container
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
@@ -78,7 +78,7 @@ void SStringEditor::updating() throw ( ::fwTools::Failed )
     m_textEditor->setPlainText( myAssociatedData->getValue().c_str() );
 }
 
-void SStringEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SStringEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {}
 
 void SStringEditor::swapping() throw ( ::fwTools::Failed )

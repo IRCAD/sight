@@ -93,7 +93,7 @@ protected:
     UIIO_API void updating() throw( ::fwTools::Failed ) ;
 
     /// SLM_FATAL require an implementation gui::editor::IEditor::updating(msg)
-    UIIO_API void updating( fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed );
+    UIIO_API void receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed );
 
     /// Gives the name of the class. Do nothing.
     UIIO_API void info( std::ostream &_sstream ) ;

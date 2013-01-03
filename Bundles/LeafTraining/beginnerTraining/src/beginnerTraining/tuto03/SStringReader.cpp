@@ -83,14 +83,14 @@ void SStringReader::updating() throw ( ::fwTools::Failed )
     }
     else
     {
-        OSLM_WARN("Be careful, reader failed because no file location is defined." );
+        SLM_WARN("Be careful, reader failed because no file location is defined." );
     }
 
-    // Then, notifies listerners that the image has been modified
+    // Then, notifies listeners that the image has been modified
     notifyMessage();
 }
 
-void SStringReader::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SStringReader::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
