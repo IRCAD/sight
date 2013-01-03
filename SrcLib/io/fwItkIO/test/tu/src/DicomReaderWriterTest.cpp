@@ -21,6 +21,7 @@
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/Patient.hpp>
 
+#include <gdcmTrace.h>
 #include <itkIO/DicomImageWriter.hpp>
 #include <itkIO/DicomPatientWriter.hpp>
 #include <itkIO/DicomPatientDBWriter.hpp>
@@ -42,6 +43,7 @@ void DicomReaderWriterTest::setUp()
 {
     // Set up context before running a test.
     srand(time(NULL));
+    ::gdcm::Trace::SetStream(m_gdcmTraceStream);
 }
 
 //------------------------------------------------------------------------------
@@ -49,6 +51,8 @@ void DicomReaderWriterTest::setUp()
 void DicomReaderWriterTest::tearDown()
 {
     // Clean up after the test run.
+    SLM_WARN( m_gdcmTraceStream.str() );
+    m_gdcmTraceStream.str( std::string() );
 }
 
 //------------------------------------------------------------------------------

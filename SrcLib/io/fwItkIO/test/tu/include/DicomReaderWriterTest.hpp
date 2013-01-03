@@ -44,6 +44,8 @@ public:
 private :
 
     void writeImage( ::fwData::Image::sptr image );
+
+    std::stringstream m_gdcmTraceStream;
 };
 
 } //namespace ut
