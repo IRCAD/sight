@@ -46,7 +46,6 @@ protected:
     std::string  m_baseMsg;
     std::string  m_leave;
 
-    ::fwCore::log::SpyLogger  *m_logger;
     ::fwCore::HiResTimer  m_timer;
 };
 

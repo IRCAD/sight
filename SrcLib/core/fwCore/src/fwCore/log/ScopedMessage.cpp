@@ -21,9 +21,8 @@ namespace log
 //-----------------------------------------------------------------------------
 
 ScopedMessage::ScopedMessage( const char * _file, int _line, std::string enterMessage, std::string leaveMessage)
-    : m_file(_file), m_line(_line)
+    : m_file(_file), m_line(_line), m_leave(leaveMessage.empty() ? enterMessage : leaveMessage)
 {
-    m_leave = leaveMessage.empty() ? enterMessage : leaveMessage;
     std::stringstream base;
     base << "Timed{'file':'"<< m_file <<"','line':"<< m_line <<",";
     m_baseMsg = base.str();
@@ -40,7 +39,7 @@ ScopedMessage::~ScopedMessage()
 {
     std::stringstream oslStr;
     oslStr << "[LEAVING SCOPE] "<<  m_baseMsg << "'leavemessage':'" << m_leave <<"','elapsed':"<<  m_timer.getElapsedTimeInMilliSec() << "}";
-    m_logger->trace(oslStr.str(), m_file, m_line);
+    SpyLogger::getSpyLogger().trace(oslStr.str(), m_file, m_line);
 }
 
 } // namespace log

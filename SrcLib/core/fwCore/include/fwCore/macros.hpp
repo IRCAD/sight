@@ -439,7 +439,7 @@
  *
  */
 #define fwCoreIsTypeOfMacro(_classinfo_)                                                                                                   \
-    static bool isTypeOf(const std::string type)                                                                                           \
+    static bool isTypeOf(const std::string &type)                                                                                           \
     {                                                                                                                                      \
         if (__FWCORE_TYPEDEF_SELF_NAME::classname()==type)                                                                                 \
         {                                                                                                                                  \
@@ -447,7 +447,7 @@
         }                                                                                                                                  \
         return BOOST_PP_IF( BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(_classinfo_), 2 ), __FWCORE_TYPEDEF_SUPERCLASS_NAME::isTypeOf(type), false); \
     }                                                                                                                                      \
-    virtual bool isA(const std::string type) const                                                                                         \
+    virtual bool isA(const std::string &type) const                                                                                         \
     {                                                                                                                                      \
         return this->__FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                                                                           \
     }
