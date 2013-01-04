@@ -81,7 +81,7 @@
             <view sid="listOrganEditor" />
           </registry>
         </service>
-        
+
       <!-- myPatientDB description -->
       <item key="myPatientDB">
         <object uid="myPatientDB" type="::fwData::PatientDB">
@@ -91,9 +91,7 @@
             <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
           </service>
           <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-          <service uid="myUpdaterComCannelAcq" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-            <target>myUpdaterAcq</target>
-          </service>
+
         </object>
       </item>
 
@@ -106,7 +104,7 @@
             <update compositeKey="myAcquisition" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
           </service>
 
-          <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" priority="0.6"  >
+          <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="stop" />
             <config>
 
@@ -132,7 +130,6 @@
                            type="::fwGui::IActionSrv" autoConnect="no" >
                   <start uid="mySofaWriter"/>
                   <start uid="mySofaStart"/>
-                  <start uid="myUpdaterComCannelSofa"/>
                 </service>
 
                 <!-- <service uid="mySofaReader"
@@ -145,7 +142,7 @@
                                    type="::fwGui::IActionSrv" autoConnect="no" >
                           <start uid="mySofaReader"/>
                           <start uid="mySofaStart"/>
-                          <start uid="myUpdaterComCannelSofa"/>
+                          <start uid="myUpdaterComChannelSofa"/>
                         </service> -->
 
                 <service uid="mySofaStart"
@@ -153,10 +150,15 @@
                               type="::fwGui::IActionSrv" autoConnect="no" >
                 </service>
 
+
+                <proxy channel="MatrixUpdateChannel">
+                    <signal>view1/objectModified</signal>
+                    <slot>mySofaCore/receive</slot>
+                </proxy>
               </object>
 
             </config>
-            
+
           </service>
 
           <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
@@ -198,9 +200,7 @@
 
           <item key="view1">
             <object uid="view1" type="::fwData::TransformationMatrix3D">
-              <service uid="myUpdaterComCannelSofa" impl="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoConnect="no">
-                <target>mySofaCore</target>
-              </service>
+
             </object>
           </item>
 
@@ -219,13 +219,19 @@
               </service>
             </object>
           </item>
+
+          <proxy channel="PDBUpdateChannel">
+              <signal>myPatientDB/objectModified</signal>
+              <slot>myUpdaterAcq/receive</slot>
+          </proxy>
+
+
         </object>
       </item>
 
       <start uid="MyIHM" />
       <start uid="myUpdaterAcq" />
       <start uid="myManager" />
-      <start uid="myUpdaterComCannelAcq" />
       <start uid="newOBject2newPatientDB"/>
       <start uid="tool1ReaderFile"/>
       <start uid="tool2ReaderFile"/>
@@ -237,3 +243,4 @@
     </config>
   </extension>
 </plugin>
+
