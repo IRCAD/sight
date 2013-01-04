@@ -172,11 +172,13 @@
                                   </proxy>
 
                                   <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
-                                 </object>
-                                 <object id="image" type="::fwData::Image" >
-                                 </object>
-                                 <object id="reconstruction" type="::fwData::Reconstruction" >
-                                 </object>
+                              </object>
+
+                              <object id="image" type="::fwData::Image" >
+                              </object>
+
+                              <object id="reconstruction" type="::fwData::Reconstruction" >
+                              </object>
                             </config>
                         </service>
                         <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
@@ -204,7 +206,7 @@
                 <start uid="updaterAcq"/>
                 <start uid="updaterImg"/>
                 <start uid="updaterReconst"/>
-                 <start uid="medicalImageManager"/>
+                <start uid="medicalImageManager"/>
                 <start uid="manager"/>
                 <start uid="newOBject2newPatientDB"/>
 
