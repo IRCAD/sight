@@ -75,6 +75,7 @@ void SignalTest::buildTest ()
 struct SignalTestClass
 {
     SignalTestClass() :
+        m_method00(false),
         m_method0(false),
         m_method1(false),
         m_method2(false),
@@ -82,6 +83,8 @@ struct SignalTestClass
     {}
 
     void method0(){ m_method0 = true; }
+
+    void method00(){ m_method00 = true; }
 
     float method1(float f){
         m_method1 = true;
@@ -98,6 +101,7 @@ struct SignalTestClass
         return 2*f;
     }
 
+    bool m_method00;
     bool m_method0;
     bool m_method1;
     bool m_method2;
