@@ -7,8 +7,11 @@
 #ifndef _OPSOFA_SOFACORESRV_HPP_
 #define _OPSOFA_SOFACORESRV_HPP_
 
-#include "config.hpp"
+#include <boost/shared_ptr.hpp>
+
 #include <fwGui/IActionSrv.hpp>
+
+#include "config.hpp"
 #include "opSofa/SofaBusiness.hpp"
 
 namespace opSofa
@@ -28,12 +31,45 @@ public :
     virtual ~SofaCoreSrv() throw() ;
 
 protected:
+
+    /**
+     * @brief Used to define the service parameters and analyze its configuration.
+     */
     void configuring() throw ( ::fwTools::Failed );
+
+    /**
+     * @brief Used to launch the service.
+     */
     void starting() throw ( ::fwTools::Failed );
+
+    /**
+     * @brief Used to stop the service.
+     */
     void stopping() throw ( ::fwTools::Failed );
+
+    /**
+     * @brief Called to do an action on the data associated to the service.
+     */
     void updating() throw ( ::fwTools::Failed );
+
+    /**
+     * @brief Called by a data to notify a service.
+     *
+     * @param _pMsg : Incoming message
+     */
     void receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+
+    /**
+     * @brief info of the class
+     */
     void info ( std::ostream &_sstream ) ;
+
+    /**
+     * @brief Add a triangularMesh to the acquisition data
+     *
+     * @param meshPath : path to the mesh
+     * @param meshName : name of the mesh
+     */
     void addMesh(std::string, std::string);
 
 private :
@@ -41,7 +77,7 @@ private :
     /**
      * @brief SofaBusiness pointer
      */
-    SofaBusiness *sofa;
+    ::boost::shared_ptr< SofaBusiness > m_sofa;
 };
 
 } // namespace opSofa
