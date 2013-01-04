@@ -92,7 +92,7 @@ void IoVtkGdcmTest::testReader()
     size_t imgSizeX_Expected =  512;
     size_t imgSizeY_Expected =  512;
     size_t imgSizeZ_Expected =  166;
-    int imgSize = imgSizeX_Expected*imgSizeY_Expected*imgSizeZ_Expected;
+    // int imgSize = imgSizeX_Expected*imgSizeY_Expected*imgSizeZ_Expected;
 
     const double imgWindowCenter = 50;
     const double imgWindowWidth = 500;

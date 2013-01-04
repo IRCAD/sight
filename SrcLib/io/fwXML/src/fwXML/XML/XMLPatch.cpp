@@ -131,7 +131,7 @@ void XMLPatch::PatchNoVersionToVersion1( xmlNodePtr node )
                 protocolValue = XMLParser::getAttribute (bufferNode, "protocol");
             }
         }
-        catch ( ::fwTools::Failed ef)
+        catch (::fwTools::Failed &ef)
         {
             OSLM_TRACE(" no protocol class for node->name=" << NodeName );
         }

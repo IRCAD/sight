@@ -173,7 +173,7 @@ void DicomSegmentWriter::writeSurfaceSegmentation(const unsigned int idx, ::fwDa
                     // Limit references to the bounding box of each surface?
                     std::vector< std::string >::const_iterator  it      = refSOPInstanceUIDs.begin();
                     std::vector< std::string >::const_iterator  itEnd   = refSOPInstanceUIDs.end();
-                    for(; it != itEnd; it++)
+                    for(; it != itEnd; ++it)
                     {
                         // Create one item
                         ::gdcm::Item        gItImageSOP;

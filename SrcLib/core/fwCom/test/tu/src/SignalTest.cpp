@@ -82,7 +82,7 @@ struct SignalTestClass
     {}
 
     void method0(){ m_method0 = true; }
-    void method00(){ m_method00 = true; }
+
     float method1(float f){
         m_method1 = true;
         return 2*f;
@@ -99,7 +99,6 @@ struct SignalTestClass
     }
 
     bool m_method0;
-    bool m_method00;
     bool m_method1;
     bool m_method2;
     bool m_method3;

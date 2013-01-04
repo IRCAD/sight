@@ -97,7 +97,7 @@ std::string distanceToStr(double dist)
             correspondance[ selections.back() ] = pl;
         }
 
-        if ( selections.size() )
+        if ( !selections.empty() )
         {
             ::fwGui::dialog::SelectorDialog::NewSptr selector;
             selector->setTitle("Select a distance to remove");

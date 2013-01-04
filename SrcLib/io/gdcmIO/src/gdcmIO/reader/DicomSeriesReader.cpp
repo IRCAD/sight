@@ -84,7 +84,7 @@ void DicomSeriesReader::read() throw(::fwTools::Failed)
     // Get the DICOM image file names
     const std::vector< std::string > imageFiles = this->getImageFileNames(mapSeries);
 
-    if (imageFiles.size() == 0)
+    if (imageFiles.empty())
     {
         throw ::fwTools::Failed("No DICOM image file found");
     }
@@ -116,7 +116,7 @@ void DicomSeriesReader::read() throw(::fwTools::Failed)
     // Get the SR file names
     const std::vector< std::string > SRFiles = this->getSRFileNames(mapSeries);
     OSLM_TRACE("Number of files for SR documents : " << SRFiles.size());
-    if (SRFiles.size() > 0)
+    if (!SRFiles.empty())
     {
         DicomSRReader SRReader;
         SRReader.setObject( series->getImage() );
@@ -137,7 +137,7 @@ void DicomSeriesReader::read() throw(::fwTools::Failed)
     // Get the RT file names
     const std::vector< std::string > RTFiles = this->getRTFileNames(mapSeries);
     OSLM_TRACE("Number of files for RT documents : " << RTFiles.size());
-    if (RTFiles.size() > 0)
+    if (!RTFiles.empty())
     {
         DicomRTReader RTReader;
         RTReader.setObject( series );
@@ -200,7 +200,7 @@ void DicomSeriesReader::readSeries()
     const std::vector< std::string > &          seriesFiles = this->getFileNames();
     std::vector< std::string >::const_iterator  itVector    = seriesFiles.begin();
     std::vector< std::string >::const_iterator  itVectorEnd = seriesFiles.end();
-    for (; itVector != itVectorEnd; itVector++)
+    for (; itVector != itVectorEnd; ++itVector)
     {
         series->addDicomFileUrl( *itVector );
 //        OSLM_TRACE("Serie's associated file : "<< *itVector );
@@ -226,7 +226,7 @@ std::vector< std::string > DicomSeriesReader::getImageFileNames(const std::map< 
     while ( itMap != itMapEnd
          && !::gdcm::MediaStorage::IsImage( ::gdcm::MediaStorage::GetMSType( itMap->first.c_str() ) ) )
     {
-        itMap++;
+        ++itMap;
     }
 
     if (itMap != itMapEnd)
@@ -249,7 +249,7 @@ std::vector< std::string > DicomSeriesReader::getSRFileNames(const std::map< std
          && ::gdcm::MediaStorage::GetMSType( itMap->first.c_str() ) != ::gdcm::MediaStorage::ComprehensiveSR
          )
     {
-        itMap++;
+        ++itMap;
     }
 
     if (itMap != itMapEnd)
@@ -273,7 +273,7 @@ std::vector< std::string > DicomSeriesReader::getRTFileNames(const std::map< std
 //         && ...
          )
     {
-        itMap++;
+        ++itMap;
     }
 
     if (itMap != itMapEnd)

@@ -592,7 +592,7 @@ void DicomSR::createSCOORD(const SCoord &                                   a_sc
     }
     // Graphic Data
     GdcmData::setTagValues<float,0x0070,0x0022>(graphicData, nbCoords,  gDsSCOORD); // Type 1
-    delete graphicData;
+    delete[] graphicData;
 
     // Graphic Type
     GdcmData::setTagValue<0x0070,0x0023>(a_scoord.getGraphicType(),     gDsSCOORD); // Type 1

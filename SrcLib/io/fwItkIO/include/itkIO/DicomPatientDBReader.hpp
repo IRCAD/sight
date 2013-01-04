@@ -45,7 +45,7 @@ protected:
 
 private :
 
-    std::string getDicomValue( ::itk::GDCMImageIO::Pointer dicomIO , const std::string entryId );
+    std::string getDicomValue( ::itk::GDCMImageIO::Pointer dicomIO , const std::string &entryId );
 
     ::fwData::PatientDB::sptr createPatientDB( const ::boost::filesystem::path dicomDir );
 

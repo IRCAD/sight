@@ -35,7 +35,6 @@ ZipFolder::~ZipFolder()
 
 bool ZipFolder::packFolder( const ::boost::filesystem::path & _srcFolderName, const ::boost::filesystem::path& _destZipFileName )
 {
-    double percent = 0.;
     std::string msg = "Zip folder " + _srcFolderName.string();
 
     unsigned int nbFiles=0;
@@ -49,9 +48,10 @@ bool ZipFolder::packFolder( const ::boost::filesystem::path & _srcFolderName, co
     bool bRes = false;
     int compressLevel = Z_DEFAULT_COMPRESSION;
     ::microzip::Zipper zip;
-    unsigned int index=0;
     if (zip.OpenZip(_destZipFileName, _srcFolderName))
     {
+        double percent = 0.;
+        unsigned int index=0;
         std::string filename;
         for( ::boost::filesystem::recursive_directory_iterator it(_srcFolderName);
                 it != ::boost::filesystem::recursive_directory_iterator(); ++it)

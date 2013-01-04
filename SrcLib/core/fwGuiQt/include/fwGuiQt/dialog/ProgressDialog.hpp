@@ -52,8 +52,8 @@ public:
                                             ::fwGui::factory::New< ProgressDialog > );
 
     FWGUIQT_API ProgressDialog( ::fwGui::GuiBaseObject::Key key,
-                                const std::string title="Progression",
-                                std::string message= std::string(86,' ') );
+                                const std::string &title="Progression",
+                                const std::string &message= std::string(86,' ') );
 
     FWGUIQT_API virtual ~ProgressDialog();
 

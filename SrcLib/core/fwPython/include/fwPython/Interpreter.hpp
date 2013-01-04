@@ -46,7 +46,7 @@ public :
     *
     * @return attribute value
     */
-   FWPYTHON_API std::string getAttrValue(const std::string moduleName, const std::string attrName);
+   FWPYTHON_API std::string getAttrValue(const std::string &moduleName, const std::string &attrName);
 
    protected :
 

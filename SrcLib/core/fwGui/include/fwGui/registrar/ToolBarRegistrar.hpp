@@ -35,11 +35,11 @@ class FWGUI_CLASS_API ToolBarRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new ToolBarRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new ToolBarRegistrar );
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
-    FWGUI_API ToolBarRegistrar( const std::string sid);
+    FWGUI_API ToolBarRegistrar( const std::string &sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~ToolBarRegistrar();

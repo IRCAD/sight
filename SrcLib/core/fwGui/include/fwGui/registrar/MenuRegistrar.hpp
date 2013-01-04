@@ -33,11 +33,11 @@ class FWGUI_CLASS_API MenuRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new MenuRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new MenuRegistrar );
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
-    FWGUI_API MenuRegistrar( const std::string sid);
+    FWGUI_API MenuRegistrar( const std::string &sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~MenuRegistrar();

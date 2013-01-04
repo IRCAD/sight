@@ -31,10 +31,10 @@ class FWGUI_CLASS_API ActionRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ActionRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new ActionRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ActionRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new ActionRegistrar );
 
     /// Constructor.
-    FWGUI_API ActionRegistrar( const std::string sid);
+    FWGUI_API ActionRegistrar( const std::string &sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~ActionRegistrar();

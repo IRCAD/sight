@@ -39,7 +39,7 @@ public:
         return cb;
     }
 
-     Camera2Clallback() {}
+     Camera2Clallback() : m_adaptor(NULL) {}
     ~Camera2Clallback() {}
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )

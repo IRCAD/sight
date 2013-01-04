@@ -40,7 +40,7 @@ public:
         return cb;
     }
 
-     TransformClallback() {}
+     TransformClallback() : m_adaptor(NULL) {}
     ~TransformClallback() {}
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )

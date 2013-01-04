@@ -46,7 +46,7 @@ public:
         return cb;
     }
 
-    MeshesBoxClallback() {}
+    MeshesBoxClallback() : m_adaptor(NULL) {}
     ~MeshesBoxClallback() {}
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )

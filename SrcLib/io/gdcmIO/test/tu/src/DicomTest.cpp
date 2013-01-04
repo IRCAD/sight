@@ -306,7 +306,7 @@ void DicomTest::checkDistance()
 
     const double IMG1_WINDOWCENTER = 86 ;
     const double IMG1_WINDOWWIDTH = 345 ;
-    const double IMG1_RESCALEINTERCEPT = 1 ;
+    // const double IMG1_RESCALEINTERCEPT = 1 ;
 
     ::boost::uint8_t IMG1_BITSPERPIXEL = 16 ;
     ::fwTools::Type IMG1_PIXELTYPE = ::fwTools::Type::create("int16");

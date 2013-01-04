@@ -16,7 +16,7 @@ namespace fwTools
 
 //------------------------------------------------------------------------------
 
-::boost::gregorian::date strToBoostDate( const std::string dateStr )
+::boost::gregorian::date strToBoostDate( const std::string &dateStr )
 {
     ::boost::gregorian::date resDate( ::boost::gregorian::from_undelimited_string( "19000101" ) );
     if ( dateStr.size() < 8 )
@@ -46,7 +46,7 @@ namespace fwTools
 
 //------------------------------------------------------------------------------
 
-::boost::posix_time::time_duration strToBoostTime( const std::string timeStr )
+::boost::posix_time::time_duration strToBoostTime( const std::string &timeStr )
 {
     using ::boost::posix_time::time_duration;
     using ::boost::posix_time::hours;
@@ -85,7 +85,7 @@ namespace fwTools
 
 //------------------------------------------------------------------------------
 
-::boost::posix_time::ptime strToBoostDateAndTime( const std::string dateStr, const std::string timeStr)
+::boost::posix_time::ptime strToBoostDateAndTime( const std::string &dateStr, const std::string &timeStr)
 {
     return ::boost::posix_time::ptime(strToBoostDate(dateStr),strToBoostTime(timeStr));
 }

@@ -66,8 +66,7 @@ void TagReader::read()
 
     /// Read content and update tag data structure
     std::string name, type;
-    int n, nbPts;
-    double x,y,z,radius=0.0;
+    int n;
     file>>name;
     file>>n;
     if(n>=1)
@@ -76,6 +75,9 @@ void TagReader::read()
 
         if(type=="ARTAG" || type=="CHESSBOARD" || type=="ARToolKitPlus_MARKER_ID_BCH")
         {
+            int nbPts;
+            double x,y,z;
+            double radius=0.0;
             file>>x>>y>>z;
             file>>nbPts;
             tag->setType(type);

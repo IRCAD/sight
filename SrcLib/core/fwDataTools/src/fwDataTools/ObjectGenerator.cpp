@@ -253,7 +253,7 @@ namespace fwDataTools
 
 //------------------------------------------------------------------------------
 
-::fwData::Array::sptr ObjectGenerator::randomizeArray(const std::string type, ::fwData::Array::SizeType sizes)
+::fwData::Array::sptr ObjectGenerator::randomizeArray(const std::string &type, ::fwData::Array::SizeType sizes)
 {
     ::fwData::Array::NewSptr array;
 
@@ -385,9 +385,9 @@ namespace fwDataTools
     ::fwData::Resection::NewSptr resection;
 
     resection->setName("Resection1");
-    resection->setIsSafePart((rand()%1 ? true : false));
-    resection->setIsValid((rand()%1 ? true : false));
-    resection->setIsVisible((rand()%1 ? true : false));
+    resection->setIsSafePart(((rand()%1) ? true : false));
+    resection->setIsValid(((rand()%1) ? true : false));
+    resection->setIsVisible(((rand()%1) ? true : false));
     ::fwData::Reconstruction::NewSptr recInput;
 
     ::fwDataTools::Patient::generateReconstruction(recInput);

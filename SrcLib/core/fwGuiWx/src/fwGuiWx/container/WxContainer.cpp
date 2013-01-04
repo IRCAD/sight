@@ -89,7 +89,7 @@ void WxContainer::setVisible(bool isVisible)
         else
         {
             wxSizer* sizer1 = parent->GetSizer();
-            bool isFound = sizer1->Show(m_container, isVisible, true);
+            sizer1->Show(m_container, isVisible, true);
             if(m_container->GetContainingSizer() && m_container->GetContainingSizer() != sizer1)
             {
                 wxSizer* sizer2 = m_container->GetContainingSizer();

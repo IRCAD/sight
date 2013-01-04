@@ -97,7 +97,7 @@ void DicomSurfaceReader::readSurfaceMeshs() throw (::fwTools::Failed)
     const ::gdcm::SegmentReader::SegmentVector &           segments= gSurfaceReader->GetSegments(); // Get all segmentations with their associated surface
     ::gdcm::SegmentReader::SegmentVector::const_iterator   it      = segments.begin();
     ::gdcm::SegmentReader::SegmentVector::const_iterator   itEnd   = segments.end();
-    for (; it != itEnd; it++)
+    for (; it != itEnd; ++it)
     {
         ::gdcm::SmartPointer< ::gdcm::Segment > segment = *it;
 

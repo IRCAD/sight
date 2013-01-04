@@ -120,7 +120,7 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
     typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
     ConfigurationElementContainer inject = m_configuration->find("inject");
 
-    if(inject.size() > 0)
+    if(!inject.empty())
     {
         m_inject = inject.at(0)->getValue();
     }

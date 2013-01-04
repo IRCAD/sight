@@ -51,7 +51,7 @@ public:
     static NegatoSlicingCallback *New()
     { return new NegatoSlicingCallback(); }
 
-    NegatoSlicingCallback() : m_mouseMoveObserved(false)
+    NegatoSlicingCallback() :  m_picker(NULL), m_localPicker(NULL), m_pickedProp(NULL), m_mouseMoveObserved(false)
     {
         this->PassiveObserverOff();
     }

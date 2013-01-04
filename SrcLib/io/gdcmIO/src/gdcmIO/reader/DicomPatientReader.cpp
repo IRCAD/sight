@@ -167,7 +167,7 @@ void DicomPatientReader::read() throw(::fwTools::Failed)
                 // Study skipped
             }
         }
-        itMap++;
+        ++itMap;
     }
 
     if(patient->getNumberOfStudies() == 0)

@@ -154,7 +154,7 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
             file.close();
         }
     }
-    catch(std::ios_base::failure exception)
+    catch(std::ios_base::failure &exception)
     {
         OSLM_ERROR( "External data file loading error for " << exception.what());
     }

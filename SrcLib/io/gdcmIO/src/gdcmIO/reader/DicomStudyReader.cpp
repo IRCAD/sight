@@ -186,7 +186,7 @@ void DicomStudyReader::read() throw(::fwTools::Failed)
                 // Acquisition skipped
             }
         }
-        itMap++;
+        ++itMap;
     }
 
     if(study->getNumberOfAcquisitions() == 0)

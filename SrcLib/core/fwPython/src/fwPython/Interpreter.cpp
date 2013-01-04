@@ -122,7 +122,7 @@ int Interpreter::execute(std::string code)
 
 //------------------------------------------------------------------------------
 
-std::string Interpreter::getAttrValue(const std::string moduleName, const std::string attrName)
+std::string Interpreter::getAttrValue(const std::string &moduleName, const std::string &attrName)
 {
     namespace bp = ::boost::python;
 

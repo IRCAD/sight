@@ -242,7 +242,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                 s.SetZSpacingTolerance( 1e-3 );
                 b = s.Sort( iter->second );
                 double zspacing = 0;
-                int nbSorter = 0;
+                // int nbSorter = 0;
                 files->Initialize();
 
                 std::vector< std::string > listOfFiles = iter->second;
@@ -294,13 +294,13 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                         }
                         else
                         {
-                            nbSorter = 2;
+                            // nbSorter = 2;
                             OSLM_DEBUG ( "Re-Sort and fix z-spacing:" << s.GetZSpacing());
                         }
                     }
                     else
                     {
-                        nbSorter = 1;
+                        // nbSorter = 1;
                         OSLM_TRACE ( "Found z-spacing:" << s.GetZSpacing());
                     }
                     const std::vector<std::string> & sorted = s.GetFilenames(); //FIXME
@@ -372,7 +372,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
 //                    std::string zone = (std::string(medprop->GetStudyDescription()) + " - ") + medprop->GetSeriesDescription(); //"0008|1030"
                     std::string serieDescription = medprop->GetSeriesDescription();
                     std::string zone = std::string(medprop->GetStudyDescription()) ; //"0008|1030"
-                    std::string studyID = std::string(medprop->GetStudyID()); // "0020,0010"
+                    // std::string studyID = std::string(medprop->GetStudyID()); // "0020,0010"
                     std::string studyTime =  std::string(medprop->GetStudyTime());
                     std::string studyDate = std::string(medprop->GetStudyDate());
                     std::string studyDescription = std::string(medprop->GetStudyDescription());
@@ -541,7 +541,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
                     }
                 } // if res == true
             } // if nb files > 0
-            iter++;
+            ++iter;
         } // While all data
     } // try
     catch (std::exception& e)
@@ -557,7 +557,7 @@ void DicomPatientDBReader::addPatients( ::fwData::PatientDB::sptr patientDB, std
 
 //------------------------------------------------------------------------------
 
-void DicomPatientDBReader::extractIdentity(const std::string patientName, std::string& name, std::string& firstname)
+void DicomPatientDBReader::extractIdentity(const std::string &patientName, std::string& name, std::string& firstname)
 {
     name = "";
     firstname = "";

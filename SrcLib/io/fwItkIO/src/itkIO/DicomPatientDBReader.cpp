@@ -89,7 +89,7 @@ void DicomPatientDBReader::searchRecursivelyDirectories
 
 //------------------------------------------------------------------------------
 
-std::string DicomPatientDBReader::getDicomValue( ::itk::GDCMImageIO::Pointer dicomIO , const std::string entryId )
+std::string DicomPatientDBReader::getDicomValue( ::itk::GDCMImageIO::Pointer dicomIO , const std::string &entryId )
 {
     std::string value = "";
 
@@ -228,7 +228,7 @@ void DicomPatientDBReader::addPatients
             while( seriesItr != seriesEnd )
             {
                 OSLM_DEBUG(seriesItr->c_str());
-                seriesItr++;
+                ++seriesItr;
             }
 
             // Given that it is common to find multiple DICOM series in the same directory,
@@ -301,9 +301,9 @@ void DicomPatientDBReader::addPatients
                     std::string acqUID      = getDicomValue(dicomIO , "0020|000e");
                     std::string acqDateStr  = getDicomValue(dicomIO , "0008|0022");
                     std::string acqTimeStr  = getDicomValue(dicomIO , "0008|0032");
-                    std::string spacing     = getDicomValue(dicomIO , "0028|0030");
-                    std::string thicknessStr= getDicomValue(dicomIO , "0018|0050");
-                    std::string interSliceStr= getDicomValue(dicomIO , "0018|0088");
+                    // std::string spacing     = getDicomValue(dicomIO , "0028|0030");
+                    // std::string thicknessStr= getDicomValue(dicomIO , "0018|0050");
+                    // std::string interSliceStr= getDicomValue(dicomIO , "0018|0088");
                     std::string centerStr   = getDicomValue(dicomIO , "0028|1050");
                     std::string widthStr    = getDicomValue(dicomIO , "0028|1051");
                     std::string rescaleStr  = getDicomValue(dicomIO , "0028|1052");
@@ -403,7 +403,7 @@ void DicomPatientDBReader::addPatients
                 }
 
                 // Change series
-                seriesItr++;
+                ++seriesItr;
 
             } // while ( seriesItr != seriesEnd )
 

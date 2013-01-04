@@ -41,7 +41,7 @@ public:
                                                      const unsigned char nbStudy,
                                                      const unsigned char nbAcquisition,
                                                      const unsigned char nbReconstruction);
-    FWDATATOOLS_API static ::fwData::Array::sptr randomizeArray(const std::string type, fwData::Array::SizeType sizes);
+    FWDATATOOLS_API static ::fwData::Array::sptr randomizeArray(const std::string &type, fwData::Array::SizeType sizes);
     FWDATATOOLS_API static ::fwData::Color::sptr randomizeColor();
     FWDATATOOLS_API static ::fwData::TransferFunction::sptr createTFColor(unsigned char nbPoints, double window, double level );
     FWDATATOOLS_API static ::fwData::TransferFunction::sptr createTFColor();

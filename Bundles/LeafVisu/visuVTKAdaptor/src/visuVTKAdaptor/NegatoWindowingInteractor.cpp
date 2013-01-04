@@ -45,7 +45,7 @@ public:
     static NegatoWindowingCallback *New()
     { return new NegatoWindowingCallback(); }
 
-    NegatoWindowingCallback() : m_mouseMoveObserved(false)
+    NegatoWindowingCallback() : m_picker(NULL), m_x(0), m_y(0), m_mouseMoveObserved(false)
     {
         m_windowStep = 1. ;
         m_levelStep  = 1. ;

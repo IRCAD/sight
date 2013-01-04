@@ -41,7 +41,7 @@ public:
         return cb;
     }
 
-     BoxClallback() {}
+     BoxClallback() : m_adaptor(NULL) {}
     ~BoxClallback() {}
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )

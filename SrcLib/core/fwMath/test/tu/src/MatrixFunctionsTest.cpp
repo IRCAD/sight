@@ -41,7 +41,6 @@ void MatrixFunctionsTest::checkMultVecMatrix()
     const double c2 = rand()%1+0.1;
     const double c3 = rand()%29+0.5;
     const double c4 = rand()%50+0.6;
-    const double c5 = rand()%20+0.5;
 
     const fwVec3d source = {X, Y, Z};
     fwVec3d result;

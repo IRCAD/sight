@@ -54,14 +54,13 @@ vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *rende
 {
     vtkProp   *res       = NULL;
     vtkPicker *vtkpicker = vtkPicker::SafeDownCast(picker);
-    vtkIdType  id        = -1 ;
 
     SLM_ASSERT("getNearestPickedProp *need* a picker.", picker);
     SLM_ASSERT("getNearestPickedProp *need* a renderer.", renderer);
 
     if (vtkpicker)
     {
-        id = getNearestPointId(vtkpicker->GetPickedPositions(), renderer);
+        vtkIdType id = getNearestPointId(vtkpicker->GetPickedPositions(), renderer);
 
         if (id>-1 && vtkpicker->GetProp3Ds()->GetNumberOfItems() > id)
         {
@@ -98,7 +97,6 @@ bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *render
 {
     bool res = false;
     vtkPicker *vtkpicker = vtkPicker::SafeDownCast(picker);
-    vtkIdType  id        = -1 ;
 
     SLM_ASSERT("getNearestPickedProp *need* a picker.", picker);
     SLM_ASSERT("getNearestPickedProp *need* a renderer.", renderer);
@@ -106,8 +104,8 @@ bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *render
     double *point = NULL;
     if (vtkpicker)
     {
-        vtkPoints *pts=vtkpicker->GetPickedPositions();
-        id = getNearestPointId(pts, renderer);
+        vtkPoints *pts = vtkpicker->GetPickedPositions();
+        vtkIdType id = getNearestPointId(pts, renderer);
 
         if (id>-1)
         {

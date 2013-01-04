@@ -61,6 +61,8 @@ public :
       m_picker( vtkCellPicker::New() ),
       m_propCollection( vtkPropCollection::New() )
     {
+        m_lastPos[0] = -1;
+        m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 

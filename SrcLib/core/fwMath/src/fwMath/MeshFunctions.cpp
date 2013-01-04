@@ -63,7 +63,7 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
 {
     const unsigned int X=0, Y=1, Z=2;
     const size_t ElementNbr  = _vertexIndex.size();
-    if ( ElementNbr <= 0 )
+    if ( ElementNbr == 0 )
         return false;
 
     // on regarde tous les triangles du maillage

@@ -55,7 +55,7 @@ void DicomRTReader::read() throw (::fwTools::Failed)
 
     // Get Surface Segmentation Storage file names
     const std::vector< std::string > surfaceFileNames = getSurfaceStorageFileNames( gScanner );
-    if (surfaceFileNames.size() > 0)
+    if (!surfaceFileNames.empty())
     {
         // Create a Surface Segmentation reader
         DicomSurfaceReader surfaceReader;

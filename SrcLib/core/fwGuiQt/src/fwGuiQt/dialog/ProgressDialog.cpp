@@ -23,7 +23,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string title, const std::string message)
+ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string &title, const std::string &message)
 :   m_title (""),
     m_pdialog ( NULL ),
     m_pprogressbar ( NULL ),

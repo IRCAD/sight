@@ -33,10 +33,10 @@ class FWGUI_CLASS_API ViewRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new ViewRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new ViewRegistrar );
 
     /// Constructor.
-    FWGUI_API ViewRegistrar( const std::string sid);
+    FWGUI_API ViewRegistrar( const std::string &sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~ViewRegistrar();

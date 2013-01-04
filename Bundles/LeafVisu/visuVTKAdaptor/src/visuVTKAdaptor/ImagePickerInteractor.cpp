@@ -46,7 +46,7 @@ public:
     static ImagePickerInteractorCallback *New()
     { return new ImagePickerInteractorCallback(); }
 
-    ImagePickerInteractorCallback() : m_priority(-1)
+    ImagePickerInteractorCallback() :  m_caller(NULL), m_priority(-1)
     {
         m_picker = NULL;
         this->PassiveObserverOn();

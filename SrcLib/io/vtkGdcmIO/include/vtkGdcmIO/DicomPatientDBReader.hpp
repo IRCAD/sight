@@ -46,7 +46,7 @@ private :
     ::boost::shared_ptr< ::fwData::PatientDB > createPatientDB( const ::boost::filesystem::path dicomDir );
 
     void addPatients( ::boost::shared_ptr< ::fwData::PatientDB > patientDB, std::vector< std::string > filenames);
-    void extractIdentity(const std::string patientName, std::string& name, std::string& firstname);
+    void extractIdentity(const std::string &patientName, std::string& name, std::string& firstname);
 
 
 };

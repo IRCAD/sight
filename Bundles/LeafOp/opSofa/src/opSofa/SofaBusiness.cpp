@@ -252,7 +252,6 @@ void SofaBusiness::moveMesh(std::string idMesh, int x, int y, int z, float rx, f
 {
     GNode::SPtr souris = groot;
     MechanicalObjectRigid3f *mechanical = (MechanicalObjectRigid3f*) (souris->getObject(sofa::core::objectmodel::TClassInfo<MechanicalObjectRigid3f>::get(), idMesh));
-    std::string name = mechanical->getName();
     sofa::core::objectmodel::Data< MechanicalObjectRigid3f::VecCoord >* data;
     data = mechanical->write(sofa::core::VecCoordId::position());
     MechanicalObjectRigid3f::VecCoord coord = data->getValue();
@@ -304,8 +303,6 @@ void SofaBusiness::fillMeshVector(::fwData::Acquisition::sptr acquisition, std::
     {
         // Info
         std::string organName = rec->getOrganName();
-        bool isVisible = rec->getIsVisible();
-        std::string uid = rec->getID();
 
         // Get Mesh
         ::fwData::Mesh::sptr mesh = rec->getMesh();

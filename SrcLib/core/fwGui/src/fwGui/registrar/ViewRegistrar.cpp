@@ -21,7 +21,7 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ViewRegistrar::ViewRegistrar(const std::string sid)
+ViewRegistrar::ViewRegistrar(const std::string &sid)
     : m_parentWid(""),
       m_sid(sid)
 {}

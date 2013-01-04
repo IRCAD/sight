@@ -343,7 +343,6 @@ void ImagesProbeCursor::updateView( double world[3] )
             else
             {
                 ::fwComEd::helper::Image imageHelper(image);
-                std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
                 txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
 
                 // update polyData

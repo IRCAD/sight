@@ -160,7 +160,6 @@ void DicomdirEditor::createContent() throw(::fwTools::Failed)
 void DicomdirEditor::onSelection()
 {
     SLM_TRACE_FUNC();
-    QTreeWidgetItem *item = m_DicomdirStructure->currentItem();
 }
 
 //------------------------------------------------------------------------------

@@ -126,7 +126,7 @@ void DicomPatientDBReader::read() throw(::fwTools::Failed)
                 OSLM_ERROR ("Read error with patient : " << itMap->first);
             }
         }
-        itMap++;
+        ++itMap;
     }
 
     if (patientDB->getNumberOfPatients() == 0)

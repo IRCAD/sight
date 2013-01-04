@@ -31,10 +31,10 @@ class FWGUI_CLASS_API MenuBarRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new MenuBarRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new MenuBarRegistrar );
 
     /// Constructor.
-    FWGUI_API MenuBarRegistrar( const std::string sid);
+    FWGUI_API MenuBarRegistrar( const std::string &sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~MenuBarRegistrar();

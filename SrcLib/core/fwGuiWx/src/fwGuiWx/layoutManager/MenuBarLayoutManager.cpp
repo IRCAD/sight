@@ -57,8 +57,6 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
 
 void MenuBarLayoutManager::destroyLayout()
 {
-    wxMenuBar* menuBar = m_parent->getWxMenuBar();
-
     this->destroyMenus();
     m_parent->clean();
     m_menus.clear();

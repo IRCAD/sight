@@ -229,8 +229,8 @@ bool ObjectComparator::comparePatientDB(::fwData::PatientDB::sptr patientDB1, ::
     while( iter1 != patientDB1List.end ())
     {
         compare &= ::fwDataTools::Patient::comparePatient(*iter1, *iter2);
-        iter1++;
-        iter2++;
+        ++iter1;
+        ++iter2;
     }
     return compare;
 }
@@ -306,8 +306,8 @@ bool ObjectComparator::compareTransferFunction(::fwData::TransferFunction::sptr 
             compare &= ( it1->second == it2->second );
             OSLM_ERROR_IF( "TFData color values are different.", !(it1->second == it2->second) );
 
-            it1++;
-            it2++;
+            ++it1;
+            ++it2;
         }
     }
 

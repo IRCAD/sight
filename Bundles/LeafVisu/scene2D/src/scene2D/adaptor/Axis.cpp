@@ -180,7 +180,6 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
     Scene2DRatio ratio = this->getRatio();
 
     ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const double viewportX = viewport->getX();
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth = viewport->getWidth();
 

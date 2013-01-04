@@ -71,7 +71,7 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
 
     SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() <= 1 );
 
-    if( extension.size() > 0 )
+    if( !extension.empty() )
     {
         ConfigurationElementContainer::iterator iter = extension.begin() ;
         SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", extension.size() == 1 );
@@ -79,7 +79,7 @@ void FwXMLGenericReaderService::configuring() throw(::fwTools::Failed)
         m_archiveExtenstion =  (*iter)->getValue();
 
     }
-    if(inject.size() > 0)
+    if(!inject.empty())
     {
         m_inject = inject.at(0)->getValue();
     }

@@ -45,7 +45,7 @@ public:
     static PickerInteractorCallback *New()
     { return new PickerInteractorCallback(); }
 
-    PickerInteractorCallback() : m_priority(-1)
+    PickerInteractorCallback() : m_caller(NULL), m_priority(-1)
     {
         m_picker = NULL;
         this->PassiveObserverOn();

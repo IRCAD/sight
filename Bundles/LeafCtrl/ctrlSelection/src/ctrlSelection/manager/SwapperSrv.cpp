@@ -242,7 +242,7 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::addObject( const std::string objectId, ::fwData::Object::sptr object )
+void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr object )
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {
@@ -306,7 +306,7 @@ void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::swapObject(const std::string objectId, ::fwData::Object::sptr object)
+void SwapperSrv::swapObject(const std::string &objectId, ::fwData::Object::sptr object)
 {
     std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
     BOOST_FOREACH( ConfigurationType cfg, confVec )
@@ -359,7 +359,7 @@ void SwapperSrv::removeObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::removeObject( const std::string objectId )
+void SwapperSrv::removeObject( const std::string &objectId )
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {

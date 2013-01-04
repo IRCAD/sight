@@ -206,7 +206,6 @@ void RendererService::initVTKPipeline()
 //-----------------------------------------------------------------------------
 void RendererService::createAndAddActorToRender()
 {
-    bool flagMaterialExist = false;
     //Check there is indeed a Composite object in this:
     assert(this->getObject< ::fwData::Composite >());
 

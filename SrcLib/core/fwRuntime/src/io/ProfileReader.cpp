@@ -223,7 +223,6 @@ void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node, ::boo
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
-    std::string value;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)
@@ -244,7 +243,6 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node, ::boost::s
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
-    std::string value;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)

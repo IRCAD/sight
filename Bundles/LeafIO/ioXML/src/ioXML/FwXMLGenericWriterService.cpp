@@ -60,7 +60,7 @@ void FwXMLGenericWriterService::configuring() throw(::fwTools::Failed)
 
     SLM_ASSERT("The configuration accepts at most one <archiveExtension> and/or one <filename> element.", extension.size() <= 1 );
 
-    if( extension.size() > 0 )
+    if( !extension.empty() )
     {
         ConfigurationElementContainer::iterator iter = extension.begin() ;
         SLM_ASSERT("The <"<< (*iter)->getName() <<"> element can be set at most once.", extension.size() == 1 );

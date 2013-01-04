@@ -62,7 +62,7 @@ void JpgPatientDBReader::searchRecursivelyInrFile( const ::boost::filesystem::pa
                 std::string ext1 = fileStr.substr(fileStr.size()-4,4);
                 std::string ext2 = fileStr.substr(fileStr.size()-5,5);
 
-                if( ext1 == ".jpg" || ext1 == ".JPG" || ext1 == ".jpeg" || ext1 == ".JPEG" )
+                if( ext1 == ".jpg" || ext1 == ".JPG" || ext2 == ".jpeg" || ext2 == ".JPEG" )
                 {
 #if BOOST_FILESYSTEM_VERSION > 2
                     OSLM_DEBUG( "JPEG File Found : " << it->path().string() );
