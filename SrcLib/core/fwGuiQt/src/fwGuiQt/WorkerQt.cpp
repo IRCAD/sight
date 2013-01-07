@@ -259,8 +259,6 @@ void WorkerQt::init( int &argc, char **argv )
 WorkerQt::~WorkerQt()
 {
     this->stop();
-    // if (!m_app.isNull())
-    //     delete m_app.data();
 }
 
 

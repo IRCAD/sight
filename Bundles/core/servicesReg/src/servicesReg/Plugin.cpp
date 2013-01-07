@@ -14,6 +14,7 @@
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include "servicesReg/Plugin.hpp"
 
@@ -59,6 +60,9 @@ void Plugin::uninitialize() throw( ::fwRuntime::RuntimeException )
 
     // Clear all service factories
     ::fwServices::registry::ServiceFactory::getDefault()->clearFactory();
+
+    // Clear all active Workers
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //-----------------------------------------------------------------------------

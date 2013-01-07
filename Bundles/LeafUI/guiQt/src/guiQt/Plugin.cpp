@@ -74,7 +74,9 @@ int Plugin::run() throw()
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    return boost::any_cast<int>(m_workerQt->getFuture().get());
+    int result = ::boost::any_cast<int>(m_workerQt->getFuture().get());
+    m_workerQt.reset();
+    return result;
 }
 
 //-----------------------------------------------------------------------------
