@@ -42,9 +42,9 @@ void DictionaryReaderTest::setUp()
 void DictionaryReaderTest::tearDown()
 {
     // Clean up after the test run.
-    bool suppr = false;
     if( ::boost::filesystem::exists(m_tmpDictionaryFilePath))
     {
+        bool suppr;
         suppr = ::boost::filesystem::remove(m_tmpDictionaryFilePath);
         CPPUNIT_ASSERT(suppr);
     }

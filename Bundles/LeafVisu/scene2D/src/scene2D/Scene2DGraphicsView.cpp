@@ -128,10 +128,10 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
     {
         modifier = ::scene2D::data::Event::ShiftModifier;
     }
-    else if(_event->modifiers() == Qt::NoModifier)
-    {
-        modifier = ::scene2D::data::Event::NoModifier;
-    }
+    // else if(_event->modifiers() == Qt::NoModifier)
+    // {
+    //     modifier = ::scene2D::data::Event::NoModifier;
+    // }
     else
     {
         modifier = ::scene2D::data::Event::NoModifier;

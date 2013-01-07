@@ -106,7 +106,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
     catch(std::exception& exception)
     {
         xmlFreeDoc(document);
-        throw exception;
+        throw ;
     }
 }
 

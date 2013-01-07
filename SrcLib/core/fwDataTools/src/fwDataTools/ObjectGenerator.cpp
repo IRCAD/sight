@@ -373,7 +373,7 @@ namespace fwDataTools
 {
     ::fwData::Plane::NewSptr plane;
     plane->setValue(generatePoint(), generatePoint(), generatePoint());
-    plane->setIsIntersection((rand()%1 ? true :false));
+    plane->setIsIntersection(((rand()%1) ? true :false));
     return plane;
 }
 

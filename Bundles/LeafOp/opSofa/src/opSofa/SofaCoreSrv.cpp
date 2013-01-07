@@ -136,7 +136,6 @@ void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTo
 
             static int idTool1 = 0;
             static int idTool2 = 0;
-            static int stage = 0;
 
             // Allow to switch tool
             if (id->value() == idTool1)
@@ -151,6 +150,7 @@ void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTo
             }
             else
             {
+                static int stage = 0;
                 if (stage%2)
                 {
                     idTool1 = id->value();

@@ -51,10 +51,9 @@ void TrianTest::setUp()
 void TrianTest::tearDown()
 {
     // Clean up after the test run.
-    bool suppr = false;
     if( ::boost::filesystem::exists(m_tmpTrianPath1))
     {
-        suppr = ::boost::filesystem::remove(m_tmpTrianPath1);
+        bool suppr = ::boost::filesystem::remove(m_tmpTrianPath1);
         CPPUNIT_ASSERT(suppr);
     }
     if( ::boost::filesystem::exists(m_tmpTrianPath2))

@@ -222,10 +222,10 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 1, std::multiplies<size_t>() );
     void *input = source->GetScalarPointer();
-    void *destBuffer;
 
     if (size != 0)
     {
+        void *destBuffer;
         int nbBytePerPixel = source->GetScalarSize();
         int nbComponents = source->GetNumberOfScalarComponents();
         OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );

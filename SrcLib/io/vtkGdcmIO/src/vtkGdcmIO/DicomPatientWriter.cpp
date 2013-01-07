@@ -130,7 +130,8 @@ struct VTKDicomSaverFunctor
                 const gdcm::Global & g = gdcm::Global::GetInstance();
                 const gdcm::Dicts & ds = g.GetDicts();
 
-                std::string tagkey, value;
+                //std::string tagkey;
+                std::string value;
 
                 // Patient name
                 // tagkey = "0010|0010";

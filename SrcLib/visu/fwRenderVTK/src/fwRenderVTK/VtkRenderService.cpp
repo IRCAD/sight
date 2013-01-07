@@ -413,7 +413,6 @@ void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw
     if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
     {
         std::vector< std::string > objectIds = compositeMsg->getModifiedKeys();
-        std::vector< std::string >::iterator iter;
 
         assert ( m_sceneConfiguration );
 

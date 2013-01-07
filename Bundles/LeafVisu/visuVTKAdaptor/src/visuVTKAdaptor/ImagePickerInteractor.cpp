@@ -136,9 +136,9 @@ public:
 
     void notifyMsg(std::string event)
     {
-        double world[3] = {-1,0,0};
         if ( this->pickSomething() )
         {
+            double world[3] = {-1,0,0};
             ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
             OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
 

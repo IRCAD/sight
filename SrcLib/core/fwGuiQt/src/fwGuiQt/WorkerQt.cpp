@@ -12,6 +12,7 @@
 #include <QPointer>
 #include <QTimer>
 #include <QStringList>
+#include <QSharedPointer>
 
 #include <fwCore/util/LazyInstantiator.hpp>
 
@@ -81,7 +82,7 @@ public:
 
 protected:
 
-    QApplication *m_app;
+    QSharedPointer< QApplication > m_app;
 
     SPTR(::fwThread::Timer) createTimer();
 
@@ -236,7 +237,7 @@ WorkerQt::WorkerQt() :
 
 void WorkerQt::init( int &argc, char **argv )
 {
-    m_app = new ::fwGuiQt::App( argc, argv );
+    m_app = QSharedPointer< QApplication > ( new ::fwGuiQt::App( argc, argv ) );
 
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
@@ -258,7 +259,8 @@ void WorkerQt::init( int &argc, char **argv )
 WorkerQt::~WorkerQt()
 {
     this->stop();
-    delete m_app;
+    // if (!m_app.isNull())
+    //     delete m_app.data();
 }
 
 

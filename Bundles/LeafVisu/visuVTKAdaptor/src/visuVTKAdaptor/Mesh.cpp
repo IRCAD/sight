@@ -311,7 +311,7 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
                 m_meshServices.push_back(meshAdaptor);
             }
 
-            bool hasItems = m_meshServices.size() > 0;
+            bool hasItems = !m_meshServices.empty();
             service->setActorPropertyToUnclippedMaterial( hasItems );
         }
         else if ( eventId == vtkCommand::UserEvent )

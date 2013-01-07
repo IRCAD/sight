@@ -55,7 +55,6 @@ InrPatientDBReaderService::~InrPatientDBReaderService() throw()
 void InrPatientDBReaderService::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
-    std::vector< ::boost::filesystem::path > patientDBPaths;
 
     std::vector<std::string> choices;
     choices.push_back("Files selection");

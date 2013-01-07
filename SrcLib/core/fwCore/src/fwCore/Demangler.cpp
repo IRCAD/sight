@@ -17,7 +17,7 @@
 #include "fwCore/Demangler.hpp"
 
 
-namespace fwCore 
+namespace fwCore
 {
 
 #define COLONS std::string("::")
@@ -110,7 +110,7 @@ std::string Demangler::demangle(  )
 #else
    static std::vector<std::string> keywords;
    typedef std::vector<std::string>::iterator keyword_iterator;
-   if ( 0 == keywords.size() ) 
+   if ( keywords.empty() )
    {
       keywords.push_back("__cdecl");
       keywords.push_back("class ");
@@ -119,7 +119,7 @@ std::string Demangler::demangle(  )
       keywords.push_back("union ");
    }
    std::string res(mangled);
-   for (keyword_iterator iter = keywords.begin(); iter != keywords.end(); ++iter ) 
+   for (keyword_iterator iter = keywords.begin(); iter != keywords.end(); ++iter )
    {
       while (res.find(*iter) != std::string::npos)
          res = res.replace(res.find(*iter), iter->size(), "");

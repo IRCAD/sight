@@ -146,10 +146,10 @@ void DynamicView::swapping() throw(::fwTools::Failed)
 
 void DynamicView::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    static int count = 0;
 
     if (_msg->hasEvent("NEW_CONFIGURATION_HELPER"))
     {
+        static int count = 0;
         ::fwData::String::csptr titleData = ::fwData::String::dynamicConstCast( _msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) );
         SLM_ASSERT("Missing field 'tabID' in message", titleData->getField("tabID"));
         std::string tabID = titleData->getField< ::fwData::String >("tabID")->value();

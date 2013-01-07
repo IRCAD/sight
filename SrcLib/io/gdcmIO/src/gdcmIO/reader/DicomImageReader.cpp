@@ -401,7 +401,6 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
         // Read one image from several files
         // TODO : test if numberOfFrames == number of files
         // (some files could be erased by an over series)
-        void * destBufferImg = NULL;
 
         gScanner.AddTag(rescaleSlopeTag);
         gScanner.AddTag(rescaleInterceptTag);
@@ -450,6 +449,8 @@ void DicomImageReader::rescaleImageBuffer(::gdcm::Image & gImg, ::fwData::Image:
                 r.SetUseTargetPixelType(true);
 
                 unsigned long bufferSize = 0;
+
+                void * destBufferImg = NULL;
 
                 switch(outputPixelType)
                 {

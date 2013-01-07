@@ -216,7 +216,7 @@ void DicomPatientDBReader::addPatients
 
         const SeriesIdContainer & seriesUID = nameGenerator->GetSeriesUIDs();
 
-        if ( seriesUID.size() == 0 )
+        if ( seriesUID.empty() )
         {
             SLM_DEBUG("Directory does not contain DICOM Series.");
         }

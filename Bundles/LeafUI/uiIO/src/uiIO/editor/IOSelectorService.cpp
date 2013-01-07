@@ -197,7 +197,6 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         bool extensionSelectionIsCanceled = false;
 
         // Selection of extension when availableExtensions.size() > 1
-        bool extensionIdFound = false;
         if ( availableExtensionsSelector.size() > 1 )
         {
             ::fwGui::dialog::SelectorDialog::NewSptr selector;
@@ -214,6 +213,8 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             std::string selection = selector->show();
             if( !selection.empty() )
             {
+                bool extensionIdFound = false;
+
                 typedef std::pair < std::string, std::string > PairType;
                 BOOST_FOREACH(PairType pair, availableExtensionsMap)
                 {

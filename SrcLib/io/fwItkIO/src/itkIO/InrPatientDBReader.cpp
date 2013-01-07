@@ -91,7 +91,7 @@ std::string InrPatientDBReader::findCommonPath( ::std::vector< ::boost::filesyst
     unsigned int minimunPathSize = inrFilePathes[0].string().size();
     for (   ::std::vector< ::boost::filesystem::path >::iterator inrFilePath = inrFilePathes.begin();
             inrFilePath != inrFilePathes.end();
-            inrFilePath++ )
+            ++inrFilePath)
     {
         if ( minimunPathSize > inrFilePath->string().size() )
         {
@@ -108,14 +108,14 @@ std::string InrPatientDBReader::findCommonPath( ::std::vector< ::boost::filesyst
         str = inrFilePathes[0].string().substr(0,cmpt);
         for (   ::std::vector< ::boost::filesystem::path >::iterator inrFilePath = inrFilePathes.begin();
         inrFilePath != inrFilePathes.end();
-        inrFilePath++ )
+        ++inrFilePath )
         {
             if ( inrFilePath->string().substr(0,cmpt) != str )
             {
                 newCommonLetterFound = false;
             }
         }
-        cmpt++;
+        ++cmpt;
     }
 
     int indexA = str.find_last_of("\\");
@@ -218,7 +218,7 @@ void InrPatientDBReader::read()
 
     for (   ::std::vector< ::boost::filesystem::path >::iterator inrFilePath = filesToRead.begin();
             inrFilePath != filesToRead.end();
-            inrFilePath++ )
+            ++inrFilePath )
     {
         getConcreteObject()->addPatient( createPatient( *inrFilePath,  commonPathSize, startPercent, filesToRead.size()) );
         startPercent += 1.0f/filesToRead.size();

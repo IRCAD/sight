@@ -51,7 +51,6 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
 
     BOOST_FOREACH ( ViewInfo viewInfo, views)
     {
-        QWidget *widget;
         QWidget *insideWidget;
         QScrollArea *scrollArea;
 
@@ -68,7 +67,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 insideWidget = new QWidget(qtContainer);
             }
 
-            widget = insideWidget;
+            QWidget *widget = insideWidget;
             SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
                     !hasCentral);
 
