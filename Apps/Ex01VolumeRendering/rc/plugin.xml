@@ -228,6 +228,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <!-- Service to add,remove or swap acquiistion in composite when a patient is loaded or cleaned -->
                     <service uid="updaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                         <update compositeKey="acquisition" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
+                        <update compositeKey="myAcquisition" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
                         <update compositeKey="acquisition" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
                     </service>
 
