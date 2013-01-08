@@ -48,7 +48,7 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     this->create(); // start with this inherited function
 
-    // Retreive Qt container
+    // Retrieve Qt container
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
@@ -74,6 +74,7 @@ void SStringEditor::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
+    m_textEditor->deleteLater();
     // Disconnect m_textEditor
     QObject::disconnect(m_textEditor, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
 
@@ -90,21 +91,18 @@ void SStringEditor::updating() throw ( ::fwTools::Failed )
 
 void SStringEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
+    // If event is UPDATED_OBJECT
     if(_msg->hasEvent(::fwServices::ObjectMsg::UPDATED_OBJECT))
     {
         m_textEditor->blockSignals(true);
-        // If event is UPDATED_OBJECT
-        if ( _msg->hasEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT  ) )
-        {
-            this->updating();
-        }
+        this->updating();
         m_textEditor->blockSignals(false);
     }
 }
 
 void SStringEditor::swapping() throw ( ::fwTools::Failed )
 {
-    // Classic default approach to update service when oject change
+    // Classic default approach to update service when object change
     this->stopping();
     this->starting();
 }
@@ -116,7 +114,7 @@ void SStringEditor::onTextChanged()
     myAssociatedData->setValue( m_textEditor->toPlainText().toStdString() );
 
     // Then, notifies listeners that the image has been modified
-    notifyMessage();
+    this->notifyMessage();
 }
 
 void SStringEditor::notifyMessage()

@@ -9,6 +9,7 @@
 
 // Qt objects
 #include <qtextedit.h>
+#include <QPointer>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -59,7 +60,7 @@ protected :
     BEGINNERTRAINING_API void notifyMessage();
 
     /// Text editor manage by the service
-    QTextEdit * m_textEditor;
+    QPointer<QTextEdit> m_textEditor;
 };
 
 

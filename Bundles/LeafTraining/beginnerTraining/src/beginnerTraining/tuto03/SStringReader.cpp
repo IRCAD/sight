@@ -87,7 +87,7 @@ void SStringReader::updating() throw ( ::fwTools::Failed )
     }
 
     // Then, notifies listeners that the image has been modified
-    notifyMessage();
+    this->notifyMessage();
 }
 
 void SStringReader::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
@@ -99,7 +99,7 @@ void SStringReader::swapping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    // Classic default approach to update service when oject change
+    // Classic default approach to update service when object change
     this->stopping();
     this->starting();
 }
