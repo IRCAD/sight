@@ -70,6 +70,8 @@ public:
                 || _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
         {
             m_service->notifyCamPositionUpdated();
+            ::fwThread::Worker::sptr worker = m_service->getWorker();
+            worker->processTasks();
         }
     }
 private:
@@ -85,7 +87,7 @@ RendererService::RendererService() throw()
 
 
     m_slotUpdateCamPosition   = ::fwCom::newSlot( &RendererService::updateCamPosition, this ) ;
-    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT   , m_slotUpdateCamPosition );
+    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT, m_slotUpdateCamPosition );
 
     m_sigCamUpdated = CamUpdatedSignalType::New();
 #ifdef COM_LOG
@@ -219,7 +221,6 @@ void RendererService::initVTKPipeline()
     }
 
     m_mapper = vtkPolyDataMapper::New();
-    m_mapper->ImmediateModeRenderingOn();
     m_mapper->SetInput(m_vtkPolyData);
 
     vtkActor* actor =  vtkActor::New();

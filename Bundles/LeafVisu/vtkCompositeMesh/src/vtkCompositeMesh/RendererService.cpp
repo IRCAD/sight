@@ -79,6 +79,8 @@ public:
         {
             //SLM_INFO(" ______________________________________________");
             m_service->notifyCamPositionUpdated();
+            ::fwThread::Worker::sptr worker = m_service->getWorker();
+            worker->processTasks();
         }
     }
 private:
@@ -92,8 +94,8 @@ RendererService::RendererService() throw()
 //    this->IService::addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
 //    this->IService::addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
 
-    m_slotUpdateCamPosition   = ::fwCom::newSlot( &RendererService::updateCamPosition, this ) ;
-    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT   , m_slotUpdateCamPosition );
+    m_slotUpdateCamPosition = ::fwCom::newSlot( &RendererService::updateCamPosition, this ) ;
+    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT, m_slotUpdateCamPosition );
 
     m_sigCamUpdated = CamUpdatedSignalType::New();
 #ifdef COM_LOG
