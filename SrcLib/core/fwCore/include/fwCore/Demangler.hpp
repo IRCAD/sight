@@ -16,7 +16,7 @@
 namespace fwCore
 {
 
- /** 
+ /**
   * @brief typeid, string or object name demangler.
   *
   * getClassname() is an alias for getRootedClassname()
@@ -29,99 +29,99 @@ class FWCORE_CLASS_API Demangler
 {
 public:
 
-    /** 
+    /**
      * @name Constructor/Destructor
      * @{ */
 
 
-    /** 
+    /**
      * @brief Constructor from a typeinfo object
-     * 
+     *
      * @param t Typeinfo to demangle
      */
     FWCORE_API Demangler(const std::type_info &t);
 
-    /** 
+    /**
      * @brief Constructor from a std::string
-     * 
+     *
      * @param s string to demangle
      */
     FWCORE_API Demangler(const std::string &s);
 
-    /** 
+    /**
      * @brief Constructor from any type
-     * 
+     *
      * @param object which type has to be demangled
      */
     template<typename T> Demangler(T &s): m_name(typeid(s).name()) {};
 
-    /** 
+    /**
      * @brief Destructor
      */
     FWCORE_API virtual ~Demangler();
 
     /**  @} */
 
-    /** 
+    /**
      * @brief Returns "Object" from "::some::long::namespace::Object"
-     * 
+     *
      * @return demangled class name only
      */
-    FWCORE_API std::string getLeafClassname();
+    FWCORE_API std::string getLeafClassname() const;
 
-    /** 
+    /**
      * @brief Returns "some::long::namespace::Object" from "::some::long::namespace::Object"
-     * 
+     *
      * @return demangled class name with namespace (without leading "::")
      */
-    FWCORE_API std::string getFullClassname();
+    FWCORE_API std::string getFullClassname() const;
 
-    /** 
+    /**
      * @brief Like getRootedClassname(), present for backward compatibility
      * @deprecated Use getRootedClassname() instead
      * @return rooted (with leading "::") demangled class name
      */
-    FWCORE_API std::string getClassname();
+    FWCORE_API std::string getClassname() const;
 
-    /** 
+    /**
      * @brief Returns "::some::long::namespace::Object" from "::some::long::namespace::Object"
-     * 
+     *
      * @return rooted (with leading "::") demangled class name
      */
-    FWCORE_API std::string getRootedClassname();
+    FWCORE_API std::string getRootedClassname() const;
 
-    /** 
+    /**
      * @brief Returns "some::long::namespace" from "::some::long::namespace::Object"
-     * 
+     *
      * @return demangled namespace (without leading "::")
      */
-    FWCORE_API std::string getFullNamespace();
+    FWCORE_API std::string getFullNamespace() const;
 
-    /** 
+    /**
      * @brief Returns "::some::long::namespace" from "::some::long::namespace::Object"
-     * 
+     *
      * @return rooted demangled namespace (with leading "::")
      */
-    FWCORE_API std::string getRootedNamespace();
+    FWCORE_API std::string getRootedNamespace() const;
 
 
 protected:
-    /** 
+    /**
      * @brief Store the name to demangle
      */
     const std::string m_name;
 
-    /** 
+    /**
      * @brief Process the name to demangle and return the same string whatever the OS is.
-     * 
+     *
      * @return demangled string
      */
-    std::string demangle();
+    std::string demangle() const;
 };
 
 
 
- /** 
+ /**
   * @brief Type demangler.
   * Use Demangler class to get a demangled string for the type T.
   */
@@ -129,11 +129,11 @@ template <class T>
 class TypeDemangler : public Demangler
 {
 public:
-    /** 
+    /**
      * @name Constructor/Destructor
      * @{ */
 
-    /** 
+    /**
      * @brief Constructor
      * @tparam T Type to demangle
      */
@@ -145,9 +145,9 @@ public:
 
 
 
-/** 
+/**
  * @name Type demangling functions
- * @brief These functions are provided as type-demangling helpers. See 
+ * @brief These functions are provided as type-demangling helpers. See
  * Demangler for details about returned values.
  *
  * @tparam T Type to demangle

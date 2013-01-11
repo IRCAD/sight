@@ -36,7 +36,7 @@ Demangler::~Demangler()
 { }
 
 
-std::string Demangler::getLeafClassname()
+std::string Demangler::getLeafClassname() const
 {
     std::string demangled(this->demangle());
 
@@ -48,20 +48,20 @@ std::string Demangler::getLeafClassname()
 }
 
 
-std::string Demangler::getClassname()
+std::string Demangler::getClassname() const
 {
     return getRootedClassname();
 }
 
 
-std::string Demangler::getFullClassname()
+std::string Demangler::getFullClassname() const
 {
     std::string demangled(this->demangle());
     return demangled;
 }
 
 
-std::string Demangler::getRootedClassname()
+std::string Demangler::getRootedClassname() const
 {
     std::string demangled(this->demangle());
     return COLONS + demangled;
@@ -69,7 +69,7 @@ std::string Demangler::getRootedClassname()
 
 
 
-std::string Demangler::getFullNamespace()
+std::string Demangler::getFullNamespace() const
 {
     std::string demangled(this->demangle());
 
@@ -84,13 +84,13 @@ std::string Demangler::getFullNamespace()
 }
 
 
-std::string Demangler::getRootedNamespace()
+std::string Demangler::getRootedNamespace() const
 {
     return COLONS + getFullNamespace();
 }
 
 
-std::string Demangler::demangle(  )
+std::string Demangler::demangle(  ) const
 {
     const char * mangled = m_name.c_str();
 #ifndef _WIN32
