@@ -8,6 +8,7 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/bind.hpp>
 
+#include <fwCore/TimeStamp.hpp>
 
 #include "fwThread/Worker.hpp"
 #include "fwThread/Timer.hpp"
@@ -48,6 +49,9 @@ public:
 
     SPTR(::fwThread::Timer) createTimer();
 
+    virtual void processTasks();
+
+    virtual void processTasks(PeriodType maxtime);
 
 protected:
 
@@ -192,6 +196,21 @@ ThreadIdType WorkerAsio::getThreadId() const
     return m_thread->get_id();
 }
 
+void WorkerAsio::processTasks()
+{
+    m_ioService.poll();
+}
+
+void WorkerAsio::processTasks(PeriodType maxtime)
+{
+    ::fwCore::TimeStamp timeStamp;
+    timeStamp.setLifePeriod(maxtime);
+    timeStamp.modified();
+    while(timeStamp.periodExpired())
+    {
+        m_ioService.poll_one();
+    }
+}
 
 // ---------- Worker ----------
 SPTR(Worker) Worker::defaultFactory()

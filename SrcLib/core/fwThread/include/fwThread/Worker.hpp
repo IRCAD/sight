@@ -14,6 +14,7 @@
 #include <boost/thread.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwCore/HiResClock.hpp>
 
 #include "fwThread/config.hpp"
 
@@ -38,6 +39,7 @@ class Timer;
 class FWTHREAD_CLASS_API Worker : public ::fwCore::BaseObject
 {
 public:
+    typedef ::fwCore::HiResClock::HiResClockType PeriodType;
     typedef ::boost::function< void() > TaskType;
     typedef ::boost::any                ExitReturnType;
 
@@ -81,6 +83,25 @@ public:
     {
         return m_future;
     }
+
+    /**
+     * @brief Processes worker pending tasks for the calling thread
+     * for maxtime milliseconds or until there are no more tasks to process.
+     * You can call this function occasionally when your program is busy performing a long operation.
+     *
+     * @param maxtime milliseconds to process worker pending tasks.
+     * @warning Qt implementation processes all Qt and Worker pending events, be careful.
+     * @warning WxWidgets version is not yet implemented.
+     */
+    FWTHREAD_API virtual void processTasks(PeriodType maxtime) = 0;
+
+    /**
+     * @brief Processes all worker pending tasks for the calling thread
+     * until there are no more tasks to process.
+     * You can call this function occasionally when your program is busy performing a long operation.
+     * @warning WxWidgets version is not yet implemented.
+     */
+    FWTHREAD_API virtual void processTasks() = 0;
 
 protected:
 

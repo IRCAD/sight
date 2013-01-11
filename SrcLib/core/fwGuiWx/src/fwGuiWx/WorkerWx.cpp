@@ -60,6 +60,7 @@ public:
     {
         return new WorkerWxTask(*this);
     }
+
 protected:
     ::fwThread::Worker::TaskType m_handler;
 };
@@ -90,6 +91,10 @@ public:
     virtual ::fwThread::ThreadIdType getThreadId() const;
 
     void onMessage(WorkerWxTask &event);
+
+    virtual void processTasks();
+
+    virtual void processTasks(PeriodType maxtime);
 
 protected:
 
@@ -307,6 +312,17 @@ void WorkerWx::onMessage(WorkerWxTask &event)
     event.process();
     event.Skip(true);
     event.StopPropagation();
+}
+
+void WorkerWx::processTasks()
+{
+    SLM_FATAL("ProcessTasks not yet implemented in WorkerWx");
+}
+
+void WorkerWx::processTasks(PeriodType maxtime)
+{
+    FwCoreNotUsedMacro(maxtime);
+    SLM_FATAL("ProcessTasks not yet implemented in WorkerWx");
 }
 
 // ---------- Timer private implementation ----------

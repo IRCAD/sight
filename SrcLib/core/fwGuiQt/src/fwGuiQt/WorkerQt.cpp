@@ -45,16 +45,14 @@ public:
         m_handler();
     }
 
+    static const int s_WORKER_QT_TASK_EVENT_TYPE;
+
 protected:
 
     ::fwThread::Worker::TaskType m_handler;
-
-    static const int s_WORKER_QT_TASK_EVENT_TYPE;
 };
 
 const int WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE = QEvent::registerEventType();
-
-
 
 
 
@@ -79,6 +77,10 @@ public:
     ::fwThread::Worker::FutureType getFuture();
 
     virtual ::fwThread::ThreadIdType getThreadId() const;
+
+    virtual void processTasks();
+
+    virtual void processTasks(PeriodType maxtime);
 
 protected:
 
@@ -303,7 +305,15 @@ void WorkerQt::post(TaskType handler)
     QApplication::postEvent( qApp, new WorkerQtTask(handler) );
 }
 
+void WorkerQt::processTasks()
+{
+    QApplication::sendPostedEvents(0, ::fwGuiQt::WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE);
+}
 
+void WorkerQt::processTasks(PeriodType maxtime)
+{
+    QCoreApplication::processEvents(QEventLoop::AllEvents, maxtime);
+}
 
 // ---------- Timer private implementation ----------
 
