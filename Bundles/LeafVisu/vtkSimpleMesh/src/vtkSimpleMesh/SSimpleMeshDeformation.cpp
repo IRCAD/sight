@@ -95,8 +95,8 @@ void SSimpleMeshDeformation::computeDeformation (
 {
     SLM_ASSERT("Deformation range must be equal to [0,1]", 0 <= deformationPercent && deformationPercent <= 1 );
 
-    const float maxDeformation = 15/100.0;
-    const float center = 2/3.0;
+    const float maxDeformation = 15/100.0f;
+    const float center = 2/3.0f;
 
     ::fwComEd::helper::Mesh meshHelper(refMesh);
     ::fwComEd::helper::Mesh transformMeshHelper(transformMesh);
@@ -169,7 +169,7 @@ void SSimpleMeshDeformation::computeDeformation(
     {
         m_currentIncrement = step;
     }
-    this->computeDeformation( refMesh, transformMesh, m_currentDeformation/100.0 );
+    this->computeDeformation( refMesh, transformMesh, m_currentDeformation/100.0f );
 }
 
 //-----------------------------------------------------------------------------

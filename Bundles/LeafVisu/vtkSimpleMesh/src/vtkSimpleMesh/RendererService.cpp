@@ -266,9 +266,13 @@ void RendererService::notifyCamPositionUpdated()
 {
     vtkCamera* camera = m_render->GetActiveCamera();
 
-    const double *position = camera->GetPosition();
-    const double *focal = camera->GetFocalPoint();
-    const double *viewUp = camera->GetViewUp();
+    SharedArray position = SharedArray(new double[3]);
+    SharedArray focal = SharedArray(new double[3]);
+    SharedArray viewUp = SharedArray(new double[3]);
+
+    std::copy(camera->GetPosition(), camera->GetPosition()+3, position.get());
+    std::copy(camera->GetFocalPoint(), camera->GetFocalPoint()+3, focal.get());
+    std::copy(camera->GetViewUp(), camera->GetViewUp()+3, viewUp.get());
 
     fwServicesBlockAndNotifyMacro( this->getLightID(), m_sigCamUpdated,
                                    (position, focal, viewUp),
@@ -277,13 +281,15 @@ void RendererService::notifyCamPositionUpdated()
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updateCamPosition(const double positionValue[3], const double focalValue[3], const double viewUpValue[3])
+void RendererService::updateCamPosition(SharedArray positionValue,
+                                        SharedArray focalValue,
+                                        SharedArray viewUpValue)
 {
     vtkCamera* camera = m_render->GetActiveCamera();
 
-    camera->SetPosition(positionValue);
-    camera->SetFocalPoint(focalValue);
-    camera->SetViewUp(viewUpValue);
+    camera->SetPosition(positionValue.get());
+    camera->SetFocalPoint(focalValue.get());
+    camera->SetViewUp(viewUpValue.get());
     camera->SetClippingRange(0.1, 1000000);
 
     m_interactorManager->getInteractor()->Render();

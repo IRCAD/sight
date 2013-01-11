@@ -62,22 +62,17 @@ public:
     }
     void Execute(vtkObject* _caller, unsigned long _event, void* _obj)
     {
-        //OSLM_INFO("ail like to LEFT : _event " << _event );
-
         if (_event == vtkCommand::StartInteractionEvent )
         {
-            //SLM_INFO(" ________________START___________________________");
             this->m_isMousePressed = true;
         }
         else if (_event == vtkCommand::EndInteractionEvent )
         {
-            //SLM_INFO(" ________________END___________________________");
             this->m_isMousePressed = false;
         }
         else if ( (_event == vtkCommand::ModifiedEvent && this->m_isMousePressed)
                 || _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
         {
-            //SLM_INFO(" ______________________________________________");
             m_service->notifyCamPositionUpdated();
             ::fwThread::Worker::sptr worker = m_service->getWorker();
             worker->processTasks();
@@ -185,13 +180,15 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updateCamPosition(const double positionValue[3], const double focalValue[3], const double viewUpValue[3] )
+void RendererService::updateCamPosition(SharedArray positionValue,
+                                        SharedArray focalValue,
+                                        SharedArray viewUpValue)
 {
     vtkCamera* camera = m_render->GetActiveCamera();
 
-    camera->SetPosition(positionValue);
-    camera->SetFocalPoint(focalValue);
-    camera->SetViewUp(viewUpValue);
+    camera->SetPosition(positionValue.get());
+    camera->SetFocalPoint(focalValue.get());
+    camera->SetViewUp(viewUpValue.get());
     camera->SetClippingRange(0.1, 1000000);
 
     m_interactorManager->getInteractor()->Render();
@@ -271,17 +268,16 @@ void RendererService::createAndAddActorToRender()
                 actor->GetProperty()->SetColor (matObjPtr->ambient()->red(), matObjPtr->ambient()->green(), matObjPtr->ambient()->blue());
             }
             mapper->Delete();
+            elementNumber++;
+            OSLM_INFO("displayed: " << it->first);
         }
-        m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
-        m_loc = new vtkLocalCommand(this);
-        m_interactorManager->getInteractor()->AddObserver(vtkCommand::AnyEvent, m_loc);
-
-        // Repaint and resize window
-        m_render->ResetCamera();
-        OSLM_INFO("displayed: " << it->first);
-
-        elementNumber++;
     }
+    m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
+    m_loc = new vtkLocalCommand(this);
+    m_interactorManager->getInteractor()->AddObserver(vtkCommand::AnyEvent, m_loc);
+
+    // Repaint and resize window
+    m_render->ResetCamera();
 }
 
 //-----------------------------------------------------------------------------
@@ -300,16 +296,17 @@ void RendererService::notifyCamPositionUpdated()
 {
     vtkCamera* camera = m_render->GetActiveCamera();
 
-    const double * position = camera->GetPosition();
-    const double * focal = camera->GetFocalPoint();
-    const double * viewUp = camera->GetViewUp();
+    SharedArray position = SharedArray(new double[3]);
+    SharedArray focal = SharedArray(new double[3]);
+    SharedArray viewUp = SharedArray(new double[3]);
 
-//    fwServicesBlockAndNotifyMacro( this->getLightID(), m_sigCamUpdated,
-//                                   (position, focal, viewUp),
-//                                   m_slotUpdateCamPosition );
+    std::copy(camera->GetPosition(), camera->GetPosition()+3, position.get());
+    std::copy(camera->GetFocalPoint(), camera->GetFocalPoint()+3, focal.get());
+    std::copy(camera->GetViewUp(), camera->GetViewUp()+3, viewUp.get());
 
-    ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(m_slotUpdateCamPosition));
-    m_sigCamUpdated->emit(position, focal, viewUp);
+    fwServicesBlockAndNotifyMacro( this->getLightID(), m_sigCamUpdated,
+                                   (position, focal, viewUp),
+                                   m_slotUpdateCamPosition );
 }
 
 }
