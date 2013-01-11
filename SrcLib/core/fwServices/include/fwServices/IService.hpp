@@ -119,6 +119,9 @@ public :
     /// Initializes m_associatedWorker and associates this worker to all service slots
     FWSERVICES_API void setWorker( ::fwThread::Worker::sptr worker );
 
+    /// Returns associate worker
+    FWSERVICES_API ::fwThread::Worker::sptr getWorker() const;
+
     //@}
 
     /**

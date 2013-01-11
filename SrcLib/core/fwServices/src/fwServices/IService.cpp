@@ -346,6 +346,13 @@ void IService::setWorker( ::fwThread::Worker::sptr worker )
 
 //-----------------------------------------------------------------------------
 
+::fwThread::Worker::sptr IService::getWorker() const
+{
+    return m_associatedWorker;
+}
+
+//-----------------------------------------------------------------------------
+
 IService::KeyConnectionsType IService::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
