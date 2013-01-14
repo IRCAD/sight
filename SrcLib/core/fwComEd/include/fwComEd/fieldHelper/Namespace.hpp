@@ -11,12 +11,14 @@ namespace fwComEd
 {
 /**
  * @brief       This namespace fwComEd::fieldHelper contains several helpers for using field.
- * @namespace   fwComEd::fieldHelper.
+ * @namespace   fwComEd::fieldHelper
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *
  */
 namespace fieldHelper
 {
+}
+
 }
 #endif /* FWCOMEDFIELDHELPERNAMESPACE_HPP_ */

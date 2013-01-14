@@ -15,7 +15,7 @@ namespace custom
 
 /**
  * @brief       Contains fwAtomConversion::custom::factory utilities
- * @namespace   factory
+ * @namespace   fwAtomConversion::custom::factory
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2012
  *

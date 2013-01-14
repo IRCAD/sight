@@ -19,9 +19,10 @@ namespace manager
 {
 
 /**
+ * @brief  This manager converts the images specified by key to medical image (with landmarks, transfer function fields)
  * @class  MedicalImageManagerSrv.
  * @author IRCAD (Research and Development Team).
-
+ *
  * @date   2007-2009.
  */
 class CTRLSELECTION_CLASS_API MedicalImageManagerSrv : public ::ctrlSelection::IManagerSrv
@@ -43,7 +44,14 @@ public :
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+     * @brief Configure the service.
+     * @verbatim
+     <service uid="medicalImageManager" impl="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+         <update imageCompositeKey="image" />
+     </service>
+      @endverbatim
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.
@@ -59,6 +67,7 @@ public :
 
 private :
 
+    /// Converts the images specified by key to medical image (with landmarks, transfer function fields).
     void convertImages( ::fwData::Composite::sptr _composite );
 
     std::vector< std::string > m_imageCompositeKeys;

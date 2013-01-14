@@ -7,7 +7,7 @@
 #ifndef FWVISITORNAMESPACE_HPP_
 #define FWVISITORNAMESPACE_HPP_
 
-/*
+/**
  * @brief       The namespace visitor provides visitor patterns used to serialize .
  * @namespace   visitor
  * @author      IRCAD (Research and Development Team).

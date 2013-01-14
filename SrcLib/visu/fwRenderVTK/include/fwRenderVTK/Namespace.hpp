@@ -7,7 +7,7 @@
 #ifndef FWRENDERVTKNAMESPACE_HPP_
 #define FWRENDERVTKNAMESPACE_HPP_
 
-/*
+/**
  * @brief       The namespace fwRenderVTK contains classes for rendering with VTK.
  * @namespace   fwRenderVTK
  * @author      IRCAD (Research and Development Team).

@@ -7,7 +7,7 @@
 #ifndef FWXMLNAMESPACE_HPP_
 #define FWXMLNAMESPACE_HPP_
 
-/*
+/**
  * @brief       The namespace fwXML provides classes to serialize data.
  * @namespace   fwXML
  * @author      IRCAD (Research and Development Team).

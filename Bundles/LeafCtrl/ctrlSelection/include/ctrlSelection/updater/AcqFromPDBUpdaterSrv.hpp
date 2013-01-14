@@ -25,6 +25,8 @@ namespace updater
  * @author IRCAD (Research and Development Team).
 
  * @date    2007-2009.
+ *
+ * @note It updates only the first acquisition in the first study and first patient of the PDB.
  */
 class CTRLSELECTION_CLASS_API AcqFromPDBUpdaterSrv : public ::ctrlSelection::IUpdaterSrv
 {
@@ -72,6 +74,7 @@ protected:
 
 private:
 
+    /// Returns the first acquisition in the first study and first patient of the PDB.
     ::fwData::Acquisition::sptr getAcquisition(::fwData::PatientDB::sptr patientDB);
 };
 

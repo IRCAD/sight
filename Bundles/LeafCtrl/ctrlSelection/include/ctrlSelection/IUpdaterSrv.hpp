@@ -21,8 +21,9 @@ namespace ctrlSelection
 
 /**
  * @class   IUpdaterSrv.
- * @brief   An updater is attached on a composite. It is use to add, swap and remove object in the composite when it receive specific message (declared in configuration)
- * and send corresponding message message. It work mainly with a IManager.
+ * @brief   An updater is attached on a composite. It is use to add, swap and remove object in the composite when it
+ * receives specific message (declared in configuration) and sends corresponding message message.
+ * It work mainly with a IManager.
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */

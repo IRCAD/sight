@@ -7,11 +7,11 @@
 #ifndef GUIQT_EDITOR_NAMESPACE_HPP_
 #define GUIQT_EDITOR_NAMESPACE_HPP_
 
-namespace gui
+namespace guiQt
 {
 /**
- * @brief       The namespace gui::editor contains a basic editor written with Qt.
- * @namespace   gui::editor.
+ * @brief       The namespace guiQt::editor contains a basic editor written with Qt.
+ * @namespace   guiQt::editor.
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

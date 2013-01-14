@@ -18,7 +18,7 @@ namespace ctrlSelection
 /**
  * @class   IManagerSrv.
  * @brief   Base class for manager.
- * A manager starts, stops or swaps services on object contained in a composite when it receive specific message.
+ * A manager starts, stops or swaps services on object contained in a composite when it receives specific message.
  * @author  IRCAD (Research and Development Team).
  * @date    2007-2009.
  */
@@ -41,7 +41,7 @@ public:
 protected:
 
     /**
-     * @brief Swap the service from associated object to another object. Stops and starts service.
+     * @brief Swaps the service from associated object to another object. Stops and starts this service.
      */
     CTRLSELECTION_API virtual void swapping() throw ( ::fwTools::Failed );
 
@@ -80,7 +80,7 @@ protected:
     typedef std::map< ObjectIdType, ProxyConnectionsVectType > ProxyConnectionsMapType;
 
     /**
-     * @brief Manage all connections define in config associated to object.
+     * @brief Manages all connections define in config associated to object.
      * Call manageConnection()
      *
      * @param objectId Id of the object
@@ -90,7 +90,7 @@ protected:
     void manageConnections(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
 
     /**
-     * @brief Manage a connection define in config associated to object.
+     * @brief Manages a connection define in config associated to object.
      *
      * @param objectId Id of the object
      * @param object Object associated with the id
@@ -98,11 +98,11 @@ protected:
      */
     void manageConnection(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
 
-    /// Disconnect all registred connection for objectId.
+    /// Disconnects all registred connection for objectId.
     void removeConnections(const std::string &objectId);
 
     /**
-     * @brief Manage all proxies connections define in config associated to object
+     * @brief Manages all proxies connections define in config associated to object
      * Call manageProxy()
      *
      * @param objectId Id of the object
@@ -112,7 +112,7 @@ protected:
     void manageProxies(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
 
     /**
-     * @brief Manage proxy connections define in config associated to object
+     * @brief Manages proxy connections define in config associated to object
      *
      * @param objectId Id of the object
      * @param object Object associated with the id
@@ -120,10 +120,10 @@ protected:
      */
     void manageProxy(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
 
-    /// Disconnect all proxies associated to objectId;
+    /// Disconnects all proxies associated to objectId;
     void disconnectProxies(const std::string &objectId);
 
-    /// Register connection associated to an object. Connections are connected/disconnected when the object is added/removed.
+    /// Registers connection associated to an object. Connections are connected/disconnected when the object is added/removed.
     ObjectConnectionsMapType m_objectConnections;
 
     /// Proxy connection information map : used to properly disconnect proxies

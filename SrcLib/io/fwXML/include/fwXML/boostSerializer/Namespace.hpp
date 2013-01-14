@@ -9,7 +9,7 @@
 
 namespace boost
 {
-/*
+/**
  * @brief       The namespace ::boost::serialization provides function to serialize, load, save  FW4SPL data structure via boost.org serialization scheme.
  * @namespace   ::boost::serialization
  * @author      IRCAD (Research and Development Team).

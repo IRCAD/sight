@@ -9,7 +9,7 @@
 
 /**
  * @brief       This namespace fwComEd contains the classes used in communication edition like definition of message used in the FW4SPL.
- * @namespace   fwComEd.
+ * @namespace   fwComEd
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

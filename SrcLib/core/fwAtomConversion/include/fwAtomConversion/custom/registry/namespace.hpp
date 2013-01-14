@@ -14,7 +14,7 @@ namespace custom
 {
 /**
  * @brief       Contains fwAtomConversion::custom::registry details
- * @namespace   registry
+ * @namespace   fwAtomConversion::custom::registry
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2012
  *

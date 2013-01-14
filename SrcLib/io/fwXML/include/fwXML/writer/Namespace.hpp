@@ -9,7 +9,7 @@
 
 namespace fwXML
 {
-/*
+/**
  * @brief       The namespace fwXML::writer contains a writer for fwXML file.
  * @namespace   fwXML::writer
  * @author      IRCAD (Research and Development Team).

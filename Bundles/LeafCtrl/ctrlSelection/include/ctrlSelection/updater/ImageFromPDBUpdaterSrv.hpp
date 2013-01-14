@@ -23,7 +23,8 @@ namespace updater
  * @class  ImageFromPDBUpdaterSrv.
  * @brief  Specific updater to update image from a patientDB.
  * @author IRCAD (Research and Development Team).
-
+ * @note It updates only the image of the first acquisition in the first study and first patient of the PDB.
+ *
  * @date    2007-2009.
  */
 class CTRLSELECTION_CLASS_API ImageFromPDBUpdaterSrv : public ::ctrlSelection::IUpdaterSrv
@@ -72,6 +73,7 @@ protected:
 
 private:
 
+    /// Returns the image of the first acquisition in the first study and first patient of the PDB.
     ::fwData::Image::sptr getImage(::fwData::PatientDB::sptr patientDB);
 };
 

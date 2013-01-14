@@ -23,7 +23,7 @@ namespace helper
 
 /**
  * @class   Mesh
- * @brief   ...
+ * @brief   Helper to manage Mesh. Lock the mesh buffer before to modify it.
  * @author  IRCAD (Research and Development Team).
  * @date    2012
  */

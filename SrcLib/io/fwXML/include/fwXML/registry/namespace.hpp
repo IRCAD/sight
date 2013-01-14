@@ -13,7 +13,7 @@ namespace fwXML
 
 /**
  * @brief       Contains fwXML::registry details
- * @namespace   registry
+ * @namespace   fwXML::registry
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2012
  *

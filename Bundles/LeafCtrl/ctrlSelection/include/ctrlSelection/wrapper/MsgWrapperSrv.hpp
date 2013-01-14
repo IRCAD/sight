@@ -64,9 +64,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     virtual void info( std::ostream &_sstream ) {};
 
-    /**
-     * @brief Convert the Object message with "UPDATED_OBJECT" event sent on Graph by GraphMsg with "NEW_GRAPH" event
-     */
+    /// Convert message with event by a specific message with another event and type.
     CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     // < onEvent, toEvent, msgType >

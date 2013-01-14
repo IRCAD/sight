@@ -13,7 +13,7 @@ namespace fwData
 
 /**
  * @brief       Contains fwData::registry details
- * @namespace   registry
+ * @namespace   fwData::registry
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2012
  *

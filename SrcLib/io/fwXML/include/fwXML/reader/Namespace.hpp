@@ -9,7 +9,7 @@
 
 namespace fwXML
 {
-/*
+/**
  * @brief       The namespace fwXML::reader contains a reader for fwXML file.
  * @namespace   fwXML::reader
  * @author      IRCAD (Research and Development Team).

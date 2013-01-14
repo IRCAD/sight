@@ -22,7 +22,7 @@ namespace helper
 
 /**
  * @class   Array
- * @brief   ...
+ * @brief   Helper to manage array buffer. Lock the buffer before to modify it.
  * @author  IRCAD (Research and Development Team).
  * @date    2012
  */
