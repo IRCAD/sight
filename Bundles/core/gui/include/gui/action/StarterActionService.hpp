@@ -124,8 +124,14 @@ protected:
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
 private:
+    typedef ::fwTools::fwID::IDType IDSrvType;
+    typedef std::pair< IDSrvType, ActionType > PairIDActionType;
+    typedef std::vector<PairIDActionType> VectPairIDActionType;
+    typedef std::set<IDSrvType> SetIDSrvType;
+
     // vector representing uuid's services that must be started (true) or stopped (false)
-    std::vector< std::pair< std::string, ActionType > > m_uuidServices;
+    VectPairIDActionType m_uuidServices;
+    SetIDSrvType m_idStartedSrvSet;
 };
 
 
