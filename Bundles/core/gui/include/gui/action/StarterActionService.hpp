@@ -121,6 +121,10 @@ protected:
 
     GUI_API virtual void starting() throw(::fwTools::Failed);
 
+    /**
+     * @brief Uninitialized the service activity.
+     * All services started by this action are stopped.
+     */
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
 private:
