@@ -66,7 +66,7 @@ public:
 
 protected :
 
-    /// Store association ::boost::weak_ptr <--> uuid as a string
+    /// Store association \::boost::weak_ptr <--> uuid as a string
     typedef std::map< UUIDType, ::fwTools::Object::wptr > UUIDContainer;
 
     FWTOOLS_API static UUIDContainer s_uuidMap;

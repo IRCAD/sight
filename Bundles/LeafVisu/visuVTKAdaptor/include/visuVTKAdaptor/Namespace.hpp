@@ -9,7 +9,7 @@
 
 /**
  * @brief       The namespace visuVTKAdaptor contains the list of adaptors available for the generic scene. .
- * @namespace   visuVTKAdaptor.
+ * @namespace   visuVTKAdaptor
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

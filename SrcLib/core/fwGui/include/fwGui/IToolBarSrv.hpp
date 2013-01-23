@@ -80,11 +80,11 @@ protected :
            </registry>
        </service>
        @endverbatim
-     *   - <gui> </gui> : (mandatory) describe the interface of the service.
-     *   - <registry> </registry> : (mandatory) describe the service management.
-     *     - <menuItem> represents IActionSrv
-     *     - <menu> represents IMenuSrv
-     *     - <editor> represents container service (IEditor, IView, ...)
+     *   - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
+     *   - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *     - \<menuItem\> represents IActionSrv
+     *     - \<menu\> represents IMenuSrv
+     *     - \<editor\> represents container service (IEditor, IView, ...)
      *
      *   @warning
      *   - The number of item in the gui section must be EQUAL to the registry section.

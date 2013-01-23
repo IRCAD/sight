@@ -34,10 +34,10 @@ public:
 
     /**
      * @brief copy method
-     * @param[in] the TypeInfo to copy
+     * @param[in] ti the TypeInfo to copy
      * @return the copied TypeInfo
      */
-    FWTOOLS_API TypeInfo &operator=(const TypeInfo&);
+    FWTOOLS_API TypeInfo &operator=(const TypeInfo &ti);
 
     /**
      * @brief access for the wrapped std::type_info

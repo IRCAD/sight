@@ -57,8 +57,8 @@ protected :
             </registrar>
         </service>
        @endverbatim
-      * - <layout> defines the layout configuration : name of the menus.
-      * - <registrar> defines the services configuration :
+      * - \<layout\> defines the layout configuration : name of the menus.
+      * - \<registrar\> defines the services configuration :
       *   - sid of the menu services
       *   - start or not the menu service automatically
      */

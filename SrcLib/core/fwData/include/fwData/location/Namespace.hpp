@@ -11,7 +11,7 @@ namespace fwData
 {
 /**
  * @brief       This namespace fwData::location contains the representation of the data objects oriented to fileSystem locations (folder, file...).
- * @namespace   fwData::location.
+ * @namespace   fwData::location
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

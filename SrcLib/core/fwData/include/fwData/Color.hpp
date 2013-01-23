@@ -38,7 +38,7 @@ public :
        );
 
     fwDataObjectMacro();
-	fwCampMakeFriendDataMacro((fwData)(Color));
+    fwCampMakeFriendDataMacro((fwData)(Color));
 
     /**
      * @brief Constructor
@@ -65,8 +65,8 @@ public :
     ///@param[in] alpha
     FWDATA_API void setRGBA( const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha=1.0 );
 
-    ///@brief set RGBA from hexadecimal format (#ffffff)
-    ///@param[in] hexaColor c hexadecimal format (#ffffff)
+    ///@brief set RGBA from hexadecimal format (\#ffffff)
+    ///@param[in] hexaColor c hexadecimal format (\#ffffff)
     FWDATA_API void setRGBA( std::string hexaColor );
     ///@}
 

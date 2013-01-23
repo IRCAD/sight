@@ -22,7 +22,7 @@ namespace fwCore
   * getClassname() is an alias for getRootedClassname()
   *
   * @warning getRootedClassname() use on fundamentals types (int, float, ...)
-  * will give a bad result ( ex: ::int )
+  * will give a bad result ( ex: \::int )
   *
   */
 class FWCORE_CLASS_API Demangler
@@ -51,7 +51,7 @@ public:
     /**
      * @brief Constructor from any type
      *
-     * @param object which type has to be demangled
+     * @param s object which type has to be demangled
      */
     template<typename T> Demangler(T &s): m_name(typeid(s).name()) {};
 

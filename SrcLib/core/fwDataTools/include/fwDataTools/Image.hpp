@@ -49,7 +49,6 @@ public :
     /**
      * @brief Generate an image with the given informations. Buffer is filled with 0.
      * @param image     image to generate
-     * @param dim       image dimension (3 for 3D)
      * @param size      vector of image size
      * @param spacing   vector of image spacing
      * @param origin    vector of image origin

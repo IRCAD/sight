@@ -37,7 +37,7 @@ public:
     /**
      * @brief       Constructor
      *
-     * @param[in]   identifier  a string containing a bundle identifier
+     * @param[in]   _identifier  a string containing a bundle identifier
      */
     FWRUNTIME_API Stopper( const std::string   & _identifier );
 

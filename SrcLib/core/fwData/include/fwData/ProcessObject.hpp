@@ -145,12 +145,14 @@ protected:
      * If the name does already exist, the matching value will be replaced.
      * @param[in] name Param name
      * @param[in] object  Param
+     * @param params parameters map to insert object
      */
     FWDATA_API void setValue(const ParamNameType& name, ::fwData::Object::sptr object, ProcessObjectMapType& params);
 
     /**
      * @brief Retrieves data associated with specified name in params map (null if non exist).
      * @param[in] name Param name
+     * @param params parameters map containing the data
      * @return null sptr if param is not found
      */
     FWDATA_API ::fwData::Object::sptr getValue(const ParamNameType& name, const ProcessObjectMapType& params);

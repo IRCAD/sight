@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwTools/attributesmacros.hpp
+ * @file fwTools/macros.hpp
  * @brief TODO
  *
  * @author IRCAD (Research and Development Team).
@@ -209,7 +209,7 @@
             OSLM_FATAL( "Attribute '"<<attrName<<"' of object '"<< this->getClassname()    \
                       <<"' can not handle a object of type '"<<_obj->getClassname()<<"'"); \
         }                                                                                  \
-    }
+    }                                                                                      \
     /** @endcond **/
 
 

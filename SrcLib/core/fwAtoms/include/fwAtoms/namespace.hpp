@@ -8,7 +8,7 @@
 #define _FWATOMS_NAMESPACE_HPP_
 
 /**
- * @namespace   fwAtoms.
+ * @namespace   fwAtoms
  * @author      IRCAD (Research and Development Team).
  * @date        2011-2012.
  *

@@ -9,7 +9,7 @@
 
 /**
  * @brief       This namespace fwData contains the representation of the data objects used in the framework.
- * @namespace   fwData.
+ * @namespace   fwData
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

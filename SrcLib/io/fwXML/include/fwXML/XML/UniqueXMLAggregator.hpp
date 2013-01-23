@@ -20,7 +20,7 @@ namespace fwXML
  * @brief interface for XML integration
  * During visitor::Serialize scanning each object traversed an xml node is created
  * This node only contain intrinsic information of object ( aggregation ignored )
- * @auhtor Vincent Agnus
+ * @author  IRCAD (Research and Development Team).
  */
 class FWXML_CLASS_API UniqueXMLAggregator : public IXMLAggregator
 {

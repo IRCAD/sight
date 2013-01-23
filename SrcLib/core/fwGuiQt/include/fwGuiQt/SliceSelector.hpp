@@ -38,8 +38,7 @@ class SliceSelector : public QWidget
 public:
     /**
      * @brief Constructor.
-     * @param parent The parent window.
-     * @param id     The window ID.
+     * @param parent The parent widget.
      */
     FWGUIQT_API SliceSelector( QWidget* const parent) throw();
 
@@ -65,13 +64,13 @@ protected Q_SLOTS:
 
     /**
      * @brief Event handler for a slice type change.
-     * @param event The corresponding wxWidgets event.
+     * @param index index of the selected type item.
      */
     FWGUIQT_API void onSliceTypeChange( int index );
 
     /**
      * @brief Event handler for a slice index change.
-     * @param event The corresponding wxWidgets event.
+     * @param value current value of the slice index slider.
      */
     FWGUIQT_API void onSliceIndexChange( int value ) throw();
 

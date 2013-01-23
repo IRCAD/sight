@@ -60,7 +60,7 @@ protected :
                 </registrar>
             </service>
        @endverbatim
-      * - <separator /> : allows to put a separator in the menu
+      * - \<separator /\> : allows to put a separator in the menu
      */
     GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
 

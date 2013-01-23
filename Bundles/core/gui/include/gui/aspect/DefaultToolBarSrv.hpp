@@ -83,8 +83,8 @@ protected:
             <action uid="action_hideInformation"  style="check" name="Show information window" icon="Bundles/MyApplication/icons/View-INFO.png" />
         </service>
        @endverbatim
-      * - <toolBitmapSize height="40" width="40" /> : has to change the size of the icon used in the toolbar.
-      * - <separator /> : allows to put a separation in the tool bar.
+      * - \<toolBitmapSize height="40" width="40" /\> : has to change the size of the icon used in the toolbar.
+      * - \<separator /\> : allows to put a separation in the tool bar.
       * - Action Attributes:
       *       - icon is the icon file to use.
       *       - name is the text that will be put inside the tool tip.

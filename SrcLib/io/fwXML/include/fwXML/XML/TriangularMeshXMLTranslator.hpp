@@ -35,10 +35,10 @@ public:
 
 protected :
 
-    /// manage extra serialization : read image from path extracted from filename attribut in <Buffer> xml node
+    /// manage extra serialization : read image from path extracted from filename attribut in \<Buffer\> xml node
     FWXML_API void manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::TriangularMesh::sptr );
 
-    /// manage extra serialization : only inform <Buffer filename attribut />
+    /// manage extra serialization : only inform \<Buffer filename attribut /\>
     FWXML_API void manageSavingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::TriangularMesh::sptr );
 };
 

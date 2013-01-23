@@ -43,7 +43,7 @@ FWTOOLS_API std::string toIsoExtendedString(boost::posix_time::ptime ptime);
 
 /**
  * @brief       Construct a string in the format YYYY-MM-DD from a boost ptime
- * @param[in]   ptime time in the boost format
+ * @param[in]   dateAndTime time in the boost format
  * @return      Time in the format YYYY-MM-DD (example : 2007-02-25 )
  */
 FWTOOLS_API std::string getDateInXsdFormat( const boost::posix_time::ptime & dateAndTime ) ;

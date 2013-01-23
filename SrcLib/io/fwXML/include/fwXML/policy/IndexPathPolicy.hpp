@@ -23,7 +23,7 @@ namespace fwXML
 {
 /**
  * @brief This class implements the IPathPolicy.
- * Path : <className>_<IndexNumber>.xml
+ * Path : \<className\>_\<IndexNumber\>.xml
  * An Index is created for each className.
  */
 class FWXML_CLASS_API IndexPathPolicy : public IPathPolicy
@@ -34,7 +34,7 @@ public :
 
     /**
       * @brief  defines a path to save an Object
-      * Path : <className>_<IndexNumber>.xml
+      * Path : \<className\>_\<IndexNumber\>.xml
       * An Index is created for each className.
       * @param obj object to save
       * @return path of the Object

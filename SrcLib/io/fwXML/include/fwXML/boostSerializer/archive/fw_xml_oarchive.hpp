@@ -42,12 +42,10 @@ namespace archive
 {
 
 
-/** @brief IRCAD R&D team framework ::boost::archive. The purpose of this class is to
+/** @brief IRCAD R&D team framework \::boost::archive. The purpose of this class is to
  * create an xml archive based on the libxml instead a stream like in native boost
  * @author IRCAD (Research and Development Team).
  */
-
-
 class fw_xml_oarchive : public detail::common_oarchive< fw_xml_oarchive > // , public  basic_text_oprimitive< std::stringstream >
 {
     // permit serialization system priviledged access to permit

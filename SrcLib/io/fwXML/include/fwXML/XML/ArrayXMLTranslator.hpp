@@ -33,10 +33,10 @@ public:
 
 protected :
 
-    /// manage extra serialization : read array from path extracted from filename attribute in <Buffer> xml node
+    /// manage extra serialization : read array from path extracted from filename attribute in \<Buffer\> xml node
     FWXML_API void manageLoadingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::Array::sptr );
 
-    /// manage extra serialization : only inform <Buffer filename attribute />
+    /// manage extra serialization : only inform \<Buffer filename attribute /\>
     FWXML_API void manageSavingBuffer( xmlNodePtr boostXMLBuffer, ::fwData::Array::sptr );
 
     static std::string S_NOFILEPROTOCOL;

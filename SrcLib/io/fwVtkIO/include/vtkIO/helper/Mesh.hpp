@@ -53,8 +53,8 @@ public :
     /*!
      * @brief Update a vtkPolyData with ::fwData::Mesh::sptr points
      *
-     * @param[out] polyData vtkPolyData
-     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @param[out] polyDataDst vtkPolyData
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
      * @return vtkPolyData
      *
      * Warning : be carefull with updatePoints : this may change the number of
@@ -66,8 +66,8 @@ public :
     /*!
      * @brief Update a vtkPolyData with point color of fwData::Mesh
      *
-     * @param[out] polyData vtkPolyData
-     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @param[out] polyDataDst vtkPolyData
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
      * @return vtkPolyData
      *
      * Returns the updated vtkPolyPata
@@ -77,8 +77,8 @@ public :
     /*!
      * @brief Update a vtkPolyData with cell color of fwData::Mesh
      *
-     * @param[out] polyData vtkPolyData
-     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @param[out] polyDataDst vtkPolyData
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
      * @return vtkPolyData
      *
      * Returns the updated vtkPolyPata
@@ -88,8 +88,8 @@ public :
     /*!
      * @brief Update a vtkPolyData with point normals of fwData::Mesh
      *
-     * @param[out] polyData vtkPolyData
-     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @param[out] polyDataDst vtkPolyData
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
      * @return vtkPolyData
      *
      * Returns the updated vtkPolyPata
@@ -99,8 +99,8 @@ public :
     /*!
      * @brief Update a vtkPolyData with cell normals of fwData::Mesh
      *
-     * @param[out] polyData vtkPolyData
-     * @param[in]  mesh ::fwData::Mesh::sptr
+     * @param[out] polyDataDst vtkPolyData
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
      * @return vtkPolyData
      *
      * Returns the updated vtkPolyPata
@@ -110,7 +110,7 @@ public :
 
     /*!
      * @brief Compute the volume of the mesh using MassProperties vtk class
-     * @param[in]  current mesh
+     * @param[in] mesh current mesh
      * @return volume of the mesh
      */
     VTKIO_API static double computeVolume( ::fwData::Mesh::sptr mesh );

@@ -27,7 +27,7 @@ struct FWXML_CLASS_API XMLParser
 /**
  * @brief
  * Validates a xml document which has a reference to its schema
- * @param : xmlDocPtr : a xml document
+ * @param xmlDoc xmlDocPtr : a xml document
  * @throw : Failed
  * @author IRCAD (Research and Development Team).
  */
@@ -37,7 +37,7 @@ FWXML_API static void validateDoc (xmlDocPtr xmlDoc) throw (::fwTools::Failed);
 /**
  * @brief
  * search via ->next->next the first xml node which is a node Element !
- * @param : a node to parse via ->next->next
+ * @param pNode : a node to parse via ->next->next
  * @return : the first element which is an ELEMENT_NODE, NULL if not found
  * @author IRCAD (Research and Development Team).
  */
@@ -46,7 +46,7 @@ FWXML_API static xmlNodePtr nextXMLElement (xmlNodePtr pNode);
 /**
  * @brief
  * search via ->children/next the first children xml node which is a node Element
- * @param : a node to parse via ->children
+ * @param pNode : a node to parse via ->children
  * @return : the first element which is an ELEMENT_NODE, NULL if not found
  */
 FWXML_API static xmlNodePtr getChildrenXMLElement (xmlNodePtr pNode);
@@ -54,7 +54,7 @@ FWXML_API static xmlNodePtr getChildrenXMLElement (xmlNodePtr pNode);
 /**
  * @brief
  * from a file : load xml data , manage Xinclude & Schema ( TODO )
- * @param : absolut path to rootFilename
+ * @param rootFile : absolut path to rootFilename
  * @throw : Failed
  * @author IRCAD (Research and Development Team).
  */
@@ -64,7 +64,7 @@ FWXML_API static xmlDocPtr getXmlDocFromFile(boost::filesystem::path rootFile) t
 /**
  * @brief Extracts the (text) value of a node.
  *
- * @param  xmlNodePtr : the node of which the text has to be extracted
+ * @param  pNode xmlNodePtr : the node of which the text has to be extracted
  * @return  std::string : the value of the node
  * @throw  ::fwTools::Failed
  * @author IRCAD (Research and Development Team).
@@ -75,8 +75,8 @@ FWXML_API static std::string getTextValue (xmlNodePtr pNode) throw (::fwTools::F
 
 /**
  * @brief Extracts the (text) value of an attribute of a node
- * @param  xmlNodePtr : the node of which the text has to be extracted
- * @param  const std::string& : the attribute's name
+ * @param  pNode xmlNodePtr : the node of which the text has to be extracted
+ * @param  _sAttrName const std::string& : the attribute's name
  * @return std::string : the value of the attribute
  *
  * @throw : ::fwTools::Failed if attribute doesn't exist

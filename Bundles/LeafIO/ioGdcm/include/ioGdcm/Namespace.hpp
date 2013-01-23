@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace ioGdcm contains service to create a PatientDB from DICOM data with gdcm library.
  * This bundle uses the FW4SPL gdcmIO library
- * @namespace   ioGdcm.
+ * @namespace   ioGdcm
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

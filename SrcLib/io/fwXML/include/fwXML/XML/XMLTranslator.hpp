@@ -19,7 +19,7 @@
 namespace fwXML
 {
 
-/*
+/**
  * @brief The purpose of this class is provide a translation scheme within XML and fwTools::Object.
  * Each specialized subClass have the responsibility of providing the implementation
  * @note : all informations are created on demand. No information are cached

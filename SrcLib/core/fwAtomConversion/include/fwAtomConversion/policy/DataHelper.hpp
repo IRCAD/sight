@@ -29,43 +29,43 @@ class FWATOMCONVERSION_CLASS_API DataHelper
 public:
     /**
      * @brief Process a simple type (real, integer, enumeration, string, double).
-     * @param property propert setted name.
-     * @param userObj the setted userObejct.
-     * @param the attribut value
+     * @param property property set name.
+     * @param userObj the set userObejct.
+     * @param attribute the attribute value
      */
     FWATOMCONVERSION_API  void processSimpleProperty(const std::string& property,
                                                      ::camp::UserObject& userObj,
-                                                     const Attribut& attribut);
+                                                     const Attribut& attribute);
 
     /**
      * @brief Process an array property.
-     * @param property propert setted name.
-     * @param userObj the setted userObejct.
-     * @param the attribut value
+     * @param property property set name.
+     * @param userObj the set userObejct.
+     * @param attribute the attribute value
      */
     FWATOMCONVERSION_API  void processArrayProperty(const std::string& property,
                                                     ::camp::UserObject& userObj,
-                                                    const Attribut& attribut);
+                                                    const Attribut& attribute);
 
     /**
      * @brief Process an user property.
-     * @param property propert setted name.
-     * @param userObj the setted userObejct.
-     * @param the attribut value
+     * @param property property name.
+     * @param userObj the set userObejct.
+     * @param attribute the attribute value
      */
     FWATOMCONVERSION_API  void processUserProperty(const std::string& property,
                                                    ::camp::UserObject& userObj,
-                                                   const Attribut& attribut);
+                                                   const Attribut& attribute);
 
     /**
      * @brief Process a mapping property.
-     * @param property propert setted name.
-     * @param userObj the setted userObejct.
-     * @param the attribut value
+     * @param property property set name.
+     * @param userObj the set userObejct.
+     * @param attribute the attribute value
      */
     FWATOMCONVERSION_API  void processMappingProperty(const std::string& property,
                                                       ::camp::UserObject& userObj,
-                                                      const Attribut& attribut);
+                                                      const Attribut& attribute);
 
 
     DataHelper(::fwAtomConversion::AtomHelper& helper);

@@ -26,7 +26,7 @@ struct Plugin : public ::fwRuntime::Plugin
      *
      * This method is used by runtime in order to initialize the bundle.
      *
-     * @exception ::fwRuntime::RuntimeException.
+     * @exception ::fwRuntime::RuntimeException
      */
     void start() throw(::fwRuntime::RuntimeException);
 

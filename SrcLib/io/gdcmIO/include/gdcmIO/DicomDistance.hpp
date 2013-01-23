@@ -66,7 +66,7 @@ public :
     /**
      * @brief   Add coordinates for one distance in the container.
      *
-     * @param   a_coord Coordinates of 2 points.
+     * @param   a_scoord Coordinates of 2 points.
      */
     GDCMIO_API void addSCoord(const SCoord & a_scoord);
 

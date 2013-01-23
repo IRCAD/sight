@@ -46,7 +46,8 @@ protected :
      *
      * @see     PS 3.3 C.8.23
      *
-     * @param   a_gSurfaceWriter   A surface and segment writer.
+     * @param   idx  Reconstruction index in acquisition
+     * @param infoSegement Segment information
      */
     void writeSurfaceSegmentation(const unsigned int idx, ::fwData::StructureTraits::csptr infoSegement) throw (::fwTools::Failed);
 

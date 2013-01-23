@@ -29,7 +29,7 @@ namespace io
  * @li The method start() initialize the service
  * @li To read the object use update() method
  * @li Finally we must call stop() before deleting the service
- * @todo ACH : remove some methods : getSupportedExtensions ? getSelectorDialogTitle ? setLocation/getLocation ? location can be replaced perhaps by ::fwData::Location ( and not a ::boost::path )
+ * @todo ACH : remove some methods : getSupportedExtensions ? getSelectorDialogTitle ?
  */
 class IO_CLASS_API IReader : public fwServices::IService
 {

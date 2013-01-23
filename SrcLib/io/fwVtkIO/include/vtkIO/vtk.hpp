@@ -25,7 +25,7 @@ class vtkLookupTable;
 
 /**
  * @brief   Namespace vtkIO.
- * @namespace   vtkIO.
+ * @namespace   vtkIO
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
@@ -47,7 +47,7 @@ VTKIO_API int getVtkScalarType(::fwData::Image::sptr image);
  * @brief Allocate a new vtkImageData* from a ::fwData::Image::sptr.
  *
  * @param[in] _data ::fwData::Image::sptr.
- * @param[out] dst, the vtk image to fill if provided
+ * @param[out] dst the vtk image to fill if provided
  *
  * if dst is provided the new image will be imported into the dst image else
  * allocate a new vtkImage from a ::fwData::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
@@ -69,7 +69,7 @@ VTKIO_API void fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _desti
  * @brief Configure a vtkImageImport* from a ::fwData::Image::sptr.
  *
  * @param[in] _pDataImage ::fwData::Image::sptr.
- * @param[out] _pImageImport ::vtkImageImport*.
+ * @param[out] _pImageImport vtkImageImport*.
  */
 VTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage );
 
@@ -84,8 +84,8 @@ VTKIO_API vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr _mesh );
 /*!
  * @brief Update a vtkPolyData* with ::fwData::TriangularMesh::sptr points
  *
- * @param[out] polyData vtkPolyData*
- * @param[in]  mesh ::fwData::TriangularMesh::sptr
+ * @param[out] polyDataDst vtkPolyData*
+ * @param[in]  meshSrc ::fwData::TriangularMesh::sptr
  * @return vtkPolyData*
  *
  * Warning : be carefull with updatePoints : this may change the number of

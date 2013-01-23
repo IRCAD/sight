@@ -48,7 +48,7 @@ public :
 
     /**
      * @brief m_object setter.
-     * @param[out] _pObject replace weakptr m_object of the instance reader
+     * @param[out] obj replace weakptr m_object of the instance reader
      *
      * This method overload setObject to ensure that given object correspond to DATATYPE
      */

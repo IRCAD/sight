@@ -80,7 +80,7 @@ public:
         </service>
        @endverbatim
      * This method analyzes the registry section of the configuration.
-     *  - <menuItem sid="item1" start="no" /> : define the service of the menuItem to add in the menu.
+     *  - \<menuItem sid="item1" start="no" /\> : define the service of the menuItem to add in the menu.
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu service.
      */

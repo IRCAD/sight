@@ -136,7 +136,7 @@ public:
      * @brief Get node
      *
      * @param[in] _edge edge associated with the node
-     * @_upStream if true return souce node, else return destination node
+     * @param[in] _upStream if true return source node, else return destination node
      *
      * @return source or destination node if edge exists, else return a new node
      */
@@ -173,10 +173,10 @@ public:
     /**
      * @brief Get a vector of nodes
      *
-     * @param[in] _node node associated with the nodes
-     * @param[in] _upStream if true _node is a source node, else _node is a destination node
-     * @param[in] _nature if nature is an empty string : no check on nature of edge
-     * @param[in] _portID if portID not specified (no check) : porID muts be an BoolupStream port of given node
+     * @param[in] node node associated with the nodes
+     * @param[in] upStream if true _node is a source node, else _node is a destination node
+     * @param[in] nature if nature is an empty string : no check on nature of edge
+     * @param[in] portID if portID not specified (no check) : porID muts be an BoolupStream port of given node
      *
      * @return the vector of all nodes associated with _node
      */

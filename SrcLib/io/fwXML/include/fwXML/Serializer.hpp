@@ -62,7 +62,6 @@ public:
      * @brief helper (factory which create a fwTools::Object form
      * \li xmlNodePtr->name for class
      * \li xmlNodePtr child for fwTools::Object information
-     * @param loadExtraXML : if true extra XML information (exple image buffer are also loaded)
      */
     ::fwData::Object::sptr ObjectsFromXml( xmlNodePtr xmlNode );
 

@@ -9,7 +9,7 @@
 
 /**
  * @brief       The namespace uiAcquisition contains an editor written with Qt. This namespace is included in uiAcquisitionQt bundle.
- * @namespace   uiAcquisition.
+ * @namespace   uiAcquisition
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

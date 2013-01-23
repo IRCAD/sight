@@ -19,7 +19,7 @@
 #include "fwTools/IBufferManager.hpp"
 #include "fwTools/config.hpp"
 
-fwCampAutoDeclareMacro((fwTools)(BufferObject), FWTOOLS_API)
+fwCampAutoDeclareMacro((fwTools)(BufferObject), FWTOOLS_API);
 
 namespace fwTools
 {
@@ -181,8 +181,6 @@ public:
 
         /**
          * @brief Returns BufferObject's buffer pointer
-         *
-         * @return
          */
         BufferType getBuffer() const
         {

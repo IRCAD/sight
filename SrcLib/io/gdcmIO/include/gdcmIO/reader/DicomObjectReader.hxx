@@ -27,7 +27,7 @@ namespace reader
  *
  * @note    Inspired from ::fwDataIO::reader::GenericObjectReader
  *
- * @class   DicomObjectReader.
+ * @class   DicomObjectReader
  * @author  IRCAD (Research and Development Team).
  * @date    2011.
  */
@@ -54,7 +54,7 @@ public:
 
     /**
      * @brief m_object setter.
-     * @param[out] _pObject replace weakptr m_object of the instance reader
+     * @param[out] a_obj replace weakptr m_object of the instance reader
      *
      * This method overload setObject to ensure that given object correspond to DATATYPE
      */

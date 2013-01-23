@@ -9,7 +9,7 @@
 
 /**
  * @brief       The namespace ioXML contains XML reader and writer for several data.
- * @namespace   ioXML.
+ * @namespace   ioXML
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

@@ -55,7 +55,6 @@ public:
 
     /**
      * @brief Show the selector and return the selection.
-     * @param[in] _parent Parent container for the selector.
      */
     FWGUIQT_API virtual Selections show();
 

@@ -9,7 +9,7 @@
 
 /**
  * @brief       The namespace ioVTK contains reader, writer and helper using the vtkIO lib for output and input actions between data and the frameWork.
- * @namespace   ioVTK.
+ * @namespace   ioVTK
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

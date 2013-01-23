@@ -30,8 +30,6 @@ class QtMainFrame : public QMainWindow
 public:
     /**
      * @brief Constructor.
-     * @param parent The parent window.
-     * @param id     The window ID.
      */
     FWGUIQT_API QtMainFrame() throw();
 

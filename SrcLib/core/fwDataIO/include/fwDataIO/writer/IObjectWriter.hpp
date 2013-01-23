@@ -73,7 +73,7 @@ public :
 
     /**
      * @brief m_location setter.
-     * @param[in] _location set location where object will be saved
+     * @param[in] location set location where object will be saved
      */
     FWDATAIO_API virtual void setLocation( const ::fwData::location::ILocation::sptr location );
 

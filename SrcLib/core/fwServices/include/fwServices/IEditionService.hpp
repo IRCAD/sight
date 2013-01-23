@@ -50,7 +50,6 @@ public :
      * @param[in] _pSource The service which send the message
      * @param[in] _pSubject The subject of the message ( to retrieve listeners of the subject )
      * @param[in] _pMsg message notify to associated object listeners
-     * @param[in] _allowLoops Allow loops (be really careful)
      *
      *  This method notifies observers of _pSubject. It changes notification status of _pSource during all notification, set correct source and subject of msg and timestamp the message.
      */

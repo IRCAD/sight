@@ -11,7 +11,7 @@ namespace uiIO
 {
 /**
  * @brief       The namespace uiIO::action contains service action in relation with IO like export.
- * @namespace   uiIO::action.
+ * @namespace   uiIO::action
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

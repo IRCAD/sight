@@ -33,7 +33,7 @@ namespace fwTools
  struct EndTypeListAction
  {
 
-    /// Perform nothing see Dispatcher<...>::invoke
+    /// Perform nothing see Dispatcher<>::invoke()
     static void invoke() {};
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list

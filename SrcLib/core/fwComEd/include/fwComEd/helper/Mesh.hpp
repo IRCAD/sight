@@ -43,7 +43,7 @@ public :
      * @brief Insert a point into the mesh.
      * Reallocates the point array if needed.
      *
-     * @param p[3] point coordinates
+     * @param p point coordinates
      *
      * @return The id of the new point
      *
@@ -65,7 +65,7 @@ public :
       * The mesh must be allocated before calling this method.
       *
       * @param id point index
-      * @param p[3] point coordinates
+      * @param p point coordinates
       *
       * @throw ::fwData::Exception
       */
@@ -88,7 +88,7 @@ public :
       * The color array must be allocated before calling this method.
       *
       * @param id point index
-      * @param c[3] color
+      * @param c color
       *
       * @throw ::fwData::Exception
       */
@@ -102,7 +102,7 @@ public :
       * The color array must be allocated before calling this method.
       *
       * @param id cell index
-      * @param c[3] color
+      * @param c color
       *
       * @throw ::fwData::Exception
       */
@@ -114,7 +114,7 @@ public :
       * The normal array must be allocated before calling this method.
       *
       * @param id point index
-      * @param n[3] normal
+      * @param n normal
       *
       * @throw ::fwData::Exception
       */
@@ -126,7 +126,7 @@ public :
       * The normal array must be allocated before calling this method.
       *
       * @param id cell index
-      * @param n[3] normal
+      * @param n normal
       *
       * @throw ::fwData::Exception
       */

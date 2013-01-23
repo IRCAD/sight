@@ -31,11 +31,15 @@ public:
 
     /**
      * @brief create a new Blob shared ptr.
-     * @param value the buffer
-     * @param size the buffer size
-     * @param name the name of the current buffer.
+     * @param buffer the buffer object
      */
     FWATOMS_API static Blob::sptr New(::fwTools::BufferObject::sptr buffer);
+
+    /**
+     * @brief create a new Blob shared ptr.
+     * @param buffer the buffer
+     * @param size the buffer size
+     */
     FWATOMS_API static Blob::sptr New(void* buffer, unsigned int size);
 
 

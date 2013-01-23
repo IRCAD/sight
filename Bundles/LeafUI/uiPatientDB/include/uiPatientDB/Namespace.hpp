@@ -9,7 +9,7 @@
 
 /**
  * @brief       The namespace uiPatientDB contains several actions to import/export PatientDB and Image
- * @namespace   uiPatientDB.
+ * @namespace   uiPatientDB
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *
@@ -17,5 +17,16 @@
 namespace uiPatientDB
 {
 
+/**
+ * @brief       The namespace uiPatientDB::action contains actions to import/export PatientDB and Image
+ * @namespace   uiPatientDB::action
+ * @author      IRCAD (Research and Development Team).
+ * @date        2009-2010.
+ *
+ */
+namespace action
+{
+
+}
 }
 #endif /* UIPATIENTDB_NAMESPACE_HPP_ */

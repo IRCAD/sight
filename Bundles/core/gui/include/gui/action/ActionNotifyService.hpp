@@ -58,7 +58,7 @@ protected:
             <notify type="::fwServices::ObjectMsg" event="APPLY" />
         </service>
        @endverbatim
-     * - <notify> :
+     * - \<notify\> :
      *   - \b type : the type of the message (i.e. ::fwServices::ObjectMsg)
      *   - \b event : the event of the message (i.e. "APPLY")
      */

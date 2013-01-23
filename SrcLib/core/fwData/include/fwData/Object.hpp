@@ -163,13 +163,13 @@ public:
 
     /**
      * @brief A shallow copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
+     * @param[in] source source of the copy.
      */
     FWDATA_API virtual void shallowCopy( ::fwData::Object::csptr source );
 
     /**
      * @brief A deep copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
+     * @param[in] source source of the copy.
      */
     FWDATA_API virtual void deepCopy( ::fwData::Object::csptr source );
 
@@ -184,13 +184,13 @@ public:
 
     /**
      * @brief A shallow copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
+     * @param[in] source source of the copy.
      */
     FWDATA_API void fieldShallowCopy( ::fwData::Object::csptr source );
 
     /**
      * @brief A deep copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
+     * @param[in] source source of the copy.
      */
     FWDATA_API void fieldDeepCopy( ::fwData::Object::csptr source );
 

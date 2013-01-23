@@ -71,19 +71,19 @@ public:
             </registry>
         </service>
       @endverbatim
-     * - <parent wid="myView" /> : This section isn't mandatory. When the parent section is present, the wid attribute is used to find its parent container.
+     * - \<parent wid="myView" /\> : This section isn't mandatory. When the parent section is present, the wid attribute is used to find its parent container.
      * Otherwise, the service uid is used to find its parent container.
-     * - <toolBar sid="toolbar1" start="yes" /> : This section isn't mandatory.
+     * - \<toolBar sid="toolbar1" start="yes" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the tool bar identifier.
      *   - \b start = {yes| no} (default value no): indicate if the tool bar service must be started by the service.
-     * - <menuBar sid="menubar1" start="yes" /> : This section isn't mandatory.
+     * - \<menuBar sid="menubar1" start="yes" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the menu bar identifier.
      *   - \b start = {yes| no} (default value no): indicate if the menu bar service must be started by the service.
-     * - <view sid="subView3" start="yes" /> : define the service of the view to add in the container.
+     * - \<view sid="subView3" start="yes" /\> : define the service of the view to add in the container.
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the view service must be started by the service.
-     * - <view wid="subView4" /> : reserve a sub container for the view in the parent container with the name "subView4". The service which want to use this sub container
-     *   will have define a parent with <parent wid="subView4" />.
+     * - \<view wid="subView4" /\> : reserve a sub container for the view in the parent container with the name "subView4". The service which want to use this sub container
+     *   will have define a parent with \<parent wid="subView4" /\>.
      *   - \b wid  (mandatory): the window identifier.
      *
      * @warning

@@ -21,7 +21,7 @@ namespace ctrlSelection
  * @date    2007-2009.
  * @brief The purpose of this service is to wrap messages incoming to the object to new messages.
  *
- * Typically when a generic message as ::ObjectMsg::UPDATED_OBJECT is received by the object then a
+ * Typically when a generic message as ::fwServices::ObjectMsg::UPDATED_OBJECT is received by the object then a
  * specific service can translate it to "NEW_BUFFER" for fwData::Image, "CAMERA_MOVING" for camera ....
  */
 

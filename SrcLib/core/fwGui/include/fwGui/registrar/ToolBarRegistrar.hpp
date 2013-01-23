@@ -50,7 +50,7 @@ public:
     /**
      * @brief Return the fwMenuItem associated with the actionSid.
      * @param actionSid sid of the action service
-     * @param toolBarItems  vector containing the fwMenuItem manages by this registrar.
+     * @param menuItems  vector containing the fwMenuItem manages by this registrar.
      */
     FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string actionSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
 
@@ -85,7 +85,7 @@ public:
        @endverbatim
      * This method analyzes the registry section of the configuration.
      *
-     *  - <menuItem sid="item2" start="no" /> : define the service of the menuItem to add in the toolbar.
+     *  - \<menuItem sid="item2" start="no" /\> : define the service of the menuItem to add in the toolbar.
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the service must be started by the toolbar service.
      */

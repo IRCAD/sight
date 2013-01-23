@@ -129,16 +129,16 @@ public:
        @endverbatim
      * This method analyzes the gui section of the configuration.
      *
-     *  - <layout> (mandatory) : give the list of the menu item that will appear in the toolbar.
-     *  - <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/> :
+     *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
+     *  - \<menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file
-     *  - <menu name="My menu" /> :
+     *  - \<menu name="My menu" /\> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      *   - \b icon : give the path of the icon file
-     *  - <editor> : to add an editor in the toolbar
-     *  - <separator/> : allow to divide the toolbar by part (draw a line).
+     *  - \<editor\> : to add an editor in the toolbar
+     *  - \<separator/\> : allow to divide the toolbar by part (draw a line).
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 

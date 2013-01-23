@@ -20,7 +20,7 @@ namespace fwXML
  * @brief XML integration each node splitted in a file
  * During visitor::Serialize scanning each object traversed an xml node is created
  * This node only contain intrinsic information of object ( aggregation ignored )
- * @auhtor Vincent Agnus
+ * @author  IRCAD (Research and Development Team).
  */
 class FWXML_CLASS_API SplittedXMLAggregator : public IXMLAggregator
 {

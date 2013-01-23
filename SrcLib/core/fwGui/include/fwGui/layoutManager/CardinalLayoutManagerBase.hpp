@@ -108,8 +108,8 @@ public:
            </registry>
        </service>
       @endverbatim
-    *  - <layout type="::fwGui::CardinalLayoutManager" > : define a cardinal layout.
-    *  - <view caption="CardinalView1" align="center" /> : define a new view with following attribute
+    *  - \<layout type="::fwGui::CardinalLayoutManager" \> : define a cardinal layout.
+    *  - \<view caption="CardinalView1" align="center" /\> : define a new view with following attribute
     *   - \b caption : name of the view (display on the screen).
     *   - \b align  {center | bottom | top | right | left}: define the position of the view
     *   - \b minWidth : minimal width of the view

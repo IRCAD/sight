@@ -87,16 +87,16 @@ protected :
 
     /**
      * @brief informe about hierarchical father of each object. To be filled by visitor
-     * @param Key is the child ( type ::boost::weak_ptr fwTools::Object )
-     * @param Value is  its father ( type ::boost::weak_ptr fwTools::Object ), NULL if none
+     * @param Key is the child ( type \::boost::weak_ptr fwTools::Object )
+     * @param Value is  its father ( type \::boost::weak_ptr fwTools::Object ), NULL if none
      */
     ChildFatherMap m_mapChildFather;
 
 
     /**
      * @brief informe about hierarchical children of each object. To be filled by visitor
-     * @param Key is the child ( type ::boost::weak_ptr fwTools::Object )
-     * @param Value is  its children ( type set of ::boost::weak_ptr fwTools::Object ), empty set if none
+     * @param Key is the child ( type \::boost::weak_ptr fwTools::Object )
+     * @param Value is  its children ( type set of \::boost::weak_ptr fwTools::Object ), empty set if none
      */
     FatherChildrenMap m_mapFatherChildren;
 

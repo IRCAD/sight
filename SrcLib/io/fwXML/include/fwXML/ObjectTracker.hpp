@@ -44,7 +44,7 @@ public:
      * If the object (className-ID) is already constructed return the corresponding object else create
      * via Factory the newObject and register its ID. If the ID is empty no registration are performed
      * @param className the name of object to build
-     * @param id the unique ID for an object : if no one specified the object is created via ObjectFactory
+     * @param uniqueID id the unique ID for an object : if no one specified the object is created via ObjectFactory
      */
     FWXML_API static ::fwData::Object::sptr buildObject( const std::string &className, const std::string &uniqueID  );
 

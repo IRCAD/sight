@@ -86,8 +86,7 @@ public :
     /**
      * \brief    Read A DICOMDIR file.
      *
-     * \param  a path to the DICOMDIR file.
-     * \param  the list of file.
+     * \param  dicomDir a path to the DICOMDIR file.
      *
      * @return    the state of the read (OK, NOK).
      */

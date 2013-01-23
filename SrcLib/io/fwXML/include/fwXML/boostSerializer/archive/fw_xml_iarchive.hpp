@@ -44,7 +44,7 @@ namespace boost {
 namespace archive {
 
 
-/** @brief IRCAD R&D team framework ::boost::archive. The purpose of this class is to
+/** @brief IRCAD R&D team framework \::boost::archive. The purpose of this class is to
  * create an xml archive based on the libxml instead a stream like in native boost
  * @author IRCAD (Research and Development Team).
  */

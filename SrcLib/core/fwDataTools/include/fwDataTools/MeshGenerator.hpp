@@ -111,7 +111,7 @@ public :
      * Array must have 3 float components, 1 dimension. Otherwise, shakeNormals
      * will do nothing.
      *
-     * @param[out]  mesh fwData::Array structure to shake normals.
+     * @param[out]  array mesh's array containing normals.
      */
     FWDATATOOLS_API static void shakeNormals(::fwData::Array::sptr array);
 

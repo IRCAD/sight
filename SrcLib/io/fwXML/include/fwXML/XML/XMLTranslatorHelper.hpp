@@ -29,7 +29,7 @@ public:
 
     /**
      * @brief return the master node of an Object : className + unique ID as attribue
-     * For example <Image id="626b2206-c55b-4a90-b215-d138dc32640e"/> RFC4122 version 4 random based generation
+     * For example \<Image id="626b2206-c55b-4a90-b215-d138dc32640e"/\> RFC4122 version 4 random based generation
      */
     FWXML_API static xmlNodePtr MasterNode( ::fwData::Object::sptr obj );
 
@@ -72,7 +72,7 @@ public:
 
     /**
      * @brief to node append a new Property with given value
-     * the value is converted to string using ::boost::lexical cast
+     * the value is converted to string using \::boost::lexical cast
      * @return the current node
      */
     template<class BASICTYPE >
@@ -91,7 +91,7 @@ public:
 
     /**
      * @brief to node get the  Property
-     * the retrun value is converted from string using ::boost::lexical cast
+     * the retrun value is converted from string using \::boost::lexical cast
      * @return the value
      * @warning
      */
@@ -113,7 +113,7 @@ public:
 
     /**
      * @brief an XML helper to create a simple XML element
-     * @return a xml node ptr referencing <name>*value*</name>
+     * @return a xml node ptr referencing \<name\>*value*\</name\>
      */
     template<class VALUE>
     static xmlNodePtr newElement(  const  std::string &name,  VALUE value )
@@ -126,7 +126,7 @@ public:
 
     /**
      * @brief an XML helper to create a simple XML element
-     * @return a xml node ptr referencing <name>1</name>
+     * @return a xml node ptr referencing \<name\>1\</name\>
      */
     FWXML_API static xmlNodePtr newElement( const  std::string &name,  bool value );
 

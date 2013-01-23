@@ -11,7 +11,7 @@ namespace uiIO
 {
 /**
  * @brief       The namespace uiIO::editor contains a simple IO selector service.
- * @namespace   uiIO::editor.
+ * @namespace   uiIO::editor
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

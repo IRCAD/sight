@@ -123,7 +123,7 @@ public :
      *         Check if firstname, name, sex, ... are the same
      *
      * @param[in]    _patientDBFrom    PatientDB source.
-     * @param[inout] _patientDBTo      PatientDB destination (data are merged in this PatientDB).
+     * @param[in,out] _patientDBTo      PatientDB destination (data are merged in this PatientDB).
      * @param[in]    _msgSender        Service source to notify modifications
      */
     FWCOMED_API static void mergePatientDBInfo( ::fwData::PatientDB::sptr _patientDBFrom, ::fwData::PatientDB::sptr _patientDBTo, ::fwServices::IService::sptr _msgSender );
@@ -160,7 +160,7 @@ public :
 
     /**
      * @brief Return a buffer of image type's size, containing 'value' casted to image data type
-     * @param[in] pImage : reference image
+     * @param[in] image : reference image
      * @param[in] value : value to map
      */
     template < typename T >

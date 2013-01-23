@@ -124,15 +124,15 @@ public:
        </service>
        @endverbatim
      * This method analyzes the gui section of the configuration.
-     * - <layout> (mandatory) : give the list of the menu item that will appear in the menu.
-     * - <menuItem name="My item 1" shortcut="1" style="check" specialAction="NEW" /> :
+     * - \<layout\> (mandatory) : give the list of the menu item that will appear in the menu.
+     * - \<menuItem name="My item 1" shortcut="1" style="check" specialAction="NEW" /\> :
      *  - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *  - \b shortcut : give the shortcut for this menu item.
      *  - \b style {check|radio} : give the style of the menu item.
      *  - \b specialAction {DEFAULT | QUIT | NEW | ABOUT | HELP}: specify a pre define action. If it isn't define the value is DEFAULT.
-     * - <menu name="My menu" /> :
+     * - \<menu name="My menu" /\> :
      *  - \b name (mandatory) : give the name of the menu that will appear in the interface.
-     * - <separator/> : allow to divide the menu by part (draw a line).
+     * - \<separator/\> : allow to divide the menu by part (draw a line).
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 

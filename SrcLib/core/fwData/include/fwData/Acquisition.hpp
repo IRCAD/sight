@@ -54,7 +54,7 @@ public:
     FWDATA_API virtual ~Acquisition();
 
 
-    fwCampMakeFriendDataMacro((fwData)(Acquisition))
+    fwCampMakeFriendDataMacro((fwData)(Acquisition));
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( Acquisition::csptr _source );
@@ -89,6 +89,7 @@ public:
      */
     FWDATA_API void addReconstruction( ::fwData::Reconstruction::sptr _reconstruction );
 
+    /// Add the url of the Dicom file
     FWDATA_API void addDicomFileUrl(std::string dicomfileUrl);
 
     // Generator result---------------------------------------------------------
@@ -164,7 +165,7 @@ protected :
     //! Index of this acquisition. (value : 0,1,2,3,4,5,6....)
     ::boost::uint32_t  m_ui32AcquisitionIndex;
 
-    //! Type picture. eg : ORIGINAL\PRIMARY\OTHER
+    //! Type picture. eg : ORIGINAL/PRIMARY/OTHER
     std::string m_sImageType;
 
     //! picture format. eg : INR, INR.GZ, INR.GZ.GPG

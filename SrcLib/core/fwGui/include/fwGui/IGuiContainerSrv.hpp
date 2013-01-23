@@ -70,7 +70,7 @@ protected :
             </registry>
         </service>
       @endverbatim
-     *  - <layout type="::fwGui::LineLayoutManager" > : give the type of layout.
+     *  - \<layout type="::fwGui::LineLayoutManager" \> : give the type of layout.
      *    - \b type {::fwGui::LineLayoutManager |::fwGui::CardinalLayoutManager |::fwGui::TabLayoutManager |::fwGui::ToolboxLayoutManager} :
      *     - \b ::fwGui::LineLayoutManager : all views will be on the same line or column (it depends of the orientation value attribute)
      *           @see ::fwGui::layoutManager::LineLayoutManagerBase

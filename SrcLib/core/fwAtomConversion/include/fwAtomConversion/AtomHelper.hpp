@@ -30,14 +30,14 @@ public:
     typedef std::map<std::string, ::fwAtoms::Object::sptr> MetaCache;
 
     /**
-     * @brief Convert a fwData to a MetaData and clear all caches
-     * @param a fwData::Object sptr
+     * @brief Converts a fwData to a MetaData and clear all caches
+     * @param object a fwData::Object sptr
      * @return a Atom::Object sptr
      */
     FWATOMCONVERSION_API ::fwAtoms::Object::sptr fromFwData(::fwData::Object::sptr object);
 
     /**
-     * @brief Convert a MetaData to a fwData and clear all caches
+     * @brief Converts a MetaData to a fwData and clear all caches
      * @param object the fwData::Object
      * @return a fwData::Object sptr.
      */
@@ -45,32 +45,32 @@ public:
 
 
     /**
-     * @brief Convert a fwData to a MetaData
-     * @param a fwData::Object sptr
+     * @brief Converts a fwData to a MetaData
+     * @param object a fwData::Object sptr
      * @return a Atom::Object sptr
      */
     FWATOMCONVERSION_API ::fwAtoms::Object::sptr dataToMeta(::fwData::Object::sptr object);
 
     /**
-     * @brief Convert a MetaData to a fwData
+     * @brief Converts a MetaData to a fwData
      * @param object the fwData::Object
      * @return a fwData::Object sptr.
      */
     FWATOMCONVERSION_API ::fwData::Object::sptr metaToData(::fwAtoms::Object::sptr object);
 
     /**
-     * Clean the object cache.
+     * Cleans the object cache.
      */
     FWATOMCONVERSION_API  void clearCache();
 
     /**
-     * Clean the metaobject cache.
+     * Cleans the metaobject cache.
      */
     FWATOMCONVERSION_API  void clearMetaCache();
 
 
     /**
-     * return the number of processed object
+     * Returns the number of processed object
      */
     FWATOMCONVERSION_API unsigned int getNbProcessObject();
 

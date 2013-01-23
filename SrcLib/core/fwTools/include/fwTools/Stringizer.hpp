@@ -112,7 +112,7 @@ inline std::string getString(ForwardIterator begin,ForwardIterator end)
 }
 
 
-// explicit specialization
+/// explicit specialization of getString(const T &t)
 template<>
 FWTOOLS_API std::string getString(const std::string &aString);
 

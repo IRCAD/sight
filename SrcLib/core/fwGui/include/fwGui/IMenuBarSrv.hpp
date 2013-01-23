@@ -64,8 +64,8 @@ protected :
           </registry>
       </service>
        @endverbatim
-     *  - <gui> </gui> : (mandatory) describe the interface of the service.
-     *  - <registry> </registry> : (mandatory) describe the service management.
+     *  - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
+     *  - \<registry\> \</registry\> : (mandatory) describe the service management.
      *
      * @warning
      * - The number of item in the gui section must be equal or greater than in the registry section.

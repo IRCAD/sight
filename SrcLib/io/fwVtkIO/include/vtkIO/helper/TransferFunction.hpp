@@ -36,7 +36,7 @@ public :
      * @brief Convert a ::fwData::TransferFunction to a vtkLookupTable.
      *
      * @param[in] tf ::fwData::TransferFunction
-     * @param[in] allow_transparency Enable conversion of ::fwData::TransferFunction alpha channel
+     * @param[in] allowTransparency Enable conversion of ::fwData::TransferFunction alpha channel
      * @param[in] size lookup table size
      * @param[out] lt vtkLookupTable
      */

@@ -19,7 +19,7 @@ namespace fwXML
  * @brief interface for XML integration
  * During visitor::Serialize scanning each object traversed an xml node is created
  * This node only contain intrinsic information of object ( aggregation ignored )
- * @auhtor Vincent Agnus
+ * @author  IRCAD (Research and Development Team).
  */
 class FWXML_CLASS_API IXMLAggregator
 {
@@ -35,7 +35,7 @@ public:
     FWXML_API virtual xmlDocPtr getXMLDoc();
 
     /** @brief set XMLAggregator in intial state : trivial XML Doc
-     *  @FIXME : what to do with old xmlPtr ? ; actually memory leak : no delete() !!!
+     *  @todo : what to do with old xmlPtr ? ; actually memory leak : no delete() !!!
      */
     FWXML_API void reset();
 

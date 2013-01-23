@@ -41,7 +41,7 @@ struct isMappingSingleMPLHelper;
  * @author  IRCAD (Research and Development Team).
  *
  * This function should be specializated to create a Mapping with a KeyType value and a type.
- * This function is used by Dispatcher:<..>::invoke(key) to know what instance to execute.
+ * This function is used by Dispatcher<>::invoke(key) to know what instance to execute.
  * If isMapping function is missing for a given type then a compilation error
  * "invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>" is raised
  * to inform developer.

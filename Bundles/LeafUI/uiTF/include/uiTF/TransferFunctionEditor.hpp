@@ -54,7 +54,7 @@ protected:
         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
     </service>
     @endverbatim
-    * - <image id="myImage" /> : Set the link between the service and the associated image.
+    * - \<image id="myImage" /\> : Set the link between the service and the associated image.
     *
     * \b id : mandatory (no default value) : set the id of the associated image.
     */

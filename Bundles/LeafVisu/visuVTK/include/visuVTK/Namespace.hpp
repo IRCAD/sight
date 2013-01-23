@@ -9,7 +9,7 @@
 
 /**
  * @brief       The namespace visuVTK supplies a  default plugin implementation for the visuVTK bundle.
- * @namespace   visuVTK.
+ * @namespace   visuVTK
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2010.
  *

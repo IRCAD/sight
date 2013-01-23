@@ -16,7 +16,7 @@ namespace container
 {
 /**
  * @brief   Defines the menu item for IHM.
- * @class   fwMenuItemBar.
+ * @class   fwMenuItem
  * @author  IRCAD (Research and Development Team).
  * @date    2009-2010.
  *

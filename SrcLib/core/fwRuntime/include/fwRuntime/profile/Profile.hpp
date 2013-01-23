@@ -82,14 +82,14 @@ public:
     /**
      * @brief       Adds a new starter.
      *
-     * @param[in]   starter a shared pointer to a starter
+     * @param[in]   initializer a shared pointer to an initializer
      */
     FWRUNTIME_API void add( SPTR( Initializer ) initializer );
 
     /**
      * @brief       Adds a new starter.
      *
-     * @param[in]   starter a shared pointer to a starter
+     * @param[in]   uninitializer a shared pointer to an uninitializer
      */
     FWRUNTIME_API void add( SPTR( Uninitializer ) uninitializer );
 

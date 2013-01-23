@@ -41,7 +41,7 @@ public :
      * @brief Setter for one item components of the array
      *
      * @param id Item id
-     * @param value Valid buffer of elements of type <m_type> with a length equal to <m_nbOfComponents> to be copied to array 'id'
+     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied to array 'id'
      */
     FWCOMED_API virtual void setItem(const ::fwData::Array::IndexType &id, const void *value);
 
@@ -50,7 +50,7 @@ public :
      *
      * @param id Item id
      * @param component Component id to write data in.
-     * @param value Valid buffer of elements of type <m_type> with a length equal to <m_nbOfComponents> to be copied to array 'id', component n° 'component'
+     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied to array 'id', component n° 'component'
      *
      */
     FWCOMED_API virtual void setItem(const ::fwData::Array::IndexType &id, const size_t component, const void *value);
@@ -106,7 +106,6 @@ public :
      * @param type           Type of the array view
      * @param size           Size of the array view
      * @param nbOfComponents Number of components of the array view, Min value : 1
-     * @param reallocate     If true, allow buffer reallocation
      */
     FWCOMED_API void setBuffer( void *buf, bool takeOwnership,
                                 const ::fwTools::Type &type,

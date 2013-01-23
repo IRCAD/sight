@@ -91,8 +91,8 @@ public:
            </registry>
        </service>
       @endverbatim
-    *  - <layout type="::fwGui::ToolboxLayoutManager" > : define a toolbox layout.
-    *  - <view caption="My view 1" expanded="true" minWidth="30" /> : define a new view which can have the following attributes
+    *  - \<layout type="::fwGui::ToolboxLayoutManager" \> : define a toolbox layout.
+    *  - \<view caption="My view 1" expanded="true" minWidth="30" /\> : define a new view which can have the following attributes
     *   - \b border : define the size of the border in the layout
     *   - \b caption : define the title to display.
     *   - \b minWidth  : minimal width of the view.

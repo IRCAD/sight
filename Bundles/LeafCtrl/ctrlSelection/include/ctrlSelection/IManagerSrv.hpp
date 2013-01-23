@@ -94,7 +94,7 @@ protected:
      *
      * @param objectId Id of the object
      * @param object Object associated with the id
-     * @param config configuration for a <connect> tag associated this object
+     * @param config configuration for a \<connect\> tag associated this object
      */
     void manageConnection(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
 
@@ -116,7 +116,7 @@ protected:
      *
      * @param objectId Id of the object
      * @param object Object associated with the id
-     * @param config configuration for a <proxy> tag associated this object
+     * @param config configuration for a \<proxy\> tag associated this object
      */
     void manageProxy(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
 

@@ -13,7 +13,7 @@ namespace fwCamp
 
 /**
  * @brief       Contains fwCamp::factory utilities
- * @namespace   factory
+ * @namespace   fwCamp::factory
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2012
  *

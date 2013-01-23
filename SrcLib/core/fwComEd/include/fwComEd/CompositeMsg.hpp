@@ -80,7 +80,7 @@ public:
 
     /**
      * @brief       This method add an object in the modified keys list.
-     * @param[in]   _modifiedkey : the key of the object which was modified.
+     * @param[in]   _modifiedKey : the key of the object which was modified.
      *
      * This method create a MODIFIED_KEYS event with an additional data information containing the keys identifiers.
      */

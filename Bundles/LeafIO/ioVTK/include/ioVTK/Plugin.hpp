@@ -21,8 +21,9 @@ public:
     /**
     * @brief Start method.
     *
-    * @exception ::fwRuntime::RuntimeException.
     * This method is used by runtime in order to initialize the bundle.
+    *
+    * @exception ::fwRuntime::RuntimeException
     */
     void start() throw(::fwRuntime::RuntimeException);
 

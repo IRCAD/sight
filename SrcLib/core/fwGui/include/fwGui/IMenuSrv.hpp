@@ -78,10 +78,10 @@ protected :
             </registry>
         </service>
        @endverbatim
-     * - <gui> </gui> : (mandatory) describe the interface of the service. It must contain a layout section.
-     * - <registry> </registry> : (mandatory) describe the service management.
-     *   - <menuItem> represents IActionSrv
-     *   - <menu> represents IMenuSrv
+     * - \<gui\> \</gui\> : (mandatory) describe the interface of the service. It must contain a layout section.
+     * - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *   - \<menuItem\> represents IActionSrv
+     *   - \<menu\> represents IMenuSrv
      *
      * @warning
      * - The number of item in the gui section must be <b> EQUAL </b> to the registry section.

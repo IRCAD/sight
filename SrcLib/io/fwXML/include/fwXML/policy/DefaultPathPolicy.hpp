@@ -17,7 +17,7 @@ namespace fwXML
 /**
  * @brief This class implements the IPathPolicy.
  *
- * Path : <className>_<Ptr>.xml
+ * Path : \<className\>_\<Ptr\>.xml
  *
  **/
 class FWXML_CLASS_API DefaultPathPolicy : public IPathPolicy
@@ -29,7 +29,7 @@ public :
      /**
       * @brief  defines a path to save an Object
      *
-     * Path : <className>_<UUID>.xml
+     * Path : \<className\>_\<UUID\>.xml
      *
      * @param obj object to save
      *

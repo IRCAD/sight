@@ -36,8 +36,8 @@ public:
 
     /**
      * @brief This method is used to compress (zip format) a folder
-     * @param[in] srcFolderName source folder path
-     * @param[in] destZipFileName file path resulting to folder compression
+     * @param[in] _srcFolderName source folder path
+     * @param[in] _destZipFileName file path resulting to folder compression
      * @return true if folder compression is a success
      * @see this method use wxDirTraverserZIP class to realize the directory exploration
      * @todo Set in parameter the compression rate.
@@ -46,8 +46,8 @@ public:
 
     /**
      * @brief This method is used to uncompress (zip format) a folder
-     * @param[in] srcZipFileName source zip folder path
-     * @param[in] destFolderName file path resulting to folder decompression
+     * @param[in] _srcZipFileName source zip folder path
+     * @param[in] _destFolderName file path resulting to folder decompression
      * @return true if folder decompression is a success
      */
     FWZIP_API bool unpackFolder( const ::boost::filesystem::path & _srcZipFileName, const ::boost::filesystem::path & _destFolderName );

@@ -85,8 +85,8 @@ public:
            </registry>
        </service>
        @endverbatim
-     *  - <layout type="::fwGui::TabLayoutManager" > : define a tab layout.
-     *  - <view caption="TabView1" selected="center" /> : define a new view which can have the following attributes
+     *  - \<layout type="::fwGui::TabLayoutManager" \> : define a tab layout.
+     *  - \<view caption="TabView1" selected="center" /\> : define a new view which can have the following attributes
      *   - \b caption : name of the view (display on the screen).
      *   - \b selected  {yes | no}: define if the tab is the current one.
      */

@@ -53,7 +53,6 @@ public:
      * An empty string returned means the tag is not found or empty.
      * The value is returned without binary space padding.
      *
-     * @param   a_tag   Dicom tag to set
      * @param   a_ds    Data set of tags
      *
      * @tparam  GRP     Group of the tag
@@ -536,7 +535,7 @@ public:
      *
      * @see     PS 3.3 C.17.3 and C.18.6
      *
-     * @param   a_sccord        SCOORD to save in data set.
+     * @param   a_scoord        SCOORD to save in data set.
      * @param   a_refFrames     Referenced Frame numbers to insert.
      * @param   a_classUID      Referenced SOP Class UID.
      * @param   a_instanceUID   Referenced SOP Instance UID.
@@ -552,6 +551,7 @@ public:
      *
      * @note    This SCOORD refers to an multi-frame image.
      *
+     * @param   a_scoord        SCOORD to save in data set.
      * @param   a_refFrames     Frame indexes of related image (equals to Z coordinates).
      * @param   a_classUID      Referenced SOP class UID of the image.
      * @param   a_instanceUID   Referenced SOP instance UID of the image.
@@ -568,7 +568,7 @@ public:
      *
      * @note    This SCOORD refers to an non multi-frame image.
      *
-     * @param   a_sccord        SCOORD to save in data set.
+     * @param   a_scoord        SCOORD to save in data set.
      * @param   a_classUID      Referenced SOP class UID of the frame.
      * @param   a_instanceUID   Referenced SOP instance UID of the frame.
      * @param   a_gDs           Data set where SCOORD node will be written.
