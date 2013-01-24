@@ -38,7 +38,7 @@ public :
        );
 
     fwDataObjectMacro();
-	fwCampMakeFriendDataMacro((fwData)(Color));
+    fwCampMakeFriendDataMacro((fwData)(Color));
 
     /**
      * @brief Constructor

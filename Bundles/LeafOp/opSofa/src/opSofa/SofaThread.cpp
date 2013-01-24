@@ -23,8 +23,8 @@ SofaThread::SofaThread(SofaBusiness* sofa, std::vector< ::fwData::Mesh::sptr > *
     this->meshs = meshs;
     this->service = service;
     this->msg = ::fwComEd::MeshMsg::New();
-	
-	stopRun = true;
+    
+    stopRun = true;
     // Create message
     msg->addEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED);
 
