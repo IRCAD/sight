@@ -1,9 +1,11 @@
 <plugin id="PoC05Kinect">
 
-  <extension id="PoC05Kinect" implements="::fwServices::ServiceObjectConfig">
+  <extension implements="::fwServices::registry::AppConfig">
+    <id>PoC05Kinect</id>
+    <type>parameters</type>
+    <config>
 
     <object type="::fwData::Composite">
-      <serviceList>
 
         <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
           <gui>
@@ -51,12 +53,10 @@
           <gui>
             <layout>
               <menuItem name="Start" shortcut="Ctrl+S" />
-              <!-- <menuItem name="Load scene" shortcut="Ctrl+L" /> -->
             </layout>
           </gui>
           <registry>
             <menuItem sid="mySofaWriterAction" start="no" />
-            <!-- <menuItem sid="mySofaReaderAction" start="no" /> -->
           </registry>
         </service>
 
@@ -80,8 +80,6 @@
           </registry>
         </service>
         
-      </serviceList>
-
       <!-- myPatientDB description -->
       <item key="myPatientDB">
         <object uid="myPatientDB" type="::fwData::PatientDB">
@@ -137,26 +135,7 @@
                            implementation="::gui::action::StarterActionService"
                            type="::fwGui::IActionSrv" autoComChannel="no" >
                   <start uid="mySofaWriter"/>
-                  <start uid="mySofaStart"/>
                   <start uid="myUpdaterComCannelSofa"/>
-                </service>
-
-                <service uid="mySofaReader"
-                           implementation="::opSofa::SofaSceneReaderSrv"
-                           type="::io::IReader" autoComChannel="no" >
-                </service>
-
-                <service uid="mySofaReaderAction"
-                                   implementation="::gui::action::StarterActionService"
-                                   type="::fwGui::IActionSrv" autoComChannel="no" >
-                          <start uid="mySofaReader"/>
-                          <start uid="mySofaStart"/>
-                          <start uid="myUpdaterComCannelSofa"/>
-                        </service>
-
-                <service uid="mySofaStart"
-                              implementation="::opSofa::SofaStartSrv"
-                              type="::fwGui::IActionSrv" autoComChannel="no" >
                 </service>
 
               </object>
@@ -175,30 +154,6 @@
               <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="myAcquisition">
                 <config renderer="default" picker="" />
               </adaptor>
-
-              <!-- <vtkObject id="tool1MatrixTransform" class="vtkTransform" />
-              <vtkObject id="tool2MatrixTransform" class="vtkTransform" />
-
-              <adaptor id="tool1MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="tool1Mesh">
-                <config renderer="default" picker="myPicker" transform="tool1MatrixTransform" />
-              </adaptor>
-
-              <adaptor id="tool2MeshAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="tool2Mesh">
-                <config renderer="default" picker="myPicker" transform="tool2MatrixTransform" />
-              </adaptor>
-
-              <adaptor id="tool1Widget" class="::opSofa::BoxWidget" objectId="view1">
-                <config renderer="default" transform="tool1MatrixTransform" scaleFactor="2.0" enableScaling="no" idMesh="souris_mors2" />
-              </adaptor>
-
-              <adaptor id="tool2Widget" class="::opSofa::BoxWidget" objectId="view1">
-                <config renderer="default" transform="tool2MatrixTransform" scaleFactor="2.0" enableScaling="no" idMesh="souris_cam" />
-              </adaptor> -->
-
-              <!-- <adaptor id="myWolrdAxes" class="::visuVTKAdaptor::Axes" objectId="self">
-                        <config renderer="default" length="5" label="no" />
-                      </adaptor> -->
-
             </scene>
           </service>
 
@@ -210,21 +165,6 @@
             </object>
           </item>
 
-          <!-- <item key="tool1Mesh">
-            <object uid="tool1Mesh" type="::fwData::TriangularMesh">
-              <service uid="tool1ReaderFile" implementation="::ioData::TriangularMeshReaderService" type="::io::IReader" autoComChannel="no" >
-                <filename>Bundles/opSofa_0-1/cam.trian</filename>
-              </service>
-            </object>
-          </item>
-
-          <item key="tool2Mesh">
-            <object uid="tool2Mesh" type="::fwData::TriangularMesh">
-              <service uid="tool2ReaderFile" implementation="::ioData::TriangularMeshReaderService" type="::io::IReader" autoComChannel="no" >
-                <filename>Bundles/opSofa_0-1/mors2.trian</filename>
-              </service>
-            </object>
-          </item> -->
         </object>
       </item>
 
@@ -233,20 +173,7 @@
       <start uid="myManager" />
       <start uid="myUpdaterComCannelAcq" />
       <start uid="newOBject2newPatientDB"/>
-      <!-- <start uid="tool1ReaderFile"/>
-      <start uid="tool2ReaderFile"/>
-
-      <update uid="tool1ReaderFile"/>
-      <update uid="tool2ReaderFile"/>
-
-      <stop uid="tool2ReaderFile"/>
-      <stop uid="tool1ReaderFile"/> -->
-      <stop uid="newOBject2newPatientDB"/>
-      <stop uid="myUpdaterComCannelAcq" />
-      <stop uid="myManager" />
-      <stop uid="myUpdaterAcq" />
-      <stop uid="MyIHM" />
-
     </object>
+    </config>
   </extension>
 </plugin>
