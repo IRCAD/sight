@@ -13,14 +13,19 @@
 namespace opKinect
 {
 
-
 /**
  * @brief Implements a plugin for the opKinect bundle.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
     ~Plugin() throw();
+    /**
+     * @brief start plugin
+     */
     void start() throw(::fwRuntime::RuntimeException);
+    /**
+     * @brief stop plugin
+     */
     void stop() throw();
 };
 

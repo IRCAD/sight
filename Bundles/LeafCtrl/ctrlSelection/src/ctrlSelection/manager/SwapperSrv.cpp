@@ -96,8 +96,21 @@ void SwapperSrv::info( std::ostream &_sstream )
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
-{
+{    
     SLM_TRACE_FUNC();
+
+    while( !m_objectConnections.empty())
+    {
+        this->removeConnections(m_objectConnections.begin()->first);
+    }
+    SLM_ASSERT("Connections must be empty", m_objectConnections.empty());
+
+    while( !m_proxyCtns.empty())
+    {
+        this->disconnectProxies(m_proxyCtns.begin()->first);
+    }
+    SLM_ASSERT("Proxy connections must be empty", m_proxyCtns.empty());
+
 
     BOOST_FOREACH(SubServicesMapType::value_type elt, m_objectsSubServices)
     {
@@ -116,18 +129,6 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
         }
     }
     m_objectsSubServices.clear();
-
-    while( !m_objectConnections.empty())
-    {
-        this->removeConnections(m_objectConnections.begin()->first);
-    }
-    SLM_ASSERT("Connections must be empty", m_objectConnections.empty());
-
-    while( !m_proxyCtns.empty())
-    {
-        this->disconnectProxies(m_proxyCtns.begin()->first);
-    }
-    SLM_ASSERT("Proxy connections must be empty", m_proxyCtns.empty());
 }
 
 //-----------------------------------------------------------------------------

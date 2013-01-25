@@ -26,11 +26,31 @@ public :
     virtual ~KinectSrv() throw() ;
 
 protected:
+    /**
+     * @brief Used to define the service parameters and analyze its configuration.
+     */
     void configuring() throw ( ::fwTools::Failed );
-    void starting() throw ( ::fwTools::Failed );
+    /**
+     * @brief Used to launch the service.
+     */
+    void starting() throw ( ::fwTools::Failed );    
+    /**
+     * @brief Used to stop the service.
+     */
     void stopping() throw ( ::fwTools::Failed );
+    /**
+     * @brief Called to do an action on the data associated to the service.
+     */
     void updating() throw ( ::fwTools::Failed );
-    void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+    /**
+     * @brief Called by a data to notify a service.
+     *
+     * @param msg : Incoming message
+     */
+    void receiving( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+    /**
+     * @brief info of the class
+     */
     void info ( std::ostream &_sstream ) ;
     
 private :

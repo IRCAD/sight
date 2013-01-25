@@ -24,4 +24,5 @@ BUNDLES = [
     'ctrlSelection_0-1'      ,
     'opSofa_0-1'             ,
     'opKinect_0-1'           ,
+    'appXml_0-1'             ,
 ]

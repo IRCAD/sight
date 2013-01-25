@@ -52,10 +52,14 @@ void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext,
     ::fwData::Integer::NewSptr v2(pContext->ptPosition.Y);
     ::fwData::Integer::NewSptr v3(pContext->ptPosition.Z);
     ::fwData::Integer::NewSptr v4(pContext->nID);
-    data->push_back(v1);
-    data->push_back(v2);
-    data->push_back(v3);
-    data->push_back(v4);
+
+    std::vector<::fwData::Integer::sptr> points;
+    points.push_back(v1);
+    points.push_back(v2);
+    points.push_back(v3);
+    points.push_back(v4);
+
+    data->setDataContainer(points);
 
     // Notification
     ::fwServices::ObjectMsg::NewSptr msg;

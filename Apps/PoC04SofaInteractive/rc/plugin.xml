@@ -129,27 +129,12 @@
                            impl="::gui::action::StarterActionService"
                            type="::fwGui::IActionSrv" autoConnect="no" >
                   <start uid="mySofaWriter"/>
-                  <start uid="mySofaStart"/>
                 </service>
-
-                <!-- <service uid="mySofaReader"
-                                     impl="::opSofa::SofaSceneReaderSrv"
-                                   type="::io::IReader" autoConnect="no" >
-                        </service> -->
-
-                <!-- <service   uid="mySofaReaderAction"
-                                   impl="::gui::action::StarterActionService"
-                                   type="::fwGui::IActionSrv" autoConnect="no" >
-                          <start uid="mySofaReader"/>
-                          <start uid="mySofaStart"/>
-                          <start uid="myUpdaterComChannelSofa"/>
-                        </service> -->
 
                 <service uid="mySofaStart"
                               impl="::opSofa::SofaStartSrv"
                               type="::fwGui::IActionSrv" autoConnect="no" >
                 </service>
-
 
                 <proxy channel="MatrixUpdateChannel">
                     <signal>view1/objectModified</signal>
