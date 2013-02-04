@@ -75,7 +75,9 @@ int Plugin::run() throw()
 
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
     int result = ::boost::any_cast<int>(m_workerQt->getFuture().get());
+#ifdef _WIN32
     m_workerQt.reset();
+#endif
     return result;
 }
 
