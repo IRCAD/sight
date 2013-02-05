@@ -111,6 +111,7 @@ void PlaneInteractor::configuring() throw(fwTools::Failed)
 
 void PlaneInteractor::doStart() throw(fwTools::Failed)
 {
+    m_vtkObserver = NULL;
     if (::fwData::Plane::dynamicCast(this->getObject()))
     {
         PlaneInteractorCallback *observer = PlaneInteractorCallback::New();
