@@ -88,6 +88,7 @@ protected :
 PlaneInteractor::PlaneInteractor() throw()
 {
     m_priority = 1;
+    m_vtkObserver = NULL;
     //handlingEventOff();
 }
 
@@ -111,7 +112,7 @@ void PlaneInteractor::configuring() throw(fwTools::Failed)
 
 void PlaneInteractor::doStart() throw(fwTools::Failed)
 {
-    m_vtkObserver = NULL;
+
     if (::fwData::Plane::dynamicCast(this->getObject()))
     {
         PlaneInteractorCallback *observer = PlaneInteractorCallback::New();
