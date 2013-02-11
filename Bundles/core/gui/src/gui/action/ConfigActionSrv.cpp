@@ -39,8 +39,8 @@ ConfigActionSrv::~ConfigActionSrv() throw()
 void ConfigActionSrv::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    this->::fwGui::IActionSrv::actionServiceStarting();
     m_connections = ::fwServices::helper::SigSlotConnection::New();
+    this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
