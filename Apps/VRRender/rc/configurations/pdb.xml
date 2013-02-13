@@ -1,0 +1,57 @@
+
+<extension implements="::fwServices::registry::AppConfig">
+    <id>PDBVRRender</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="appName" />
+        <param name="appIconPath" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <xi:include href="MenuAndViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+            <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <gui>
+                    <frame>
+                        <name>${appName}</name>
+                        <icon>${appIconPath}</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menuBar />
+                    <toolBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <toolBar sid="toolBar" start="yes" />
+                    <view sid="view" start="yes" />
+                </registry>
+            </service>
+                
+<!-- 
+            <item key="activitySeries">
+                <object uid="activitySeries" type="::fwActivities::ActivitySeries">
+                </object>
+            </item>
+ -->
+ 
+<!-- 
+            <item key="medicalData">
+                <object uid="medicalData" type="::fwMedData::MedicalData">
+                    <service uid="selector" .../>
+                </object>
+            </item>
+ -->
+            <item key="selections">
+                <object uid="selections" type="::fwData::Vector">                 
+
+                </object>
+            </item>
+
+            <start uid="mainFrame" />
+
+        </object>
+
+    </config>
+</extension>
