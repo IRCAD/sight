@@ -21,7 +21,7 @@ namespace fwMedData
 
 class Patient;
 class Study;
-class Equipement;
+class Equipment;
 
 /**
  * @class Series
@@ -55,7 +55,7 @@ public:
 
     fwDataGetSetSptrMacro(Patient, SPTR(::fwMedData::Patient));
     fwDataGetSetSptrMacro(Study, SPTR(::fwMedData::Study));
-    fwDataGetSetSptrMacro(Equipement, SPTR(::fwMedData::Equipement));
+    fwDataGetSetSptrMacro(Equipment, SPTR(::fwMedData::Equipment));
 
     fwDataGetSetCRefMacro(InstanceUID, DicomValueType);
     fwDataGetSetCRefMacro(Modality, DicomValueType);
@@ -68,7 +68,7 @@ protected:
 
     SPTR(Patient) m_attrPatient;
     SPTR(Study) m_attrStudy;
-    SPTR(Equipement) m_attrEquipement;
+    SPTR(Equipment) m_attrEquipment;
 
     DicomValueType m_attrInstanceUID;
     DicomValueType m_attrModality;

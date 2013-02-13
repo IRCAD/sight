@@ -7,25 +7,25 @@
 
 #include "fwData/registry/macros.hpp"
 
-#include "fwMedData/Equipement.hpp"
+#include "fwMedData/Equipment.hpp"
 
-fwDataRegisterMacro( ::fwMedData::Equipement );
+fwDataRegisterMacro( ::fwMedData::Equipment );
 
 namespace fwMedData
 {
 
-Equipement::Equipement(::fwData::Object::Key key)
+Equipment::Equipment(::fwData::Object::Key key)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Equipement::~Equipement()
+Equipment::~Equipment()
 {}
 
 //------------------------------------------------------------------------------
 
-void Equipement::shallowCopy(Equipement::csptr _src)
+void Equipment::shallowCopy(Equipment::csptr _src)
 {
     this->fieldShallowCopy( _src );
     m_attrInstitutionName = _src->m_attrInstitutionName;
@@ -33,7 +33,7 @@ void Equipement::shallowCopy(Equipement::csptr _src)
 
 //------------------------------------------------------------------------------
 
-void Equipement::deepCopy(Equipement::csptr _src)
+void Equipment::deepCopy(Equipment::csptr _src)
 {
     this->fieldDeepCopy( _src );
     m_attrInstitutionName = _src->m_attrInstitutionName;

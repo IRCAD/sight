@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATA_EQUIPEMENT_HPP__
-#define __FWMEDDATA_EQUIPEMENT_HPP__
+#ifndef __FWMEDDATA_EQUIPMENT_HPP__
+#define __FWMEDDATA_EQUIPMENT_HPP__
 
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
@@ -14,23 +14,23 @@
 #include "fwMedData/types.hpp"
 #include "fwMedData/config.hpp"
 
-fwCampAutoDeclareDataMacro((fwMedData)(Equipement), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(Equipment), FWMEDDATA_API);
 
 namespace fwMedData
 {
 
 /**
- * @class Equipement
+ * @class Equipment
  *
  * @author  IRCAD (Research and Development Team).
  */
-class FWMEDDATA_CLASS_API Equipement : public ::fwData::Object
+class FWMEDDATA_CLASS_API Equipment : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Equipement)(::fwData::Object), (()), ::fwData::factory::New< Equipement >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Equipment)(::fwData::Object), (()), ::fwData::factory::New< Equipment >) ;
 
-    fwCampMakeFriendDataMacro((fwMedData)(Equipement));
+    fwCampMakeFriendDataMacro((fwMedData)(Equipment));
 
     fwDataObjectMacro();
 
@@ -38,16 +38,16 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    FWMEDDATA_API Equipement(::fwData::Object::Key key);
+    FWMEDDATA_API Equipment(::fwData::Object::Key key);
 
     /// Destructor
-    FWMEDDATA_API virtual ~Equipement();
+    FWMEDDATA_API virtual ~Equipment();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( Equipement::csptr _source );
+    FWMEDDATA_API void shallowCopy( Equipment::csptr _source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( Equipement::csptr _source );
+    FWMEDDATA_API void deepCopy( Equipment::csptr _source );
 
     fwDataSetCRefMacro(InstitutionName, DicomValueType);
 
@@ -58,6 +58,6 @@ protected:
 
 }   //end namespace fwMedData
 
-#endif // __FWMEDDATA_EQUIPEMENT_HPP__
+#endif // __FWMEDDATA_EQUIPMENT_HPP__
 
 

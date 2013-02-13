@@ -9,7 +9,7 @@
 
 #include "fwMedData/Patient.hpp"
 #include "fwMedData/Study.hpp"
-#include "fwMedData/Equipement.hpp"
+#include "fwMedData/Equipment.hpp"
 #include "fwMedData/Series.hpp"
 
 fwDataRegisterMacro( ::fwMedData::Series );
@@ -34,7 +34,7 @@ void Series::shallowCopy(Series::csptr _src)
 
     m_attrPatient = _src->m_attrPatient;
     m_attrStudy = _src->m_attrStudy;
-    m_attrEquipement = _src->m_attrEquipement;
+    m_attrEquipment = _src->m_attrEquipment;
 
     m_attrInstanceUID = _src->m_attrInstanceUID;
     m_attrModality = _src->m_attrModality;
@@ -52,7 +52,7 @@ void Series::deepCopy(Series::csptr _src)
 
     m_attrPatient = ::fwData::Object::copy(_src->m_attrPatient);
     m_attrStudy = ::fwData::Object::copy(_src->m_attrStudy);
-    m_attrEquipement = ::fwData::Object::copy(_src->m_attrEquipement);
+    m_attrEquipment = ::fwData::Object::copy(_src->m_attrEquipment);
 
     m_attrInstanceUID = _src->m_attrInstanceUID;
     m_attrModality = _src->m_attrModality;
