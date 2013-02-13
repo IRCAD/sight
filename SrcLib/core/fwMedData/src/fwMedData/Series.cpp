@@ -12,7 +12,6 @@
 #include "fwMedData/Equipment.hpp"
 #include "fwMedData/Series.hpp"
 
-fwDataRegisterMacro( ::fwMedData::Series );
 
 namespace fwMedData
 {
