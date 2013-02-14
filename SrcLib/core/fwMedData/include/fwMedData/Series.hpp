@@ -61,8 +61,9 @@ public:
     fwDataGetSetCRefMacro(Modality, DicomValueType);
     fwDataGetSetCRefMacro(Date, DicomValueType);
     fwDataGetSetCRefMacro(Time, DicomValueType);
-    fwDataGetSetCRefMacro(PerformingPhysiciansName, DicomValueType);
     fwDataGetSetCRefMacro(Description, DicomValueType);
+
+    fwDataGetSetCRefMacro(PerformingPhysiciansName, DicomValuesType);
 
 protected:
 
@@ -74,8 +75,9 @@ protected:
     DicomValueType m_attrModality;
     DicomValueType m_attrDate;
     DicomValueType m_attrTime;
-    DicomValueType m_attrPerformingPhysiciansName;
     DicomValueType m_attrDescription;
+
+    DicomValuesType m_attrPerformingPhysiciansName;
 };
 
 }   //end namespace fwMedData

@@ -12,6 +12,7 @@
 namespace fwMedData
 {
     typedef std::string DicomValueType;
+    typedef std::vector<DicomValueType> DicomValuesType;
 
 }//end namespace fwMedData
 
