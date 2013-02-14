@@ -1,0 +1,15 @@
+
+CLASSTEST = [
+            'SeriesPropertiesTest',
+            ]
+
+USE = ['boost',]
+LIB = [
+      'fwData_0-1', 
+      'fwMedData_0-1',
+      'fwDataCamp_0-1',
+      'fwAtoms_0-1',
+      'fwAtomConversion_0-1',
+      'fwDataTools_0-1'
+      ]
+CONSOLE = 'yes'
