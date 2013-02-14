@@ -1,6 +1,11 @@
 
 CLASSTEST = [
-            'SeriesPropertiesTest',
+            'EquipmentTest',
+            'ImageTest',
+            'ModelTest',
+            'PatientTest',
+            'StudyTest',
+            'MedDataCampHelper',
             ]
 
 USE = ['boost',]
