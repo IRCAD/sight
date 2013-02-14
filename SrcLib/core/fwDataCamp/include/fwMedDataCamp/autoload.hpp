@@ -13,6 +13,7 @@
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/SeriesContainer.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
@@ -31,6 +32,7 @@ struct runner
         localDeclarefwMedDataStudy();
         localDeclarefwMedDataPatient();
         localDeclarefwMedDataSeries();
+        localDeclarefwMedDataSeriesContainer();
         localDeclarefwMedDataImageSeries();
         localDeclarefwMedDataModelSeries();
     }
