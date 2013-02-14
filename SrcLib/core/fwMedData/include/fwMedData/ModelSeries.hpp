@@ -60,7 +60,7 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( ModelSeries::csptr _source );
 
-    fwDataSetCRefMacro(ReconstructionDB, ReconstructionVectorType);
+    fwDataGetSetCRefMacro(ReconstructionDB, ReconstructionVectorType);
 
 
 protected:

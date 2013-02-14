@@ -49,12 +49,12 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( Study::csptr _source );
 
-    fwDataSetCRefMacro(InstanceUID, DicomValueType);
-    fwDataSetCRefMacro(Date, DicomValueType);
-    fwDataSetCRefMacro(Time, DicomValueType);
-    fwDataSetCRefMacro(ReferringPhysicianName, DicomValueType);
-    fwDataSetCRefMacro(Description, DicomValueType);
-    fwDataSetCRefMacro(PatientAge, DicomValueType);
+    fwDataGetSetCRefMacro(InstanceUID, DicomValueType);
+    fwDataGetSetCRefMacro(Date, DicomValueType);
+    fwDataGetSetCRefMacro(Time, DicomValueType);
+    fwDataGetSetCRefMacro(ReferringPhysicianName, DicomValueType);
+    fwDataGetSetCRefMacro(Description, DicomValueType);
+    fwDataGetSetCRefMacro(PatientAge, DicomValueType);
 
 protected:
 

@@ -49,7 +49,7 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( Equipment::csptr _source );
 
-    fwDataSetCRefMacro(InstitutionName, DicomValueType);
+    fwDataGetSetCRefMacro(InstitutionName, DicomValueType);
 
 protected:
 
