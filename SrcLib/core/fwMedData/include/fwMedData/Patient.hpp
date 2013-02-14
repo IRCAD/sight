@@ -21,8 +21,9 @@ namespace fwMedData
 
 /**
  * @class Patient
+ * Holds patient information
  *
- * @author  IRCAD (Research and Development Team).
+ * @author IRCAD (Research and Development Team).
  */
 class FWMEDDATA_CLASS_API Patient : public ::fwData::Object
 {
@@ -49,16 +50,49 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( Patient::csptr _source );
 
+    /**
+     * @name Getters/Setters
+     * @{ */
+
+    /**
+     * @brief Patient's full name (0010,0010)
+     * @{ */
     fwDataGetSetCRefMacro(Name, DicomValueType);
+    /**  @} */
+
+    /**
+     * @brief Primary hospital identification number or code for the patient (0010,0020)
+     * @{ */
     fwDataGetSetCRefMacro(Id, DicomValueType);
+    /**  @} */
+
+    /**
+     * @brief Birthdate of the patient (0010,0030) 
+     * @{ */
     fwDataGetSetCRefMacro(Birthdate, DicomValueType);
+    /**  @} */
+
+    /**
+     * @brief Sex of the named patient (0010,0040)
+     * Enumerated Values: M = male, F = female, O = other
+     * @{ */
     fwDataGetSetCRefMacro(Sex, DicomValueType);
+    /**  @} */
+
+    /**  @} */
 
 protected:
 
+    /// Full name
     DicomValueType m_attrName;
+
+    /// Primary hospital identification
     DicomValueType m_attrId;
+
+    /// Birthdate
     DicomValueType m_attrBirthdate;
+
+    /// Patient's sex
     DicomValueType m_attrSex;
 };
 

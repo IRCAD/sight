@@ -28,6 +28,7 @@ namespace fwMedData
 
 /**
  * @class ImageSeries
+ * Holds images data
  *
  * @author  IRCAD (Research and Development Team).
  */
@@ -56,9 +57,21 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( ImageSeries::csptr _source );
 
+    /**
+     * @name Getters / Setters
+     * @{ */
+
+    /**
+     * @brief Image container
+     * @{ */
     fwDataGetSetSptrMacro(Image, SPTR(::fwData::Image));
+    /**  @} */
+
+    /**  @} */
 
 protected:
+
+    /// Image container
     SPTR(::fwData::Image) m_attrImage;
 
 };

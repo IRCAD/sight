@@ -30,6 +30,7 @@ namespace fwMedData
 
 /**
  * @class ModelSeries
+ * Holds models data 
  *
  * @author  IRCAD (Research and Development Team).
  */
@@ -60,11 +61,23 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( ModelSeries::csptr _source );
 
+    /**
+     * @name Getters / Setters
+     * @{ */
+
+    /**
+     * @brief Model container
+     * @{ */
     fwDataGetSetCRefMacro(ReconstructionDB, ReconstructionVectorType);
+    /**  @} */
+
+    /**  @} */
 
 
 protected:
-     ReconstructionVectorType m_attrReconstructionDB;
+
+    /// Model container
+    ReconstructionVectorType m_attrReconstructionDB;
 
 };
 

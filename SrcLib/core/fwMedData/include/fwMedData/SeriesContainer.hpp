@@ -25,6 +25,7 @@ class Series;
 
 /**
  * @class SeriesContainer
+ * Holds series data
  *
  * @author  IRCAD (Research and Development Team).
  */
@@ -99,11 +100,23 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( SeriesContainer::csptr _source );
 
+
+    /**
+     * @name Getters / Setters
+     * @{ */
+
+    /**
+     * @brief Series container
+     * @{ */
     ContainerType &getContainer(){ return m_attrContainer; };
     fwDataGetSetCRefMacro(Container, ContainerType);
+    /**  @} */
+
+    /**  @} */
 
 protected:
 
+    /// Series container
     ContainerType m_attrContainer;
 
 };

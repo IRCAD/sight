@@ -21,8 +21,9 @@ namespace fwMedData
 
 /**
  * @class Equipment
+ * Holds equipment information
  *
- * @author  IRCAD (Research and Development Team).
+ * @author IRCAD (Research and Development Team).
  */
 class FWMEDDATA_CLASS_API Equipment : public ::fwData::Object
 {
@@ -49,10 +50,21 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( Equipment::csptr _source );
 
+    /**
+     * @name Getters / Setters
+     * @{ */
+
+    /**
+     * @brief Institution where the equipment that produced the composite instances is located (0008,0080)
+     * @{ */
     fwDataGetSetCRefMacro(InstitutionName, DicomValueType);
+    /**  @} */
+
+    /**  @} */
 
 protected:
 
+    /// Institution name
     DicomValueType m_attrInstitutionName;
 };
 

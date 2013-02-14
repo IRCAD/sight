@@ -21,8 +21,9 @@ namespace fwMedData
 
 /**
  * @class Study
+ * Holds study information
  *
- * @author  IRCAD (Research and Development Team).
+ * @author IRCAD (Research and Development Team).
  */
 class FWMEDDATA_CLASS_API Study : public ::fwData::Object
 {
@@ -49,20 +50,66 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( Study::csptr _source );
 
+    /**
+     * @name Getters/Setters
+     * @{ */
+
+    /**
+     * @brief Unique identifier of the Study (0020,000D)
+     * @{ */
     fwDataGetSetCRefMacro(InstanceUID, DicomValueType);
+    /**  @} */
+
+    /**
+     * @brief Date the Study started (0008,0020)
+     * @{ */
     fwDataGetSetCRefMacro(Date, DicomValueType);
+    /**  @} */
+
+    /**
+     * @brief Time the Study started (0008,0030)
+     * @{ */
     fwDataGetSetCRefMacro(Time, DicomValueType);
+    /**  @} */
+
+    /**
+     * @brief Name of the patient's referring physician (0008,0090)
+     * @{ */
     fwDataGetSetCRefMacro(ReferringPhysicianName, DicomValueType);
+    /**  @} */
+
+    /**
+     * @brief Institution-generated description or classification of the Study (component) performed (0008,1030)
+     * @{ */
     fwDataGetSetCRefMacro(Description, DicomValueType);
+    /**  @} */
+
+    /**
+     * @brief Age of the Patient (0010,1010)
+     * @{ */
     fwDataGetSetCRefMacro(PatientAge, DicomValueType);
+    /**  @} */
+
+    /**  @} */
 
 protected:
 
+    /// Study unique identifier
     DicomValueType m_attrInstanceUID;
+
+    /// Date
     DicomValueType m_attrDate;
+
+    /// Time
     DicomValueType m_attrTime;
+
+    /// Referring physician name
     DicomValueType m_attrReferringPhysicianName;
+
+    /// Description
     DicomValueType m_attrDescription;
+
+    /// Patient age
     DicomValueType m_attrPatientAge;
 };
 
