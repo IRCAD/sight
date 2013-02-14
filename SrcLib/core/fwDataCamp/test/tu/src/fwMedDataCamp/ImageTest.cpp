@@ -6,7 +6,6 @@
 
 #include <boost/assign/std/vector.hpp>
 
-#include <fwData/GenericFieldBase.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 

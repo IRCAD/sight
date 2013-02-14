@@ -7,6 +7,8 @@
 #ifndef __FWMEDDATACAMP_UT_MEDDATACAMPHELPER_HPP__
 #define __FWMEDDATACAMP_UT_MEDDATACAMPHELPER_HPP__
 
+#include <fwData/Object.hpp>
+
 namespace fwMedDataCamp
 {
 namespace ut

@@ -7,8 +7,8 @@
 #include <vector>
 #include <boost/assign/std/vector.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
 #include <fwData/GenericFieldBase.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
 #include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 

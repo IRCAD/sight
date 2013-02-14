@@ -6,8 +6,6 @@
 
 #include <boost/assign/std/vector.hpp>
 
-#include <fwData/GenericFieldBase.hpp>
-
 #include <fwDataCamp/Version.hpp>
 #include <fwMedData/Study.hpp>
 

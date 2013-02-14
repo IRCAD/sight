@@ -7,47 +7,53 @@
 #include <boost/assign/std/vector.hpp>
 
 #include <fwDataCamp/Version.hpp>
-#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/SeriesContainer.hpp>
 
-#include "fwMedDataCamp/EquipmentTest.hpp"
+#include "fwMedDataCamp/SeriesContainerTest.hpp"
 #include "fwMedDataCamp/MedDataCampHelper.hpp"
 
 using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::EquipmentTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::SeriesContainerTest );
 
 namespace fwMedDataCamp
 {
 namespace ut
 {
 
-void EquipmentTest::setUp()
+void SeriesContainerTest::setUp()
 {
     // Set up context before running a test.
     //Force link with fwDataCamp
     const int version = ::fwDataCamp::Version::s_CURRENT_VERSION;
 }
 
-void EquipmentTest::tearDown()
+void SeriesContainerTest::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void EquipmentTest::propertiesTest()
+void SeriesContainerTest::propertiesTest()
 {
-    const std::string institution_name = "IHU Strasbourg / IRCAD";
     const MedDataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                        ("institution_name");
+                                                                        ("values");
 
-    ::fwMedData::Equipment::sptr obj = ::fwMedData::Equipment::New();
-    obj->setInstitutionName(institution_name);
+    ::fwMedData::SeriesContainer::sptr obj = ::fwMedData::SeriesContainer::New();
+    ::fwMedData::SeriesContainer::ContainerType vectSeries;
+    vectSeries.push_back(::fwMedData::ImageSeries::New());
+    vectSeries.push_back(::fwMedData::ImageSeries::New());
+    vectSeries.push_back(::fwMedData::ModelSeries::New());
+    obj->setContainer(vectSeries);
 
     MedDataCampHelper::visitProperties(obj->getClassname(), dataProperties);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@institution_name", institution_name);
-
+    MedDataCampHelper::compareObjectPropertyValue(obj, "@values.0", vectSeries[0]);
+    MedDataCampHelper::compareObjectPropertyValue(obj, "@values.1", vectSeries[1]);
+    MedDataCampHelper::compareObjectPropertyValue(obj, "@values.2", vectSeries[2]);
 }
 
 //------------------------------------------------------------------------------
