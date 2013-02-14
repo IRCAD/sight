@@ -28,11 +28,11 @@ struct runner
     runner()
     {
         localDeclarefwMedDataEquipment();
-        localDeclarefwMedDataImageSeries();
-        localDeclarefwMedDataModelSeries();
+        localDeclarefwMedDataStudy();
         localDeclarefwMedDataPatient();
         localDeclarefwMedDataSeries();
-        localDeclarefwMedDataStudy();
+        localDeclarefwMedDataImageSeries();
+        localDeclarefwMedDataModelSeries();
     }
 
     static runner r;
