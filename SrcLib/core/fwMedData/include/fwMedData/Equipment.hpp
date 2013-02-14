@@ -28,7 +28,7 @@ class FWMEDDATA_CLASS_API Equipment : public ::fwData::Object
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (Equipment)(::fwData::Object) );
+    fwCoreClassDefinitionsWithFactoryMacro( (Equipment)(::fwData::Object), (()), ::fwData::factory::New< Equipment >) ;
 
     fwCampMakeFriendDataMacro((fwMedData)(Equipment));
 

@@ -53,9 +53,9 @@ public:
     /// Defines deep copy
     FWMEDDATA_API void deepCopy( Series::csptr _source );
 
-    fwDataGetSetSptrMacro(Patient, SPTR(::fwMedData::Patient));
-    fwDataGetSetSptrMacro(Study, SPTR(::fwMedData::Study));
-    fwDataGetSetSptrMacro(Equipment, SPTR(::fwMedData::Equipment));
+    fwDataGetSptrMacro(Patient, SPTR(::fwMedData::Patient));
+    fwDataGetSptrMacro(Study, SPTR(::fwMedData::Study));
+    fwDataGetSptrMacro(Equipment, SPTR(::fwMedData::Equipment));
 
     fwDataGetSetCRefMacro(InstanceUID, DicomValueType);
     fwDataGetSetCRefMacro(Modality, DicomValueType);

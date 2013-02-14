@@ -16,7 +16,10 @@
 namespace fwMedData
 {
 
-Series::Series(::fwData::Object::Key key)
+Series::Series(::fwData::Object::Key key) :
+        m_attrPatient(::fwMedData::Patient::New()),
+        m_attrStudy(::fwMedData::Study::New()),
+        m_attrEquipment(::fwMedData::Equipment::New())
 {
 }
 
