@@ -10,6 +10,7 @@
 #include "fwMedData/Series.hpp"
 #include "fwMedData/SeriesDB.hpp"
 
+fwDataRegisterMacro( ::fwMedData::SeriesDB );
 
 namespace fwMedData
 {
