@@ -1,0 +1,15 @@
+<plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin">
+    <library name="uiMedDataQt"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SSelector</service>
+        <object>::fwMedData::SeriesDB</object>
+    </extension>
+                
+</plugin>
