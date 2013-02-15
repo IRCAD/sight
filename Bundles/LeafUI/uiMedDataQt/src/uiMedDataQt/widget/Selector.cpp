@@ -60,7 +60,7 @@ void Selector::addSeries(::fwMedData::Series::sptr series)
         ::fwMedData::Equipment::sptr equipment = series->getEquipment();
 
         QStandardItem *patientName = new QStandardItem( QString::fromStdString(patient->getName()) );
-        QStandardItem *patientId   = new QStandardItem( QString::fromStdString(patient->getId()) );
+        QStandardItem *patientId   = new QStandardItem( QString::fromStdString(patient->getPatientId()) );
         QStandardItem *patientBirthdate   = new QStandardItem( QString::fromStdString(patient->getBirthdate()) );
         QStandardItem *patientSex   = new QStandardItem( QString::fromStdString(patient->getSex()) );
 
