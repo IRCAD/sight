@@ -11,6 +11,10 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesContainer.hpp>
 
+#include <fwAtoms/Sequence.hpp>
+#include <fwAtomConversion/AtomHelper.hpp>
+#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+
 #include "fwMedDataCamp/SeriesContainerTest.hpp"
 #include "fwMedDataCamp/MedDataCampHelper.hpp"
 
@@ -54,6 +58,20 @@ void SeriesContainerTest::propertiesTest()
     MedDataCampHelper::compareObjectPropertyValue(obj, "@values.0", vectSeries[0]);
     MedDataCampHelper::compareObjectPropertyValue(obj, "@values.1", vectSeries[1]);
     MedDataCampHelper::compareObjectPropertyValue(obj, "@values.2", vectSeries[2]);
+
+    ::fwAtomConversion::AtomHelper metaHelper;
+    ::fwAtoms::Object::sptr metaObject = metaHelper.dataToMeta(obj);
+    ::fwAtoms::Object::Attributes attrs = metaObject->getAttributes();
+
+    CPPUNIT_ASSERT_MESSAGE("Attributes values not found in SeriesContainer atom",
+                           attrs.find("values") != attrs.end());
+
+    ::fwAtoms::Base::sptr baseAtom = metaObject->getAttribut("values");
+    CPPUNIT_ASSERT_MESSAGE("Bad Atom SeriesContainer conversion", baseAtom->isSequence());
+
+    ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast(baseAtom);
+    CPPUNIT_ASSERT_MESSAGE("Sequence dynamicCast failed", seqAtom);
+    CPPUNIT_ASSERT_EQUAL( vectSeries.size(), seqAtom->getValue().size());
 }
 
 //------------------------------------------------------------------------------
