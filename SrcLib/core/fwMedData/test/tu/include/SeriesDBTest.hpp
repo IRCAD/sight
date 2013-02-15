@@ -4,21 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATA_UT_SERIESCONTAINERTEST_HPP__
-#define __FWMEDDATA_UT_SERIESCONTAINERTEST_HPP__
+#ifndef __FWMEDDATA_UT_SERIESDBTEST_HPP__
+#define __FWMEDDATA_UT_SERIESDBTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwMedData
 {
-    class SeriesContainer;
+    class SeriesDB;
 
 namespace ut
 {
 
-class SeriesContainerTest : public CPPUNIT_NS::TestFixture
+class SeriesDBTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( SeriesContainerTest );
+    CPPUNIT_TEST_SUITE( SeriesDBTest );
 
     CPPUNIT_TEST(containerTest);
 
@@ -30,15 +30,15 @@ public:
     void tearDown();
 
     void containerTest();
-    
+
 protected:
 
-    SPTR(::fwMedData::SeriesContainer) m_series;
+    SPTR(::fwMedData::SeriesDB) m_series;
 
 };
 
 } //namespace ut
 } //namespace fwMedData
 
-#endif //__FWMEDDATA_UT_SERIESCONTAINERTEST_HPP__
+#endif //__FWMEDDATA_UT_SERIESDBTEST_HPP__
 

@@ -6,7 +6,7 @@ CLASSTEST=[
     'ImageSeriesTest',
     'ModelSeriesTest',
     'SeriesTest',
-    'SeriesContainerTest',
+    'SeriesDBTest',
 ]
 
 USE = ['boost', 'cppunit']

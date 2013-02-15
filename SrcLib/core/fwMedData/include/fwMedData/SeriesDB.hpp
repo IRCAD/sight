@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATA_SERIESCONTAINER_HPP__
-#define __FWMEDDATA_SERIESCONTAINER_HPP__
+#ifndef __FWMEDDATA_SERIESDB_HPP__
+#define __FWMEDDATA_SERIESDB_HPP__
 
 #include <vector>
 
@@ -16,7 +16,7 @@
 #include "fwMedData/types.hpp"
 #include "fwMedData/config.hpp"
 
-fwCampAutoDeclareDataMacro((fwMedData)(SeriesContainer), FWMEDDATA_API);
+fwCampAutoDeclareDataMacro((fwMedData)(SeriesDB), FWMEDDATA_API);
 
 namespace fwMedData
 {
@@ -24,18 +24,18 @@ namespace fwMedData
 class Series;
 
 /**
- * @class SeriesContainer
+ * @class SeriesDB
  * Holds series data
  *
  * @author  IRCAD (Research and Development Team).
  */
-class FWMEDDATA_CLASS_API SeriesContainer : public ::fwData::Object
+class FWMEDDATA_CLASS_API SeriesDB : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesContainer)(::fwData::Object), (()), ::fwData::factory::New< SeriesContainer >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (SeriesDB)(::fwData::Object), (()), ::fwData::factory::New< SeriesDB >) ;
 
-    fwCampMakeFriendDataMacro((fwMedData)(SeriesContainer));
+    fwCampMakeFriendDataMacro((fwMedData)(SeriesDB));
 
     fwDataObjectMacro();
 
@@ -89,16 +89,16 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    FWMEDDATA_API SeriesContainer(::fwData::Object::Key key);
+    FWMEDDATA_API SeriesDB(::fwData::Object::Key key);
 
     /// Destructor
-    FWMEDDATA_API virtual ~SeriesContainer();
+    FWMEDDATA_API virtual ~SeriesDB();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( SeriesContainer::csptr _source );
+    FWMEDDATA_API void shallowCopy( SeriesDB::csptr _source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( SeriesContainer::csptr _source );
+    FWMEDDATA_API void deepCopy( SeriesDB::csptr _source );
 
 
     /**
@@ -123,6 +123,6 @@ protected:
 
 }   //end namespace fwMedData
 
-#endif // __FWMEDDATA_SERIESCONTAINER_HPP__
+#endif // __FWMEDDATA_SERIESDB_HPP__
 
 

@@ -8,23 +8,23 @@
 #include "fwData/registry/macros.hpp"
 
 #include "fwMedData/Series.hpp"
-#include "fwMedData/SeriesContainer.hpp"
+#include "fwMedData/SeriesDB.hpp"
 
 
 namespace fwMedData
 {
 
-SeriesContainer::SeriesContainer(::fwData::Object::Key key)
+SeriesDB::SeriesDB(::fwData::Object::Key key)
 {}
 
 //------------------------------------------------------------------------------
 
-SeriesContainer::~SeriesContainer()
+SeriesDB::~SeriesDB()
 {}
 
 //------------------------------------------------------------------------------
 
-void SeriesContainer::shallowCopy(SeriesContainer::csptr _src)
+void SeriesDB::shallowCopy(SeriesDB::csptr _src)
 {
     this->fieldShallowCopy( _src );
 
@@ -33,7 +33,7 @@ void SeriesContainer::shallowCopy(SeriesContainer::csptr _src)
 
 //------------------------------------------------------------------------------
 
-void SeriesContainer::deepCopy(SeriesContainer::csptr _src)
+void SeriesDB::deepCopy(SeriesDB::csptr _src)
 {
     this->fieldDeepCopy( _src );
     m_attrContainer.clear();

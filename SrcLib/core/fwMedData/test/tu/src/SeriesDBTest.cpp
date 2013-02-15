@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwMedData/SeriesContainer.hpp"
+#include "fwMedData/SeriesDB.hpp"
 #include "fwMedData/Series.hpp"
 
-#include "SeriesContainerTest.hpp"
+#include "SeriesDBTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::SeriesContainerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::SeriesDBTest );
 
 namespace fwMedData
 {
@@ -20,15 +20,15 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-void SeriesContainerTest::setUp()
+void SeriesDBTest::setUp()
 {
     // Set up context before running a test.
-    m_series = ::fwMedData::SeriesContainer::New();
+    m_series = ::fwMedData::SeriesDB::New();
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesContainerTest::tearDown()
+void SeriesDBTest::tearDown()
 {
     // Clean up after the test run.
     m_series->getContainer().clear();
@@ -36,7 +36,7 @@ void SeriesContainerTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void SeriesContainerTest::containerTest()
+void SeriesDBTest::containerTest()
 {
     fwMedData::Series::sptr series1 = fwMedData::Series::New();
     fwMedData::Series::sptr series2 = fwMedData::Series::New();
@@ -60,7 +60,7 @@ void SeriesContainerTest::containerTest()
 
 
 
-    ::fwMedData::SeriesContainer::ContainerType series;
+    ::fwMedData::SeriesDB::ContainerType series;
 
     series.push_back(series1);
     series.push_back(series2);
