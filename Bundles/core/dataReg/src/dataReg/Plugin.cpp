@@ -6,6 +6,7 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwData/Float.hpp>
+#include <fwMedData/Patient.hpp>
 
 #include "dataReg/Plugin.hpp"
 
@@ -22,6 +23,10 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     //Hack: force link with fwData
     ::fwData::Float::NewSptr obj;
     obj->getClassname();
+
+    //Hack: force link with fwMedData
+    ::fwMedData::Patient::NewSptr pat;
+    pat->getClassname();
 }
 
 void Plugin::stop() throw()
