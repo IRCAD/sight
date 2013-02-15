@@ -63,6 +63,7 @@
             </layout>
         </gui>
         <registry>
+            <view sid="selector" start="yes" />
         </registry>
     </service>
 
