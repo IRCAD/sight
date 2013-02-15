@@ -72,15 +72,8 @@ private :
 };
 
 /// Returns the subObject of an object given by subObjPath thanks to camp reflection
-::fwData::Object::sptr getSubObject( ::fwData::Object::sptr object, const std::string & subObjPath )
-{
-    SLM_FATAL_IF( "SubObjPath is empty.", subObjPath.empty() );
-    SLM_FATAL_IF( "SubObjPath not start with '@'.", subObjPath[0] != '@' );
-    std::string path =  subObjPath.substr( 1 );
-    ::fwAtomConversion::RetreiveObjectVisitor visitor( object, path );
-    ::fwData::Object::sptr subObject = visitor.retreive();
-    return subObject;
-}
+FWATOMCONVERSION_API ::fwData::Object::sptr getSubObject( ::fwData::Object::sptr object,
+                                                          const std::string & subObjPath );
 
 /// Returns the subObject of an object given by subObjPath thanks to camp reflection
 template< class DATATYPE >

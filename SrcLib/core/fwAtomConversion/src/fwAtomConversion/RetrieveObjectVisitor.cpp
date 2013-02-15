@@ -263,4 +263,14 @@ std::string RetreiveObjectVisitor::getNextPropertyName()
 
 //-----------------------------------------------------------------------------
 
+::fwData::Object::sptr getSubObject( ::fwData::Object::sptr object, const std::string & subObjPath )
+{
+    SLM_FATAL_IF( "SubObjPath is empty.", subObjPath.empty() );
+    SLM_FATAL_IF( "SubObjPath not start with '@'.", subObjPath[0] != '@' );
+    const std::string path =  subObjPath.substr( 1 );
+    ::fwAtomConversion::RetreiveObjectVisitor visitor( object, path );
+    ::fwData::Object::sptr subObject = visitor.retreive();
+    return subObject;
+}
+
 } // fwAtomConversion
