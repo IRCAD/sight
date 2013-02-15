@@ -5,7 +5,7 @@ CLASSTEST = [
             'ModelTest',
             'PatientTest',
             'StudyTest',
-            'SeriesContainerTest',
+            'SeriesDBTest',
             'MedDataCampHelper',
             ]
 

@@ -39,24 +39,24 @@ void PatientTest::tearDown()
 void PatientTest::propertiesTest()
 {
     const std::string name = "Patient Name";
-    const std::string id = "42";
+    const std::string patient_id = "42";
     const std::string birth_date = "19830214";
     const std::string sex = "M";
     const MedDataCampHelper::PropertiesNameType dataProperties = list_of("fields")
                                                                         ("name")
-                                                                        ("id")
+                                                                        ("patient_id")
                                                                         ("birth_date")
                                                                         ("sex");
 
     ::fwMedData::Patient::sptr obj = ::fwMedData::Patient::New();
     obj->setName(name);
-    obj->setId(id);
+    obj->setPatientId(patient_id);
     obj->setBirthdate(birth_date);
     obj->setSex(sex);
 
     MedDataCampHelper::visitProperties(obj->getClassname(), dataProperties);
     MedDataCampHelper::compareSimplePropertyValue(obj, "@name", name);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@id", id);
+    MedDataCampHelper::compareSimplePropertyValue(obj, "@patient_id", patient_id);
     MedDataCampHelper::compareSimplePropertyValue(obj, "@birth_date", birth_date);
     MedDataCampHelper::compareSimplePropertyValue(obj, "@sex", sex);
 }

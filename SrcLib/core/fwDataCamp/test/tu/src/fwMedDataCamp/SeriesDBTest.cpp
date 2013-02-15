@@ -9,46 +9,46 @@
 #include <fwDataCamp/Version.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/SeriesContainer.hpp>
+#include <fwMedData/SeriesDB.hpp>
 
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtomConversion/AtomHelper.hpp>
 #include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 
-#include "fwMedDataCamp/SeriesContainerTest.hpp"
+#include "fwMedDataCamp/SeriesDBTest.hpp"
 #include "fwMedDataCamp/MedDataCampHelper.hpp"
 
 using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::SeriesContainerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::SeriesDBTest );
 
 namespace fwMedDataCamp
 {
 namespace ut
 {
 
-void SeriesContainerTest::setUp()
+void SeriesDBTest::setUp()
 {
     // Set up context before running a test.
     //Force link with fwDataCamp
     const int version = ::fwDataCamp::Version::s_CURRENT_VERSION;
 }
 
-void SeriesContainerTest::tearDown()
+void SeriesDBTest::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesContainerTest::propertiesTest()
+void SeriesDBTest::propertiesTest()
 {
     const MedDataCampHelper::PropertiesNameType dataProperties = list_of("fields")
                                                                         ("values");
 
-    ::fwMedData::SeriesContainer::sptr obj = ::fwMedData::SeriesContainer::New();
-    ::fwMedData::SeriesContainer::ContainerType vectSeries;
+    ::fwMedData::SeriesDB::sptr obj = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::ContainerType vectSeries;
     vectSeries.push_back(::fwMedData::ImageSeries::New());
     vectSeries.push_back(::fwMedData::ImageSeries::New());
     vectSeries.push_back(::fwMedData::ModelSeries::New());
@@ -63,11 +63,11 @@ void SeriesContainerTest::propertiesTest()
     ::fwAtoms::Object::sptr metaObject = metaHelper.dataToMeta(obj);
     ::fwAtoms::Object::Attributes attrs = metaObject->getAttributes();
 
-    CPPUNIT_ASSERT_MESSAGE("Attributes values not found in SeriesContainer atom",
+    CPPUNIT_ASSERT_MESSAGE("Attributes values not found in SeriesDB atom",
                            attrs.find("values") != attrs.end());
 
     ::fwAtoms::Base::sptr baseAtom = metaObject->getAttribut("values");
-    CPPUNIT_ASSERT_MESSAGE("Bad Atom SeriesContainer conversion", baseAtom->isSequence());
+    CPPUNIT_ASSERT_MESSAGE("Bad Atom SeriesDB conversion", baseAtom->isSequence());
 
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast(baseAtom);
     CPPUNIT_ASSERT_MESSAGE("Sequence dynamicCast failed", seqAtom);
