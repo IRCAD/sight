@@ -52,7 +52,7 @@ QStandardItem* Selector::getInfo(T data, QString separator)
     QString dataStr;
     if(!data.empty())
     {
-        T::iterator itr = data.begin();
+        typename T::iterator itr = data.begin();
         std::ostringstream str;
         str << *itr++;
         dataStr = QString::fromStdString(str.str());

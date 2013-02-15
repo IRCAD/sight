@@ -53,7 +53,7 @@ protected:
 
 private :
 
-    QPointer<::uiMedData::widget::Selector> m_selectorWidget;
+    QPointer< ::uiMedData::widget::Selector> m_selectorWidget;
 
 };
 } // namespace editor
