@@ -63,7 +63,7 @@ public:
     /**
      * @brief Primary hospital identification number or code for the patient (0010,0020)
      * @{ */
-    fwDataGetSetCRefMacro(Id, DicomValueType);
+    fwDataGetSetCRefMacro(PatientId, DicomValueType);
     /**  @} */
 
     /**
@@ -87,7 +87,7 @@ protected:
     DicomValueType m_attrName;
 
     /// Primary hospital identification
-    DicomValueType m_attrId;
+    DicomValueType m_attrPatientId;
 
     /// Birthdate
     DicomValueType m_attrBirthdate;

@@ -30,7 +30,7 @@ void Patient::shallowCopy(Patient::csptr _src)
     this->fieldShallowCopy( _src );
     m_attrName = _src->m_attrName;
     m_attrBirthdate = _src->m_attrBirthdate;
-    m_attrId = _src->m_attrId;
+    m_attrPatientId = _src->m_attrPatientId;
     m_attrSex = _src->m_attrSex;
 }
 
@@ -41,7 +41,7 @@ void Patient::deepCopy(Patient::csptr _src)
     this->fieldDeepCopy( _src );
     m_attrName = _src->m_attrName;
     m_attrBirthdate = _src->m_attrBirthdate;
-    m_attrId = _src->m_attrId;
+    m_attrPatientId = _src->m_attrPatientId;
     m_attrSex = _src->m_attrSex;
 }
 

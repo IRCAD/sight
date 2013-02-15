@@ -47,10 +47,10 @@ void PatientTest::nameTest()
 
 void PatientTest::idTest()
 {
-    const std::string id = "42";
+    const std::string patientId = "42";
     CPPUNIT_ASSERT(m_patient);
-    m_patient->setId(id);
-    CPPUNIT_ASSERT_EQUAL(id, m_patient->getId());
+    m_patient->setPatientId(patientId);
+    CPPUNIT_ASSERT_EQUAL(patientId, m_patient->getPatientId());
 }
 
 //------------------------------------------------------------------------------
