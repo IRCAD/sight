@@ -43,8 +43,10 @@ public :
 
 protected:
 
+    /// Installs GUI : create container and add selector.
     virtual void starting() throw(::fwTools::Failed);
 
+    /// Destroys GUI.
     virtual void stopping() throw(::fwTools::Failed);
 
     /**
@@ -57,8 +59,10 @@ protected:
      */
     virtual void configuring() throw (::fwTools::Failed);
 
+    /// Fill selector with the series contained in SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
 
+    /// Manages events
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void info( std::ostream &_sstream );
@@ -66,16 +70,30 @@ protected:
 
 
 protected Q_SLOTS:
+
+    /**
+     * @brief Manages the selection vector according to selection deselection.
+     * @param[in] selection Series to add in selection vector.
+     * @param[in] deselection Series to remove from selection vector.
+     */
     void onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
                           QVector< ::fwMedData::Series::sptr > deselection);
+
+    /**
+     * @brief Shows a simple message dialog with the current series uid (if a series is clicked).
+     * @todo  Sends signal to activity launcher.
+     */
     void onDoubleClick(const QModelIndex &index);
 
 private :
 
+    /// Returns current vector of selections given with its fwID m_selectionId.
     ::fwData::Vector::sptr getSelection();
 
+    /// fwID of the vector of selections
     std::string m_selectionId;
 
+    /// Selector widget.
     QPointer< ::uiMedData::widget::Selector > m_selectorWidget;
 
 };

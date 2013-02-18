@@ -28,18 +28,28 @@ SelectorModel::SelectorModel(QWidget *parent) :
     QStandardItemModel(parent),
     m_studyRowCount(0)
 {
-    QStringList headers;
-    headers << "Patient name" << "Patient ID" << "Modality" << "Date Acquired" << "Institution" << "Birthdate"
-            << "Sex" << "Age" << "Referring physician" << "Performing physician " << "Study description"
-            << "Image number" << "Voxel size" << "Patient position";
-
-    this->setHorizontalHeaderLabels(headers);
+    this->init();
 }
 
 //-----------------------------------------------------------------------------
 
 SelectorModel::~SelectorModel()
 {
+}
+
+//-----------------------------------------------------------------------------
+
+void SelectorModel::init()
+{
+    m_studyRowCount = 0;
+    m_items.clear();
+
+    QStringList headers;
+    headers << "Patient name" << "Patient ID" << "Modality" << "Date Acquired" << "Institution" << "Birthdate"
+            << "Sex" << "Age" << "Referring physician" << "Performing physician " << "Study description"
+            << "Image number" << "Voxel size" << "Patient position";
+
+    this->setHorizontalHeaderLabels(headers);
 }
 
 //-----------------------------------------------------------------------------
@@ -56,15 +66,7 @@ SelectorModel::ItemType SelectorModel::getItemType(const QModelIndex &index)
 void SelectorModel::clear()
 {
     this->QStandardItemModel::clear();
-    m_studyRowCount = 0;
-    m_items.clear();
-
-    QStringList headers;
-    headers << "Patient name" << "Patient ID" << "Modality" << "Date Acquired" << "Institution" << "Birthdate"
-            << "Sex" << "Age" << "Referring physician" << "Performing physician " << "Study description"
-            << "Image number" << "Voxel size" << "Patient position";
-
-    this->setHorizontalHeaderLabels(headers);
+    this->init();
 }
 
 //-----------------------------------------------------------------------------

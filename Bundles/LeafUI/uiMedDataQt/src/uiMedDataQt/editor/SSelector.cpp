@@ -153,7 +153,6 @@ void SSelector::onDoubleClick(const QModelIndex &index)
     if (m_selectorWidget->getItemType(index) == ::uiMedData::widget::SelectorModel::STUDY)
     {
         str << "Selected study. TODO";
-
     }
     else if (m_selectorWidget->getItemType(index) == ::uiMedData::widget::SelectorModel::SERIES)
     {

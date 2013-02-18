@@ -23,6 +23,12 @@ namespace uiMedData
 {
 namespace widget
 {
+
+/**
+ * @brief   This class represents the Selector Model.
+ * @class   SSelector.
+ * @date    2013.
+ */
 class UIMEDDATAQT_CLASS_API SelectorModel : public QStandardItemModel
 {
     Q_OBJECT
@@ -31,40 +37,59 @@ public:
 
     typedef enum
     {
-        ITEM_TYPE = Qt::UserRole,
-        UID
+        ITEM_TYPE = Qt::UserRole, /// Role for the item type (STUDY or SERIES)
+        UID                       /// Role for the fwID od the object
     }Role;
 
     typedef enum
     {
-        STUDY = 1,
-        SERIES
+        STUDY = 1,  /// Type to represent Study/Patient
+        SERIES      /// Type to represent Series
     }ItemType;
 
+    /// Constructor. Inits the model.
     UIMEDDATAQT_API SelectorModel(QWidget *parent = 0);
+
+    /// Destructor. Does nothing
     UIMEDDATAQT_API ~SelectorModel();
 
+    /**
+     * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
+     * this study.
+     */
     UIMEDDATAQT_API void addSeries(::fwMedData::Series::sptr series);
     UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr series);
 
+    /// Clear all items in the model.
     UIMEDDATAQT_API void clear();
 
-    /// returns item flags with non editable flag
+    /// Returns item flags with non editable flag
     UIMEDDATAQT_API Qt::ItemFlags flags(const QModelIndex& index) const
     {
         return (QStandardItemModel::flags(index) & ~Qt::ItemIsEditable);
     }
 
+    /// Returns the type of the item (SERIES or STUDY) associates to the ITEM_TYPE role.
     UIMEDDATAQT_API ItemType getItemType(const QModelIndex &index);
 
 private:
 
+    /**
+     * @brief Returns the informations contained in the data container as a string, all items are separated with the
+     * separator.
+     */
     template <typename T>
     QStandardItem* getInfo(T data, QString separator);
 
+    /// Initialize model. Set headers.
+    void init();
+
     typedef std::map< ::fwMedData::DicomValueType, QStandardItem* > StudyUidItemMapType;
 
+    /// Number of study rows in the tree
     int m_studyRowCount;
+
+    /// Map to registers study Instance UID/study root item. Used to associate the series to theirs study in the tree
     StudyUidItemMapType m_items;
 };
 
