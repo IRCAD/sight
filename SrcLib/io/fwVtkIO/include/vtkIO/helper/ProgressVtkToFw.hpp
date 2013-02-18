@@ -19,7 +19,7 @@ namespace vtkIO
 
 class ProgressorBase
 {
-    public:
+public:
     typedef SPTR(ProgressorBase) sptr;
 };
 
@@ -45,7 +45,7 @@ protected :
 
 class Progressor
 {
-    public:
+public:
     typedef SPTR(Progressor) sptr;
 
     template<typename OBS >
