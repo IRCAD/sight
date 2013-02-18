@@ -8,6 +8,10 @@
 #define _UIMEDDATAQT_EDITOR_SSELECTOR_HPP_
 
 #include <QPointer>
+#include <QObject>
+#include <QVector>
+
+#include <fwData/Vector.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -25,9 +29,9 @@ namespace editor
  * @author  IRCAD (Research and Development Team).
  * @date    2013.
  */
-class UIMEDDATAQT_CLASS_API SSelector : public ::gui::editor::IEditor
+class UIMEDDATAQT_CLASS_API SSelector : public QObject, public ::gui::editor::IEditor
 {
-
+    Q_OBJECT
 public :
     fwCoreServiceClassDefinitionsMacro ( (SSelector)(::gui::editor::IEditor) ) ;
 
@@ -43,17 +47,36 @@ protected:
 
     virtual void stopping() throw(::fwTools::Failed);
 
+    /**
+     *
+     * @verbatim
+     <service uid="selector" impl="::uiMedData::editor::SSelector" type="::gui::editor::IEditor" autoConnect="yes">
+        <selectionId>selections</selectionId>
+     </service>
+     @endverbatim
+     */
     virtual void configuring() throw (::fwTools::Failed);
 
     virtual void updating() throw (::fwTools::Failed);
 
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
+
+
+
+protected Q_SLOTS:
+    void onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
+                          QVector< ::fwMedData::Series::sptr > deselection);
+    void onDoubleClick(const QModelIndex &index);
 
 private :
 
-    QPointer< ::uiMedData::widget::Selector> m_selectorWidget;
+    ::fwData::Vector::sptr getSelection();
+
+    std::string m_selectionId;
+
+    QPointer< ::uiMedData::widget::Selector > m_selectorWidget;
 
 };
 } // namespace editor

@@ -14,10 +14,13 @@
 #include <QPointer>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QModelIndex>
+#include <QVector>
 
 #include <fwMedData/Series.hpp>
 
 #include "uiMedDataQt/config.hpp"
+#include "uiMedDataQt/widget/SelectorModel.hpp"
 
 namespace uiMedData
 {
@@ -28,46 +31,39 @@ class UIMEDDATAQT_CLASS_API Selector : public QTreeView
     Q_OBJECT
 
 public:
+
+    typedef QVector< ::fwMedData::Series::sptr > SeriesVectorType;
+
     UIMEDDATAQT_API Selector(QWidget *parent = 0);
     UIMEDDATAQT_API ~Selector();
 
+    UIMEDDATAQT_API void clear();
+
     UIMEDDATAQT_API void addSeries(::fwMedData::Series::sptr series);
+
+    UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr series);
+
+    SelectorModel::ItemType getItemType(const QModelIndex &index);
+
+Q_SIGNALS:
+    void selectSeries(QVector< ::fwMedData::Series::sptr > selection, QVector< ::fwMedData::Series::sptr > deselection);
+
+
+protected Q_SLOTS:
+    void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+
+protected :
+
+    /**
+     * @brief Returns the Series associated to the selection.
+     * @todo If a study is selected : returns the first series associated to this study.
+     */
+    SeriesVectorType getSeries( const QItemSelection & selection );
 
 private:
 
-    template <typename T>
-    QStandardItem* getInfo(T data, QString separator);
-
-    typedef std::map< ::fwMedData::DicomValueType, QStandardItem* > StudyUidItemMapType;
-
-    int m_studyRowCount;
-    QPointer<QStandardItemModel> m_model;
-    StudyUidItemMapType m_items;
+    QPointer<SelectorModel> m_model;
 };
-
-
-template <typename T>
-QStandardItem* Selector::getInfo(T data, QString separator)
-{
-    QString dataStr;
-    if(!data.empty())
-    {
-        typename T::iterator itr = data.begin();
-        std::ostringstream str;
-        str << *itr++;
-        dataStr = QString::fromStdString(str.str());
-
-        for(;itr!= data.end(); ++itr)
-        {
-            str.str("");
-            str << *itr;
-            dataStr.append(separator + QString::fromStdString(str.str()));
-        }
-    }
-    QStandardItem *item = new QStandardItem(dataStr);
-    return item;
-}
-
 
 } // namespace widget
 } // namespace uiMedData

@@ -22,112 +22,92 @@ namespace uiMedData
 namespace widget
 {
 
+//-----------------------------------------------------------------------------
+
 Selector::Selector(QWidget *parent) :
-    QTreeView(parent),
-    m_studyRowCount(0)
+    QTreeView(parent)
 {
-    m_model = new QStandardItemModel();
+    m_model = new SelectorModel();
     this->setModel(m_model);
-
-    QStringList headers;
-    headers << "Patient name" << "Patient ID" << "Modality" << "Date Acquired" << "Institution" << "Birthdate"
-            << "Sex" << "Age" << "Referring physician" << "Performing physician " << "Study description"
-            << "Image number" << "Voxel size" << "Patient position";
-
-    m_model->setHorizontalHeaderLabels(headers);
 
     this->setSelectionMode(QAbstractItemView::ExtendedSelection);
     this->setAlternatingRowColors( true );
 }
 
+//-----------------------------------------------------------------------------
+
 Selector::~Selector()
 {
 }
 
+//-----------------------------------------------------------------------------
+
+void Selector::clear()
+{
+    m_model->clear();
+}
+
+//-----------------------------------------------------------------------------
+
 void Selector::addSeries(::fwMedData::Series::sptr series)
 {
-    ::fwMedData::Study::sptr study = series->getStudy();
-    ::fwMedData::DicomValueType studyUID = study->getInstanceUID();
-    StudyUidItemMapType::iterator itr = m_items.find(studyUID);
-    QStandardItem* studyRootItem;
-    if(itr != m_items.end())
-    {
-        studyRootItem = itr->second;
-    }
-    else
-    {
-        ::fwMedData::Patient::sptr patient = series->getPatient();
-        ::fwMedData::Equipment::sptr equipment = series->getEquipment();
+    m_model->addSeries(series);
+}
 
-        QStandardItem *patientName = new QStandardItem( QString::fromStdString(patient->getName()) );
-        QStandardItem *patientId   = new QStandardItem( QString::fromStdString(patient->getPatientId()) );
-        QStandardItem *patientBirthdate   = new QStandardItem( QString::fromStdString(patient->getBirthdate()) );
-        QStandardItem *patientSex   = new QStandardItem( QString::fromStdString(patient->getSex()) );
+//-----------------------------------------------------------------------------
 
-        std::string studyDateTime(study->getDate()+ " " + study->getTime());
-        QStandardItem *studyDate = new QStandardItem( QString::fromStdString(studyDateTime));
-        QStandardItem *studyReferringPhysicianName = new QStandardItem( QString::fromStdString(study->getReferringPhysicianName()));
-        QStandardItem *studyDescription = new QStandardItem( QString::fromStdString(study->getDescription()));
-        QStandardItem *studyPatientAge = new QStandardItem( QString::fromStdString(study->getPatientAge()));
-
-        QStandardItem *institution = new QStandardItem( QString::fromStdString(equipment->getInstitutionName()));
-
-        m_model->setItem(m_studyRowCount, 0, patientName);
-        m_model->setItem(m_studyRowCount, 1, patientId);
-        m_model->setItem(m_studyRowCount, 3, studyDate);
-        m_model->setItem(m_studyRowCount, 4, institution);
-        m_model->setItem(m_studyRowCount, 5, patientBirthdate);
-        m_model->setItem(m_studyRowCount, 6, patientSex);
-        m_model->setItem(m_studyRowCount, 7, studyPatientAge);
-        m_model->setItem(m_studyRowCount, 8, studyReferringPhysicianName);
-        m_model->setItem(m_studyRowCount, 10, studyDescription);
-
-        m_studyRowCount++;
-        studyRootItem = patientName;
-        m_items[studyUID] = studyRootItem;
-    }
-
-
-    QStandardItem *seriesModality = new QStandardItem(QString::fromStdString(series->getModality()));
-    std::string seriesDateTime(series->getDate()+ " " + series->getTime());
-    QStandardItem *seriesDate = new QStandardItem( QString::fromStdString(seriesDateTime));
-
-
-    QStandardItem* seriesPerformingPhysician = this->getInfo< ::fwMedData::DicomValuesType >(series->getPerformingPhysiciansName(), ", ");
-    QStandardItem * seriesDescription1 = new QStandardItem(QString::fromStdString(series->getDescription()));
-    QStandardItem * seriesDescription2 = new QStandardItem(QString::fromStdString(series->getDescription()));
-
-    int nbRow = studyRootItem->rowCount();
-    studyRootItem->setChild(nbRow, 0, seriesDescription1);
-    studyRootItem->setChild(nbRow, 2, seriesModality);
-    studyRootItem->setChild(nbRow, 3, seriesDate);
-    studyRootItem->setChild(nbRow, 9, seriesPerformingPhysician);
-    studyRootItem->setChild(nbRow, 10, seriesDescription2);
-
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
-    if(imageSeries)
-    {
-        ::fwData::Image::sptr image =  imageSeries->getImage();
-
-        ::fwData::Image::SizeType imageNumber = image->getSize();
-        QStandardItem* imageSize = this->getInfo< ::fwData::Image::SizeType>(imageNumber, " x ");
-        studyRootItem->setChild(nbRow, 11, imageSize);
-
-        ::fwData::Image::SpacingType voxelSize = image->getSpacing();
-        QStandardItem* voxelSizeItem = this->getInfo< ::fwData::Image::SpacingType>(voxelSize, " x ");
-        studyRootItem->setChild(nbRow, 12, voxelSizeItem);
-
-        ::fwData::Image::OriginType patientPosition = image->getOrigin();
-        QStandardItem* originItem = this->getInfo< ::fwData::Image::OriginType>(patientPosition, ", ");
-        studyRootItem->setChild(nbRow, 13, originItem);
-    }
-
-    this->resizeColumnToContents(0);
-    this->resizeColumnToContents(9);
-    this->resizeColumnToContents(10);
-    this->resizeColumnToContents(11);
+void Selector::removeSeries(::fwMedData::Series::sptr series)
+{
 
 }
+
+//-----------------------------------------------------------------------------
+
+void Selector::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
+{
+    QTreeView::selectionChanged(selected, deselected);
+
+    SeriesVectorType selectedSeries = this->getSeries(selected);
+
+    SeriesVectorType deselectedSeries = this->getSeries(deselected);
+
+    Q_EMIT selectSeries(selectedSeries, deselectedSeries);
+}
+
+//-----------------------------------------------------------------------------
+
+Selector::SeriesVectorType Selector::getSeries( const QItemSelection & selection  )
+{
+    SeriesVectorType vSeries;
+
+    QModelIndexList selectedIndexes = selection.indexes();
+    if (!selectedIndexes.empty())
+    {
+        for (int i=0 ; i < selectedIndexes.count() ; ++i)
+        {
+            QModelIndex index = selectedIndexes[i];
+            std::string uid = index.data(SelectorModel::UID).toString().toStdString();
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+
+            if (index.data(SelectorModel::ITEM_TYPE)  == SelectorModel::SERIES)
+            {
+                ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+                vSeries.push_back(series);
+            }
+        }
+    }
+
+    return vSeries;
+}
+
+//-----------------------------------------------------------------------------
+
+SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
+{
+    return m_model->getItemType(index);
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace widget
 } // namespace uiMedData

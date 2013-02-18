@@ -42,7 +42,9 @@
                     <service uid="action_import" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
                         <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderSeriesDBReader" />
                     </service>
-                    <service uid="selector" impl="::uiMedData::editor::SSelector" autoConnect="yes" />
+                    <service uid="selector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
+                        <selectionId>selections</selectionId>
+                    </service>
                 </object>
             </item>
 

@@ -14,12 +14,12 @@
  * @date        2009-2013.
  *
  */
-namespace uiMedDataQt
+namespace uiMedData
 {
 
 /**
- * @brief       The namespace ::uiMedDataQt::widget contains widgets for medical data.
- * @namespace   ::uiMedDataQt::widget
+ * @brief       The namespace ::uiMedData::widget contains widgets for medical data.
+ * @namespace   ::uiMedData::widget
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2013.
  *
