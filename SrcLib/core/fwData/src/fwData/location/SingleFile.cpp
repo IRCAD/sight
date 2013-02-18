@@ -48,23 +48,23 @@ void SingleFile::deepCopy( SingleFile::csptr _source )
 
 //------------------------------------------------------------------------------
 
-SingleFile::sptr SingleFile::SingleFileFactory(::boost::filesystem::path _path)
+SingleFile::sptr SingleFile::SingleFileFactory(PathType path)
 {
     SingleFile::sptr singlefile = SingleFile::New();
-    singlefile->setPath(_path);
+    singlefile->setPath(path);
     return singlefile;
 }
 
 //------------------------------------------------------------------------------
 
-void SingleFile::setPath( ::boost::filesystem::path path)
+void SingleFile::setPath( PathType path)
 {
     m_path = path;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path SingleFile::getPath() const
+ILocation::PathType SingleFile::getPath() const
 {
     return m_path;
 }

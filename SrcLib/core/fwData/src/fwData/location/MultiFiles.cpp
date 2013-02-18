@@ -30,14 +30,14 @@ MultiFiles::~MultiFiles()
 
 //------------------------------------------------------------------------------
 
-void MultiFiles::setPaths( std::vector< ::boost::filesystem::path> paths)
+void MultiFiles::setPaths( VectPathType paths)
 {
     m_paths = paths;
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< ::boost::filesystem::path> MultiFiles::getPaths()
+ILocation::VectPathType MultiFiles::getPaths()
 {
     return m_paths;
 }

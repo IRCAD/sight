@@ -53,10 +53,10 @@ public:
     FWDATA_API void deepCopy( Folder::csptr _source );
 
     /// @brief Set folder filesystem path
-    FWDATA_API void setFolder( ::boost::filesystem::path folder);
+    FWDATA_API void setFolder( PathType folder);
 
     /// @brief Get folder filesystem path
-    FWDATA_API ::boost::filesystem::path getFolder() const;
+    FWDATA_API PathType getFolder() const;
 
     /// @brief Set the flag if folder location is recursive
     FWDATA_API void setRecursive( bool recursive);
@@ -66,10 +66,10 @@ public:
 
 protected :
 
-    FWDATA_API static sptr FolderFactory(::boost::filesystem::path _path, bool recursive=false );
+    FWDATA_API static sptr FolderFactory(PathType path, bool recursive=false );
 
     /// %Folder path
-    ::boost::filesystem::path m_folder;
+    PathType m_folder;
 
     /// Flag if folder is recursive
     bool m_isRecursive;
@@ -92,16 +92,19 @@ struct enableFolder
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableFolder(RW *rw) : m_rw(rw) { SLM_ASSERT("m_rw not instanced", m_rw); }
+    enableFolder(RW *rw) : m_rw(rw)
+    {
+        SLM_ASSERT("m_rw not instanced", m_rw);
+    }
 
     /// @brief Set folder filesystem path
-    void setFolder(::boost::filesystem::path folder)
+    void setFolder(ILocation::PathType folder)
     {
         getLocation<Folder>(m_rw)->setFolder(folder);
     }
 
     /// @brief Get folder filesystem path
-    ::boost::filesystem::path getFolder()
+    ILocation::PathType getFolder()
     {
         return getLocation<Folder>(m_rw)->getFolder();
     }
@@ -126,8 +129,6 @@ private :
     RW *m_rw;
 
 };
-
-
 
 }
 }

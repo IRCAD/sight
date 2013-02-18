@@ -54,17 +54,17 @@ public:
     FWDATA_API void deepCopy( SingleFile::csptr _source );
 
     /// Set file system path
-    FWDATA_API void setPath( ::boost::filesystem::path path);
+    FWDATA_API void setPath( PathType path);
 
     /// Get file system path
-    FWDATA_API ::boost::filesystem::path getPath() const;
+    FWDATA_API PathType getPath() const;
 
 protected :
 
-    FWDATA_API static sptr SingleFileFactory(::boost::filesystem::path _path);
+    FWDATA_API static sptr SingleFileFactory(PathType path);
 
     /// file system path
-    ::boost::filesystem::path m_path;
+    PathType m_path;
 
 };
 
@@ -84,16 +84,19 @@ struct enableSingleFile
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableSingleFile(RW *rw) : m_rw(rw) { SLM_ASSERT("m_rw not instanced", m_rw);}
+    enableSingleFile(RW *rw) : m_rw(rw)
+    {
+        SLM_ASSERT("m_rw not instanced", m_rw);
+    }
 
     /// Set file system path
-    void setFile(::boost::filesystem::path path)
+    void setFile(ILocation::PathType path)
     {
         getLocation<SingleFile>(m_rw)->setPath(path);
     }
 
     /// Get file system path
-    ::boost::filesystem::path getFile()
+    ILocation::PathType getFile()
     {
         return (getLocation<SingleFile>(m_rw))->getPath();
     }

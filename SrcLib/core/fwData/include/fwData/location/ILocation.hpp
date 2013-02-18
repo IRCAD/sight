@@ -34,9 +34,12 @@ class FWDATA_CLASS_API ILocation : public ::fwData::Object
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (ILocation)(::fwData::Object) );
 
+    typedef ::boost::filesystem::path PathType;
+    typedef std::vector<PathType> VectPathType;
+
 protected:
 
-    /// Constructor : cannot be instanciated but derivated class OK
+    /// Constructor : cannot be instantiated but derivated class OK
     FWDATA_API ILocation();
 
     /// Destructor
