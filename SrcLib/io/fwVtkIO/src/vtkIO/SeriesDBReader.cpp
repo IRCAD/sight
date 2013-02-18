@@ -15,6 +15,8 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
+#include <fwTools/UUID.hpp>
+
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/Study.hpp>
 #include <fwMedData/Patient.hpp>
@@ -59,7 +61,7 @@ void SeriesDBReader::read()
     vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
     //add progress observation
     const ::fwData::location::ILocation::VectPathType files = this->getFiles();
-
+    const std::string instanceUID = ::fwTools::UUID::generateUUID();
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs;
     BOOST_FOREACH(const ::fwData::location::ILocation::VectPathType::value_type& file, files)
@@ -87,7 +89,7 @@ void SeriesDBReader::read()
                 ::fwData::Image::sptr imgObj = ::fwData::Image::New();
                 ::vtkIO::fromVTKImage( img, imgObj);
                 ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
-                this->initSeries(imgSeries, seriesDB->getID());
+                this->initSeries(imgSeries, instanceUID);
                 imgSeries->setImage(imgObj);
                 seriesDB->getContainer().push_back(imgSeries);
             }
@@ -106,7 +108,7 @@ void SeriesDBReader::read()
     if(!recs.empty())
     {
         ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::New();
-        this->initSeries(modelSeries, seriesDB->getID());
+        this->initSeries(modelSeries, instanceUID);
         modelSeries->setReconstructionDB(recs);
         seriesDB->getContainer().push_back(modelSeries);
     }
