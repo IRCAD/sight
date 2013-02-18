@@ -3,6 +3,7 @@ CLASSTEST=[
           'MeshTest',
           'ImageTest',
           'TransferFunctionTest',
+          'SeriesDBTest',
           ]
 USE = ['boost']
 LIB = [
