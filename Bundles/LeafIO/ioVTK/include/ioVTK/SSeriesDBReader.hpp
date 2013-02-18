@@ -25,7 +25,6 @@ namespace ioVTK
 /**
  * @brief   SeriesDB reader service.
  * @class   SSeriesDBReader .
- * @author  IRCAD (Research and Development Team).
  * @date    2013.
  *
  * Service reading a VTK file (mesh or image) using the vtkIO lib.

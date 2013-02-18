@@ -44,8 +44,6 @@ fwServicesRegisterMacro( ::io::IReader , ::ioVTK::SSeriesDBReader , ::fwMedData:
 
 void SSeriesDBReader::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
-
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -136,8 +134,6 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
 
 void SSeriesDBReader::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
@@ -158,7 +154,6 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
 
 void SSeriesDBReader::notificationOfUpdate()
 {
-    SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     SLM_ASSERT("SeriesDB not instanced", seriesDB);
 

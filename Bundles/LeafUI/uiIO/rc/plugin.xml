@@ -18,6 +18,13 @@
         <object>::fwData::PatientDB</object>
         <desc>Export acquisition</desc>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiIO::action::SSeriesDBMerger</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Merge SeriesDB</desc>
+    </extension>
 
 </plugin>
 
