@@ -76,7 +76,7 @@ struct enableMultiFiles
     }
 
     /// Get file system paths
-    MultiFiles::VectPathType getFiles()
+    ILocation::VectPathType getFiles()
     {
         return getLocation<MultiFiles>(m_rw)->getPaths();
     }

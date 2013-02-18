@@ -75,5 +75,12 @@
         <object>::fwData::Model</object>
         <desc>Model Reader (VTK)</desc>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioVTK::SSeriesDBReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>VTK File Reader (VTK)</desc>
+    </extension>
 
 </plugin>

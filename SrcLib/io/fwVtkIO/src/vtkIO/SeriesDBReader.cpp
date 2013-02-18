@@ -117,6 +117,12 @@ void SeriesDBReader::read()
 void  SeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
 {
     const std::string unknown = "unknown";
+    series->setModality(unknown);
+    series->setDate(unknown);
+    series->setTime(unknown);
+    //series->setDescription(??);
+    //series->setPerformingPhysiciansName(??);
+
     series->getEquipment()->setInstitutionName(unknown);
 
     series->getPatient()->setName(unknown);
