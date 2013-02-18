@@ -23,7 +23,7 @@ namespace helper
 
 /**
  * @brief   Defines an helper to modify an ::fwData::Vector and create in parallel the message to announce this modification.
- * class  Vector
+ * @class  Vector
  * @author  IRCAD (Research and Development Team).
  * @date    2007-20013.
  */

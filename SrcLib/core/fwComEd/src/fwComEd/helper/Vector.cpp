@@ -82,7 +82,8 @@ void Vector::notify( ::fwServices::IService::sptr _serviceSource )
     {
         ::fwServices::IEditionService::notify( _serviceSource, m_vector.lock(), m_vectorMsg , true );
     }
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.", m_vectorMsg->getEventIds().size() == 0);
+    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
+                m_vectorMsg->getEventIds().size() == 0);
 }
 
 //-----------------------------------------------------------------------------

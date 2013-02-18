@@ -44,7 +44,7 @@ void VectorMsg::appendAddedObject( ::fwData::Object::sptr _pNewObject )
         this->addEvent( ADDED_OBJECTS, m_addedObjects );
     }
 
-    SLM_ASSERT("This vector object is already registered",
+    SLM_ASSERT("This object is already registered",
                std::find(m_addedObjects->begin(), m_addedObjects->end(), _pNewObject) == m_addedObjects->end() );
 
     m_addedObjects->getContainer().push_back(_pNewObject);
@@ -66,7 +66,7 @@ void VectorMsg::appendRemovedObject( ::fwData::Object::sptr _pOldObject )
         this->addEvent( REMOVED_OBJECTS, m_removedObjects );
     }
 
-    SLM_ASSERT("This composite key is already register",
+    SLM_ASSERT("This object is already register",
                std::find(m_removedObjects->begin(), m_removedObjects->end(), _pOldObject) == m_removedObjects->end() );
 
     m_removedObjects->getContainer().push_back( _pOldObject );
