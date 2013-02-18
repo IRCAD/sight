@@ -49,6 +49,7 @@ void SSeriesDBReader::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle("Choose vtk files to load Series");
     dialogFile.addFilter("Vtk","*.vtk");
