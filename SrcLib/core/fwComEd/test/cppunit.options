@@ -3,6 +3,7 @@ CLASSTEST=[
     'CompositeMessageTest',
     'FieldHelperTest',
     'MessagesTest',
+    'VectorMsgTest',
     ]
 
 USE = ['boost']
