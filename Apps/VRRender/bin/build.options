@@ -6,6 +6,8 @@ BUNDLES = [
     'gui_0-1'                  ,
     'guiQt_0-1'                ,
     'launcher_0-1'             ,
+    'ioVTK_0-1'                ,
+    'uiIO_0-1'                 ,
     'uiGenericQt_0-1'          ,
     'uiMedDataQt_0-1'          ,
     'appXml_0-1'               ,

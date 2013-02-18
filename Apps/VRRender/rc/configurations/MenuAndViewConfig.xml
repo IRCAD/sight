@@ -69,7 +69,9 @@
 
     <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
-    <service uid="action_import" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" />
+    <service uid="action_import" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+        <start uid="readerSelector" />
+    </service>
     <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" />
 
     <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAbout" autoConnect="no">
