@@ -39,8 +39,8 @@
  
             <item key="medicalData">
                 <object uid="medicalData" type="::fwMedData::SeriesDB">
-                    <service uid="readerSelector" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
-                        <type mode="reader" />
+                    <service uid="action_import" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
+                        <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderSeriesDBReader" />
                     </service>
                     <service uid="selector" impl="::uiMedData::editor::SSelector" autoConnect="yes" />
                 </object>
