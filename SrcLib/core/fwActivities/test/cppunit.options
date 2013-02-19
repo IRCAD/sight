@@ -1,0 +1,8 @@
+
+CLASSTEST=[
+          'ActivitySeriesTest',
+          ]
+
+USE = ['boost', 'cppunit']
+LIB = ['fwData_0-1', 'fwMedData_0-1', 'fwDataTools_0-1', 'fwActivities_0-1']
+CONSOLE = 'yes'
