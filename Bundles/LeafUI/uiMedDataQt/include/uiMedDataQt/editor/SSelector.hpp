@@ -56,6 +56,8 @@ protected:
         <selectionId>selections</selectionId>
      </service>
      @endverbatim
+     * - \<selectionId>selections</\selectionId> : defines the fwId of the ::fwData::Vector where the selection
+     * will be put or get.
      */
     virtual void configuring() throw (::fwTools::Failed);
 
@@ -80,7 +82,7 @@ protected Q_SLOTS:
                           QVector< ::fwMedData::Series::sptr > deselection);
 
     /**
-     * @brief Shows a simple message dialog with the current series uid (if a series is clicked).
+     * @brief Shows a simple message dialog with the current series uid (if a series is double clicked).
      * @todo  Sends signal to activity launcher.
      */
     void onDoubleClick(const QModelIndex &index);

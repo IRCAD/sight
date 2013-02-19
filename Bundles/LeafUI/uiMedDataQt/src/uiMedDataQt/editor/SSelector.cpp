@@ -98,7 +98,7 @@ void SSelector::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools:
             }
         }
     }
-    else if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS ) )
+    if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS ) )
     {
         ::fwData::Vector::sptr removedObject = seriesDBMsg->getRemovedSeries();
         BOOST_FOREACH( ::fwData::Object::sptr obj, removedObject->getContainer() )
@@ -172,7 +172,11 @@ void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
 
 void SSelector::onDoubleClick(const QModelIndex &index)
 {
+    m_selectorWidget->clearSelection();
+    m_selectorWidget->selectRow(index);
+
     ::fwData::Vector::sptr selectionVector = this->getSelection();
+
     std::stringstream str;
     if (m_selectorWidget->getItemType(index) == ::uiMedData::widget::SelectorModel::STUDY)
     {

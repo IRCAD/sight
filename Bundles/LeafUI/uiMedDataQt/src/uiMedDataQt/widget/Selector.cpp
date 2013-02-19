@@ -6,6 +6,7 @@
 
 #include <QStandardItem>
 #include <QString>
+#include <QItemSelectionModel>
 
 #include <fwData/Image.hpp>
 
@@ -108,6 +109,19 @@ SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
 }
 
 //-----------------------------------------------------------------------------
+
+ void Selector::selectRow(const QModelIndex &index)
+ {
+     QItemSelectionModel* selectionModel = this->selectionModel();
+
+     QModelIndex topLeft = m_model->getIndex(index, 0);
+     QModelIndex bottomRight = m_model->getIndex(index, m_model->columnCount()-1);
+     QItemSelection selection(topLeft, bottomRight);
+
+     selectionModel->select(selection, QItemSelectionModel::Select);
+ }
+
+ //-----------------------------------------------------------------------------
 
 } // namespace widget
 } // namespace uiMedData

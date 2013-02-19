@@ -58,7 +58,10 @@ public:
     UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr series);
 
     /// Returns the type of the item (SERIES or STUDY)
-    SelectorModel::ItemType getItemType(const QModelIndex &index);
+    UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex &index);
+
+    /// Select the row of the index.
+    UIMEDDATAQT_API void selectRow(const QModelIndex &index);
 
 Q_SIGNALS:
     /**

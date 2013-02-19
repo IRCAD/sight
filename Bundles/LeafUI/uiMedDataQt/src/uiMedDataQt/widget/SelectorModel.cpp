@@ -166,5 +166,13 @@ void SelectorModel::removeSeries(::fwMedData::Series::sptr series)
 
 //-----------------------------------------------------------------------------
 
+QModelIndex SelectorModel::getIndex(const QModelIndex& index, int column )
+{
+    QModelIndex idx = this->createIndex(index.row(), column, index.internalPointer());
+    return idx;
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace widget
 } // namespace uiMedData

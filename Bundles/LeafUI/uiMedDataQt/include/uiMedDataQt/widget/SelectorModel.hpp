@@ -72,6 +72,13 @@ public:
     /// Returns the type of the item (SERIES or STUDY) associates to the ITEM_TYPE role.
     UIMEDDATAQT_API ItemType getItemType(const QModelIndex &index);
 
+    /**
+     * @brief Return an index in the same row of the given index and in the column.
+     * @param[in] index index used to get the associated row.
+     * @param[in] column the column of the index to return.
+     */
+    UIMEDDATAQT_API QModelIndex getIndex(const QModelIndex& index, int column );
+
 private:
 
     /**
