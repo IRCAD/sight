@@ -73,8 +73,6 @@ protected:
     void info(std::ostream &_sstream ) ;
 
 private:
-    void merge(::fwMedData::SeriesDB::sptr seriesDBIn, ::fwMedData::SeriesDB::sptr seriesDBOut);
-
     std::string m_ioSelectorSrvConfig;
 
 };

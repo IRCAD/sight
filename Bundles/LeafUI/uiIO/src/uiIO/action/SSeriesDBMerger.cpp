@@ -15,6 +15,8 @@
 
 #include <fwGui/Cursor.hpp>
 
+#include <fwComEd/helper/SeriesDB.hpp>
+
 #include "uiIO/action/SSeriesDBMerger.hpp"
 
 namespace uiIO
@@ -91,7 +93,9 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
     ioSelectorSrv->stop();
     ::fwServices::OSR::unregisterService( ioSelectorSrv );
 
-    this->merge(localSeriesDB, seriesDB);
+    ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
+    sDBhelper.merge(localSeriesDB);
+    sDBhelper.notify(this->getSptr());
 }
 
 //------------------------------------------------------------------------------
@@ -114,18 +118,6 @@ void SSeriesDBMerger::stopping() throw (::fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-
-void SSeriesDBMerger::merge(::fwMedData::SeriesDB::sptr seriesDBIn, ::fwMedData::SeriesDB::sptr seriesDBOut)
-{
-    ::fwMedData::SeriesDB::ContainerType& vectIn = seriesDBIn->getContainer();
-    ::fwMedData::SeriesDB::ContainerType& vectOut = seriesDBOut->getContainer();
-    vectOut.reserve( vectOut.size() + vectIn.size() );
-    vectOut.insert( vectOut.end(), vectIn.begin(), vectIn.end() );
-
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
-    ::fwServices::IEditionService::notify(this->getSptr(), seriesDBOut, msg);
-}
 
 } // namespace action
 } // namespace uiIO
