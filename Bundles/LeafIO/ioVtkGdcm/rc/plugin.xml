@@ -11,6 +11,13 @@
         <desc>Dicom Reader (VTK/gdcm)</desc>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioVtkGdcm::SSeriesDBReaderService</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Series DB Reader (VTK/gdcm)</desc>
+    </extension>
+
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
