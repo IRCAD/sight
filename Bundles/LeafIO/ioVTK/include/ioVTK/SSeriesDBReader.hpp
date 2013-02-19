@@ -82,7 +82,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    IOVTK_API void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.
@@ -98,27 +98,13 @@ private :
     /**
     * @brief Load VTK mesh or image and push it into SeriesDB.
     * @param[in] vtkFiles vector of boost::filesystem::path.
-    * @param[out] seriesDB ::boost::shared_ptr< ::fwData::Mesh >.
+    * @param[out] seriesDB ::boost::shared_ptr< ::fwMedData::SeriesDB >.
     * @return bool.
     *
     * This method is used to load a mesh using the file path.
     */
     void loadSeriesDB( const ::fwData::location::ILocation::VectPathType& vtkFiles,
                        ::fwMedData::SeriesDB::sptr seriesDB );
-
-    /**
-     * @brief Notification method.
-     *
-     * This method is used to notify
-     * the mesh services.
-     */
-    void notificationOfUpdate();
-
-    /**
-    * @brief the m_bServiceIsConfigured value is \b true
-    * if the mesh path is known.
-    */
-    bool m_bServiceIsConfigured;
 
 };
 

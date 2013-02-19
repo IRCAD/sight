@@ -18,6 +18,8 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/location/Folder.hpp>
 
+#include <fwComEd/helper/SeriesDB.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -55,7 +57,7 @@ void SSeriesDBReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     ::fwData::location::MultiFiles::sptr  result;
-    result= ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
+    result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
         const ::fwData::location::ILocation::VectPathType paths = result->getPaths();
@@ -140,26 +142,19 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
         ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
         SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
+        ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
+
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        this->loadSeriesDB(this->getFiles(), seriesDB);
-        this->notificationOfUpdate();
+        this->loadSeriesDB(this->getFiles(), localSeriesDB);
+
+        ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
+        sDBhelper.merge(localSeriesDB);
+        sDBhelper.notify(this->getSptr());
 
         cursor.setDefaultCursor();
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesDBReader::notificationOfUpdate()
-{
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    SLM_ASSERT("SeriesDB not instanced", seriesDB);
-
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), seriesDB, msg);
 }
 
 //------------------------------------------------------------------------------
