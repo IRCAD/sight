@@ -14,8 +14,10 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwcomEd/helper/Vector.hpp>
+#include <fwComEd/helper/Vector.hpp>
+#include <fwComEd/SeriesDBMsg.hpp>
 
+#include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -80,11 +82,33 @@ void SSelector::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSelector::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void SSelector::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
-    if (_msg->hasEvent(::fwServices::ObjectMsg::UPDATED_OBJECT))
+    ::fwComEd::SeriesDBMsg::csptr seriesDBMsg = ::fwComEd::SeriesDBMsg::dynamicConstCast(msg);
+
+    if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::ADDED_OBJECTS ) )
     {
-        this->updating();
+        ::fwData::Vector::sptr addedObject = seriesDBMsg->getAddedSeries();
+        BOOST_FOREACH( ::fwData::Object::sptr obj, addedObject->getContainer() )
+        {
+            ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+            if(series)
+            {
+                m_selectorWidget->addSeries(series);
+            }
+        }
+    }
+    else if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS ) )
+    {
+        ::fwData::Vector::sptr removedObject = seriesDBMsg->getRemovedSeries();
+        BOOST_FOREACH( ::fwData::Object::sptr obj, removedObject->getContainer() )
+        {
+            ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+            if(series)
+            {
+                m_selectorWidget->removeSeries(series);
+            }
+        }
     }
 }
 
