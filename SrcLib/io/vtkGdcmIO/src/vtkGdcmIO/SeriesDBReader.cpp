@@ -157,7 +157,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
 
             const char *seriesUID =  scanner.GetValue( filename, seriesUIDTag );
             const char *acqDate   =  scanner.GetValue( filename, acquisitionDateTag );
-            const char *acqTime   =  scanner.GetValue( filename, acquisitionTimeTag );
 
             if (seriesUID)
             {
@@ -167,12 +166,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                 {
                     fileSetId += "_";
                     fileSetId += acqDate;
-                }
-
-                if (acqTime)
-                {
-                    fileSetId += "_";
-                    fileSetId += acqTime;
                 }
 
                 const char *imageTypeStr = scanner.GetValue(filename, imageTypeTag);
