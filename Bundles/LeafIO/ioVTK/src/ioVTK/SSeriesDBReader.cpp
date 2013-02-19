@@ -108,7 +108,6 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading SeriesDB");
         reader->addHandler( progressMeterGUI );
-        ::fwData::mt::ObjectWriteLock lock(seriesDB);
         reader->read();
     }
     catch (const std::exception & e)
@@ -150,6 +149,8 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 
         ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
+
+        ::fwData::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);
         sDBhelper.notify(this->getSptr());
 
