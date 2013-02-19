@@ -7,6 +7,8 @@
 #include <QStandardItem>
 #include <QString>
 #include <QItemSelectionModel>
+#include <QModelIndexList>
+#include <QKeyEvent>
 
 #include <fwData/Image.hpp>
 
@@ -15,6 +17,8 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
+
+#include <fwComEd/SeriesDBMsg.hpp>
 
 #include "uiMedDataQt/widget/Selector.hpp"
 
@@ -82,22 +86,60 @@ Selector::SeriesVectorType Selector::getSeries( const QItemSelection & selection
     SeriesVectorType vSeries;
 
     QModelIndexList selectedIndexes = selection.indexes();
-    if (!selectedIndexes.empty())
-    {
-        for (int i=0 ; i < selectedIndexes.count() ; ++i)
-        {
-            QModelIndex index = selectedIndexes[i];
-            std::string uid = index.data(SelectorModel::UID).toString().toStdString();
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+    vSeries = this->getSeries(selectedIndexes);
+    return vSeries;
+}
 
-            if (index.data(SelectorModel::ITEM_TYPE)  == SelectorModel::SERIES)
-            {
-                ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
-                vSeries.push_back(series);
-            }
+//-----------------------------------------------------------------------------
+
+Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& indexList)
+{
+    SeriesVectorType vSeries;
+    BOOST_FOREACH(QModelIndex index, indexList)
+    {
+        std::string uid = index.data(SelectorModel::UID).toString().toStdString();
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+
+        if (index.data(SelectorModel::ITEM_TYPE)  == SelectorModel::SERIES)
+        {
+            ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+            vSeries.push_back(series);
         }
     }
+    return vSeries;
+}
 
+//-----------------------------------------------------------------------------
+
+QModelIndexList Selector::getStudyIndexes(const QModelIndexList& indexList)
+{
+    QModelIndexList studiesIndex;
+    BOOST_FOREACH(QModelIndex index, indexList)
+    {
+        if (index.data(SelectorModel::ITEM_TYPE)  == SelectorModel::STUDY)
+        {
+            studiesIndex.push_back(index);
+        }
+    }
+    return studiesIndex;
+}
+
+//-----------------------------------------------------------------------------
+
+Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& index )
+{
+    SeriesVectorType vSeries;
+    QStandardItem* item = m_model->itemFromIndex(index);
+    int nbRow = item->rowCount();
+    for(int row =0; row < nbRow; ++row)
+    {
+        QStandardItem *child = item->child(row);
+        std::string uid = child->data(SelectorModel::UID).toString().toStdString();
+        SLM_ASSERT("UID must not be empty.", !uid.empty());
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+        vSeries.push_back(series);
+    }
     return vSeries;
 }
 
@@ -107,6 +149,40 @@ SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
 {
     return m_model->getItemType(index);
 }
+
+ //-----------------------------------------------------------------------------
+
+ void Selector::keyPressEvent(QKeyEvent * event)
+ {
+     if(event->matches(QKeySequence::Delete))
+     {
+//         this->onDelete();
+     }
+ }
+
+ //-----------------------------------------------------------------------------
+
+ void Selector::onDelete()
+ {
+     SeriesVectorType vSeries;
+     QModelIndexList selection = this->selectedIndexes();
+     Selector::SeriesVectorType series = this->getSeries(selection);
+     QModelIndexList studyIndexes = this->getStudyIndexes(selection);
+     BOOST_FOREACH(QModelIndex index, studyIndexes)
+     {
+         vSeries = getSeriesFromStudyIndex(index);
+     }
+
+     // Remove item in Selector.
+     BOOST_FOREACH(QModelIndex index, selection)
+     {
+         if (index.column() == 0)
+         {
+             bool removed = m_model->removeRow(index);
+         }
+
+     }
+ }
 
  //-----------------------------------------------------------------------------
 

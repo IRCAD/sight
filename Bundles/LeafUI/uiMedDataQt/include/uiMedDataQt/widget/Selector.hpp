@@ -18,6 +18,7 @@
 #include <QVector>
 
 #include <fwMedData/Series.hpp>
+#include <fwMedData/Study.hpp>
 
 #include "uiMedDataQt/config.hpp"
 #include "uiMedDataQt/widget/SelectorModel.hpp"
@@ -39,6 +40,7 @@ class UIMEDDATAQT_CLASS_API Selector : public QTreeView
 public:
 
     typedef QVector< ::fwMedData::Series::sptr > SeriesVectorType;
+    typedef QVector< ::fwMedData::Study::sptr > StudiesVectorType;
 
     /// Constructor. Init tree view.
     UIMEDDATAQT_API Selector(QWidget *parent = 0);
@@ -59,6 +61,8 @@ public:
 
     /// Returns the type of the item (SERIES or STUDY)
     UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex &index);
+
+    UIMEDDATAQT_API void keyPressEvent(QKeyEvent * event);
 
 Q_SIGNALS:
     /**
@@ -81,14 +85,19 @@ protected Q_SLOTS:
      * don't appear in this selection/deselection.
      */
     void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    void onDelete();
 
 protected :
 
     /**
      * @brief Returns the Series associated to the selection.
-     * note If a study is selected, return an empty selection.
+     * @note If a study is selected, return an empty selection.
      */
     SeriesVectorType getSeries( const QItemSelection & selection );
+    SeriesVectorType getSeries(const QModelIndexList& indexList);
+
+    QModelIndexList getStudyIndexes(const QModelIndexList& indexList);
+    SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& index);
 
 private:
 

@@ -78,6 +78,7 @@ public:
      * @param[in] column the column of the index to return.
      */
     UIMEDDATAQT_API QModelIndex getIndex(const QModelIndex& index, int column );
+    UIMEDDATAQT_API bool removeRow(const QModelIndex& index);
 
 private:
 
@@ -87,6 +88,9 @@ private:
      */
     template <typename T>
     QStandardItem* getInfo(T data, QString separator);
+
+    bool removeStudyFromIndex(const QModelIndex& index);
+    bool removeSeriesFromIndex(const QModelIndex& index);
 
     /// Initialize model. Set headers.
     void init();

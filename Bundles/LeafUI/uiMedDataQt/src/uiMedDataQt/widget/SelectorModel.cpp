@@ -7,6 +7,8 @@
 #include <QStandardItem>
 #include <QString>
 
+#include <fwTools/fwID.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwMedData/Patient.hpp>
@@ -88,7 +90,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 
         QStandardItem *patientName = new QStandardItem( QString::fromStdString(patient->getName()) );
         patientName->setData(QVariant((int)SelectorModel::STUDY), SelectorModel::ITEM_TYPE);
-        patientName->setData(QVariant(QString::fromStdString(patient->getID())), UID);
+        patientName->setData(QVariant(QString::fromStdString(study->getID())), UID);
         QStandardItem *patientId   = new QStandardItem( QString::fromStdString(patient->getPatientId()) );
         QStandardItem *patientBirthdate   = new QStandardItem( QString::fromStdString(patient->getBirthdate()) );
         QStandardItem *patientSex   = new QStandardItem( QString::fromStdString(patient->getSex()) );
@@ -174,5 +176,60 @@ QModelIndex SelectorModel::getIndex(const QModelIndex& index, int column )
 
 //-----------------------------------------------------------------------------
 
+bool SelectorModel::removeRow(const QModelIndex& index)
+{
+    bool isRemoved = false;
+    if(index.data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY)
+    {
+        isRemoved = this->removeStudyFromIndex(index);
+    }
+    else if (index.data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
+    {
+        isRemoved = this->removeSeriesFromIndex(index);
+    }
+    return isRemoved;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SelectorModel::removeStudyFromIndex(const QModelIndex& index)
+{
+    bool isRemoved = false;
+    QStandardItem* item = this->itemFromIndex(index);
+    SLM_ASSERT("Index must represent a study.", item->data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY);
+    QString uid = item->data(SelectorModel::UID).toString();
+    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid.toStdString());
+
+    ::fwMedData::Study::sptr study = ::fwMedData::Study::dynamicCast(obj);
+    SLM_ASSERT("This is not a study", study);
+    ::fwMedData::DicomValueType instanceUID = study->getInstanceUID();
+
+    isRemoved = this->QStandardItemModel::removeRow(item->row());
+    SLM_ASSERT("Remove can not be done!", isRemoved);
+    m_items.erase(instanceUID);
+    --m_studyRowCount;
+
+    return isRemoved;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SelectorModel::removeSeriesFromIndex(const QModelIndex& index)
+{
+    bool isRemoved = false;
+
+    QStandardItem* item = this->itemFromIndex(index);
+    SLM_ASSERT("Index must represent series", item->data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES);
+    QStandardItem* parent = item->parent();
+    isRemoved = this->QStandardItemModel::removeRow(item->row(), index.parent());
+    SLM_ASSERT("Remove can not be done!", isRemoved);
+    if(parent && parent->rowCount() == 0)
+    {
+        this->removeStudyFromIndex(index.parent());
+    }
+    return isRemoved;
+}
+
+//-----------------------------------------------------------------------------
 } // namespace widget
 } // namespace uiMedData
