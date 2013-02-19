@@ -54,11 +54,18 @@ public :
     FWCOMED_API void remove( ::fwMedData::Series::sptr oldSeries );
 
     /**
-     * @brief Clear all objects in the vector.
+     * @brief Clear all series in the SeriesDB.
      *
      * Prepare the message to announce the modification.
      */
     FWCOMED_API void clear();
+
+    /**
+     * @brief Merge seriesDBIn all series from seriesDBIn to the SeriesDB.
+     *
+     * Prepare the message to announce the modification.
+     */
+    FWCOMED_API void merge(::fwMedData::SeriesDB::sptr seriesDBIn);
 
     /// Send the message of modification
     FWCOMED_API void notify( ::fwServices::IService::sptr serviceSource );

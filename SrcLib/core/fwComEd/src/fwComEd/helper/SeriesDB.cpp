@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/IEditionService.hpp>
@@ -74,9 +76,20 @@ void SeriesDB::clear()
 
 //-----------------------------------------------------------------------------
 
+void SeriesDB::merge(::fwMedData::SeriesDB::sptr seriesDBIn)
+{
+    ::fwMedData::SeriesDB::ContainerType& vectIn = seriesDBIn->getContainer();
+    BOOST_FOREACH(::fwMedData::Series::sptr series, vectIn)
+    {
+        this->add(series);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SeriesDB::notify( ::fwServices::IService::sptr serviceSource )
 {
-    if ( m_seriesDBMsg->getEventIds().size() > 0 )
+    if ( !m_seriesDBMsg->getEventIds().empty() )
     {
         ::fwServices::IEditionService::notify( serviceSource, m_seriesDB.lock(), m_seriesDBMsg , true );
     }
