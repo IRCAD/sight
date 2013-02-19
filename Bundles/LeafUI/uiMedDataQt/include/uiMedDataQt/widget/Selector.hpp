@@ -60,9 +60,6 @@ public:
     /// Returns the type of the item (SERIES or STUDY)
     UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex &index);
 
-    /// Select the row of the index.
-    UIMEDDATAQT_API void selectRow(const QModelIndex &index);
-
 Q_SIGNALS:
     /**
      * @brief Signal emitted when the selection change.

@@ -108,19 +108,6 @@ SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
     return m_model->getItemType(index);
 }
 
-//-----------------------------------------------------------------------------
-
- void Selector::selectRow(const QModelIndex &index)
- {
-     QItemSelectionModel* selectionModel = this->selectionModel();
-
-     QModelIndex topLeft = m_model->getIndex(index, 0);
-     QModelIndex bottomRight = m_model->getIndex(index, m_model->columnCount()-1);
-     QItemSelection selection(topLeft, bottomRight);
-
-     selectionModel->select(selection, QItemSelectionModel::Select);
- }
-
  //-----------------------------------------------------------------------------
 
 } // namespace widget
