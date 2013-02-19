@@ -272,6 +272,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                 for( ; filesIt != filesEnd; ++filesIt)
                 {
                     const std::string &f = *filesIt;
+                    OSLM_TRACE("Add " << f << " to vtkGdcmReader");
                     fileArray->InsertNextValue( f.c_str() );
                 }
 
@@ -280,6 +281,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                 bool res = false;
                 if (fileArray->GetNumberOfValues() > 0)
                 {
+                    reader->SetFileNames( fileArray );
                     try
                     {
                         SLM_TRACE ( "Read all files" );
@@ -361,11 +363,12 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
 
                         ::fwData::Image::OriginType imgOrigin = pDataImage->getOrigin();
                         imgOrigin.resize(3);
-                        imgOrigin[2] = 1;
+                        imgOrigin[2] = 0.;
                         pDataImage->setOrigin(imgOrigin);
 
                         width = 4096;
                     }
+
 
                     ::fwData::Image::SpacingType vPixelSpacing = pDataImage->getSpacing();
                     vPixelSpacing.resize(3);
@@ -383,6 +386,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                     series->setDate( seriesDate );
                     series->setTime( seriesTime );
                     series->setPerformingPhysiciansName( seriesPhysicianNames );
+                    series->setImage(pDataImage);
 
                     SLM_ASSERT("No study UID",  studyUIDStr);
                     study->setInstanceUID(( studyUIDStr ? studyUIDStr : "UNKNOWN-UID" ));
