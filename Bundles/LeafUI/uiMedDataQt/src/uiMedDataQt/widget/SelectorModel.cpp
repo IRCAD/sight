@@ -45,7 +45,7 @@ void SelectorModel::init()
     m_items.clear();
 
     QStringList headers;
-    headers << "Patient name" << "Patient ID" << "Modality" << "Date Acquired" << "Institution" << "Birthdate"
+    headers << "Patient name" << "Patient ID" << "Modality" << "Date started" << "Institution" << "Birthdate"
             << "Sex" << "Age" << "Referring physician" << "Performing physician " << "Study description"
             << "Image number" << "Voxel size" << "Patient position";
 
