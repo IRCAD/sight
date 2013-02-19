@@ -1,0 +1,4 @@
+TYPE = 'shared'
+VERSION = '0.1'
+USE = ['boost']
+LIB = ['fwData_0-1', 'fwMedData_0-1']
