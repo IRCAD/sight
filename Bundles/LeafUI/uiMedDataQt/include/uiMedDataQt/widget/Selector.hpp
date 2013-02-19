@@ -74,6 +74,8 @@ Q_SIGNALS:
      */
     void selectSeries(QVector< ::fwMedData::Series::sptr > selection, QVector< ::fwMedData::Series::sptr > deselection);
 
+    void removeSeries(QVector< ::fwMedData::Series::sptr > selection);
+
 
 protected Q_SLOTS:
     /**

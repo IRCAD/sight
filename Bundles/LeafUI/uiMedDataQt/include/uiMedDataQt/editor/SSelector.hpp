@@ -87,6 +87,8 @@ protected Q_SLOTS:
      */
     void onDoubleClick(const QModelIndex &index);
 
+    void onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection);
+
 private :
 
     /// Returns current vector of selections given with its fwID m_selectionId.

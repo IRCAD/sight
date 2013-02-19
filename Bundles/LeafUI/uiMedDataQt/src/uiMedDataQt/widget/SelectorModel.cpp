@@ -176,26 +176,44 @@ QModelIndex SelectorModel::getIndex(const QModelIndex& index, int column )
 
 //-----------------------------------------------------------------------------
 
-bool SelectorModel::removeRow(const QModelIndex& index)
+void SelectorModel::removeRows(const QModelIndexList indexes)
+{
+    QList<QStandardItem *> items;
+
+    BOOST_FOREACH(QModelIndex index, indexes)
+    {
+        SLM_ASSERT("Index must be in first column.", index.column() == 0);
+        QStandardItem * item = this->itemFromIndex(index);
+        items.append(item);
+    }
+
+    BOOST_FOREACH(QStandardItem *item, items)
+    {
+        bool removed = this->removeRow(item);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+bool SelectorModel::removeRow(QStandardItem *item)
 {
     bool isRemoved = false;
-    if(index.data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY)
+    if(item->data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY)
     {
-        isRemoved = this->removeStudyFromIndex(index);
+        isRemoved = this->removeStudyItem(item);
     }
-    else if (index.data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
+    else if (item->data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
     {
-        isRemoved = this->removeSeriesFromIndex(index);
+        isRemoved = this->removeSeriesItem(item);
     }
     return isRemoved;
 }
 
 //-----------------------------------------------------------------------------
 
-bool SelectorModel::removeStudyFromIndex(const QModelIndex& index)
+bool SelectorModel::removeStudyItem(QStandardItem *item)
 {
     bool isRemoved = false;
-    QStandardItem* item = this->itemFromIndex(index);
     SLM_ASSERT("Index must represent a study.", item->data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY);
     QString uid = item->data(SelectorModel::UID).toString();
     ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid.toStdString());
@@ -214,18 +232,17 @@ bool SelectorModel::removeStudyFromIndex(const QModelIndex& index)
 
 //-----------------------------------------------------------------------------
 
-bool SelectorModel::removeSeriesFromIndex(const QModelIndex& index)
+bool SelectorModel::removeSeriesItem(QStandardItem *item)
 {
     bool isRemoved = false;
 
-    QStandardItem* item = this->itemFromIndex(index);
     SLM_ASSERT("Index must represent series", item->data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES);
     QStandardItem* parent = item->parent();
-    isRemoved = this->QStandardItemModel::removeRow(item->row(), index.parent());
+    isRemoved = this->QStandardItemModel::removeRow(item->row(), this->indexFromItem(parent));
     SLM_ASSERT("Remove can not be done!", isRemoved);
     if(parent && parent->rowCount() == 0)
     {
-        this->removeStudyFromIndex(index.parent());
+        this->removeStudyItem(parent);
     }
     return isRemoved;
 }

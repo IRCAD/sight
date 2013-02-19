@@ -156,7 +156,7 @@ SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
  {
      if(event->matches(QKeySequence::Delete))
      {
-//         this->onDelete();
+         this->onDelete();
      }
  }
 
@@ -164,24 +164,20 @@ SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
 
  void Selector::onDelete()
  {
-     SeriesVectorType vSeries;
-     QModelIndexList selection = this->selectedIndexes();
-     Selector::SeriesVectorType series = this->getSeries(selection);
+     QModelIndexList selection = this->selectionModel()->selectedRows(0);
+
+     SeriesVectorType vSeries = this->getSeries(selection);
      QModelIndexList studyIndexes = this->getStudyIndexes(selection);
      BOOST_FOREACH(QModelIndex index, studyIndexes)
      {
-         vSeries = getSeriesFromStudyIndex(index);
+         SeriesVectorType series = getSeriesFromStudyIndex(index);
+         std::copy(series.begin(), series.end(), std::back_inserter(vSeries));
      }
+
+     Q_EMIT removeSeries(vSeries);
 
      // Remove item in Selector.
-     BOOST_FOREACH(QModelIndex index, selection)
-     {
-         if (index.column() == 0)
-         {
-             bool removed = m_model->removeRow(index);
-         }
-
-     }
+     m_model->removeRows(selection);
  }
 
  //-----------------------------------------------------------------------------

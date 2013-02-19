@@ -15,6 +15,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/helper/Vector.hpp>
+#include <fwComEd/helper/SeriesDB.hpp>
 #include <fwComEd/SeriesDBMsg.hpp>
 
 #include <fwMedData/Series.hpp>
@@ -78,6 +79,9 @@ void SSelector::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_selectorWidget, SIGNAL(doubleClicked(const QModelIndex &)),
                      this, SLOT(onDoubleClick(const QModelIndex &)));
+
+    QObject::connect(m_selectorWidget, SIGNAL(removeSeries(QVector< ::fwMedData::Series::sptr >)),
+                     this, SLOT(onRemoveSeries(QVector< ::fwMedData::Series::sptr >)));
 }
 
 //------------------------------------------------------------------------------
@@ -191,6 +195,21 @@ void SSelector::onDoubleClick(const QModelIndex &index)
 
     ::fwGui::dialog::MessageDialog::showMessageDialog("Double click",
                                                       str.str());
+}
+
+//------------------------------------------------------------------------------
+
+void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
+{
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+
+    BOOST_FOREACH( ::fwMedData::Series::sptr series, selection)
+    {
+        seriesDBHelper.remove(series);
+    }
+
+    seriesDBHelper.notify(this->getSptr());
 }
 
 //------------------------------------------------------------------------------
