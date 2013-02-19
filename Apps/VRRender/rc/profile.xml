@@ -19,7 +19,6 @@
         <param id="parameters" value="VRRenderAppBase" />
     </activate>
 
-    <start id="ioVtkGdcm" />
     <start id="guiQt" />
     <start id="appXml" />
 
