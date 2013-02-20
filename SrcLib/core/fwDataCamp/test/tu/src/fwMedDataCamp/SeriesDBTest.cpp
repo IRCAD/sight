@@ -16,7 +16,7 @@
 #include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 
 #include "fwMedDataCamp/SeriesDBTest.hpp"
-#include "fwMedDataCamp/MedDataCampHelper.hpp"
+#include "DataCampHelper.hpp"
 
 using namespace ::boost::assign;
 
@@ -44,8 +44,8 @@ void SeriesDBTest::tearDown()
 
 void SeriesDBTest::propertiesTest()
 {
-    const MedDataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                        ("values");
+    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
+                                                                       ("values");
 
     ::fwMedData::SeriesDB::sptr obj = ::fwMedData::SeriesDB::New();
     ::fwMedData::SeriesDB::ContainerType vectSeries;
@@ -54,10 +54,10 @@ void SeriesDBTest::propertiesTest()
     vectSeries.push_back(::fwMedData::ModelSeries::New());
     obj->setContainer(vectSeries);
 
-    MedDataCampHelper::visitProperties(obj->getClassname(), dataProperties);
-    MedDataCampHelper::compareObjectPropertyValue(obj, "@values.0", vectSeries[0]);
-    MedDataCampHelper::compareObjectPropertyValue(obj, "@values.1", vectSeries[1]);
-    MedDataCampHelper::compareObjectPropertyValue(obj, "@values.2", vectSeries[2]);
+    ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
+    ::DataCampHelper::compareObjectPropertyValue(obj, "@values.0", vectSeries[0]);
+    ::DataCampHelper::compareObjectPropertyValue(obj, "@values.1", vectSeries[1]);
+    ::DataCampHelper::compareObjectPropertyValue(obj, "@values.2", vectSeries[2]);
 
     ::fwAtomConversion::AtomHelper metaHelper;
     ::fwAtoms::Object::sptr metaObject = metaHelper.dataToMeta(obj);

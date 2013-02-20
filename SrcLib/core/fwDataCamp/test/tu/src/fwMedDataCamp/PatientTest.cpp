@@ -9,7 +9,7 @@
 #include <fwDataCamp/Version.hpp>
 #include <fwMedData/Patient.hpp>
 
-#include "fwMedDataCamp/MedDataCampHelper.hpp"
+#include "DataCampHelper.hpp"
 #include "fwMedDataCamp/PatientTest.hpp"
 
 using namespace ::boost::assign;
@@ -42,11 +42,11 @@ void PatientTest::propertiesTest()
     const std::string patient_id = "42";
     const std::string birth_date = "19830214";
     const std::string sex = "M";
-    const MedDataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                        ("name")
-                                                                        ("patient_id")
-                                                                        ("birth_date")
-                                                                        ("sex");
+    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
+                                                                       ("name")
+                                                                       ("patient_id")
+                                                                       ("birth_date")
+                                                                       ("sex");
 
     ::fwMedData::Patient::sptr obj = ::fwMedData::Patient::New();
     obj->setName(name);
@@ -54,11 +54,11 @@ void PatientTest::propertiesTest()
     obj->setBirthdate(birth_date);
     obj->setSex(sex);
 
-    MedDataCampHelper::visitProperties(obj->getClassname(), dataProperties);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@name", name);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@patient_id", patient_id);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@birth_date", birth_date);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@sex", sex);
+    ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@name", name);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@patient_id", patient_id);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@birth_date", birth_date);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@sex", sex);
 }
 
 //------------------------------------------------------------------------------

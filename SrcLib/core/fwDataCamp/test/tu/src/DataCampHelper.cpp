@@ -12,32 +12,29 @@
 
 #include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 
-#include "fwMedDataCamp/MedDataCampHelper.hpp"
+#include "DataCampHelper.hpp"
 
-namespace fwMedDataCamp
-{
-namespace ut
+namespace DataCampHelper
 {
 
 //------------------------------------------------------------------------------
 
-void MedDataCampHelper::visitProperties(const std::string& className, const PropertiesNameType& vecProp)
+void visitProperties(const std::string& className, const PropertiesNameType& vecProp)
 {
     const ::camp::Class& metaClass = ::camp::classByName(className);
-
-    CPPUNIT_ASSERT_EQUAL( vecProp.size(), metaClass.propertyCount()) ;
+    CPPUNIT_ASSERT_EQUAL( vecProp.size(), metaClass.propertyCount());
     BOOST_FOREACH(const std::string& property, vecProp)
     {
-        CPPUNIT_ASSERT_MESSAGE("Missing property "+ property+" in fwMedData::Equipment",
+        CPPUNIT_ASSERT_MESSAGE("Missing property "+ property+" in "+className,
                               metaClass.hasProperty(property));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void MedDataCampHelper::compareSimplePropertyValue(::fwData::Object::sptr obj,
-                                                   const std::string& propertyPath,
-                                                   const std::string& value)
+void compareSimplePropertyValue(::fwData::Object::sptr obj,
+                                const std::string& propertyPath,
+                                const std::string& value)
 {
     ::fwData::GenericFieldBase::sptr field;
     field = ::fwAtomConversion::getSubObject< ::fwData::GenericFieldBase >(obj, propertyPath);
@@ -47,9 +44,9 @@ void MedDataCampHelper::compareSimplePropertyValue(::fwData::Object::sptr obj,
 
 //------------------------------------------------------------------------------
 
-void MedDataCampHelper::compareObjectPropertyValue(::fwData::Object::sptr obj,
-                                                   const std::string& propertyPath,
-                                                   ::fwData::Object::sptr value)
+void compareObjectPropertyValue(::fwData::Object::sptr obj,
+                                const std::string& propertyPath,
+                                ::fwData::Object::sptr value)
 {
     ::fwData::Object::sptr subObj;
     subObj = ::fwAtomConversion::getSubObject(obj, propertyPath);
@@ -59,6 +56,5 @@ void MedDataCampHelper::compareObjectPropertyValue(::fwData::Object::sptr obj,
 
 //------------------------------------------------------------------------------
 
+} // end namespace DataCampHelper
 
-} //namespace ut
-} //namespace fwMedDataCamp

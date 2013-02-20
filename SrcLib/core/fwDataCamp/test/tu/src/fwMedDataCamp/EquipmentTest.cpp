@@ -10,7 +10,7 @@
 #include <fwMedData/Equipment.hpp>
 
 #include "fwMedDataCamp/EquipmentTest.hpp"
-#include "fwMedDataCamp/MedDataCampHelper.hpp"
+#include "DataCampHelper.hpp"
 
 using namespace ::boost::assign;
 
@@ -39,14 +39,14 @@ void EquipmentTest::tearDown()
 void EquipmentTest::propertiesTest()
 {
     const std::string institution_name = "IHU Strasbourg / IRCAD";
-    const MedDataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                        ("institution_name");
+    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
+                                                                       ("institution_name");
 
     ::fwMedData::Equipment::sptr obj = ::fwMedData::Equipment::New();
     obj->setInstitutionName(institution_name);
 
-    MedDataCampHelper::visitProperties(obj->getClassname(), dataProperties);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@institution_name", institution_name);
+    ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@institution_name", institution_name);
 
 }
 

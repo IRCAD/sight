@@ -18,34 +18,34 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
-#include "fwMedDataCamp/MedDataCampHelper.hpp"
-#include "fwMedDataCamp/ImageTest.hpp"
+#include "DataCampHelper.hpp"
+#include "fwMedDataCamp/ImageSeriesTest.hpp"
 
 using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::ImageTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::ImageSeriesTest );
 
 namespace fwMedDataCamp
 {
 namespace ut
 {
 
-void ImageTest::setUp()
+void ImageSeriesTest::setUp()
 {
     // Set up context before running a test.
     //Force link with fwDataCamp
     const int version = ::fwDataCamp::Version::s_CURRENT_VERSION;
 }
 
-void ImageTest::tearDown()
+void ImageSeriesTest::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void ImageTest::propertiesTest()
+void ImageSeriesTest::propertiesTest()
 {
     const std::string instance_uid = "123456789";
     const std::string modality = "CT";
@@ -53,7 +53,7 @@ void ImageTest::propertiesTest()
     const std::string time = "143328";
     const std::string performing_physicians_name = "John Doe";
     const std::string description = "description";
-    const MedDataCampHelper::PropertiesNameType dataProperties = list_of("fields")
+    const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
                                                                         ("image")
                                                                         ("patient")
                                                                         ("study")
@@ -79,17 +79,17 @@ void ImageTest::propertiesTest()
     obj->setDescription(description);
     obj->setImage(img);
 
-    MedDataCampHelper::visitProperties(obj->getClassname(), dataProperties);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@instance_uid", instance_uid);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@modality", modality);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@date", date);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@time", time);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@performing_physicians_name.0", performing_physicians_names[0]);
-    MedDataCampHelper::compareSimplePropertyValue(obj, "@description", description);
-    MedDataCampHelper::compareObjectPropertyValue(obj, "@image", obj->getImage());
-    MedDataCampHelper::compareObjectPropertyValue(obj, "@patient", obj->getPatient());
-    MedDataCampHelper::compareObjectPropertyValue(obj, "@study", obj->getStudy());
-    MedDataCampHelper::compareObjectPropertyValue(obj, "@equipment", obj->getEquipment());
+    ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@instance_uid", instance_uid);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@modality", modality);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@date", date);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@time", time);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@performing_physicians_name.0", performing_physicians_names[0]);
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@description", description);
+    ::DataCampHelper::compareObjectPropertyValue(obj, "@image", obj->getImage());
+    ::DataCampHelper::compareObjectPropertyValue(obj, "@patient", obj->getPatient());
+    ::DataCampHelper::compareObjectPropertyValue(obj, "@study", obj->getStudy());
+    ::DataCampHelper::compareObjectPropertyValue(obj, "@equipment", obj->getEquipment());
 }
 
 //------------------------------------------------------------------------------

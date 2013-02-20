@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATACAMP_UT_MODELTEST_HPP__
-#define __FWMEDDATACAMP_UT_MODELTEST_HPP__
+#ifndef __FWMEDDATACAMP_UT_MODELSERIESTEST_HPP__
+#define __FWMEDDATACAMP_UT_MODELSERIESTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -14,9 +14,9 @@ namespace fwMedDataCamp
 namespace ut
 {
 
-class ModelTest : public CPPUNIT_NS::TestFixture
+class ModelSeriesTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( ModelTest );
+    CPPUNIT_TEST_SUITE( ModelSeriesTest );
     CPPUNIT_TEST( propertiesTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -32,4 +32,4 @@ public:
 } //namespace ut
 } //namespace fwMedDataCamp
 
-#endif // __FWMEDDATACAMP_UT_MODELTEST_HPP__
+#endif // __FWMEDDATACAMP_UT_MODELSERIESTEST_HPP__

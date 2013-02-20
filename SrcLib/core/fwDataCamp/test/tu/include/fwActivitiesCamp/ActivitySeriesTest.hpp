@@ -1,22 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATACAMP_UT_IMAGETEST_HPP__
-#define __FWMEDDATACAMP_UT_IMAGETEST_HPP__
+#ifndef __FWMEDDATACAMP_UT_ACTIVITYSERIESTEST_HPP__
+#define __FWMEDDATACAMP_UT_ACTIVITYSERIESTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwMedDataCamp
+namespace fwActivitiesCamp
 {
 namespace ut
 {
 
-class ImageTest : public CPPUNIT_NS::TestFixture
+class ActivitySeriesTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( ImageTest );
+    CPPUNIT_TEST_SUITE( ActivitySeriesTest );
     CPPUNIT_TEST( propertiesTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,6 +30,6 @@ public:
 };
 
 } //namespace ut
-} //namespace fwMedDataCamp
+} //namespace fwActivitiesCamp
 
-#endif // __FWMEDDATACAMP_UT_IMAGETEST_HPP__
+#endif // __FWMEDDATACAMP_UT_ACTIVITYSERIESTEST_HPP__
