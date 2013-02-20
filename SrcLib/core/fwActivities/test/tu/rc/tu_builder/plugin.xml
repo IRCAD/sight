@@ -1,0 +1,24 @@
+<plugin id="tu_fwActivities" >
+
+    <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd"/>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test0</id>
+        <title>Title Test0</title>
+        <desc>Desc Test0</desc>
+        <icon>Icon Test0</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="2" />
+        </requirements>
+        <builder>::fwActivities::ActivitySeriesBuilder</builder>
+        <appConfig id="Test0">
+            <parameters>
+                <key id="@modelSeries.value" pattern="RefModel" />
+                <key id="@imageSeries.value.image" pattern="RefImage" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>
+

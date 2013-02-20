@@ -4,7 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <boost/foreach.hpp>
+
+#include <fwData/Vector.hpp>
 
 #include "fwActivities/IBuilder.hpp"
 
@@ -12,9 +14,22 @@
 namespace fwActivities
 {
 
-void IBuilder::setConfiguration( ::fwRuntime::ConfigurationElement::sptr configuration)
+//------------------------------------------------------------------------------
+
+::fwData::Vector::sptr IBuilder::getType( ::fwData::Vector::sptr currentSelection, std::string type ) const
 {
-    m_configuration = configuration;
+    SLM_ASSERT("currentSelection not instanced", currentSelection);
+
+    ::fwData::Vector::sptr subSelection = ::fwData::Vector::New();
+    BOOST_FOREACH(::fwData::Vector::value_type obj, *currentSelection)
+    {
+        OSLM_ASSERT("Object not instanced in selection", obj);
+        if(obj->isA(type))
+        {
+            subSelection->getContainer().push_back(obj);
+        }
+    }
+    return subSelection;
 }
 
 //------------------------------------------------------------------------------

@@ -30,6 +30,10 @@ public:
 
     void builDataTest();
 
+protected:
+    SPTR( ::fwRuntime::Bundle ) m_bundle;
+    SPTR( ::fwActivities::registry::Activities ) m_activities;
+
 };
 
 } //namespace ut

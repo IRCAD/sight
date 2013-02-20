@@ -54,7 +54,7 @@ struct BundleDescriptorReader
      *
      * @return      a shared pointer to the created bundle
      */
-    static ::boost::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location) throw(RuntimeException);
+    FWRUNTIME_API static ::boost::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location) throw(RuntimeException);
 
     /**
      * @brief       Look for a descriptor at the specified location,

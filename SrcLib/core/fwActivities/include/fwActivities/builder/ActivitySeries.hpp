@@ -41,13 +41,13 @@ public:
 
     /**
      * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.
-     * @param[in] currentSelection a composite which contains current selected data.
-     * @param[in] activityConfigId an activity configuration identifier associated with the ActivitySeries data instanced.
+    * @param[in] activityInfo a structure which contains all the Activity configuration
+     * @param[in] currentSelection a vector which contains current selected data.
      * @return specific data ActivitySeries for the specified Activity.
      */
     FWACTIVITIES_API virtual ::fwActivities::ActivitySeries::sptr buildData(
-            SPTR(::fwData::Composite) currentSelection,
-            const ConfigIdType& activityConfigId ) const;
+            const ::fwActivities::registry::ActivityInfo& activityInfo,
+            SPTR(::fwData::Vector) currentSelection ) const;
 };
 
 } // namespace builder

@@ -14,15 +14,13 @@
 #include "fwActivities/builder/factory/new.hpp"
 #include "fwActivities/builder/registry/detail.hpp"
 #include "fwActivities/ActivitySeries.hpp"
+#include "fwActivities/registry/Activities.hpp"
+
 #include "fwActivities/config.hpp"
 
-namespace fwRuntime
-{
-struct ConfigurationElement;
-}
 namespace fwData
 {
-class Composite;
+class Vector;
 }
 
 namespace fwActivities
@@ -61,41 +59,18 @@ public :
 
     /**
      * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.
-     * @param[in] currentSelection a composite which contains current selected data.
-     * @param[in] activityConfigId an activity configuration identifier associated with the ActivitySeries data instanced.
+     * @param[in] activityInfo a structure which contains all the Activity configuration
+     * @param[in] currentSelection a vector which contains current selected data.
      * @return specific data ActivitySeries for the specified Activity.
      */
     FWACTIVITIES_API virtual ::fwActivities::ActivitySeries::sptr buildData(
-            SPTR(::fwData::Composite) currentSelection,
-            const ConfigIdType& activityConfigId ) const = 0;
-
-    /**
-     * @brief Affect the configuration, using a generic XML like structure.
-     * @param[in] configuration a structure which represents the xml configuration
-     *
-     * Example of configuration
-     * @verbatim
-      <requirements>
-            <param name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
-            <param name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
-        </requirements>
-       @endverbatim
-     */
-    FWACTIVITIES_API virtual void setConfiguration( SPTR(::fwRuntime::ConfigurationElement) configuration);
+            const ::fwActivities::registry::ActivityInfo& activityInfo,
+            SPTR(::fwData::Vector) currentSelection ) const = 0;
 
 protected :
 
-    /**
-     * @name Constructor/Destructor
-     * @{ */
-
-    IBuilder(){};
-
-    virtual ~IBuilder(){};
-
-    /**  @} */
-
-    SPTR(::fwRuntime::ConfigurationElement) m_configuration;
+    FWACTIVITIES_API virtual SPTR(::fwData::Vector) getType( SPTR(::fwData::Vector) currentSelection,
+                                                             std::string type ) const;
 };
 
 } // namespace fwActivities

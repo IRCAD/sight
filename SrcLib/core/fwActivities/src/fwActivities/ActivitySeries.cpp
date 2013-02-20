@@ -16,7 +16,8 @@ fwDataRegisterMacro( ::fwActivities::ActivitySeries );
 namespace fwActivities
 {
 
-ActivitySeries::ActivitySeries(::fwData::Object::Key key) : Series(key)
+ActivitySeries::ActivitySeries(::fwData::Object::Key key) : Series(key),
+        m_attrData(::fwData::Composite::New())
 {}
 
 //------------------------------------------------------------------------------

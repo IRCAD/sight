@@ -81,9 +81,9 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     typedef std::map< std::string, MinMaxType > RequirementsMinMaxCount;
     typedef std::map< std::string, unsigned int > DataCountType;
 
-    ActivityInfo(const SPTR(::fwRuntime::Extension) &ext);
+    FWACTIVITIES_API ActivityInfo(const SPTR(::fwRuntime::Extension) &ext);
 
-    bool usableWith(DataCountType dataCount) const;
+    FWACTIVITIES_API bool usableWith(DataCountType dataCount) const;
 
     std::string id;
     std::string title;
@@ -142,25 +142,25 @@ public:
      * @brief Tests if we have information about operator
      * @note This method is thread safe.
      */
-    bool hasInfo( const std::string & extensionId ) const;
+    FWACTIVITIES_API bool hasInfo( const std::string & extensionId ) const;
 
     /**
      * @brief Get all infos
      * @note This method is thread safe.
      */
-    ActivitiesType getInfos() const;
+    FWACTIVITIES_API ActivitiesType getInfos() const;
 
     /**
      * @brief Get available activities for given data.
      * @note This method is thread safe.
      */
-    ActivitiesType getInfos( const SPTR(::fwData::Vector) &data ) const;
+    FWACTIVITIES_API ActivitiesType getInfos( const SPTR(::fwData::Vector) &data ) const;
 
     /**
      * @brief Get all keys
      * @note This method is thread safe.
      */
-    std::vector< std::string > getKeys() const;
+    FWACTIVITIES_API std::vector< std::string > getKeys() const;
 
     /**
      * @brief Clear the registry.
