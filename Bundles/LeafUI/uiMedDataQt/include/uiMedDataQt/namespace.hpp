@@ -8,8 +8,8 @@
 #define __UIMEDDATAQT_NAMESPACE_HPP__
 
 /**
- * @brief       The namespace uiMedDataQt contains editors for medical data.
- * @namespace   uiMedDataQt
+ * @brief       The namespace uiMedData contains editors for medical data.
+ * @namespace   uiMedData
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2013.
  *
@@ -29,8 +29,8 @@ namespace widget
 }
 
 /**
- * @brief       The namespace ::uiMedDataQt::editor contains editors for medical data.
- * @namespace   ::uiMedDataQt::editor
+ * @brief       The namespace ::uiMedData::editor contains editors for medical data.
+ * @namespace   ::uiMedData::editor
  * @author      IRCAD (Research and Development Team).
  * @date        2009-2013.
  *

@@ -163,7 +163,8 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 
 void SelectorModel::removeSeries(::fwMedData::Series::sptr series)
 {
-
+    QStandardItem* seriesItem = this->findSeriesItem(series);
+    this->removeSeriesItem(seriesItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -249,5 +250,28 @@ bool SelectorModel::removeSeriesItem(QStandardItem *item)
 }
 
 //-----------------------------------------------------------------------------
+
+QStandardItem* SelectorModel::findSeriesItem(::fwMedData::Series::sptr series)
+{
+    QStandardItem* seriesItem;
+    ::fwMedData::Study::sptr study = series->getStudy();
+    ::fwMedData::DicomValueType studyInstanceUid = study->getInstanceUID();
+
+    QStandardItem* studyItem = m_items[studyInstanceUid];
+    int nbRow = studyItem->rowCount();
+    for(int row =0; row < nbRow; ++row)
+    {
+        QStandardItem *child = studyItem->child(row);
+        std::string seriesId = child->data(SelectorModel::UID).toString().toStdString();
+        if(seriesId == series->getID())
+        {
+            seriesItem = child;
+            break;
+        }
+    }
+    return seriesItem;
+}
+//-----------------------------------------------------------------------------
+
 } // namespace widget
 } // namespace uiMedData

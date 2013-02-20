@@ -38,7 +38,7 @@ public:
     typedef enum
     {
         ITEM_TYPE = Qt::UserRole, /// Role for the item type (STUDY or SERIES)
-        UID                       /// Role for the fwID od the object
+        UID                       /// Role for the fwID of the object
     }Role;
 
     typedef enum
@@ -58,9 +58,14 @@ public:
      * this study.
      */
     UIMEDDATAQT_API void addSeries(::fwMedData::Series::sptr series);
+
+    /**
+     * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
+     * @param[in] series series to remove from the tree.
+     */
     UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr series);
 
-    /// Clear all items in the model.
+    /// Clears all items in the model.
     UIMEDDATAQT_API void clear();
 
     /// Returns item flags with non editable flag
@@ -69,39 +74,50 @@ public:
         return (QStandardItemModel::flags(index) & ~Qt::ItemIsEditable);
     }
 
-    /// Returns the type of the item (SERIES or STUDY) associates to the ITEM_TYPE role.
+    /// Returns the type of the item (SERIES or STUDY) associated to the ITEM_TYPE role.
     UIMEDDATAQT_API ItemType getItemType(const QModelIndex &index);
 
     /**
-     * @brief Return an index in the same row of the given index and in the column.
+     * @brief Returns the index in the same row as the given index and at the specified column.
      * @param[in] index index used to get the associated row.
      * @param[in] column the column of the index to return.
      */
     UIMEDDATAQT_API QModelIndex getIndex(const QModelIndex& index, int column );
 
+    /// Removes the rows given by the indexes.
     UIMEDDATAQT_API void removeRows(const QModelIndexList indexes);
+
+    /// Returns the series item representing the series.
+    UIMEDDATAQT_API QStandardItem* findSeriesItem(::fwMedData::Series::sptr series);
+
 
 private:
 
+    typedef std::map< ::fwMedData::DicomValueType, QStandardItem* > StudyUidItemMapType;
+
     /**
-     * @brief Returns the informations contained in the data container as a string, all items are separated with the
+     * @brief Returns the informations contained in the data container as a string, all items are separated by the
      * separator.
      */
     template <typename T>
     QStandardItem* getInfo(T data, QString separator);
 
+    /// Removes the study item and all the series associated.
     bool removeStudyItem(QStandardItem *item);
+
+    /// Removes the series item and the parent study if it is the last series in the study.
     bool removeSeriesItem(QStandardItem *item);
 
-    /// Initialize model. Set headers.
+    /// Initializes model. Sets headers of the selector.
     void init();
 
-    typedef std::map< ::fwMedData::DicomValueType, QStandardItem* > StudyUidItemMapType;
-
-    /// Number of study rows in the tree
+    /// Number of study rows in the tree.
     int m_studyRowCount;
 
-    /// Map to registers study Instance UID/study root item. Used to associate the series to theirs study in the tree
+    /**
+     * @brief Map to register the association of study Instance UID  and study root item.
+     * It is used to associate the series to its study in the tree.
+     */
     StudyUidItemMapType m_items;
 };
 

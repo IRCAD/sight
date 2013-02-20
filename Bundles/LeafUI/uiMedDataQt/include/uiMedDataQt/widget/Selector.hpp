@@ -40,7 +40,6 @@ class UIMEDDATAQT_CLASS_API Selector : public QTreeView
 public:
 
     typedef QVector< ::fwMedData::Series::sptr > SeriesVectorType;
-    typedef QVector< ::fwMedData::Study::sptr > StudiesVectorType;
 
     /// Constructor. Init tree view.
     UIMEDDATAQT_API Selector(QWidget *parent = 0);
@@ -52,16 +51,22 @@ public:
     UIMEDDATAQT_API void clear();
 
     /**
-     * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
+     * @brief Adds the Series in the tree. If the associated study already exists in the tree, the series is added to
      * this study.
+     * @param[in] series series to add in the tree.
      */
     UIMEDDATAQT_API void addSeries(::fwMedData::Series::sptr series);
 
+    /**
+     * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
+     * @param[in] series series to remove from the tree.
+     */
     UIMEDDATAQT_API void removeSeries(::fwMedData::Series::sptr series);
 
     /// Returns the type of the item (SERIES or STUDY)
     UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex &index);
 
+    /// Catch the delete key event and remove the selected items.
     UIMEDDATAQT_API void keyPressEvent(QKeyEvent * event);
 
 Q_SIGNALS:
@@ -74,6 +79,10 @@ Q_SIGNALS:
      */
     void selectSeries(QVector< ::fwMedData::Series::sptr > selection, QVector< ::fwMedData::Series::sptr > deselection);
 
+    /**
+     * @brief Signal emitted when series are deleted.
+     * @param selection contains the deleted series.
+     */
     void removeSeries(QVector< ::fwMedData::Series::sptr > selection);
 
 
@@ -87,7 +96,6 @@ protected Q_SLOTS:
      * don't appear in this selection/deselection.
      */
     void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
-    void onDelete();
 
 protected :
 
@@ -100,6 +108,11 @@ protected :
 
     QModelIndexList getStudyIndexes(const QModelIndexList& indexList);
     SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& index);
+
+    /**
+     * @brief Deletes the selected items and notify the deleted series.
+     */
+    void deleteSelection();
 
 private:
 

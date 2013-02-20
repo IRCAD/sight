@@ -63,7 +63,7 @@ void Selector::addSeries(::fwMedData::Series::sptr series)
 
 void Selector::removeSeries(::fwMedData::Series::sptr series)
 {
-
+    m_model->removeSeries(series);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,13 +156,13 @@ SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
  {
      if(event->matches(QKeySequence::Delete))
      {
-         this->onDelete();
+         this->deleteSelection();
      }
  }
 
  //-----------------------------------------------------------------------------
 
- void Selector::onDelete()
+ void Selector::deleteSelection()
  {
      QModelIndexList selection = this->selectionModel()->selectedRows(0);
 

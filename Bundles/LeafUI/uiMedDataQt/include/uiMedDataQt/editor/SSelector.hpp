@@ -24,7 +24,8 @@ namespace uiMedData
 namespace editor
 {
 /**
- * @brief   This editor shows information about the medical data. It allows to manipulate (select, erase, ...)studies and series.
+ * @brief   This editor shows information about the medical data. It allows to manipulate
+ *          (select, erase, ...) studies and series.
  * @class   SSelector.
  * @author  IRCAD (Research and Development Team).
  * @date    2013.
@@ -64,7 +65,9 @@ protected:
     /// Fill selector with the series contained in SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
 
-    /// Manages events
+    /** Manages events (::fwComEd::SeriesDBMsg::ADDED_OBJECTS, ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS)
+     *  This method adds/removes series in the selector widget.
+     */
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void info( std::ostream &_sstream );
@@ -74,9 +77,9 @@ protected:
 protected Q_SLOTS:
 
     /**
-     * @brief Manages the selection vector according to selection deselection.
-     * @param[in] selection Series to add in selection vector.
-     * @param[in] deselection Series to remove from selection vector.
+     * @brief Manages the selection vector according to selection/deselection.
+     * @param[in] selection series to add in selection vector.
+     * @param[in] deselection series to remove from selection vector.
      */
     void onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
                           QVector< ::fwMedData::Series::sptr > deselection);
@@ -87,11 +90,15 @@ protected Q_SLOTS:
      */
     void onDoubleClick(const QModelIndex &index);
 
+    /**
+     * @brief Removes series from seriesDB and notify.
+     * @param[in] selection series to remove from seriesDB.
+     */
     void onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection);
 
 private :
 
-    /// Returns current vector of selections given with its fwID m_selectionId.
+    /// Returns current selection vector given by its fwID m_selectionId.
     ::fwData::Vector::sptr getSelection();
 
     /// fwID of the vector of selections
