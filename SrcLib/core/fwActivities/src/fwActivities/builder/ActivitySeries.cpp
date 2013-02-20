@@ -46,10 +46,17 @@ ActivitySeries::~ActivitySeries()
     {
         ::fwData::Vector::sptr vectorType = this->getType(currentSelection, req.type);
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)
-        if(req.minOccurs <= 1 && req.maxOccurs == 1)
+        if(req.maxOccurs == 1)
         {
-            OSLM_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
-            (*data)[req.name] = (*vectorType)[0];
+            if(req.minOccurs == 1)
+            {
+                OSLM_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
+                (*data)[req.name] = (*vectorType)[0];
+            }
+            else if(!vectorType->empty())
+            {
+                (*data)[req.name] = (*vectorType)[0];
+            }
         }
         // param is a set of data (maxOccurs>1) optional (minOccurs==0) or not (minOccurs==1)
         else if(req.maxOccurs > 1)
