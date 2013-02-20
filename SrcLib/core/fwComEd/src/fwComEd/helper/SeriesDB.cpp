@@ -87,11 +87,11 @@ void SeriesDB::merge(::fwMedData::SeriesDB::sptr seriesDBIn)
 
 //-----------------------------------------------------------------------------
 
-void SeriesDB::notify( ::fwServices::IService::sptr serviceSource )
+void SeriesDB::notify( ::fwServices::IService::sptr serviceSource, bool notifySource )
 {
     if ( !m_seriesDBMsg->getEventIds().empty() )
     {
-        ::fwServices::IEditionService::notify( serviceSource, m_seriesDB.lock(), m_seriesDBMsg , true );
+        ::fwServices::IEditionService::notify( serviceSource, m_seriesDB.lock(), m_seriesDBMsg , notifySource );
     }
     SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
                 m_seriesDBMsg->getEventIds().empty());

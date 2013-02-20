@@ -68,7 +68,7 @@ public :
     FWCOMED_API void merge(::fwMedData::SeriesDB::sptr seriesDBIn);
 
     /// Send the message of modification
-    FWCOMED_API void notify( ::fwServices::IService::sptr serviceSource );
+    FWCOMED_API void notify( ::fwServices::IService::sptr serviceSource, bool notifySource = false );
 
 private :
 

@@ -62,7 +62,7 @@ public :
     FWCOMED_API void clear();
 
     /// Send the message of modification
-    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource );
+    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource, bool notifySource=false );
 
 private :
 
