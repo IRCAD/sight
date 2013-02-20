@@ -1,0 +1,44 @@
+<plugin id="activities" class="activities::Plugin" >
+
+    <library name="activities" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    <requirement id="guiQt"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::activities::action::SActivityLauncher</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
+    <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd"/>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>3DVisualization</id>
+        <title>3D Visu</title>
+        <desc>Activity description ...</desc>
+        <icon>Bundles/icons_0-1/icons/icon-3D.png</icon>
+        <requirements>
+            <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param2" type="::fwData::Mesh" maxOccurs="8" />
+            <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" />
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <!--# ...-->
+        </requirements>
+        <builder>::fwActivities::ActivitySeriesBuilder</builder>
+        <appConfig id="3DVisualization">
+            <parameters>
+                <key id="..." pattern="refImageUid" />
+                <key id="@..." pattern="registeredImageUid" />
+                <replace val="frontal" pattern="orientation"/>
+                <!--# ...-->
+            </parameters>
+        </appConfig>
+    </extension>
+
+
+</plugin>

@@ -12,5 +12,6 @@ BUNDLES = [
     'uiGenericQt_0-1'          ,
     'uiMedDataQt_0-1'          ,
     'appXml_0-1'               ,
+    'activities_0-1'           ,
  ]
 

@@ -1,0 +1,9 @@
+TYPE    = 'bundle'
+USE     = ['boost']
+LIB     = [
+          'fwRuntime_0-3',
+          'fwGui_0-1',
+          'fwActivities_0-1',
+          ]
+BUNDLES = ['gui_0-1']
+VERSION = '0-1'

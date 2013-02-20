@@ -13,6 +13,8 @@
     <activate id="uiGenericQt" version="0-1" />
     <activate id="uiMedDataQt" version="0-1" />
 
+    <activate id="activities" version="0-1" />
+
     <activate id="VRRender" />
     <activate id="appXml" version="0-1" >
         <param id="config" value="PDBVRRender" />
@@ -20,6 +22,7 @@
     </activate>
 
     <start id="guiQt" />
+    <start id="activities" />
     <start id="appXml" />
 
 </profile>
