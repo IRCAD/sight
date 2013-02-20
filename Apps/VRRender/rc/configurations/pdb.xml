@@ -50,12 +50,18 @@
 
             <item key="selections">
                 <object uid="selections" type="::fwData::Vector">                 
-
+                    <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
+                        <parentView>preview</parentView>
+                        <configs>
+                            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries" />
+                            <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
+                        </configs>
+                    </service>
                 </object>
             </item>
 
             <start uid="mainFrame" />
-
+            <start uid="seriesViewer" />
         </object>
 
     </config>

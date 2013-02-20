@@ -12,4 +12,67 @@
         <object>::fwMedData::SeriesDB</object>
     </extension>
                 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::uiMedData::SSeriesViewer</service>
+        <object>::fwData::Vector</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>2DSimpleConfig</id>
+        <type>parameters</type>
+        <parameters>
+            <param name="GENERIC_UID" />
+            <param name="WID_PARENT" />
+        </parameters>
+        <config>
+            <object type="::fwData::Composite">
+                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <registry>
+                        <parent wid="${WID_PARENT}" />
+                    </registry>
+                    <scene>
+                        <picker id="picker" vtkclass="fwVtkCellPicker" />
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+                        <adaptor id="imageAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="object">
+                            <config renderer="default" picker="picker" autoresetcamera="yes" />
+                        </adaptor>
+                    </scene>
+                </service>
+                <start uid="${GENERIC_UID}_gs" />
+            </object>
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>3DSimpleConfig</id>
+        <type>parameters</type>
+        <parameters>
+            <param name="GENERIC_UID" />
+            <param name="WID_PARENT" />
+        </parameters>
+        <config>
+            <object type="::fwData::Composite">
+                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <registry>
+                        <parent wid="${WID_PARENT}" />
+                    </registry>
+                    <scene>
+                        <picker id="picker" vtkclass="fwVtkCellPicker" />
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+                        <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Mesh" objectId="object">
+                            <config renderer="default" picker="picker" autoresetcamera="yes" />
+                        </adaptor>
+                    </scene>
+                </service>
+                <start uid="${GENERIC_UID}_gs" />
+            </object>
+        </config>
+    </extension>
 </plugin>

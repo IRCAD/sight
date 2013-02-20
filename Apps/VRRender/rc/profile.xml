@@ -13,6 +13,11 @@
     <activate id="uiGenericQt" version="0-1" />
     <activate id="uiMedDataQt" version="0-1" />
 
+    <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKQt" version="0-1" />
+    <activate id="visuVTKAdaptor" version="0-1" />
+
     <activate id="activities" version="0-1" />
 
     <activate id="VRRender" />
@@ -21,6 +26,8 @@
         <param id="parameters" value="VRRenderAppBase" />
     </activate>
 
+    <start id="visuVTK" />
+    <start id="visuVTKQt" />
     <start id="guiQt" />
     <start id="activities" />
     <start id="appXml" />

@@ -64,6 +64,7 @@
         </gui>
         <registry>
             <view sid="selector" start="yes" />
+            <view wid="preview" />
         </registry>
     </service>
 
