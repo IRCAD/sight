@@ -157,6 +157,11 @@ SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
      if(event->matches(QKeySequence::Delete))
      {
          this->deleteSelection();
+         event->accept();
+     }
+     else
+     {
+         QTreeView::keyPressEvent(event);
      }
  }
 
