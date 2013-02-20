@@ -18,8 +18,6 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
 
-#include "fwMedDataCamp/Series.hpp"
-
 
 namespace fwMedDataCamp
 {
