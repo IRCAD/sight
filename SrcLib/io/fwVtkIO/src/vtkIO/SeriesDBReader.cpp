@@ -80,6 +80,7 @@ void SeriesDBReader::read()
             ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
             rec->setMesh(meshObj);
             rec->setOrganName((file.has_stem())?file.stem().string():file.string());
+            rec->setIsVisible(true);
             recs.push_back(rec);
         }
         else if(img)
