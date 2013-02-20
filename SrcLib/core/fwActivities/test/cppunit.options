@@ -2,6 +2,7 @@
 CLASSTEST=[
           'ActivitySeriesTest',
           'ActivitySeriesBuilderTest',
+          'ActivityRegistryTest',
           ]
 
 USE = ['boost', 'cppunit']

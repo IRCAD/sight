@@ -106,10 +106,17 @@ Activities::~Activities()
 
 void Activities::parseBundleInformation()
 {
-    std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > >  extensions
+    std::vector< SPTR( ::fwRuntime::Extension ) >  extensions
         = ::fwRuntime::getAllExtensionsForPoint("::fwActivities::registry::Activities");
 
-    BOOST_FOREACH( const ::boost::shared_ptr< ::fwRuntime::Extension > &ext, extensions )
+    this->parseBundleInformation(extensions);
+
+}
+
+void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) > &extensions)
+{
+
+    BOOST_FOREACH( const SPTR( ::fwRuntime::Extension ) &ext, extensions )
     {
         OSLM_DEBUG("Parsing <" << ext->getBundle()->getIdentifier() << "> Activities");
         ActivityInfo info(ext);

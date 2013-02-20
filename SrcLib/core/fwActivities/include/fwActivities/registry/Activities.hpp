@@ -126,8 +126,11 @@ public:
      * @brief Parse bundle information to retrieve config parameters declaration
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
+     * @{
      **/
     FWACTIVITIES_API void parseBundleInformation();
+    FWACTIVITIES_API void parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) > &extensions);
+    ///@}
 
     /**
      * @brief Get the parameters associated to extension id.
