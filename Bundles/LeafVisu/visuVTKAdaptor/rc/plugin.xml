@@ -326,6 +326,12 @@
         <service>::visuVTKAdaptor::VectorField</service>
         <object>::fwData::Image</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ModelSeries</service>
+        <object>::fwMedData::ModelSeries</object>
+    </extension>
 
 </plugin>
 
