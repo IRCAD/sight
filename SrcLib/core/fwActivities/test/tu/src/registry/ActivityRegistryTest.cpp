@@ -13,6 +13,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Vector.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
 
@@ -41,7 +43,7 @@ void ActivityRegistryTest::setUp()
     std::vector< SPTR( ::fwRuntime::Extension ) > extensions(extensionsSet.begin(), extensionsSet.end());
     m_activities->parseBundleInformation(extensions);
 
-    CPPUNIT_ASSERT_EQUAL( size_t(7) , extensions.size());
+    CPPUNIT_ASSERT_EQUAL( size_t(8) , extensions.size());
 
     // Set up context before running a test.
 }
@@ -69,18 +71,120 @@ void ActivityRegistryTest::registryTest()
 {
 
     ::fwData::Vector::sptr v = ::fwData::Vector::New();
-    v->getContainer().push_back( ::fwData::Image::New() );
-
     ::fwActivities::registry::Activities::ActivitiesType activities;
-    activities = m_activities->getInfos(v);
 
+    // 1 image
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
-    CPPUNIT_ASSERT_EQUAL( size_t(3), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( size_t(4), activities.size() );
     CPPUNIT_ASSERT_EQUAL( std::string("Test1"), activities.at(0).id );
     CPPUNIT_ASSERT_EQUAL( std::string("Test3"), activities.at(1).id );
     CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(2).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test7"), activities.at(3).id );
 
+
+    // 2 images
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(3), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test3"), activities.at(0).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(1).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test6"), activities.at(2).id );
+
+    // 3 images
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(0).id );
+
+    // 4 images
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(0).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test5"), activities.at(1).id );
+
+    // 5 images
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(0).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test5"), activities.at(1).id );
+
+    // 6 images
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(0).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test5"), activities.at(1).id );
+
+    // 7 images
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(0).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test5"), activities.at(1).id );
+
+    // 8 images
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(0).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test5"), activities.at(1).id );
+
+    // 9 images
+    v->getContainer().push_back( ::fwData::Image::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(0).id );
+
+    // 9 images, 1 mesh
+    v->getContainer().push_back( ::fwData::Mesh::New() );
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(0), activities.size() );
+
+    // 1 images, 1 mesh
+    v->getContainer().clear();
+    v->getContainer().push_back( ::fwData::Image::New() );
+    v->getContainer().push_back( ::fwData::Mesh::New() );
+
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test2"), activities.at(0).id );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test7"), activities.at(1).id );
+
+    // 1 images, 2 mesh, 1 ImageSeries, 1 ModelSeries
+    v->getContainer().push_back( ::fwData::Mesh::New() );
+    v->getContainer().push_back( ::fwMedData::ImageSeries::New() );
+    v->getContainer().push_back( ::fwMedData::ModelSeries::New() );
+
+    activities = m_activities->getInfos(v);
+    std::sort(activities.begin(), activities.end(), activities_less_than_key());
+
+    CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("Test0"), activities.at(0).id );
 }
 
 //------------------------------------------------------------------------------

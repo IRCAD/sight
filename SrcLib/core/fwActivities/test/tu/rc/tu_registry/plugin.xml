@@ -27,7 +27,6 @@
     </extension>
 
 
-
     <extension implements="::fwActivities::registry::Activities">
         <id>Test1</id>
         <title>Title Test1</title>
@@ -102,6 +101,19 @@
         <appConfig id="Test6" >appConfig Test6</appConfig>
     </extension>
 
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test7</id>
+        <title>Title Test7</title>
+        <desc>1 image, 0-1 mesh</desc>
+        <icon>Icon Test3</icon>
+        <requirements>
+            <requirement name="img" type="::fwData::Image" />
+            <requirement name="mesh" type="::fwData::Mesh" minOccurs="0" />
+        </requirements>
+        <builder>::fwActivities::ActivitySeriesBuilder</builder>
+        <appConfig id="Test7" >appConfig Test7</appConfig>
+    </extension>
 
 
 </plugin>
