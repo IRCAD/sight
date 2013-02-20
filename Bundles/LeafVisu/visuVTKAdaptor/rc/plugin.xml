@@ -332,6 +332,12 @@
         <service>::visuVTKAdaptor::ModelSeries</service>
         <object>::fwMedData::ModelSeries</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ImageSeries</service>
+        <object>::fwMedData::ImageSeries</object>
+    </extension>
 
 </plugin>
 
