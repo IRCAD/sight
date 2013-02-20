@@ -24,6 +24,7 @@
         <parameters>
             <param name="GENERIC_UID" />
             <param name="WID_PARENT" />
+            <param name="seriesKey" />
         </parameters>
         <config>
             <object type="::fwData::Composite">
@@ -37,7 +38,7 @@
                         <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
                         </adaptor>
-                        <adaptor id="imageAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="object">
+                        <adaptor id="seriesAdaptor" class="::visuVTKAdaptor::ImageSeries" objectId="${seriesKey}">
                             <config renderer="default" picker="picker" autoresetcamera="yes" />
                         </adaptor>
                     </scene>
@@ -53,6 +54,7 @@
         <parameters>
             <param name="GENERIC_UID" />
             <param name="WID_PARENT" />
+            <param name="seriesKey" />
         </parameters>
         <config>
             <object type="::fwData::Composite">
@@ -66,7 +68,7 @@
                         <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
                         </adaptor>
-                        <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Mesh" objectId="object">
+                        <adaptor id="modelAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="${seriesKey}">
                             <config renderer="default" picker="picker" autoresetcamera="yes" />
                         </adaptor>
                     </scene>

@@ -12,9 +12,13 @@
 
 #include <fwData/Vector.hpp>
 
+#include <fwComEd/helper/Composite.hpp>
+
 #include <fwMedData/Series.hpp>
 
 #include "uiMedDataQt/SSeriesViewer.hpp"
+#include <fwData/Composite.hpp>
+
 
 namespace uiMedData
 {
@@ -92,6 +96,9 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
         finalMap["GENERIC_UID"] = genericUidAdaptor;
         finalMap["WID_PARENT"] = m_parentView;
 
+        std::string seriesKey = "series";
+        finalMap["seriesKey"] = seriesKey;
+
         if(itr != m_seriesConfigs.end())
         {
             std::string configId =  itr->second;
@@ -103,6 +110,13 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
 
             // Launch config
             m_configTemplateManager->launch();
+
+            ::fwData::Composite::sptr root = m_configTemplateManager->getConfigRoot< ::fwData::Composite >();
+
+            ::fwComEd::helper::Composite compoHelper(root);
+
+            compoHelper.add(seriesKey, obj);
+            compoHelper.notify(this->getSptr());
         }
         else
         {
