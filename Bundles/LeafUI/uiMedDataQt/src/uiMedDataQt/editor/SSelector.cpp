@@ -204,7 +204,11 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
 
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, selection)
+    // Remove duplicated series
+    std::set< ::fwMedData::Series::sptr > seriesSet;
+    std::copy(selection.begin(), selection.end(), std::inserter(seriesSet, seriesSet.begin()));
+
+    BOOST_FOREACH( ::fwMedData::Series::sptr series, seriesSet)
     {
         seriesDBHelper.remove(series);
     }

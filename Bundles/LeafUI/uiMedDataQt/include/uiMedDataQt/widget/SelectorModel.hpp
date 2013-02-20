@@ -78,7 +78,6 @@ public:
      * @param[in] column the column of the index to return.
      */
     UIMEDDATAQT_API QModelIndex getIndex(const QModelIndex& index, int column );
-    UIMEDDATAQT_API bool removeRow(QStandardItem *item);
 
     UIMEDDATAQT_API void removeRows(const QModelIndexList indexes);
 

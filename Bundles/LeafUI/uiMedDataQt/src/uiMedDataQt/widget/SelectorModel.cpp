@@ -90,7 +90,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 
         QStandardItem *patientName = new QStandardItem( QString::fromStdString(patient->getName()) );
         patientName->setData(QVariant((int)SelectorModel::STUDY), SelectorModel::ITEM_TYPE);
-        patientName->setData(QVariant(QString::fromStdString(study->getID())), UID);
+        patientName->setData(QVariant(QString::fromStdString(study->getInstanceUID())), UID);
         QStandardItem *patientId   = new QStandardItem( QString::fromStdString(patient->getPatientId()) );
         QStandardItem *patientBirthdate   = new QStandardItem( QString::fromStdString(patient->getBirthdate()) );
         QStandardItem *patientSex   = new QStandardItem( QString::fromStdString(patient->getSex()) );
@@ -178,35 +178,40 @@ QModelIndex SelectorModel::getIndex(const QModelIndex& index, int column )
 
 void SelectorModel::removeRows(const QModelIndexList indexes)
 {
-    QList<QStandardItem *> items;
+    QList<QStandardItem *> seriesItems;
+    QList<QStandardItem *> studyItems;
 
     BOOST_FOREACH(QModelIndex index, indexes)
     {
         SLM_ASSERT("Index must be in first column.", index.column() == 0);
         QStandardItem * item = this->itemFromIndex(index);
-        items.append(item);
+        if (item->data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY)
+        {
+            studyItems.append(item);
+        }
+        else if (item->data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
+        {
+            seriesItems.append(item);
+        }
     }
 
-    BOOST_FOREACH(QStandardItem *item, items)
+    // Remove series items from selector
+    BOOST_FOREACH(QStandardItem *item, seriesItems)
     {
-        bool removed = this->removeRow(item);
-    }
-}
+        QStandardItem * studyItem = item->parent();
 
-//-----------------------------------------------------------------------------
+        // Remove series item if it is not included in a study which will be remove.
+        if (std::find(studyItems.begin(), studyItems.end(), studyItem) == studyItems.end())
+        {
+            this->removeSeriesItem(item);
+        }
+    }
 
-bool SelectorModel::removeRow(QStandardItem *item)
-{
-    bool isRemoved = false;
-    if(item->data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY)
+    // Remove study items from selector
+    BOOST_FOREACH(QStandardItem *item, studyItems)
     {
-        isRemoved = this->removeStudyItem(item);
+        this->removeStudyItem(item);
     }
-    else if (item->data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
-    {
-        isRemoved = this->removeSeriesItem(item);
-    }
-    return isRemoved;
 }
 
 //-----------------------------------------------------------------------------
@@ -216,11 +221,7 @@ bool SelectorModel::removeStudyItem(QStandardItem *item)
     bool isRemoved = false;
     SLM_ASSERT("Index must represent a study.", item->data(SelectorModel::ITEM_TYPE) == SelectorModel::STUDY);
     QString uid = item->data(SelectorModel::UID).toString();
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid.toStdString());
-
-    ::fwMedData::Study::sptr study = ::fwMedData::Study::dynamicCast(obj);
-    SLM_ASSERT("This is not a study", study);
-    ::fwMedData::DicomValueType instanceUID = study->getInstanceUID();
+    ::fwMedData::DicomValueType instanceUID = uid.toStdString();
 
     isRemoved = this->QStandardItemModel::removeRow(item->row());
     SLM_ASSERT("Remove can not be done!", isRemoved);
