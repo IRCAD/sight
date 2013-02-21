@@ -34,6 +34,31 @@ namespace registry
 
 typedef ::boost::property_tree::ptree ConfigType;
 
+struct FWACTIVITIES_CLASS_API ActivityAppConfigParam
+{
+    ActivityAppConfigParam(){};
+    ActivityAppConfigParam(const ConfigType &config);
+
+    bool isSeshat() const
+    {
+        return (by.substr(0,1) == "@");
+    }
+
+    std::string replace;
+    std::string by;
+};
+
+struct FWACTIVITIES_CLASS_API ActivityAppConfig
+{
+    typedef std::vector< ActivityAppConfigParam > ActivityAppConfigParamsType;
+
+    ActivityAppConfig(){};
+    ActivityAppConfig(const ConfigType &config);
+
+    std::string id;
+    ActivityAppConfigParamsType parameters;
+};
+
 struct FWACTIVITIES_CLASS_API ActivityRequirement
 {
     ActivityRequirement(){};
@@ -94,11 +119,9 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     std::string icon;
     RequirementsType requirements;
     std::string builderImpl;
-    std::string appConfigId;
-    ConfigType appConfigTree;
+    ActivityAppConfig appConfig;
 
 protected:
-
 
     RequirementsMinMaxCount m_requirementCount;
 };

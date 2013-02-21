@@ -17,6 +17,24 @@ namespace fwActivities
 namespace registry
 {
 
+ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType &config) :
+    replace(config.get<std::string>("<xmlattr>.replace")),
+    by(config.get<std::string>("<xmlattr>.by"))
+{
+}
+
+ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
+    id(config.get<std::string>("<xmlattr>.id"))
+{
+    ConfigType params = config.get_child("parameters");
+
+    BOOST_FOREACH( const ConfigType::value_type &v, config.equal_range("parameter") )
+    {
+        ActivityAppConfigParam parameter( v.second.get_child("parameter") );
+        parameters.push_back( parameter );
+    }
+}
+
 ActivityRequirement::ActivityRequirement(const ConfigType &config) :
     name(config.get<std::string>("<xmlattr>.name")),
     type(config.get<std::string>("<xmlattr>.type")),
@@ -40,8 +58,7 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
     description(ext->findConfigurationElement("desc")->getValue()),
     icon(ext->findConfigurationElement("icon")->getValue()),
     builderImpl(ext->findConfigurationElement("builder")->getValue()),
-    appConfigId(ext->findConfigurationElement("appConfig")->getExistingAttributeValue("id")),
-    appConfigTree(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")))
+    appConfig(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
 {
     ::fwRuntime::ConfigurationElement::sptr req = ext->findConfigurationElement("requirements");
     for(  ::fwRuntime::ConfigurationElementContainer::Iterator elem = req->begin();
@@ -64,7 +81,6 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
             minMax.second = std::numeric_limits<unsigned int>::max();
         }
     }
-
 }
 
 bool ActivityInfo::usableWith(DataCountType dataCounts) const

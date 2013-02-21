@@ -20,6 +20,7 @@
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/IEditionService.hpp>
 
+#include <fwData/Composite.hpp>
 #include <fwData/Vector.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Boolean.hpp>
@@ -30,6 +31,8 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwActivities/IBuilder.hpp>
+
+#include "activities/helper/Activity.hpp"
 #include "activities/action/SActivityLauncher.hpp"
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
@@ -183,6 +186,7 @@ void SActivityLauncher::info( std::ostream &_sstream )
 
 void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo & info )
 {
+    ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 
     ::fwActivities::IBuilder::sptr builder;
@@ -193,23 +197,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     actSeries = builder->buildData(info, selection);
     SLM_ASSERT("ActivitySeries instantiation failed", actSeries);
 
-    std::string fieldID         = "::fwServices::registry::AppConfig";
-    std::string viewConfigID    = "viewConfigID";
-    std::string closableFieldID = "closable";
-    std::string iconFieldID     = "icon";
-    std::string tooltipFieldID  = "tooltip";
-    std::string tabIDFieldID    = "tabID";
-    std::string tabID = "TABID_" + ::fwTools::UUID::generateUUID();
-
-    ::fwServices::ObjectMsg::sptr  msg = ::fwServices::ObjectMsg::New();
-    ::fwData::String::NewSptr title;
-
-    title->value() = info.title;
-    msg->addEvent( "NEW_CONFIGURATION_HELPER", title );
-    title->setField( viewConfigID, ::fwData::String::New(info.appConfigId) );
-    title->setField( closableFieldID, ::fwData::Boolean::New(true));
-    title->setField( tabIDFieldID, ::fwData::String::New(tabID));
-    title->setField( iconFieldID, ::fwData::String::New(info.icon) );
+    ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info);
 
     ::fwServices::IEditionService::notify(this->getSptr(), selection, msg);
 }
