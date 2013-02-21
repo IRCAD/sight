@@ -126,15 +126,11 @@
             <service uid="${GENERIC_UID}_VRToolbar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Load VR param" icon="Bundles/icons_0-1/icons/icon-loadVRParam" />
                         <menuItem name="Export VR param" icon="Bundles/icons_0-1/icons/icon-exportVRParam" />
-                        <menuItem name="Reset VR param" icon="Bundles/icons_0-1/icons/icon-resetVRParam" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="${GENERIC_UID}_action_loadVRParam" start="yes" />
                     <menuItem sid="${GENERIC_UID}_action_exportVRParam" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_resetVRParam" start="yes" />
                 </registry>
             </service>
 
@@ -228,15 +224,6 @@
 
                             <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle3DForNegato" />
-                            </adaptor>
-
-                            <adaptor id="VolumeScene3DA" class="::visuVTKVR::adaptor::VolumeChoice" objectId="imageKey">
-                                <config renderer="default" vrParamUid="${GENERIC_UID}_VRParam" propertyId="Property" mapperId="Mapper"
-                                    selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
-                            </adaptor>
-
-                            <adaptor id="Lights" class="::visuVTKVR::adaptor::LightsAdaptor" objectId="VisuLights">
-                                <config renderer="default" />
                             </adaptor>
 
                             <adaptor id="Image3DCursor" class="::visuVTKAdaptor::Image3DCursor" objectId="imageKeyCursor">
@@ -457,21 +444,6 @@
                                 <mode type="stop" />
                                 <config>
                                     <object id="selectedLight" type="::fwData::Composite">
-                                        <service uid="${GENERIC_UID}_LightEditor" impl="::uiData::ParameterInfoCompositeEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                            <orientation>vertical</orientation>
-                                            <specificAssociation objectKey="i_LightType_0" type="::fwData::String" element="param" editor="::uiData::StringEnumEditor" />
-
-                                            <association type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <association type="::fwData::String" element="param" editor="::uiData::StringEditor" />
-                                            <association type="::fwData::Boolean" element="param" editor="::uiData::BooleanEditor" />
-                                            <association type="::fwData::Color" element="value" editor="::uiData::ColorEditor" />
-                                            <association type="::fwData::Integer" element="param" editor="::uiData::IntegerEditor" />
-                                        </service>
-
-                                        <service uid="${GENERIC_UID}_LightsApplyButton" impl="::uiData::NotifyButtonEditor" type="::gui::editor::IEditor" autoConnect="no">
-                                            <label>Apply</label>
-                                            <notify type="::fwServices::ObjectMsg" event="MODIFIED_LIGHT" />
-                                        </service>
                                     </object>
                                 </config>
                             </service>
@@ -485,8 +457,6 @@
                             <service uid="${GENERIC_UID}_action_exportVRParam" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no" >
                                 <start uid="${GENERIC_UID}_writerVRParam" />
                             </service>
-                            <service uid="${GENERIC_UID}_action_resetVRParam" type="::fwGui::IActionSrv" impl="::visuVTKVR::action::ResetVRParam" autoConnect="no" />
-                            <service uid="${GENERIC_UID}_action_loadVRParam" type="::fwGui::IActionSrv" impl="::visuVTKVR::action::LoadVRParam" autoConnect="no" />
                             <service uid="${GENERIC_UID}_writerVRParam" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no" >
                                 <type mode="writer" />
                                 <selection mode="include" />
@@ -498,60 +468,11 @@
                                 <mode type="stop" />
                                 <config>
                                     <object type="::fwData::Composite" id="Lights" >
-                                        <service uid="${GENERIC_UID}_LightsEditor" type="::gui::editor::IEditor" impl="::visuVTKVR::editor::LightsEditor" autoConnect="no">
-                                            <config lightSelectionUid="${GENERIC_UID}_LightSelection" selectedLightKey="selectedLight" />
-                                        </service>
                                     </object>
                                     <object type="::fwData::Composite" id="Property" >
-                                        <service uid="${GENERIC_UID}_PropertyEditor" impl="::uiData::ParameterInfoCompositeEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                            <orientation>vertical</orientation>
-                                            <specificAssociation objectKey="i_InterpolationType_0" type="::fwData::String" element="param" editor="::uiData::StringEnumEditor" />
-
-                                            <specificAssociation objectKey="Shade" type="::fwData::Boolean" element="param" editor="::uiData::BooleanEditor" />
-                                            <specificAssociation objectKey="Ambient" type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <specificAssociation objectKey="Diffuse" type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <specificAssociation objectKey="Specular" type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <specificAssociation objectKey="SpecularPower" type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-
-
-                                            <specificAssociation objectKey="GradientOpacityDisable" type="::fwData::Boolean" element="param" editor="::uiData::BooleanEditor" />
-                                            <specificAssociation objectKey="Intensity1" type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <specificAssociation objectKey="Opacity1" type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <specificAssociation objectKey="Intensity2" type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <specificAssociation objectKey="Opacity2" type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <specificAssociation objectKey="Clamping" type="::fwData::Boolean" element="param" editor="::uiData::BooleanEditor" />
-                                            <specificAssociation objectKey="ScalarOpacityUnitDistance" type="::fwData::Float" element="param" editor="::uiData::FloatSpinBoxEditor" />
-
-
-                                            <association type="::fwData::Float" element="param" editor="::uiData::FloatSliderEditor" />
-                                            <association type="::fwData::Boolean" element="param" editor="::uiData::BooleanEditor" />
-                                            <association type="::fwData::String" element="param" editor="::uiData::StringEnumEditor" />
-                                        </service>
-
-                                        <service uid="${GENERIC_UID}_PropertyApplyButton" impl="::uiData::NotifyButtonEditor" type="::gui::editor::IEditor" autoConnect="no">
-                                            <label>Apply</label>
-                                            <notify type="::fwServices::ObjectMsg" event="MODIFIED_PROPERTY" />
-                                        </service>
                                     </object>
 
                                     <object type="::fwData::Composite" id="Mapper" >
-                                        <service uid="${GENERIC_UID}_MapperEditor" impl="::uiData::ParameterInfoCompositeEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                            <orientation>vertical</orientation>
-                                            <specificAssociation objectKey="i_MapperType_0" type="::fwData::String" element="param" editor="::uiData::StringEnumEditor" />
-                                            <specificAssociation objectKey="i_SampleDistance_0" type="::fwData::Float" element="param" editor="::uiData::FloatEditor" />
-                                            <specificAssociation objectKey="i_BlendMode_0" type="::fwData::String" element="param" editor="::uiData::StringEnumEditor" />
-                                            <specificAssociation objectKey="i_ScalarMode_0" type="::fwData::String" element="param" editor="::uiData::StringEnumEditor" />
-
-
-                                            <association type="::fwData::Float" element="param" editor="::uiData::FloatEditor" />
-                                            <association type="::fwData::Boolean" element="param" editor="::uiData::BooleanEditor" />
-                                            <association type="::fwData::String" element="param" editor="::uiData::StringEnumEditor" />
-                                        </service>
-
-                                        <service uid="${GENERIC_UID}_MapperApplyButton" impl="::uiData::NotifyButtonEditor" type="::gui::editor::IEditor" autoConnect="no">
-                                            <label>Apply</label>
-                                            <notify type="::fwServices::ObjectMsg" event="MODIFIED_MAPPER" />
-                                        </service>
                                     </object>
                                 </config>
                             </service>
