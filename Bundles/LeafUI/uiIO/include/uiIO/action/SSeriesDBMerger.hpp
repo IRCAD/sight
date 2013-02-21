@@ -19,7 +19,7 @@ namespace action
 {
 
 /**
- * @brief   This action allows to load a new PatientDB and merge it with the current PatientDB
+ * @brief   This action allows to load a new SeriesDB and merge it with the current SeriesDB
  * @class   SSeriesDBMerger.
  * @date    2013.
  *
@@ -62,7 +62,7 @@ protected:
     /// Start action.
     void starting() throw (::fwTools::Failed);
 
-    /// Show the PatientDB reader selector, load the new PatientDB and merge it the the current PatientDB
+    /// Show the SeriesDB reader selector, load the new SeriesDB and merge it the the current SeriesDB
     void updating() throw (::fwTools::Failed);
 
     /// Does nothing
