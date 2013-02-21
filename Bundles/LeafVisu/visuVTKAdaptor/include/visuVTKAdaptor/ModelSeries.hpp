@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_ACQUISITION_HPP_
-#define _VISUVTKADAPTOR_ACQUISITION_HPP_
+#ifndef __VISUVTKADAPTOR_MODELSERIES_HPP__
+#define __VISUVTKADAPTOR_MODELSERIES_HPP__
 
 #include <vector>
 
@@ -57,4 +57,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_ACQUISITION_HPP_
+#endif // __VISUVTKADAPTOR_MODELSERIES_HPP__

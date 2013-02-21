@@ -4,24 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_ACQUISITION_HPP_
-#define _VISUVTKADAPTOR_ACQUISITION_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGESERIES_HPP__
+#define __VISUVTKADAPTOR_IMAGESERIES_HPP__
 
 #include <vector>
+
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/NegatoMPR.hpp"
 
 namespace visuVTKAdaptor
 {
 
 
 /**
- * @brief This adaptor shows ImageSeries. Creates an adaptor for this image in the series.
+ * @brief This adaptor shows ImageSeries. Creates an adaptor for the image in the series.
  * @class ImageSeries
  */
-class VISUVTKADAPTOR_CLASS_API ImageSeries : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API ImageSeries : public ::fwComEd::helper::MedicalImageAdaptor,
+                                             public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
@@ -32,23 +36,51 @@ public:
 
     VISUVTKADAPTOR_API virtual ~ImageSeries() throw();
 
-    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id){ m_clippingPlanes = id ; }
+    void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
+    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
 
 protected:
 
+    /// Calls doUpdate()
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
+
+    /// Configure the adaptor.
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+
+    /// Calls doUpdate()
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    /// redraw all (stop then restart sub services)
+
+    /// Creates and starts image adaptor. Redraw all (stop then restart sub services).
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+
+    /// Stops and unregister image subservice.
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-   VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    /// Does nothing.
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanes;
+    /// Sets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
+    void setSliceMode(NegatoMPR::SliceMode sliceMode);
+
+    /// Gets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
+    NegatoMPR::SliceMode getSliceMode();
+
+    /// Returns true if 3d mode is enabled, false if it is not and indeterminate if it is not defined
+    ::boost::logic::tribool is3dModeEnabled();
+
+    /// Defines 3D mode
+    void set3dMode( bool enabled );
 
 private:
-    bool   m_autoResetCamera;
+    bool m_allowAlphaInTF;
+    bool m_interpolation;
+
+    std::string m_imageSourceId;
+
+    ::boost::logic::tribool m_3dModeEnabled;
+    NegatoMPR::SliceMode m_sliceMode;
+
 };
 
 
@@ -56,4 +88,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_ACQUISITION_HPP_
+#endif // __VISUVTKADAPTOR_IMAGESERIES_HPP__

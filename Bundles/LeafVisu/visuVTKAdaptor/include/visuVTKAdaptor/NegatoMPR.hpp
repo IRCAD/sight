@@ -40,6 +40,11 @@ public:
     void setInterpolation(bool interpolation){m_interpolation = interpolation;};
     void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
 
+    void setSliceMode(SliceMode sliceMode);
+    SliceMode getSliceMode();
+    ::boost::logic::tribool is3dModeEnabled();
+    void set3dMode( bool enabled );
+
 protected :
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
@@ -54,10 +59,6 @@ protected :
 
     void addAdaptor(std::string adaptor, int axis=-1);
 
-    void setSliceMode(SliceMode sliceMode);
-    SliceMode getSliceMode();
-    ::boost::logic::tribool is3dModeEnabled();
-    void set3dMode( bool enabled );
 
 private:
 
