@@ -13,14 +13,14 @@
         <desc>3D visualization activity</desc>
         <icon>Bundles/icons_0-1/icons/icon-3D.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::fwMedicalData::ImageSeries" minOccurs="0" maxOccurs="1" />
-            <requirement name="modelSeries" type="::fwMedicalData::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="1" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder impl="::fwActivities::builder::ActivitySeries" />
+        <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="3DVisualization">
             <parameters>
-                <parameter replace="imageUid" by="@value.imageSeries.image" />
-                <parameter replace="modelSeriesUid" by="@value.modelSeries" />
+                <parameter replace="imageUid" by="@values.imageSeries.image" />
+                <parameter replace="modelSeriesUid" by="@values.modelSeries" />
                 <parameter replace="orientation" by="frontal" />
             </parameters>
         </appConfig>

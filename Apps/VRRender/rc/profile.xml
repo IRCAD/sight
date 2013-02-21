@@ -28,6 +28,11 @@
         <param id="parameters" value="VRRenderAppBase" />
     </activate>
 
+    <activate id="2DVisualizationActivity" />
+    <activate id="3DVisualizationActivity" />
+    <activate id="blendActivity" />
+    <activate id="volumeRenderingActivity" />
+
     <start id="visuVTK" />
     <start id="visuVTKQt" />
     <start id="guiQt" />
