@@ -1,17 +1,18 @@
 <plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin">
-    <library name="uiMedDataQt"/>
-    
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
-    <requirement id="gui"/>
-    
-    
+    <library name="uiMedDataQt" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="gui" />
+    <requirement id="visuVTKAdaptor" />
+
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiMedData::editor::SSelector</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>
-                
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::uiMedData::SSeriesViewer</service>
@@ -38,8 +39,11 @@
                         <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                             <config renderer="default" picker="" />
                         </adaptor>
+                        <adaptor id="interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                            <config renderer="default" style="InteractorStyle2DForNegato" />
+                        </adaptor>
                         <adaptor id="seriesAdaptor" class="::visuVTKAdaptor::ImageSeries" objectId="${seriesKey}">
-                            <config renderer="default" picker="picker" autoresetcamera="yes" />
+                            <config renderer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="axial" />
                         </adaptor>
                     </scene>
                 </service>

@@ -11,13 +11,14 @@
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwData/Vector.hpp>
+#include <fwData/Composite.hpp>
 
 #include <fwComEd/helper/Composite.hpp>
+#include <fwComEd/VectorMsg.hpp>
 
 #include <fwMedData/Series.hpp>
 
 #include "uiMedDataQt/SSeriesViewer.hpp"
-#include <fwData/Composite.hpp>
 
 
 namespace uiMedData
@@ -58,7 +59,13 @@ void SSeriesViewer::starting() throw(::fwTools::Failed)
 
 void SSeriesViewer::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
-    this->updating();
+    ::fwComEd::VectorMsg::csptr vectorMsg = ::fwComEd::VectorMsg::dynamicConstCast(msg);
+
+    if ( vectorMsg && (vectorMsg->hasEvent( ::fwComEd::VectorMsg::ADDED_OBJECTS )
+                      || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
+    {
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -118,12 +125,6 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
             compoHelper.add(seriesKey, obj);
             compoHelper.notify(this->getSptr());
         }
-        else
-        {
-        }
-    }
-    else
-    {
     }
 }
 

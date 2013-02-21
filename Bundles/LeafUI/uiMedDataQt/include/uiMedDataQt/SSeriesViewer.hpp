@@ -17,8 +17,8 @@
 namespace uiMedData
 {
 /**
- * @brief  This Service allows to preview the selected series.
- *          It works on a simple click and single selection.Only, model series and image series can be previewed.
+ * @brief  This Service allows to preview the selected series in the Vector. For the moment, it works only on a
+ * single selection.
  * @class   SSeriesViewer.
  * @author  IRCAD (Research and Development Team).
  * @date    2013.
@@ -37,12 +37,14 @@ class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
 
 protected:
 
+    /// Calls updating on starting.
     virtual void starting() throw(::fwTools::Failed);
 
+    /// Stops the config if it is running.
     virtual void stopping() throw(::fwTools::Failed);
 
     /**
-     * @brief configures the service.
+     * @brief Configures the service.
      * @verbatim
     <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
         <parentView>preview</parentView>
@@ -52,14 +54,22 @@ protected:
         </config>
     </service>
      @endverbatim
-     * \ <parentView>preview</parentView> uid of the view where the config will be installed its windows.
+     * \ <parentView>preview</parentView> wid of the view where the config will install its windows.
      * \ <config id="2DSimpleConfig" type="::fwMedData::ImageSeries"/\> gives the available association between
      *   data type and associated config.
      */
     virtual void configuring() throw (::fwTools::Failed);
 
+    /**
+     * @brief Launch the config on the object if possible.
+     *
+     * If there is a single selection : launch a config on the object if it is defines in this service configuration
+     * (stored in m_seriesConfigs). The selected object is added in config root composite with the key 'series'.
+     * Else doesn't launch config.
+     */
     virtual void updating() throw (::fwTools::Failed);
 
+    /// Listen Vector notification when objects are added or deleted.
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void info( std::ostream &_sstream );
@@ -70,8 +80,9 @@ private:
     /// Config manager
     ::fwServices::AppConfigManager::sptr m_configTemplateManager;
 
-    /// Stores the uid of the view wher the config will be installed  its windows.
+    /// Stores the wid of the view where the config will install its windows.
     std::string m_parentView;
+
     /// Stores the association between data type and associated configuration.
     SeriesConfigMapType m_seriesConfigs;
 };
