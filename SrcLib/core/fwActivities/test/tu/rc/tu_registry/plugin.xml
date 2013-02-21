@@ -18,10 +18,9 @@
         <builder>::fwActivities::ActivitySeriesBuilder</builder>
         <appConfig id="Test0">
             <parameters>
-                <key id="..." pattern="refImageUid" />
-                <key id="@..." pattern="registeredImageUid" />
-                <replace val="frontal" pattern="orientation"/>
-                <!--# ...-->
+                <parameter replace="refImageUid" by="@values.param1"  />
+                <parameter replace="registeredImageUid" by="@values.param2" />
+                <parameter replace="orientation" by="frontal" />
             </parameters>
         </appConfig>
     </extension>

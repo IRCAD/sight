@@ -14,8 +14,8 @@
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Test0">
             <parameters>
-                <key id="@modelSeries.value" pattern="RefModel" />
-                <key id="@imageSeries.value.image" pattern="RefImage" />
+                <parameter replace="RefModel" by="@values.modelSeries" />
+                <parameter replace="RefImage" by="@values.imageSeries.value.image" />
             </parameters>
         </appConfig>
     </extension>

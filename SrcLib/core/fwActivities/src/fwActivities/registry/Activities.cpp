@@ -23,17 +23,19 @@ ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType &config) :
 {
 }
 
+//-----------------------------------------------------------------------------
+
 ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
     id(config.get<std::string>("<xmlattr>.id"))
 {
-    ConfigType params = config.get_child("parameters");
-
     BOOST_FOREACH( const ConfigType::value_type &v, config.equal_range("parameter") )
     {
         ActivityAppConfigParam parameter( v.second.get_child("parameter") );
         parameters.push_back( parameter );
     }
 }
+
+//-----------------------------------------------------------------------------
 
 ActivityRequirement::ActivityRequirement(const ConfigType &config) :
     name(config.get<std::string>("<xmlattr>.name")),
@@ -51,6 +53,8 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
                  0 <= minOccurs && minOccurs <= maxOccurs);
     OSLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs );
 }
+
+//-----------------------------------------------------------------------------
 
 ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
     id(ext->findConfigurationElement("id")->getValue()),
@@ -83,6 +87,8 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
     }
 }
 
+//-----------------------------------------------------------------------------
+
 bool ActivityInfo::usableWith(DataCountType dataCounts) const
 {
     bool ok = dataCounts.size() <= m_requirementCount.size();
@@ -104,6 +110,8 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
     return ok;
 }
 
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 Activities::sptr Activities::s_activities = Activities::New();
 
