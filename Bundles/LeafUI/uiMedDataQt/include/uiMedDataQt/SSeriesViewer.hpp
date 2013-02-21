@@ -49,14 +49,18 @@ protected:
     <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
         <parentView>preview</parentView>
         <configs>
-            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries"/>
-            <config id="3DSimpleConfig" type="::fwMedData::ModelSeries"/>
+            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
+                <extract name="@image" pattern="imageID" />
+            </config>
+            <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
         </config>
     </service>
      @endverbatim
-     * \ <parentView>preview</parentView> wid of the view where the config will install its windows.
-     * \ <config id="2DSimpleConfig" type="::fwMedData::ImageSeries"/\> gives the available association between
+     * - \<parentView\>preview\</parentView\> wid of the view where the config will install its windows.
+     * - \<config id="2DSimpleConfig" type="::fwMedData::ImageSeries"/\> gives the available association between
      *   data type and associated config.
+     * - \<extract name="@values.imgSeriesRegister.image" pattern="imageID" /\> extracts the object from name and
+     *   replaces pattern with its fwID
      */
     virtual void configuring() throw (::fwTools::Failed);
 
@@ -75,7 +79,16 @@ protected:
     virtual void info( std::ostream &_sstream );
 
 private:
-    typedef std::map<std::string, std::string> SeriesConfigMapType;
+
+    typedef std::map<std::string, std::string> ReplaceValuesMapType;
+
+    struct SeriesConfigInfo
+    {
+        std::string configId;
+        ReplaceValuesMapType replaceValues;
+    };
+
+    typedef std::map<std::string, SeriesConfigInfo> SeriesConfigMapType;
 
     /// Config manager
     ::fwServices::AppConfigManager::sptr m_configTemplateManager;

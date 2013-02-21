@@ -53,7 +53,9 @@
                     <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
                         <parentView>preview</parentView>
                         <configs>
-                            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries" />
+                            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
+                                <extract name="@image" pattern="imageID" />
+                            </config>
                             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
                         </configs>
                     </service>

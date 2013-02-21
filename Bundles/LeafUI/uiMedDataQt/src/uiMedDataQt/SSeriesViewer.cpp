@@ -6,15 +6,16 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/Vector.hpp>
+#include <fwData/String.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwData/Vector.hpp>
-#include <fwData/Composite.hpp>
-
-#include <fwComEd/helper/Composite.hpp>
 #include <fwComEd/VectorMsg.hpp>
+
+#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 
 #include <fwMedData/Series.hpp>
 
@@ -97,33 +98,33 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
         std::string classname = obj->getClassname();
         SeriesConfigMapType::iterator itr = m_seriesConfigs.find(classname);
 
-        std::map< std::string, std::string > finalMap;
-        // Generate generic UID
-        std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( this->getID() );
-        finalMap["GENERIC_UID"] = genericUidAdaptor;
-        finalMap["WID_PARENT"] = m_parentView;
-
-        std::string seriesKey = "series";
-        finalMap["seriesKey"] = seriesKey;
-
         if(itr != m_seriesConfigs.end())
         {
-            std::string configId =  itr->second;
+            SeriesConfigInfo info = itr->second;
+            std::string configId =  info.configId;
+
+            std::map< std::string, std::string > replaceMap;
+            // Generate generic UID
+            std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( this->getID() );
+            replaceMap["GENERIC_UID"] = genericUidAdaptor;
+            replaceMap["WID_PARENT"] = m_parentView;
+            replaceMap["objectID"] = obj->getID();
+
+            BOOST_FOREACH(ReplaceValuesMapType::value_type elt, info.replaceValues)
+            {
+                ::fwData::Object::sptr object = ::fwAtomConversion::getSubObject( obj, elt.second );
+                OSLM_ASSERT("Object from name "<< elt.second <<" not found", object);
+                replaceMap[elt.first] = object->getID();
+            }
+
             // Init manager
             ::fwRuntime::ConfigurationElement::csptr config =
-                   ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, finalMap );
+                   ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceMap );
             m_configTemplateManager = ::fwServices::AppConfigManager::New();
             m_configTemplateManager->setConfig( config );
 
             // Launch config
             m_configTemplateManager->launch();
-
-            ::fwData::Composite::sptr root = m_configTemplateManager->getConfigRoot< ::fwData::Composite >();
-
-            ::fwComEd::helper::Composite compoHelper(root);
-
-            compoHelper.add(seriesKey, obj);
-            compoHelper.notify(this->getSptr());
         }
     }
 }
@@ -145,13 +146,24 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
 
     BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, config)
     {
-        std::string id = elt->getAttributeValue("id");
-        SLM_ASSERT("'id' attribute must not be empty", !id.empty());
+        SeriesConfigInfo info;
+        info.configId = elt->getAttributeValue("id");
+        SLM_ASSERT("'id' attribute must not be empty", !info.configId.empty());
         std::string seriesType = elt->getAttributeValue("type");
         SLM_ASSERT("'type' attribute must not be empty", !seriesType.empty());
         OSLM_ASSERT("Type " << seriesType << " is already defined.",
                     m_seriesConfigs.find(seriesType)== m_seriesConfigs.end() );
-        m_seriesConfigs[seriesType] = id;
+
+        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr extractElt, elt->find("extract"))
+        {
+            std::string name = extractElt->getAttributeValue("name");
+            SLM_ASSERT("'name' attribute must not be empty", !name.empty());
+            std::string pattern = extractElt->getAttributeValue("pattern");
+            SLM_ASSERT("'pattern' attribute must not be empty", !pattern.empty());
+            info.replaceValues[pattern] = name;
+        }
+
+        m_seriesConfigs[seriesType] = info;
     }
 
 }

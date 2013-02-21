@@ -15,4 +15,6 @@ USE     = ['boost','qtCore']
 BUNDLES = ['gui_0-1']
 REQUIREMENTS = [
                'visuVTKAdaptor_0-1',
+               'uiImageQt_0-1',
+               'ctrlSelection_0-1',
                ]
