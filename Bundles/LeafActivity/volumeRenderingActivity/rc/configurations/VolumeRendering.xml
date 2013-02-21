@@ -426,11 +426,6 @@
                                 <notify type="::fwServices::ObjectMsg" event="RESET_BOX_WIDGET" />
                             </service>
 
-                            <!-- Compute the histogram of 'imageKey' and stores it into 'myHistogram'    -->
-                            <service uid="${GENERIC_UID}_computeHistogramSrv" type="::fwServices::IController" impl="::opData::ComputeHistogramSrv" autoConnect="yes">
-                                <config compositeUID="${GENERIC_UID}_VisuComposite" histogramKey="myHistogram" binsWidth="5.0" />
-                            </service>
-
                             <service uid="${GENERIC_UID}_FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
                                 <mode type="stop" />
                                 <config>
@@ -583,7 +578,6 @@
             <start uid="${GENERIC_UID}_VRSwapper" />
             <start uid="${GENERIC_UID}_VRParamSwapper" />
             <start uid="${GENERIC_UID}_vr" />
-            <start uid="${GENERIC_UID}_computeHistogramSrv" />
             <start uid="${GENERIC_UID}_FieldManager" />
             <start uid="${GENERIC_UID}_cfgNegato" />
 

@@ -252,11 +252,7 @@
             </item>
 
             <item key="myImage">
-                <object uid="${SELECTED_UID_myImage}" src="ref" type="::fwData::Image">
-                    <service uid="${GENERIC_UID}_computeHistogramSrv" type="::fwServices::IController" impl="::opData::ComputeHistogramSrv" autoConnect="yes">
-                        <config compositeUID="${GENERIC_UID}_myComposite" histogramKey="myHistogram" binsWidth="5.0" />
-                    </service>
-                </object>
+                <object uid="${SELECTED_UID_myImage}" src="ref" type="::fwData::Image" />
             </item>
 
 
@@ -267,7 +263,6 @@
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_myManager" />
-            <start uid="${GENERIC_UID}_computeHistogramSrv" />
 
 
         </object>

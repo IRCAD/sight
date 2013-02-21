@@ -46,8 +46,6 @@
                         <menuItem name="Hide cross" icon="Bundles/icons_0-1/icons/HideCross.png" style="radio" />
                         <menuItem name="Show normal cross" icon="Bundles/icons_0-1/icons/NormalCross.png" style="radio" />
                         <menuItem name="Show full cross" icon="Bundles/icons_0-1/icons/FullCross.png" style="radio" />
-                        <spacer />
-                        <menu name="Visu 2D" />
                     </layout>
                 </gui>
                 <registry>
@@ -63,35 +61,9 @@
                     <menuItem sid="${GENERIC_UID}_ActionHideCross" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowNormalCross" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowFullCross" start="yes" />
-                    <menu sid="${GENERIC_UID}_menu" start="yes" />
                 </registry>
             </service>
 
-
-            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Image Cropping" />
-                        <menuItem name="Image Rotation" />
-                        <menuItem name="Image Subsampling" />
-                        <menuItem name="Image Windowing" />
-                        <menuItem name="Image Flip" />
-                        <menuItem name="Image Median" />
-                        <menuItem name="Convert image to SignedShort" />
-                        <menuItem name="Update image properties" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_action_Cropping" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_Rotation" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_Subsampling" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_Windowing" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_Flip" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_Median" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_ConvertToSignedShort" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_UpdateImageProperties" start="yes" />
-                </registry>
-            </service>
 
             <item key="imageKey">
                 <object uid="${imageUid}" src="ref" type="::fwData::Image">
@@ -120,70 +92,6 @@
                         <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato3" />
                     </service>
 
-                    <!-- Operator actions -->
-                    <service uid="${GENERIC_UID}_action_Cropping" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <config>
-                            <viewConfig id="DefaultConfigForSimpleParam" />
-                            <operator implementation="::transformOp::itk::Cropping" />
-                            <patientDB uid="${patientDBUid}" />
-                        </config>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_action_Rotation" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <config>
-                            <viewConfig id="DefaultConfigForSimpleParam" />
-                            <operator implementation="::transformOp::itk::Rotation" />
-                            <patientDB uid="${patientDBUid}" />
-                        </config>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_action_Subsampling" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <config>
-                            <viewConfig id="DefaultConfigForSimpleParam" />
-                            <operator implementation="::transformOp::itk::SubSampling" />
-                            <patientDB uid="${patientDBUid}" />
-                        </config>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_action_Windowing" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <config>
-                            <viewConfig id="DefaultConfigForSimpleParam" />
-                            <operator implementation="::photometricOp::itk::Windowing" />
-                            <patientDB uid="${patientDBUid}" />
-                        </config>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_action_Flip" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <config>
-                            <viewConfig id="DefaultConfigForSimpleParam" />
-                            <operator implementation="::transformOp::itk::Flip" />
-                            <patientDB uid="${patientDBUid}" />
-                        </config>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_action_Median" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <config>
-                            <viewConfig id="DefaultConfigForSimpleParam" />
-                            <operator implementation="::denoisingOp::itk::Median" />
-                            <patientDB uid="${patientDBUid}" />
-                        </config>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_action_ConvertToSignedShort" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <config>
-                            <viewConfig id="DefaultConfigForSimpleParam" />
-                            <operator implementation="::transformOp::itk::ConvertToSignedShort" />
-                            <patientDB uid="${patientDBUid}" />
-                        </config>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_action_UpdateImageProperties" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <config>
-                            <viewConfig id="DefaultConfigForSimpleParam" />
-                            <operator implementation="::opData::UpdateImageProperties" />
-                            <patientDB uid="${patientDBUid}" />
-                        </config>
-                    </service>
 
                     <service uid="${GENERIC_UID}_ActionFocusLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::FocusLandmark" autoConnect="no" />
                     <service uid="${GENERIC_UID}_ActionNewLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddLandmark" autoConnect="no" />
