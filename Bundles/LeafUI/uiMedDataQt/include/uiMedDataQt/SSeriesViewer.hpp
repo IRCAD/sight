@@ -17,7 +17,8 @@
 namespace uiMedData
 {
 /**
- * @brief
+ * @brief  This Service allows to preview the selected series.
+ *          It works on a simple click and single selection.Only, model series and image series can be previewed.
  * @class   SSeriesViewer.
  * @author  IRCAD (Research and Development Team).
  * @date    2013.
@@ -41,7 +42,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /**
-     *
+     * @brief configures the service.
      * @verbatim
     <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
         <parentView>preview</parentView>
@@ -51,6 +52,9 @@ protected:
         </config>
     </service>
      @endverbatim
+     * \ <parentView>preview</parentView> uid of the view where the config will be installed its windows.
+     * \ <config id="2DSimpleConfig" type="::fwMedData::ImageSeries"/\> gives the available association between
+     *   data type and associated config.
      */
     virtual void configuring() throw (::fwTools::Failed);
 
@@ -66,7 +70,9 @@ private:
     /// Config manager
     ::fwServices::AppConfigManager::sptr m_configTemplateManager;
 
+    /// Stores the uid of the view wher the config will be installed  its windows.
     std::string m_parentView;
+    /// Stores the association between data type and associated configuration.
     SeriesConfigMapType m_seriesConfigs;
 };
 } // namespace uiMedData
