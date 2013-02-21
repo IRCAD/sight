@@ -39,6 +39,7 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
     title(ext->findConfigurationElement("title")->getValue()),
     description(ext->findConfigurationElement("desc")->getValue()),
     icon(ext->findConfigurationElement("icon")->getValue()),
+    builderImpl(ext->findConfigurationElement("builder")->getValue()),
     appConfigId(ext->findConfigurationElement("appConfig")->getExistingAttributeValue("id")),
     appConfigTree(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")))
 {

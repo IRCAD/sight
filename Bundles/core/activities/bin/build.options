@@ -3,6 +3,7 @@ USE     = ['boost']
 LIB     = [
           'fwRuntime_0-3',
           'fwGui_0-1',
+          'fwGuiQt_0-1',
           'fwActivities_0-1',
           ]
 BUNDLES = ['gui_0-1']

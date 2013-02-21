@@ -57,6 +57,9 @@
                             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
                         </configs>
                     </service>
+                    <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config titlePrefixKey="title" tooltipKey="tooltip" />
+                    </service>
                 </object>
             </item>
 

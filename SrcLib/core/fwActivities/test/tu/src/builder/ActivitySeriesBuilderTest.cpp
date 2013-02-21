@@ -57,14 +57,6 @@ void ActivitySeriesBuilderTest::tearDown()
 
 void ActivitySeriesBuilderTest::builDataTest()
 {
-    const std::string defaultActivitySeriesBuilder = "::fwActivities::builder::ActivitySeries";
-    ::fwActivities::ActivitySeries::sptr actSeries;
-    ::fwActivities::IBuilder::sptr builder;
-    builder = ::fwActivities::builder::factory::New(defaultActivitySeriesBuilder);
-
-    CPPUNIT_ASSERT_MESSAGE(defaultActivitySeriesBuilder + " instantiation failed", builder);
-
-
     ::fwData::Vector::sptr selection = ::fwData::Vector::New();
     ::fwMedData::ImageSeries::sptr imgSeriesSelected = ::fwMedData::ImageSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeriesSelected = ::fwMedData::ModelSeries::New();
@@ -76,6 +68,10 @@ void ActivitySeriesBuilderTest::builDataTest()
     CPPUNIT_ASSERT_EQUAL(size_t(1), activities.size());
 
     ::fwActivities::registry::ActivityInfo activityInfo = activities[0];
+    ::fwActivities::ActivitySeries::sptr actSeries;
+    ::fwActivities::IBuilder::sptr builder;
+    builder = ::fwActivities::builder::factory::New(activityInfo.builderImpl);
+    CPPUNIT_ASSERT_MESSAGE("<" + activityInfo.builderImpl + "> instantiation failed", builder);
     actSeries = builder->buildData(activityInfo, selection);
 
     CPPUNIT_ASSERT_MESSAGE("ActivitySeries instantiation failed", actSeries);

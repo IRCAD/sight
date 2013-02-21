@@ -10,7 +10,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::activities::action::SActivityLauncher</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Vector</object>
     </extension>
 
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->

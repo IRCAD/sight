@@ -36,6 +36,7 @@ typedef ::boost::property_tree::ptree ConfigType;
 
 struct FWACTIVITIES_CLASS_API ActivityRequirement
 {
+    ActivityRequirement(){};
     ActivityRequirement(const ConfigType &config);
 
     std::string name;
@@ -80,6 +81,8 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     typedef std::pair<unsigned int, unsigned int> MinMaxType;
     typedef std::map< std::string, MinMaxType > RequirementsMinMaxCount;
     typedef std::map< std::string, unsigned int > DataCountType;
+
+    ActivityInfo(){};
 
     FWACTIVITIES_API ActivityInfo(const SPTR(::fwRuntime::Extension) &ext);
 
