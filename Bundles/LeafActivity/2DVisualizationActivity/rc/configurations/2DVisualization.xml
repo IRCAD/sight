@@ -5,7 +5,6 @@
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="imageUid" />
-        <param name="patientDBUid" />
     </parameters>
     <config>
 
@@ -69,8 +68,6 @@
                 <object uid="${imageUid}" src="ref" type="::fwData::Image">
                     <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
 
-                    <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
-
                     <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
                         <config id="2DNegato" />
                         <key id="self" pattern="imageUid" />
@@ -119,7 +116,6 @@
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
-            <start uid="${GENERIC_UID}_LockImageSrv" />
 
             <start uid="${GENERIC_UID}_cfgNegato1" />
             <start uid="${GENERIC_UID}_cfgNegato2" />

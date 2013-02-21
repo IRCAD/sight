@@ -6,4 +6,19 @@
     <xi:include href="configurations/2DNegato.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DNegatoWithTF.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
+    <extension implements="::fwActivities::registry::Activities">
+        <id>2DVisualization</id>
+        <title>2D Visu</title>
+        <desc>2D visualization activity</desc>
+        <icon>Bundles/icons_0-1/icons/icon-2D.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedicalData::ImageSeries" minOccurs="1" maxOccurs="1" /> 
+        </requirements>
+        <builder impl="::fwActivities::builder::ActivitySeries" />
+        <appConfig id="2DVisualization">
+            <parameters>
+                <key id="@imageSeries.image" pattern="imageUid" />
+            </parameters>
+        </appConfig>
+    </extension>
 </plugin>

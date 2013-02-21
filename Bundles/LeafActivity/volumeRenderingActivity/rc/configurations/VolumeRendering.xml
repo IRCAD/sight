@@ -5,7 +5,7 @@
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="imageUid" />
-        <param name="acquisitionUid" />
+        <param name="modelSeriesUid" />
     </parameters>
     <config>
 
@@ -188,7 +188,7 @@
                     </service>
 
                     <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <push src="${GENERIC_UID}_VisuComposite[acquisitionKey]" key="myMeshAcquisition" />
+                        <push src="${GENERIC_UID}_VisuComposite[modelSeriesKey]" key="modelSeries" />
                     </service>
 
                     <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no">
@@ -230,7 +230,7 @@
                                 <config renderer="default" />
                             </adaptor>
 
-                            <adaptor id="Acquisition" class="::visuVTKAdaptor::Acquisition" objectId="myMeshAcquisition">
+                            <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                 <config renderer="default" picker="negato1default" autoresetcamera="no" />
                             </adaptor>
 
@@ -374,8 +374,8 @@
                         <object uid="${GENERIC_UID}_TFSelections" type="::fwData::Composite" />
                     </item>
 
-                    <item key="acquisitionKey">
-                        <object uid="${acquisitionUid}" src="ref" type="::fwData::Acquisition">
+                    <item key="modelSeriesKey">
+                        <object uid="${modelSeriesUid}" src="ref" type="::fwMedData::ModelSeries">
                         </object>
                     </item>
 
@@ -383,8 +383,6 @@
                         <object uid="${imageUid}" src="ref" type="::fwData::Image">
 
                             <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-
-                            <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
 
                             <service uid="${GENERIC_UID}_cfgNegato" impl="::fwServices::SConfigController" autoConnect="no">
                                 <config id="2DNegatoWithTF" />
@@ -497,7 +495,6 @@
             <start uid="${GENERIC_UID}_Scene2D_Shutter" />
             <start uid="${GENERIC_UID}_Scene2D" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
-            <start uid="${GENERIC_UID}_LockImageSrv" />
             <start uid="${GENERIC_UID}_LightSwapper" />
             <start uid="${GENERIC_UID}_VRSwapper" />
             <start uid="${GENERIC_UID}_VRParamSwapper" />

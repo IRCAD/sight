@@ -3,4 +3,19 @@
     <xi:include href="configurations/Blend.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageMix.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Blend</id>
+        <title>Blend</title>
+        <desc>Blend activity</desc>
+        <appConfig>Blend</appConfig>
+        <icon>Bundles/icons_0-1/icons/icon-blend.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" />
+        </requirements>
+        <parameters>
+            <key id="@values[0].image" pattern="frontImageUid" />
+            <key id="@values[1].image" pattern="backgroundImageUid" />
+        </parameters>
+    </extension>
 </plugin>

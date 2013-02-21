@@ -5,7 +5,7 @@
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="imageUid" />
-        <param name="acquisitionUid" />
+        <param name="modelSeriesUid" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
     </parameters>
     <config>
@@ -83,7 +83,11 @@
                                 <config renderer="default" picker="negatodefault" slices="3" sliceIndex="${orientation}" />
                             </adaptor>
 
-                            <adaptor id="acquisition" class="::visuVTKAdaptor::Acquisition" objectId="acquisitionKey">
+                            <adaptor id="image" class="::visuVTKAdaptor::Image" objectId="imageKey">
+                                <config renderer="default" picker="negatodefault" autoresetcamera="no" />
+                            </adaptor>
+
+                            <adaptor id="modelSeries" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
                                 <config renderer="default" picker="negatodefault" autoresetcamera="no" />
                             </adaptor>
 
@@ -105,8 +109,6 @@
                     <item key="imageKey">
                         <object uid="${imageUid}" src="ref" type="::fwData::Image">
 
-                            <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
-
                             <service uid="${GENERIC_UID}_slider_negato" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>${orientation}</sliceIndex>
                             </service>
@@ -122,9 +124,8 @@
                         </object>
                     </item>
 
-                    <item key="acquisitionKey">
-                        <object uid="${acquisitionUid}" src="ref" type="::fwData::Acquisition">
-                            <service uid="${GENERIC_UID}_LockAcqSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+                    <item key="modelSeriesKey">
+                        <object uid="${modelSeriesUid}" src="ref" type="::fwMedData::ModelSeries">
                         </object>
                     </item>
 
@@ -133,8 +134,6 @@
 
 
             <!-- START AND STOP SERVICES -->
-            <start uid="${GENERIC_UID}_LockImageSrv" />
-            <start uid="${GENERIC_UID}_LockAcqSrv" />
             <start uid="${GENERIC_UID}_mainView" />
 
         </object>

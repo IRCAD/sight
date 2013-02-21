@@ -7,4 +7,23 @@
     <xi:include href="configurations/ManageOrgan.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DNegatoWithAcq.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
+    <extension implements="::fwActivities::registry::Activities">
+        <id>3DVisualization</id>
+        <title>3D Visu</title>
+        <desc>3D visualization activity</desc>
+        <icon>Bundles/icons_0-1/icons/icon-3D.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedicalData::ImageSeries" minOccurs="0" maxOccurs="1" /> 
+            <requirement name="modelSeries" type="::fwMedicalData::ModelSeries" minOccurs="1" maxOccurs="1" /> 
+        </requirements>
+        <builder impl="::fwActivities::builder::ActivitySeries" />
+        <appConfig id="3DVisualization">
+            <parameters>
+                <key id="@imageSeries.image" pattern="imageUid" />
+                <key id="modelSeries" pattern="modelSeriesUid" />
+                <replace val="frontal" pattern="orientation" />
+            </parameters>
+        </appConfig>
+    </extension>
+
 </plugin>
