@@ -54,7 +54,7 @@
                         <parentView>preview</parentView>
                         <configs>
                             <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
-                                <extract name="@image" pattern="imageID" />
+                                <extract path="@image" pattern="imageID" />
                             </config>
                             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
                         </configs>

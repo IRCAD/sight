@@ -50,26 +50,27 @@ protected:
         <parentView>preview</parentView>
         <configs>
             <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
-                <extract name="@image" pattern="imageID" />
+                <extract path="@image" pattern="imageID" />
             </config>
             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
         </config>
     </service>
      @endverbatim
-     * - \<parentView\>preview\</parentView\> wid of the view where the config will install its windows.
-     * - \<config id="2DSimpleConfig" type="::fwMedData::ImageSeries"/\> gives the available association between
-     *   data type and associated config.
-     * - \<extract name="@values.imgSeriesRegister.image" pattern="imageID" /\> extracts the object from name and
-     *   replaces pattern with its fwID
+     * - \b parentView : wid of the view where the config will install its windows.
+     * - \b config : gives the available association between data type and associated config.
+     *   - \b id : identifier of the AppConfig to launch
+     *   - \b type : classname of the object stored in Vector associated to this config.
+     * - \b extract : extracts the object from the path and replaces pattern with its fwID
      */
     virtual void configuring() throw (::fwTools::Failed);
 
     /**
      * @brief Launch the config on the object if possible.
      *
-     * If there is a single selection : launch a config on the object if it is defines in this service configuration
-     * (stored in m_seriesConfigs). The selected object is added in config root composite with the key 'series'.
-     * Else doesn't launch config.
+     * If there is a single selection : it launchs an AppConfig on the object defined in this service configuration
+     * (stored in m_seriesConfigs). The selected object fwID replaces the 'objectID' parameter in the AppConfig.
+     * no configuration are launched if there is no selection, a multiple selection or if there is no configuration
+     * associated with the selected object.
      */
     virtual void updating() throw (::fwTools::Failed);
 
@@ -82,9 +83,13 @@ private:
 
     typedef std::map<std::string, std::string> ReplaceValuesMapType;
 
+    /// Stucture to register configuration informations.
     struct SeriesConfigInfo
     {
+        /// Id of the configuration to launch.
         std::string configId;
+
+        /// Stores the pattern to replace in the config by the fwID of the object given by a path.
         ReplaceValuesMapType replaceValues;
     };
 

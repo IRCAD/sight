@@ -156,11 +156,11 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
 
         BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr extractElt, elt->find("extract"))
         {
-            std::string name = extractElt->getAttributeValue("name");
-            SLM_ASSERT("'name' attribute must not be empty", !name.empty());
+            std::string path = extractElt->getAttributeValue("path");
+            SLM_ASSERT("'path' attribute must not be empty", !path.empty());
             std::string pattern = extractElt->getAttributeValue("pattern");
             SLM_ASSERT("'pattern' attribute must not be empty", !pattern.empty());
-            info.replaceValues[pattern] = name;
+            info.replaceValues[pattern] = path;
         }
 
         m_seriesConfigs[seriesType] = info;
