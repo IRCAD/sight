@@ -1,0 +1,88 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>OrganManager</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="ORGAN_MANAGER_ACQUISITION" />
+    </parameters>
+    <config>
+
+
+        <object type="::fwData::Composite">
+
+            <!-- MAIN FRAME -->
+            <service uid="${GENERIC_UID}_organManagerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Organs Manager</name>
+                        <icon>Bundles/icons_0-1/icons/vrmed.ico</icon>
+                        <!-- <minSize width="400" height="750" /> -->
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_multiViewOrgans" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_multiViewOrgans" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::ToolboxLayoutManager" >
+                        <view caption="Organs" expanded="true" />
+                        <view caption="Material" expanded="true" />
+                        <view caption="Volume" expanded="true" />
+                        <view caption="Representation" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_listOrganEditor" start="yes" />
+                    <view sid="${GENERIC_UID}_organMaterialEditor" start="no" />
+                    <view sid="${GENERIC_UID}_volumeEditor" start="no" />
+                    <view sid="${GENERIC_UID}_representationEditor" start="no" />
+                </registry>
+            </service>
+
+            <item key="selection">
+                <object type="::fwData::Composite">
+
+                    <service uid="${GENERIC_UID}_myUpdaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
+                        <update compositeKey="myReconstruction" onEvent="REMOVED_RECONSTRUCTIONS" fromUID="*" actionType="REMOVE_IF_PRESENT" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                        <mode type="dummy" />
+                        <config>
+
+                            <object id="myReconstruction" type="::fwData::Reconstruction">
+                                <service uid="${GENERIC_UID}_organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_volumeEditor" impl="::uiData::VolumeEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                            </object>
+
+                        </config>
+                    </service>
+
+                </object>
+            </item>
+
+            <item key="myAcquisition">
+                <object uid="${ORGAN_MANAGER_ACQUISITION}" src="ref" type="::fwData::Acquisition">
+                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
+                </object>
+            </item>
+
+            <connect>
+                <signal>${ORGAN_MANAGER_ACQUISITION}/objectModified</signal>
+                <slot>${GENERIC_UID}_myUpdaterReconst/receive</slot>
+            </connect>
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_organManagerFrame" />
+            <start uid="${GENERIC_UID}_myUpdaterReconst" />
+            <start uid="${GENERIC_UID}_myManagerForOrgansFrame" />
+        </object>
+
+    </config>
+</extension>

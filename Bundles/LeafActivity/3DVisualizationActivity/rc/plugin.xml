@@ -1,0 +1,10 @@
+<plugin id="3DVisualizationActivity">
+
+    <requirement id="servicesReg" />
+    <requirement id="2DVisualizationActivity" />
+
+    <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ManageOrgan.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/3DNegatoWithAcq.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+</plugin>

@@ -1,0 +1,9 @@
+<plugin id="2DVisualizationActivity">
+
+    <requirement id="servicesReg" />
+
+    <xi:include href="configurations/2DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DNegato.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DNegatoWithTF.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+</plugin>

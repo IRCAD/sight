@@ -1,0 +1,6 @@
+<plugin id="blendActivity">
+    <requirement id="servicesReg" />
+    <xi:include href="configurations/Blend.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ImageMix.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/TransferFunctionEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+</plugin>

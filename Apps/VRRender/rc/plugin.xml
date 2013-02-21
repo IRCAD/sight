@@ -11,7 +11,7 @@
             <param name="appIconPath" value="Bundles/VRRender_0-9/documentations/vrrender_96.png" />
         </parameters>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>IOSelectorServiceConfigVRRenderSeriesDBReader</id>
         <service>::uiIO::editor::IOSelectorService</service>
@@ -22,5 +22,5 @@
             <addSelection service="::ioXML::FwXMLGenericReaderService" />
         </config>
     </extension>
-    
+
 </plugin>

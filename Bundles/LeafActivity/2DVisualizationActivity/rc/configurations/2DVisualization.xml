@@ -1,0 +1,223 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>2DVisualization</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="imageUid" />
+        <param name="patientDBUid" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="Negato1" align="center" />
+                        <view caption="Negato2" align="right" minWidth="350" />
+                        <view caption="Negato3" align="right" minWidth="350" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
+                    <view wid="${GENERIC_UID}_view_negato1" />
+                    <view wid="${GENERIC_UID}_view_negato2" />
+                    <view wid="${GENERIC_UID}_view_negato3" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="New landmark" icon="Bundles/icons_0-1/icons/Add-landmark.png" />
+                        <menuItem name="Remove landmark" icon="Bundles/icons_0-1/icons/Remove-landmark.png" />
+                        <menuItem name="Load landmark" icon="Bundles/icons_0-1/icons/Load-landmark.png" />
+                        <menuItem name="Save landmark" icon="Bundles/icons_0-1/icons/Save-landmark.png" />
+                        <menuItem name="Focus landmark" icon="Bundles/icons_0-1/icons/Find-landmark.png" />
+                        <menuItem name="Hide/Show landmark" icon="Bundles/icons_0-1/icons/View-landmark.png" />
+                        <separator />
+                        <menuItem name="Add distance" icon="Bundles/icons_0-1/icons/distance.png" />
+                        <menuItem name="Remove distance" icon="Bundles/icons_0-1/icons/RemoveDistance.png" />
+                        <menuItem name="Hide distance" icon="Bundles/icons_0-1/icons/HideDistance.png" style="check" />
+                        <separator />
+                        <menuItem name="Hide cross" icon="Bundles/icons_0-1/icons/HideCross.png" style="radio" />
+                        <menuItem name="Show normal cross" icon="Bundles/icons_0-1/icons/NormalCross.png" style="radio" />
+                        <menuItem name="Show full cross" icon="Bundles/icons_0-1/icons/FullCross.png" style="radio" />
+                        <spacer />
+                        <menu name="Visu 2D" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_ActionNewLandmark" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionRemoveLandmark" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionLoadLandmark" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionSaveLandmark" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionFocusLandmark" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionHideLandmark" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionAddDistance" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionRemoveDistance" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionHideDistance" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionHideCross" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionShowNormalCross" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionShowFullCross" start="yes" />
+                    <menu sid="${GENERIC_UID}_menu" start="yes" />
+                </registry>
+            </service>
+
+
+            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Image Cropping" />
+                        <menuItem name="Image Rotation" />
+                        <menuItem name="Image Subsampling" />
+                        <menuItem name="Image Windowing" />
+                        <menuItem name="Image Flip" />
+                        <menuItem name="Image Median" />
+                        <menuItem name="Convert image to SignedShort" />
+                        <menuItem name="Update image properties" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_action_Cropping" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_Rotation" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_Subsampling" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_Windowing" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_Flip" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_Median" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_ConvertToSignedShort" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_UpdateImageProperties" start="yes" />
+                </registry>
+            </service>
+
+            <item key="imageKey">
+                <object uid="${imageUid}" src="ref" type="::fwData::Image">
+                    <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+
+                    <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+
+                    <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
+                        <config id="2DNegato" />
+                        <key id="self" pattern="imageUid" />
+                        <replace pattern="orientation" val="axial" />
+                        <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato1" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_cfgNegato2" impl="::fwServices::SConfigController" autoConnect="no">
+                        <config id="2DNegato" />
+                        <key id="self" pattern="imageUid" />
+                        <replace pattern="orientation" val="frontal" />
+                        <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato2" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_cfgNegato3" impl="::fwServices::SConfigController" autoConnect="no">
+                        <config id="2DNegato" />
+                        <key id="self" pattern="imageUid" />
+                        <replace pattern="orientation" val="sagittal" />
+                        <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato3" />
+                    </service>
+
+                    <!-- Operator actions -->
+                    <service uid="${GENERIC_UID}_action_Cropping" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <config>
+                            <viewConfig id="DefaultConfigForSimpleParam" />
+                            <operator implementation="::transformOp::itk::Cropping" />
+                            <patientDB uid="${patientDBUid}" />
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_Rotation" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <config>
+                            <viewConfig id="DefaultConfigForSimpleParam" />
+                            <operator implementation="::transformOp::itk::Rotation" />
+                            <patientDB uid="${patientDBUid}" />
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_Subsampling" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <config>
+                            <viewConfig id="DefaultConfigForSimpleParam" />
+                            <operator implementation="::transformOp::itk::SubSampling" />
+                            <patientDB uid="${patientDBUid}" />
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_Windowing" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <config>
+                            <viewConfig id="DefaultConfigForSimpleParam" />
+                            <operator implementation="::photometricOp::itk::Windowing" />
+                            <patientDB uid="${patientDBUid}" />
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_Flip" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <config>
+                            <viewConfig id="DefaultConfigForSimpleParam" />
+                            <operator implementation="::transformOp::itk::Flip" />
+                            <patientDB uid="${patientDBUid}" />
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_Median" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <config>
+                            <viewConfig id="DefaultConfigForSimpleParam" />
+                            <operator implementation="::denoisingOp::itk::Median" />
+                            <patientDB uid="${patientDBUid}" />
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_ConvertToSignedShort" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <config>
+                            <viewConfig id="DefaultConfigForSimpleParam" />
+                            <operator implementation="::transformOp::itk::ConvertToSignedShort" />
+                            <patientDB uid="${patientDBUid}" />
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_UpdateImageProperties" impl="::uiWorkflow::action::OperatorActionSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <config>
+                            <viewConfig id="DefaultConfigForSimpleParam" />
+                            <operator implementation="::opData::UpdateImageProperties" />
+                            <patientDB uid="${patientDBUid}" />
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_ActionFocusLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::FocusLandmark" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_ActionNewLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddLandmark" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_ActionRemoveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveLandmark" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_ActionLoadLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::LoadLandmark" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_ActionSaveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::SaveLandmark" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_ActionHideLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::ShowLandmark" autoConnect="yes" />
+                    <service uid="${GENERIC_UID}_ActionAddDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddDistance" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_ActionRemoveDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveDistance" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_ActionHideDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::ShowDistance" autoConnect="yes" />
+                    <service uid="${GENERIC_UID}_ActionHideCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                        <crossType>hide</crossType>
+                    </service>
+                    <service uid="${GENERIC_UID}_ActionShowNormalCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                        <crossType>half</crossType>
+                        <state active="true" />
+                    </service>
+                    <service uid="${GENERIC_UID}_ActionShowFullCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                        <crossType>full</crossType>
+                    </service>
+                </object>
+            </item>
+
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_mainView" />
+            <start uid="${GENERIC_UID}_MedicalImageSrv" />
+            <start uid="${GENERIC_UID}_LockImageSrv" />
+
+            <start uid="${GENERIC_UID}_cfgNegato1" />
+            <start uid="${GENERIC_UID}_cfgNegato2" />
+            <start uid="${GENERIC_UID}_cfgNegato3" />
+
+        </object>
+
+    </config>
+</extension>
