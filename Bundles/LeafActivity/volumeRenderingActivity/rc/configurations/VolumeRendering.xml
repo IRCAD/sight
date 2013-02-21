@@ -234,6 +234,9 @@
                                 <config renderer="default" picker="negato1default" autoresetcamera="no" />
                             </adaptor>
 
+                            <adaptor id="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
+                                <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
+                            </adaptor>
                         </scene>
                     </service>
 
