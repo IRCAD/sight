@@ -11,14 +11,14 @@
         <desc>Volume rendering activity</desc>
         <icon>Bundles/icons_0-1/icons/icon-VR.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::fwMedicalData::ImageSeries" minOccurs="1" maxOccurs="1" /> 
-            <requirement name="modelSeries" type="::fwMedicalData::ModelSeries" minOccurs="0" maxOccurs="1" /> 
+            <requirement name="imageSeries" type="::fwMedicalData::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="::fwMedicalData::ModelSeries" minOccurs="0" maxOccurs="1" />
         </requirements>
         <builder impl="::fwActivities::builder::ActivitySeries" />
         <appConfig id="3DVisualization">
             <parameters>
-                <key id="@imageSeries.image" pattern="imageUid" />
-                <key id="modelSeries" pattern="modelSeriesUid" />
+                <parameter replace="imageUid" by="@values.imageSeries.image" />
+                <parameter replace="modelSeriesUid" by="@values.modelSeries" />
             </parameters>
         </appConfig>
     </extension>

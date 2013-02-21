@@ -12,12 +12,12 @@
         <desc>2D visualization activity</desc>
         <icon>Bundles/icons_0-1/icons/icon-2D.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::fwMedicalData::ImageSeries" minOccurs="1" maxOccurs="1" /> 
+            <requirement name="imageSeries" type="::fwMedicalData::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder impl="::fwActivities::builder::ActivitySeries" />
         <appConfig id="2DVisualization">
             <parameters>
-                <key id="@imageSeries.image" pattern="imageUid" />
+                <parameter replace="imageUid" by="@values.imageSeries.image" />
             </parameters>
         </appConfig>
     </extension>
