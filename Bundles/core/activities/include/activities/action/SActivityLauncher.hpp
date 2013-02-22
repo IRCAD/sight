@@ -58,6 +58,17 @@ protected:
     /**
      * @brief Initialize the action.
      * @see fwGui::IActionSrv::initialize()
+     *
+     * @verbatim
+     <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+         <config>
+             <parameters>
+                 <parameter replace="SERIESDB" by="medicalData" />
+                 <parameter replace="IMAGE" by="@values.ImageSeries.image" />
+             </parameters>
+         </config>
+     </service>
+     @endverbatim
       */
     virtual void configuring() throw(fwTools::Failed);
 

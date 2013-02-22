@@ -20,16 +20,37 @@
 #include <fwServices/AppConfigManager.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwActivities/registry/Activities.hpp>
 
 #include "guiQt/config.hpp"
 
 
 class QTabWidget;
-
+namespace fwData
+{
+class Composite;
+}
 namespace guiQt
 {
 namespace editor
 {
+
+typedef const ::fwServices::IService::ConfigType ConfigType;
+
+struct AppConfig
+{
+    typedef ::fwActivities::registry::ActivityAppConfigParam ParameterType;
+    typedef std::vector< ParameterType > ParametersType;
+
+    AppConfig(){};
+    AppConfig(const ConfigType &config);
+
+    std::string id;
+    std::string title;
+    ParametersType parameters;
+};
+
+
 /**
  * @class   DynamicView
  * @brief   This editor manages tabs. It receive message with NEW_CONFIGURATION_HELPER event containing the view config id.
@@ -84,12 +105,26 @@ protected:
     virtual void swapping() throw(::fwTools::Failed);
 
     /**
-     * @brief Configure the editor
-     *
-     */
+    * @brief Configure the view
+    * @see fwGui::IGuiContainerSrv::initialize()
+    *
+    * @verbatim
+    <service type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes" >
+        <config dynamicConfigStartStop="false">
+            <appConfig id="Visu2DID" title="Visu2D" >
+                <parameters>
+                    <parameter replace="SERIESDB" by="medicalData"  />
+                    <parameter replace="IMAGE" by="@values.image"  />
+                </parameters>
+            </appConfig>
+        </config>
+    </service>
+    @endverbatim
+    */
     virtual void configuring() throw(fwTools::Failed);
 
     virtual void info( std::ostream &_sstream ) ;
+
 
     struct DynamicViewInfo
     {
@@ -101,9 +136,21 @@ protected:
         std::string icon;
         std::string tooltip;
         std::string tabID;
+        std::string viewConfigID;
+        SPTR(::fwData::Composite) replaceMap;
     };
 
     typedef std::map< QWidget* , DynamicViewInfo > DynamicViewInfoMapType;
+
+    /**
+     * @brief Launch tab
+     */
+    void launchTab(DynamicViewInfo& info);
+
+    /**
+     * @brief Build a DynamicViewInfo from an AppConfig
+     */
+    DynamicViewInfo buildDynamicViewInfo(const AppConfig& appConfig);
 
     QPointer<QTabWidget> m_tabWidget;
     QPointer<QWidget> m_currentWidget;
@@ -113,6 +160,8 @@ protected:
 
     DynamicViewInfoMapType m_dynamicInfoMap;
     bool m_dynamicConfigStartStop;
+
+    AppConfig m_appConfig;
 
 protected Q_SLOTS:
 

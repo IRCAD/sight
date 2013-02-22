@@ -84,7 +84,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
     m_parameters.clear();
     if(this->getConfigTree().get_child("service").count("config") > 0)
     {
-        SLM_ASSERT("Sorry you must have one (and only one) <config id=... /> element.",
+        SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
                 this->getConfigTree().get_child("service").count("config") == 1 );
 
         const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");

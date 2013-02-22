@@ -13,33 +13,19 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwData/String.hpp>
-#include <fwData/Integer.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
 #include <fwData/Boolean.hpp>
-
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/BackupHelper.hpp>
-#include <fwComEd/Dictionary.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IService.hpp>
-#include <fwServices/op/Get.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwGui/GuiRegistry.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
+#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 
 #include "guiQt/editor/DynamicView.hpp"
 
@@ -49,6 +35,24 @@ namespace editor
 {
 
 fwServicesRegisterMacro( ::gui::view::IView , ::guiQt::editor::DynamicView , ::fwData::Object ) ;
+
+AppConfig::AppConfig(const DynamicView::ConfigType& config) :
+    id(config.get<std::string>("<xmlattr>.id")),
+    title(config.get<std::string>("<xmlattr>.title"))
+{
+    if(config.count("parameters") == 1 )
+    {
+        const ConfigType &configParameters = config.get_child("parameters");
+        BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+        {
+            ParameterType parameter( v.second );
+            parameters.push_back( parameter );
+        }
+    }
+    OSLM_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
+}
+
+//------------------------------------------------------------------------------
 
 DynamicView::DynamicView() throw()
 {
@@ -91,6 +95,12 @@ void DynamicView::starting() throw(::fwTools::Failed)
 
     layout->addWidget( m_tabWidget );
     m_currentWidget = 0;
+
+    if(!m_appConfig.id.empty())
+    {
+        DynamicViewInfo info = this->buildDynamicViewInfo(m_appConfig);
+        this->launchTab(info);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -114,22 +124,54 @@ void DynamicView::stopping() throw(::fwTools::Failed)
 
 void DynamicView::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    std::vector< ::fwRuntime::ConfigurationElement::sptr > vectMode =
-            m_configuration->find("config");
-
-    if (!vectMode.empty())
+    if(this->getConfigTree().get_child("service").count("config") > 0)
     {
-        ::fwRuntime::ConfigurationElement::sptr config = vectMode.at(0);
+        SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
+                this->getConfigTree().get_child("service").count("config") == 1 );
+        const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
+        const ::fwServices::IService::ConfigType &config = srvconfig.get_child("config");
 
-        if (config->hasAttribute("dynamicConfigStartStop"))
+        const std::string dynamicConfig =
+                config.get_optional<std::string>("<xmlattr>.dynamicConfigStartStop").get_value_or("false");
+        m_dynamicConfigStartStop = (dynamicConfig == "true");
+
+        if(config.count("appConfig") == 1 )
         {
-            std::string dynamicConfig = config->getAttributeValue("dynamicConfigStartStop");
-            m_dynamicConfigStartStop = (dynamicConfig == "true");
+            const ::fwServices::IService::ConfigType &appConfig = config.get_child("appConfig");
+            m_appConfig = AppConfig(appConfig);
+        }
+        OSLM_ASSERT("At most 1 <appConfig> tag is allowed", config.count("appConfig") < 2);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& appConfig)
+{
+    DynamicViewInfo info;
+    info.tabID = "TABID_" + this->getID();
+    info.title = appConfig.title;
+    info.viewConfigID = appConfig.id;
+
+    ::fwData::Object::sptr currentObj = this->getObject();
+    ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
+    BOOST_FOREACH(const AppConfig::ParametersType::value_type& param, appConfig.parameters)
+    {
+        if(!param.isSeshat())
+        {
+            (*replaceMap)[param.replace] = ::fwData::String::New(param.by);
+        }
+        else
+        {
+            ::fwData::Object::sptr obj = ::fwAtomConversion::getSubObject(currentObj, param.by);
+            OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
+            (*replaceMap)[param.replace] = ::fwData::String::New(obj->getID());
         }
     }
+    info.replaceMap = replaceMap;
+    return info;
 }
 
 //------------------------------------------------------------------------------
@@ -144,23 +186,12 @@ void DynamicView::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void DynamicView::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void DynamicView::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
-
-    if (_msg->hasEvent("NEW_CONFIGURATION_HELPER"))
+    if (msg->hasEvent("NEW_CONFIGURATION_HELPER"))
     {
-        static int count = 0;
-        ::fwData::String::csptr titleData = ::fwData::String::dynamicConstCast( _msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) );
-        SLM_ASSERT("Missing field 'tabID' in message", titleData->getField("tabID"));
-        std::string tabID = titleData->getField< ::fwData::String >("tabID")->value();
-        std::string title = titleData->value();
-        if(m_tabIDList.find(tabID) != m_tabIDList.end() )
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("New tab",
-                    "Sorry, the tab " + title + " cannot be opened twice.",
-                    ::fwGui::dialog::IMessageDialog::WARNING);
-            return;
-        }
+        DynamicViewInfo info;
+        ::fwData::String::csptr titleData = ::fwData::String::dynamicConstCast(msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) );
 
         const std::string eventID              = "NEW_CONFIGURATION_HELPER";
         const std::string fieldID              = "APPCONFIG";
@@ -171,78 +202,84 @@ void DynamicView::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwToo
         const std::string tabIDFieldID         = "TABID";
         const std::string asFieldID            = "ACTIVITYSERIES";
 
-        bool closable;
-        std::string icon;
-        std::string tooltip("");
-        std::string viewConfigID;
-        ::fwData::Composite::sptr fieldAdaptors;
+        SLM_ASSERT("Missing field 'tabID' in message", titleData->getField("tabID"));
+        info.title         = titleData->value();
+        info.tabID         = titleData->getField< ::fwData::String >(tabIDFieldID)->value();
+        info.closable      = titleData->getField(closableFieldID, ::fwData::Boolean::New(true))->value();
+        info.icon          = titleData->getField(iconFieldID, ::fwData::String::New(""))->value();
+        info.tooltip       = titleData->getField(tooltipFieldID, ::fwData::String::New(""))->value();
+        info.viewConfigID  = titleData->getField(viewConfigFieldID, ::fwData::String::New(""))->value();
+        info.replaceMap    = titleData->getField(fieldID, ::fwData::Composite::New());
 
-        closable      = titleData->getField(closableFieldID, ::fwData::Boolean::New(true))->value();
-        icon          = titleData->getField(iconFieldID, ::fwData::String::New(""))->value();
-        tooltip       = titleData->getField(tooltipFieldID, ::fwData::String::New(""))->value();
-        viewConfigID  = titleData->getField(viewConfigFieldID, ::fwData::String::New(""))->value();
-        fieldAdaptors = titleData->getField(fieldID, ::fwData::Composite::New());
-
-        if ( m_titleToCount.find( title ) !=  m_titleToCount.end() )
-        {
-            m_titleToCount[ title ] ++;
-        }
-        else
-        {
-            m_titleToCount[ title ] = 1;
-        }
-
-        QString finalTitle = QString("%1 %2").arg( title.c_str(),"(%1)" ).arg( m_titleToCount[ title ] );
-
-        std::string wid = QString("DynamicView-%1").arg(count++).toStdString();
-
-        ::fwGuiQt::container::QtContainer::NewSptr subContainer;
-        QWidget *widget = new QWidget();
-        subContainer->setQtContainer(widget);
-        ::fwGui::GuiRegistry::registerWIDContainer(wid, subContainer);
-
-        (*fieldAdaptors)[ "WID_PARENT" ] = fwData::String::New( wid );
-
-
-        ::fwRuntime::ConfigurationElement::csptr config =
-                ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( viewConfigID, fieldAdaptors );
-
-        ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
-        helper->setConfig( config );
-
-        if (!m_dynamicConfigStartStop)
-        {
-            helper->launch();
-        }
-        else
-        {
-            helper->create();
-        }
-
-        DynamicViewInfo info;
-        info.container = subContainer;
-        info.helper    = helper;
-        info.wid       = wid;
-        info.title     = title;
-        info.closable  = closable;
-        info.icon      = icon;
-        info.tooltip   = tooltip;
-        info.tabID     = tabID;
-
-        m_dynamicInfoMap[widget] = info;
-        m_tabIDList.insert(tabID);
-
-        int index = m_tabWidget->addTab(widget, finalTitle );
-        if(!info.tooltip.empty())
-        {
-            m_tabWidget->setTabToolTip(index, QString::fromStdString(info.tooltip));
-        }
-        if(!info.icon.empty())
-        {
-            m_tabWidget->setTabIcon(index, QIcon(QString::fromStdString(info.icon)) );
-        }
-        m_tabWidget->setCurrentWidget(widget);
+        this->launchTab(info);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void DynamicView::launchTab(DynamicViewInfo& info)
+{
+    static int count = 0;
+    if(m_tabIDList.find(info.tabID) != m_tabIDList.end() )
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("New tab",
+                "Sorry, the tab " + info.title + " cannot be opened twice.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
+        return;
+    }
+
+    if ( m_titleToCount.find( info.title ) !=  m_titleToCount.end() )
+    {
+        m_titleToCount[ info.title ] ++;
+    }
+    else
+    {
+        m_titleToCount[ info.title ] = 1;
+    }
+
+    QString finalTitle = QString("%1 %2").arg( info.title.c_str(),"(%1)" ).arg( m_titleToCount[ info.title ] );
+    info.wid = QString("DynamicView-%1").arg(count++).toStdString();
+
+    ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
+    QWidget *widget = new QWidget();
+    subContainer->setQtContainer(widget);
+    ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
+
+    (*(info.replaceMap))[ "WID_PARENT" ] = fwData::String::New( info.wid );
+
+
+    ::fwRuntime::ConfigurationElement::csptr config =
+            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( info.viewConfigID, info.replaceMap);
+
+    ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+    helper->setConfig( config );
+
+    if (!m_dynamicConfigStartStop)
+    {
+        helper->launch();
+    }
+    else
+    {
+        helper->create();
+    }
+
+    info.container = subContainer;
+    info.helper    = helper;
+
+
+    m_dynamicInfoMap[widget] = info;
+    m_tabIDList.insert(info.tabID);
+
+    int index = m_tabWidget->addTab(widget, finalTitle );
+    if(!info.tooltip.empty())
+    {
+        m_tabWidget->setTabToolTip(index, QString::fromStdString(info.tooltip));
+    }
+    if(!info.icon.empty())
+    {
+        m_tabWidget->setTabIcon(index, QIcon(QString::fromStdString(info.icon)) );
+    }
+    m_tabWidget->setCurrentWidget(widget);
 }
 
 //------------------------------------------------------------------------------
