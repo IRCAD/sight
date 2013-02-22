@@ -48,8 +48,6 @@
             <item key="myBlendSelectionComposite">
                 <object uid="${GENERIC_UID}_myBlendSelectionComposite" type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_myManagerLockDump" impl="::ctrlMemory::manager::LockDumpManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" /> <!--priority="0.65" -->
-
                     <service uid="${GENERIC_UID}_myUpdater" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                         <update compositeKey="myBackgroundImage" onEvent="NEW_BACKGROUND_IMAGE" fromUID="*" actionType="ADD_OR_SWAP" />
                         <update compositeKey="myFrontImage" onEvent="NEW_FRONT_IMAGE" fromUID="*" actionType="ADD_OR_SWAP" />
@@ -86,7 +84,6 @@
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_myUpdater" />
-            <start uid="${GENERIC_UID}_myManagerLockDump" />
             <start uid="${GENERIC_UID}_myManager" />
             <start uid="${GENERIC_UID}_action_blendView" />
 

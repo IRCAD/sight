@@ -64,16 +64,16 @@
                 </object>
             </item>
 
-            <item key="myAcquisition">
+            <!--<item key="myAcquisition">
                 <object uid="${ORGAN_MANAGER_ACQUISITION}" src="ref" type="::fwData::Acquisition">
                     <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
                 </object>
-            </item>
+            </item>-->
 
-            <connect>
+            <!--<connect>
                 <signal>${ORGAN_MANAGER_ACQUISITION}/objectModified</signal>
                 <slot>${GENERIC_UID}_myUpdaterReconst/receive</slot>
-            </connect>
+            </connect>-->
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_organManagerFrame" />

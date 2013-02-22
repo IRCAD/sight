@@ -5,7 +5,7 @@
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="imageUid" />
-        <param name="acquisitionUid" />
+        <param name="modelSeriesUid" />
     </parameters>
     <config>
 
@@ -51,7 +51,7 @@
                         <menuItem name="Show normal cross" icon="Bundles/media_0-1/icons/NormalCross.png" style="radio" />
                         <menuItem name="Show full cross" icon="Bundles/media_0-1/icons/FullCross.png" style="radio" />
                         <separator />
-                        <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
+<!--                        <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />-->
                         <spacer />
                         <menu name="Visu 3D" />
                     </layout>
@@ -72,7 +72,7 @@
                     <menuItem sid="${GENERIC_UID}_ActionHideCross" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowNormalCross" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowFullCross" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_organManager" start="no" />
+<!--                    <menuItem sid="${GENERIC_UID}_action_organManager" start="no" />-->
                     <menu sid="${GENERIC_UID}_menu" start="yes" />
                 </registry>
             </service>
@@ -80,30 +80,30 @@
             <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="Bundles/media_0-1/icons/ManageOrgan.png" />
-                        <separator />
+<!--                        <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="Bundles/media_0-1/icons/ManageOrgan.png" />-->
+<!--                        <separator />-->
                         <menuItem name="Axial view" icon="Bundles/media_0-1/icons/icon-axial.png" />
                         <menuItem name="Frontal view" icon="Bundles/media_0-1/icons/icon-frontal.png" />
                         <menuItem name="Sagittal view" icon="Bundles/media_0-1/icons/icon-sagittal.png" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="${GENERIC_UID}_action_organManager" start="yes" />
+<!--                    <menuItem sid="${GENERIC_UID}_action_organManager" start="yes" />-->
                     <menuItem sid="${GENERIC_UID}_action_AxialViewMPR3D" start="no" />
                     <menuItem sid="${GENERIC_UID}_action_FrontalViewMPR3D" start="no" />
                     <menuItem sid="${GENERIC_UID}_action_SagittalViewMPR3D" start="no" />
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
+            <!-- <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
                 <config id="OrganManager" />
-                <replace pattern="ORGAN_MANAGER_ACQUISITION" val="${acquisitionUid}" />
-            </service>
+                <replace pattern="ORGAN_MANAGER_ACQUISITION" val="${modelSeriesUid}" />
+            </service> -->
 
             <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
                 <config id="3DNegatoWithAcq" />
                 <key id="imageKey" pattern="imageUid" />
-                <key id="acquisitionKey" pattern="acquisitionUid" />
+                <key id="modelSeriesKey" pattern="modelSeriesUid" />
                 <replace pattern="orientation" val="axial" />
                 <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato1" />
             </service>
@@ -111,7 +111,7 @@
             <service uid="${GENERIC_UID}_cfgNegato2" impl="::fwServices::SConfigController" autoConnect="no">
                 <config id="2DNegato" />
                 <key id="imageKey" pattern="imageUid" />
-                <key id="acquisitionKey" pattern="acquisitionUid" />
+                <key id="modelSeriesKey" pattern="modelSeriesUid" />
                 <replace pattern="orientation" val="frontal" />
                 <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato2" />
             </service>
@@ -119,16 +119,14 @@
             <service uid="${GENERIC_UID}_cfgNegato3" impl="::fwServices::SConfigController" autoConnect="no">
                 <config id="2DNegato" />
                 <key id="imageKey" pattern="imageUid" />
-                <key id="acquisitionKey" pattern="acquisitionUid" />
+                <key id="modelSeriesKey" pattern="modelSeriesUid" />
                 <replace pattern="orientation" val="sagittal" />
                 <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato3" />
             </service>
 
 
-            <item key="acquisitionKey">
-                <object uid="${acquisitionUid}" src="ref" type="::fwData::Acquisition">
-                    <service uid="${GENERIC_UID}_LockAcqSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
-                </object>
+            <item key="modelSeriesKey">
+                <object uid="${modelSeriesUid}" src="ref" type="::fwData::Acquisition"/>
             </item>
 
             <item key="imageKey">
@@ -171,8 +169,6 @@
 
                     <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
 
-                    <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
-
                 </object>
             </item>
 
@@ -180,8 +176,6 @@
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
-            <start uid="${GENERIC_UID}_LockImageSrv" />
-            <start uid="${GENERIC_UID}_LockAcqSrv" />
 
             <start uid="${GENERIC_UID}_cfgNegato1" />
             <start uid="${GENERIC_UID}_cfgNegato2" />
