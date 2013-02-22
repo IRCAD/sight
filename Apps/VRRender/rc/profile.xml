@@ -27,6 +27,7 @@
     <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
     <activate id="visuVTKAdaptor" version="0-1" />
+    <activate id="visuVTKVRAdaptor" version="0-1" />
 
     <activate id="activities" version="0-1" />
     <activate id="ctrlSelection" version="0-1" />

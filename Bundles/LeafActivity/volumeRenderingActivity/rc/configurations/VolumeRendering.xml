@@ -64,7 +64,6 @@
                         <menuItem name="Show full cross" icon="Bundles/media_0-1/icons/FullCross.png" style="radio" />
                         <separator />
                         <menuItem name="Show 3d slice cursor" icon="Bundles/media_0-1/icons/icon-landmark.png" style="check" />
-                        <menuItem name="Configure 3d slice cursor" icon="Bundles/media_0-1/icons/Find-landmark.png" />
                         <menuItem name="Show mesh" icon="Bundles/media_0-1/icons/icon-3D.png" style="check" />
                         <separator />
                         <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" />
@@ -79,8 +78,6 @@
                     <menuItem sid="${GENERIC_UID}_ActionShowFullCross" start="yes" />
 
                     <menuItem sid="${GENERIC_UID}_ActionShowSliceCursor" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_Image3DCursorManager" start="no" />
-
                     <menuItem sid="${GENERIC_UID}_ActionShowMesh" start="yes" />
 
                     <menuItem sid="${GENERIC_UID}_ActionShowHideBoxWidget" start="yes" />
@@ -197,15 +194,6 @@
                         </snap>
                     </service>
 
-                    <service uid="${GENERIC_UID}_VRSwapper" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                        <mode type="stop" />
-                        <config>
-                            <object id="imageKeyCursor" type="::fwData::Image">
-                                <service uid="${GENERIC_UID}_Image3DCursorManager" type="::fwGui::IActionSrv" impl="::uiDataQt::action::Image3DCursorManager" autoConnect="yes" />
-                            </object>
-                        </config>
-                    </service>
-
                     <!-- Generic Scene VR -->
                     <service uid="${GENERIC_UID}_vr" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
@@ -230,7 +218,7 @@
                                 <config renderer="default" />
                             </adaptor>
 
-                            <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
+                            <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                 <config renderer="default" picker="negato1default" autoresetcamera="no" />
                             </adaptor>
 
@@ -496,7 +484,6 @@
             <start uid="${GENERIC_UID}_Scene2D" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
             <start uid="${GENERIC_UID}_LightSwapper" />
-            <start uid="${GENERIC_UID}_VRSwapper" />
             <start uid="${GENERIC_UID}_VRParamSwapper" />
             <start uid="${GENERIC_UID}_vr" />
             <start uid="${GENERIC_UID}_FieldManager" />

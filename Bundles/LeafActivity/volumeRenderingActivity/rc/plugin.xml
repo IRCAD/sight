@@ -19,10 +19,10 @@
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" />
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="3DVisualization">
+        <appConfig id="VolumeRendering">
             <parameters>
                 <parameter replace="imageUid" by="@values.imageSeries.image" />
-                <parameter replace="modelSeriesUid" by="@values.modelSeries" />
+                <parameter replace="modelSeriesUid" by="@values.modelSeries.values.0" />
             </parameters>
         </appConfig>
     </extension>
