@@ -2,7 +2,8 @@
 
     <requirement id="servicesReg" />
 
-    <xi:include href="configurations/pdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/VRRenderBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::AppConfigParameters">
         <id>VRRenderAppBase</id>

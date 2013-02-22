@@ -92,8 +92,8 @@
     <!-- Proxy Type -->
     <xs:complexType name="ProxyType">
         <xs:sequence>
-            <xs:element name="signal" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-            <xs:element name="slot" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="signal" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="slot" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name='channel' type='xs:string' />
     </xs:complexType>

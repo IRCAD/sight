@@ -170,6 +170,8 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
             (*replaceMap)[param.replace] = ::fwData::String::New(obj->getID());
         }
     }
+    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(appConfig.id, true);
+    (*replaceMap)["GENERIC_UID"] = ::fwData::String::New(genericUidAdaptor);
     info.replaceMap = replaceMap;
     return info;
 }
@@ -202,7 +204,7 @@ void DynamicView::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTool
         const std::string tabIDFieldID         = "TABID";
         const std::string asFieldID            = "ACTIVITYSERIES";
 
-        SLM_ASSERT("Missing field 'tabID' in message", titleData->getField("tabID"));
+        SLM_ASSERT("Missing field 'tabID' in message", titleData->getField(tabIDFieldID));
         info.title         = titleData->value();
         info.tabID         = titleData->getField< ::fwData::String >(tabIDFieldID)->value();
         info.closable      = titleData->getField(closableFieldID, ::fwData::Boolean::New(true))->value();

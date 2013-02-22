@@ -1,5 +1,21 @@
 <serviceList>
-
+    
+    <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="yes">
+        <gui>
+            <layout type="::fwGui::CardinalLayoutManager">
+                <view caption="Information" align="center" minWidth="200" />
+                <view caption="Preview" align="bottom" minHeight="200" />
+            </layout>
+            <toolBar />
+        </gui>
+        <registry>
+            <parent wid="${WID_PARENT}" />
+            <toolBar sid="toolBar" start="yes" />
+            <view sid="${GENERIC_UID}_selector" start="yes" />
+            <view wid="${GENERIC_UID}_preview" />
+        </registry>
+    </service>
+    
     <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
         <gui>
             <layout>
@@ -8,82 +24,9 @@
             </layout>
         </gui>
         <registry>
-            <menuItem sid="action_import" start="yes" />
-            <menuItem sid="action_newActivity" start="yes" />
+            <menuItem sid="${GENERIC_UID}_action_import" start="yes" />
+            <menuItem sid="${GENERIC_UID}_action_newActivity" start="yes" />
         </registry>
-    </service>
-
-    <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
-        <gui>
-            <layout>
-                <menu name="File" />
-                <menu name="Help" />
-            </layout>
-        </gui>
-        <registry>
-            <menu sid="menu_file" start="yes" />
-            <menu sid="menu_help" start="yes" />
-        </registry>
-    </service>
-
-    <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
-        <gui>
-            <layout>
-                <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-            </layout>
-        </gui>
-        <registry>
-            <menuItem sid="action_quit" start="yes" />
-        </registry>
-    </service>
-
-    <service uid="menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
-        <gui>
-            <layout>
-                <menuItem name="About" specialAction="ABOUT" />
-                <menuItem name="Acknowledgments" />
-                <menuItem name="Help Contents" specialAction="HELP" />
-                <separator />
-                <menuItem name="VR-Render Website" />
-            </layout>
-        </gui>
-        <registry>
-            <menuItem sid="action_about" start="yes" />
-            <menuItem sid="action_acknowledgments" start="yes" />
-            <menuItem sid="action_help" start="yes" />
-            <menuItem sid="action_openBrowser" start="yes" />
-        </registry>
-    </service>
-
-    <service uid="view" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="yes">
-        <gui>
-            <layout type="::fwGui::CardinalLayoutManager">
-                <view caption="Information" align="center" minWidth="200" />
-                <view caption="Preview" align="bottom" minHeight="200" />
-            </layout>
-        </gui>
-        <registry>
-            <view sid="selector" start="yes" />
-            <view wid="preview" />
-        </registry>
-    </service>
-
-    <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
-
-    <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAbout" autoConnect="no">
-        <filename id="Bundles/VRRender_0-9/about/about.html" />
-    </service>
-
-    <service uid="action_acknowledgments" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
-        <filename id="Bundles/VRRender_0-9/documentations/ack.html" />
-    </service>
-
-    <service uid="action_help" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowHelpContents" autoConnect="no">
-        <filename id="Bundles/VRRender_0-9/documentations/doc.qhc" />
-    </service>
-
-    <service uid="action_openBrowser" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
-        <url>http://www.ircad.fr/softwares/vr-render/Software.php</url>
     </service>
 
 

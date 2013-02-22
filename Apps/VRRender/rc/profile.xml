@@ -13,6 +13,11 @@
     <activate id="uiGenericQt" version="0-1" />
     <activate id="uiMedDataQt" version="0-1" />
     <activate id="uiImageQt" version="0-1" />
+    <activate id="uiMeasurement" version="0-1" />
+    <activate id="uiMeasurementQt" version="0-1" />
+    <activate id="uiVisu" version="0-1" />
+    <activate id="uiVisuQt" version="0-1" />
+    <activate id="media" version="0-1" />
 
     <activate id="visu" version="0-1" />
     <activate id="visuVTK" version="0-1" />
@@ -24,7 +29,7 @@
 
     <activate id="VRRender" />
     <activate id="appXml" version="0-1" >
-        <param id="config" value="PDBVRRender" />
+        <param id="config" value="VRRenderBase" />
         <param id="parameters" value="VRRenderAppBase" />
     </activate>
 

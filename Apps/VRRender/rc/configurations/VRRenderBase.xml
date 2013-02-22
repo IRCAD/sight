@@ -1,0 +1,110 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>VRRenderBase</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="appName" />
+        <param name="appIconPath" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <gui>
+                    <frame>
+                        <name>${appName}</name>
+                        <icon>${appIconPath}</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="dynamicView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Help" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_file" start="yes" />
+                    <menu sid="menu_help" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="About" specialAction="ABOUT" />
+                        <menuItem name="Acknowledgments" />
+                        <menuItem name="Help Contents" specialAction="HELP" />
+                        <separator />
+                        <menuItem name="VR-Render Website" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_about" start="yes" />
+                    <menuItem sid="action_acknowledgments" start="yes" />
+                    <menuItem sid="action_help" start="yes" />
+                    <menuItem sid="action_openBrowser" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+
+            <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAbout" autoConnect="no">
+                <filename id="Bundles/VRRender_0-9/about/about.html" />
+            </service>
+
+            <service uid="action_acknowledgments" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
+                <filename id="Bundles/VRRender_0-9/documentations/ack.html" />
+            </service>
+
+            <service uid="action_help" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowHelpContents" autoConnect="no">
+                <filename id="Bundles/VRRender_0-9/documentations/doc.qhc" />
+            </service>
+
+            <service uid="action_openBrowser" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
+                <url>http://www.ircad.fr/softwares/vr-render/Software.php</url>
+            </service>
+
+
+            <item key="seriesDB">
+                <object uid="seriesDB" type="::fwMedData::SeriesDB">
+                    <service uid="dynamicView" type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes">
+                        <config>
+                            <appConfig id="SDBVRRender" title="SDB">
+                                <parameters>
+                                    <parameter replace="SERIESDB" by="seriesDB" />
+                                </parameters>
+                            </appConfig>
+                        </config>
+                    </service>
+                </object>
+            </item>
+            
+            <proxy channel="dynamicView">
+                <slot>dynamicView/receive</slot>
+            </proxy>
+
+            <start uid="mainFrame" />
+        </object>
+
+    </config>
+</extension>
