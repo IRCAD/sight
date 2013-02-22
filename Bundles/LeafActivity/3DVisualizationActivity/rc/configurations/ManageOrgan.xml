@@ -16,7 +16,7 @@
                 <gui>
                     <frame>
                         <name>Organs Manager</name>
-                        <icon>Bundles/icons_0-1/icons/vrmed.ico</icon>
+                        <icon>Bundles/VRRender_0-9/vrrender.ico</icon>
                         <!-- <minSize width="400" height="750" /> -->
                         <style mode="STAY_ON_TOP" />
                     </frame>

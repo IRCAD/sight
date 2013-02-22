@@ -79,7 +79,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
         <id>3DVisualization</id>
         <title>3D Visu</title>
         <desc>Activity description ...</desc>
-        <icon>Bundles/icons_0-1/icons/icon-3D.png</icon>
+        <icon>Bundles/media_0-1/icons/icon-3D.png</icon>
         <requirements>
             <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="::fwData::Mesh" maxOccurs="8" />
