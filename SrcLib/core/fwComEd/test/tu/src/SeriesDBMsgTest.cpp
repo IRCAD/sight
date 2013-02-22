@@ -104,7 +104,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
         CPPUNIT_ASSERT(std::find(seriesDB->begin(), seriesDB->end(), series1) != seriesDB->end());
         CPPUNIT_ASSERT(std::find(seriesDB->begin(), seriesDB->end(), series2) != seriesDB->end());
 
-        seriesDBHelper.notify(srv);
+        seriesDBHelper.notify(srv, true);
 
         // Wait a little notification system
         ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
@@ -126,7 +126,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
         seriesDBHelper.remove(series2);
         CPPUNIT_ASSERT_EQUAL((size_t) 0, seriesDB->size());
 
-        seriesDBHelper.notify(srv);
+        seriesDBHelper.notify(srv, true);
 
         // Wait a little notification system
         ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
@@ -149,7 +149,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
         seriesDBHelper.clear();
         CPPUNIT_ASSERT_EQUAL((size_t) 0, seriesDB->size());
 
-        seriesDBHelper.notify(srv);
+        seriesDBHelper.notify(srv, true);
 
         // Wait a little notification system
         ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
@@ -176,7 +176,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
 
         CPPUNIT_ASSERT_EQUAL((size_t) 3, seriesDB->size());
 
-        seriesDBHelper.notify(srv);
+        seriesDBHelper.notify(srv, true);
 
         // Wait a little notification system
         ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );

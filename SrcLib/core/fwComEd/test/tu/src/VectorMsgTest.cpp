@@ -104,7 +104,7 @@ void VectorMsgTest::vectorHelperTest()
         CPPUNIT_ASSERT(std::find(vector->begin(), vector->end(), str1) != vector->end());
         CPPUNIT_ASSERT(std::find(vector->begin(), vector->end(), str2) != vector->end());
 
-        vectorHelper.notify(srv);
+        vectorHelper.notify(srv, true);
 
         // Wait a little notification system
         ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
@@ -125,7 +125,7 @@ void VectorMsgTest::vectorHelperTest()
         vectorHelper.remove(str2);
         CPPUNIT_ASSERT_EQUAL((size_t) 0, vector->size());
 
-        vectorHelper.notify(srv);
+        vectorHelper.notify(srv, true);
 
         // Wait a little notification system
         ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
