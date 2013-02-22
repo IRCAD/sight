@@ -108,6 +108,9 @@ private:
     /// Removes the series item and the parent study if it is the last series in the study.
     bool removeSeriesItem(QStandardItem *item);
 
+    /// Add the icon corresponding to the type of series.
+    void addSeriesIcon(::fwMedData::Series::sptr series, QStandardItem *item);
+
     /// Initializes model. Sets headers of the selector.
     void init();
 

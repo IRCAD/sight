@@ -10,6 +10,7 @@ LIB     = [
           'fwGui_0-1',
           'fwGuiQt_0-1',
           'fwMedData_0-1',
+          'fwActivities_0-1',
           ]
 USE     = ['boost','qtCore']
 BUNDLES = ['gui_0-1']

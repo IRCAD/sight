@@ -16,6 +16,10 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwActivities/ActivitySeries.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
 #include "uiMedDataQt/widget/SelectorModel.hpp"
 
@@ -143,6 +147,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
     if(imageSeries)
     {
+
         ::fwData::Image::sptr image =  imageSeries->getImage();
 
         ::fwData::Image::SizeType imageNumber = image->getSize();
@@ -156,6 +161,39 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         ::fwData::Image::OriginType patientPosition = image->getOrigin();
         QStandardItem* originItem = this->getInfo< ::fwData::Image::OriginType>(patientPosition, ", ");
         studyRootItem->setChild(nbRow, 13, originItem);
+    }
+
+    this->addSeriesIcon(series, seriesDescription1);
+}
+
+//-----------------------------------------------------------------------------
+
+void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr series, QStandardItem *item)
+{
+    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
+    ::fwActivities::ActivitySeries::sptr activitySeries = ::fwActivities::ActivitySeries::dynamicCast(series);
+    if(imageSeries)
+    {
+        item->setIcon(QIcon("Bundles/media_0-1/icons/ImageSeries.svg"));
+    }
+    else if (modelSeries)
+    {
+        item->setIcon(QIcon("Bundles/media_0-1/icons/ModelSeries.svg"));
+    }
+    else if (activitySeries)
+    {
+        ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
+        std::string id = activitySeries->getActivityConfigId();
+        OSLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
+
+        ::fwActivities::registry::ActivityInfo activityInfo;
+        activityInfo = registry->getInfo(id);
+        item->setIcon(QIcon(QString::fromStdString(activityInfo.icon)));
+    }
+    else
+    {
+        OSLM_WARN("This type of series is not defined (" << series->getClassname() << ")");
     }
 }
 
