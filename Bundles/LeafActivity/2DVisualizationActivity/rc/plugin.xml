@@ -10,7 +10,7 @@
         <id>2DVisualization</id>
         <title>2D Visu</title>
         <desc>2D visualization activity</desc>
-        <icon>Bundles/icons_0-1/icons/icon-2D.png</icon>
+        <icon>Bundles/media_0-1/icons/icon-2D.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>

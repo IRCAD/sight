@@ -9,7 +9,7 @@
         <id>VolumeRendering</id>
         <title>Volume rendering</title>
         <desc>Volume rendering activity</desc>
-        <icon>Bundles/icons_0-1/icons/icon-VR.png</icon>
+        <icon>Bundles/media_0-1/icons/icon-VR.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" />

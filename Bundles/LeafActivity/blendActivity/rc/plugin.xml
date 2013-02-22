@@ -8,7 +8,7 @@
         <id>Blend</id>
         <title>Blend</title>
         <desc>Blend activity</desc>
-        <icon>Bundles/icons_0-1/icons/icon-blend.png</icon>
+        <icon>Bundles/media_0-1/icons/icon-blend.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" />
         </requirements>

@@ -23,5 +23,6 @@ BUNDLES = [
     '3DVisualizationActivity_0-1',
     'blendActivity_0-1'          ,
     'volumeRenderingActivity_0-1',
+    'media_0-1'                  ,
  ]
 
