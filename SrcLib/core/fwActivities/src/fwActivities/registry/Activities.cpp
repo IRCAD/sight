@@ -28,9 +28,10 @@ ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType &config) :
 ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
     id(config.get<std::string>("<xmlattr>.id"))
 {
-    BOOST_FOREACH( const ConfigType::value_type &v, config.equal_range("parameter") )
+    const ConfigType &configParameters = config.get_child("parameters");
+    BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
     {
-        ActivityAppConfigParam parameter( v.second.get_child("parameter") );
+        ActivityAppConfigParam parameter( v.second );
         parameters.push_back( parameter );
     }
 }

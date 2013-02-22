@@ -184,7 +184,15 @@ void ActivityRegistryTest::registryTest()
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );
-    CPPUNIT_ASSERT_EQUAL( std::string("Test0"), activities.at(0).id );
+    const ::fwActivities::registry::ActivityInfo &info = activities[0];
+    CPPUNIT_ASSERT_EQUAL( std::string("Test0"), info.id );
+    CPPUNIT_ASSERT_EQUAL( size_t(3), info.appConfig.parameters.size() );
+    CPPUNIT_ASSERT_EQUAL( std::string("refImageUid"), info.appConfig.parameters.at(0).replace );
+    CPPUNIT_ASSERT_EQUAL( std::string("@values.param1"), info.appConfig.parameters.at(0).by );
+    CPPUNIT_ASSERT_EQUAL( std::string("registeredImageUid"), info.appConfig.parameters.at(1).replace );
+    CPPUNIT_ASSERT_EQUAL( std::string("@values.param2"), info.appConfig.parameters.at(1).by );
+    CPPUNIT_ASSERT_EQUAL( std::string("orientation"), info.appConfig.parameters.at(2).replace );
+    CPPUNIT_ASSERT_EQUAL( std::string("frontal"), info.appConfig.parameters.at(2).by );
 }
 
 //------------------------------------------------------------------------------

@@ -15,7 +15,7 @@
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
             <!--# ...-->
         </requirements>
-        <builder>::fwActivities::ActivitySeriesBuilder</builder>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Test0">
             <parameters>
                 <parameter replace="refImageUid" by="@values.param1"  />
@@ -34,8 +34,10 @@
         <requirements>
             <requirement name="param1" type="::fwData::Image" />
         </requirements>
-        <builder>::fwActivities::ActivitySeriesBuilder</builder>
-        <appConfig id="Test1" >appConfig Test1</appConfig>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test1" >
+            <parameters/>
+        </appConfig>
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
@@ -47,8 +49,10 @@
             <requirement name="img" type="::fwData::Image" />
             <requirement name="mesh" type="::fwData::Mesh" />
         </requirements>
-        <builder>::fwActivities::ActivitySeriesBuilder</builder>
-        <appConfig id="Test2" >appConfig Test2</appConfig>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test2" >
+            <parameters/>
+        </appConfig>
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
@@ -59,8 +63,10 @@
         <requirements>
             <requirement name="param1" type="::fwData::Image" maxOccurs="2" />
         </requirements>
-        <builder>::fwActivities::ActivitySeriesBuilder</builder>
-        <appConfig id="Test3" >appConfig Test3</appConfig>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test3" >
+            <parameters/>
+        </appConfig>
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
@@ -71,8 +77,10 @@
         <requirements>
             <requirement name="param1" type="::fwData::Image" maxOccurs="*" />
         </requirements>
-        <builder>::fwActivities::ActivitySeriesBuilder</builder>
-        <appConfig id="Test4" >appConfig Test4</appConfig>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test4" >
+            <parameters/>
+        </appConfig>
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
@@ -83,8 +91,10 @@
         <requirements>
             <requirement name="param1" type="::fwData::Image" minOccurs="4" maxOccurs="8"/>
         </requirements>
-        <builder>::fwActivities::ActivitySeriesBuilder</builder>
-        <appConfig id="Test5" >appConfig Test5</appConfig>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test5" >
+            <parameters/>
+        </appConfig>
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
@@ -96,8 +106,10 @@
             <requirement name="param1" type="::fwData::Image" />
             <requirement name="param2" type="::fwData::Image" />
         </requirements>
-        <builder>::fwActivities::ActivitySeriesBuilder</builder>
-        <appConfig id="Test6" >appConfig Test6</appConfig>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test6" >
+            <parameters/>
+        </appConfig>
     </extension>
 
 
@@ -110,8 +122,10 @@
             <requirement name="img" type="::fwData::Image" />
             <requirement name="mesh" type="::fwData::Mesh" minOccurs="0" />
         </requirements>
-        <builder>::fwActivities::ActivitySeriesBuilder</builder>
-        <appConfig id="Test7" >appConfig Test7</appConfig>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test7" >
+            <parameters/>
+        </appConfig>
     </extension>
 
 
