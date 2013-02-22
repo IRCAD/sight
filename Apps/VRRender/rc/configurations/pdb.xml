@@ -60,7 +60,11 @@
                         </configs>
                     </service>
                     <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
-                        <config titlePrefixKey="title" tooltipKey="tooltip" />
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="medicalData"  />
+                            </parameters>
+                        </config>
                     </service>
                 </object>
             </item>

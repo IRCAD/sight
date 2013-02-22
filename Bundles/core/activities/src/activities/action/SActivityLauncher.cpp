@@ -13,6 +13,8 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 
+#include <fwRuntime/Convert.hpp>
+
 #include <fwTools/UUID.hpp>
 #include <fwTools/fwID.hpp>
 
@@ -77,6 +79,28 @@ void SActivityLauncher::stopping() throw(::fwTools::Failed)
 void SActivityLauncher::configuring() throw(fwTools::Failed)
 {
     this->::fwGui::IActionSrv::initialize();
+    typedef ::fwServices::IService::ConfigType ConfigType;
+
+    m_parameters.clear();
+    if(this->getConfigTree().get_child("service").count("config") > 0)
+    {
+        SLM_ASSERT("Sorry you must have one (and only one) <config id=... /> element.",
+                this->getConfigTree().get_child("service").count("config") == 1 );
+
+        const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
+        const ::fwServices::IService::ConfigType &config = srvconfig.get_child("config");
+
+        if(config.count("parameters") == 1 )
+        {
+            const ::fwServices::IService::ConfigType &configParameters = config.get_child("parameters");
+            BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+            {
+                ParametersType::value_type parameter( v.second );
+                m_parameters.push_back( parameter );
+            }
+        }
+        OSLM_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -197,7 +221,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     actSeries = builder->buildData(info, selection);
     SLM_ASSERT("ActivitySeries instantiation failed", actSeries);
 
-    ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info);
+    ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info, m_parameters);
 
     ::fwServices::IEditionService::notify(this->getSptr(), selection, msg);
 }

@@ -147,7 +147,7 @@ void VectorMsgTest::vectorHelperTest()
         vectorHelper.clear();
         CPPUNIT_ASSERT_EQUAL((size_t) 0, vector->size());
 
-        vectorHelper.notify(srv);
+        vectorHelper.notify(srv, true);
 
         // Wait a little notification system
         ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );

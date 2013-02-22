@@ -37,7 +37,7 @@ typedef ::boost::property_tree::ptree ConfigType;
 struct FWACTIVITIES_CLASS_API ActivityAppConfigParam
 {
     ActivityAppConfigParam(){};
-    ActivityAppConfigParam(const ConfigType &config);
+    FWACTIVITIES_API ActivityAppConfigParam(const ConfigType &config);
 
     bool isSeshat() const
     {
@@ -53,7 +53,7 @@ struct FWACTIVITIES_CLASS_API ActivityAppConfig
     typedef std::vector< ActivityAppConfigParam > ActivityAppConfigParamsType;
 
     ActivityAppConfig(){};
-    ActivityAppConfig(const ConfigType &config);
+    FWACTIVITIES_API ActivityAppConfig(const ConfigType &config);
 
     std::string id;
     ActivityAppConfigParamsType parameters;
@@ -62,7 +62,7 @@ struct FWACTIVITIES_CLASS_API ActivityAppConfig
 struct FWACTIVITIES_CLASS_API ActivityRequirement
 {
     ActivityRequirement(){};
-    ActivityRequirement(const ConfigType &config);
+    FWACTIVITIES_API ActivityRequirement(const ConfigType &config);
 
     std::string name;
     std::string type;

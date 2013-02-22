@@ -13,6 +13,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwGui/IActionSrv.hpp>
+
 #include <fwActivities/registry/Activities.hpp>
 
 #include "activities/config.hpp"
@@ -69,6 +70,7 @@ protected:
     virtual void updateState();
 
 private:
+    typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
     /// Send message to launch new tab view
     void sendConfig( const ::fwActivities::registry::ActivityInfo & info );
@@ -77,6 +79,8 @@ private:
 
     /// Show custom dialog box
     ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer & infos );
+
+    ParametersType m_parameters;
 };
 
 } //action

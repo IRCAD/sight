@@ -28,7 +28,8 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 ::fwServices::ObjectMsg::sptr buildActivityMsg( ::fwActivities::ActivitySeries::sptr series,
-        const ::fwActivities::registry::ActivityInfo & info)
+        const ::fwActivities::registry::ActivityInfo & info,
+        const ParametersType& parameters)
 {
     namespace ActiReg = fwActivities::registry;
 
@@ -36,20 +37,23 @@ namespace helper
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
     SLM_ASSERT("ActivitySeries instantiation failed", series);
 
-    const std::string fieldID         = "::fwServices::registry::AppConfig";
-    const std::string viewConfigID    = "viewConfigID";
-    const std::string closableFieldID = "closable";
-    const std::string iconFieldID     = "icon";
-    const std::string tooltipFieldID  = "tooltip";
-    const std::string tabIDFieldID    = "tabID";
-    const std::string asFieldID       = "ActivitySeries";
-    const std::string tabID           = "TABID_" + ::fwTools::UUID::generateUUID();
+    const std::string eventID              = "NEW_CONFIGURATION_HELPER";
+    const std::string fieldID              = "APPCONFIG";
+    const std::string viewConfigFieldID    = "VIEWCONFIGID";
+    const std::string closableFieldID      = "CLOSABLE";
+    const std::string iconFieldID          = "ICON";
+    const std::string tooltipFieldID       = "TOOLTIP";
+    const std::string tabIDFieldID         = "TABID";
+    const std::string asFieldID            = "ACTIVITYSERIES";
+    const std::string asUID                = "AS_UID";
+    const std::string genericUID           = "GENERIC_UID";
+    const std::string tabID                = "TABID_" + ::fwTools::UUID::generateUUID();
 
     ::fwData::String::sptr title = ::fwData::String::New();
 
     title->value() = info.title;
-    activityMsg->addEvent( "NEW_CONFIGURATION_HELPER", title );
-    title->setField( viewConfigID, ::fwData::String::New(info.appConfig.id) );
+    activityMsg->addEvent( eventID, title );
+    title->setField( viewConfigFieldID, ::fwData::String::New(info.appConfig.id) );
     title->setField( closableFieldID, ::fwData::Boolean::New(true));
     title->setField( tabIDFieldID, ::fwData::String::New(tabID));
     title->setField( iconFieldID, ::fwData::String::New(info.icon) );
@@ -59,9 +63,14 @@ namespace helper
 
 
     std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.id, true);
-    (*replaceMap)["GENERIC_UID"] = ::fwData::String::New(genericUidAdaptor);
+    (*replaceMap)[genericUID] = ::fwData::String::New(genericUidAdaptor);
 
     ActiReg::ActivityAppConfig::ActivityAppConfigParamsType params = info.appConfig.parameters;
+    params.reserve(params.size() + parameters.size());
+    params.insert(params.end(), parameters.begin(), parameters.end());
+    ActiReg::ActivityAppConfigParam asConfigParam;
+    asConfigParam.replace = asUID;
+    asConfigParam.by = series->getID();
     BOOST_FOREACH(const ActiReg::ActivityAppConfigParam& param, params)
     {
         if(!param.isSeshat())

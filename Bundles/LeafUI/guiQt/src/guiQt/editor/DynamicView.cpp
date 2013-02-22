@@ -161,17 +161,27 @@ void DynamicView::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwToo
                     ::fwGui::dialog::IMessageDialog::WARNING);
             return;
         }
+
+        const std::string eventID              = "NEW_CONFIGURATION_HELPER";
+        const std::string fieldID              = "APPCONFIG";
+        const std::string viewConfigFieldID    = "VIEWCONFIGID";
+        const std::string closableFieldID      = "CLOSABLE";
+        const std::string iconFieldID          = "ICON";
+        const std::string tooltipFieldID       = "TOOLTIP";
+        const std::string tabIDFieldID         = "TABID";
+        const std::string asFieldID            = "ACTIVITYSERIES";
+
         bool closable;
         std::string icon;
         std::string tooltip("");
         std::string viewConfigID;
         ::fwData::Composite::sptr fieldAdaptors;
 
-        closable      = titleData->getField("closable", ::fwData::Boolean::New(true))->value();
-        icon          = titleData->getField("icon", ::fwData::String::New(""))->value();
-        tooltip       = titleData->getField("tooltip", ::fwData::String::New(""))->value();
-        viewConfigID  = titleData->getField("viewConfigID", ::fwData::String::New(""))->value();
-        fieldAdaptors = titleData->getField("::fwServices::registry::AppConfig", ::fwData::Composite::New());
+        closable      = titleData->getField(closableFieldID, ::fwData::Boolean::New(true))->value();
+        icon          = titleData->getField(iconFieldID, ::fwData::String::New(""))->value();
+        tooltip       = titleData->getField(tooltipFieldID, ::fwData::String::New(""))->value();
+        viewConfigID  = titleData->getField(viewConfigFieldID, ::fwData::String::New(""))->value();
+        fieldAdaptors = titleData->getField(fieldID, ::fwData::Composite::New());
 
         if ( m_titleToCount.find( title ) !=  m_titleToCount.end() )
         {

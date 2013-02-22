@@ -7,6 +7,8 @@
 #ifndef __ACTIVITIES_HELPER_ACTIVITY_HPP__
 #define __ACTIVITIES_HELPER_ACTIVITY_HPP__
 
+#include <fwActivities/registry/Activities.hpp>
+
 #include "activities/config.hpp"
 
 namespace fwServices
@@ -21,9 +23,13 @@ class ActivitySerie;
 
 namespace helper
 {
+
+typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+
     ACTIVITIES_API SPTR(::fwServices::ObjectMsg) buildActivityMsg(
             SPTR(::fwActivities::ActivitySeries) series,
-            const ::fwActivities::registry::ActivityInfo& info );
+            const ::fwActivities::registry::ActivityInfo& info,
+            const ParametersType& parameters = ParametersType());
 
 } // namespace helper
 } // namespace activities
