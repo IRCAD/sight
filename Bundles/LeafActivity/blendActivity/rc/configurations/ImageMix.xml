@@ -115,7 +115,7 @@
                     <service uid="${GENERIC_UID}_myManagerVisu" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes"> <!-- priority="0.6" -->
                         <mode type="stop" />
                         <config>
-                            <object id="myBackgroundImage" type="::fwData::Image">
+                            <object id="backgroundImage" type="::fwData::Image">
 
                                 <!-- This service convert a simple fwData::Image to medical Image -->
                                 <service uid="${GENERIC_UID}_bg_medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes"/> <!-- priority="0.6" -->
@@ -128,7 +128,7 @@
 
                             </object>
 
-                            <object id="myFrontImage" type="::fwData::Image">
+                            <object id="frontImage" type="::fwData::Image">
                                 <!-- This service convert a simple fwData::Image to medical Image -->
                                 <service impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes"/> <!-- priority="0.6" -->
 
@@ -154,17 +154,17 @@
                             <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
                                 <config renderer="default" picker="" />
                             </adaptor>
-                            <adaptor uid="${GENERIC_UID}_MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myBackgroundImage">
+                            <adaptor uid="${GENERIC_UID}_MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
                                 <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend"
                                     selectedTFKey="${SELECTED_TF_KEYA}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
                             </adaptor>
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
-                            <adaptor id="bgImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="myBackgroundImage">
+                            <adaptor id="bgImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
                                 <config renderer="default" picker="myPicker" />
                             </adaptor>
-                            <adaptor id="frontImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="myFrontImage">
+                            <adaptor id="frontImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
                                 <config renderer="default" picker="myPicker" />
                             </adaptor>
                             <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
@@ -174,9 +174,9 @@
                             <!-- Adaptor to show background and front image merge in the same view. -->
                             <adaptor id="myImagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
                                 <config vtkimageregister="imageBlend">
-                                    <image objectId="myBackgroundImage" tfalpha="no"
+                                    <image objectId="backgroundImage" tfalpha="no"
                                         selectedTFKey="${SELECTED_TF_KEYA}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
-                                    <image objectId="myFrontImage" tfalpha="yes"
+                                    <image objectId="frontImage" tfalpha="yes"
                                         selectedTFKey="${SELECTED_TF_KEYB}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
                                 </config>
                             </adaptor>
@@ -184,8 +184,8 @@
                             <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
                             <adaptor id="myImagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
                                 <config renderer="default" picker="myPicker">
-                                    <image objectId="myBackgroundImage" name="background" />
-                                    <image objectId="myFrontImage" name="front" />
+                                    <image objectId="backgroundImage" name="background" />
+                                    <image objectId="frontImage" name="front" />
                                 </config>
                             </adaptor>
                         </scene>

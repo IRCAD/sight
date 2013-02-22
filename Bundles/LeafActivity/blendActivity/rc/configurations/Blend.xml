@@ -48,11 +48,6 @@
             <item key="myBlendSelectionComposite">
                 <object uid="${GENERIC_UID}_myBlendSelectionComposite" type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_myUpdater" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="myBackgroundImage" onEvent="NEW_BACKGROUND_IMAGE" fromUID="*" actionType="ADD_OR_SWAP" />
-                        <update compositeKey="myFrontImage" onEvent="NEW_FRONT_IMAGE" fromUID="*" actionType="ADD_OR_SWAP" />
-                    </service>
-
                     <service uid="${GENERIC_UID}_action_blendView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="yes">
                         <state active="true" />
                         <config id="ImageMix" />
@@ -63,28 +58,34 @@
                         <replace pattern="SELECTED_TF_KEYB" val="tfFrontImage" />
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_bgTFView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKey" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_action_bgTFView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="yes">
                         <config id="TransferFunctionEditor" />
-                        <key id="${backgroundImageUid}" pattern="SELECTED_UID_myImage" />
+                        <replace val="${backgroundImageUid}" pattern="SELECTED_UID_myImage" />
                         <replace pattern="WID_VIEW" val="${GENERIC_UID}_WID_VIEW" />
                         <replace pattern="TF_COMPOSITE_ID" val="${GENERIC_UID}_TFComposite" />
                         <replace pattern="SELECTED_TF_KEY" val="tfBackgroundImage" />
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_frontTFView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKey" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_action_frontTFView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="yes">
                         <config id="TransferFunctionEditor" />
-                        <key id="${frontImageUid}" pattern="SELECTED_UID_myImage" />
+                        <replace val="${frontImageUid}" pattern="SELECTED_UID_myImage" />
                         <replace pattern="WID_VIEW" val="${GENERIC_UID}_WID_VIEW" />
                         <replace pattern="TF_COMPOSITE_ID" val="${GENERIC_UID}_TFComposite" />
                         <replace pattern="SELECTED_TF_KEY" val="tfFrontImage" />
                     </service>
+                    
+                    <item key="backgroundImage">
+                        <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
+                    </item>
+                    
+                    <item key="frontImage">
+                        <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
+                    </item>
                 </object>
             </item>
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
-            <start uid="${GENERIC_UID}_myUpdater" />
-            <start uid="${GENERIC_UID}_myManager" />
             <start uid="${GENERIC_UID}_action_blendView" />
 
         </object>

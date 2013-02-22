@@ -17,7 +17,11 @@
     <activate id="uiMeasurementQt" version="0-1" />
     <activate id="uiVisu" version="0-1" />
     <activate id="uiVisuQt" version="0-1" />
+    <activate id="uiTF" version="0-1" />
+    
     <activate id="media" version="0-1" />
+    
+    <activate id="scene2D" version="0-1" />
 
     <activate id="visu" version="0-1" />
     <activate id="visuVTK" version="0-1" />
@@ -38,6 +42,7 @@
     <activate id="blendActivity" />
     <activate id="volumeRenderingActivity" />
 
+    <start id="scene2D" />
     <start id="visuVTK" />
     <start id="visuVTKQt" />
     <start id="guiQt" />

@@ -27,8 +27,8 @@
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Blend">
             <parameters>
-                <parameter replace="frontImageUid" by="@values.imageSeries.values[0].image" />
-                <parameter replace="backgroundImageUid" by="@values.imageSeries.values[1].image" />
+                <parameter replace="frontImageUid" by="@values.imageSeries.values.0.image" />
+                <parameter replace="backgroundImageUid" by="@values.imageSeries.values.1.image" />
             </parameters>
         </appConfig>
     </extension>
