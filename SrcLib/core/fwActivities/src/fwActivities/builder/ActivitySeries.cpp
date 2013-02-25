@@ -6,8 +6,17 @@
 
 #include <boost/foreach.hpp>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <fwData/Vector.hpp>
 #include <fwData/Composite.hpp>
+
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
+#include <fwMedData/Equipment.hpp>
+
+#include <fwTools/UUID.hpp>
+#include <fwTools/dateAndTime.hpp>
 
 #include "fwActivities/builder/registry/macros.hpp"
 #include "fwActivities/builder/ActivitySeries.hpp"
@@ -36,6 +45,36 @@ ActivitySeries::~ActivitySeries()
         ::fwData::Vector::sptr currentSelection ) const
 {
     ::fwActivities::ActivitySeries::sptr actSeries = ::fwActivities::ActivitySeries::New();
+
+    ::fwMedData::Patient::sptr     actPatient = actSeries->getPatient();
+    ::fwMedData::Study::sptr         actStudy = actSeries->getStudy();
+    ::fwMedData::Equipment::sptr actEquipment = actSeries->getEquipment();
+
+
+    ::fwMedData::Series::sptr series;
+    BOOST_FOREACH(const ::fwData::Object::sptr& obj, *currentSelection)
+    {
+        series = ::fwMedData::Series::dynamicCast(obj);
+        if(series)
+        {
+            break;
+        }
+    }
+
+    if(series)
+    {
+        actPatient->deepCopy( series->getPatient() );
+        actStudy->deepCopy( series->getStudy() );
+        actEquipment->deepCopy( series->getEquipment() );
+    }
+
+    actSeries->setModality("OT");
+    actSeries->setInstanceUID("fwActivities." + ::fwTools::UUID::generateUUID() );
+
+    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
+    actSeries->setDate(::fwTools::getDate(now));
+    actSeries->setTime(::fwTools::getTime(now));
+
     actSeries->setActivityConfigId(activityInfo.id);
     ::fwData::Composite::sptr data = actSeries->getData();
 
@@ -46,24 +85,16 @@ ActivitySeries::~ActivitySeries()
     {
         ::fwData::Vector::sptr vectorType = this->getType(currentSelection, req.type);
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)
-        if(req.maxOccurs == 1) //required parameter
+        if(req.maxOccurs == 1 && req.minOccurs == 1)
         {
-            if(req.minOccurs == 1)
-            {
-                OSLM_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
-                (*data)[req.name] = (*vectorType)[0];
-            }
-            else //optional single parameter
-            {
-                (*data)[req.name] = vectorType;
-            }
+            OSLM_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
+            (*data)[req.name] = (*vectorType)[0];
         }
-        // param is a set of data (maxOccurs>1) optional (minOccurs==0) or not (minOccurs==1)
-        else if(req.maxOccurs > 1)
+        else //optional single parameter
         {
             (*data)[req.name] = vectorType;
         }
-    }
+}
 
     return actSeries;
 }
