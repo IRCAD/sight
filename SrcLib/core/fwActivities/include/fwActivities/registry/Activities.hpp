@@ -171,6 +171,11 @@ public:
     FWACTIVITIES_API bool hasInfo( const std::string & extensionId ) const;
 
     /**
+     * @brief Get the number of vector objects in the same type.
+     */
+    FWACTIVITIES_API ActivityInfo::DataCountType getDataCount( const SPTR(::fwData::Vector) &data ) const;
+
+    /**
      * @brief Get all infos
      * @note This method is thread safe.
      */

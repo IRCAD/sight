@@ -89,6 +89,12 @@ protected:
 
 private:
 
+    /**
+     * @brief Launches activity series if only ActivitySeries are selected.
+     * @return Returns true if only ActivitySeries are selected.
+     */
+    bool launchAS(::fwData::Vector::sptr &selection);
+
     /// Send message to launch new tab view
     void sendConfig( const ::fwActivities::registry::ActivityInfo & info );
 

@@ -194,8 +194,7 @@ std::vector< ActivityInfo > Activities::getInfos() const
 
 //-----------------------------------------------------------------------------
 
-
-ActivityInfo::DataCountType getDataCount( const ::fwData::Vector::sptr &data )
+ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::sptr &data ) const
 {
     ActivityInfo::DataCountType dataCount;
 
@@ -207,10 +206,11 @@ ActivityInfo::DataCountType getDataCount( const ::fwData::Vector::sptr &data )
     return dataCount;
 }
 
+//-----------------------------------------------------------------------------
 
 std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::sptr &data ) const
 {
-    ActivityInfo::DataCountType dataCount = getDataCount(data);
+    ActivityInfo::DataCountType dataCount = this->getDataCount(data);
     std::vector< ActivityInfo > infos;
 
     ::fwCore::mt::ReadLock lock(m_registryMutex);

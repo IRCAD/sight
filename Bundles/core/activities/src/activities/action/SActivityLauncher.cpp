@@ -169,21 +169,27 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
 void SActivityLauncher::updating() throw(::fwTools::Failed)
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
-    ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
 
-    if ( ! infos.empty() )
+    bool launchAS = this->launchAS(selection);
+
+    if (!launchAS)
     {
-        ::fwActivities::registry::ActivityInfo info = this->show( infos );
-        if( !info.id.empty() )
+        ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
+
+        if ( ! infos.empty() )
         {
-            this->sendConfig( info );
+            ::fwActivities::registry::ActivityInfo info = this->show( infos );
+            if( !info.id.empty() )
+            {
+                this->sendConfig( info );
+            }
         }
-    }
-    else
-    {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
-                                                          "Not available activity for the current selection.",
-                                                          ::fwGui::dialog::MessageDialog::WARNING);
+        else
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
+                                                              "Not available activity for the current selection.",
+                                                              ::fwGui::dialog::MessageDialog::WARNING);
+        }
     }
 }
 
@@ -199,8 +205,23 @@ void SActivityLauncher::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::
 void SActivityLauncher::updateState()
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
+
+    bool isExecutable = false;
+
+    ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
+    dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
+    if(dataCount.size() == 1)
+    {
+        ::fwData::Object::sptr obj = selection->front();
+        if (::fwActivities::ActivitySeries::dynamicCast(obj))
+        {
+            isExecutable = true;
+        }
+    }
+
     ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
-    this->setIsExecutable(!infos.empty());
+    isExecutable |= !infos.empty();
+    this->setIsExecutable(isExecutable);
 }
 
 //------------------------------------------------------------------------------
@@ -226,6 +247,38 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info, parameters);
 
     ::fwServices::IEditionService::notify(this->getSptr(), selection, msg);
+}
+
+//------------------------------------------------------------------------------
+
+bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
+{
+    bool launchAS = false;
+    ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
+    dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
+    if(dataCount.size() == 1)
+    {
+        BOOST_FOREACH(::fwData::Object::sptr obj, *selection)
+        {
+            ::fwActivities::ActivitySeries::sptr as = ::fwActivities::ActivitySeries::dynamicCast(obj);
+            if (!as)
+            {
+                launchAS = false;
+                break;
+            }
+            else
+            {
+                ::fwActivities::registry::ActivityInfo info;
+                info = ::fwActivities::registry::Activities::getDefault()->getInfo(as->getActivityConfigId());
+                ParametersType parameters = this->translateParameters(m_parameters);
+                ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(as, info, parameters);
+
+                ::fwServices::IEditionService::notify(this->getSptr(), selection, msg);
+                launchAS = true;
+            }
+        }
+    }
+    return launchAS;
 }
 
 //------------------------------------------------------------------------------
