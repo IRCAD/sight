@@ -43,6 +43,12 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
         <service>::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv</service>
         <object>::fwData::Composite</object>
     </extension>
