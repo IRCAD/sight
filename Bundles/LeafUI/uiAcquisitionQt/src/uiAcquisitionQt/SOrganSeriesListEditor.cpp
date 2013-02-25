@@ -14,7 +14,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <fwData/Acquisition.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/String.hpp>
@@ -22,7 +21,7 @@
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwComEd/ReconstructionMsg.hpp>
-#include <fwComEd/AcquisitionMsg.hpp>
+#include <fwComEd/ModelSeriesMsg.hpp>
 
 #include <fwRuntime/operations.hpp>
 
@@ -44,11 +43,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiAcquisition::SOrganSeriesL
 
 
 SOrganSeriesListEditor::SOrganSeriesListEditor() throw()
-{
-    //addNewHandledEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS);
-    //addNewHandledEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION);
-    //addNewHandledEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS);
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -121,18 +116,18 @@ void SOrganSeriesListEditor::swapping() throw(::fwTools::Failed)
 
 void SOrganSeriesListEditor::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
-    ::fwComEd::AcquisitionMsg::csptr acquisitionMsg = ::fwComEd::AcquisitionMsg::dynamicConstCast( msg ) ;
+    ::fwComEd::ModelSeriesMsg::csptr acquisitionMsg = ::fwComEd::ModelSeriesMsg::dynamicConstCast( msg ) ;
     if ( acquisitionMsg )
     {
-        if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) )
+        if ( acquisitionMsg->hasEvent(::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS) )
         {
             this->updating();
         }
-        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+        else if ( acquisitionMsg->hasEvent(::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION) )
         {
             this->updating();
         }
-        else if ( acquisitionMsg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS) )
+        else if ( acquisitionMsg->hasEvent(::fwComEd::ModelSeriesMsg::REMOVED_RECONSTRUCTIONS) )
         {
             this->updating();
         }
@@ -200,8 +195,8 @@ void SOrganSeriesListEditor::onCurrentItemChanged( QListWidgetItem * current, QL
         ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
         ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
 
-        ::fwComEd::AcquisitionMsg::NewSptr msg;
-        msg->addEvent( ::fwComEd::AcquisitionMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) ) ;
+        ::fwComEd::ModelSeriesMsg::NewSptr msg;
+        msg->addEvent( ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
     }
 }
@@ -233,8 +228,8 @@ void SOrganSeriesListEditor::onShowReconstructions(int state )
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
 
-    ::fwComEd::AcquisitionMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS );
+    ::fwComEd::ModelSeriesMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS );
     ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
 
     m_organChoice->setEnabled(state == Qt::Unchecked);

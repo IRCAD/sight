@@ -44,16 +44,16 @@
             <item key="selection">
                 <object type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_myUpdaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
-                        <update compositeKey="myReconstruction" onEvent="REMOVED_RECONSTRUCTIONS" fromUID="*" actionType="REMOVE_IF_PRESENT" />
+                    <service uid="${GENERIC_UID}_myUpdaterReconst" impl="::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <update compositeKey="reconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
+                        <update compositeKey="reconstruction" onEvent="REMOVED_RECONSTRUCTIONS" fromUID="*" actionType="REMOVE_IF_PRESENT" />
                     </service>
 
                     <service uid="${GENERIC_UID}_myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                         <mode type="dummy" />
                         <config>
 
-                            <object id="myReconstruction" type="::fwData::Reconstruction">
+                            <object id="reconstruction" type="::fwData::Reconstruction">
                                 <service uid="${GENERIC_UID}_organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
                                 <service uid="${GENERIC_UID}_representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
                             </object>

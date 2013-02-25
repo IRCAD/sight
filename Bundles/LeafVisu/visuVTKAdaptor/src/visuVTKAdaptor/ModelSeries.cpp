@@ -16,7 +16,7 @@
 
 #include <fwMedData/ModelSeries.hpp>
 
-#include <fwComEd/AcquisitionMsg.hpp>
+#include <fwComEd/ModelSeriesMsg.hpp>
 
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
@@ -36,9 +36,6 @@ ModelSeries::ModelSeries() throw()
 {
     m_clippingPlanes = "";
     m_autoResetCamera = true;
-    //addNewHandledEvent(::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS);
-    //addNewHandledEvent(::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION);
-    //addNewHandledEvent(::fwComEd::ModelSeriesMsg::REMOVED_RECONSTRUCTIONS);
 }
 
 //------------------------------------------------------------------------------
@@ -127,7 +124,7 @@ void ModelSeries::doStop() throw(fwTools::Failed)
 
 void ModelSeries::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    if ( msg->hasEvent(::fwComEd::AcquisitionMsg::SHOW_RECONSTRUCTIONS) )
+    if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS) )
     {
         ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
         bool showRec;
@@ -149,11 +146,11 @@ void ModelSeries::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::
         OSLM_INFO( "Receive event ShowReconstruction : " << showRec );
         this->setVtkPipelineModified();
     }
-    else if ( msg->hasEvent(::fwComEd::AcquisitionMsg::ADD_RECONSTRUCTION) )
+    else if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION) )
     {
         this->doUpdate();
     }
-    else if ( msg->hasEvent(::fwComEd::AcquisitionMsg::REMOVED_RECONSTRUCTIONS) )
+    else if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::REMOVED_RECONSTRUCTIONS) )
     {
         this->doStop();
     }
