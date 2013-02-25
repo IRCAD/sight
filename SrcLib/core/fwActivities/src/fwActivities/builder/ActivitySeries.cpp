@@ -47,7 +47,6 @@ ActivitySeries::~ActivitySeries()
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
     OSLM_ASSERT("Each possible items in requirement need to have a maching key", req.keys.size() >= req.maxOccurs );
-    OSLM_ASSERT("Not enough items in selection", req.keys.size() == vector->getContainer().size() );
 
     ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
 
