@@ -19,10 +19,11 @@ namespace uiMedData
 namespace action
 {
 /**
- * @brief   This ...
+ * @brief   This action allows to export the series specified in config to the SeriesDB.
  * @class   SExportSeries.
  * @author  IRCAD (Research and Development Team).
  * @date    2013.
+ * @note This action is not executable if the series already exists in the SeriesDB.
  */
 class UIMEDDATAQT_CLASS_API SExportSeries : public ::fwGui::IActionSrv
 {
@@ -37,8 +38,10 @@ public :
 
 protected:
 
+    /// Starts service. If series associated with m_seriesId exists in SeriesDB, this action is not executable.
     virtual void starting() throw(::fwTools::Failed);
 
+    /// Stops service. Does nothing.
     virtual void stopping() throw(::fwTools::Failed);
 
     /**
@@ -52,8 +55,13 @@ protected:
      */
     virtual void configuring() throw (::fwTools::Failed);
 
+    /// Adds the series specified by m_seriesId in the SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
 
+    /**
+     * @brief Receive SeriesDBMsg to check if series specified by m_seriesId already exist in SeriesDB,
+     * thus set action not executable.
+     */
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void info( std::ostream &_sstream );
