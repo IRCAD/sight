@@ -19,6 +19,8 @@ BUNDLES = [
     'appXml_0-1'                 ,
     'activities_0-1'             ,
     'ctrlSelection_0-1'          ,
+    'uiAcquisitionQt_0-1'        ,
+    'uiReconstructionQt_0-1'     ,
     '2DVisualizationActivity_0-1',
     '3DVisualizationActivity_0-1',
     'blendActivity_0-1'          ,

@@ -13,6 +13,8 @@
     <activate id="uiGenericQt" version="0-1" />
     <activate id="uiMedDataQt" version="0-1" />
     <activate id="uiImageQt" version="0-1" />
+    <activate id="uiAcquisitionQt" version="0-1" />
+    <activate id="uiReconstructionQt" version="0-1" />
     <activate id="uiMeasurement" version="0-1" />
     <activate id="uiMeasurementQt" version="0-1" />
     <activate id="uiVisu" version="0-1" />

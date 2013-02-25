@@ -53,7 +53,7 @@
                         <menuItem name="Show normal cross" icon="Bundles/media_0-1/icons/NormalCross.png" style="radio" />
                         <menuItem name="Show full cross" icon="Bundles/media_0-1/icons/FullCross.png" style="radio" />
                         <separator />
-<!--                        <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />-->
+                        <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
                         <menuItem name="Export Activity" />
                         <spacer />
@@ -76,7 +76,7 @@
                     <menuItem sid="${GENERIC_UID}_ActionHideCross" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowNormalCross" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowFullCross" start="yes" />
-<!--                    <menuItem sid="${GENERIC_UID}_action_organManager" start="no" />-->
+                    <menuItem sid="${GENERIC_UID}_action_organManager" start="no" />
                     <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
                     <menu sid="${GENERIC_UID}_menu" start="yes" />
                 </registry>
@@ -85,25 +85,25 @@
             <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
-<!--                        <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="Bundles/media_0-1/icons/ManageOrgan.png" />-->
-<!--                        <separator />-->
+                        <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="Bundles/media_0-1/icons/ManageOrgan.png" />
+                        <separator />
                         <menuItem name="Axial view" icon="Bundles/media_0-1/icons/icon-axial.png" />
                         <menuItem name="Frontal view" icon="Bundles/media_0-1/icons/icon-frontal.png" />
                         <menuItem name="Sagittal view" icon="Bundles/media_0-1/icons/icon-sagittal.png" />
                     </layout>
                 </gui>
                 <registry>
-<!--                    <menuItem sid="${GENERIC_UID}_action_organManager" start="yes" />-->
+                    <menuItem sid="${GENERIC_UID}_action_organManager" start="yes" />
                     <menuItem sid="${GENERIC_UID}_action_AxialViewMPR3D" start="no" />
                     <menuItem sid="${GENERIC_UID}_action_FrontalViewMPR3D" start="no" />
                     <menuItem sid="${GENERIC_UID}_action_SagittalViewMPR3D" start="no" />
                 </registry>
             </service>
 
-            <!-- <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
-                <config id="OrganManager" />
-                <replace pattern="ORGAN_MANAGER_ACQUISITION" val="${modelSeriesUid}" />
-            </service> -->
+            <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
+                <config id="OrganManagerWithSeries" />
+                <replace pattern="ORGAN_MANAGER_MODELSERIES" val="${modelSeriesUid}" />
+            </service>
 
             <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
                 <config id="3DNegatoWithAcq" />
@@ -136,7 +136,7 @@
                     </service>
                 </object>
             </item>
-            
+
             <item key="activitySeries">
                 <object uid="${AS_UID}" src="ref" type="::fwActivities::ActivitySeries" />
             </item>
