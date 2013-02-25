@@ -32,6 +32,8 @@
 #include <fwGui/dialog/SelectorDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
+#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+
 #include <fwActivities/IBuilder.hpp>
 
 #include "activities/helper/Activity.hpp"
@@ -220,13 +222,29 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     ::fwActivities::ActivitySeries::sptr actSeries;
     actSeries = builder->buildData(info, selection);
     SLM_ASSERT("ActivitySeries instantiation failed", actSeries);
-
-    ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info, m_parameters);
+    ParametersType parameters = this->translateParameters(m_parameters);
+    ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info, parameters);
 
     ::fwServices::IEditionService::notify(this->getSptr(), selection, msg);
 }
 
 //------------------------------------------------------------------------------
+
+SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const ParametersType& parameters )
+{
+    ParametersType transParams = parameters;
+    ::fwData::Object::sptr obj = this->getObject();
+    BOOST_FOREACH(ParametersType::value_type& param, transParams)
+    {
+        if(param.isSeshat())
+        {
+            ::fwData::Object::sptr subObj = ::fwAtomConversion::getSubObject(obj, param.by);
+            OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", subObj);
+            param.by = subObj->getID();
+        }
+    }
+    return transParams;
+}
 
 }
 }

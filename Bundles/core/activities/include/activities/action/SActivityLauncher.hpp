@@ -75,13 +75,19 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
+    typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+
     /**
      * @brief Updates action state (enable if activities are available for current selection).
      */
     virtual void updateState();
 
+    /**
+     * @brief Interpret configuration parameters.
+     */
+    ParametersType translateParameters( const ParametersType& parameters);
+
 private:
-    typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
     /// Send message to launch new tab view
     void sendConfig( const ::fwActivities::registry::ActivityInfo & info );
