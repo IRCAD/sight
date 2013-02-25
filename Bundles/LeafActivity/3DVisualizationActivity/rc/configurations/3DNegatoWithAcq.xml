@@ -83,10 +83,6 @@
                                 <config renderer="default" picker="negatodefault" slices="3" sliceIndex="${orientation}" />
                             </adaptor>
 
-                            <adaptor id="image" class="::visuVTKAdaptor::Image" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" autoresetcamera="no" />
-                            </adaptor>
-
                             <adaptor id="modelSeries" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
                                 <config renderer="default" picker="negatodefault" autoresetcamera="no" />
                             </adaptor>

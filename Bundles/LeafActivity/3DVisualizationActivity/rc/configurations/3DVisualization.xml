@@ -126,7 +126,7 @@
 
 
             <item key="modelSeriesKey">
-                <object uid="${modelSeriesUid}" src="ref" type="::fwData::Acquisition"/>
+                <object uid="${modelSeriesUid}" src="ref" type="::fwMedData::ModelSeries"/>
             </item>
 
             <item key="imageKey">

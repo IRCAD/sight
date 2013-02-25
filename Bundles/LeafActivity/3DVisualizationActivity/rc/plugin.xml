@@ -20,7 +20,7 @@
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="3DVisualization">
             <parameters>
-                <parameter replace="imageUid" by="@values.imageSeries.image" />
+                <parameter replace="imageUid" by="@values.imageSeries.values.0.image" />
                 <parameter replace="modelSeriesUid" by="@values.modelSeries" />
                 <parameter replace="orientation" by="frontal" />
             </parameters>
