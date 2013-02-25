@@ -16,13 +16,15 @@
         <icon>Bundles/media_0-1/icons/icon-VR.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
-            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
+                <key>optionalModelSeriesKey</key>
+            </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="VolumeRendering">
             <parameters>
                 <parameter replace="imageUid" by="@values.imageSeries.image" />
-                <parameter replace="modelSeriesUid" by="@values.modelSeries.values.0" />
+                <parameter replace="optionalModelSeriesCompositeUID" by="@values.modelSeries" />
             </parameters>
         </appConfig>
     </extension>

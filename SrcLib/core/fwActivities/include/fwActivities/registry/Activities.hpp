@@ -64,10 +64,13 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
     ActivityRequirement(){};
     FWACTIVITIES_API ActivityRequirement(const ConfigType &config);
 
+    typedef std::vector< std::string > KeyType;
+
     std::string name;
     std::string type;
     unsigned int minOccurs;
     unsigned int maxOccurs;
+    KeyType keys;
 };
 
 /**
@@ -82,7 +85,11 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
         <icon>Bundles/media_0-1/icons/icon-3D.png</icon>
         <requirements>
             <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
-            <requirement name="param2" type="::fwData::Mesh" maxOccurs="8" />
+            <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" >
+                <key>Item1</key>
+                <key>Item2</key>
+                <key>Item3</key>
+            </requirement>
             <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" />
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
@@ -91,9 +98,8 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
         <builder impl="::fwActivities::ActivitySeriesBuilder" />
         <appConfig id="3DVisualization">
             <parameters>
-                <key id="..." pattern="refImageUid" />
-                <key id="@..." pattern="registeredImageUid" />
-                <replace val="frontal" pattern="orientation"/>
+                <parameter replace="registeredImageUid" by="@values.param1" />
+                <parameter replace="orientation" by="frontal" />
                 <!--# ...-->
             </parameters>
         </appConfig>

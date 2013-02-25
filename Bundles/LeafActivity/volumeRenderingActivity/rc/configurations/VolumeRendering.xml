@@ -7,7 +7,7 @@
         <param name="SERIESDB" />
         <param name="AS_UID" />
         <param name="imageUid" />
-        <param name="modelSeriesUid" />
+        <param name="optionalModelSeriesCompositeUID" />
     </parameters>
     <config>
 
@@ -88,7 +88,7 @@
                     <menuItem sid="${GENERIC_UID}_ActionResetBoxWidget" start="yes" />
 
                     <menuItem sid="${GENERIC_UID}_ActionSnapshotVR" start="yes" />
-                    
+
                     <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
                 </registry>
             </service>
@@ -203,7 +203,7 @@
                     </service>
 
                     <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <push src="${GENERIC_UID}_VisuComposite[modelSeriesKey]" key="modelSeries" />
+                        <push src="${optionalModelSeriesCompositeUID}[optionalModelSeriesKey]" key="modelSeries" />
                     </service>
 
                     <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no">
@@ -364,9 +364,8 @@
                         <object uid="${GENERIC_UID}_TFSelections" type="::fwData::Composite" />
                     </item>
 
-                    <item key="modelSeriesKey">
-                        <object uid="${modelSeriesUid}" src="ref" type="::fwMedData::ModelSeries">
-                        </object>
+                    <item key="optionalModelSeriesKey">
+                        <object uid="${optionalModelSeriesCompositeUID}" src="ref" type="::fwData::Composite" />
                     </item>
 
                     <item key="imageKey">

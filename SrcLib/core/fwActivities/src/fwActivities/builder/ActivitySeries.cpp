@@ -40,6 +40,27 @@ ActivitySeries::~ActivitySeries()
 
 //-----------------------------------------------------------------------------
 
+::fwData::Composite::sptr vectorToComposite(::fwData::Vector::sptr vector,
+                                            const ::fwActivities::registry::ActivityRequirement &req)
+{
+    namespace ActReg = ::fwActivities::registry;
+    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+
+    OSLM_ASSERT("Each possible items in requirement need to have a maching key", req.keys.size() >= req.maxOccurs );
+    OSLM_ASSERT("Not enough items in selection", req.keys.size() == vector->getContainer().size() );
+
+    ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
+
+    BOOST_FOREACH(const ::fwData::Object::sptr &obj, *vector)
+    {
+        (*composite)[*iter++] = obj;
+    }
+
+    return composite;
+}
+
+//-----------------------------------------------------------------------------
+
 ::fwActivities::ActivitySeries::sptr ActivitySeries::buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
         ::fwData::Vector::sptr currentSelection ) const
@@ -92,9 +113,9 @@ ActivitySeries::~ActivitySeries()
         }
         else //optional single parameter
         {
-            (*data)[req.name] = vectorType;
+            (*data)[req.name] = vectorToComposite(vectorType, req);
         }
-}
+    }
 
     return actSeries;
 }

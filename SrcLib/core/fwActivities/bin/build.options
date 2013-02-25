@@ -1,6 +1,6 @@
 TYPE = 'shared'
 VERSION = '0.1'
-USE = ['boost']
+USE = ['boost', 'boostDateTime']
 LIB = [
       'fwData_0-1',
       'fwMedData_0-1',

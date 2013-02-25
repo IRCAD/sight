@@ -44,6 +44,10 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
     minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
     maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
 {
+    BOOST_FOREACH( const ConfigType::value_type &v, config.equal_range("key") )
+    {
+        keys.push_back(v.second.get_value< std::string >());
+    }
 
     if (config.get_optional<std::string>("<xmlattr>.maxOccurs").get_value_or("") == "*")
     {
