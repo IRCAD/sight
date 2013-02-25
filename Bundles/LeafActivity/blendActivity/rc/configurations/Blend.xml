@@ -4,6 +4,8 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
         <param name="frontImageUid" />
         <param name="backgroundImageUid" />
     </parameters>
@@ -32,14 +34,28 @@
                         <menuItem name="Blend view" style="radio" icon="Bundles/media_0-1/icons/icon-2D.png" />
                         <menuItem name="Edit background Image TF" style="radio" icon="Bundles/media_0-1/icons/icon-tf1.svg" />
                         <menuItem name="Edit front Image TF" style="radio" icon="Bundles/media_0-1/icons/icon-tf2.svg" />
+                        <menuItem name="Export Activity"  />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="${GENERIC_UID}_action_blendView" start="no" />
                     <menuItem sid="${GENERIC_UID}_action_bgTFView" start="yes" />
                     <menuItem sid="${GENERIC_UID}_action_frontTFView" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
                 </registry>
             </service>
+
+            <item key="seriesDB">
+                <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
+                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
+                        <seriesId>${AS_UID}</seriesId>
+                    </service>
+                </object>
+            </item>
+            
+            <item key="activitySeries">
+                <object uid="${AS_UID}" src="ref" type="::fwActivities::ActivitySeries" />
+            </item>
 
             <item key="TFSelectionsKey">
                 <object uid="${GENERIC_UID}_TFComposite" type="::fwData::Composite" />

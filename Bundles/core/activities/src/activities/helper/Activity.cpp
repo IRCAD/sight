@@ -66,11 +66,12 @@ namespace helper
     (*replaceMap)[genericUID] = ::fwData::String::New(genericUidAdaptor);
 
     ActiReg::ActivityAppConfig::ActivityAppConfigParamsType params = info.appConfig.parameters;
-    params.reserve(params.size() + parameters.size());
+    params.reserve(params.size() + parameters.size() + 1);
     params.insert(params.end(), parameters.begin(), parameters.end());
     ActiReg::ActivityAppConfigParam asConfigParam;
     asConfigParam.replace = asUID;
     asConfigParam.by = series->getID();
+    params.push_back(asConfigParam);
     BOOST_FOREACH(const ActiReg::ActivityAppConfigParam& param, params)
     {
         if(!param.isSeshat())

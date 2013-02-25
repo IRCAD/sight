@@ -4,6 +4,8 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
         <param name="imageUid" />
     </parameters>
     <config>
@@ -45,6 +47,8 @@
                         <menuItem name="Hide cross" icon="Bundles/media_0-1/icons/HideCross.png" style="radio" />
                         <menuItem name="Show normal cross" icon="Bundles/media_0-1/icons/NormalCross.png" style="radio" />
                         <menuItem name="Show full cross" icon="Bundles/media_0-1/icons/FullCross.png" style="radio" />
+                        <separator />
+                        <menuItem name="Export Activity"  />
                     </layout>
                 </gui>
                 <registry>
@@ -60,9 +64,21 @@
                     <menuItem sid="${GENERIC_UID}_ActionHideCross" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowNormalCross" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowFullCross" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
                 </registry>
             </service>
 
+            <item key="seriesDB">
+                <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
+                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
+                        <seriesId>${AS_UID}</seriesId>
+                    </service>
+                </object>
+            </item>
+            
+            <item key="activitySeries">
+                <object uid="${AS_UID}" src="ref" type="::fwActivities::ActivitySeries" />
+            </item>
 
             <item key="imageKey">
                 <object uid="${imageUid}" src="ref" type="::fwData::Image">
