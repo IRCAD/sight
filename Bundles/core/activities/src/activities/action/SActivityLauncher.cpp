@@ -140,6 +140,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
     {
         QStandardItem* item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(info.id));
         item->setData(QVariant::fromValue(info));
+        item->setEditable(false);
         model->appendRow(item);
     }
 
