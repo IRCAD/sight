@@ -94,6 +94,8 @@ protected:
 
     typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
+    typedef std::vector< std::string > KeysType;
+
     /**
      * @brief Updates action state (enable if activities are available for current selection).
      */
@@ -129,6 +131,9 @@ private:
     /// Show custom dialog box
     ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer & infos );
 
+    /// Returns enabled activity infos according to activity filter.
+    ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);
+
     ParametersType m_parameters;
 
     /**
@@ -137,8 +142,8 @@ private:
      */
     std::string m_mode;
 
-    /// Id-s of activity configurations to be enabled.
-    std::vector< std::string > m_allowedKeys;
+    /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
+    KeysType m_keys;
 
     /// Slot to call launchSeries method
     LaunchSeriesSlotType::sptr m_slotLaunchSeries;

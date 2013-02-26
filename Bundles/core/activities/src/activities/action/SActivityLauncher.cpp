@@ -135,7 +135,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
 
             BOOST_FOREACH( const ConfigType::value_type &v, configFilter.equal_range("id") )
             {
-                m_allowedKeys.push_back(v.second.get<std::string>(""));
+                m_keys.push_back(v.second.get<std::string>(""));
             }
         }
         OSLM_ASSERT("At most 1 <filter> tag is allowed", config.count("filter") < 2);
@@ -203,6 +203,38 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+SActivityLauncher::ActivityInfoContainer SActivityLauncher::getEnabledActivities(const ActivityInfoContainer& infos)
+{
+    ActivityInfoContainer configs;
+
+    if(m_mode == "include" || m_mode == "exclude")
+    {
+        const bool isIncludeMode = m_mode == "include";
+
+        for(ActivityInfoContainer::const_iterator iter = infos.begin(); iter != infos.end(); ++iter)
+        {
+            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), iter->id);
+
+            if(keyIt != m_keys.end() && isIncludeMode)
+            {
+                configs.push_back(*iter);
+            }
+            else if(keyIt == m_keys.end() && !isIncludeMode)
+            {
+                configs.push_back(*iter);
+            }
+        }
+    }
+    else
+    {
+        configs = infos;
+    }
+
+    return configs;
+}
+
+//------------------------------------------------------------------------------
+
 void SActivityLauncher::updating() throw(::fwTools::Failed)
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
@@ -212,29 +244,7 @@ void SActivityLauncher::updating() throw(::fwTools::Failed)
     if (!launchAS)
     {
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
-
-        if(m_mode == "include" || m_mode == "exclude")
-        {
-            const bool isIncludeMode = m_mode == "include";
-            ActivityInfoContainer configs;
-
-            for(ActivityInfoContainer::iterator iter = infos.begin(); iter != infos.end(); ++iter)
-            {
-                std::vector< std::string >::iterator keyIt = std::find(m_allowedKeys.begin(), m_allowedKeys.end(), iter->id);
-
-                if(keyIt != m_allowedKeys.end() && isIncludeMode)
-                {
-                    configs.push_back(*iter);
-                }
-                else if(keyIt == m_allowedKeys.end() && !isIncludeMode)
-                {
-                    configs.push_back(*iter);
-                }
-            }
-
-            infos.clear();
-            infos = ::boost::move(configs);
-        }
+        infos = this->getEnabledActivities(infos);
 
         if ( ! infos.empty() )
         {
@@ -280,6 +290,8 @@ void SActivityLauncher::updateState()
     }
 
     ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
+    infos = this->getEnabledActivities(infos);
+
     isExecutable |= !infos.empty();
     this->setIsExecutable(isExecutable);
 }
