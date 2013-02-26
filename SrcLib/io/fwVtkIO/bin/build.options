@@ -9,4 +9,9 @@ LIB = [
       'fwComEd_0-1'
       ]
 VERSION = '0-1'
-USE = ['boost','boostFilesystem','vtkHybrid']
+USE = [
+       'boost',
+       'boostFilesystem',
+       'boostDateTime',
+       'vtkHybrid'
+       ]

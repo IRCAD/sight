@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkPolyData.h>
@@ -16,6 +17,7 @@
 #include <fwData/Reconstruction.hpp>
 
 #include <fwTools/UUID.hpp>
+#include <fwTools/dateAndTime.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/Study.hpp>
@@ -120,9 +122,12 @@ void SeriesDBReader::read()
 void  SeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
 {
     const std::string unknown = "unknown";
-    series->setModality(unknown);
-    series->setDate(unknown);
-    series->setTime(unknown);
+    series->setModality("OT");
+    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
+    const std::string date = ::fwTools::getDate(now);
+    const std::string time = ::fwTools::getTime(now);
+    series->setDate(date);
+    series->setTime(time);
     //series->setDescription(??);
     //series->setPerformingPhysiciansName(??);
 
@@ -134,7 +139,8 @@ void  SeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::st
     series->getPatient()->setSex(unknown);
 
     series->getStudy()->setInstanceUID(instanceUID);
-    series->getStudy()->setTime(unknown);
+    series->getStudy()->setDate(date);
+    series->getStudy()->setTime(time);
     series->getStudy()->setReferringPhysicianName(unknown);
     series->getStudy()->setDescription(unknown);
     series->getStudy()->setPatientAge(unknown);
