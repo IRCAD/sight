@@ -65,7 +65,7 @@ void SComputeHistogram::starting() throw ( ::fwTools::Failed )
 
 void SComputeHistogram::updating() throw ( ::fwTools::Failed )
 {
-    ::fwData::Image::sptr image =  this->getObject<::fwData::Image>();
+    ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
 
     if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
