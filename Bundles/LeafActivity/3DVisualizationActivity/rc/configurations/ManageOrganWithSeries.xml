@@ -4,6 +4,7 @@
     <parameters>
         <param name="GENERIC_UID" />
         <param name="ORGAN_MANAGER_MODELSERIES" />
+        <param name="ICON_PATH" />
     </parameters>
     <config>
 
@@ -16,7 +17,7 @@
                 <gui>
                     <frame>
                         <name>Organs Manager</name>
-                        <icon>Bundles/VRRender_0-9/vrrender.ico</icon>
+                        <icon>${ICON_PATH}</icon>
                         <!-- <minSize width="400" height="750" /> -->
                         <style mode="STAY_ON_TOP" />
                     </frame>

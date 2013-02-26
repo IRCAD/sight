@@ -6,13 +6,14 @@
         <param name="GENERIC_UID" />
         <param name="SERIESDB" />
         <param name="WID_PARENT" />
+        <param name="ICON_PATH" />
     </parameters>
     <config>
 
         <object type="::fwData::Composite">
 
             <xi:include href="MenuAndViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
- 
+
             <item key="seriesDB">
                 <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" >
                     <service uid="${GENERIC_UID}_action_import" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
@@ -25,7 +26,7 @@
             </item>
 
             <item key="selections">
-                <object uid="${GENERIC_UID}_selections" type="::fwData::Vector">                 
+                <object uid="${GENERIC_UID}_selections" type="::fwData::Vector">
                     <service uid="${GENERIC_UID}_seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
                         <parentView>${GENERIC_UID}_preview</parentView>
                         <configs>
@@ -39,17 +40,18 @@
                         <config>
                             <parameters>
                                 <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                             </parameters>
                         </config>
                     </service>
                 </object>
-            </item> 
-            
+            </item>
+
             <connect>
                 <signal>${GENERIC_UID}_selector/seriesDoubleClicked</signal>
                 <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
             </connect>
-            
+
             <proxy channel="dynamicView">
                 <signal>${GENERIC_UID}_selections/objectModified</signal>
             </proxy>

@@ -92,13 +92,14 @@
                             <appConfig id="SDBVRRender" title="SDB">
                                 <parameters>
                                     <parameter replace="SERIESDB" by="seriesDB" />
+                                    <parameter replace="ICON_PATH" by="${appIconPath}" />
                                 </parameters>
                             </appConfig>
                         </config>
                     </service>
                 </object>
             </item>
-            
+
             <proxy channel="dynamicView">
                 <slot>dynamicView/receive</slot>
             </proxy>
