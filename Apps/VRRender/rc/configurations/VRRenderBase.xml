@@ -7,7 +7,7 @@
     </parameters>
     <config>
 
-        <object type="::fwData::Composite">
+        <object uid="seriesDB" type="::fwMedData::SeriesDB">
 
             <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                 <gui>
@@ -84,22 +84,17 @@
                 <url>http://www.ircad.fr/softwares/vr-render/Software.php</url>
             </service>
 
-
-            <item key="seriesDB">
-                <object uid="seriesDB" type="::fwMedData::SeriesDB">
-                    <service uid="dynamicView" type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes">
-                        <config>
-                            <appConfig id="SDBVRRender" title="SDB">
-                                <parameters>
-                                    <parameter replace="SERIESDB" by="seriesDB" />
-                                    <parameter replace="ICON_PATH" by="${appIconPath}" />
-                                    <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
-                                </parameters>
-                            </appConfig>
-                        </config>
-                    </service>
-                </object>
-            </item>
+            <service uid="dynamicView" type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes">
+                <config>
+                    <appConfig id="SDBVRRender" title="SDB">
+                        <parameters>
+                            <parameter replace="SERIESDB" by="seriesDB" />
+                            <parameter replace="ICON_PATH" by="${appIconPath}" />
+                            <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
+                        </parameters>
+                    </appConfig>
+                </config>
+            </service>
 
             <proxy channel="dynamicView">
                 <slot>dynamicView/receive</slot>
