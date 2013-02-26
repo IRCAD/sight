@@ -54,7 +54,7 @@
             </connect>
 
             <proxy channel="${DYNAMICVIEW_CHANNEL}">
-                <signal>${GENERIC_UID}_selections/objectModified</signal>
+                <signal>${GENERIC_UID}_action_newActivity/activityLaunched</signal>
             </proxy>
 
             <start uid="${GENERIC_UID}_mainview" />

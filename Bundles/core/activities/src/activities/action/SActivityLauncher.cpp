@@ -25,7 +25,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Vector.hpp>
@@ -57,17 +56,22 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SActivityLau
 //------------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT = "launchSeries";
+const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
 //------------------------------------------------------------------------------
 
 SActivityLauncher::SActivityLauncher() throw()
 {
+    m_sigActivityLaunched = ActivityLaunchedSignalType::New();
+    m_signals( s_ACTIVITY_LAUNCHED_SIG,  m_sigActivityLaunched);
+
     m_slotLaunchSeries = ::fwCom::newSlot( &SActivityLauncher::launchSeries, this ) ;
 
     ::fwCom::HasSlots::m_slots( s_LAUNCH_SERIES_SLOT, m_slotLaunchSeries );
 
 #ifdef COM_LOG
     ::fwCom::HasSlots::m_slots.setID();
+    ::fwCom::HasSignals::m_signals.setID();
 #endif
     this->setWorker( m_associatedWorker );
 }
@@ -302,7 +306,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     ParametersType parameters = this->translateParameters(m_parameters);
     ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info, parameters);
 
-    ::fwServices::IEditionService::notify(this->getSptr(), selection, msg);
+    fwServicesNotifyMsgMacro(this->getLightID(), m_sigActivityLaunched, msg);
 }
 
 //------------------------------------------------------------------------------
@@ -329,7 +333,7 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
                 ParametersType parameters = this->translateParameters(m_parameters);
                 ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(as, info, parameters);
 
-                ::fwServices::IEditionService::notify(this->getSptr(), selection, msg);
+                fwServicesNotifyMsgMacro(this->getLightID(), m_sigActivityLaunched, msg);
                 launchAS = true;
             }
         }
@@ -349,7 +353,7 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
         ParametersType parameters = this->translateParameters(m_parameters);
         ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(as, info, parameters);
 
-        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+        fwServicesNotifyMsgMacro(this->getLightID(), m_sigActivityLaunched, msg);
     }
     else
     {

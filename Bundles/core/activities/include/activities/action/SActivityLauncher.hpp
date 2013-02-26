@@ -39,6 +39,11 @@ public :
     ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
     typedef ::fwCom::Slot< void (SPTR( ::fwMedData::Series )) > LaunchSeriesSlotType;
 
+    typedef ::fwCom::Signal< void ( CSPTR(::fwServices::ObjectMsg) ) > ActivityLaunchedSignalType;
+
+    /// Key in m_signals map of signal m_sigActivityLaunched
+    ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
+
 protected:
 
     ///This method launches the IAction::starting method.
@@ -137,6 +142,9 @@ private:
 
     /// Slot to call launchSeries method
     LaunchSeriesSlotType::sptr m_slotLaunchSeries;
+
+    /// Signal emitted when activity is launched. Send a message containing the activity information.
+    ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
 };
 
 } //action
