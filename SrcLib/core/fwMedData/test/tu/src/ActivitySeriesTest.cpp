@@ -6,15 +6,15 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwActivities/ActivitySeries.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 
 #include "ActivitySeriesTest.hpp"
 
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwActivities::ut::ActivitySeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::ActivitySeriesTest );
 
-namespace fwActivities
+namespace fwMedData
 {
 namespace ut
 {
@@ -24,7 +24,7 @@ namespace ut
 void ActivitySeriesTest::setUp()
 {
     // Set up context before running a test.
-    m_series = ::fwActivities::ActivitySeries::New();
+    m_series = ::fwMedData::ActivitySeries::New();
 }
 
 //------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ void ActivitySeriesTest::tearDown()
 
 void ActivitySeriesTest::activityConfigIdTest()
 {
-    const ::fwActivities::ActivitySeries::ConfigIdType activityConfigId = "Visu2D";
+    const ::fwMedData::ActivitySeries::ConfigIdType activityConfigId = "Visu2D";
     CPPUNIT_ASSERT(m_series);
     m_series->setActivityConfigId(activityConfigId);
     CPPUNIT_ASSERT_EQUAL(activityConfigId, m_series->getActivityConfigId());
@@ -59,4 +59,4 @@ void ActivitySeriesTest::dataTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace fwActivities
+} //namespace fwMedData

@@ -5,19 +5,19 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/Composite.hpp>
-#include <fwActivities/ActivitySeries.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwCamp/UserObject.hpp>
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((fwActivities)(ActivitySeries))
+fwCampImplementDataMacro((fwMedData)(ActivitySeries))
 {
     builder
         .tag("object_version", "1")
         .tag("lib_name", "fwActivities")
         .base< ::fwMedData::Series>()
-        .property("activity_config_id", &::fwActivities::ActivitySeries::m_attrActivityConfigId)
-        .property("data", &::fwActivities::ActivitySeries::m_attrData)
+        .property("activity_config_id", &::fwMedData::ActivitySeries::m_attrActivityConfigId)
+        .property("data", &::fwMedData::ActivitySeries::m_attrData)
         ;
 }

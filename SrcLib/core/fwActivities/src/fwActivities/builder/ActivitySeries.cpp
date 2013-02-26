@@ -18,6 +18,8 @@
 #include <fwTools/UUID.hpp>
 #include <fwTools/dateAndTime.hpp>
 
+#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+
 #include "fwActivities/builder/registry/macros.hpp"
 #include "fwActivities/builder/ActivitySeries.hpp"
 
@@ -52,7 +54,15 @@ ActivitySeries::~ActivitySeries()
 
     BOOST_FOREACH(const ::fwData::Object::sptr &obj, *vector)
     {
-        (*composite)[*iter++] = obj;
+        const ActReg::ActivityRequirementKey &keyTag = (*iter++);
+        if(keyTag.path.empty())
+        {
+            (*composite)[keyTag.key] = obj;
+        }
+        else
+        {
+            (*composite)[keyTag.key] = ::fwAtomConversion::getSubObject( obj, keyTag.path );
+        }
     }
 
     return composite;
@@ -60,11 +70,11 @@ ActivitySeries::~ActivitySeries()
 
 //-----------------------------------------------------------------------------
 
-::fwActivities::ActivitySeries::sptr ActivitySeries::buildData(
+::fwMedData::ActivitySeries::sptr ActivitySeries::buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
         ::fwData::Vector::sptr currentSelection ) const
 {
-    ::fwActivities::ActivitySeries::sptr actSeries = ::fwActivities::ActivitySeries::New();
+    ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
 
     ::fwMedData::Patient::sptr     actPatient = actSeries->getPatient();
     ::fwMedData::Study::sptr         actStudy = actSeries->getStudy();

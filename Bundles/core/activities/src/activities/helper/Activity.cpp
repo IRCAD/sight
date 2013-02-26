@@ -15,7 +15,7 @@
 
 #include <fwAtomConversion/RetreiveObjectVisitor.hpp>
 
-#include <fwActivities/ActivitySeries.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
 #include "activities/helper/Activity.hpp"
@@ -27,7 +27,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-::fwServices::ObjectMsg::sptr buildActivityMsg( ::fwActivities::ActivitySeries::sptr series,
+::fwServices::ObjectMsg::sptr buildActivityMsg( ::fwMedData::ActivitySeries::sptr series,
         const ::fwActivities::registry::ActivityInfo & info,
         const ParametersType& parameters)
 {

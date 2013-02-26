@@ -9,11 +9,11 @@
 #include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
 
-#include "fwActivities/ActivitySeries.hpp"
+#include "fwMedData/ActivitySeries.hpp"
 
-fwDataRegisterMacro( ::fwActivities::ActivitySeries );
+fwDataRegisterMacro( ::fwMedData::ActivitySeries );
 
-namespace fwActivities
+namespace fwMedData
 {
 
 ActivitySeries::ActivitySeries(::fwData::Object::Key key) : Series(key),
@@ -45,5 +45,5 @@ void ActivitySeries::deepCopy(ActivitySeries::csptr src)
 
 //------------------------------------------------------------------------------
 
-} // namespace fwActivities
+} // namespace fwMedData
 

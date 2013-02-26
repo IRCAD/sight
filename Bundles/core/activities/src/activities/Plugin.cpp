@@ -1,7 +1,7 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include "activities/Plugin.hpp"
-#include "fwActivities/ActivitySeries.hpp"
+#include "fwMedData/ActivitySeries.hpp"
 #include "fwActivities/registry/Activities.hpp"
 
 namespace activities
@@ -12,7 +12,7 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 Plugin::~Plugin() throw()
 {
     //Hack: force link with fwActivities
-    ::fwActivities::ActivitySeries::NewSptr aSeries;
+    ::fwMedData::ActivitySeries::NewSptr aSeries;
     aSeries->getClassname();
 }
 

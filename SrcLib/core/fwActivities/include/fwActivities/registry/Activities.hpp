@@ -59,12 +59,21 @@ struct FWACTIVITIES_CLASS_API ActivityAppConfig
     ActivityAppConfigParamsType parameters;
 };
 
+struct FWACTIVITIES_CLASS_API ActivityRequirementKey
+{
+    ActivityRequirementKey(){};
+    FWACTIVITIES_API ActivityRequirementKey(const ConfigType &config);
+
+    std::string key;
+    std::string path;
+};
+
 struct FWACTIVITIES_CLASS_API ActivityRequirement
 {
     ActivityRequirement(){};
     FWACTIVITIES_API ActivityRequirement(const ConfigType &config);
 
-    typedef std::vector< std::string > KeyType;
+    typedef std::vector< ActivityRequirementKey > KeyType;
 
     std::string name;
     std::string type;
@@ -95,7 +104,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
             <!--# ...-->
         </requirements>
-        <builder impl="::fwActivities::ActivitySeriesBuilder" />
+        <builder impl="::fwMedData::ActivitySeriesBuilder" />
         <appConfig id="3DVisualization">
             <parameters>
                 <parameter replace="registeredImageUid" by="@values.param1" />

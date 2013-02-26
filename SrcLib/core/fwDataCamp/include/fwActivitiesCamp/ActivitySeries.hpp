@@ -8,10 +8,10 @@
 #define __FWMACTIVITIESCAMP_ACTIVITYSERIES_HPP__
 
 #include <fwCamp/macros.hpp>
-#include <fwActivities/ActivitySeries.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 
 #include "fwDataCamp/config.hpp"
 
-fwCampDeclareAccessor((fwActivities)(ActivitySeries), (fwData)(Composite));
+fwCampDeclareAccessor((fwMedData)(ActivitySeries), (fwData)(Composite));
 
 #endif /* __FWMACTIVITIESCAMP_ACTIVITYSERIES_HPP__ */

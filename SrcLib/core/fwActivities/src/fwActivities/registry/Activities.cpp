@@ -38,6 +38,14 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
 
 //-----------------------------------------------------------------------------
 
+ActivityRequirementKey::ActivityRequirementKey(const ConfigType &config) :
+    key(config.get_value<std::string>()),
+    path(config.get_optional<std::string>("<xmlattr>.path").get_value_or(""))
+{
+}
+
+//-----------------------------------------------------------------------------
+
 ActivityRequirement::ActivityRequirement(const ConfigType &config) :
     name(config.get<std::string>("<xmlattr>.name")),
     type(config.get<std::string>("<xmlattr>.type")),
@@ -46,7 +54,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
 {
     BOOST_FOREACH( const ConfigType::value_type &v, config.equal_range("key") )
     {
-        keys.push_back(v.second.get_value< std::string >());
+        keys.push_back(ActivityRequirementKey(v.second));
     }
 
     if (config.get_optional<std::string>("<xmlattr>.maxOccurs").get_value_or("") == "*")

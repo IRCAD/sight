@@ -13,8 +13,9 @@
 #include <fwData/Vector.hpp>
 #include <fwData/Composite.hpp>
 
+#include "fwMedData/ActivitySeries.hpp"
+
 #include <fwActivities/registry/Activities.hpp>
-#include <fwActivities/ActivitySeries.hpp>
 #include <fwActivities/IBuilder.hpp>
 
 #include "builder/ActivitySeriesBuilderTest.hpp"
@@ -68,7 +69,7 @@ void ActivitySeriesBuilderTest::builDataTest()
     CPPUNIT_ASSERT_EQUAL(size_t(1), activities.size());
 
     ::fwActivities::registry::ActivityInfo activityInfo = activities[0];
-    ::fwActivities::ActivitySeries::sptr actSeries;
+    ::fwMedData::ActivitySeries::sptr actSeries;
     ::fwActivities::IBuilder::sptr builder;
     builder = ::fwActivities::builder::factory::New(activityInfo.builderImpl);
     CPPUNIT_ASSERT_MESSAGE("<" + activityInfo.builderImpl + "> instantiation failed", builder);
@@ -92,10 +93,10 @@ void ActivitySeriesBuilderTest::builDataTest()
 
     //set of param [0;2]
     obj = (*dataActivity)[modelKey];
-    ::fwData::Vector::sptr vect = ::fwData::Vector::dynamicCast(obj);
-    CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to fwData::Vector failed", vect);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), vect->size());
-    CPPUNIT_ASSERT(modelSeriesSelected == vect->at(0));
+    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(obj);
+    CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to fwData::Composite failed", composite);
+    CPPUNIT_ASSERT_EQUAL(size_t(1), composite->size());
+    CPPUNIT_ASSERT(modelSeriesSelected == (*composite)["key1"]);
 }
 
 //------------------------------------------------------------------------------

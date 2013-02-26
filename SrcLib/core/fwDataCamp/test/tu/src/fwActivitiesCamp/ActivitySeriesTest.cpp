@@ -9,7 +9,7 @@
 #include <fwData/Composite.hpp>
 #include <fwDataCamp/Version.hpp>
 
-#include <fwActivities/ActivitySeries.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 
 #include "DataCampHelper.hpp"
 #include "fwActivitiesCamp/ActivitySeriesTest.hpp"
@@ -40,7 +40,7 @@ void ActivitySeriesTest::tearDown()
 
 void ActivitySeriesTest::propertiesTest()
 {
-    const ::fwActivities::ActivitySeries::ConfigIdType activity_config_id = "Visu2D";
+    const ::fwMedData::ActivitySeries::ConfigIdType activity_config_id = "Visu2D";
 
     const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
                                                                        ("patient")
@@ -57,7 +57,7 @@ void ActivitySeriesTest::propertiesTest()
 
     ::fwData::Composite::sptr data = ::fwData::Composite::New();
 
-    ::fwActivities::ActivitySeries::sptr obj = ::fwActivities::ActivitySeries::New();
+    ::fwMedData::ActivitySeries::sptr obj = ::fwMedData::ActivitySeries::New();
     obj->setActivityConfigId(activity_config_id);
     obj->setData(data);
 

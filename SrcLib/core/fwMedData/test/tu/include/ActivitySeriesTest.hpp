@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWACTIVITIES_UT_ACTIVITYSERIESTEST_HPP__
-#define __FWACTIVITIES_UT_ACTIVITYSERIESTEST_HPP__
+#ifndef __FWMEDDATA_UT_ACTIVITYSERIESTEST_HPP__
+#define __FWMEDDATA_UT_ACTIVITYSERIESTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwActivities
+namespace fwMedData
 {
     class ActivitySeries;
 
@@ -35,12 +35,12 @@ public:
 
 protected:
 
-    SPTR(::fwActivities::ActivitySeries) m_series;
+    SPTR(::fwMedData::ActivitySeries) m_series;
 
 };
 
 } //namespace ut
-} //namespace fwActivities
+} //namespace fwMedData
 
-#endif //__FWACTIVITIES_UT_ACTIVITYSERIESTEST_HPP__
+#endif //__FWMEDDATA_UT_ACTIVITYSERIESTEST_HPP__
 

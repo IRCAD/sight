@@ -9,9 +9,32 @@
         <icon>Icon Test0</icon>
         <requirements>
             <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
-            <requirement name="param2" type="::fwData::Mesh" maxOccurs="8" />
-            <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" />
-            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
+            <requirement name="param2" type="::fwData::Mesh" maxOccurs="8" >
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+            </requirement>
+            <requirement name="param3" type="::fwData::Mesh" maxOccurs="10" > <!-- '*' not managed right now -->
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+              <key>key9</key>
+              <key>key10</key>
+            </requirement>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" >
+              <key>key1</key>
+              <key>key2</key>
+            </requirement>
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
             <!--# ...-->
         </requirements>
@@ -61,7 +84,10 @@
         <desc>1-2 image</desc>
         <icon>Icon Test3</icon>
         <requirements>
-            <requirement name="param1" type="::fwData::Image" maxOccurs="2" />
+          <requirement name="param1" type="::fwData::Image" maxOccurs="2" >
+            <key>key1</key>
+            <key>key2</key>
+          </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Test3" >
@@ -75,7 +101,18 @@
         <desc>* image</desc>
         <icon>Icon Test4</icon>
         <requirements>
-            <requirement name="param1" type="::fwData::Image" maxOccurs="*" />
+            <requirement name="param1" type="::fwData::Image" maxOccurs="10" > <!-- '*' not managed right now -->
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+              <key>key9</key>
+              <key>key10</key>
+            </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Test4" >
@@ -90,6 +127,15 @@
         <icon>Icon Test5</icon>
         <requirements>
             <requirement name="param1" type="::fwData::Image" minOccurs="4" maxOccurs="8"/>
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+            </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Test5" >
@@ -120,7 +166,9 @@
         <icon>Icon Test3</icon>
         <requirements>
             <requirement name="img" type="::fwData::Image" />
-            <requirement name="mesh" type="::fwData::Mesh" minOccurs="0" />
+            <requirement name="mesh" type="::fwData::Mesh" minOccurs="0" >
+              <key>key1</key>
+            </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Test7" >

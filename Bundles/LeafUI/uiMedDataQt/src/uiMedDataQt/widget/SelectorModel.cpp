@@ -18,7 +18,7 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
-#include <fwActivities/ActivitySeries.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
 #include "uiMedDataQt/widget/SelectorModel.hpp"
@@ -172,7 +172,7 @@ void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr series, QStandardIte
 {
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
-    ::fwActivities::ActivitySeries::sptr activitySeries = ::fwActivities::ActivitySeries::dynamicCast(series);
+    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
     if(imageSeries)
     {
         item->setIcon(QIcon("Bundles/media_0-1/icons/ImageSeries.svg"));

@@ -2,7 +2,8 @@ TYPE = 'shared'
 VERSION = '0.1'
 USE = ['boost', 'boostDateTime']
 LIB = [
-      'fwData_0-1',
-      'fwMedData_0-1',
-      'fwRuntime_0-3',
-      ]
+    'fwAtomConversion_0-1',
+    'fwData_0-1',
+    'fwMedData_0-1',
+    'fwRuntime_0-3',
+    ]

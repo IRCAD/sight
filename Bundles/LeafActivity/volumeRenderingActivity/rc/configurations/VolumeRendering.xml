@@ -190,7 +190,7 @@
             </item>
 
             <item key="activitySeries">
-                <object uid="${AS_UID}" src="ref" type="::fwActivities::ActivitySeries" />
+                <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
             </item>
 
 

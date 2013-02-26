@@ -27,7 +27,7 @@ namespace helper
 typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
     ACTIVITIES_API SPTR(::fwServices::ObjectMsg) buildActivityMsg(
-            SPTR(::fwActivities::ActivitySeries) series,
+            SPTR(::fwMedData::ActivitySeries) series,
             const ::fwActivities::registry::ActivityInfo& info,
             const ParametersType& parameters = ParametersType());
 

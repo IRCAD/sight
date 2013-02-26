@@ -4,24 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWACTIVITIES_ACTIVITYSERIES_HPP__
-#define __FWACTIVITIES_ACTIVITYSERIES_HPP__
+#ifndef __FWMEDDATA_ACTIVITYSERIES_HPP__
+#define __FWMEDDATA_ACTIVITYSERIES_HPP__
 
 #include <fwData/factory/new.hpp>
 #include <fwData/macros.hpp>
 
 #include <fwMedData/Series.hpp>
 
-#include "fwActivities/config.hpp"
+#include "fwMedData/config.hpp"
 
-fwCampAutoDeclareDataMacro((fwActivities)(ActivitySeries), FWACTIVITIES_API);
+fwCampAutoDeclareDataMacro((fwMedData)(ActivitySeries), FWMEDDATA_API);
 
 namespace fwData
 {
     class Composite;
 }
 
-namespace fwActivities
+namespace fwMedData
 {
 
 class Series;
@@ -31,7 +31,7 @@ class Series;
  * Holds activity information
  *
  */
-class FWACTIVITIES_CLASS_API ActivitySeries : public ::fwMedData::Series
+class FWMEDDATA_CLASS_API ActivitySeries : public ::fwMedData::Series
 {
 
 public:
@@ -39,7 +39,7 @@ public:
                                             (()),
                                             ::fwData::factory::New< ActivitySeries >) ;
 
-    fwCampMakeFriendDataMacro((fwActivities)(ActivitySeries));
+    fwCampMakeFriendDataMacro((fwMedData)(ActivitySeries));
 
     fwDataObjectMacro();
 
@@ -49,16 +49,16 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    FWACTIVITIES_API ActivitySeries(::fwData::Object::Key key);
+    FWMEDDATA_API ActivitySeries(::fwData::Object::Key key);
 
     /// Destructor
-    FWACTIVITIES_API virtual ~ActivitySeries();
+    FWMEDDATA_API virtual ~ActivitySeries();
 
     /// Defines shallow copy
-    FWACTIVITIES_API void shallowCopy( ActivitySeries::csptr source );
+    FWMEDDATA_API void shallowCopy( ActivitySeries::csptr source );
 
     /// Defines deep copy
-    FWACTIVITIES_API void deepCopy( ActivitySeries::csptr source );
+    FWMEDDATA_API void deepCopy( ActivitySeries::csptr source );
 
     /**
      * @name Getters / Setters
@@ -87,8 +87,8 @@ protected:
 
 };
 
-}   //end namespace fwActivities
+}   //end namespace fwMedData
 
-#endif // __FWACTIVITIES_ACTIVITYSERIES_HPP__
+#endif // __FWMEDDATA_ACTIVITYSERIES_HPP__
 
 

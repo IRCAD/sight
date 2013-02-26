@@ -9,7 +9,10 @@
         <icon>Icon Test0</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
-            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="2" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="2" >
+              <key>key1</key>
+              <key>key2</key>
+            </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Test0">

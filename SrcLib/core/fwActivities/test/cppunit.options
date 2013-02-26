@@ -1,6 +1,5 @@
 
 CLASSTEST=[
-          'ActivitySeriesTest',
           'ActivitySeriesBuilderTest',
           'ActivityRegistryTest',
           ]

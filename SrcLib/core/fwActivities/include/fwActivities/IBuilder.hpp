@@ -13,7 +13,7 @@
 
 #include "fwActivities/builder/factory/new.hpp"
 #include "fwActivities/builder/registry/detail.hpp"
-#include "fwActivities/ActivitySeries.hpp"
+#include "fwMedData/ActivitySeries.hpp"
 #include "fwActivities/registry/Activities.hpp"
 
 #include "fwActivities/config.hpp"
@@ -35,7 +35,7 @@ class FWACTIVITIES_CLASS_API IBuilder : public ::fwCore::BaseObject
 public :
 
     typedef ::fwActivities::builder::factory::Key Key;
-    typedef ::fwActivities::ActivitySeries::ConfigIdType ConfigIdType;
+    typedef ::fwMedData::ActivitySeries::ConfigIdType ConfigIdType;
 
     /**
      * @brief Class used to register a class factory in factory registry.
@@ -63,7 +63,7 @@ public :
      * @param[in] currentSelection a vector which contains current selected data.
      * @return specific data ActivitySeries for the specified Activity.
      */
-    FWACTIVITIES_API virtual ::fwActivities::ActivitySeries::sptr buildData(
+    FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
             const ::fwActivities::registry::ActivityInfo& activityInfo,
             SPTR(::fwData::Vector) currentSelection ) const = 0;
 

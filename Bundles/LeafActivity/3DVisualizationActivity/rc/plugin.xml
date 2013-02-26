@@ -14,13 +14,15 @@
         <desc>3D visualization activity</desc>
         <icon>Bundles/media_0-1/icons/icon-3D.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="1" />
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="1" >
+                <key path="@image" >OptionalInputImageKey</key>
+            </requirement>
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="3DVisualization">
             <parameters>
-                <parameter replace="imageUid" by="@values.imageSeries.values.0.image" />
+                <parameter replace="InputImageCompositeUID" by="@values.imageSeries" />
                 <parameter replace="modelSeriesUid" by="@values.modelSeries" />
                 <parameter replace="orientation" by="frontal" />
             </parameters>

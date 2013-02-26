@@ -231,7 +231,7 @@ void SActivityLauncher::updateState()
     if(dataCount.size() == 1)
     {
         ::fwData::Object::sptr obj = selection->front();
-        if (::fwActivities::ActivitySeries::dynamicCast(obj))
+        if (::fwMedData::ActivitySeries::dynamicCast(obj))
         {
             isExecutable = true;
         }
@@ -258,7 +258,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     builder = ::fwActivities::builder::factory::New(info.builderImpl);
     OSLM_ASSERT(info.builderImpl << " instantiation failed", builder);
 
-    ::fwActivities::ActivitySeries::sptr actSeries;
+    ::fwMedData::ActivitySeries::sptr actSeries;
     actSeries = builder->buildData(info, selection);
     SLM_ASSERT("ActivitySeries instantiation failed", actSeries);
     ParametersType parameters = this->translateParameters(m_parameters);
@@ -278,7 +278,7 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
     {
         BOOST_FOREACH(::fwData::Object::sptr obj, *selection)
         {
-            ::fwActivities::ActivitySeries::sptr as = ::fwActivities::ActivitySeries::dynamicCast(obj);
+            ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(obj);
             if (!as)
             {
                 launchAS = false;

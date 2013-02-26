@@ -1,6 +1,7 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
 LIB     = [
+          'fwActivities_0-1',
           'fwData_0-1',
           'fwServices_0-1',
           'fwComEd_0-1',

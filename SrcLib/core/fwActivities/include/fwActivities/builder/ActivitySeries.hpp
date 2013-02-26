@@ -45,7 +45,7 @@ public:
      * @param[in] currentSelection a vector which contains current selected data.
      * @return specific data ActivitySeries for the specified Activity.
      */
-    FWACTIVITIES_API virtual ::fwActivities::ActivitySeries::sptr buildData(
+    FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
             const ::fwActivities::registry::ActivityInfo& activityInfo,
             SPTR(::fwData::Vector) currentSelection ) const;
 };

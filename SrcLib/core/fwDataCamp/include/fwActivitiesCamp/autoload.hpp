@@ -9,7 +9,7 @@
 
 #include <fwCamp/macros.hpp>
 
-#include <fwActivities/ActivitySeries.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 
 #include "fwMedDataCamp/Series.hpp"
 
@@ -21,7 +21,7 @@ struct runner
 {
     runner()
     {
-        localDeclarefwActivitiesActivitySeries();
+        localDeclarefwMedDataActivitySeries();
     }
 
     static runner r;
