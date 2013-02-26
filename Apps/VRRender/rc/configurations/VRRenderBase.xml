@@ -93,6 +93,7 @@
                                 <parameters>
                                     <parameter replace="SERIESDB" by="seriesDB" />
                                     <parameter replace="ICON_PATH" by="${appIconPath}" />
+                                    <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
                                 </parameters>
                             </appConfig>
                         </config>

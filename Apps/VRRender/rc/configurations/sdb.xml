@@ -6,6 +6,7 @@
         <param name="GENERIC_UID" />
         <param name="SERIESDB" />
         <param name="WID_PARENT" />
+        <param name="DYNAMICVIEW_CHANNEL" default="channel" />
         <param name="ICON_PATH" />
     </parameters>
     <config>
@@ -52,7 +53,7 @@
                 <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
             </connect>
 
-            <proxy channel="dynamicView">
+            <proxy channel="${DYNAMICVIEW_CHANNEL}">
                 <signal>${GENERIC_UID}_selections/objectModified</signal>
             </proxy>
 
