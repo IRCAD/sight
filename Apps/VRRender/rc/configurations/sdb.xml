@@ -45,6 +45,11 @@
                 </object>
             </item> 
             
+            <connect>
+                <signal>${GENERIC_UID}_selector/seriesDoubleClicked</signal>
+                <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
+            </connect>
+            
             <proxy channel="dynamicView">
                 <signal>${GENERIC_UID}_selections/objectModified</signal>
             </proxy>

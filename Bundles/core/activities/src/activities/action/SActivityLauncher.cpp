@@ -15,11 +15,16 @@
 
 #include <fwRuntime/Convert.hpp>
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwTools/UUID.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwData/Composite.hpp>
@@ -52,8 +57,21 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SActivityLau
 
 //------------------------------------------------------------------------------
 
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT = "launchSeries";
+
+//------------------------------------------------------------------------------
+
 SActivityLauncher::SActivityLauncher() throw()
-{}
+{
+    m_slotLaunchSeries = ::fwCom::newSlot( &SActivityLauncher::launchSeries, this ) ;
+
+    ::fwCom::HasSlots::m_slots( s_LAUNCH_SERIES_SLOT, m_slotLaunchSeries );
+
+#ifdef COM_LOG
+    ::fwCom::HasSlots::m_slots.setID();
+#endif
+    this->setWorker( m_associatedWorker );
+}
 
 //------------------------------------------------------------------------------
 
@@ -279,6 +297,39 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
         }
     }
     return launchAS;
+}
+
+//------------------------------------------------------------------------------
+
+void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
+{
+    ::fwActivities::ActivitySeries::sptr as = ::fwActivities::ActivitySeries::dynamicCast(series);
+    if (as)
+    {
+        ::fwActivities::registry::ActivityInfo info;
+        info = ::fwActivities::registry::Activities::getDefault()->getInfo(as->getActivityConfigId());
+        ParametersType parameters = this->translateParameters(m_parameters);
+        ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(as, info, parameters);
+
+        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+    }
+    else
+    {
+        ::fwData::Vector::sptr selection = ::fwData::Vector::New();
+        selection->getContainer().push_back(series);
+        ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
+
+        if ( ! infos.empty() )
+        {
+            this->sendConfig( infos.front() );
+        }
+        else
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launcher",
+                                                              "Not available activity for the current selection.",
+                                                              ::fwGui::dialog::MessageDialog::WARNING);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

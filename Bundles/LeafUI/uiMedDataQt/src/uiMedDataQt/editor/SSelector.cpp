@@ -39,8 +39,21 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMedData::editor::SSelector
 
 //------------------------------------------------------------------------------
 
+const ::fwCom::Signals::SignalKeyType SSelector::s_SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
+
+//------------------------------------------------------------------------------
+
 SSelector::SSelector()
 {
+    // Init
+    m_sigSeriesDoubleClicked = SeriesDoubleClickedSignalType::New();
+
+    // Register
+    m_signals( s_SERIES_DOUBLE_CLICKED_SIG,  m_sigSeriesDoubleClicked);
+
+#ifdef COM_LOG
+    ::fwCom::HasSignals::m_signals.setID();
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -181,20 +194,23 @@ void SSelector::onDoubleClick(const QModelIndex &index)
 
     ::fwData::Vector::sptr selectionVector = this->getSelection();
 
-    std::stringstream str;
     if (m_selectorWidget->getItemType(index) == ::uiMedData::widget::SelectorModel::STUDY)
     {
+        std::stringstream str;
         str << "Selected study. TODO";
+
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Double click",
+                                                          str.str());
     }
     else if (m_selectorWidget->getItemType(index) == ::uiMedData::widget::SelectorModel::SERIES)
     {
-        str << "Selected series : ";
         SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
-        str << selectionVector->getContainer()[0]->getID() << ".";
-    }
+        ::fwData::Object::sptr obj = selectionVector->front();
+        ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
+        SLM_ASSERT("Object must be a '::fwMedData::Series'", series);
 
-    ::fwGui::dialog::MessageDialog::showMessageDialog("Double click",
-                                                      str.str());
+        fwServicesNotifyMacro(this->getLightID(), m_sigSeriesDoubleClicked, (series));
+    }
 }
 
 //------------------------------------------------------------------------------

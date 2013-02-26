@@ -36,6 +36,9 @@ public :
     /// Destructor. Do nothing.
     ACTIVITIES_API virtual ~SActivityLauncher() throw() ;
 
+    ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
+    typedef ::fwCom::Slot< void (SPTR( ::fwMedData::Series )) > LaunchSeriesSlotType;
+
 protected:
 
     ///This method launches the IAction::starting method.
@@ -95,6 +98,15 @@ private:
      */
     bool launchAS(::fwData::Vector::sptr &selection);
 
+    /**
+     * @brief Slots to launch the given series.
+     * @param series the activity is launched on this series.
+     *
+     * If series is an ActivitySeries, it is launched, otherwise it launches the first available activity for
+     * this series.
+     */
+    void launchSeries(::fwMedData::Series::sptr series);
+
     /// Send message to launch new tab view
     void sendConfig( const ::fwActivities::registry::ActivityInfo & info );
 
@@ -104,6 +116,9 @@ private:
     ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer & infos );
 
     ParametersType m_parameters;
+
+    /// Slot to call launchSeries method
+    LaunchSeriesSlotType::sptr m_slotLaunchSeries;
 };
 
 } //action

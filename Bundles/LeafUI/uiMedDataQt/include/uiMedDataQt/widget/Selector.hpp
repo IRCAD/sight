@@ -104,9 +104,17 @@ protected :
      * @note If a study is selected, return an empty selection.
      */
     SeriesVectorType getSeries( const QItemSelection & selection );
+
+    /**
+     * @brief Returns the Series associated to the selection.
+     * @note It ignores the studies.
+     */
     SeriesVectorType getSeries(const QModelIndexList& indexList);
 
+    /// Returns all the study indexes contained in the given indexList
     QModelIndexList getStudyIndexes(const QModelIndexList& indexList);
+
+    /// Returns all the series associated with the study index
     SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& index);
 
     /**

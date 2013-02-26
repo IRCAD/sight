@@ -42,6 +42,11 @@ public :
     /// Destructor
     UIMEDDATAQT_API virtual ~SSelector() throw() ;
 
+    typedef ::fwCom::Signal< void ( SPTR( ::fwMedData::Series ) ) > SeriesDoubleClickedSignalType;
+
+    /// Key in m_signals map of signal m_sigSeriesDoubleClicked
+    UIMEDDATAQT_API static const ::fwCom::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG;
+
 protected:
 
     /// Installs GUI : create container and add selector.
@@ -106,6 +111,9 @@ private :
 
     /// Selector widget.
     QPointer< ::uiMedData::widget::Selector > m_selectorWidget;
+
+    /// Signal emitted when there is a double click on a series
+    SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked;
 
 };
 } // namespace editor
