@@ -275,19 +275,16 @@
                                 <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
                             </adaptor>
 
-                            <!-- <adaptor id="histogram" class="::scene2D::adaptor::Histogram" objectId="myHistogram"> <config xAxis="xAxis" yAxis="axeHistogramY" color="red" opacity="0.25" zValue="5" histogramPointUID="${GENERIC_UID}_HistogramPoint" /> </adaptor> -->
-
-                            <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="myHistogram">
+                            <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="histogram">
                                 <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" histogramPointUID="${GENERIC_UID}_HistogramPoint" borderWidth="2.0" />
                             </adaptor>
 
-
                             <!-- A graphic cursor that follow histogram's shape according to mouse's cursor -->
-                            <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="myHistogram">
+                            <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="histogram">
                                 <config xAxis="xAxis" yAxis="axeHistogramY" color="blue" borderColor="gray" zValue="9" pointSize="16" viewportUID="${GENERIC_UID}_Viewport" histogramPointUID="${GENERIC_UID}_HistogramPoint" />
                             </adaptor>
 
-                            <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="myHistogram">
+                            <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="histogram">
                                 <config xAxis="xAxis" yAxis="axeHistogramY" zValue="12" fontSize="6" viewportUID="${GENERIC_UID}_Viewport" histogramPointUID="${GENERIC_UID}_HistogramPoint" />
                             </adaptor>
 
@@ -295,7 +292,7 @@
                                 <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="${GENERIC_UID}_Viewport" selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
                             </adaptor>
 
-                            <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="myViewport">
+                            <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
                                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
                             </adaptor>
 
@@ -344,11 +341,11 @@
                                 <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
                             </adaptor>
 
-                            <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="myHistogram">
+                            <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="histogram">
                                 <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
                             </adaptor>
 
-                            <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="myViewport">
+                            <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
                                 <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
                             </adaptor>
 
@@ -414,16 +411,25 @@
                                 </config>
                             </service>
 
+                            <service uid="${GENERIC_UID}_computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes">
+                                <histogramId>${GENERIC_UID}_Histogram</histogramId>
+                                <binsWidth>5.0</binsWidth>
+                            </service>
+
                         </object>
                     </item>
 
 
 
-                    <item key="myViewport">
+                    <item key="viewport">
                         <object uid="${GENERIC_UID}_Viewport" type="::scene2D::data::Viewport" />
                     </item>
 
-                    <item key="myHistogramPoint">
+                    <item key="histogram">
+                        <object uid="${GENERIC_UID}_Histogram" type="::fwData::Histogram" />
+                    </item>
+
+                    <item key="histogramPoint">
                         <object uid="${GENERIC_UID}_HistogramPoint" type="::fwData::Point" />
                     </item>
 
@@ -481,6 +487,7 @@
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_translateUpdater" />
             <start uid="${GENERIC_UID}_mainView" />
+            <start uid="${GENERIC_UID}_computeHistogram" />
             <start uid="${GENERIC_UID}_Scene2D_Shutter" />
             <start uid="${GENERIC_UID}_Scene2D" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
@@ -489,7 +496,6 @@
             <start uid="${GENERIC_UID}_vr" />
             <start uid="${GENERIC_UID}_FieldManager" />
             <start uid="${GENERIC_UID}_cfgNegato" />
-
 
         </object>
 
