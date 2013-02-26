@@ -69,6 +69,15 @@ protected:
                  <parameter replace="SERIESDB" by="medicalData" />
                  <parameter replace="IMAGE" by="@values.ImageSeries.image" />
              </parameters>
+
+             <!-- Filter mode 'include' allows all given activity id-s.
+                  Filter mode 'exclude' allows all activity id-s excepted given ones. -->
+             <filter>
+                <mode>include</mode>
+                <id>2DVisualizationActivity</id>
+                <id>3DVisualizationActivity</id>
+                <id>VolumeRenderingActivity</id>
+            </filter>
          </config>
      </service>
      @endverbatim
@@ -116,6 +125,15 @@ private:
     ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer & infos );
 
     ParametersType m_parameters;
+
+    /**
+     * @brief Filter mode : include or exclude activity configurations.
+     * @note Allowed values : 'include' or 'exclude' 
+     */
+    std::string m_mode;
+
+    /// Id-s of activity configurations to be enabled.
+    std::vector< std::string > m_allowedKeys;
 
     /// Slot to call launchSeries method
     LaunchSeriesSlotType::sptr m_slotLaunchSeries;

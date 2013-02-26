@@ -29,8 +29,6 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Vector.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Boolean.hpp>
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwComEd/VectorMsg.hpp>
@@ -121,6 +119,22 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
             }
         }
         OSLM_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
+
+        if(config.count("filter") == 1 )
+        {
+            const ::fwServices::IService::ConfigType &configFilter = config.get_child("filter");
+            OSLM_ASSERT("At most 1 <mode> tag is allowed", configFilter.count("mode") < 2);
+
+            const std::string mode = configFilter.get< std::string >("mode");
+            OSLM_ASSERT("'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.", mode == "include" || mode == "exclude");
+            m_mode = mode;
+
+            BOOST_FOREACH( const ConfigType::value_type &v, configFilter.equal_range("id") )
+            {
+                m_allowedKeys.push_back(v.second.get<std::string>(""));
+            }
+        }
+        OSLM_ASSERT("At most 1 <filter> tag is allowed", config.count("filter") < 2);
     }
 }
 
@@ -135,7 +149,6 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
 
 
     QStandardItemModel *model = new QStandardItemModel(dialog);
-
     BOOST_FOREACH( ::fwActivities::registry::ActivityInfo info, infos)
     {
         QStandardItem* item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(info.id));
@@ -195,6 +208,29 @@ void SActivityLauncher::updating() throw(::fwTools::Failed)
     if (!launchAS)
     {
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
+
+        if(m_mode == "include" || m_mode == "exclude")
+        {
+            const bool isIncludeMode = m_mode == "include";
+            ActivityInfoContainer configs;
+
+            for(ActivityInfoContainer::iterator iter = infos.begin(); iter != infos.end(); ++iter)
+            {
+                std::vector< std::string >::iterator keyIt = std::find(m_allowedKeys.begin(), m_allowedKeys.end(), iter->id);
+
+                if(keyIt != m_allowedKeys.end() && isIncludeMode)
+                {
+                    configs.push_back(*iter);
+                }
+                else if(keyIt == m_allowedKeys.end() && !isIncludeMode)
+                {
+                    configs.push_back(*iter);
+                }
+            }
+
+            infos.clear();
+            infos = ::boost::move(configs);
+        }
 
         if ( ! infos.empty() )
         {
