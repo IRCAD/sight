@@ -13,7 +13,7 @@
 #include <fwData/Vector.hpp>
 #include <fwData/Composite.hpp>
 
-#include "fwMedData/ActivitySeries.hpp"
+#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/IBuilder.hpp>

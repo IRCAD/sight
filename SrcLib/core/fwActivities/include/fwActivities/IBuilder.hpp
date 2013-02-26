@@ -10,10 +10,10 @@
 #include <boost/enable_shared_from_this.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 
 #include "fwActivities/builder/factory/new.hpp"
 #include "fwActivities/builder/registry/detail.hpp"
-#include "fwMedData/ActivitySeries.hpp"
 #include "fwActivities/registry/Activities.hpp"
 
 #include "fwActivities/config.hpp"

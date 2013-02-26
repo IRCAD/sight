@@ -1,8 +1,9 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
+#include <fwMedData/ActivitySeries.hpp>
+#include <fwActivities/registry/Activities.hpp>
+
 #include "activities/Plugin.hpp"
-#include "fwMedData/ActivitySeries.hpp"
-#include "fwActivities/registry/Activities.hpp"
 
 namespace activities
 {

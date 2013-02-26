@@ -31,6 +31,7 @@
 #include <fwData/Vector.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 
 #include <fwComEd/VectorMsg.hpp>
 
@@ -303,7 +304,7 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
 
 void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
 {
-    ::fwActivities::ActivitySeries::sptr as = ::fwActivities::ActivitySeries::dynamicCast(series);
+    ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(series);
     if (as)
     {
         ::fwActivities::registry::ActivityInfo info;
