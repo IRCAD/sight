@@ -22,13 +22,16 @@
         <desc>Blend activity</desc>
         <icon>Bundles/media_0-1/icons/icon-blend.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" />
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" >
+              <key>FrontImage</key>
+              <key>BackImage</key>
+            </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="Blend">
             <parameters>
-                <parameter replace="frontImageUid" by="@values.imageSeries.values.0.image" />
-                <parameter replace="backgroundImageUid" by="@values.imageSeries.values.1.image" />
+                <parameter replace="frontImageUid"      by="@values.imageSeries.values.FrontImage.image" />
+                <parameter replace="backgroundImageUid" by="@values.imageSeries.values.BackImage.image" />
             </parameters>
         </appConfig>
     </extension>
