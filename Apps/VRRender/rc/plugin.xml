@@ -9,7 +9,7 @@
         <id>VRRenderAppBase</id>
         <parameters>
             <param name="appName" value="VRRender 0.9.6" />
-            <param name="appIconPath" value="Bundles/VRRender_0-9/documentations/vrrender_96.png" />
+            <param name="appIconPath" value="Bundles/VRRender_0-9/vrrender.ico" />
         </parameters>
     </extension>
 
