@@ -55,6 +55,10 @@
             <item key="visuConfig">
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
 
+                    <service uid="${GENERIC_UID}_VisuCompositeUpdater" impl="::ctrlSelection::updater::TranslateUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <translate fromUID="${InputImageCompositeUID}" fromKey="OptionalInputImageKey" toKey="imageKey" />
+                    </service>
+
                     <!-- Generic Scene Negato -->
                     <service uid="${GENERIC_UID}_negato" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
@@ -75,7 +79,7 @@
                                 <config renderer="default" style="InteractorStyle3DForNegato" />
                             </adaptor>
 
-                            <adaptor id="medicalCamera" class="::visuVTKAdaptor::Medical3DCamera" objectId="imageKey"> <!-- imageKey : TODO -->
+                            <adaptor id="medicalCamera" class="::visuVTKAdaptor::Medical3DCamera" objectId="imageKey">
                                 <config renderer="default" sliceIndex="${orientation}" />
                             </adaptor>
 
@@ -142,6 +146,8 @@
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
+            <start uid="${GENERIC_UID}_EditorManager" />
+            <start uid="${GENERIC_UID}_VisuCompositeUpdater" />
 
         </object>
     </config>

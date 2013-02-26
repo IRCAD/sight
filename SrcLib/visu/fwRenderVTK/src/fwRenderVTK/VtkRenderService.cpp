@@ -418,8 +418,8 @@ void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw
 
         BOOST_FOREACH( std::string objectId, objectIds)
         {
-        std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId);
-        BOOST_FOREACH( ConfigurationType cfg, confVec )
+            std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId);
+            BOOST_FOREACH( ConfigurationType cfg, confVec )
             {
                 this->configureObject(cfg);
             }

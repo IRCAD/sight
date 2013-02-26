@@ -46,20 +46,20 @@ void TranslateUpdater::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(_msg);
     SLM_ASSERT("Sorry, this service only manage compositeMsg", compositeMsg);
 
+    ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast( _msg->getSubject().lock() );
+    SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
+
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    for (   ManagedTranslations::iterator it = m_managedTranslations.begin();
+    for (   ManagedTranslations::const_iterator it = m_managedTranslations.begin();
             it != m_managedTranslations.end();
             ++it )
     {
-        std::string uuid     = it->get<0>();
-        std::string fromKey  = it->get<1>();
-        std::string toKey    = it->get<2>();
-
-        ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast( _msg->getSubject().lock() );
-        SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
+        const std::string &fwid     = it->get<0>();
+        const std::string &fromKey  = it->get<1>();
+        const std::string &toKey    = it->get<2>();
 
         // Test if we manage this event from this object message uid
-        if( obj->getID() == uuid)
+        if( obj->getID() == fwid)
         {
             //  test if message correspond to a defined event
             if( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
@@ -98,6 +98,24 @@ void TranslateUpdater::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( 
 void TranslateUpdater::starting()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+
+    BOOST_FOREACH( const ManagedTranslations::value_type & trans, m_managedTranslations )
+    {
+        const std::string &fwid     = trans.get<0>();
+        const std::string &fromKey  = trans.get<1>();
+        const std::string &toKey    = trans.get<2>();
+
+        ::fwData::Composite::sptr compositeFrom = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject(fwid) );
+        if (compositeFrom)
+        {
+            ::fwData::Composite::const_iterator iter = compositeFrom->find(fromKey);
+            if (iter != compositeFrom->end())
+            {
+                this->updateComposite(composite, iter->second , toKey , ADD_OR_SWAP );
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
