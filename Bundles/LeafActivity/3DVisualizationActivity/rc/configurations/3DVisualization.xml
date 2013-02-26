@@ -18,8 +18,8 @@
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Negato1" align="center" />
-                        <view caption="Negato2" align="right" minWidth="350" />
-                        <view caption="Negato3" align="right" minWidth="350" />
+                        <view caption="Negato2" align="right" minWidth="350" visible="no" />
+                        <view caption="Negato3" align="right" minWidth="350" visible="no" />
                     </layout>
                     <toolBar />
                 </gui>
@@ -82,6 +82,7 @@
                     <menu sid="${GENERIC_UID}_menu" start="yes" />
                 </registry>
             </service>
+
 
             <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
@@ -183,6 +184,25 @@
                 </service>
 
 
+                <service uid="${GENERIC_UID}_2DLayoutManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
+                  <mode type="startAndUpdate" />
+                  <config>
+                    <object id="OptionalInputImageKey" type="::fwData::Image">
+
+                      <service uid="${GENERIC_UID}_ModifyLayout" type="::fwGui::IActionSrv" impl="::gui::action::ModifyLayoutActionSrv" autoConnect="no">
+                        <config>
+                          <show wid="${GENERIC_UID}_view_negato2" />
+                          <show wid="${GENERIC_UID}_view_negato3" />
+                        </config>
+                      </service>
+
+
+                    </object>
+                  </config>
+                </service>
+
+
+
               </object>
             </item>
 
@@ -211,6 +231,7 @@
 
             <start uid="${GENERIC_UID}_cfgNegato1" />
             <start uid="${GENERIC_UID}_2DViewManager" />
+            <start uid="${GENERIC_UID}_2DLayoutManager" />
 
         </object>
 
