@@ -19,8 +19,8 @@
     <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
         <gui>
             <layout>
-                <menuItem name="Import" />
-                <menuItem name="New activity" />
+                <menuItem name="Import" icon="Bundles/media_0-1/icons/Import.svg" />
+                <menuItem name="Launch activity" icon="Bundles/media_0-1/icons/Launch_activity.svg" />
                 <separator />
                 <menuItem name="2D visualization" icon="Bundles/media_0-1/icons/icon-2D.png" />
                 <menuItem name="3D visualization" icon="Bundles/media_0-1/icons/icon-3D.png" />

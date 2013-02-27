@@ -73,7 +73,7 @@
                         <separator />
                         <menuItem name="Snapshot VR" icon="Bundles/media_0-1/icons/camera-photo.png" />
                         <separator />
-                        <menuItem name="Export Activity"  />
+                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
                     </layout>
                 </gui>
                 <registry>

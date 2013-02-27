@@ -56,7 +56,7 @@
                         <separator />
                         <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
-                        <menuItem name="Export Activity" />
+                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
                         <spacer />
                         <menu name="Visu 3D" />
                     </layout>

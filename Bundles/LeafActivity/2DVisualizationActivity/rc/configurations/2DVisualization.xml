@@ -48,7 +48,7 @@
                         <menuItem name="Show normal cross" icon="Bundles/media_0-1/icons/NormalCross.png" style="radio" />
                         <menuItem name="Show full cross" icon="Bundles/media_0-1/icons/FullCross.png" style="radio" />
                         <separator />
-                        <menuItem name="Export Activity"  />
+                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
                     </layout>
                 </gui>
                 <registry>
