@@ -43,6 +43,8 @@ class SVectorTest : public ::fwComEd::ut::TestService
 {
 
 public:
+    virtual ~SVectorTest() throw() {};
+
     fwCoreServiceClassDefinitionsMacro ( (SVectorTest)(::fwComEd::ut::TestService) ) ;
 
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
