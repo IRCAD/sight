@@ -1,0 +1,13 @@
+CLASSTEST=[
+          'ProcessingTest',
+          ]
+
+USE = ['boost']
+LIB = ['fwData_0-1','fwDataTools_0-1','fwTest_0-1']
+
+BUNDLES = []
+REQUIREMENTS = ['dataReg_0-1','servicesReg_0-1','scene2D_0-1']
+
+CONSOLE = 'yes'
+
+#LOGLEVEL='trace'
