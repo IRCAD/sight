@@ -239,16 +239,25 @@ void SActivityLauncher::updating() throw(::fwTools::Failed)
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 
-    bool launchAS = this->launchAS(selection);
+    bool launchAS = m_mode.empty() && this->launchAS(selection);
 
     if (!launchAS)
     {
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
         infos = this->getEnabledActivities(infos);
 
-        if ( ! infos.empty() )
+        if ( ! infos.empty())
         {
-            ::fwActivities::registry::ActivityInfo info = this->show( infos );
+            ::fwActivities::registry::ActivityInfo info;
+            if(m_keys.size() == 1 && m_mode == "include")
+            {
+                info = infos[0];
+            }
+            else
+            {
+                info = this->show( infos );
+            }
+
             if( !info.id.empty() )
             {
                 this->sendConfig( info );
@@ -280,7 +289,7 @@ void SActivityLauncher::updateState()
 
     ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
     dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
-    if(dataCount.size() == 1)
+    if(m_mode.empty() && dataCount.size() == 1)
     {
         ::fwData::Object::sptr obj = selection->front();
         if (::fwMedData::ActivitySeries::dynamicCast(obj))
