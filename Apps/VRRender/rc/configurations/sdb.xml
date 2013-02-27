@@ -91,9 +91,6 @@
             <connect>
                 <signal>${GENERIC_UID}_selector/seriesDoubleClicked</signal>
                 <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
-                <slot>${GENERIC_UID}_action_2DVisualization/launchSeries</slot>
-                <slot>${GENERIC_UID}_action_3DVisualization/launchSeries</slot>
-                <slot>${GENERIC_UID}_action_volumeRendering/launchSeries</slot>
             </connect>
 
             <proxy channel="${DYNAMICVIEW_CHANNEL}">
