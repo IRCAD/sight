@@ -48,13 +48,11 @@
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="TF-Negato" />
                         <view caption="TF-Scene2D" />
-                        <view caption="Volume Rendering" />
                     </layout>
                 </gui>
                 <registry>
                     <view wid="${GENERIC_UID}_view_negato" />
                     <view sid="${GENERIC_UID}_TFScene2D" start="yes" />
-                    <view sid="${GENERIC_UID}_VolumeRendering" start="yes" />
                 </registry>
             </service>
 
@@ -106,78 +104,6 @@
                     <view sid="${GENERIC_UID}_Scene2D_Shutter" start="no" />
                     <view sid="${GENERIC_UID}_Scene2D" start="no" />
                     <view sid="${GENERIC_UID}_FloatEditor" start="no" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_VolumeRendering" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::TabLayoutManager">
-                        <view caption="MapperEditor" />
-                        <view caption="PropertyEditor" />
-                        <view caption="LightEdition" />
-                    </layout>
-                    <toolBar />
-                </gui>
-                <registry>
-                    <toolBar sid="${GENERIC_UID}_VRToolbar" start="yes" />
-                    <view sid="${GENERIC_UID}_MapperEdition" start="yes" />
-                    <view sid="${GENERIC_UID}_PropertyEdition" start="yes" />
-                    <view sid="${GENERIC_UID}_LightEdition" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_VRToolbar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Export VR param" icon="Bundles/media_0-1/icons/icon-exportVRParam" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_action_exportVRParam" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_MapperEdition" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" useScrollBar="yes" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_MapperEditor" start="no" />
-                    <view sid="${GENERIC_UID}_MapperApplyButton" start="no" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_PropertyEdition" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" useScrollBar="yes" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_PropertyEditor" start="no" />
-                    <view sid="${GENERIC_UID}_PropertyApplyButton" start="no" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_LightEdition" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view caption="LightsEditor" proportion="0" />
-                        <view caption="LightEditor" proportion="1" minWidth="370" useScrollBar="yes" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_LightsEditor" start="no" />
-                    <view sid="${GENERIC_UID}_LightEditor" start="no" />
-                    <view sid="${GENERIC_UID}_LightsApplyButton" start="no" />
                 </registry>
             </service>
 
