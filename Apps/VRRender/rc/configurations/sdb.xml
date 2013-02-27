@@ -45,16 +45,62 @@
                             </parameters>
                         </config>
                     </service>
+
+                    <service uid="${GENERIC_UID}_action_2DVisualization" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>2DVisualization</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_3DVisualization" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>3DVisualization</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_volumeRendering" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>VolumeRendering</id>
+                            </filter>
+                        </config>
+                    </service>
+
                 </object>
             </item>
 
             <connect>
                 <signal>${GENERIC_UID}_selector/seriesDoubleClicked</signal>
                 <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
+                <slot>${GENERIC_UID}_action_2DVisualization/launchSeries</slot>
+                <slot>${GENERIC_UID}_action_3DVisualization/launchSeries</slot>
+                <slot>${GENERIC_UID}_action_volumeRendering/launchSeries</slot>
             </connect>
 
             <proxy channel="${DYNAMICVIEW_CHANNEL}">
                 <signal>${GENERIC_UID}_action_newActivity/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_2DVisualization/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_3DVisualization/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_volumeRendering/activityLaunched</signal>
             </proxy>
 
             <start uid="${GENERIC_UID}_mainview" />
