@@ -118,6 +118,18 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
                 break;
             }
         }
+
+        if(ok)
+        {
+            BOOST_FOREACH( const DataCountType::value_type &dataCount, dataCounts )
+            {
+                if(m_requirementCount.find(dataCount.first) == m_requirementCount.end())
+                {
+                    ok = false;
+                    break;
+                }
+            }
+        }
     }
 
     return ok;
