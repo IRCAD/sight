@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/math/special_functions/round.hpp>
+#include <boost/regex.hpp>
+
 #include <QStandardItem>
 #include <QString>
 
@@ -77,6 +80,74 @@ void SelectorModel::clear()
 
 //-----------------------------------------------------------------------------
 
+::fwData::Image::SpacingType roundSpacing(const ::fwData::Image::SpacingType& spacing)
+{
+    ::fwData::Image::SpacingType roundSpacing;
+    BOOST_FOREACH(::fwData::Image::SpacingType::value_type val, spacing)
+    {
+        ::fwData::Image::SpacingType::value_type roundVal = ::boost::math::round(val * 100.)/100.;
+        roundSpacing.push_back(roundVal);
+    }
+    return roundSpacing;
+}
+
+//-----------------------------------------------------------------------------
+
+std::string formatDate(const std::string& date)
+{
+    std::string formatDate = date;
+
+    const std::string regexYyear = "[0-9]{4}";
+    const std::string regexMonth = "[0-9]{2}";
+    const std::string regexDay   = "[0-9]{2}";
+
+    const std::string regexStr = "("+regexYyear+")"+"("+regexMonth+")"+"("+regexDay+")";
+    ::boost::regex re(regexStr);
+    ::boost::smatch match;
+    if( ::boost::regex_match(formatDate, match, re) )
+    {
+        std::string year, month, day, hour, min, sec;
+        OSLM_ASSERT("Wrong match for "<<formatDate, match.size() >= 4);
+        year.assign(match[1].first, match[1].second);
+        month.assign(match[2].first, match[2].second);
+        day.assign(match[3].first, match[3].second);
+
+        formatDate = year +  "/" + month + "/" + day;
+    }
+
+    return formatDate;
+}
+
+//-----------------------------------------------------------------------------
+
+std::string formatTime(const std::string& time)
+{
+    std::string formatTime = time;
+
+    const std::string regexHour  = "[0-9]{2}";
+    const std::string regexMin   = "[0-9]{2}";
+    const std::string regexSec   = "[0-9]{2}";
+    const std::string regexEnd   = "[.0-9]*";
+
+    const std::string regexStr = "("+regexHour+")"+"("+regexMin+")"+"("+regexSec+")"+regexEnd;
+    ::boost::regex re(regexStr);
+    ::boost::smatch match;
+    if( ::boost::regex_match(formatTime, match, re) )
+    {
+        std::string year, month, day, hour, min, sec;
+        OSLM_ASSERT("Wrong match for "<<formatTime, match.size() >= 4);
+        hour.assign(match[1].first, match[1].second);
+        min.assign(match[2].first, match[2].second);
+        sec.assign(match[3].first, match[3].second);
+
+        formatTime = hour + ":" + min + ":" + sec;
+    }
+
+    return formatTime;
+}
+
+//-----------------------------------------------------------------------------
+
 void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 {
     ::fwMedData::Study::sptr study = series->getStudy();
@@ -96,10 +167,11 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         patientName->setData(QVariant((int)SelectorModel::STUDY), SelectorModel::ITEM_TYPE);
         patientName->setData(QVariant(QString::fromStdString(study->getInstanceUID())), UID);
         QStandardItem *patientId   = new QStandardItem( QString::fromStdString(patient->getPatientId()) );
-        QStandardItem *patientBirthdate   = new QStandardItem( QString::fromStdString(patient->getBirthdate()) );
+        std::string birthDate = formatDate(patient->getBirthdate());
+        QStandardItem *patientBirthdate   = new QStandardItem( QString::fromStdString(birthDate) );
         QStandardItem *patientSex   = new QStandardItem( QString::fromStdString(patient->getSex()) );
 
-        std::string studyDateTime(study->getDate()+ " " + study->getTime());
+        std::string studyDateTime = formatDate(study->getDate()) + " " + formatTime(study->getTime());
         QStandardItem *studyDate = new QStandardItem( QString::fromStdString(studyDateTime));
         QStandardItem *studyReferringPhysicianName = new QStandardItem(
                 QString::fromStdString(study->getReferringPhysicianName()));
@@ -125,7 +197,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 
 
     QStandardItem *seriesModality = new QStandardItem(QString::fromStdString(series->getModality()));
-    std::string seriesDateTime(series->getDate()+ " " + series->getTime());
+    std::string seriesDateTime = formatDate(series->getDate()) + " " + formatTime(series->getTime());
     QStandardItem *seriesDate = new QStandardItem( QString::fromStdString(seriesDateTime));
 
 
@@ -154,7 +226,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         QStandardItem* imageSize = this->getInfo< ::fwData::Image::SizeType>(imageNumber, " x ");
         studyRootItem->setChild(nbRow, 11, imageSize);
 
-        ::fwData::Image::SpacingType voxelSize = image->getSpacing();
+        ::fwData::Image::SpacingType voxelSize = roundSpacing(image->getSpacing());
         QStandardItem* voxelSizeItem = this->getInfo< ::fwData::Image::SpacingType>(voxelSize, " x ");
         studyRootItem->setChild(nbRow, 12, voxelSizeItem);
 
