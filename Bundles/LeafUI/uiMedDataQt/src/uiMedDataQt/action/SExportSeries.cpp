@@ -6,11 +6,18 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwTools/Os.hpp>
+
 #include <fwServices/Base.hpp>
 
 #include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/ActivitySeries.hpp>
+
+#include <fwActivities/registry/Activities.hpp>
+
+#include <fwGui/dialog/InputDialog.hpp>
 
 #include "uiMedDataQt/action/SExportSeries.hpp"
 
@@ -105,10 +112,36 @@ void SExportSeries::updating() throw(::fwTools::Failed)
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     ::fwMedData::Series::sptr series = this->getSeries();
 
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
-    seriesDBHelper.add(series);
-    seriesDBHelper.notify(this->getSptr());
-    this->setIsExecutable(false);
+    std::string description;
+
+    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+    if (activitySeries)
+    {
+        ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
+        std::string id = activitySeries->getActivityConfigId();
+        OSLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
+
+        ::fwActivities::registry::ActivityInfo activityInfo;
+        activityInfo = registry->getInfo(id);
+        description = activityInfo.description;
+    }
+
+    std::string desc = ::fwGui::dialog::InputDialog::showInputDialog(
+                                    "Export activity", "Enter the series description", description);
+    if(!desc.empty())
+    {
+        std::string username = ::fwTools::os::getEnv("USERNAME", fwTools::os::getEnv("LOGNAME", "Unknown"));
+        ::fwMedData::DicomValuesType physicians;
+        physicians.push_back(username);
+        series->setPerformingPhysiciansName(physicians);
+        series->setDescription(desc);
+
+        ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+        seriesDBHelper.add(series);
+        seriesDBHelper.notify(this->getSptr());
+        this->setIsExecutable(false);
+    }
+
 }
 
 //------------------------------------------------------------------------------
