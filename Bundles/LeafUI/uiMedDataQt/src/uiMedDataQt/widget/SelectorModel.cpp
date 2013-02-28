@@ -184,7 +184,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         QStandardItem *institution = new QStandardItem( QString::fromStdString(equipment->getInstitutionName()));
 
         this->setItem(m_studyRowCount, 0, patientName);
-        this->setItem(m_studyRowCount, 3, studyDate);
+        this->setItem(m_studyRowCount, 2, studyDate);
         this->setItem(m_studyRowCount, 6, studyDescription);
         this->setItem(m_studyRowCount, 7, patientId);
         this->setItem(m_studyRowCount, 8, studyPatientAge);
@@ -216,7 +216,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
     studyRootItem->setChild(nbRow, 2, seriesDate);
     studyRootItem->setChild(nbRow, 6, seriesDescription2);
     studyRootItem->setChild(nbRow, 9, seriesPerformingPhysician);
-    studyRootItem->setChild(nbRow, 13, new QStandardItem());
+    studyRootItem->setChild(nbRow, 12, new QStandardItem());
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
     if(imageSeries)
