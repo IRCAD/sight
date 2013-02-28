@@ -72,9 +72,9 @@ protected:
 
 private:
 
-    // [dest_map]->[(dest_key1,dest_key2,...)]
+    // [src_map]->[(src_key1, src_key2, ...)]
     typedef std::map< std::string, std::set< std::string > > SrcKeyMapType;
-    // [src_key]->[<dest_map, dest_key>]
+    // [dest_key]->[<src_map, src_key>]
     typedef std::map< std::string, std::pair< std::string, std::string > > DestKeyMapType;
     /**
      * @brief keep the association between associated key and source object
