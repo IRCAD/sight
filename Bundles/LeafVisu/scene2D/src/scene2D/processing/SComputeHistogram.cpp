@@ -58,7 +58,7 @@ void SComputeHistogram::configuring() throw ( ::fwTools::Failed )
 
 void SComputeHistogram::starting() throw ( ::fwTools::Failed )
 {
-    this->updating();
+    m_slotUpdate->asyncRun();
 }
 
 //-----------------------------------------------------------------------------

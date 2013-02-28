@@ -7,6 +7,7 @@
 #include <fwData/Histogram.hpp>
 
 #include <fwServices/Base.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwComEd/helper/Array.hpp>
 
@@ -40,6 +41,9 @@ void ProcessingTest::tearDown()
 
 void ProcessingTest::histogramTest()
 {
+    ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
+    activeWorkers->initRegistry();
+
     typedef signed short ImageType;
     const int sizeX = 50;
     const int sizeY = 50;

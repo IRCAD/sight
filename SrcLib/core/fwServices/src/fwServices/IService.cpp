@@ -227,8 +227,8 @@ void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
         OSLM_COM("Receive " << _msg->getLightID() << "::" << _msg->getEventIds()[0]);
+        OSLM_FATAL_IF("IService::receive : "<<this->getID()<<" is stopped", m_globalState != STARTED);
         this->receiving( _msg );
     }
     else
@@ -243,8 +243,8 @@ IService::SharedFutureType IService::update() //throw( ::fwTools::Failed)
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_ASSERT("INVOKING update WHILE ALREADY STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
-        OSLM_ASSERT("INVOKING update WHILE NOT IDLED ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
+        OSLM_ASSERT("INVOKING update WHILE STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
+        OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
 
         PackagedTaskType task( ::boost::bind(&IService::updating, this) );
         UniqueFutureType ufuture = task.get_future();

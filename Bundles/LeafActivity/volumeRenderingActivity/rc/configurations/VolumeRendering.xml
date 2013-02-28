@@ -337,7 +337,7 @@
                                 </config>
                             </service>
 
-                            <service uid="${GENERIC_UID}_computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes">
+                            <service uid="${GENERIC_UID}_computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
                                 <histogramId>${GENERIC_UID}_Histogram</histogramId>
                                 <binsWidth>5.0</binsWidth>
                             </service>
