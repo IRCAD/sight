@@ -7,33 +7,22 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 #include <fwData/Color.hpp>
-#include <fwData/String.hpp>
 
 #include <vtkIO/vtk.hpp>
 
 #include <vtkCommand.h>
 #include <vtkPlaneCollection.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkImageImport.h>
 #include <vtkVolumeProperty.h>
 #include <vtkVolume.h>
-#include <vtkFixedPointVolumeRayCastMapper.h>
-#include <vtkAbstractVolumeMapper.h>
-#include <vtkVolumeTextureMapper2D.h>
-#include <vtkVolumeTextureMapper3D.h>
-#include <vtkVolumeRayCastMapper.h>
-#include <vtkVolumeRayCastCompositeFunction.h>
-#include <vtkVolumeRayCastIsosurfaceFunction.h>
-#include <vtkVolumeRayCastMIPFunction.h>
+#include <vtkSmartVolumeMapper.h>
 #include <vtkBoxWidget2.h>
 #include <vtkBoxRepresentation.h>
 #include <vtkObjectFactory.h>
@@ -142,10 +131,7 @@ Volume::Volume() throw() :
 
     m_volume = vtkVolume::New();
     m_volumeProperty = vtkVolumeProperty::New();
-    m_volumeMapper = vtkVolumeTextureMapper3D::New();
-
-    vtkVolumeTextureMapper3D::SafeDownCast(m_volumeMapper)->SetPreferredMethodToFragmentProgram();
-    vtkVolumeTextureMapper3D::SafeDownCast(m_volumeMapper)->SetSampleDistance (.2);
+    m_volumeMapper = vtkSmartVolumeMapper::New();
 
     m_abortCommand    = AbortCallback::New();
 
