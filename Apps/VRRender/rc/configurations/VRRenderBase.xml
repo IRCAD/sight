@@ -53,7 +53,6 @@
                     <layout>
                         <menuItem name="About" specialAction="ABOUT" />
                         <menuItem name="Acknowledgments" />
-                        <menuItem name="Help Contents" specialAction="HELP" />
                         <separator />
                         <menuItem name="VR-Render Website" />
                     </layout>
@@ -61,7 +60,6 @@
                 <registry>
                     <menuItem sid="action_about" start="yes" />
                     <menuItem sid="action_acknowledgments" start="yes" />
-                    <menuItem sid="action_help" start="yes" />
                     <menuItem sid="action_openBrowser" start="yes" />
                 </registry>
             </service>
@@ -74,10 +72,6 @@
 
             <service uid="action_acknowledgments" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
                 <filename id="Bundles/VRRender_0-9/documentations/ack.html" />
-            </service>
-
-            <service uid="action_help" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowHelpContents" autoConnect="no">
-                <filename id="Bundles/VRRender_0-9/documentations/doc.qhc" />
             </service>
 
             <service uid="action_openBrowser" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
