@@ -55,10 +55,9 @@ void SelectorModel::init()
     m_items.clear();
 
     QStringList headers;
-    headers << "Patient name" << "Patient ID" << "Modality" << "Date started" << "Institution" << "Birthdate"
-            << "Sex" << "Age" << "Referring physician" << "Performing physician " << "Study description"
-            << "Image number" << "Voxel size" << "Patient position";
-
+    headers << "Patient name" << "Modality" << "Acquisition date" << "Image dimension" << "Voxel size"
+            << "Patient position" << "Study description" <<  "Patient ID" << "Age"
+            << "Referring physician / Performing physician " << "Sex" << "Birthdate" << "Institution";
     this->setHorizontalHeaderLabels(headers);
 }
 
@@ -157,6 +156,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
     ::fwMedData::DicomValueType studyUID = study->getInstanceUID();
     StudyUidItemMapType::iterator itr = m_items.find(studyUID);
     QStandardItem* studyRootItem;
+
     if(itr != m_items.end())
     {
         studyRootItem = itr->second;
@@ -184,28 +184,27 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         QStandardItem *institution = new QStandardItem( QString::fromStdString(equipment->getInstitutionName()));
 
         this->setItem(m_studyRowCount, 0, patientName);
-        this->setItem(m_studyRowCount, 1, patientId);
         this->setItem(m_studyRowCount, 3, studyDate);
-        this->setItem(m_studyRowCount, 4, institution);
-        this->setItem(m_studyRowCount, 5, patientBirthdate);
-        this->setItem(m_studyRowCount, 6, patientSex);
-        this->setItem(m_studyRowCount, 7, studyPatientAge);
-        this->setItem(m_studyRowCount, 8, studyReferringPhysicianName);
-        this->setItem(m_studyRowCount, 10, studyDescription);
+        this->setItem(m_studyRowCount, 6, studyDescription);
+        this->setItem(m_studyRowCount, 7, patientId);
+        this->setItem(m_studyRowCount, 8, studyPatientAge);
+        this->setItem(m_studyRowCount, 9, studyReferringPhysicianName);
+        this->setItem(m_studyRowCount, 10, patientSex);
+        this->setItem(m_studyRowCount, 11, patientBirthdate);
+        this->setItem(m_studyRowCount, 12, institution);
 
         m_studyRowCount++;
         studyRootItem = patientName;
         m_items[studyUID] = studyRootItem;
     }
 
-
     QStandardItem *seriesModality = new QStandardItem(QString::fromStdString(series->getModality()));
     std::string seriesDateTime = formatDate(series->getDate()) + " " + formatTime(series->getTime());
     QStandardItem *seriesDate = new QStandardItem( QString::fromStdString(seriesDateTime));
 
-
     QStandardItem* seriesPerformingPhysician =
             this->getInfo< ::fwMedData::DicomValuesType >(series->getPerformingPhysiciansName(), ", ");
+
     QStandardItem * seriesDescription1 = new QStandardItem(QString::fromStdString(series->getDescription()));
     seriesDescription1->setData(QVariant((int)SelectorModel::SERIES), SelectorModel::ITEM_TYPE);
     seriesDescription1->setData(QVariant(QString::fromStdString(series->getID())), UID);
@@ -213,10 +212,10 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 
     int nbRow = studyRootItem->rowCount();
     studyRootItem->setChild(nbRow, 0, seriesDescription1);
-    studyRootItem->setChild(nbRow, 2, seriesModality);
-    studyRootItem->setChild(nbRow, 3, seriesDate);
+    studyRootItem->setChild(nbRow, 1, seriesModality);
+    studyRootItem->setChild(nbRow, 2, seriesDate);
+    studyRootItem->setChild(nbRow, 6, seriesDescription2);
     studyRootItem->setChild(nbRow, 9, seriesPerformingPhysician);
-    studyRootItem->setChild(nbRow, 10, seriesDescription2);
     studyRootItem->setChild(nbRow, 13, new QStandardItem());
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
@@ -227,15 +226,15 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 
         ::fwData::Image::SizeType imageNumber = image->getSize();
         QStandardItem* imageSize = this->getInfo< ::fwData::Image::SizeType>(imageNumber, " x ");
-        studyRootItem->setChild(nbRow, 11, imageSize);
+        studyRootItem->setChild(nbRow, 3, imageSize);
 
         ::fwData::Image::SpacingType voxelSize = roundSpacing(image->getSpacing());
         QStandardItem* voxelSizeItem = this->getInfo< ::fwData::Image::SpacingType>(voxelSize, " x ");
-        studyRootItem->setChild(nbRow, 12, voxelSizeItem);
+        studyRootItem->setChild(nbRow, 4, voxelSizeItem);
 
         ::fwData::Image::OriginType patientPosition = image->getOrigin();
         QStandardItem* originItem = this->getInfo< ::fwData::Image::OriginType>(patientPosition, ", ");
-        studyRootItem->setChild(nbRow, 13, originItem);
+        studyRootItem->setChild(nbRow, 5, originItem);
     }
 
     this->addSeriesIcon(series, seriesDescription1);
