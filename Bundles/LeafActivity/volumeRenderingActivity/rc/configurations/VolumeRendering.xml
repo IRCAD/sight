@@ -6,8 +6,9 @@
         <param name="GENERIC_UID" />
         <param name="SERIESDB" />
         <param name="AS_UID" />
+        <param name="ICON_PATH" />
         <param name="imageUid" />
-        <param name="optionalModelSeriesCompositeUID" />
+        <param name="optionalModelSeriesCompositeUid" />
     </parameters>
     <config>
 
@@ -65,6 +66,7 @@
                         <separator />
                         <menuItem name="Show 3d slice cursor" icon="Bundles/media_0-1/icons/icon-landmark.png" style="check" />
                         <menuItem name="Show mesh" icon="Bundles/media_0-1/icons/icon-3D.png" style="check" />
+                        <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
                         <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" />
                         <menuItem name="Reset box cropping" icon="Bundles/media_0-1/icons/icon-box-reset.png" />
@@ -81,6 +83,7 @@
 
                     <menuItem sid="${GENERIC_UID}_ActionShowSliceCursor" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionShowMesh" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_organManager" start="no" />
 
                     <menuItem sid="${GENERIC_UID}_ActionShowHideBoxWidget" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionResetBoxWidget" start="yes" />
@@ -119,7 +122,6 @@
                 <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
             </item>
 
-
             <!-- GENERIC SCENE DEFINITION -->
             <item key="visuConfig">
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
@@ -129,7 +131,22 @@
                     </service>
 
                     <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
-                        <push src="${optionalModelSeriesCompositeUID}[optionalModelSeriesKey]" key="modelSeries" />
+                        <push src="${optionalModelSeriesCompositeUid}[optionalModelSeriesKey]" key="modelSeries" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_managerModelSeries" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+                        <mode type="stop" />
+                        <config>
+
+                            <object id="modelSeries" type="::fwMedData::ModelSeries">
+                                <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKey" autoConnect="yes">
+                                    <config id="OrganManagerWithSeries" title="Organ manager" />
+                                    <key id="self" pattern="ORGAN_MANAGER_MODELSERIES" />
+                                    <replace pattern="ICON_PATH" val="${ICON_PATH}" />
+                                    <replace pattern="GENERIC_UID" val="${GENERIC_UID}" />
+                                </service>
+                            </object>
+                        </config>
                     </service>
 
                     <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no">
@@ -287,8 +304,9 @@
                         <object uid="${GENERIC_UID}_TFSelections" type="::fwData::Composite" />
                     </item>
 
-                    <item key="optionalModelSeriesKey">
-                        <object uid="${optionalModelSeriesCompositeUID}" src="ref" type="::fwData::Composite" />
+                    <item key="optionalModelSeriesCompositeKey">
+                        <object uid="${optionalModelSeriesCompositeUid}" src="ref" type="::fwData::Composite">
+                        </object>
                     </item>
 
                     <item key="imageKey">
@@ -422,6 +440,7 @@
             <start uid="${GENERIC_UID}_vr" />
             <start uid="${GENERIC_UID}_FieldManager" />
             <start uid="${GENERIC_UID}_cfgNegato" />
+            <start uid="${GENERIC_UID}_managerModelSeries" />
 
         </object>
 
