@@ -111,8 +111,17 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
         BOOST_FOREACH( const RequirementsMinMaxCount::value_type &reqCount, m_requirementCount )
         {
             const MinMaxType &reqMinMax = reqCount.second;
-            unsigned int dataCount = dataCounts[reqCount.first];
-            ok = reqMinMax.first <= dataCount && dataCount <= reqMinMax.second;
+            DataCountType::iterator iter = dataCounts.find(reqCount.first);
+            if (iter != dataCounts.end())
+            {
+                unsigned int dataCount = iter->second;
+                ok = dataCount && reqMinMax.first <= dataCount && dataCount <= reqMinMax.second;
+                dataCounts.erase(iter);
+            }
+            else
+            {
+                ok = (reqMinMax.first == 0);
+            }
             if( !ok )
             {
                 break;
