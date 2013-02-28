@@ -57,7 +57,7 @@ struct AppConfig
  * @author  IRCAD (Research and Development Team).
  * @date    2010.
  *
- * @note The ::gui::action::ConfigActionSrvWithKeySendingConfigTemplate action sends message to be receive by the editor.
+ * @note The ::activities::action::SActivityLauncher action sends message to be receive by the editor.
  */
 class GUIQT_CLASS_API DynamicView : public QObject, public ::gui::view::IView
 {

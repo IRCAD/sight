@@ -73,12 +73,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::gui::action::ConfigActionSrvWithKeySendingConfigTemplate</service>
-        <object>::fwData::Object</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ModifyLayoutActionSrv</service>
         <object>::fwData::Object</object>
     </extension>
