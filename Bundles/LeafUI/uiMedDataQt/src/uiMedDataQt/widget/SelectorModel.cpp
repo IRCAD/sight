@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/math/special_functions/round.hpp>
 #include <boost/regex.hpp>
 
@@ -96,6 +97,7 @@ void SelectorModel::clear()
 std::string formatDate(const std::string& date)
 {
     std::string formatDate = date;
+    ::boost::algorithm::trim(formatDate);
 
     const std::string regexYyear = "[0-9]{4}";
     const std::string regexMonth = "[0-9]{2}";
@@ -123,6 +125,7 @@ std::string formatDate(const std::string& date)
 std::string formatTime(const std::string& time)
 {
     std::string formatTime = time;
+    ::boost::algorithm::trim(formatTime);
 
     const std::string regexHour  = "[0-9]{2}";
     const std::string regexMin   = "[0-9]{2}";
