@@ -5,13 +5,12 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include <fwData/Image.hpp>
 #include <fwData/Float.hpp>
-#include <fwData/Composite.hpp>
+#include <fwData/Histogram.hpp>
+#include <fwData/Point.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/HistogramMsg.hpp>
 
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
@@ -239,23 +238,26 @@ void CurvedHistogram::doUpdate() throw( ::fwTools::Failed)
 
     ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
 
-    Points controlPoints = this->getControlPoints( histogram );
-    Points bSplinePoints = this->getBSplinePoints( controlPoints );
+    if (!histogram->getValues().empty())
+    {
+        Points controlPoints = this->getControlPoints( histogram );
+        Points bSplinePoints = this->getBSplinePoints( controlPoints );
 
-    computePointToPathLengthMapFromBSplinePoints( bSplinePoints );
+        computePointToPathLengthMapFromBSplinePoints( bSplinePoints );
 
-    // Try to remove unnecessary points of the B-Spline points
-    Points resampledBSplinePoints = this->getResampledBSplinePoints( bSplinePoints );
-    bSplinePoints = resampledBSplinePoints;
+        // Try to remove unnecessary points of the B-Spline points
+        Points resampledBSplinePoints = this->getResampledBSplinePoints( bSplinePoints );
+        bSplinePoints = resampledBSplinePoints;
 
-    this->buildBSplineFromPoints( bSplinePoints );
+        this->buildBSplineFromPoints( bSplinePoints );
 
-    // Adjust the layer's position and zValue depending on the associated axis
-    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-    m_layer->setZValue(m_zValue);
+        // Adjust the layer's position and zValue depending on the associated axis
+        m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
+        m_layer->setZValue(m_zValue);
 
-    // Add to the scene the unique item which gather the whole set of rectangle graphic items:
-    this->getScene2DRender()->getScene()->addItem( m_layer );
+        // Add to the scene the unique item which gather the whole set of rectangle graphic items:
+        this->getScene2DRender()->getScene()->addItem( m_layer );
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -517,7 +519,11 @@ CurvedHistogram::Points CurvedHistogram::linearInterpolation( const Point _p1, c
 
 void CurvedHistogram::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    ::fwComEd::HistogramMsg::csptr histoMsg = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
+    if (histoMsg && histoMsg->hasEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED))
+    {
+        this->doUpdate();
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------

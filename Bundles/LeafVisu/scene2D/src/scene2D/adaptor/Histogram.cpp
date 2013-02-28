@@ -5,14 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Point.hpp>
 #include <fwData/Histogram.hpp>
-#include <fwData/Composite.hpp>
+#include <fwData/Point.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/HistogramMsg.hpp>
 
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
@@ -88,60 +85,57 @@ void Histogram::doUpdate() throw( ::fwTools::Failed)
 
     m_layer = new QGraphicsItemGroup();
     ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
-
-    // Update color with opacity
-    QColor color = m_color.color();
-    color.setAlphaF( m_opacity );
-    m_color.setColor( color );
-
-    const float min = histogram->getMinValue();
-    const float binsWidth = histogram->getBinsWidth();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
 
-    // Initialize the path with a start point:
-    // The value preceding the current value that we'll use to build the arcs of the path
-    std::pair< double, double > startPoint = this->mapAdaptorToScene(
+    if (!values.empty())
+    {
+        // Update color with opacity
+        QColor color = m_color.color();
+        color.setAlphaF( m_opacity );
+        m_color.setColor( color );
+
+        const float min = histogram->getMinValue();
+        const float binsWidth = histogram->getBinsWidth();
+
+        // Initialize the path with a start point:
+        // The value preceding the current value that we'll use to build the arcs of the path
+        std::pair< double, double > startPoint = this->mapAdaptorToScene(
                 std::pair<double, double>(min, values[0]), m_xAxis, m_yAxis);
 
-    std::pair<double, double> pair;
+        std::pair<double, double> pair;
 
-    QBrush brush = QBrush(m_color.color());
+        QBrush brush = QBrush(m_color.color());
 
-    // Build the graphic items:
-    const int nbValues = (int)values.size();
-    for(int i = 1; i < nbValues; ++i)
-    {
-        pair = this->mapAdaptorToScene(
-                std::pair<double, double>(min + i * binsWidth, values[i]), m_xAxis, m_yAxis);
+        // Build the graphic items:
+        const int nbValues = (int)values.size();
+        for(int i = 1; i < nbValues; ++i)
+        {
+            pair = this->mapAdaptorToScene(
+                    std::pair<double, double>(min + i * binsWidth, values[i]), m_xAxis, m_yAxis);
 
-        QPainterPath painter( QPointF(startPoint.first, 0) );
-        painter.lineTo( startPoint.first, startPoint.second );
-        painter.lineTo( pair.first, pair.second );
-        painter.lineTo( pair.first, 0 );
+            QPainterPath painter( QPointF(startPoint.first, 0) );
+            painter.lineTo( startPoint.first, startPoint.second );
+            painter.lineTo( pair.first, pair.second );
+            painter.lineTo( pair.first, 0 );
 
-        QGraphicsPathItem* item = new QGraphicsPathItem( painter );
-        item->setPath( painter );
-        item->setBrush( brush );
-        item->setPen( Qt::NoPen );
-        item->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+            QGraphicsPathItem* item = new QGraphicsPathItem( painter );
+            item->setPath( painter );
+            item->setBrush( brush );
+            item->setPen( Qt::NoPen );
+            item->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
 
-        m_layer->addToGroup( item );
-        /*
-        QGraphicsRectItem* rect = new QGraphicsRectItem(startPoint.first, 0, pair.first - startPoint.first, pair.second);
-        rect->setBrush( brush );
-        rect->setPen( Qt::NoPen );
-        m_layer->addToGroup( rect );
-        */
+            m_layer->addToGroup( item );
 
-        startPoint = pair;
+            startPoint = pair;
+        }
+
+        // Adjust the layer's position and zValue depending on the associated axis
+        m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
+        m_layer->setZValue(m_zValue);
+
+        // Add to the scene the unique item which gather the whole set of rectangle graphic items:
+        this->getScene2DRender()->getScene()->addItem( m_layer );
     }
-
-    // Adjust the layer's position and zValue depending on the associated axis
-    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-    m_layer->setZValue(m_zValue);
-
-    // Add to the scene the unique item which gather the whole set of rectangle graphic items:
-    this->getScene2DRender()->getScene()->addItem( m_layer );
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -181,7 +175,11 @@ void Histogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
 
 void Histogram::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    ::fwComEd::HistogramMsg::csptr histoMsg = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
+    if (histoMsg && histoMsg->hasEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED))
+    {
+        this->doUpdate();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------

@@ -5,9 +5,11 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwData/Histogram.hpp>
+#include <fwData/Point.hpp>
+
+#include <fwComEd/HistogramMsg.hpp>
 
 #include <QGraphicsEllipseItem>
 #include <QFont>
@@ -169,9 +171,13 @@ void HistogramCursor::doUpdate() throw( ::fwTools::Failed)
 
 void HistogramCursor::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    if( _msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
+    ::fwComEd::HistogramMsg::csptr histoMsg = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
+    ::scene2D::data::ViewportMsg::csptr viewportMsg = ::scene2D::data::ViewportMsg::dynamicConstCast(_msg);
+    if (histoMsg && histoMsg->hasEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED))
+    {
+        this->doUpdate();
+    }
+    else if( viewportMsg && viewportMsg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
     {
         this->initializeViewSize();
         this->initializeViewportSize();

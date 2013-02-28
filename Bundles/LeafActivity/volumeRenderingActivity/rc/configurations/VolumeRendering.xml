@@ -413,9 +413,9 @@
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_translateUpdater" />
             <start uid="${GENERIC_UID}_mainView" />
-            <start uid="${GENERIC_UID}_computeHistogram" />
             <start uid="${GENERIC_UID}_Scene2D_Shutter" />
             <start uid="${GENERIC_UID}_Scene2D" />
+            <start uid="${GENERIC_UID}_computeHistogram" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
             <start uid="${GENERIC_UID}_LightSwapper" />
             <start uid="${GENERIC_UID}_VRParamSwapper" />

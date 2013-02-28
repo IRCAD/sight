@@ -9,8 +9,6 @@
 
 #include <scene2D/adaptor/IAdaptor.hpp>
 
-#include <fwData/Point.hpp>
-
 #include <QGraphicsTextItem>
 
 #include "scene2D/data/Viewport.hpp"

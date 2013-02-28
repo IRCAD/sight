@@ -9,8 +9,6 @@
 
 #include <scene2D/adaptor/IAdaptor.hpp>
 
-#include <fwData/Histogram.hpp>
-
 
 namespace scene2D
 {
