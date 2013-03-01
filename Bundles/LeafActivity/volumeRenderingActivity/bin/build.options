@@ -1,5 +1,11 @@
 TYPE    = 'bundle'
 VERSION = '0-1'
+
+REQUIREMENTS = [
+    '2DVisualizationActivity_0-1',
+    '3DVisualizationActivity_0-1',
+]
+
 BUNDLES = [
     'gui_0-1'                ,
     'guiQt_0-1'              ,
