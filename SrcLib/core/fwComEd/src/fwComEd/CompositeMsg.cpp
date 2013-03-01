@@ -19,8 +19,6 @@ fwServicesMessageRegisterMacro( ::fwComEd::CompositeMsg );
 namespace fwComEd
 {
 
-std::string CompositeMsg::MODIFIED_KEYS = "MODIFIED_KEYS";
-
 std::string CompositeMsg::ADDED_KEYS = "ADDED_KEYS";
 std::string CompositeMsg::REMOVED_KEYS = "REMOVED_KEYS";
 std::string CompositeMsg::CHANGED_KEYS = "CHANGED_KEYS";
@@ -42,42 +40,6 @@ CompositeMsg::~CompositeMsg() throw()
 
 //-------------------------------------------------------------------------
 
-void CompositeMsg::addModifiedKeysEvent( const std::vector< std::string > & _modifiedKeys )
-{
-    m_modifiedKeys = _modifiedKeys;
-    this->addEvent(MODIFIED_KEYS);
-}
-
-//-------------------------------------------------------------------------
-
-void CompositeMsg::addModifiedKeyEvent( std::string _modifiedKey )
-{
-    if( ! this->hasEvent( MODIFIED_KEYS ) )
-    {
-        this->addEvent( MODIFIED_KEYS );
-    }
-    m_modifiedKeys.push_back(_modifiedKey);
-}
-
-//-------------------------------------------------------------------------
-
-void CompositeMsg::addModifiedKeysEvent( const std::vector< std::string > & _modifiedKeys, std::vector< ::fwData::Object::sptr > _oldObjects )
-{
-    m_modifiedKeys = _modifiedKeys;
-    m_modifiedObjects = _oldObjects;
-    this->addEvent(MODIFIED_KEYS);
-}
-
-//-------------------------------------------------------------------------
-
-std::vector< std::string > CompositeMsg::getModifiedKeys() const
-{
-    SLM_ASSERT("sorry, CompositeMsg does not contained MODIFIED_KEYS event", this->hasEvent(MODIFIED_KEYS));
-    return m_modifiedKeys;
-}
-
-//-------------------------------------------------------------------------
-
 void CompositeMsg::appendAddedKey( std::string _compositeKey, ::fwData::Object::sptr _pNewObject )
 {
     if( ! this->hasEvent( ADDED_KEYS ) )
@@ -88,7 +50,6 @@ void CompositeMsg::appendAddedKey( std::string _compositeKey, ::fwData::Object::
     SLM_ASSERT("This composite key is already register", m_addedKeys->find(_compositeKey) == m_addedKeys->end() );
 
     m_addedKeys->getContainer()[ _compositeKey ] = _pNewObject;
-    addModifiedKeyEvent( _compositeKey );
 }
 
 //-----------------------------------------------------------------------------
@@ -110,7 +71,6 @@ void CompositeMsg::appendRemovedKey( std::string _compositeKey, ::fwData::Object
     SLM_ASSERT("This composite key is already register", m_removedKeys->find(_compositeKey) == m_removedKeys->end() );
 
     m_removedKeys->getContainer()[ _compositeKey ] = _pOldObject;
-    addModifiedKeyEvent( _compositeKey );
 }
 
 //-----------------------------------------------------------------------------
@@ -133,8 +93,6 @@ void CompositeMsg::appendChangedKey( std::string _compositeKey, ::fwData::Object
 
     m_oldChangedKeys->getContainer()[ _compositeKey ] = _pOldObject;
     m_newChangedKeys->getContainer()[ _compositeKey ] = _pNewObject;
-
-    addModifiedKeyEvent( _compositeKey );
 }
 
 //-----------------------------------------------------------------------------

@@ -57,8 +57,6 @@ const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT = "render";
 VtkRenderService::VtkRenderService() throw() :
      m_pendingRenderRequest(false)
 {
-    //addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
-
     m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
     m_slotRender->setWorker(m_associatedWorker);
 
@@ -410,16 +408,27 @@ void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
 
-    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
+    if( compositeMsg )
     {
-        std::vector< std::string > objectIds = compositeMsg->getModifiedKeys();
+        ::fwData::Composite::ContainerType objects;
+
+        ::fwData::Composite::sptr modifiedKeys;
+
+        modifiedKeys = compositeMsg->getAddedKeys();
+        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
+
+        modifiedKeys = compositeMsg->getNewChangedKeys();
+        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
+
+        modifiedKeys = compositeMsg->getRemovedKeys();
+        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
 
         assert ( m_sceneConfiguration );
 
-        BOOST_FOREACH( std::string objectId, objectIds)
+        BOOST_FOREACH( ::fwData::Composite::ContainerType::value_type objectId, objects)
         {
-        std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId);
-        BOOST_FOREACH( ConfigurationType cfg, confVec )
+            std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId.first);
+            BOOST_FOREACH( ConfigurationType cfg, confVec )
             {
                 this->configureObject(cfg);
             }
