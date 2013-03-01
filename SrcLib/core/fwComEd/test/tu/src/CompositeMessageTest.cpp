@@ -6,7 +6,6 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Video.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -54,8 +53,8 @@ void CompositeMessageTest::testCompositeMessage()
     activeWorkers->initRegistry();
 
     const std::string objAUUID = "imageUUID";
-    const std::string service1UUID = "myTestService1";
-    const std::string service2UUID = "myTestService2";
+    const std::string service1UUID = "service1UUID";
+    const std::string service2UUID = "service2UUID";
 
     // build composite
     ::fwRuntime::ConfigurationElement::sptr config = buildConfig() ;
@@ -66,7 +65,7 @@ void CompositeMessageTest::testCompositeMessage()
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
 
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
+    ::fwData::Object::sptr image = compo->getContainer()[objAUUID];
 
     // get service 1
     ::fwComEd::ut::TestService::sptr serviceCompo;
@@ -88,11 +87,9 @@ void CompositeMessageTest::testCompositeMessage()
     helper->connect( compo, serviceCompo, serviceCompo->getObjSrvConnections() );
     helper->connect( compo, serviceCompo2, serviceCompo2->getObjSrvConnections() );
 
-    // notify message
-    std::vector< std::string > modifiedFields;
-    modifiedFields.push_back(objAUUID);
-    ::fwComEd::CompositeMsg::NewSptr compoMsg;
-    compoMsg->addModifiedKeysEvent(modifiedFields);
+    ::fwComEd::CompositeMsg::sptr compoMsg;
+    compoMsg = ::fwComEd::CompositeMsg::New();
+    compoMsg->appendAddedKey(objAUUID, image);
     ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
 
     // Wait a little notification system
@@ -101,15 +98,51 @@ void CompositeMessageTest::testCompositeMessage()
     // test message is received
     CPPUNIT_ASSERT(serviceCompo->getIsUpdatedMessage());
     CPPUNIT_ASSERT(!serviceCompo2->getIsUpdatedMessage());
+    CPPUNIT_ASSERT_EQUAL(::fwComEd::CompositeMsg::ADDED_KEYS, serviceCompo->getMessageEvent());
 
-    ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::dynamicCast(serviceCompo->getMessage());
-    CPPUNIT_ASSERT(compositeMsg);
+    ::fwData::Composite::sptr addedKeys = compoMsg->getAddedKeys();
+    CPPUNIT_ASSERT((*addedKeys).find(objAUUID) != (*addedKeys).end());
+    CPPUNIT_ASSERT_EQUAL(image, (*addedKeys)[objAUUID]);
 
-    std::vector< std::string > vEvent = compositeMsg->getEventIds();
-    CPPUNIT_ASSERT(std::find(vEvent.begin(), vEvent.end(),::fwComEd::CompositeMsg::MODIFIED_KEYS) != vEvent.end());
 
-    std::vector< std::string > vModifiedFields = compositeMsg->getModifiedKeys();
-    CPPUNIT_ASSERT(std::find(vModifiedFields.begin(), vModifiedFields.end(),objAUUID) != vModifiedFields.end());
+    ::fwData::Object::sptr newImage = ::fwData::Image::New();
+    compoMsg = ::fwComEd::CompositeMsg::New();
+    compoMsg->appendChangedKey(objAUUID, image, newImage);
+    ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
+
+    // Wait a little notification system
+    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+
+    // test message is received
+    CPPUNIT_ASSERT(serviceCompo->getIsUpdatedMessage());
+    CPPUNIT_ASSERT(!serviceCompo2->getIsUpdatedMessage());
+    CPPUNIT_ASSERT_EQUAL(::fwComEd::CompositeMsg::CHANGED_KEYS, serviceCompo->getMessageEvent());
+
+    ::fwData::Composite::sptr oldChangedKeys = compoMsg->getOldChangedKeys();
+    ::fwData::Composite::sptr newChangedKeys = compoMsg->getNewChangedKeys();
+    CPPUNIT_ASSERT((*oldChangedKeys).find(objAUUID) != (*oldChangedKeys).end() );
+    CPPUNIT_ASSERT_EQUAL(image, (*oldChangedKeys)[objAUUID]);
+    CPPUNIT_ASSERT((*newChangedKeys).find(objAUUID) != (*newChangedKeys).end() );
+    CPPUNIT_ASSERT_EQUAL(newImage, (*newChangedKeys)[objAUUID]);
+
+
+    compoMsg = ::fwComEd::CompositeMsg::New();
+    compoMsg->appendRemovedKey(objAUUID, image);
+    ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
+
+    // Wait a little notification system
+    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+
+    // test message is received
+    CPPUNIT_ASSERT(serviceCompo->getIsUpdatedMessage());
+    CPPUNIT_ASSERT(!serviceCompo2->getIsUpdatedMessage());
+    CPPUNIT_ASSERT_EQUAL(::fwComEd::CompositeMsg::REMOVED_KEYS, serviceCompo->getMessageEvent());
+
+    ::fwData::Composite::sptr removedKeys = compoMsg->getRemovedKeys();
+    CPPUNIT_ASSERT((*removedKeys).find(objAUUID) != (*removedKeys).end());
+    CPPUNIT_ASSERT_EQUAL(image, (*removedKeys)[objAUUID]);
+
+
 
     // unregister communication channel
     helper->disconnect();
@@ -161,25 +194,25 @@ void CompositeMessageTest::testCompositeMessage()
 
     // composite's service 1
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service = cfg->addConfigurationElement("service");
-    service->setAttributeValue( "uid" , "myTestService1" ) ;
+    service->setAttributeValue( "uid" , "service1UUID" ) ;
     service->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
 
     // start / stop / update on service 1
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > start = cfg->addConfigurationElement("start");
-    start->setAttributeValue( "uid" , "myTestService1" ) ;
+    start->setAttributeValue( "uid" , "service1UUID" ) ;
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > update = cfg->addConfigurationElement("update");
-    update->setAttributeValue( "uid" , "myTestService1" ) ;
+    update->setAttributeValue( "uid" , "service1UUID" ) ;
 
     // composite's service 2
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
-    service2->setAttributeValue( "uid" , "myTestService2" ) ;
+    service2->setAttributeValue( "uid" , "service2UUID" ) ;
     service2->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
 
     // start / stop / update on service 2
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > start2 = cfg->addConfigurationElement("start");
-    start2->setAttributeValue( "uid" , "myTestService2" ) ;
+    start2->setAttributeValue( "uid" , "service2UUID" ) ;
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > update2 = cfg->addConfigurationElement("update");
-    update2->setAttributeValue( "uid" , "myTestService2" ) ;
+    update2->setAttributeValue( "uid" , "service2UUID" ) ;
 
     return cfg ;
 }

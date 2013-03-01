@@ -61,7 +61,6 @@ ImageSlice::ImageSlice() throw()
     //this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
     //this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
     //this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
-    //this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
 }
 
 //------------------------------------------------------------------------------
@@ -138,7 +137,6 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 
 void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getCtrlImage();
 
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -163,13 +161,14 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
 
 void ImageSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = m_ctrlImage.lock();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
-    if ( msg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
+    if ( msg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS )
+         || msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS )
+         || msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS )
+         )
     {
-        SLM_TRACE("Has event MODIFIED_KEYS");
         doUpdate();
     }
 
@@ -214,7 +213,6 @@ void ImageSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
 
 void ImageSlice::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
