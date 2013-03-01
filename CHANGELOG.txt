@@ -1,12 +1,58 @@
+=== fw4spl_0.9.2 from begin of the branch 09/02/2013 ===
+
+ * Data:
+    * Created a new library fwMedData to store structures for medical data.
+        * Added structures to store Patient, Study, Series and Equipment information.
+        * Added a type of data called Series ::fwMedData::Series. It aggregates information (Patient, Study, Series, Equipment, etc) related to a data set.
+        * Added ImageSeries data (inherit from Series) which stores an image.
+        * Added ModelSeries data (inherit from Series) which stores a set of reconstructions.
+        * Added structure to store a set of ::fwMedData::SeriesDB series. It provides basic STL container API.
+    * All new fwMedData data structures are wrapped with camp.
+
+ * Core:
+    * Added the concept of activity (fwActivities library).
+    * Added new factory for fwActivities.
+    * Added a default builder for the data ActivitySeries.
+
+ * Bundle:
+    * Created a bundle 'activity'. It contains
+        * a service ::activities::SLauncherActivity to launch an activity. 
+    * Created a new bundle 'uiMedDataQt'. It contains
+        * a service ::uiMedDataQt::SSelctor to show information about medical data.
+        * a service ::uiMedDataQt::SExportSeries to export series to an ::fwMedData::ActivitySeries defined in the service configuration.
+        * a service ::uiMedDataQt::SSeriesViewer to view series stored in a vector ::fwData::Vector.
+    * Created a new bundle 'LeafActivity'. It contains
+        * a configuration which allows to visualize medical image in 2D.
+        * a configuration which allows to visualize a mesh and optionally a medical image in 3D.
+        * a configuration which allows to blend two medical images (its also contains a transfert function editor).
+        * a configuration which allows to visualize a volume rendering of image and optionally a mesh.
+    * Added new service ::scene2D::processing::SComputeHistogram to compute histogram for an image.
+
+ * Communication:
+    * Added messages SeriesDBMsg, VectorMsg, ModelSeriesMsg on fwComEd library.
+    * Added helpers for SeriesDBMsg, VectorMsg on fwComEd.
+
+ * IO:
+    * Added a reader ::vtkGdcmIO::SeriesDBReader, based on VTK and GDCM, for loading a SeriesDB from DICOM files.
+    * Added a reader ::vtkIO::SeriesDBReader, based on VTK, for loading a SeriesDB from VTK polydata or image'.vtk' files.
+    * Added a service ::uiIO::action::SSeriesDBMerger to read SeriesDB and merges it with the current SeriesDB.
+
+ * Software:
+     - VRRender 0.9.6.
+
+ * Tests:
+     - Added unit tests for fwActivities and fwMedData libraries.
+     - Added unit tests for ::scene2D::processing::SComputeHistogram service. 
+    
 === fw4spl_0.9.1.0 ( diff from fw4spl_0.9.0.2 ) 29/11/2012 ===
 
- * Thread :
+ * Thread:
   * Created new fwThread library that provides few tools to execute asynchronous tasks on different threads.
   * Created fwThread::Worker. This class creates and manages a thread. Thanks to the post method it is possible to execute handlers on.
   * Created fwThread::TaskHandler. This class encapsulates packaged task and it is used to post easily a task on a worker
   * Created fwThread::Timer. The Timer class provides single-shot or repetitive timers. A Timer triggers a function once after a delay, or periodically, inside the worker loop. The delay or the period is defined by the duration attribute.
 
- * Communication :
+ * Communication:
   * Added new fwCom library. This library provides a set of tools dedicated to communication. These communications are based on Signal and slots concept (http://en.wikipedia.org/wiki/Signals_and_slots). fwCom provides the following features :
    * function and method wrapping
    * direct slot calling
@@ -23,12 +69,12 @@
   * The connection of a Slot to a Signal returns a Connection handler. Connection provides a mechanism which allows to temporarily disable a Slot in a Signal. The slot stays connected to the Signal, but it will not be triggered while the Connection is blocked :
   * Add new xxx.vrdc file that are parsed by a variadic_parser (fwCom/scripts/variadic_parser.py) to generate some hpp/hxx files (manipulation of template).
 
- * fwData :
+ * fwData:
   * Updated Object to inherit of HasSignal
   * all objects have a signal objectModifiedSig to emit object modification
 
- * fwServices :
-  * IService :
+ * fwServices:
+  * IService:
    * Updated IService to have an associated worker and thus an associated thread
    * Updated IService to inherit of HasSignal and HasSlots
    * Updated IService to remove old communication system
@@ -36,39 +82,39 @@
    * Added slots start, stop, receive, update, swap on IService. If these methods (receive excepted) are not call in thread associated to the service, the slot version is called.
    * Add IService::getObjSrvConnections method to propose signal/slot connections between a service and his associated object
   * Add new structure ActiveWorkers to register worker in f4s
-  * Added macros for notification : fwServicesNotifyMsgMacro and fwServicesBlockAndNotifyMsgMacro
+  * Added macros for notification: fwServicesNotifyMsgMacro and fwServicesBlockAndNotifyMsgMacro
   * Modify IEditionService::notify to use this macros.
 
- * Log :
+ * Log:
   * Add fwID::getLightId method used for log
   * Initialized spylog in fwTest, to enable logs within unit tests
   * Add communication info message, messages are enable if you define COM_LOG when you compiling f4s
 
- * Tutorials :
+ * Tutorials:
   * Create new tutorial Tuto15MultithreadCtrl that contains a few multithread examples.
 
 === fw4spl_0.9.0.2 ( diff from fw4spl_0.9.0.1 ) 02/11/2012 ===
 
- * General :
+ * General:
   * renamed fwMetaData library to fwAtoms
   * few fixes, refactoring
 
- * Editor :
-  * PatientDBGuiSelectorService : now it is possible to erase an acquisition OR a patient (with key del)
-  * PatientDBGuiSelectorService : image comment edition is now possible from mouse double-clicking on item
+ * Editor:
+  * PatientDBGuiSelectorService: now it is possible to erase an acquisition OR a patient (with key del)
+  * PatientDBGuiSelectorService: image comment edition is now possible from mouse double-clicking on item
 
- * Log :
-  * Update application log : check if default log dir is unreachable before create log file
+ * Log:
+  * Update application log: check if default log dir is unreachable before create log file
 
 === fw4spl_0.9.0.1 ( diff from fw4spl_0.9.0.0 ) 28/09/2012 ===
 
- * Merge :
+ * Merge:
   * Merge from tag fw4spl_0.8.3.6
 
- * General :
+ * General:
   * /!\ Removed WxWidgets support in f4s apps (preserved in TutoGui)
   * /!\ Removed old factory in fwTools
-  * Code cleaning : fix compilation, removed unused code, added missing include, removed verbose logging, added missing export
+  * Code cleaning: fix compilation, removed unused code, added missing include, removed verbose logging, added missing export
   * Add new service ::fwServices::SConfigController to manage AppConfig without using an action
   * Add new introspection tool in fwMetaConversion to find a subOject from an object and a path.
   * ConfigActionSrvWithKeySendingConfigTemplate uses now data reflection to find tabPrefix and tabInfo
@@ -276,7 +322,7 @@
   * Introduced hysteresis offset in fwMemory::policy::ValveDump
   * Updated fwMemory Policy API : added policy factory, added setParam API on dump policies
   * Added service : SDumpService will help to configure the dump policy
-  * Fwxml writer dos not restore dumped image during serialization, just copy dumped file
+  * Fwxml writer does not restore dumped image during serialization, just copy dumped file
   * Try to hard link raw file instead of copy to serialize patient folder
   * Fixed barrier limit to max(freeMemory/2, aliveMemory, 512Mo) during serialization
 
