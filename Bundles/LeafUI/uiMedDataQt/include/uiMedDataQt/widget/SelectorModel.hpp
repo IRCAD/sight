@@ -16,6 +16,7 @@
 #include <QStandardItem>
 
 #include <fwMedData/Series.hpp>
+#include <fwMedData/Study.hpp>
 
 #include "uiMedDataQt/config.hpp"
 
@@ -89,6 +90,9 @@ public:
 
     /// Returns the series item representing the series.
     UIMEDDATAQT_API QStandardItem* findSeriesItem(::fwMedData::Series::sptr series);
+
+    /// Returns the item representing the study.
+    UIMEDDATAQT_API QStandardItem* findStudyItem(::fwMedData::Study::sptr study);
 
 
 private:

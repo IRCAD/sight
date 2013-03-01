@@ -16,7 +16,6 @@
 #include <fwData/Image.hpp>
 
 #include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -367,9 +366,8 @@ QStandardItem* SelectorModel::findSeriesItem(::fwMedData::Series::sptr series)
 {
     QStandardItem* seriesItem;
     ::fwMedData::Study::sptr study = series->getStudy();
-    ::fwMedData::DicomValueType studyInstanceUid = study->getInstanceUID();
+    QStandardItem* studyItem = this->findStudyItem(study);
 
-    QStandardItem* studyItem = m_items[studyInstanceUid];
     int nbRow = studyItem->rowCount();
     for(int row =0; row < nbRow; ++row)
     {
@@ -383,6 +381,17 @@ QStandardItem* SelectorModel::findSeriesItem(::fwMedData::Series::sptr series)
     }
     return seriesItem;
 }
+
+//-----------------------------------------------------------------------------
+
+QStandardItem* SelectorModel::findStudyItem(::fwMedData::Study::sptr study)
+{
+    ::fwMedData::DicomValueType studyInstanceUid = study->getInstanceUID();
+
+    QStandardItem* studyItem = m_items[studyInstanceUid];
+    return studyItem;
+}
+
 //-----------------------------------------------------------------------------
 
 } // namespace widget
