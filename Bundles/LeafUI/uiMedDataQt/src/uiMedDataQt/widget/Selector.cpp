@@ -59,6 +59,11 @@ void Selector::addSeries(::fwMedData::Series::sptr series)
     m_model->addSeries(series);
     QStandardItem * studyItem = m_model->findStudyItem(series->getStudy());
     this->expand(m_model->indexFromItem(studyItem));
+
+    for (int i=0 ; i < m_model->columnCount() ; ++i)
+    {
+        this->resizeColumnToContents(i);
+    }
 }
 
 //-----------------------------------------------------------------------------
