@@ -241,7 +241,7 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
         if(service_exists)
         {
             ::fwServices::IService::sptr service = ::fwServices::get( actionSid ) ;
-            OSLM_ASSERT("Service "<<actionSid<<" must be stopped before unregister action.",service->isStopped());
+            OSLM_WARN_IF("Service "<<actionSid<<" must be stopped before unregister action.",!service->isStopped());
         }
         m_actionSIDToParentSID.erase(actionSid);
     }
