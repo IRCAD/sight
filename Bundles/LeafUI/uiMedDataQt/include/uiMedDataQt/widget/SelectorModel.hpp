@@ -27,7 +27,7 @@ namespace widget
 
 /**
  * @brief   This class represents the Selector Model.
- * @class   SSelector.
+ * @class   SelectorModel
  * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SelectorModel : public QStandardItemModel
@@ -36,16 +36,18 @@ class UIMEDDATAQT_CLASS_API SelectorModel : public QStandardItemModel
 
 public:
 
+    /// Defines the role of the items data (ITEM_TYPE or UID)
     typedef enum
     {
-        ITEM_TYPE = Qt::UserRole, /// Role for the item type (STUDY or SERIES)
-        UID                       /// Role for the fwID of the object
+        ITEM_TYPE = Qt::UserRole, ///< Role for the item type (STUDY or SERIES)
+        UID                       ///< Role for the fwID of the object
     }Role;
 
+    /// Defines item type (STUDY or SERIES), it is used in items data (ITEM_TYPE role).
     typedef enum
     {
-        STUDY = 1,  /// Type to represent Study/Patient
-        SERIES      /// Type to represent Series
+        STUDY = 1,  ///< Type to represent Study/Patient
+        SERIES      ///< Type to represent Series
     }ItemType;
 
     /// Constructor. Inits the model.

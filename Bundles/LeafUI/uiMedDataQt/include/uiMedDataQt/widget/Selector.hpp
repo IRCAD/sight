@@ -30,7 +30,7 @@ namespace widget
 
 /**
  * @brief   This selector represents the Series in a hierarchical view (Study/Patient->Series).
- * @class   SSelector.
+ * @class   Selector
  * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API Selector : public QTreeView
@@ -90,8 +90,8 @@ protected Q_SLOTS:
     /**
      * @brief Slot called when the selection changed. Emits a signal containing the new selected/deselected series. If a
      * Study is selected, no series are added in signal.
-     * @param selection contains the new selection.
-     * @param deselection contains the new deselection.
+     * @param selection contains the new selected items.
+     * @param deselection contains the new deselected items.
      * @note selection and deselection contain only the change of selection. The items always selected or deselected
      * don't appear in this selection/deselection.
      */
@@ -100,13 +100,13 @@ protected Q_SLOTS:
 protected :
 
     /**
-     * @brief Returns the Series associated to the selection.
+     * @brief Returns all the Series associated to the selection.
      * @note If a study is selected, return an empty selection.
      */
     SeriesVectorType getSeries( const QItemSelection & selection );
 
     /**
-     * @brief Returns the Series associated to the selection.
+     * @brief Returns all the Series associated to the selection.
      * @note It ignores the studies.
      */
     SeriesVectorType getSeries(const QModelIndexList& indexList);
@@ -117,9 +117,7 @@ protected :
     /// Returns all the series associated with the study index
     SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& index);
 
-    /**
-     * @brief Deletes the selected items and notify the deleted series.
-     */
+    /// Deletes the selected items and notify the deleted series.
     void deleteSelection();
 
 private:

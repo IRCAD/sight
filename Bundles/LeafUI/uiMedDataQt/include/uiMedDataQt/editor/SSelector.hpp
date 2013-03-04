@@ -62,7 +62,7 @@ protected:
         <selectionId>selections</selectionId>
      </service>
      @endverbatim
-     * - \<selectionId>selections</\selectionId> : defines the fwId of the ::fwData::Vector where the selection
+     * - \b selectionId : defines the fwId of the ::fwData::Vector where the selection
      * will be put or get.
      */
     virtual void configuring() throw (::fwTools::Failed);
@@ -70,7 +70,8 @@ protected:
     /// Fill selector with the series contained in SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
 
-    /** Manages events (::fwComEd::SeriesDBMsg::ADDED_OBJECTS, ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS)
+    /**
+     * @brief Manages events (::fwComEd::SeriesDBMsg::ADDED_OBJECTS, ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS)
      *  This method adds/removes series in the selector widget.
      */
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
@@ -90,8 +91,10 @@ protected Q_SLOTS:
                           QVector< ::fwMedData::Series::sptr > deselection);
 
     /**
-     * @brief Shows a simple message dialog with the current series uid (if a series is double clicked).
-     * @todo  Sends signal to activity launcher.
+     * @brief Send a 'seriesDoubleClicked' signal when the user double click on a series. This signal holds the
+     * clicked series.
+     * @param[in] index index of the clicked item in the selector.
+     * @todo  Manages double click on a study.
      */
     void onDoubleClick(const QModelIndex &index);
 

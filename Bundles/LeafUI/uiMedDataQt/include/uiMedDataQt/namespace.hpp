@@ -18,6 +18,16 @@ namespace uiMedData
 {
 
 /**
+ * @brief       The namespace ::uiMedData::action contains actions interacting on medical data.
+ * @namespace   ::uiMedData::action
+ * @date        2013.
+ *
+ */
+namespace action
+{
+}
+
+/**
  * @brief       The namespace ::uiMedData::widget contains widgets for medical data.
  * @namespace   ::uiMedData::widget
  * @author      IRCAD (Research and Development Team).
@@ -38,5 +48,7 @@ namespace widget
 namespace editor
 {
 }
+
+
 }
 #endif /* __UIMEDDATAQT_NAMESPACE_HPP__ */
