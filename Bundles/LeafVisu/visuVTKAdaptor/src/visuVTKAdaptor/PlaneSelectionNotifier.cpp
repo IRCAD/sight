@@ -10,7 +10,6 @@
 #include <fwComEd/PlaneListMsg.hpp>
 #include <fwComEd/PlaneMsg.hpp>
 
-#include <fwData/None.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 #include <fwData/Boolean.hpp>
@@ -230,15 +229,12 @@ void PlaneSelectionNotifier::deselectPlane()
 {
      SLM_TRACE_FUNC();
      ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-     if ( ! ::fwData::None::dynamicCast(composite->getContainer()[m_planeSelectionId]))
+     if ( composite->find(m_planeSelectionId) != composite->end() )
      {
-
-        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        composite->getContainer()[m_planeSelectionId].reset();
-        composite->getContainer()[m_planeSelectionId] = ::fwData::None::New();
-
         ::fwComEd::CompositeMsg::NewSptr compositeMsg;
         compositeMsg->appendRemovedKey(m_planeSelectionId,(*composite)[m_planeSelectionId]);
+
+        composite->getContainer().erase(m_planeSelectionId);
 
         ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
      }

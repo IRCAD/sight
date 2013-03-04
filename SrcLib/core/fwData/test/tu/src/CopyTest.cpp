@@ -27,7 +27,6 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Model.hpp>
 #include <fwData/Node.hpp>
-#include <fwData/None.hpp>
 #include <fwData/Object.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/PatientDB.hpp>
@@ -128,7 +127,6 @@ void CopyTest::fieldCopyTest()
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Edge);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Model);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Node);
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::None);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Object);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Port);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::ProcessObject);

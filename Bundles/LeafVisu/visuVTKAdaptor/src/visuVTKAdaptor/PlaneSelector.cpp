@@ -16,7 +16,6 @@
 #include <fwServices/IEditionService.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwData/None.hpp>
 
 #include "visuVTKAdaptor/PlaneSelector.hpp"
 
@@ -89,7 +88,7 @@ void PlaneSelector::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    this->selectObject( ::fwData::None::New() );
+    this->selectObject( ::fwData::Object::sptr() );
 }
 
 //------------------------------------------------------------------------------
@@ -105,25 +104,22 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Object::sptr oldObject;
-
-    if ( ! m_currentObject.expired() )
-    {
-        oldObject = m_currentObject.lock() ;
-    }
+    ::fwData::Object::sptr oldObject = m_currentObject.lock();
 
     if (oldObject != object)
     {
-        if (oldObject && !::fwData::None::isNone(oldObject) )
+        if (oldObject)
         {
             ::fwComEd::PlaneMsg::NewSptr deselectMsg;
             deselectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
             ::fwServices::IEditionService::notify( this->getSptr(), oldObject, deselectMsg); //TODO: remove option
         }
 
+        m_currentObject.reset();
+
         if (object)
         {
-            if (!::fwData::None::isNone(object) )
+            if ( object )
             {
                 ::fwComEd::PlaneMsg::NewSptr selectMsg;
                 selectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );

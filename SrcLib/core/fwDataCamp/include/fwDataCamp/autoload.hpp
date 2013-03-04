@@ -26,7 +26,6 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Model.hpp>
-#include <fwData/None.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/PatientDB.hpp>
 #include <fwData/Plane.hpp>
@@ -109,7 +108,6 @@ struct runner
         localDeclarefwDataList();
         localDeclarefwDatalocationSingleFile();
         localDeclarefwDataModel();
-        localDeclarefwDataNone();
         localDeclarefwDataProcessObject();
         localDeclarefwDataTag();
         localDeclarefwDataVideo();
