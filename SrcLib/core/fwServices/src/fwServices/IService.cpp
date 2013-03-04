@@ -227,8 +227,8 @@ void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
-        OSLM_COM("Receive " << _msg->getLightID() << "::" << _msg->getEventIds()[0]);
+        OSLM_COM("Receive " << _msg->getLightID() << "::" << _msg->getEventIds()[0] << " ( "<< this->getLightID() <<" )" );
+        OSLM_FATAL_IF("Service "<<this->getID()<<" is stopped and cannot manages messages.", m_globalState != STARTED);
         this->receiving( _msg );
     }
     else
