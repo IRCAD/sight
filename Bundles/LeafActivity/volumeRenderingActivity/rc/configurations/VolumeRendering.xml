@@ -139,11 +139,15 @@
                         <config>
 
                             <object id="modelSeries" type="::fwMedData::ModelSeries">
-                                <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKey" autoConnect="yes">
-                                    <config id="OrganManagerWithSeries" title="Organ manager" />
-                                    <key id="self" pattern="ORGAN_MANAGER_MODELSERIES" />
-                                    <replace pattern="ICON_PATH" val="${ICON_PATH}" />
-                                    <replace pattern="GENERIC_UID" val="${GENERIC_UID}" />
+                                <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
+                                    <config>
+                                        <appConfig id="OrganManagerWithSeries" >
+                                            <parameters>
+                                                <parameter replace="ORGAN_MANAGER_MODELSERIES" by="self"  />
+                                                <parameter replace="ICON_PATH" by="${ICON_PATH}"  />
+                                            </parameters>
+                                        </appConfig>
+                                    </config>
                                 </service>
                             </object>
                         </config>

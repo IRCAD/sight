@@ -64,30 +64,45 @@
             <item key="myBlendSelectionComposite">
                 <object uid="${GENERIC_UID}_myBlendSelectionComposite" type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_action_blendView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_action_blendView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
                         <state active="true" />
-                        <config id="ImageMix" />
-                        <replace pattern="SELECTED_myBlendSelectionComposite" val="${GENERIC_UID}_myBlendSelectionComposite" />
-                        <replace pattern="WID_VIEW" val="${GENERIC_UID}_WID_VIEW" />
-                        <replace pattern="TF_COMPOSITE_ID" val="${GENERIC_UID}_TFComposite" />
-                        <replace pattern="SELECTED_TF_KEYA" val="tfBackgroundImage" />
-                        <replace pattern="SELECTED_TF_KEYB" val="tfFrontImage" />
+                        <config>
+                            <appConfig id="ImageMix" >
+                               <parameters>
+                                    <parameter replace="SELECTED_myBlendSelectionComposite" by="${GENERIC_UID}_myBlendSelectionComposite"  />
+                                    <parameter replace="WID_VIEW" by="${GENERIC_UID}_WID_VIEW"  />
+                                    <parameter replace="TF_COMPOSITE_ID" by="${GENERIC_UID}_TFComposite"  />
+                                    <parameter replace="SELECTED_TF_KEYA" by="tfBackgroundImage"  />
+                                    <parameter replace="SELECTED_TF_KEYB" by="tfFrontImage"  />
+                               </parameters>
+                            </appConfig>
+                        </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_bgTFView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="yes">
-                        <config id="TransferFunctionEditor" />
-                        <replace val="${backgroundImageUid}" pattern="SELECTED_UID_myImage" />
-                        <replace pattern="WID_VIEW" val="${GENERIC_UID}_WID_VIEW" />
-                        <replace pattern="TF_COMPOSITE_ID" val="${GENERIC_UID}_TFComposite" />
-                        <replace pattern="SELECTED_TF_KEY" val="tfBackgroundImage" />
+                    <service uid="${GENERIC_UID}_action_bgTFView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
+                        <config>
+                            <appConfig id="TransferFunctionEditor" >
+                                <parameters>
+                                    <parameter replace="SELECTED_UID_myImage" by="${backgroundImageUid}"  />
+                                    <parameter replace="WID_VIEW" by="${GENERIC_UID}_WID_VIEW"  />
+                                    <parameter replace="TF_COMPOSITE_ID" by="${GENERIC_UID}_TFComposite"  />
+                                    <parameter replace="SELECTED_TF_KEY" by="tfBackgroundImage"  />
+                                </parameters>
+                            </appConfig>
+                        </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_frontTFView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="yes">
-                        <config id="TransferFunctionEditor" />
-                        <replace val="${frontImageUid}" pattern="SELECTED_UID_myImage" />
-                        <replace pattern="WID_VIEW" val="${GENERIC_UID}_WID_VIEW" />
-                        <replace pattern="TF_COMPOSITE_ID" val="${GENERIC_UID}_TFComposite" />
-                        <replace pattern="SELECTED_TF_KEY" val="tfFrontImage" />
+                    <service uid="${GENERIC_UID}_action_frontTFView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
+                        <config>
+                            <appConfig id="TransferFunctionEditor" >
+                                <parameters>
+                                    <parameter replace="SELECTED_UID_myImage" by="${frontImageUid}"  />
+                                    <parameter replace="WID_VIEW" by="${GENERIC_UID}_WID_VIEW"  />
+                                    <parameter replace="TF_COMPOSITE_ID" by="${GENERIC_UID}_TFComposite"  />
+                                    <parameter replace="SELECTED_TF_KEY" by="tfFrontImage"  />
+                                </parameters>
+                            </appConfig>
+                        </config>
                     </service>
                     
                     <item key="backgroundImage">

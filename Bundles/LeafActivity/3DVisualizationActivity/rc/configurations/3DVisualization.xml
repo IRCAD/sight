@@ -102,10 +102,15 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
-                <config id="OrganManagerWithSeries" />
-                <replace pattern="ORGAN_MANAGER_MODELSERIES" val="${modelSeriesUid}" />
-                <replace pattern="ICON_PATH" val="${ICON_PATH}" />
+            <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
+                <config>
+                    <appConfig id="OrganManagerWithSeries" >
+                        <parameters>
+                            <parameter replace="ORGAN_MANAGER_MODELSERIES" by="${modelSeriesUid}"  />
+                            <parameter replace="ICON_PATH" by="${ICON_PATH}"  />
+                        </parameters>
+                    </appConfig>
+                </config>
             </service>
 
             <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
