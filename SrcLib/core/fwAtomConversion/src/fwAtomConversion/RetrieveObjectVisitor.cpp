@@ -29,16 +29,19 @@
 #include "fwAtomConversion/RetreiveObjectVisitor.hpp"
 
 #include "fwAtomConversion/camp/ValueMapper.hpp"
+#include "fwAtomConversion/exception/NullPointer.hpp"
+#include "fwAtomConversion/exception/ObjectNotFound.hpp"
 
 namespace fwAtomConversion
 {
 
 struct RetreiveCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
 {
-
     std::string m_subObjPath;
+    PathVisitor::sptr m_pathVisitor;
 
-    RetreiveCampValueVisitor( const std::string & subObjPath ) : m_subObjPath(subObjPath)
+    RetreiveCampValueVisitor( const std::string & subObjPath, PathVisitor::sptr pathVisitor) :
+        m_subObjPath(subObjPath), m_pathVisitor(pathVisitor)
     {}
 
     ::fwData::Object::sptr operator()(camp::NoType value)
@@ -50,30 +53,22 @@ struct RetreiveCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::s
 
     ::fwData::Object::sptr operator()(bool value)
     {
-        ::fwData::Boolean::NewSptr val;
-        val->value() = value;
-        return val;
+        return ::fwData::Boolean::New(value);
     }
 
     ::fwData::Object::sptr operator()(long value)
     {
-        ::fwData::Integer::NewSptr val;
-        val->value() = value;
-        return val;
+        return ::fwData::Integer::New(value);
     }
 
     ::fwData::Object::sptr operator()(double value)
     {
-        ::fwData::Float::NewSptr val;
-        val->value() = value;
-        return val;
+        return ::fwData::Float::New(value);
     }
 
     ::fwData::Object::sptr operator()(const std::string& value)
     {
-        ::fwData::String::NewSptr val;
-        val->value() = value;
-        return val;
+        return ::fwData::String::New(value);
     }
 
     ::fwData::Object::sptr operator()(const camp::EnumObject& value)
@@ -95,6 +90,7 @@ struct RetreiveCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::s
                 ::fwData::Object * ptr = value.get< ::fwData::Object * >();
                 ::fwAtomConversion::RetreiveObjectVisitor visitor( ptr->getSptr(), m_subObjPath );
                 val = visitor.retreive();
+                m_pathVisitor->merge(visitor.getPathVisitor());
             }
             else
             {
@@ -104,7 +100,9 @@ struct RetreiveCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::s
         }
         else
         {
-            OSLM_FATAL( "try visiting class= '" << metaclass.name() << " but we have a null pointer" );
+            FW_RAISE_EXCEPTION( ::fwAtomConversion::exception::NullPointer(
+                    "Object '" + metaclass.name() + "' not instanced.")
+            );
         }
 
         return val;
@@ -113,11 +111,12 @@ struct RetreiveCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::s
 
 //-----------------------------------------------------------------------------
 
-RetreiveObjectVisitor::RetreiveObjectVisitor
-( ::fwData::Object::sptr object, const std::string & subObjPath )
-: m_object(object), m_subObjPath(subObjPath), m_newSubObjPath(subObjPath)
+RetreiveObjectVisitor::RetreiveObjectVisitor( ::fwData::Object::sptr object, const std::string & subObjPath ) :
+        m_object(object), m_subObjPath(subObjPath),
+        m_newSubObjPath(subObjPath),
+        m_pathVisitor(::boost::make_shared<PathVisitor>(subObjPath))
 {
-    SLM_FATAL_IF("Cannot retreive an object with an empty path.",subObjPath.empty());
+    SLM_FATAL_IF("Cannot retrieve an object with an empty path.", subObjPath.empty());
     m_campObj = camp::UserObject( object.get() );
     m_propertyName = this->getNextPropertyName();
 }
@@ -132,14 +131,14 @@ RetreiveObjectVisitor::~RetreiveObjectVisitor()
 void RetreiveObjectVisitor::visit(const camp::SimpleProperty& property)
 {
     SLM_TRACE_FUNC();
-
     const std::string name ( property.name() );
     OSLM_DEBUG( "SimpleProperty name =" << name );
     if( name == m_propertyName )
     {
+        m_pathVisitor->addObject(name);
         OSLM_DEBUG( "Ok SimpleProperty name =" << name );
         ::camp::Value elemValue = property.get( m_campObj );
-        RetreiveCampValueVisitor visitor(m_newSubObjPath);
+        RetreiveCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
     }
 }
@@ -161,6 +160,7 @@ void RetreiveObjectVisitor::visit(const camp::MapProperty& property)
     OSLM_DEBUG( "MapProperty name =" << name);
     if( name == m_propertyName )
     {
+        m_pathVisitor->addObject(name);
         OSLM_DEBUG( "Ok MapProperty name =" << name );
         std::string key = this->getNextPropertyName();
 
@@ -172,13 +172,13 @@ void RetreiveObjectVisitor::visit(const camp::MapProperty& property)
             mapKey = value.first.to< std::string >();
             if ( key == mapKey )
             {
-                RetreiveCampValueVisitor visitor( m_newSubObjPath );
+                m_pathVisitor->addObject(key);
+                RetreiveCampValueVisitor visitor( m_newSubObjPath, m_pathVisitor );
                 m_subObject = value.second.visit( visitor );
             }
         }
     }
 }
-
 
 //-----------------------------------------------------------------------------
 
@@ -189,14 +189,16 @@ void RetreiveObjectVisitor::visit(const camp::ArrayProperty& property)
     OSLM_DEBUG( "ArrayProperty name =" << name );
     if( name == m_propertyName )
     {
+        m_pathVisitor->addObject(name);
         OSLM_DEBUG( "Ok ArrayProperty name =" << name );
         std::string key = this->getNextPropertyName();
 
         size_t index = ::boost::lexical_cast< size_t >( key );
 
         ::camp::Value elemValue = property.get( m_campObj, index );
-        RetreiveCampValueVisitor visitor(m_newSubObjPath);
+        RetreiveCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
+        m_pathVisitor->addObject(key);
     }
 }
 
@@ -209,9 +211,10 @@ void RetreiveObjectVisitor::visit(const camp::UserProperty& property)
     OSLM_DEBUG( "UserProperty name =" << name );
     if( name == m_propertyName )
     {
+        m_pathVisitor->addObject(name);
         OSLM_DEBUG( "Ok UserProperty name =" << name );
         ::camp::Value elemValue = property.get( m_campObj );
-        RetreiveCampValueVisitor visitor(m_newSubObjPath);
+        RetreiveCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
     }
 }
@@ -261,15 +264,37 @@ std::string RetreiveObjectVisitor::getNextPropertyName()
     return m_subObject;
 }
 
+////-----------------------------------------------------------------------------
+
+bool RetreiveObjectVisitor::objectsFound() const
+{
+    return m_pathVisitor->allObjectsFound();
+}
+
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr getSubObject( ::fwData::Object::sptr object, const std::string & subObjPath )
+::fwData::Object::sptr getSubObject( ::fwData::Object::sptr object,
+                                     const std::string & subObjPath,
+                                     bool raiseException )
 {
     SLM_FATAL_IF( "SubObjPath is empty.", subObjPath.empty() );
     SLM_FATAL_IF( "SubObjPath not start with '@'.", subObjPath[0] != '@' );
     const std::string path =  subObjPath.substr( 1 );
     ::fwAtomConversion::RetreiveObjectVisitor visitor( object, path );
-    ::fwData::Object::sptr subObject = visitor.retreive();
+    ::fwData::Object::sptr subObject;
+    try
+    {
+        subObject = visitor.retreive();
+    }
+    catch(const ::fwAtomConversion::exception::NullPointer& np)
+    {
+        FW_FORWARD_EXCEPTION_IF(np, raiseException);
+    }
+
+    FW_RAISE_EXCEPTION_IF(
+            ::fwAtomConversion::exception::ObjectNotFound("Object '" + subObjPath + "' not found."),
+            !visitor.objectsFound() && raiseException);
+
     return subObject;
 }
 

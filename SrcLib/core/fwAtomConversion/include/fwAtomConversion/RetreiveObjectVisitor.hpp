@@ -7,12 +7,46 @@
 #ifndef  __FWATOMCONVERSION_RETREIVEOBJECTVISITOR_HPP__
 #define  __FWATOMCONVERSION_RETREIVEOBJECTVISITOR_HPP__
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+
 #include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
 #include "fwAtomConversion/config.hpp"
 
 namespace fwAtomConversion
 {
+
+struct PathVisitor
+{
+    typedef ::boost::shared_ptr<PathVisitor> sptr;
+    typedef std::vector<std::string> ObjectsNamesType;
+
+    ObjectsNamesType m_vectObj;
+    ObjectsNamesType m_vectObjFound;
+
+    PathVisitor(const std::string& seshatPath)
+    {
+        ::boost::split( m_vectObj, seshatPath, ::boost::is_any_of("."));
+    }
+
+    void merge(PathVisitor::sptr pathVisitor)
+    {
+        const ObjectsNamesType& vectObjFound =  pathVisitor->m_vectObjFound;
+        m_vectObjFound.reserve(m_vectObjFound.size() + vectObjFound.size());
+        m_vectObjFound.insert(m_vectObjFound.end(), vectObjFound.begin(), vectObjFound.end());
+    }
+
+    void addObject(const std::string& objPath)
+    {
+        m_vectObjFound.push_back(objPath);
+    }
+
+    bool allObjectsFound() const
+    {
+        return m_vectObj == m_vectObjFound;
+    }
+};
 
 /**
  * @class   RetreiveObjectVisitor
@@ -40,6 +74,13 @@ public:
     /// Launches visit process and return the subObject given by m_subObjPath
     FWATOMCONVERSION_API ::fwData::Object::sptr retreive();
 
+    FWATOMCONVERSION_API bool objectsFound() const;
+
+    PathVisitor::sptr getPathVisitor() const
+    {
+        return m_pathVisitor;
+    }
+
 private :
 
     /// Returns after visit process, the subObject given by m_subObjPath
@@ -47,7 +88,7 @@ private :
 
     /*
      * @brief Parses m_newSubObjPath, returns the substring until the first dot ( property name, key map or
-     * index array ) and udaptes m_newSubObjPath.
+     * index array ) and updates m_newSubObjPath.
      */
     std::string getNextPropertyName();
 
@@ -66,20 +107,27 @@ private :
     /// Reflection in camp world of m_object
     ::camp::UserObject m_campObj;
 
-    /// Object retreive after introspection
+    /// Object retrieve after introspection
     ::fwData::Object::sptr m_subObject;
+
+protected:
+
+    PathVisitor::sptr m_pathVisitor;
 
 };
 
 /// Returns the subObject of an object given by subObjPath thanks to camp reflection
 FWATOMCONVERSION_API ::fwData::Object::sptr getSubObject( ::fwData::Object::sptr object,
-                                                          const std::string & subObjPath );
+                                                          const std::string & subObjPath,
+                                                          bool raiseException = false);
 
 /// Returns the subObject of an object given by subObjPath thanks to camp reflection
 template< class DATATYPE >
-SPTR(DATATYPE) getSubObject( ::fwData::Object::sptr object, const std::string & subObjPath )
+SPTR(DATATYPE) getSubObject( ::fwData::Object::sptr object,
+                             const std::string & subObjPath,
+                             bool raiseException = false )
 {
-    ::fwData::Object::sptr subObject = getSubObject( object, subObjPath );
+    ::fwData::Object::sptr subObject = getSubObject( object, subObjPath, raiseException );
     SPTR(DATATYPE) casteDdata = ::boost::dynamic_pointer_cast<DATATYPE>( subObject );
     return casteDdata;
 }
