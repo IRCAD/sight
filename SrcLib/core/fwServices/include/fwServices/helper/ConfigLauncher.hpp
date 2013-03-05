@@ -65,14 +65,10 @@ public :
      */
     FWSERVICES_API virtual void parseConfig(const ::fwServices::IService::ConfigType& config);
 
-    /**
-     * @brief Read the configuration and show the parameters view.
-     */
+    /// Launch Appconfig and connect service with config root object
     FWSERVICES_API virtual void startConfig( SPTR(::fwServices::IService) srv );
 
-    /**
-     * @brief Close the parameters view.
-     */
+    /// Stop/destroy AppConfig and disconnect connection with config root object
     FWSERVICES_API virtual void stopConfig();
 
     /// Check if AppConfig can be launched.
@@ -98,6 +94,11 @@ private:
 
     /// helper to disconnect config root
     void disconnectToConfigRoot();
+
+    /// Defines a special key to defines the associated object him self
+    static const std::string s_SELF_KEY;
+    /// Defines a special key to defines the generated uid
+    static const std::string s_GENERIC_UID_KEY;
 
 };
 
