@@ -85,21 +85,21 @@ bool has( ::fwData::Object::sptr obj , const std::string &srvType)
 
 void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service )
 {
-    return ::fwServices::OSR::get()->registerService(obj, service);
+    ::fwServices::OSR::get()->registerService(obj, service);
 }
 
 //------------------------------------------------------------------------------
 
 void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
 {
-    return ::fwServices::OSR::get()->swapService(objDst, service);
+    ::fwServices::OSR::get()->swapService(objDst, service);
 }
 
 //------------------------------------------------------------------------------
 
 void unregisterService(  ::fwServices::IService::sptr service )
 {
-    return ::fwServices::OSR::get()->unregisterService(service);
+    ::fwServices::OSR::get()->unregisterService(service);
 }
 
 } //namespace OSR
