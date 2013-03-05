@@ -13,9 +13,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
-#include <fwActivities/registry/Activities.hpp>
+#include <fwServices/helper/ConfigLauncher.hpp>
 
 #include "gui/export.hpp"
 
@@ -112,40 +110,11 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-    /**
-     * @brief Read the configuration and show the parameters view.
-     */
-    virtual void startConfig();
-
-    /**
-     * @brief Close the parameters view.
-     */
-    virtual void stopConfig();
-
-
-    /// helper to connect tp config root
-    void connectToConfigRoot();
-
-    /// helper to disconnect tp config root
-    void disconnectToConfigRoot();
-
-    /// Update the action service executable state.
-    void updateExecutableState();
-
-    /// To manage connection to the config root
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
-
-    ::fwActivities::registry::ActivityAppConfig m_appConfig;
-
-    /// to know if AppConfig is running
-    bool m_configIsRunning;
-
-    // config manager
-    ::fwServices::AppConfigManager::sptr m_appConfigManager;
+    ::fwServices::helper::ConfigLauncher::sptr m_configLauncher;
 };
 
-} //action
-} // GUI
+} // action
+} // gui
 
 
 #endif // _GUI_ACTION_SCONFIGLAUNCHER_HPP_
