@@ -319,12 +319,16 @@
                             <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
 
                             <service uid="${GENERIC_UID}_cfgNegato" impl="::fwServices::SConfigController" autoConnect="no">
-                                <config id="2DNegatoWithTF" />
-                                <key id="self" pattern="imageUid" />
-                                <replace pattern="orientation" val="axial" />
-                                <replace pattern="TFSelectionsUid" val="${GENERIC_UID}_TFSelections" />
-                                <replace pattern="selectedTFKey" val="SelectedTF" />
-                                <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato" />
+                                <config>
+                                    <appConfig id="2DNegatoWithTF" >
+                                        <parameters>
+                                            <parameter replace="imageUid" by="self"  />
+                                            <parameter replace="TFSelectionsUid" by="${GENERIC_UID}_TFSelections"  />
+                                            <parameter replace="selectedTFKey" by="SelectedTF"  />
+                                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato"  />
+                                        </parameters>
+                                    </appConfig>
+                                </config>
                             </service>
 
                             <service uid="${GENERIC_UID}_ActionHideCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">

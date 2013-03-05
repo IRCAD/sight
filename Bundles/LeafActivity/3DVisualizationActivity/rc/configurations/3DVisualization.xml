@@ -114,11 +114,16 @@
             </service>
 
             <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
-                <config id="3DNegatoWithAcq" />
-                <key id="OptionalInputImageCompositeKey" pattern="InputImageCompositeUID" />
-                <key id="modelSeriesKey" pattern="modelSeriesUid" />
-                <replace pattern="orientation" val="axial" />
-                <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato1" />
+                <config>
+                    <appConfig id="3DNegatoWithAcq" >
+                        <parameters>
+                            <parameter replace="InputImageCompositeUID" by="@values.OptionalInputImageCompositeKey"  />
+                            <parameter replace="modelSeriesUid" by="@values.modelSeriesKey"  />
+                            <parameter replace="orientation" by="axial"  />
+                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato1"  />
+                        </parameters>
+                    </appConfig>
+                </config>
             </service>
 
 
@@ -132,17 +137,27 @@
                     <object id="OptionalInputImageKey" type="::fwData::Image">
 
                       <service uid="${GENERIC_UID}_cfgNegato2" type="::fwServices::IController" impl="::fwServices::SConfigController" autoConnect="no">
-                        <config id="2DNegato" />
-                        <key id="self" pattern="imageUid" />
-                        <replace pattern="orientation" val="frontal" />
-                        <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato2" />
+                          <config>
+                              <appConfig id="2DNegato" >
+                                  <parameters>
+                                      <parameter replace="imageUid" by="self"  />
+                                      <parameter replace="orientation" by="frontal"  />
+                                      <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato2"  />
+                                  </parameters>
+                              </appConfig>
+                          </config>
                       </service>
 
                       <service uid="${GENERIC_UID}_cfgNegato3" type="::fwServices::IController" impl="::fwServices::SConfigController" autoConnect="no">
-                        <config id="2DNegato" />
-                        <key id="self" pattern="imageUid" />
-                        <replace pattern="orientation" val="sagittal" />
-                        <replace pattern="WID_PARENT" val="${GENERIC_UID}_view_negato3" />
+                          <config>
+                              <appConfig id="2DNegato" >
+                                  <parameters>
+                                      <parameter replace="imageUid" by="self"  />
+                                      <parameter replace="orientation" by="sagittal"  />
+                                      <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato3"  />
+                                  </parameters>
+                              </appConfig>
+                          </config>
                       </service>
 
 
