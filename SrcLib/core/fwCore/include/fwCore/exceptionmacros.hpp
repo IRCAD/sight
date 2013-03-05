@@ -62,6 +62,9 @@
 # define __FWCORE_EXCEPT_FORWARD_EXCEPTION(excep)       \
     BOOST_THROW_EXCEPTION(excep)
 
+# define __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond)    \
+    __FWCORE_IF(cond, BOOST_THROW_EXCEPTION(excep);)
+
 // -----------------------------------------------------------------------------
 
 # ifdef FWEXCEPTIONS_AS_ASSERTS
@@ -71,10 +74,16 @@
     OSLM_ASSERT(__FWCORE_EXCEPTION_INFO(excep), false)
 
 #  undef __FWCORE_EXCEPT_FORWARD_EXCEPTION
-#  define __FWCORE_EXCEPT_FORWARD_EXCEPTION(exception)          \
+#  define __FWCORE_EXCEPT_FORWARD_EXCEPTION(excep)           \
+    OSLM_ASSERT(                                             \
+        "[Forwarded] " << __FWCORE_EXCEPTION_INFO (excep),   \
+        false)
+
+#  undef __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF
+#  define __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond)     \
     OSLM_ASSERT(                                                \
         "[Forwarded] " << __FWCORE_EXCEPTION_INFO (excep),      \
-        false)
+        cond)
 
 # endif
 
@@ -102,6 +111,10 @@
 
 # define FW_FORWARD_EXCEPTION(excep) __FWCORE_EXPR_BLOCK(       \
         __FWCORE_EXCEPT_FORWARD_EXCEPTION(excep);               \
+        )
+
+# define FW_FORWARD_EXCEPTION_IF(excep, cond) __FWCORE_EXPR_BLOCK(       \
+        __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond);               \
         )
 
 #endif  // _FWCORE_EXCEPTION_MACRO_HPP_
