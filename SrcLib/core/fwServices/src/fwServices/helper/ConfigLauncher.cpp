@@ -19,6 +19,9 @@ namespace helper
 {
 
 //------------------------------------------------------------------------------
+const std::string ConfigLauncher::s_SELF_KEY = "self";
+const std::string ConfigLauncher::s_GENERIC_UID_KEY = "GENERIC_UID";
+//------------------------------------------------------------------------------
 
 ConfigLauncher::ConfigLauncher() : m_configIsRunning(false)
 {}
@@ -58,14 +61,14 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv)
 
     // Generate generic UID
     const std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( srv->getID() );
-    replaceMap["GENERIC_UID"] = genericUidAdaptor;
+    replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
     BOOST_FOREACH(const AppConfig::ActivityAppConfigParamsType::value_type& param, m_appConfig.parameters)
     {
         if(!param.isSeshat())
         {
             std::string by = param.by;
-            if(by == "self")
+            if(by == ConfigLauncher::s_SELF_KEY)
             {
                 by = currentObj->getID();
             }
