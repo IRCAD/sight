@@ -28,12 +28,16 @@ ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType &config) :
 ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
     id(config.get<std::string>("<xmlattr>.id"))
 {
-    const ConfigType &configParameters = config.get_child("parameters");
-    BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+    if(config.count("parameters") == 1 )
     {
-        ActivityAppConfigParam parameter( v.second );
-        parameters.push_back( parameter );
+        const ConfigType &configParameters = config.get_child("parameters");
+        BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+        {
+            ActivityAppConfigParam parameter( v.second );
+            parameters.push_back( parameter );
+        }
     }
+    OSLM_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
 }
 
 //-----------------------------------------------------------------------------
