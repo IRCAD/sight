@@ -126,7 +126,7 @@
         <desc>4-8 image</desc>
         <icon>Icon Test5</icon>
         <requirements>
-            <requirement name="param1" type="::fwData::Image" minOccurs="4" maxOccurs="8"/>
+            <requirement name="param1" type="::fwData::Image" minOccurs="4" maxOccurs="8">
               <key>key1</key>
               <key>key2</key>
               <key>key3</key>
