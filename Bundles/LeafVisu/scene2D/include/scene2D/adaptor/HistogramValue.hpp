@@ -20,7 +20,7 @@ namespace adaptor
 
 
 /**
- * @brief
+ * @brief IAdaptor implementation to show the histogram values clicked by mouse.
  *
  *
  * \b xAxis     : see ::scene2D::adaptor::IAdaptor

@@ -9,6 +9,8 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Histogram.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -67,9 +69,13 @@ void SComputeHistogram::updating() throw ( ::fwTools::Failed )
 {
     ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
 
+    ::fwData::mt::ObjectReadLock imgLock(image);
+
     if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwData::Histogram::sptr histogram = this->getHistogram();
+
+        ::fwData::mt::ObjectWriteLock lock(histogram);
 
         ComputeHistogramFunctor::Parameter param;
         param.image = image;

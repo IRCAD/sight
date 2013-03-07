@@ -30,8 +30,9 @@ const float Histogram::SCALE = 1.1f; // vertical scaling factor applied at each 
 
 //---------------------------------------------------------------------------------------------------------
 
-Histogram::Histogram() throw() : m_color("green"), m_opacity( 0.80f )
+Histogram::Histogram() throw() : m_color("green"), m_opacity( 0.80f ), m_scale(1.0)
 {
+    m_layer = NULL;
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -83,12 +84,14 @@ void Histogram::doUpdate() throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    m_layer = new QGraphicsItemGroup();
+    this->doStop();
+
     ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
 
     if (!values.empty())
     {
+        m_layer = new QGraphicsItemGroup();
         // Update color with opacity
         QColor color = m_color.color();
         color.setAlphaF( m_opacity );
@@ -193,7 +196,12 @@ void Histogram::doSwap() throw( ::fwTools::Failed)
 
 void Histogram::doStop() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    if (m_layer)
+    {
+        this->getScene2DRender()->getScene()->removeItem(m_layer);
+        delete m_layer;
+        m_layer = NULL;
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------

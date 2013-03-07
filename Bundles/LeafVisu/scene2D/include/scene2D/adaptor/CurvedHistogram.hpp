@@ -16,32 +16,33 @@ namespace adaptor
 {
 
 /**
- * @brief   IAdaptor implementation for histogram data.
+ * @brief IAdaptor implementation for histogram data.
  *
  * Configuration example:
  *
    @verbatim
    <adaptor id="histogram" class="::scene2D::adaptor::CurvedHistogram" objectId="myCurvedHistogram">
-       <config xAxis="xAxis" yAxis="axeCurvedHistogramY" color="gray" opacity="0.25" zValue="5"/>
+       <config xAxis="xAxis" yAxis="axeCurvedHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25"
+               zValue="6" histogramPointUID="HistogramPointID" borderWidth="2.0" />
    </adaptor>
    @endverbatim
  *
- * \b color (mandatory)     : the background color of the histogram
- *
- * \b opacity (mandatory)   : the opacity of the histogram (from 0.0 to 1.0)
- *
- * \b xAxis                 : see ::scene2D::adaptor::IAdaptor
- *
- * \b yAxis                 : see ::scene2D::adaptor::IAdaptor
- *
- * \b zValue                : see ::scene1D::adaptor::IAdaptor
+ * - \b innerColor         : the background color of the histogram
+ * - \b borderColor        : the color of the histogram border
+ * - \b borderWidth        : the width of the histogram border
+ * - \b histogramPointUID  : the fwId of the histogram point. It is used with HistogramCursor and/or HistogramValue
+ *      adaptor to show information at the current histogram index pointed by the mouse.
+ * - \b opacity            : the opacity of the histogram (from 0.0 to 1.0)
+ * - \b xAxis              : see ::scene2D::adaptor::IAdaptor
+ * - \b yAxis              : see ::scene2D::adaptor::IAdaptor
+ * - \b zValue             : see ::scene2D::adaptor::IAdaptor
  */
 class SCENE2D_CLASS_API CurvedHistogram : public ::scene2D::adaptor::IAdaptor
 {
     public:
         fwCoreServiceClassDefinitionsMacro( (CurvedHistogram)( ::scene2D::adaptor::IAdaptor) );
 
-        typedef std::pair< double, double > Point;
+        typedef ::scene2D::adaptor::IAdaptor::Point2DType Point;
         typedef std::vector< Point > Points;
 
         SCENE2D_API CurvedHistogram() throw();
@@ -77,9 +78,6 @@ class SCENE2D_CLASS_API CurvedHistogram : public ::scene2D::adaptor::IAdaptor
 
         /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
         void updateCurrentPoint( ::scene2D::data::Event::sptr _event );
-
-        /// Append the vector of points to the path
-        void appendPointsToPath( QPainterPath & _path, Points & _points );
 
         /// Build and add a part of histogram's border, according to the given path.
         void addBorderItem( const QPainterPath & _path );
@@ -118,7 +116,7 @@ class SCENE2D_CLASS_API CurvedHistogram : public ::scene2D::adaptor::IAdaptor
         // build thanks to painters like this one, because it improves significantly the rendering performance.
         // This painter path will be used to provide information about the hsitogram: for instance, it will help 
         // to retrieve the coordinates of path's points.
-        QPainterPath m_painterPath;
+        QPainterPath * m_painterPath;
 
         /// Width of histram's border
         float m_borderWidth;

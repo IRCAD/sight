@@ -166,8 +166,7 @@
 
                     <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="myHistogram">
                         <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray"
-                            opacity="0.25" zValue="6" histogramPointUID="${GENERIC_UID}_HistogramPoint"
-                            borderWidth="2.0" />
+                            opacity="0.25" zValue="6" borderWidth="2.0" />
                     </adaptor>
 
                 </scene>
@@ -219,10 +218,6 @@
 
             <item key="myHistogram">
                 <object uid="${GENERIC_UID}_Histogram" type="::fwData::Histogram" />
-            </item>
-
-            <item key="myHistogramPoint">
-                <object uid="${GENERIC_UID}_HistogramPoint" type="::fwData::Point" />
             </item>
 
             <item key="myImage">
