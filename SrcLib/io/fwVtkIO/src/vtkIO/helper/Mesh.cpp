@@ -59,18 +59,21 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             idList = cell->GetPointIds();
             cellType = cell->GetCellType();
 
-            if(cellType == VTK_TRIANGLE)
+            switch (cellType)
             {
+            case VTK_LINE :
+                SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==2);
+                meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1));
+                break;
+            case VTK_TRIANGLE :
                 SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==3);
                 meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2));
-            }
-            else if(cellType == VTK_QUAD)
-            {
+                break;
+            case VTK_QUAD :
                 SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
                 meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
-            }
-            else
-            {
+                break;
+            default:
                 FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
             }
         }
@@ -179,22 +182,55 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> po
     {
         ::fwData::Mesh::CellTypes cellType = cellTypes[i];
         ::fwData::Mesh::Id offset = cellDataOffsets[i];
-        if ( cellType == ::fwData::Mesh::TRIANGLE )
+        switch( cellType )
         {
+        case ::fwData::Mesh::EDGE :
+            typeVtkCell = VTK_LINE;
+            cell[0] = cellData[offset];
+            cell[1] = cellData[offset+1];
+            polyData->InsertNextCell( typeVtkCell, 2, cell );
+            break;
+        case ::fwData::Mesh::TRIANGLE :
             typeVtkCell = VTK_TRIANGLE;
             cell[0] = cellData[offset];
             cell[1] = cellData[offset+1];
             cell[2] = cellData[offset+2];
             polyData->InsertNextCell( typeVtkCell, 3, cell );
-        }
-        else if ( cellType == ::fwData::Mesh::QUAD )
-        {
+            break;
+        case ::fwData::Mesh::QUAD :
             typeVtkCell = VTK_QUAD;
             cell[0] = cellData[offset];
             cell[1] = cellData[offset+1];
             cell[2] = cellData[offset+2];
             cell[3] = cellData[offset+3];
             polyData->InsertNextCell( typeVtkCell, 4, cell );
+            break;
+        case ::fwData::Mesh::TETRA :
+            typeVtkCell = VTK_LINE;
+            cell[0] = cellData[offset];
+            cell[1] = cellData[offset+1];
+            polyData->InsertNextCell( typeVtkCell, 2, cell );
+
+            cell[0] = cellData[offset+1];
+            cell[1] = cellData[offset+2];
+            polyData->InsertNextCell( typeVtkCell, 2, cell );
+
+            cell[0] = cellData[offset+2];
+            cell[1] = cellData[offset+3];
+            polyData->InsertNextCell( typeVtkCell, 2, cell );
+
+            cell[0] = cellData[offset+3];
+            cell[1] = cellData[offset];
+            polyData->InsertNextCell( typeVtkCell, 2, cell );
+
+            cell[0] = cellData[offset+2];
+            cell[1] = cellData[offset];
+            polyData->InsertNextCell( typeVtkCell, 2, cell );
+
+            cell[0] = cellData[offset+1];
+            cell[1] = cellData[offset+3];
+            polyData->InsertNextCell( typeVtkCell, 2, cell );
+
         }
     }
 
