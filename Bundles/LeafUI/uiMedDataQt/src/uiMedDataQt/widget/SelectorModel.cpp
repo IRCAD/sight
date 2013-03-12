@@ -183,7 +183,11 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         QStandardItem *institution = new QStandardItem( QString::fromStdString(equipment->getInstitutionName()));
 
         this->setItem(m_studyRowCount, 0, patientName);
+        this->setItem(m_studyRowCount, 1, new QStandardItem());
         this->setItem(m_studyRowCount, 2, studyDate);
+        this->setItem(m_studyRowCount, 3, new QStandardItem());
+        this->setItem(m_studyRowCount, 4, new QStandardItem());
+        this->setItem(m_studyRowCount, 5, new QStandardItem());
         this->setItem(m_studyRowCount, 6, studyDescription);
         this->setItem(m_studyRowCount, 7, patientId);
         this->setItem(m_studyRowCount, 8, studyPatientAge);
@@ -191,6 +195,12 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         this->setItem(m_studyRowCount, 10, patientSex);
         this->setItem(m_studyRowCount, 11, patientBirthdate);
         this->setItem(m_studyRowCount, 12, institution);
+
+        for (int i = 0; i<13; ++i)
+        {
+            QStandardItem *item = this->item(m_studyRowCount, i);
+            item->setFlags(item->flags() & ~Qt::ItemIsSelectable );
+        }
 
         m_studyRowCount++;
         studyRootItem = patientName;
@@ -216,6 +226,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
     studyRootItem->setChild(nbRow, 6, seriesDescription2);
     studyRootItem->setChild(nbRow, 9, seriesPerformingPhysician);
     studyRootItem->setChild(nbRow, 12, new QStandardItem());
+
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
     if(imageSeries)
