@@ -1,3 +1,36 @@
+=== fw4spl_0.9.1.1 ( diff from fw4spl_0.9.1.0 ) 07/02/2013 ===
+
+ * Merge :
+  * Merge from tag fw4spl_0.9.0.3 to branch fw4spl_0.9.1
+
+ * General :
+  * Modify Appconfig xml syntax. "parameters" appConfig type is now required ( "standard" and "template" type are no longer supported )
+  * Modify Appconfig xml syntax. Replace xml attribut : implementation to impl, autoComChannel to autoConnect. priority tag is no longer supported ( priority is now relative to connection creation order )
+  * Update Appconfig xml syntax. Add two new xml elements ( to support signal/slot connection ) : <connect> and <proxy> (see Tuto15Multithread AppConfig to see an example)
+  * Update SwapperSrv to support new connection system. Updated SwapperSrv xml syntax to manage <connect> and <proxy> tag.
+  * Fix VRRender application to support new communication system / new xml appConfig syntax
+  * Fix bundles and libraries to support new communication system
+  * Fix applications to support xml appConfig syntax
+  * Fix JpgImageWriter to save jpg instead of png file
+  * Fix some issues, ex : updated BufferManager counter to be thread-safe, permissions issue when deleting temporary folder, some cppcheck warnings ...
+
+ * Visu :
+  * Updated vtk adaptors : rename doUpdate(msg) by doReceive(msg) and new communication system.
+
+ * Multithread and communication :
+  * Cleaning communication system : removed ComChannelService, MessageHandler service...
+  * Added Proxy in fwServices. Proxy is an application singleton that provides communication channels. A channel can be connected to a signal. Slots can be connected to a channel. Connection/disconnection can be dynamic during application life. A channel has a forwarder role.
+  * Update Tuto15Multithread with another sub configurations (other examples)
+  * Updated AppconfigManager to manage connect and proxy xml tags in config and to wait for start/stop/update.
+  * Fix IService methods : start, stop, update and swap return a correct shared future in mono thread
+  * Added abstraction level to fwThread's Worker and Timer, implements a Qt and WxWidget version. Updated Tuto15 with new Timer API
+  * Fix ActiveWorkers registry : clear and reset all ActiveWorkers when app stop
+
+ * TU :
+  * Added tests for fwGuiQt WorkerQt and TimerQt
+  * Fix some unit tests to support new communication system / new xml appConfig syntax
+  * Change gdcm trace output stream for unit tests
+
 === fw4spl_0.9.1.0 ( diff from fw4spl_0.9.0.2 ) 29/11/2012 ===
 
  * Thread :
