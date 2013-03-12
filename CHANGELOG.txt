@@ -1,48 +1,52 @@
-=== fw4spl_0.9.2 from begin of the branch 09/02/2013 ===
+=== fw4spl_0.9.2.0 from begin of the branch 12/02/2013 ===
 
  * Data:
-    * Created a new library fwMedData to store structures for medical data.
-        * Added structures to store Patient, Study, Series and Equipment information.
-        * Added a type of data called Series ::fwMedData::Series. It aggregates information (Patient, Study, Series, Equipment, etc) related to a data set.
-        * Added ImageSeries data (inherit from Series) which stores an image.
-        * Added ModelSeries data (inherit from Series) which stores a set of reconstructions.
-        * Added structure to store a set of ::fwMedData::SeriesDB series. It provides basic STL container API.
-    * All new fwMedData data structures are wrapped with camp.
+  * Few fwData class are deprecated : PatientDB, Patient, Study, Acquisition
+  * Created a new library fwMedData to store structures for medical data.
+   * Added structures to store Patient, Study, Series and Equipment information.
+   * Added a type of data called Series ::fwMedData::Series. It aggregates information (Patient, Study, Series, Equipment, etc) related to a data set.
+   * Added ImageSeries data (inherit from Series) which stores an image.
+   * Added ModelSeries data (inherit from Series) which stores a set of reconstructions.
+   * Added structure to store a set of ::fwMedData::SeriesDB series. It provides basic STL container API.
+  * All new fwMedData data structures are wrapped with camp.
+  * Added Tetra cell type management for fwData::Mesh ( update vtk adaptor to show it )
+  * Removed deprecated fwData::None
 
  * Core:
-    * Added the concept of activity (fwActivities library).
-    * Added new factory for fwActivities.
-    * Added a default builder for the data ActivitySeries.
+  * Added the concept of activity (fwActivities library).
+  * Added new factory for fwActivities.
+  * Added a default builder for the data ActivitySeries.
 
  * Bundle:
-    * Created a bundle 'activity'. It contains
-        * a service ::activities::SLauncherActivity to launch an activity. 
-    * Created a new bundle 'uiMedDataQt'. It contains
-        * a service ::uiMedDataQt::SSelctor to show information about medical data.
-        * a service ::uiMedDataQt::SExportSeries to export series to an ::fwMedData::ActivitySeries defined in the service configuration.
-        * a service ::uiMedDataQt::SSeriesViewer to view series stored in a vector ::fwData::Vector.
-    * Created a new bundle 'LeafActivity'. It contains
-        * a configuration which allows to visualize medical image in 2D.
-        * a configuration which allows to visualize a mesh and optionally a medical image in 3D.
-        * a configuration which allows to blend two medical images (its also contains a transfert function editor).
-        * a configuration which allows to visualize a volume rendering of image and optionally a mesh.
-    * Added new service ::scene2D::processing::SComputeHistogram to compute histogram for an image.
+  * Created a bundle 'activity'. It contains
+   * a service ::activities::SLauncherActivity to launch an activity. 
+  * Created a new bundle 'uiMedDataQt'. It contains
+   * a service ::uiMedDataQt::SSelctor to show information about medical data.
+   * a service ::uiMedDataQt::SExportSeries to export series to an ::fwMedData::ActivitySeries defined in the service configuration.
+   * a service ::uiMedDataQt::SSeriesViewer to view series stored in a vector ::fwData::Vector.
+  * Created a new bundle 'LeafActivity'. It contains
+   * a configuration which allows to visualize medical image in 2D.
+   * a configuration which allows to visualize a mesh and optionally a medical image in 3D.
+   * a configuration which allows to blend two medical images (its also contains a transfert function editor).
+   * a configuration which allows to visualize a volume rendering of image and optionally a mesh.
+  * Added new service ::scene2D::processing::SComputeHistogram to compute histogram for an image.
 
  * Communication:
-    * Added messages SeriesDBMsg, VectorMsg, ModelSeriesMsg on fwComEd library.
-    * Added helpers for SeriesDBMsg, VectorMsg on fwComEd.
+  * Removed deprecated MODIFIED_KEYS from fwComEd::CompositeMsg event (and support few libraries which still used it)
+  * Added messages SeriesDBMsg, VectorMsg, ModelSeriesMsg on fwComEd library.
+  * Added helpers for SeriesDBMsg, VectorMsg on fwComEd.
 
  * IO:
-    * Added a reader ::vtkGdcmIO::SeriesDBReader, based on VTK and GDCM, for loading a SeriesDB from DICOM files.
-    * Added a reader ::vtkIO::SeriesDBReader, based on VTK, for loading a SeriesDB from VTK polydata or image'.vtk' files.
-    * Added a service ::uiIO::action::SSeriesDBMerger to read SeriesDB and merges it with the current SeriesDB.
+  * Added a reader ::vtkGdcmIO::SeriesDBReader, based on VTK and GDCM, for loading a SeriesDB from DICOM files.
+  * Added a reader ::vtkIO::SeriesDBReader, based on VTK, for loading a SeriesDB from VTK polydata or image'.vtk' files.
+  * Added a service ::uiIO::action::SSeriesDBMerger to read SeriesDB and merges it with the current SeriesDB.
 
  * Software:
-     - VRRender 0.9.6.
+  * VRRender 0.9.6.
 
  * Tests:
-     - Added unit tests for fwActivities and fwMedData libraries.
-     - Added unit tests for ::scene2D::processing::SComputeHistogram service. 
+  * Added unit tests for fwActivities and fwMedData libraries.
+  * Added unit tests for ::scene2D::processing::SComputeHistogram service. 
     
 === fw4spl_0.9.1.1 ( diff from fw4spl_0.9.1.0 ) 07/02/2013 ===
 
