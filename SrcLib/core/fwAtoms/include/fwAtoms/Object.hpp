@@ -11,6 +11,7 @@
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/factory/new.hpp"
 
 fwCampAutoDeclareMacro((fwAtoms)(Object), FWATOMS_API);
 
@@ -24,11 +25,24 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Object : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Object), (()), new Object) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Object >) ;
+
     typedef std::map<std::string, Base::sptr> Attributes;
     typedef std::map<std::string, std::string> MetaInfos;
 
     //--------------------------------------------------------------------------
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    Object(::fwAtoms::Base::Key key);
+
+    /**
+     * @brief   Destructor
+     */
+    virtual ~Object()
+    {}
 
     //! Set the internal attributs map
     FWATOMS_API void setAttributs(Attributes& attrs);
@@ -90,7 +104,6 @@ public:
     FWATOMS_API virtual Base::sptr clone();
 
 private:
-    FWATOMS_API Object();
 
     MetaInfos m_metaInfos;
     Attributes m_attrs;

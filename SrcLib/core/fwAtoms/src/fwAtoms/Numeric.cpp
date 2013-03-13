@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Numeric.hpp"
 
 fwCampImplementMacro((fwAtoms)(Numeric))
@@ -15,27 +16,29 @@ fwCampImplementMacro((fwAtoms)(Numeric))
         .property("value", &::fwAtoms::Numeric::getString, &::fwAtoms::Numeric::setString);
 }
 
+fwAtomsRegisterMacro( ::fwAtoms::Numeric );
+
 namespace fwAtoms
 {
 
-
-Numeric::Numeric(std::string& value) : Base(), m_value(value)
-{}
+//------------------------------------------------------------------------------
 
 Numeric::sptr Numeric::New(std::string value)
 {
-    Numeric::sptr valueSptr(new Numeric(value));
+    Numeric::sptr valueSptr = Numeric::New();
+    valueSptr->m_value = value;
     return valueSptr;
-
 }
 
+//------------------------------------------------------------------------------
 
 bool Numeric::isSigned()
 {
-
     return m_value[0] == '-';
-
 }
+
+//------------------------------------------------------------------------------
+
 bool Numeric::isReal()
 {
     return m_value.find('.') != std::string::npos;
@@ -48,10 +51,14 @@ Base::sptr Numeric::clone()
     return Numeric::New(m_value);
 }
 
+//------------------------------------------------------------------------------
+
 bool Numeric::isEqual(Numeric::sptr obj)
 {
     return obj->getString() == m_value;
 }
+
+//------------------------------------------------------------------------------
 
 bool Numeric::isHigher(Numeric::sptr obj)
 {
@@ -65,6 +72,7 @@ bool Numeric::isHigher(Numeric::sptr obj)
     return result;
 }
 
+//------------------------------------------------------------------------------
 
 bool Numeric::isLower(Numeric::sptr obj)
 {

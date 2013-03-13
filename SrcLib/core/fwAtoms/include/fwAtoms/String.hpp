@@ -14,6 +14,7 @@
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/factory/new.hpp"
 
 fwCampAutoDeclareMacro((fwAtoms)(String), FWATOMS_API);
 
@@ -27,7 +28,20 @@ namespace fwAtoms
 class FWATOMS_CLASS_API String : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwAtoms::String), (()), new String ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< String > ) ;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    String(::fwAtoms::Base::Key key) : m_value("")
+    {}
+
+    /**
+     * @brief   Destructor
+     */
+    virtual ~String()
+    {}
 
     virtual bool isValue() const {return true;};
     virtual bool isString() const {return true;};
@@ -45,8 +59,7 @@ public:
     FWATOMS_API virtual Base::sptr clone();
 
 protected:
-    String(){m_value = "";};
-    String(const std::string& value);
+
     std::string m_value;
 };
 

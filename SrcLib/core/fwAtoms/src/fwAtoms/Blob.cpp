@@ -4,7 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Blob.hpp"
+
 
 fwCampImplementMacro((fwAtoms)(Blob))
 {
@@ -14,32 +16,39 @@ fwCampImplementMacro((fwAtoms)(Blob))
         .base< ::fwAtoms::Base >();
 }
 
+fwAtomsRegisterMacro( ::fwAtoms::Blob );
+
 namespace fwAtoms
 {
 
-Blob::Blob(::fwTools::BufferObject::sptr buffer)
-             : m_bufferObject(buffer)
-{}
+//------------------------------------------------------------------------------
 
 Blob::sptr Blob::New(::fwTools::BufferObject::sptr buffer)
 {
-    Blob::sptr blob(new Blob(buffer));
+    Blob::sptr blob = Blob::New();
+    blob->m_bufferObject = buffer;
 
     return blob;
 }
+
+//------------------------------------------------------------------------------
 
 Blob::sptr Blob::New(void* buffer, unsigned int size)
 {
     ::fwTools::BufferObject::sptr bufferObject = ::fwTools::BufferObject::New();
     bufferObject->setBuffer(buffer, size);
-    Blob::sptr blob(new Blob(bufferObject));
+    Blob::sptr blob = Blob::New(bufferObject);
     return blob;
 }
 
-unsigned int Blob::getSize() const
+//------------------------------------------------------------------------------
+
+size_t Blob::getSize() const
 {
     return m_bufferObject->getSize();
 }
+
+//------------------------------------------------------------------------------
 
 char* Blob::getBuffer()const
 {
@@ -47,12 +56,14 @@ char* Blob::getBuffer()const
     return static_cast<char *>( lock.getBuffer());
 }
 
+//------------------------------------------------------------------------------
+
 ::fwTools::BufferObject::sptr Blob::getBufferObject()
 {
     return m_bufferObject;
 }
 
-
+//------------------------------------------------------------------------------
 
 Base::sptr Blob::clone()
 {

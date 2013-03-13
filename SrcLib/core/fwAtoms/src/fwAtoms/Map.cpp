@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Map.hpp"
 
 fwCampImplementMacro((fwAtoms)(Map))
@@ -18,6 +19,7 @@ fwCampImplementMacro((fwAtoms)(Map))
         .property("value", get);
 }
 
+fwAtomsRegisterMacro( ::fwAtoms::Map );
 
 namespace fwAtoms
 {
