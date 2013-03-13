@@ -11,6 +11,7 @@
 #include <string>
 #include <iomanip>
 #include <boost/lexical_cast.hpp>
+#include <boost/make_shared.hpp>
 
 namespace fwAtoms
 {
@@ -18,17 +19,15 @@ namespace fwAtoms
 template <typename T>
 Numeric::Numeric(T value)
 {
-
-    m_value = boost::lexical_cast<std::string>(value);
+    m_value = ::boost::lexical_cast<std::string>(value);
 }
 
 
 template<typename T>
 Numeric::sptr Numeric::New(T value)
 {
-    Numeric::sptr valueSptr(new Numeric(value));
+    Numeric::sptr valueSptr = ::boost::make_shared<Numeric>(value);
     return valueSptr;
-
 }
 
 }

@@ -44,61 +44,61 @@ public:
      * @brief clone a data.
      * @return a clone of the current MetaData
      */
-    FWATOMS_API virtual Base::sptr clone(){ return Base::New();};
+    virtual Base::sptr clone(){ return Base::New();};
 
     /**
      *@brief Test if the current base is a value or not (Value = {string;numeric;boolean})
      *@return the test result
      */
-    FWATOMS_API virtual bool isValue() const {return false;};
+    virtual bool isValue() const {return false;};
 
     /**
      *@brief Test if the current base is a boolean
      *@return the test result
      */
-    FWATOMS_API virtual bool isBoolean() const {return false;};
+    virtual bool isBoolean() const {return false;};
 
     /**
      *@brief Test if the current base is a Numeric (real or integer)
      *@return the test result
      */
-    FWATOMS_API virtual bool isNumeric() const {return false;};
+    virtual bool isNumeric() const {return false;};
 
     /**
      *@brief Test if the current base is a string
      *@return the test result
      */
-    FWATOMS_API virtual bool isString() const {return false;};
+    virtual bool isString() const {return false;};
 
     /**
      *@brief Test if the current base is a sequence
      *@return the test result
      */
-    FWATOMS_API virtual bool isSequence() const {return false;};
+    virtual bool isSequence() const {return false;};
 
     /**
      *@brief Test if the current base is a mapping
      *@return the test result
      */
-    FWATOMS_API virtual bool isMapping() const {return false;};
+    virtual bool isMapping() const {return false;};
 
     /**
      *@brief Test if the current base is a blob (a object with a buffer)
      *@return the test result
      */
-    FWATOMS_API virtual bool isBlob() const {return false;};
+    virtual bool isBlob() const {return false;};
 
     /**
      *@brief Test if the current base is an object (representation of fwData)
      *@return the test result
      */
-    FWATOMS_API virtual bool isObject() const {return false;};
+    virtual bool isObject() const {return false;};
 
     /**
      * @brief Return the string value of the current base.
      * @return the string representation. Default value = "Unknown"
      */
-    FWATOMS_API virtual std::string getString() const {return "Unknown";};
+    virtual std::string getString() const {return "Unknown";};
 
 };
 

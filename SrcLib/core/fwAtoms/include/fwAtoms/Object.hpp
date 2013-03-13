@@ -37,10 +37,13 @@ public:
     FWATOMS_API void addAttribut(const std::string& key, Base::sptr);
 
     //! Retrieve the internal map
-    FWATOMS_API  Attributes& getAttributes() {return m_attrs;};
+    Attributes& getAttributes() {return m_attrs;};
+
+    //! Retrieve the internal map
+    const Attributes& getAttributes() const {return m_attrs;};
 
     //! Retrieve one Attribut
-    FWATOMS_API  Base::sptr& getAttribut(const std::string& key) {return m_attrs[key];};
+    Base::sptr& getAttribut(const std::string& key) {return m_attrs[key];};
 
     //! Remove an attributs
     FWATOMS_API void removeAttribut(const std::string& key);
@@ -48,16 +51,16 @@ public:
     //--------------------------------------------------------------------------
 
     //! Retrieve object type ; ex : "::fwData::Object"
-    FWATOMS_API std::string getType();
+    FWATOMS_API std::string getType() const;
 
     //! Set internal object type
     FWATOMS_API void setType(const std::string& type);
 
     //! Retrieve object id
-    FWATOMS_API std::string getId(){return m_id;};
+    std::string getId() const {return m_id;};
 
     //! Set current id
-    FWATOMS_API void setId(std::string id){m_id = id;};
+    void setId(std::string id){m_id = id;};
 
     //--------------------------------------------------------------------------
 
@@ -71,16 +74,19 @@ public:
     FWATOMS_API void setMetaInfos(const MetaInfos& metaInfos);
 
     //! Retrieve one meta information
-    FWATOMS_API std::string getMetaInfo(const std::string& key);
+    FWATOMS_API std::string getMetaInfo(const std::string& key) const;
 
     //! Get internal metaInfo mapping
-    FWATOMS_API MetaInfos& getMetaInfos()  ;
+    FWATOMS_API MetaInfos& getMetaInfos();
+
+    //! Get internal metaInfo mapping
+    FWATOMS_API const MetaInfos& getMetaInfos() const;
 
 
     //--------------------------------------------------------------------------
 
-    FWATOMS_API virtual bool isObject() const {return true;};
-    FWATOMS_API virtual std::string getString() const {return "Object : ";};
+    virtual bool isObject() const {return true;};
+    virtual std::string getString() const {return "Object : ";};
     FWATOMS_API virtual Base::sptr clone();
 
 private:

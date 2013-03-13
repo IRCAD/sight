@@ -46,7 +46,7 @@ public:
      */
     FWATOMS_API void insert(const Base::sptr key, Base::sptr value);
 
-    FWATOMS_API virtual bool isMapping() const {return true;};
+    virtual bool isMapping() const {return true;};
 
     /**
      * @brief retrieve size of map
@@ -83,8 +83,9 @@ public:
      */
     FWATOMS_API bool isEmpty() const;
 
-    //FWATOMS_API const MapType& getValue() const;
     FWATOMS_API MapType& getValue();
+
+    FWATOMS_API const MapType& getValue() const;
 
 
     /**
@@ -111,6 +112,7 @@ public:
     FWATOMS_API Base::sptr operator[](std::string key);
 
     FWATOMS_API virtual Base::sptr clone();
+
 protected:
      Map(){};
      MapType m_value;

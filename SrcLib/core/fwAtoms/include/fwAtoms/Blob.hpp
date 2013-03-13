@@ -43,7 +43,7 @@ public:
     FWATOMS_API static Blob::sptr New(void* buffer, unsigned int size);
 
 
-    FWATOMS_API  virtual bool isBlob() const {return true;};
+    virtual bool isBlob() const {return true;};
     /**
      * @brief size accessor.
      * @return the buffer size

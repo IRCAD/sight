@@ -8,11 +8,14 @@
 
 fwCampImplementMacro((fwAtoms)(Sequence))
 {
+    typedef ::fwAtoms::Sequence::SequenceType& (::fwAtoms::Sequence::* AccessorType) ();
+    AccessorType get = &::fwAtoms::Sequence::getValue;
+
     builder
         .tag("object_version", "1")
         .tag("lib_name", "fwAtoms")
         .base< ::fwAtoms::Base >()
-        .property("value", &::fwAtoms::Sequence::getValue);
+        .property("value", get);
 }
 
 namespace fwAtoms
@@ -44,7 +47,11 @@ Sequence::cIterator Sequence::cEnd() const
     return m_value.end();
 }
 
-//const Sequence::SequenceType& Sequence::getValue()
+const Sequence::SequenceType& Sequence::getValue() const
+{
+    return m_value;
+}
+
 Sequence::SequenceType& Sequence::getValue()
 {
     return m_value;

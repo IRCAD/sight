@@ -60,7 +60,9 @@ public:
 
 
     //! Retrieve internal vector
-    //FWATOMS_API const SequenceType& getValue();
+    FWATOMS_API const SequenceType& getValue() const;
+
+    //! Retrieve internal vector
     FWATOMS_API SequenceType& getValue();
 
 

@@ -29,13 +29,13 @@ class FWATOMS_CLASS_API Numeric : public Base
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Numeric), (()), new Numeric) ;
 
-    FWATOMS_API virtual bool isNumeric() const {return true;};
-    FWATOMS_API virtual bool isValue() const {return true;};
+    virtual bool isNumeric() const {return true;};
+    virtual bool isValue() const {return true;};
     FWATOMS_API virtual bool isSigned();
     FWATOMS_API virtual bool isReal();
-    FWATOMS_API virtual std::string getString() const {return m_value;};
+    virtual std::string getString() const {return m_value;};
 
-    FWATOMS_API virtual void setString(std::string value) { m_value = value;};
+    virtual void setString(std::string value) { m_value = value;};
 
     /**
      * @brief Constructed a new numeric type
@@ -69,6 +69,7 @@ public:
     FWATOMS_API bool isLower(Numeric::sptr obj);
 
     FWATOMS_API virtual Base::sptr clone();
+
 protected:
     Numeric(){}
     template< typename T >
