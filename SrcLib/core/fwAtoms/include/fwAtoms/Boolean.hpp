@@ -12,6 +12,7 @@
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/factory/new.hpp"
 
 fwCampAutoDeclareMacro((fwAtoms)(Boolean), FWATOMS_API);
 
@@ -25,8 +26,20 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Boolean : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwAtoms::Boolean), (()), new Boolean) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Boolean > ) ;
 
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    Boolean(::fwAtoms::Base::Key key) : m_value(false)
+    {}
+
+    /**
+     * @brief   Destructor
+     */
+    virtual ~Boolean()
+    {}
 
     virtual bool isValue() const {return true;};
     virtual bool isBoolean() const {return true;};
@@ -64,7 +77,7 @@ protected:
      * If value = "true" then true is stored otherwise false is stored.
      */
     FWATOMS_API Boolean(std::string& value);
-    Boolean(){};
+
     bool m_value;
 };
 

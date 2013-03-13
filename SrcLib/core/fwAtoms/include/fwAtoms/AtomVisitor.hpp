@@ -13,8 +13,8 @@
 
 #include "fwAtoms/config.hpp"
 
-namespace fwAtoms {
-
+namespace fwAtoms
+{
 
 /**
  * @brief This class offer the possibility to visit a MetaData and manage his execution with a Policy

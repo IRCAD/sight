@@ -20,7 +20,8 @@
 #include <fwCamp/camp/detail/MapPropertyImpl.hpp>
 #include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
-
+#include "fwAtoms/factory/new.hpp"
+#include "fwAtoms/registry/detail.hpp"
 #include "fwAtoms/config.hpp"
 
 fwCampAutoDeclareMacro((fwAtoms)(Base), FWATOMS_API);
@@ -34,7 +35,25 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Base : public ::fwCore::BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Base), (()), new Base );
+    typedef ::fwAtoms::factory::Key Key;
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar()
+        {
+            ::fwAtoms::registry::get()->addFactory(T::classname(), &::fwAtoms::factory::New<T>);
+        }
+    };
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (Base)(::fwCore::BaseObject) );
     fwCoreAllowSharedFromThis();
 
     /// return the sub class classname : an alias of this->getClassname
@@ -44,7 +63,7 @@ public:
      * @brief clone a data.
      * @return a clone of the current MetaData
      */
-    virtual Base::sptr clone(){ return Base::New();};
+    virtual Base::sptr clone() = 0;
 
     /**
      *@brief Test if the current base is a value or not (Value = {string;numeric;boolean})
@@ -99,6 +118,16 @@ public:
      * @return the string representation. Default value = "Unknown"
      */
     virtual std::string getString() const {return "Unknown";};
+
+protected :
+    /**
+     * @name Constructor/Destructor
+     * @{ */
+
+    Base(){};
+    virtual ~Base(){};
+
+    /**  @} */
 
 };
 

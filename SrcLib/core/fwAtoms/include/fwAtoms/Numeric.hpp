@@ -7,7 +7,6 @@
 #ifndef _FWATOMS_BASE_NUMERIC_HPP_
 #define _FWATOMS_BASE_NUMERIC_HPP_
 
-
 #include <string>
 
 #include <fwCamp/Mapper/ValueMapper.hpp>
@@ -15,6 +14,7 @@
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/factory/new.hpp"
 
 fwCampAutoDeclareMacro((fwAtoms)(Numeric), FWATOMS_API);
 
@@ -27,7 +27,21 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Numeric : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Numeric), (()), new Numeric) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Numeric >) ;
+
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    Numeric(::fwAtoms::Base::Key key)
+    {}
+
+    /**
+     * @brief   Destructor
+     */
+    virtual ~Numeric()
+    {}
 
     virtual bool isNumeric() const {return true;};
     virtual bool isValue() const {return true;};
@@ -71,18 +85,14 @@ public:
     FWATOMS_API virtual Base::sptr clone();
 
 protected:
-    Numeric(){}
+
     template< typename T >
-
     Numeric(T value);
-
-    Numeric(std::string& value);
 
     std::string m_value;
 };
 
 }
-
 
 
 #include "fwAtoms/Numeric.hxx"

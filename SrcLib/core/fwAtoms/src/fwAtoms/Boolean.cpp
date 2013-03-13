@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Boolean.hpp"
 
 fwCampImplementMacro((fwAtoms)(Boolean))
@@ -15,40 +16,30 @@ fwCampImplementMacro((fwAtoms)(Boolean))
         .property("value", &::fwAtoms::Boolean::getString, &::fwAtoms::Boolean::setString);
 }
 
+fwAtomsRegisterMacro( ::fwAtoms::Boolean );
+
 namespace fwAtoms
 {
 
-
-Boolean::Boolean(bool value)
-{
-    m_value = value;
-}
-
-Boolean::Boolean(std::string& value)
-{
-    if(value.compare("true") == 0)
-    {
-        m_value = true;
-    }
-    else
-    {
-        m_value = false;
-    }
-}
+//------------------------------------------------------------------------------
 
 Boolean::sptr Boolean::New(std::string value)
 {
-    Boolean::sptr valueSptr(new Boolean(value));
+    Boolean::sptr valueSptr = Boolean::New();
+    valueSptr->m_value = (value.compare("true") == 0);
     return valueSptr;
-
 }
+
+//------------------------------------------------------------------------------
 
 Boolean::sptr Boolean::New(bool value)
 {
-    Boolean::sptr valueSptr(new Boolean(value));
+    Boolean::sptr valueSptr = Boolean::New();
+    valueSptr->m_value = value;
     return valueSptr;
-
 }
+
+//------------------------------------------------------------------------------
 
 std::string Boolean::getString() const
 {
@@ -61,23 +52,19 @@ std::string Boolean::getString() const
     return result;
 }
 
+//------------------------------------------------------------------------------
+
 void Boolean::setString(const std::string& value)
 {
-    if(!value.compare("true"))
-    {
-        m_value = true;
-    }
-    else
-    {
-        m_value = false;
-    }
+    m_value = (!value.compare("true"));
 }
+
 //------------------------------------------------------------------------------
 
 Base::sptr Boolean::clone()
 {
-
     return Boolean::New(m_value);
 }
+
 }
 

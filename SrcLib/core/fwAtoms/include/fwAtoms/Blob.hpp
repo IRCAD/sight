@@ -8,9 +8,12 @@
 #define __FWATOMS_BASE_BLOB_HPP__
 
 #include <string>
+
 #include <fwTools/BufferObject.hpp>
+
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/factory/new.hpp"
 
 #include <fwCamp/macros.hpp>
 
@@ -26,8 +29,20 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Blob : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Blob)(::fwAtoms::Blob), (()), new Blob) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Blob)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Blob >) ;
 
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    Blob(::fwAtoms::Base::Key key)
+    {}
+
+    /**
+     * @brief   Destructor
+     */
+    virtual ~Blob()
+    {}
 
     /**
      * @brief create a new Blob shared ptr.
@@ -48,7 +63,7 @@ public:
      * @brief size accessor.
      * @return the buffer size
      */
-    FWATOMS_API  unsigned int getSize() const;
+    FWATOMS_API  size_t getSize() const;
 
     /**
      * @brief buffer accessor.
@@ -65,8 +80,6 @@ public:
     FWATOMS_API virtual Base::sptr clone();
 
 protected:
-    Blob(){};
-    Blob(::fwTools::BufferObject::sptr buffer);
 
     ::fwTools::BufferObject::sptr m_bufferObject;
 };

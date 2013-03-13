@@ -7,11 +7,11 @@
 #ifndef _FWATOMS_BASE_SEQUENCE_HPP_
 #define _FWATOMS_BASE_SEQUENCE_HPP_
 
-#include <string>
 #include <vector>
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/factory/new.hpp"
 
 fwCampAutoDeclareMacro((fwAtoms)(Sequence), FWATOMS_API);
 
@@ -24,10 +24,24 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Sequence : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Sequence), (()), new Sequence ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Sequence > ) ;
+
     typedef std::vector<Base::sptr> SequenceType;
     typedef SequenceType::iterator Iterator;
     typedef SequenceType::const_iterator cIterator;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    Sequence(::fwAtoms::Base::Key key)
+    {}
+
+    /**
+     * @brief   Destructor
+     */
+    virtual ~Sequence()
+    {}
 
     /**
      * @brief Append a base in back of the sequence.
@@ -69,11 +83,11 @@ public:
     //! access an element in position index
     FWATOMS_API Base::sptr operator[](unsigned int index);
 
+    virtual bool isSequence() const {return true;};
 
-    FWATOMS_API virtual bool isSequence() const {return true;};
     FWATOMS_API virtual Base::sptr clone();
+
 protected:
-    Sequence(){};
     SequenceType m_value;
 };
 

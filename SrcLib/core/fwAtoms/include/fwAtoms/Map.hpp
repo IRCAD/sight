@@ -14,6 +14,7 @@
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
 #include "fwAtoms/Object.hpp"
+#include "fwAtoms/factory/new.hpp"
 
 fwCampAutoDeclareMacro((fwAtoms)(Map), FWATOMS_API);
 
@@ -33,11 +34,23 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Map : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Map)(::fwAtoms::Map), (()), new Map) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Map)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Map >) ;
     typedef std::map<Base::sptr, Base::sptr> MapType;
     typedef MapType::iterator Iterator;
     typedef MapType::const_iterator cIterator;
 
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    Map(::fwAtoms::Base::Key key)
+    {}
+
+    /**
+     * @brief   Destructor
+     */
+    virtual ~Map()
+    {}
 
     /**
      * @brief Insert a new value in the map.
@@ -114,7 +127,6 @@ public:
     FWATOMS_API virtual Base::sptr clone();
 
 protected:
-     Map(){};
      MapType m_value;
 };
 

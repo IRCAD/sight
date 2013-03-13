@@ -8,8 +8,8 @@
 
 #include <fwTools/UUID.hpp>
 
+#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Object.hpp"
-
 
 fwCampImplementMacro((fwAtoms)(Object))
 {
@@ -24,18 +24,24 @@ fwCampImplementMacro((fwAtoms)(Object))
         .property("attributes", getAttr);
 }
 
+fwAtomsRegisterMacro( ::fwAtoms::Object );
+
 namespace fwAtoms
 {
 
-Object::Object()
+Object::Object(::fwAtoms::Base::Key key)
 {
     m_id = ::fwTools::UUID::generateUUID();
 }
+
+//------------------------------------------------------------------------------
 
 void Object::addAttribut(const std::string& key, Base::sptr value)
 {
     m_attrs[key] = value;
 }
+
+//------------------------------------------------------------------------------
 
 void Object::setAttributs( Object::Attributes& attrs)
 {
@@ -43,10 +49,14 @@ void Object::setAttributs( Object::Attributes& attrs)
     m_attrs.insert(attrs.begin(), attrs.end());
 }
 
+//------------------------------------------------------------------------------
+
 void Object::setType(const std::string& type)
 {
     m_metaInfos["type"] = type;
 }
+
+//------------------------------------------------------------------------------
 
 std::string Object::getType() const
 {
@@ -60,6 +70,7 @@ Base::sptr Object::clone()
     return this->getSptr();
 }
 
+//------------------------------------------------------------------------------
 
 void Object::addMetaInfo(const std::string& key, const std::string& value)
 {
@@ -67,8 +78,10 @@ void Object::addMetaInfo(const std::string& key, const std::string& value)
     {
         m_metaInfos[key] = value;
     }
-
 }
+
+//------------------------------------------------------------------------------
+
 std::string Object::getMetaInfo(const std::string& key) const
 {
     MetaInfos::const_iterator cIt = m_metaInfos.find(key);
@@ -86,21 +99,29 @@ std::string Object::getMetaInfo(const std::string& key) const
     return value;
 }
 
+//------------------------------------------------------------------------------
+
 Object::MetaInfos& Object::getMetaInfos()
 {
    return m_metaInfos;
 }
+
+//------------------------------------------------------------------------------
 
 const Object::MetaInfos& Object::getMetaInfos() const
 {
    return m_metaInfos;
 }
 
+//------------------------------------------------------------------------------
+
 void Object::setMetaInfos(const MetaInfos& metaInfos)
 {
     m_metaInfos.clear();
     m_metaInfos.insert(metaInfos.begin(), metaInfos.end());
 }
+
+//------------------------------------------------------------------------------
 
 void Object::removeAttribut(const std::string& key)
 {
