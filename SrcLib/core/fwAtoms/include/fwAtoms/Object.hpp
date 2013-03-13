@@ -36,7 +36,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    Object(::fwAtoms::Base::Key key);
+    FWATOMS_API Object(::fwAtoms::Base::Key key);
 
     /**
      * @brief   Destructor
