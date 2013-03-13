@@ -5,20 +5,27 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCamp/UserObject.hpp>
+
 #include <fwTools/UUID.hpp>
 
 #include "fwAtoms/Object.hpp"
 
 
-
 fwCampImplementMacro((fwAtoms)(Object))
 {
+    typedef ::fwAtoms::Object::MetaInfos& (::fwAtoms::Object::* AccessorMInfosType) ();
+    typedef ::fwAtoms::Object::Attributes& (::fwAtoms::Object::* AccessorAttrType) ();
+
+    AccessorMInfosType getMInfos = &::fwAtoms::Object::getMetaInfos;
+    AccessorAttrType getAttr = &::fwAtoms::Object::getAttributes;
+
     builder.base< ::fwAtoms::Base>()
-        .property("metaInfos", &::fwAtoms::Object::getMetaInfos)
-        .property("attributes", &::fwAtoms::Object::getAttributes);
+        .property("metaInfos", getMInfos)
+        .property("attributes", getAttr);
 }
 
-namespace fwAtoms {
+namespace fwAtoms
+{
 
 Object::Object()
 {
@@ -41,7 +48,7 @@ void Object::setType(const std::string& type)
     m_metaInfos["type"] = type;
 }
 
-std::string Object::getType()
+std::string Object::getType() const
 {
     return this->getMetaInfo("type");
 }
@@ -62,7 +69,7 @@ void Object::addMetaInfo(const std::string& key, const std::string& value)
     }
 
 }
-std::string Object::getMetaInfo(const std::string& key)
+std::string Object::getMetaInfo(const std::string& key) const
 {
     MetaInfos::const_iterator cIt = m_metaInfos.find(key);
     std::string value;
@@ -80,6 +87,11 @@ std::string Object::getMetaInfo(const std::string& key)
 }
 
 Object::MetaInfos& Object::getMetaInfos()
+{
+   return m_metaInfos;
+}
+
+const Object::MetaInfos& Object::getMetaInfos() const
 {
    return m_metaInfos;
 }

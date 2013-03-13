@@ -29,9 +29,9 @@ class FWATOMS_CLASS_API String : public Base
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwAtoms::String), (()), new String ) ;
 
-    FWATOMS_API virtual bool isValue() const {return true;};
-    FWATOMS_API virtual bool isString() const {return true;};
-    FWATOMS_API virtual std::string getString() const {return m_value;};
+    virtual bool isValue() const {return true;};
+    virtual bool isString() const {return true;};
+    virtual std::string getString() const {return m_value;};
 
     virtual void setString( const std::string value ){m_value=value;};
 
@@ -43,6 +43,7 @@ public:
     FWATOMS_API static String::sptr New(std::string value);
 
     FWATOMS_API virtual Base::sptr clone();
+
 protected:
     String(){m_value = "";};
     String(const std::string& value);

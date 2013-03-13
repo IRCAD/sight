@@ -28,8 +28,8 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwAtoms::Boolean), (()), new Boolean) ;
 
 
-    FWATOMS_API virtual bool isValue() const {return true;};
-    FWATOMS_API virtual bool isBoolean() const {return true;};
+    virtual bool isValue() const {return true;};
+    virtual bool isBoolean() const {return true;};
     FWATOMS_API virtual std::string getString() const;
 
     FWATOMS_API virtual void setString(const std::string& value);

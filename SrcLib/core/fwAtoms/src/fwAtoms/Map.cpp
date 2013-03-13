@@ -8,12 +8,16 @@
 
 fwCampImplementMacro((fwAtoms)(Map))
 {
+    typedef ::fwAtoms::Map::MapType& (::fwAtoms::Map::* AccessorType) ();
+    AccessorType get = &::fwAtoms::Map::getValue;
+
     builder
         .tag("object_version", "1")
         .tag("lib_name", "fwAtoms")
         .base< ::fwAtoms::Base>()
-        .property("value", &::fwAtoms::Map::getValue);
+        .property("value", get);
 }
+
 
 namespace fwAtoms
 {
@@ -60,10 +64,12 @@ Map::cIterator Map::cEnd() const
 
 //------------------------------------------------------------------------------
 
-//const Map::MapType& Map::getValue() const
-//{
-//    return m_value;
-//}
+const Map::MapType& Map::getValue() const
+{
+    return m_value;
+}
+
+//------------------------------------------------------------------------------
 
 Map::MapType& Map::getValue()
 {
