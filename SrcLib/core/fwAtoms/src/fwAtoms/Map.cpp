@@ -31,7 +31,7 @@ void Map::insert(const Base::sptr key, Base::sptr value)
 
 //------------------------------------------------------------------------------
 
-unsigned int Map::getSize()
+size_t Map::getSize() const
 {
     return m_value.size();
 }

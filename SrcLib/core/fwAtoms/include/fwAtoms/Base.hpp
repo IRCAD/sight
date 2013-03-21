@@ -56,6 +56,8 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (Base)(::fwCore::BaseObject) );
     fwCoreAllowSharedFromThis();
 
+    virtual ~Base(){};
+
     /// return the sub class classname : an alias of this->getClassname
     std::string className() const { return this->getClassname(); };
 
@@ -121,13 +123,9 @@ public:
 
 protected :
     /**
-     * @name Constructor/Destructor
-     * @{ */
-
+     * @brief Constructor
+     */
     Base(){};
-    virtual ~Base(){};
-
-    /**  @} */
 
 };
 

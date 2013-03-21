@@ -65,13 +65,13 @@ public:
      * @brief retrieve size of map
      * @return the map size
      */
-    FWATOMS_API unsigned int getSize();
+    FWATOMS_API size_t getSize() const;
 
     /**
      *@brief Provide an iterator on the first element
      *@return An iterator on the first element, end() if map is empty.
      */
-    FWATOMS_API Iterator  begin();
+    FWATOMS_API Iterator begin();
 
     /**
      *@brief Provide a const iterator on the first element
@@ -82,7 +82,7 @@ public:
     /**
      * @brief Return an iterator after the last element in the map
      */
-    FWATOMS_API Iterator  end();
+    FWATOMS_API Iterator end();
 
     /**
      * @brief Return a const iterator after the last element in the map

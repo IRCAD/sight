@@ -32,14 +32,14 @@ Numeric::sptr Numeric::New(std::string value)
 
 //------------------------------------------------------------------------------
 
-bool Numeric::isSigned()
+bool Numeric::isSigned() const
 {
     return m_value[0] == '-';
 }
 
 //------------------------------------------------------------------------------
 
-bool Numeric::isReal()
+bool Numeric::isReal() const
 {
     return m_value.find('.') != std::string::npos;
 }
@@ -53,14 +53,14 @@ Base::sptr Numeric::clone()
 
 //------------------------------------------------------------------------------
 
-bool Numeric::isEqual(Numeric::sptr obj)
+bool Numeric::isEqual(Numeric::sptr obj) const
 {
     return obj->getString() == m_value;
 }
 
 //------------------------------------------------------------------------------
 
-bool Numeric::isHigher(Numeric::sptr obj)
+bool Numeric::isHigher(Numeric::sptr obj) const
 {
     std::string value = obj->getString();
 
@@ -74,7 +74,7 @@ bool Numeric::isHigher(Numeric::sptr obj)
 
 //------------------------------------------------------------------------------
 
-bool Numeric::isLower(Numeric::sptr obj)
+bool Numeric::isLower(Numeric::sptr obj) const
 {
     return !this->isEqual(obj) && !this->isHigher(obj);
 }
