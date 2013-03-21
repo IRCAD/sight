@@ -59,7 +59,7 @@ namespace custom
 
     ::fwAtoms::Base::sptr metaAttr = meta->getAttribut("connections");
     ::fwAtoms::Map::sptr connections = ::fwAtoms::Map::dynamicCast(metaAttr);
-    ::fwAtoms::Map::cIterator cIt = connections->cBegin();
+    ::fwAtoms::Map::ConstIteratorType cIt = connections->begin();
 
 
     ::fwData::Object::sptr tmp;
@@ -69,7 +69,7 @@ namespace custom
 
     ::fwAtoms::Object::sptr value;
 
-    for(; cIt != connections->cEnd(); ++cIt)
+    for(; cIt != connections->end(); ++cIt)
     {
         tmp = metaHelper.metaToData(::fwAtoms::Object::dynamicCast(cIt->first));
         key = ::fwData::Edge::dynamicCast(tmp);

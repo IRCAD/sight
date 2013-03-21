@@ -35,9 +35,17 @@ class FWATOMS_CLASS_API Map : public Base
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Map)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Map >) ;
+
     typedef std::map<Base::sptr, Base::sptr> MapType;
-    typedef MapType::iterator Iterator;
-    typedef MapType::const_iterator cIterator;
+
+    typedef MapType::key_type KeyType;
+    typedef MapType::mapped_type MappedType;
+    typedef MapType::value_type ValueType;
+    typedef MapType::iterator IteratorType;
+    typedef MapType::const_iterator ConstIteratorType;
+    typedef MapType::reverse_iterator ReverseIteratorType;
+    typedef MapType::const_reverse_iterator ConstReverseIteratorType;
+    typedef MapType::size_type SizeType;
 
     /**
      * @brief Constructor
@@ -71,23 +79,23 @@ public:
      *@brief Provide an iterator on the first element
      *@return An iterator on the first element, end() if map is empty.
      */
-    FWATOMS_API Iterator begin();
+    FWATOMS_API IteratorType begin();
 
     /**
      *@brief Provide a const iterator on the first element
-     *@return An iterator on the first element, cEnd() if map is empty.
+     *@return An iterator on the first element, end() if map is empty.
      */
-    FWATOMS_API cIterator cBegin() const;
+    FWATOMS_API ConstIteratorType begin() const;
 
     /**
      * @brief Return an iterator after the last element in the map
      */
-    FWATOMS_API Iterator end();
+    FWATOMS_API IteratorType end();
 
     /**
      * @brief Return a const iterator after the last element in the map
      */
-    FWATOMS_API cIterator cEnd() const;
+    FWATOMS_API ConstIteratorType end() const;
 
 
     /**
@@ -105,7 +113,7 @@ public:
      * @brief find an element in the map
      * @param key the key
      * @return an iterator on value pointed by key if exist, else return
-     * Map.cEnd()
+     * Map.end()
      */
     FWATOMS_API MapType::const_iterator find(Base::sptr key) const;
 

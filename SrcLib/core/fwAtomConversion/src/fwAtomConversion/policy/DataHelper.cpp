@@ -112,7 +112,7 @@ void DataHelper::processMappingProperty(const std::string & property, camp::User
     ::fwAtoms::Map::sptr map = ::fwAtoms::Map::dynamicCast(attribut);
     ::fwAtoms::Base::sptr value;
 
-    ::fwAtoms::Map::Iterator it = map->begin();
+    ::fwAtoms::Map::IteratorType it = map->begin();
     ::fwAtoms::Base::sptr key;
     camp::Value campValue;
 
