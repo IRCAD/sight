@@ -61,7 +61,7 @@ void Boolean::setString(const std::string& value)
 
 //------------------------------------------------------------------------------
 
-Base::sptr Boolean::clone()
+Base::sptr Boolean::clone() const
 {
     return Boolean::New(m_value);
 }

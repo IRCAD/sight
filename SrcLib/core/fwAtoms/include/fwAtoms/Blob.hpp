@@ -77,7 +77,7 @@ public:
      */
     FWATOMS_API ::fwTools::BufferObject::sptr getBufferObject() const;
 
-    FWATOMS_API virtual Base::sptr clone();
+    FWATOMS_API virtual Base::sptr clone() const;
 
 protected:
 

@@ -101,7 +101,7 @@ public:
 
     virtual bool isObject() const {return true;};
     virtual std::string getString() const {return "Object : ";};
-    FWATOMS_API virtual Base::sptr clone();
+    FWATOMS_API virtual Base::sptr clone() const;
 
 private:
 

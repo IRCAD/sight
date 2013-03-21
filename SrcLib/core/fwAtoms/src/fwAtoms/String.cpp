@@ -34,7 +34,7 @@ String::sptr String::New(std::string value)
 
 //------------------------------------------------------------------------------
 
-Base::sptr String::clone()
+Base::sptr String::clone() const
 {
     return String::New(m_value);
 }

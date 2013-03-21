@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Map.hpp"
 
@@ -105,9 +107,15 @@ Base::sptr Map::operator[](std::string index)
 
 //------------------------------------------------------------------------------
 
-Base::sptr Map::clone()
+Base::sptr Map::clone() const
 {
-    return this->getSptr();
+    Map::sptr cloneMap = Map::New();
+    MapType& valueMap = cloneMap->getValue();
+    BOOST_FOREACH(const ValueType &elem, m_value)
+    {
+        valueMap.insert( ValueType(elem.first, elem.second->clone() ) );
+    }
+    return cloneMap;
 }
 
 //------------------------------------------------------------------------------

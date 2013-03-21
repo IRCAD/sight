@@ -46,7 +46,7 @@ bool Numeric::isReal() const
 
 //------------------------------------------------------------------------------
 
-Base::sptr Numeric::clone()
+Base::sptr Numeric::clone() const
 {
     return Numeric::New(m_value);
 }

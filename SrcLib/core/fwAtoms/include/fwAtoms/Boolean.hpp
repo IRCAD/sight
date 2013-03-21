@@ -61,7 +61,7 @@ public:
      */
     FWATOMS_API static Boolean::sptr New(bool value);
 
-    FWATOMS_API virtual Base::sptr clone();
+    FWATOMS_API virtual Base::sptr clone() const;
 protected:
 
     /**
