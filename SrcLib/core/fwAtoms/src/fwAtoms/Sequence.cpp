@@ -31,29 +31,28 @@ void Sequence::append(Base::sptr value)
 
 //------------------------------------------------------------------------------
 
-Sequence::Iterator Sequence::begin()
-
+Sequence::IteratorType Sequence::begin()
 {
     return m_value.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Sequence::cIterator Sequence::cBegin() const
+Sequence::ConstIteratorType Sequence::begin() const
 {
     return m_value.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Sequence::Iterator Sequence::end()
+Sequence::IteratorType Sequence::end()
 {
     return m_value.end();
 }
 
 //------------------------------------------------------------------------------
 
-Sequence::cIterator Sequence::cEnd() const
+Sequence::ConstIteratorType Sequence::end() const
 {
     return m_value.end();
 }

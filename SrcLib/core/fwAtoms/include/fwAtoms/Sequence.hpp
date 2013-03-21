@@ -27,8 +27,15 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Sequence > ) ;
 
     typedef std::vector<Base::sptr> SequenceType;
-    typedef SequenceType::iterator Iterator;
-    typedef SequenceType::const_iterator cIterator;
+
+    typedef SequenceType::value_type ValueType;
+    typedef SequenceType::reference ReferenceType;
+    typedef SequenceType::const_reference ConstReferenceType;
+    typedef SequenceType::iterator IteratorType;
+    typedef SequenceType::const_iterator ConstIteratorType;
+    typedef SequenceType::reverse_iterator ReverseIteratorType;
+    typedef SequenceType::const_reverse_iterator ConstReverseIteratorType;
+    typedef SequenceType::size_type SizeType;
 
     /**
      * @brief Constructor
@@ -57,16 +64,16 @@ public:
     FWATOMS_API void set(unsigned int pos, Base::sptr value);
 
     //! Begin of sequence iterator
-    FWATOMS_API Iterator  begin();
+    FWATOMS_API IteratorType  begin();
 
     //! End of sequence iterator
-    FWATOMS_API Iterator  end();
+    FWATOMS_API IteratorType  end();
 
     //! Begin of sequence const iterator
-    FWATOMS_API cIterator cBegin() const;
+    FWATOMS_API ConstIteratorType begin() const;
 
     //! End of sequence const iterator
-    FWATOMS_API cIterator cEnd() const;
+    FWATOMS_API ConstIteratorType end() const;
 
 
     //! Test if the sequence is empty

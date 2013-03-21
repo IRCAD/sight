@@ -38,28 +38,28 @@ size_t Map::getSize() const
 
 //------------------------------------------------------------------------------
 
-Map::Iterator Map::begin()
+Map::IteratorType Map::begin()
 {
     return m_value.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Map::cIterator Map::cBegin() const
+Map::ConstIteratorType Map::begin() const
 {
     return m_value.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Map::Iterator Map::end()
+Map::IteratorType Map::end()
 {
     return m_value.end();
 }
 
 //------------------------------------------------------------------------------
 
-Map::cIterator Map::cEnd() const
+Map::ConstIteratorType Map::end() const
 {
     return m_value.end();
 }
