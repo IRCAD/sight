@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Sequence.hpp"
 
@@ -97,9 +99,16 @@ void Sequence::set(unsigned int pos, ::fwAtoms::Base::sptr value)
 
 //------------------------------------------------------------------------------
 
-Base::sptr Sequence::clone()
+Base::sptr Sequence::clone() const
 {
-    return this->getSptr();
+    Sequence::sptr cloneSeq = Sequence::New();
+    SequenceType& valueVect = cloneSeq->getValue();
+    valueVect.resize(m_value.size());
+    BOOST_FOREACH(const ValueType &elem, m_value)
+    {
+        valueVect.push_back( elem->clone() );
+    }
+    return cloneSeq;
 }
 
 }

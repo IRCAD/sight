@@ -65,9 +65,23 @@ char* Blob::getBuffer() const
 
 //------------------------------------------------------------------------------
 
-Base::sptr Blob::clone()
+Base::sptr Blob::clone() const
 {
-    return this->getSptr();
+    ::fwTools::BufferObject::sptr bufferObjectDest = ::fwTools::BufferObject::New();
+    Blob::sptr cloneBlob = Blob::New(bufferObjectDest);
+    if(m_bufferObject)
+    {
+        bufferObjectDest->allocate(m_bufferObject->getSize());
+
+        ::fwTools::BufferObject::Lock lockerSource(m_bufferObject);
+        char * buffSrc = static_cast< char * >( lockerSource.getBuffer() );
+
+        ::fwTools::BufferObject::Lock lockerDest(bufferObjectDest);
+        char * buffDest = static_cast< char * >( lockerDest.getBuffer() );
+
+        std::copy(buffSrc, buffSrc + m_bufferObject->getSize(), buffDest );
+    }
+    return cloneBlob;
 }
 
 }

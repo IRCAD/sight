@@ -92,7 +92,7 @@ public:
 
     virtual bool isSequence() const {return true;};
 
-    FWATOMS_API virtual Base::sptr clone();
+    FWATOMS_API virtual Base::sptr clone() const;
 
 protected:
     SequenceType m_value;

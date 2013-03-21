@@ -56,7 +56,7 @@ public:
      */
     FWATOMS_API static String::sptr New(std::string value);
 
-    FWATOMS_API virtual Base::sptr clone();
+    FWATOMS_API virtual Base::sptr clone() const;
 
 protected:
 

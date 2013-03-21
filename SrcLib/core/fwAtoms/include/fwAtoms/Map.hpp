@@ -132,7 +132,7 @@ public:
      */
     FWATOMS_API Base::sptr operator[](std::string key);
 
-    FWATOMS_API virtual Base::sptr clone();
+    FWATOMS_API virtual Base::sptr clone() const;
 
 protected:
      MapType m_value;

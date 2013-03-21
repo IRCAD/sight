@@ -65,7 +65,7 @@ public:
      * @brief clone a data.
      * @return a clone of the current MetaData
      */
-    virtual Base::sptr clone() = 0;
+    virtual Base::sptr clone() const = 0;
 
     /**
      *@brief Test if the current base is a value or not (Value = {string;numeric;boolean})

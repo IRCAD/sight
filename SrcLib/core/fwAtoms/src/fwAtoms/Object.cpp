@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <fwCamp/UserObject.hpp>
 
 #include <fwTools/UUID.hpp>
@@ -65,9 +67,18 @@ std::string Object::getType() const
 
 //------------------------------------------------------------------------------
 
-Base::sptr Object::clone()
+Base::sptr Object::clone() const
 {
-    return this->getSptr();
+    Object::sptr obj = Object::New();
+    MetaInfos& metaInfos = obj->getMetaInfos();
+    metaInfos = m_metaInfos;
+
+    Attributes& attrs = obj->getAttributes();
+    BOOST_FOREACH(const Attributes::value_type& elem, m_attrs)
+    {
+        attrs.insert( Attributes::value_type(elem.first, elem.second->clone() ) );
+    }
+    return obj;
 }
 
 //------------------------------------------------------------------------------

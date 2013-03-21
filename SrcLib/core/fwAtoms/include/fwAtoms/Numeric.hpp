@@ -82,7 +82,7 @@ public:
      */
     FWATOMS_API bool isLower(Numeric::sptr obj) const;
 
-    FWATOMS_API virtual Base::sptr clone();
+    FWATOMS_API virtual Base::sptr clone() const;
 
 protected:
 
