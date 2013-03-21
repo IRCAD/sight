@@ -50,7 +50,7 @@ size_t Blob::getSize() const
 
 //------------------------------------------------------------------------------
 
-char* Blob::getBuffer()const
+char* Blob::getBuffer() const
 {
     const ::fwTools::BufferObject::Lock& lock = m_bufferObject->lock();
     return static_cast<char *>( lock.getBuffer());
@@ -58,7 +58,7 @@ char* Blob::getBuffer()const
 
 //------------------------------------------------------------------------------
 
-::fwTools::BufferObject::sptr Blob::getBufferObject()
+::fwTools::BufferObject::sptr Blob::getBufferObject() const
 {
     return m_bufferObject;
 }

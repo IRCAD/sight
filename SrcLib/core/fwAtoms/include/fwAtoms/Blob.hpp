@@ -63,19 +63,19 @@ public:
      * @brief size accessor.
      * @return the buffer size
      */
-    FWATOMS_API  size_t getSize() const;
+    FWATOMS_API size_t getSize() const;
 
     /**
      * @brief buffer accessor.
      * @return the a pointer to the first buffer element.
      */
-    FWATOMS_API  char* getBuffer()const;
+    FWATOMS_API char* getBuffer() const;
 
     /**
      * @brief buffer accessor.
      * @return the a pointer to the first buffer element.
      */
-    FWATOMS_API  ::fwTools::BufferObject::sptr getBufferObject();
+    FWATOMS_API ::fwTools::BufferObject::sptr getBufferObject() const;
 
     FWATOMS_API virtual Base::sptr clone();
 

@@ -45,8 +45,8 @@ public:
 
     virtual bool isNumeric() const {return true;};
     virtual bool isValue() const {return true;};
-    FWATOMS_API virtual bool isSigned();
-    FWATOMS_API virtual bool isReal();
+    FWATOMS_API virtual bool isSigned() const;
+    FWATOMS_API virtual bool isReal() const;
     virtual std::string getString() const {return m_value;};
 
     virtual void setString(std::string value) { m_value = value;};
@@ -69,18 +69,18 @@ public:
     /**
      *@brief test if two numerics are equal
      */
-    FWATOMS_API bool isEqual(Numeric::sptr obj);
+    FWATOMS_API bool isEqual(Numeric::sptr obj) const;
 
 
     /**
      * @brief test if this numeric is higher than obj
      */
-    FWATOMS_API bool isHigher(Numeric::sptr obj);
+    FWATOMS_API bool isHigher(Numeric::sptr obj) const;
 
     /**
      * @brief test if this numeric is lower than obj
      */
-    FWATOMS_API bool isLower(Numeric::sptr obj);
+    FWATOMS_API bool isLower(Numeric::sptr obj) const;
 
     FWATOMS_API virtual Base::sptr clone();
 
