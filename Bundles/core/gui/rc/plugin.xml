@@ -70,12 +70,6 @@
         <service>::gui::action::ConfigActionSrvWithKey</service>
         <object>::fwData::Object</object>
     </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::gui::action::SConfigLauncher</service>
-        <object>::fwData::Object</object>
-    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>

@@ -121,28 +121,18 @@
             <!-- Mesh deformation service. -->
             <service uid="${GENERIC_UID}_meshDeformation" impl="::vtkSimpleMesh::SSimpleMeshDeformation"  worker="DEFORMATION_WORKER" />
 
-            <service uid="${GENERIC_UID}_rendering1Action" impl="::gui::action::SConfigLauncher" autoConnect="yes">
-                <config>
-                    <appConfig id="tuto15MultithreadMeshViewConfig" >
-                        <parameters>
-                            <parameter replace="meshUid" by="self" />
-                            <parameter replace="parentViewId" by="${GENERIC_UID}_rendering1View" />
-                            <parameter replace="channelId" by="camera" />
-                        </parameters>
-                    </appConfig>
-                </config>
+            <service uid="${GENERIC_UID}_rendering1Action" impl="::gui::action::ConfigActionSrvWithKey" autoConnect="yes">
+                <config id="tuto15MultithreadMeshViewConfig" />
+                <key id="self" pattern="meshUid" />
+                <replace pattern="parentViewId" val="${GENERIC_UID}_rendering1View" />
+                <replace pattern="channelId" val="camera" />
             </service>
 
-            <service uid="${GENERIC_UID}_rendering2Action" impl="::gui::action::SConfigLauncher" autoConnect="yes">
-                <config>
-                    <appConfig id="tuto15MultithreadMeshViewConfig" >
-                        <parameters>
-                            <parameter replace="meshUid" by="self" />
-                            <parameter replace="parentViewId" by="${GENERIC_UID}_rendering2View" />
-                            <parameter replace="channelId" by="camera" />
-                        </parameters>
-                    </appConfig>
-                </config>
+            <service uid="${GENERIC_UID}_rendering2Action" impl="::gui::action::ConfigActionSrvWithKey" autoConnect="yes">
+                <config id="tuto15MultithreadMeshViewConfig" />
+                <key id="self" pattern="meshUid" />
+                <replace pattern="parentViewId" val="${GENERIC_UID}_rendering2View" />
+                <replace pattern="channelId" val="camera" />
             </service>
             
             <start uid="${GENERIC_UID}_frame" />

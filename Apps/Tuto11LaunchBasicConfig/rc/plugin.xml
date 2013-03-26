@@ -62,14 +62,9 @@
 
                 <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
 
-                <service uid="actionLaunchConfig" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
-                    <config>
-                        <appConfig id="BasicFrameConfig" >
-                            <parameters>
-                                <parameter replace="imageUid" by="myImage" />
-                            </parameters>
-                        </appConfig>
-                    </config>
+                <service uid="actionLaunchConfig" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
+                    <config id="BasicFrameConfig" />
+                    <replace val="myImage" pattern="imageUid" />
                 </service>
 
                 <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="mainView" autoConnect="yes">

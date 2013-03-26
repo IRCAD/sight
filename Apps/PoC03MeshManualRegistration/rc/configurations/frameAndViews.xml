@@ -62,28 +62,20 @@
         </registry>
     </service>
 
-    <service uid="action_manageOrgansColors" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
-        <config>
-            <appConfig id="organManagerConfig" />
-        </config>
+    <service uid="action_manageOrgansColors" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
+        <config id="organManagerConfig" />
     </service>
 
-    <service uid="action_manageView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
-        <config>
-            <appConfig id="camViewManagerConfig" />
-        </config>
+    <service uid="action_manageView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
+        <config id="camViewManagerConfig" />
     </service>
 
-    <service uid="action_manageRegistration" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
-        <config>
-            <appConfig id="manualRegistrationEditorConfig" />
-        </config>
+    <service uid="action_manageRegistration" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
+        <config id="manualRegistrationEditorConfig" />
     </service>
 
-    <service uid="action_worldView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
-        <config>
-            <appConfig id="worldViewConfig" />
-        </config>
+    <service uid="action_worldView" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
+        <config id="worldViewConfig" />
     </service>
 
     <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
