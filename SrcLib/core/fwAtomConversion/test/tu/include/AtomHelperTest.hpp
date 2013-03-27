@@ -22,8 +22,6 @@ class AtomHelperTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( visitPatientDataTest );
     CPPUNIT_TEST( visitPatientMetaDataTest );
     CPPUNIT_TEST( visitCompositeDataTest );
-    CPPUNIT_TEST( retreiveCampObjectVisitorTest );
-    CPPUNIT_TEST( invalidPathTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -37,8 +35,6 @@ public:
     void visitPatientDataTest();
     void visitPatientMetaDataTest();
     void visitCompositeDataTest();
-    void retreiveCampObjectVisitorTest();
-    void invalidPathTest();
 
     void visitCampObject( const camp::UserObject & campObj );
 
