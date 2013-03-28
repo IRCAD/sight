@@ -33,11 +33,9 @@ Mapper::computeMinimalInfos(::fwData::Object::sptr object,
 Mapper::computeMinimalInfos(::fwAtoms::Object::sptr object,
                             ::fwAtomConversion::AtomHelper& metaHelper)
 {
-
-    const camp::Class& metaclass = camp::classByName(object->getClassname());
     ::fwAtomConversion::policy::Data policy(metaHelper);
     ::fwAtoms::AtomVisitor visitor(policy, object);
-    metaclass.visit(visitor);
+    visitor.visit();
 
     return policy.getObject();
 }

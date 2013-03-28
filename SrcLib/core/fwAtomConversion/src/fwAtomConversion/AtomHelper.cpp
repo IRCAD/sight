@@ -91,10 +91,9 @@ fwAtoms::Object::sptr AtomHelper::dataToMeta(fwData::Object::sptr object)
         }
         else
         {
-            const camp::Class& metaclass = camp::classByName(object->getClassname());
             ::fwAtomConversion::policy::Data policy(*this);
             ::fwAtoms::AtomVisitor visitor(policy, object);
-            metaclass.visit(visitor);
+            visitor.visit();
             dataObject = policy.getObject();
         }
         OSLM_ASSERT("Error when converting metaData to fwData", (dataObject.get()) != NULL);

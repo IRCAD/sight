@@ -7,7 +7,6 @@
 #ifndef __FWATOMS_METAVISITOR_HPP_
 #define __FWATOMS_METAVISITOR_HPP_
 
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
 #include "fwAtoms/Object.hpp"
 #include "fwAtoms/Policy.hpp"
 
@@ -19,7 +18,7 @@ namespace fwAtoms
 /**
  * @brief This class offer the possibility to visit a MetaData and manage his execution with a Policy
  */
-class FWATOMS_CLASS_API AtomVisitor: public ::camp::ExtendedClassVisitor
+class FWATOMS_CLASS_API AtomVisitor
 {
 public:
     /**
@@ -27,7 +26,7 @@ public:
      * @param policy the policy to manage visitation @see Policy.
      * @param metaObject the visited metaObject.
      */
-    FWATOMS_API AtomVisitor(Policy& policy, Object::sptr metaObject);
+    FWATOMS_API AtomVisitor( ::fwAtoms::Policy& policy, ::fwAtoms::Object::sptr visitedAtom );
 
     /**
      * @brief Meta visitor destructor
@@ -39,12 +38,13 @@ public:
      * @brief visit MapProperty(the map of Object attributes).
      * Call Policy::processAttributes method
      */
-    FWATOMS_API virtual void visit(const camp::MapProperty& property);
+    FWATOMS_API virtual void visit();
 
 private:
-    Policy& m_policy;
-    camp::UserObject m_userObj;
 
+    ::fwAtoms::Policy& m_policy;
+
+    ::fwAtoms::Object::sptr m_visitedAtom;
 };
 
 

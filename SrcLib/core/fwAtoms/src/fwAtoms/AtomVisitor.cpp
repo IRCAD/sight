@@ -10,61 +10,18 @@
 namespace fwAtoms
 {
 
-AtomVisitor::AtomVisitor(Policy& policy, Object::sptr metaObject) : m_userObj(metaObject.get()), m_policy(policy)
+AtomVisitor::AtomVisitor( ::fwAtoms::Policy& policy, ::fwAtoms::Object::sptr visitedAtom )
+: m_policy(policy), m_visitedAtom(visitedAtom)
 {}
 
 AtomVisitor::~AtomVisitor()
 {}
 
 
-
-void AtomVisitor::visit(const camp::MapProperty& property)
+void AtomVisitor::visit()
 {
-    std::string name = property.name();
-    camp::Value first;
-    camp::Value second;
-    std::pair< camp::Value, camp::Value > value;
-    std::string currentKey;
-
-    if(!name.compare("attributes"))
-    {
-        Object::Attributes attributes;
-        Base::sptr secObject;
-
-        for (int var = 0; var < property.getSize(m_userObj); var++)
-        {
-            value = property.getElement(m_userObj, var);
-            first = value.first;
-            second = value.second;
-
-            currentKey = first.to< std::string>();
-            secObject = second.to< ::fwAtoms::Base::sptr>();
-
-            if(secObject.get() != NULL)
-            {
-                attributes[currentKey] = secObject;
-            }
-        }
-        m_policy.processAttributes(attributes);
-    }
-    else if(!name.compare("metaInfos"))
-    {
-        std::string secObject;
-        Object::MetaInfos metaInfos;
-
-        for (int var = 0; var < property.getSize(m_userObj); var++)
-        {
-            value = property.getElement(m_userObj, var);
-            first = value.first;
-            second = value.second;
-
-            currentKey = first.to< std::string>();
-            secObject = second.to< std::string>();
-
-            metaInfos[currentKey] = secObject;
-        }
-        m_policy.processMetaInfos(metaInfos);
-    }
+    m_policy.processAttributes( m_visitedAtom->getAttributes() );
+    m_policy.processMetaInfos( m_visitedAtom->getMetaInfos() );
 }
 
 
