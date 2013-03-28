@@ -6,6 +6,7 @@
         <param name="WID_PARENT" />
         <param name="COMPOSITE_SELECTION" />
         <param name="UID_OF_SELECTED_PATIENT" />
+        <param name="medicalWorkspaceUid" />
     </parameters>
     
     <config>
@@ -18,6 +19,10 @@
             <item key="compositeSelection">
                 <object uid="${COMPOSITE_SELECTION}" src="ref" type="::fwData::Composite">
 
+                    <service uid="${GENERIC_UID}_myManagerLockDump" impl="::ctrlMemory::manager::LockDumpManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+                        <manageLockOn key="image" />
+                    </service>
+                    
                     <service uid="${GENERIC_UID}_action_activity3" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoConnect="yes">
                         <config id="Activity3Config" title="Visu 2D" titlePrefixKey="@values.tabPrefix" tooltipKey="@values.tabInfo" icon="Bundles/VRRender_0-9/icons/icon-2D.png" />
                         <key id="image" pattern="SELECTED_UID_image" />
@@ -71,6 +76,25 @@
                 </object>
             </item>
 
+            <item key="medicalWorkspace">
+                <object uid="${medicalWorkspaceUid}" src="ref" type="::fwData::Composite">
+
+                    <service uid="${GENERIC_UID}_action_exportMedicalWorkspace" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <start uid="${GENERIC_UID}_writerMedicalWorkspace" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_writerMedicalWorkspace" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
+                        <type mode="writer" />
+                        <selection mode="include" />
+                        <addSelection service="::ioXML::FwXMLGenericWriterService" />
+                        <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericWriterService" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_importMedicalWorkspace" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::AddMedicalWorkspace" autoConnect="no" />
+                    
+                </object>
+            </item>
+            
             <item key="patientDB">
                 <object uid="${UID_OF_SELECTED_PATIENT}" src="ref" type="::fwData::PatientDB">
                     <service uid="${GENERIC_UID}_selector" type="::gui::editor::IEditor" impl="::uiPatientDB::PatientDBGuiSelectorService" autoConnect="yes" />
@@ -99,6 +123,7 @@
             </item>
 
             <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_myManagerLockDump" />
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_selector" />
             <start uid="${GENERIC_UID}_infoEditor" />

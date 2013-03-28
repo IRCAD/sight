@@ -16,10 +16,24 @@
 
             <object type="::fwData::Composite">
 
+                <service uid="dumpPolicy" type="::fwServices::IController" impl="::memory::SDumpPolicy" autoConnect="no">
+                    <config>
+                        <policy>NeverDump</policy>
+                        <!-- <policy>AlwaysDump</policy> -->
+                        <!-- <policy>ValveDump</policy> -->
+                        <!-- <policy>BarrierDump</policy> -->
+                        <params>
+                            <!-- <min_free_mem>4073741824</min_free_mem> -->
+                            <!-- <hysteresis_offet>1073741824</hysteresis_offet> -->
+                            <!-- <barrier>4073741824</barrier> -->
+                        </params>
+                    </config>
+                </service>
+            
                 <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
-                            <name>VRRender 0.9.0</name>
+                            <name>VRRender 0.9.5</name>
                             <icon>Bundles/VRRender_0-9/vrrender.ico</icon>
                             <minSize width="800" height="600" />
                         </frame>
@@ -32,14 +46,23 @@
                 <item key="medicalWorkspace">
                     <object uid="medicalWorkspace" type="::fwData::Composite">
 
-                    <!--  Patient DB Composite declaration -->
+                        <!--  Patient DB Composite declaration -->
                         <item key="patientDB">
                             <object uid="patientDB" type="::fwData::PatientDB">
-
                                 <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-
                             </object>
                         </item>
+                        
+                        <!-- Processing DB Composite declaration -->
+                        <item key="processingDB">
+                            <object uid="processingDB" type="::fwData::Composite" />
+                        </item>
+
+                        <!-- Planning DB Composite declaration -->
+                        <item key="planningDB">
+                            <object uid="planningDB" type="::fwData::Composite" />
+                        </item>
+                    
                     </object>
                 </item>
 
@@ -53,6 +76,7 @@
                             <key id="self" pattern="COMPOSITE_SELECTION" />
 
                             <replace val="patientDB" pattern="UID_OF_SELECTED_PATIENT" />
+                            <replace val="medicalWorkspace" pattern="medicalWorkspaceUid" />
                         </service>
 
                         <service uid="updaterAcq" impl="::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">

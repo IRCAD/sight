@@ -313,12 +313,16 @@
                     </service>
 
                     <item key="acquisition">
-                        <object uid="${SELECTED_UID_acquisition}" src="ref" type="::fwData::Acquisition" />
+                        <object uid="${SELECTED_UID_acquisition}" src="ref" type="::fwData::Acquisition" >
+                            <service uid="${GENERIC_UID}_acquisitionDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+                        </object>
                     </item>
 
                     <item key="image">
                         <object uid="${SELECTED_UID_image}" src="ref" type="::fwData::Image">
 
+                            <service uid="${GENERIC_UID}_imageDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+                            
                             <service uid="${GENERIC_UID}_ActionFocusLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::FocusLandmark" autoConnect="no" />
                             <service uid="${GENERIC_UID}_ActionNewLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddLandmark" autoConnect="no" />
                             <service uid="${GENERIC_UID}_ActionRemoveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveLandmark" autoConnect="no" />
@@ -400,6 +404,8 @@
 
 
             <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_acquisitionDumpLocker" />
+            <start uid="${GENERIC_UID}_imageDumpLocker" />
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_negato1" />
             <start uid="${GENERIC_UID}_negato2" />

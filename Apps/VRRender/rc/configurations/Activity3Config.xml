@@ -262,7 +262,11 @@
 
                     <item key="image">
                         <object uid="${SELECTED_UID_image}" src="ref" type="::fwData::Image">
+                            
+                            <service uid="${GENERIC_UID}_imageDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+                        
                             <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+                            
                             <!-- Editors for Negato1 -->
                             <service uid="${GENERIC_UID}_slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>axial</sliceIndex>
@@ -314,6 +318,7 @@
 
 
             <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_imageDumpLocker" />
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_negato1" />
             <start uid="${GENERIC_UID}_negato2" />

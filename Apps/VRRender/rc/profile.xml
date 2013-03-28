@@ -1,4 +1,4 @@
-<profile name="VRRender" version="0.9.0">
+<profile name="VRRender" version="0.9.5">
 
     <activate id="dataReg" version="0-1" />
     <activate id="servicesReg" version="0-1" />
@@ -42,6 +42,13 @@
 
     <activate id="uiTF" version="0-1" />
 
+    <activate id="ctrlMemory" version="0-1" />
+    <activate id="monitor" version="0-1" />
+    <activate id="memory" version="0-1" />
+
+    <activate id="monitorQt" version="0-1" />
+
+    <start id="memory" />
     <start id="ioITK" />
     <start id="ioVTK" />
     <start id="visuVTK" />

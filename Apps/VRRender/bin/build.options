@@ -7,6 +7,9 @@ BUNDLES = [
     'guiQt_0-1'                ,
     'io_0-1'                   ,
     'launcher_0-1'             ,
+    'memory_0-1'               ,
+    'monitor_0-1'              ,
+    'monitorQt_0-1'            ,
     'uiIO_0-1'                 ,
     'visuVTK_0-1'              ,
     'visuVTKQt_0-1'            ,
@@ -26,6 +29,7 @@ BUNDLES = [
     'uiPatientDB_0-1'          ,
     'uiPatientDBQt_0-1'        ,
     'ctrlSelection_0-1'        ,
+    'ctrlMemory_0-1'           ,
     'uiAcquisitionQt_0-1'      ,
     'uiReconstructionQt_0-1'   ,
     'uiMeasurement_0-1'        ,
@@ -33,4 +37,3 @@ BUNDLES = [
     'uiTF_0-1'                 ,
     'appXml_0-1'               ,
  ]
-

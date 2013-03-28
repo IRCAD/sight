@@ -160,6 +160,8 @@
                     <item key="image">
                         <object uid="${SELECTED_UID_image}" src="ref" type="::fwData::Image">
                     
+                            <service uid="${GENERIC_UID}_imageDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+                    
                             <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
 
                             <!-- Editors for Negato2 -->
@@ -209,6 +211,7 @@
             </item>
 
             <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_imageDumpLocker" />
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
             <start uid="${GENERIC_UID}_slider_negato2" />
