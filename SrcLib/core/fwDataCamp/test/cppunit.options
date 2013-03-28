@@ -1,6 +1,8 @@
 
 CLASSTEST=[
-    'GetObjectTest'
+    'GetObjectTest',
+    'ObjectTest',
+    'RecursiveLockTest',
 ]
 
 LIB = ['fwTools_0-1', 'fwCore_0-1', 'fwDataCamp_0-1', 'fwDataTools_0-1']
