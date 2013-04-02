@@ -82,12 +82,6 @@ public:
     //! Get internal metaInfo mapping
     const MetaInfosType& getMetaInfos() const { return m_metaInfos; }
 
-
-
-    //--------------------------------------------------------------------------
-
-    virtual std::string getString() const {return "Object : ";};
-
     /**
      * @brief Returns a clone object
      */

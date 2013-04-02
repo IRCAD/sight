@@ -116,7 +116,7 @@ public:
      * @brief Return the string representation of a value.
      * @return the value's representation, else "<Unknown>"
      */
-    virtual std::string getString() const {return "<Unknown>";};
+    FWATOMS_API virtual std::string getString() const;
 
     /**
      * @brief returns Atom type
