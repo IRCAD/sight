@@ -6,11 +6,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
 #include <fwData/Object.hpp>
-#include <fwData/String.hpp>
 
 #include <fwData/camp/mapper.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
