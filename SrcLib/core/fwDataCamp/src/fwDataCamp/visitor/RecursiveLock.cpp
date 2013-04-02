@@ -5,18 +5,21 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/shared_ptr.hpp>
-#include <boost/utility/enable_if.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/Object.hpp>
+#include <fwData/String.hpp>
 
 #include <fwData/camp/mapper.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Integer.hpp>
-
-#include "fwDataCamp/visitor/RecursiveLock.hpp"
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include "fwDataCamp/exception/NullPointer.hpp"
 #include "fwDataCamp/exception/ObjectNotFound.hpp"
+
+#include "fwDataCamp/visitor/RecursiveLock.hpp"
+
 
 namespace fwDataCamp
 {
