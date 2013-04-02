@@ -16,9 +16,9 @@
 namespace fwAtoms
 {
 /**
- * @brief Represented a buffer in fwAtoms
+ * @brief Representation of a buffer
  *
- * A blob is a buffer. In fact it is a char* in memory.
+ * A blob wraps a buffer
  */
 class FWATOMS_CLASS_API Blob : public Base
 {
@@ -50,19 +50,6 @@ public:
      * @param size the buffer size
      */
     FWATOMS_API static Blob::sptr New(void* buffer, unsigned int size);
-
-    /**
-     * @brief size accessor.
-     * @return the buffer size
-     */
-    FWATOMS_API size_t getSize() const;
-
-    /**
-     * @brief buffer accessor.
-     * @return the a pointer to the first buffer element.
-     * @TODO remove me
-     */
-    FWATOMS_API char* getBuffer() const;
 
     /**
      * @brief buffer accessor.

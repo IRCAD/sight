@@ -95,10 +95,32 @@ void Object::setMetaInfos(const MetaInfosType& metaInfos)
 
 //------------------------------------------------------------------------------
 
-void Object::removeAttribute(const std::string& key)
+Object::AttributesType::size_type Object::eraseAttribute(const std::string& key)
 {
-    m_attributes.erase(key);
+    return m_attributes.erase(key);
 }
+
+//------------------------------------------------------------------------------
+
+void Object::clearAttribute()
+{
+    m_attributes.clear();
+}
+
+//------------------------------------------------------------------------------
+
+Object::MetaInfosType::size_type Object::eraseMetaInfo(const std::string& key)
+{
+    return m_metaInfos.erase(key);
+}
+
+//------------------------------------------------------------------------------
+
+void Object::clearMetaInfo()
+{
+    m_metaInfos.clear();
+}
+
 
 
 }  // namespace fwAtoms

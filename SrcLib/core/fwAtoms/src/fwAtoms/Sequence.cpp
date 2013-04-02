@@ -4,7 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <algorithm>
 #include <boost/foreach.hpp>
+#include <boost/bind.hpp>
 
 #include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Sequence.hpp"
@@ -20,10 +22,7 @@ Base::sptr Sequence::clone() const
 {
     Sequence::sptr cloneSeq = Sequence::New();
     cloneSeq->m_value.resize(m_value.size());
-    BOOST_FOREACH(const ValueType &elem, m_value)
-    {
-        cloneSeq->m_value.push_back( elem->clone() );
-    }
+    std::transform(m_value.begin(), m_value.end(), cloneSeq->m_value.begin(), boost::bind(&::fwAtoms::Base::clone, _1));
     return cloneSeq;
 }
 

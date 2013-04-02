@@ -53,9 +53,17 @@ public:
     //! add a atrtribut, old value is erased
     FWATOMS_API void setAttribute(const std::string& key, const Base::sptr&);
 
+    /**
+     * @brief Removes an attributes
+     *
+     * @param key Key of the element to be removed
+     *
+     * @return returns the number of elements erased
+     */
+    FWATOMS_API AttributesType::size_type eraseAttribute(const std::string& key);
 
-    //! Remove an attributes
-    FWATOMS_API void removeAttribute(const std::string& key);
+    //! clear attributes
+    FWATOMS_API void clearAttribute();
 
     //--------------------------------------------------------------------------
 
@@ -81,6 +89,18 @@ public:
 
     //! Get internal metaInfo mapping
     const MetaInfosType& getMetaInfos() const { return m_metaInfos; }
+
+    /**
+     * @brief Removes a MetaInfo
+     *
+     * @param key Key of the element to be removed
+     *
+     * @return returns the number of elements erased
+     */
+    FWATOMS_API MetaInfosType::size_type eraseMetaInfo(const std::string& key);
+
+    //! clear MetaInfos
+    FWATOMS_API void clearMetaInfo();
 
     /**
      * @brief Returns a clone object

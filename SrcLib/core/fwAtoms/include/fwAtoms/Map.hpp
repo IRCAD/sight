@@ -76,7 +76,7 @@ public:
      * @param key the key, if exist the oldest value is erased.
      * @param value the new value
      */
-    std::pair<IteratorType, bool> insert(const std::string &key, Base::sptr &value)
+    std::pair<IteratorType, bool> insert(const std::string &key, const Base::sptr &value)
     { return m_value.insert( ValueType(key, value) ); }
 
     /**
@@ -107,6 +107,8 @@ public:
      */
     ConstIteratorType end() const{return m_value.end();}
 
+    //! clear the map
+    void  clear() {m_value.clear();}
 
     /**
      * @brief test if the map is empty

@@ -78,6 +78,12 @@ public:
     ConstIteratorType end() const {return m_value.end();}
 
 
+    //! Returns the sequence size
+    size_type size() const {return m_value.size();}
+
+    //! clear the sequence
+    void  clear() {m_value.clear();}
+
     //! Test if the sequence is empty
     bool empty() const {return m_value.empty();}
 

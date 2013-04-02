@@ -34,21 +34,6 @@ Blob::sptr Blob::New(void* buffer, unsigned int size)
 
 //------------------------------------------------------------------------------
 
-size_t Blob::getSize() const
-{
-    return m_bufferObject->getSize();
-}
-
-//------------------------------------------------------------------------------
-
-char* Blob::getBuffer() const
-{
-    const ::fwTools::BufferObject::Lock& lock = m_bufferObject->lock();
-    return static_cast<char *>( lock.getBuffer());
-}
-
-//------------------------------------------------------------------------------
-
 ::fwTools::BufferObject::sptr Blob::getBufferObject() const
 {
     return m_bufferObject;

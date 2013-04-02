@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMS_UT_BOOLEANTEST_HPP__
-#define __FWATOMS_UT_BOOLEANTEST_HPP__
+#ifndef __FWATOMS_UT_ATOMTEST_HPP__
+#define __FWATOMS_UT_ATOMTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -14,10 +14,13 @@ namespace fwAtoms
 namespace ut
 {
 
-class BooleanTest :  public CPPUNIT_NS::TestFixture
+class AtomTest :  public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( BooleanTest );
-    CPPUNIT_TEST( conversion );
+    CPPUNIT_TEST_SUITE( AtomTest );
+    CPPUNIT_TEST( blobTest );
+    CPPUNIT_TEST( mapTest );
+    CPPUNIT_TEST( objectTest );
+    CPPUNIT_TEST( sequenceTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -25,7 +28,10 @@ public:
     void setUp();
     void tearDown();
 
-    void conversion();
+    void blobTest();
+    void mapTest();
+    void objectTest();
+    void sequenceTest();
 };
 
 
@@ -34,5 +40,5 @@ public:
 
 
 
-#endif // __FWATOMS_UT_BOOLEANTEST_HPP__
+#endif // __FWATOMS_UT_ATOMTEST_HPP__
 
