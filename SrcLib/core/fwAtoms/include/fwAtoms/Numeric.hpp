@@ -87,7 +87,7 @@ public:
     /**
      * @brief Returns a string representing the currently held numeric value
      */
-    virtual std::string getString() const;
+    FWATOMS_API virtual std::string getString() const;
 
     /**
      * @brief Sets Numeric's value from given string, using Numeric::valueFromString
