@@ -20,19 +20,31 @@ namespace fwDataCamp
 namespace visitor
 {
 
+/**
+ * @brief Check if object introspection process mathes a given path. 
+ */
 struct PathVisitor
 {
+    /**
+     * @name Typedefs
+     * @{ */
     typedef ::boost::shared_ptr<PathVisitor> sptr;
     typedef std::vector<std::string> ObjectsNamesType;
+    /**  @} */
 
-    ObjectsNamesType m_vectObj;
-    ObjectsNamesType m_vectObjFound;
-
-    PathVisitor(const std::string& seshatPath)
+    /**
+     * @brief Constructor.
+     *
+     * @param path 
+     */
+    PathVisitor(const std::string& path)
     {
-        ::boost::split( m_vectObj, seshatPath, ::boost::is_any_of("."));
+        ::boost::split( m_vectObj, path, ::boost::is_any_of("."));
     }
 
+    /**
+     * @brief Appends the path elements of the given path visitor.
+     */
     void merge(PathVisitor::sptr pathVisitor)
     {
         const ObjectsNamesType& vectObjFound =  pathVisitor->m_vectObjFound;
@@ -40,15 +52,26 @@ struct PathVisitor
         m_vectObjFound.insert(m_vectObjFound.end(), vectObjFound.begin(), vectObjFound.end());
     }
 
+    /// Appends a path element.
     void addObject(const std::string& objPath)
     {
         m_vectObjFound.push_back(objPath);
     }
 
+    /// Returns true if all path elements were found during an introspection process.
     bool allObjectsFound() const
     {
         return m_vectObj == m_vectObjFound;
     }
+
+private:
+
+    /// Path elements to introspect.
+    ObjectsNamesType m_vectObj;
+
+    /// Introspected path elements.
+    ObjectsNamesType m_vectObjFound;
+
 };
 
 /**
@@ -62,22 +85,38 @@ class FWDATACAMP_CLASS_API GetObject : public ::camp::ExtendedClassVisitor
 
 public:
 
+    /**
+     * @brief Constructor.
+     *
+     * @param object data object containing child object to retrieve
+     * @param subObjPath normalized path targeting child object to retrieve
+     */
     FWDATACAMP_API GetObject( ::fwData::Object::sptr object, const std::string & subObjPath );
 
     FWDATACAMP_API virtual ~GetObject();
 
+    /**
+     * @name Introspection methods implementation
+     * @{ */
     FWDATACAMP_API void visit(const camp::SimpleProperty& property);
     FWDATACAMP_API void visit(const camp::EnumProperty& property);
     FWDATACAMP_API void visit(const camp::UserProperty& property);
     FWDATACAMP_API void visit(const camp::ArrayProperty& property);
     FWDATACAMP_API void visit(const camp::Function& function);
     FWDATACAMP_API virtual void visit(const camp::MapProperty& property);
+    /**  @} */
 
     /// Launches visit process and returns the object designated by m_subObjPath
     FWDATACAMP_API ::fwData::Object::sptr get();
 
+    /**
+     * @brief Returns true if introspection process matched child object path.
+     */
     FWDATACAMP_API bool objectsFound() const;
 
+    /**
+     * @brief Returns pointer to associated path visitor.
+     */
     PathVisitor::sptr getPathVisitor() const
     {
         return m_pathVisitor;
@@ -111,6 +150,7 @@ private :
 
 protected:
 
+    /// Path visitor.
     PathVisitor::sptr m_pathVisitor;
 
 };

@@ -37,7 +37,9 @@ FWDATACAMP_API ::fwData::Object::sptr getObject( SPTR(::fwData::Object) object,
                                                           const std::string & path,
                                                           bool raiseException = false);
 
-/// @see fwDataCamp.getObject
+/**
+ * @see fwDataCamp.getObject
+ */
 template< class DATATYPE >
 SPTR(DATATYPE) getObject( SPTR(::fwData::Object) object,
                              const std::string & path,
