@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,12 +17,10 @@ namespace ut
 class NumericTest :  public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( NumericTest );
-    CPPUNIT_TEST( intConversion );
-    CPPUNIT_TEST( uintConversion );
-    CPPUNIT_TEST( int64Conversion );
-    CPPUNIT_TEST( uint64Conversion );
-    CPPUNIT_TEST( floatConversion );
-    CPPUNIT_TEST( doubleConversion );
+    CPPUNIT_TEST( emptyTest );
+    CPPUNIT_TEST( intTest );
+    CPPUNIT_TEST( floatingTest );
+    CPPUNIT_TEST( mixedTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -30,15 +28,12 @@ public:
     void setUp();
     void tearDown();
 
-    void intConversion();
-    void uintConversion();
-    void int64Conversion();
-    void uint64Conversion();
-    void floatConversion();
-    void doubleConversion();
+    void emptyTest();
+    void intTest();
+    void floatingTest();
+    void mixedTest();
 
 };
-
 
 }  // namespace ut
 }  // namespace fwAtoms

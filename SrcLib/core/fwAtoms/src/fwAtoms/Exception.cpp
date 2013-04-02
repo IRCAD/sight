@@ -4,22 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwAtoms/Object.hpp"
-#include "fwAtoms/factory/new.hpp"
+#include "fwAtoms/Exception.hpp"
 
 namespace fwAtoms
 {
 
-namespace factory
-{
+Exception::Exception(const std::string &message) throw()
+: ::fwCore::Exception(message)
+{}
 
-::fwAtoms::Base::sptr New( const ::fwAtoms::registry::KeyType & classname )
-{
-    return ::fwAtoms::registry::get()->create(classname);
-}
 
-} // namespace factory
+Exception::~Exception() throw()
+{}
+
+
 
 } // namespace fwAtoms
-
 

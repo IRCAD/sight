@@ -1,20 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Boolean.hpp"
-
-fwCampImplementMacro((fwAtoms)(Boolean))
-{
-    builder
-        .tag("object_version", "1")
-        .tag("lib_name", "fwAtoms")
-        .base< ::fwAtoms::Base >()
-        .property("value", &::fwAtoms::Boolean::getString, &::fwAtoms::Boolean::setString);
-}
 
 fwAtomsRegisterMacro( ::fwAtoms::Boolean );
 
@@ -43,13 +34,7 @@ Boolean::sptr Boolean::New(bool value)
 
 std::string Boolean::getString() const
 {
-    std::string result = "false";
-    if(m_value)
-    {
-        result = "true";
-    }
-
-    return result;
+    return m_value ? "true" : "false";
 }
 
 //------------------------------------------------------------------------------

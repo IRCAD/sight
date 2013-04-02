@@ -1,13 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
 #include <limits>
 
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+
+
 #include <fwAtoms/Numeric.hpp>
+#include <fwAtoms/Numeric.hxx>
+
+#include <fwAtoms/Exception.hpp>
+
 #include "NumericTest.hpp"
 
 
@@ -31,106 +38,161 @@ void NumericTest::tearDown()
 }
 
 
-void NumericTest::intConversion()
+//-----------------------------------------------------------------------------
+
+void NumericTest::emptyTest()
 {
-    const int VALUES[] = {
-            std::numeric_limits< int >::min(), -1234, 0, 1234, std::numeric_limits<int>::max()};
-    fwAtoms::Numeric::sptr metaInt;
-
-    BOOST_FOREACH ( int INT, VALUES )
-    {
-        std::string res = boost::lexical_cast< std::string>( INT);
-
-        metaInt = ::fwAtoms::Numeric::New(INT);
-
-        CPPUNIT_ASSERT_EQUAL(res, metaInt->getString());
-    }
+    fwAtoms::Numeric::sptr numeric = fwAtoms::Numeric::New();
+    CPPUNIT_ASSERT_THROW(numeric->getString(), ::fwAtoms::Exception);
 }
 
-void NumericTest::uintConversion()
+//-----------------------------------------------------------------------------
+
+void NumericTest::intTest()
 {
-    const unsigned int VALUES[] = {
-            std::numeric_limits< unsigned int >::min(), 0, 1234, std::numeric_limits<unsigned int>::max()};
-    fwAtoms::Numeric::sptr metaInt;
+    fwAtoms::Numeric::sptr numeric;
 
-    BOOST_FOREACH ( unsigned int INT, VALUES )
-    {
-        std::string res = boost::lexical_cast< std::string>( INT);
+    numeric = fwAtoms::Numeric::New(42);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(42), numeric->getString());
 
-        metaInt = ::fwAtoms::Numeric::New(INT);
+    numeric = fwAtoms::Numeric::New(1ULL<<63);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(1ULL<<63), numeric->getString());
+    CPPUNIT_ASSERT_THROW( numeric->getValue<int>(), boost::numeric::positive_overflow );
 
-        CPPUNIT_ASSERT_EQUAL(res, metaInt->getString());
-    }
-}
+    numeric = fwAtoms::Numeric::New(-22);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(-22), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(static_cast<int>(-22), numeric->getValue<int>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue<unsigned int>(), boost::numeric::negative_overflow );
 
-void NumericTest::int64Conversion()
-{
-    const ::boost::int64_t VALUES[] = {
-            std::numeric_limits<  ::boost::int64_t >::min(),-1234, 0, 1234,
-            std::numeric_limits<  ::boost::int64_t >::max()};
+    numeric = fwAtoms::Numeric::New(true);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(true), numeric->getString());
 
-    fwAtoms::Numeric::sptr metaInt;
+    numeric = fwAtoms::Numeric::New('a');
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(static_cast<int>('a')), numeric->getString());
 
-    BOOST_FOREACH ( boost::int64_t INT, VALUES )
-    {
-        std::string res = boost::lexical_cast< std::string>( INT);
+    numeric = fwAtoms::Numeric::New(std::string("42"));
+    CPPUNIT_ASSERT_EQUAL(std::string("42"), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(static_cast<char>(42), numeric->getValue<char>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(42), numeric->getValue<unsigned char>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned short>(42), numeric->getValue<unsigned short>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(42), numeric->getValue<unsigned int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned long int>(42), numeric->getValue<unsigned long int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned long long int>(42), numeric->getValue<unsigned long long int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<char>(42), numeric->getValue<char>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<short>(42), numeric->getValue<short>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<int>(42), numeric->getValue<int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<long int>(42), numeric->getValue<long int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<long long int>(42), numeric->getValue<long long int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(42), numeric->getValue<float>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<double>(42), numeric->getValue<double>());
 
-        metaInt = ::fwAtoms::Numeric::New(INT);
-
-        CPPUNIT_ASSERT_EQUAL(res, metaInt->getString());
-    }
-}
-
-void NumericTest::uint64Conversion()
-{
-    const ::boost::uint64_t VALUES[] = {
-            std::numeric_limits<  ::boost::uint64_t >::min(),1234, 0, 12345678,
-            std::numeric_limits<  ::boost::uint64_t >::max()};
-
-    fwAtoms::Numeric::sptr metaInt;
-
-    BOOST_FOREACH ( boost::uint64_t INT, VALUES )
-    {
-        std::string res = boost::lexical_cast< std::string>( INT);
-
-        metaInt = ::fwAtoms::Numeric::New(INT);
-
-        CPPUNIT_ASSERT_EQUAL(res, metaInt->getString());
-    }
+    numeric = fwAtoms::Numeric::New(std::string("422"));
+    CPPUNIT_ASSERT_EQUAL(422, numeric->getValue<int>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue<char>(), boost::numeric::positive_overflow );
 
 }
 
-void NumericTest::floatConversion()
+//-----------------------------------------------------------------------------
+
+void NumericTest::floatingTest()
 {
-    const float VALUES[] = {
-            std::numeric_limits< float >::min(), -1234.1234, 0, 1234.1234, std::numeric_limits<float>::max()};
-    fwAtoms::Numeric::sptr metaFloat;
+    fwAtoms::Numeric::sptr numeric;
 
-    BOOST_FOREACH ( float FLOAT, VALUES )
-    {
-        std::string res = boost::lexical_cast< std::string>( FLOAT);
+    typedef boost::variant<float, double> VariantType;
 
-        metaFloat = ::fwAtoms::Numeric::New(FLOAT);
+    double d1 = 0.234;
+    double d2 = std::numeric_limits< double >::max();
+    double d3 = -42.4;
+    float  f1 = 4327.452359;
 
-        CPPUNIT_ASSERT_EQUAL(res, metaFloat->getString());
-    }
-}
+    numeric = fwAtoms::Numeric::New(d1);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d1)), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(d1, numeric->getValue<double>());
+    CPPUNIT_ASSERT_EQUAL((float)d1, numeric->getValue<float>());
 
-void NumericTest::doubleConversion()
+    numeric = fwAtoms::Numeric::New(d2);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d2)), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(d2, numeric->getValue<double>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue< float >(), boost::numeric::positive_overflow );
+    CPPUNIT_ASSERT_THROW( numeric->getValue< ::boost::uint64_t >(), boost::numeric::positive_overflow );
+
+    numeric = fwAtoms::Numeric::New(d3);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d3)), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(d3, numeric->getValue<double>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<int>(d3), numeric->getValue<int>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue< unsigned int >(), boost::numeric::negative_overflow );
+
+    numeric = fwAtoms::Numeric::New(f1);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(f1)), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(f1, numeric->getValue<float>());
+    CPPUNIT_ASSERT_EQUAL((double)f1, numeric->getValue<double>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue< char >(), boost::numeric::positive_overflow );
+};
+
+//-----------------------------------------------------------------------------
+
+
+class variant_visitor : public boost::static_visitor<>
 {
-    const double VALUES[] = {
-            std::numeric_limits< double >::min(), -1234.1234, 0, 1234.1234, std::numeric_limits<double>::max()};
-    fwAtoms::Numeric::sptr metaFloat;
+public:
 
-    BOOST_FOREACH ( double FLOAT, VALUES )
+    void operator()( ::boost::blank & ) const
     {
-        std::string res = boost::lexical_cast< std::string>( FLOAT);
-
-        metaFloat = ::fwAtoms::Numeric::New(FLOAT);
-
-        CPPUNIT_ASSERT_EQUAL(res, metaFloat->getString());
+        CPPUNIT_ASSERT_MESSAGE("This shall not happen", 0);
     }
+    template <typename U>
+    void operator()( U & value ) const
+    {
+        fwAtoms::Numeric::sptr numeric = ::fwAtoms::Numeric::New(value);
+        CPPUNIT_ASSERT_EQUAL(U(value), numeric->getValue<U>());
+        CPPUNIT_ASSERT_EQUAL(
+                             ::boost::lexical_cast<std::string>(fwAtoms::Numeric::ValueType(value)),
+                             numeric->getString()
+                             );
+
+        CPPUNIT_ASSERT_EQUAL(typeid(U).name(), numeric->getVariant().type().name());
+    }
+};
+
+
+void NumericTest::mixedTest()
+{
+    fwAtoms::Numeric::ValueType values[] = {
+        std::numeric_limits<  ::boost::int64_t >::min(),
+        ::boost::int64_t(-1234),
+        ::boost::int64_t(0),
+        ::boost::int64_t(1234),
+        std::numeric_limits<  ::boost::int64_t >::max(),
+
+        std::numeric_limits<  ::boost::uint64_t >::min(),
+        ::boost::uint64_t(-1234),
+        ::boost::uint64_t(0),
+        ::boost::uint64_t(1234),
+        std::numeric_limits<  ::boost::uint64_t >::max(),
+
+        -std::numeric_limits<  float >::max(),
+        float(-1234),
+        float(0),
+        std::numeric_limits<  float >::min(),
+        float(1234),
+        std::numeric_limits<  float >::max(),
+
+        -std::numeric_limits<  double >::max(),
+        double(-1234),
+        double(0),
+        std::numeric_limits<  double >::min(),
+        double(1234),
+        std::numeric_limits<  double >::max()
+
+    };
+
+    BOOST_FOREACH ( fwAtoms::Numeric::ValueType &v, values )
+    {
+        boost::apply_visitor( variant_visitor(), v );
+    }
+
 }
 
 }  // namespace ut
 }  // namespace fwAtoms
+

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,18 +24,18 @@ namespace fwAtoms {
 
 class FWATOMS_CLASS_API Policy {
 public:
-    typedef ::fwAtoms::Object::Attributes Attributes;
+    typedef ::fwAtoms::Object::AttributesType AttributesType;
 
     /**
      * @brief process the attributes os current object
      * @param attributes the attributes of object.
      */
-    FWATOMS_API virtual void processAttributes(const Attributes& attributes)= 0;
+    FWATOMS_API virtual void processAttributes(const AttributesType& attributes)= 0;
 
     /**
      * @brief Process version of metaData.
      */
-    FWATOMS_API virtual void processMetaInfos(const ::fwAtoms::Object::MetaInfos& metaInfos) = 0;
+    FWATOMS_API virtual void processMetaInfos(const ::fwAtoms::Object::MetaInfosType& metaInfos) = 0;
 private:
 
 };
@@ -45,3 +45,4 @@ private:
 }  // namespace fwAtoms
 
 #endif
+
