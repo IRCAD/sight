@@ -119,7 +119,7 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
 
         if ( value.pointer() )
         {
-            DataVisitor::ClassnameType classname = value.call("classname");
+            DataVisitor::ClassnameType classname = value.call("classname").to<std::string>();
 
             if( classname == "::fwTools::BufferObject" )
             {
@@ -148,7 +148,7 @@ DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache 
 
     // Create atom object
     m_atomObj = ::fwAtoms::Object::New();
-    ClassnameType classname = m_campDataObj.call("classname");
+    ClassnameType classname = m_campDataObj.call("classname").to<std::string>();
     m_atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, classname );
     ::fwTools::UUID::UUIDType uuid = ::fwTools::UUID::get(dataObj);
     m_atomObj->setId( uuid );
