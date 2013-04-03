@@ -26,12 +26,21 @@
 #include <fwData/PointList.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/TransferFunction.hpp>
+#include <fwData/Graph.hpp>
 
 #include <fwDataTools/Patient.hpp>
 #include <fwDataTools/MeshGenerator.hpp>
 #include <fwDataTools/Image.hpp>
 
-#include <fwAtomConversion/AtomHelper.hpp>
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwAtoms/Object.hpp>
+
+#include <fwTest/Exception.hpp>
+
+#include <fwAtomConversion/convert.hpp>
+#include <fwAtomConversion/DataVisitor.hpp>
+
 
 #include "AtomHelperTest.hpp"
 
@@ -42,6 +51,8 @@ namespace fwAtomConversion
 {
 namespace ut
 {
+
+static ::fwTest::Exception fwTestException(""); // force link with fwTest
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +69,7 @@ void AtomHelperTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::dataToMeta()
+void AtomHelperTest::dataToMetaTest()
 {
     ::fwData::Patient::sptr patient = ::fwData::Patient::New();
     ::fwDataTools::Patient::generatePatient(patient, 2, 2, 2);
@@ -68,7 +79,6 @@ void AtomHelperTest::dataToMeta()
             ::fwData::Float::New(),
             ::fwData::String::New(),
             ::fwData::Boolean::New(),
-            ::fwData::String::New(),
             ::fwData::Vector::New(),
             ::fwData::Color::New(1.4, 0.9, 1.1, 1.67),
             ::fwData::Array::New(),
@@ -84,90 +94,124 @@ void AtomHelperTest::dataToMeta()
             ::fwData::PointList::New(),
             ::fwData::TransformationMatrix3D::New(),
             ::fwData::TransferFunction::New(),
-             patient,
+            patient,
+            ::fwData::Graph::New(),
     };
 
-    ::fwAtoms::Object::sptr metaObject;
+    ::fwAtoms::Object::sptr atom;
 
     BOOST_FOREACH ( fwData::Object::sptr  object, VALUES )
     {
-        AtomHelper metaHelper;
-        metaObject = metaHelper.dataToMeta( object);
+        atom = ::fwAtomConversion::convert(object);
 
         const ::camp::Class& metaClass = ::camp::classByName(object->getClassname());
 
         //Type test
-        CPPUNIT_ASSERT_EQUAL(object->getClassname(), metaObject->getType());
-
-
-        ::fwAtoms::Object::Attributes attributes = metaObject->getAttributes();
-        ::fwAtoms::Object::Attributes::const_iterator cIt = attributes.begin();
+        CPPUNIT_ASSERT_EQUAL( object->getClassname(),
+                              atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO ) );
 
          //Test attribute type
-        for(; cIt != attributes.end(); ++cIt)
+        BOOST_FOREACH( ::fwAtoms::Object::AttributesType::value_type elem, atom->getAttributes() )
         {
-                int type = metaClass.property(cIt->first).type();
+            if ( ! ( atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO ) == "::fwData::Graph" &&
+                    elem.first == "connections" ) )
+            {
+                int type = metaClass.property(elem.first).type();
                 switch(type)
                 {
                 case camp::stringType:
-                    CPPUNIT_ASSERT(cIt->second->isString());
-                    CPPUNIT_ASSERT(cIt->second->isValue());
+                    CPPUNIT_ASSERT(elem.second->isString());
+                    CPPUNIT_ASSERT(elem.second->isValue());
                     break;
                 case camp::realType :
                 case camp::intType :
-                    CPPUNIT_ASSERT(cIt->second->isNumeric());
-                    CPPUNIT_ASSERT(cIt->second->isValue());
+                    CPPUNIT_ASSERT(elem.second->isNumeric());
+                    CPPUNIT_ASSERT(elem.second->isValue());
                     break;
                 case camp::boolType :
-                    CPPUNIT_ASSERT(cIt->second->isBoolean());
-                    CPPUNIT_ASSERT(cIt->second->isValue());
+                    CPPUNIT_ASSERT(elem.second->isBoolean());
+                    CPPUNIT_ASSERT(elem.second->isValue());
                     break;
                 case camp::userType:
-                    CPPUNIT_ASSERT(cIt->second->isObject() || cIt->second->isBlob());
+                    CPPUNIT_ASSERT(elem.second->isObject() || elem.second->isBlob());
                     break;
                 case camp::mappingType:
-                    CPPUNIT_ASSERT(cIt->second->isMapping());
+                    CPPUNIT_ASSERT(elem.second->isMapping());
                     break;
                 case camp::enumType:
-                    CPPUNIT_ASSERT(cIt->second->isString());
-                    CPPUNIT_ASSERT(cIt->second->isValue());
+                    CPPUNIT_ASSERT(elem.second->isString());
+                    CPPUNIT_ASSERT(elem.second->isValue());
                     break;
                 case camp::arrayType:
-                    CPPUNIT_ASSERT(cIt->second->isSequence());
+                    CPPUNIT_ASSERT(elem.second->isSequence());
                     break;
                 }
+            }
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::metaToData()
+void AtomHelperTest::materialConversionTest()
 {
-    AtomHelper metaHelper;
-
     ::fwData::Color::sptr color = ::fwData::Color::New(0.2, 1.2, 1.3, 0.9);
     ::fwData::Material::sptr material = ::fwData::Material::New();
     material->setAmbient(color);
 
-    ::fwAtoms::Object::sptr metaObject = metaHelper.dataToMeta( material);
-    ::fwData::Object::sptr materialRes = metaHelper.metaToData(metaObject);
+    // Create Atom
+    ::fwData::Material::sptr materialTmp = ::fwData::Material::New();
+    materialTmp->deepCopy( material );
+    ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( materialTmp );
+    materialTmp.reset();
+
+    // Create Data from Atom
+    ::fwData::Object::sptr materialRes = ::fwAtomConversion::convert(atom);
     ::fwData::Material::sptr materialResultat = ::fwData::Material::dynamicCast(materialRes);
+
     bool materialComparison = ::fwDataTools::Patient::compareMaterial(material, materialResultat, std::string("material"));
-
     CPPUNIT_ASSERT_MESSAGE("Material Not equal" , materialComparison);
+}
 
-    metaHelper.clearCache();
-    metaHelper.clearMetaCache();
+//-----------------------------------------------------------------------------
 
+void AtomHelperTest::patientConversionTest()
+{
     ::fwData::Patient::sptr patient = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient, 1, 1, 1);
+    ::fwDataTools::Patient::generatePatient(patient, 1, 1, 0);
 
-    metaObject = metaHelper.dataToMeta( patient);
-    ::fwData::Object::sptr patientObject = metaHelper.metaToData(metaObject);
+    // Create Atom
+    ::fwData::Patient::sptr patientTmp = ::fwData::Patient::New();
+    patientTmp->deepCopy( patient );
+
+    // HACK : Acquisition::netID not managed in deep copy
+    ::fwData::Acquisition::sptr acq = patientTmp->getStudies()[0]->getAcquisitions()[0];
+    acq->setNetID(patient->getStudies()[0]->getAcquisitions()[0]->getNetID());
+
+    ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( patientTmp );
+
+    ::fwData::Image::sptr image =  acq->getImage();
+    image->getDataArray()->setIsBufferOwner(false);
+    image.reset();
+    acq.reset();
+    patientTmp.reset();
+
+
+    // Create Data from Atom
+    ::fwData::Object::sptr patientObject = ::fwAtomConversion::convert(atom);
     ::fwData::Patient::sptr patientResultat = ::fwData::Patient::dynamicCast(patientObject);
-    bool patientComparison = ::fwDataTools::Patient::comparePatient(patient, patientResultat);
 
+    using namespace ::fwDataCamp::visitor;
+    CompareObjects visitor;
+    visitor.compare(patient, patientResultat);
+    SPTR(CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH(CompareObjects::PropsMapType::value_type prop, (*props) )
+    {
+        OSLM_ERROR( "new object difference found : " << prop.first << " " << prop.second );
+    }
+    CPPUNIT_ASSERT_MESSAGE("Patient Not equal" , props->size() == 0 );
+
+    bool patientComparison = ::fwDataTools::Patient::comparePatient(patient, patientResultat);
     CPPUNIT_ASSERT_MESSAGE("Patient Not equal" , patientComparison);
 }
 

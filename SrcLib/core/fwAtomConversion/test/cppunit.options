@@ -3,5 +3,5 @@ CLASSTEST=[
     'AtomHelperTest'
 ]
 
-LIB = ['fwTools_0-1','fwCore_0-1', 'fwAtomConversion_0-1', 'fwDataTools_0-1']
+LIB = ['fwTools_0-1','fwCore_0-1','fwTest_0-1','fwAtomConversion_0-1', 'fwDataTools_0-1', 'fwDataCamp_0-1']
 CONSOLE = 'yes'

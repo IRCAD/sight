@@ -18,72 +18,65 @@ namespace custom
 
 //-----------------------------------------------------------------------------
 
-::fwAtoms::Object::sptr Graph::toMeta(::fwData::Object::sptr object,
-                                    ::fwAtomConversion::AtomHelper& metaHelper)
+::fwAtoms::Object::sptr Graph::convert( ::fwData::Object::sptr object,
+                                        DataVisitor::AtomCacheType & cache )
 {
-    typedef ::fwData::Graph::ConnectionContainer GraphConnections;
+    const camp::Class& metaclass = ::camp::classByName( object->getClassname() );
+    ::fwAtomConversion::DataVisitor visitor ( object, cache );
+    metaclass.visit(visitor);
+    ::fwAtoms::Object::sptr atom = visitor.getAtomObject();
+
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(object);
-    ::fwAtoms::Object::sptr meta = this->computeMinimalInfos(graph,metaHelper);
 
-    ::fwAtoms::Map::sptr metaMap = ::fwAtoms::Map::New();
+    ::fwAtoms::Sequence::sptr sequence = ::fwAtoms::Sequence::New();
 
-
-    const GraphConnections& connections = graph->getCRefConnections();
-    GraphConnections::const_iterator cIt = connections.begin();
-
-
-    ::fwAtoms::Object::sptr key;
+    typedef ::fwData::Graph::ConnectionContainer GraphConnections;
     ::fwAtoms::Object::sptr value;
-    for(;cIt != connections.end(); ++cIt)
+    BOOST_FOREACH( GraphConnections::value_type elem, graph->getCRefConnections() )
     {
-        key = metaHelper.dataToMeta(cIt->first);
         value = ::fwAtoms::Object::New();
 
-        value->addAttribut("source", metaHelper.dataToMeta(cIt->second.first));
-        value->addAttribut("destination", metaHelper.dataToMeta(cIt->second.second));
+        value->setAttribute("edge", DataVisitor::convert(elem.first, cache));
+        value->setAttribute("source", DataVisitor::convert(elem.second.first, cache));
+        value->setAttribute("destination", DataVisitor::convert(elem.second.second, cache));
 
-        metaMap->insert(key, value );
+        sequence->push_back(value);
     }
 
-    meta->addAttribut("connections", metaMap );
-    return meta;
+    atom->setAttribute("connections", sequence );
+
+    return atom;
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Graph::fromMeta(::fwAtoms::Object::sptr meta,
-                                     ::fwAtomConversion::AtomHelper& metaHelper)
+::fwData::Object::sptr Graph::convert(  ::fwAtoms::Object::sptr atom,
+                                        AtomVisitor::DataCacheType & cache )
 {
-    ::fwData::Object::sptr object= this->computeMinimalInfos(meta,metaHelper);
-    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(object);
-
-    ::fwAtoms::Base::sptr metaAttr = meta->getAttribut("connections");
-    ::fwAtoms::Map::sptr connections = ::fwAtoms::Map::dynamicCast(metaAttr);
-    ::fwAtoms::Map::ConstIteratorType cIt = connections->begin();
+    ::fwAtomConversion::AtomVisitor visitor ( atom, cache );
+    visitor.visit();
+    ::fwData::Object::sptr data = visitor.getDataObject();
+    ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(data);
 
 
-    ::fwData::Object::sptr tmp;
-    ::fwData::Edge::sptr key;
-    ::fwData::Node::sptr source;
-    ::fwData::Node::sptr target;
-
-    ::fwAtoms::Object::sptr value;
-
-    for(; cIt != connections->end(); ++cIt)
+    ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast( atom->getAttribute("connections") );
+    BOOST_FOREACH( ::fwAtoms::Base::sptr elemAtom , seqAtom->getValue() )
     {
-        tmp = metaHelper.metaToData(::fwAtoms::Object::dynamicCast(cIt->first));
-        key = ::fwData::Edge::dynamicCast(tmp);
+        SLM_FATAL_IF("Atom must be an atom object.", elemAtom->type() == ::fwAtoms::Base::OBJECT );
+        ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast( elemAtom );
 
-        value = ::fwAtoms::Object::dynamicCast(cIt->second);
+        ::fwAtoms::Object::sptr edgeAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );
+        ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast( AtomVisitor::convert( edgeAtom, cache ) );
 
-        tmp = metaHelper.metaToData(::fwAtoms::Object::dynamicCast(value->getAttribut("source")));
-        source = ::fwData::Node::dynamicCast(tmp);
+        ::fwAtoms::Object::sptr srcAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("source") );
+        ::fwData::Node::sptr src = ::fwData::Node::dynamicCast( AtomVisitor::convert( srcAtom, cache ) );
 
-        tmp = metaHelper.metaToData(::fwAtoms::Object::dynamicCast(value->getAttribut("destination")));
-        target = ::fwData::Node::dynamicCast(tmp);
+        ::fwAtoms::Object::sptr destAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("destination") );
+        ::fwData::Node::sptr dest = ::fwData::Node::dynamicCast( AtomVisitor::convert( destAtom, cache ) );
 
-        graph->addEdge(key, source ,target);
+        graph->addEdge( edge, src, dest );
     }
+
     return graph;
 }
 

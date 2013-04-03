@@ -17,8 +17,9 @@ namespace ut
 class AtomHelperTest :  public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( AtomHelperTest );
-    CPPUNIT_TEST( dataToMeta );
-    CPPUNIT_TEST( metaToData );
+    CPPUNIT_TEST( dataToMetaTest );
+    CPPUNIT_TEST( materialConversionTest );
+    CPPUNIT_TEST( patientConversionTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,8 +28,9 @@ public:
     void setUp();
     void tearDown();
 
-    void dataToMeta();
-    void metaToData();
+    void dataToMetaTest();
+    void materialConversionTest();
+    void patientConversionTest();
 
 };
 
