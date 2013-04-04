@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMCONVERSION_CUSTOM_FACTORY_NEW_HPP__
-#define __FWATOMCONVERSION_CUSTOM_FACTORY_NEW_HPP__
+#ifndef __FWATOMCONVERSION_MAPPER_FACTORY_NEW_HPP__
+#define __FWATOMCONVERSION_MAPPER_FACTORY_NEW_HPP__
 
 #include <string>
 #include <boost/make_shared.hpp>
@@ -13,11 +13,11 @@
 #include <fwTools/macros.hpp>
 
 #include "fwAtomConversion/config.hpp"
-#include "fwAtomConversion/custom/registry/detail.hpp"
+#include "fwAtomConversion/mapper/registry/detail.hpp"
 
 namespace fwAtomConversion
 {
-namespace custom
+namespace mapper
 {
 
 class Mapper;
@@ -27,8 +27,8 @@ namespace factory
 
 template<class CLASSNAME > SPTR( CLASSNAME ) New();
 
-FWATOMCONVERSION_API SPTR(::fwAtomConversion::custom::Mapper) New(
-        const ::fwAtomConversion::custom::registry::KeyType & classname );
+FWATOMCONVERSION_API SPTR(::fwAtomConversion::mapper::Base) New(
+        const ::fwAtomConversion::mapper::registry::KeyType & classname );
 
 
 template<class CLASSNAME > SPTR( CLASSNAME ) New()
@@ -37,10 +37,10 @@ template<class CLASSNAME > SPTR( CLASSNAME ) New()
     return obj;
 }
 
-} // namespace custom
+} // namespace mapper
 } // namespace factory
 } // namespace fwAtomConversion
 
-#endif /* __FWATOMCONVERSION_CUSTOM_FACTORY_NEW_HPP__ */
+#endif /* __FWATOMCONVERSION_MAPPER_FACTORY_NEW_HPP__ */
 
 

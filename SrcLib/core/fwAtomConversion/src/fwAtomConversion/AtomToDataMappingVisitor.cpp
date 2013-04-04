@@ -15,7 +15,7 @@
 
 #include "fwAtomConversion/AtomToDataMappingVisitor.hpp"
 #include "fwAtomConversion/DataVisitor.hpp"
-#include "fwAtomConversion/custom/Mapper.hpp"
+#include "fwAtomConversion/mapper/Base.hpp"
 #include "fwAtomConversion/camp/ValueMapper.hpp"
 
 namespace fwAtomConversion

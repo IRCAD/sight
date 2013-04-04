@@ -7,7 +7,7 @@
 #include "fwAtomConversion/AtomVisitor.hpp"
 #include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/AtomToDataMappingVisitor.hpp"
-#include "fwAtomConversion/custom/Mapper.hpp"
+#include "fwAtomConversion/mapper/Base.hpp"
 
 namespace fwAtomConversion
 {
@@ -20,7 +20,7 @@ namespace fwAtomConversion
 
     if ( elem == cache.end() )
     {
-        SPTR(custom::Mapper) mapper = custom::factory::New( atomObj->getMetaInfo( DataVisitor::CLASSNAME_METAINFO ) );
+        SPTR(mapper::Base) mapper = mapper::factory::New( atomObj->getMetaInfo( DataVisitor::CLASSNAME_METAINFO ) );
         if ( mapper )
         {
             data = mapper->convert( atomObj, cache );

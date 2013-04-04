@@ -32,8 +32,8 @@
 #include <fwDataCamp/Version.hpp>
 
 #include "fwAtomConversion/DataVisitor.hpp"
-#include "fwAtomConversion/custom/factory/new.hpp"
-#include "fwAtomConversion/custom/Mapper.hpp"
+#include "fwAtomConversion/mapper/factory/new.hpp"
+#include "fwAtomConversion/mapper/Base.hpp"
 
 
 namespace fwAtomConversion
@@ -51,7 +51,7 @@ const std::string DataVisitor::CLASSNAME_METAINFO = "CLASSNAME_METAINFO";
 
     if ( elem == cache.end() )
     {
-        SPTR(custom::Mapper) mapper = custom::factory::New( dataObj->getClassname() );
+        SPTR(mapper::Base) mapper = mapper::factory::New( dataObj->getClassname() );
         if ( mapper )
         {
             atom = mapper->convert( dataObj, cache );

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMCONVERSION_CUSTOM_REGISTRY_DETAIL_HPP__
-#define __FWATOMCONVERSION_CUSTOM_REGISTRY_DETAIL_HPP__
+#ifndef __FWATOMCONVERSION_MAPPER_REGISTRY_DETAIL_HPP__
+#define __FWATOMCONVERSION_MAPPER_REGISTRY_DETAIL_HPP__
 
 #include <string>
 
@@ -16,24 +16,24 @@
 
 namespace fwAtomConversion
 {
-namespace custom
+namespace mapper
 {
 
-class Mapper;
+class Base;
 
 namespace registry
 {
 
 typedef std::string KeyType;
 
-typedef ::fwCore::util::FactoryRegistry< SPTR(::fwAtomConversion::custom::Mapper)() , KeyType > Type;
+typedef ::fwCore::util::FactoryRegistry< SPTR(::fwAtomConversion::mapper::Base)() , KeyType > Type;
 
 FWATOMCONVERSION_API SPTR(Type) get();
 
-} // namespace custom
+} // namespace mapper
 } // namespace registry
 } // namespace fwAtomConversion
 
-#endif /* __FWATOMCONVERSION_CUSTOM_REGISTRY_DETAIL_HPP__ */
+#endif /* __FWATOMCONVERSION_MAPPER_REGISTRY_DETAIL_HPP__ */
 
 

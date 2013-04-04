@@ -6,12 +6,12 @@
 
 #include <fwCore/util/LazyInstantiator.hpp>
 
-#include "fwAtomConversion/custom/registry/detail.hpp"
+#include "fwAtomConversion/mapper/registry/detail.hpp"
 
 
 namespace fwAtomConversion
 {
-namespace custom
+namespace mapper
 {
 namespace registry
 {
@@ -25,7 +25,7 @@ SPTR(Type) get()
 }
 
 } // namespace registry
-} // namespace custom
+} // namespace mapper
 } // namespace fwAtomConversion
 
 

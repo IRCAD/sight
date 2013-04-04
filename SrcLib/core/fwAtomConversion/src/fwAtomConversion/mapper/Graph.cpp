@@ -9,17 +9,17 @@
 #include <fwAtoms/Sequence.hpp>
 #include <fwData/Graph.hpp>
 
-#include "fwAtomConversion/custom/Graph.hpp"
-#include "fwAtomConversion/custom/registry/macros.hpp"
+#include "fwAtomConversion/mapper/Graph.hpp"
+#include "fwAtomConversion/mapper/registry/macros.hpp"
 
 namespace fwAtomConversion
 {
-namespace custom
+namespace mapper
 {
 
 //-----------------------------------------------------------------------------
 
-fwAtomConversionRegisterMacro( ::fwAtomConversion::custom::Graph, ::fwData::Graph);
+fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Graph);
 
 //-----------------------------------------------------------------------------
 
@@ -86,5 +86,5 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::custom::Graph, ::fwData::Grap
 
 //-----------------------------------------------------------------------------
 
-} //namespace custom
+} //namespace mapper
 } //namespace fwAtomConversion
