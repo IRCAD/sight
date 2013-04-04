@@ -1,0 +1,7 @@
+CLASSTEST=[
+    'BoostIOTest',
+]
+
+LIB = ['fwTools_0-1','fwCore_0-1', 'fwAtoms_0-1', 'fwAtomsBoostIO_0-1']
+CONSOLE = 'yes'
+
