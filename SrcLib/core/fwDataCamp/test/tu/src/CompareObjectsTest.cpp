@@ -6,18 +6,21 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Acquisition.hpp>
-#include <fwData/Study.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/Composite.hpp>
+#include <fwCore/Exception.hpp>
 
+#include <fwData/Acquisition.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Patient.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/Study.hpp>
 
 #include <fwDataTools/Patient.hpp>
 #include <fwDataTools/Image.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwTools/Type.hpp>
 
 #include "CompareObjectsTest.hpp"
 
@@ -34,15 +37,25 @@ namespace ut
 // Set up context before running a test.
 void CompareObjectsTest::setUp()
 {
+    ::fwTools::Type type = ::fwTools::Type::create< float >();
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwDataTools::Image::generateRandomImage(image, type);
+
     m_patientRef = ::fwData::Patient::New();
     ::fwDataTools::Patient::generatePatient(m_patientRef, 1, 1, 1);
+    m_patientRef->getStudies()[0]->getAcquisitions()[0]->setImage(image);
 
     m_patientComp = ::fwData::Patient::New();
     m_patientComp->deepCopy(m_patientRef); 
 
     // HACK : Acquisition::netID not managed in deep copy
-    ::fwData::Acquisition::sptr acq = m_patientComp->getStudies()[0]->getAcquisitions()[0];
-    acq->setNetID(m_patientRef->getStudies()[0]->getAcquisitions()[0]->getNetID());
+    ::fwData::Acquisition::sptr acqRef = m_patientRef->getStudies()[0]->getAcquisitions()[0];
+    ::fwData::Acquisition::sptr acqComp = m_patientComp->getStudies()[0]->getAcquisitions()[0];
+    acqComp->setNetID(acqRef->getNetID());
+
+    // HACK
+    acqComp->getReconstructions()[0]->getMesh()->setCellTypesArray(
+            acqRef->getReconstructions()[0]->getMesh()->getCellTypesArray() );
 }
 
 //-----------------------------------------------------------------------------
@@ -169,5 +182,59 @@ void CompareObjectsTest::compareReconstructionTest()
 
 //-----------------------------------------------------------------------------
 
+void CompareObjectsTest::compareBufferTest()
+{
+    ::fwData::Image::sptr imgRef = ::fwData::Image::New(); 
+    ::fwData::Image::sptr imgComp = ::fwData::Image::New(); 
+
+    ::fwTools::Type typeRef = ::fwTools::Type::create< float >();
+    ::fwTools::Type typeComp = ::fwTools::Type::create< double >();
+
+    ::fwDataTools::Image::generateRandomImage(imgRef, typeRef);
+    ::fwDataTools::Image::generateRandomImage(imgComp, typeComp);
+
+    visitor::CompareObjects visitor;
+    visitor.compare(imgRef, imgComp);
+
+    SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    CPPUNIT_ASSERT(!props->empty());
+    CPPUNIT_ASSERT(props->find("spacing.0") != props->end());
+    CPPUNIT_ASSERT(props->find("spacing.1") != props->end());
+    CPPUNIT_ASSERT(props->find("spacing.2") != props->end());
+    CPPUNIT_ASSERT(props->find("origin.0") != props->end());
+    CPPUNIT_ASSERT(props->find("origin.1") != props->end());
+    CPPUNIT_ASSERT(props->find("origin.2") != props->end());
+    CPPUNIT_ASSERT(props->find("type") != props->end());
+    CPPUNIT_ASSERT((*props)["type"] == "double");
+    CPPUNIT_ASSERT(props->find("size.0") != props->end());
+    CPPUNIT_ASSERT(props->find("size.1") != props->end());
+    CPPUNIT_ASSERT(props->find("size.2") != props->end());
+    CPPUNIT_ASSERT(props->find("array.type") != props->end());
+    CPPUNIT_ASSERT(props->find("array.strides.0") != props->end());
+    CPPUNIT_ASSERT(props->find("array.strides.1") != props->end());
+    CPPUNIT_ASSERT(props->find("array.strides.2") != props->end());
+    CPPUNIT_ASSERT(props->find("array.size.0") != props->end());
+    CPPUNIT_ASSERT(props->find("array.size.1") != props->end());
+    CPPUNIT_ASSERT(props->find("array.size.2") != props->end());
+}
+
+//-----------------------------------------------------------------------------
+
+void CompareObjectsTest::exceptionTest()
+{
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+    ::fwData::Study::sptr study = ::fwData::Study::New();
+
+    visitor::CompareObjects visitor;
+    CPPUNIT_ASSERT_THROW(visitor.compare(img, study), ::fwCore::Exception);
+
+    CPPUNIT_ASSERT_EQUAL(visitor.getReferenceProps().size(), (size_t)0);
+    CPPUNIT_ASSERT_EQUAL(visitor.getComparedProps().size(), (size_t)0);
+    CPPUNIT_ASSERT_EQUAL(visitor.getDifferences()->size(), (size_t)0);
+}
+
+//-----------------------------------------------------------------------------
+
 }  // namespace ut
 }  // namespace fwDataCamp
+

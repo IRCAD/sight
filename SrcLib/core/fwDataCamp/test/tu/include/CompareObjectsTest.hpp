@@ -21,6 +21,8 @@ class CompareObjectsTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( compareStudyTest );
     CPPUNIT_TEST( compareImageTest );
     CPPUNIT_TEST( compareReconstructionTest );
+    CPPUNIT_TEST( compareBufferTest );
+    CPPUNIT_TEST( exceptionTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -33,6 +35,8 @@ public:
     void compareStudyTest();
     void compareImageTest();
     void compareReconstructionTest();
+    void compareBufferTest();
+    void exceptionTest();
 
 private:
     ::fwData::Patient::sptr m_patientRef;

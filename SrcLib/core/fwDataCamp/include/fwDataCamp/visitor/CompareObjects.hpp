@@ -11,6 +11,11 @@
 
 #include "fwDataCamp/config.hpp"
 
+namespace fwCore
+{
+    class Exception;
+}
+
 namespace fwData
 {
     class Object;
@@ -32,7 +37,7 @@ class FWDATACAMP_CLASS_API CompareObjects : public ::camp::ExtendedClassVisitor
 
 public:
 
-    //typedef std::map< std::string, SPTR(::fwData::Object) > PropsMapType;
+    /// Associates property path (within its parent object) to its value.
     typedef std::map< std::string, std::string > PropsMapType;
 
     /**
@@ -53,46 +58,73 @@ public:
     FWDATACAMP_API virtual void visit(const camp::MapProperty& property);
     /**  @} */
 
-    /// Returns the reference object used in comparison.
-    FWDATACAMP_API SPTR(::fwData::Object) getReferenceObject() const
+    /// Returns the reference object.
+    SPTR(::fwData::Object) getReferenceObject() const
     { return m_objRef; }
 
     /// Returns the compared object.
-    FWDATACAMP_API SPTR(::fwData::Object) getComparedObject() const
+    SPTR(::fwData::Object) getComparedObject() const
     { return m_objComp; }
 
-    FWDATACAMP_API const PropsMapType& getReferenceProps() const 
+    /// Returns reference object properties.
+    const PropsMapType& getReferenceProps() const
     { return m_propsRef; }
 
-    FWDATACAMP_API const PropsMapType& getComparedProps() const
+    /// Returns compared object properties.
+    const PropsMapType& getComparedProps() const
     { return m_propsComp; }
 
-    FWDATACAMP_API SPTR(PropsMapType) getDifferences()
+    /**
+     * @brief Returns the differences found between comparison of reference and compared objects.
+     *
+     * @return a map using property path within object as key, and associated value found in
+     * compared object as value.
+     */
+    SPTR(PropsMapType) getDifferences() const
     { return m_props; }
 
     /**
-     * @brief 
+     * @brief Process to the comparison between reference object and compared object.
+     * When the process completes, the differences found between the objects are accessible
+     * through ComparedObjects.getDifferences().
      *
      * @param objRef data object marked as reference object in comparison
      * @param objComp data object marked as compared object to reference object
      *
-     * @return 
+     * @return a map containing the differences found between objects
+     *
+     * @throw ::fwCore::Exception if classnames of reference and compared objects are different
      */
     FWDATACAMP_API void compare(
-            SPTR(::fwData::Object) objRef, SPTR(::fwData::Object) objComp);
+            SPTR(::fwData::Object) objRef, SPTR(::fwData::Object) objComp)
+        throw(::fwCore::Exception);
 
 private:
 
     friend struct PropertyVisitor;
 
+    /**
+     * @brief Constructor used for child data objects introspection.
+     *
+     * @param obj child data object representation in Camp world
+     * @param prefix path within parent object where then child object is found
+     * @param PropsMapType properties map of parent object to complete with child ones
+     */
     CompareObjects(
             const ::camp::UserObject& obj,
             const std::string& prefix,
             SPTR(PropsMapType) props = SPTR(PropsMapType)(new PropsMapType));
 
+    /// Returns the path of the given property within object.
+    std::string getPath(const std::string& property) const;
+
+    /// Differences found between reference and compared object.
     SPTR(PropsMapType) m_props;
 
+    /// Reference object properties.
     PropsMapType  m_propsRef;
+
+    /// Compared object properties.
     PropsMapType  m_propsComp;
 
     /// Prefix used to identify child objects.

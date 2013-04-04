@@ -4,19 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <string>
+
 #include <boost/foreach.hpp>
+#include <boost/functional/hash.hpp>
+
+#include <fwCore/Exception.hpp>
 
 #include <fwData/camp/mapper.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Object.hpp>
+
+#include <fwTools/BufferObject.hpp>
 
 #include "fwDataCamp/visitor/CompareObjects.hpp"
 
-#include "fwDataCamp/exception/NullPointer.hpp"
-#include "fwDataCamp/exception/ObjectNotFound.hpp"
 
 namespace fwDataCamp
 {
@@ -29,10 +29,8 @@ typedef CompareObjects::PropsMapType::value_type PropType;
 struct PropertyVisitor : public camp::ValueVisitor< PropType >
 {
     std::string m_prefix;
+    ::boost::hash< std::string > m_hasher;  // hash buffer objects
     SPTR(CompareObjects::PropsMapType) m_props;
-
-    PropertyVisitor() : m_prefix("")
-    {}
 
     PropertyVisitor(std::string prefix) : m_prefix(prefix)
     {}
@@ -74,7 +72,7 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
     PropType operator()(const camp::UserObject& value)
     {
         const camp::Class& metaclass = value.getClass();
-        PropType prop = std::make_pair("", "");
+        PropType prop;
 
         if (value.pointer())
         {
@@ -85,6 +83,20 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
                 const camp::Class& newMetaclass = ::camp::classByName(classname);
                 CompareObjects visitor(value, m_prefix, m_props);
                 newMetaclass.visit(visitor);
+                std::cout << "process in if" << std::endl;
+            }
+            else if(classname == "::fwTools::BufferObject")
+            {
+                ::fwTools::BufferObject* bo = value.get< ::fwTools::BufferObject* >();
+                if(bo)
+                {
+                    if(bo->getBuffer())
+                    {
+                        char* buffer = static_cast< char* >(bo->getBuffer());
+                        unsigned int size = m_hasher(buffer); 
+                        return std::make_pair(m_prefix, boost::lexical_cast< std::string >(size));
+                    }
+                }
             }
             else
             {
@@ -94,7 +106,7 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
         }
         else
         {
-            OSLM_INFO( "try visiting class= '" << metaclass.name() << " but a null pointer was found" );
+            OSLM_INFO("try visiting class= '" << metaclass.name() << " but a null pointer was found");
         }
         return prop;
     }
@@ -109,7 +121,8 @@ CompareObjects::CompareObjects()
 
 //-----------------------------------------------------------------------------
 
-CompareObjects::CompareObjects(const ::camp::UserObject& obj, const std::string& prefix, SPTR(PropsMapType) props)
+CompareObjects::CompareObjects(
+        const ::camp::UserObject& obj, const std::string& prefix, SPTR(PropsMapType) props)
     : m_campObj(obj), m_prefix(prefix), m_props(props)
 {}
 //-----------------------------------------------------------------------------
@@ -125,8 +138,7 @@ void CompareObjects::visit(const camp::SimpleProperty& property)
     const std::string name ( property.name() );
     OSLM_DEBUG("SimpleProperty name = " << name);
     ::camp::Value elemValue = property.get(m_campObj);
-    PropertyVisitor visitor(
-            m_prefix + (!m_prefix.empty() ? "." : "") + name, m_props);
+    PropertyVisitor visitor(getPath(name), m_props);
     m_props->insert(m_props->end(), elemValue.visit(visitor));
 }
 
@@ -136,7 +148,7 @@ void CompareObjects::visit(const camp::EnumProperty& property)
 {
     SLM_TRACE_FUNC();
     m_props->insert(m_props->end(),
-            std::make_pair(m_prefix + (!m_prefix.empty() ? "." : ""), ""));
+            std::make_pair(getPath(property.name()), ""));
 }
 
 //-----------------------------------------------------------------------------
@@ -155,7 +167,7 @@ void CompareObjects::visit(const camp::MapProperty& property)
     {
         value = property.getElement(m_campObj, i);
         mapKey = value.first.to< std::string >();
-        PropertyVisitor visitor(m_prefix + (!m_prefix.empty() ? "." : "") + name + "." + mapKey, m_props);
+        PropertyVisitor visitor(getPath(name + "." + mapKey), m_props);
         m_props->insert(m_props->end(), value.second.visit(visitor));
     }
 }
@@ -173,7 +185,7 @@ void CompareObjects::visit(const camp::ArrayProperty& property)
         ::camp::Value elemValue = property.get(m_campObj, i);
         std::stringstream ss;
         ss << name << "." << i;
-        PropertyVisitor visitor(m_prefix + (!m_prefix.empty() ? "." : "") + ss.str(), m_props);
+        PropertyVisitor visitor(getPath(ss.str()), m_props);
         m_props->insert(m_props->end(), elemValue.visit(visitor));
     }
 }
@@ -189,7 +201,7 @@ void CompareObjects::visit(const camp::UserProperty& property)
 
     if(m_campObj.call("is_a", ::camp::Args("::fwData::Object")).to<bool>())
     {
-        PropertyVisitor visitor(m_prefix + "." + name, m_props);
+        PropertyVisitor visitor(getPath(name), m_props);
         m_props->insert(m_props->end(), elemValue.visit(visitor));
     }
 }
@@ -203,8 +215,24 @@ void CompareObjects::visit(const camp::Function& function)
 
 //-----------------------------------------------------------------------------
 
-void CompareObjects::compare(SPTR(::fwData::Object) objRef, SPTR(::fwData::Object) objComp)
+std::string CompareObjects::getPath(const std::string& property) const
 {
+    return m_prefix + (!m_prefix.empty() ? "." : "") + property;
+}
+
+//-----------------------------------------------------------------------------
+
+void CompareObjects::compare(SPTR(::fwData::Object) objRef, SPTR(::fwData::Object) objComp)
+    throw (::fwCore::Exception)
+{
+    if(objRef->getClassname() != objComp->getClassname())
+    {
+        std::stringstream ss;
+        ss << "Classnames mismatch : '" << objRef->getClassname() << "' (reference object) vs. '"
+            << objComp->getClassname() << "' (compared object)";
+        throw ::fwCore::Exception(ss.str());
+    }
+
     m_objRef = objRef;
     m_objComp = objComp;
 
