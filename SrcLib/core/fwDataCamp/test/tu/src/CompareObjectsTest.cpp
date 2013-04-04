@@ -190,32 +190,26 @@ void CompareObjectsTest::compareBufferTest()
     ::fwTools::Type typeRef = ::fwTools::Type::create< float >();
     ::fwTools::Type typeComp = ::fwTools::Type::create< double >();
 
-    ::fwDataTools::Image::generateRandomImage(imgRef, typeRef);
-    ::fwDataTools::Image::generateRandomImage(imgComp, typeComp);
+    {
+        ::fwDataTools::Image::generateRandomImage(imgRef, typeRef);
+        ::fwDataTools::Image::generateRandomImage(imgComp, typeComp);
 
-    visitor::CompareObjects visitor;
-    visitor.compare(imgRef, imgComp);
+        visitor::CompareObjects visitor;
+        visitor.compare(imgRef, imgComp);
 
-    SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    CPPUNIT_ASSERT(!props->empty());
-    CPPUNIT_ASSERT(props->find("spacing.0") != props->end());
-    CPPUNIT_ASSERT(props->find("spacing.1") != props->end());
-    CPPUNIT_ASSERT(props->find("spacing.2") != props->end());
-    CPPUNIT_ASSERT(props->find("origin.0") != props->end());
-    CPPUNIT_ASSERT(props->find("origin.1") != props->end());
-    CPPUNIT_ASSERT(props->find("origin.2") != props->end());
-    CPPUNIT_ASSERT(props->find("type") != props->end());
-    CPPUNIT_ASSERT((*props)["type"] == "double");
-    CPPUNIT_ASSERT(props->find("size.0") != props->end());
-    CPPUNIT_ASSERT(props->find("size.1") != props->end());
-    CPPUNIT_ASSERT(props->find("size.2") != props->end());
-    CPPUNIT_ASSERT(props->find("array.type") != props->end());
-    CPPUNIT_ASSERT(props->find("array.strides.0") != props->end());
-    CPPUNIT_ASSERT(props->find("array.strides.1") != props->end());
-    CPPUNIT_ASSERT(props->find("array.strides.2") != props->end());
-    CPPUNIT_ASSERT(props->find("array.size.0") != props->end());
-    CPPUNIT_ASSERT(props->find("array.size.1") != props->end());
-    CPPUNIT_ASSERT(props->find("array.size.2") != props->end());
+        SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+        CPPUNIT_ASSERT(!props->empty());
+        CPPUNIT_ASSERT(props->find("array.buffer") != props->end());
+    }
+
+    {
+        imgComp->deepCopy(imgRef);
+        visitor::CompareObjects visitor;
+        visitor.compare(imgRef, imgComp);
+
+        SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+        CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)0);
+    }
 }
 
 //-----------------------------------------------------------------------------
