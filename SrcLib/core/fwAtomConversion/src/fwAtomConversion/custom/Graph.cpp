@@ -10,11 +10,16 @@
 #include <fwData/Graph.hpp>
 
 #include "fwAtomConversion/custom/Graph.hpp"
+#include "fwAtomConversion/custom/registry/macros.hpp"
 
 namespace fwAtomConversion
 {
 namespace custom
 {
+
+//-----------------------------------------------------------------------------
+
+fwAtomConversionRegisterMacro( ::fwAtomConversion::custom::Graph, ::fwData::Graph);
 
 //-----------------------------------------------------------------------------
 
@@ -58,11 +63,10 @@ namespace custom
     ::fwData::Object::sptr data = visitor.getDataObject();
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(data);
 
-
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast( atom->getAttribute("connections") );
     BOOST_FOREACH( ::fwAtoms::Base::sptr elemAtom , seqAtom->getValue() )
     {
-        SLM_FATAL_IF("Atom must be an atom object.", elemAtom->type() == ::fwAtoms::Base::OBJECT );
+        SLM_FATAL_IF("Atom must be an atom object.", elemAtom->type() != ::fwAtoms::Base::OBJECT );
         ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast( elemAtom );
 
         ::fwAtoms::Object::sptr edgeAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );

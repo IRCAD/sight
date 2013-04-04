@@ -20,6 +20,7 @@ class AtomHelperTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( dataToMetaTest );
     CPPUNIT_TEST( materialConversionTest );
     CPPUNIT_TEST( patientConversionTest );
+    CPPUNIT_TEST( graphConversionTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -31,6 +32,9 @@ public:
     void dataToMetaTest();
     void materialConversionTest();
     void patientConversionTest();
+
+    //// Test fwData::Graph conversion, UUID management, and object field conversion
+    void graphConversionTest();
 
 };
 

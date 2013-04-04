@@ -217,5 +217,94 @@ void AtomHelperTest::patientConversionTest()
 
 //-----------------------------------------------------------------------------
 
+void AtomHelperTest::graphConversionTest()
+{
+    ::fwAtoms::Object::sptr atom;
+    ::fwTools::UUID::UUIDType gID,n1ID,n2ID,n3ID,e12ID,e23ID;
+    {
+        ::fwData::Graph::sptr g = ::fwData::Graph::New();
+        gID = ::fwTools::UUID::get(g);
+        ::fwData::Node::sptr  n1 = ::fwData::Node::New();
+        n1ID = ::fwTools::UUID::get(n1);
+        ::fwData::Node::sptr  n2 = ::fwData::Node::New();
+        n2ID = ::fwTools::UUID::get(n2);
+        ::fwData::Node::sptr  n3 = ::fwData::Node::New();
+        n3ID = ::fwTools::UUID::get(n3);
+        ::fwData::Edge::sptr  e12 = ::fwData::Edge::New();
+        e12ID = ::fwTools::UUID::get(e12);
+        ::fwData::Edge::sptr  e23 = ::fwData::Edge::New();
+        e23ID = ::fwTools::UUID::get(e23);
+
+        // build graph
+        g->addNode(n1);
+        g->addNode(n2);
+        g->addNode(n3);
+
+        n1->addOutputPort( ::fwData::Port::New() );
+        n2->addInputPort( ::fwData::Port::New() );
+        n2->addOutputPort( ::fwData::Port::New() );
+        n3->addInputPort( ::fwData::Port::New() );
+
+        e12->setIdentifiers("IDNOTdefined","IDNOTdefined");
+        e23->setIdentifiers("IDNOTdefined","IDNOTdefined");
+
+        g->addEdge(e12,n1,n2);
+        g->addEdge(e23,n2,n3);
+
+        // Test field on edge
+        e12->setField("infoTest",::fwData::String::New("valueInfoTest"));
+
+        // Create Atom
+        atom = ::fwAtomConversion::convert( g );
+    }
+
+   // Create Data from Atom
+   ::fwData::Graph::sptr newGraph = ::fwData::Graph::dynamicCast( ::fwAtomConversion::convert(atom) );
+
+   // nodes
+   ::fwData::Node::sptr n1, n2, n3;
+
+   // Test nodes
+   const ::fwData::Graph::NodeContainer & nodes = newGraph->getCRefNodes();
+   CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size" ,  (size_t)3, nodes.size() );
+   BOOST_FOREACH( ::fwData::Node::sptr node, nodes )
+   {
+       ::fwTools::UUID::UUIDType nodeID = ::fwTools::UUID::get(node);
+       CPPUNIT_ASSERT_MESSAGE("Test node uuid" ,  nodeID == n1ID || nodeID == n2ID || nodeID == n3ID );
+       if (  nodeID == n1ID ) { n1 = node; }
+       else if  (  nodeID == n2ID ) { n2 = node; }
+       else if  (  nodeID == n3ID ) { n3 = node; }
+
+   }
+   CPPUNIT_ASSERT_MESSAGE("Test node n1" , n1 );
+   CPPUNIT_ASSERT_MESSAGE("Test node n2" , n2 );
+   CPPUNIT_ASSERT_MESSAGE("Test node n3" , n3 );
+
+   // Test edges
+   const ::fwData::Graph::ConnectionContainer & connections = newGraph->getCRefConnections();
+   CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size" ,  (size_t)2, connections.size() );
+   BOOST_FOREACH( ::fwData::Graph::ConnectionContainer::value_type elem , connections )
+   {
+       ::fwTools::UUID::UUIDType edgeID = ::fwTools::UUID::get(elem.first);
+       CPPUNIT_ASSERT_MESSAGE("Test edge uuid" ,  edgeID == e12ID || edgeID == e23ID );
+       if ( edgeID == e12ID )
+       {
+           CPPUNIT_ASSERT( newGraph->getSourceNode( elem.first ) == n1 );
+           CPPUNIT_ASSERT( newGraph->getDestinationNode( elem.first ) == n2 );
+
+           // test field
+           CPPUNIT_ASSERT( elem.first->getField("infoTest") );
+           CPPUNIT_ASSERT( elem.first->getField< ::fwData::String >("infoTest")->value() == "valueInfoTest" );
+       }
+       else
+       {
+           CPPUNIT_ASSERT( newGraph->getSourceNode( elem.first ) == n2 );
+           CPPUNIT_ASSERT( newGraph->getDestinationNode( elem.first ) == n3 );
+       }
+   }
+}
+
+//-----------------------------------------------------------------------------
+
 }  // namespace ut
 }  // namespace fwAtomConversion
