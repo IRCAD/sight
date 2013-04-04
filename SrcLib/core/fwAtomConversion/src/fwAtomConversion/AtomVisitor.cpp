@@ -8,6 +8,8 @@
 #include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/AtomToDataMappingVisitor.hpp"
 #include "fwAtomConversion/mapper/Base.hpp"
+#include "fwAtomConversion/exception/DataFactoryNotFound.hpp"
+#include "fwAtomConversion/exception/DuplicatedDataUUID.hpp"
 
 namespace fwAtomConversion
 {
@@ -60,7 +62,17 @@ void AtomVisitor::processMetaInfos( const ::fwAtoms::Object::MetaInfosType & met
     ::fwTools::UUID::UUIDType uuid = m_atomObj->getId();
     m_dataObj = ::fwData::factory::New(classname);
 
+    std::stringstream msg;
+    msg << "Data object '"<< classname << "' not found in data factory during atom to data conversion";
+    FW_RAISE_EXCEPTION_IF( exception::DataFactoryNotFound(msg.str()), ! m_dataObj );
+
     bool uuidIsSetted = ::fwTools::UUID::set(m_dataObj, uuid);
+    msg << "Try to create new data object '"
+        << classname << "' with uuid '"
+        << uuid <<"' but this uuid is already used in the system";
+    FW_RAISE_EXCEPTION_IF( exception::DuplicatedDataUUID(msg.str()), ! uuidIsSetted );
+
+
     SLM_FATAL_IF("Sorry it is impossible to set uuid on new object because it already exists.",! uuidIsSetted );
 
     m_cache[uuid] = m_dataObj;

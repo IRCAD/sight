@@ -23,6 +23,9 @@ class AtomHelperTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( graphConversionTest );
     CPPUNIT_TEST( objectMultiReferencedTest );
     CPPUNIT_TEST( recursiveObjectTest );
+    CPPUNIT_TEST( uuidExceptionTest );
+    CPPUNIT_TEST( dataFactoryNotFoundExceptionTest );
+    CPPUNIT_TEST( campFactoryNotFoundExceptionTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,6 +46,15 @@ public:
 
     /// Test recursive data conversion
     void recursiveObjectTest();
+
+    /// Test exception throwing if uuid already exist
+    void uuidExceptionTest();
+
+    /// Test exception throwing if during atom to data conversion a classname is not found in data factory
+    void dataFactoryNotFoundExceptionTest();
+
+    /// Test exception throwing if uuid already exist
+     void campFactoryNotFoundExceptionTest();
 
 };
 

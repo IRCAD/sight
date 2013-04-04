@@ -35,12 +35,14 @@
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwAtoms/Object.hpp>
+#include <fwAtoms/Map.hpp>
 
 #include <fwTest/Exception.hpp>
 
 #include <fwAtomConversion/convert.hpp>
 #include <fwAtomConversion/DataVisitor.hpp>
-
+#include <fwAtomConversion/exception/DataFactoryNotFound.hpp>
+#include <fwAtomConversion/exception/DuplicatedDataUUID.hpp>
 
 #include "AtomHelperTest.hpp"
 
@@ -355,6 +357,74 @@ void AtomHelperTest::recursiveObjectTest()
     CPPUNIT_ASSERT( newComposite == dataMap["key"] );
 }
 
+//-----------------------------------------------------------------------------
+
+void AtomHelperTest::dataFactoryNotFoundExceptionTest()
+{
+    ::fwAtoms::Object::sptr atom;
+    {
+        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+        ::fwData::String::sptr data = ::fwData::String::New();
+        composite->getContainer()["key"] = data;
+
+        // Create Atom
+        atom = ::fwAtomConversion::convert( composite );
+    }
+
+    {
+        ::fwAtoms::Map::sptr map = ::fwAtoms::Map::dynamicCast( atom->getAttribute("values") );
+        ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast( (*map)["key"] );
+        obj->eraseMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO );
+        obj->setMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO, "CHANGE::CLASNAME" );
+
+    }
+
+    CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert(atom),
+                          ::fwAtomConversion::exception::DataFactoryNotFound );
+
+}
+
+//-----------------------------------------------------------------------------
+
+void AtomHelperTest::uuidExceptionTest()
+{
+    // Create data
+    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    ::fwData::String::sptr data = ::fwData::String::New();
+    composite->getContainer()["key"] = data;
+
+    // Create Atom
+    ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
+
+    CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert(atom),
+            ::fwAtomConversion::exception::DuplicatedDataUUID );
+}
+
+//-----------------------------------------------------------------------------
+
+class ClassNotCamped : public ::fwData::Object
+{
+
+public :
+
+    fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotCamped)(::fwData::Object),
+       ((::fwData::factory::New< ClassNotCamped > ,() )) );
+
+    fwDataObjectMacro();
+
+    ClassNotCamped(::fwData::Object::Key key){};
+
+};
+
+
+void AtomHelperTest::campFactoryNotFoundExceptionTest()
+{
+    ClassNotCamped::sptr obj = ClassNotCamped::New();
+    CPPUNIT_ASSERT(obj);
+    CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert( obj ), ::camp::ClassNotFound );
+}
+
+//-----------------------------------------------------------------------------
 
 }  // namespace ut
 }  // namespace fwAtomConversion
