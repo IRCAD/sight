@@ -118,20 +118,20 @@ private:
     /// Returns the path of the given property within object.
     std::string getPath(const std::string& property) const;
 
-    /// Differences found between reference and compared object.
-    SPTR(PropsMapType) m_props;
-
     /// Reference object properties.
     PropsMapType  m_propsRef;
 
     /// Compared object properties.
     PropsMapType  m_propsComp;
 
+    /// Reflection in camp world of currently introspected object
+    ::camp::UserObject m_campObj;
+
     /// Prefix used to identify child objects.
     std::string m_prefix;
 
-    /// Reflection in camp world of currently introspected object
-    ::camp::UserObject m_campObj;
+    /// Differences found between reference and compared object.
+    SPTR(PropsMapType) m_props;
 
     /// Reference object.
     SPTR(::fwData::Object) m_objRef;
