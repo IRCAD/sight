@@ -306,5 +306,55 @@ void AtomHelperTest::graphConversionTest()
 
 //-----------------------------------------------------------------------------
 
+void AtomHelperTest::objectMultiReferencedTest()
+{
+    ::fwAtoms::Object::sptr atom;
+    {
+        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+        ::fwData::String::sptr data = ::fwData::String::New();
+        composite->getContainer()["key1"] = data;
+        composite->getContainer()["key2"] = data;
+
+        // Create Atom
+        atom = ::fwAtomConversion::convert( composite );
+    }
+
+    // Create Data from Atom
+    ::fwData::Composite::sptr newComposite = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+    ::fwData::Composite::ContainerType & dataMap = newComposite->getContainer();
+    CPPUNIT_ASSERT( dataMap.find("key1") != dataMap.end() );
+    CPPUNIT_ASSERT( dataMap.find("key2") != dataMap.end() );
+    CPPUNIT_ASSERT( dataMap["key1"] );
+    CPPUNIT_ASSERT( dataMap["key2"] );
+    CPPUNIT_ASSERT( dataMap["key2"] == dataMap["key1"] );
+}
+
+//-----------------------------------------------------------------------------
+
+void AtomHelperTest::recursiveObjectTest()
+{
+    ::fwAtoms::Object::sptr atom;
+    ::fwTools::UUID::UUIDType compositeID;
+    {
+        ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+        compositeID = ::fwTools::UUID::get( composite );
+        composite->getContainer()["key"] = composite;
+        // Create Atom
+        atom = ::fwAtomConversion::convert( composite );
+
+        // Hack, remove composite to destroy composite
+        composite->getContainer().erase("key");
+    }
+
+    CPPUNIT_ASSERT( ! ::fwTools::UUID::exist( compositeID ) );
+
+    // Create Data from Atom
+    ::fwData::Composite::sptr newComposite = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+    ::fwData::Composite::ContainerType & dataMap = newComposite->getContainer();
+    CPPUNIT_ASSERT( dataMap.find("key") != dataMap.end() );
+    CPPUNIT_ASSERT( newComposite == dataMap["key"] );
+}
+
+
 }  // namespace ut
 }  // namespace fwAtomConversion

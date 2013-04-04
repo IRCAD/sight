@@ -21,6 +21,8 @@ class AtomHelperTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( materialConversionTest );
     CPPUNIT_TEST( patientConversionTest );
     CPPUNIT_TEST( graphConversionTest );
+    CPPUNIT_TEST( objectMultiReferencedTest );
+    CPPUNIT_TEST( recursiveObjectTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -35,6 +37,12 @@ public:
 
     //// Test fwData::Graph conversion, UUID management, and object field conversion
     void graphConversionTest();
+
+    /// Test using an object multi referenced in different structures, test also fwData::Composite conversion
+    void objectMultiReferencedTest();
+
+    /// Test recursive data conversion
+    void recursiveObjectTest();
 
 };
 
