@@ -26,6 +26,7 @@ class AtomHelperTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( uuidExceptionTest );
     CPPUNIT_TEST( dataFactoryNotFoundExceptionTest );
     CPPUNIT_TEST( campFactoryNotFoundExceptionTest );
+    CPPUNIT_TEST( nullPtrManagmentTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,8 +54,11 @@ public:
     /// Test exception throwing if during atom to data conversion a classname is not found in data factory
     void dataFactoryNotFoundExceptionTest();
 
-    /// Test exception throwing if uuid already exist
-     void campFactoryNotFoundExceptionTest();
+    /// Test exception throwing if during atom to data conversion a classname is not found in camp factory
+    void campFactoryNotFoundExceptionTest();
+
+    /// Test null ptr management (null ptr attribut, null ptr in vector, null ptr in map)
+    void nullPtrManagmentTest();
 
 };
 

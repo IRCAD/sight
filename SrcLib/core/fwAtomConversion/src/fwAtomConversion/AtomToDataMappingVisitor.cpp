@@ -92,30 +92,10 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
     unsigned int index = 0;
     BOOST_FOREACH( ::fwAtoms::Base::sptr elemAtom, seqAtom->getValue() )
     {
-        SLM_FATAL_IF("Not support null element in Atom Sequence", !elemAtom);
-        switch( elemAtom->type() )
+        if (!elemAtom)
         {
-        case ::fwAtoms::Base::BOOLEAN :
-        case ::fwAtoms::Base::NUMERIC :
-        case ::fwAtoms::Base::STRING :
-        {
-            std::string value = elemAtom->getString();
-
-            if( property.dynamic() )
-            {
-                property.insert( m_campDataObj, index, value );
-            }
-            else
-            {
-                property.set( m_campDataObj, index, value );
-            }
-            break;
-        }
-        case ::fwAtoms::Base::OBJECT :
-        {
-            ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom);
-            ::fwData::Object::sptr objectData = AtomVisitor::convert( objectAtom, m_cache );
-
+            SLM_ASSERT("Not supported null element in Atom sequence.", property.elementType() == ::camp::userType);
+            ::fwData::Object::sptr objectData;
             if( property.dynamic() )
             {
                 property.insert( m_campDataObj, index, objectData );
@@ -124,13 +104,48 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
             {
                 property.set( m_campDataObj, index, objectData );
             }
-            break;
         }
-        default :
+        else
         {
-            SLM_FATAL("Atom must be a value or an object.");
-            break;
-        }
+            switch( elemAtom->type() )
+            {
+            case ::fwAtoms::Base::BOOLEAN :
+            case ::fwAtoms::Base::NUMERIC :
+            case ::fwAtoms::Base::STRING :
+            {
+                std::string value = elemAtom->getString();
+
+                if( property.dynamic() )
+                {
+                    property.insert( m_campDataObj, index, value );
+                }
+                else
+                {
+                    property.set( m_campDataObj, index, value );
+                }
+                break;
+            }
+            case ::fwAtoms::Base::OBJECT :
+            {
+                ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom);
+                ::fwData::Object::sptr objectData = AtomVisitor::convert( objectAtom, m_cache );
+
+                if( property.dynamic() )
+                {
+                    property.insert( m_campDataObj, index, objectData );
+                }
+                else
+                {
+                    property.set( m_campDataObj, index, objectData );
+                }
+                break;
+            }
+            default :
+            {
+                SLM_FATAL("Atom must be a value or an object.");
+                break;
+            }
+            }
         }
         ++index;
     }
@@ -145,29 +160,37 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
 
     BOOST_FOREACH( ::fwAtoms::Map::ValueType elemAtom, mapAtom->getValue() )
     {
-        SLM_FATAL_IF("Not support null element in Atom Sequence", !elemAtom.second);
-        switch( elemAtom.second->type() )
+        if (!elemAtom.second)
         {
-        case ::fwAtoms::Base::BOOLEAN :
-        case ::fwAtoms::Base::NUMERIC :
-        case ::fwAtoms::Base::STRING :
-        {
-            std::string value = elemAtom.second->getString();
-            property.set( m_campDataObj, elemAtom.first, value );
-            break;
-        }
-        case ::fwAtoms::Base::OBJECT :
-        {
-            ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom.second);
-            ::fwData::Object::sptr objectData = AtomVisitor::convert( objectAtom, m_cache );
+            SLM_ASSERT("Not supported null element in Atom map.", property.elementType() == ::camp::userType);
+            ::fwData::Object::sptr objectData;
             property.set( m_campDataObj, elemAtom.first, objectData );
-            break;
         }
-        default :
+        else
         {
-            SLM_FATAL("Atom must be a value or an object.");
-            break;
-        }
+            switch( elemAtom.second->type() )
+            {
+            case ::fwAtoms::Base::BOOLEAN :
+            case ::fwAtoms::Base::NUMERIC :
+            case ::fwAtoms::Base::STRING :
+            {
+                std::string value = elemAtom.second->getString();
+                property.set( m_campDataObj, elemAtom.first, value );
+                break;
+            }
+            case ::fwAtoms::Base::OBJECT :
+            {
+                ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom.second);
+                ::fwData::Object::sptr objectData = AtomVisitor::convert( objectAtom, m_cache );
+                property.set( m_campDataObj, elemAtom.first, objectData );
+                break;
+            }
+            default :
+            {
+                SLM_FATAL("Atom must be a value or an object.");
+                break;
+            }
+            }
         }
     }
 }

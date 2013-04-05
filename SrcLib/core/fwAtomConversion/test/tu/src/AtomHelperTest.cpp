@@ -82,7 +82,7 @@ void AtomHelperTest::dataToMetaTest()
             ::fwData::String::New(),
             ::fwData::Boolean::New(),
             ::fwData::Vector::New(),
-            ::fwData::Color::New(1.4, 0.9, 1.1, 1.67),
+            ::fwData::Color::New(1.4f, 0.9f, 1.1f, 1.67f),
             ::fwData::Array::New(),
             ::fwData::Image::New(),
             ::fwData::Mesh::New(),
@@ -115,10 +115,12 @@ void AtomHelperTest::dataToMetaTest()
          //Test attribute type
         BOOST_FOREACH( ::fwAtoms::Object::AttributesType::value_type elem, atom->getAttributes() )
         {
-            if ( ! ( atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO ) == "::fwData::Graph" &&
+            std::string classname = atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO );
+            if ( ! (  classname == "::fwData::Graph" &&
                     elem.first == "connections" ) )
             {
                 int type = metaClass.property(elem.first).type();
+                std::string attribute = metaClass.property(elem.first).name();
                 switch(type)
                 {
                 case camp::stringType:
@@ -135,7 +137,21 @@ void AtomHelperTest::dataToMetaTest()
                     CPPUNIT_ASSERT(elem.second->isValue());
                     break;
                 case camp::userType:
-                    CPPUNIT_ASSERT(elem.second->isObject() || elem.second->isBlob());
+                    if( ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_colors" ) ) ||
+                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_normals" ) ) ||
+                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_colors" ) ) ||
+                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_normals" ) ) ||
+                            ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "image" ) ) ||
+                            ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "mesh" ) ) ||
+                            ( ( classname == "::fwData::Acquisition" ) && ( attribute == "image" ) ) ||
+                            ( ( classname == "::fwData::Acquisition" ) && ( attribute == "struct_anat" ) ) )
+                    {
+                        CPPUNIT_ASSERT(!elem.second);
+                    }
+                    else
+                    {
+                        CPPUNIT_ASSERT(elem.second->isObject() || elem.second->isBlob());
+                    }
                     break;
                 case camp::mappingType:
                     CPPUNIT_ASSERT(elem.second->isMapping());
@@ -157,7 +173,7 @@ void AtomHelperTest::dataToMetaTest()
 
 void AtomHelperTest::materialConversionTest()
 {
-    ::fwData::Color::sptr color = ::fwData::Color::New(0.2, 1.2, 1.3, 0.9);
+    ::fwData::Color::sptr color = ::fwData::Color::New(0.2f, 1.2f, 1.3f, 0.9f);
     ::fwData::Material::sptr material = ::fwData::Material::New();
     material->setAmbient(color);
 
@@ -422,6 +438,71 @@ void AtomHelperTest::campFactoryNotFoundExceptionTest()
     ClassNotCamped::sptr obj = ClassNotCamped::New();
     CPPUNIT_ASSERT(obj);
     CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert( obj ), ::camp::ClassNotFound );
+}
+
+//-----------------------------------------------------------------------------
+
+void AtomHelperTest::nullPtrManagmentTest()
+{
+    // null shared ptr attribute managed
+    {
+        ::fwAtoms::Object::sptr atom;
+        {
+            ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+            CPPUNIT_ASSERT( ! mesh->getPointColorsArray() );
+
+            // Create Atom
+            atom = ::fwAtomConversion::convert( mesh );
+        }
+
+        // null ptr must be also in atom
+        CPPUNIT_ASSERT( atom->getAttributes().find("point_colors") != atom->getAttributes().end() );
+
+        ::fwData::Mesh::sptr newMesh = ::fwData::Mesh::dynamicCast( ::fwAtomConversion::convert(atom) );
+        CPPUNIT_ASSERT( newMesh );
+        CPPUNIT_ASSERT( ! newMesh->getPointColorsArray() );
+    }
+
+    // null shared ptr in map is managed
+    {
+        ::fwAtoms::Object::sptr atom;
+        {
+            ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+            composite->getContainer()["key1"] = ::fwData::String::New();
+            composite->getContainer()["key2"] = ::fwData::Object::sptr();
+
+            // Create Atom
+            atom = ::fwAtomConversion::convert( composite );
+        }
+
+        ::fwData::Composite::sptr newComposite = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+        ::fwData::Composite::ContainerType & dataMap = newComposite->getContainer();
+        CPPUNIT_ASSERT( newComposite );
+        CPPUNIT_ASSERT_EQUAL( (size_t)2, dataMap.size() );
+        CPPUNIT_ASSERT( dataMap["key1"] );
+        CPPUNIT_ASSERT( dataMap.find("key2") != dataMap.end() );
+        CPPUNIT_ASSERT( ! dataMap["key2"] );
+    }
+
+    // null shared ptr in vector is managed
+    {
+        ::fwAtoms::Object::sptr atom;
+        {
+            ::fwData::Vector::sptr vector = ::fwData::Vector::New();
+            vector->getContainer().push_back( ::fwData::String::New() );
+            vector->getContainer().push_back( ::fwData::Object::sptr() );
+
+            // Create Atom
+            atom = ::fwAtomConversion::convert( vector );
+        }
+
+        ::fwData::Vector::sptr newVector = ::fwData::Vector::dynamicCast( ::fwAtomConversion::convert(atom) );
+        ::fwData::Vector::ContainerType & dataVec = newVector->getContainer();
+        CPPUNIT_ASSERT( newVector );
+        CPPUNIT_ASSERT_EQUAL( (size_t)2, dataVec.size() );
+        CPPUNIT_ASSERT( dataVec[0] );
+        CPPUNIT_ASSERT( ! dataVec[1] );
+    }
 }
 
 //-----------------------------------------------------------------------------
