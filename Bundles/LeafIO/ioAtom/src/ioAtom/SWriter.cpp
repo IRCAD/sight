@@ -70,7 +70,7 @@ void SWriter::updating() throw(::fwTools::Failed)
         OSLM_ASSERT("Extension '" << ext << "' not found", m_formatsMap.find(ext) != m_formatsMap.end());
 
         ::fwAtomsBoostIO::Writer writer( ::fwAtomConversion::convert(data) );
-        writer.write(file.parent_path(), m_formatsMap[ext]);
+        writer.write(file.string(), m_formatsMap[ext]);
 
         cursor.setDefaultCursor(); 
     }
