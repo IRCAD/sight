@@ -150,9 +150,6 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
 
     pt.add_child("object", object);
 
-    ::boost::property_tree::json_parser::write_json("/tmp/object.json", object);
-    ::boost::property_tree::json_parser::write_json("/tmp/pt-object.json", pt);
-
     return pt;
 }
 

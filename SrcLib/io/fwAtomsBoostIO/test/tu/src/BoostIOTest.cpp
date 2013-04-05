@@ -97,10 +97,7 @@ void BoostIOTest::writeTest()
     map->insert("object key", ::fwAtoms::Object::New());
     map->insert("sequence key", ::fwAtoms::String::New("map-str"));
 
-    // ::fwAtomsBoostIO::Writer(obj).write(sstr, ::fwAtomsBoostIO::Writer::JSON);
     ::fwAtomsBoostIO::Writer(seq).write(sstr, ::fwAtomsBoostIO::Writer::JSON);
-
-
 
 
 
@@ -155,7 +152,6 @@ void BoostIOTest::writeTest()
     CPPUNIT_ASSERT_EQUAL( num->getString(), readNum->getString() );
     CPPUNIT_ASSERT_EQUAL( num2->getString(), readNum2->getString() );
     CPPUNIT_ASSERT_EQUAL( str->getValue(), readStr->getValue() );
-
 }
 
 
