@@ -97,7 +97,7 @@ void SWriter::configureWithIHM()
    static ::boost::filesystem::path _sDefaultPath;
 
    ::fwGui::dialog::LocationDialog dialogFile;
-   dialogFile.setTitle("Enter file name for medical workspace");
+   dialogFile.setTitle("Enter file name");
    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
    dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
