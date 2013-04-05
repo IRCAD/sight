@@ -8,7 +8,7 @@
         <param name="UID_OF_SELECTED_PATIENT" />
         <param name="medicalWorkspaceUid" />
     </parameters>
-    
+
     <config>
 
 
@@ -22,12 +22,12 @@
                     <service uid="${GENERIC_UID}_myManagerLockDump" impl="::ctrlMemory::manager::LockDumpManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
                         <manageLockOn key="image" />
                     </service>
-                    
+
                     <service uid="${GENERIC_UID}_action_activity3" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoConnect="yes">
                         <config id="Activity3Config" title="Visu 2D" titlePrefixKey="@values.tabPrefix" tooltipKey="@values.tabInfo" icon="Bundles/VRRender_0-9/icons/icon-2D.png" />
                         <key id="image" pattern="SELECTED_UID_image" />
                     </service>
-                    
+
                     <service uid="${GENERIC_UID}_action_vr_activity" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKeySendingConfigTemplate" autoConnect="yes">
                         <config id="VRActivityConfig" title="VR" titlePrefixKey="@values.tabPrefix" tooltipKey="@values.tabInfo" icon="Bundles/VRRender_0-9/icons/icon-VR.png" />
                         <key id="image" pattern="SELECTED_UID_image" />
@@ -38,7 +38,7 @@
                         <key id="image" pattern="SELECTED_UID_image" />
                         <key id="acquisition" pattern="SELECTED_UID_acquisition" />
                     </service>
-                    
+
                     <service uid="${GENERIC_UID}_managerMainFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
                         <mode type="dummy" />
                         <config>
@@ -87,14 +87,16 @@
                         <type mode="writer" />
                         <selection mode="include" />
                         <addSelection service="::ioXML::FwXMLGenericWriterService" />
+                        <addSelection service="::ioAtom::SWriter" />
                         <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericWriterService" />
+                        <config id="AtomIOSelectorWriterConfig" service="::ioAtom::SWriter" />
                     </service>
 
                     <service uid="${GENERIC_UID}_action_importMedicalWorkspace" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::AddMedicalWorkspace" autoConnect="no" />
-                    
+
                 </object>
             </item>
-            
+
             <item key="patientDB">
                 <object uid="${UID_OF_SELECTED_PATIENT}" src="ref" type="::fwData::PatientDB">
                     <service uid="${GENERIC_UID}_selector" type="::gui::editor::IEditor" impl="::uiPatientDB::PatientDBGuiSelectorService" autoConnect="yes" />
@@ -105,7 +107,7 @@
                     <service uid="${GENERIC_UID}_action_importPatient" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::AddPatientDB" autoConnect="no">
                         <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderPatientDBReader" />
                     </service>
-  
+
                     <service uid="${GENERIC_UID}_action_exportAllPatient" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::ExportPatientDB" autoConnect="no">
                         <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderPatientDBWriter" />
                     </service>

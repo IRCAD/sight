@@ -16,6 +16,7 @@ BUNDLES = [
     'visuVTKAdaptor_0-1'       ,
     'visuVTKVRAdaptor_0-1'     ,
     'visu_0-1'                 ,
+    'ioAtom_0-1'               ,
     'ioVTK_0-1'                ,
     'ioITK_0-1'                ,
     'ioVtkGdcm_0-1'            ,
