@@ -44,10 +44,10 @@
 #include <fwAtomConversion/exception/DataFactoryNotFound.hpp>
 #include <fwAtomConversion/exception/DuplicatedDataUUID.hpp>
 
-#include "AtomHelperTest.hpp"
+#include "ConversionTest.hpp"
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtomConversion::ut::AtomHelperTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtomConversion::ut::ConversionTest );
 
 namespace fwAtomConversion
 {
@@ -59,19 +59,19 @@ static ::fwTest::Exception fwTestException(""); // force link with fwTest
 //-----------------------------------------------------------------------------
 
 // Set up context before running a test.
-void AtomHelperTest::setUp()
+void ConversionTest::setUp()
 {};
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::tearDown()
+void ConversionTest::tearDown()
 {
     // Clean up after the test run.
 }
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::dataToMetaTest()
+void ConversionTest::dataToAtomTest()
 {
     ::fwData::Patient::sptr patient = ::fwData::Patient::New();
     ::fwDataTools::Patient::generatePatient(patient, 2, 2, 2);
@@ -171,7 +171,7 @@ void AtomHelperTest::dataToMetaTest()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::materialConversionTest()
+void ConversionTest::materialConversionTest()
 {
     ::fwData::Color::sptr color = ::fwData::Color::New(0.2f, 1.2f, 1.3f, 0.9f);
     ::fwData::Material::sptr material = ::fwData::Material::New();
@@ -193,7 +193,7 @@ void AtomHelperTest::materialConversionTest()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::patientConversionTest()
+void ConversionTest::patientConversionTest()
 {
     ::fwData::Patient::sptr patient = ::fwData::Patient::New();
     ::fwDataTools::Patient::generatePatient(patient, 1, 1, 0);
@@ -235,7 +235,7 @@ void AtomHelperTest::patientConversionTest()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::graphConversionTest()
+void ConversionTest::graphConversionTest()
 {
     ::fwAtoms::Object::sptr atom;
     ::fwTools::UUID::UUIDType gID,n1ID,n2ID,n3ID,e12ID,e23ID;
@@ -324,7 +324,7 @@ void AtomHelperTest::graphConversionTest()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::objectMultiReferencedTest()
+void ConversionTest::objectMultiReferencedTest()
 {
     ::fwAtoms::Object::sptr atom;
     {
@@ -349,7 +349,7 @@ void AtomHelperTest::objectMultiReferencedTest()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::recursiveObjectTest()
+void ConversionTest::recursiveObjectTest()
 {
     ::fwAtoms::Object::sptr atom;
     ::fwTools::UUID::UUIDType compositeID;
@@ -375,7 +375,7 @@ void AtomHelperTest::recursiveObjectTest()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::dataFactoryNotFoundExceptionTest()
+void ConversionTest::dataFactoryNotFoundExceptionTest()
 {
     ::fwAtoms::Object::sptr atom;
     {
@@ -402,7 +402,7 @@ void AtomHelperTest::dataFactoryNotFoundExceptionTest()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::uuidExceptionTest()
+void ConversionTest::uuidExceptionTest()
 {
     // Create data
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
@@ -433,7 +433,7 @@ public :
 };
 
 
-void AtomHelperTest::campFactoryNotFoundExceptionTest()
+void ConversionTest::campFactoryNotFoundExceptionTest()
 {
     ClassNotCamped::sptr obj = ClassNotCamped::New();
     CPPUNIT_ASSERT(obj);
@@ -442,7 +442,7 @@ void AtomHelperTest::campFactoryNotFoundExceptionTest()
 
 //-----------------------------------------------------------------------------
 
-void AtomHelperTest::nullPtrManagmentTest()
+void ConversionTest::nullPtrManagmentTest()
 {
     // null shared ptr attribute managed
     {
