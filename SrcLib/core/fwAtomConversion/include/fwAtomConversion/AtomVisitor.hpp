@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +20,11 @@
 namespace fwAtomConversion
 {
 
-/// ???
+/**
+ * @brief This class is used to convert a fwAtoms to a fwData.
+ * @class AtomVisitor
+ * @date 2013
+ */
 class FWATOMCONVERSION_CLASS_API AtomVisitor
 {
 
@@ -28,36 +32,45 @@ public:
 
     typedef std::map< ::fwTools::UUID::UUIDType, ::fwData::Object::sptr > DataCacheType;
 
-    /// ???
+    /**
+     * @brief Converts a ::fwAtoms::Object to a ::fwData::Object
+     *
+     * @param atom atom to convert
+     * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times
+     * @return Converted ::fwData::Object.
+     *
+     * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found.
+     * @throw ::fwAtomConversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
+     */
     FWATOMCONVERSION_API static ::fwData::Object::sptr convert( ::fwAtoms::Object::sptr atomObj, DataCacheType & cache );
 
-    /// ???
+    /// Constructors. Initializes parameters.
     FWATOMCONVERSION_API AtomVisitor( ::fwAtoms::Object::sptr atomObj, DataCacheType & cache );
 
-    /// ???
+    /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~AtomVisitor();
 
-    /// ???
+    /// Visits the atom information to create the data object and store it in the cache.
     FWATOMCONVERSION_API void visit();
 
-    /// ???
+    /// Returns the data object. Calls this method after visit().
     FWATOMCONVERSION_API ::fwData::Object::sptr getDataObject() const;
 
 private:
 
-    /// ???
+    /// Creates an empty data object from the classname in atom info and store it in the cache.
     void processMetaInfos( const ::fwAtoms::Object::MetaInfosType & metaInfos );
 
-    /// ???
+    /// Visits data object to fill it from atom (use AtomToDataMappingVisitor).
     void processAttributes( const ::fwAtoms::Object::AttributesType & attributes );
 
-    /// ???
+    /// Atom object to convert
     ::fwAtoms::Object::sptr m_atomObj;
 
-    /// ???
+    /// Converted data object
     ::fwData::Object::sptr m_dataObj;
 
-    /// ???
+    /// Cache to register the atoms already converted, used when an atom is referenced multiple times.
     DataCacheType & m_cache;
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace fwAtomConversion
 namespace mapper
 {
 
-/// Base class of mapper mapper between fwData and MetaData
+/// Base class of custom mapper between fwData and fwAtoms
 class FWATOMCONVERSION_CLASS_API Base
 {
 public:
@@ -52,15 +52,21 @@ public:
 
     virtual ~Base(){};
 
-    /// ???
-    FWATOMCONVERSION_API virtual ::fwAtoms::Object::sptr convert
-        ( ::fwData::Object::sptr object,
-          DataVisitor::AtomCacheType & cache ) = 0;
+    /**
+     * @brief Convert a ::fwData::Object to a ::fwAtoms::Object.
+     * @param object data to convert
+     * @param cache  cache to register the data already converted, used when a data is referenced multiple times.
+     */
+    FWATOMCONVERSION_API virtual ::fwAtoms::Object::sptr convert(::fwData::Object::sptr object,
+                                                                 DataVisitor::AtomCacheType & cache) = 0;
 
-    /// ???
-    FWATOMCONVERSION_API virtual ::fwData::Object::sptr convert
-    ( ::fwAtoms::Object::sptr atom,
-      AtomVisitor::DataCacheType & cache ) = 0;
+    /**
+     * @brief Convert a ::fwAtoms::Object to a ::fwData::Object.
+     * @param object atom to convert
+     * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times.
+     */
+    FWATOMCONVERSION_API virtual ::fwData::Object::sptr convert(::fwAtoms::Object::sptr atom,
+                                                                AtomVisitor::DataCacheType & cache) = 0;
 
 };
 
