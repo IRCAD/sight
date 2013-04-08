@@ -53,6 +53,7 @@ namespace fwAtomConversion
      * @param atom atom to convert
      * @return Converted ::fwData::Object
      *
+     * @throw ::camp::ClassNotFound if data class is not found in camp world during visit
      * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in ::fwData::factory
      * @throw ::fwAtomConversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
      * @throw ::fwAtomConversion::exception::ConversionNotManaged if atom is not data compliant
