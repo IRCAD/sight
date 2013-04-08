@@ -36,6 +36,7 @@
 
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Map.hpp>
+#include <fwAtoms/Sequence.hpp>
 
 #include <fwTest/Exception.hpp>
 
@@ -503,6 +504,13 @@ void ConversionTest::nullPtrManagmentTest()
             atom = ::fwAtomConversion::convert( composite );
         }
 
+        {
+            ::fwAtoms::Map::sptr map = ::fwAtoms::Map::dynamicCast( atom->getAttribute("values") );
+            CPPUNIT_ASSERT_EQUAL( (size_t)2, map->size() );
+            CPPUNIT_ASSERT( map->find("key2") != map->end() );
+            CPPUNIT_ASSERT( ! (*map)["key2"] );
+        }
+
         ::fwData::Composite::sptr newComposite = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
         ::fwData::Composite::ContainerType & dataMap = newComposite->getContainer();
         CPPUNIT_ASSERT( newComposite );
@@ -522,6 +530,12 @@ void ConversionTest::nullPtrManagmentTest()
 
             // Create Atom
             atom = ::fwAtomConversion::convert( vector );
+        }
+
+        {
+            ::fwAtoms::Sequence::sptr seq = ::fwAtoms::Sequence::dynamicCast( atom->getAttribute("values") );
+            CPPUNIT_ASSERT_EQUAL( (size_t)2, seq->size() );
+            CPPUNIT_ASSERT( ! (*seq)[1] );
         }
 
         ::fwData::Vector::sptr newVector = ::fwData::Vector::dynamicCast( ::fwAtomConversion::convert(atom) );
