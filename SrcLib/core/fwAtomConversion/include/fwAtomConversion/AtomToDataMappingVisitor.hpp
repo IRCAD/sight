@@ -21,6 +21,7 @@ namespace fwAtomConversion
 
 /**
  * @brief This visitor visits data object to fill it with associated atom object attributes.
+ * This class is used by AtomVisitor to convert an fwData::Object.
  * @class AtomToDataMappingVisitor
  * @date 2013
  */
@@ -44,13 +45,28 @@ public:
     /// Visits data object enum property and fill it with associated atom attribute.
     FWATOMCONVERSION_API void visit(const camp::EnumProperty& property);
 
-    /// Visits data object user property and fill it with associated atom attribute.
+    /**
+     * @brief Visits data object user property and fill it with associated atom attribute.
+     * Manages null fwAtoms::Base::sptr by inserting a null fwData::Object::sptr.
+     */
     FWATOMCONVERSION_API void visit(const camp::UserProperty& property);
 
-    /// Visits data object array property and fill it with associated atom attribute.
+    /**
+     * @brief Visits data object array property and fill it with associated atom attribute.
+     * Manages null fwAtoms::Base::sptr by inserting a null fwData::Object::sptr.
+     *
+     * Only array that contains ::fwAtoms::Base::BOOLEAN, ::fwAtoms::Base::NUMERIC, ::fwAtoms::Base::STRING and
+     * ::fwAtoms::Base::OBJECT are managed.
+     */
     FWATOMCONVERSION_API void visit(const camp::ArrayProperty& property);
 
-    /// Visits data object map property and fill it with associated atom attribute.
+    /**
+     * @brief Visits data object map property and fill it with associated atom attribute.
+     * Manages null fwAtoms::Base::sptr by inserting a null fwData::Object::sptr.
+     *
+     * Only map that contains ::fwAtoms::Base::BOOLEAN, ::fwAtoms::Base::NUMERIC, ::fwAtoms::Base::STRING and
+     * ::fwAtoms::Base::OBJECT are managed.
+     */
     FWATOMCONVERSION_API void visit(const camp::MapProperty& property);
 
 private:

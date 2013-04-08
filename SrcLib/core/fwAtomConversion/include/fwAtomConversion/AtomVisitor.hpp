@@ -38,7 +38,15 @@ public:
     /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~AtomVisitor();
 
-    /// Visits the atom information to create the data object and store it in the cache.
+    /**
+     * @brief Visits the atom information to create the data object and store it in the cache.
+     *
+     * Creates a new ::fwData::Object from classname store in meta info CLASSNAME_METAINFO.
+     * Creates this new object with UUID store in fwAtoms::Object ID.
+     *
+     * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in ::fwData::factory
+     * @throw ::fwAtomConversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
+     */
     FWATOMCONVERSION_API void visit();
 
     /// Returns the data object. Calls this method after visit().

@@ -20,6 +20,10 @@ namespace mapper
  * @brief Specific mapper used to convert a ::fwData::Graph.
  * @class Graph
  * @date 2012-2013
+ *
+ * The attribute ::fwData::Graph::m_connections ( of type ::fwData::Graph::ConnectionContainer ) is
+ * represented in fwAtoms world like a fwAtoms::Sequence that contains fwAtoms::Object with three
+ * attributes "edge", "source" and "destination".
  */
 class FWATOMCONVERSION_CLASS_API Graph : public Base
 {

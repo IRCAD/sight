@@ -245,13 +245,6 @@ void DataVisitor::visit(const camp::UserProperty& property)
 
 //-----------------------------------------------------------------------------
 
-void DataVisitor::visit(const camp::Function& function)
-{
-    SLM_DEBUG("function visitation not implemented");
-}
-
-//-----------------------------------------------------------------------------
-
 ::fwAtoms::Object::sptr DataVisitor::getAtomObject() const
 {
     return this->m_atomObj;

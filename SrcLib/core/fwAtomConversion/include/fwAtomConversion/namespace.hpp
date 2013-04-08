@@ -24,7 +24,7 @@ namespace exception
 } // namespace exception
 
 /**
- * @brief This namespace contains the specific mappers used to convert some data
+ * @brief This namespace contains the specific mappers used to convert few data
  */
 namespace mapper
 {
@@ -37,7 +37,7 @@ namespace factory
 } // namespace factory
 
 /**
- * @brief       Contains fwAtomConversion::mapper::registry details
+ * @brief Contains fwAtomConversion::mapper::registry details
  */
 namespace registry
 {
