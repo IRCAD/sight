@@ -11,6 +11,7 @@
 
 #include "fwAtomConversion/mapper/Graph.hpp"
 #include "fwAtomConversion/mapper/registry/macros.hpp"
+#include "fwAtomConversion/convert.hpp"
 
 namespace fwAtomConversion
 {
@@ -41,9 +42,9 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
     {
         value = ::fwAtoms::Object::New();
 
-        value->setAttribute("edge", DataVisitor::convert(elem.first, cache));
-        value->setAttribute("source", DataVisitor::convert(elem.second.first, cache));
-        value->setAttribute("destination", DataVisitor::convert(elem.second.second, cache));
+        value->setAttribute("edge", ::fwAtomConversion::convert(elem.first, cache));
+        value->setAttribute("source", ::fwAtomConversion::convert(elem.second.first, cache));
+        value->setAttribute("destination", ::fwAtomConversion::convert(elem.second.second, cache));
 
         sequence->push_back(value);
     }
@@ -70,13 +71,13 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
         ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast( elemAtom );
 
         ::fwAtoms::Object::sptr edgeAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );
-        ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast( AtomVisitor::convert( edgeAtom, cache ) );
+        ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast( ::fwAtomConversion::convert( edgeAtom, cache ) );
 
         ::fwAtoms::Object::sptr srcAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("source") );
-        ::fwData::Node::sptr src = ::fwData::Node::dynamicCast( AtomVisitor::convert( srcAtom, cache ) );
+        ::fwData::Node::sptr src = ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( srcAtom, cache ) );
 
         ::fwAtoms::Object::sptr destAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("destination") );
-        ::fwData::Node::sptr dest = ::fwData::Node::dynamicCast( AtomVisitor::convert( destAtom, cache ) );
+        ::fwData::Node::sptr dest = ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( destAtom, cache ) );
 
         graph->addEdge( edge, src, dest );
     }

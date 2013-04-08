@@ -17,6 +17,7 @@
 #include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/mapper/Base.hpp"
 #include "fwAtomConversion/camp/ValueMapper.hpp"
+#include "fwAtomConversion/convert.hpp"
 
 namespace fwAtomConversion
 {
@@ -70,7 +71,7 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
         case ::fwAtoms::Base::OBJECT :
         {
             ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(atom);
-            ::fwData::Object::sptr objectData = AtomVisitor::convert( objectAtom, m_cache );
+            ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache );
             property.set( m_campDataObj, objectData );
             break;
         }
@@ -128,7 +129,7 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
             case ::fwAtoms::Base::OBJECT :
             {
                 ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom);
-                ::fwData::Object::sptr objectData = AtomVisitor::convert( objectAtom, m_cache );
+                ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache );
 
                 if( property.dynamic() )
                 {
@@ -181,7 +182,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
             case ::fwAtoms::Base::OBJECT :
             {
                 ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom.second);
-                ::fwData::Object::sptr objectData = AtomVisitor::convert( objectAtom, m_cache );
+                ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache );
                 property.set( m_campDataObj, elemAtom.first, objectData );
                 break;
             }

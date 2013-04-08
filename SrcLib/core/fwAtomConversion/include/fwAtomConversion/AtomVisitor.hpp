@@ -32,18 +32,6 @@ public:
 
     typedef std::map< ::fwTools::UUID::UUIDType, ::fwData::Object::sptr > DataCacheType;
 
-    /**
-     * @brief Converts a ::fwAtoms::Object to a ::fwData::Object
-     *
-     * @param atom atom to convert
-     * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times
-     * @return Converted ::fwData::Object.
-     *
-     * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found.
-     * @throw ::fwAtomConversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
-     */
-    FWATOMCONVERSION_API static ::fwData::Object::sptr convert( ::fwAtoms::Object::sptr atomObj, DataCacheType & cache );
-
     /// Constructors. Initializes parameters.
     FWATOMCONVERSION_API AtomVisitor( ::fwAtoms::Object::sptr atomObj, DataCacheType & cache );
 

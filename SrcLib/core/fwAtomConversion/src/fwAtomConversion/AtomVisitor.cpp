@@ -7,40 +7,11 @@
 #include "fwAtomConversion/AtomVisitor.hpp"
 #include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/AtomToDataMappingVisitor.hpp"
-#include "fwAtomConversion/mapper/Base.hpp"
 #include "fwAtomConversion/exception/DataFactoryNotFound.hpp"
 #include "fwAtomConversion/exception/DuplicatedDataUUID.hpp"
 
 namespace fwAtomConversion
 {
-
-::fwData::Object::sptr AtomVisitor::convert( ::fwAtoms::Object::sptr atomObj, DataCacheType & cache )
-{
-    ::fwData::Object::sptr data;
-
-    AtomVisitor::DataCacheType::iterator elem = cache.find( atomObj->getId() );
-
-    if ( elem == cache.end() )
-    {
-        SPTR(mapper::Base) mapper = mapper::factory::New( atomObj->getMetaInfo( DataVisitor::CLASSNAME_METAINFO ) );
-        if ( mapper )
-        {
-            data = mapper->convert( atomObj, cache );
-        }
-        else
-        {
-            ::fwAtomConversion::AtomVisitor visitor ( atomObj, cache );
-            visitor.visit();
-            data = visitor.getDataObject();
-        }
-    }
-    else // already analysed
-    {
-        data = elem->second;
-    }
-
-    return data;
-}
 
 AtomVisitor::AtomVisitor( ::fwAtoms::Object::sptr atomObj, DataCacheType & cache )
 : m_atomObj ( atomObj ),
@@ -71,9 +42,6 @@ void AtomVisitor::processMetaInfos( const ::fwAtoms::Object::MetaInfosType & met
         << classname << "' with uuid '"
         << uuid <<"' but this uuid is already used in the system";
     FW_RAISE_EXCEPTION_IF( exception::DuplicatedDataUUID(msg.str()), ! uuidIsSetted );
-
-
-    SLM_FATAL_IF("Sorry it is impossible to set uuid on new object because it already exists.",! uuidIsSetted );
 
     m_cache[uuid] = m_dataObj;
 }

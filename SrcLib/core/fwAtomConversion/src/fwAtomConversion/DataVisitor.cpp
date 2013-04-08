@@ -33,7 +33,7 @@
 
 #include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/mapper/factory/new.hpp"
-#include "fwAtomConversion/mapper/Base.hpp"
+#include "fwAtomConversion/convert.hpp"
 
 
 namespace fwAtomConversion
@@ -43,34 +43,7 @@ static int dataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION; // Hack t
 
 const std::string DataVisitor::CLASSNAME_METAINFO = "CLASSNAME_METAINFO";
 
-::fwAtoms::Object::sptr DataVisitor::convert( ::fwData::Object::sptr dataObj, AtomCacheType & cache )
-{
-    ::fwAtoms::Object::sptr atom;
-
-    DataVisitor::AtomCacheType::iterator elem = cache.find( ::fwTools::UUID::get( dataObj ) );
-
-    if ( elem == cache.end() )
-    {
-        SPTR(mapper::Base) mapper = mapper::factory::New( dataObj->getClassname() );
-        if ( mapper )
-        {
-            atom = mapper->convert( dataObj, cache );
-        }
-        else
-        {
-            const camp::Class& metaclass = ::camp::classByName( dataObj->getClassname() );
-            ::fwAtomConversion::DataVisitor visitor ( dataObj, cache );
-            metaclass.visit(visitor);
-            atom = visitor.getAtomObject();
-        }
-    }
-    else // already analysed
-    {
-        atom = elem->second;
-    }
-
-    return atom;
-}
+//-----------------------------------------------------------------------------
 
 struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base::sptr >
 {
@@ -130,7 +103,7 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
                 ::fwData::Object * ptr = value.get< ::fwData::Object * >();
                 ::fwData::Object::sptr dataObj = ptr->getSptr();
 
-                baseObj = DataVisitor::convert( dataObj, m_cache );
+                baseObj = ::fwAtomConversion::convert( dataObj, m_cache );
             }
         }
 

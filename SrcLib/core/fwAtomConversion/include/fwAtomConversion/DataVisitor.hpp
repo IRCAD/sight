@@ -39,15 +39,6 @@ public:
     /// Key of the meta info to store data object classname
     FWATOMCONVERSION_API static const std::string CLASSNAME_METAINFO;
 
-    /**
-     * @brief Converts a ::fwData::Object to a ::fwAtoms::Object.
-     * @param dataObj data to convert
-     * @param cache   cache to register already converted data, used when a data is referenced multiple times.
-     * @return Returns the converted atom.
-     * @throw ::camp::ClassNotFound if data class is not found.
-     */
-    FWATOMCONVERSION_API static ::fwAtoms::Object::sptr convert( ::fwData::Object::sptr dataObj, AtomCacheType & cache );
-
     /// Constructor. Initializes atom object and store it in the cache.
     FWATOMCONVERSION_API DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache );
 
