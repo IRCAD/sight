@@ -11,6 +11,9 @@
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/Map.hpp>
+#include <fwAtoms/Boolean.hpp>
+#include <fwAtoms/Numeric.hpp>
+#include <fwAtoms/Numeric.hxx>
 #include "fwAtomConversion/camp/ValueMapper.hpp"
 
 #include "fwAtomConversion/AtomToDataMappingVisitor.hpp"
@@ -23,6 +26,128 @@
 namespace fwAtomConversion
 {
 
+//-----------------------------------------------------------------------------
+
+class NumericSimplePropertyVisitor : public boost::static_visitor<void>
+{
+public:
+
+    ::fwAtoms::Numeric::sptr m_typedAtom;
+    ::camp::UserObject & m_campDataObj;
+    const camp::SimpleProperty& m_property;
+
+    NumericSimplePropertyVisitor( const ::fwAtoms::Numeric::sptr & typedAtom,
+                                  ::camp::UserObject & campDataObj,
+                                  const camp::SimpleProperty& property ) :
+        m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property) {}
+
+    void operator()( ::boost::blank & ) const
+    {
+        m_property.set( m_campDataObj, m_typedAtom->getString() );
+    }
+
+    void operator()( const ::boost::blank & ) const
+    {
+        m_property.set( m_campDataObj, m_typedAtom->getString() );
+    }
+
+    template <typename U>
+    void operator()( U & value ) const
+    {
+        m_property.set( m_campDataObj, value );
+    }
+};
+
+//-----------------------------------------------------------------------------
+
+class NumericArrayPropertyVisitor : public boost::static_visitor<void>
+{
+public:
+
+    ::fwAtoms::Numeric::sptr m_typedAtom;
+    ::camp::UserObject & m_campDataObj;
+    const camp::ArrayProperty& m_property;
+    unsigned int m_index;
+
+    NumericArrayPropertyVisitor( const ::fwAtoms::Numeric::sptr & typedAtom,
+                                 ::camp::UserObject & campDataObj,
+                                 const camp::ArrayProperty& property,
+                                 unsigned int index ) :
+                 m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property), m_index(index) {}
+
+    void operator()( ::boost::blank & ) const
+    {
+        if( m_property.dynamic() )
+        {
+            m_property.insert( m_campDataObj, m_index, m_typedAtom->getString() );
+        }
+        else
+        {
+            m_property.set( m_campDataObj, m_index, m_typedAtom->getString() );
+        }
+    }
+
+    void operator()( const ::boost::blank & ) const
+    {
+        if( m_property.dynamic() )
+        {
+            m_property.insert( m_campDataObj, m_index, m_typedAtom->getString() );
+        }
+        else
+        {
+            m_property.set( m_campDataObj, m_index, m_typedAtom->getString() );
+        }
+    }
+
+    template <typename U>
+    void operator()( U & value ) const
+    {
+        if( m_property.dynamic() )
+        {
+            m_property.insert( m_campDataObj, m_index, value );
+        }
+        else
+        {
+            m_property.set( m_campDataObj, m_index, value );
+        }
+    }
+};
+
+//-----------------------------------------------------------------------------
+class NumericMapPropertyVisitor : public boost::static_visitor<void>
+{
+public:
+
+    ::fwAtoms::Numeric::sptr m_typedAtom;
+    ::camp::UserObject & m_campDataObj;
+    const camp::MapProperty& m_property;
+    std::string m_key;
+
+    NumericMapPropertyVisitor( const ::fwAtoms::Numeric::sptr & typedAtom,
+                               ::camp::UserObject & campDataObj,
+                               const camp::MapProperty& property,
+                               const std::string & key ) :
+        m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property), m_key(key) {}
+
+    void operator()( ::boost::blank & ) const
+    {
+        m_property.set( m_campDataObj, m_key, m_typedAtom->getString() );
+    }
+
+    void operator()( const ::boost::blank & ) const
+    {
+        m_property.set( m_campDataObj, m_key, m_typedAtom->getString() );
+    }
+
+    template <typename U>
+    void operator()( U & value ) const
+    {
+        m_property.set( m_campDataObj, m_key, value );
+    }
+};
+
+//-----------------------------------------------------------------------------
+
 AtomToDataMappingVisitor::AtomToDataMappingVisitor(
         ::fwData::Object::sptr dataObj,
          ::fwAtoms::Object::sptr atomObj,
@@ -32,6 +157,7 @@ AtomToDataMappingVisitor::AtomToDataMappingVisitor(
    m_atomObj(atomObj),
    m_cache(cache)
 {}
+
 
 AtomToDataMappingVisitor::~AtomToDataMappingVisitor(){}
 
@@ -45,8 +171,24 @@ void AtomToDataMappingVisitor::visit(const camp::SimpleProperty& property)
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
     FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
 
-    property.set( m_campDataObj, atom->getString() );
+    switch( atom->type() )
+    {
+    case ::fwAtoms::Base::NUMERIC :
+    {
+        ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( atom );
+        ::boost::apply_visitor( NumericSimplePropertyVisitor(typedAtom,m_campDataObj,property),
+                                typedAtom->getVariant() );
+        break;
+    }
+    default:
+    {
+        property.set( m_campDataObj, atom->getString() );
+        break;
+    }
+    }
+
 }
+
 
 void AtomToDataMappingVisitor::visit(const camp::EnumProperty& property)
 {
@@ -150,7 +292,6 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
             switch( elemAtom->type() )
             {
             case ::fwAtoms::Base::BOOLEAN :
-            case ::fwAtoms::Base::NUMERIC :
             case ::fwAtoms::Base::STRING :
             {
                 std::string value = elemAtom->getString();
@@ -165,6 +306,14 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
                 }
                 break;
             }
+            case ::fwAtoms::Base::NUMERIC :
+            {
+                ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( elemAtom );
+                ::boost::apply_visitor( NumericArrayPropertyVisitor(typedAtom,m_campDataObj,property,index),
+                                        typedAtom->getVariant() );
+                break;
+            }
+
             case ::fwAtoms::Base::OBJECT :
             {
                 ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom);
@@ -235,11 +384,17 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
             switch( elemAtom.second->type() )
             {
             case ::fwAtoms::Base::BOOLEAN :
-            case ::fwAtoms::Base::NUMERIC :
             case ::fwAtoms::Base::STRING :
             {
                 std::string value = elemAtom.second->getString();
                 property.set( m_campDataObj, elemAtom.first, value );
+                break;
+            }
+            case ::fwAtoms::Base::NUMERIC :
+            {
+                ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( elemAtom.second );
+                ::boost::apply_visitor( NumericMapPropertyVisitor(typedAtom,m_campDataObj,property,elemAtom.first),
+                                        typedAtom->getVariant() );
                 break;
             }
             case ::fwAtoms::Base::OBJECT :
