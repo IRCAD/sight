@@ -71,7 +71,7 @@ public:
      * @brief Visit map property. Null fwData::Object::sptr attribute is converted to
      * null fwAtoms::Base::sptr attributes
      *
-     * Only map with key of type string, real or int are managed ( real and int are
+     * Only map with key of type enum, string, real or int are managed ( real and int are
      * converted in string ). In other cases, an assertion is raised.
      */
     FWATOMCONVERSION_API void visit(const camp::MapProperty& property);

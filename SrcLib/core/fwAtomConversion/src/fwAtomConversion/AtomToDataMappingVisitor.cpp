@@ -18,6 +18,7 @@
 #include "fwAtomConversion/mapper/Base.hpp"
 #include "fwAtomConversion/camp/ValueMapper.hpp"
 #include "fwAtomConversion/convert.hpp"
+#include "fwAtomConversion/exception/ConversionNotManaged.hpp"
 
 namespace fwAtomConversion
 {
@@ -39,7 +40,11 @@ void AtomToDataMappingVisitor::visit(const camp::SimpleProperty& property)
 {
     const std::string& name ( property.name() );
     ::fwAtoms::Base::sptr atom = m_atomObj->getAttribute( name );
-    OSLM_ASSERT("Atom " << name << " must exist", atom);
+
+    std::stringstream msg;
+    msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
+    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
+
     property.set( m_campDataObj, atom->getString() );
 }
 
@@ -47,7 +52,11 @@ void AtomToDataMappingVisitor::visit(const camp::EnumProperty& property)
 {
     const std::string& name ( property.name() );
     ::fwAtoms::Base::sptr atom = m_atomObj->getAttribute( name );
-    OSLM_ASSERT("Atom " << name << " must exist", atom);
+
+    std::stringstream msg;
+    msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
+    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
+
     property.set( m_campDataObj, atom->getString() );
 }
 
@@ -77,7 +86,30 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
         }
         default :
         {
-            SLM_FATAL("Atom must be a blob or an object.");
+            std::stringstream msg;
+            msg << "Attribute of type '";
+            switch( atom->type() )
+            {
+            case ::fwAtoms::Base::BOOLEAN :
+                msg << "BOOLEAN";
+                break;
+            case ::fwAtoms::Base::STRING :
+                msg << "STRING";
+                break;
+            case ::fwAtoms::Base::NUMERIC :
+                msg << "NUMERIC";
+                break;
+            case ::fwAtoms::Base::MAP :
+                msg << "MAP";
+                break;
+            case ::fwAtoms::Base::SEQUENCE :
+                msg << "SEQUENCE";
+                break;
+            default:
+                break;
+            }
+            msg <<"', are not supported in the data conversion process.";
+            FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
             break;
         }
         }
@@ -89,13 +121,20 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
 {
     const std::string& name ( property.name() );
     ::fwAtoms::Base::sptr atom = m_atomObj->getAttribute( name );
+
+    std::stringstream msg;
+    msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
+    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
+
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast(atom);
     unsigned int index = 0;
     BOOST_FOREACH( ::fwAtoms::Base::sptr elemAtom, seqAtom->getValue() )
     {
         if (!elemAtom)
         {
-            SLM_ASSERT("Not supported null element in Atom sequence.", property.elementType() == ::camp::userType);
+            FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( "Not supported null element in Atom sequence." ),
+                                   property.elementType() != ::camp::userType );
+
             ::fwData::Object::sptr objectData;
             if( property.dynamic() )
             {
@@ -143,7 +182,24 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
             }
             default :
             {
-                SLM_FATAL("Atom must be a value or an object.");
+                std::stringstream msg;
+                msg << "fwAtoms::Sequence elements of type '";
+                switch( elemAtom->type() )
+                {
+                case ::fwAtoms::Base::BLOB :
+                    msg << "BLOB";
+                    break;
+                case ::fwAtoms::Base::MAP :
+                    msg << "MAP";
+                    break;
+                case ::fwAtoms::Base::SEQUENCE :
+                    msg << "SEQUENCE";
+                    break;
+                default:
+                    break;
+                }
+                msg <<"', are not supported in the data conversion process.";
+                FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
                 break;
             }
             }
@@ -157,13 +213,20 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
 {
     const std::string& name ( property.name() );
     ::fwAtoms::Base::sptr atom = m_atomObj->getAttribute( name );
+
+    std::stringstream msg;
+    msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
+    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
+
     ::fwAtoms::Map::sptr mapAtom = ::fwAtoms::Map::dynamicCast(atom);
 
     BOOST_FOREACH( ::fwAtoms::Map::ValueType elemAtom, mapAtom->getValue() )
     {
         if (!elemAtom.second)
         {
-            SLM_ASSERT("Not supported null element in Atom map.", property.elementType() == ::camp::userType);
+            FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( "Not supported null element in Atom map." ),
+                                   property.elementType() != ::camp::userType );
+
             ::fwData::Object::sptr objectData;
             property.set( m_campDataObj, elemAtom.first, objectData );
         }
@@ -188,7 +251,24 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
             }
             default :
             {
-                SLM_FATAL("Atom must be a value or an object.");
+                std::stringstream msg;
+                msg << "fwAtoms::Map value elements of type '";
+                switch( elemAtom.second->type() )
+                {
+                case ::fwAtoms::Base::BLOB :
+                    msg << "BLOB";
+                    break;
+                case ::fwAtoms::Base::MAP :
+                    msg << "MAP";
+                    break;
+                case ::fwAtoms::Base::SEQUENCE :
+                    msg << "SEQUENCE";
+                    break;
+                default:
+                    break;
+                }
+                msg <<"', are not supported in the data conversion process.";
+                FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
                 break;
             }
             }

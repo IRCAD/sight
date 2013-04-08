@@ -34,6 +34,7 @@
 #include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/mapper/factory/new.hpp"
 #include "fwAtomConversion/convert.hpp"
+#include "fwAtomConversion/exception/ConversionNotManaged.hpp"
 
 
 namespace fwAtomConversion
@@ -54,7 +55,8 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
 
     ::fwAtoms::Base::sptr operator()(camp::NoType value)
     {
-        SLM_FATAL("Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed");
+        FW_RAISE_EXCEPTION( exception::ConversionNotManaged(
+                "Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed" ) );
         ::fwAtoms::Base::sptr val;
         return val;
     }
@@ -198,10 +200,11 @@ void DataVisitor::visit(const camp::MapProperty& property)
         DataConversionValueVisitor valVisitor(m_cache);
         valAtom = second.visit( valVisitor );
 
-        SLM_ASSERT("Not managed type for map key.",
-                   first.type() == ::camp::stringType ||
-                   first.type() == ::camp::intType ||
-                   first.type() == ::camp::realType);
+        FW_RAISE_EXCEPTION_IF(
+                exception::ConversionNotManaged("Not managed type for map key (only support string, int and real)"),
+                first.type() != ::camp::stringType &&
+                first.type() != ::camp::intType &&
+                first.type() != ::camp::realType );
         atom->insert( first.to< std::string >(), valAtom );
     }
 

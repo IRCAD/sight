@@ -32,6 +32,10 @@
 #include <fwDataTools/MeshGenerator.hpp>
 #include <fwDataTools/Image.hpp>
 
+#include <fwCamp/macros.hpp>
+#include <fwCamp/Mapper/ValueMapper.hpp>
+#include <fwCamp/UserObject.hpp>
+
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwAtoms/Object.hpp>
@@ -44,6 +48,7 @@
 #include <fwAtomConversion/DataVisitor.hpp>
 #include <fwAtomConversion/exception/DataFactoryNotFound.hpp>
 #include <fwAtomConversion/exception/DuplicatedDataUUID.hpp>
+#include <fwAtomConversion/exception/ConversionNotManaged.hpp>
 
 #include "ConversionTest.hpp"
 
@@ -547,7 +552,96 @@ void ConversionTest::nullPtrManagmentTest()
     }
 }
 
-//-----------------------------------------------------------------------------
 
 }  // namespace ut
 }  // namespace fwAtomConversion
+
+//-----------------------------------------------------------------------------
+
+#define EMTPY_CLASS_API
+fwCampAutoDeclareDataMacro((fwAtomConversion)(ut)(ClassNotManaged),EMTPY_CLASS_API);
+
+namespace fwAtomConversion {
+namespace ut {
+
+class ClassNotManaged : public ::fwData::Object
+{
+
+public :
+
+    fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotManaged)(::fwData::Object),
+       ((::fwData::factory::New< ClassNotManaged > ,() )) );
+
+    fwDataObjectMacro();
+
+    fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged));
+
+    ClassNotManaged(::fwData::Object::Key key)
+    {
+        m_values.insert( std::make_pair( ::fwData::String::New(), 0.2 ) );
+    };
+
+    std::map< ::fwData::String::sptr, double > m_values;
+
+};
+
+}  // namespace ut
+}  // namespace fwAtomConversion
+
+
+fwCampImplementDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
+{
+    builder
+        .tag("object_version", "1")
+        .tag("lib_name", "fwAtomConversion")
+        .base< ::fwData::Object>()
+        .property("values", &::fwAtomConversion::ut::ClassNotManaged::m_values);
+}
+
+namespace fwAtomConversion {
+namespace ut {
+
+void ConversionTest::conversionNotManagedExceptionTest()
+{
+    // Test ConversionNotManaged throwing during data to atom conversion
+    {
+        localDeclarefwAtomConversionutClassNotManaged();
+
+        ClassNotManaged::sptr classNotManaged = ClassNotManaged::New();
+
+        CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert( classNotManaged ),
+                              ::fwAtomConversion::exception::ConversionNotManaged );
+    }
+
+    // Test ConversionNotManaged throwing during atom to data conversion
+    {
+        ::fwAtoms::Object::sptr atomObj = ::fwAtoms::Object::New();
+        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::fwData::Vector" );
+
+        CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert( atomObj ),
+                              ::fwAtomConversion::exception::ConversionNotManaged );
+    }
+
+    // Test ConversionNotManaged throwing during atom to data conversion
+    {
+        ::fwAtoms::Object::sptr atomObj = ::fwAtoms::Object::New();
+        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO,"::fwData::Vector");
+
+        ::fwAtoms::Map::sptr atomFields = ::fwAtoms::Map::New();
+        atomObj->setAttribute("fields",atomFields);
+
+        ::fwAtoms::Sequence::sptr atomSeq = ::fwAtoms::Sequence::New();
+        atomObj->setAttribute("values",atomSeq);
+
+        ::fwAtoms::Map::sptr atomBasicMap = ::fwAtoms::Map::New();
+        atomSeq->push_back( atomBasicMap );
+
+        CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert( atomObj ),
+                              ::fwAtomConversion::exception::ConversionNotManaged );
+    }
+}
+
+}  // namespace ut
+}  // namespace fwAtomConversion
+
+

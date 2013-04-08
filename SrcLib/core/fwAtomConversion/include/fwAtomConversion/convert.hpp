@@ -24,15 +24,16 @@ namespace fwAtomConversion
      * @return Converted ::fwAtoms::Object
      *
      * @throw ::camp::ClassNotFound if data class is not found in camp world during visit
+     * @throw ::fwAtomConversion::exception::ConversionNotManaged if data has attribute type not managed by algorithm
      *
      * @note All data must be camped or mapped by a specific ::fwAtomConversion::mapper::Base
      * @note fwData camp property names are used like key to store attributes in fwAtoms::Object
      * @note sub objects multi-referenced in the fwData structure are represented by the same fwAtoms::Object
      * ( also multi-referenced in fwAtoms structure )
      * @note null ::fwData::Object::sptr are kept and are converted in null ::fwAtoms::Base::sptr
-     * @note Only std::vector of type fwData::Object::sptr, bool, string, int or real are managed
+     * @note Only std::vector of type fwData::Object::sptr, enum, bool, string, int or real are managed
      * @note Only std::map with key value : string, int or real are managed
-     * @note Only std::map with type value : fwData::Object::sptr, bool, string, int or real are managed
+     * @note Only std::map with type value : fwData::Object::sptr, bool, enum, string, int or real are managed
      */
     FWATOMCONVERSION_API ::fwAtoms::Object::sptr convert( ::fwData::Object::sptr data );
 
@@ -54,6 +55,7 @@ namespace fwAtomConversion
      *
      * @throw ::fwAtomConversion::exception::DataFactoryNotFound if the data class is not found in ::fwData::factory
      * @throw ::fwAtomConversion::exception::DuplicatedDataUUID if the data uuid already exists in the system.
+     * @throw ::fwAtomConversion::exception::ConversionNotManaged if atom is not data compliant
      *
      * @note see notes of convert(::fwData::Object::sptr data) method
      */

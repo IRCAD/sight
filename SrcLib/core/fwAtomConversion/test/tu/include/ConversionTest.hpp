@@ -27,6 +27,7 @@ class ConversionTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( uuidExceptionTest );
     CPPUNIT_TEST( dataFactoryNotFoundExceptionTest );
     CPPUNIT_TEST( campFactoryNotFoundExceptionTest );
+    CPPUNIT_TEST( conversionNotManagedExceptionTest );
     CPPUNIT_TEST( nullPtrManagmentTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -65,6 +66,9 @@ public:
 
     /// Test exception throwing if during data to atom conversion a classname is not found in camp factory
     void campFactoryNotFoundExceptionTest();
+
+    /// Test exception throwing if during data/atom conversion a conversion is not managed
+    void conversionNotManagedExceptionTest();
 
     /// Test null ptr management (null ptr attribut, null ptr in vector, null ptr in map)
     void nullPtrManagmentTest();

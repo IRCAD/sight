@@ -12,6 +12,7 @@
 #include "fwAtomConversion/mapper/Graph.hpp"
 #include "fwAtomConversion/mapper/registry/macros.hpp"
 #include "fwAtomConversion/convert.hpp"
+#include "fwAtomConversion/exception/ConversionNotManaged.hpp"
 
 namespace fwAtomConversion
 {
@@ -67,7 +68,10 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast( atom->getAttribute("connections") );
     BOOST_FOREACH( ::fwAtoms::Base::sptr elemAtom , seqAtom->getValue() )
     {
-        SLM_FATAL_IF("Atom must be an atom object.", elemAtom->type() != ::fwAtoms::Base::OBJECT );
+        FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
+                "sub atoms stored in fwAtom::Sequence 'connections' must be atom objects"),
+                elemAtom->type() != ::fwAtoms::Base::OBJECT );
+
         ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast( elemAtom );
 
         ::fwAtoms::Object::sptr edgeAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );
