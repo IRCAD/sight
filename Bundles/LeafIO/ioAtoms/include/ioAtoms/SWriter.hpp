@@ -4,27 +4,27 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOATOM_SWRITER_HPP__
-#define __IOATOM_SWRITER_HPP__
+#ifndef __IOATOMS_SWRITER_HPP__
+#define __IOATOMS_SWRITER_HPP__
 
 #include <io/IWriter.hpp>
 
-#include "ioAtom/config.hpp"
+#include "ioAtoms/config.hpp"
 
 namespace fwServices
 {
     class ObjectMsg;
 }
 
-namespace ioAtom
+namespace ioAtoms
 {
 
 /**
- * @brief Atom writer.
+ * @brief Atoms writer.
  * @class SWriter
  * @date 2013
  */
-class IOATOM_CLASS_API SWriter : public ::io::IWriter
+class IOATOMS_CLASS_API SWriter : public ::io::IWriter
 {
 
 public:
@@ -33,7 +33,7 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SWriter)(::io::IWriter) );
 
     /// Override
-    IOATOM_API void configureWithIHM();
+    IOATOMS_API void configureWithIHM();
 
 protected:
 
@@ -46,19 +46,19 @@ protected:
     /**  @} */
 
     /// Override
-    IOATOM_API void starting() throw(::fwTools::Failed);
+    IOATOMS_API void starting() throw(::fwTools::Failed);
 
     /// Override
-    IOATOM_API void stopping() throw(::fwTools::Failed);
+    IOATOMS_API void stopping() throw(::fwTools::Failed);
 
     /// Override
-    IOATOM_API void updating() throw(::fwTools::Failed);
+    IOATOMS_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOATOM_API ::io::IOPathType getIOPathType() const;
+    IOATOMS_API ::io::IOPathType getIOPathType() const;
 
     /// Override
-    IOATOM_API void info(std::ostream & _stream);
+    IOATOMS_API void info(std::ostream & _stream);
 
     /// Specify if data must be saved using compression.
     bool m_archive;
@@ -70,7 +70,7 @@ protected:
     FiltersType m_filters;
 };
 
-} // namespace ioAtom
+} // namespace ioAtoms
 
-#endif // __IOATOM_SWRITER_HPP__
+#endif // __IOATOMS_SWRITER_HPP__
 

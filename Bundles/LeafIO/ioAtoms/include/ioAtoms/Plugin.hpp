@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOATOM_PLUGIN_HPP__
-#define __IOATOM_PLUGIN_HPP__
+#ifndef __IOATOMS_PLUGIN_HPP__
+#define __IOATOMS_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
-namespace ioAtom
+namespace ioAtoms
 {
 
 class Plugin : public ::fwRuntime::Plugin
@@ -36,7 +36,7 @@ public:
 
 };
 
-} // namespace ioAtom
+} // namespace ioAtoms
 
-#endif //__IOATOM_PLUGIN_HPP__
+#endif //__IOATOMS_PLUGIN_HPP__
 

@@ -1,6 +1,6 @@
-<plugin id="ioAtom" class="::ioAtom::Plugin" >
+<plugin id="ioAtoms" class="::ioAtoms::Plugin" >
 
-    <library name="ioAtom" />
+    <library name="ioAtoms" />
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -8,20 +8,20 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioAtom::SWriter</service>
+        <service>::ioAtoms::SWriter</service>
         <object>::fwData::Composite</object>
-        <desc>Atom writer</desc>
+        <desc>Atoms writer</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>AtomIOSelectorWriterConfig</id>
-        <service>::ioAtom::SWriter</service>
+        <service>::ioAtoms::SWriter</service>
         <desc>IOSelector config to write atom</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::ioAtom::SWriter" />
-            <config id="AtomIOSelectorWriterConfig" service="::ioAtom::SWriter" />
+            <addSelection service="::ioAtoms::SWriter" />
+            <config id="AtomIOSelectorWriterConfig" service="::ioAtoms::SWriter" />
         </config>
     </extension>
 

@@ -6,12 +6,12 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include "ioAtom/Plugin.hpp"
+#include "ioAtoms/Plugin.hpp"
 
-namespace ioAtom
+namespace ioAtoms
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ioAtom::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ioAtoms::Plugin");
 
 Plugin::~Plugin() throw()
 {}
@@ -22,5 +22,5 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 void Plugin::stop() throw()
 {}
 
-} // namespace ioAtom
+} // namespace ioAtoms
 

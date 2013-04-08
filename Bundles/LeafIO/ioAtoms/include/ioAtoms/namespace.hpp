@@ -4,19 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOATOM_NAMESPACE_HPP__
-#define __IOATOM_NAMESPACE_HPP__
+#ifndef __IOATOMS_NAMESPACE_HPP__
+#define __IOATOMS_NAMESPACE_HPP__
 
 /**
  * @brief      Contains services to read and write atoms.
- * @namespace  ioAtom
+ * @namespace  ioAtoms
  * @date       2013.
  *
  */
-namespace ioAtom
+namespace ioAtoms
 {
 
 }
 
-#endif /* __IOATOM_NAMESPACE_HPP__ */
+#endif /* __IOATOMS_NAMESPACE_HPP__ */
 

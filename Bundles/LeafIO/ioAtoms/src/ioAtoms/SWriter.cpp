@@ -19,12 +19,12 @@
 
 #include <fwServices/macros.hpp>
 
-#include "ioAtom/SWriter.hpp"
+#include "ioAtoms/SWriter.hpp"
 
-namespace ioAtom
+namespace ioAtoms
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioAtom::SWriter , ::fwData::Composite );
+fwServicesRegisterMacro( ::io::IWriter , ::ioAtoms::SWriter , ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
@@ -126,5 +126,5 @@ void SWriter::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-} // namespace ioAtom
+} // namespace ioAtoms
 
