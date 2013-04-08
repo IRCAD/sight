@@ -74,7 +74,6 @@ const std::string DataVisitor::CLASSNAME_METAINFO = "CLASSNAME_METAINFO";
 
 struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base::sptr >
 {
-
     DataVisitor::AtomCacheType & m_cache;
 
     DataConversionValueVisitor( DataVisitor::AtomCacheType & cache ) : m_cache(cache)
@@ -226,7 +225,10 @@ void DataVisitor::visit(const camp::MapProperty& property)
         DataConversionValueVisitor valVisitor(m_cache);
         valAtom = second.visit( valVisitor );
 
-        SLM_ASSERT("Not managed type for map key.", first.type() == ::camp::stringType);
+        SLM_ASSERT("Not managed type for map key.",
+                   first.type() == ::camp::stringType ||
+                   first.type() == ::camp::intType ||
+                   first.type() == ::camp::realType);
         atom->insert( first.to< std::string >(), valAtom );
     }
 

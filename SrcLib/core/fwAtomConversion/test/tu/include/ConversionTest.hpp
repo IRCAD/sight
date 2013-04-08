@@ -21,6 +21,7 @@ class ConversionTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( materialConversionTest );
     CPPUNIT_TEST( patientConversionTest );
     CPPUNIT_TEST( graphConversionTest );
+    CPPUNIT_TEST( tfConversionTest );
     CPPUNIT_TEST( objectMultiReferencedTest );
     CPPUNIT_TEST( recursiveObjectTest );
     CPPUNIT_TEST( uuidExceptionTest );
@@ -47,6 +48,9 @@ public:
     //// Test fwData::Graph conversion, UUID management, and object field conversion
     void graphConversionTest();
 
+    //// Test fwData::TransferFunction conversion
+    void tfConversionTest();
+
     /// Test using an object multi referenced in different structures, test also fwData::Composite conversion
     void objectMultiReferencedTest();
 
@@ -59,7 +63,7 @@ public:
     /// Test exception throwing if during atom to data conversion a classname is not found in data factory
     void dataFactoryNotFoundExceptionTest();
 
-    /// Test exception throwing if during atom to data conversion a classname is not found in camp factory
+    /// Test exception throwing if during data to atom conversion a classname is not found in camp factory
     void campFactoryNotFoundExceptionTest();
 
     /// Test null ptr management (null ptr attribut, null ptr in vector, null ptr in map)
