@@ -4,7 +4,6 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
-
 #include <fwTools/UUID.hpp>
 
 #include <fwAtoms/Blob.hpp>
@@ -99,7 +98,11 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     std::string path = ptpath + (ptpath.empty()?"":".") + "map";
     BOOST_FOREACH(const ::fwAtoms::Map::MapType::value_type& elt, atom->getValue())
     {
-        map.add_child(elt.first, this->visit(elt.second, path + "." + elt.first));
+        ::boost::property_tree::ptree mapChild;
+        mapChild.put("key", elt.first);
+        mapChild.add_child("value", this->visit(elt.second, path + "." + elt.first));
+
+        map.add_child("item", mapChild);
     }
     pt.add_child("map", map);
     return pt;
@@ -140,9 +143,10 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     ::boost::property_tree::ptree metaInfosPt;
     BOOST_FOREACH(const ::fwAtoms::Object::MetaInfosType::value_type& info, metaInfos)
     {
-        ::boost::property_tree::ptree pinfo;
-        pinfo.put_value(info.second);
-        metaInfosPt.push_back(::boost::property_tree::ptree::value_type(info.first, pinfo));
+        ::boost::property_tree::ptree item;
+        item.put("key", info.first);
+        item.put("value", info.second);
+        metaInfosPt.push_back(::boost::property_tree::ptree::value_type("item", item));
     }
     object.add_child("meta_infos", metaInfosPt);
 

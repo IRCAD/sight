@@ -245,18 +245,18 @@ void BoostIOTest::readWriteZipTest()
         CPPUNIT_ASSERT(suppr);
     }
     {
-//        writeArchive = ::fwZip::WriteZipArchive::New(folderPath.string());
-//        writeArchive->setRootFilename("root.xml");
-//        this->writeProcess(writeArchive, ::fwAtomsBoostIO::Writer::XML);
-//        writeArchive.reset();
-//
-//        readArchive = ::fwZip::ReadZipArchive::New(folderPath.string());
-//        readArchive->setRootFilename("root.xml");
-//        this->readProcess(readArchive);
-//        readArchive.reset();
-//
-//        bool suppr = ::boost::filesystem::remove_all(folderPath);
-//        CPPUNIT_ASSERT(suppr);
+        writeArchive = ::fwZip::WriteZipArchive::New(folderPath.string());
+        writeArchive->setRootFilename("root.xml");
+        this->writeProcess(writeArchive, ::fwAtomsBoostIO::Writer::XML);
+        writeArchive.reset();
+
+        readArchive = ::fwZip::ReadZipArchive::New(folderPath.string());
+        readArchive->setRootFilename("root.xml");
+        this->readProcess(readArchive);
+        readArchive.reset();
+
+        bool suppr = ::boost::filesystem::remove_all(folderPath);
+        CPPUNIT_ASSERT(suppr);
     }
 }
 
@@ -285,18 +285,18 @@ void BoostIOTest::readWriteDirTest()
         CPPUNIT_ASSERT(suppr);
     }
     {
-//        writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
-//        writeArchive->setRootFilename("root.xml");
-//        this->writeProcess(writeArchive, ::fwAtomsBoostIO::Writer::XML);
-//        writeArchive.reset();
-//
-//        readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
-//        readArchive->setRootFilename("root.xml");
-//        this->readProcess(readArchive);
-//        readArchive.reset();
-//
-//        bool suppr = ::boost::filesystem::remove_all(folderPath);
-//        CPPUNIT_ASSERT(suppr);
+        writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+        writeArchive->setRootFilename("root.xml");
+        this->writeProcess(writeArchive, ::fwAtomsBoostIO::Writer::XML);
+        writeArchive.reset();
+
+        readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+        readArchive->setRootFilename("root.xml");
+        this->readProcess(readArchive);
+        readArchive.reset();
+
+        bool suppr = ::boost::filesystem::remove_all(folderPath);
+        CPPUNIT_ASSERT(suppr);
     }
 }
 

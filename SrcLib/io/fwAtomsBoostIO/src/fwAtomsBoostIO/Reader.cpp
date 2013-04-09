@@ -111,8 +111,14 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 
     BOOST_FOREACH( const ::boost::property_tree::ptree::value_type &val, pt.get_child("map") )
     {
-        ::fwAtoms::Base::sptr subAtom = this->visit(val.second, ptpath + (ptpath.empty()?"":".")+ "map." + val.first );
-        atom->insert( val.first, subAtom );
+        ::boost::property_tree::ptree mapChild = val.second;
+        ::boost::property_tree::ptree value    = mapChild.get_child("value");
+        std::string key = mapChild.get<std::string>("key");
+
+        ::fwAtoms::Base::sptr subAtom = this->visit(
+                value, ptpath + (ptpath.empty()?"":".")+ "map.item." + key );
+
+        atom->insert( key, subAtom );
     }
     return atom;
 }
@@ -133,7 +139,10 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
     ::fwAtoms::Object::MetaInfosType metaInfos;
     BOOST_FOREACH( const ptree::value_type &val, metaInfosTree )
     {
-        ::fwAtoms::Object::MetaInfosType::value_type value(val.first, val.second.get_value<std::string>());
+        ::boost::property_tree::ptree item = val.second;
+
+        ::fwAtoms::Object::MetaInfosType::value_type value(
+                item.get<std::string>("key"), item.get<std::string>("value") );
         metaInfos.insert( value );
     }
     atom->setMetaInfos(metaInfos);
