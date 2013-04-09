@@ -38,7 +38,7 @@ std::ostream& WriteDirArchive::createFile(const ::boost::filesystem::path &path)
 {
     const ::boost::filesystem::path file = m_archive / path;
     const ::boost::filesystem::path parentFile = file.parent_path();
-    if(!::boost::filesystem::exists(file.parent_path()))
+    if(!::boost::filesystem::exists(parentFile))
     {
         ::boost::filesystem::create_directories(parentFile);
     }
@@ -68,5 +68,11 @@ bool WriteDirArchive::createDir(const ::boost::filesystem::path &path)
 
 //-----------------------------------------------------------------------------
 
+const ::boost::filesystem::path WriteDirArchive::getArchivePath() const
+{
+    return m_archive;
+}
+
 
 }
+

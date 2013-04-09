@@ -118,5 +118,13 @@ void WriteZipArchive::closeFile()
     zipCloseFileInZip(m_zipDescriptor);
 }
 
+//-----------------------------------------------------------------------------
+
+const ::boost::filesystem::path WriteZipArchive::getArchivePath() const
+{
+    return m_archive;
+}
+
 
 }
+

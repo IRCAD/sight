@@ -30,6 +30,8 @@ public:
         m_rootFilename = root;
     }
 
+    virtual const ::boost::filesystem::path getArchivePath() const = 0;
+
 protected:
     ::boost::filesystem::path m_rootFilename;
 };

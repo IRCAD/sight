@@ -32,6 +32,8 @@ public:
 
     FWZIP_API bool createDir(const ::boost::filesystem::path &path);
 
+    FWZIP_API const ::boost::filesystem::path getArchivePath() const;
+
 protected:
 
     FWZIP_API void closeFile();

@@ -54,5 +54,12 @@ bool ReadDirArchive::exists(const ::boost::filesystem::path &path)
     return !::boost::filesystem::exists(m_archive / path);
 }
 
+//-----------------------------------------------------------------------------
+
+const ::boost::filesystem::path ReadDirArchive::getArchivePath() const
+{
+    return m_archive;
+}
+
 }
 

@@ -1,10 +1,13 @@
 #include <sstream>
 
 #include <boost/foreach.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <fwTools/UUID.hpp>
+#include <fwTools/IBufferManager.hpp>
 
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -13,6 +16,8 @@
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
+
+#include <fwMemory/BufferManager.hpp>
 
 #include <fwZip/IWriteArchive.hpp>
 
@@ -179,14 +184,48 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     }
     else
     {
-        ::fwTools::BufferObject::Lock lock(buffObj->lock());
-
+        std::string bufFile;
         const size_t buffSize = buffObj->getSize();
-        void *v = lock.getBuffer();
-        char* buff = static_cast<char*>(v);
 
-        const std::string bufFile = "fwAtomsArchive/" + ::fwTools::UUID::generateUUID() + ".raw";
-        m_archive->createFile(bufFile).write(buff, buffSize);
+        ::fwMemory::BufferManager::sptr manager
+            = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+
+        // Test if buffer is not already dumped
+        const bool isDumped =  manager && manager->isDumped( (void ** ) buffObj->getBufferPointer() );
+
+        if(m_archive->isA("::fwZip::WriteDirArchive") && isDumped)
+        {
+            const ::boost::filesystem::path fileSrc = manager->getDumpedFilePath( (void ** ) buffObj->getBufferPointer() );
+            bufFile = std::string("fwAtomsArchive/") + fileSrc.filename().string();
+            const ::boost::filesystem::path fileDest = m_archive->getArchivePath() / bufFile;
+
+            if (! ::boost::filesystem::exists(fileDest))
+            {
+
+                const ::boost::filesystem::path parentFile = fileDest.parent_path();
+                if(!::boost::filesystem::exists(parentFile))
+                {
+                    ::boost::filesystem::create_directories(parentFile);
+                }
+
+                ::boost::system::error_code err;
+                ::boost::filesystem::create_hard_link( fileSrc, fileDest, err );
+                if (err.value() != 0)
+                {
+                    ::boost::filesystem::copy_file( fileSrc, fileDest );
+                }
+            }
+        }
+        else
+        {
+            bufFile = "fwAtomsArchive/" + ::fwTools::UUID::generateUUID() + ".raw";
+
+            ::fwTools::BufferObject::Lock lock(buffObj->lock());
+            void *v = lock.getBuffer();
+            char* buff = static_cast<char*>(v);
+
+            m_archive->createFile(bufFile).write(buff, buffSize);
+        }
 
         pt.put("blob.buffer_size", buffSize);
         pt.put("blob.buffer", bufFile);

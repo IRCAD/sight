@@ -82,5 +82,13 @@ bool ReadZipArchive::exists(const ::boost::filesystem::path &path)
     return (nRet == UNZ_OK);
 }
 
+//-----------------------------------------------------------------------------
+
+const ::boost::filesystem::path ReadZipArchive::getArchivePath() const
+{
+    return m_archive;
+}
+
+
 }
 

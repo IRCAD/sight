@@ -48,6 +48,8 @@ public:
 
     FWZIP_API std::istream& getFile(const ::boost::filesystem::path &path);
 
+    FWZIP_API const ::boost::filesystem::path getArchivePath() const;
+
 protected:
 
     FWZIP_API bool exists(const ::boost::filesystem::path &path);
