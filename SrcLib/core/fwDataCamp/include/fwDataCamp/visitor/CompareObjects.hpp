@@ -99,6 +99,9 @@ public:
             SPTR(::fwData::Object) objRef, SPTR(::fwData::Object) objComp)
         throw(::fwCore::Exception);
 
+    /// Property value for differences map meaning a missing property.
+    FWDATACAMP_API static const std::string s_MISSING_PROPERTY;
+
 private:
 
     friend struct PropertyVisitor;

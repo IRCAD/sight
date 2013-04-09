@@ -24,6 +24,8 @@ namespace fwDataCamp
 namespace visitor
 {
 
+const std::string CompareObjects::s_MISSING_PROPERTY("CompareObjects::s_MISSING_PROPERTY");
+
 typedef CompareObjects::PropsMapType::value_type PropType;
 
 struct PropertyVisitor : public camp::ValueVisitor< PropType >
@@ -83,7 +85,6 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
                 const camp::Class& newMetaclass = ::camp::classByName(classname);
                 CompareObjects visitor(value, m_prefix, m_props);
                 newMetaclass.visit(visitor);
-                std::cout << "process in if" << std::endl;
             }
             else if(classname == "::fwTools::BufferObject")
             {
@@ -93,7 +94,7 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
                     if(bo->getBuffer())
                     {
                         char* buffer = static_cast< char* >(bo->getBuffer());
-                        unsigned int size = m_hasher(buffer); 
+                        unsigned int size = m_hasher(buffer);
                         return std::make_pair(m_prefix, boost::lexical_cast< std::string >(size));
                     }
                 }
@@ -139,7 +140,11 @@ void CompareObjects::visit(const camp::SimpleProperty& property)
     OSLM_DEBUG("SimpleProperty name = " << name);
     ::camp::Value elemValue = property.get(m_campObj);
     PropertyVisitor visitor(getPath(name), m_props);
-    m_props->insert(m_props->end(), elemValue.visit(visitor));
+    PropType pt = elemValue.visit(visitor);
+    if(!pt.first.empty())
+    {
+        m_props->insert(m_props->end(), pt);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -168,7 +173,11 @@ void CompareObjects::visit(const camp::MapProperty& property)
         value = property.getElement(m_campObj, i);
         mapKey = value.first.to< std::string >();
         PropertyVisitor visitor(getPath(name + "." + mapKey), m_props);
-        m_props->insert(m_props->end(), value.second.visit(visitor));
+        PropType pt = value.second.visit(visitor);
+        if(!pt.first.empty())
+        {
+            m_props->insert(m_props->end(), pt);
+        }
     }
 }
 
@@ -186,7 +195,11 @@ void CompareObjects::visit(const camp::ArrayProperty& property)
         std::stringstream ss;
         ss << name << "." << i;
         PropertyVisitor visitor(getPath(ss.str()), m_props);
-        m_props->insert(m_props->end(), elemValue.visit(visitor));
+        PropType pt = elemValue.visit(visitor);
+        if(!pt.first.empty())
+        {
+            m_props->insert(m_props->end(), pt);
+        }
     }
 }
 
@@ -202,7 +215,11 @@ void CompareObjects::visit(const camp::UserProperty& property)
     if(m_campObj.call("is_a", ::camp::Args("::fwData::Object")).to<bool>())
     {
         PropertyVisitor visitor(getPath(name), m_props);
-        m_props->insert(m_props->end(), elemValue.visit(visitor));
+        PropType pt = elemValue.visit(visitor);
+        if(!pt.first.empty())
+        {
+            m_props->insert(m_props->end(), pt);
+        }
     }
 }
 
@@ -258,6 +275,18 @@ void CompareObjects::compare(SPTR(::fwData::Object) objRef, SPTR(::fwData::Objec
             {
                 (*m_props)[prop.first] = prop.second;
             }
+        }
+        else
+        {
+            (*m_props)[prop.first] = s_MISSING_PROPERTY;
+        }
+    }
+
+    BOOST_FOREACH(PropsMapType::value_type prop, m_propsRef)
+    {
+        if(m_propsComp.find(prop.first) == m_propsComp.end() && m_props->find(prop.first) == m_props->end())
+        {
+            (*m_props)[prop.first] = s_MISSING_PROPERTY;
         }
     }
 }

@@ -10,6 +10,8 @@
 
 #include <fwData/Acquisition.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -210,6 +212,27 @@ void CompareObjectsTest::compareBufferTest()
         SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
         CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)0);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void CompareObjectsTest::compareEmpty()
+{
+    ::fwData::Composite::sptr compRef = ::fwData::Composite::New();
+    ::fwData::Composite::sptr compComp = ::fwData::Composite::New();
+
+    (*compRef)["float"] = ::fwData::Float::New(0.0f);
+    (*compComp)["int"] = ::fwData::Integer::New(0);
+
+    visitor::CompareObjects visitor;
+    visitor.compare(compComp, compRef);
+
+    SPTR(visitor::CompareObjects::PropsMapType) diffs = visitor.getDifferences();
+    CPPUNIT_ASSERT_EQUAL(diffs->size(), (size_t)2);
+    CPPUNIT_ASSERT(diffs->find("values.float.value") != diffs->end());
+    CPPUNIT_ASSERT(diffs->find("values.int.value") != diffs->end());
+    CPPUNIT_ASSERT_EQUAL((*diffs)["values.float.value"], visitor::CompareObjects::s_MISSING_PROPERTY);
+    CPPUNIT_ASSERT_EQUAL((*diffs)["values.int.value"], visitor::CompareObjects::s_MISSING_PROPERTY);
 }
 
 //-----------------------------------------------------------------------------
