@@ -44,7 +44,7 @@ std::ostream& WriteDirArchive::createFile(const ::boost::filesystem::path &path)
     }
 
     this->closeFile();
-    m_outfile.open(file.string().c_str());
+    m_outfile.open(file.string().c_str(), std::fstream::binary | std::fstream::out | std::fstream::trunc);
     return m_outfile;
 }
 

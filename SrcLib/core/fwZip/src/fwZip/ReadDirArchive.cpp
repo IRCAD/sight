@@ -33,7 +33,7 @@ std::istream& ReadDirArchive::getFile(const ::boost::filesystem::path &path)
              !this->exists(m_archive / path));
 
     this->closeFile();
-    m_infile.open((m_archive / path).string().c_str(), std::ifstream::in);
+    m_infile.open((m_archive / path).string().c_str(), std::fstream::binary | std::fstream::in);
     return m_infile;
 }
 
