@@ -8,7 +8,7 @@
 #define __IOATOMS_NAMESPACE_HPP__
 
 /**
- * @brief      Contains services to read and write atoms.
+ * @brief      Contains services to read and write data via atom conversion.
  * @namespace  ioAtoms
  * @date       2013.
  *

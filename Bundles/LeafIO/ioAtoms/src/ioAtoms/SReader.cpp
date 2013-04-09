@@ -6,12 +6,11 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <fwAtomsBoostIO/Writer.hpp>
+#include <fwAtomsBoostIO/Reader.hpp>
 
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwData/Composite.hpp>
-#include <fwData/PatientDB.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
 
@@ -20,27 +19,22 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/IEditionService.hpp>
 
-#include <fwZip/WriteDirArchive.hpp>
-#include <fwZip/WriteZipArchive.hpp>
+#include <fwZip/ReadDirArchive.hpp>
+#include <fwZip/ReadZipArchive.hpp>
 
-#include <fwDataCamp/visitor/RecursiveLock.hpp>
-
-#include "ioAtoms/SWriter.hpp"
+#include "ioAtoms/SReader.hpp"
 
 namespace ioAtoms
 {
 
-//-----------------------------------------------------------------------------
-
-fwServicesRegisterMacro( ::io::IWriter , ::ioAtoms::SWriter , ::fwData::Composite );
+fwServicesRegisterMacro( ::io::IReader , ::ioAtoms::SReader , ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
-void SWriter::starting() throw(::fwTools::Failed)
+void SReader::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     m_formatsMap[".json"] = ::fwAtomsBoostIO::Writer::JSON;
     m_formatsMap[".xml"] = ::fwAtomsBoostIO::Writer::XML;
 
@@ -52,23 +46,21 @@ void SWriter::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SWriter::stopping() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
+void SReader::stopping() throw(::fwTools::Failed)
+{}
 
 //-----------------------------------------------------------------------------
 
-void SWriter::updating() throw(::fwTools::Failed)
+void SReader::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 
     if(this->hasLocationDefined())
     {
-        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        ::fwData::Composite::sptr data = this->getObject< ::fwData::Composite >();
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
+
         try
         {
             const ::boost::filesystem::path& filePath = this->getFile();
@@ -78,107 +70,96 @@ void SWriter::updating() throw(::fwTools::Failed)
 
             FW_RAISE_IF( "Extension is empty", extension.empty() );
 
-            // Hack manage medical workspace
-            ::fwData::Composite::sptr md = ::fwData::Composite::New();
-            ::fwData::Composite::sptr processingdb = ::fwData::Composite::New();
-            ::fwData::Composite::sptr planningdb = ::fwData::Composite::New();
-            ::fwData::PatientDB::sptr pdb = ::fwData::PatientDB::New();
-            md->getContainer()["processingDB"] = processingdb;
-            md->getContainer()["planningDB"] = planningdb;
-            md->getContainer()["patientDB"] = pdb;
-            processingdb->shallowCopy( composite->getContainer()["processingDB"] );
-            planningdb->shallowCopy( composite->getContainer()["planningDB"] );
-            pdb->shallowCopy( composite->getContainer()["patientDB"] );
-
-            // Mutex data lock
-            ::fwDataCamp::visitor::RecursiveLock recursiveLock (md);
-
-            // Convert data to atom
-            ::fwAtoms::Base::sptr atom = ::fwAtomConversion::convert(md);
-
-            // Write atom
-            ::fwZip::IWriteArchive::sptr writeArchive;
-            ::fwAtomsBoostIO::Writer::FormatType format;
+            // Read atom
+            ::fwZip::IReadArchive::sptr readArchive;
             ::boost::filesystem::path archiveRootName;
             if ( extension == ".json" )
             {
-                writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+                readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
                 archiveRootName = filename;
-                format = ::fwAtomsBoostIO::Writer::JSON;
             }
             else if ( extension == ".jsonz" )
             {
-                if ( ::boost::filesystem::exists( filePath ) )
-                {
-                    ::boost::filesystem::remove( filePath );
-                }
-                writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
+                readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
                 archiveRootName = "root.json";
-                format = ::fwAtomsBoostIO::Writer::JSON;
             }
             else if ( extension == ".xml" )
             {
-                writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+                readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
                 archiveRootName = filename;
-                format = ::fwAtomsBoostIO::Writer::XML;
             }
             else if ( extension == ".xmlz" )
             {
-                if ( ::boost::filesystem::exists( filePath ) )
-                {
-                    ::boost::filesystem::remove( filePath );
-                }
-                writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
+                readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
                 archiveRootName = "root.xml";
-                format = ::fwAtomsBoostIO::Writer::XML;
             }
             else
             {
                 FW_RAISE( "This file extension '" << extension << "' is not managed" );
             }
 
-            writeArchive->setRootFilename( archiveRootName );
-            ::fwAtomsBoostIO::Writer(atom).write( writeArchive, format );
-            writeArchive.reset();
+            readArchive->setRootFilename( archiveRootName );
+            ::fwAtomsBoostIO::Reader reader;
+            ::fwAtoms::Object::sptr atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive ) );
+            readArchive.reset();
+            FW_RAISE_IF( "Data not correspond to an fw4spl medical data", ! atom );
 
+            ::fwData::Composite::sptr newData = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+            FW_RAISE_IF( "Data not correspond to an fw4spl medical data", ! newData );
+
+            data->shallowCopy(newData);
+
+            this->notificationOfUpdate();
         }
         catch( std::exception & e )
         {
             OSLM_ERROR( e.what() );
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data reader failed",
                     e.what(),
                     ::fwGui::dialog::MessageDialog::CRITICAL);
         }
         catch( ... )
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data reader failed",
                     "Writing process abort",
                     ::fwGui::dialog::MessageDialog::CRITICAL);
         }
+
         cursor.setDefaultCursor();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SWriter::getIOPathType() const
+::io::IOPathType SReader::getIOPathType() const
 {
     return ::io::FILE;
 }
 
+//------------------------------------------------------------------------------
+
+void SReader::notificationOfUpdate()
+{
+    ::fwData::Object::sptr object = this->getObject();
+    ::fwServices::ObjectMsg::NewSptr msg;
+    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
+    ::fwServices::IEditionService::notify( this->getSptr(),  object, msg );
+}
+
 //-----------------------------------------------------------------------------
 
-void SWriter::configureWithIHM()
+void SReader::configureWithIHM()
 {
    static ::boost::filesystem::path _sDefaultPath;
 
    ::fwGui::dialog::LocationDialog dialogFile;
    dialogFile.setTitle("Enter file name");
    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-   dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-   dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
+   dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
+   dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+   dialogFile.setOption(::fwGui::dialog::LocationDialog::FILE_MUST_EXIST);
 
-   FiltersType::const_iterator cIt = m_filters.begin();
+   SWriter::FiltersType::const_iterator cIt = m_filters.begin();
    while(cIt != m_filters.end())
    {
        dialogFile.addFilter(cIt->first, cIt->second);

@@ -4,46 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOATOMS_SWRITER_HPP__
-#define __IOATOMS_SWRITER_HPP__
+#ifndef __IOATOMS_SREADER_HPP__
+#define __IOATOMS_SREADER_HPP__
 
-#include <io/IWriter.hpp>
-
-#include <fwAtomsBoostIO/Writer.hpp>
+#include <io/IReader.hpp>
 
 #include "ioAtoms/config.hpp"
+#include "ioAtoms/SWriter.hpp"
 
 namespace ioAtoms
 {
 
 /**
- * @brief Atoms writer.
- * @class SWriter
+ * @brief Atoms reader.
+ * @class SReader
  * @date 2013
  */
-class IOATOMS_CLASS_API SWriter : public ::io::IWriter
+class IOATOMS_CLASS_API SReader : public ::io::IReader
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SWriter)(::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SReader)(::io::IReader) );
 
-    /**
-     * @name Typedefs
-     * @{ */
-    typedef ::fwAtomsBoostIO::Writer::FormatType FormatType;
-    typedef std::map< std::string, FormatType > Ext2FormatType;
-    typedef std::map< std::string, std::string > FiltersType;
-    /**  @} */
-
-    /// Does nothing
-    IOATOMS_API  virtual ~SWriter() throw() {};
+    virtual ~SReader() throw() {};
 
     /// Override
     IOATOMS_API void configureWithIHM();
 
 protected:
-
 
     /// Override
     IOATOMS_API void starting() throw(::fwTools::Failed);
@@ -57,17 +46,20 @@ protected:
     /// Override
     IOATOMS_API ::io::IOPathType getIOPathType() const;
 
+    /// notify modification on associated object if reading process is a success
+    void notificationOfUpdate();
+
     /// Specify if data must be saved using compression.
     bool m_archive;
 
     /// Maps an extension to a format type.
-    Ext2FormatType m_formatsMap;
+    SWriter::Ext2FormatType m_formatsMap;
 
     /// Maps a filter name to its wildcard.
-    FiltersType m_filters;
+    SWriter::FiltersType m_filters;
 };
 
 } // namespace ioAtoms
 
-#endif // __IOATOMS_SWRITER_HPP__
+#endif // __IOATOMS_SREADER_HPP__
 
