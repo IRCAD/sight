@@ -202,26 +202,34 @@ void ConversionTest::materialConversionTest()
 void ConversionTest::patientConversionTest()
 {
     ::fwData::Patient::sptr patient = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient, 1, 1, 0);
+    ::fwDataTools::Patient::generatePatient(patient, 1, 1, 1);
 
-    // Create Atom
+    // Creates Atom
     ::fwData::Patient::sptr patientTmp = ::fwData::Patient::New();
     patientTmp->deepCopy( patient );
 
-    // HACK : Acquisition::netID not managed in deep copy
-    ::fwData::Acquisition::sptr acq = patientTmp->getStudies()[0]->getAcquisitions()[0];
-    acq->setNetID(patient->getStudies()[0]->getAcquisitions()[0]->getNetID());
-
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( patientTmp );
 
+    // Manages buffer owners
+    ::fwData::Acquisition::sptr acq = patientTmp->getStudies()[0]->getAcquisitions()[0];
     ::fwData::Image::sptr image =  acq->getImage();
+    ::fwData::Reconstruction::sptr rec =  acq->getReconstructions()[0];
     image->getDataArray()->setIsBufferOwner(false);
+    rec->getImage()->getDataArray()->setIsBufferOwner(false);
+    rec->getMesh()->getPointsArray()->setIsBufferOwner(false);
+    rec->getMesh()->getPointColorsArray()->setIsBufferOwner(false);
+    rec->getMesh()->getPointNormalsArray()->setIsBufferOwner(false);
+    rec->getMesh()->getCellDataArray()->setIsBufferOwner(false);
+    rec->getMesh()->getCellTypesArray()->setIsBufferOwner(false);
+    rec->getMesh()->getCellDataOffsetsArray()->setIsBufferOwner(false);
+    rec->getMesh()->getCellColorsArray()->setIsBufferOwner(false);
+    rec->getMesh()->getCellNormalsArray()->setIsBufferOwner(false);
+    rec.reset();
     image.reset();
     acq.reset();
     patientTmp.reset();
 
-
-    // Create Data from Atom
+    // Creates Data from Atom
     ::fwData::Object::sptr patientObject = ::fwAtomConversion::convert(atom);
     ::fwData::Patient::sptr patientResultat = ::fwData::Patient::dynamicCast(patientObject);
 
@@ -229,7 +237,7 @@ void ConversionTest::patientConversionTest()
     CompareObjects visitor;
     visitor.compare(patient, patientResultat);
     SPTR(CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH(CompareObjects::PropsMapType::value_type prop, (*props) )
+    BOOST_FOREACH( CompareObjects::PropsMapType::value_type prop, (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " " << prop.second );
     }
