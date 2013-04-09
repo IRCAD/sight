@@ -216,6 +216,9 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
             ::fwAtoms::Blob::sptr blobAtom = ::fwAtoms::Blob::dynamicCast(atom);
             ::fwTools::BufferObject::sptr buffer;
             buffer = ::camp_ext::ValueMapper< ::fwAtoms::Blob::sptr >::to(blobAtom);
+            FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
+                    "A blob cannot contain a null buffer pointer"),
+                    ! buffer );
             property.set( m_campDataObj, ::camp::UserObject(buffer) );
             break;
         }

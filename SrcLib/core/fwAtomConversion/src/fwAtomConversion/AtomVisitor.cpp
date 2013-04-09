@@ -38,6 +38,7 @@ void AtomVisitor::processMetaInfos( const ::fwAtoms::Object::MetaInfosType & met
     FW_RAISE_EXCEPTION_IF( exception::DataFactoryNotFound(msg.str()), ! m_dataObj );
 
     bool uuidIsSetted = ::fwTools::UUID::set(m_dataObj, uuid);
+    msg.str(std::string());
     msg << "Try to create new data object '"
         << classname << "' with uuid '"
         << uuid <<"' but this uuid is already used in the system";
