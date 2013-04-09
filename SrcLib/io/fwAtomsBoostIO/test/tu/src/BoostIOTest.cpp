@@ -134,12 +134,12 @@ struct SequenceGenerator
     void compare(::fwAtoms::Sequence::sptr readSeq)
     {
         ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast((*m_seq)[0]);
+        ::fwAtoms::Blob::sptr blob = ::fwAtoms::Blob::dynamicCast((*m_seq)[2]);
         ::fwAtoms::Boolean::sptr boolFalse = ::fwAtoms::Boolean::dynamicCast((*m_seq)[5]);
-        ::fwAtoms::Boolean::sptr boolTrue = ::fwAtoms::Boolean::dynamicCast((*m_seq)[10]);
         ::fwAtoms::Numeric::sptr num = ::fwAtoms::Numeric::dynamicCast((*m_seq)[6]);
-        ::fwAtoms::Numeric::sptr num2 = ::fwAtoms::Numeric::dynamicCast((*m_seq)[9]);
         ::fwAtoms::String::sptr str = ::fwAtoms::String::dynamicCast((*m_seq)[7]);
-
+        ::fwAtoms::Numeric::sptr num2 = ::fwAtoms::Numeric::dynamicCast((*m_seq)[9]);
+        ::fwAtoms::Boolean::sptr boolTrue = ::fwAtoms::Boolean::dynamicCast((*m_seq)[10]);
 
         CPPUNIT_ASSERT_EQUAL(m_seq->size(), readSeq->size());
 
@@ -154,6 +154,23 @@ struct SequenceGenerator
         ::fwAtoms::Base::sptr     readNull  = ::fwAtoms::Base::dynamicCast((*readSeq)[8]);
         ::fwAtoms::Numeric::sptr  readNum2  = ::fwAtoms::Numeric::dynamicCast((*readSeq)[9]);
         ::fwAtoms::Boolean::sptr  readBoolT = ::fwAtoms::Boolean::dynamicCast((*readSeq)[10]);
+
+        ::fwTools::BufferObject::sptr bo = blob->getBufferObject();
+        ::fwTools::BufferObject::sptr readBo = readBlob->getBufferObject();
+
+        CPPUNIT_ASSERT_EQUAL( bo->getSize(),  readBo->getSize() );
+
+        ::fwTools::BufferObject::Lock lock(bo->lock());
+        ::fwTools::BufferObject::Lock readLock(readBo->lock());
+
+        void *v = lock.getBuffer();
+        void *readV = readLock.getBuffer();
+        char* buff = static_cast<char*>(v);
+        char* readBuff = static_cast<char*>(readV);
+        for (size_t i = 0; i < bo->getSize(); ++i)
+        {
+            CPPUNIT_ASSERT_EQUAL( buff[i], readBuff[i] );
+        }
 
         CPPUNIT_ASSERT( readObj0  );
         CPPUNIT_ASSERT( readObj1  );
