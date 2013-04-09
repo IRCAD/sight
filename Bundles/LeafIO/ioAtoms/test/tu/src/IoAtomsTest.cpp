@@ -65,7 +65,7 @@ void IoAtomsTest::writeReadFile( const ::boost::filesystem::path & filePath )
         workspaceTmp->deepCopy(workspace);
 
         // Write PatientDB
-        ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioAtoms::SWriter" );
+        ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioAtoms::SMedDataWriter" );
         CPPUNIT_ASSERT(writerSrv);
 
         ::fwServices::OSR::registerService( workspaceTmp , writerSrv );
@@ -78,7 +78,7 @@ void IoAtomsTest::writeReadFile( const ::boost::filesystem::path & filePath )
     }
 
     // Read PatientDB
-    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioAtoms::SReader" );
+    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioAtoms::SMedDataReader" );
     CPPUNIT_ASSERT(readerSrv);
 
     ::fwData::Composite::NewSptr workspace2;

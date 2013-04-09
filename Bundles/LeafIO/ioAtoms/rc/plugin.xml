@@ -8,14 +8,14 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioAtoms::SWriter</service>
+        <service>::ioAtoms::SMedDataWriter</service>
         <object>::fwData::Composite</object>
         <desc>Atoms writer</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioAtoms::SReader</service>
+        <service>::ioAtoms::SMedDataReader</service>
         <object>::fwData::Composite</object>
         <desc>Atoms reader</desc>
     </extension>

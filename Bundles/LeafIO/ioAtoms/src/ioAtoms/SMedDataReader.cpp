@@ -24,34 +24,26 @@
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/ReadZipArchive.hpp>
 
-#include "ioAtoms/SReader.hpp"
+#include "ioAtoms/SMedDataReader.hpp"
 
 namespace ioAtoms
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioAtoms::SReader , ::fwData::Composite );
+fwServicesRegisterMacro( ::io::IReader , ::ioAtoms::SMedDataReader , ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
-void SReader::starting() throw(::fwTools::Failed)
-{
-    m_formatsMap[".json"] = ::fwAtomsBoostIO::Writer::JSON;
-    m_formatsMap[".xml"] = ::fwAtomsBoostIO::Writer::XML;
-
-    m_filters["XML"] = "*.xml";
-    m_filters["JSON"] = "*.json";
-    m_filters["Zipped JSON"] = "*.jsonz";
-    m_filters["Zipped XML"] = "*.xmlz";
-}
-
-//-----------------------------------------------------------------------------
-
-void SReader::stopping() throw(::fwTools::Failed)
+void SMedDataReader::starting() throw(::fwTools::Failed)
 {}
 
 //-----------------------------------------------------------------------------
 
-void SReader::updating() throw(::fwTools::Failed)
+void SMedDataReader::stopping() throw(::fwTools::Failed)
+{}
+
+//-----------------------------------------------------------------------------
+
+void SMedDataReader::updating() throw(::fwTools::Failed)
 {
 
     if(this->hasLocationDefined())
@@ -131,14 +123,14 @@ void SReader::updating() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SReader::getIOPathType() const
+::io::IOPathType SMedDataReader::getIOPathType() const
 {
     return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-void SReader::notificationOfUpdate()
+void SMedDataReader::notificationOfUpdate()
 {
     ::fwData::Object::sptr object = this->getObject();
     ::fwServices::ObjectMsg::NewSptr msg;
@@ -148,7 +140,7 @@ void SReader::notificationOfUpdate()
 
 //-----------------------------------------------------------------------------
 
-void SReader::configureWithIHM()
+void SMedDataReader::configureWithIHM()
 {
    static ::boost::filesystem::path _sDefaultPath;
 
@@ -159,12 +151,11 @@ void SReader::configureWithIHM()
    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
    dialogFile.setOption(::fwGui::dialog::LocationDialog::FILE_MUST_EXIST);
 
-   SWriter::FiltersType::const_iterator cIt = m_filters.begin();
-   while(cIt != m_filters.end())
-   {
-       dialogFile.addFilter(cIt->first, cIt->second);
-       ++cIt;
-   }
+   dialogFile.addFilter( "Medical data", "*.json *.jsonz *.xml *.xmlz" );
+   dialogFile.addFilter( "JSON", "*.json" );
+   dialogFile.addFilter( "Zipped JSON", "*.jsonz" );
+   dialogFile.addFilter( "XML", "*.xml" );
+   dialogFile.addFilter( "Zipped XML", "*.xmlz" );
 
    ::fwData::location::SingleFile::sptr result
        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );

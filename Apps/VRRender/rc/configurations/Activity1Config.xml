@@ -87,7 +87,7 @@
                         <type mode="writer" />
                         <selection mode="include" />
                         <addSelection service="::ioXML::FwXMLGenericWriterService" />
-                        <addSelection service="::ioAtoms::SWriter" />
+                        <addSelection service="::ioAtoms::SMedDataWriter" />
                         <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericWriterService" />
                     </service>
 

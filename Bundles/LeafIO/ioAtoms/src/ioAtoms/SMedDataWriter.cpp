@@ -26,44 +26,30 @@
 
 #include <fwDataCamp/visitor/RecursiveLock.hpp>
 
-#include "ioAtoms/SWriter.hpp"
+#include "ioAtoms/SMedDataWriter.hpp"
 
 namespace ioAtoms
 {
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioAtoms::SWriter , ::fwData::Composite );
+fwServicesRegisterMacro( ::io::IWriter , ::ioAtoms::SMedDataWriter , ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
-void SWriter::starting() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-
-    m_formatsMap[".json"] = ::fwAtomsBoostIO::Writer::JSON;
-    m_formatsMap[".xml"] = ::fwAtomsBoostIO::Writer::XML;
-
-    m_filters["XML"] = "*.xml";
-    m_filters["JSON"] = "*.json";
-    m_filters["Zipped JSON"] = "*.jsonz";
-    m_filters["Zipped XML"] = "*.xmlz";
-}
+void SMedDataWriter::starting() throw(::fwTools::Failed)
+{}
 
 //-----------------------------------------------------------------------------
 
-void SWriter::stopping() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
+void SMedDataWriter::stopping() throw(::fwTools::Failed)
+{}
 
 //-----------------------------------------------------------------------------
 
-void SWriter::updating() throw(::fwTools::Failed)
+void SMedDataWriter::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    if(this->hasLocationDefined())
+    if( this->hasLocationDefined() )
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
@@ -161,14 +147,14 @@ void SWriter::updating() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SWriter::getIOPathType() const
+::io::IOPathType SMedDataWriter::getIOPathType() const
 {
     return ::io::FILE;
 }
 
 //-----------------------------------------------------------------------------
 
-void SWriter::configureWithIHM()
+void SMedDataWriter::configureWithIHM()
 {
    static ::boost::filesystem::path _sDefaultPath;
 
@@ -178,12 +164,10 @@ void SWriter::configureWithIHM()
    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
    dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
 
-   FiltersType::const_iterator cIt = m_filters.begin();
-   while(cIt != m_filters.end())
-   {
-       dialogFile.addFilter(cIt->first, cIt->second);
-       ++cIt;
-   }
+   dialogFile.addFilter( "JSON", "*.json");
+   dialogFile.addFilter( "Zipped JSON", "*.jsonz");
+   dialogFile.addFilter( "XML", "*.xml");
+   dialogFile.addFilter( "Zipped XML", "*.xmlz");
 
    ::fwData::location::SingleFile::sptr result
        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
