@@ -79,6 +79,7 @@ void Acquisition::shallowCopy( Acquisition::csptr _source )
     m_sUID = _source->m_sUID;
     m_i32DbID = _source->m_i32DbID;
     m_ui32LaboID = _source->m_ui32LaboID;
+    m_ui32NetID = _source->m_ui32NetID;
     m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
     m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
     m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
@@ -115,6 +116,7 @@ void Acquisition::deepCopy( Acquisition::csptr _source )
     m_sUID = _source->m_sUID;
     m_i32DbID = _source->m_i32DbID;
     m_ui32LaboID = _source->m_ui32LaboID;
+    m_ui32NetID = _source->m_ui32NetID;
     m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
     m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
     m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
