@@ -50,7 +50,6 @@
     <activate id="monitorQt" version="0-1" />
 
     <start id="memory" />
-    <start id="ioAtoms" />
     <start id="ioITK" />
     <start id="ioVTK" />
     <start id="visuVTK" />
