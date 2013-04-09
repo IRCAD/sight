@@ -19,11 +19,10 @@ namespace fwZip
 WriteDirArchive::WriteDirArchive( const ::boost::filesystem::path &archive ) :
     m_archive(archive)
 {
-    FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Write("Archive '" + m_archive.string() + "' already exists."),
-            ::boost::filesystem::exists(m_archive));
-
-    ::boost::filesystem::create_directories(m_archive);
+    if(!::boost::filesystem::exists(m_archive))
+    {
+        ::boost::filesystem::create_directories(m_archive);
+    }
 }
 
 //-----------------------------------------------------------------------------
