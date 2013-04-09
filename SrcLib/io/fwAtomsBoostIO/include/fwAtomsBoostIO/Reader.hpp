@@ -10,6 +10,10 @@ namespace fwAtoms
 {
     class Base;
 }
+namespace fwZip
+{
+    class IReadArchive;
+}
 
 namespace fwAtomsBoostIO
 {
@@ -19,8 +23,7 @@ class FWATOMSBOOSTIO_CLASS_API Reader
 
 public:
 
-    FWATOMSBOOSTIO_API SPTR(::fwAtoms::Base) read( const ::boost::filesystem::path &file );
-    FWATOMSBOOSTIO_API SPTR(::fwAtoms::Base) read( std::stringstream &sstr );
+    FWATOMSBOOSTIO_API SPTR(::fwAtoms::Base) read( SPTR(::fwZip::IReadArchive) archive ) const;
 
 protected:
 

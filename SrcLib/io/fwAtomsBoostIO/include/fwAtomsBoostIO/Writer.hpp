@@ -12,6 +12,10 @@ namespace fwAtoms
 {
     class Base;
 }
+namespace fwZip
+{
+    class IWriteArchive;
+}
 
 namespace fwAtomsBoostIO
 {
@@ -25,15 +29,11 @@ public:
     {
         JSON,
         XML,
-        JSON_Z,
-        XML_Z
     } FormatType;
 
-    Writer( SPTR(fwAtoms::Base) atom ) : m_atom(atom) {}
+    Writer( SPTR(::fwAtoms::Base) atom ) : m_atom(atom) {}
 
-    FWATOMSBOOSTIO_API void write( const ::boost::filesystem::path &file, FormatType format );
-
-    FWATOMSBOOSTIO_API void write( std::stringstream &sstr, FormatType format );
+    FWATOMSBOOSTIO_API void write( SPTR(::fwZip::IWriteArchive) archive, FormatType format = JSON ) const;
 
 protected:
 

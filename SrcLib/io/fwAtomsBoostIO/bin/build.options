@@ -1,4 +1,4 @@
 TYPE = 'shared'
 VERSION = '0.1'
 #USE = []
-LIB = ['fwAtoms_0-1', 'fwTools_0-1']
+LIB = ['fwAtoms_0-1', 'fwTools_0-1', 'fwZip_0-1']

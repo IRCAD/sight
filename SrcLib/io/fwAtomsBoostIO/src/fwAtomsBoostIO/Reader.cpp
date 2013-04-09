@@ -16,30 +16,30 @@
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
 
+#include <fwZip/IReadArchive.hpp>
+
 #include "fwAtomsBoostIO/Reader.hpp"
-
-
 
 namespace fwAtomsBoostIO
 {
-
-
 
 //-----------------------------------------------------------------------------
 struct PTreeVisitor
 {
 
-    typedef std::map< std::string, ::fwAtoms::Base::sptr > AtomCacheType;
+typedef std::map< std::string, ::fwAtoms::Base::sptr > AtomCacheType;
 
-    AtomCacheType m_cache;
-    const ::boost::property_tree::ptree &m_root;
+AtomCacheType m_cache;
+const ::boost::property_tree::ptree &m_root;
+::fwZip::IReadArchive::sptr m_archive;
 
-    PTreeVisitor(const ::boost::property_tree::ptree &pt) : m_root(pt){};
-
+PTreeVisitor(const ::boost::property_tree::ptree &pt, ::fwZip::IReadArchive::sptr archive) :
+    m_root(pt), m_archive(archive)
+{}
 
 //-----------------------------------------------------------------------------
 
-AtomCacheType::mapped_type hitCache(const AtomCacheType::key_type &path)
+AtomCacheType::mapped_type hitCache(const AtomCacheType::key_type &path) const
 {
     AtomCacheType::const_iterator iter = m_cache.find(path);
     if(iter != m_cache.end())
@@ -59,7 +59,6 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
     m_cache.insert( AtomCacheType::value_type( ptpath, atom ) );
 }
 
-
 //-----------------------------------------------------------------------------
 
 ::fwAtoms::Boolean::sptr getBoolean(const ::boost::property_tree::ptree &pt, const std::string & ptpath)
@@ -77,7 +76,6 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
     this->cache(ptpath, atom);
     return atom;
 }
-
 
 //-----------------------------------------------------------------------------
 
@@ -159,11 +157,25 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 ::fwAtoms::Blob::sptr getBlob(const ::boost::property_tree::ptree &pt, const std::string & ptpath)
 {
     ::fwAtoms::Blob::sptr atom = ::fwAtoms::Blob::New();
+    ::fwTools::BufferObject::sptr buffObj = ::fwTools::BufferObject::New();
+    atom->setBufferObject(buffObj);
+
     this->cache(ptpath, atom);
 
     size_t buffSize = pt.get<size_t>("blob.buffer_size");
-    // const std::string bufFile = pt.get<std::string>("buffer");
+    if(buffSize > 0)
+    {
+        const std::string bufFile = pt.get<std::string>("blob.buffer");
 
+        buffObj->allocate(buffSize);
+
+        ::fwTools::BufferObject::Lock lock(buffObj->lock());
+        void *v = lock.getBuffer();
+        char* buff = static_cast<char*>(v);
+
+        std::istream& inStream = m_archive->getFile(bufFile);
+        inStream.read(buff, buffSize);
+    }
     return atom;
 }
 
@@ -225,6 +237,8 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
     return atom;
 }
 
+//-----------------------------------------------------------------------------
+
 ::fwAtoms::Base::sptr visit()
 {
     return this->visit(m_root);
@@ -234,28 +248,29 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-::fwAtoms::Base::sptr readPTree( const ::fwAtoms::Base::sptr &atom, T &input )
+::fwAtoms::Base::sptr Reader::read( ::fwZip::IReadArchive::sptr archive ) const
 {
     ::boost::property_tree::ptree root;
+    ::fwAtoms::Base::sptr atom;
 
-    ::boost::property_tree::json_parser::read_json(input, root);
+    ::boost::filesystem::path rootFilename  = archive->getRootFilename();
+    std::istream& in = archive->getFile(rootFilename);
+    if(rootFilename.extension().string() == ".json")
+    {
+        ::boost::property_tree::json_parser::read_json(in, root);
+    }
+    else if(rootFilename.extension().string() == ".xml")
+    {
+        ::boost::property_tree::xml_parser::read_xml(in, root);
+    }
+    else
+    {
+        SLM_ASSERT("You shall not pass", 0);
+    }
+    PTreeVisitor visitor(root, archive);
+    atom = visitor.visit();
 
-    return PTreeVisitor(root).visit();
-}
-
-//-----------------------------------------------------------------------------
-
-::fwAtoms::Base::sptr Reader::read( const ::boost::filesystem::path &file )
-{
-    return readPTree(m_atom, file.string());
-}
-
-//-----------------------------------------------------------------------------
-
-::fwAtoms::Base::sptr Reader::read( std::stringstream &sstr )
-{
-    return readPTree(m_atom, sstr);
+    return atom;
 }
 
 }

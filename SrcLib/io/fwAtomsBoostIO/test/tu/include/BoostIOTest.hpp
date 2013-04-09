@@ -9,6 +9,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <fwZip/IWriteArchive.hpp>
+#include <fwZip/IReadArchive.hpp>
+
+#include <fwAtomsBoostIO/Writer.hpp>
+
 namespace fwAtomsBoostIO
 {
 namespace ut
@@ -17,7 +22,8 @@ namespace ut
 class BoostIOTest :  public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( BoostIOTest );
-    CPPUNIT_TEST( writeTest );
+    CPPUNIT_TEST( readWriteZipTest );
+    CPPUNIT_TEST( readWriteDirTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -25,7 +31,14 @@ public:
     void setUp();
     void tearDown();
 
-    void writeTest();
+    void readWriteZipTest();
+    void readWriteDirTest();
+
+protected:
+    void readProcess(::fwZip::IReadArchive::sptr readArchive);
+
+    void writeProcess(::fwZip::IWriteArchive::sptr writeArchive,
+                      ::fwAtomsBoostIO::Writer::FormatType format );
 };
 
 

@@ -15,6 +15,8 @@
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
 
+#include <fwZip/IWriteArchive.hpp>
+
 #include "fwAtomsBoostIO/Writer.hpp"
 
 
@@ -22,18 +24,23 @@
 namespace fwAtomsBoostIO
 {
 
-
 //-----------------------------------------------------------------------------
+
 struct AtomVisitor
 {
 
-    typedef std::map< ::fwAtoms::Base::sptr, ::boost::property_tree::ptree > PropTreeCacheType;
+typedef std::map< ::fwAtoms::Base::sptr, ::boost::property_tree::ptree > PropTreeCacheType;
 
-    PropTreeCacheType m_cache;
+PropTreeCacheType m_cache;
+::fwZip::IWriteArchive::sptr m_archive;
+
+
+AtomVisitor( ::fwZip::IWriteArchive::sptr archive ) : m_archive(archive)
+{}
 
 //-----------------------------------------------------------------------------
 
-PropTreeCacheType::mapped_type hitCache(const PropTreeCacheType::key_type &atom)
+PropTreeCacheType::mapped_type hitCache(const PropTreeCacheType::key_type &atom) const
 {
     PropTreeCacheType::const_iterator iter = m_cache.find(atom);
     if(iter != m_cache.end())
@@ -168,19 +175,14 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     }
     else
     {
-
         ::fwTools::BufferObject::Lock lock(buffObj->lock());
 
         const size_t buffSize = buffObj->getSize();
         void *v = lock.getBuffer();
         char* buff = static_cast<char*>(v);
 
-        const std::string bufFile = ::fwTools::UUID::generateUUID() + ".raw";
-        // ::boost::filesystem::path file = m_saveDir / bufFile;
-        // std::ofstream fs(file.string().c_str(), std::ios::binary|std::ios::trunc);
-
-        // fs.write(buff, buffSize);
-        // fs.close();
+        const std::string bufFile = "fwAtomsArchive/" + ::fwTools::UUID::generateUUID() + ".raw";
+        m_archive->createFile(bufFile).write(buff, buffSize);
 
         pt.put("blob.buffer_size", buffSize);
         pt.put("blob.buffer", bufFile);
@@ -243,32 +245,31 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-void writePTree( const ::fwAtoms::Base::sptr &atom, T &output, Writer::FormatType format )
+void Writer::write( ::fwZip::IWriteArchive::sptr archive, FormatType format ) const
 {
     ::boost::property_tree::ptree root;
-    AtomVisitor visitor;
-
-    root = visitor.visit(atom);
-
-    ::boost::property_tree::json_parser::write_json(output, root);
-    // ::boost::property_tree::xml_writer_settings<char> settings(' ', 4);
-    // ::boost::property_tree::xml_parser::write_xml(file.string(), root, std::locale(), settings);
+    AtomVisitor visitor(archive);
+    root = visitor.visit(m_atom);
+    ::boost::filesystem::path rootFilename  = archive->getRootFilename();
+    switch(format)
+    {
+    case JSON:
+        ::boost::property_tree::json_parser::write_json(archive->createFile(rootFilename), root);
+        break;
+    case XML:
+    {
+        ::boost::property_tree::xml_writer_settings<char> settings(' ', 4);
+        ::boost::property_tree::xml_parser::write_xml(archive->createFile(rootFilename),
+                                                      root,
+                                                      settings);
+        break;
+    }
+    default:
+        SLM_ASSERT("You shall not pass", 0);
+        break;
+    }
 }
 
-//-----------------------------------------------------------------------------
-
-void Writer::write( const ::boost::filesystem::path &file, FormatType format )
-{
-    writePTree(m_atom, file.string(), format);
-}
-
-//-----------------------------------------------------------------------------
-
-void Writer::write( std::stringstream &sstr, FormatType format )
-{
-    writePTree(m_atom, sstr, format);
-}
 
 
 }
