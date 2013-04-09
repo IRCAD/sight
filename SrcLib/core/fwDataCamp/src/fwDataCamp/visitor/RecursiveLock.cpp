@@ -114,7 +114,10 @@ void RecursiveLock::visit(const camp::MapProperty& property)
         first = value.first;
         second = value.second;
 
-        SLM_ASSERT("Not managed type for map key.", first.type() == ::camp::stringType);
+        SLM_ASSERT("Not managed type for map key.",
+                first.type() == ::camp::stringType ||
+                first.type() == ::camp::intType ||
+                first.type() == ::camp::realType );
 
         if ( second.type() == ::camp::userType )
         {
