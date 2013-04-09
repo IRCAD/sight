@@ -94,10 +94,7 @@ void RecursiveLock::visit(const camp::SimpleProperty& property)
 //-----------------------------------------------------------------------------
 
 void RecursiveLock::visit(const camp::EnumProperty& property)
-{
-    SLM_TRACE_FUNC();
-    OSLM_FATAL( "EnumProperty is not still managed : name =" <<  property.name() );
-}
+{}
 
 //-----------------------------------------------------------------------------
 

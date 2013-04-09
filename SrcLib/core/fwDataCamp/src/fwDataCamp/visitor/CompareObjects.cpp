@@ -94,7 +94,8 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
                     if(bo->getBuffer())
                     {
                         char* buffer = static_cast< char* >(bo->getBuffer());
-                        unsigned int size = m_hasher(buffer);
+                        std::string buffStr ( buffer, bo->getSize() );
+                        unsigned int size = m_hasher(buffStr);
                         return std::make_pair(m_prefix, boost::lexical_cast< std::string >(size));
                     }
                 }

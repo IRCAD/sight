@@ -48,16 +48,7 @@ void CompareObjectsTest::setUp()
     m_patientRef->getStudies()[0]->getAcquisitions()[0]->setImage(image);
 
     m_patientComp = ::fwData::Patient::New();
-    m_patientComp->deepCopy(m_patientRef); 
-
-    // HACK : Acquisition::netID not managed in deep copy
-    ::fwData::Acquisition::sptr acqRef = m_patientRef->getStudies()[0]->getAcquisitions()[0];
-    ::fwData::Acquisition::sptr acqComp = m_patientComp->getStudies()[0]->getAcquisitions()[0];
-    acqComp->setNetID(acqRef->getNetID());
-
-    // HACK
-    acqComp->getReconstructions()[0]->getMesh()->setCellTypesArray(
-            acqRef->getReconstructions()[0]->getMesh()->getCellTypesArray() );
+    m_patientComp->deepCopy(m_patientRef);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,14 +84,14 @@ void CompareObjectsTest::comparePatientTest()
         SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
         CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)3);
 
-        CPPUNIT_ASSERT(props->find("name") != props->end()); 
-        CPPUNIT_ASSERT_EQUAL((*props)["name"], name); 
+        CPPUNIT_ASSERT(props->find("name") != props->end());
+        CPPUNIT_ASSERT_EQUAL((*props)["name"], name);
 
-        CPPUNIT_ASSERT(props->find("firstname") != props->end()); 
-        CPPUNIT_ASSERT_EQUAL((*props)["firstname"], firstname); 
+        CPPUNIT_ASSERT(props->find("firstname") != props->end());
+        CPPUNIT_ASSERT_EQUAL((*props)["firstname"], firstname);
 
-        CPPUNIT_ASSERT(props->find("is_male") != props->end()); 
-        CPPUNIT_ASSERT_EQUAL((*props)["is_male"], std::string(m_patientComp->getIsMale() ? "true" : "false")); 
+        CPPUNIT_ASSERT(props->find("is_male") != props->end());
+        CPPUNIT_ASSERT_EQUAL((*props)["is_male"], std::string(m_patientComp->getIsMale() ? "true" : "false"));
     }
 }
 
@@ -118,11 +109,11 @@ void CompareObjectsTest::compareStudyTest()
     SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)2);
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisition_zone") != props->end()); 
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisition_zone"], std::string("Thorax")); 
+    CPPUNIT_ASSERT(props->find("studies.0.acquisition_zone") != props->end());
+    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisition_zone"], std::string("Thorax"));
 
-    CPPUNIT_ASSERT(props->find("studies.0.hospital") != props->end()); 
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.hospital"], std::string("Unknown")); 
+    CPPUNIT_ASSERT(props->find("studies.0.hospital") != props->end());
+    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.hospital"], std::string("Unknown"));
 }
 
 //-----------------------------------------------------------------------------
@@ -145,11 +136,11 @@ void CompareObjectsTest::compareImageTest()
     SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)2);
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.image.spacing.0") != props->end()); 
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.image.spacing.0"], std::string("42")); 
+    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.image.spacing.0") != props->end());
+    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.image.spacing.0"], std::string("42"));
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.image.origin.2") != props->end()); 
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.image.origin.2"], std::string("1664")); 
+    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.image.origin.2") != props->end());
+    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.image.origin.2"], std::string("1664"));
 }
 
 //-----------------------------------------------------------------------------
@@ -169,25 +160,25 @@ void CompareObjectsTest::compareReconstructionTest()
     SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)3);
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.organ_name") != props->end()); 
+    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.organ_name") != props->end());
     CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.reconstructions.0.organ_name"],
-            std::string("Unknown organ name")); 
+            std::string("Unknown organ name"));
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.is_automatic") != props->end()); 
+    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.is_automatic") != props->end());
     CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.reconstructions.0.is_automatic"],
-            std::string(rec->getIsAutomatic() ? "true" : "false")); 
+            std::string(rec->getIsAutomatic() ? "true" : "false"));
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.is_visible") != props->end()); 
+    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.is_visible") != props->end());
     CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.reconstructions.0.is_visible"],
-            std::string(rec->getIsVisible() ? "true" : "false")); 
+            std::string(rec->getIsVisible() ? "true" : "false"));
 }
 
 //-----------------------------------------------------------------------------
 
 void CompareObjectsTest::compareBufferTest()
 {
-    ::fwData::Image::sptr imgRef = ::fwData::Image::New(); 
-    ::fwData::Image::sptr imgComp = ::fwData::Image::New(); 
+    ::fwData::Image::sptr imgRef = ::fwData::Image::New();
+    ::fwData::Image::sptr imgComp = ::fwData::Image::New();
 
     ::fwTools::Type typeRef = ::fwTools::Type::create< float >();
     ::fwTools::Type typeComp = ::fwTools::Type::create< double >();
