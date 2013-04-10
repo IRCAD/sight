@@ -1,3 +1,55 @@
+=== fw4spl_0.9.1.2 ( diff from fw4spl_0.9.1.1 ) 10/04/2013 ===
+
+ * General :
+  * Fixed bugs in ConfigActionSrv
+  * Added macro FW_FORWARD_EXCEPTION_IF to forward an exception on certain conditions
+  * Added new bundles (monitor, monitorQt) to monitor system
+  * Added new bundle (ctrlMemory) to provide services to dump lock data
+  * Added new service (uiPatientDB::action::AddMedicalWorkspace) to load and merge medical workspaces
+  * Updated VRRender 0.9.5 : add dump functionality, menus to monitor the app, import/export medical workspace
+  
+ * Data introspection : 
+  * Moved ::fwAtomConversion::RetrieveObjectVisitor to ::fwDataCamp::visitor::GetObject
+  * Updated fwDataCamp::Object to bind 'isA' method
+  * Added new visitor (RecursiveLock) to lock (mutex) data recursively
+  * Added new visitor (CompareObjects) to compare two data objects
+  * Added exception management and unit tests
+  
+ * Atoms :
+  * Refactoring of fwAtoms :
+   * cleaning, bug fixing, API updating (added const accessors), unit tests
+   * added factory to build atoms
+   * fixed all clone methods
+   * updated atom visitor to not use camp to visit atom
+  * Refactoring of fwAtomConversion :
+   * removed useless visitors
+   * proposed new conversion methods between fwData::Object and fwAtoms::Object
+   * fixed graph conversion
+   * added exception management and unit tests
+   * managed null pointer in atoms
+   * improved numeric conversion
+  
+ * fwData :
+  * Removed deprecated fwData::None
+  * Added tetra cell type for fwData::Mesh
+  * Managed acquisition 'NetID' in deepCopy/shallowCopy
+  
+ * IO :
+  * Added new library fwAtomsBoostIO to read/write atoms using Boost Property Tree.
+  * Added new bundle ioAtoms to provide services for reading/writing medical data using fwAtomsBoostIO.
+  * Managed zip and folder archive in fwZip
+  * Added BufferObject comparison unit test in fwAtomsBoostIO
+  * Managed dumped buffers during saving
+  * Changed dump policy during medical data loading (set to 'barrier' if policy is 'never').
+  * Added unit tests for fwAtomsBoostIO and ioAtoms
+
+ * Log :
+  * Improved logs for 'receive' method in ::fwServices::IService
+
+ * Communication :
+  * Removed deprecated MODIFIED_KEYS event in fwComEd::CompositeMsg
+
+
 === fw4spl_0.9.1.1 ( diff from fw4spl_0.9.1.0 ) 07/02/2013 ===
 
  * Merge :
