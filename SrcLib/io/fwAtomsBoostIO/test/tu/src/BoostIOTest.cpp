@@ -232,13 +232,11 @@ void BoostIOTest::readWriteZipTest()
 
     {
         writeArchive = ::fwZip::WriteZipArchive::New(folderPath.string());
-        writeArchive->setRootFilename("root.json");
-        this->writeProcess(writeArchive, ::fwAtomsBoostIO::Writer::JSON);
+        this->writeProcess(writeArchive, "root.json", ::fwAtomsBoostIO::Writer::JSON);
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadZipArchive::New(folderPath.string());
-        readArchive->setRootFilename("root.json");
-        this->readProcess(readArchive);
+        this->readProcess(readArchive, "root.json");
         readArchive.reset();
 
         bool suppr = ::boost::filesystem::remove_all(folderPath);
@@ -246,13 +244,11 @@ void BoostIOTest::readWriteZipTest()
     }
     {
         writeArchive = ::fwZip::WriteZipArchive::New(folderPath.string());
-        writeArchive->setRootFilename("root.xml");
-        this->writeProcess(writeArchive, ::fwAtomsBoostIO::Writer::XML);
+        this->writeProcess(writeArchive, "root.xml", ::fwAtomsBoostIO::Writer::XML);
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadZipArchive::New(folderPath.string());
-        readArchive->setRootFilename("root.xml");
-        this->readProcess(readArchive);
+        this->readProcess(readArchive, "root.xml");
         readArchive.reset();
 
         bool suppr = ::boost::filesystem::remove_all(folderPath);
@@ -272,13 +268,11 @@ void BoostIOTest::readWriteDirTest()
 
     {
         writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
-        writeArchive->setRootFilename("root.json");
-        this->writeProcess(writeArchive, ::fwAtomsBoostIO::Writer::JSON);
+        this->writeProcess(writeArchive, "root.json", ::fwAtomsBoostIO::Writer::JSON);
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
-        readArchive->setRootFilename("root.json");
-        this->readProcess(readArchive);
+        this->readProcess(readArchive, "root.json");
         readArchive.reset();
 
         bool suppr = ::boost::filesystem::remove_all(folderPath);
@@ -286,13 +280,11 @@ void BoostIOTest::readWriteDirTest()
     }
     {
         writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
-        writeArchive->setRootFilename("root.xml");
-        this->writeProcess(writeArchive, ::fwAtomsBoostIO::Writer::XML);
+        this->writeProcess(writeArchive, "root.xml", ::fwAtomsBoostIO::Writer::XML);
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
-        readArchive->setRootFilename("root.xml");
-        this->readProcess(readArchive);
+        this->readProcess(readArchive, "root.xml");
         readArchive.reset();
 
         bool suppr = ::boost::filesystem::remove_all(folderPath);
@@ -303,19 +295,21 @@ void BoostIOTest::readWriteDirTest()
 //-----------------------------------------------------------------------------
 
 void BoostIOTest::writeProcess(::fwZip::IWriteArchive::sptr writeArchive,
+                               const ::boost::filesystem::path& rootFilename,
                                ::fwAtomsBoostIO::Writer::FormatType format )
 {
     ::fwAtoms::Sequence::sptr seq = generator.getSequence();
-    ::fwAtomsBoostIO::Writer(seq).write(writeArchive, format);
+    ::fwAtomsBoostIO::Writer(seq).write(writeArchive, rootFilename, format);
 }
 
 //-----------------------------------------------------------------------------
 
-void BoostIOTest::readProcess(::fwZip::IReadArchive::sptr readArchive)
+void BoostIOTest::readProcess(::fwZip::IReadArchive::sptr readArchive,
+                              const ::boost::filesystem::path& rootFilename)
 {
     ::fwAtoms::Sequence::sptr readSeq;
     {
-        readSeq = ::fwAtoms::Sequence::dynamicCast(::fwAtomsBoostIO::Reader().read(readArchive));
+        readSeq = ::fwAtoms::Sequence::dynamicCast(::fwAtomsBoostIO::Reader().read(readArchive, rootFilename));
     }
     generator.compare(readSeq);
 }

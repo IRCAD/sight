@@ -35,9 +35,11 @@ public:
     void readWriteDirTest();
 
 protected:
-    void readProcess(::fwZip::IReadArchive::sptr readArchive);
+    void readProcess(::fwZip::IReadArchive::sptr readArchive,
+                     const ::boost::filesystem::path& rootFilename);
 
     void writeProcess(::fwZip::IWriteArchive::sptr writeArchive,
+                      const ::boost::filesystem::path& rootFilename,
                       ::fwAtomsBoostIO::Writer::FormatType format );
 };
 
