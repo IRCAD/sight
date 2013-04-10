@@ -271,12 +271,13 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
 
 //-----------------------------------------------------------------------------
 
-void Writer::write( ::fwZip::IWriteArchive::sptr archive, FormatType format ) const
+void Writer::write( ::fwZip::IWriteArchive::sptr archive,
+                    const ::boost::filesystem::path& rootFilename,
+                    FormatType format ) const
 {
     ::boost::property_tree::ptree root;
     AtomVisitor visitor(archive);
     root = visitor.visit(m_atom);
-    ::boost::filesystem::path rootFilename  = archive->getRootFilename();
     switch(format)
     {
     case JSON:

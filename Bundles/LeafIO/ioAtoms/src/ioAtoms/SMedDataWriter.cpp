@@ -123,8 +123,7 @@ void SMedDataWriter::updating() throw(::fwTools::Failed)
                 FW_RAISE( "This file extension '" << extension << "' is not managed" );
             }
 
-            writeArchive->setRootFilename( archiveRootName );
-            ::fwAtomsBoostIO::Writer(atom).write( writeArchive, format );
+            ::fwAtomsBoostIO::Writer(atom).write( writeArchive, archiveRootName, format );
             writeArchive.reset();
 
         }

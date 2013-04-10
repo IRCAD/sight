@@ -33,7 +33,9 @@ public:
 
     Writer( SPTR(::fwAtoms::Base) atom ) : m_atom(atom) {}
 
-    FWATOMSBOOSTIO_API void write( SPTR(::fwZip::IWriteArchive) archive, FormatType format = JSON ) const;
+    FWATOMSBOOSTIO_API void write( SPTR(::fwZip::IWriteArchive) archive,
+                                   const ::boost::filesystem::path& rootFilename = "root.json",
+                                   FormatType format = JSON ) const;
 
 protected:
 

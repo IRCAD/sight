@@ -99,9 +99,8 @@ void SMedDataReader::updating() throw(::fwTools::Failed)
                 FW_RAISE( "This file extension '" << extension << "' is not managed" );
             }
 
-            readArchive->setRootFilename( archiveRootName );
             ::fwAtomsBoostIO::Reader reader;
-            ::fwAtoms::Object::sptr atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive ) );
+            ::fwAtoms::Object::sptr atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName ) );
             readArchive.reset();
             FW_RAISE_IF( "Data not correspond to an fw4spl medical data", ! atom );
 

@@ -257,12 +257,12 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 
 //-----------------------------------------------------------------------------
 
-::fwAtoms::Base::sptr Reader::read( ::fwZip::IReadArchive::sptr archive ) const
+::fwAtoms::Base::sptr Reader::read( ::fwZip::IReadArchive::sptr archive,
+                                    const ::boost::filesystem::path& rootFilename ) const
 {
     ::boost::property_tree::ptree root;
     ::fwAtoms::Base::sptr atom;
 
-    ::boost::filesystem::path rootFilename  = archive->getRootFilename();
     std::istream& in = archive->getFile(rootFilename);
     if(rootFilename.extension().string() == ".json")
     {
