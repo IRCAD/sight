@@ -193,28 +193,11 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
         // Test if buffer is not already dumped
         const bool isDumped =  manager && manager->isDumped( (void ** ) buffObj->getBufferPointer() );
 
-        if(m_archive->isA("::fwZip::WriteDirArchive") && isDumped)
+        if(isDumped)
         {
             const ::boost::filesystem::path fileSrc = manager->getDumpedFilePath( (void ** ) buffObj->getBufferPointer() );
             bufFile = std::string("fwAtomsArchive/") + fileSrc.filename().string();
-            const ::boost::filesystem::path fileDest = m_archive->getArchivePath() / bufFile;
-
-            if (! ::boost::filesystem::exists(fileDest))
-            {
-
-                const ::boost::filesystem::path parentFile = fileDest.parent_path();
-                if(!::boost::filesystem::exists(parentFile))
-                {
-                    ::boost::filesystem::create_directories(parentFile);
-                }
-
-                ::boost::system::error_code err;
-                ::boost::filesystem::create_hard_link( fileSrc, fileDest, err );
-                if (err.value() != 0)
-                {
-                    ::boost::filesystem::copy_file( fileSrc, fileDest );
-                }
-            }
+            m_archive->putFile(fileSrc, bufFile);
         }
         else
         {
