@@ -97,6 +97,16 @@ bool WriteZipArchive::createDir(const ::boost::filesystem::path &path)
 
 int WriteZipArchive::openFile(const ::boost::filesystem::path &path)
 {
+    const std::string extension = path.extension().string();
+    int compressLevel = Z_DEFAULT_COMPRESSION;
+    if(extension == ".raw")
+    {
+        compressLevel = Z_BEST_SPEED;
+    }
+    else if(extension == ".raw.gz")
+    {
+        compressLevel = Z_NO_COMPRESSION;
+    }
     zip_fileinfo zfi;
     zfi.internal_fa = 0;
     zfi.external_fa = 0;// @todo FIXME
@@ -120,7 +130,7 @@ int WriteZipArchive::openFile(const ::boost::filesystem::path &path)
             0,
             NULL,
             Z_DEFLATED,
-            Z_DEFAULT_COMPRESSION);
+            compressLevel);
 
     return nRet;
 }
@@ -139,6 +149,7 @@ const ::boost::filesystem::path WriteZipArchive::getArchivePath() const
     return m_archive;
 }
 
+//-----------------------------------------------------------------------------
 
 }
 
