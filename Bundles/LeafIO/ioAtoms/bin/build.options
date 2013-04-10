@@ -9,6 +9,7 @@ LIB     = [
           'fwRuntime_0-3',
           'fwServices_0-1',
           'fwTools_0-1',
+          'fwMemory_0-1',
           'fwZip_0-1',
           ]
 BUNDLES  = ['io_0-1']

@@ -10,6 +10,8 @@
 
 #include <fwAtomConversion/convert.hpp>
 
+#include <fwTools/IBufferManager.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
@@ -23,6 +25,11 @@
 
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/ReadZipArchive.hpp>
+
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/policy/BarrierDump.hpp>
+#include <fwMemory/policy/NeverDump.hpp>
+#include <fwMemory/tools/MemoryMonitorTools.hpp>
 
 #include "ioAtoms/SMedDataReader.hpp"
 
@@ -48,6 +55,8 @@ void SMedDataReader::updating() throw(::fwTools::Failed)
 
     if(this->hasLocationDefined())
     {
+        this->setBarrierDumpPolicy();
+
         ::fwData::Composite::sptr data = this->getObject< ::fwData::Composite >();
 
         ::fwGui::Cursor cursor;
@@ -118,6 +127,8 @@ void SMedDataReader::updating() throw(::fwTools::Failed)
         }
 
         cursor.setDefaultCursor();
+
+        this->resetDumpPolicy();
     }
 }
 
@@ -126,6 +137,44 @@ void SMedDataReader::updating() throw(::fwTools::Failed)
 ::io::IOPathType SMedDataReader::getIOPathType() const
 {
     return ::io::FILE;
+}
+
+//------------------------------------------------------------------------------
+
+void SMedDataReader::setBarrierDumpPolicy()
+{
+    ::fwMemory::BufferManager::sptr manager;
+    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+
+    if( manager )
+    {
+        ::fwMemory::IPolicy::sptr policy = manager->getDumpPolicy();
+        if( ::boost::dynamic_pointer_cast< ::fwMemory::policy::NeverDump >( policy ) )
+        {
+            ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
+            size_t aliveMemory = manager->getManagedBufferSize() - manager->getDumpedBufferSize();
+            size_t freeMemory = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
+            size_t barrier = std::max( aliveMemory, std::max( freeMemory, static_cast<size_t>(500L * 1024 * 1024) ) );
+
+            newDumpPolicy->setBarrier( barrier );
+            manager->setDumpPolicy( newDumpPolicy );
+            m_oldPolicy = policy;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SMedDataReader::resetDumpPolicy()
+{
+    ::fwMemory::BufferManager::sptr manager;
+    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+
+    if( manager && m_oldPolicy )
+    {
+        manager->setDumpPolicy( m_oldPolicy );
+        m_oldPolicy.reset();
+    }
 }
 
 //------------------------------------------------------------------------------

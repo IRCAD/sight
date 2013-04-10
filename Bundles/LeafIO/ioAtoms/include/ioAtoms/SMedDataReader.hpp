@@ -41,14 +41,32 @@ protected:
     /// Does nothing
     IOATOMS_API void stopping() throw(::fwTools::Failed);
 
-    /// Tests file extension, applies the good atom reader, and converts atom in fwData::Composite
+    /**
+     * @brief Tests file extension, applies the good atom reader, and converts atom in fwData::Composite
+     * @note  Before reading, set dump policy to 'barrier dump' if policy is 'never dump', then reset old policy.
+     */
     IOATOMS_API void updating() throw(::fwTools::Failed);
 
     /// Returns managed path type, here service manages only single file
     IOATOMS_API ::io::IOPathType getIOPathType() const;
 
+private:
+
     /// Notify modification on associated object if reading process is a success
     void notificationOfUpdate();
+
+    /**
+     * @brief Changes dump policy to barrier dump if possible.
+     *
+     * Store old policy in m_oldPolicy to be reset after reading.
+     */
+    void setBarrierDumpPolicy();
+
+    /// Resets dump policy to m_oldPolicy
+    void resetDumpPolicy();
+
+    /// Initial dump policy
+    ::fwMemory::IPolicy::sptr m_oldPolicy;
 };
 
 } // namespace ioAtoms
