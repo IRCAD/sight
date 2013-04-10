@@ -72,6 +72,19 @@ std::ostream& WriteZipArchive::createFile(const ::boost::filesystem::path &path)
 
 //-----------------------------------------------------------------------------
 
+void WriteZipArchive::putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path)
+{
+    std::ifstream sourceStream(sourceFile.string().c_str(), std::ios::binary);
+    FW_RAISE_EXCEPTION_IF(::fwZip::exception::Write("Source file '" + sourceFile.string() + "' cannot be opened."),
+                         !sourceStream.good());
+
+    std::ostream& oStream = this->createFile(path);
+    oStream << sourceStream.rdbuf();
+    sourceStream.close();
+}
+
+//-----------------------------------------------------------------------------
+
 bool WriteZipArchive::createDir(const ::boost::filesystem::path &path)
 {
     int nRet = this->openFile(path);

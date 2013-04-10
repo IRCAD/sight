@@ -20,6 +20,8 @@ public:
 
     virtual std::ostream& createFile(const ::boost::filesystem::path &path) = 0;
 
+    virtual void putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path) = 0;
+
     virtual bool createDir(const ::boost::filesystem::path &path) = 0;
 
     virtual const ::boost::filesystem::path getRootFilename()

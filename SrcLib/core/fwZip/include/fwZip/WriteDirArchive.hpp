@@ -30,6 +30,8 @@ public:
 
     FWZIP_API std::ostream& createFile(const ::boost::filesystem::path &path);
 
+    FWZIP_API void putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path);
+
     FWZIP_API bool createDir(const ::boost::filesystem::path &path);
 
     FWZIP_API const ::boost::filesystem::path getArchivePath() const;

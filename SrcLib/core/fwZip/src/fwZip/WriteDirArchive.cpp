@@ -50,6 +50,28 @@ std::ostream& WriteDirArchive::createFile(const ::boost::filesystem::path &path)
 
 //-----------------------------------------------------------------------------
 
+void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path)
+{
+    const ::boost::filesystem::path fileDest = m_archive / path;
+    if (! ::boost::filesystem::exists(fileDest))
+    {
+        const ::boost::filesystem::path parentFile = fileDest.parent_path();
+        if(!::boost::filesystem::exists(parentFile))
+        {
+            ::boost::filesystem::create_directories(parentFile);
+        }
+
+        ::boost::system::error_code err;
+        ::boost::filesystem::create_hard_link( sourceFile, fileDest, err );
+        if (err.value() != 0)
+        {
+            ::boost::filesystem::copy_file( sourceFile, fileDest );
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void WriteDirArchive::closeFile()
 {
     if(m_outfile.is_open())
