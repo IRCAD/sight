@@ -5,6 +5,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="io" />
+    <requirement id="gui" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
