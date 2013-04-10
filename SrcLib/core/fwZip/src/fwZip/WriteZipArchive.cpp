@@ -1,4 +1,5 @@
 #include <iosfwd>    // streamsize
+#include <fstream>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
