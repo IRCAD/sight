@@ -39,7 +39,10 @@ protected:
 };
 
 
-
+/**
+ * @brief   This class defines functions to read a file in a zip archive.
+ * @class   ReadZipArchive.
+ */
 class FWZIP_CLASS_API ReadZipArchive : public IReadArchive
 {
 
@@ -49,15 +52,37 @@ public:
                                            ((( const ::boost::filesystem::path& ))),
                                            ::boost::make_shared< ReadZipArchive >);
 
+    /*
+     * @brief Constructors. Initializes archive path, zip descriptor and zip stream.
+     *
+     * @throw ::fwZip::exception::Read if archive doesn't exist.
+     * @throw ::fwZip::exception::Read if archive cannot be opened.
+     */
     FWZIP_API ReadZipArchive( const ::boost::filesystem::path &archive );
+
+    /// Destructor. Close ZipFile.
     FWZIP_API ~ReadZipArchive();
 
+    /**
+     * @brief Returns input stream for the file in current archive (zip).
+     * @param path file in archive.
+     * @return input stream from request file.
+     *
+     * @throw ::fwZip::exception::Read if file doesn't exist in archive.
+     * @throw ::fwZip::exception::Read if cannot retrieve file in archive.
+     */
     FWZIP_API std::istream& getFile(const ::boost::filesystem::path &path);
 
+    /**
+     * @brief Returns archive path.
+     */
     FWZIP_API const ::boost::filesystem::path getArchivePath() const;
 
 protected:
 
+    /**
+     * @brief Returns true if path exists in archive. If the file is found, it becomes the current file.
+     */
     FWZIP_API bool exists(const ::boost::filesystem::path &path);
 
     ::boost::filesystem::path m_archive;

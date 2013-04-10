@@ -15,6 +15,10 @@
 namespace fwZip
 {
 
+/**
+ * @brief   This interface defines functions to read a file in an archive.
+ * @class   IReadArchive.
+ */
 class IReadArchive
 {
 
@@ -24,8 +28,16 @@ public:
 
     virtual ~IReadArchive(){};
 
+    /**
+     * @brief Returns input stream for the file in current archive.
+     * @param path file in archive.
+     * @return input stream from request file.
+     */
     virtual std::istream& getFile(const ::boost::filesystem::path &path) = 0;
 
+    /**
+     * @brief Returns archive path.
+     */
     virtual const ::boost::filesystem::path getArchivePath() const = 0;
 };
 

@@ -22,6 +22,10 @@
 namespace fwZip
 {
 
+/**
+ * @brief   This class defines functions to read a file in a file system archive.
+ * @class   ReadDirArchive.
+ */
 class FWZIP_CLASS_API ReadDirArchive : public IReadArchive
 {
 
@@ -31,18 +35,36 @@ public:
                                            ((( const ::boost::filesystem::path& ))),
                                            ::boost::make_shared< ReadDirArchive >);
 
+    /// Constructors. Initializes archive path.
     FWZIP_API ReadDirArchive( const ::boost::filesystem::path &archive );
 
+    /// Destructor. Close automatically last input file stream.
     FWZIP_API ~ReadDirArchive();
 
+    /**
+     * @brief Returns input stream for the file in current archive.
+     * @param path file in archive.
+     * @return input stream from request file.
+     *
+     * @throw ::fwZip::exception::Read if file doesn't exist in archive.
+     */
     FWZIP_API std::istream& getFile(const ::boost::filesystem::path &path);
 
+    /**
+     * @brief Returns archive path.
+     */
     FWZIP_API const ::boost::filesystem::path getArchivePath() const;
 
 protected:
 
+    /**
+     * @brief Returns true if path exists in archive.
+     */
     FWZIP_API bool exists(const ::boost::filesystem::path &path);
 
+    /**
+     * @brief Close automatically current input file stream.
+     */
     FWZIP_API void closeFile();
 
     std::ifstream m_infile;

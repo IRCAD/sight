@@ -74,7 +74,7 @@ std::istream& ReadZipArchive::getFile(const ::boost::filesystem::path &path)
     int nRet = unzOpenCurrentFile(m_zipDescriptor);
     FW_RAISE_EXCEPTION_IF(
             ::fwZip::exception::Read("Cannot retrieve file '" + path.string() +
-                                     "' in archive.string() '"+ m_archive.string() +"'."),
+                                     "' in archive '"+ m_archive.string() +"'."),
             nRet != UNZ_OK);
 
     return m_istream;
