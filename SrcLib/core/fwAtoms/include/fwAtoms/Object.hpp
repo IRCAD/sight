@@ -32,7 +32,8 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    FWATOMS_API Object(::fwAtoms::Base::Key key);
+    Object(::fwAtoms::Base::Key key)
+    {}
 
     /**
      * @brief   Destructor
@@ -64,14 +65,6 @@ public:
 
     //! clear attributes
     FWATOMS_API void clearAttribute();
-
-    //--------------------------------------------------------------------------
-
-    //! Returns object id
-    const std::string& getId() const {return m_id;};
-
-    //! Set current id
-    void setId(const std::string &id){m_id = id;};
 
     //--------------------------------------------------------------------------
 
@@ -117,7 +110,6 @@ private:
 
     MetaInfosType  m_metaInfos;
     AttributesType m_attributes;
-    std::string    m_id;
 
 };
 

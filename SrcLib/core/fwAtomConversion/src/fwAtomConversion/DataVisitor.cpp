@@ -43,6 +43,7 @@ namespace fwAtomConversion
 static int dataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION; // Hack to force link with fwDataCamp
 
 const std::string DataVisitor::CLASSNAME_METAINFO = "CLASSNAME_METAINFO";
+const std::string DataVisitor::ID_METAINFO        = "ID_METAINFO";
 
 //-----------------------------------------------------------------------------
 
@@ -124,7 +125,7 @@ DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache 
     ClassnameType classname = m_campDataObj.call("classname").to<std::string>();
     m_atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, classname );
     ::fwTools::UUID::UUIDType uuid = ::fwTools::UUID::get(dataObj);
-    m_atomObj->setId( uuid );
+    m_atomObj->setMetaInfo( DataVisitor::ID_METAINFO, uuid );
     m_cache[uuid] = m_atomObj;
 
     // Fill atom object with tag

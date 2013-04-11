@@ -40,6 +40,8 @@ public:
 
     /// Key of the meta info to store data object classname
     FWATOMCONVERSION_API static const std::string CLASSNAME_METAINFO;
+    /// Key of the meta info to store data object ID
+    FWATOMCONVERSION_API static const std::string ID_METAINFO;
 
     /**
      * @brief Constructor. Initializes atom object and store it in the cache.

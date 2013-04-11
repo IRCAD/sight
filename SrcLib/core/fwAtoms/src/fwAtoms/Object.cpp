@@ -9,8 +9,6 @@
 
 #include <fwCamp/UserObject.hpp>
 
-#include <fwTools/UUID.hpp>
-
 #include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Object.hpp"
 
@@ -19,11 +17,6 @@ fwAtomsRegisterMacro( ::fwAtoms::Object );
 
 namespace fwAtoms
 {
-
-Object::Object(::fwAtoms::Base::Key key)
-{
-    m_id = ::fwTools::UUID::generateUUID();
-}
 
 //------------------------------------------------------------------------------
 

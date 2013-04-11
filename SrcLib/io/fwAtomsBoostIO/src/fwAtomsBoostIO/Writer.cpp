@@ -142,8 +142,6 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     this->cache(atom, ptpath);
     std::string path = ptpath + (ptpath.empty()?"":".") + "object";
 
-    object.put("id", atom->getId());
-
     const ::fwAtoms::Object::MetaInfosType& metaInfos = atom->getMetaInfos();
     ::boost::property_tree::ptree metaInfosPt;
     BOOST_FOREACH(const ::fwAtoms::Object::MetaInfosType::value_type& info, metaInfos)

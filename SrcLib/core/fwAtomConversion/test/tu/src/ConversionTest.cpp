@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/log/SpyLogger.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
@@ -434,7 +435,6 @@ void ConversionTest::dataFactoryNotFoundExceptionTest()
         ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast( (*map)["key"] );
         obj->eraseMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO );
         obj->setMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO, "CHANGE::CLASNAME" );
-
     }
 
     CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert(atom),
@@ -625,6 +625,7 @@ void ConversionTest::conversionNotManagedExceptionTest()
     {
         ::fwAtoms::Object::sptr atomObj = ::fwAtoms::Object::New();
         atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::fwData::Vector" );
+        atomObj->setMetaInfo( DataVisitor::ID_METAINFO, ::fwTools::UUID::generateUUID() );
 
         CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert( atomObj ),
                               ::fwAtomConversion::exception::ConversionNotManaged );
@@ -633,7 +634,8 @@ void ConversionTest::conversionNotManagedExceptionTest()
     // Test ConversionNotManaged throwing during atom to data conversion
     {
         ::fwAtoms::Object::sptr atomObj = ::fwAtoms::Object::New();
-        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO,"::fwData::Vector");
+        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::fwData::Vector");
+        atomObj->setMetaInfo( DataVisitor::ID_METAINFO, ::fwTools::UUID::generateUUID());
 
         ::fwAtoms::Map::sptr atomFields = ::fwAtoms::Map::New();
         atomObj->setAttribute("fields",atomFields);

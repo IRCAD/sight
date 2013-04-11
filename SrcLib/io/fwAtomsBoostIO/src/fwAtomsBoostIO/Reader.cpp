@@ -131,8 +131,6 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
     ::fwAtoms::Object::sptr atom = ::fwAtoms::Object::New();
     this->cache(ptpath, atom);
 
-    atom->setId(pt.get<std::string>("object.id"));
-
     const ptree& metaInfosTree  = pt.get_child("object.meta_infos");
     const ptree& attributesTree = pt.get_child("object.attributes");
 

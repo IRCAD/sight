@@ -29,8 +29,9 @@ void AtomVisitor::visit()
 
 void AtomVisitor::processMetaInfos( const ::fwAtoms::Object::MetaInfosType & metaInfos )
 {
-    const DataVisitor::ClassnameType & classname = metaInfos.find( DataVisitor::CLASSNAME_METAINFO )->second;
-    ::fwTools::UUID::UUIDType uuid = m_atomObj->getId();
+    const DataVisitor::ClassnameType& classname = metaInfos.find( DataVisitor::CLASSNAME_METAINFO )->second;
+    const ::fwTools::UUID::UUIDType& uuid = metaInfos.find( DataVisitor::ID_METAINFO )->second;
+
     m_dataObj = ::fwData::factory::New(classname);
 
     std::stringstream msg;

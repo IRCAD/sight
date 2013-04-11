@@ -63,7 +63,7 @@ namespace fwAtomConversion
 {
     ::fwData::Object::sptr data;
 
-    AtomVisitor::DataCacheType::iterator elem = cache.find( atomObj->getId() );
+    AtomVisitor::DataCacheType::iterator elem = cache.find( atomObj->getMetaInfo( DataVisitor::ID_METAINFO ) );
 
     if ( elem == cache.end() )
     {
@@ -79,7 +79,7 @@ namespace fwAtomConversion
             data = visitor.getDataObject();
         }
     }
-    else // already analysed
+    else // already analyzed
     {
         data = elem->second;
     }
