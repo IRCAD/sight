@@ -8,6 +8,8 @@
 
 #include <fwAtomsBoostIO/Reader.hpp>
 
+#include <fwAtomsHdf5IO/Reader.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwTools/IBufferManager.hpp>
@@ -71,43 +73,54 @@ void SMedDataReader::updating() throw(::fwTools::Failed)
 
             FW_RAISE_IF( "Extension is empty", extension.empty() );
 
-            // Read atom
-            ::fwZip::IReadArchive::sptr readArchive;
-            ::boost::filesystem::path archiveRootName;
-            if ( extension == ".json" )
+            ::fwAtoms::Object::sptr atom;
+            if ( extension == ".hdf5" )
             {
-                readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
-                archiveRootName = filename;
-            }
-            else if ( extension == ".jsonz" )
-            {
-                readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
-                archiveRootName = "root.json";
-            }
-            else if ( extension == ".xml" )
-            {
-                readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
-                archiveRootName = filename;
-            }
-            else if ( extension == ".xmlz" )
-            {
-                readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
-                archiveRootName = "root.xml";
+                ::fwAtomsHdf5IO::Reader reader;
+                atom = ::fwAtoms::Object::dynamicCast( reader.read( filePath ) );
             }
             else
             {
-                FW_RAISE( "This file extension '" << extension << "' is not managed" );
-            }
+                // Read atom
+                ::fwZip::IReadArchive::sptr readArchive;
+                ::boost::filesystem::path archiveRootName;
+                if ( extension == ".json" )
+                {
+                    readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+                    archiveRootName = filename;
+                }
+                else if ( extension == ".jsonz" )
+                {
+                    readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
+                    archiveRootName = "root.json";
+                }
+                else if ( extension == ".xml" )
+                {
+                    readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+                    archiveRootName = filename;
+                }
+                else if ( extension == ".xmlz" )
+                {
+                    readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
+                    archiveRootName = "root.xml";
+                }
+                else
+                {
+                    FW_RAISE( "This file extension '" << extension << "' is not managed" );
+                }
 
-            ::fwAtomsBoostIO::Reader reader;
-            ::fwAtoms::Object::sptr atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName ) );
-            readArchive.reset();
+                ::fwAtomsBoostIO::Reader reader;
+                atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName ) );
+                readArchive.reset();
+
+            }
             FW_RAISE_IF( "Data not correspond to an fw4spl medical data", ! atom );
 
             ::fwData::Composite::sptr newData = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
             FW_RAISE_IF( "Data not correspond to an fw4spl medical data", ! newData );
 
             data->shallowCopy(newData);
+
 
             this->notificationOfUpdate();
         }
@@ -199,11 +212,12 @@ void SMedDataReader::configureWithIHM()
    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
    dialogFile.setOption(::fwGui::dialog::LocationDialog::FILE_MUST_EXIST);
 
-   dialogFile.addFilter( "Medical data", "*.json *.jsonz *.xml *.xmlz" );
+   dialogFile.addFilter( "Medical data", "*.json *.jsonz *.xml *.xmlz *.hdf5" );
    dialogFile.addFilter( "JSON", "*.json" );
    dialogFile.addFilter( "Zipped JSON", "*.jsonz" );
    dialogFile.addFilter( "XML", "*.xml" );
    dialogFile.addFilter( "Zipped XML", "*.xmlz" );
+   dialogFile.addFilter( "HDF5", "*.hdf5" );
 
    ::fwData::location::SingleFile::sptr result
        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );

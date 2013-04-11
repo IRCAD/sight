@@ -31,7 +31,7 @@ public:
     /// Does nothing
     IOATOMS_API  virtual ~SMedDataWriter() throw() {};
 
-    /// Propose to create a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
+    /// Propose to create a medical data file (*.json,*.jsonz,*.xml, *.xmlz or *.hdf5)
     IOATOMS_API void configureWithIHM();
 
 protected:

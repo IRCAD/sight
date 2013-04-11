@@ -140,6 +140,16 @@ void IoAtomsTest::XMLZMedicalDataTest()
     ::boost::filesystem::create_directories( filePath.parent_path() );
     this->writeReadFile( filePath );
 }
+
+//------------------------------------------------------------------------------
+
+void IoAtomsTest::HDF5MedicalDataTest()
+{
+    ::boost::filesystem::path filePath = ::fwTools::System::getTemporaryFolder() / "testHDF5" / "ioAtomsTest.hdf5";
+    ::boost::filesystem::create_directories( filePath.parent_path() );
+    this->writeReadFile( filePath );
+}
+
 //------------------------------------------------------------------------------
 
 } // namespace ut

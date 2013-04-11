@@ -2,6 +2,7 @@ TYPE    = 'bundle'
 VERSION = '0-1'
 LIB     = [
           'fwAtomsBoostIO_0-1',
+          'fwAtomsHdf5IO_0-1',
           'fwAtomConversion_0-1',
           'fwCore_0-1',
           'fwData_0-1',

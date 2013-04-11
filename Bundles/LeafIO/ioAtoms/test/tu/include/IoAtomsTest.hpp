@@ -19,6 +19,7 @@ class IoAtomsTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( JSONZMedicalDataTest );
     CPPUNIT_TEST( XMLMedicalDataTest );
     CPPUNIT_TEST( XMLZMedicalDataTest );
+    CPPUNIT_TEST( HDF5MedicalDataTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -33,6 +34,7 @@ public:
     void JSONZMedicalDataTest();
     void XMLMedicalDataTest();
     void XMLZMedicalDataTest();
+    void HDF5MedicalDataTest();
 
     // Helper to test different extensions
     void writeReadFile( const ::boost::filesystem::path & filePath );

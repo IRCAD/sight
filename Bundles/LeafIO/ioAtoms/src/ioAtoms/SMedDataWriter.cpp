@@ -8,6 +8,8 @@
 
 #include <fwAtomsBoostIO/Writer.hpp>
 
+#include <fwAtomsHdf5IO/Writer.hpp>
+
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwData/Composite.hpp>
@@ -82,50 +84,56 @@ void SMedDataWriter::updating() throw(::fwTools::Failed)
             // Convert data to atom
             ::fwAtoms::Base::sptr atom = ::fwAtomConversion::convert(md);
 
-            // Write atom
-            ::fwZip::IWriteArchive::sptr writeArchive;
-            ::fwAtomsBoostIO::Writer::FormatType format;
-            ::boost::filesystem::path archiveRootName;
-            if ( extension == ".json" )
+            if (extension == ".hdf5")
             {
-                writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
-                archiveRootName = filename;
-                format = ::fwAtomsBoostIO::Writer::JSON;
-            }
-            else if ( extension == ".jsonz" )
-            {
-                if ( ::boost::filesystem::exists( filePath ) )
-                {
-                    ::boost::filesystem::remove( filePath );
-                }
-                writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
-                archiveRootName = "root.json";
-                format = ::fwAtomsBoostIO::Writer::JSON;
-            }
-            else if ( extension == ".xml" )
-            {
-                writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
-                archiveRootName = filename;
-                format = ::fwAtomsBoostIO::Writer::XML;
-            }
-            else if ( extension == ".xmlz" )
-            {
-                if ( ::boost::filesystem::exists( filePath ) )
-                {
-                    ::boost::filesystem::remove( filePath );
-                }
-                writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
-                archiveRootName = "root.xml";
-                format = ::fwAtomsBoostIO::Writer::XML;
+                ::fwAtomsHdf5IO::Writer(atom).write( filePath );
             }
             else
             {
-                FW_RAISE( "This file extension '" << extension << "' is not managed" );
+                // Write atom
+                ::fwZip::IWriteArchive::sptr writeArchive;
+                ::fwAtomsBoostIO::Writer::FormatType format;
+                ::boost::filesystem::path archiveRootName;
+                if ( extension == ".json" )
+                {
+                    writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+                    archiveRootName = filename;
+                    format = ::fwAtomsBoostIO::Writer::JSON;
+                }
+                else if ( extension == ".jsonz" )
+                {
+                    if ( ::boost::filesystem::exists( filePath ) )
+                    {
+                        ::boost::filesystem::remove( filePath );
+                    }
+                    writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
+                    archiveRootName = "root.json";
+                    format = ::fwAtomsBoostIO::Writer::JSON;
+                }
+                else if ( extension == ".xml" )
+                {
+                    writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+                    archiveRootName = filename;
+                    format = ::fwAtomsBoostIO::Writer::XML;
+                }
+                else if ( extension == ".xmlz" )
+                {
+                    if ( ::boost::filesystem::exists( filePath ) )
+                    {
+                        ::boost::filesystem::remove( filePath );
+                    }
+                    writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
+                    archiveRootName = "root.xml";
+                    format = ::fwAtomsBoostIO::Writer::XML;
+                }
+                else
+                {
+                    FW_RAISE( "This file extension '" << extension << "' is not managed" );
+                }
+
+                ::fwAtomsBoostIO::Writer(atom).write( writeArchive, archiveRootName, format );
+                writeArchive.reset();
             }
-
-            ::fwAtomsBoostIO::Writer(atom).write( writeArchive, archiveRootName, format );
-            writeArchive.reset();
-
         }
         catch( std::exception & e )
         {
@@ -167,6 +175,7 @@ void SMedDataWriter::configureWithIHM()
    dialogFile.addFilter( "Zipped JSON", "*.jsonz");
    dialogFile.addFilter( "XML", "*.xml");
    dialogFile.addFilter( "Zipped XML", "*.xmlz");
+   dialogFile.addFilter( "HDF5", "*.hdf5");
 
    ::fwData::location::SingleFile::sptr result
        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
