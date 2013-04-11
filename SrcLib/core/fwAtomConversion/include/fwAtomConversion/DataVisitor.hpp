@@ -16,6 +16,7 @@
 #include <fwData/Object.hpp>
 
 #include <fwAtoms/Base.hpp>
+#include <fwAtoms/Object.hpp>
 
 #include "fwAtomConversion/config.hpp"
 
