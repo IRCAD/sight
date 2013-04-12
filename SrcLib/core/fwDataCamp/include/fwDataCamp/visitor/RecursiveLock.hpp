@@ -7,6 +7,10 @@
 #ifndef  __FWDATACAMP_VISITOR_RECURSIVELOCK_HPP__
 #define  __FWDATACAMP_VISITOR_RECURSIVELOCK_HPP__
 
+#include <vector>
+
+#include <fwCore/mt/types.hpp>
+
 #include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
 #include "fwDataCamp/config.hpp"
@@ -20,6 +24,7 @@ namespace fwData
         class ObjectReadLock;
     }
 }
+
 
 namespace fwDataCamp
 {
@@ -41,7 +46,7 @@ public:
     /**
      * @brief Container definition dedicated to object locks storage.
      */
-    typedef std::map< std::string,  SPTR( ::fwData::mt::ObjectReadLock )> LockMapType;
+    typedef std::vector< ::fwCore::mt::ReadLock > LockVectType;
 
     /**
      * @brief Constructor.
@@ -52,7 +57,7 @@ public:
      * @param locks container of previously acquired locks
      */
     FWDATACAMP_API RecursiveLock( SPTR(::fwData::Object) object,
-                                  SPTR(LockMapType) locks = SPTR(LockMapType)(new LockMapType) );
+                                  SPTR(LockVectType) locks = SPTR(LockVectType)(new LockVectType()));
 
     FWDATACAMP_API virtual ~RecursiveLock();
 
@@ -72,15 +77,15 @@ private :
     /// Locks associated object recursively (called by constructor).
     void lock();
 
-
     /// Object given in constructor which will introspected
     SPTR(::fwData::Object) m_object;
+
+    /// Container of acquired locks.
+    SPTR(LockVectType) m_locks;
 
     /// Reflection in camp world of m_object
     ::camp::UserObject m_campObj;
 
-    /// Container of acquired locks.
-    SPTR(LockMapType) m_locks;
 
 };
 

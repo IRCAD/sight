@@ -6,10 +6,12 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <fwData/Object.hpp>
+#include <fwCore/mt/types.hpp>
 
+#include <fwTools/BufferObject.hpp>
+
+#include <fwData/Object.hpp>
 #include <fwData/camp/mapper.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
 
 #include "fwDataCamp/exception/NullPointer.hpp"
 #include "fwDataCamp/exception/ObjectNotFound.hpp"
@@ -25,9 +27,9 @@ namespace visitor
 
 struct LockVisitor : public camp::ValueVisitor< void >
 {
-    SPTR(RecursiveLock::LockMapType) m_locks;
+    SPTR(RecursiveLock::LockVectType) m_locks;
 
-    LockVisitor(SPTR(RecursiveLock::LockMapType) locks) : m_locks(locks)
+    LockVisitor(SPTR(RecursiveLock::LockVectType) locks) : m_locks(locks)
     {}
 
     void operator()(camp::NoType value)
@@ -54,12 +56,20 @@ struct LockVisitor : public camp::ValueVisitor< void >
         if ( value.pointer() )
         {
             OSLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call("classname") <<"' )" );
-            if( metaclass.hasFunction("is_a") && value.call("is_a", ::camp::Args("::fwData::Object")).to<bool>() )
+            if( metaclass.hasFunction("is_a") )
             {
-                ::fwData::Object * ptr = value.get< ::fwData::Object * >();
-                ::fwData::Object::sptr obj = ptr->getSptr();
-
-                ::fwDataCamp::visitor::RecursiveLock visitor( obj, m_locks );
+                if( value.call("is_a", ::camp::Args("::fwData::Object")).to<bool>() )
+                {
+                    ::fwData::Object * ptr = value.get< ::fwData::Object * >();
+                    ::fwData::Object::sptr obj = ptr->getSptr();
+                    ::fwDataCamp::visitor::RecursiveLock visitor( obj, m_locks );
+                }
+                else if( value.call("is_a", ::camp::Args("::fwTools::BufferObject")).to<bool>() )
+                {
+                    ::fwTools::BufferObject * ptr = value.get< ::fwTools::BufferObject * >();
+                    ::fwTools::BufferObject::sptr bo = ptr->getSptr();
+                    m_locks->push_back(::fwCore::mt::ReadLock(bo->getMutex()));
+                }
             }
         }
     }
@@ -67,17 +77,11 @@ struct LockVisitor : public camp::ValueVisitor< void >
 
 //-----------------------------------------------------------------------------
 
-RecursiveLock::RecursiveLock( ::fwData::Object::sptr object, SPTR(RecursiveLock::LockMapType) locks  ) :
-        m_object(object)
+RecursiveLock::RecursiveLock( ::fwData::Object::sptr object, SPTR(LockVectType) locks ) :
+        m_object(object), m_locks(locks)
 {
+    m_locks->push_back(::fwCore::mt::ReadLock(m_object->getMutex()));
     m_campObj = camp::UserObject( object.get() );
-
-    m_locks = locks;
-
-    SPTR(::fwData::mt::ObjectReadLock) lock =
-            SPTR(::fwData::mt::ObjectReadLock)(new ::fwData::mt::ObjectReadLock(object));
-    (*m_locks)[object->getID()] = lock;
-
     this->lock();
 }
 
