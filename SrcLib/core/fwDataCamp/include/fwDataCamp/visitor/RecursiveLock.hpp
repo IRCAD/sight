@@ -46,7 +46,7 @@ public:
     /**
      * @brief Container definition dedicated to object locks storage.
      */
-    typedef std::vector< ::fwCore::mt::ReadLock > LockVectType;
+    typedef std::vector< SPTR(::fwCore::mt::ReadLock) > LockVectType;
 
     /**
      * @brief Constructor.
