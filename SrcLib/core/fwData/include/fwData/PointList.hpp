@@ -36,7 +36,6 @@ public :
 
     typedef std::vector< ::fwData::Point::sptr > PointListContainer;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -48,10 +47,10 @@ public :
     FWDATA_API virtual ~PointList();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( PointList::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( PointList::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// Points container
     fwGettersSettersDocMacro(Points, vPoints, PointListContainer, a container of all points);

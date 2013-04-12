@@ -42,7 +42,6 @@ public :
     typedef double PointCoordType;
     typedef fwVec3d PointCoordArrayType;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -54,10 +53,10 @@ public :
     FWDATA_API virtual ~Point();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Point::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Point::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// Coordinates of point
     fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );

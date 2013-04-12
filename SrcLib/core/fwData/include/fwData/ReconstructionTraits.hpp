@@ -65,6 +65,9 @@ public:
     /// Get the associated structure traits
     FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
 
+    /// Defines deep copy
+    FWDATA_API void deepCopy( const Object::csptr& _source );
+
 private:
 
     /// ROI identifier

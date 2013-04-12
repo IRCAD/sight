@@ -128,6 +128,9 @@ public:
      */
     FWDATA_API void setCameraGUID(uint32HL _cameraGUID);
 
+    /// Defines deep copy
+    FWDATA_API void deepCopy( const Object::csptr& _source );
+
 protected:
 
     /// extrinsic matrix

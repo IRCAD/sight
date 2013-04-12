@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Port.hpp"
 
@@ -24,22 +25,30 @@ Port::~Port()
 
 //------------------------------------------------------------------------------
 
-void Port::shallowCopy( Port::csptr _source )
+void Port::shallowCopy(const Object::csptr &_source )
 {
+    Port::csptr other = Port::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    m_identifier = _source->m_identifier;
-    m_type = _source->m_type;
+    m_identifier = other->m_identifier;
+    m_type = other->m_type;
 }
 
 //------------------------------------------------------------------------------
 
-void Port::deepCopy( Port::csptr _source )
+void Port::deepCopy(const Object::csptr &_source )
 {
+    Port::csptr other = Port::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
-    m_identifier = _source->m_identifier;
-    m_type = _source->m_type;
+    m_identifier = other->m_identifier;
+    m_type = other->m_type;
 }
 
 //------------------------------------------------------------------------------

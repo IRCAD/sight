@@ -12,7 +12,7 @@ LIB = ['fwData_0-1',
       ]
 
 BUNDLES = []
-REQUIREMENTS = ['dataReg_0-1','servicesReg_0-1','ioAtoms_0-1']
+REQUIREMENTS = ['dataReg_0-1','servicesReg_0-1','ioAtoms_0-1','gui_0-1']
 
 CONSOLE = 'yes'
 

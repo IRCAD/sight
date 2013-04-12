@@ -38,7 +38,6 @@ public:
 
     typedef std::vector< long > fwHistogramValues;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -50,10 +49,10 @@ public:
     FWDATA_API virtual ~Histogram();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Histogram::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Histogram::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /**
      * @brief Add the given pixel value into the histogram.

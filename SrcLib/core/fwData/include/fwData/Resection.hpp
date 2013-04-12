@@ -35,7 +35,6 @@ public :
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionOutputs;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -47,10 +46,10 @@ public :
     FWDATA_API virtual ~Resection();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Resection::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Resection::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// PlaneList
     fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, the plane list);

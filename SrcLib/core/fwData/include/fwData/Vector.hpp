@@ -104,13 +104,12 @@ public:
 
 
 
-    fwDataObjectMacro();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Vector::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Vector::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// Method to initialize a ::fwData::Vector from a std::vector
     template< class DATATYPE >

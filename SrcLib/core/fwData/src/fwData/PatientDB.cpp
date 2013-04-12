@@ -6,6 +6,7 @@
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Patient.hpp"
 
@@ -32,20 +33,28 @@ PatientDB::~PatientDB()
 
 //------------------------------------------------------------------------------
 
-void PatientDB::shallowCopy( PatientDB::csptr _source )
+void PatientDB::shallowCopy(const Object::csptr &_source )
 {
+    PatientDB::csptr other = PatientDB::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_attrPatients = _source->m_attrPatients;
+    m_attrPatients = other->m_attrPatients;
 }
 
 //------------------------------------------------------------------------------
 
-void PatientDB::deepCopy( PatientDB::csptr _source )
+void PatientDB::deepCopy(const Object::csptr &_source )
 {
+    PatientDB::csptr other = PatientDB::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
     m_attrPatients.clear();
     std::transform(
-            _source->m_attrPatients.begin(), _source->m_attrPatients.end(),
+            other->m_attrPatients.begin(), other->m_attrPatients.end(),
             std::back_inserter(m_attrPatients),
             & ::fwData::Object::copy< PatientContainerType::value_type::element_type >
             );

@@ -97,13 +97,12 @@ public:
     fwDataGetSetCRefMacro(Container, ContainerType);
     /// @}
 
-    fwDataObjectMacro();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( List::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( List::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
 protected:
 

@@ -165,56 +165,34 @@ public:
      * @brief A shallow copy of fields (objects in m_children)
      * @param[in] source source of the copy.
      */
-    FWDATA_API virtual void shallowCopy( ::fwData::Object::csptr source );
+    FWDATA_API virtual void shallowCopy( const ::fwData::Object::csptr &source );
 
     /**
      * @brief A deep copy of fields (objects in m_children)
      * @param[in] source source of the copy.
      */
-    FWDATA_API virtual void deepCopy( ::fwData::Object::csptr source );
+    FWDATA_API virtual void deepCopy( const ::fwData::Object::csptr &source ) = 0;
 
     /**
      * @brief return a copy of the source. if source is a null pointer, return a null pointer.
      * @{
      */
-    FWDATA_API static ::fwData::Object::sptr copy(::fwData::Object::csptr source);
+    FWDATA_API static ::fwData::Object::sptr copy(const ::fwData::Object::csptr &source);
     template <typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(SPTR(DATA_TYPE) source);
+    static SPTR(DATA_TYPE) copy(const SPTR(DATA_TYPE) &source);
     /** @} */
 
     /**
      * @brief A shallow copy of fields (objects in m_children)
      * @param[in] source source of the copy.
      */
-    FWDATA_API void fieldShallowCopy( ::fwData::Object::csptr source );
+    FWDATA_API void fieldShallowCopy( const ::fwData::Object::csptr &source );
 
     /**
      * @brief A deep copy of fields (objects in m_children)
      * @param[in] source source of the copy.
      */
-    FWDATA_API void fieldDeepCopy( ::fwData::Object::csptr source );
-
-    //-----------------------------------------------------------------------------
-
-    template< typename DATA_TYPE >
-    void shallowCopy( ::fwData::Object::csptr source )
-    {
-        typename DATA_TYPE::csptr castSource = DATA_TYPE::dynamicConstCast( source );
-        SLM_FATAL_IF("Sorry, the classname of object source is different, shallowCopy is not possible.", castSource == 0 );
-        typename DATA_TYPE::sptr castDest = DATA_TYPE::dynamicCast( this->getSptr() );
-        castDest->DATA_TYPE::shallowCopy( castSource );
-    }
-
-    //-----------------------------------------------------------------------------
-
-    template< typename DATA_TYPE >
-    void deepCopy( ::fwData::Object::csptr source )
-    {
-        typename DATA_TYPE::csptr castSource = DATA_TYPE::dynamicConstCast( source );
-        SLM_FATAL_IF("Sorry, the classname of object source is different, deepCopy is not possible.", castSource == 0 );
-        typename DATA_TYPE::sptr castDest = DATA_TYPE::dynamicCast( this->getSptr() );
-        castDest->DATA_TYPE::deepCopy( castSource );
-    }
+    FWDATA_API void fieldDeepCopy( const ::fwData::Object::csptr &source );
 
     //-----------------------------------------------------------------------------
 
@@ -253,7 +231,7 @@ protected:
 
 
 template <typename DATA_TYPE>
-SPTR(DATA_TYPE) Object::copy(SPTR(DATA_TYPE) source)
+SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) &source)
 {
     return DATA_TYPE::dynamicCast( ::fwData::Object::copy( ::fwData::Object::csptr(source)) );
 }

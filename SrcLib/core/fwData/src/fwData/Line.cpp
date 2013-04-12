@@ -6,6 +6,7 @@
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 
@@ -32,20 +33,28 @@ Line::~Line ()
 
 //------------------------------------------------------------------------------
 
-void Line::shallowCopy( Line::csptr _source )
+void Line::shallowCopy(const Object::csptr &_source )
 {
+    Line::csptr other = Line::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_position = _source->m_position;
-    m_direction = _source->m_direction;
+    m_position = other->m_position;
+    m_direction = other->m_direction;
 }
 
 //------------------------------------------------------------------------------
 
-void Line::deepCopy( Line::csptr _source )
+void Line::deepCopy(const Object::csptr &_source )
 {
+    Line::csptr other = Line::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    m_position = ::fwData::Object::copy( _source->m_position );
-    m_direction = ::fwData::Object::copy( _source->m_direction );
+    m_position = ::fwData::Object::copy( other->m_position );
+    m_direction = ::fwData::Object::copy( other->m_direction );
 }
 
 //------------------------------------------------------------------------------

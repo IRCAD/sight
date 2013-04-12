@@ -9,6 +9,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/PointList.hpp"
 
 fwDataRegisterMacro( ::fwData::PointList );
@@ -28,21 +29,29 @@ PointList::~PointList()
 
 //------------------------------------------------------------------------------
 
-void PointList::shallowCopy( PointList::csptr _source )
+void PointList::shallowCopy(const Object::csptr &_source )
 {
+    PointList::csptr other = PointList::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    m_vPoints = _source->m_vPoints;
+    m_vPoints = other->m_vPoints;
 }
 
 //------------------------------------------------------------------------------
 
-void PointList::deepCopy( PointList::csptr _source )
+void PointList::deepCopy(const Object::csptr &_source )
 {
+    PointList::csptr other = PointList::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
     m_vPoints.clear();
-    BOOST_FOREACH(PointListContainer::value_type point, _source->m_vPoints )
+    BOOST_FOREACH(PointListContainer::value_type point, other->m_vPoints )
     {
         Point::NewSptr newPoint;
         newPoint->deepCopy( point );

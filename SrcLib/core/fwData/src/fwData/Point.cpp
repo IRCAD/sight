@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/Point.hpp"
 
 fwDataRegisterMacro( ::fwData::Point );
@@ -52,18 +53,26 @@ Point::~Point ()
 
 //------------------------------------------------------------------------------
 
-void Point::shallowCopy( Point::csptr _source )
+void Point::shallowCopy(const Object::csptr &_source )
 {
+    Point::csptr other = Point::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_vCoord = _source->m_vCoord;
+    m_vCoord = other->m_vCoord;
 }
 
 //------------------------------------------------------------------------------
 
-void Point::deepCopy( Point::csptr _source )
+void Point::deepCopy(const Object::csptr &_source )
 {
+    Point::csptr other = Point::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    m_vCoord = _source->m_vCoord;
+    m_vCoord = other->m_vCoord;
 }
 
 //------------------------------------------------------------------------------

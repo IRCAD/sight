@@ -36,7 +36,6 @@ public:
             ((SingleFileFactory ,((::boost::filesystem::path)) ))
     );
 
-    fwDataObjectMacro();
 
     /// Constructor
     FWDATA_API SingleFile( ::fwData::Object::Key key );
@@ -48,10 +47,10 @@ public:
     fwCampMakeFriendDataMacro((fwData)(location)(SingleFile));
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( SingleFile::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( SingleFile::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// Set file system path
     FWDATA_API void setPath( ::boost::filesystem::path path);

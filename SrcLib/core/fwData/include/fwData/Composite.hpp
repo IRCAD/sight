@@ -117,13 +117,12 @@ public:
     fwDataGetSetCRefMacro(Container, ContainerType);
     /// @}
 
-    fwDataObjectMacro();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Composite::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Composite::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// Method to initialize a ::fwData::Composite from a std::map< string, X >
     template< class DATATYPE >

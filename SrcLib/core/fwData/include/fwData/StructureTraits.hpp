@@ -98,6 +98,9 @@ public:
 
     fwGettersSettersDocMacro(PropertyType, propertyType, std::string, Dicom property type);
 
+    /// Defines deep copy
+    FWDATA_API void deepCopy( const Object::csptr& _source );
+
 private:
 
     /// structure type (ie. Liver, Skin, ...)

@@ -37,7 +37,6 @@ class FWDATA_CLASS_API Graph : public ::fwData::Object {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwData::factory::New< Graph >) ;
 
-    fwDataObjectMacro();
     fwCampMakeFriendDataMacro((fwData)(Graph));
 
     FWDATA_API static const bool UP_STREAM;
@@ -192,9 +191,9 @@ public:
      */
     FWDATA_API size_t getNbEdges() const;
 
-    FWDATA_API void shallowCopy( Graph::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
-    FWDATA_API void deepCopy( Graph::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /**
      * @brief Check if an edge is connected to the node

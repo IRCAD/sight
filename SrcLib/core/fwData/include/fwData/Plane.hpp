@@ -36,7 +36,6 @@ public :
 
     typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -48,10 +47,10 @@ public :
     FWDATA_API virtual ~Plane();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Plane::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Plane::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /*
      * @brief Compare method

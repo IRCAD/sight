@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/ReconstructionTraits.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
 fwDataRegisterMacro( ::fwData::ReconstructionTraits );
@@ -70,6 +71,17 @@ ReconstructionTraits::~ReconstructionTraits()
 {}
 
 //------------------------------------------------------------------------------
+
+void ReconstructionTraits::deepCopy(const Object::csptr &source )
+{
+    ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source );
+
+    OSLM_FATAL("Not implemented." );
+}
 
 } // namespace fwData
 

@@ -81,6 +81,9 @@ public :
 
     fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
 
+    /// Defines deep copy
+    FWDATA_API void deepCopy( const Object::csptr& _source );
+
 protected :
 
     /// Points container

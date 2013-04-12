@@ -43,7 +43,6 @@ class FWDATA_CLASS_API Acquisition : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Acquisition)(::fwData::Object), (()), ::fwData::factory::New< Acquisition >) ;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -57,10 +56,10 @@ public:
     fwCampMakeFriendDataMacro((fwData)(Acquisition));
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Acquisition::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Acquisition::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /**
      * @brief Get/Set the image associated with the acquisition

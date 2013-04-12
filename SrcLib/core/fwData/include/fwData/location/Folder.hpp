@@ -37,7 +37,6 @@ public:
             ((FolderFactory ,((::boost::filesystem::path)) ((bool)(false)) ))
     );
 
-    fwDataObjectMacro();
     fwCampMakeFriendDataMacro((fwData)(location)(Folder));
 
     /// Constructor
@@ -47,10 +46,10 @@ public:
     FWDATA_API virtual ~Folder();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Folder::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Folder::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// @brief Set folder filesystem path
     FWDATA_API void setFolder( ::boost::filesystem::path folder);

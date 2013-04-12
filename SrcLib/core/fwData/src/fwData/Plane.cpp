@@ -8,6 +8,7 @@
 #include <fwMath/PlaneFunctions.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/Plane.hpp"
 
 #define EPSILON 0.00000001
@@ -33,22 +34,30 @@ Plane::~Plane ()
 
 //------------------------------------------------------------------------------
 
-void Plane::shallowCopy( Plane::csptr _source )
+void Plane::shallowCopy(const Object::csptr &_source )
 {
+    Plane::csptr other = Plane::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_vPoints = _source->m_vPoints;
-    m_plane = _source->m_plane;
+    m_vPoints = other->m_vPoints;
+    m_plane = other->m_plane;
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::deepCopy( Plane::csptr _source )
+void Plane::deepCopy(const Object::csptr &_source )
 {
+    Plane::csptr other = Plane::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    m_vPoints[0]->deepCopy( _source->m_vPoints[0] );
-    m_vPoints[1]->deepCopy( _source->m_vPoints[1] );
-    m_vPoints[2]->deepCopy( _source->m_vPoints[2] );
-    m_plane = _source->m_plane;
+    m_vPoints[0]->deepCopy( other->m_vPoints[0] );
+    m_vPoints[1]->deepCopy( other->m_vPoints[1] );
+    m_vPoints[2]->deepCopy( other->m_vPoints[2] );
+    m_plane = other->m_plane;
 }
 
 //------------------------------------------------------------------------------

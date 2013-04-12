@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 #include "fwData/List.hpp"
@@ -31,21 +32,29 @@ List::~List()
 
 //------------------------------------------------------------------------------
 
-void List::shallowCopy( List::csptr _source )
+void List::shallowCopy(const Object::csptr &_source )
 {
+    List::csptr other = List::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_attrContainer = _source->m_attrContainer;
+    m_attrContainer = other->m_attrContainer;
 }
 
 //------------------------------------------------------------------------------
 
-void List::deepCopy( List::csptr _source )
+void List::deepCopy(const Object::csptr &_source )
 {
+    List::csptr other = List::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
     m_attrContainer.clear();
     std::transform(
-            _source->begin(), _source->end(),
+            other->begin(), other->end(),
             std::back_inserter(m_attrContainer),
             &::fwData::Object::copy< ValueType::element_type >
     );

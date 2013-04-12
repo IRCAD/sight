@@ -41,6 +41,9 @@ public:
     /// Set file system paths
     FWDATA_API std::vector< ::boost::filesystem::path> getPaths();
 
+    /// Defines deep copy
+    FWDATA_API void deepCopy( const Object::csptr& _source );
+
 protected :
 
     /// file system paths

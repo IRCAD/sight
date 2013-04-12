@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Study.hpp"
 #include "fwData/Patient.hpp"
@@ -32,41 +33,49 @@ Patient::~Patient()
 
 //------------------------------------------------------------------------------
 
-void Patient::shallowCopy( Patient::csptr _source )
+void Patient::shallowCopy(const Object::csptr &_source )
 {
+    Patient::csptr other = Patient::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_sName         = _source->m_sName;
-    m_sFirstname    = _source->m_sFirstname;
-    m_sIDDicom      = _source->m_sIDDicom;
-    m_sBirthdate    = _source->m_sBirthdate;
-    m_bIsMale       = _source->m_bIsMale;
-    m_i32DbID       = _source->m_i32DbID;
-    m_attrStudies   = _source->m_attrStudies;
-    m_attrToolBox   = _source->m_attrToolBox;
-    m_attrScenarios = _source->m_attrScenarios;
+    m_sName         = other->m_sName;
+    m_sFirstname    = other->m_sFirstname;
+    m_sIDDicom      = other->m_sIDDicom;
+    m_sBirthdate    = other->m_sBirthdate;
+    m_bIsMale       = other->m_bIsMale;
+    m_i32DbID       = other->m_i32DbID;
+    m_attrStudies   = other->m_attrStudies;
+    m_attrToolBox   = other->m_attrToolBox;
+    m_attrScenarios = other->m_attrScenarios;
 }
 
 //------------------------------------------------------------------------------
 
-void Patient::deepCopy( Patient::csptr _source )
+void Patient::deepCopy(const Object::csptr &_source )
 {
+    Patient::csptr other = Patient::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    m_sName         = _source->m_sName;
-    m_sFirstname    = _source->m_sFirstname;
-    m_sIDDicom      = _source->m_sIDDicom;
-    m_sBirthdate    = _source->m_sBirthdate;
-    m_bIsMale       = _source->m_bIsMale;
-    m_i32DbID       = _source->m_i32DbID;
+    m_sName         = other->m_sName;
+    m_sFirstname    = other->m_sFirstname;
+    m_sIDDicom      = other->m_sIDDicom;
+    m_sBirthdate    = other->m_sBirthdate;
+    m_bIsMale       = other->m_bIsMale;
+    m_i32DbID       = other->m_i32DbID;
 
     m_attrStudies.clear();
     std::transform(
-            _source->m_attrStudies.begin(), _source->m_attrStudies.end(),
+            other->m_attrStudies.begin(), other->m_attrStudies.end(),
             std::back_inserter(m_attrStudies),
             & ::fwData::Object::copy< StudyContainerType::value_type::element_type >
             );
 
-    m_attrToolBox   = ::fwData::Object::copy(_source->m_attrToolBox);
-    m_attrScenarios = ::fwData::Object::copy(_source->m_attrScenarios);
+    m_attrToolBox   = ::fwData::Object::copy(other->m_attrToolBox);
+    m_attrScenarios = ::fwData::Object::copy(other->m_attrScenarios);
 }
 
 //------------------------------------------------------------------------------

@@ -468,9 +468,8 @@ public :
     fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotCamped)(::fwData::Object),
        ((::fwData::factory::New< ClassNotCamped > ,() )) );
 
-    fwDataObjectMacro();
-
     ClassNotCamped(::fwData::Object::Key key){};
+    void deepCopy(const Object::csptr &_source ){};
 
 };
 
@@ -580,14 +579,14 @@ public :
     fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotManaged)(::fwData::Object),
        ((::fwData::factory::New< ClassNotManaged > ,() )) );
 
-    fwDataObjectMacro();
-
     fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged));
 
     ClassNotManaged(::fwData::Object::Key key)
     {
         m_values.insert( std::make_pair( ::fwData::String::New(), 0.2 ) );
     };
+
+    void deepCopy(const Object::csptr &_source ){};
 
     std::map< ::fwData::String::sptr, double > m_values;
 

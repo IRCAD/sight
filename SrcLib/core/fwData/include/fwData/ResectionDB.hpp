@@ -31,7 +31,6 @@ class FWDATA_CLASS_API ResectionDB : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwData::factory::New< ResectionDB >) ;
     fwCampMakeFriendDataMacro((fwData)(ResectionDB));
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -44,10 +43,10 @@ public:
 
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( ResectionDB::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( ResectionDB::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     typedef std::vector< ::fwData::Resection::sptr > ResectionContainerType;
 

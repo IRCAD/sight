@@ -64,7 +64,6 @@ public:
     typedef ::boost::uint8_t BufferType;
     typedef ::boost::shared_array< BufferType > SharedArray;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -78,10 +77,10 @@ public:
     FWDATA_API virtual ~Image() throw();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Image::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Image::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     FWDATA_API void copyInformation( Image::csptr _source );

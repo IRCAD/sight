@@ -6,6 +6,7 @@
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 
@@ -46,18 +47,26 @@ Color::~Color ()
 
 //------------------------------------------------------------------------------
 
-void Color::shallowCopy( Color::csptr _source )
+void Color::shallowCopy(const Object::csptr &_source )
 {
+    Color::csptr other = Color::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_vRGBA = _source->m_vRGBA;
+    m_vRGBA = other->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------
 
-void Color::deepCopy( Color::csptr _source )
+void Color::deepCopy(const Object::csptr &_source )
 {
+    Color::csptr other = Color::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    m_vRGBA = _source->m_vRGBA;
+    m_vRGBA = other->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------

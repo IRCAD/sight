@@ -38,7 +38,6 @@ public :
     typedef std::vector<TM3DType> TMCoefArray;
 
     //duplication methods
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -50,10 +49,10 @@ public :
     FWDATA_API virtual ~TransformationMatrix3D();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( TransformationMatrix3D::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( TransformationMatrix3D::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
 
     fwGettersSettersDocMacro(Coefficients, vCoefficients, TMCoefArray, the elements of the matrix)
