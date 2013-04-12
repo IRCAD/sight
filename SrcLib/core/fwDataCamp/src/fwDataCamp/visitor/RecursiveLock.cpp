@@ -69,7 +69,8 @@ struct LockVisitor : public camp::ValueVisitor< void >
                 {
                     ::fwTools::BufferObject * ptr = value.get< ::fwTools::BufferObject * >();
                     ::fwTools::BufferObject::sptr bo = ptr->getSptr();
-                    SPTR(::fwCore::mt::ReadLock) lock = ::boost::make_shared< ::fwCore::mt::ReadLock >(bo->getMutex());
+                    SPTR(::fwCore::mt::ReadLock) lock
+                            = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(bo->getMutex()));
                     m_locks->push_back(lock);
                 }
             }
@@ -82,7 +83,8 @@ struct LockVisitor : public camp::ValueVisitor< void >
 RecursiveLock::RecursiveLock( ::fwData::Object::sptr object, SPTR(LockVectType) locks ) :
         m_object(object), m_locks(locks)
 {
-    SPTR(::fwCore::mt::ReadLock) lock = ::boost::make_shared< ::fwCore::mt::ReadLock >(m_object->getMutex());
+    SPTR(::fwCore::mt::ReadLock) lock
+            = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(m_object->getMutex()));
     m_locks->push_back(lock);
     m_campObj = camp::UserObject( object.get() );
     this->lock();
