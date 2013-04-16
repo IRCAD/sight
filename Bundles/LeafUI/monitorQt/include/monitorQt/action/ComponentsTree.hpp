@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _MONITORQT_UI_ACTION_COMPONENTSTREE_HPP_
-#define _MONITORQT_UI_ACTION_COMPONENTSTREE_HPP_
+#ifndef __MONITORQT_UI_ACTION_COMPONENTSTREE_HPP__
+#define __MONITORQT_UI_ACTION_COMPONENTSTREE_HPP__
 
 #include <QDialog>
 #include <QPointer>
@@ -22,8 +22,7 @@ namespace action
 {
 
 /**
- * @brief   Implements an action that show bundle information
- * @author IRCAD (Research and Development Team).
+ * @brief  Implements an action that show bundle information.
  */
 class MONITORQT_CLASS_API ComponentsTree : public ::fwGui::IActionSrv
 {
@@ -65,5 +64,5 @@ private:
 } // namespace action
 } // namespace monitor
 
+#endif //__MONITORQT_UI_ACTION_COMPONENTSTREE_HPP__
 
-#endif //_MONITORQT_UI_ACTION_COMPONENTSTREE_HPP_

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _MONITORQT_PLUGIN_HPP_
-#define _MONITORQT_PLUGIN_HPP_
+#ifndef __MONITORQT_PLUGIN_HPP__
+#define __MONITORQT_PLUGIN_HPP__
 
 
 #include <fwRuntime/Plugin.hpp>
@@ -15,7 +15,6 @@ namespace monitor
 {
 
 /**
- * @author  IRCAD (Research and Development Team).
  * @date    2010.
  */
 struct Plugin : public ::fwRuntime::Plugin
@@ -36,5 +35,5 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace monitor
 
+#endif //__MONITORQT_PLUGIN_HPP__
 
-#endif //_MONITORQT_PLUGIN_HPP_

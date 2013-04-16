@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef MONITOR_MEMORYINFO_H_
-#define MONITOR_MEMORYINFO_H_
+#ifndef __MONITOR_MEMORYINFO_HPP__
+#define __MONITOR_MEMORYINFO_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -49,4 +49,5 @@ protected :
 } // namespace action
 } // namespace monitor
 
-#endif /*MONITOR_MEMORYINFO_H_*/
+#endif // __MONITOR_MEMORYINFO_HPP__
+

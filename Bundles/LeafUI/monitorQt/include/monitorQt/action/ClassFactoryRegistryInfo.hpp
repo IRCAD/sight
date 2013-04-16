@@ -4,9 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef MONITORQT_CLASSFACTORYREGISTRYINFO_H_
-#define MONITORQT_CLASSFACTORYREGISTRYINFO_H_
+#ifndef __MONITORQT_CLASSFACTORYREGISTRYINFO_HPP__
+#define __MONITORQT_CLASSFACTORYREGISTRYINFO_HPP__
 
+#include <QApplication>
 #include <QDialog>
 #include <QTreeWidget>
 
@@ -20,7 +21,6 @@ namespace action
 {
 /**
  * @brief   Implements an action to show services registered in factory
- * @author IRCAD (Research and Development Team).
  */
 class MONITORQT_CLASS_API ClassFactoryRegistryInfo : public ::fwGui::IActionSrv
 {
@@ -62,5 +62,5 @@ private:
 } // namespace action
 } // namespace monitor
 
-#endif //MONITORQT_CLASSFACTORYREGISTRYINFO_H_
+#endif // __MONITORQT_CLASSFACTORYREGISTRYINFO_HPP__
 

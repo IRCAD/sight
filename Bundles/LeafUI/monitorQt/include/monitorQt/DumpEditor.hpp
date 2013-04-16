@@ -4,19 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _MONITORQT_DUMPEDITOR_HPP_
-#define _MONITORQT_DUMPEDITOR_HPP_
+#ifndef __MONITORQT_DUMPEDITOR_HPP__
+#define __MONITORQT_DUMPEDITOR_HPP__
+
+#include <vector>
 
 #include <boost/signals/connection.hpp>
 
-#include <QLabel>
-#include <QTableWidget>
+#include <QPointer>
 #include <QPushButton>
 #include <QSignalMapper>
-#include <QPointer>
 #include <QTableView>
-
-#include <fwCore/TimeStamp.hpp>
+#include <QTableWidget>
 
 #include <fwTools/Failed.hpp>
 
@@ -32,7 +31,6 @@ namespace monitor
 /**
  * @class   DumpEditor
  * @brief   Editor to dump or restore selected buffer.
- * @author  IRCAD (Research and Development Team).
  * @date    2010-2013
  */
 class MONITORQT_CLASS_API DumpEditor : public QObject, public ::gui::editor::IEditor
@@ -112,6 +110,5 @@ private:
 
 } // monitor
 
-#endif /*_MONITORQT_DUMPEDITOR_HPP_*/
-
+#endif //__MONITORQT_DUMPEDITOR_HPP__
 

@@ -8,19 +8,19 @@
 #include <boost/foreach.hpp>
 
 #include <QComboBox>
+#include <QHeaderView>
+#include <QItemDelegate>
 #include <QStringList>
 #include <QTableWidgetItem>
 #include <QTimer>
 #include <QVBoxLayout>
-#include <QHeaderView>
-#include <QItemDelegate>
 
 #include <fwCore/base.hpp>
 
 #include <fwTools/fwID.hpp>
 #include <fwTools/IBufferManager.hpp>
-#include <fwTools/Stringizer.hpp>
 #include <fwTools/ByteSize.hpp>
+#include <fwTools/Stringizer.hpp>
 
 #include <fwData/Object.hpp>
 

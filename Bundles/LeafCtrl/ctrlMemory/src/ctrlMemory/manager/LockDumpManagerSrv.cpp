@@ -10,7 +10,7 @@
 #include <fwServices/Base.hpp>
 
 #include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
+#include <fwData/ObjectLock.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 
@@ -151,4 +151,6 @@ void LockDumpManagerSrv::info( std::ostream &_sstream )
 //-----------------------------------------------------------------------------
 
 } // manager
+
 } // ctrlMemory
+

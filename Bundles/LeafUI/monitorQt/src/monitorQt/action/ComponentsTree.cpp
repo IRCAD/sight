@@ -7,8 +7,6 @@
 #include <QApplication>
 #include <QVBoxLayout>
 
-#include <boost/foreach.hpp>
-
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/ExtensionPoint.hpp>
@@ -121,4 +119,6 @@ void ComponentsTree::stopping() throw (::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 } // namespace action
+
 } // namespace monitor
+

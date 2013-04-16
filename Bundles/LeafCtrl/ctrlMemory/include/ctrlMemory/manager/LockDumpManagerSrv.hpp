@@ -4,19 +4,27 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLMEMORY_MANAGER_LOCKDUMPMANAGERSRV_HPP_
-#define _CTRLMEMORY_MANAGER_LOCKDUMPMANAGERSRV_HPP_
+#ifndef __CTRLMEMORY_MANAGER_LOCKDUMPMANAGERSRV_HPP__
+#define __CTRLMEMORY_MANAGER_LOCKDUMPMANAGERSRV_HPP__
 
-#include <set>
-
-#include <fwData/Image.hpp>
-#include <fwData/ObjectLock.hpp>
-
-#include <fwServices/IService.hpp>
+#include <map>
+#include <vector>
+#include <string>
 
 #include <ctrlSelection/IManagerSrv.hpp>
 
 #include "ctrlMemory/config.hpp"
+
+namespace fwData
+{
+    class ObjectLock;
+    class Composite;
+}
+
+namespace fwServices
+{
+    class ObjectMsg;
+}
 
 namespace ctrlMemory
 {
@@ -66,7 +74,7 @@ protected :
     CTRLMEMORY_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Updates dump locks when object are pushed removed or swaped in composite
-    CTRLMEMORY_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
 
 private :
 
@@ -75,7 +83,7 @@ private :
     typedef std::map< CompositeKeyType, ::fwData::ObjectLock > LockMapType;
 
     /// Add or remove lock ( _isLocked parameter ) on composite objects
-    void setDumpLockOnImages(LockMapType &lockMap, ::fwData::Composite::sptr _composite, bool _isLocked );
+    void setDumpLockOnImages(LockMapType &lockMap, SPTR(::fwData::Composite) _composite, bool _isLocked );
 
     /// Composite keys managed by this service
     std::vector< std::string > m_managedKeys;
@@ -87,4 +95,5 @@ private :
 } // manager
 } // ctrlMemory
 
-#endif // _CTRLMEMORY_MANAGER_LOCKDUMPMANAGERSRV_HPP_
+#endif // __CTRLMEMORY_MANAGER_LOCKDUMPMANAGERSRV_HPP__
+

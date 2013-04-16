@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _MONITOR_UI_ACTION_SDUMPALL_HPP_
-#define _MONITOR_UI_ACTION_SDUMPALL_HPP_
+#ifndef __MONITOR_ACTION_SDUMPALL_HPP__
+#define __MONITOR_ACTION_SDUMPALL_HPP__
 
 
 #include <fwGui/IActionSrv.hpp>
@@ -52,5 +52,5 @@ protected :
 } // namespace action
 } // namespace monitor
 
+#endif //__MONITOR_ACTION_SDUMPALL_HPP__
 
-#endif //_MONITOR_UI_ACTION_SDUMPALL_HPP_

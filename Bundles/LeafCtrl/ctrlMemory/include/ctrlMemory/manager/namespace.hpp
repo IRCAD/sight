@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef CTRLMANAGERMANAGERNAMESPACE_HPP_
-#define CTRLMANAGERMANAGERNAMESPACE_HPP_
+#ifndef __CTRLMANAGERMANAGERNAMESPACE_HPP__
+#define __CTRLMANAGERMANAGERNAMESPACE_HPP__
 
 namespace ctrlMemory
 {
@@ -18,4 +18,6 @@ namespace ctrlMemory
 namespace manager
 {
 }
-#endif /* CTRLMANAGERMANAGERNAMESPACE_HPP_ */
+
+#endif // __CTRLMANAGERMANAGERNAMESPACE_HPP__
+

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _MONITOR_ACTION_MEMORYCONSUMPTION_HPP_
-#define _MONITOR_ACTION_MEMORYCONSUMPTION_HPP_
+#ifndef __MONITOR_ACTION_MEMORYCONSUMPTION_HPP__
+#define __MONITOR_ACTION_MEMORYCONSUMPTION_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -38,7 +38,8 @@ protected :
      * Sample of declaration configuration :
      *
      * @verbatim
-         <service uid="myIncMemConsum"  type="::fwGui::IActionSrv" implementation="::monitor::action::MemoryConsumption" autoComChannel="no" >
+         <service uid="myIncMemConsum"  type="::fwGui::IActionSrv"
+            implementation="::monitor::action::MemoryConsumption" autoComChannel="no" >
             <config mode="increase" value="256" />
         </service>
      @endverbatim
@@ -74,5 +75,5 @@ private:
 } // namespace action
 } // namespace monitor
 
+#endif //__MONITOR_ACTION_MEMORYCONSUMPTION_HPP__
 
-#endif //_MONITOR_ACTION_COMPONENTSTREE_HPP_

@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QApplication>
 #include <QHBoxLayout>
 
 #include <boost/foreach.hpp>
@@ -86,6 +85,7 @@ void ClassFactoryRegistryInfo::starting() throw (::fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
+
 void ClassFactoryRegistryInfo::stopping() throw (::fwTools::Failed)
 {
     m_dialog->hide();
@@ -97,6 +97,7 @@ void ClassFactoryRegistryInfo::stopping() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-
 } // namespace action
+
 } // namespace monitor
+

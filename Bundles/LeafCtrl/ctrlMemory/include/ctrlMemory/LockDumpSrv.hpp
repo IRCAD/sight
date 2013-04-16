@@ -4,18 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLMEMORY_LOCKDUMPSRV_HPP_
-#define _CTRLMEMORY_LOCKDUMPSRV_HPP_
-
-#include <vector>
-
-#include <fwTools/BufferObject.hpp>
+#ifndef __CTRLMEMORY_LOCKDUMPSRV_HPP__
+#define __CTRLMEMORY_LOCKDUMPSRV_HPP__
 
 #include <fwData/ObjectLock.hpp>
 
-#include <fwServices/IService.hpp>
+#include <fwServices/IController.hpp>
 
 #include "ctrlMemory/config.hpp"
+
+namespace fwServices
+{
+    class ObjectMsg;
+}
 
 namespace ctrlMemory
 {
@@ -59,7 +60,7 @@ protected:
     CTRLMEMORY_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Does nothing
-    CTRLMEMORY_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
 
 private :
 
@@ -69,4 +70,5 @@ private :
 
 } // ctrlMemory
 
-#endif // _CTRLMEMORY_LOCKDUMPSRV_HPP_
+#endif // __CTRLMEMORY_LOCKDUMPSRV_HPP__
+

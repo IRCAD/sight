@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _MONITOR_PLUGIN_HPP_
-#define _MONITOR_PLUGIN_HPP_
+#ifndef __MONITOR_PLUGIN_HPP__
+#define __MONITOR_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
 namespace monitor
 {
 
-/// Class called when the bundle is loaded and stopped
+/// Class called when the bundle is loaded and stopped.
 struct Plugin : public ::fwRuntime::Plugin
 {
 
@@ -30,5 +30,5 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace monitor
 
+#endif //__MONITOR_PLUGIN_HPP__
 
-#endif //_MONITOR_PLUGIN_HPP_

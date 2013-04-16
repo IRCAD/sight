@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef MONITORNAMESPACE_HPP_
-#define MONITORNAMESPACE_HPP_
+#ifndef __MONITORNAMESPACE_HPP__
+#define __MONITORNAMESPACE_HPP__
 
 /**
  * @brief       The namespace monitor contains tools for monitoring an application built with FW4SPL.
@@ -15,4 +15,6 @@ namespace monitor
 {
 
 }
-#endif /* MONITORNAMESPACE_HPP_ */
+
+#endif // __MONITORNAMESPACE_HPP__
+
