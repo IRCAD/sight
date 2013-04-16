@@ -37,6 +37,12 @@ public:
     */
     SCENE2D_API Axis( ::fwData::Object::Key key );
 
+    /// Defines shallow copy
+    SCENE2D_API void shallowCopy( const ::fwData::Object::csptr& _source );
+
+    /// Defines deep copy
+    SCENE2D_API void deepCopy( const ::fwData::Object::csptr& _source );
+
     /// Basic destructor, do nothing.
     SCENE2D_API virtual ~Axis();
 

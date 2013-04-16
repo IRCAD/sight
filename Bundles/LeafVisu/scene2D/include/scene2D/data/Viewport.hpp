@@ -32,6 +32,12 @@ public:
     SCENE2D_API Viewport( ::fwData::Object::Key key );
     SCENE2D_API virtual ~Viewport();
 
+    /// Defines shallow copy
+    SCENE2D_API void shallowCopy( const ::fwData::Object::csptr& _source );
+
+    /// Defines deep copy
+    SCENE2D_API void deepCopy( const ::fwData::Object::csptr& _source );
+
     SCENE2D_API float getX();
     SCENE2D_API void setX (float _x);
     SCENE2D_API float getY();

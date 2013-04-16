@@ -37,7 +37,6 @@ public :
        ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
        );
 
-    fwDataObjectMacro();
     fwCampMakeFriendDataMacro((fwData)(Color));
 
     /**
@@ -50,10 +49,10 @@ public :
     FWDATA_API virtual ~Color();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Color::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Color::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     fwGettersSettersDocMacro(RGBA, vRGBA, ColorArray, the array of color values (red, green, blue, alpha).);
 

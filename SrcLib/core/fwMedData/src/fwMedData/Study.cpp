@@ -5,7 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwData/registry/macros.hpp"
+#include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "fwMedData/Study.hpp"
 
@@ -25,28 +26,38 @@ Study::~Study()
 
 //------------------------------------------------------------------------------
 
-void Study::shallowCopy(Study::csptr _src)
+void Study::shallowCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( _src );
-    m_attrInstanceUID = _src->m_attrInstanceUID;
-    m_attrDate = _src->m_attrDate;
-    m_attrTime = _src->m_attrTime;
-    m_attrReferringPhysicianName = _src->m_attrReferringPhysicianName;
-    m_attrDescription = _src->m_attrDescription;
-    m_attrPatientAge = _src->m_attrPatientAge;
+    Study::csptr other = Study::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldShallowCopy( other );
+    m_attrInstanceUID = other->m_attrInstanceUID;
+    m_attrDate = other->m_attrDate;
+    m_attrTime = other->m_attrTime;
+    m_attrReferringPhysicianName = other->m_attrReferringPhysicianName;
+    m_attrDescription = other->m_attrDescription;
+    m_attrPatientAge = other->m_attrPatientAge;
 }
 
 //------------------------------------------------------------------------------
 
-void Study::deepCopy(Study::csptr _src)
+void Study::deepCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( _src );
-    m_attrInstanceUID = _src->m_attrInstanceUID;
-    m_attrDate = _src->m_attrDate;
-    m_attrTime = _src->m_attrTime;
-    m_attrReferringPhysicianName = _src->m_attrReferringPhysicianName;
-    m_attrDescription = _src->m_attrDescription;
-    m_attrPatientAge = _src->m_attrPatientAge;
+    Study::csptr other = Study::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldShallowCopy( other );
+    m_attrInstanceUID = other->m_attrInstanceUID;
+    m_attrDate = other->m_attrDate;
+    m_attrTime = other->m_attrTime;
+    m_attrReferringPhysicianName = other->m_attrReferringPhysicianName;
+    m_attrDescription = other->m_attrDescription;
+    m_attrPatientAge = other->m_attrPatientAge;
 }
 
 //------------------------------------------------------------------------------

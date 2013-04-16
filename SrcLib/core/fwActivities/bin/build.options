@@ -6,4 +6,5 @@ LIB = [
     'fwData_0-1',
     'fwMedData_0-1',
     'fwRuntime_0-3',
+    'fwDataCamp_0-1'
     ]

@@ -13,11 +13,15 @@
 
 namespace camp_ext
 {
+
+/// New value mapper to manage conversion in camp world between ::fwAtoms::Blob and a ::fwTools::BufferObject
 template <>
 struct ValueMapper< ::fwAtoms::Blob::sptr >
 {
     typedef ::fwAtoms::Blob::sptr  ReturnType;
+
     static const int type = camp::userType;
+
     static const  ::fwTools::BufferObject::sptr to(const ReturnType& source)
     {
         return source->getBufferObject();
@@ -27,22 +31,27 @@ struct ValueMapper< ::fwAtoms::Blob::sptr >
     {
         CAMP_ERROR(camp::BadType(camp::boolType, camp::mapType<ReturnType>()));
     }
+
     static ReturnType from(long source)
     {
         CAMP_ERROR(camp::BadType(camp::intType, camp::mapType<ReturnType>()));
     }
+
     static ReturnType from(double source)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
+
     static ReturnType from(const std::string& source)
     {
         CAMP_ERROR(camp::BadType(camp::realType, camp::mapType<ReturnType>()));
     }
+
     static ReturnType from(const camp::EnumObject& source)
     {
         CAMP_ERROR(camp::BadType(camp::enumType, camp::mapType<ReturnType>()));
     }
+
     static ReturnType from(const camp::UserObject& source)
     {
         ::fwTools::BufferObject::sptr tmp = source.get< ::fwTools::BufferObject::sptr>()->getSptr();

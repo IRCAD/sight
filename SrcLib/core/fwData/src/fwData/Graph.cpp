@@ -8,6 +8,7 @@
 #include <boost/foreach.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 #include "fwData/Edge.hpp"
@@ -293,24 +294,32 @@ Graph::ConnectionContainer &Graph::getRefConnections()
 
 //------------------------------------------------------------------------------
 
-void Graph::shallowCopy( Graph::csptr _source )
+void Graph::shallowCopy(const Object::csptr &_source )
 {
+    Graph::csptr other = Graph::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_nodes = _source->m_nodes;
-    m_connections = _source->m_connections;
+    m_nodes = other->m_nodes;
+    m_connections = other->m_connections;
 }
 
 //------------------------------------------------------------------------------
 
-void Graph::deepCopy( Graph::csptr _source )
+void Graph::deepCopy(const Object::csptr &_source )
 {
+    Graph::csptr other = Graph::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
     std::map< ::fwData::Node::sptr, ::fwData::Node::sptr > correspondenceBetweenNodes;
     typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;
 
     m_nodes.clear();
-    BOOST_FOREACH(::fwData::Node::sptr node, _source->m_nodes)
+    BOOST_FOREACH(::fwData::Node::sptr node, other->m_nodes)
     {
         ::fwData::Node::NewSptr newNode;
         newNode->deepCopy( Node::constCast(node) );
@@ -321,7 +330,7 @@ void Graph::deepCopy( Graph::csptr _source )
     }
 
     m_connections.clear();
-    BOOST_FOREACH(ConnectionContainerElt connection, _source->m_connections)
+    BOOST_FOREACH(ConnectionContainerElt connection, other->m_connections)
     {
         // Edge deep copy .
         ::fwData::Edge::NewSptr newEdge;

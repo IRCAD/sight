@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Image.hpp"
 #include "fwData/Mesh.hpp"
@@ -52,60 +53,68 @@ Reconstruction::~Reconstruction()
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::shallowCopy( Reconstruction::csptr _source )
+void Reconstruction::shallowCopy(const Object::csptr &_source )
 {
+    Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    m_bIsVisible            = _source->m_bIsVisible;
-    m_sReconstructionFormat = _source->m_sReconstructionFormat;
-    m_sOrganName            = _source->m_sOrganName;
-    m_sStructureType        = _source->m_sStructureType;
-    m_bIsClosed             = _source->m_bIsClosed;
-    m_bIsAutomatic          = _source->m_bIsAutomatic;
-    m_dAvgVolume            = _source->m_dAvgVolume;
-    m_dVolStdDeviation      = _source->m_dVolStdDeviation;
-    m_dVolPctConfidence     = _source->m_dVolPctConfidence;
-    m_sReconstructionTime   = _source->m_sReconstructionTime;
-    m_bMaskGenerated        = _source->m_bMaskGenerated;
-    m_ui8Level              = _source->m_ui8Level;
-    m_ui16Label             = _source->m_ui16Label;
-    m_bGenerated3D          = _source->m_bGenerated3D;
-    m_sType3D               = _source->m_sType3D;
-    m_fsPath                = _source->m_fsPath;
-    m_i32DbID               = _source->m_i32DbID;
+    m_bIsVisible            = other->m_bIsVisible;
+    m_sReconstructionFormat = other->m_sReconstructionFormat;
+    m_sOrganName            = other->m_sOrganName;
+    m_sStructureType        = other->m_sStructureType;
+    m_bIsClosed             = other->m_bIsClosed;
+    m_bIsAutomatic          = other->m_bIsAutomatic;
+    m_dAvgVolume            = other->m_dAvgVolume;
+    m_dVolStdDeviation      = other->m_dVolStdDeviation;
+    m_dVolPctConfidence     = other->m_dVolPctConfidence;
+    m_sReconstructionTime   = other->m_sReconstructionTime;
+    m_bMaskGenerated        = other->m_bMaskGenerated;
+    m_ui8Level              = other->m_ui8Level;
+    m_ui16Label             = other->m_ui16Label;
+    m_bGenerated3D          = other->m_bGenerated3D;
+    m_sType3D               = other->m_sType3D;
+    m_fsPath                = other->m_fsPath;
+    m_i32DbID               = other->m_i32DbID;
 
-    m_attrMaterial = _source->m_attrMaterial;
-    m_attrImage    = _source->m_attrImage;
-    m_attrMesh     = _source->m_attrMesh;
+    m_attrMaterial = other->m_attrMaterial;
+    m_attrImage    = other->m_attrImage;
+    m_attrMesh     = other->m_attrMesh;
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::deepCopy( Reconstruction::csptr _source )
+void Reconstruction::deepCopy(const Object::csptr &_source )
 {
+    Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
-    m_bIsVisible            = _source->m_bIsVisible;
-    m_sReconstructionFormat = _source->m_sReconstructionFormat;
-    m_sOrganName            = _source->m_sOrganName;
-    m_sStructureType        = _source->m_sStructureType;
-    m_bIsClosed             = _source->m_bIsClosed;
-    m_bIsAutomatic          = _source->m_bIsAutomatic;
-    m_dAvgVolume            = _source->m_dAvgVolume;
-    m_dVolStdDeviation      = _source->m_dVolStdDeviation;
-    m_dVolPctConfidence     = _source->m_dVolPctConfidence;
-    m_sReconstructionTime   = _source->m_sReconstructionTime;
-    m_bMaskGenerated        = _source->m_bMaskGenerated;
-    m_ui8Level              = _source->m_ui8Level;
-    m_ui16Label             = _source->m_ui16Label;
-    m_bGenerated3D          = _source->m_bGenerated3D;
-    m_sType3D               = _source->m_sType3D;
-    m_fsPath                = _source->m_fsPath;
-    m_i32DbID               = _source->m_i32DbID;
+    m_bIsVisible            = other->m_bIsVisible;
+    m_sReconstructionFormat = other->m_sReconstructionFormat;
+    m_sOrganName            = other->m_sOrganName;
+    m_sStructureType        = other->m_sStructureType;
+    m_bIsClosed             = other->m_bIsClosed;
+    m_bIsAutomatic          = other->m_bIsAutomatic;
+    m_dAvgVolume            = other->m_dAvgVolume;
+    m_dVolStdDeviation      = other->m_dVolStdDeviation;
+    m_dVolPctConfidence     = other->m_dVolPctConfidence;
+    m_sReconstructionTime   = other->m_sReconstructionTime;
+    m_bMaskGenerated        = other->m_bMaskGenerated;
+    m_ui8Level              = other->m_ui8Level;
+    m_ui16Label             = other->m_ui16Label;
+    m_bGenerated3D          = other->m_bGenerated3D;
+    m_sType3D               = other->m_sType3D;
+    m_fsPath                = other->m_fsPath;
+    m_i32DbID               = other->m_i32DbID;
 
-    m_attrMaterial = ::fwData::Object::copy(_source->m_attrMaterial);
-    m_attrImage    = ::fwData::Object::copy(_source->m_attrImage);
-    m_attrMesh     = ::fwData::Object::copy(_source->m_attrMesh);
+    m_attrMaterial = ::fwData::Object::copy(other->m_attrMaterial);
+    m_attrImage    = ::fwData::Object::copy(other->m_attrImage);
+    m_attrMesh     = ::fwData::Object::copy(other->m_attrMesh);
 }
 
 //------------------------------------------------------------------------------

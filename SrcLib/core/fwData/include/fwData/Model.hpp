@@ -66,10 +66,10 @@ public:
     FWDATA_API const Container &getCRefMap() const ;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Model::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Model::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
 protected:
 

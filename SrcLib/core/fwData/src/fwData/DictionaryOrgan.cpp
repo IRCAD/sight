@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/DictionaryOrgan.hpp"
 
@@ -44,5 +45,18 @@ DictionaryOrgan::~DictionaryOrgan()
 {}
 
 //------------------------------------------------------------------------------
+
+void DictionaryOrgan::deepCopy(const Object::csptr &source)
+{
+    DictionaryOrgan::csptr other = DictionaryOrgan::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source );
+
+    OSLM_FATAL("Not implemented." );
+}
+
+
 
 } // end namespace fwData

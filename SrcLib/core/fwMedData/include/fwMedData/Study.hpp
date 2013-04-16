@@ -33,8 +33,6 @@ public:
 
     fwCampMakeFriendDataMacro((fwMedData)(Study));
 
-    fwDataObjectMacro();
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -45,10 +43,10 @@ public:
     FWMEDDATA_API virtual ~Study();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( Study::csptr _source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( Study::csptr _source );
+    FWMEDDATA_API void deepCopy( const ::fwData::Object::csptr &_source );
 
     /**
      * @name Getters/Setters

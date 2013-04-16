@@ -7,6 +7,7 @@
 #include <boost/foreach.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Port.hpp"
 
@@ -101,27 +102,31 @@ Port::sptr Node::findPort(const std::string &identifier, /*const std::string &ty
 
 //------------------------------------------------------------------------------
 
-void Node::shallowCopy( Node::csptr _source )
+void Node::shallowCopy(const Object::csptr &_source )
 {
+    Node::csptr other = Node::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     m_inputs.clear();
     m_outputs.clear();
 
-    if( _source->getObject())
+    if( other->getObject())
     {
-        ::fwTools::Object::sptr object = ::fwData::factory::New( _source->getObject()->getClassname() );
-        OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
+        ::fwTools::Object::sptr object = ::fwData::factory::New( other->getObject()->getClassname() );
+        OSLM_ASSERT("Sorry, instantiate "<<other->getObject()->getClassname()<< " failed", object );
         m_object = ::fwData::Object::dynamicCast(object);
-        m_object->shallowCopy( _source->m_object );
+        m_object->shallowCopy( other->m_object );
     }
-    BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
+    BOOST_FOREACH(::fwData::Port::sptr port, other->m_inputs)
     {
         ::fwData::Port::NewSptr newPort;
         newPort->deepCopy( port );
         this->addInputPort(newPort);
     }
-    BOOST_FOREACH(::fwData::Port::sptr port, _source->m_outputs)
+    BOOST_FOREACH(::fwData::Port::sptr port, other->m_outputs)
     {
         ::fwData::Port::NewSptr newPort;
         newPort->deepCopy( port );
@@ -131,27 +136,31 @@ void Node::shallowCopy( Node::csptr _source )
 
 //------------------------------------------------------------------------------
 
-void Node::deepCopy( Node::csptr _source )
+void Node::deepCopy(const Object::csptr &_source )
 {
+    Node::csptr other = Node::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
     m_inputs.clear();
     m_outputs.clear();
 
-    if( _source->getObject())
+    if( other->getObject())
     {
-        ::fwTools::Object::sptr object = ::fwData::factory::New( _source->getObject()->getClassname() );
-        OSLM_ASSERT("Sorry, instantiate "<<_source->getObject()->getClassname()<< " failed", object );
+        ::fwTools::Object::sptr object = ::fwData::factory::New( other->getObject()->getClassname() );
+        OSLM_ASSERT("Sorry, instantiate "<<other->getObject()->getClassname()<< " failed", object );
         m_object = ::fwData::Object::dynamicCast(object);
-        m_object->deepCopy(_source->m_object);
+        m_object->deepCopy(other->m_object);
     }
-    BOOST_FOREACH(::fwData::Port::sptr port, _source->m_inputs)
+    BOOST_FOREACH(::fwData::Port::sptr port, other->m_inputs)
     {
         ::fwData::Port::NewSptr newPort;
         newPort->deepCopy( port );
         this->addInputPort(newPort);
     }
-    BOOST_FOREACH(::fwData::Port::sptr port, _source->m_outputs)
+    BOOST_FOREACH(::fwData::Port::sptr port, other->m_outputs)
     {
         ::fwData::Port::NewSptr newPort;
         newPort->deepCopy( port );

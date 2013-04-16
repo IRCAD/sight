@@ -27,4 +27,3 @@ BUNDLES = [
     'volumeRenderingActivity_0-1',
     'media_0-1'                  ,
  ]
-

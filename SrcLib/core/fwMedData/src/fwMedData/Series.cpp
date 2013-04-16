@@ -5,7 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwData/registry/macros.hpp"
+#include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "fwMedData/Patient.hpp"
 #include "fwMedData/Study.hpp"
@@ -30,38 +31,48 @@ Series::~Series()
 
 //------------------------------------------------------------------------------
 
-void Series::shallowCopy(Series::csptr _src)
+void Series::shallowCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( _src );
+    Series::csptr other = Series::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
-    m_attrPatient = _src->m_attrPatient;
-    m_attrStudy = _src->m_attrStudy;
-    m_attrEquipment = _src->m_attrEquipment;
+    this->fieldShallowCopy( other );
 
-    m_attrInstanceUID = _src->m_attrInstanceUID;
-    m_attrModality = _src->m_attrModality;
-    m_attrDate = _src->m_attrDate;
-    m_attrTime = _src->m_attrTime;
-    m_attrPerformingPhysiciansName = _src->m_attrPerformingPhysiciansName;
-    m_attrDescription = _src->m_attrDescription;
+    m_attrPatient = other->m_attrPatient;
+    m_attrStudy = other->m_attrStudy;
+    m_attrEquipment = other->m_attrEquipment;
+
+    m_attrInstanceUID = other->m_attrInstanceUID;
+    m_attrModality = other->m_attrModality;
+    m_attrDate = other->m_attrDate;
+    m_attrTime = other->m_attrTime;
+    m_attrPerformingPhysiciansName = other->m_attrPerformingPhysiciansName;
+    m_attrDescription = other->m_attrDescription;
 }
 
 //------------------------------------------------------------------------------
 
-void Series::deepCopy(Series::csptr _src)
+void Series::deepCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldDeepCopy( _src );
+    Series::csptr other = Series::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
-    m_attrPatient = ::fwData::Object::copy(_src->m_attrPatient);
-    m_attrStudy = ::fwData::Object::copy(_src->m_attrStudy);
-    m_attrEquipment = ::fwData::Object::copy(_src->m_attrEquipment);
+    this->fieldDeepCopy( other );
 
-    m_attrInstanceUID = _src->m_attrInstanceUID;
-    m_attrModality = _src->m_attrModality;
-    m_attrDate = _src->m_attrDate;
-    m_attrTime = _src->m_attrTime;
-    m_attrPerformingPhysiciansName = _src->m_attrPerformingPhysiciansName;
-    m_attrDescription = _src->m_attrDescription;
+    m_attrPatient = ::fwData::Object::copy(other->m_attrPatient);
+    m_attrStudy = ::fwData::Object::copy(other->m_attrStudy);
+    m_attrEquipment = ::fwData::Object::copy(other->m_attrEquipment);
+
+    m_attrInstanceUID = other->m_attrInstanceUID;
+    m_attrModality = other->m_attrModality;
+    m_attrDate = other->m_attrDate;
+    m_attrTime = other->m_attrTime;
+    m_attrPerformingPhysiciansName = other->m_attrPerformingPhysiciansName;
+    m_attrDescription = other->m_attrDescription;
 }
 
 //------------------------------------------------------------------------------

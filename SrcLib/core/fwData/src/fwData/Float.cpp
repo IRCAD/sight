@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Object.hpp"
 #include "fwData/GenericField.hpp"
@@ -31,18 +32,26 @@ Float::~Float() throw()
 {}
 
 //------------------------------------------------------------------------------
-void Float::shallowCopy( Float::csptr _source )
+void Float::shallowCopy(const Object::csptr &_source )
 {
+    Float::csptr other = Float::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_value = _source->m_value;
+    m_value = other->m_value;
 }
 
 //------------------------------------------------------------------------------
 
-void Float::deepCopy( Float::csptr _source )
+void Float::deepCopy(const Object::csptr &_source )
 {
+    Float::csptr other = Float::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    m_value = _source->m_value;
+    m_value = other->m_value;
 }
 
 

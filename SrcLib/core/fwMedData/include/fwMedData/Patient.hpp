@@ -33,8 +33,6 @@ public:
 
     fwCampMakeFriendDataMacro((fwMedData)(Patient));
 
-    fwDataObjectMacro();
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -45,10 +43,10 @@ public:
     FWMEDDATA_API virtual ~Patient();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( Patient::csptr _source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( Patient::csptr _source );
+    FWMEDDATA_API void deepCopy( const ::fwData::Object::csptr &_source );
 
     /**
      * @name Getters/Setters
@@ -67,7 +65,7 @@ public:
     /**  @} */
 
     /**
-     * @brief Birthdate of the patient (0010,0030) 
+     * @brief Birthdate of the patient (0010,0030)
      * @{ */
     fwDataGetSetCRefMacro(Birthdate, DicomValueType);
     /**  @} */

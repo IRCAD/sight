@@ -35,7 +35,7 @@
 #include <fwGui/dialog/SelectorDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+#include <fwDataCamp/getObject.hpp>
 
 #include <fwActivities/IBuilder.hpp>
 
@@ -405,7 +405,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
     {
         if(param.isSeshat())
         {
-            ::fwData::Object::sptr subObj = ::fwAtomConversion::getSubObject(obj, param.by);
+            ::fwData::Object::sptr subObj = ::fwDataCamp::getObject(obj, param.by);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", subObj);
             param.by = subObj->getID();
         }

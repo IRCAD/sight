@@ -106,6 +106,10 @@ public:
 
     fwGettersSettersDocMacro(MeshDataNode, meshDataNode, ::fwData::Node::sptr, the node that represents the organ mesh);
 
+
+    /// Defines deep copy
+    FWDATA_API void deepCopy( const Object::csptr& _source );
+
 protected :
 
     /// the name of the organ

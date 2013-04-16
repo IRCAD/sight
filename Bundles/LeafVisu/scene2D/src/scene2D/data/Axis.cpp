@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "scene2D/data/Axis.hpp"
 
@@ -25,6 +26,36 @@ Axis::Axis( ::fwData::Object::Key key )
 
 Axis::~Axis()
 {
+}
+
+//------------------------------------------------------------------------------
+
+void Axis::shallowCopy(const ::fwData::Object::csptr &_source )
+{
+    Axis::csptr other = Axis::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldShallowCopy( _source );
+
+    m_origin = other->m_origin;
+    m_scale = other->m_scale;
+    m_scaleType = other->m_scaleType;
+}
+
+//------------------------------------------------------------------------------
+
+void Axis::deepCopy(const ::fwData::Object::csptr &_source )
+{
+    Axis::csptr other = Axis::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source );
+
+    m_origin = other->m_origin;
+    m_scale = other->m_scale;
+    m_scaleType = other->m_scaleType;
 }
 
 float Axis::getOrigin()

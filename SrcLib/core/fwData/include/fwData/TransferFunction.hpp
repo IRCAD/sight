@@ -37,7 +37,6 @@ public :
     fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::factory::New< TransferFunction >) ;
 
     /// Macro for deep and shallow copies
-    fwDataObjectMacro();
 
     fwCampMakeFriendDataMacro((fwData)(TransferFunction));
 
@@ -112,10 +111,10 @@ public :
     FWDATA_API static TransferFunction::sptr createDefaultTF();
 
     /// Shallow copy method
-    FWDATA_API void shallowCopy( TransferFunction::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Deep copy method
-    FWDATA_API void deepCopy( TransferFunction::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /// Get all the point values of the TF (keys of the map m_tfData)
     FWDATA_API TFValueVectorType getTFValues() const;

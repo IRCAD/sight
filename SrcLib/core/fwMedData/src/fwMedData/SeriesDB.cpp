@@ -5,7 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwData/registry/macros.hpp"
+#include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "fwMedData/Series.hpp"
 #include "fwMedData/SeriesDB.hpp"
@@ -25,22 +26,32 @@ SeriesDB::~SeriesDB()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::shallowCopy(SeriesDB::csptr _src)
+void SeriesDB::shallowCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( _src );
+    SeriesDB::csptr other = SeriesDB::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
-    m_attrContainer= _src->m_attrContainer;
+    this->fieldShallowCopy( other );
+
+    m_attrContainer= other->m_attrContainer;
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::deepCopy(SeriesDB::csptr _src)
+void SeriesDB::deepCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldDeepCopy( _src );
+    SeriesDB::csptr other = SeriesDB::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldDeepCopy( other );
     m_attrContainer.clear();
-    m_attrContainer.resize(_src->m_attrContainer.size());
+    m_attrContainer.resize(other->m_attrContainer.size());
     std::transform(
-            _src->begin(), _src->end(),
+            other->begin(), other->end(),
             this->begin(),
             &::fwData::Object::copy< ValueType::element_type >
     );

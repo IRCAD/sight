@@ -10,7 +10,7 @@
 #include <fwData/GenericFieldBase.hpp>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+#include <fwDataCamp/getObject.hpp>
 
 #include "DataCampHelper.hpp"
 
@@ -37,7 +37,7 @@ void compareSimplePropertyValue(::fwData::Object::sptr obj,
                                 const std::string& value)
 {
     ::fwData::GenericFieldBase::sptr field;
-    field = ::fwAtomConversion::getSubObject< ::fwData::GenericFieldBase >(obj, propertyPath);
+    field = ::fwDataCamp::getObject< ::fwData::GenericFieldBase >(obj, propertyPath);
     CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, field);
     CPPUNIT_ASSERT_EQUAL( value, field->toString());
 }
@@ -49,7 +49,7 @@ void compareObjectPropertyValue(::fwData::Object::sptr obj,
                                 ::fwData::Object::sptr value)
 {
     ::fwData::Object::sptr subObj;
-    subObj = ::fwAtomConversion::getSubObject(obj, propertyPath);
+    subObj = ::fwDataCamp::getObject(obj, propertyPath);
     CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, subObj);
     CPPUNIT_ASSERT_MESSAGE("Retrieve property "+propertyPath+" not equal with value", value == subObj);
 }

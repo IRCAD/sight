@@ -41,8 +41,6 @@ public:
 
     fwCampMakeFriendDataMacro((fwMedData)(ActivitySeries));
 
-    fwDataObjectMacro();
-
     typedef std::string ConfigIdType;
 
     /**
@@ -55,10 +53,10 @@ public:
     FWMEDDATA_API virtual ~ActivitySeries();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( ActivitySeries::csptr source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( ActivitySeries::csptr source );
+    FWMEDDATA_API void deepCopy( const ::fwData::Object::csptr &_source );
 
     /**
      * @name Getters / Setters

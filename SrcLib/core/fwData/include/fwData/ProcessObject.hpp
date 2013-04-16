@@ -128,10 +128,10 @@ public:
     FWDATA_API void clearOutputs();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( ProcessObject::csptr source );
+    FWDATA_API void shallowCopy( const Object::csptr& source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( ProcessObject::csptr source );
+    FWDATA_API void deepCopy( const Object::csptr& source );
 
 protected:
 

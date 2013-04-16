@@ -8,6 +8,7 @@
 
 #include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/Exception.hpp>
 
 #include "fwMedData/ActivitySeries.hpp"
 
@@ -27,20 +28,30 @@ ActivitySeries::~ActivitySeries()
 
 //------------------------------------------------------------------------------
 
-void ActivitySeries::shallowCopy(ActivitySeries::csptr src)
+void ActivitySeries::shallowCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( src );
-    m_attrActivityConfigId = src->m_attrActivityConfigId;
-    m_attrData = src->m_attrData;
+    ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldShallowCopy( _source );
+    m_attrActivityConfigId = other->m_attrActivityConfigId;
+    m_attrData = other->m_attrData;
 }
 
 //------------------------------------------------------------------------------
 
-void ActivitySeries::deepCopy(ActivitySeries::csptr src)
+void ActivitySeries::deepCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldDeepCopy( src );
-    m_attrActivityConfigId = src->m_attrActivityConfigId;
-    m_attrData = ::fwData::Object::copy(src->m_attrData);
+    ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldDeepCopy( _source );
+    m_attrActivityConfigId = other->m_attrActivityConfigId;
+    m_attrData = ::fwData::Object::copy(other->m_attrData);
 }
 
 //------------------------------------------------------------------------------

@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Image.hpp"
 #include "fwData/Reconstruction.hpp"
@@ -63,78 +64,88 @@ Acquisition::~Acquisition()
 
 //------------------------------------------------------------------------------
 
-void Acquisition::shallowCopy( Acquisition::csptr _source )
+void Acquisition::shallowCopy(const Object::csptr &_source )
 {
-    this->fieldShallowCopy( _source );
-    m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
-    m_fSliceThickness = _source->m_fSliceThickness;
-    m_ui8Axe = _source->m_ui8Axe;
-    m_bUnsignedFlag = _source->m_bUnsignedFlag;
-    m_ui32AcquisitionIndex = _source->m_ui32AcquisitionIndex;
-    m_sImageType = _source->m_sImageType;
-    m_sImageFormat = _source->m_sImageFormat;
-    m_ptCreationDate = _source->m_ptCreationDate;
-    m_bIsMain = _source->m_bIsMain;
-    m_bIsNormalDir = _source->m_bIsNormalDir;
-    m_sUID = _source->m_sUID;
-    m_i32DbID = _source->m_i32DbID;
-    m_ui32LaboID = _source->m_ui32LaboID;
-    m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
-    m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
-    m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
-    m_ptDateDisponibilityAt = _source->m_ptDateDisponibilityAt;
-    m_dPatientSize = _source->m_dPatientSize;
-    m_dPatientWeight = _source->m_dPatientWeight;
-    m_dRadiations = _source->m_dRadiations;
-    m_sMedicalPrinter = _source->m_sMedicalPrinter;
-    m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
-    m_sPatientPosition = _source->m_sPatientPosition;
-    m_dicomFileList = _source->m_dicomFileList;
+    Acquisition::csptr other = Acquisition::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
-    m_attrImage           = _source->m_attrImage;
-    m_attrStructAnat      = _source->m_attrStructAnat;
-    m_attrReconstructions = _source->m_attrReconstructions;
+    this->fieldShallowCopy( _source );
+    m_ui8BitsPerPixel = other->m_ui8BitsPerPixel;
+    m_fSliceThickness = other->m_fSliceThickness;
+    m_ui8Axe = other->m_ui8Axe;
+    m_bUnsignedFlag = other->m_bUnsignedFlag;
+    m_ui32AcquisitionIndex = other->m_ui32AcquisitionIndex;
+    m_sImageType = other->m_sImageType;
+    m_sImageFormat = other->m_sImageFormat;
+    m_ptCreationDate = other->m_ptCreationDate;
+    m_bIsMain = other->m_bIsMain;
+    m_bIsNormalDir = other->m_bIsNormalDir;
+    m_sUID = other->m_sUID;
+    m_i32DbID = other->m_i32DbID;
+    m_ui32LaboID = other->m_ui32LaboID;
+    m_ui32NetID = other->m_ui32NetID;
+    m_ptDateSendToLaboAt = other->m_ptDateSendToLaboAt;
+    m_ptDateReceiveFromLaboAt = other->m_ptDateReceiveFromLaboAt;
+    m_ptDateSendToBDDAt = other->m_ptDateSendToBDDAt;
+    m_ptDateDisponibilityAt = other->m_ptDateDisponibilityAt;
+    m_dPatientSize = other->m_dPatientSize;
+    m_dPatientWeight = other->m_dPatientWeight;
+    m_dRadiations = other->m_dRadiations;
+    m_sMedicalPrinter = other->m_sMedicalPrinter;
+    m_sMedicalPrinterCorp = other->m_sMedicalPrinterCorp;
+    m_sPatientPosition = other->m_sPatientPosition;
+    m_dicomFileList = other->m_dicomFileList;
+
+    m_attrImage           = other->m_attrImage;
+    m_attrStructAnat      = other->m_attrStructAnat;
+    m_attrReconstructions = other->m_attrReconstructions;
 }
 
 //------------------------------------------------------------------------------
-
-void Acquisition::deepCopy( Acquisition::csptr _source )
+void Acquisition::deepCopy(const Object::csptr &_source )
 {
+    Acquisition::csptr other = Acquisition::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( _source );
-    m_ui8BitsPerPixel = _source->m_ui8BitsPerPixel;
-    m_fSliceThickness = _source->m_fSliceThickness;
-    m_ui8Axe = _source->m_ui8Axe;
-    m_bUnsignedFlag = _source->m_bUnsignedFlag;
-    m_ui32AcquisitionIndex = _source->m_ui32AcquisitionIndex;
-    m_sImageType = _source->m_sImageType;
-    m_sImageFormat = _source->m_sImageFormat;
-    m_ptCreationDate = _source->m_ptCreationDate;
-    m_bIsMain = _source->m_bIsMain;
-    m_bIsNormalDir = _source->m_bIsNormalDir;
-    m_sUID = _source->m_sUID;
-    m_i32DbID = _source->m_i32DbID;
-    m_ui32LaboID = _source->m_ui32LaboID;
-    m_ptDateSendToLaboAt = _source->m_ptDateSendToLaboAt;
-    m_ptDateReceiveFromLaboAt = _source->m_ptDateReceiveFromLaboAt;
-    m_ptDateSendToBDDAt = _source->m_ptDateSendToBDDAt;
-    m_ptDateDisponibilityAt = _source->m_ptDateDisponibilityAt;
-    m_dPatientSize = _source->m_dPatientSize;
-    m_dPatientWeight = _source->m_dPatientWeight;
-    m_dRadiations = _source->m_dRadiations;
-    m_sMedicalPrinter = _source->m_sMedicalPrinter;
-    m_sMedicalPrinterCorp = _source->m_sMedicalPrinterCorp;
-    m_sPatientPosition = _source->m_sPatientPosition;
-    BOOST_FOREACH( std::string dicomFile , _source->m_dicomFileList)
+    m_ui8BitsPerPixel = other->m_ui8BitsPerPixel;
+    m_fSliceThickness = other->m_fSliceThickness;
+    m_ui8Axe = other->m_ui8Axe;
+    m_bUnsignedFlag = other->m_bUnsignedFlag;
+    m_ui32AcquisitionIndex = other->m_ui32AcquisitionIndex;
+    m_sImageType = other->m_sImageType;
+    m_sImageFormat = other->m_sImageFormat;
+    m_ptCreationDate = other->m_ptCreationDate;
+    m_bIsMain = other->m_bIsMain;
+    m_bIsNormalDir = other->m_bIsNormalDir;
+    m_sUID = other->m_sUID;
+    m_i32DbID = other->m_i32DbID;
+    m_ui32LaboID = other->m_ui32LaboID;
+    m_ui32NetID = other->m_ui32NetID;
+    m_ptDateSendToLaboAt = other->m_ptDateSendToLaboAt;
+    m_ptDateReceiveFromLaboAt = other->m_ptDateReceiveFromLaboAt;
+    m_ptDateSendToBDDAt = other->m_ptDateSendToBDDAt;
+    m_ptDateDisponibilityAt = other->m_ptDateDisponibilityAt;
+    m_dPatientSize = other->m_dPatientSize;
+    m_dPatientWeight = other->m_dPatientWeight;
+    m_dRadiations = other->m_dRadiations;
+    m_sMedicalPrinter = other->m_sMedicalPrinter;
+    m_sMedicalPrinterCorp = other->m_sMedicalPrinterCorp;
+    m_sPatientPosition = other->m_sPatientPosition;
+    BOOST_FOREACH( std::string dicomFile , other->m_dicomFileList)
     {
         m_dicomFileList.push_back(dicomFile);
     }
 
-    m_attrImage           = ::fwData::Object::copy(_source->m_attrImage);
-    m_attrStructAnat      = ::fwData::Object::copy(_source->m_attrStructAnat);
+    m_attrImage           = ::fwData::Object::copy(other->m_attrImage);
+    m_attrStructAnat      = ::fwData::Object::copy(other->m_attrStructAnat);
     m_attrReconstructions.clear();
     std::transform(
-            _source->m_attrReconstructions.begin(), _source->m_attrReconstructions.end(),
+            other->m_attrReconstructions.begin(), other->m_attrReconstructions.end(),
             std::back_inserter(m_attrReconstructions),
             & ::fwData::Object::copy< ReconstructionContainerType::value_type::element_type >
             );

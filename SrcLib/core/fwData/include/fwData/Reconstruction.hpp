@@ -39,7 +39,6 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwData::factory::New< Reconstruction >) ;
 
     fwCoreAllowSharedFromThis()
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -53,10 +52,10 @@ public:
     fwCampMakeFriendDataMacro((fwData)(Reconstruction));
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Reconstruction::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Reconstruction::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
 
     // Generator result---------------------------------------------------------

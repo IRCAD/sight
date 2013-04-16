@@ -13,6 +13,7 @@
 #include <boost/assign/list_of.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/Mesh.hpp"
 
 using namespace boost::assign;
@@ -75,53 +76,61 @@ void Mesh::initArrays()
 
 //------------------------------------------------------------------------------
 
-void Mesh::shallowCopy( Mesh::csptr _source )
+void Mesh::shallowCopy(const Object::csptr &_source )
 {
+    Mesh::csptr other = Mesh::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    m_nbPoints        = _source->m_nbPoints;
-    m_nbCells         = _source->m_nbCells;
-    m_cellsDataSize   = _source->m_cellsDataSize;
+    m_nbPoints        = other->m_nbPoints;
+    m_nbCells         = other->m_nbCells;
+    m_cellsDataSize   = other->m_cellsDataSize;
 
-    m_points          = _source->m_points;
-    m_cellTypes       = _source->m_cellTypes;
-    m_cellData        = _source->m_cellData;
-    m_cellDataOffsets = _source->m_cellDataOffsets;
+    m_points          = other->m_points;
+    m_cellTypes       = other->m_cellTypes;
+    m_cellData        = other->m_cellData;
+    m_cellDataOffsets = other->m_cellDataOffsets;
 
-    m_pointColors     = _source->m_pointColors;
-    m_cellColors      = _source->m_cellColors;
-    m_pointNormals    = _source->m_pointNormals;
-    m_cellNormals     = _source->m_cellNormals;
+    m_pointColors     = other->m_pointColors;
+    m_cellColors      = other->m_cellColors;
+    m_pointNormals    = other->m_pointNormals;
+    m_cellNormals     = other->m_cellNormals;
 
-    m_arrayMap        = _source->m_arrayMap;
+    m_arrayMap        = other->m_arrayMap;
 }
 
 //------------------------------------------------------------------------------
 
-void Mesh::deepCopy( Mesh::csptr _source )
+void Mesh::deepCopy(const Object::csptr &_source )
 {
+    Mesh::csptr other = Mesh::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
-    m_nbPoints      = _source->m_nbPoints;
-    m_nbCells       = _source->m_nbCells;
-    m_cellsDataSize = _source->m_cellsDataSize;
+    m_nbPoints      = other->m_nbPoints;
+    m_nbCells       = other->m_nbCells;
+    m_cellsDataSize = other->m_cellsDataSize;
 
     this->initArrays();
 
-    m_points->deepCopy(_source->m_points);
-    m_cellTypes->deepCopy(_source->m_cellTypes);
-    m_cellData->deepCopy(_source->m_cellData);
-    m_cellDataOffsets->deepCopy(_source->m_cellDataOffsets);
+    m_points->deepCopy(other->m_points);
+    m_cellTypes->deepCopy(other->m_cellTypes);
+    m_cellData->deepCopy(other->m_cellData);
+    m_cellDataOffsets->deepCopy(other->m_cellDataOffsets);
 
-    m_pointColors  = ::fwData::Object::copy(_source->m_pointColors );
-    m_cellColors   = ::fwData::Object::copy(_source->m_cellColors  );
-    m_pointNormals = ::fwData::Object::copy(_source->m_pointNormals);
-    m_cellNormals  = ::fwData::Object::copy(_source->m_cellNormals );
+    m_pointColors  = ::fwData::Object::copy(other->m_pointColors );
+    m_cellColors   = ::fwData::Object::copy(other->m_cellColors  );
+    m_pointNormals = ::fwData::Object::copy(other->m_pointNormals);
+    m_cellNormals  = ::fwData::Object::copy(other->m_cellNormals );
 
     m_arrayMap.clear();
-    BOOST_FOREACH(ArrayMapType::value_type element, _source->m_arrayMap)
+    BOOST_FOREACH(ArrayMapType::value_type element, other->m_arrayMap)
     {
-        m_arrayMap[element.first]->deepCopy(element.second);
+        m_arrayMap[element.first] = ::fwData::Object::copy(element.second);
     }
 
 }

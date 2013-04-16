@@ -5,6 +5,7 @@ LIB     = [
           'fwGui_0-1',
           'fwGuiQt_0-1',
           'fwActivities_0-1',
+          'fwDataCamp_0-1',
           ]
 BUNDLES = ['gui_0-1']
 VERSION = '0-1'

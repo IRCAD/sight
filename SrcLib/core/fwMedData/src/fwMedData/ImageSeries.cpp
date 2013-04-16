@@ -6,7 +6,8 @@
 
 
 #include <fwData/Image.hpp>
-#include "fwData/registry/macros.hpp"
+#include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "fwMedData/ImageSeries.hpp"
 
@@ -26,20 +27,30 @@ ImageSeries::~ImageSeries()
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::shallowCopy(ImageSeries::csptr _src)
+void ImageSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( _src );
+    ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
-    m_attrImage = _src->m_attrImage;
+    this->fieldShallowCopy( other );
+
+    m_attrImage = other->m_attrImage;
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::deepCopy(ImageSeries::csptr _src)
+void ImageSeries::deepCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldDeepCopy( _src );
+    ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
-    m_attrImage = ::fwData::Object::copy(_src->m_attrImage);
+    this->fieldDeepCopy( other );
+
+    m_attrImage = ::fwData::Object::copy(other->m_attrImage);
 }
 
 //------------------------------------------------------------------------------

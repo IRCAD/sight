@@ -8,8 +8,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
-
 #include "gui/action/SConfigLauncher.hpp"
 
 namespace gui

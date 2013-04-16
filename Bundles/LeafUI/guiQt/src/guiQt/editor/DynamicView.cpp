@@ -25,7 +25,7 @@
 #include <fwGui/GuiRegistry.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+#include <fwDataCamp/getObject.hpp>
 
 #include "guiQt/editor/DynamicView.hpp"
 
@@ -165,7 +165,7 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
         }
         else
         {
-            ::fwData::Object::sptr obj = ::fwAtomConversion::getSubObject(currentObj, param.by);
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, param.by);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
             (*replaceMap)[param.replace] = ::fwData::String::New(obj->getID());
         }

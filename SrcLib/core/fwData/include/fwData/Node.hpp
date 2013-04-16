@@ -79,10 +79,10 @@ public:
     FWDATA_API Port::sptr findPort(const std::string &_identifier, /*const std::string &type,*/ bool _modeInput) const;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Node::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Node::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
 protected :
 

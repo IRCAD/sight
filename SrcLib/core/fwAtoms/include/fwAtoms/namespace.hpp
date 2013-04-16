@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C), 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,25 +9,21 @@
 
 /**
  * @namespace   fwAtoms
- * @author      IRCAD (Research and Development Team).
- * @date        2011-2012.
  *
- *@brief fwAtoms contains all necessary for represented  meta object.
+ *@brief fwAtoms contains basic objects to represent any other kind of object
  *
- * fwAtoms component contains the necessary to represented fwData
- * and to visited fwAtoms.
- *
- * fwAtoms is decomposed into 7 types :
- * \li  Numeric : Managed real and integer.
- * \li  Boolean : Managed boolean type.
- * \li  String  : Managed String type.
- * \li  Object : Managed complex type.
- * \li  Map : Container where associated a string ket with on of this type.
+ * fwAtoms contains seven basic types :
+ * \li  Numeric : real and integer type.
+ * \li  Boolean : boolean type.
+ * \li  String  : String type.
+ * \li  Object : complex type.
+ * \li  Map : string:Atom association
  * \li  Sequence : sequence of simple Atoms (Numeric, Boolean, String).
- * \li  Blob: Metaobject represented a row buffer.
+ * \li  Blob: representing a raw buffer.
  */
 namespace fwAtoms
 {
 }
 
 #endif /* _FWATOMS_NAMESPACE_HPP_ */
+

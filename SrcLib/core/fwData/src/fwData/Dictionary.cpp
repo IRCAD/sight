@@ -8,6 +8,7 @@
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 
@@ -31,21 +32,29 @@ Dictionary::~Dictionary()
 
 //------------------------------------------------------------------------------
 
-void Dictionary::shallowCopy( Dictionary::csptr _source )
+void Dictionary::shallowCopy(const Object::csptr &_source )
 {
-    ::fwData::Object::fieldShallowCopy( _source );
+    Dictionary::csptr other = Dictionary::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    ::fwData::Object::fieldShallowCopy( other );
 
-    m_attrDictionaryOrgans = _source->m_attrDictionaryOrgans;
+    m_attrDictionaryOrgans = other->m_attrDictionaryOrgans;
 }
 
 //------------------------------------------------------------------------------
 
-void Dictionary::deepCopy( Dictionary::csptr _source )
+void Dictionary::deepCopy(const Object::csptr &_source )
 {
-    ::fwData::Object::fieldDeepCopy( _source );
+    Dictionary::csptr other = Dictionary::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    ::fwData::Object::fieldDeepCopy( other );
 
     m_attrDictionaryOrgans.clear();
-    BOOST_FOREACH(DictionaryOrganContainerType::value_type element, _source->m_attrDictionaryOrgans)
+    BOOST_FOREACH(DictionaryOrganContainerType::value_type element, other->m_attrDictionaryOrgans)
     {
         m_attrDictionaryOrgans[element.first] = ::fwData::Object::copy(element.second);
     }

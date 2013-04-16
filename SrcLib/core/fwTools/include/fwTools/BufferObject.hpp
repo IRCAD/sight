@@ -111,7 +111,7 @@ public:
         {
             SLM_ASSERT("Can't lock NULL object", bo);
 
-            ::fwCore::mt::ScopedLock lock(bo->m_mutex);
+            ::fwCore::mt::ScopedLock lock(bo->m_lockDumpMutex);
             m_count = bo->m_count.lock();
             if ( ! m_count )
             {
@@ -355,6 +355,8 @@ public:
      */
     const void * getBufferPointer() const {return &m_buffer;};
 
+    ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
+
     /// Exchanges the content of the BufferObject with the content of _source.
     FWTOOLS_API void swap( BufferObject::sptr _source );
 
@@ -365,7 +367,8 @@ protected :
     SizeType m_size;
 
     mutable WeakCounterType m_count;
-    mutable ::fwCore::mt::Mutex m_mutex;
+    mutable ::fwCore::mt::Mutex m_lockDumpMutex;
+    ::fwCore::mt::ReadWriteMutex m_mutex;
 
     ::fwTools::IBufferManager::sptr m_bufferManager;
 

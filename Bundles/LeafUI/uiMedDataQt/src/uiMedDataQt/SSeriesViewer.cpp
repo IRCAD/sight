@@ -15,7 +15,7 @@
 
 #include <fwComEd/VectorMsg.hpp>
 
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+#include <fwDataCamp/getObject.hpp>
 
 #include <fwMedData/Series.hpp>
 
@@ -112,7 +112,7 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
 
             BOOST_FOREACH(ReplaceValuesMapType::value_type elt, info.replaceValues)
             {
-                ::fwData::Object::sptr object = ::fwAtomConversion::getSubObject( obj, elt.second );
+                ::fwData::Object::sptr object = ::fwDataCamp::getObject( obj, elt.second );
                 OSLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
             }

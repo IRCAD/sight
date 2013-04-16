@@ -116,14 +116,14 @@ void Object::updateFields( const FieldMapType & fieldMap )
 
 //-----------------------------------------------------------------------------
 
-void Object::fieldShallowCopy( ::fwData::Object::csptr source )
+void Object::fieldShallowCopy(const ::fwData::Object::csptr &source )
 {
     this->setFields(source->getFields());
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::fieldDeepCopy( ::fwData::Object::csptr source )
+void Object::fieldDeepCopy(const ::fwData::Object::csptr &source )
 {
     m_fields.clear();
     ::fwData::Object::FieldMapType sourceFields = source->getFields();
@@ -135,7 +135,7 @@ void Object::fieldDeepCopy( ::fwData::Object::csptr source )
 
 //-----------------------------------------------------------------------------
 
-void Object::shallowCopy( ::fwData::Object::csptr source )
+void Object::shallowCopy(const ::fwData::Object::csptr &source )
 {
     FwCoreNotUsedMacro(source);
     OSLM_FATAL("shallowCopy not implemented for : " << this->getClassname() );
@@ -143,15 +143,7 @@ void Object::shallowCopy( ::fwData::Object::csptr source )
 
 //-----------------------------------------------------------------------------
 
-void Object::deepCopy( ::fwData::Object::csptr source )
-{
-    FwCoreNotUsedMacro(source);
-    OSLM_FATAL("deepCopy not implemented for : " << this->getClassname() );
-}
-
-//-----------------------------------------------------------------------------
-
-::fwData::Object::sptr Object::copy(::fwData::Object::csptr source)
+::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr &source)
 {
     ::fwData::Object::sptr newObj;
     if( source )

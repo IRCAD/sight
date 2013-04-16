@@ -17,7 +17,17 @@ namespace camp
 class FWCAMP_CLASS_API ExtendedClassVisitor : public ClassVisitor
 {
 public:
+
+    virtual void visit(const Property& property){ClassVisitor::visit(property);};
+    virtual void visit(const SimpleProperty& property){ClassVisitor::visit(property);};
+    virtual void visit(const ArrayProperty& property){ClassVisitor::visit(property);};
+    virtual void visit(const EnumProperty& property){ClassVisitor::visit(property);};
+    virtual void visit(const UserProperty& property){ClassVisitor::visit(property);};
+    virtual void visit(const Function& function){ClassVisitor::visit(function);};
+
+
     FWCAMP_API virtual void visit(const MapProperty& property){}
+
 
 };
 

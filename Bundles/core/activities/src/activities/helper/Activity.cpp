@@ -13,7 +13,7 @@
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+#include <fwDataCamp/getObject.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwActivities/registry/Activities.hpp>
@@ -80,7 +80,7 @@ namespace helper
         }
         else
         {
-            ::fwData::Object::sptr obj = ::fwAtomConversion::getSubObject(series->getData(), param.by);
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(series->getData(), param.by);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
             (*replaceMap)[param.replace] = ::fwData::String::New(obj->getID());
         }

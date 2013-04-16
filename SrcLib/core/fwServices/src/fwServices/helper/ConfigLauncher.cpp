@@ -9,7 +9,7 @@
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
 
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+#include <fwDataCamp/getObject.hpp>
 
 #include "fwServices/helper/ConfigLauncher.hpp"
 
@@ -76,7 +76,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv)
         }
         else
         {
-            ::fwData::Object::sptr obj = ::fwAtomConversion::getSubObject(currentObj, param.by);
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, param.by);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
             replaceMap[param.replace] = obj->getID();
         }
@@ -141,7 +141,7 @@ bool ConfigLauncher::isExecutable(::fwData::Object::sptr currentObj)
         if(param.isSeshat())
         {
             std::string by = param.by;
-            executable &= ::fwAtomConversion::getSubObject(currentObj, param.by, false).get() != 0;
+            executable &= ::fwDataCamp::getObject(currentObj, param.by, false).get() != 0;
         }
     }
 

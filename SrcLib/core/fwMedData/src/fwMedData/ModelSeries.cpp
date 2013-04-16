@@ -6,7 +6,8 @@
 
 
 #include <fwData/Image.hpp>
-#include "fwData/registry/macros.hpp"
+#include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "fwMedData/ModelSeries.hpp"
 
@@ -26,20 +27,30 @@ ModelSeries::~ModelSeries()
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::shallowCopy(ModelSeries::csptr _src)
+void ModelSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( _src );
+    ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
-    m_attrReconstructionDB = _src->m_attrReconstructionDB;
+    this->fieldShallowCopy( other );
+
+    m_attrReconstructionDB = other->m_attrReconstructionDB;
 }
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::deepCopy(ModelSeries::csptr _src)
+void ModelSeries::deepCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldDeepCopy( _src );
+    ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
-    m_attrReconstructionDB = _src->m_attrReconstructionDB;
+    this->fieldDeepCopy( other );
+
+    m_attrReconstructionDB = other->m_attrReconstructionDB;
 }
 
 //------------------------------------------------------------------------------

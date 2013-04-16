@@ -1,23 +1,10 @@
 
-CLASSTEST = [
-            'ActivitySeriesTest',
-            'EquipmentTest',
-            'ImageSeriesTest',
-            'ModelSeriesTest',
-            'PatientTest',
-            'StudyTest',
-            'SeriesDBTest',
-            'DataCampHelper',
-            ]
+CLASSTEST=[
+    'GetObjectTest',
+    'ObjectTest',
+    'RecursiveLockTest',
+    'CompareObjectsTest',
+]
 
-USE = ['boost',]
-LIB = [
-      'fwData_0-1', 
-      'fwMedData_0-1',
-      'fwActivities_0-1',
-      'fwDataCamp_0-1',
-      'fwAtoms_0-1',
-      'fwAtomConversion_0-1',
-      'fwDataTools_0-1'
-      ]
+LIB = ['fwTools_0-1', 'fwCore_0-1', 'fwDataCamp_0-1', 'fwDataTools_0-1']
 CONSOLE = 'yes'

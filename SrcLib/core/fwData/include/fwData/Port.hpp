@@ -42,10 +42,10 @@ public:
     fwCampMakeFriendDataMacro((fwData)(Port));
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Port::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Port::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
 protected :
 

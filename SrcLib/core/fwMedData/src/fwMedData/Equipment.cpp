@@ -5,7 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwData/registry/macros.hpp"
+#include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "fwMedData/Equipment.hpp"
 
@@ -25,18 +26,28 @@ Equipment::~Equipment()
 
 //------------------------------------------------------------------------------
 
-void Equipment::shallowCopy(Equipment::csptr _src)
+void Equipment::shallowCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( _src );
-    m_attrInstitutionName = _src->m_attrInstitutionName;
+    Equipment::csptr other = Equipment::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldShallowCopy( _source );
+    m_attrInstitutionName = other->m_attrInstitutionName;
 }
 
 //------------------------------------------------------------------------------
 
-void Equipment::deepCopy(Equipment::csptr _src)
+void Equipment::deepCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldDeepCopy( _src );
-    m_attrInstitutionName = _src->m_attrInstitutionName;
+    Equipment::csptr other = Equipment::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldDeepCopy( _source );
+    m_attrInstitutionName = other->m_attrInstitutionName;
 }
 
 //------------------------------------------------------------------------------

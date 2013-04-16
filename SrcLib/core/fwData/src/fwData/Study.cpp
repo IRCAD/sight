@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/Study.hpp"
 
 fwDataRegisterMacro( ::fwData::Study );
@@ -32,38 +33,46 @@ Study::~Study()
 
 //------------------------------------------------------------------------------
 
-void Study::shallowCopy( Study::csptr _source )
+void Study::shallowCopy(const Object::csptr &_source )
 {
+    Study::csptr other = Study::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_sHospital = _source->m_sHospital;
-    m_sModality = _source->m_sModality;
-    m_sAcquisitionZone = _source->m_sAcquisitionZone;
-    m_sRISId = _source->m_sRISId;
-    m_sUID = _source->m_sUID;
-    m_i32DbID = _source->m_i32DbID;
-    m_date = _source->m_date;
-    m_time = _source->m_time;
-    m_description = _source->m_description;
-    m_attrAcquisitions = _source->m_attrAcquisitions;
+    m_sHospital = other->m_sHospital;
+    m_sModality = other->m_sModality;
+    m_sAcquisitionZone = other->m_sAcquisitionZone;
+    m_sRISId = other->m_sRISId;
+    m_sUID = other->m_sUID;
+    m_i32DbID = other->m_i32DbID;
+    m_date = other->m_date;
+    m_time = other->m_time;
+    m_description = other->m_description;
+    m_attrAcquisitions = other->m_attrAcquisitions;
 }
 
 //------------------------------------------------------------------------------
 
-void Study::deepCopy( Study::csptr _source )
+void Study::deepCopy(const Object::csptr &_source )
 {
+    Study::csptr other = Study::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    m_sHospital = _source->m_sHospital;
-    m_sModality = _source->m_sModality;
-    m_sAcquisitionZone = _source->m_sAcquisitionZone;
-    m_sRISId = _source->m_sRISId;
-    m_sUID = _source->m_sUID;
-    m_i32DbID = _source->m_i32DbID;
-    m_date = _source->m_date;
-    m_time = _source->m_time;
-    m_description = _source->m_description;
+    m_sHospital = other->m_sHospital;
+    m_sModality = other->m_sModality;
+    m_sAcquisitionZone = other->m_sAcquisitionZone;
+    m_sRISId = other->m_sRISId;
+    m_sUID = other->m_sUID;
+    m_i32DbID = other->m_i32DbID;
+    m_date = other->m_date;
+    m_time = other->m_time;
+    m_description = other->m_description;
     m_attrAcquisitions.clear();
-    m_attrAcquisitions.resize(_source->m_attrAcquisitions.size());
-    std::transform(_source->m_attrAcquisitions.begin(), _source->m_attrAcquisitions.end(),
+    m_attrAcquisitions.resize(other->m_attrAcquisitions.size());
+    std::transform(other->m_attrAcquisitions.begin(), other->m_attrAcquisitions.end(),
                    m_attrAcquisitions.begin(),
                    &::fwData::Object::copy< AcquisitionContainerType::value_type::element_type >
                   );

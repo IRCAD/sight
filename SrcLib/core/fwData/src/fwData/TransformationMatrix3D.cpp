@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/TransformationMatrix3D.hpp"
 
@@ -35,18 +36,26 @@ TransformationMatrix3D::~TransformationMatrix3D()
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3D::shallowCopy( TransformationMatrix3D::csptr _source )
+void TransformationMatrix3D::shallowCopy(const Object::csptr &_source )
 {
+    TransformationMatrix3D::csptr other = TransformationMatrix3D::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_vCoefficients = _source->m_vCoefficients;
+    m_vCoefficients = other->m_vCoefficients;
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3D::deepCopy( TransformationMatrix3D::csptr _source )
+void TransformationMatrix3D::deepCopy(const Object::csptr &_source )
 {
+    TransformationMatrix3D::csptr other = TransformationMatrix3D::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    m_vCoefficients = _source->m_vCoefficients;
+    m_vCoefficients = other->m_vCoefficients;
 }
 
 //------------------------------------------------------------------------------

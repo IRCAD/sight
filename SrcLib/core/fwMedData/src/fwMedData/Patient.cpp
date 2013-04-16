@@ -5,7 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwData/registry/macros.hpp"
+#include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "fwMedData/Patient.hpp"
 
@@ -25,24 +26,34 @@ Patient::~Patient()
 
 //------------------------------------------------------------------------------
 
-void Patient::shallowCopy(Patient::csptr _src)
+void Patient::shallowCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldShallowCopy( _src );
-    m_attrName = _src->m_attrName;
-    m_attrBirthdate = _src->m_attrBirthdate;
-    m_attrPatientId = _src->m_attrPatientId;
-    m_attrSex = _src->m_attrSex;
+    Patient::csptr other = Patient::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldShallowCopy( other );
+    m_attrName = other->m_attrName;
+    m_attrBirthdate = other->m_attrBirthdate;
+    m_attrPatientId = other->m_attrPatientId;
+    m_attrSex = other->m_attrSex;
 }
 
 //------------------------------------------------------------------------------
 
-void Patient::deepCopy(Patient::csptr _src)
+void Patient::deepCopy(const ::fwData::Object::csptr &_source)
 {
-    this->fieldDeepCopy( _src );
-    m_attrName = _src->m_attrName;
-    m_attrBirthdate = _src->m_attrBirthdate;
-    m_attrPatientId = _src->m_attrPatientId;
-    m_attrSex = _src->m_attrSex;
+    Patient::csptr other = Patient::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+
+    this->fieldDeepCopy( other );
+    m_attrName = other->m_attrName;
+    m_attrBirthdate = other->m_attrBirthdate;
+    m_attrPatientId = other->m_attrPatientId;
+    m_attrSex = other->m_attrSex;
 }
 
 //------------------------------------------------------------------------------

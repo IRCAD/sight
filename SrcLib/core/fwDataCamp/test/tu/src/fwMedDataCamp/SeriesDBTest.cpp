@@ -13,7 +13,7 @@
 
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtomConversion/AtomHelper.hpp>
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+#include <fwDataCamp/getObject.hpp>
 
 #include "fwMedDataCamp/SeriesDBTest.hpp"
 #include "DataCampHelper.hpp"

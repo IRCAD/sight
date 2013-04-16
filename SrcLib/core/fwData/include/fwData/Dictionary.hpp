@@ -35,7 +35,6 @@ class FWDATA_CLASS_API Dictionary : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Dictionary)(::fwData::Object), (()), ::fwData::factory::New< Dictionary >) ;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -88,8 +87,8 @@ public :
      * @brief Shallow/deep copy
      * @{
      */
-    void shallowCopy( Dictionary::csptr _source );
-    void deepCopy( Dictionary::csptr _source );
+    void shallowCopy( const Object::csptr& _source );
+    void deepCopy( const Object::csptr& _source );
     /** @} */
 
 protected:

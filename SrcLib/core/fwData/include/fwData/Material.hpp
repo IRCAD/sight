@@ -33,7 +33,6 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::factory::New< Material >) ;
     fwCampMakeFriendDataMacro((fwData)(Material));
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -45,10 +44,10 @@ public:
     FWDATA_API virtual ~Material();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Material::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Material::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /**
     * @brief returns editable ambient color

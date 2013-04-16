@@ -30,7 +30,7 @@ namespace fwMedData
 
 /**
  * @class ModelSeries
- * Holds models data 
+ * Holds models data
  *
  * @author  IRCAD (Research and Development Team).
  */
@@ -44,8 +44,6 @@ public:
 
     fwCampMakeFriendDataMacro((fwMedData)(ModelSeries));
 
-    fwDataObjectMacro();
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -56,10 +54,10 @@ public:
     FWMEDDATA_API virtual ~ModelSeries();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( ModelSeries::csptr _source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( ModelSeries::csptr _source );
+    FWMEDDATA_API void deepCopy( const ::fwData::Object::csptr &_source );
 
     /**
      * @name Getters / Setters

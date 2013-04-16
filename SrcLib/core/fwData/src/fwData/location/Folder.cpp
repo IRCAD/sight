@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/location/Folder.hpp"
 
@@ -37,18 +38,26 @@ Folder::sptr Folder::FolderFactory(PathType path, bool recursive )
 
 //------------------------------------------------------------------------------
 
-void Folder::shallowCopy( Folder::csptr _source )
+void Folder::shallowCopy(const Object::csptr &_source )
 {
+    Folder::csptr other = Folder::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    this->m_folder = _source->m_folder;
+    this->m_folder = other->m_folder;
 }
 
 //------------------------------------------------------------------------------
 
-void Folder::deepCopy( Folder::csptr _source )
+void Folder::deepCopy(const Object::csptr &_source )
 {
+    Folder::csptr other = Folder::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
-    this->m_folder = _source->m_folder;
+    this->m_folder = other->m_folder;
 }
 
 //------------------------------------------------------------------------------

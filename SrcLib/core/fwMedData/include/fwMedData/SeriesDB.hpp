@@ -37,8 +37,6 @@ public:
 
     fwCampMakeFriendDataMacro((fwMedData)(SeriesDB));
 
-    fwDataObjectMacro();
-
 
     typedef std::vector< SPTR(Series) > ContainerType;
 
@@ -95,10 +93,10 @@ public:
     FWMEDDATA_API virtual ~SeriesDB();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( SeriesDB::csptr _source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( SeriesDB::csptr _source );
+    FWMEDDATA_API void deepCopy( const ::fwData::Object::csptr &_source );
 
 
     /**

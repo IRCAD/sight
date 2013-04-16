@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/Spline.hpp"
 
 fwDataRegisterMacro( ::fwData::Spline );
@@ -32,6 +33,19 @@ Spline::~Spline()
 Spline::Points &Spline::points()
 {
     return m_points ;
+}
+
+//------------------------------------------------------------------------------
+
+void Spline::deepCopy(const Object::csptr &source )
+{
+    Spline::csptr other = Spline::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source );
+
+    OSLM_FATAL("Not implemented." );
 }
 
 //------------------------------------------------------------------------------

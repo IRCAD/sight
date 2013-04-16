@@ -80,7 +80,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >) ;
 
-    fwDataObjectMacro();
 
     fwCampMakeFriendDataMacro((fwData)(Mesh));
 
@@ -131,10 +130,10 @@ public:
     FWDATA_API virtual ~Mesh() ;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Mesh::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Mesh::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
 
     /**

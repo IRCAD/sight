@@ -350,7 +350,7 @@ protected :
     //@{
 
     /**
-     * @brief Invoke updating(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
+     * @brief Invoke receiving(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
      * @pre m_globalState == STARTED
      */
     FWSERVICES_API void receive( fwServices::ObjectMsg::csptr _msg ) ;

@@ -39,7 +39,6 @@ public:
 
     fwCampMakeFriendDataMacro((fwData)(Study))
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -51,10 +50,10 @@ public:
     FWDATA_API virtual ~Study();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Study::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Study::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     typedef std::vector< ::fwData::Acquisition::sptr > AcquisitionContainerType;
 

@@ -6,6 +6,7 @@
 
 #include <fwCore/base.hpp>
 #include <fwData/registry/macros.hpp>
+#include <fwData/Exception.hpp>
 
 #include "scene2D/data/Viewport.hpp"
 
@@ -26,6 +27,40 @@ Viewport::Viewport(::fwData::Object::Key key)
 Viewport::~Viewport()
 {
 }
+
+//------------------------------------------------------------------------------
+
+void Viewport::shallowCopy(const ::fwData::Object::csptr &_source )
+{
+    Viewport::csptr other = Viewport::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldShallowCopy( _source );
+
+    m_x = other->m_x;
+    m_y = other->m_y;
+    m_width = other->m_width;
+    m_height = other->m_height;
+}
+
+//------------------------------------------------------------------------------
+
+void Viewport::deepCopy(const ::fwData::Object::csptr &_source )
+{
+    Viewport::csptr other = Viewport::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source );
+
+    m_x = other->m_x;
+    m_y = other->m_y;
+    m_width = other->m_width;
+    m_height = other->m_height;
+}
+
+//------------------------------------------------------------------------------
 
 float Viewport::getX()
 {

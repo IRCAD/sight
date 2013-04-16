@@ -34,7 +34,6 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (PatientDB)(::fwData::Object), (()), ::fwData::factory::New< PatientDB >) ;
     fwCampMakeFriendDataMacro((fwData)(PatientDB));
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -46,10 +45,10 @@ public:
     FWDATA_API virtual ~PatientDB();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( PatientDB::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( PatientDB::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     typedef std::vector< ::fwData::Patient::sptr > PatientContainerType;
 

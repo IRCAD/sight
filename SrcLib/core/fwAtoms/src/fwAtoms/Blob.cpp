@@ -1,20 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Blob.hpp"
-
-
-fwCampImplementMacro((fwAtoms)(Blob))
-{
-    builder
-        .tag("object_version", "1")
-        .tag("lib_name", "fwAtoms")
-        .base< ::fwAtoms::Base >();
-}
 
 fwAtomsRegisterMacro( ::fwAtoms::Blob );
 
@@ -43,27 +34,17 @@ Blob::sptr Blob::New(void* buffer, unsigned int size)
 
 //------------------------------------------------------------------------------
 
-size_t Blob::getSize() const
-{
-    return m_bufferObject->getSize();
-}
-
-//------------------------------------------------------------------------------
-
-char* Blob::getBuffer() const
-{
-    const ::fwTools::BufferObject::Lock& lock = m_bufferObject->lock();
-    return static_cast<char *>( lock.getBuffer());
-}
-
-//------------------------------------------------------------------------------
-
 ::fwTools::BufferObject::sptr Blob::getBufferObject() const
 {
     return m_bufferObject;
 }
 
 //------------------------------------------------------------------------------
+
+void Blob::setBufferObject(const ::fwTools::BufferObject::sptr &bo)
+{
+    m_bufferObject = bo;
+}
 
 Base::sptr Blob::clone() const
 {
@@ -85,3 +66,4 @@ Base::sptr Blob::clone() const
 }
 
 }
+

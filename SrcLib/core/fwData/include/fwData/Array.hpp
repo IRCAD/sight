@@ -35,7 +35,6 @@ class FWDATA_CLASS_API Array : public ::fwData::Object
 public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (Array)(::fwData::Object), (()), ::fwData::factory::New< Array >) ;
-    fwDataDeepCopyMacro();
 
     fwCampMakeFriendDataMacro((fwData)(Array));
 
@@ -67,7 +66,7 @@ public :
 
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Array::csptr _source );
+    FWDATA_API void deepCopy( const Object::csptr& _source );
 
     /**
      * @brief Resizes and allocate (if needed) the array.

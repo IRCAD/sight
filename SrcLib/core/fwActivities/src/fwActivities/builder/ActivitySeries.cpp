@@ -18,7 +18,7 @@
 #include <fwTools/UUID.hpp>
 #include <fwTools/dateAndTime.hpp>
 
-#include <fwAtomConversion/RetreiveObjectVisitor.hpp>
+#include <fwDataCamp/getObject.hpp>
 
 #include "fwActivities/builder/registry/macros.hpp"
 #include "fwActivities/builder/ActivitySeries.hpp"
@@ -61,7 +61,7 @@ ActivitySeries::~ActivitySeries()
         }
         else
         {
-            (*composite)[keyTag.key] = ::fwAtomConversion::getSubObject( obj, keyTag.path );
+            (*composite)[keyTag.key] = ::fwDataCamp::getObject( obj, keyTag.path );
         }
     }
 

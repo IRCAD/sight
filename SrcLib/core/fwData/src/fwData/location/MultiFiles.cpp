@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/location/MultiFiles.hpp"
 
@@ -40,6 +41,19 @@ void MultiFiles::setPaths( VectPathType paths)
 ILocation::VectPathType MultiFiles::getPaths()
 {
     return m_paths;
+}
+
+//------------------------------------------------------------------------------
+
+void MultiFiles::deepCopy(const Object::csptr &source )
+{
+    MultiFiles::csptr other = MultiFiles::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source );
+
+    OSLM_FATAL("Not implemented." );
 }
 
 //------------------------------------------------------------------------------

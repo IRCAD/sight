@@ -12,7 +12,8 @@
 fwCampImplementMacro((fwTools)(BufferObject))
 {
     builder.tag("buffer")
-           .function("classname", &::fwTools::BufferObject::className);
+           .function("classname", &::fwTools::BufferObject::className)
+           .function("is_a", (bool (::fwTools::BufferObject::*)(const std::string &) const) &::fwTools::BufferObject::isA);
 }
 
 namespace fwTools
