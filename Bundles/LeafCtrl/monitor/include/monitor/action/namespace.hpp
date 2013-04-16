@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __MONITORACTIONNAMESPACE_HPP__
-#define __MONITORACTIONNAMESPACE_HPP__
+#ifndef __MONITOR_ACTION_NAMESPACE_HPP__
+#define __MONITOR_ACTION_NAMESPACE_HPP__
 
 namespace monitor
 {
@@ -20,5 +20,5 @@ namespace action
 
 } // namespace monitor
 
-#endif // __MONITORACTIONNAMESPACE_HPP__
+#endif // __MONITOR_ACTION_NAMESPACE_HPP__
 
