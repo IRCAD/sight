@@ -58,9 +58,11 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
 //-----------------------------------------------------------------------------
 
 ::fwData::Object::sptr Graph::convert(  ::fwAtoms::Object::sptr atom,
-                                        AtomVisitor::DataCacheType & cache )
+                                        AtomVisitor::DataCacheType & cache,
+                                        const AtomVisitor::IReadPolicy &uuidPolicy
+                                        )
 {
-    ::fwAtomConversion::AtomVisitor visitor ( atom, cache );
+    ::fwAtomConversion::AtomVisitor visitor ( atom, cache, uuidPolicy );
     visitor.visit();
     ::fwData::Object::sptr data = visitor.getDataObject();
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(data);
@@ -75,13 +77,13 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
         ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast( elemAtom );
 
         ::fwAtoms::Object::sptr edgeAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );
-        ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast( ::fwAtomConversion::convert( edgeAtom, cache ) );
+        ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast( ::fwAtomConversion::convert( edgeAtom, cache, uuidPolicy ) );
 
         ::fwAtoms::Object::sptr srcAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("source") );
-        ::fwData::Node::sptr src = ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( srcAtom, cache ) );
+        ::fwData::Node::sptr src = ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( srcAtom, cache, uuidPolicy ) );
 
         ::fwAtoms::Object::sptr destAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("destination") );
-        ::fwData::Node::sptr dest = ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( destAtom, cache ) );
+        ::fwData::Node::sptr dest = ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( destAtom, cache, uuidPolicy ) );
 
         graph->addEdge( edge, src, dest );
     }

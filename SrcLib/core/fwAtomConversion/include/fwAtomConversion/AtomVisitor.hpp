@@ -11,11 +11,14 @@
 
 #include <fwTools/UUID.hpp>
 
-#include <fwData/Object.hpp>
-
 #include <fwAtoms/Object.hpp>
 
 #include "fwAtomConversion/config.hpp"
+
+namespace fwData
+{
+    class Object;
+}
 
 namespace fwAtomConversion
 {
@@ -30,10 +33,40 @@ class FWATOMCONVERSION_CLASS_API AtomVisitor
 
 public:
 
-    typedef std::map< ::fwTools::UUID::UUIDType, ::fwData::Object::sptr > DataCacheType;
+    /**
+     * @brief Visitor UUID Management policies
+     * @{
+     */
+    struct IReadPolicy
+    {
+        virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const = 0;
+    };
+
+    /**
+     * @brief This policy reuses the data associated with an existing uuid
+     */
+    struct ReusePolicy: IReadPolicy
+    { virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+
+    /**
+     * @brief This policy changes data's uuid if it already exists
+     */
+    struct ChangePolicy: IReadPolicy
+    { virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+
+    /**
+     * @brief This policy throws an exception if the loaded uuid is not available
+     */
+    struct StrictPolicy: IReadPolicy
+    { virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+    /** @} */
+
+
+    typedef std::map< ::fwTools::UUID::UUIDType, SPTR(::fwData::Object) > DataCacheType;
 
     /// Constructors. Initializes parameters.
-    FWATOMCONVERSION_API AtomVisitor( ::fwAtoms::Object::sptr atomObj, DataCacheType & cache );
+    FWATOMCONVERSION_API AtomVisitor( const ::fwAtoms::Object::sptr &atomObj, DataCacheType & cache,
+                                      const IReadPolicy &uuidPolicy );
 
     /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~AtomVisitor();
@@ -50,7 +83,7 @@ public:
     FWATOMCONVERSION_API void visit();
 
     /// Returns the data object. Calls this method after visit().
-    FWATOMCONVERSION_API ::fwData::Object::sptr getDataObject() const;
+    FWATOMCONVERSION_API SPTR(::fwData::Object) getDataObject() const;
 
 private:
 
@@ -64,10 +97,13 @@ private:
     ::fwAtoms::Object::sptr m_atomObj;
 
     /// Converted data object
-    ::fwData::Object::sptr m_dataObj;
+    SPTR(::fwData::Object) m_dataObj;
 
     /// Cache to register the atoms already converted, used when an atom is referenced multiple times.
     DataCacheType & m_cache;
+
+    /// Atom visitor uuids policy
+    const IReadPolicy &m_uuidPolicy;
 };
 
 } // end namespace fwAtomConversion

@@ -9,12 +9,17 @@
 
 #include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
-#include <fwData/Object.hpp>
-
-#include <fwAtoms/Object.hpp>
-
 #include "fwAtomConversion/config.hpp"
 #include "fwAtomConversion/AtomVisitor.hpp"
+
+namespace fwAtoms
+{
+    class Object;
+}
+namespace fwData
+{
+    class Object;
+}
 
 namespace fwAtomConversion
 {
@@ -32,9 +37,11 @@ public:
 
     /// Constructor. Initializes visitor.
     FWATOMCONVERSION_API AtomToDataMappingVisitor(
-            ::fwData::Object::sptr dataObj,
-            ::fwAtoms::Object::sptr atomObj,
-            AtomVisitor::DataCacheType & cache );
+            SPTR(::fwData::Object) dataObj,
+            SPTR(::fwAtoms::Object) atomObj,
+            AtomVisitor::DataCacheType & cache,
+            const AtomVisitor::IReadPolicy &uuidPolicy
+            );
 
     /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~AtomToDataMappingVisitor();
@@ -72,16 +79,19 @@ public:
 private:
 
     /// Converted data object
-    ::fwData::Object::sptr m_dataObj;
+    SPTR(::fwData::Object) m_dataObj;
 
     /// Reflection in camp world of m_dataObj
     ::camp::UserObject m_campDataObj;
 
     /// Atom object to convert
-    ::fwAtoms::Object::sptr m_atomObj;
+    SPTR(::fwAtoms::Object) m_atomObj;
 
     /// Cache to register the atoms already converted, used when an atom is referenced multiple times.
     AtomVisitor::DataCacheType & m_cache;
+
+    /// Atom visitor uuids policy
+    const AtomVisitor::IReadPolicy & m_uuidPolicy;
 };
 
 } // end namespace fwAtomConversion

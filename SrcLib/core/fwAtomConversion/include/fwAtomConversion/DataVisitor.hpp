@@ -13,12 +13,17 @@
 
 #include <fwTools/UUID.hpp>
 
-#include <fwData/Object.hpp>
-
-#include <fwAtoms/Base.hpp>
-#include <fwAtoms/Object.hpp>
-
 #include "fwAtomConversion/config.hpp"
+
+namespace fwAtoms
+{
+    class Object;
+}
+
+namespace fwData
+{
+    class Object;
+}
 
 namespace fwAtomConversion
 {
@@ -35,7 +40,7 @@ class FWATOMCONVERSION_CLASS_API DataVisitor : public ::camp::ExtendedClassVisit
 
 public:
 
-    typedef std::map< ::fwTools::UUID::UUIDType, ::fwAtoms::Object::sptr > AtomCacheType;
+    typedef std::map< ::fwTools::UUID::UUIDType, SPTR(::fwAtoms::Object) > AtomCacheType;
 
     typedef std::string ClassnameType;
 
@@ -50,7 +55,7 @@ public:
      * Creates a new ::fwAtoms::Object. Sets : ID from dataObj UUID, meta info
      * CLASSNAME_METAINFO from dataObj classname() and add tag information from camp data
      */
-    FWATOMCONVERSION_API DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache );
+    FWATOMCONVERSION_API DataVisitor( SPTR(::fwData::Object) dataObj, AtomCacheType & cache );
 
     /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~DataVisitor();
@@ -80,7 +85,7 @@ public:
     FWATOMCONVERSION_API void visit(const camp::MapProperty& property);
 
     /// Returns the atom object (representation of dataObj in fwAtoms) . Calls this methods after the visit.
-    FWATOMCONVERSION_API ::fwAtoms::Object::sptr getAtomObject() const;
+    FWATOMCONVERSION_API SPTR(::fwAtoms::Object) getAtomObject() const;
 
 private:
 
@@ -88,7 +93,7 @@ private:
     ::camp::UserObject m_campDataObj;
 
     /// converted atom object.
-    ::fwAtoms::Object::sptr m_atomObj;
+    SPTR(::fwAtoms::Object) m_atomObj;
 
     /// cache to register already converted object. Used when a data is referenced several times.
     AtomCacheType & m_cache;
