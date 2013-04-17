@@ -46,19 +46,19 @@ public:
      * @brief This policy reuses the data associated with an existing uuid
      */
     struct ReusePolicy: IReadPolicy
-    { virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
 
     /**
      * @brief This policy changes data's uuid if it already exists
      */
     struct ChangePolicy: IReadPolicy
-    { virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
 
     /**
      * @brief This policy throws an exception if the loaded uuid is not available
      */
     struct StrictPolicy: IReadPolicy
-    { virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
     /** @} */
 
 
