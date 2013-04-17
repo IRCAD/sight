@@ -116,7 +116,7 @@
                         <mode type="stop" />
                         <config>
                             <object id="backgroundImage" type="::fwData::Image">
-
+                                <service impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
                                 <!-- This service convert a simple fwData::Image to medical Image -->
                                 <service uid="${GENERIC_UID}_bg_medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes"/> <!-- priority="0.6" -->
                                 <service uid="${GENERIC_UID}_slider" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
@@ -129,6 +129,7 @@
                             </object>
 
                             <object id="frontImage" type="::fwData::Image">
+                                <service impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
                                 <!-- This service convert a simple fwData::Image to medical Image -->
                                 <service impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes"/> <!-- priority="0.6" -->
 

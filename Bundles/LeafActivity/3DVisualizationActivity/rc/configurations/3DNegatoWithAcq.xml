@@ -109,28 +109,30 @@
                     <item key="OptionalInputImageCompositeKey">
                         <object uid="${InputImageCompositeUID}" src="ref" type="::fwData::Composite">
 
-                          <service uid="${GENERIC_UID}_EditorManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
-                            <mode type="stop" />
-                            <config>
-                              <object id="OptionalInputImageKey" type="::fwData::Image">
+                            <service uid="${GENERIC_UID}_EditorManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
+                                <mode type="stop" />
+                                <config>
+                                    <object id="OptionalInputImageKey" type="::fwData::Image">
 
-                                <service uid="${GENERIC_UID}_slider_negato" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                  <sliceIndex>${orientation}</sliceIndex>
-                                </service>
+                                        <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
 
-                                <service uid="${GENERIC_UID}_distanceNegatoEditor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
-                                  <placeInScene uid="${GENERIC_UID}_negato" />
-                                </service>
+                                        <service uid="${GENERIC_UID}_slider_negato" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
+                                            <sliceIndex>${orientation}</sliceIndex>
+                                        </service>
 
-                                <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor2" autoConnect="yes">
-                                  <negatoAdaptor uid="${GENERIC_UID}_MPRNegato" slices="3" />
-                                </service>
+                                        <service uid="${GENERIC_UID}_distanceNegatoEditor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
+                                            <placeInScene uid="${GENERIC_UID}_negato" />
+                                        </service>
+
+                                        <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor2" autoConnect="yes">
+                                            <negatoAdaptor uid="${GENERIC_UID}_MPRNegato" slices="3" />
+                                        </service>
 
 
 
-                              </object>
-                            </config>
-                          </service>
+                                    </object>
+                                </config>
+                            </service>
 
                         </object>
                     </item>

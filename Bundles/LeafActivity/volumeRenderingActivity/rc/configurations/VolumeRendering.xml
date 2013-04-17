@@ -315,6 +315,8 @@
 
                     <item key="imageKey">
                         <object uid="${imageUid}" src="ref" type="::fwData::Image">
+                        
+                            <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
 
                             <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
 
@@ -437,6 +439,7 @@
             </connect>
 
             <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_LockImageSrv" />
             <start uid="${GENERIC_UID}_translateUpdater" />
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_Scene2D_Shutter" />

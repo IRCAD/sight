@@ -56,7 +56,7 @@
                         <separator />
                         <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
-                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
+                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg" />
                         <spacer />
                         <menu name="Visu 3D" />
                     </layout>
@@ -104,10 +104,10 @@
 
             <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
                 <config>
-                    <appConfig id="OrganManagerWithSeries" >
+                    <appConfig id="OrganManagerWithSeries">
                         <parameters>
-                            <parameter replace="ORGAN_MANAGER_MODELSERIES" by="${modelSeriesUid}"  />
-                            <parameter replace="ICON_PATH" by="${ICON_PATH}"  />
+                            <parameter replace="ORGAN_MANAGER_MODELSERIES" by="${modelSeriesUid}" />
+                            <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                         </parameters>
                     </appConfig>
                 </config>
@@ -115,12 +115,12 @@
 
             <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
                 <config>
-                    <appConfig id="3DNegatoWithAcq" >
+                    <appConfig id="3DNegatoWithAcq">
                         <parameters>
-                            <parameter replace="InputImageCompositeUID" by="@values.OptionalInputImageCompositeKey"  />
-                            <parameter replace="modelSeriesUid" by="@values.modelSeriesKey"  />
-                            <parameter replace="orientation" by="axial"  />
-                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato1"  />
+                            <parameter replace="InputImageCompositeUID" by="@values.OptionalInputImageCompositeKey" />
+                            <parameter replace="modelSeriesUid" by="@values.modelSeriesKey" />
+                            <parameter replace="orientation" by="axial" />
+                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato1" />
                         </parameters>
                     </appConfig>
                 </config>
@@ -129,101 +129,103 @@
 
 
             <item key="OptionalInputImageCompositeKey">
-              <object uid="${InputImageCompositeUID}" src="ref" type="::fwData::Composite">
+                <object uid="${InputImageCompositeUID}" src="ref" type="::fwData::Composite">
 
-                <service uid="${GENERIC_UID}_2DViewManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
-                  <mode type="stop" />
-                  <config>
-                    <object id="OptionalInputImageKey" type="::fwData::Image">
-
-                      <service uid="${GENERIC_UID}_cfgNegato2" type="::fwServices::IController" impl="::fwServices::SConfigController" autoConnect="no">
-                          <config>
-                              <appConfig id="2DNegato" >
-                                  <parameters>
-                                      <parameter replace="imageUid" by="self"  />
-                                      <parameter replace="orientation" by="frontal"  />
-                                      <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato2"  />
-                                  </parameters>
-                              </appConfig>
-                          </config>
-                      </service>
-
-                      <service uid="${GENERIC_UID}_cfgNegato3" type="::fwServices::IController" impl="::fwServices::SConfigController" autoConnect="no">
-                          <config>
-                              <appConfig id="2DNegato" >
-                                  <parameters>
-                                      <parameter replace="imageUid" by="self"  />
-                                      <parameter replace="orientation" by="sagittal"  />
-                                      <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato3"  />
-                                  </parameters>
-                              </appConfig>
-                          </config>
-                      </service>
-
-
-                      <service uid="${GENERIC_UID}_ActionFocusLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::FocusLandmark" autoConnect="no" />
-                      <service uid="${GENERIC_UID}_ActionNewLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddLandmark" autoConnect="no" />
-                      <service uid="${GENERIC_UID}_ActionRemoveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveLandmark" autoConnect="no" />
-                      <service uid="${GENERIC_UID}_ActionLoadLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::LoadLandmark" autoConnect="no" />
-                      <service uid="${GENERIC_UID}_ActionSaveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::SaveLandmark" autoConnect="no" />
-                      <service uid="${GENERIC_UID}_ActionHideLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::ShowLandmark" autoConnect="yes" />
-                      <service uid="${GENERIC_UID}_ActionAddDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddDistance" autoConnect="no" />
-                      <service uid="${GENERIC_UID}_ActionRemoveDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveDistance" autoConnect="no" />
-                      <service uid="${GENERIC_UID}_ActionHideDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::ShowDistance" autoConnect="yes" />
-
-                      <service uid="${GENERIC_UID}_ActionHideCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
-                        <crossType>hide</crossType>
-                      </service>
-
-                      <service uid="${GENERIC_UID}_ActionShowNormalCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
-                        <crossType>half</crossType>
-                        <state active="true" />
-                      </service>
-
-                      <service uid="${GENERIC_UID}_ActionShowFullCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
-                        <crossType>full</crossType>
-                      </service>
-
-                      <service uid="${GENERIC_UID}_action_SagittalViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
-                        <orientation>sagittal</orientation>
-                      </service>
-
-                      <service uid="${GENERIC_UID}_action_FrontalViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
-                        <orientation>frontal</orientation>
-                      </service>
-
-                      <service uid="${GENERIC_UID}_action_AxialViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
-                        <orientation>axial</orientation>
-                      </service>
-
-                      <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-
-
-                    </object>
-                  </config>
-                </service>
-
-
-                <service uid="${GENERIC_UID}_2DLayoutManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
-                  <mode type="startAndUpdate" />
-                  <config>
-                    <object id="OptionalInputImageKey" type="::fwData::Image">
-
-                      <service uid="${GENERIC_UID}_ModifyLayout" type="::fwGui::IActionSrv" impl="::gui::action::ModifyLayoutActionSrv" autoConnect="no">
+                    <service uid="${GENERIC_UID}_2DViewManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
+                        <mode type="stop" />
                         <config>
-                          <show wid="${GENERIC_UID}_view_negato2" />
-                          <show wid="${GENERIC_UID}_view_negato3" />
+                            <object id="OptionalInputImageKey" type="::fwData::Image">
+
+                                <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+
+                                <service uid="${GENERIC_UID}_cfgNegato2" type="::fwServices::IController" impl="::fwServices::SConfigController" autoConnect="no">
+                                    <config>
+                                        <appConfig id="2DNegato">
+                                            <parameters>
+                                                <parameter replace="imageUid" by="self" />
+                                                <parameter replace="orientation" by="frontal" />
+                                                <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato2" />
+                                            </parameters>
+                                        </appConfig>
+                                    </config>
+                                </service>
+
+                                <service uid="${GENERIC_UID}_cfgNegato3" type="::fwServices::IController" impl="::fwServices::SConfigController" autoConnect="no">
+                                    <config>
+                                        <appConfig id="2DNegato">
+                                            <parameters>
+                                                <parameter replace="imageUid" by="self" />
+                                                <parameter replace="orientation" by="sagittal" />
+                                                <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato3" />
+                                            </parameters>
+                                        </appConfig>
+                                    </config>
+                                </service>
+
+
+                                <service uid="${GENERIC_UID}_ActionFocusLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::FocusLandmark" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_ActionNewLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddLandmark" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_ActionRemoveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveLandmark" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_ActionLoadLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::LoadLandmark" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_ActionSaveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::SaveLandmark" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_ActionHideLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::ShowLandmark" autoConnect="yes" />
+                                <service uid="${GENERIC_UID}_ActionAddDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddDistance" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_ActionRemoveDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveDistance" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_ActionHideDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::ShowDistance" autoConnect="yes" />
+
+                                <service uid="${GENERIC_UID}_ActionHideCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                                    <crossType>hide</crossType>
+                                </service>
+
+                                <service uid="${GENERIC_UID}_ActionShowNormalCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                                    <crossType>half</crossType>
+                                    <state active="true" />
+                                </service>
+
+                                <service uid="${GENERIC_UID}_ActionShowFullCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                                    <crossType>full</crossType>
+                                </service>
+
+                                <service uid="${GENERIC_UID}_action_SagittalViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
+                                    <orientation>sagittal</orientation>
+                                </service>
+
+                                <service uid="${GENERIC_UID}_action_FrontalViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
+                                    <orientation>frontal</orientation>
+                                </service>
+
+                                <service uid="${GENERIC_UID}_action_AxialViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
+                                    <orientation>axial</orientation>
+                                </service>
+
+                                <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+
+
+                            </object>
                         </config>
-                      </service>
+                    </service>
 
 
-                    </object>
-                  </config>
-                </service>
+                    <service uid="${GENERIC_UID}_2DLayoutManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
+                        <mode type="startAndUpdate" />
+                        <config>
+                            <object id="OptionalInputImageKey" type="::fwData::Image">
+
+                                <service uid="${GENERIC_UID}_ModifyLayout" type="::fwGui::IActionSrv" impl="::gui::action::ModifyLayoutActionSrv" autoConnect="no">
+                                    <config>
+                                        <show wid="${GENERIC_UID}_view_negato2" />
+                                        <show wid="${GENERIC_UID}_view_negato3" />
+                                    </config>
+                                </service>
+
+
+                            </object>
+                        </config>
+                    </service>
 
 
 
-              </object>
+                </object>
             </item>
 
 
@@ -242,13 +244,11 @@
             </item>
 
             <item key="modelSeriesKey">
-                <object uid="${modelSeriesUid}" src="ref" type="::fwMedData::ModelSeries"/>
+                <object uid="${modelSeriesUid}" src="ref" type="::fwMedData::ModelSeries" />
             </item>
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
-            <!-- <start uid="${GENERIC_UID}_MedicalImageSrv" /> -->
-
             <start uid="${GENERIC_UID}_cfgNegato1" />
             <start uid="${GENERIC_UID}_2DViewManager" />
             <start uid="${GENERIC_UID}_2DLayoutManager" />

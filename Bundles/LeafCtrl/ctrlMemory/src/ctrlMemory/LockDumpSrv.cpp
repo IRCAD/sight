@@ -34,7 +34,7 @@ void LockDumpSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::
 
 void LockDumpSrv::starting()  throw ( ::fwTools::Failed )
 {
-   m_objLock = ::fwData::ObjectLock( ::fwData::Object::dynamicCast( this->getObject() ) );
+   m_objLock = ::fwData::ObjectLock( this->getObject() );
 }
 
 //-----------------------------------------------------------------------------

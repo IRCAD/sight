@@ -21,6 +21,11 @@
     <activate id="uiVisuQt" version="0-1" />
     <activate id="uiTF" version="0-1" />
     
+    <activate id="ctrlMemory" version="0-1" />
+    <activate id="monitor" version="0-1" />
+    <activate id="memory" version="0-1" />
+    <activate id="monitorQt" version="0-1" />
+    
     <activate id="media" version="0-1" />
     
     <activate id="scene2D" version="0-1" />
@@ -45,6 +50,7 @@
     <activate id="blendActivity" />
     <activate id="volumeRenderingActivity" />
 
+    <start id="memory" />
     <start id="scene2D" />
     <start id="visuVTK" />
     <start id="visuVTKQt" />

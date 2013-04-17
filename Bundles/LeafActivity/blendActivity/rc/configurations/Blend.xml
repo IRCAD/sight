@@ -63,6 +63,8 @@
 
             <item key="myBlendSelectionComposite">
                 <object uid="${GENERIC_UID}_myBlendSelectionComposite" type="::fwData::Composite">
+                
+                    <service uid="${GENERIC_UID}_myManagerLockDump" impl="::ctrlMemory::manager::LockDumpManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" />
 
                     <service uid="${GENERIC_UID}_action_blendView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
                         <state active="true" />
