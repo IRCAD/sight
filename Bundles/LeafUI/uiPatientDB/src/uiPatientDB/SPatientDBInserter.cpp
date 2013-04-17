@@ -114,26 +114,26 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
         ::fwData::PatientDB::sptr pPDB;
         if(pdb)
         {
-            ::fwData::PatientDB::NewSptr copy;
-            copy->deepCopy(pdb);
+            ::fwData::PatientDB::sptr copy;
+            copy = ::fwData::Object::copy(pdb);
             pPDB = copy;
         }
         else if(patient)
         {
-            ::fwData::Patient::NewSptr copy;
-            copy->deepCopy(patient);
+            ::fwData::Patient::sptr copy;
+            copy = ::fwData::Object::copy(patient);
             pPDB = this->createPDB(copy);
         }
         else if(study)
         {
-            ::fwData::Study::NewSptr copy;
-            copy->deepCopy(study);
+            ::fwData::Study::sptr copy;
+            copy = ::fwData::Object::copy(study);
             pPDB = this->createPDB(copy);
         }
         else if(acq)
         {
-            ::fwData::Acquisition::NewSptr copy;
-            copy->deepCopy(acq);
+            ::fwData::Acquisition::sptr copy;
+            copy = ::fwData::Object::copy(acq);
             ::fwData::Image::sptr copyImg = copy->getImage();
             ::fwData::String::sptr comment;
             comment = copyImg->setDefaultField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId,
@@ -159,8 +159,8 @@ void SPatientDBInserter::updating() throw ( ::fwTools::Failed )
             }
             if (exportImage)
             {
-                ::fwData::Image::NewSptr copy;
-                copy->deepCopy(img);
+                ::fwData::Image::sptr copy;
+                copy = ::fwData::Object::copy(img);
                 ::fwComEd::fieldHelper::MedicalImageHelpers::checkComment(copy);
                 ::fwData::String::sptr comment;
                 comment = copy->setDefaultField< ::fwData::String >( ::fwComEd::Dictionary::m_commentId,

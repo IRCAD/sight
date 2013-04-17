@@ -49,7 +49,7 @@ public:
     FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// @brief do a deep copy of edge
-    FWDATA_API void deepCopy( const Object::csptr& _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
      * @brief Set the edge identifier ("ID_SIZEX" , ...)

@@ -47,8 +47,7 @@ void CompareObjectsTest::setUp()
     ::fwDataTools::Patient::generatePatient(m_patientRef, 1, 1, 1);
     m_patientRef->getStudies()[0]->getAcquisitions()[0]->setImage(image);
 
-    m_patientComp = ::fwData::Patient::New();
-    m_patientComp->deepCopy(m_patientRef);
+    m_patientComp = ::fwData::Object::copy(m_patientRef);
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +195,7 @@ void CompareObjectsTest::compareBufferTest()
     }
 
     {
-        imgComp->deepCopy(imgRef);
+        imgComp = ::fwData::Object::copy(imgRef);
         visitor::CompareObjects visitor;
         visitor.compare(imgRef, imgComp);
 

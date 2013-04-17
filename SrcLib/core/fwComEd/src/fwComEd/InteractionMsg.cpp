@@ -77,7 +77,7 @@ bool InteractionMsg::getModifiersStatus(Modifiers k) const
 void InteractionMsg::setEventPoint(::fwData::Point::csptr point)
 {
     SLM_ASSERT("Null point pointer", point);
-    m_eventPoint->deepCopy(point);
+    m_eventPoint = ::fwData::Object::copy(point);
 }
 
 //-----------------------------------------------------------------------------

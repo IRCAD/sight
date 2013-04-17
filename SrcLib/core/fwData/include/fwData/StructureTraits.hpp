@@ -99,7 +99,7 @@ public:
     fwGettersSettersDocMacro(PropertyType, propertyType, std::string, Dicom property type);
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( const Object::csptr& _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 private:
 

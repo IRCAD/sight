@@ -307,34 +307,32 @@ void Graph::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Graph::deepCopy(const Object::csptr &_source )
+void Graph::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Graph::csptr other = Graph::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     std::map< ::fwData::Node::sptr, ::fwData::Node::sptr > correspondenceBetweenNodes;
     typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;
 
     m_nodes.clear();
-    BOOST_FOREACH(::fwData::Node::sptr node, other->m_nodes)
+    BOOST_FOREACH(const ::fwData::Node::sptr &node, other->m_nodes)
     {
-        ::fwData::Node::NewSptr newNode;
-        newNode->deepCopy( Node::constCast(node) );
+        ::fwData::Node::sptr newNode = ::fwData::Object::copy(node, cache);
         bool addOK =this->addNode(newNode);
-        OSLM_ASSERT("Node "<<newNode->getID() <<" can't be deepCopy ", addOK );
+        OSLM_ASSERT("Node "<<newNode->getID() <<" can't be added ", addOK );
         FwCoreNotUsedMacro(addOK);
         correspondenceBetweenNodes.insert(std::make_pair(node, newNode));
     }
 
     m_connections.clear();
-    BOOST_FOREACH(ConnectionContainerElt connection, other->m_connections)
+    BOOST_FOREACH(const ConnectionContainerElt &connection, other->m_connections)
     {
         // Edge deep copy .
-        ::fwData::Edge::NewSptr newEdge;
-        newEdge->deepCopy( connection.first );
+        ::fwData::Edge::sptr newEdge = ::fwData::Object::copy(connection.first, cache);
         ::fwData::Node::sptr oldNode1 = (connection.second).first;
         ::fwData::Node::sptr oldNode2 = (connection.second).second;
         if ((correspondenceBetweenNodes.find(Node::constCast(oldNode1))!= correspondenceBetweenNodes.end())

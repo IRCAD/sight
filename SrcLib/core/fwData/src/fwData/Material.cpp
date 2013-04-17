@@ -49,16 +49,16 @@ void Material::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Material::deepCopy(const Object::csptr &_source )
+void Material::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Material::csptr other = Material::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
-    m_ambient->deepCopy( other->m_ambient );
-    m_diffuse->deepCopy( other->m_diffuse );
+    m_ambient = ::fwData::Object::copy( other->m_ambient, cache );
+    m_diffuse = ::fwData::Object::copy( other->m_diffuse, cache );
 
     m_shadingMode = other->m_shadingMode;
     m_representationMode = other->m_representationMode;

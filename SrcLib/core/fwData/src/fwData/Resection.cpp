@@ -53,34 +53,30 @@ void Resection::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Resection::deepCopy(const Object::csptr &_source )
+void Resection::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Resection::csptr other = Resection::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_name = other->m_name;
     m_isSafePart = other->m_isSafePart;
     m_isValid = other->m_isValid;
     m_isVisible = other->m_isVisible;
-    m_planeList->deepCopy( other->m_planeList );
+    m_planeList = ::fwData::Object::copy(other->m_planeList, cache);
 
     this->m_vInputs.clear();
-    BOOST_FOREACH(ResectionInputs::value_type resec, other->m_vInputs)
+    BOOST_FOREACH(const ResectionInputs::value_type &resec, other->m_vInputs)
     {
-        Reconstruction::NewSptr newObj;
-        newObj->deepCopy( resec );
-        m_vInputs.push_back( newObj );
+        m_vInputs.push_back( ::fwData::Object::copy(resec, cache) );
     }
 
     this->m_vOutputs.clear();
-    BOOST_FOREACH(ResectionOutputs::value_type resec, other->m_vOutputs)
+    BOOST_FOREACH(const ResectionOutputs::value_type &resec, other->m_vOutputs)
     {
-        Reconstruction::NewSptr newObj;
-        newObj->deepCopy( resec );
-        m_vOutputs.push_back( newObj );
+        m_vOutputs.push_back( ::fwData::Object::copy(resec, cache) );
     }
 }
 

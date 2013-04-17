@@ -54,13 +54,13 @@ void Study::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Study::deepCopy(const Object::csptr &_source )
+void Study::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Study::csptr other = Study::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_sHospital = other->m_sHospital;
     m_sModality = other->m_sModality;
     m_sAcquisitionZone = other->m_sAcquisitionZone;
@@ -71,11 +71,11 @@ void Study::deepCopy(const Object::csptr &_source )
     m_time = other->m_time;
     m_description = other->m_description;
     m_attrAcquisitions.clear();
-    m_attrAcquisitions.resize(other->m_attrAcquisitions.size());
-    std::transform(other->m_attrAcquisitions.begin(), other->m_attrAcquisitions.end(),
-                   m_attrAcquisitions.begin(),
-                   &::fwData::Object::copy< AcquisitionContainerType::value_type::element_type >
-                  );
+    m_attrAcquisitions.reserve(other->m_attrAcquisitions.size());
+    BOOST_FOREACH(const AcquisitionContainerType::value_type &obj, other->m_attrAcquisitions)
+    {
+        m_attrAcquisitions.push_back( ::fwData::Object::copy(obj, cache) );
+    }
 }
 
 //------------------------------------------------------------------------------

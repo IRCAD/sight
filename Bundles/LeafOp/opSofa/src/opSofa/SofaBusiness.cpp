@@ -342,8 +342,8 @@ void SofaBusiness::translationPointer(OglModel *visual, ::fwData::Mesh::sptr pMe
      {
         ::fwData::Mesh::sptr pMesh = meshs->at(i);
 
-        ::fwData::Array::NewSptr pointArray;
-        pointArray->deepCopy(pMesh->getPointsArray());
+        ::fwData::Array::sptr pointArray;
+        pointArray = ::fwData::Object::copy(pMesh->getPointsArray());
         pMesh->setPointsArray(pointArray);
      }
  }

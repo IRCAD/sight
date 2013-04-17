@@ -37,13 +37,13 @@ Spline::Points &Spline::points()
 
 //------------------------------------------------------------------------------
 
-void Spline::deepCopy(const Object::csptr &source )
+void Spline::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
     Spline::csptr other = Spline::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source );
+    this->fieldDeepCopy( source, cache );
 
     OSLM_FATAL("Not implemented." );
 }

@@ -47,16 +47,16 @@ void Plane::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Plane::deepCopy(const Object::csptr &_source )
+void Plane::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Plane::csptr other = Plane::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
-    m_vPoints[0]->deepCopy( other->m_vPoints[0] );
-    m_vPoints[1]->deepCopy( other->m_vPoints[1] );
-    m_vPoints[2]->deepCopy( other->m_vPoints[2] );
+    this->fieldDeepCopy( _source, cache );
+    m_vPoints[0] = ::fwData::Object::copy(other->m_vPoints[0], cache);
+    m_vPoints[1] = ::fwData::Object::copy(other->m_vPoints[1], cache);
+    m_vPoints[2] = ::fwData::Object::copy(other->m_vPoints[2], cache);
     m_plane = other->m_plane;
 }
 

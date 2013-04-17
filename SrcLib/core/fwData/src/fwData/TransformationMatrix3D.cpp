@@ -48,13 +48,13 @@ void TransformationMatrix3D::shallowCopy(const Object::csptr &_source )
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3D::deepCopy(const Object::csptr &_source )
+void TransformationMatrix3D::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     TransformationMatrix3D::csptr other = TransformationMatrix3D::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_vCoefficients = other->m_vCoefficients;
 }
 

@@ -61,8 +61,8 @@ void IoAtomsTest::writeReadFile( const ::boost::filesystem::path & filePath )
     srvCfg->addConfigurationElement(fileCfg);
 
     {
-        ::fwData::Composite::sptr workspaceTmp = ::fwData::Composite::New();
-        workspaceTmp->deepCopy(workspace);
+        ::fwData::Composite::sptr workspaceTmp;
+        workspaceTmp = ::fwData::Object::copy(workspace);
 
         // Write PatientDB
         ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioAtoms::SMedDataWriter" );

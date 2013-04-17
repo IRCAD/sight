@@ -141,8 +141,8 @@ void BasicFloatEditor::onModifyValue(QString value)
 {
     SLM_TRACE_FUNC();
     ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
-    ::fwData::Float::NewSptr oldValue;
-    oldValue->deepCopy(floatObj);
+    ::fwData::Float::sptr oldValue;
+    oldValue = ::fwData::Object::copy(floatObj);
 
     std::string strValue = value.toStdString();
 

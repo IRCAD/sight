@@ -55,13 +55,13 @@ void Camera::setDistortionCoefficient(double k1, double k2,
 
 //------------------------------------------------------------------------------
 
-void Camera::deepCopy(const Object::csptr &source )
+void Camera::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
     Camera::csptr other = Camera::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source );
+    this->fieldDeepCopy( source, cache );
 
     OSLM_FATAL("Not implemented." );
 }

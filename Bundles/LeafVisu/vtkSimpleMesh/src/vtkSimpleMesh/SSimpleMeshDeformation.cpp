@@ -81,9 +81,9 @@ void SSimpleMeshDeformation::stopping() throw(fwTools::Failed)
 
 void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr & src, const ::fwData::Mesh::sptr & dest ) const
 {
-    dest->getPointsArray()->deepCopy( src->getPointsArray() );
-    dest->getPointNormalsArray()->deepCopy( src->getPointNormalsArray() );
-    dest->getPointColorsArray()->deepCopy( src->getPointColorsArray() );
+    dest->setPointsArray(::fwData::Object::copy( src->getPointsArray() ));
+    dest->setPointNormalsArray(::fwData::Object::copy( src->getPointNormalsArray() ));
+    dest->setPointColorsArray(::fwData::Object::copy( src->getPointColorsArray() ));
 }
 
 //-----------------------------------------------------------------------------
@@ -189,11 +189,9 @@ void SSimpleMeshDeformation::initMeshBackup()
     mesh->allocatePointColors( ::fwData::Mesh::RGB );
     lock.downgrade();
 
-    m_mesh = ::fwData::Mesh::New();
-    m_mesh->deepCopy( mesh );
+    m_mesh = ::fwData::Object::copy( mesh );
 
-    m_transformMesh = ::fwData::Mesh::New();
-    m_transformMesh->deepCopy( mesh );
+    m_transformMesh = ::fwData::Object::copy( mesh );
 }
 
 //-----------------------------------------------------------------------------

@@ -51,7 +51,7 @@ public :
             this->normal[1] = _point.normal[1];
             this->normal[2] = _point.normal[2];
             this->isVisible = _point.isVisible;
-            c->deepCopy( _point.c );
+            c = ::fwData::Object::copy( _point.c );
             return(*this);
         };
     };
@@ -82,7 +82,7 @@ public :
     fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( const Object::csptr& _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected :
 

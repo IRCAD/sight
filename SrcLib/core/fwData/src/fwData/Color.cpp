@@ -59,13 +59,13 @@ void Color::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Color::deepCopy(const Object::csptr &_source )
+void Color::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Color::csptr other = Color::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_vRGBA = other->m_vRGBA;
 }
 

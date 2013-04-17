@@ -156,8 +156,8 @@ void Code::onModifyValue()
 {
     QString value = m_valueCtrl->toPlainText();
     ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
-    ::fwData::String::NewSptr oldValue;
-    oldValue->deepCopy(stringObj);
+    ::fwData::String::sptr oldValue;
+    oldValue = ::fwData::Object::copy(stringObj);
 
     std::string strValue = value.toStdString();
     stringObj->value() = strValue;

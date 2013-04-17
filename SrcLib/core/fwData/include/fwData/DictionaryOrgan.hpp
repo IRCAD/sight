@@ -108,7 +108,7 @@ public:
 
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( const Object::csptr& _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected :
 

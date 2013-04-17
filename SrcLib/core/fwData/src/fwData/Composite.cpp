@@ -48,19 +48,19 @@ void Composite::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Composite::deepCopy(const Object::csptr &_source )
+void Composite::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Composite::csptr other = Composite::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_attrContainer.clear();
 
     BOOST_FOREACH(const ValueType &elem, *other)
     {
-        m_attrContainer.insert( ValueType(elem.first, ::fwData::Object::copy(elem.second) ) );
+        m_attrContainer.insert( ValueType(elem.first, ::fwData::Object::copy(elem.second, cache) ) );
     }
 }
 

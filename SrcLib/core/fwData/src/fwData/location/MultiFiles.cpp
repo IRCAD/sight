@@ -45,13 +45,13 @@ std::vector< ::boost::filesystem::path> MultiFiles::getPaths()
 
 //------------------------------------------------------------------------------
 
-void MultiFiles::deepCopy(const Object::csptr &source )
+void MultiFiles::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
     MultiFiles::csptr other = MultiFiles::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source );
+    this->fieldDeepCopy( source, cache );
 
     OSLM_FATAL("Not implemented." );
 }

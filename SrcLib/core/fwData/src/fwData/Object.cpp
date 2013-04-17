@@ -116,20 +116,35 @@ void Object::updateFields( const FieldMapType & fieldMap )
 
 //-----------------------------------------------------------------------------
 
-void Object::fieldShallowCopy(const ::fwData::Object::csptr &source )
+void Object::fieldShallowCopy(const ::fwData::Object::csptr &source)
 {
     this->setFields(source->getFields());
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::fieldDeepCopy(const ::fwData::Object::csptr &source )
+void Object::deepCopy(const ::fwData::Object::csptr &source)
+{
+    DeepCopyCacheType cache;
+    return this->cachedDeepCopy(source, cache);
+}
+//-----------------------------------------------------------------------------
+
+void Object::fieldDeepCopy(const ::fwData::Object::csptr &source)
+{
+    DeepCopyCacheType cache;
+    return this->fieldDeepCopy(source, cache);
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::fieldDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheType &cache)
 {
     m_fields.clear();
-    ::fwData::Object::FieldMapType sourceFields = source->getFields();
-    BOOST_FOREACH(::fwData::Object::FieldMapType::value_type elt, sourceFields)
+    const ::fwData::Object::FieldMapType &sourceFields = source->getFields();
+    BOOST_FOREACH(const ::fwData::Object::FieldMapType::value_type &elt, sourceFields)
     {
-        this->setField(elt.first, ::fwData::Object::copy(elt.second));
+        this->setField(elt.first, ::fwData::Object::copy(elt.second, cache));
     }
 }
 
@@ -145,13 +160,33 @@ void Object::shallowCopy(const ::fwData::Object::csptr &source )
 
 ::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr &source)
 {
-    ::fwData::Object::sptr newObj;
+    DeepCopyCacheType cache;
+    return Object::copy(source, cache);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr &source, Object::DeepCopyCacheType &cache)
+{
+    ::fwData::Object::sptr obj;
+
     if( source )
     {
-        newObj = ::fwData::factory::New(source->className());
-        newObj->deepCopy(source);
+        DeepCopyCacheType::const_iterator cacheItem = cache.find(source);
+
+        if (cacheItem == cache.end())
+        {
+            obj = ::fwData::factory::New(source->className());
+            cache.insert( DeepCopyCacheType::value_type(source, obj) );
+            obj->cachedDeepCopy(source, cache);
+        }
+        else
+        {
+            obj = cacheItem->second;
+        }
     }
-    return newObj;
+
+    return obj;
 }
 
 //-----------------------------------------------------------------------------

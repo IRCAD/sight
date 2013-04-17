@@ -87,6 +87,8 @@ public:
     typedef std::vector<FieldNameType> FieldNameVectorType;
     typedef ::boost::unordered_map< FieldNameType, ::fwData::Object::sptr > FieldMapType;
 
+    typedef ::boost::unordered_map< ::fwData::Object::csptr, ::fwData::Object::sptr > DeepCopyCacheType;
+
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
      * @param[in] name Field name
@@ -168,16 +170,19 @@ public:
     FWDATA_API virtual void shallowCopy( const ::fwData::Object::csptr &source );
 
     /**
-     * @brief A deep copy of fields (objects in m_children)
-     * @param[in] source source of the copy.
+     * @brief Make a deep copy from the source
+     * Calling this method may invalidate any DumpLock, RescursiveLock or helper
+     * on the object. Prefer using fwData::Object::copy instead.
      */
-    FWDATA_API virtual void deepCopy( const ::fwData::Object::csptr &source ) = 0;
+    FWDATA_API void deepCopy( const ::fwData::Object::csptr &source );
 
     /**
      * @brief return a copy of the source. if source is a null pointer, return a null pointer.
      * @{
      */
     FWDATA_API static ::fwData::Object::sptr copy(const ::fwData::Object::csptr &source);
+    template <typename DATA_TYPE>
+    static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) &source);
     template <typename DATA_TYPE>
     static SPTR(DATA_TYPE) copy(const SPTR(DATA_TYPE) &source);
     /** @} */
@@ -219,6 +224,18 @@ protected:
 
     FWDATA_API Object();
 
+    /**
+     * @brief Internal-use methods to implement Object's deepCopy
+     * @{
+     */
+    FWDATA_API static ::fwData::Object::sptr copy(const ::fwData::Object::csptr &source, DeepCopyCacheType &cache);
+    FWDATA_API void fieldDeepCopy( const ::fwData::Object::csptr &source, DeepCopyCacheType &cache );
+    FWDATA_API virtual void cachedDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheType &cache) = 0;
+    template <typename DATA_TYPE>
+    static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) &source, DeepCopyCacheType &cache);
+    template <typename DATA_TYPE>
+    static SPTR(DATA_TYPE) copy(const SPTR(DATA_TYPE) &source, DeepCopyCacheType &cache);
+    /** @} */
 
     /// Fields
     FieldMapType m_fields;
@@ -231,9 +248,28 @@ protected:
 
 
 template <typename DATA_TYPE>
+SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) &source, DeepCopyCacheType &cache)
+{
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(::fwData::Object::csptr(source), cache) );
+}
+
+
+template <typename DATA_TYPE>
+SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) &source, DeepCopyCacheType &cache)
+{
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(::fwData::Object::csptr(source), cache) );
+}
+
+template <typename DATA_TYPE>
+SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) &source)
+{
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(::fwData::Object::csptr(source)) );
+}
+
+template <typename DATA_TYPE>
 SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) &source)
 {
-    return DATA_TYPE::dynamicCast( ::fwData::Object::copy( ::fwData::Object::csptr(source)) );
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(::fwData::Object::csptr(source)) );
 }
 
 //-----------------------------------------------------------------------------

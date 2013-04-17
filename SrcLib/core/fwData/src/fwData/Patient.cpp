@@ -53,13 +53,13 @@ void Patient::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Patient::deepCopy(const Object::csptr &_source )
+void Patient::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Patient::csptr other = Patient::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_sName         = other->m_sName;
     m_sFirstname    = other->m_sFirstname;
     m_sIDDicom      = other->m_sIDDicom;
@@ -68,14 +68,14 @@ void Patient::deepCopy(const Object::csptr &_source )
     m_i32DbID       = other->m_i32DbID;
 
     m_attrStudies.clear();
-    std::transform(
-            other->m_attrStudies.begin(), other->m_attrStudies.end(),
-            std::back_inserter(m_attrStudies),
-            & ::fwData::Object::copy< StudyContainerType::value_type::element_type >
-            );
+    m_attrStudies.reserve(other->m_attrStudies.size());
+    BOOST_FOREACH(const StudyContainerType::value_type &study, other->m_attrStudies)
+    {
+        m_attrStudies.push_back( ::fwData::Object::copy(study, cache) );
+    }
 
-    m_attrToolBox   = ::fwData::Object::copy(other->m_attrToolBox);
-    m_attrScenarios = ::fwData::Object::copy(other->m_attrScenarios);
+    m_attrToolBox   = ::fwData::Object::copy(other->m_attrToolBox, cache);
+    m_attrScenarios = ::fwData::Object::copy(other->m_attrScenarios, cache);
 }
 
 //------------------------------------------------------------------------------

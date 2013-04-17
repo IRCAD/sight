@@ -216,8 +216,8 @@ void ConfigActionSrvWithKeySendingConfigTemplate::sendConfig()
     (*m_fieldAdaptors)["GENERIC_UID"] = ::fwData::String::New(genericUidAdaptor);
 
 
-    ::fwData::Composite::NewSptr finalMap;
-    finalMap->deepCopy( m_fieldAdaptors );
+    ::fwData::Composite::sptr finalMap;
+    finalMap = ::fwData::Object::copy( m_fieldAdaptors );
 
     ::fwData::Object::sptr obj = this->getObject();
     ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );

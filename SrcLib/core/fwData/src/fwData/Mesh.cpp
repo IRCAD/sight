@@ -103,13 +103,13 @@ void Mesh::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Mesh::deepCopy(const Object::csptr &_source )
+void Mesh::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Mesh::csptr other = Mesh::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_nbPoints      = other->m_nbPoints;
     m_nbCells       = other->m_nbCells;
@@ -117,20 +117,21 @@ void Mesh::deepCopy(const Object::csptr &_source )
 
     this->initArrays();
 
-    m_points->deepCopy(other->m_points);
-    m_cellTypes->deepCopy(other->m_cellTypes);
-    m_cellData->deepCopy(other->m_cellData);
-    m_cellDataOffsets->deepCopy(other->m_cellDataOffsets);
+    m_points          = ::fwData::Object::copy( other->m_points, cache );
+    m_cellTypes       = ::fwData::Object::copy( other->m_cellTypes, cache );
+    m_cellData        = ::fwData::Object::copy( other->m_cellData, cache );
+    m_cellDataOffsets = ::fwData::Object::copy( other->m_cellDataOffsets, cache );
 
-    m_pointColors  = ::fwData::Object::copy(other->m_pointColors );
-    m_cellColors   = ::fwData::Object::copy(other->m_cellColors  );
-    m_pointNormals = ::fwData::Object::copy(other->m_pointNormals);
-    m_cellNormals  = ::fwData::Object::copy(other->m_cellNormals );
+    //Object::copy returns a null object if source object is null
+    m_pointColors  = ::fwData::Object::copy( other->m_pointColors , cache );
+    m_cellColors   = ::fwData::Object::copy( other->m_cellColors  , cache );
+    m_pointNormals = ::fwData::Object::copy( other->m_pointNormals, cache );
+    m_cellNormals  = ::fwData::Object::copy( other->m_cellNormals , cache );
 
     m_arrayMap.clear();
     BOOST_FOREACH(ArrayMapType::value_type element, other->m_arrayMap)
     {
-        m_arrayMap[element.first] = ::fwData::Object::copy(element.second);
+        m_arrayMap[element.first] = ::fwData::Object::copy(element.second, cache);
     }
 
 }

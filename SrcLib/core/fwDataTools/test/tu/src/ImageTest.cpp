@@ -85,12 +85,12 @@ void ImageTest::testGetterSetter2D()
 
 void ImageTest::testDeepCopy()
 {
-    ::fwData::Image::NewSptr image;
-    ::fwData::Image::NewSptr image2;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image2;
     ::fwTools::Type type = ::fwTools::Type::create< ::boost::int32_t >();
     ::fwDataTools::Image::generateRandomImage(image, type);
 
-    image2->deepCopy(image);
+    image2 = ::fwData::Object::copy(image);
     CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
 }
 
@@ -135,11 +135,11 @@ void ImageTest::stressTestWithType(::fwTools::Type type, int nbTest)
 {
     for (int nb=0 ; nb < nbTest ; ++nb)
     {
-        ::fwData::Image::NewSptr image;
-        ::fwData::Image::NewSptr image2;
+        ::fwData::Image::sptr image = ::fwData::Image::New();
         ::fwDataTools::Image::generateRandomImage(image, type);
 
-        image2->deepCopy(image);
+        ::fwData::Image::sptr image2;
+        image2 = ::fwData::Object::copy(image);
         CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
     }
 }
@@ -149,51 +149,51 @@ void ImageTest::stressTestWithType(::fwTools::Type type, int nbTest)
 void ImageTest::roiApplyTest()
 {
 
-#define TestRoiApplyMacro(imageTypeName, roiTypeName)                                                  \
-    {                                                                                                  \
-        std::stringstream ss;                                                                          \
-        ss                                                                                             \
-            << "Test failed with types : img : " << imageTypeName                                      \
-            << ", roi : " << roiTypeName;                                                              \
-        std::string message = ss.str();\
-        ::fwTools::Type imageType(imageTypeName);                                                      \
-        ::fwTools::Type roiType(roiTypeName);                                                          \
-        ::fwData::Image::NewSptr imageRef;                                                             \
-        ::fwData::Image::NewSptr image;                                                                \
-        ::fwData::Image::NewSptr roi;                                                                  \
-                                                                                                       \
-        ::fwDataTools::Image::generateRandomImage(image, imageType);                                   \
-        ::fwData::Image::SizeType    size = image->getSize();                                          \
-        ::fwData::Image::SpacingType spacing = image->getSpacing();                                    \
-        ::fwData::Image::OriginType  origin = image->getOrigin();                                      \
-        ::fwDataTools::Image::generateImage(roi, size, spacing, origin, roiType);                      \
-                                                                                                       \
-        imageRef->deepCopy(image);                                                                     \
-                                                                                                       \
-        ::fwData::Array::sptr imgData;                                                                 \
-        ::fwData::Array::sptr roiData;                                                                 \
-        imgData = image->getDataArray();                                                               \
-        roiData = roi->getDataArray();                                                                 \
-                                                                                                       \
-        ::fwComEd::helper::Array roiDataHelper(roiData);                                               \
-                                                                                                       \
-        CPPUNIT_ASSERT(imgData);                                                                       \
-        CPPUNIT_ASSERT(imgData->getNumberOfElements());                                                \
-                                                                                                       \
-        CPPUNIT_ASSERT(roiData);                                                                       \
-        CPPUNIT_ASSERT(roiData->getNumberOfElements());                                                \
-                                                                                                       \
-        ::fwDataTools::Image::randomizeArray(roi->getDataArray());                                     \
-                                                                                                       \
-        char *begin = roiDataHelper.begin();                                                           \
-        char *end   = roiDataHelper.end();                                                             \
-        size_t part = (end - begin)/3;                                                                 \
-                                                                                                       \
-        std::fill(begin, begin + part, 0);                                                             \
-        std::fill(end - part, end, 0);                                                                 \
-                                                                                                       \
-        ::fwDataTools::Image::applyRoi(image, roi);                                                    \
-        CPPUNIT_ASSERT_MESSAGE( message, ::fwDataTools::Image::isRoiApplyed(imageRef, roi, image));   \
+#define TestRoiApplyMacro(imageTypeName, roiTypeName)                                                   \
+    {                                                                                                   \
+        std::stringstream ss;                                                                           \
+        ss                                                                                              \
+            << "Test failed with types : img : " << imageTypeName                                       \
+            << ", roi : " << roiTypeName;                                                               \
+        std::string message = ss.str();                                                                 \
+        ::fwTools::Type imageType(imageTypeName);                                                       \
+        ::fwTools::Type roiType(roiTypeName);                                                           \
+        ::fwData::Image::sptr imageRef;                                                                 \
+        ::fwData::Image::NewSptr image;                                                                 \
+        ::fwData::Image::NewSptr roi;                                                                   \
+                                                                                                        \
+        ::fwDataTools::Image::generateRandomImage(image, imageType);                                    \
+        ::fwData::Image::SizeType    size = image->getSize();                                           \
+        ::fwData::Image::SpacingType spacing = image->getSpacing();                                     \
+        ::fwData::Image::OriginType  origin = image->getOrigin();                                       \
+        ::fwDataTools::Image::generateImage(roi, size, spacing, origin, roiType);                       \
+                                                                                                        \
+        imageRef = ::fwData::Object::copy(image);                                                       \
+                                                                                                        \
+        ::fwData::Array::sptr imgData;                                                                  \
+        ::fwData::Array::sptr roiData;                                                                  \
+        imgData = image->getDataArray();                                                                \
+        roiData = roi->getDataArray();                                                                  \
+                                                                                                        \
+        ::fwComEd::helper::Array roiDataHelper(roiData);                                                \
+                                                                                                        \
+        CPPUNIT_ASSERT(imgData);                                                                        \
+        CPPUNIT_ASSERT(imgData->getNumberOfElements());                                                 \
+                                                                                                        \
+        CPPUNIT_ASSERT(roiData);                                                                        \
+        CPPUNIT_ASSERT(roiData->getNumberOfElements());                                                 \
+                                                                                                        \
+        ::fwDataTools::Image::randomizeArray(roi->getDataArray());                                      \
+                                                                                                        \
+        char *begin = roiDataHelper.begin();                                                            \
+        char *end   = roiDataHelper.end();                                                              \
+        size_t part = (end - begin)/3;                                                                  \
+                                                                                                        \
+        std::fill(begin, begin + part, 0);                                                              \
+        std::fill(end - part, end, 0);                                                                  \
+                                                                                                        \
+        ::fwDataTools::Image::applyRoi(image, roi);                                                     \
+        CPPUNIT_ASSERT_MESSAGE( message, ::fwDataTools::Image::isRoiApplyed(imageRef, roi, image));     \
     }
 
 

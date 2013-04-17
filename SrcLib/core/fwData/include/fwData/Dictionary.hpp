@@ -88,7 +88,7 @@ public :
      * @{
      */
     void shallowCopy( const Object::csptr& _source );
-    void deepCopy( const Object::csptr& _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
     /** @} */
 
 protected:

@@ -86,13 +86,13 @@ void Reconstruction::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::deepCopy(const Object::csptr &_source )
+void Reconstruction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_bIsVisible            = other->m_bIsVisible;
     m_sReconstructionFormat = other->m_sReconstructionFormat;
@@ -112,9 +112,9 @@ void Reconstruction::deepCopy(const Object::csptr &_source )
     m_fsPath                = other->m_fsPath;
     m_i32DbID               = other->m_i32DbID;
 
-    m_attrMaterial = ::fwData::Object::copy(other->m_attrMaterial);
-    m_attrImage    = ::fwData::Object::copy(other->m_attrImage);
-    m_attrMesh     = ::fwData::Object::copy(other->m_attrMesh);
+    m_attrMaterial = ::fwData::Object::copy(other->m_attrMaterial, cache);
+    m_attrImage    = ::fwData::Object::copy(other->m_attrImage, cache);
+    m_attrMesh     = ::fwData::Object::copy(other->m_attrMesh, cache);
 }
 
 //------------------------------------------------------------------------------

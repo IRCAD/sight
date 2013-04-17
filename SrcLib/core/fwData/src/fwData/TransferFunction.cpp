@@ -392,13 +392,13 @@ void TransferFunction::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::deepCopy(const Object::csptr &_source )
+void TransferFunction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     this->m_attrLevel = other->m_attrLevel;
     this->m_attrWindow = other->m_attrWindow;
     this->m_attrName =other->m_attrName;
