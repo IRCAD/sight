@@ -7,20 +7,21 @@
 #ifndef __FWATOMCONVERSION_MAPPER_BASE_HPP__
 #define __FWATOMCONVERSION_MAPPER_BASE_HPP__
 
-#include <iostream>
-#include <map>
 #include <string>
-
-#include <camp/class.hpp>
-
-#include <fwData/Object.hpp>
-
-#include <fwAtoms/Object.hpp>
 
 #include "fwAtomConversion/config.hpp"
 #include "fwAtomConversion/mapper/factory/new.hpp"
 #include "fwAtomConversion/DataVisitor.hpp"
 #include "fwAtomConversion/AtomVisitor.hpp"
+
+namespace fwAtoms
+{
+    class Object;
+}
+namespace fwData
+{
+    class Object;
+}
 
 namespace fwAtomConversion
 {
@@ -57,16 +58,19 @@ public:
      * @param object data to convert
      * @param cache  cache to register the data already converted, used when a data is referenced multiple times.
      */
-    FWATOMCONVERSION_API virtual ::fwAtoms::Object::sptr convert(::fwData::Object::sptr object,
+    FWATOMCONVERSION_API virtual SPTR(::fwAtoms::Object) convert(SPTR(::fwData::Object) object,
                                                                  DataVisitor::AtomCacheType & cache) = 0;
 
     /**
      * @brief Convert a ::fwAtoms::Object to a ::fwData::Object.
      * @param object atom to convert
      * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times.
+     * @param uuidPolicy AtomVisitor's policy
      */
-    FWATOMCONVERSION_API virtual ::fwData::Object::sptr convert(::fwAtoms::Object::sptr atom,
-                                                                AtomVisitor::DataCacheType & cache) = 0;
+    FWATOMCONVERSION_API virtual SPTR(::fwData::Object) convert(SPTR(::fwAtoms::Object) atom,
+                                                                AtomVisitor::DataCacheType & cache,
+                                                                const AtomVisitor::IReadPolicy &uuidPolicy
+                                                                ) = 0;
 
 };
 

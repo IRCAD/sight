@@ -454,8 +454,60 @@ void ConversionTest::uuidExceptionTest()
     // Create Atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
 
-    CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert(atom),
+    CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::StrictPolicy()),
             ::fwAtomConversion::exception::DuplicatedDataUUID );
+}
+
+
+//-----------------------------------------------------------------------------
+
+void ConversionTest::uuidChangeTest()
+{
+    // Create data
+    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    ::fwData::String::sptr data = ::fwData::String::New();
+    composite->getContainer()["key"] = data;
+
+    // Create Atom
+    ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
+
+    ::fwData::Composite::sptr compositeReloaded;
+    ::fwData::String::sptr dataReloaded;
+
+    compositeReloaded = ::fwData::Composite::dynamicCast(
+                            ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ChangePolicy())
+                            );
+    dataReloaded = ::fwData::String::dynamicCast((*compositeReloaded)["key"]);
+
+    CPPUNIT_ASSERT( ::fwTools::UUID::get(composite) != ::fwTools::UUID::get(compositeReloaded) );
+    CPPUNIT_ASSERT( ::fwTools::UUID::get(data) != ::fwTools::UUID::get(dataReloaded) );
+
+}
+
+
+//-----------------------------------------------------------------------------
+
+void ConversionTest::uuidReuseTest()
+{
+    // Create data
+    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    ::fwData::String::sptr data = ::fwData::String::New();
+    composite->getContainer()["key"] = data;
+
+    // Create Atom
+    ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
+
+
+    ::fwData::Composite::sptr compositeReloaded;
+    ::fwData::String::sptr dataReloaded;
+
+    compositeReloaded = ::fwData::Composite::dynamicCast(
+                            ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ReusePolicy())
+                            );
+    dataReloaded = ::fwData::String::dynamicCast((*compositeReloaded)["key"]);
+
+    CPPUNIT_ASSERT_EQUAL( composite, compositeReloaded );
+    CPPUNIT_ASSERT_EQUAL( data, dataReloaded );
 }
 
 //-----------------------------------------------------------------------------

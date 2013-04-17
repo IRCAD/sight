@@ -8,6 +8,8 @@
 
 #include <fwCamp/factory/new.hpp>
 
+#include <fwData/Object.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/Map.hpp>
@@ -151,11 +153,13 @@ public:
 AtomToDataMappingVisitor::AtomToDataMappingVisitor(
         ::fwData::Object::sptr dataObj,
          ::fwAtoms::Object::sptr atomObj,
-          AtomVisitor::DataCacheType & cache )
+          AtomVisitor::DataCacheType & cache,
+          const AtomVisitor::IReadPolicy &uuidPolicy)
  : m_dataObj(dataObj),
    m_campDataObj( m_dataObj.get() ),
    m_atomObj(atomObj),
-   m_cache(cache)
+   m_cache(cache),
+   m_uuidPolicy(uuidPolicy)
 {}
 
 
@@ -225,7 +229,7 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
         case ::fwAtoms::Base::OBJECT :
         {
             ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(atom);
-            ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache );
+            ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy );
             property.set( m_campDataObj, objectData );
             break;
         }
@@ -320,7 +324,7 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
             case ::fwAtoms::Base::OBJECT :
             {
                 ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom);
-                ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache );
+                ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy);
 
                 if( property.dynamic() )
                 {
@@ -403,7 +407,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
             case ::fwAtoms::Base::OBJECT :
             {
                 ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom.second);
-                ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache );
+                ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy);
                 property.set( m_campDataObj, elemAtom.first, objectData );
                 break;
             }

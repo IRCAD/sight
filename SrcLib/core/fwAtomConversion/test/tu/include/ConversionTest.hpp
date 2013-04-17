@@ -25,6 +25,8 @@ class ConversionTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( objectMultiReferencedTest );
     CPPUNIT_TEST( recursiveObjectTest );
     CPPUNIT_TEST( uuidExceptionTest );
+    CPPUNIT_TEST( uuidChangeTest );
+    CPPUNIT_TEST( uuidReuseTest );
     CPPUNIT_TEST( dataFactoryNotFoundExceptionTest );
     CPPUNIT_TEST( campFactoryNotFoundExceptionTest );
     CPPUNIT_TEST( conversionNotManagedExceptionTest );
@@ -58,8 +60,15 @@ public:
     /// Test recursive data conversion
     void recursiveObjectTest();
 
+
     /// Test exception throwing if uuid already exist
     void uuidExceptionTest();
+
+    /// Test exception throwing if uuid already exist
+    void uuidChangeTest();
+
+    /// Test exception throwing if uuid already exist
+    void uuidReuseTest();
 
     /// Test exception throwing if during atom to data conversion a classname is not found in data factory
     void dataFactoryNotFoundExceptionTest();
