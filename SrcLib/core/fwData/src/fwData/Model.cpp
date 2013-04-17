@@ -52,24 +52,24 @@ void Model::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Model::deepCopy(const Object::csptr &_source )
+void Model::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Model::csptr other = Model::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_map.clear();
     for(    Model::Container::const_iterator iter = other->getCRefMap().begin();
             iter != other->getCRefMap().end();
             ++iter )
     {
-        ::fwData::TriangularMesh::NewSptr newTrian;
-        ::fwData::Material::NewSptr newMaterial;
+        ::fwData::TriangularMesh::sptr newTrian;
+        ::fwData::Material::sptr newMaterial;
 
-        newTrian->deepCopy( iter->first );
-        newMaterial->deepCopy( iter->second );
+        newTrian = ::fwData::Object::copy(iter->first, cache);
+        newMaterial = ::fwData::Object::copy(iter->second, cache);
         m_map[newTrian] = newMaterial;
     }
 }

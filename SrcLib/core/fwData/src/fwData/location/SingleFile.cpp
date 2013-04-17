@@ -45,13 +45,13 @@ void SingleFile::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void SingleFile::deepCopy(const Object::csptr &_source )
+void SingleFile::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     SingleFile::csptr other = SingleFile::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     this->m_path = other->m_path;
 }
 

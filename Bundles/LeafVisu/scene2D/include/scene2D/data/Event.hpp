@@ -67,7 +67,7 @@ public:
     SCENE2D_API void shallowCopy( const ::fwData::Object::csptr& _source );
 
     /// Defines deep copy
-    SCENE2D_API void deepCopy( const ::fwData::Object::csptr& _source );
+    SCENE2D_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache );
 
     fwGettersSettersDocMacro(OldSize, oldSize, Size, no comment);
     fwGettersSettersDocMacro(Size, size, Size, no comment);

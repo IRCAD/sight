@@ -53,7 +53,7 @@ public:
     Buffer( ::fwData::Object::Key key ){}
     ~Buffer(){}
 
-    void deepCopy( const Object::csptr& _source ){}
+    void cachedDeepCopy( const Object::csptr& _source, DeepCopyCacheType &cache ){}
 };
 
 //------------------------------------------------------------------------------

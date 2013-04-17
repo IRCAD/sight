@@ -96,13 +96,13 @@ void Edge::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Edge::deepCopy(const Object::csptr &_source )
+void Edge::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Edge::csptr other = Edge::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_fromPortIdentifier = other->m_fromPortIdentifier;
     m_toPortIdentifier = other->m_toPortIdentifier;
     m_nature = other->m_nature;

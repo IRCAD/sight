@@ -42,16 +42,16 @@ void ActivitySeries::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void ActivitySeries::deepCopy(const ::fwData::Object::csptr &_source)
+void ActivitySeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
 {
     ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_attrActivityConfigId = other->m_attrActivityConfigId;
-    m_attrData = ::fwData::Object::copy(other->m_attrData);
+    m_attrData = ::fwData::Object::copy(other->m_attrData, cache);
 }
 
 //------------------------------------------------------------------------------

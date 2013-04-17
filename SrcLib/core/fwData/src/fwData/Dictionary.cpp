@@ -45,18 +45,18 @@ void Dictionary::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Dictionary::deepCopy(const Object::csptr &_source )
+void Dictionary::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Dictionary::csptr other = Dictionary::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    ::fwData::Object::fieldDeepCopy( other );
+    this->fieldDeepCopy( other, cache );
 
     m_attrDictionaryOrgans.clear();
     BOOST_FOREACH(DictionaryOrganContainerType::value_type element, other->m_attrDictionaryOrgans)
     {
-        m_attrDictionaryOrgans[element.first] = ::fwData::Object::copy(element.second);
+        m_attrDictionaryOrgans[element.first] = ::fwData::Object::copy(element.second, cache);
     }
 }
 

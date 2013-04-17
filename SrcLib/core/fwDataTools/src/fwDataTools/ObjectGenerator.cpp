@@ -328,8 +328,8 @@ namespace fwDataTools
 
     ::fwData::Material::NewSptr material;
 
-    material->ambient()->deepCopy( ambient );
-    material->diffuse()->deepCopy( diffuse );
+    material->setAmbient(::fwData::Object::copy( ambient ));
+    material->setDiffuse(::fwData::Object::copy( diffuse ));
 
     return material;
 }

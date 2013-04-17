@@ -40,13 +40,13 @@ void TriangularMesh::shallowCopy(const Object::csptr &_source )
 
 //-----------------------------------------------------------------------------
 
-void TriangularMesh::deepCopy(const Object::csptr &_source )
+void TriangularMesh::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     TriangularMesh::csptr other = TriangularMesh::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     this->m_points = other->m_points;
     this->m_cells = other->m_cells;
 }

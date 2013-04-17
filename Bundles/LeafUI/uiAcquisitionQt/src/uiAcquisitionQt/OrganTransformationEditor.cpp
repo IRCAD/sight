@@ -268,8 +268,8 @@ void OrganTransformationEditor::OnResetClick()
             ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
-                ::fwData::TransformationMatrix3D::NewSptr pIdentMat;
-                pTmpMat->deepCopy(pIdentMat);
+                ::fwData::TransformationMatrix3D::sptr pIdentMat;
+                pTmpMat = ::fwData::Object::copy(pIdentMat);
                 NotitfyTransformationMatrix(pTmpMat);
             }
 
@@ -296,8 +296,8 @@ void OrganTransformationEditor::OnSaveClick()
             ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
-                ::fwData::TransformationMatrix3D::NewSptr pCpyTmpMat;
-                pCpyTmpMat->deepCopy(pTmpMat);
+                ::fwData::TransformationMatrix3D::sptr pCpyTmpMat;
+                pCpyTmpMat = ::fwData::Object::copy(pTmpMat);
                 matMap[pTmpTrMesh->getID()] = pCpyTmpMat;
             }
         }
@@ -375,7 +375,7 @@ void OrganTransformationEditor::OnTestClick()
             ::fwData::TransformationMatrix3D::sptr pTmpMat = pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
-                pTmpMat->deepCopy(pRandTmpMat);
+                pTmpMat->setCoefficients(pRandTmpMat->getCoefficients());
 
                 NotitfyTransformationMatrix(pTmpMat);
             }

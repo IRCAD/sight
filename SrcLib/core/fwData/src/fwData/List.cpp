@@ -44,20 +44,19 @@ void List::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void List::deepCopy(const Object::csptr &_source )
+void List::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     List::csptr other = List::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_attrContainer.clear();
-    std::transform(
-            other->begin(), other->end(),
-            std::back_inserter(m_attrContainer),
-            &::fwData::Object::copy< ValueType::element_type >
-    );
+    BOOST_FOREACH(const ContainerType::value_type &obj, other->m_attrContainer)
+    {
+        m_attrContainer.push_back( ::fwData::Object::copy(obj, cache) );
+    }
 }
 
 //------------------------------------------------------------------------------

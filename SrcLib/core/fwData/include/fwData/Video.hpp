@@ -76,7 +76,7 @@ public:
     FWDATA_API void Modified();
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( const Object::csptr& _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     //! The buffer size along X axis
     ::boost::uint32_t  m_ui32XSize;

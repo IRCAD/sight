@@ -141,8 +141,8 @@ BackupHelper::SelectionIdType BackupHelper::getSelectedAcquisitionIdx(::fwData::
 
     if( patIdx >= 0 && study && acquisition )
     {
-        ::fwData::Acquisition::NewSptr pAquisitionCopy;
-        pAquisitionCopy->deepCopy( acquisition );
+        ::fwData::Acquisition::sptr pAquisitionCopy;
+        pAquisitionCopy = ::fwData::Object::copy( acquisition );
         study->addAcquisition( pAquisitionCopy );
 
         backupImage = pAquisitionCopy->getImage();

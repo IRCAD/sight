@@ -42,14 +42,14 @@ void Patient::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void Patient::deepCopy(const ::fwData::Object::csptr &_source)
+void Patient::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Patient::csptr other = Patient::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldDeepCopy( other );
+    this->fieldDeepCopy( other, cache );
     m_attrName = other->m_attrName;
     m_attrBirthdate = other->m_attrBirthdate;
     m_attrPatientId = other->m_attrPatientId;

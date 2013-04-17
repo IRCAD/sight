@@ -41,14 +41,14 @@ void ModelSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::deepCopy(const ::fwData::Object::csptr &_source)
+void ModelSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
 {
     ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldDeepCopy( other );
+    this->fieldDeepCopy( other, cache );
 
     m_attrReconstructionDB = other->m_attrReconstructionDB;
 }

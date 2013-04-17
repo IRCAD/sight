@@ -54,18 +54,18 @@ void Series::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void Series::deepCopy(const ::fwData::Object::csptr &_source)
+void Series::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Series::csptr other = Series::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldDeepCopy( other );
+    this->fieldDeepCopy( other, cache );
 
-    m_attrPatient = ::fwData::Object::copy(other->m_attrPatient);
-    m_attrStudy = ::fwData::Object::copy(other->m_attrStudy);
-    m_attrEquipment = ::fwData::Object::copy(other->m_attrEquipment);
+    m_attrPatient = ::fwData::Object::copy(other->m_attrPatient, cache);
+    m_attrStudy = ::fwData::Object::copy(other->m_attrStudy, cache);
+    m_attrEquipment = ::fwData::Object::copy(other->m_attrEquipment, cache);
 
     m_attrInstanceUID = other->m_attrInstanceUID;
     m_attrModality = other->m_attrModality;

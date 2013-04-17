@@ -57,12 +57,12 @@ void ImageMsg::setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
 
 //-----------------------------------------------------------------------------
 
-void ImageMsg::getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s) const
+void ImageMsg::getSliceIndex(::fwData::Integer::sptr &a, ::fwData::Integer::sptr &f, ::fwData::Integer::sptr &s) const
 {
     SLM_ASSERT( "SLICE_INDEX Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ));
-    a->deepCopy(m_axialIndex   );
-    f->deepCopy(m_frontalIndex );
-    s->deepCopy(m_sagittalIndex);
+    a = ::fwData::Object::copy(m_axialIndex   );
+    f = ::fwData::Object::copy(m_frontalIndex );
+    s = ::fwData::Object::copy(m_sagittalIndex);
 }
 
 //-----------------------------------------------------------------------------

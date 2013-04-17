@@ -31,8 +31,8 @@ struct SharedPtrTypedef
 
     BOOST_CONCEPT_USAGE(SharedPtrTypedef)
     {
-        typename X::sptr::element_type *a;
-        X *b;
+        typename X::sptr::element_type *a=0;
+        X *b=0;
         FwCoreNotUsedMacro(a);
         FwCoreNotUsedMacro(b);
         same_type(a,b);

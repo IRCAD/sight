@@ -104,14 +104,14 @@ void Acquisition::shallowCopy(const Object::csptr &_source )
 }
 
 //------------------------------------------------------------------------------
-void Acquisition::deepCopy(const Object::csptr &_source )
+void Acquisition::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Acquisition::csptr other = Acquisition::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_ui8BitsPerPixel = other->m_ui8BitsPerPixel;
     m_fSliceThickness = other->m_fSliceThickness;
     m_ui8Axe = other->m_ui8Axe;
@@ -141,14 +141,14 @@ void Acquisition::deepCopy(const Object::csptr &_source )
         m_dicomFileList.push_back(dicomFile);
     }
 
-    m_attrImage           = ::fwData::Object::copy(other->m_attrImage);
-    m_attrStructAnat      = ::fwData::Object::copy(other->m_attrStructAnat);
+    m_attrImage           = ::fwData::Object::copy(other->m_attrImage, cache);
+    m_attrStructAnat      = ::fwData::Object::copy(other->m_attrStructAnat, cache);
     m_attrReconstructions.clear();
-    std::transform(
-            other->m_attrReconstructions.begin(), other->m_attrReconstructions.end(),
-            std::back_inserter(m_attrReconstructions),
-            & ::fwData::Object::copy< ReconstructionContainerType::value_type::element_type >
-            );
+    m_attrReconstructions.reserve(other->m_attrReconstructions.size());
+    BOOST_FOREACH(const ReconstructionContainerType::value_type &rec, other->m_attrReconstructions)
+    {
+        m_attrReconstructions.push_back( ::fwData::Object::copy(rec, cache) );
+    }
 }
 //------------------------------------------------------------------------------
 

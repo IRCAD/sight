@@ -65,13 +65,13 @@ void Event::shallowCopy(const ::fwData::Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Event::deepCopy(const ::fwData::Object::csptr &_source )
+void Event::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache )
 {
     Event::csptr other = Event::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_type = other->m_type;
     m_button = other->m_button;

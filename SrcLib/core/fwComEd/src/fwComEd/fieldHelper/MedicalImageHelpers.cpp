@@ -197,7 +197,7 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
     ::fwData::Array::sptr imgData = imgSrc->getDataArray();
     imgSrc->setDataArray(::fwData::Array::sptr(), false);
 
-    imgToInitialize->deepCopy(imgSrc);
+    imgToInitialize = ::fwData::Object::copy(imgSrc);
 
     imgSrc->setDataArray(imgData, false);
 

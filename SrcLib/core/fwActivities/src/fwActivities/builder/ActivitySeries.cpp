@@ -76,11 +76,6 @@ ActivitySeries::~ActivitySeries()
 {
     ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
 
-    ::fwMedData::Patient::sptr     actPatient = actSeries->getPatient();
-    ::fwMedData::Study::sptr         actStudy = actSeries->getStudy();
-    ::fwMedData::Equipment::sptr actEquipment = actSeries->getEquipment();
-
-
     ::fwMedData::Series::sptr series;
     BOOST_FOREACH(const ::fwData::Object::sptr& obj, *currentSelection)
     {
@@ -93,9 +88,9 @@ ActivitySeries::~ActivitySeries()
 
     if(series)
     {
-        actPatient->deepCopy( series->getPatient() );
-        actStudy->deepCopy( series->getStudy() );
-        actEquipment->deepCopy( series->getEquipment() );
+        actSeries->setPatient( ::fwData::Object::copy(series->getPatient()) );
+        actSeries->setStudy( ::fwData::Object::copy(series->getStudy()) );
+        actSeries->setEquipment( ::fwData::Object::copy(series->getEquipment()) );
     }
 
     actSeries->setModality("OT");

@@ -114,7 +114,7 @@ public :
     FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Deep copy method
-    FWDATA_API void deepCopy( const Object::csptr& _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// Get all the point values of the TF (keys of the map m_tfData)
     FWDATA_API TFValueVectorType getTFValues() const;

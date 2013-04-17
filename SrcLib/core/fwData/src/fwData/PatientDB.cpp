@@ -45,19 +45,19 @@ void PatientDB::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void PatientDB::deepCopy(const Object::csptr &_source )
+void PatientDB::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     PatientDB::csptr other = PatientDB::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_attrPatients.clear();
-    std::transform(
-            other->m_attrPatients.begin(), other->m_attrPatients.end(),
-            std::back_inserter(m_attrPatients),
-            & ::fwData::Object::copy< PatientContainerType::value_type::element_type >
-            );
+    m_attrPatients.reserve(other->m_attrPatients.size());
+    BOOST_FOREACH(const PatientContainerType::value_type &obj, other->m_attrPatients)
+    {
+        m_attrPatients.push_back( ::fwData::Object::copy(obj, cache) );
+    }
 }
 
 //------------------------------------------------------------------------------

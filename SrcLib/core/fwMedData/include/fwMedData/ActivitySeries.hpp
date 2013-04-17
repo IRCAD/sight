@@ -56,7 +56,7 @@ public:
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( const ::fwData::Object::csptr &_source );
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache );
 
     /**
      * @name Getters / Setters

@@ -173,8 +173,8 @@ void TransferFunctionTest::shallowAndDeepCopyTest()
     ::fwData::TransferFunction::sptr tf = this->createTFColor();
     this->checkTFColor(tf);
 
-    ::fwData::TransferFunction::NewSptr deepCopyTf;
-    deepCopyTf->deepCopy( tf );
+    ::fwData::TransferFunction::sptr deepCopyTf;
+    deepCopyTf = ::fwData::Object::copy( tf );
     this->checkTFColor(deepCopyTf);
 
     ::fwData::TransferFunction::NewSptr shallowCopyTf;

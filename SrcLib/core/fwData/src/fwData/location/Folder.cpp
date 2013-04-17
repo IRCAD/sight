@@ -50,13 +50,13 @@ void Folder::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Folder::deepCopy(const Object::csptr &_source )
+void Folder::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Folder::csptr other = Folder::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     this->m_folder = other->m_folder;
 }
 

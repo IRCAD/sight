@@ -41,14 +41,14 @@ void ImageSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::deepCopy(const ::fwData::Object::csptr &_source)
+void ImageSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache)
 {
     ImageSeries::csptr other = ImageSeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldDeepCopy( other );
+    this->fieldDeepCopy( other, cache );
 
     m_attrImage = ::fwData::Object::copy(other->m_attrImage);
 }

@@ -33,7 +33,7 @@ class FWMEDDATA_CLASS_API Series : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Series)(::fwData::Object), (()), ::fwData::factory::New< Series >) ;
+    fwCoreNonInstanciableClassDefinitionsMacro( (Series)(::fwData::Object) );
 
     fwCampMakeFriendDataMacro((fwMedData)(Series));
 
@@ -50,7 +50,7 @@ public:
     FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
 
     /// Defines deep copy
-    FWMEDDATA_API void deepCopy( const ::fwData::Object::csptr &_source );
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache );
 
     /**
      * @name Getters / Setters
@@ -59,19 +59,19 @@ public:
     /**
      * @brief Referring Patient
      * @{ */
-    fwDataGetSptrMacro(Patient, SPTR(::fwMedData::Patient));
+    fwDataGetSetSptrMacro(Patient, SPTR(::fwMedData::Patient));
     /**  @} */
 
     /**
      * @brief Referring Study
      * @{ */
-    fwDataGetSptrMacro(Study, SPTR(::fwMedData::Study));
+    fwDataGetSetSptrMacro(Study, SPTR(::fwMedData::Study));
     /**  @} */
 
     /**
      * @brief Related Equipment
      * @{ */
-    fwDataGetSptrMacro(Equipment, SPTR(::fwMedData::Equipment));
+    fwDataGetSetSptrMacro(Equipment, SPTR(::fwMedData::Equipment));
     /**  @} */
 
     /**

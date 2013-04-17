@@ -81,17 +81,17 @@ void StructureTraitsDictionary::shallowCopy(const Object::csptr &source )
 
 //------------------------------------------------------------------------------
 
-void StructureTraitsDictionary::deepCopy(const Object::csptr &source )
+void StructureTraitsDictionary::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
     StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source );
+    this->fieldDeepCopy( source, cache );
     m_structureTraitsMap.clear();
     BOOST_FOREACH(StructureTraitsMapType::value_type elt, other->m_structureTraitsMap)
     {
-        m_structureTraitsMap[elt.first] = ::fwData::Object::copy(elt.second);
+        m_structureTraitsMap[elt.first] = ::fwData::Object::copy(elt.second, cache);
     }
 }
 

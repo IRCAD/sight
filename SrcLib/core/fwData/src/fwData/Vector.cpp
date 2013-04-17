@@ -37,20 +37,19 @@ void Vector::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Vector::deepCopy(const Object::csptr &source )
+void Vector::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
     Vector::csptr other = Vector::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source );
+    this->fieldDeepCopy( source, cache );
     m_attrContainer.clear();
-    m_attrContainer.resize(other->m_attrContainer.size());
-    std::transform(
-            other->begin(), other->end(),
-            this->begin(),
-            &::fwData::Object::copy< ValueType::element_type >
-    );
+    m_attrContainer.reserve(other->m_attrContainer.size());
+    BOOST_FOREACH(const ContainerType::value_type &obj, other->m_attrContainer)
+    {
+        m_attrContainer.push_back( ::fwData::Object::copy(obj, cache) );
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -44,13 +44,13 @@ void Float::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Float::deepCopy(const Object::csptr &_source )
+void Float::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Float::csptr other = Float::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_value = other->m_value;
 }
 

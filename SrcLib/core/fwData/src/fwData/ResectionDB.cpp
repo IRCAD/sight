@@ -38,13 +38,13 @@ void ResectionDB::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::deepCopy(const Object::csptr &_source )
+void ResectionDB::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     ResectionDB::csptr other = ResectionDB::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 }
 
 //------------------------------------------------------------------------------

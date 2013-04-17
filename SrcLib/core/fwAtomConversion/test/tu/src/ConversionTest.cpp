@@ -185,8 +185,8 @@ void ConversionTest::materialConversionTest()
     material->setAmbient(color);
 
     // Create Atom
-    ::fwData::Material::sptr materialTmp = ::fwData::Material::New();
-    materialTmp->deepCopy( material );
+    ::fwData::Material::sptr materialTmp;
+    materialTmp = ::fwData::Object::copy( material );
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( materialTmp );
     materialTmp.reset();
 
@@ -206,8 +206,8 @@ void ConversionTest::patientConversionTest()
     ::fwDataTools::Patient::generatePatient(patient, 1, 1, 1);
 
     // Creates Atom
-    ::fwData::Patient::sptr patientTmp = ::fwData::Patient::New();
-    patientTmp->deepCopy( patient );
+    ::fwData::Patient::sptr patientTmp;
+    patientTmp = ::fwData::Object::copy( patient );
 
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( patientTmp );
 
@@ -469,7 +469,7 @@ public :
        ((::fwData::factory::New< ClassNotCamped > ,() )) );
 
     ClassNotCamped(::fwData::Object::Key key){};
-    void deepCopy(const Object::csptr &_source ){};
+    void cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache ){};
 
 };
 
@@ -586,7 +586,7 @@ public :
         m_values.insert( std::make_pair( ::fwData::String::New(), 0.2 ) );
     };
 
-    void deepCopy(const Object::csptr &_source ){};
+    void cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache ){};
 
     std::map< ::fwData::String::sptr, double > m_values;
 

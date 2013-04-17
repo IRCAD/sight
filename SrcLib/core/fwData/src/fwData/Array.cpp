@@ -83,13 +83,13 @@ void Array::swap( Array::sptr _source )
 
 //------------------------------------------------------------------------------
 
-void Array::deepCopy(const Object::csptr &_source )
+void Array::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Array::csptr other = Array::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     this->clear();
 

@@ -284,10 +284,10 @@ void TransferFunctionEditor::newTF()
     {
         if(!this->hasTransferFunctionName(newName))
         {
-            ::fwData::TransferFunction::NewSptr pNewTransferFunction ;
+            ::fwData::TransferFunction::sptr pNewTransferFunction ;
             ::fwData::TransferFunction::sptr selectedTF = this->getSelectedTransferFunction();
 
-            pNewTransferFunction->deepCopy(selectedTF);
+            pNewTransferFunction = ::fwData::Object::copy(selectedTF);
             pNewTransferFunction->setName(newName);
             ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
             ::fwComEd::helper::Composite compositeHelper(poolTF);

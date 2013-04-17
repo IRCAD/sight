@@ -39,13 +39,13 @@ void String::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void String::deepCopy(const Object::csptr &_source )
+void String::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     String::csptr other = String::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
     m_value = other->m_value;
 }
 

@@ -143,25 +143,25 @@ void ProcessObject::shallowCopy(const Object::csptr &source )
 
 //-----------------------------------------------------------------------------
 
-void ProcessObject::deepCopy(const Object::csptr &source )
+void ProcessObject::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
     ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source );
+    this->fieldDeepCopy( source, cache );
 
     this->clearInputs();
     this->clearOutputs();
 
     BOOST_FOREACH(ProcessObjectMapType::value_type elt, other->m_attrInputs)
     {
-        m_attrInputs[elt.first] = ::fwData::Object::copy(elt.second);
+        m_attrInputs[elt.first] = ::fwData::Object::copy(elt.second, cache);
     }
 
     BOOST_FOREACH(ProcessObjectMapType::value_type elt, other->m_attrOutputs)
     {
-        m_attrOutputs[elt.first] = ::fwData::Object::copy(elt.second);
+        m_attrOutputs[elt.first] = ::fwData::Object::copy(elt.second, cache);
     }
 }
 

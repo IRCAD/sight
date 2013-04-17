@@ -46,16 +46,16 @@ void Tag::shallowCopy(const Object::csptr &source )
 
 //------------------------------------------------------------------------------
 
-void Tag::deepCopy(const Object::csptr &source )
+void Tag::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
     Tag::csptr other = Tag::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source );
+    this->fieldDeepCopy( source, cache );
     m_sType = other->m_sType;
     m_size = other->m_size;
-    m_pointList = ::fwData::Object::copy(other->m_pointList);
+    m_pointList = ::fwData::Object::copy(other->m_pointList, cache);
 }
 
 } // namespace fwData

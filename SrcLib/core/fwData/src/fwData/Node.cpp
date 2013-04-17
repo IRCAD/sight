@@ -122,48 +122,39 @@ void Node::shallowCopy(const Object::csptr &_source )
     }
     BOOST_FOREACH(::fwData::Port::sptr port, other->m_inputs)
     {
-        ::fwData::Port::NewSptr newPort;
-        newPort->deepCopy( port );
-        this->addInputPort(newPort);
+        this->addInputPort( ::fwData::Object::copy(port) );
     }
     BOOST_FOREACH(::fwData::Port::sptr port, other->m_outputs)
     {
-        ::fwData::Port::NewSptr newPort;
-        newPort->deepCopy( port );
-        this->addOutputPort(newPort);
+        this->addOutputPort( ::fwData::Object::copy(port) );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Node::deepCopy(const Object::csptr &_source )
+void Node::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Node::csptr other = Node::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_inputs.clear();
     m_outputs.clear();
 
-    if( other->getObject())
+    m_object = ::fwData::Object::copy( other->m_object, cache );
+
+    BOOST_FOREACH(const ::fwData::Port::sptr &port, other->m_inputs)
     {
-        ::fwTools::Object::sptr object = ::fwData::factory::New( other->getObject()->getClassname() );
-        OSLM_ASSERT("Sorry, instantiate "<<other->getObject()->getClassname()<< " failed", object );
-        m_object = ::fwData::Object::dynamicCast(object);
-        m_object->deepCopy(other->m_object);
-    }
-    BOOST_FOREACH(::fwData::Port::sptr port, other->m_inputs)
-    {
-        ::fwData::Port::NewSptr newPort;
-        newPort->deepCopy( port );
+        ::fwData::Port::sptr newPort;
+        newPort = ::fwData::Object::copy(port, cache);
         this->addInputPort(newPort);
     }
-    BOOST_FOREACH(::fwData::Port::sptr port, other->m_outputs)
+    BOOST_FOREACH(const ::fwData::Port::sptr &port, other->m_outputs)
     {
-        ::fwData::Port::NewSptr newPort;
-        newPort->deepCopy( port );
+        ::fwData::Port::sptr newPort;
+        newPort = ::fwData::Object::copy(port, cache);
         this->addOutputPort(newPort);
     }
 }

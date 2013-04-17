@@ -44,21 +44,21 @@ void PlaneList::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void PlaneList::deepCopy(const Object::csptr &_source )
+void PlaneList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     this->m_vPlanes.clear();
     for (   PlaneList::PlaneListContainer::const_iterator iter = other->m_vPlanes.begin();
             iter != other->m_vPlanes.end();
             ++iter )
     {
-        Plane::NewSptr newPlane;
-        newPlane->deepCopy( *iter );
+        Plane::sptr newPlane;
+        newPlane = ::fwData::Object::copy(*iter, cache);
         this->m_vPlanes.push_back( newPlane );
     }
 }

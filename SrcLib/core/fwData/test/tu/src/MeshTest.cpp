@@ -9,6 +9,7 @@
 #include <boost/cstdint.hpp>
 
 #include <fwData/Mesh.hpp>
+#include <fwData/ObjectLock.hpp>
 
 #include <fwComEd/helper/Mesh.hpp>
 #include <fwComEd/helper/Array.hpp>
@@ -391,11 +392,9 @@ void MeshTest::addingArray()
 void MeshTest::copy()
 {
     ::fwData::Mesh::NewSptr mesh;
-    ::fwData::Mesh::NewSptr deepCopyMesh;
     ::fwData::Mesh::NewSptr shallowCopyMesh;
 
     ::fwComEd::helper::Mesh meshHelper(mesh);
-    ::fwComEd::helper::Mesh deepCopyMeshHelper(deepCopyMesh);
 
     meshHelper.insertNextPoint(10, 20, 30);
     meshHelper.insertNextPoint(10, 10, 10);
@@ -424,7 +423,10 @@ void MeshTest::copy()
     ::fwData::Mesh::PointColorsMultiArrayType pointColorArray = meshHelper.getPointColors();
 
     // check deep copy
-    deepCopyMesh->deepCopy(mesh);
+    ::fwData::Mesh::sptr deepCopyMesh;
+    deepCopyMesh = ::fwData::Object::copy(mesh);
+    ::fwComEd::helper::Mesh deepCopyMeshHelper(deepCopyMesh);
+
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), deepCopyMesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells() , deepCopyMesh->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize()  , deepCopyMesh->getCellDataSize());

@@ -39,13 +39,13 @@ void Port::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Port::deepCopy(const Object::csptr &_source )
+void Port::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Port::csptr other = Port::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_identifier = other->m_identifier;
     m_type = other->m_type;

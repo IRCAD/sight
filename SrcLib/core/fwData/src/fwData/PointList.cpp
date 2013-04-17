@@ -42,19 +42,19 @@ void PointList::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void PointList::deepCopy(const Object::csptr &_source )
+void PointList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     PointList::csptr other = PointList::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_vPoints.clear();
     BOOST_FOREACH(PointListContainer::value_type point, other->m_vPoints )
     {
         Point::NewSptr newPoint;
-        newPoint->deepCopy( point );
+        newPoint = ::fwData::Object::copy(point, cache);
         m_vPoints.push_back( newPoint );
     }
 }

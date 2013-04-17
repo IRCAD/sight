@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwMedData/SeriesDB.hpp"
-#include "fwMedData/Series.hpp"
+#include "fwMedData/ModelSeries.hpp"
 
 #include "SeriesDBTest.hpp"
 
@@ -38,9 +38,9 @@ void SeriesDBTest::tearDown()
 
 void SeriesDBTest::containerTest()
 {
-    fwMedData::Series::sptr series1 = fwMedData::Series::New();
-    fwMedData::Series::sptr series2 = fwMedData::Series::New();
-    fwMedData::Series::sptr series3 = fwMedData::Series::New();
+    fwMedData::Series::sptr series1 = fwMedData::ModelSeries::New();
+    fwMedData::Series::sptr series2 = fwMedData::ModelSeries::New();
+    fwMedData::Series::sptr series3 = fwMedData::ModelSeries::New();
 
     CPPUNIT_ASSERT( m_series->empty() );
 

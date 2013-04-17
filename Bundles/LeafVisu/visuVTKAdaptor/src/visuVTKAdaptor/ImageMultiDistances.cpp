@@ -243,8 +243,8 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
         current = colors.begin();
     }
 
-    Color::NewSptr newColor;
-    newColor->deepCopy( *current );
+    Color::sptr newColor;
+    newColor = ::fwData::Object::copy( *current );
     return newColor;
 }
 

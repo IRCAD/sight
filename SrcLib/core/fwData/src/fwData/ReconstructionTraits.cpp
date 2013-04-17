@@ -72,13 +72,13 @@ ReconstructionTraits::~ReconstructionTraits()
 
 //------------------------------------------------------------------------------
 
-void ReconstructionTraits::deepCopy(const Object::csptr &source )
+void ReconstructionTraits::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
     ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( source );
+    this->fieldDeepCopy( source, cache );
 
     OSLM_FATAL("Not implemented." );
 }

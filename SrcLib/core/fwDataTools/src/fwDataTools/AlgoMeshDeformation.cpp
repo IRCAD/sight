@@ -75,8 +75,7 @@ void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
 void AlgoMeshDeformation::initSimu()
 {
     SLM_TRACE_FUNC();
-    m_originPoints = ::fwData::Array::New();
-    m_originPoints->deepCopy( m_mesh.lock()->getPointsArray() );
+    m_originPoints = ::fwData::Object::copy( m_mesh.lock()->getPointsArray() );
     m_step = 0;
 
     if ( ! m_mesh.lock()->getPointColorsArray() )

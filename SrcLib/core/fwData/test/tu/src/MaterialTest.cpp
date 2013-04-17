@@ -45,8 +45,8 @@ void MaterialTest::methode1()
 
     ::fwData::Material::NewSptr material;
 
-    material->ambient()->deepCopy( CAMBIENT );
-    material->diffuse()->deepCopy( CDIFF );
+    material->setAmbient(::fwData::Object::copy(CAMBIENT));
+    material->setDiffuse(::fwData::Object::copy(CDIFF));
 
     CPPUNIT_ASSERT_EQUAL(material->ambient()->getRGBA()[0], CAMBIENT->getRGBA()[0]);
     CPPUNIT_ASSERT_EQUAL(material->diffuse()->getRGBA()[0], CDIFF->getRGBA()[0]);

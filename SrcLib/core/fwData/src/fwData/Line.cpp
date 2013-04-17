@@ -46,15 +46,15 @@ void Line::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Line::deepCopy(const Object::csptr &_source )
+void Line::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
     Line::csptr other = Line::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
-    m_position = ::fwData::Object::copy( other->m_position );
-    m_direction = ::fwData::Object::copy( other->m_direction );
+    this->fieldDeepCopy( _source, cache );
+    m_position = ::fwData::Object::copy( other->m_position, cache );
+    m_direction = ::fwData::Object::copy( other->m_direction, cache );
 }
 
 //------------------------------------------------------------------------------

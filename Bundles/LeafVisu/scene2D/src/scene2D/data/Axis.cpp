@@ -45,13 +45,13 @@ void Axis::shallowCopy(const ::fwData::Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void Axis::deepCopy(const ::fwData::Object::csptr &_source )
+void Axis::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache )
 {
     Axis::csptr other = Axis::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
-    this->fieldDeepCopy( _source );
+    this->fieldDeepCopy( _source, cache );
 
     m_origin = other->m_origin;
     m_scale = other->m_scale;
