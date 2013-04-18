@@ -22,6 +22,7 @@ class ConversionTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( patientConversionTest );
     CPPUNIT_TEST( graphConversionTest );
     CPPUNIT_TEST( tfConversionTest );
+    CPPUNIT_TEST( seriesDBConversionTest );
     CPPUNIT_TEST( objectMultiReferencedTest );
     CPPUNIT_TEST( recursiveObjectTest );
     CPPUNIT_TEST( uuidExceptionTest );
@@ -53,6 +54,9 @@ public:
 
     //// Test fwData::TransferFunction conversion
     void tfConversionTest();
+
+    /// Test fwMedData::SeriesDB conversion
+    void seriesDBConversionTest();
 
     /// Test using an object multi referenced in different structures, test also fwData::Composite conversion
     void objectMultiReferencedTest();

@@ -29,6 +29,8 @@
 #include <fwData/TransferFunction.hpp>
 #include <fwData/Graph.hpp>
 
+#include <fwMedData/SeriesDB.hpp>
+
 #include <fwDataTools/Patient.hpp>
 #include <fwDataTools/MeshGenerator.hpp>
 #include <fwDataTools/Image.hpp>
@@ -43,7 +45,7 @@
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Sequence.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <fwTest/generator/SeriesDB.hpp>
 
 #include <fwAtomConversion/convert.hpp>
 #include <fwAtomConversion/DataVisitor.hpp>
@@ -60,8 +62,6 @@ namespace fwAtomConversion
 {
 namespace ut
 {
-
-static ::fwTest::Exception fwTestException(""); // force link with fwTest
 
 //-----------------------------------------------------------------------------
 
@@ -363,6 +363,31 @@ void ConversionTest::tfConversionTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.05, color2.g, 0.000001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.99, color2.b, 0.000001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2,  color2.a, 0.000001);
+}
+
+//-----------------------------------------------------------------------------
+
+void ConversionTest::seriesDBConversionTest()
+{
+    ::fwAtoms::Object::sptr atom;
+
+    ::fwMedData::SeriesDB::sptr sdb = ::fwTest::generator::SeriesDB::createSeriesDB(2, 3, 1);
+
+    // Create Atom
+    atom = ::fwAtomConversion::convert( sdb );
+
+
+    ::fwMedData::SeriesDB::sptr newSdb =
+            ::fwMedData::SeriesDB::dynamicCast( ::fwAtomConversion::convert(atom) );
+
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(sdb, newSdb);
+    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    {
+        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+    }
+    CPPUNIT_ASSERT_MESSAGE("SeriesDB Not equal" , props->size() == 0 );
 }
 
 //-----------------------------------------------------------------------------
