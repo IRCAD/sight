@@ -20,6 +20,12 @@ class IoAtomsTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( XMLMedicalDataTest );
     CPPUNIT_TEST( XMLZMedicalDataTest );
     CPPUNIT_TEST( HDF5MedicalDataTest );
+
+    CPPUNIT_TEST( JSONTest );
+    CPPUNIT_TEST( JSONZTest );
+    CPPUNIT_TEST( XMLTest );
+    CPPUNIT_TEST( XMLZTest );
+    CPPUNIT_TEST( HDF5Test );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -28,16 +34,20 @@ public:
     void setUp();
     void tearDown();
 
-    void writeReadMedicalDataTest();
-
     void JSONMedicalDataTest();
     void JSONZMedicalDataTest();
     void XMLMedicalDataTest();
     void XMLZMedicalDataTest();
     void HDF5MedicalDataTest();
 
-    // Helper to test different extensions
-    void writeReadFile( const ::boost::filesystem::path & filePath );
+    void JSONTest();
+    void JSONZTest();
+    void XMLTest();
+    void XMLZTest();
+    void HDF5Test();
+
+
+
 };
 
 } // namespace ut
