@@ -108,6 +108,7 @@ namespace generator
 {
     ::fwMedData::Equipment::sptr equipment = ::fwMedData::Equipment::New();
     const std::string INSTITUTION = "hospital" ;
+    equipment->setInstitutionName(INSTITUTION);
 
     return equipment;
 }
@@ -132,6 +133,12 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     performingPhysiciansName.push_back("Dr House");
     performingPhysiciansName.push_back("Dr Einstein");
     series->setPerformingPhysiciansName(performingPhysiciansName);
+
+    series->setInstanceUID(UID);
+    series->setModality(MODALITY);
+    series->setDate(DATE);
+    series->setTime(TIME);
+    series->setDescription(DESCRIPTION);
 }
 
 //------------------------------------------------------------------------------
