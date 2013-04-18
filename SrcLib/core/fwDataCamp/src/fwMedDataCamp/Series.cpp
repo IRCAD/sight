@@ -11,6 +11,8 @@
 
 #include <fwCamp/UserObject.hpp>
 
+#include "fwMedDataCamp/Series.hpp"
+
 //------------------------------------------------------------------------------
 
 fwCampImplementDataMacro((fwMedData)(Series))
