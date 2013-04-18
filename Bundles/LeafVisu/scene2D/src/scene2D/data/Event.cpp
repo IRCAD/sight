@@ -36,6 +36,13 @@ Event::~Event()
 
 //-----------------------------------------------------------------------------
 
+void Event::cachedDeepCopy(const ::fwData::Object::csptr &source, ::fwData::Object::DeepCopyCacheType &cache)
+{
+    SLM_FATAL("The Event::cachedDeepCopy(...) has not been implemented yet..");
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace data
 } // namespace scene2D
 

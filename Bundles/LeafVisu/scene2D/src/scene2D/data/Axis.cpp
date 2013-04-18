@@ -23,34 +23,48 @@ Axis::Axis( ::fwData::Object::Key key )
   m_scaleType (LINEAR)
 {}
 
+//-----------------------------------------------------------------------------
+
 Axis::~Axis()
 {
 }
+
+//-----------------------------------------------------------------------------
 
 float Axis::getOrigin()
 {
     return m_origin;
 }
 
+//-----------------------------------------------------------------------------
+
 void Axis::setOrigin (float _origin)
 {
     m_origin = _origin;
 }
+
+//-----------------------------------------------------------------------------
 
 float Axis::getScale()
 {
     return m_scale;
 }
 
+//-----------------------------------------------------------------------------
+
 void Axis::setScale (float _scale)
 {
     m_scale = _scale;
 }
 
+//-----------------------------------------------------------------------------
+
 std::string Axis::getScaleType()
 {
     return (m_scaleType == LINEAR)?"LINEAR":"LOG";
 }
+
+//-----------------------------------------------------------------------------
 
 void Axis::setScaleType (std::string _scaleType)
 {
@@ -63,6 +77,15 @@ void Axis::setScaleType (std::string _scaleType)
         m_scaleType = LOG;
     }
 }
+
+//-----------------------------------------------------------------------------
+
+void Axis::cachedDeepCopy(const ::fwData::Object::csptr &source, ::fwData::Object::DeepCopyCacheType &cache)
+{
+    SLM_FATAL("The Axis::cachedDeepCopy(...) has not been implemented yet..");
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace data
 } // namespace scene2D

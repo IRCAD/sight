@@ -23,49 +23,76 @@ Viewport::Viewport(::fwData::Object::Key key)
   m_height (400)
 {}
 
+//-----------------------------------------------------------------------------
+
 Viewport::~Viewport()
 {
 }
+
+//-----------------------------------------------------------------------------
 
 float Viewport::getX()
 {
     return m_x;
 }
 
+//-----------------------------------------------------------------------------
+
 void Viewport::setX (float _x)
 {
     m_x = _x;
 }
+
+//-----------------------------------------------------------------------------
 
 float Viewport::getY()
 {
     return m_y;
 }
 
+//-----------------------------------------------------------------------------
+
 void Viewport::setY (float _y)
 {
     m_y = _y;
 }
+
+//-----------------------------------------------------------------------------
 
 float Viewport::getWidth()
 {
     return m_width;
 }
 
+//-----------------------------------------------------------------------------
+
 void Viewport::setWidth (float _width)
 {
     m_width = _width;
 }
+
+//-----------------------------------------------------------------------------
 
 float Viewport::getHeight()
 {
     return m_height;
 }
 
+//-----------------------------------------------------------------------------
+
 void Viewport::setHeight (float _height)
 {
     m_height = _height;
 }
+
+//-----------------------------------------------------------------------------
+
+void Viewport::cachedDeepCopy(const ::fwData::Object::csptr &source, ::fwData::Object::DeepCopyCacheType &cache)
+{
+    SLM_FATAL("The Viewport::cachedDeepCopy(...) has not been implemented yet.");
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace data
 } // namespace scene2D

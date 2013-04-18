@@ -62,6 +62,7 @@ public:
      */
     SCENE2D_API Event( ::fwData::Object::Key key );
     SCENE2D_API virtual ~Event();
+    SCENE2D_API void cachedDeepCopy(const fwData::Object::csptr &source, DeepCopyCacheType &cache);
 
     fwGettersSettersDocMacro(OldSize, oldSize, Size, no comment);
     fwGettersSettersDocMacro(Size, size, Size, no comment);

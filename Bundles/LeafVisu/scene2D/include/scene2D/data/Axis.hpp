@@ -58,6 +58,8 @@ public:
     /// Set m_scaleType attribute.
     SCENE2D_API void setScaleType (std::string _scaleType);
 
+    SCENE2D_API void cachedDeepCopy(const ::fwData::Object::csptr &source, ::fwData::Object::DeepCopyCacheType &cache);
+
 private:
     /// The origin and scale.
     float m_origin, m_scale;

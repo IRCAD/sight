@@ -31,6 +31,7 @@ public:
      */
     SCENE2D_API Viewport( ::fwData::Object::Key key );
     SCENE2D_API virtual ~Viewport();
+    SCENE2D_API void cachedDeepCopy(const ::fwData::Object::csptr &source, ::fwData::Object::DeepCopyCacheType &cache);
 
     SCENE2D_API float getX();
     SCENE2D_API void setX (float _x);
@@ -40,6 +41,7 @@ public:
     SCENE2D_API void setWidth (float _width);
     SCENE2D_API float getHeight();
     SCENE2D_API void setHeight (float _height);
+
 
 private:
     float m_x, m_y, m_width, m_height;
