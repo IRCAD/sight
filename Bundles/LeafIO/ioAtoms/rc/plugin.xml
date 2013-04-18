@@ -20,7 +20,21 @@
         <object>::fwData::Composite</object>
         <desc>Atoms reader</desc>
     </extension>
-    
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioAtoms::SReader</service>
+        <object>::fwData::Object</object>
+        <desc>Atoms reader</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioAtoms::SWriter</service>
+        <object>::fwData::Object</object>
+        <desc>Atoms writer</desc>
+    </extension>
+
 </plugin>
 
 
