@@ -170,13 +170,13 @@ void SReader::updating() throw(::fwTools::Failed)
 
             FW_RAISE_IF( "Unable to load '" << filePath << "' : invalid data.", ! newData );
 
-            FW_RAISE_IF( "Unable to load '" << filePath
-                         << "' : trying to load a '" << newData->getClassname()
-                         << "' where a '" << data->getClassname() << "' was expected",
-                         newData->getClassname() != data->getClassname() );
-
             if(m_inject.empty())
             {
+                FW_RAISE_IF( "Unable to load '" << filePath
+                        << "' : trying to load a '" << newData->getClassname()
+                        << "' where a '" << data->getClassname() << "' was expected",
+                        newData->getClassname() != data->getClassname() );
+
                 data->shallowCopy(newData);
             }
             else
@@ -185,7 +185,7 @@ void SReader::updating() throw(::fwTools::Failed)
                 SLM_ASSERT("Inject mode works only on a Composite object", composite );
 
                 ::fwComEd::helper::Composite helper(composite);
-                helper.add(m_inject, data);
+                helper.add(m_inject, newData);
                 helper.notify(this->getSptr());
             }
 
