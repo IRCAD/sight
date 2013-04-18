@@ -2,4 +2,10 @@ TYPE = 'shared'
 VERSION = '0.1'
 
 USE = ['boostFilesystem', 'cppunit']
-LIB = ['fwTools_0-1','fwCore_0-1','fwData_0-1','fwMedData_0-1']
+LIB = ['fwTools_0-1',
+       'fwCore_0-1',
+       'fwData_0-1',
+       'fwMedData_0-1',
+       'fwComEd_0-1',
+       'fwDataTools_0-1'
+      ]
