@@ -9,7 +9,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwActivitiesCamp
+namespace fwMedDataCamp
 {
 namespace ut
 {
@@ -30,6 +30,6 @@ public:
 };
 
 } //namespace ut
-} //namespace fwActivitiesCamp
+} //namespace fwMedDataCamp
 
 #endif // __FWMEDDATACAMP_UT_ACTIVITYSERIESTEST_HPP__

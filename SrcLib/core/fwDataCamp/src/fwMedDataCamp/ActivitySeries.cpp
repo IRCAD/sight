@@ -9,6 +9,8 @@
 
 #include <fwCamp/UserObject.hpp>
 
+#include "fwMedDataCamp/ActivitySeries.hpp"
+
 //------------------------------------------------------------------------------
 
 fwCampImplementDataMacro((fwMedData)(ActivitySeries))

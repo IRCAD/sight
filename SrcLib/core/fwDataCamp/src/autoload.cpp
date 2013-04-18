@@ -6,7 +6,6 @@
 
 #include "fwDataCamp/autoload.hpp"
 #include "fwMedDataCamp/autoload.hpp"
-#include "fwActivitiesCamp/autoload.hpp"
 
 
 namespace fwDataCamp
@@ -15,11 +14,6 @@ runner runner::r;
 }
 
 namespace fwMedDataCamp
-{
-runner runner::r;
-}
-
-namespace fwActivitiesCamp
 {
 runner runner::r;
 }

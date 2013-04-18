@@ -10,9 +10,10 @@
 #include <fwCamp/macros.hpp>
 
 
-#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Equipment.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
@@ -33,6 +34,7 @@ struct runner
         localDeclarefwMedDataSeriesDB();
         localDeclarefwMedDataImageSeries();
         localDeclarefwMedDataModelSeries();
+        localDeclarefwMedDataActivitySeries();
     }
 
     static runner r;

@@ -12,14 +12,14 @@
 #include <fwMedData/ActivitySeries.hpp>
 
 #include "DataCampHelper.hpp"
-#include "fwActivitiesCamp/ActivitySeriesTest.hpp"
+#include "fwMedDataCamp/ActivitySeriesTest.hpp"
 
 using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwActivitiesCamp::ut::ActivitySeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::ActivitySeriesTest );
 
-namespace fwActivitiesCamp
+namespace fwMedDataCamp
 {
 namespace ut
 {
@@ -70,4 +70,4 @@ void ActivitySeriesTest::propertiesTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace fwActivitiesCamp
+} //namespace fwMedDataCamp

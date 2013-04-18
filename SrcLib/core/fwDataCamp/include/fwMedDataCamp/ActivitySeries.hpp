@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMACTIVITIESCAMP_ACTIVITYSERIES_HPP__
-#define __FWMACTIVITIESCAMP_ACTIVITYSERIES_HPP__
+#ifndef __FWMEDDATACAMP_ACTIVITYSERIES_HPP__
+#define __FWMEDDATACAMP_ACTIVITYSERIES_HPP__
 
 #include <fwCamp/macros.hpp>
 #include <fwMedData/ActivitySeries.hpp>
@@ -14,4 +14,4 @@
 
 fwCampDeclareAccessor((fwMedData)(ActivitySeries), (fwData)(Composite));
 
-#endif /* __FWMACTIVITIESCAMP_ACTIVITYSERIES_HPP__ */
+#endif /* __FWMEDDATACAMP_ACTIVITYSERIES_HPP__ */
