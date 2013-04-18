@@ -46,6 +46,7 @@
 #include <fwAtoms/Sequence.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
+#include <fwTest/generator/Object.hpp>
 
 #include <fwAtomConversion/convert.hpp>
 #include <fwAtomConversion/DataVisitor.hpp>
@@ -74,6 +75,20 @@ void ConversionTest::setUp()
 void ConversionTest::tearDown()
 {
     // Clean up after the test run.
+}
+
+//-----------------------------------------------------------------------------
+
+void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+{
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(objRef, objComp);
+    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    {
+        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+    }
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -234,15 +249,7 @@ void ConversionTest::patientConversionTest()
     ::fwData::Object::sptr patientObject = ::fwAtomConversion::convert(atom);
     ::fwData::Patient::sptr patientResultat = ::fwData::Patient::dynamicCast(patientObject);
 
-    using namespace ::fwDataCamp::visitor;
-    CompareObjects visitor;
-    visitor.compare(patient, patientResultat);
-    SPTR(CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( CompareObjects::PropsMapType::value_type prop, (*props) )
-    {
-        OSLM_ERROR( "new object difference found : " << prop.first << " " << prop.second );
-    }
-    CPPUNIT_ASSERT_MESSAGE("Patient Not equal" , props->size() == 0 );
+    compare(patient, patientResultat);
 
     bool patientComparison = ::fwDataTools::Patient::comparePatient(patient, patientResultat);
     CPPUNIT_ASSERT_MESSAGE("Patient Not equal" , patientComparison);
@@ -342,27 +349,16 @@ void ConversionTest::graphConversionTest()
 void ConversionTest::tfConversionTest()
 {
     ::fwAtoms::Object::sptr atom;
-    {
-        ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
-        tf->addTFColor(0.56, ::fwData::TransferFunction::TFColor(0.5, 0.56, 0.9, 1.0));
-        tf->addTFColor(25.89, ::fwData::TransferFunction::TFColor(0.8, 0.05, 0.99, 0.2));
 
-        // Create Atom
-        atom = ::fwAtomConversion::convert( tf );
-    }
+    ::fwData::TransferFunction::sptr tf = ::fwTest::generator::Object::createTFColor(15, 120, 50);
+
+    // Create Atom
+    atom = ::fwAtomConversion::convert( tf );
+
     ::fwData::TransferFunction::sptr newTF =
             ::fwData::TransferFunction::dynamicCast( ::fwAtomConversion::convert(atom) );
-    ::fwData::TransferFunction::TFColor color1 = newTF->getTFColor(0.56);
-    ::fwData::TransferFunction::TFColor color2 = newTF->getTFColor(25.89);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  color1.r, 0.000001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.56, color1.g, 0.000001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.9,  color1.b, 0.000001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0,  color1.a, 0.000001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.8,  color2.r, 0.000001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.05, color2.g, 0.000001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.99, color2.b, 0.000001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2,  color2.a, 0.000001);
+    compare(tf, newTF);
 }
 
 //-----------------------------------------------------------------------------
@@ -380,14 +376,7 @@ void ConversionTest::seriesDBConversionTest()
     ::fwMedData::SeriesDB::sptr newSdb =
             ::fwMedData::SeriesDB::dynamicCast( ::fwAtomConversion::convert(atom) );
 
-    ::fwDataCamp::visitor::CompareObjects visitor;
-    visitor.compare(sdb, newSdb);
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
-    {
-        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
-    }
-    CPPUNIT_ASSERT_MESSAGE("SeriesDB Not equal" , props->size() == 0 );
+    compare(sdb, newSdb);
 }
 
 //-----------------------------------------------------------------------------
