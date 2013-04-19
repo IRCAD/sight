@@ -1,0 +1,149 @@
+{
+    "object":
+    {
+        "meta_infos":
+        {
+            "item":
+            {
+                "key": "CLASSNAME_METAINFO",
+                "value": "::fwData::TransferFunction"
+            },
+            "item":
+            {
+                "key": "ID_METAINFO",
+                "value": "1860ecea-9c9d-4b97-9d06-e242b475b679"
+            },
+            "item":
+            {
+                "key": "lib_name",
+                "value": "fwData"
+            },
+            "item":
+            {
+                "key": "object_version",
+                "value": "1"
+            }
+        },
+        "attributes":
+        {
+            "background_color":
+            {
+                "string":
+                {
+                    "value": "0;0;0;0;"
+                }
+            },
+            "fields":
+            {
+                "map": ""
+            },
+            "interpolation_mode":
+            {
+                "string":
+                {
+                    "value": "LINEAR"
+                }
+            },
+            "is_clamped":
+            {
+                "boolean":
+                {
+                    "value": "false"
+                }
+            },
+            "level":
+            {
+                "numeric":
+                {
+                    "value": "573"
+                }
+            },
+            "name":
+            {
+                "string":
+                {
+                    "value": "MRI-T2-kidneys"
+                }
+            },
+            "tf_data":
+            {
+                "map":
+                {
+                    "item":
+                    {
+                        "key": "432",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "445",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.50196099281311035;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "482",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;0.50196099281311035;0.50196099281311035;0.13966499269008636;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "554",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;0.50196099281311035;0;0.43575400114059448;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "657",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;0;0.79329597949981689;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "715",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;1;1;"
+                            }
+                        }
+                    }
+                }
+            },
+            "window":
+            {
+                "numeric":
+                {
+                    "value": "283"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,127 @@
+{
+    "object":
+    {
+        "meta_infos":
+        {
+            "item":
+            {
+                "key": "CLASSNAME_METAINFO",
+                "value": "::fwData::TransferFunction"
+            },
+            "item":
+            {
+                "key": "ID_METAINFO",
+                "value": "8ba11417-6451-4bc2-832a-fd6025347774"
+            },
+            "item":
+            {
+                "key": "lib_name",
+                "value": "fwData"
+            },
+            "item":
+            {
+                "key": "object_version",
+                "value": "1"
+            }
+        },
+        "attributes":
+        {
+            "background_color":
+            {
+                "string":
+                {
+                    "value": "0;0;0;0;"
+                }
+            },
+            "fields":
+            {
+                "map": ""
+            },
+            "interpolation_mode":
+            {
+                "string":
+                {
+                    "value": "LINEAR"
+                }
+            },
+            "is_clamped":
+            {
+                "boolean":
+                {
+                    "value": "false"
+                }
+            },
+            "level":
+            {
+                "numeric":
+                {
+                    "value": "1262"
+                }
+            },
+            "name":
+            {
+                "string":
+                {
+                    "value": "CT-Bones-U16"
+                }
+            },
+            "tf_data":
+            {
+                "map":
+                {
+                    "item":
+                    {
+                        "key": "1184",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "1191",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;0.50196099281311035;0;0.30991700291633606;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "1247",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;0.72548997402191162;0.59504097700119019;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "1341",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;1;0.79178899526596069;"
+                            }
+                        }
+                    }
+                }
+            },
+            "window":
+            {
+                "numeric":
+                {
+                    "value": "157"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,149 @@
+{
+    "object":
+    {
+        "meta_infos":
+        {
+            "item":
+            {
+                "key": "CLASSNAME_METAINFO",
+                "value": "::fwData::TransferFunction"
+            },
+            "item":
+            {
+                "key": "ID_METAINFO",
+                "value": "4a0cd8be-af5d-4cbe-875e-3613ba88a738"
+            },
+            "item":
+            {
+                "key": "lib_name",
+                "value": "fwData"
+            },
+            "item":
+            {
+                "key": "object_version",
+                "value": "1"
+            }
+        },
+        "attributes":
+        {
+            "background_color":
+            {
+                "string":
+                {
+                    "value": "0;0;0;0;"
+                }
+            },
+            "fields":
+            {
+                "map": ""
+            },
+            "interpolation_mode":
+            {
+                "string":
+                {
+                    "value": "LINEAR"
+                }
+            },
+            "is_clamped":
+            {
+                "boolean":
+                {
+                    "value": "false"
+                }
+            },
+            "level":
+            {
+                "numeric":
+                {
+                    "value": "216"
+                }
+            },
+            "name":
+            {
+                "string":
+                {
+                    "value": "CT-Vessels"
+                }
+            },
+            "tf_data":
+            {
+                "map":
+                {
+                    "item":
+                    {
+                        "key": "128",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "140",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.62352901697158813;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "159",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;0.50196099281311035;0.50196099281311035;0.30000001192092896;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "187",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;0.50196099281311035;0;0.60000002384185791;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "219",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;0.64313697814941406;0.90149301290512085;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "304",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;1;1;"
+                            }
+                        }
+                    }
+                }
+            },
+            "window":
+            {
+                "numeric":
+                {
+                    "value": "176"
+                }
+            }
+        }
+    }
+}

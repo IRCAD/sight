@@ -5,6 +5,8 @@
     <requirement id="servicesReg" />
 
     <requirement id="gui" />
+    <requirement id="io" />
+    <requirement id="ioAtoms" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>

@@ -1,0 +1,204 @@
+{
+    "object":
+    {
+        "meta_infos":
+        {
+            "item":
+            {
+                "key": "CLASSNAME_METAINFO",
+                "value": "::fwData::TransferFunction"
+            },
+            "item":
+            {
+                "key": "ID_METAINFO",
+                "value": "c9cc3bfc-35c8-4c18-bc8c-ed75f1726850"
+            },
+            "item":
+            {
+                "key": "lib_name",
+                "value": "fwData"
+            },
+            "item":
+            {
+                "key": "object_version",
+                "value": "1"
+            }
+        },
+        "attributes":
+        {
+            "background_color":
+            {
+                "string":
+                {
+                    "value": "0;0;0;0;"
+                }
+            },
+            "fields":
+            {
+                "map": ""
+            },
+            "interpolation_mode":
+            {
+                "string":
+                {
+                    "value": "LINEAR"
+                }
+            },
+            "is_clamped":
+            {
+                "boolean":
+                {
+                    "value": "false"
+                }
+            },
+            "level":
+            {
+                "numeric":
+                {
+                    "value": "-418"
+                }
+            },
+            "name":
+            {
+                "string":
+                {
+                    "value": "CT-Thorax"
+                }
+            },
+            "tf_data":
+            {
+                "map":
+                {
+                    "item":
+                    {
+                        "key": "-1011",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;1;1;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "-195",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "-480",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.50196099281311035;0;0;0.28623199462890625;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "-597",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.9803919792175293;0.67843097448348999;0.27058801054954529;0.51906198263168335;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "-690",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.9882349967956543;0.83921599388122559;0.63529402017593384;0.72727298736572266;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "121",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.50196099281311035;0;0;0.39882698655128479;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "135",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;0.50196099281311035;0.50196099281311035;0.52199399471282959;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "155",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;0.69019597768783569;0.7536659836769104;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "176",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;1;1;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "5",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "95",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.25097998976707458;0;0;0;"
+                            }
+                        }
+                    }
+                }
+            },
+            "window":
+            {
+                "numeric":
+                {
+                    "value": "1187"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,182 @@
+{
+    "object":
+    {
+        "meta_infos":
+        {
+            "item":
+            {
+                "key": "CLASSNAME_METAINFO",
+                "value": "::fwData::TransferFunction"
+            },
+            "item":
+            {
+                "key": "ID_METAINFO",
+                "value": "492769ba-e48d-407e-8963-6dbd85251acf"
+            },
+            "item":
+            {
+                "key": "lib_name",
+                "value": "fwData"
+            },
+            "item":
+            {
+                "key": "object_version",
+                "value": "1"
+            }
+        },
+        "attributes":
+        {
+            "background_color":
+            {
+                "string":
+                {
+                    "value": "0;0;0;0;"
+                }
+            },
+            "fields":
+            {
+                "map": ""
+            },
+            "interpolation_mode":
+            {
+                "string":
+                {
+                    "value": "LINEAR"
+                }
+            },
+            "is_clamped":
+            {
+                "boolean":
+                {
+                    "value": "false"
+                }
+            },
+            "level":
+            {
+                "numeric":
+                {
+                    "value": "324"
+                }
+            },
+            "name":
+            {
+                "string":
+                {
+                    "value": "MRI-T2-Liver"
+                }
+            },
+            "tf_data":
+            {
+                "map":
+                {
+                    "item":
+                    {
+                        "key": "109",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.74901998043060303;0.34509798884391785;0.19607800245285034;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "147",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "21",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0;0;0;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "295",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.25097998976707458;0;0;0.047485999763011932;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "402",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.74901998043060303;0.17254899442195892;0.137254998087883;0.34357500076293945;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "466",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;0.35294100642204285;0.27450999617576599;0.67318397760391235;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "539",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;0;0.83240199089050293;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "62",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;0.69411802291870117;0.39215698838233948;0;"
+                            }
+                        }
+                    },
+                    "item":
+                    {
+                        "key": "627",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;1;1;"
+                            }
+                        }
+                    }
+                }
+            },
+            "window":
+            {
+                "numeric":
+                {
+                    "value": "606"
+                }
+            }
+        }
+    }
+}
