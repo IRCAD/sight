@@ -4,8 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Series.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 #include <fwMedData/Equipment.hpp>
@@ -40,7 +46,7 @@ void SeriesDBTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void SeriesDBTest::testGetterSetter3D()
+void SeriesDBTest::generationTest()
 {
     const unsigned char nbImgSeries = 3;
     const unsigned char nbModelSeries = 4;
@@ -57,6 +63,10 @@ void SeriesDBTest::testGetterSetter3D()
     performingPhysiciansName.push_back("Dr Jekyl");
     performingPhysiciansName.push_back("Dr House");
     performingPhysiciansName.push_back("Dr Einstein");
+
+    unsigned char nbIS = 0;
+    unsigned char nbMS = 0;
+    unsigned char nbAS = 0;
     BOOST_FOREACH(::fwMedData::Series::sptr series, seriesContainer)
     {
         CPPUNIT_ASSERT_EQUAL(std::string("1346357.1664.482101.421337.4123403") , series->getInstanceUID());
@@ -82,7 +92,37 @@ void SeriesDBTest::testGetterSetter3D()
 
         ::fwMedData::Equipment::sptr equipement = series->getEquipment();
         CPPUNIT_ASSERT_EQUAL(std::string("hospital"), equipement->getInstitutionName());
+
+        ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+        ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
+        ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+
+        if (imgSeries)
+        {
+            ++nbIS;
+            CPPUNIT_ASSERT(imgSeries->getImage());
+        }
+        else if (modelSeries)
+        {
+            ++nbMS;
+            CPPUNIT_ASSERT(!modelSeries->getReconstructionDB().empty());
+        }
+        else if (activitySeries)
+        {
+            ++nbAS;
+            CPPUNIT_ASSERT_EQUAL(std::string("IdOfTheConfig"), activitySeries->getActivityConfigId());
+            ::fwData::Composite::sptr composite = activitySeries->getData();
+            CPPUNIT_ASSERT(composite);
+            CPPUNIT_ASSERT(composite->find("key1") != composite->end());
+            ::fwData::String::sptr value = ::fwData::String::dynamicCast(composite->getContainer()["key1"]);
+            CPPUNIT_ASSERT(value);
+            CPPUNIT_ASSERT_EQUAL(std::string("ValueOfKey1"), value->value());
+        }
     }
+
+    CPPUNIT_ASSERT_EQUAL(nbImgSeries, nbIS);
+    CPPUNIT_ASSERT_EQUAL(nbModelSeries, nbMS);
+    CPPUNIT_ASSERT_EQUAL(nbActivitySeries, nbAS);
 }
 
 //------------------------------------------------------------------------------

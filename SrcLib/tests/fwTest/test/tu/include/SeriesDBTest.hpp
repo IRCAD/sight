@@ -20,7 +20,7 @@ namespace ut
 class SeriesDBTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( SeriesDBTest );
-    CPPUNIT_TEST( testGetterSetter3D );
+    CPPUNIT_TEST( generationTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -29,7 +29,7 @@ public:
     void tearDown();
 
 
-    void testGetterSetter3D();
+    void generationTest();
 
 
 

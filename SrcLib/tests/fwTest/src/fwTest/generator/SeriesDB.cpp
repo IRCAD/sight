@@ -54,7 +54,7 @@ namespace generator
     for (unsigned char nb=0 ; nb<nbActivitySeries ; ++nb)
     {
         ::fwMedData::Series::sptr activitySeries;
-        activitySeries = SeriesDB::createImageSeries();
+        activitySeries = SeriesDB::createActivitySeries();
         seriesDB->getContainer().push_back(activitySeries);
     }
     return seriesDB;
@@ -151,6 +151,8 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     Image::generateRandomImage(image, ::fwTools::Type::s_INT16);
+
+    imgSeries->setImage(image);
 
     return imgSeries;
 }
