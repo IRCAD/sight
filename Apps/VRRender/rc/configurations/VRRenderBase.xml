@@ -147,8 +147,10 @@
 
             <service uid="action_ClassFactoryRegistryInfo" type="::fwGui::IActionSrv" impl="::monitor::action::ClassFactoryRegistryInfo" autoConnect="no" />
             <service uid="action_ComponentsTree" type="::fwGui::IActionSrv" impl="::monitor::action::ComponentsTree" autoConnect="no" />
-            <service uid="action_ChangeDumpStatus" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrv" autoConnect="no">
-                <config id="DumpFrameConfig" />
+            <service uid="action_ChangeDumpStatus" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
+                <config>
+                    <appConfig id="DumpFrameConfig" />
+                </config>
             </service>
             <service uid="dumpAll" impl="::monitor::action::SDumpAll" type="::fwGui::IActionSrv" autoConnect="no" />
 
