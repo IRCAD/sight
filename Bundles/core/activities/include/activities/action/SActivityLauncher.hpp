@@ -70,6 +70,9 @@ protected:
      * @verbatim
      <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
          <config>
+             <!-- SActivityLauncher mode : immediate or message(default)
+             Immediate mode starts and stop immediatly the activity's config -->
+             <mode>immediate</mode>
              <parameters>
                  <parameter replace="SERIESDB" by="medicalData" />
                  <parameter replace="IMAGE" by="@values.ImageSeries.image" />
@@ -138,9 +141,9 @@ private:
 
     /**
      * @brief Filter mode : include or exclude activity configurations.
-     * @note Allowed values : 'include' or 'exclude' 
+     * @note Allowed values : 'include' or 'exclude'
      */
-    std::string m_mode;
+    std::string m_filterMode;
 
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
     KeysType m_keys;
@@ -150,6 +153,9 @@ private:
 
     /// Signal emitted when activity is launched. Send a message containing the activity information.
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
+
+    /// SActivityLauncher's mode (message or immediate)
+    std::string m_mode;
 };
 
 } //action

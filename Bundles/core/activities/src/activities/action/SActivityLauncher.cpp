@@ -25,8 +25,10 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwServices/AppConfigManager.hpp>
 
 #include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 #include <fwMedData/ActivitySeries.hpp>
 
@@ -60,7 +62,8 @@ const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG
 
 //------------------------------------------------------------------------------
 
-SActivityLauncher::SActivityLauncher() throw()
+SActivityLauncher::SActivityLauncher() throw():
+    m_mode("message")
 {
     m_sigActivityLaunched = ActivityLaunchedSignalType::New();
     m_signals( s_ACTIVITY_LAUNCHED_SIG,  m_sigActivityLaunched);
@@ -113,6 +116,10 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
         const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
         const ::fwServices::IService::ConfigType &config = srvconfig.get_child("config");
 
+        m_mode = config.get_optional<std::string>("mode").get_value_or("message");
+        SLM_ASSERT("SActivityLauncher mode must be 'immediate' or 'message'",
+                   "message" == m_mode || "immediate" == m_mode);
+
         if(config.count("parameters") == 1 )
         {
             const ::fwServices::IService::ConfigType &configParameters = config.get_child("parameters");
@@ -131,7 +138,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
 
             const std::string mode = configFilter.get< std::string >("mode");
             OSLM_ASSERT("'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.", mode == "include" || mode == "exclude");
-            m_mode = mode;
+            m_filterMode = mode;
 
             BOOST_FOREACH( const ConfigType::value_type &v, configFilter.equal_range("id") )
             {
@@ -207,9 +214,9 @@ SActivityLauncher::ActivityInfoContainer SActivityLauncher::getEnabledActivities
 {
     ActivityInfoContainer configs;
 
-    if(m_mode == "include" || m_mode == "exclude")
+    if(m_filterMode == "include" || m_filterMode == "exclude")
     {
-        const bool isIncludeMode = m_mode == "include";
+        const bool isIncludeMode = m_filterMode == "include";
 
         for(ActivityInfoContainer::const_iterator iter = infos.begin(); iter != infos.end(); ++iter)
         {
@@ -239,7 +246,7 @@ void SActivityLauncher::updating() throw(::fwTools::Failed)
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 
-    bool launchAS = m_mode.empty() && this->launchAS(selection);
+    bool launchAS = m_filterMode.empty() && this->launchAS(selection);
 
     if (!launchAS)
     {
@@ -249,7 +256,7 @@ void SActivityLauncher::updating() throw(::fwTools::Failed)
         if ( ! infos.empty())
         {
             ::fwActivities::registry::ActivityInfo info;
-            if(m_keys.size() == 1 && m_mode == "include")
+            if((m_keys.size() == 1 && m_filterMode == "include") || (infos.size() == 1))
             {
                 info = infos[0];
             }
@@ -289,7 +296,7 @@ void SActivityLauncher::updateState()
 
     ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
     dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
-    if(m_mode.empty() && dataCount.size() == 1)
+    if(m_filterMode.empty() && dataCount.size() == 1)
     {
         ::fwData::Object::sptr obj = selection->front();
         if (::fwMedData::ActivitySeries::dynamicCast(obj))
@@ -327,7 +334,27 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     ParametersType parameters = this->translateParameters(m_parameters);
     ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info, parameters);
 
-    fwServicesNotifyMsgMacro(this->getLightID(), m_sigActivityLaunched, msg);
+    if( m_mode == "message" )
+    {
+        fwServicesNotifyMsgMacro(this->getLightID(), m_sigActivityLaunched, msg);
+    }
+    else
+    {
+        ::fwData::String::csptr msgData = ::fwData::String::dynamicConstCast(msg->getDataInfo("NEW_CONFIGURATION_HELPER"));
+        const std::string viewConfigFieldID = "VIEWCONFIGID";
+        const std::string fieldID           = "APPCONFIG";
+
+        std::string viewConfigID = msgData->getField(viewConfigFieldID, ::fwData::String::New(""))->value();
+        ::fwData::Composite::sptr replaceMap = msgData->getField(fieldID, ::fwData::Composite::New());
+
+        ::fwRuntime::ConfigurationElement::csptr config =
+            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( viewConfigID, replaceMap);
+
+        ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+        helper->setConfig( config );
+        helper->launch();
+        helper->stopAndDestroy();
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -36,4 +36,59 @@
         </config>
     </extension>
 
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExportSelection</id>
+        <type>parameters</type>
+        <parameters>
+            <param name="GENERIC_UID" />
+            <param name="selection" />
+        </parameters>
+        <config>
+            <!-- <object uid="${selection}" type="::fwData::Vector" src="ref"> -->
+            <object uid="${selection}" src="ref">
+                <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::IOSelectorService" autoConnect="yes">
+                    <type mode="writer" />
+                    <!-- <selection mode="include" /> -->
+                    <!-- <addSelection service="::ioAtoms::SReader" /> -->
+                </service>
+                <start uid="${GENERIC_UID}_export_selection" />
+                <update uid="${GENERIC_UID}_export_selection" />
+            </object>
+        </config>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ImageSeriesExport</id>
+        <title>ImageSeries Export</title>
+        <desc>ImageSeries Export</desc>
+        <icon>NONE</icon>
+        <requirements>
+            <requirement name="series" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportSelection">
+            <parameters>
+                <parameter replace="selection" by="@values.series" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ModelSeriesExport</id>
+        <title>ModelSeries Export</title>
+        <desc>ModelSeries Export</desc>
+        <icon>NONE</icon>
+        <requirements>
+            <requirement name="series" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportSelection">
+            <parameters>
+                <parameter replace="selection" by="@values.series" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+
 </plugin>
