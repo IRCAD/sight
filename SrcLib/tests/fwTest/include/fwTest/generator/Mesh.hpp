@@ -96,20 +96,6 @@ public :
     FWTEST_API static void generateTriangleQuadMesh(::fwData::Mesh::sptr mesh);
 
 
-    /**
-     * @brief Generate cell normals for the mesh.
-     *
-     * @param[out]  mesh fwData::Mesh structure to fill with cell normals.
-     */
-    FWTEST_API static void generateCellNormals(::fwData::Mesh::sptr mesh);
-
-    /**
-     * @brief Generate point normals for the mesh.
-     *
-     * @param[out]  mesh fwData::Mesh structure to fill with cell normals.
-     */
-    FWTEST_API static void generatePointNormals(::fwData::Mesh::sptr mesh);
-
 protected:
 
     FWTEST_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt,
