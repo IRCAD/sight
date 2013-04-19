@@ -6,8 +6,20 @@
         <param name="appIconPath" />
     </parameters>
     <config>
-
         <object uid="seriesDB" type="::fwMedData::SeriesDB">
+
+            <service uid="action_open" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
+                <IOSelectorSrvConfig name="SDBOpenIOSelectorConfig" />
+            </service>
+            <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <start uid="SDBWriter" />
+            </service>
+            <service uid="SDBWriter" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
+                <type mode="writer" />
+                <selection mode="include" />
+                <addSelection service="::ioAtoms::SWriter" />
+            </service>
+
 
             <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                 <gui>
@@ -42,14 +54,18 @@
             <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
+                        <menuItem name="Open" shortcut="Ctrl+O" />
+                        <menuItem name="Save" shortcut="Ctrl+S" />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
+                    <menuItem sid="action_open" start="yes" />
+                    <menuItem sid="action_save" start="yes" />
                     <menuItem sid="action_quit" start="yes" />
                 </registry>
             </service>
-            
+
             <service uid="menu_monitor" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
                 <gui>
                     <layout>

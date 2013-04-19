@@ -7,6 +7,7 @@
     <activate id="guiQt" version="0-1" />
 
     <activate id="io" version="0-1" />
+    <activate id="ioAtoms" version="0-1" />
     <activate id="ioVTK" version="0-1" />
     <activate id="ioVtkGdcm" version="0-1" />
     <activate id="uiIO" version="0-1" />
@@ -20,14 +21,14 @@
     <activate id="uiVisu" version="0-1" />
     <activate id="uiVisuQt" version="0-1" />
     <activate id="uiTF" version="0-1" />
-    
+
     <activate id="ctrlMemory" version="0-1" />
     <activate id="monitor" version="0-1" />
     <activate id="memory" version="0-1" />
     <activate id="monitorQt" version="0-1" />
-    
+
     <activate id="media" version="0-1" />
-    
+
     <activate id="scene2D" version="0-1" />
 
     <activate id="visu" version="0-1" />
