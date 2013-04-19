@@ -100,6 +100,7 @@ void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _c
 {
     SLM_ASSERT( "Invalid ConfigurationElement", _cfgElement ) ;
     m_configuration = _cfgElement ;
+    m_configurationState = UNCONFIGURED ;
 }
 
 //-----------------------------------------------------------------------------
