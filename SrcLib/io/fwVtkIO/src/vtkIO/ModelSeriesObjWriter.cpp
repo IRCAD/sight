@@ -5,13 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/filesystem.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
 
 #include <vtkActor.h>
 #include <vtkPolyData.h>
-#include <vtkDataSetMapper.h>
-#include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
 #include <vtkOBJExporter.h>
 #include <vtkRenderWindow.h>

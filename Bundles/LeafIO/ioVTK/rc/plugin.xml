@@ -73,14 +73,14 @@
         <type>::io::IWriter</type>
         <service>::ioVTK::SModelSeriesWriter</service>
         <object>::fwMedData::ModelSeries</object>
-        <desc>Reconstructions in VTK files (VTK)</desc>
+        <desc>VTK files (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioVTK::SModelSeriesObjWriter</service>
         <object>::fwMedData::ModelSeries</object>
-        <desc>Reconstructions Wavefront OBJ files (VTK)</desc>
+        <desc>Wavefront OBJ files (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

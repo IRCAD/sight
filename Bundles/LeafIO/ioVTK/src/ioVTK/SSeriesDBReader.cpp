@@ -52,7 +52,10 @@ void SSeriesDBReader::configureWithIHM()
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle("Choose vtk files to load Series");
-    dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.addFilter("Vtk","*.vtk *.vti *.mhd");
+    dialogFile.addFilter("Vtk files","*.vtk");
+    dialogFile.addFilter("Vti files","*.vti");
+    dialogFile.addFilter("MetaImage files","*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 

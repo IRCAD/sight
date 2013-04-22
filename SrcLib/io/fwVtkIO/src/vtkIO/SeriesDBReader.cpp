@@ -8,9 +8,11 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <vtkGenericDataObjectReader.h>
-#include <vtkPolyData.h>
 #include <vtkImageData.h>
+#include <vtkMetaImageReader.h>
+#include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
+#include <vtkXMLGenericDataObjectReader.h>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
@@ -52,6 +54,15 @@ SeriesDBReader::~SeriesDBReader()
 }
 
 //------------------------------------------------------------------------------
+template <typename T, typename FILE, typename PROGRESSOR>
+vtkSmartPointer< vtkDataObject  > getObj(FILE &file, PROGRESSOR *progressor)
+{
+    vtkSmartPointer< T > reader = vtkSmartPointer< T >::New();
+    reader->SetFileName(file.string().c_str());
+    Progressor progress(reader, progressor->getSptr(), file.string());
+    reader->Update();
+    return reader->GetOutput();
+}
 
 void SeriesDBReader::read()
 {
@@ -60,21 +71,29 @@ void SeriesDBReader::read()
 
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
-    vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
-    //add progress observation
     const ::fwData::location::ILocation::VectPathType files = this->getFiles();
     const std::string instanceUID = ::fwTools::UUID::generateUUID();
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs;
     BOOST_FOREACH(const ::fwData::location::ILocation::VectPathType::value_type& file, files)
     {
-        Progressor progress(reader, this->getSptr(), file.string());
-        reader->SetFileName(file.string().c_str());
-        reader->Update();
+        vtkSmartPointer< vtkDataObject  > obj;
 
-        vtkDataObject *obj = reader->GetOutput();
-        vtkPolyData* mesh = vtkPolyData::SafeDownCast(obj);
-        vtkImageData* img = vtkImageData::SafeDownCast(obj);
+        if(file.extension().string() == ".vtk")
+        {
+            obj = getObj<vtkGenericDataObjectReader>(file, this);
+        }
+        else if(file.extension().string() == ".vti")
+        {
+            obj = getObj<vtkXMLGenericDataObjectReader>(file, this);
+        }
+        else if(file.extension().string() == ".mhd")
+        {
+            obj = getObj<vtkMetaImageReader>(file, this);
+        }
+
+        vtkSmartPointer< vtkPolyData  > mesh = vtkPolyData::SafeDownCast(obj);
+        vtkSmartPointer< vtkImageData  > img = vtkImageData::SafeDownCast(obj);
         if(mesh)
         {
             ::fwData::Mesh::sptr meshObj = ::fwData::Mesh::New();

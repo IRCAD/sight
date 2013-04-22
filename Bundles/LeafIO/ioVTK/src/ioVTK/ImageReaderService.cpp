@@ -58,7 +58,7 @@ void ImageReaderService::configureWithIHM()
     dialogFile.setTitle("Choose a file to load an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
-    dialogFile.addFilter("Vti","*.vtk");
+    dialogFile.addFilter("Vti","*.vti");
     dialogFile.addFilter("MetaImage","*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
