@@ -33,6 +33,13 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioITK::SJpgImageSeriesWriter</service>
+        <object>::fwMedData::ImageSeries</object>
+        <desc>Image Series Jpeg Writer (ITK)</desc>
+    </extension>
+
+   <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioITK::InrPatientDBReaderService</service>
         <object>::fwData::PatientDB</object>
