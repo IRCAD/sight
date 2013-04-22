@@ -9,7 +9,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwTest/generator/Image.hpp>
 
 #include <fwDataCamp/Version.hpp>
 #include <fwMedData/Equipment.hpp>
@@ -66,7 +66,7 @@ void ImageSeriesTest::propertiesTest()
                                                                         ("description");
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwDataTools::Image::generateRandomImage(img, ::fwTools::Type::create("uint8"));
+    ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create("uint8"));
     ::fwMedData::DicomValuesType performing_physicians_names;
     performing_physicians_names.push_back(performing_physicians_name);
 

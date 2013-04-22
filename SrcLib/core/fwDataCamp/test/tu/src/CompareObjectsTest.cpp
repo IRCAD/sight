@@ -8,17 +8,19 @@
 
 #include <fwCore/Exception.hpp>
 
-#include <fwData/Acquisition.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Patient.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwData/Study.hpp>
 
-#include <fwDataTools/Patient.hpp>
-#include <fwDataTools/Image.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Series.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwTest/generator/Image.hpp>
+#include <fwTest/generator/SeriesDB.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
@@ -39,15 +41,6 @@ namespace ut
 // Set up context before running a test.
 void CompareObjectsTest::setUp()
 {
-    ::fwTools::Type type = ::fwTools::Type::create< float >();
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwDataTools::Image::generateRandomImage(image, type);
-
-    m_patientRef = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(m_patientRef, 1, 1, 1);
-    m_patientRef->getStudies()[0]->getAcquisitions()[0]->setImage(image);
-
-    m_patientComp = ::fwData::Object::copy(m_patientRef);
 }
 
 //-----------------------------------------------------------------------------
@@ -59,117 +52,106 @@ void CompareObjectsTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void CompareObjectsTest::comparePatientTest()
+void CompareObjectsTest::compareSeriesDBTest()
 {
+    ::fwMedData::SeriesDB::sptr seriesDBRef = ::fwTest::generator::SeriesDB::createSeriesDB(1, 1, 1);
+    ::fwMedData::SeriesDB::sptr seriesDBComp = ::fwData::Object::copy< ::fwMedData::SeriesDB >(seriesDBRef);
+
     {
         visitor::CompareObjects visitor;
-        visitor.compare(m_patientRef, m_patientComp);
+        visitor.compare(seriesDBRef, seriesDBComp);
 
         SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-        CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)0);
+        CPPUNIT_ASSERT_EQUAL(size_t(0), props->size());
     }
 
     {
-        const std::string name = m_patientComp->getName() + "X";
-        const std::string firstname = m_patientComp->getFirstname() + "X";
+        CPPUNIT_ASSERT_EQUAL(size_t(3), seriesDBComp->getContainer().size());
+        ::fwMedData::Series::sptr series = seriesDBComp->getContainer()[0];
+        CPPUNIT_ASSERT(series);
 
-        m_patientComp->setName(name);
-        m_patientComp->setFirstname(firstname);
-        m_patientComp->setIsMale(!m_patientComp->getIsMale());
+        ::fwMedData::Patient::sptr patient = series->getPatient();
+        const std::string name = patient->getName() + "X";
+
+        patient->setName(name);
+        patient->setSex("M");
+        patient->setPatientId("42");
 
         visitor::CompareObjects visitor;
-        visitor.compare(m_patientRef, m_patientComp);
+        visitor.compare(seriesDBRef, seriesDBComp);
 
         SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
         CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)3);
 
-        CPPUNIT_ASSERT(props->find("name") != props->end());
-        CPPUNIT_ASSERT_EQUAL((*props)["name"], name);
+        CPPUNIT_ASSERT(props->find("values.0.patient.name") != props->end());
+        CPPUNIT_ASSERT_EQUAL(name, (*props)["values.0.patient.name"]);
 
-        CPPUNIT_ASSERT(props->find("firstname") != props->end());
-        CPPUNIT_ASSERT_EQUAL((*props)["firstname"], firstname);
+        CPPUNIT_ASSERT(props->find("values.0.patient.patient_id") != props->end());
+        CPPUNIT_ASSERT_EQUAL(std::string("42"), (*props)["values.0.patient.patient_id"]);
 
-        CPPUNIT_ASSERT(props->find("is_male") != props->end());
-        CPPUNIT_ASSERT_EQUAL((*props)["is_male"], std::string(m_patientComp->getIsMale() ? "true" : "false"));
+        CPPUNIT_ASSERT(props->find("values.0.patient.sex") != props->end());
+        CPPUNIT_ASSERT_EQUAL(std::string("M"), (*props)["values.0.patient.sex"]);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void CompareObjectsTest::compareStudyTest()
-{
-    ::fwData::Study::sptr study = m_patientComp->getStudies()[0];
-    study->setAcquisitionZone("Thorax");
-    study->setHospital("Unknown");
-
-    visitor::CompareObjects visitor;
-    visitor.compare(m_patientRef, m_patientComp);
-
-    SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)2);
-
-    CPPUNIT_ASSERT(props->find("studies.0.acquisition_zone") != props->end());
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisition_zone"], std::string("Thorax"));
-
-    CPPUNIT_ASSERT(props->find("studies.0.hospital") != props->end());
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.hospital"], std::string("Unknown"));
 }
 
 //-----------------------------------------------------------------------------
 
 void CompareObjectsTest::compareImageTest()
 {
-    ::fwData::Image::sptr img = m_patientComp->getStudies()[0]->getAcquisitions()[0]->getImage();
+    ::fwTools::Type type = ::fwTools::Type::create< float >();
+    ::fwData::Image::sptr img = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(img, type);
 
-    ::fwData::Image::SpacingType spacing = img->getSpacing();
+    ::fwData::Image::sptr imgComp = ::fwData::Object::copy(img);
+
+    ::fwData::Image::SpacingType spacing = imgComp->getSpacing();
     spacing[0] = 42;
-    img->setSpacing(spacing);
+    imgComp->setSpacing(spacing);
 
-    ::fwData::Image::OriginType origin = img->getOrigin();
+    ::fwData::Image::OriginType origin = imgComp->getOrigin();
     origin[2] = 1664;
-    img->setOrigin(origin);
+    imgComp->setOrigin(origin);
 
     visitor::CompareObjects visitor;
-    visitor.compare(m_patientRef, m_patientComp);
+    visitor.compare(img, imgComp);
 
     SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)2);
+    CPPUNIT_ASSERT_EQUAL(size_t(2), props->size());
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.image.spacing.0") != props->end());
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.image.spacing.0"], std::string("42"));
+    CPPUNIT_ASSERT(props->find("spacing.0") != props->end());
+    CPPUNIT_ASSERT_EQUAL(std::string("42"), (*props)["spacing.0"]);
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.image.origin.2") != props->end());
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.image.origin.2"], std::string("1664"));
+    CPPUNIT_ASSERT(props->find("origin.2") != props->end());
+    CPPUNIT_ASSERT_EQUAL(std::string("1664"), (*props)["origin.2"]);
 }
 
 //-----------------------------------------------------------------------------
 
 void CompareObjectsTest::compareReconstructionTest()
 {
-    ::fwData::Reconstruction::sptr rec =
-        m_patientComp->getStudies()[0]->getAcquisitions()[0]->getReconstructions()[0];
+    ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
+    ::fwTest::generator::SeriesDB::generateReconstruction(rec);
 
-    rec->setOrganName("Unknown organ name");
-    rec->setIsAutomatic(!rec->getIsAutomatic());
-    rec->setIsVisible(!rec->getIsVisible());
+    ::fwData::Reconstruction::sptr recComp = ::fwData::Object::copy< ::fwData::Reconstruction >(rec);
+
+    recComp->setOrganName("Unknown organ name");
+    recComp->setIsAutomatic(!rec->getIsAutomatic());
+    recComp->setIsVisible(!rec->getIsVisible());
 
     visitor::CompareObjects visitor;
-    visitor.compare(m_patientRef, m_patientComp);
+    visitor.compare(rec, recComp);
 
     SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)3);
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.organ_name") != props->end());
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.reconstructions.0.organ_name"],
-            std::string("Unknown organ name"));
+    CPPUNIT_ASSERT(props->find("organ_name") != props->end());
+    CPPUNIT_ASSERT_EQUAL(std::string("Unknown organ name"), (*props)["organ_name"]);
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.is_automatic") != props->end());
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.reconstructions.0.is_automatic"],
-            std::string(rec->getIsAutomatic() ? "true" : "false"));
+    CPPUNIT_ASSERT(props->find("is_automatic") != props->end());
+    CPPUNIT_ASSERT_EQUAL(std::string(recComp->getIsAutomatic() ? "true" : "false"), (*props)["is_automatic"]);
 
-    CPPUNIT_ASSERT(props->find("studies.0.acquisitions.0.reconstructions.0.is_visible") != props->end());
-    CPPUNIT_ASSERT_EQUAL((*props)["studies.0.acquisitions.0.reconstructions.0.is_visible"],
-            std::string(rec->getIsVisible() ? "true" : "false"));
+    CPPUNIT_ASSERT(props->find("is_visible") != props->end());
+    CPPUNIT_ASSERT_EQUAL(std::string(recComp->getIsVisible() ? "true" : "false"), (*props)["is_visible"]);
 }
 
 //-----------------------------------------------------------------------------
@@ -183,8 +165,8 @@ void CompareObjectsTest::compareBufferTest()
     ::fwTools::Type typeComp = ::fwTools::Type::create< double >();
 
     {
-        ::fwDataTools::Image::generateRandomImage(imgRef, typeRef);
-        ::fwDataTools::Image::generateRandomImage(imgComp, typeComp);
+        ::fwTest::generator::Image::generateRandomImage(imgRef, typeRef);
+        ::fwTest::generator::Image::generateRandomImage(imgComp, typeComp);
 
         visitor::CompareObjects visitor;
         visitor.compare(imgRef, imgComp);
@@ -230,7 +212,7 @@ void CompareObjectsTest::compareEmpty()
 void CompareObjectsTest::exceptionTest()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwData::Study::sptr study = ::fwData::Study::New();
+    ::fwMedData::Study::sptr study = ::fwMedData::Study::New();
 
     visitor::CompareObjects visitor;
     CPPUNIT_ASSERT_THROW(visitor.compare(img, study), ::fwCore::Exception);

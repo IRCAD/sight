@@ -22,11 +22,6 @@ class DicomReaderWriterTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DicomReaderWriterTest );
     CPPUNIT_TEST( testWriteImage );
-    CPPUNIT_TEST( testWritePatient );
-    CPPUNIT_TEST( testWritePatientDB );
-    CPPUNIT_TEST( testReadPatientDB );
-    CPPUNIT_TEST( testReadWritePatientDB );
-    CPPUNIT_TEST( testReadPatientDBACHGenou );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -35,11 +30,6 @@ public:
     void tearDown();
     // fonctions de tests
     void testWriteImage();
-    void testWritePatient();
-    void testWritePatientDB();
-    void testReadPatientDB();
-    void testReadWritePatientDB();
-    void testReadPatientDBACHGenou();
 
 private :
 

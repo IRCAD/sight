@@ -15,7 +15,8 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwTest/generator/Mesh.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
@@ -424,8 +425,8 @@ void DicomTest::checkDistance()
 ::fwData::Mesh::sptr DicomTest::generateMesh()
 {
     ::fwData::Mesh::NewSptr mesh;
-    ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
-    ::fwDataTools::MeshGenerator::shakePoint(mesh);
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    ::fwDataTools::Mesh::shakePoint(mesh);
 
     mesh->adjustAllocatedMemory();
     return mesh;

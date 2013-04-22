@@ -11,5 +11,10 @@ CLASSTEST=[
 ]
 
 USE = ['boost', 'cppunit']
-LIB = ['fwData_0-1', 'fwMedData_0-1', 'fwDataTools_0-1', 'fwTools_0-1']
+LIB = [
+      'fwData_0-1',
+      'fwMedData_0-1',
+      'fwTools_0-1',
+      'fwTest_0-1',
+      ]
 CONSOLE = 'yes'

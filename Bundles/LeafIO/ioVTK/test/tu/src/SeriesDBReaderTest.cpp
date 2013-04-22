@@ -22,8 +22,9 @@
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
 #include <fwDataTools/Image.hpp>
-#include <fwDataTools/ObjectComparator.hpp>
 
 #include <fwComEd/helper/Image.hpp>
 
@@ -40,6 +41,20 @@ namespace ioVTK
 {
 namespace ut
 {
+
+//-----------------------------------------------------------------------------
+
+void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+{
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(objRef, objComp);
+    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    {
+        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+    }
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+}
 
 //------------------------------------------------------------------------------
 
@@ -140,9 +155,10 @@ void SeriesDBReaderTest::testSeriesDBReader()
     ::fwData::Mesh::sptr mesh1 = rec1->getMesh();
     ::fwData::Mesh::sptr mesh2 = rec2->getMesh();
 
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)720);
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)362);
-    CPPUNIT_ASSERT( ::fwDataTools::ObjectComparator::compareMesh(mesh1, mesh2));
+    CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id)720, mesh1->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id)362, mesh1->getNumberOfPoints());
+
+    compare(mesh1, mesh2);
 }
 
 //------------------------------------------------------------------------------

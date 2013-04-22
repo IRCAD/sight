@@ -10,6 +10,7 @@ LIB = [
        'fwTools_0-1',
        'fwCore_0-1',
        'fwData_0-1',
+       'fwDataCamp_0-1',
        'fwVtkIO_0-1',
        'fwDataTools_0-1',
        'fwTest_0-1',

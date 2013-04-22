@@ -10,6 +10,8 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
 #include <fwData/Object.hpp>
 #include <fwData/Patient.hpp>
 #include <fwData/PatientDB.hpp>
@@ -18,9 +20,8 @@
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwTest/Data.hpp>
-#include <fwTest/DicomReaderTest.hpp>
+#include <fwTest/generator/Image.hpp>
 
-#include <fwDataTools/Patient.hpp>
 #include <fwDataTools/Image.hpp>
 
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -37,6 +38,20 @@ namespace ioITK
 {
 namespace ut
 {
+
+//-----------------------------------------------------------------------------
+
+void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+{
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(objRef, objComp);
+    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    {
+        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+    }
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+}
 
 //------------------------------------------------------------------------------
 
@@ -79,7 +94,7 @@ void IoItkTest::testImageSeriesWriterJPG()
 {
     // Create image series
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
     imageSeries->setImage(image);
@@ -107,8 +122,8 @@ void IoItkTest::testImageSeriesWriterJPG()
 void IoItkTest::testImageWriterJPG()
 {
     // Create Image
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // Create path
     const ::boost::filesystem::path path = "imageJPG";
@@ -155,10 +170,15 @@ void IoItkTest::testPatientDBReaderJPG()
 
 //------------------------------------------------------------------------------
 
+double tolerance(double num)
+{
+    return std::floor(num * 100. + .5) / 100.;
+}
+
 void IoItkTest::testSaveLoadInr()
 {
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // inr only support image origin (0,0,0)
     ::fwData::Image::OriginType origin(3,0);
@@ -178,14 +198,17 @@ void IoItkTest::testSaveLoadInr()
     this->executeService( image, "::io::IWriter", "::ioITK::InrImageWriterService", srvCfg );
 
     // load Image
-    ::fwData::Image::NewSptr image2;
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();
     this->executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
+    ::fwData::Image::SpacingType spacing = image2->getSpacing();
+    std::transform (spacing.begin(), spacing.end(), spacing.begin(), tolerance);
+    image2->setSpacing(spacing);
+
     // check Image
-    // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2, 0.00001, 0.00001));
+    compare(image, image2);
 }
 
 //------------------------------------------------------------------------------
@@ -238,109 +261,6 @@ void IoItkTest::testLoadInr()
     ::fwData::PatientDB::NewSptr patientDB3;
     this->executeService( patientDB3, "::io::IReader", "::ioITK::InrPatientDBReaderService", srvCfg3 );
     CPPUNIT_ASSERT_EQUAL(size_t(2),patientDB3->getNumberOfPatients());
-}
-
-//------------------------------------------------------------------------------
-
-void IoItkTest::testPatientDBReaderDicom()
-{
-    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
-
-    // Create Config 1
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
-
-    // Create and execute service
-    ::fwData::PatientDB::NewSptr patientDB;
-    this->executeService( patientDB, "::io::IReader", "::ioITK::DicomPatientDBReaderService", srvCfg );
-
-    // Get patient
-    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), patientDB->getNumberOfPatients());
-    ::fwData::Patient::sptr patient = patientDB->getPatients().front();
-
-    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkPatientACHGenou( patient ) );
-}
-
-//------------------------------------------------------------------------------
-
-void IoItkTest::testDicomImageWriter()
-{
-    // Create path
-    const ::boost::filesystem::path path = "imageDicomTest";
-    ::boost::filesystem::create_directories( path );
-
-    // Create data
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
-
-    // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
-
-    // Create and execute service
-    this->executeService( image, "::io::IWriter", "::ioITK::DicomImageWriterService", srvCfg );
-
-    // Remove path
-    ::boost::filesystem::remove_all( path.string() );
-}
-
-//------------------------------------------------------------------------------
-
-void IoItkTest::testDicomPatientWriter()
-{
-    // Create path
-    const ::boost::filesystem::path path = "imageDicomTest";
-    ::boost::filesystem::create_directories( path );
-
-    // Create data
-    ::fwData::Patient::NewSptr patient;
-    ::fwDataTools::Patient::generatePatient(patient, 2, 2, 0);
-
-    // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
-
-    // Create and execute service
-    this->executeService( patient, "::io::IWriter", "::ioITK::DicomPatientWriterService", srvCfg );
-
-    // Remove path
-    ::boost::filesystem::remove_all( path.string() );
-}
-
-//------------------------------------------------------------------------------
-
-void IoItkTest::testDicomPatientDBWriter()
-{
-    // Create path
-    const ::boost::filesystem::path path = "imageDicomTest";
-    ::boost::filesystem::create_directories( path );
-
-    // Create data
-    ::fwData::PatientDB::NewSptr patientDB;
-    ::fwData::Patient::NewSptr patient1;
-    ::fwDataTools::Patient::generatePatient(patient1, 2, 2, 0);
-    patientDB->addPatient( patient1 );
-    ::fwData::Patient::NewSptr patient2;
-    ::fwDataTools::Patient::generatePatient(patient2, 1, 3, 0);
-    patientDB->addPatient( patient2 );
-
-    // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
-
-    // Create and execute service
-    this->executeService( patientDB, "::io::IWriter", "::ioITK::DicomPatientDBWriterService", srvCfg );
-
-    // Remove path
-    ::boost::filesystem::remove_all( path.string() );
 }
 
 //------------------------------------------------------------------------------

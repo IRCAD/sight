@@ -4,15 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATATOOLS_TEST_TU_IMAGETEST_HPP_
-#define _FWDATATOOLS_TEST_TU_IMAGETEST_HPP_
+#ifndef _FWTEST_TEST_TU_IMAGETEST_HPP_
+#define _FWTEST_TEST_TU_IMAGETEST_HPP_
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwData/Image.hpp>
 
-
-namespace fwDataTools
+namespace fwTest
 {
 namespace ut
 {
@@ -23,7 +22,10 @@ namespace ut
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ImageTest );
-    CPPUNIT_TEST( roiApplyTest );
+    CPPUNIT_TEST( generator3DTest );
+    CPPUNIT_TEST( generator2DTest );
+    CPPUNIT_TEST( deepCopyTest );
+    CPPUNIT_TEST( stressTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -32,11 +34,18 @@ public:
     void tearDown();
 
 
-    void roiApplyTest();
+    void generator3DTest();
+    void generator2DTest();
+    void deepCopyTest();
+    void stressTest();
+
+private:
+    void stressTestWithType(::fwTools::Type type, int nbTest);
+
 
 };
 
 } //namespace ut
-} //namespace fwDataTools
+} //namespace fwTest
 
-#endif //_FWDATATOOLS_TEST_TU_IMAGETEST_HPP_
+#endif //_FWTEST_TEST_TU_IMAGETEST_HPP_

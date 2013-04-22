@@ -9,6 +9,7 @@
 
 #include <fwComEd/helper/Array.hpp>
 
+#include <fwTest/generator/Image.hpp>
 #include <fwDataTools/Image.hpp>
 
 #include "ImageTest.hpp"
@@ -38,114 +39,6 @@ void ImageTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void ImageTest::testGetterSetter3D()
-{
-    ::fwData::Image::NewSptr image;
-    const ::boost::uint8_t dim = 3;
-    ::fwData::Image::SizeType size(dim);
-    size[0] = 10;
-    size[1] = 15;
-    size[2] = 23;
-    std::vector<double> spacing(dim);
-    spacing[0] = 0.85;
-    spacing[1] = 2.6;
-    spacing[2] = 1.87;
-    std::vector<double> origin(dim);
-    origin[0] = -45.6;
-    origin[1] = 25.97;
-    origin[2] = -53.9;
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int32_t >();
-
-    ::fwDataTools::Image::generateImage(image, size, spacing, origin, type);
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, size, spacing, origin, type));
-}
-
-//------------------------------------------------------------------------------
-
-void ImageTest::testGetterSetter2D()
-{
-    ::fwData::Image::NewSptr image;
-    const ::boost::uint8_t dim = 2;
-    ::fwData::Image::SizeType size(dim);
-    size[0] = 10;
-    size[1] = 15;
-    std::vector<double> spacing(dim);
-    spacing[0] = 0.85;
-    spacing[1] = 2.6;
-    std::vector<double> origin(dim);
-    origin[0] = -45.6;
-    origin[1] = 25.97;
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int16_t >();
-
-    ::fwDataTools::Image::generateImage(image, size, spacing, origin, type);
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, size, spacing, origin, type));
-}
-
-//------------------------------------------------------------------------------
-
-void ImageTest::testDeepCopy()
-{
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwData::Image::sptr image2;
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int32_t >();
-    ::fwDataTools::Image::generateRandomImage(image, type);
-
-    image2 = ::fwData::Object::copy(image);
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
-}
-
-//------------------------------------------------------------------------------
-
-void ImageTest::stressTest()
-{
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int8_t >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< ::boost::uint8_t >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< ::boost::int16_t >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< ::boost::uint16_t >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< ::boost::int32_t >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< ::boost::uint32_t >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< ::boost::int64_t >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< ::boost::uint64_t >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< float >();
-    this->stressTestWithType(type, 10);
-
-    type = ::fwTools::Type::create< double >();
-    this->stressTestWithType(type, 10);
-}
-
-//------------------------------------------------------------------------------
-
-void ImageTest::stressTestWithType(::fwTools::Type type, int nbTest)
-{
-    for (int nb=0 ; nb < nbTest ; ++nb)
-    {
-        ::fwData::Image::sptr image = ::fwData::Image::New();
-        ::fwDataTools::Image::generateRandomImage(image, type);
-
-        ::fwData::Image::sptr image2;
-        image2 = ::fwData::Object::copy(image);
-        CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ImageTest::roiApplyTest()
 {
 
@@ -162,11 +55,11 @@ void ImageTest::roiApplyTest()
         ::fwData::Image::NewSptr image;                                                                 \
         ::fwData::Image::NewSptr roi;                                                                   \
                                                                                                         \
-        ::fwDataTools::Image::generateRandomImage(image, imageType);                                    \
+        ::fwTest::generator::Image::generateRandomImage(image, imageType);                                    \
         ::fwData::Image::SizeType    size = image->getSize();                                           \
         ::fwData::Image::SpacingType spacing = image->getSpacing();                                     \
         ::fwData::Image::OriginType  origin = image->getOrigin();                                       \
-        ::fwDataTools::Image::generateImage(roi, size, spacing, origin, roiType);                       \
+        ::fwTest::generator::Image::generateImage(roi, size, spacing, origin, roiType);                       \
                                                                                                         \
         imageRef = ::fwData::Object::copy(image);                                                       \
                                                                                                         \
@@ -183,7 +76,7 @@ void ImageTest::roiApplyTest()
         CPPUNIT_ASSERT(roiData);                                                                        \
         CPPUNIT_ASSERT(roiData->getNumberOfElements());                                                 \
                                                                                                         \
-        ::fwDataTools::Image::randomizeArray(roi->getDataArray());                                      \
+        ::fwTest::generator::Image::randomizeArray(roi->getDataArray());                                      \
                                                                                                         \
         char *begin = roiDataHelper.begin();                                                            \
         char *end   = roiDataHelper.end();                                                              \

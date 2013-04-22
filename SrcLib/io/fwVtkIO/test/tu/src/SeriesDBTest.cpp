@@ -7,13 +7,15 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
+#include <fwData/Reconstruction.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
-#include <fwTest/Data.hpp>
+#include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwDataTools/ObjectComparator.hpp>
+#include <fwTest/Data.hpp>
 
 #include <vtkIO/SeriesDBReader.hpp>
 
@@ -85,8 +87,15 @@ void SeriesDBTest::testImportSeriesDB()
 
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)720);
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)362);
-    CPPUNIT_ASSERT( ::fwDataTools::ObjectComparator::compareMesh(mesh1, mesh2));
 
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(mesh1, mesh2);
+    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    {
+        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+    }
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
 }
 
 //------------------------------------------------------------------------------

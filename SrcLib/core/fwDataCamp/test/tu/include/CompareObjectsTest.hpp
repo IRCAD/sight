@@ -17,8 +17,7 @@ namespace ut
 class CompareObjectsTest :  public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( CompareObjectsTest );
-    CPPUNIT_TEST( comparePatientTest );
-    CPPUNIT_TEST( compareStudyTest );
+    CPPUNIT_TEST( compareSeriesDBTest );
     CPPUNIT_TEST( compareImageTest );
     CPPUNIT_TEST( compareReconstructionTest );
     CPPUNIT_TEST( compareBufferTest );
@@ -32,17 +31,12 @@ public:
     void setUp();
     void tearDown();
 
-    void comparePatientTest();
-    void compareStudyTest();
+    void compareSeriesDBTest();
     void compareImageTest();
     void compareReconstructionTest();
     void compareBufferTest();
     void compareEmpty();
     void exceptionTest();
-
-private:
-    ::fwData::Patient::sptr m_patientRef;
-    ::fwData::Patient::sptr m_patientComp;
 };
 
 }  // namespace ut

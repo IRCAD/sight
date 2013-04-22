@@ -19,6 +19,7 @@
 #include <fwData/Acquisition.hpp>
 #include <fwData/Image.hpp>
 
+#include <fwTest/generator/Image.hpp>
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/Patient.hpp>
 
@@ -63,34 +64,34 @@ void RealDataDicomTest::testWriteImage()
     // create Image
     ::fwData::Image::NewSptr image;
 
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("uint8"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("uint8"));
     this->writeImage( image );
 
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int8"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int8"));
     this->writeImage( image );
 
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("uint16"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("uint16"));
     this->writeImage( image );
 
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
     this->writeImage( image );
 
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("uint32"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("uint32"));
     this->writeImage( image );
 
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int32"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int32"));
     this->writeImage( image );
 
-//   ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("float"));
+//   ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("float"));
 //    this->writeImage( image );
 
-//    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("uint64"));
-//    this->writeImage( image );
-//
-//    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int64"));
+//    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("uint64"));
 //    this->writeImage( image );
 //
-//    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("double"));
+//    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int64"));
+//    this->writeImage( image );
+//
+//    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("double"));
 //    this->writeImage( image );
 }
 
@@ -102,16 +103,15 @@ void RealDataDicomTest::writeImage( ::fwData::Image::sptr image )
     ::boost::filesystem::create_directories( PATH );
 
     // Create patient from image
-    ::fwData::Patient::NewSptr patient;
-    ::fwDataTools::Patient::generatePatient(patient, 1, 1, 0);
+    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
 
-    ::fwData::Study::sptr study;
-    study = patient->getStudies().front();
-    ::fwData::Acquisition::sptr acq;
-    acq = study->getAcquisitions().front();
+    ::fwData::Study::sptr study = ::fwData::Study::New();
+    patient->addStudy(study);
+    ::fwData::Acquisition::sptr acq = ::fwData::Acquisition::New();
+    study->addAcquisition(acq);
     acq->setImage( image );
 
-    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
+    ::gdcmIO::writer::DicomGlobalWriterManager::sptr myWriter = ::gdcmIO::writer::DicomGlobalWriterManager::New();
     myWriter->setObject(patient);
     myWriter->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
@@ -121,46 +121,46 @@ void RealDataDicomTest::writeImage( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void RealDataDicomTest::testWritePatient()
-{
-    // create Patient
-    ::fwData::Patient::NewSptr patient;
-    ::fwDataTools::Patient::generatePatient(patient, 2, 2, 0);
-
-    const ::boost::filesystem::path PATH = "imageDicomTest";
-    ::boost::filesystem::create_directories( PATH );
-
-    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
-    myWriter->setObject(patient);
-    myWriter->setFolder(PATH);
-    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-
-    ::boost::filesystem::remove_all( PATH.string() );
-}
+//void RealDataDicomTest::testWritePatient()
+//{
+//    // create Patient
+//    ::fwData::Patient::NewSptr patient;
+//    ::fwDataTools::Patient::generatePatient(patient, 2, 2, 0);
+//
+//    const ::boost::filesystem::path PATH = "imageDicomTest";
+//    ::boost::filesystem::create_directories( PATH );
+//
+//    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
+//    myWriter->setObject(patient);
+//    myWriter->setFolder(PATH);
+//    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
+//
+//    ::boost::filesystem::remove_all( PATH.string() );
+//}
 
 //------------------------------------------------------------------------------
 
-void RealDataDicomTest::testWritePatientDB()
-{
-    // create PatientDB
-    ::fwData::PatientDB::NewSptr patientDB;
-    ::fwData::Patient::NewSptr patient1;
-    ::fwDataTools::Patient::generatePatient(patient1, 2, 2, 0);
-    patientDB->addPatient( patient1 );
-    ::fwData::Patient::NewSptr patient2;
-    ::fwDataTools::Patient::generatePatient(patient2, 1, 3, 0);
-    patientDB->addPatient( patient2 );
-
-    const ::boost::filesystem::path PATH = "imageDicomTest";
-    ::boost::filesystem::create_directories( PATH );
-
-    ::gdcmIO::writer::DicomPatientDBWriterManager::NewSptr myWriter;
-    myWriter->setObject(patientDB);
-    myWriter->setFolder(PATH);
-    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-
-    ::boost::filesystem::remove_all( PATH.string() );
-}
+//void RealDataDicomTest::testWritePatientDB()
+//{
+//    // create PatientDB
+//    ::fwData::PatientDB::NewSptr patientDB;
+//    ::fwData::Patient::NewSptr patient1;
+//    ::fwDataTools::Patient::generatePatient(patient1, 2, 2, 0);
+//    patientDB->addPatient( patient1 );
+//    ::fwData::Patient::NewSptr patient2;
+//    ::fwDataTools::Patient::generatePatient(patient2, 1, 3, 0);
+//    patientDB->addPatient( patient2 );
+//
+//    const ::boost::filesystem::path PATH = "imageDicomTest";
+//    ::boost::filesystem::create_directories( PATH );
+//
+//    ::gdcmIO::writer::DicomPatientDBWriterManager::NewSptr myWriter;
+//    myWriter->setObject(patientDB);
+//    myWriter->setFolder(PATH);
+//    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
+//
+//    ::boost::filesystem::remove_all( PATH.string() );
+//}
 
 //------------------------------------------------------------------------------
 
@@ -233,6 +233,7 @@ void RealDataDicomTest::testReadPatientDB()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing z ", static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[2]), imgSpacingZ);
 
 }
+
 //------------------------------------------------------------------------------
 
 void RealDataDicomTest::testReadPatientDBACHGenou()
@@ -256,34 +257,34 @@ void RealDataDicomTest::testReadPatientDBACHGenou()
 
 //------------------------------------------------------------------------------
 
-void RealDataDicomTest::testReadWritePatientDB()
-{
-    // Create folder
-    const ::boost::filesystem::path PATH = "imageDicomTest";
-    ::boost::filesystem::create_directories( PATH );
-
-    // create and write patient1
-    ::fwData::Patient::NewSptr patient1;
-    ::fwDataTools::Patient::generatePatient(patient1, 1, 1, 0);
-    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
-    myWriter->setObject(patient1);
-    myWriter->setFolder(PATH);
-    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
-
-    // read and  create patient2
-    ::fwData::PatientDB::NewSptr patientDB;
-    ::gdcmIO::reader::DicomPatientDBReader::NewSptr myReader;
-    myReader->setObject(patientDB);
-    myReader->setFolder(PATH);
-    CPPUNIT_ASSERT_NO_THROW(myReader->read());
-    ::fwData::Patient::sptr patient2 = patientDB->getPatients().front();
-
-    // Remove folder
-    ::boost::filesystem::remove_all( PATH.string() );
-
-    // Check patient
-    CPPUNIT_ASSERT(::fwDataTools::Patient::comparePatient(patient1, patient2));
-}
+//void RealDataDicomTest::testReadWritePatientDB()
+//{
+//    // Create folder
+//    const ::boost::filesystem::path PATH = "imageDicomTest";
+//    ::boost::filesystem::create_directories( PATH );
+//
+//    // create and write patient1
+//    ::fwData::Patient::NewSptr patient1;
+//    ::fwDataTools::Patient::generatePatient(patient1, 1, 1, 0);
+//    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
+//    myWriter->setObject(patient1);
+//    myWriter->setFolder(PATH);
+//    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
+//
+//    // read and  create patient2
+//    ::fwData::PatientDB::NewSptr patientDB;
+//    ::gdcmIO::reader::DicomPatientDBReader::NewSptr myReader;
+//    myReader->setObject(patientDB);
+//    myReader->setFolder(PATH);
+//    CPPUNIT_ASSERT_NO_THROW(myReader->read());
+//    ::fwData::Patient::sptr patient2 = patientDB->getPatients().front();
+//
+//    // Remove folder
+//    ::boost::filesystem::remove_all( PATH.string() );
+//
+//    // Check patient
+//    CPPUNIT_ASSERT(::fwDataTools::Patient::comparePatient(patient1, patient2));
+//}
 
 //------------------------------------------------------------------------------
 

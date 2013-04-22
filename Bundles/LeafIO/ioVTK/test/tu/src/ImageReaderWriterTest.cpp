@@ -18,6 +18,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwTest/generator/Image.hpp>
+
 #include <fwDataTools/Image.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
@@ -264,8 +266,8 @@ void ImageReaderWriterTest::testVtkImageWriter()
     originExpected[1] = 15.16;
     originExpected[2] = 11.11;
 
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
@@ -274,7 +276,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 
     // Read image from disk
-    ::fwData::Image::NewSptr imageFromDisk;
+    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
 
     ::boost::filesystem::remove(file);
@@ -318,7 +320,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
     ::fwTools::Type type = ::fwTools::Type::create< float >();
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::fwDataTools::Image::generateRandomImage(image, type);
+    ::fwTest::generator::Image::generateRandomImage(image, type);
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
     imageSeries->setImage(image);
@@ -357,8 +359,8 @@ void ImageReaderWriterTest::testVtiImageWriter()
     originExpected[1] = 15.16;
     originExpected[2] = 11.11;
 
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
@@ -367,7 +369,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
 
 
     // Read image from disk
-    ::fwData::Image::NewSptr imageFromDisk;
+    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
 
     // Data read
@@ -423,8 +425,8 @@ void ImageReaderWriterTest::testMhdImageWriter()
     originExpected[1] = 15.16;
     originExpected[2] = 11.11;
 
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
@@ -488,15 +490,15 @@ void ImageReaderWriterTest::testImageWriterExtension()
     originExpected[1] = 15.16;
     originExpected[2] = 11.11;
 
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
 
 
     CPPUNIT_ASSERT_THROW(
-            this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image),
+            this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService", getIOConfiguration(file), image),
             ::fwTools::Failed
             );
 }

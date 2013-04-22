@@ -11,7 +11,8 @@
 #include <fwTools/System.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwTest/generator/Mesh.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwDataIO/reader/MeshReader.hpp>
 #include <fwDataIO/writer/MeshWriter.hpp>
@@ -50,8 +51,8 @@ void MeshTrianTest::testSimpleMesh()
 
     ::fwData::Mesh::NewSptr mesh;
     ::fwData::Mesh::NewSptr mesh2;
-    ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
-    ::fwDataTools::MeshGenerator::shakePoint(mesh);
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    ::fwDataTools::Mesh::shakePoint(mesh);
 
     mesh->adjustAllocatedMemory();
 
@@ -80,9 +81,9 @@ void MeshTrianTest::testMeshWithCellNormals()
 
     ::fwData::Mesh::NewSptr mesh;
     ::fwData::Mesh::NewSptr mesh2;
-    ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
-    ::fwDataTools::MeshGenerator::shakePoint(mesh);
-    ::fwDataTools::MeshGenerator::generateCellNormals(mesh);
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    ::fwDataTools::Mesh::shakePoint(mesh);
+    ::fwDataTools::Mesh::generateCellNormals(mesh);
 
     mesh->adjustAllocatedMemory();
 

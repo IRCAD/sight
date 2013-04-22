@@ -28,8 +28,6 @@
 #include <fwTools/BufferObject.hpp>
 #include <fwTools/System.hpp>
 
-#include <fwDataTools/ObjectComparator.hpp>
-
 #include <fwTest/generator/SeriesDB.hpp>
 
 #include "ModelSeriesWriterTest.hpp"

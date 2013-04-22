@@ -31,10 +31,6 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwDataTools/Patient.hpp>
-#include <fwDataTools/MeshGenerator.hpp>
-#include <fwDataTools/Image.hpp>
-
 #include <fwCamp/macros.hpp>
 #include <fwCamp/Mapper/ValueMapper.hpp>
 #include <fwCamp/UserObject.hpp>
@@ -95,9 +91,6 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
 
 void ConversionTest::dataToAtomTest()
 {
-    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient, 2, 2, 2);
-
     const ::fwData::Object::sptr VALUES[] = {
             ::fwData::Integer::New(1337),
             ::fwData::Float::New(),
@@ -118,7 +111,6 @@ void ConversionTest::dataToAtomTest()
             ::fwData::PointList::New(),
             ::fwData::TransformationMatrix3D::New(),
             ::fwData::TransferFunction::New(),
-            patient,
             ::fwData::Graph::New(),
     };
 
@@ -209,50 +201,7 @@ void ConversionTest::materialConversionTest()
     ::fwData::Object::sptr materialRes = ::fwAtomConversion::convert(atom);
     ::fwData::Material::sptr materialResultat = ::fwData::Material::dynamicCast(materialRes);
 
-    bool materialComparison = ::fwDataTools::Patient::compareMaterial(material, materialResultat, std::string("material"));
-    CPPUNIT_ASSERT_MESSAGE("Material Not equal" , materialComparison);
-}
-
-//-----------------------------------------------------------------------------
-
-void ConversionTest::patientConversionTest()
-{
-    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient, 1, 1, 1);
-
-    // Creates Atom
-    ::fwData::Patient::sptr patientTmp;
-    patientTmp = ::fwData::Object::copy( patient );
-
-    ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( patientTmp );
-
-    // Manages buffer owners
-    ::fwData::Acquisition::sptr acq = patientTmp->getStudies()[0]->getAcquisitions()[0];
-    ::fwData::Image::sptr image =  acq->getImage();
-    ::fwData::Reconstruction::sptr rec =  acq->getReconstructions()[0];
-    image->getDataArray()->setIsBufferOwner(false);
-    rec->getImage()->getDataArray()->setIsBufferOwner(false);
-    rec->getMesh()->getPointsArray()->setIsBufferOwner(false);
-    rec->getMesh()->getPointColorsArray()->setIsBufferOwner(false);
-    rec->getMesh()->getPointNormalsArray()->setIsBufferOwner(false);
-    rec->getMesh()->getCellDataArray()->setIsBufferOwner(false);
-    rec->getMesh()->getCellTypesArray()->setIsBufferOwner(false);
-    rec->getMesh()->getCellDataOffsetsArray()->setIsBufferOwner(false);
-    rec->getMesh()->getCellColorsArray()->setIsBufferOwner(false);
-    rec->getMesh()->getCellNormalsArray()->setIsBufferOwner(false);
-    rec.reset();
-    image.reset();
-    acq.reset();
-    patientTmp.reset();
-
-    // Creates Data from Atom
-    ::fwData::Object::sptr patientObject = ::fwAtomConversion::convert(atom);
-    ::fwData::Patient::sptr patientResultat = ::fwData::Patient::dynamicCast(patientObject);
-
-    compare(patient, patientResultat);
-
-    bool patientComparison = ::fwDataTools::Patient::comparePatient(patient, patientResultat);
-    CPPUNIT_ASSERT_MESSAGE("Patient Not equal" , patientComparison);
+    compare(material, materialResultat);
 }
 
 //-----------------------------------------------------------------------------

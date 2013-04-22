@@ -13,7 +13,7 @@
 
 #include <fwTools/NumericRoundCast.hxx>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include "fwTest/generator/Mesh.hpp"
 
@@ -41,11 +41,11 @@ void Mesh::generateMesh( ::fwData::Mesh::sptr mesh )
 {
     ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
     ::fwTest::generator::Mesh::initRand();
-    ::fwDataTools::MeshGenerator::shakePoint(mesh);
-    ::fwDataTools::MeshGenerator::generateCellNormals(mesh);
-    ::fwDataTools::MeshGenerator::generatePointNormals(mesh);
-    ::fwDataTools::MeshGenerator::colorizeMeshPoints(mesh);
-    ::fwDataTools::MeshGenerator::colorizeMeshCells(mesh);
+    ::fwDataTools::Mesh::shakePoint(mesh);
+    ::fwDataTools::Mesh::generateCellNormals(mesh);
+    ::fwDataTools::Mesh::generatePointNormals(mesh);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh);
     mesh->adjustAllocatedMemory();
 }
 

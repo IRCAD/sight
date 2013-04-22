@@ -4,7 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwDataTools/Image.hpp>
+#include <fwData/Object.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwTest/generator/Image.hpp>
+#include <fwTest/helper/compare.hpp>
 
 #include <itkIO/itk.hpp>
 
@@ -39,7 +44,7 @@ void ImageConversionTest::testConversion()
 {
     // create Image
     ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     typedef itk::Image< ::boost::int16_t , 3 > ImageType;
     ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
@@ -47,11 +52,11 @@ void ImageConversionTest::testConversion()
     ::fwData::Image::NewSptr image2;
     bool image2ManagesHisBuffer = false;
     ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2));
 
     bool image3ManagesHisBuffer = false;
     ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3));
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3));
 }
 
 
@@ -93,9 +98,9 @@ void ImageConversionTest::testConversion2D()
     origin[1] = (rand()%200 - 100) / 3.;
     ::fwTools::Type type = ::fwTools::Type::create< ::boost::int16_t >();
 
-    ::fwDataTools::Image::generateImage(image, size, spacing, origin, type);
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
     ::fwData::Array::sptr array = image->getDataArray();
-    ::fwDataTools::Image::randomizeArray(array);
+    ::fwTest::generator::Image::randomizeArray(array);
 
     typedef itk::Image< ::boost::int16_t , 2 > ImageType;
 
@@ -104,11 +109,11 @@ void ImageConversionTest::testConversion2D()
     ::fwData::Image::NewSptr image2;
     bool image2ManagesHisBuffer = false;
     ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2));
 
     bool image3ManagesHisBuffer = false;
     ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3) );
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3));
 }
 
 //------------------------------------------------------------------------------

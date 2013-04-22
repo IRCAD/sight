@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwDataTools/Image.hpp>
+#include <fwTest/generator/Image.hpp>
 #include <fwTools/Type.hpp>
 
 #include "fwMedData/ImageSeries.hpp"
@@ -43,7 +43,7 @@ void ImageSeriesTest::imageTest()
     CPPUNIT_ASSERT(m_series);
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwDataTools::Image::generateRandomImage(img, ::fwTools::Type("float"));
+    ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type("float"));
     CPPUNIT_ASSERT(img);
 
     m_series->setImage(img);

@@ -16,220 +16,32 @@
 #include <fwTools/NumericRoundCast.hxx>
 
 #include "fwDataTools/thread/RegionThreader.hpp"
-#include "fwDataTools/MeshGenerator.hpp"
+#include "fwDataTools/Mesh.hpp"
 
 
 namespace fwDataTools
 {
 
-struct RandFloat{
+struct RandFloat
+{
     float operator()()
-    { return ((rand()%101-50.f))/500.f; };
-} ;
+    {
+        return ((rand() % 101 - 50.f)) / 500.f;
+    }
+};
 
 //------------------------------------------------------------------------------
 
-MeshGenerator::MeshGenerator()
-{}
-
-//------------------------------------------------------------------------------
-
-MeshGenerator::~MeshGenerator()
-{}
-
-//------------------------------------------------------------------------------
-void MeshGenerator::initRand()
+void Mesh::initRand()
 {
     std::srand(::fwTools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::generateTriangleQuadMesh(::fwData::Mesh::sptr mesh)
+void Mesh::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::TriangularMesh::sptr trian)
 {
-    size_t nbPointsByEdge = 10;
-    float edgeDim = 100.;
-    MeshGenerator::PointsMapType points;
-
-    mesh->clear();
-    MeshGenerator::addTriangleMesh(mesh, points, nbPointsByEdge, edgeDim);
-    MeshGenerator::addQuadMesh(mesh, points, nbPointsByEdge, edgeDim);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshGenerator::generateTriangleMesh(::fwData::Mesh::sptr mesh)
-{
-    size_t nbPointsByEdge = 10;
-    float edgeDim = 100.;
-    MeshGenerator::PointsMapType points;
-
-    mesh->clear();
-    MeshGenerator::addTriangleMesh(mesh, points, nbPointsByEdge, edgeDim);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshGenerator::generateQuadMesh(::fwData::Mesh::sptr mesh)
-{
-    size_t nbPointsByEdge = 10;
-    float edgeDim = 100.;
-    MeshGenerator::PointsMapType points;
-
-    mesh->clear();
-    MeshGenerator::addQuadMesh(mesh, points, nbPointsByEdge, edgeDim);
-}
-//------------------------------------------------------------------------------
-
-void MeshGenerator::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t nbPointsByEdge, float edgeDim)
-{
-    ::fwComEd::helper::Mesh::sptr meshHelper;
-    meshHelper = ::fwComEd::helper::Mesh::New(mesh);
-
-    ::fwData::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
-    ::fwData::Mesh::Id idx1, idx2, idx3, idx4;
-    float step = edgeDim / nbPointsByEdge;
-
-    //Face Y = edgeDim
-    for(size_t x=0; x<nbPointsByEdge; x++)
-    {
-        for(size_t z=0; z<nbPointsByEdge; z++)
-        {
-            pt1[0] = x*step;
-            pt1[1] = edgeDim;
-            pt1[2] = z*step;
-
-            pt2[0] = (x+1)*step;
-            pt2[1] = edgeDim;
-            pt2[2] = (z)*step;
-
-            pt3[0] = x*step;
-            pt3[1] = edgeDim;
-            pt3[2] = (z+1)*step;
-
-            pt4[0] = (x+1)*step;
-            pt4[1] = edgeDim;
-            pt4[2] = (z+1)*step;
-
-            idx1 = MeshGenerator::addPoint(pt1, meshHelper, points);
-            idx2 = MeshGenerator::addPoint(pt2, meshHelper, points);
-            idx3 = MeshGenerator::addPoint(pt3, meshHelper, points);
-            idx4 = MeshGenerator::addPoint(pt4, meshHelper, points);
-
-            meshHelper->insertNextCell(idx1, idx3, idx4, idx2);
-        }
-    }
-
-    //Face X = edgeDim
-    for(size_t y=0; y<nbPointsByEdge; y++)
-    {
-        for(size_t z=0; z<nbPointsByEdge; z++)
-        {
-            pt1[0] = edgeDim;
-            pt1[1] = y*step;
-            pt1[2] = z*step;
-
-            pt2[0] = edgeDim;
-            pt2[1] = y*step;
-            pt2[2] = (z+1)*step;
-
-            pt3[0] = edgeDim;
-            pt3[1] = (y+1)*step;
-            pt3[2] = z*step;
-
-            pt4[0] = edgeDim;
-            pt4[1] = (y+1)*step;
-            pt4[2] = (z+1)*step;
-
-            idx1 = MeshGenerator::addPoint(pt1, meshHelper, points);
-            idx2 = MeshGenerator::addPoint(pt2, meshHelper, points);
-            idx3 = MeshGenerator::addPoint(pt3, meshHelper, points);
-            idx4 = MeshGenerator::addPoint(pt4, meshHelper, points);
-
-            meshHelper->insertNextCell(idx1, idx3, idx4, idx2);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void MeshGenerator::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t nbPointsByEdge, float edgeDim)
-{
-    ::fwComEd::helper::Mesh::sptr meshHelper;
-    meshHelper = ::fwComEd::helper::Mesh::New(mesh);
-
-    ::fwData::Mesh::PointValueType pt1[3], pt2[3], pt3[3], pt4[3];
-    ::fwData::Mesh::Id idx1, idx2, idx3, idx4;
-    float step = edgeDim / nbPointsByEdge;
-
-    //Face Z = 0
-    for(size_t x=0; x<nbPointsByEdge; x++)
-    {
-        for(size_t y=0; y<nbPointsByEdge; y++)
-        {
-            pt1[0] = x*step;
-            pt1[1] = y*step;
-            pt1[2] = 0;
-
-            pt2[0] = (x+1)*step;
-            pt2[1] = y*step;
-            pt2[2] = 0;
-
-            pt3[0] = x*step;
-            pt3[1] = (y+1)*step;
-            pt3[2] = 0;
-
-            pt4[0] = (x+1)*step;
-            pt4[1] = (y+1)*step;
-            pt4[2] = 0;
-
-            idx1 = MeshGenerator::addPoint(pt1, meshHelper, points);
-            idx2 = MeshGenerator::addPoint(pt2, meshHelper, points);
-            idx3 = MeshGenerator::addPoint(pt3, meshHelper, points);
-            idx4 = MeshGenerator::addPoint(pt4, meshHelper, points);
-
-            meshHelper->insertNextCell(idx1, idx4, idx2);
-            meshHelper->insertNextCell(idx1, idx3, idx4);
-        }
-    }
-
-    //Face X = 0
-    for(size_t y=0; y<nbPointsByEdge; y++)
-    {
-        for(size_t z=0; z<nbPointsByEdge; z++)
-        {
-            pt1[0] = 0;
-            pt1[1] = y*step;
-            pt1[2] = z*step;
-
-            pt2[0] = 0;
-            pt2[1] = y*step;
-            pt2[2] = (z+1)*step;
-
-            pt3[0] = 0;
-            pt3[1] = (y+1)*step;
-            pt3[2] = z*step;
-
-            pt4[0] = 0;
-            pt4[1] = (y+1)*step;
-            pt4[2] = (z+1)*step;
-
-            idx1 = MeshGenerator::addPoint(pt1, meshHelper, points);
-            idx2 = MeshGenerator::addPoint(pt2, meshHelper, points);
-            idx3 = MeshGenerator::addPoint(pt3, meshHelper, points);
-            idx4 = MeshGenerator::addPoint(pt4, meshHelper, points);
-
-            meshHelper->insertNextCell(idx2, idx4, idx3);
-            meshHelper->insertNextCell(idx1, idx2, idx3);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::TriangularMesh::sptr trian)
-{
-    FW_RAISE_IF("Can't convert this Mesh to TriangularMesh", !MeshGenerator::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
+    FW_RAISE_IF("Can't convert this Mesh to TriangularMesh", !Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
     // Clear the container cells and set its capacity to 0
     trian->clearCells();
@@ -272,7 +84,7 @@ void MeshGenerator::toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::Triang
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::fwData::Mesh::sptr mesh)
+void Mesh::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::fwData::Mesh::sptr mesh)
 {
     ::fwData::TriangularMesh::PointContainer& vPoints = trian->points();
     ::fwData::TriangularMesh::CellContainer& vCells = trian->cells();
@@ -312,7 +124,7 @@ void MeshGenerator::fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::f
 
 //------------------------------------------------------------------------------
 
-bool MeshGenerator::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell)
+bool Mesh::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell)
 {
     bool res = true;
     ::fwComEd::helper::Mesh meshHelper(mesh);
@@ -464,7 +276,7 @@ void vectorSum( std::vector< std::vector<T> > &vectors, size_t regionMin, size_t
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::generateCellNormals(::fwData::Mesh::sptr mesh)
+void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
 {
     const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
     if(numberOfCells > 0)
@@ -575,7 +387,7 @@ void normalizeRegionCellNormalsByPoints(FloatVectors::value_type &normalsData, C
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::generatePointNormals(::fwData::Mesh::sptr mesh)
+void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
 {
     const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
     if(nbOfPoints > 0)
@@ -642,7 +454,7 @@ void regionShakeNormals(T normals, const ::fwData::Mesh::Id regionMin, const ::f
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::shakeNormals(::fwData::Array::sptr array)
+void Mesh::shakeNormals(::fwData::Array::sptr array)
 {
 
     if(array
@@ -672,21 +484,21 @@ void MeshGenerator::shakeNormals(::fwData::Array::sptr array)
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::shakePointNormals(::fwData::Mesh::sptr mesh)
+void Mesh::shakePointNormals(::fwData::Mesh::sptr mesh)
 {
     shakeNormals(mesh->getPointNormalsArray());
 }
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::shakeCellNormals(::fwData::Mesh::sptr mesh)
+void Mesh::shakeCellNormals(::fwData::Mesh::sptr mesh)
 {
     shakeNormals(mesh->getCellNormalsArray());
 }
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
+void Mesh::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 {
     mesh->allocatePointColors(::fwData::Mesh::RGB);
 
@@ -704,7 +516,7 @@ void MeshGenerator::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 }
 //------------------------------------------------------------------------------
 
-void MeshGenerator::colorizeMeshCells(::fwData::Mesh::sptr mesh)
+void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 {
     mesh->allocateCellColors(::fwData::Mesh::RGBA);
 
@@ -724,7 +536,7 @@ void MeshGenerator::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void MeshGenerator::shakePoint(::fwData::Mesh::sptr mesh)
+void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
 {
     ::fwComEd::helper::Mesh meshHelper(mesh);
 
@@ -741,25 +553,7 @@ void MeshGenerator::shakePoint(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id MeshGenerator::addPoint(::fwData::Mesh::PointValueType* pt,
-                                           ::fwComEd::helper::Mesh::sptr meshHelper,
-                                           PointsMapType& points)
-{
-    Point myPoint(pt[0], pt[1], pt[2]);
-
-    PointsMapType::iterator it = points.find(myPoint);
-    if(it != points.end())
-    {
-        return it->second;
-    }
-    ::fwData::Mesh::Id idx = meshHelper->insertNextPoint(pt[0], pt[1], pt[2]);
-    points[myPoint] = idx;
-    return idx;
-}
-
-//------------------------------------------------------------------------------
-
-void MeshGenerator::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::sptr t )
+void Mesh::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::sptr t )
  {
     size_t nbPts = mesh->getNumberOfPoints();
     ::fwComEd::helper::Mesh meshHelper(mesh);

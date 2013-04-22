@@ -15,8 +15,7 @@
 
 #include <fwMedData/ImageSeries.hpp>
 
-#include <fwDataTools/Patient.hpp>
-#include <fwDataTools/Image.hpp>
+#include <fwTest/generator/Image.hpp>
 
 #include <fwDataCamp/getObject.hpp>
 #include <fwDataCamp/exception/NullPointer.hpp>
@@ -51,9 +50,9 @@ void GetObjectTest::getTest()
 {
     // Visit 1
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
-    ::fwDataTools::Image::generateRandomImage(img1, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create("int16"));
     ::fwData::Image::sptr img2 = ::fwData::Image::New();
-    ::fwDataTools::Image::generateRandomImage(img2, ::fwTools::Type::create("uint8"));
+    ::fwTest::generator::Image::generateRandomImage(img2, ::fwTools::Type::create("uint8"));
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
     composite->getContainer()["img1"] = img1;
     composite->getContainer()["img2"] = img2;
@@ -71,15 +70,6 @@ void GetObjectTest::getTest()
     CPPUNIT_ASSERT_MESSAGE("Firstname must be equal" , patient1->getFirstname() == str->value() );
 
     // Visit 4
-    ::fwData::Patient::sptr patient2 = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient2, 2, 1, 2);
-    ::fwData::Reconstruction::sptr rec = ::fwDataCamp::getObject< ::fwData::Reconstruction >( patient2, "@studies.1.acquisitions.0.reconstructions.1" );
-    ::fwData::Study::sptr study = patient2->getStudies()[1];
-    ::fwData::Acquisition::sptr acq = study->getAcquisitions()[0];
-    ::fwData::Reconstruction::sptr rec2 = acq->getReconstructions()[1];
-    CPPUNIT_ASSERT_MESSAGE("Reconstruction must be equal" , rec ==  rec2 );
-
-    // Visit 5
     composite->setField("toto", img1);
     img1->setField("titi", img2);
     ::fwData::Object::sptr subObj2 = ::fwDataCamp::getObject( composite, "@fields.toto.fields.titi" );

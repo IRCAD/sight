@@ -1,5 +1,4 @@
 CLASSTEST=[
-    'DicomTest',
     'SeriesDBReaderTest',
     'ImageSeriesWriterTest',
     ]

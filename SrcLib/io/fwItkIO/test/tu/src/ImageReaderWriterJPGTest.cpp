@@ -13,8 +13,7 @@
 #include <fwData/Study.hpp>
 #include <fwData/Acquisition.hpp>
 
-#include <fwDataTools/Image.hpp>
-
+#include <fwTest/generator/Image.hpp>
 #include <fwTest/Data.hpp>
 
 #include <itkIO/itk.hpp>
@@ -53,7 +52,7 @@ void ImageReaderWriterJPGTest::testImageWriter()
 {
     // create Image
     ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // save image in inr
     const ::boost::filesystem::path PATH = "imageJPG";

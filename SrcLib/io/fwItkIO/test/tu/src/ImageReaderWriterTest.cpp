@@ -7,7 +7,10 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwTest/generator/Image.hpp>
+#include <fwTest/helper/compare.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <itkIO/ImageWriter.hpp>
 #include <itkIO/ImageReader.hpp>
@@ -44,7 +47,7 @@ void ImageReaderWriterTest::testSaveLoadInr()
 {
     // create Image
     ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
     this->checkSaveLoadInr( image );
 }
 
@@ -91,7 +94,7 @@ void ImageReaderWriterTest::stressTestInrWithType(::fwTools::Type type, int nbTe
     for (int nb=0 ; nb < nbTest ; ++nb)
     {
         ::fwData::Image::NewSptr image;
-        ::fwDataTools::Image::generateRandomImage(image, type);
+        ::fwTest::generator::Image::generateRandomImage(image, type);
         this->checkSaveLoadInr(image);
     }
 }
@@ -123,7 +126,7 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::NewSptr image )
 
     // check Image
     // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2, 0.00001, 0.00001));
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2));
 }
 
 //------------------------------------------------------------------------------

@@ -18,10 +18,11 @@
 
 #include <fwTools/System.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/File.hpp>
+#include <fwTest/generator/Image.hpp>
 
 #include <fwComEd/helper/Image.hpp>
 
@@ -72,18 +73,18 @@ static const ::fwData::Image::OriginType  bostonTeapotOrigin  = list_of(1.1)(2.2
 {                                                                                                                                  \
     const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / filename);                                  \
                                                                                                                                    \
-    ::fwData::Image::NewSptr image;                                                                                                \
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type(imagetype));                                                  \
+    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                          \
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type(imagetype));                                            \
                                                                                                                                    \
-    writerclass::NewSptr writer;                                                                                                   \
+    writerclass::sptr writer =  writerclass::New();                                                                                \
     writer->setObject(image);                                                                                                      \
     writer->setFile(testFile);                                                                                                     \
     writer->write();                                                                                                               \
                                                                                                                                    \
     CPPUNIT_ASSERT_MESSAGE( "test on <" filename ">  of type <" imagetype "> Failed ", ::boost::filesystem::exists(testFile) );    \
                                                                                                                                    \
-    ::fwData::Image::NewSptr image2;                                                                                               \
-    readerclass::NewSptr reader;                                                                                                   \
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();                                                                         \
+    readerclass::sptr reader = readerclass::New();                                                                                 \
     reader->setObject(image2);                                                                                                     \
     reader->setFile(testFile);                                                                                                     \
     reader->read();                                                                                                                \
@@ -136,8 +137,8 @@ void ImageTest::testImageToVtk()
 
 #define IMAGE_TO_VTK_TEST(imgtype, vtktypes)                                                                                   \
     {                                                                                                                          \
-    ::fwData::Image::NewSptr image;                                                                                            \
-    ::fwDataTools::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));                               \
+    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                      \
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));                         \
                                                                                                                                \
     ::fwComEd::helper::Image imageHelper(image);                                                                               \
                                                                                                                                \

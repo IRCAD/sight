@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwComEd/helper/Array.hpp>
 
@@ -120,7 +120,7 @@ void DicomSurface::setFromData(fwData::Reconstruction::csptr a_reconstruction)
     // Get mesh
     ::fwData::Mesh::sptr mesh = a_reconstruction->getMesh();
     FW_RAISE_IF("Can't save this Mesh. It must contain only triangle!",
-            !::fwDataTools::MeshGenerator::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
+            !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
     ::fwData::Array::sptr pointArray = mesh->getPointsArray();
     ::fwComEd::helper::Array pointArrayHelper(pointArray);

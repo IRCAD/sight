@@ -13,10 +13,12 @@
 
 #include <fwTools/System.hpp>
 
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
 #include <fwComEd/helper/Array.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
-#include <fwDataTools/ObjectComparator.hpp>
+#include <fwTest/generator/Mesh.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <vtkIO/MeshWriter.hpp>
 #include <vtkIO/MeshReader.hpp>
@@ -31,6 +33,20 @@ namespace fwVtkIO
 {
 namespace ut
 {
+
+//-----------------------------------------------------------------------------
+
+void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+{
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(objRef, objComp);
+    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    {
+        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+    }
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+}
 
 //------------------------------------------------------------------------------
 
@@ -82,7 +98,7 @@ void MeshTest::testMeshToVtk()
     CPPUNIT_ASSERT( mesh2 );
     ::vtkIO::helper::Mesh::fromVTKMesh(vtkMesh, mesh2);
 
-    CPPUNIT_ASSERT( ::fwDataTools::ObjectComparator::compareMesh(mesh1, mesh2));
+    compare(mesh1, mesh2);
 }
 
 //------------------------------------------------------------------------------
@@ -90,8 +106,8 @@ void MeshTest::testMeshToVtk()
 void MeshTest::testSyntheticMesh()
 {
     ::fwData::Mesh::NewSptr mesh1;
-    ::fwDataTools::MeshGenerator::generateTriangleQuadMesh(mesh1);
-    ::fwDataTools::MeshGenerator::shakePoint(mesh1);
+    ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+    ::fwDataTools::Mesh::shakePoint(mesh1);
     mesh1->adjustAllocatedMemory();
 
     vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
@@ -101,7 +117,7 @@ void MeshTest::testSyntheticMesh()
     ::fwData::Mesh::NewSptr mesh2;
     ::vtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
 
-    CPPUNIT_ASSERT( ::fwDataTools::ObjectComparator::compareMesh(mesh1, mesh2));
+    compare(mesh1, mesh2);
 }
 
 //------------------------------------------------------------------------------
@@ -109,12 +125,12 @@ void MeshTest::testSyntheticMesh()
 void MeshTest::testExportImportSyntheticMesh()
 {
     ::fwData::Mesh::NewSptr mesh1;
-    ::fwDataTools::MeshGenerator::generateTriangleQuadMesh(mesh1);
-    ::fwDataTools::MeshGenerator::shakePoint(mesh1);
-    ::fwDataTools::MeshGenerator::colorizeMeshPoints(mesh1);
-    ::fwDataTools::MeshGenerator::colorizeMeshCells(mesh1);
-    ::fwDataTools::MeshGenerator::generatePointNormals(mesh1);
-    ::fwDataTools::MeshGenerator::generateCellNormals(mesh1);
+    ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh1);
+    ::fwDataTools::Mesh::shakePoint(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshPoints(mesh1);
+    ::fwDataTools::Mesh::colorizeMeshCells(mesh1);
+    ::fwDataTools::Mesh::generatePointNormals(mesh1);
+    ::fwDataTools::Mesh::generateCellNormals(mesh1);
 
     mesh1->adjustAllocatedMemory();
 
@@ -132,7 +148,7 @@ void MeshTest::testExportImportSyntheticMesh()
     reader->setFile(testFile);
     reader->read();
 
-    CPPUNIT_ASSERT( ::fwDataTools::ObjectComparator::compareMesh(mesh1, mesh2));
+    compare(mesh1, mesh2);
 
     bool suppr = ::boost::filesystem::remove(testFile);
     CPPUNIT_ASSERT(suppr);

@@ -12,7 +12,7 @@
 #include <fwComEd/helper/Mesh.hpp>
 #include <fwComEd/helper/Array.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include "fwDataIO/writer/MeshWriter.hpp"
 #include "fwDataIO/writer/registry/macros.hpp"
@@ -45,7 +45,7 @@ void MeshWriter::write()
     assert( getFile().empty() ==  false );
 
     ::fwData::Mesh::sptr mesh = this->getConcreteObject();
-    FW_RAISE_IF("Can't convert this Mesh to TriangularMesh", !::fwDataTools::MeshGenerator::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
+    FW_RAISE_IF("Can't convert this Mesh to TriangularMesh", !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);

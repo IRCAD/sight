@@ -7,7 +7,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/Composite.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwTest/generator/Image.hpp>
 
 #include <fwDataCamp/visitor/RecursiveLock.hpp>
 
@@ -40,7 +40,7 @@ void RecursiveLockTest::lockTest()
 {
     {
         ::fwData::Image::sptr image = ::fwData::Image::New();
-        ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+        ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
         ::fwData::Array::sptr array = image->getDataArray();
         ::fwTools::BufferObject::sptr bo = array->getBufferObject();
 
@@ -59,9 +59,9 @@ void RecursiveLockTest::lockTest()
 
     {
         ::fwData::Image::sptr img1 = ::fwData::Image::New();
-        ::fwDataTools::Image::generateRandomImage(img1, ::fwTools::Type::create("int16"));
+        ::fwTest::generator::Image::generateRandomImage(img1, ::fwTools::Type::create("int16"));
         ::fwData::Image::sptr img2 = ::fwData::Image::New();
-        ::fwDataTools::Image::generateRandomImage(img2, ::fwTools::Type::create("uint8"));
+        ::fwTest::generator::Image::generateRandomImage(img2, ::fwTools::Type::create("uint8"));
         ::fwData::Composite::sptr composite = ::fwData::Composite::New();
         composite->getContainer()["img1"] = img1;
         composite->getContainer()["img2"] = img2;

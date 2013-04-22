@@ -1,9 +1,16 @@
 CLASSTEST=[
-          'MeshGeneratorTest',
+          'MeshTest',
           'ImageTest',
           ]
 
 USE = ['boost']
-LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1','fwDataTools_0-1']
+LIB = [
+      'fwData_0-1',
+      'fwDataCamp_0-1',
+      'fwTools_0-1',
+      'fwCore_0-1',
+      'fwDataTools_0-1',
+      'fwTest_0-1',
+      ]
 CONSOLE = 'yes'
 LOGLEVEL='trace'

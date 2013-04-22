@@ -20,8 +20,7 @@ namespace ut
 class IoVtkGdcmTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( IoVtkGdcmTest );
-    CPPUNIT_TEST( testReader );
-    CPPUNIT_TEST( testWriter );
+    CPPUNIT_TEST( seriesDBReaderTest );
     CPPUNIT_TEST( imageSeriesWriterTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,8 +29,7 @@ public:
     void setUp();
     void tearDown();
 
-    void testReader();
-    void testWriter();
+    void seriesDBReaderTest();
     void imageSeriesWriterTest();
 
 };

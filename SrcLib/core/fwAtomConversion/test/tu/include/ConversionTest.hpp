@@ -19,7 +19,6 @@ class ConversionTest :  public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE( ConversionTest );
     CPPUNIT_TEST( dataToAtomTest );
     CPPUNIT_TEST( materialConversionTest );
-    CPPUNIT_TEST( patientConversionTest );
     CPPUNIT_TEST( graphConversionTest );
     CPPUNIT_TEST( tfConversionTest );
     CPPUNIT_TEST( seriesDBConversionTest );
@@ -45,9 +44,6 @@ public:
 
     /// Test the conversion fwData::Material -> fwAtoms::Object -> fwData::Material
     void materialConversionTest();
-
-    /// Test the conversion fwData::Patient -> fwAtoms::Object -> fwData::Patient
-    void patientConversionTest();
 
     //// Test fwData::Graph conversion, UUID management, and object field conversion
     void graphConversionTest();

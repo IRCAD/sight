@@ -6,8 +6,9 @@
 
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwDataTools/MeshGenerator.hpp>
 #include <fwTools/Type.hpp>
+
+#include <fwTest/generator/Mesh.hpp>
 
 #include "fwMedData/ModelSeries.hpp"
 
@@ -51,11 +52,11 @@ void ModelSeriesTest::modelTest()
 
     ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
     CPPUNIT_ASSERT(mesh1);
-    ::fwDataTools::MeshGenerator::generateQuadMesh(mesh1);
+    ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
 
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
     CPPUNIT_ASSERT(mesh2);
-    ::fwDataTools::MeshGenerator::generateQuadMesh(mesh2);
+    ::fwTest::generator::Mesh::generateQuadMesh(mesh2);
 
     rec1->setMesh(mesh1);
     rec2->setMesh(mesh2);
