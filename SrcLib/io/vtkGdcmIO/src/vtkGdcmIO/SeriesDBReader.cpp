@@ -7,6 +7,8 @@
 #include <exception>
 
 #include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
@@ -322,8 +324,15 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                     std::string seriesDescription = medprop->GetSeriesDescription();
                     std::string seriesDate = ( seriesDateStr ? seriesDateStr : "" );
                     std::string seriesTime = ( seriesTimeStr ? seriesTimeStr : "" );
-                    ::fwMedData::DicomValuesType seriesPhysicianNames
-                        (gdcmPhysicianNames.begin(), gdcmPhysicianNames.end());
+
+                    ::fwMedData::DicomValuesType seriesPhysicianNames;
+                    BOOST_FOREACH(const std::string &str, gdcmPhysicianNames)
+                    {
+                        ::fwMedData::DicomValuesType result;
+                        ::boost::split( result, str, ::boost::is_any_of("\\"));
+                        seriesPhysicianNames.reserve(seriesPhysicianNames.size() + result.size());
+                        seriesPhysicianNames.insert(seriesPhysicianNames.end(), result.begin(), result.end());
+                    }
 
                     const char * studyUIDStr =  scanner.GetValue( files[0].c_str(), studyUIDTag );
                     const char * studyReferingPhysicianNameStr
