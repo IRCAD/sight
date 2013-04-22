@@ -84,7 +84,7 @@ public:
      * @param[out] f : frontal position
      * @param[out] s : sagittal position
      */
-    FWCOMED_API void getSliceIndex(::fwData::Integer::sptr &a, ::fwData::Integer::sptr &f, ::fwData::Integer::sptr &s ) const;
+    FWCOMED_API void getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s ) const;
 
     /**
      * @brief Get the window min and max.
@@ -109,11 +109,11 @@ public:
 
 protected:
     /// Axial slice index
-    ::fwData::Integer::sptr m_axialIndex;
+    ::fwData::Integer::ValueType m_axialIndex;
     /// Frontal slice index
-    ::fwData::Integer::sptr m_frontalIndex;
+    ::fwData::Integer::ValueType m_frontalIndex;
     /// Sagittal slice index
-    ::fwData::Integer::sptr m_sagittalIndex;
+    ::fwData::Integer::ValueType m_sagittalIndex;
 
 };
 
