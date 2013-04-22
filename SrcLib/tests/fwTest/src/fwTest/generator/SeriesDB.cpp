@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <sstream>
+
 #include <fwTools/Type.hpp>
 
 #include <fwData/Composite.hpp>
@@ -67,9 +69,9 @@ namespace generator
     ::fwMedData::Patient::sptr patient = ::fwMedData::Patient::New();
     const std::string PATIENT_NAME          = "NomSeriesDB1" ;
     const std::string PATIENT_FIRSTNAME     = "PrenomSeriesDB1" ;
-    const std::string PATIENT_ID            = "456438375" ;
-    const std::string PATIENT_BIRTHDATE     = "04-18-2013 09:53";
-    const std::string PATIENT_SEX           = "O";
+    const std::string PATIENT_ID            = "4564383757" ;
+    const std::string PATIENT_BIRTHDATE     = "19710418 095318.185236";
+    const std::string PATIENT_SEX           = "O ";
 
     patient->setName( PATIENT_NAME + "^" + PATIENT_FIRSTNAME );
     patient->setPatientId(   PATIENT_ID );
@@ -84,13 +86,20 @@ namespace generator
 ::fwMedData::Study::sptr SeriesDB::createStudy()
 {
     ::fwMedData::Study::sptr study = ::fwMedData::Study::New();
+
+    static unsigned int count = 1;
+    std::stringstream str;
+    str.width(4);
+    str.fill('0');
+    str << count++;
+
     // studies informations
-    const std::string UID         = "1346357.1664.643101.421337.4123403" ;
-    const std::string DATE        = "04-18-2013";
-    const std::string TIME        = "09:59";
+    const std::string UID         = "1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str() ;
+    const std::string DATE        = "20130418";
+    const std::string TIME        = "095948.689872 ";
     const std::string PHYSICIAN   = "Dr Jekyl" ;
-    const std::string DESCRIPTION = "Say 33." ;
-    const std::string PATIENT_AGE = "42" ;
+    const std::string DESCRIPTION = "Say 33. " ;
+    const std::string PATIENT_AGE = "042Y" ;
 
     study->setInstanceUID( UID );
     study->setDate( DATE );
@@ -122,16 +131,22 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     series->setStudy(SeriesDB::createStudy());
     series->setEquipment(SeriesDB::createEquipement());
 
-    const std::string UID         = "1346357.1664.482101.421337.4123403";
+    static unsigned int count = 1;
+    std::stringstream str;
+    str.width(4);
+    str.fill('0');
+    str << count++;
+
+    const std::string UID         = "1.2.826.0.1.3680043.2.1125.102906542887009256605006409108689" + str.str();
     const std::string MODALITY    = "CT";
-    const std::string DATE        = "04-18-2013";
-    const std::string TIME        = "10:10";
-    const std::string DESCRIPTION = "Description";
+    const std::string DATE        = "20130418";
+    const std::string TIME        = "101010.101010 ";
+    const std::string DESCRIPTION = "Description ";
 
     ::fwMedData::DicomValuesType performingPhysiciansName;
     performingPhysiciansName.push_back("Dr Jekyl");
     performingPhysiciansName.push_back("Dr House");
-    performingPhysiciansName.push_back("Dr Einstein");
+    performingPhysiciansName.push_back("Dr Einstein ");
     series->setPerformingPhysiciansName(performingPhysiciansName);
 
     series->setInstanceUID(UID);

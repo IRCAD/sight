@@ -62,33 +62,42 @@ void SeriesDBTest::generationTest()
     ::fwMedData::DicomValuesType performingPhysiciansName;
     performingPhysiciansName.push_back("Dr Jekyl");
     performingPhysiciansName.push_back("Dr House");
-    performingPhysiciansName.push_back("Dr Einstein");
+    performingPhysiciansName.push_back("Dr Einstein ");
 
     unsigned char nbIS = 0;
     unsigned char nbMS = 0;
     unsigned char nbAS = 0;
+
+    unsigned int count = 1;
+    std::stringstream str;
     BOOST_FOREACH(::fwMedData::Series::sptr series, seriesContainer)
     {
-        CPPUNIT_ASSERT_EQUAL(std::string("1346357.1664.482101.421337.4123403") , series->getInstanceUID());
+        str.str("");
+        str.width(4);
+        str.fill('0');
+        str << count++;
+        CPPUNIT_ASSERT_EQUAL(std::string("1.2.826.0.1.3680043.2.1125.102906542887009256605006409108689" + str.str()) ,
+                             series->getInstanceUID());
         CPPUNIT_ASSERT_EQUAL(std::string("CT") , series->getModality());
-        CPPUNIT_ASSERT_EQUAL(std::string("04-18-2013") , series->getDate());
-        CPPUNIT_ASSERT_EQUAL(std::string("10:10") , series->getTime());
-        CPPUNIT_ASSERT_EQUAL(std::string("Description") , series->getDescription());
+        CPPUNIT_ASSERT_EQUAL(std::string("20130418") , series->getDate());
+        CPPUNIT_ASSERT_EQUAL(std::string("101010.101010 ") , series->getTime());
+        CPPUNIT_ASSERT_EQUAL(std::string("Description ") , series->getDescription());
         CPPUNIT_ASSERT(performingPhysiciansName == series->getPerformingPhysiciansName());
 
         ::fwMedData::Patient::sptr patient = series->getPatient();
         CPPUNIT_ASSERT_EQUAL(std::string("NomSeriesDB1^PrenomSeriesDB1") , patient->getName());
-        CPPUNIT_ASSERT_EQUAL(std::string("456438375") , patient->getPatientId());
-        CPPUNIT_ASSERT_EQUAL(std::string("04-18-2013 09:53") , patient->getBirthdate());
-        CPPUNIT_ASSERT_EQUAL(std::string("O") , patient->getSex());
+        CPPUNIT_ASSERT_EQUAL(std::string("4564383757") , patient->getPatientId());
+        CPPUNIT_ASSERT_EQUAL(std::string("19710418 095318.185236") , patient->getBirthdate());
+        CPPUNIT_ASSERT_EQUAL(std::string("O ") , patient->getSex());
 
         ::fwMedData::Study::sptr study = series->getStudy();
-        CPPUNIT_ASSERT_EQUAL(std::string("1346357.1664.643101.421337.4123403") , study->getInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(std::string("04-18-2013") , study->getDate());
-        CPPUNIT_ASSERT_EQUAL(std::string("09:59") , study->getTime());
+        CPPUNIT_ASSERT_EQUAL(std::string("1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str()) ,
+                             study->getInstanceUID());
+        CPPUNIT_ASSERT_EQUAL(std::string("20130418") , study->getDate());
+        CPPUNIT_ASSERT_EQUAL(std::string("095948.689872 ") , study->getTime());
         CPPUNIT_ASSERT_EQUAL(std::string("Dr Jekyl") , study->getReferringPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(std::string("Say 33.") , study->getDescription());
-        CPPUNIT_ASSERT_EQUAL(std::string("42") , study->getPatientAge());
+        CPPUNIT_ASSERT_EQUAL(std::string("Say 33. ") , study->getDescription());
+        CPPUNIT_ASSERT_EQUAL(std::string("042Y") , study->getPatientAge());
 
         ::fwMedData::Equipment::sptr equipement = series->getEquipment();
         CPPUNIT_ASSERT_EQUAL(std::string("hospital"), equipement->getInstitutionName());
