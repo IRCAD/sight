@@ -73,14 +73,14 @@
         <type>::io::IWriter</type>
         <service>::ioVTK::SModelSeriesWriter</service>
         <object>::fwMedData::ModelSeries</object>
-        <desc>VTK Mesh Writer (VTK)</desc>
+        <desc>Reconstructions in VTK files (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioVTK::SModelSeriesObjWriter</service>
         <object>::fwMedData::ModelSeries</object>
-        <desc>VTK Reconstruction Writer (VTK)</desc>
+        <desc>Reconstructions Wavefront OBJ files (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -96,7 +96,7 @@
         <object>::fwData::Model</object>
         <desc>Model Reader (VTK)</desc>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::SSeriesDBReader</service>
