@@ -108,17 +108,6 @@ public :
     FWCOMED_API static void setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage);
 
     /**
-     * @brief       Initialized an image to 0 from image source (same field, pixel type, buffer size...).
-     *
-     *
-     * @param[in]   imgSrc             image which gives information (field, pixel type, buffer size...).
-     * @param[in]   imgToInitialize    image to initialized (if not null).
-     *
-     * @return      Returns initialized image.
-     */
-    FWCOMED_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize = ::fwData::Image::sptr());
-
-    /**
      * @brief  Merge PatientDB:
      *         Check if firstname, name, sex, ... are the same
      *

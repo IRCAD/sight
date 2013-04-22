@@ -185,29 +185,6 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
 
 //------------------------------------------------------------------------------
 
-::fwData::Image::sptr MedicalImageHelpers::initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize)
-{
-    SLM_ASSERT("Image source must be initialized", imgSrc);
-    SLM_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
-
-    if(!imgToInitialize)
-    {
-        imgToInitialize = ::fwData::Image::New();
-    }
-    ::fwData::Array::sptr imgData = imgSrc->getDataArray();
-    imgSrc->setDataArray(::fwData::Array::sptr(), false);
-
-    imgToInitialize = ::fwData::Object::copy(imgSrc);
-
-    imgSrc->setDataArray(imgData, false);
-
-    imgToInitialize->allocate();
-
-    return imgToInitialize;
-}
-
-//------------------------------------------------------------------------------
-
 void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patientDBFrom, ::fwData::PatientDB::sptr _patientDBTo, ::fwServices::IService::sptr _msgSender )
 {
     // Add new patient DB to patient DB container
