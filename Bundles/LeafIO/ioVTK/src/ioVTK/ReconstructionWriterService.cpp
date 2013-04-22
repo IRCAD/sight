@@ -121,7 +121,7 @@ void ReconstructionWriterService::saveReconstruction( const ::boost::filesystem:
     catch( ... )
     {
         std::stringstream ss;
-        ss << "Warning during loading. ";
+        ss << "Warning during saving. ";
 
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
@@ -142,7 +142,7 @@ void ReconstructionWriterService::updating() throw(::fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Acquisition::sptr pAcquisition = this->getObject< ::fwData::Acquisition >() ;
-        SLM_ASSERT("pAcquisition not instanced", pAcquisition);
+        SLM_ASSERT("Acquisition not instanced", pAcquisition);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

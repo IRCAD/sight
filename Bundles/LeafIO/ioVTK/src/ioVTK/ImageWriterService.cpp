@@ -105,7 +105,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
     bool bValue = true;
 
     ::fwDataIO::writer::IObjectWriter::sptr myWriter;
-    fwGui::dialog::ProgressDialog progressMeterGUI("Saving Images ");
+    fwGui::dialog::ProgressDialog progressMeterGUI("Saving images... ");
     std::string ext = ::boost::filesystem::extension(imgFile);
     ::boost::algorithm::to_lower(ext);
 
@@ -175,7 +175,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
-        SLM_ASSERT("pImage not instanced", pImage);
+        SLM_ASSERT("Image not instanced", pImage);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);

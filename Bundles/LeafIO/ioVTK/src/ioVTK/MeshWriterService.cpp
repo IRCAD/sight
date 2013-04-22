@@ -99,7 +99,7 @@ void MeshWriterService::saveMesh(const ::boost::filesystem::path& meshFile, cons
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Mesh");
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving mesh...");
         writer->addHandler( progressMeterGUI );
         writer->write();
 

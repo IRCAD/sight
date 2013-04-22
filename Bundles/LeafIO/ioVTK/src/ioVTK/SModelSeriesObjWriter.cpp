@@ -144,7 +144,7 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
         catch (const std::exception & e)
         {
             std::stringstream ss;
-            ss << "Warning during loading : " << e.what();
+            ss << "Warning during saving : " << e.what();
 
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
@@ -156,7 +156,7 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
         catch( ... )
         {
             std::stringstream ss;
-            ss << "Warning during loading.";
+            ss << "Warning during saving.";
 
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
