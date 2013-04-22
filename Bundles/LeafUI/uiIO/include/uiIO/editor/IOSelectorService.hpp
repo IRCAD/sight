@@ -68,11 +68,11 @@ protected:
      *
      * Sample of configuration :
      * @verbatim
-          <service uid="GENERIC_UID_writerMedicalWorkspace" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
+          <service uid="GENERIC_UID_writer" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
               <type mode="writer" />
               <selection mode="include" />
-              <addSelection service="::ioXML::FwXMLGenericWriterService" />
-              <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericWriterService" />
+              <addSelection service="::ioAtoms::SWriter" />
+              <config id="ioAtomsConfig" service="::ioAtoms::SWriter" />
           </service>
      * @endverbatim
      * With :

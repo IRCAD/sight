@@ -655,9 +655,11 @@ void AppConfigManager::createConnection(::fwRuntime::ConfigurationElement::csptr
         }
     }
 
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalInfo.first);
-    ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+    ::fwTools::Object::sptr sigSource = ::fwTools::fwID::getObject(signalInfo.first);
+    ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(sigSource);
 
+    SLM_ASSERT("Signal source not found" << signalInfo.first , sigSource);
+    SLM_ASSERT("invalid signal source " << signalInfo.first , hasSignals);
 
     BOOST_FOREACH(SlotInfoType slotInfo,  slotInfos)
     {

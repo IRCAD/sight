@@ -40,7 +40,7 @@ namespace action
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="::ioXML::FwXMLGenericReaderService" />
+            <addSelection service="::ioAtoms::SReader" />
         </config>
     </extension>
     @endverbatim

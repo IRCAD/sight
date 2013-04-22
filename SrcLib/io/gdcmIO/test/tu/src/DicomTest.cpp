@@ -47,7 +47,6 @@ void DicomTest::setUp()
     // create patientDB
     m_originalPatientDB = createPatientDB();
 
-    // save patientDB in fwXML
     const ::boost::filesystem::path PATH = "dicomTest";
 
     ::boost::filesystem::create_directories( PATH );

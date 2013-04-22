@@ -53,7 +53,6 @@ void DicomTest::methode1()
     ::fwData::PatientDB::sptr pPatientDB;
     pPatientDB = ::fwDataTools::ObjectGenerator::createPatientDB(1, 2, 2, 0);
 
-    // save patientDB in fwXML
     const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "dicomTest";
 
     ::boost::filesystem::create_directories( PATH );

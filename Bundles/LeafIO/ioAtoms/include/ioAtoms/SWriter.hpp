@@ -43,13 +43,8 @@ protected:
     IOATOMS_API void stopping() throw(::fwTools::Failed);
 
     /**
-     * @brief Convert fwData medical data in fwAtoms, and apply the good writer ( chosen from file extension )
-     *
-     * Actually, this method creates a new composite representing a medical workspace : add new patient db, new
-     * planning db and new processing db. Shallow copy these structures to avoid UUID conflict if reader is used
-     * in the same application instance.
-     *
-     * @note Data is lock (mutex) recursively during writing
+     * @brief Convert fwData to fwAtoms, and apply the writer chosen from file extension
+     * @note Data is locked (mutex) recursively during writing
      */
     IOATOMS_API void updating() throw(::fwTools::Failed);
 

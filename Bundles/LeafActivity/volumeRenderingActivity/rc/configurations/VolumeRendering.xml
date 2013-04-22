@@ -300,9 +300,6 @@
 
                     </service>
 
-                    <service uid="${GENERIC_UID}_translateUpdater" impl="::ctrlSelection::updater::TranslateUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <translate fromUID="${GENERIC_UID}_VRParam" fromKey="Lights" toKey="VisuLights" />
-                    </service>
 
                     <item key="TFSelectionsKey">
                         <object uid="${GENERIC_UID}_TFSelections" type="::fwData::Composite" />
@@ -315,7 +312,7 @@
 
                     <item key="imageKey">
                         <object uid="${imageUid}" src="ref" type="::fwData::Image">
-                        
+
                             <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
 
                             <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
@@ -401,53 +398,19 @@
                         </object>
                     </item>
 
-                    <item key="VRParam">
-                        <object uid="${GENERIC_UID}_VRParam" type="::fwData::Composite">
-
-                            <service uid="${GENERIC_UID}_action_exportVRParam" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                                <start uid="${GENERIC_UID}_writerVRParam" />
-                            </service>
-                            <service uid="${GENERIC_UID}_writerVRParam" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
-                                <type mode="writer" />
-                                <selection mode="include" />
-                                <addSelection service="::ioXML::FwXMLGenericWriterService" />
-                                <config id="FwXMLGenericWriterReaderVRConfig" service="::ioXML::FwXMLGenericWriterService" />
-                            </service>
-
-                            <service uid="${GENERIC_UID}_VRParamSwapper" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                                <mode type="stop" />
-                                <config>
-                                    <object type="::fwData::Composite" id="Lights">
-                                    </object>
-                                    <object type="::fwData::Composite" id="Property">
-                                    </object>
-
-                                    <object type="::fwData::Composite" id="Mapper">
-                                    </object>
-                                </config>
-                            </service>
-
-                        </object>
-                    </item>
 
                 </object>
             </item>
 
-            <connect>
-                <signal>${GENERIC_UID}_VRParam/objectModified</signal>
-                <slot>${GENERIC_UID}_translateUpdater/receive</slot>
-            </connect>
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_LockImageSrv" />
-            <start uid="${GENERIC_UID}_translateUpdater" />
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_Scene2D_Shutter" />
             <start uid="${GENERIC_UID}_Scene2D" />
             <start uid="${GENERIC_UID}_computeHistogram" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
             <start uid="${GENERIC_UID}_LightSwapper" />
-            <start uid="${GENERIC_UID}_VRParamSwapper" />
             <start uid="${GENERIC_UID}_vr" />
             <start uid="${GENERIC_UID}_FieldManager" />
             <start uid="${GENERIC_UID}_cfgNegato" />
