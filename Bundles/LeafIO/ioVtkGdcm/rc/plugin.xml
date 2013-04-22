@@ -42,4 +42,12 @@
         <desc>Dicom Writer (VTK/gdcm)</desc>
     </extension>
 
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVtkGdcm::SImageSeriesWriter</service>
+        <object>::fwMedData::ImageSeries</object>
+        <desc>Dicom Writer (VTK/gdcm)</desc>
+    </extension>
+
 </plugin>

@@ -13,6 +13,7 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
+#include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
@@ -21,6 +22,11 @@
 #include <fwData/PatientDB.hpp>
 #include <fwDataTools/Patient.hpp>
 
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/ImageSeries.hpp>
+
+#include <fwTest/generator/SeriesDB.hpp>
+#include <fwTest/generator/Image.hpp>
 #include <fwTest/Data.hpp>
 
 #include "IoVtkGdcmTest.hpp"
@@ -49,6 +55,20 @@ void IoVtkGdcmTest::tearDown()
 }
 
 //------------------------------------------------------------------------------
+
+void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+{
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(objRef, objComp);
+    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    {
+        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+    }
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+}
+
+//-----------------------------------------------------------------------------
 
 void IoVtkGdcmTest::testReader()
 {
@@ -239,6 +259,60 @@ void IoVtkGdcmTest::testWriter()
     // check patient
     CPPUNIT_ASSERT(::fwDataTools::Patient::comparePatient(pPatient, pReadPatient));
 
+}
+
+//------------------------------------------------------------------------------
+
+void IoVtkGdcmTest::imageSeriesWriterTest()
+{
+    const ::boost::filesystem::path PATH = ::fwTools::System::getTemporaryFolder() / "DicomWriterTest";
+
+    ::boost::filesystem::create_directories( PATH );
+
+    ::fwRuntime::EConfigurationElement::sptr srvConfig = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");
+    folderCfg->setValue(PATH.string());
+    srvConfig->addConfigurationElement(folderCfg);
+
+    ::fwTest::generator::Image::initRand();
+    ::fwMedData::ImageSeries::sptr imgSeries;
+    imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
+
+    ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IWriter", "::ioVtkGdcm::SImageSeriesWriter" );
+    CPPUNIT_ASSERT(writerSrv);
+
+    ::fwServices::OSR::registerService( imgSeries, writerSrv );
+
+    writerSrv->setConfiguration( srvConfig );
+    writerSrv->configure();
+    writerSrv->start();
+    writerSrv->update();
+    writerSrv->stop();
+    ::fwServices::OSR::unregisterService( writerSrv );
+
+
+    // Load Dicom from disk
+    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+
+    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::SSeriesDBReaderService" );
+    CPPUNIT_ASSERT(readerSrv);
+
+    ::fwServices::OSR::registerService( seriesDB , readerSrv );
+
+    readerSrv->setConfiguration( srvConfig ); // use same config as writer
+    readerSrv->configure();
+    readerSrv->start();
+    readerSrv->update();
+    readerSrv->stop();
+    ::fwServices::OSR::unregisterService( readerSrv );
+
+    // Clean the written data
+    ::boost::filesystem::remove_all( PATH.string() );
+
+    // check series
+    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->getContainer().size());
+
+    compare(imgSeries, seriesDB->getContainer().front());
 }
 
 //------------------------------------------------------------------------------

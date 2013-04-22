@@ -22,6 +22,7 @@ class IoVtkGdcmTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE( IoVtkGdcmTest );
     CPPUNIT_TEST( testReader );
     CPPUNIT_TEST( testWriter );
+    CPPUNIT_TEST( imageSeriesWriterTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -31,6 +32,7 @@ public:
 
     void testReader();
     void testWriter();
+    void imageSeriesWriterTest();
 
 };
 
