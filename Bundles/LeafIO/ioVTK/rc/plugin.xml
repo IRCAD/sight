@@ -28,6 +28,13 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVTK::SImageSeriesWriter</service>
+        <object>::fwMedData::ImageSeries</object>
+        <desc>VTK Image Writer (VTK)</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::ImageReaderService</service>
         <object>::fwData::Image</object>
@@ -61,7 +68,21 @@
         <object>::fwData::Mesh</object>
         <desc>VTK Mesh Writer (VTK)</desc>
     </extension>
-    
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVTK::SModelSeriesWriter</service>
+        <object>::fwMedData::ModelSeries</object>
+        <desc>VTK Mesh Writer (VTK)</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVTK::SModelSeriesObjWriter</service>
+        <object>::fwMedData::ModelSeries</object>
+        <desc>VTK Reconstruction Writer (VTK)</desc>
+    </extension>
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::VtkPatientDBReaderService</service>
