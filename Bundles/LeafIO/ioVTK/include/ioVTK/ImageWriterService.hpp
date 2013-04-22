@@ -51,6 +51,18 @@ public :
      */
     IOVTK_API virtual void configureWithIHM();
 
+    /**
+    * @brief Save a VTK image.
+    * @param[in] imgFile ::boost::filesystem::path.
+    * @param[out] image ::boost::shared_ptr< ::fwData::Image >.
+    * @return bool.
+    *
+    * This method is used to save an image using the file path.
+    * Returns \b true if the image saving is a success and \b false if it fails
+    */
+    IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile, const SPTR(::fwData::Image)& image );
+
+
 protected:
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
@@ -94,20 +106,7 @@ protected:
      */
     IOVTK_API void info(std::ostream &_sstream ) ;
 
-
 private :
-
-    /**
-    * @brief Save a VTK image.
-    * @param[in] _vtkFile ::boost::filesystem::path.
-    * @param[out] _pImage ::boost::shared_ptr< ::fwData::Image >.
-    * @return bool.
-    *
-    * This method is used to save an image using the file path.
-    * Returns \b true if the image saving is a success and \b false if it fails
-    */
-    bool saveImage( const ::boost::filesystem::path _vtkFile, ::boost::shared_ptr< ::fwData::Image > _pImage );
-
     /**
     * @brief the m_bServiceIsConfigured value is \b true
     * if the image path is known.

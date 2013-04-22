@@ -7,15 +7,21 @@
 #ifndef _IOVTK_MESHWRITERSERVICE_HPP_
 #define _IOVTK_MESHWRITERSERVICE_HPP_
 
-#include <string>
 #include <boost/filesystem/path.hpp>
-
-#include <fwServices/ObjectMsg.hpp>
-#include <fwData/Mesh.hpp>
 
 #include <io/IWriter.hpp>
 
 #include "ioVTK/export.hpp"
+
+namespace fwData
+{
+    class Mesh;
+}
+
+namespace fwServices
+{
+    class ObjectMsg;
+}
 
 namespace ioVTK
 {
@@ -46,6 +52,16 @@ public :
     * the file path  using a file selector.
     */
     IOVTK_API virtual void configureWithIHM();
+
+    /**
+     * @brief Save a VTK mesh.
+     * @param[in] meshFile \b const ::boost::filesystem::path.
+     * @param[out] mesh ::boost::shared_ptr< ::fwData::Mesh >.
+     *
+     * This method is used to save a mesh using the file path.
+     */
+    IOVTK_API static void saveMesh( const ::boost::filesystem::path& meshFile, const SPTR(::fwData::Mesh)& mesh );
+
 
 
 protected:
@@ -85,25 +101,14 @@ protected:
     void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
-    * @brief Info method.
-    *
-    * This method is used to give
-    * informations about the service.
-    */
+     * @brief Info method.
+     *
+     * This method is used to give
+     * informations about the service.
+     */
     IOVTK_API void info(std::ostream &_sstream ) ;
 
-
 private :
-
-    /**
-    * @brief Save a VTK image.
-    * @param[in] _vtkFile \b const ::boost::filesystem::path.
-    * @param[out] _pMesh ::boost::shared_ptr< ::fwData::Mesh >.
-    *
-    * This method is used to save an image using the file path.
-    */
-    void saveMesh( const ::boost::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
-
     /**
     * @brief the m_bServiceIsConfigured value is \b true
     * if the image path is known.
@@ -120,3 +125,4 @@ private :
 } // namespace ioVTK
 
 #endif //_IOVTK_MESHWRITERSERVICE_HPP_
+

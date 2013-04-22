@@ -99,7 +99,7 @@ void ImageWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-bool ImageWriterService::saveImage( const ::boost::filesystem::path imgFile, ::boost::shared_ptr< ::fwData::Image > _pImg )
+bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, const SPTR(::fwData::Image)& image )
 {
     SLM_TRACE_FUNC();
     bool bValue = true;
@@ -136,7 +136,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path imgFile, ::b
         FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
     }
 
-    myWriter->setObject(_pImg);
+    myWriter->setObject(image);
 
     try
     {
