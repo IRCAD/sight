@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,6 @@
 
 #include <fwComEd/FloatMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/PatientDBMsg.hpp>
 #include <fwComEd/helper/MsgHelper.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
@@ -77,29 +76,6 @@ void MessagesTest::testImageMsg()
     ::fwData::Integer::sptr intField2 = ::fwData::Integer::dynamicCast(obj);
     CPPUNIT_ASSERT(intField2);
     CPPUNIT_ASSERT_EQUAL(intField, intField2);
-}
-
-//------------------------------------------------------------------------------
-
-void MessagesTest::testPatientDBMsg()
-{
-    const std::string EVENT = ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED;
-
-    ::fwData::PatientDB::NewSptr patientDB;
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-
-    // create message
-    ::fwComEd::PatientDBMsg::NewSptr patientDBMsg;
-    patientDBMsg->addEvent(EVENT, image);
-
-    //check event
-    CPPUNIT_ASSERT(patientDBMsg->hasEvent(EVENT));
-
-    // check data info
-    ::fwData::Object::sptr obj = ::fwData::Object::constCast(patientDBMsg->getDataInfo(EVENT));
-    ::fwData::Image::sptr img = ::fwData::Image::dynamicCast(obj);
-    CPPUNIT_ASSERT(img);
-    CPPUNIT_ASSERT_EQUAL(image, img);
 }
 
 //------------------------------------------------------------------------------

@@ -10,7 +10,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
-#include <fwComEd/PatientMsg.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
 
