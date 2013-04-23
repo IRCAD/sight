@@ -67,7 +67,7 @@
 
             <item key="modelSeries">
                 <object uid="${ORGAN_MANAGER_MODELSERIES}" src="ref" type="::fwMedData::ModelSeries">
-                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiAcquisition::SOrganSeriesListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
+                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" />
                 </object>
             </item>
 

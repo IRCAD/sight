@@ -7,7 +7,6 @@ BUNDLES = [
     'uiVisu_0-1'             ,
     'uiVisuQt_0-1'           ,
     'visuVTKAdaptor_0-1'     ,
-    'uiAcquisitionQt_0-1'    ,
     'uiImageQt_0-1'          ,
     'uiMeasurement_0-1'      ,
     'uiMeasurementQt_0-1'    ,

@@ -129,7 +129,7 @@ void ServiceTest::testServiceCreationWithUUID()
     CPPUNIT_ASSERT(service2);
     CPPUNIT_ASSERT_EQUAL(obj, service2->getObject< ::fwData::Integer >());
     CPPUNIT_ASSERT_EQUAL(myUUID2, service2 ->getID());
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(myUUID3) );
+    CPPUNIT_ASSERT( !::fwTools::fwID::exist(myUUID3) );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::fwServices::ut::TestService").size() );
 
     // Test erasing service

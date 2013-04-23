@@ -8,12 +8,10 @@
 #include <fwData/Float.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwData/Acquisition.hpp>
-#include <fwData/Study.hpp>
-#include <fwData/Patient.hpp>
 #include <fwData/Composite.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
@@ -64,10 +62,10 @@ void GetObjectTest::getTest()
     CPPUNIT_ASSERT_MESSAGE("spacing must be equal" , img2->getSpacing()[2] - 0.001 < zspacing->value() && zspacing->value() < img2->getSpacing()[2] + 0.001 );
 
     // Visit 3
-    ::fwData::Patient::sptr patient1 = ::fwData::Patient::New();
-    patient1->setFirstname( "toto" );
-    ::fwData::String::sptr str= ::fwDataCamp::getObject< ::fwData::String >( patient1, "@firstname" );
-    CPPUNIT_ASSERT_MESSAGE("Firstname must be equal" , patient1->getFirstname() == str->value() );
+    ::fwMedData::Patient::sptr patient1 = ::fwMedData::Patient::New();
+    patient1->setName( "toto" );
+    ::fwData::String::sptr str= ::fwDataCamp::getObject< ::fwData::String >( patient1, "@name" );
+    CPPUNIT_ASSERT_MESSAGE("Name must be equal" , patient1->getName() == str->value() );
 
     // Visit 4
     composite->setField("toto", img1);

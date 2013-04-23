@@ -11,7 +11,6 @@
 #include <boost/filesystem/path.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/Patient.hpp>
 
 #include <io/IWriter.hpp>
 

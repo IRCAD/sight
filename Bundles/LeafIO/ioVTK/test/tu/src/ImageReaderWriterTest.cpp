@@ -237,12 +237,25 @@ void ImageReaderWriterTest::testImageReaderExtension()
 
     ::fwData::Image::NewSptr image;
 
+    {
+        const std::string srvtype("::io::IReader");
+        const std::string srvname("::ioVTK::ImageReaderService");
 
-    CPPUNIT_ASSERT_THROW(
-            this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image),
-            ::fwTools::Failed
-            );
 
+        ::fwServices::IService::sptr srv;
+        srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
+
+        CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
+
+        ::fwServices::OSR::registerService( image , srv );
+
+        CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
+        CPPUNIT_ASSERT_NO_THROW( srv->configure() );
+        CPPUNIT_ASSERT_NO_THROW( srv->start() );
+        CPPUNIT_ASSERT_THROW( srv->update(), ::fwTools::Failed);
+        CPPUNIT_ASSERT_NO_THROW( srv->stop() );
+        ::fwServices::OSR::unregisterService( srv );
+    }
     ::boost::filesystem::remove(file);
 
 }
@@ -497,10 +510,25 @@ void ImageReaderWriterTest::testImageWriterExtension()
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
 
 
-    CPPUNIT_ASSERT_THROW(
-            this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService", getIOConfiguration(file), image),
-            ::fwTools::Failed
-            );
+    {
+        const std::string srvtype("::io::IWriter");
+        const std::string srvname("::ioVTK::ImageWriterService");
+
+
+        ::fwServices::IService::sptr srv;
+        srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
+
+        CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
+
+        ::fwServices::OSR::registerService( image , srv );
+
+        CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
+        CPPUNIT_ASSERT_NO_THROW( srv->configure() );
+        CPPUNIT_ASSERT_NO_THROW( srv->start() );
+        CPPUNIT_ASSERT_THROW( srv->update(), ::fwTools::Failed);
+        CPPUNIT_ASSERT_NO_THROW( srv->stop() );
+        ::fwServices::OSR::unregisterService( srv );
+    }
 }
 
 //------------------------------------------------------------------------------

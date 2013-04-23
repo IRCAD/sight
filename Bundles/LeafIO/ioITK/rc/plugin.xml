@@ -19,13 +19,6 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioITK::VtkPatientDBReaderService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>VTK image Reader (ITK)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioITK::JpgImageWriterService</service>
         <object>::fwData::Image</object>
@@ -37,48 +30,6 @@
         <service>::ioITK::SJpgImageSeriesWriter</service>
         <object>::fwMedData::ImageSeries</object>
         <desc>Image Series Jpeg Writer (ITK)</desc>
-    </extension>
-
-   <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioITK::InrPatientDBReaderService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>Inrimage Reader (ITK/Ircad)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioITK::JpgPatientDBReaderService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>Jpeg Reader (ITK)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioITK::DicomPatientDBReaderService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>Dicom Reader (ITK/gdcm)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioITK::DicomPatientWriterService</service>
-        <object>::fwData::Patient</object>
-        <desc>Dicom Writer (ITK/gdcm)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioITK::DicomPatientDBWriterService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>Dicom Writer (ITK/gdcm)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioITK::DicomImageWriterService</service>
-        <object>::fwData::Image</object>
-        <desc>Dicom Writer (ITK/gdcm)</desc>
     </extension>
 
 </plugin>

@@ -8,10 +8,7 @@
 #include <itkImageFileReader.h>
 
 #include <fwData/Image.hpp>
-#include <fwData/PatientDB.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/Study.hpp>
-#include <fwData/Acquisition.hpp>
+
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/Data.hpp>
@@ -19,7 +16,6 @@
 #include <itkIO/itk.hpp>
 #include <itkIO/JpgImageWriter.hpp>
 #include <itkIO/ImageReader.hpp>
-#include <itkIO/JpgPatientDBReader.hpp>
 
 #include "ImageReaderWriterJPGTest.hpp"
 
@@ -86,26 +82,6 @@ void ImageReaderWriterJPGTest::testImageWriter2()
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
 
     ::boost::filesystem::remove_all( PATH.string() );
-}
-
-//------------------------------------------------------------------------------
-
-void ImageReaderWriterJPGTest::testPatientDBReader()
-{
-    // create a Patient
-    ::boost::filesystem::path pathJPGDir = ::fwTest::Data::dir() / "fw4spl/image/jpg";
-    ::fwData::PatientDB::NewSptr patientDB;
-    ::itkIO::JpgPatientDBReader::NewSptr myReader;
-    myReader->setObject(patientDB);
-    myReader->setFolder(pathJPGDir);
-    CPPUNIT_ASSERT_NO_THROW(myReader->read());
-
-    CPPUNIT_ASSERT_EQUAL(size_t(3), patientDB->getNumberOfPatients());
-    ::fwData::Image::sptr image = patientDB->getPatients().front()->getStudies().front()->getAcquisitions().front()->getImage();
-    CPPUNIT_ASSERT_EQUAL(size_t(3), image->getNumberOfDimensions());
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(512), image->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(256), image->getSize()[1]);
-    CPPUNIT_ASSERT_EQUAL(static_cast< ::fwData::Image::SizeType::value_type >(1), image->getSize()[2]);
 }
 
 //------------------------------------------------------------------------------

@@ -3,6 +3,7 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QCheckBox>
@@ -34,25 +35,27 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiAcquisitionQt/SOrganSeriesListEditor.hpp"
+#include "uiMedDataQt/editor/SModelSeriesList.hpp"
 
-namespace uiAcquisition
+namespace uiMedData
+{
+namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiAcquisition::SOrganSeriesListEditor , ::fwMedData::ModelSeries) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMedData::editor::SModelSeriesList , ::fwMedData::ModelSeries) ;
 
 
-SOrganSeriesListEditor::SOrganSeriesListEditor() throw()
+SModelSeriesList::SModelSeriesList() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-SOrganSeriesListEditor::~SOrganSeriesListEditor() throw()
+SModelSeriesList::~SModelSeriesList() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::starting() throw(::fwTools::Failed)
+void SModelSeriesList::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -79,7 +82,7 @@ void SOrganSeriesListEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::stopping() throw(::fwTools::Failed)
+void SModelSeriesList::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
@@ -92,7 +95,7 @@ void SOrganSeriesListEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::configuring() throw(fwTools::Failed)
+void SModelSeriesList::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -100,7 +103,7 @@ void SOrganSeriesListEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::updating() throw(::fwTools::Failed)
+void SModelSeriesList::updating() throw(::fwTools::Failed)
 {
     this->updateReconstructions();
     this->refreshVisibility();
@@ -108,13 +111,13 @@ void SOrganSeriesListEditor::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::swapping() throw(::fwTools::Failed)
+void SModelSeriesList::swapping() throw(::fwTools::Failed)
 {
     this->updating();
 }
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void SModelSeriesList::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::ModelSeriesMsg::csptr acquisitionMsg = ::fwComEd::ModelSeriesMsg::dynamicConstCast( msg ) ;
     if ( acquisitionMsg )
@@ -136,13 +139,13 @@ void SOrganSeriesListEditor::receiving( ::fwServices::ObjectMsg::csptr msg ) thr
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::info( std::ostream &_sstream )
+void SModelSeriesList::info( std::ostream &_sstream )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::updateReconstructions()
+void SModelSeriesList::updateReconstructions()
 {
     m_organChoice->blockSignals(true);
     m_organChoice->clear();
@@ -183,7 +186,7 @@ void SOrganSeriesListEditor::updateReconstructions()
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::onCurrentItemChanged( QListWidgetItem * current, QListWidgetItem * previous )
+void SModelSeriesList::onCurrentItemChanged( QListWidgetItem * current, QListWidgetItem * previous )
 {
     SLM_ASSERT( "Current selected item is null", current );
 
@@ -203,7 +206,7 @@ void SOrganSeriesListEditor::onCurrentItemChanged( QListWidgetItem * current, QL
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::onOrganChoiceVisibility(QListWidgetItem * item )
+void SModelSeriesList::onOrganChoiceVisibility(QListWidgetItem * item )
 {
     std::string organSelected = item->text().toStdString();
     ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
@@ -223,7 +226,7 @@ void SOrganSeriesListEditor::onOrganChoiceVisibility(QListWidgetItem * item )
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::onShowReconstructions(int state )
+void SModelSeriesList::onShowReconstructions(int state )
 {
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
@@ -237,7 +240,7 @@ void SOrganSeriesListEditor::onShowReconstructions(int state )
 
 //------------------------------------------------------------------------------
 
-void SOrganSeriesListEditor::refreshVisibility()
+void SModelSeriesList::refreshVisibility()
 {
     int item = 0;
     for( OrganNameReconstruction::iterator iter = m_map.begin(); iter != m_map.end(); ++iter, ++item )
@@ -247,5 +250,6 @@ void SOrganSeriesListEditor::refreshVisibility()
     }
 }
 
-}
+} // namespace editor
+} // namespace uiMedData
 

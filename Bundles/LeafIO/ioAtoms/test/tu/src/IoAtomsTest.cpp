@@ -6,12 +6,8 @@
 
 #include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/PatientDB.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwDataTools/Patient.hpp>
 
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -48,21 +44,6 @@ void IoAtomsTest::tearDown()
 }
 
 //------------------------------------------------------------------------------
-
-::fwData::Composite::sptr genWorkspace()
-{
-    ::fwData::Composite::sptr workspace = ::fwData::Composite::New();
-    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
-    ::fwData::Patient::sptr patient  = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient, 2, 2, 2);
-    patientDB->addPatient( patient );
-    workspace->getContainer()["patientDB"] = patientDB;
-    workspace->getContainer()["processingDB"] = ::fwData::Composite::New();
-    workspace->getContainer()["planningDB"] = ::fwData::Composite::New();
-
-    return workspace;
-}
-
 
 template <typename T>
 void compareLog(T &comparator)
@@ -116,7 +97,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 template <typename T>
 void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const SPTR(T) &obj,
-                                 const std::string &writer, const std::string &reader)
+                   const std::string &writer, const std::string &reader)
 {
     write(srvCfg, obj, writer);
 
@@ -132,54 +113,6 @@ void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const
     CPPUNIT_ASSERT_MESSAGE("Objects not equal" , visitor.getDifferences()->empty() );
 }
 
-
-//------------------------------------------------------------------------------
-
-void medicalDataTest(const ::boost::filesystem::path & filePath)
-{
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("file");
-    fileCfg->setValue(filePath.string());
-    srvCfg->addConfigurationElement(fileCfg);
-
-    ::boost::filesystem::create_directories( filePath.parent_path() );
-    writeReadFile< ::fwData::Composite>( srvCfg, genWorkspace(), "::ioAtoms::SMedDataWriter",  "::ioAtoms::SMedDataReader" );
-}
-//------------------------------------------------------------------------------
-
-void IoAtomsTest::JSONMedicalDataTest()
-{
-    medicalDataTest(::fwTools::System::getTemporaryFolder() / "JSONMedicalDataTest" / "ioAtomsTest.json");
-}
-
-//------------------------------------------------------------------------------
-
-void IoAtomsTest::JSONZMedicalDataTest()
-{
-    medicalDataTest(::fwTools::System::getTemporaryFolder() / "JSONMedicalDataTest" / "ioAtomsTest.jsonz");
-}
-
-//------------------------------------------------------------------------------
-
-void IoAtomsTest::XMLMedicalDataTest()
-{
-    medicalDataTest(::fwTools::System::getTemporaryFolder() / "JSONMedicalDataTest" / "ioAtomsTest.xml");
-}
-
-//------------------------------------------------------------------------------
-
-void IoAtomsTest::XMLZMedicalDataTest()
-{
-    medicalDataTest(::fwTools::System::getTemporaryFolder() / "JSONMedicalDataTest" / "ioAtomsTest.xmlz");
-}
-
-//------------------------------------------------------------------------------
-
-void IoAtomsTest::HDF5MedicalDataTest()
-{
-    medicalDataTest(::fwTools::System::getTemporaryFolder() / "JSONMedicalDataTest" / "ioAtomsTest.hdf5");
-}
-
 //------------------------------------------------------------------------------
 
 void atomTest(const ::boost::filesystem::path & filePath)
@@ -189,8 +122,10 @@ void atomTest(const ::boost::filesystem::path & filePath)
     fileCfg->setValue(filePath.string());
     srvCfg->addConfigurationElement(fileCfg);
 
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwTest::generator::SeriesDB::createSeriesDB(5,5,5);
-    ::fwData::Composite::sptr workspace = genWorkspace();
+    ::fwMedData::SeriesDB::sptr seriesDB = ::fwTest::generator::SeriesDB::createSeriesDB(2,2,2);
+    ::fwData::Composite::sptr workspace = ::fwData::Composite::New();
+    workspace->getContainer()["processingDB"] = ::fwData::Composite::New();
+    workspace->getContainer()["planningDB"] = ::fwData::Composite::New();
 
     ::boost::filesystem::create_directories( filePath.parent_path() );
     writeReadFile< ::fwData::Composite>( srvCfg, workspace, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );

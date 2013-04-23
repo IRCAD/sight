@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,7 +59,7 @@ void ImageInfo::starting() throw(::fwTools::Failed)
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
-    QLabel* staticText = new QLabel( tr("intensity:"), container);
+    QLabel* staticText = new QLabel( QObject::tr("intensity:"), container);
     hLayout->addWidget( staticText, 0, Qt::AlignVCenter );
 
     m_valueText = new QLineEdit( container );

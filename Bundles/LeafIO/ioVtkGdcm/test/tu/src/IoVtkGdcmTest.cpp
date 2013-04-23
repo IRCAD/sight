@@ -19,8 +19,6 @@
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwData/PatientDB.hpp>
-
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
@@ -28,6 +26,7 @@
 
 #include <fwTest/generator/SeriesDB.hpp>
 #include <fwTest/generator/Image.hpp>
+#include <fwTest/helper/compare.hpp>
 #include <fwTest/Data.hpp>
 
 #include "IoVtkGdcmTest.hpp"
@@ -53,20 +52,6 @@ void IoVtkGdcmTest::setUp()
 void IoVtkGdcmTest::tearDown()
 {
     // Clean up after the test run.
-}
-
-//------------------------------------------------------------------------------
-
-void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
-{
-    ::fwDataCamp::visitor::CompareObjects visitor;
-    visitor.compare(objRef, objComp);
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
-    {
-        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
-    }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -130,18 +115,42 @@ void IoVtkGdcmTest::seriesDBReaderTest()
     CPPUNIT_ASSERT(imgSeries);
     ::fwData::Image::csptr fisrtImage = imgSeries->getImage();
 
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on image dimension.", fisrtImage->getNumberOfDimensions(), imgDimensionExpected);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on X ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[0]), imgOriginExpected[0]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Y ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[1]), imgOriginExpected[1]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Z ", static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[2]), imgOriginExpected[2]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window center ", fisrtImage->getWindowCenter(), imgWindowCenter);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window width ", fisrtImage->getWindowWidth(), imgWindowWidth);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size x ", static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[0]), static_cast< ::fwData::Image::SizeType::value_type > (imgSizeX_Expected));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size y ", static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[1]), static_cast< ::fwData::Image::SizeType::value_type > (imgSizeY_Expected));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size z ", static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[2]), static_cast< ::fwData::Image::SizeType::value_type > (imgSizeZ_Expected));
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing x ", static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[0]), imgSpacingX);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing y ", static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[1]), imgSpacingY);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing z ", static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[2]), imgSpacingZ);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on image dimension.",
+                                fisrtImage->getNumberOfDimensions(),
+                                imgDimensionExpected);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on X ",
+                                static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[0]),
+                                imgOriginExpected[0]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Y ",
+                                static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[1]),
+                                imgOriginExpected[1]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Z ",
+                                static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[2]),
+                                imgOriginExpected[2]);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window center ",
+                                fisrtImage->getWindowCenter(),
+                                imgWindowCenter);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window width ",
+                                fisrtImage->getWindowWidth(),
+                                imgWindowWidth);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size x ",
+                                static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[0]),
+                                static_cast< ::fwData::Image::SizeType::value_type > (imgSizeX_Expected));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size y ",
+                                static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[1]),
+                                static_cast< ::fwData::Image::SizeType::value_type > (imgSizeY_Expected));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size z ",
+                                static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[2]),
+                                static_cast< ::fwData::Image::SizeType::value_type > (imgSizeZ_Expected));
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing x ",
+                                static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[0]),
+                                imgSpacingX);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing y ",
+                                static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[1]),
+                                imgSpacingY);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing z ",
+                                static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[2]),
+                                imgSpacingZ);
 }
 
 //------------------------------------------------------------------------------
@@ -195,7 +204,7 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
     // check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->getContainer().size());
 
-    compare(imgSeries, seriesDB->getContainer().front());
+    CPPUNIT_ASSERT(::fwTest::helper::compare(imgSeries, seriesDB->getContainer().front()));
 }
 
 //------------------------------------------------------------------------------

@@ -12,11 +12,8 @@
 #include <fwData/Array.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/Dictionary.hpp>
-#include <fwData/DictionaryOrgan.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Node.hpp>
-#include <fwData/PatientDB.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/Port.hpp>

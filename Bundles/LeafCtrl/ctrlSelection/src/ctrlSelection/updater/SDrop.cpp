@@ -6,7 +6,6 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Acquisition.hpp>
 
 #include <fwComEd/helper/Composite.hpp>
 
@@ -55,13 +54,7 @@ void SDrop::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::
 
             ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
             helper.clear();
-            if(object->isA("::fwData::Acquisition"))
-            {
-                ::fwData::Acquisition::sptr acq = ::fwData::Acquisition::dynamicCast(object);
-                helper.add("acquisition", object);
-                helper.add("image", acq->getImage());
-            }
-            else if(object->isA("::fwData::Image"))
+            if(object->isA("::fwData::Image"))
             {
                 helper.add("image", object);
             }

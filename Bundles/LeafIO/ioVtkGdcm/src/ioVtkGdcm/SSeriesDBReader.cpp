@@ -12,7 +12,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
-//#include <fwComEd/PatientDBMsg.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
 
@@ -170,13 +169,13 @@ void SSeriesDBReaderService::updating() throw(::fwTools::Failed)
 void SSeriesDBReaderService::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr pDPDB = this->getObject< ::fwMedData::SeriesDB >() ;
-    SLM_ASSERT("pDPDB not instanced", pDPDB);
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
+    SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
-    //::fwComEd::PatientDBMsg::NewSptr msg;
-    //msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT );
+    ::fwComEd::SeriesDBMsg::NewSptr msg;
+    msg->addEvent( ::fwComEd::SeriesDBMsg::ADDED_OBJECTS );
 
-    //::fwServices::IEditionService::notify(this->getSptr(),  pDPDB, msg);
+    ::fwServices::IEditionService::notify(this->getSptr(),  seriesDB, msg);
 }
 
 //-----------------------------------------------------------------------------

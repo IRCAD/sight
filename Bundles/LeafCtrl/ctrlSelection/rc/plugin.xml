@@ -7,42 +7,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::AcqFromPDBUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::ImageFromPDBUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::AcqFromPDBSelectorUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::PSAFromPDBSelectorUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::ImageFromPDBSelectorUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
         <service>::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater</service>
         <object>::fwData::Composite</object>
     </extension>
@@ -123,12 +87,6 @@
         <type>::ctrlSelection::IWrapperSrv</type>
         <service>::ctrlSelection::wrapper::ImageWrapperSrv</service>
         <object>::fwData::Image</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IWrapperSrv</type>
-        <service>::ctrlSelection::wrapper::PatientDBWrapperSrv</service>
-        <object>::fwData::PatientDB</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

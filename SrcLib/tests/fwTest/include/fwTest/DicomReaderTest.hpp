@@ -7,14 +7,7 @@
 #ifndef __FWTEST__DICOMREADERTEST_HPP__
 #define __FWTEST__DICOMREADERTEST_HPP__
 
-#include <fwData/Patient.hpp>
-
 #include "fwTest/config.hpp"
-
-namespace fwData
-{
-    class Patient;
-}
 
 namespace fwMedData
 {
@@ -42,7 +35,6 @@ public:
      * This file is located here on test database : "fw4spl/Patient/Dicom/ACHGenou",
      * its represents a CT image of a knee ( 400 slices ).
      */
-    FWTEST_API static bool checkPatientACHGenou( const SPTR(::fwData::Patient) &patient );
     FWTEST_API static bool checkSeriesACHGenou( const SPTR(::fwMedData::ImageSeries) &series );
 };
 

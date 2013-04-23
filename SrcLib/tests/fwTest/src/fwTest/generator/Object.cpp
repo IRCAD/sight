@@ -12,7 +12,6 @@
 
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
-#include <fwData/DictionaryOrgan.hpp>
 #include <fwData/Resection.hpp>
 #include <fwData/ResectionDB.hpp>
 #include <fwData/Plane.hpp>

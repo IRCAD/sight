@@ -1,48 +1,57 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_
-#define _UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_
+#ifndef _UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
+#define _UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
 
 #include <QPointer>
 #include <QObject>
 
 #include <fwTools/Failed.hpp>
 
-#include <fwData/Reconstruction.hpp>
-
 #include <gui/editor/IEditor.hpp>
 
-#include "uiAcquisitionQt/config.hpp"
+#include "uiMedDataQt/config.hpp"
 
 class QListWidget;
 class QCheckBox;
 class QListWidgetItem;
 
-namespace uiAcquisition
+namespace fwData
+{
+    class Reconstruction;
+}
+
+namespace fwServices
+{
+    class ObjectMsg;
+}
+
+namespace uiMedData
+{
+namespace editor
 {
 
 /**
- * @brief   OrganListEditor service.
- * @class   OrganListEditor.
- * @author  IRCAD (Research and Development Team).
- * @date    2010.
+ * @brief   SModelSeriesList service.
+ * @class   SModelSeriesList.
+ * @date    2013.
  */
-class UIACQUISITIONQT_CLASS_API OrganListEditor :  public QObject, public ::gui::editor::IEditor
+class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject, public ::gui::editor::IEditor
 {
     Q_OBJECT
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (OrganListEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesList)(::gui::editor::IEditor) ) ;
 
     /// Constructor. Do nothing.
-    UIACQUISITIONQT_API OrganListEditor() throw() ;
+    UIMEDDATAQT_API SModelSeriesList() throw() ;
 
     /// Destructor. Do nothing.
-    UIACQUISITIONQT_API virtual ~OrganListEditor() throw() ;
+    UIMEDDATAQT_API virtual ~SModelSeriesList() throw() ;
 
 protected:
 
@@ -53,7 +62,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Managment of observations ( overides )
-    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( SPTR(const ::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 
@@ -64,7 +73,7 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-    typedef std::map< std::string, ::fwData::Reconstruction::sptr > OrganNameReconstruction;
+    typedef std::map< std::string, SPTR(::fwData::Reconstruction) > OrganNameReconstruction;
 
     void updateReconstructions();
 
@@ -86,8 +95,9 @@ private:
 
 };
 
-} // uiAcquisition
+} // namespace editor
+} // namespace uiMedData
 
-#endif /*_UIACQUISITIONQT_ORGAN_LIST_EDITOR_HPP_*/
+#endif /*_UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__*/
 
 

@@ -11,8 +11,6 @@
 #include <fwServices/macros.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwData/PatientDB.hpp>
-
 namespace vtkGdcmIO
 {
 namespace ut

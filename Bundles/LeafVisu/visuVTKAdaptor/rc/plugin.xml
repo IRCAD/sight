@@ -47,12 +47,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
-        <service>::visuVTKAdaptor::Acquisition</service>
-        <object>::fwData::Acquisition</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ResectionDB</service>
         <object>::fwData::ResectionDB</object>
     </extension>

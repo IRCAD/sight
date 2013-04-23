@@ -7,14 +7,11 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/vector.hpp>
 
-#include <fwData/Acquisition.hpp>
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/Camera.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/Dictionary.hpp>
-#include <fwData/DictionaryOrgan.hpp>
 #include <fwData/Edge.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Graph.hpp>
@@ -28,8 +25,6 @@
 #include <fwData/Model.hpp>
 #include <fwData/Node.hpp>
 #include <fwData/Object.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/PatientDB.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 #include <fwData/Point.hpp>
@@ -45,7 +40,6 @@
 #include <fwData/String.hpp>
 #include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/Study.hpp>
 #include <fwData/Tag.hpp>
 #include <fwData/TransferFunction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -88,7 +82,6 @@ void CopyTest::tearDown()
 
 void CopyTest::fieldCopyTest()
 {
-    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Acquisition);
     __FWDATA_UT_FIELD_DEEP_COPY_MACRO(::fwData::Array);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Boolean);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Color);
@@ -104,8 +97,6 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::location::SingleFile);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Material);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Mesh);
-    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Patient);
-    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::PatientDB);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Plane);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::PlaneList);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Point);
@@ -114,7 +105,6 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Resection);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::ResectionDB);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::String);
-    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Study);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransferFunction);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransformationMatrix3D);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TriangularMesh);
@@ -122,8 +112,6 @@ void CopyTest::fieldCopyTest()
 
 //Not implemented !?
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Camera);
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Dictionary);
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::DictionaryOrgan);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Edge);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Model);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Node);

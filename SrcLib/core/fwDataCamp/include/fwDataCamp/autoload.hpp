@@ -14,7 +14,6 @@
 #include <fwData/Camera.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/Dictionary.hpp>
 #include <fwData/Edge.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Graph.hpp>
@@ -26,8 +25,6 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Model.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/PatientDB.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 #include <fwData/Point.hpp>
@@ -42,7 +39,6 @@
 #include <fwData/String.hpp>
 #include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/Study.hpp>
 #include <fwData/Tag.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
@@ -75,11 +71,7 @@ struct runner
         localDeclarefwDataMaterialSHADING_MODE();
         localDeclarefwDataMaterial();
         localDeclarefwDataReconstruction();
-        localDeclarefwDataAcquisition();
-        localDeclarefwDataStudy();
         localDeclarefwDataComposite();
-        localDeclarefwDataPatient();
-        localDeclarefwDataPatientDB();
         localDeclarefwDataPoint();
         localDeclarefwDataPointList();
         localDeclarefwDataTransformationMatrix3D();
@@ -101,8 +93,6 @@ struct runner
         localDeclarefwDataResection();
         localDeclarefwDataResectionDB();
         localDeclarefwDataCamera();
-        localDeclarefwDataDictionary();
-        localDeclarefwDataDictionaryOrgan();
         localDeclarefwDataHistogram();
         localDeclarefwDataLine();
         localDeclarefwDataList();

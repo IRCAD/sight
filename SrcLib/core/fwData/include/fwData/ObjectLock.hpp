@@ -13,7 +13,6 @@
 #include "fwData/Array.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Reconstruction.hpp"
-#include "fwData/Acquisition.hpp"
 
 #include "fwData/config.hpp"
 
@@ -50,7 +49,6 @@ private :
     void lock( ::fwData::Image::sptr image, LocksType & locks );
     void lock( ::fwData::Mesh::sptr mesh, LocksType & locks );
     void lock( ::fwData::Reconstruction::sptr rec, LocksType & locks );
-    void lock( ::fwData::Acquisition::sptr acq, LocksType & locks );
 
     LocksType m_locks;
     ObjectsType m_objects;

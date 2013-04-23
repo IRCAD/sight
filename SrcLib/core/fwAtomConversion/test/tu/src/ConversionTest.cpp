@@ -18,10 +18,6 @@
 #include <fwData/Vector.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwData/Acquisition.hpp>
-#include <fwData/Study.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/PatientDB.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
@@ -103,10 +99,7 @@ void ConversionTest::dataToAtomTest()
             ::fwData::Mesh::New(),
             ::fwData::Material::New(),
             ::fwData::Reconstruction::New(),
-            ::fwData::Acquisition::New(),
-            ::fwData::Study::New(),
             ::fwData::Composite::New(),
-            ::fwData::Patient::New(),
             ::fwData::Point::New(),
             ::fwData::PointList::New(),
             ::fwData::TransformationMatrix3D::New(),
@@ -156,9 +149,7 @@ void ConversionTest::dataToAtomTest()
                             ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_colors" ) ) ||
                             ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_normals" ) ) ||
                             ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "image" ) ) ||
-                            ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "mesh" ) ) ||
-                            ( ( classname == "::fwData::Acquisition" ) && ( attribute == "image" ) ) ||
-                            ( ( classname == "::fwData::Acquisition" ) && ( attribute == "struct_anat" ) ) )
+                            ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "mesh" ) ) )
                     {
                         CPPUNIT_ASSERT(!elem.second);
                     }

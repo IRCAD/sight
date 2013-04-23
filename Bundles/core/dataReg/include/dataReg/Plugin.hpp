@@ -17,8 +17,6 @@ namespace dataReg
 /**
  * @brief   This class is started when the bundles is loaded.
  * @class   Plugin.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
  */
 struct DATAREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

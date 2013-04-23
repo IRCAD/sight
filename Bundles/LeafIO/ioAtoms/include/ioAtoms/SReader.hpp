@@ -10,7 +10,6 @@
 #include <io/IReader.hpp>
 
 #include "ioAtoms/config.hpp"
-#include "ioAtoms/SMedDataWriter.hpp"
 
 namespace ioAtoms
 {

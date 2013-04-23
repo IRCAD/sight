@@ -15,13 +15,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioVTK::ReconstructionWriterService</service>
-        <object>::fwData::Acquisition</object>
-        <desc>Reconstructions Writer (VTK)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
         <service>::ioVTK::ImageWriterService</service>
         <object>::fwData::Image</object>
         <desc>VTK Image Writer (VTK)</desc>
@@ -81,13 +74,6 @@
         <service>::ioVTK::SModelSeriesObjWriter</service>
         <object>::fwMedData::ModelSeries</object>
         <desc>Wavefront OBJ files (VTK)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioVTK::VtkPatientDBReaderService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>VTK Image Reader (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

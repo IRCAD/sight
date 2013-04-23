@@ -18,7 +18,6 @@
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/Acquisition.hpp>
 
 #include "ctrlSelection/manager/SwapperSrv.hpp"
 
@@ -96,7 +95,7 @@ void SwapperSrv::info( std::ostream &_sstream )
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
-{    
+{
     SLM_TRACE_FUNC();
 
     while( !m_objectConnections.empty())

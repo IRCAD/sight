@@ -13,9 +13,6 @@
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/PatientDB.hpp>
-#include <fwData/Study.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
@@ -144,32 +141,6 @@ void IoItkTest::testImageWriterJPG()
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::testPatientDBReaderJPG()
-{
-    // create a Patient
-    ::boost::filesystem::path pathJPGDir = ::fwTest::Data::dir() / "fw4spl/image/jpg";
-    ::fwData::PatientDB::NewSptr patientDB;
-
-    // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr folderCfg("folder");
-    folderCfg->setValue(pathJPGDir.string());
-    srvCfg->addConfigurationElement(folderCfg);
-
-    // Create and execute service
-    this->executeService( patientDB, "::io::IReader", "::ioITK::JpgPatientDBReaderService", srvCfg );
-
-    CPPUNIT_ASSERT_EQUAL(size_t(3),patientDB->getNumberOfPatients());
-    ::fwData::Image::sptr image
-        = patientDB->getPatients().front()->getStudies().front()->getAcquisitions().front()->getImage();
-    CPPUNIT_ASSERT_EQUAL(size_t(3),image->getNumberOfDimensions());
-    CPPUNIT_ASSERT_EQUAL(::fwData::Image::SizeType::value_type(512), image->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(::fwData::Image::SizeType::value_type(256), image->getSize()[1]);
-    CPPUNIT_ASSERT_EQUAL(::fwData::Image::SizeType::value_type(1), image->getSize()[2]);
-}
-
-//------------------------------------------------------------------------------
-
 double tolerance(double num)
 {
     return std::floor(num * 100. + .5) / 100.;
@@ -209,58 +180,6 @@ void IoItkTest::testSaveLoadInr()
 
     // check Image
     compare(image, image2);
-}
-
-//------------------------------------------------------------------------------
-
-void IoItkTest::testLoadInr()
-{
-    // path on inr
-    ::boost::filesystem::path file1 = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
-    ::boost::filesystem::path file2 = ::fwTest::Data::dir() / "fw4spl/image/inr/skin.inr.gz";
-    ::boost::filesystem::path folder = ::fwTest::Data::dir() / "fw4spl/image/inr";
-
-
-
-    // Create Config 1
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("file");
-    fileCfg->setValue(file1.string());
-    srvCfg->addConfigurationElement(fileCfg);
-
-    // Create and execute service
-    ::fwData::PatientDB::NewSptr patientDB;
-    this->executeService( patientDB, "::io::IReader", "::ioITK::InrPatientDBReaderService", srvCfg );
-    CPPUNIT_ASSERT_EQUAL(size_t(1), patientDB->getNumberOfPatients());
-
-
-
-    // Create Config 2
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg2("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg2a("file");
-    fileCfg2a->setValue(file1.string());
-    srvCfg2->addConfigurationElement(fileCfg2a);
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg2b("file");
-    fileCfg2b->setValue(file2.string());
-    srvCfg2->addConfigurationElement(fileCfg2b);
-
-    // Create and execute service
-    ::fwData::PatientDB::NewSptr patientDB2;
-    this->executeService( patientDB2, "::io::IReader", "::ioITK::InrPatientDBReaderService", srvCfg2 );
-    CPPUNIT_ASSERT_EQUAL(size_t(2),patientDB2->getNumberOfPatients());
-
-
-
-    // Create Config 3
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg3("service");
-    ::fwRuntime::EConfigurationElement::NewSptr folderCfg3("folder");
-    folderCfg3->setValue(folder.string());
-    srvCfg3->addConfigurationElement(folderCfg3);
-
-    // Create and execute service
-    ::fwData::PatientDB::NewSptr patientDB3;
-    this->executeService( patientDB3, "::io::IReader", "::ioITK::InrPatientDBReaderService", srvCfg3 );
-    CPPUNIT_ASSERT_EQUAL(size_t(2),patientDB3->getNumberOfPatients());
 }
 
 //------------------------------------------------------------------------------

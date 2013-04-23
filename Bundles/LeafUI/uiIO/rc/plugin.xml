@@ -11,13 +11,6 @@
         <service>::uiIO::editor::IOSelectorService</service>
         <object>::fwData::Object</object>
     </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::uiIO::action::ExportAcquisition</service>
-        <object>::fwData::PatientDB</object>
-        <desc>Export acquisition</desc>
-    </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>

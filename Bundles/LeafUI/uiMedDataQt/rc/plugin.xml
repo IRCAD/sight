@@ -26,6 +26,18 @@
         <service>::uiMedData::action::SExportSeries</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SModelSeriesList</service>
+        <object>::fwMedData::ModelSeries</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SOrganTransformation</service>
+        <object>::fwMedData::ModelSeries</object>
+    </extension>
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>2DSimpleConfig</id>

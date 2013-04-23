@@ -15,7 +15,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include "fwComEd/PatientDBMsg.hpp"
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
 
@@ -169,22 +168,6 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage)
-{
-    SLM_ASSERT("pPatient pointer null", pPatient);
-    SLM_ASSERT("pImage pointer null", pImage);
-
-    std::stringstream label;
-    ::fwData::Integer::sptr intField = pPatient->setDefaultField( ::fwComEd::Dictionary::m_acquisitionCountId , ::fwData::Integer::New(0));
-    label << "I" << intField->value();
-    ++(intField->value());
-
-    ::fwData::String::NewSptr labelField(label.str());
-    pImage->setField(::fwComEd::Dictionary::m_imageLabelId, labelField);
-}
-
-//------------------------------------------------------------------------------
-
 ::fwData::Image::sptr MedicalImageHelpers::initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize)
 {
     SLM_ASSERT("Image source must be initialized", imgSrc);
@@ -204,73 +187,6 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
     imgToInitialize->allocate();
 
     return imgToInitialize;
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patientDBFrom, ::fwData::PatientDB::sptr _patientDBTo, ::fwServices::IService::sptr _msgSender )
-{
-    // Add new patient DB to patient DB container
-
-    // Test if the patient db contain patient
-    bool hasOldPatients = ! _patientDBTo->getPatients().empty();
-    bool hasNewPatients = ! _patientDBFrom->getPatients().empty();
-
-    int index = 0;
-
-    BOOST_FOREACH( ::fwData::Patient::sptr patient, _patientDBFrom->getPatients() )
-    {
-        BOOST_FOREACH( ::fwData::Study::sptr study, patient->getStudies() )
-        {
-            BOOST_FOREACH( ::fwData::Acquisition::sptr acq, study->getAcquisitions() )
-            {
-                BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, acq->getReconstructions() )
-                {
-                    ::fwData::Image::sptr image;
-                    reconstruction->setImage( image );
-                }
-            }
-        }
-
-        bool patientExist = false;
-        index = 0;
-        BOOST_FOREACH( ::fwData::Patient::sptr oldPatient, _patientDBTo->getPatients() )
-        {
-            if (    patient->getName()      == oldPatient->getName() &&
-                    patient->getFirstname() == oldPatient->getFirstname() &&
-                    patient->getIsMale()    == oldPatient->getIsMale() )
-            {
-                patientExist = true;
-                BOOST_FOREACH( ::fwData::Study::sptr study, patient->getStudies() )
-                {
-                    oldPatient->addStudy(study);
-                }
-                break;
-            }
-            ++index;
-        }
-        if ( !patientExist )
-        {
-            _patientDBTo->addPatient( patient );
-        }
-    }
-
-    if( hasNewPatients )
-    {
-        // Notify modifications
-        ::fwComEd::PatientDBMsg::NewSptr msg;
-        if( hasOldPatients )
-        {
-            msg->addEvent(::fwComEd::PatientDBMsg::ADD_PATIENT, ::fwData::Integer::New(index));
-            msg->addEvent(::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT);
-        }
-        else
-        {
-            msg->addEvent(::fwComEd::PatientDBMsg::NEW_PATIENT);
-            msg->addEvent(::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT);
-        }
-        ::fwServices::IEditionService::notify( _msgSender, _patientDBTo, msg);
-    }
 }
 
 //------------------------------------------------------------------------------

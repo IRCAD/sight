@@ -8,7 +8,6 @@
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/PatientDB.hpp>
 
 #include <fwComEd/FloatMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>

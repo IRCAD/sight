@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,7 +61,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
-    QLabel* staticText = new QLabel( tr("Transparency: "), container);
+    QLabel* staticText = new QLabel( QObject::tr("Transparency: "), container);
     hLayout->addWidget( staticText, 0, Qt::AlignVCenter );
 
     m_valueSlider = new QSlider( Qt::Horizontal, container );
@@ -69,7 +69,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     m_valueSlider->setRange(0, 100);
     m_valueSlider->setMinimumWidth(100);
 
-    m_valueCheckBox = new QCheckBox( tr("visible"), container);
+    m_valueCheckBox = new QCheckBox( QObject::tr("visible"), container);
     m_action = new QAction(container);
     m_action->setCheckable(true);
     if (!m_shortcut.empty())

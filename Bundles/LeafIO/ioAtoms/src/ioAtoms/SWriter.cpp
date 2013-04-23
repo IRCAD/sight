@@ -13,7 +13,6 @@
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwData/Composite.hpp>
-#include <fwData/PatientDB.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
 

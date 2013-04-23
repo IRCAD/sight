@@ -15,12 +15,6 @@ namespace ut
 class IoAtomsTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( IoAtomsTest );
-    CPPUNIT_TEST( JSONMedicalDataTest );
-    CPPUNIT_TEST( JSONZMedicalDataTest );
-    CPPUNIT_TEST( XMLMedicalDataTest );
-    CPPUNIT_TEST( XMLZMedicalDataTest );
-    CPPUNIT_TEST( HDF5MedicalDataTest );
-
     CPPUNIT_TEST( JSONTest );
     CPPUNIT_TEST( JSONZTest );
     CPPUNIT_TEST( XMLTest );
@@ -33,12 +27,6 @@ public:
     // interface
     void setUp();
     void tearDown();
-
-    void JSONMedicalDataTest();
-    void JSONZMedicalDataTest();
-    void XMLMedicalDataTest();
-    void XMLZMedicalDataTest();
-    void HDF5MedicalDataTest();
 
     void JSONTest();
     void JSONZTest();

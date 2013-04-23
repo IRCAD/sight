@@ -7,9 +7,6 @@
 #ifndef _CTRLSELECTION_SDROP_HPP_
 #define _CTRLSELECTION_SDROP_HPP_
 
-#include <fwData/Acquisition.hpp>
-#include <fwData/PatientDB.hpp>
-
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
 

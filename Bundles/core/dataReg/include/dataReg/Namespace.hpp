@@ -10,9 +10,6 @@
 /**
  * @brief       The namespace dataReg (data registration) contains classes which describes all types of data existing in FW4SPL.
  * @namespace   dataReg
- * @author      IRCAD (Research and Development Team).
- * @date        2009-2010.
- *
  */
 namespace dataReg
 {
