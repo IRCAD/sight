@@ -35,7 +35,7 @@ void ActivitySeries::shallowCopy(const ::fwData::Object::csptr &_source)
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldShallowCopy( _source );
+    this->::fwMedData::Series::shallowCopy(_source);
     m_attrActivityConfigId = other->m_attrActivityConfigId;
     m_attrData = other->m_attrData;
 }
@@ -49,7 +49,8 @@ void ActivitySeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, Deep
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldDeepCopy( _source, cache );
+    this->::fwMedData::Series::cachedDeepCopy(_source, cache);
+
     m_attrActivityConfigId = other->m_attrActivityConfigId;
     m_attrData = ::fwData::Object::copy(other->m_attrData, cache);
 }

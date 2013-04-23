@@ -34,7 +34,7 @@ void ModelSeries::shallowCopy(const ::fwData::Object::csptr &_source)
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldShallowCopy( other );
+    this->::fwMedData::Series::shallowCopy(_source);
 
     m_attrReconstructionDB = other->m_attrReconstructionDB;
 }
@@ -48,7 +48,7 @@ void ModelSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
             "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
             + " to " + this->getClassname()), !bool(other) );
 
-    this->fieldDeepCopy( other, cache );
+    this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
     m_attrReconstructionDB = other->m_attrReconstructionDB;
 }
