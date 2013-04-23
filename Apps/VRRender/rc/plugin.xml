@@ -144,7 +144,7 @@
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="::ioXML::FwXMLGenericReaderService" />
-            <addSelection service="::ioAtoms::SMedDataReader" />
+            <addSelection service="::ioAtoms::SReader" />
             <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericReaderService" />
         </config>
     </extension>
