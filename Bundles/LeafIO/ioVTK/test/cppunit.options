@@ -1,6 +1,7 @@
 CLASSTEST=[
           'ImageReaderWriterTest',
           'SeriesDBReaderTest',
+          'ModelSeriesWriterTest',
           ]
 USE = []
 LIB = [
@@ -9,7 +10,8 @@ LIB = [
       'fwData_0-1',
       'fwMedData_0-1',
       'fwTools_0-1',
-      'fwDataTools_0-1'
+      'fwDataTools_0-1',
+      'fwDataCamp_0-1',
       ]
 
 REQUIREMENTS = ['dataReg_0-1', 'servicesReg_0-1', 'io_0-1', 'ioVTK_0-1']

@@ -5,19 +5,26 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fstream>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwTools/System.hpp>
+#include <fwTools/Type.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwData/Image.hpp>
+
 #include <fwDataTools/Image.hpp>
 
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
 #include <fwComEd/helper/Image.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
 
 #include <fwTest/Data.hpp>
 
@@ -56,7 +63,6 @@ void ImageReaderWriterTest::tearDown()
     readerSrvCfg->addConfigurationElement(readerCfg);
 
     return readerSrvCfg;
-
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +120,6 @@ void ImageReaderWriterTest::testVtkImageReader()
 
 void ImageReaderWriterTest::testVtiImageReader()
 {
-
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/image/vti/BostonTeapot.vti";
 
     ::fwData::Image::NewSptr image;
@@ -306,7 +311,34 @@ void ImageReaderWriterTest::testVtkImageWriter()
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
 
 }
+
 //------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::testVtkImageSeriesWriter()
+{
+    ::fwTools::Type type = ::fwTools::Type::create< float >();
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwDataTools::Image::generateRandomImage(image, type);
+
+    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
+    imageSeries->setImage(image);
+
+    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "imageSeries.vtk";
+
+    // Write image series
+    this->runImageSrv("::io::IWriter", "::ioVTK::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
+
+    // Read image series
+    ::fwData::Image::sptr newImage = ::fwData::Image::New();
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService", getIOConfiguration(file), newImage);
+
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(image, newImage);
+    CPPUNIT_ASSERT_EQUAL(visitor.getDifferences()->size(), (size_t)0);
+}
+
+//------------------------------------------------------------------------------
+
 void ImageReaderWriterTest::testVtiImageWriter()
 {
     // Data to write
@@ -370,7 +402,9 @@ void ImageReaderWriterTest::testVtiImageWriter()
 
 
 }
+
 //------------------------------------------------------------------------------
+
 void ImageReaderWriterTest::testMhdImageWriter()
 {
     // Data to write
@@ -433,7 +467,9 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
 
 }
+
 //------------------------------------------------------------------------------
+
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
@@ -464,21 +500,28 @@ void ImageReaderWriterTest::testImageWriterExtension()
             ::fwTools::Failed
             );
 }
+
 //------------------------------------------------------------------------------
-void ImageReaderWriterTest::runImageSrv(const std::string &srvtype, const std::string &srvname, const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image)
+
+void ImageReaderWriterTest::runImageSrv(
+        const std::string &srvtype,
+        const std::string &srvname,
+        const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+        const SPTR(::fwData::Object)& image)
 {
 
     ::fwServices::IService::sptr srv;
     srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
 
-    CPPUNIT_ASSERT_MESSAGE(srvname,srv);
+    CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
     ::fwServices::OSR::registerService( image , srv );
-    srv->setConfiguration( cfg );
-    srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
+
+    CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(cfg) );
+    CPPUNIT_ASSERT_NO_THROW( srv->configure() );
+    CPPUNIT_ASSERT_NO_THROW( srv->start() );
+    CPPUNIT_ASSERT_NO_THROW( srv->update() );
+    CPPUNIT_ASSERT_NO_THROW( srv->stop() );
     ::fwServices::OSR::unregisterService( srv );
 }
 
@@ -486,3 +529,4 @@ void ImageReaderWriterTest::runImageSrv(const std::string &srvtype, const std::s
 
 } //namespace ut
 } //namespace ioVTK
+
