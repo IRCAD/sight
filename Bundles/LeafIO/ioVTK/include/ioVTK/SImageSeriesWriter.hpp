@@ -25,10 +25,10 @@ namespace ioVTK
 {
 
 /**
- * @brief   VTK image series writer service.
+ * @brief   Image series writer service.
  * @class   SImageSeriesWriter.
  *
- * Service writing an ::fwMedData::ImageSeries using the vtkIO lib.
+ * Service writing an image series using the vtkIO lib.
  */
 class IOVTK_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {
@@ -76,7 +76,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed) {};
 
     /**
      * @brief Info method.
@@ -95,8 +95,8 @@ private :
     bool m_bServiceIsConfigured;
 
     /**
-    * @brief Image path.
-    */
+     * @brief Image path.
+     */
     ::boost::filesystem::path m_fsImgPath;
 
 };

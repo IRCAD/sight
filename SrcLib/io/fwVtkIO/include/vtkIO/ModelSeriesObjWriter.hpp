@@ -29,10 +29,10 @@ namespace vtkIO
 {
 
 /**
- * @brief   Write a Reconstruction.
+ * @brief   Write a ::fwData::Reconstruction.
  * @class   ModelSeriesObjWriter.
  *
- * Write a ::fwData::Reconstruction using the VTK lib and the obj format
+ * Write a ::fwData::Reconstruction as .obj file using the VTK lib and the obj format.
  */
 class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
                              public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
@@ -49,16 +49,18 @@ public :
 
     fwCoreAllowSharedFromThis();
 
-    //! @brief Constructor.
+    //! Constructor.
     VTKIO_API ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
-    //! @brief Destructor.
+    //! Destructor.
     VTKIO_API ~ModelSeriesObjWriter();
 
-    //! @brief Writing operator.
+    //! Writing operator.
     VTKIO_API void write();
 
-    /// @return ".obj"
+    /**
+     * @return ".obj"
+     */
     VTKIO_API std::string extension();
 
 };
