@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,8 @@
 #include <fwData/Patient.hpp>
 #include <fwData/PatientDB.hpp>
 #include <fwData/Study.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
@@ -52,9 +54,15 @@ void IoItkTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::executeService( ::fwData::Object::sptr obj, std::string srvType, std::string srvImpl, ::fwRuntime::EConfigurationElement::sptr cfg )
+void IoItkTest::executeService(
+        const SPTR(::fwData::Object)& obj,
+        const std::string& srvType,
+        const std::string& srvImpl,
+        const SPTR(::fwRuntime::EConfigurationElement)& cfg )
 {
-    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImpl );
+    ::fwServices::IService::sptr srv
+        = ::fwServices::registry::ServiceFactory::getDefault()->create(srvType, srvImpl);
+
     CPPUNIT_ASSERT(srv);
     ::fwServices::OSR::registerService( obj , srv );
     srv->setConfiguration(cfg);
@@ -64,6 +72,35 @@ void IoItkTest::executeService( ::fwData::Object::sptr obj, std::string srvType,
     CPPUNIT_ASSERT_NO_THROW(srv->stop());
     ::fwServices::OSR::unregisterService( srv );
 }
+
+//------------------------------------------------------------------------------
+
+void IoItkTest::testImageSeriesWriterJPG()
+{
+    // Create image series
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+
+    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
+    imageSeries->setImage(image);
+
+    // Create path
+    const ::boost::filesystem::path path = "imageSeriesJPG";
+    ::boost::filesystem::create_directories(path);
+
+    // Create Config
+    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
+    ::fwRuntime::EConfigurationElement::NewSptr folderCfg("folder");
+    folderCfg->setValue(path.string());
+    srvCfg->addConfigurationElement(folderCfg);
+
+    // Create and execute service
+    this->executeService(imageSeries, "::io::IWriter", "::ioITK::SJpgImageSeriesWriter", srvCfg);
+
+    // Remove path
+    ::boost::filesystem::remove_all( path.string() );
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -108,7 +145,8 @@ void IoItkTest::testPatientDBReaderJPG()
     this->executeService( patientDB, "::io::IReader", "::ioITK::JpgPatientDBReaderService", srvCfg );
 
     CPPUNIT_ASSERT_EQUAL(size_t(3),patientDB->getNumberOfPatients());
-    ::fwData::Image::sptr image = patientDB->getPatients().front()->getStudies().front()->getAcquisitions().front()->getImage();
+    ::fwData::Image::sptr image
+        = patientDB->getPatients().front()->getStudies().front()->getAcquisitions().front()->getImage();
     CPPUNIT_ASSERT_EQUAL(size_t(3),image->getNumberOfDimensions());
     CPPUNIT_ASSERT_EQUAL(::fwData::Image::SizeType::value_type(512), image->getSize()[0]);
     CPPUNIT_ASSERT_EQUAL(::fwData::Image::SizeType::value_type(256), image->getSize()[1]);
@@ -309,3 +347,4 @@ void IoItkTest::testDicomPatientDBWriter()
 
 } //namespace ut
 } //namespace ioITK
+
