@@ -73,23 +73,12 @@ void SImageSeriesWriter::configureWithIHM()
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::starting() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
+{}
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::stopping() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-void SImageSeriesWriter::info(std::ostream &_sstream )
-{
-    _sstream << "SImageSeriesWriter::info";
-}
+{}
 
 //------------------------------------------------------------------------------
 
@@ -106,6 +95,22 @@ void SImageSeriesWriter::updating() throw(::fwTools::Failed)
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
                     "\nDo you want to continue ?");
             dialog.setTitle("Folder not empty.");
+            dialog.setIcon(::fwGui::dialog::MessageDialog::QUESTION);
+            dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
+            ::fwGui::dialog::MessageDialog::Buttons button = dialog.show();
+
+            if(button == ::fwGui::dialog::MessageDialog::NO)
+            {
+                return;
+            }
+        }
+
+        if (series->getModality() == "OT")
+        {
+            ::fwGui::dialog::MessageDialog dialog;
+            dialog.setMessage("Series modality is '" + series->getModality() + "' some information can be lost."
+                              "\nDo you want to continue ?");
+            dialog.setTitle("Series modality.");
             dialog.setIcon(::fwGui::dialog::MessageDialog::QUESTION);
             dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
             ::fwGui::dialog::MessageDialog::Buttons button = dialog.show();

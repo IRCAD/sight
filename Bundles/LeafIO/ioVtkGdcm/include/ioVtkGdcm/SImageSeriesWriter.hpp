@@ -23,6 +23,10 @@ namespace fwMedData
 namespace ioVtkGdcm
 {
 
+/**
+ * @brief Services to write an ImageSeries in DICOM format.
+ * @class SImageSeriesWriter
+ */
 class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {
 
@@ -39,22 +43,20 @@ public :
      */
     IOVTKGDCM_API virtual ~SImageSeriesWriter() throw();
 
+    /// Propose select a directory where to save the DICOM files.
+    IOVTKGDCM_API virtual void configureWithIHM();
+
 protected:
 
-    /// Override
+    /// Does nothing
     IOVTKGDCM_API virtual void starting() throw(::fwTools::Failed);
 
-    /// Override
+    /// Does nothing
     IOVTKGDCM_API virtual void stopping() throw(::fwTools::Failed);
 
-    /// Override
+    /// Write the ImageSeries in DICOM format.
     IOVTKGDCM_API void updating() throw(::fwTools::Failed);
 
-    /// Override
-    IOVTKGDCM_API void info(std::ostream &_sstream ) ;
-
-    /// Override
-    IOVTKGDCM_API virtual void configureWithIHM();
 
     /// Return path type managed by the service, here FOLDER
     IOVTKGDCM_API ::io::IOPathType getIOPathType() const;
