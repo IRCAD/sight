@@ -21,6 +21,10 @@ class ImageSeries;
 namespace vtkGdcmIO
 {
 
+/**
+ * @brief Write an ImageSeries in DICOM format.
+ * @class ImageSeriesWriter
+ */
 class ImageSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ImageSeries >,
                              public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
                              public ::fwTools::ProgressAdviser
@@ -34,10 +38,13 @@ public :
                                           );
     fwCoreAllowSharedFromThis();
 
+    /// Constructor. Does nothing
     VTKGDCMIO_API ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
+    /// Write the image series in DICOM format.
     VTKGDCMIO_API void write();
 
+    /// Return an empty string
     VTKGDCMIO_API std::string  extension();
 };
 

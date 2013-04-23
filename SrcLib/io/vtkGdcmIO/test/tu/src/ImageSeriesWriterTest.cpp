@@ -18,6 +18,7 @@
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
+#include <fwTest/generator/Image.hpp>
 
 #include <vtkGdcmIO/ImageSeriesWriter.hpp>
 #include <vtkGdcmIO/SeriesDBReader.hpp>
@@ -64,6 +65,7 @@ void ImageSeriesWriterTest::tearDown()
 
 void ImageSeriesWriterTest::writeReadTest()
 {
+    ::fwTest::generator::Image::initRand();
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
@@ -85,15 +87,8 @@ void ImageSeriesWriterTest::writeReadTest()
 
     ::boost::filesystem::remove_all( PATH );
 
-    // check patientDB
+    // check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
-
-    ::fwMedData::ImageSeries::sptr imgSeriesComp =  ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer().front());
-    CPPUNIT_ASSERT(imgSeriesComp);
-    ::fwData::Image::sptr img = imgSeries->getImage();
-    ::fwData::Image::sptr imgComp = imgSeriesComp->getImage();
-
-    CPPUNIT_ASSERT(img->getSpacing() == imgComp->getSpacing());
 
     compare(imgSeries, sdb->getContainer().front());
 }
