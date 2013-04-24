@@ -18,7 +18,7 @@
 
 #include <fwComEd/MeshMsg.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include "vtkSimpleMesh/SSimpleMeshDeformation.hpp"
 
@@ -149,7 +149,7 @@ void SSimpleMeshDeformation::computeDeformation (
         }
     }
 
-    ::fwDataTools::MeshGenerator::generatePointNormals(transformMesh);
+    ::fwDataTools::Mesh::generatePointNormals(transformMesh);
 }
 
 //-----------------------------------------------------------------------------
@@ -185,7 +185,7 @@ void SSimpleMeshDeformation::initMeshBackup()
     SLM_ASSERT("Data already init", ! m_transformMesh && ! m_mesh);
 
     lock.upgrade();
-    ::fwDataTools::MeshGenerator::generatePointNormals(mesh);
+    ::fwDataTools::Mesh::generatePointNormals(mesh);
     mesh->allocatePointColors( ::fwData::Mesh::RGB );
     lock.downgrade();
 
