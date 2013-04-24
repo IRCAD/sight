@@ -125,7 +125,7 @@
 
             <service uid="dynamicView" type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes">
                 <config>
-                    <appConfig id="SDBVRRender" title="SDB">
+                    <appConfig id="SDBVRRender" title="SDB" closable="false">
                         <parameters>
                             <parameter replace="SERIESDB" by="seriesDB" />
                             <parameter replace="ICON_PATH" by="${appIconPath}" />

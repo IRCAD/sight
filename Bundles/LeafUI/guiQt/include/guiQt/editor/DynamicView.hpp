@@ -47,6 +47,7 @@ struct AppConfig
 
     std::string id;
     std::string title;
+    bool closable;
     ParametersType parameters;
 };
 

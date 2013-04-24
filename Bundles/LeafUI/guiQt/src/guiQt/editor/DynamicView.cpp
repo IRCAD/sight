@@ -40,6 +40,9 @@ AppConfig::AppConfig(const DynamicView::ConfigType& config) :
     id(config.get<std::string>("<xmlattr>.id")),
     title(config.get<std::string>("<xmlattr>.title"))
 {
+    std::string closableStr = config.get_optional<std::string>("<xmlattr>.closable").get_value_or("true");
+    closable = (closableStr == "true");
+
     if(config.count("parameters") == 1 )
     {
         const ConfigType &configParameters = config.get_child("parameters");
@@ -154,6 +157,7 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
     info.tabID = "TABID_" + this->getID();
     info.title = appConfig.title;
     info.viewConfigID = appConfig.id;
+    info.closable = appConfig.closable;
 
     ::fwData::Object::sptr currentObj = this->getObject();
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
