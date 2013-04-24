@@ -22,31 +22,33 @@
 
 #include <io/IReader.hpp>
 
+#include <fwComEd/SeriesDBMsg.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <vtkGdcmIO/SeriesDBReader.hpp>
 
-#include "ioVtkGdcm/SSeriesDBReaderService.hpp"
+#include "ioVtkGdcm/SSeriesDBReader.hpp"
 
 
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVtkGdcm::SSeriesDBReaderService , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioVtkGdcm::SSeriesDBReader , ::fwMedData::SeriesDB ) ;
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReaderService::SSeriesDBReaderService() throw()
+SSeriesDBReader::SSeriesDBReader() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReaderService::~SSeriesDBReaderService() throw()
+SSeriesDBReader::~SSeriesDBReader() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReaderService::configureWithIHM()
+void SSeriesDBReader::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
@@ -68,28 +70,28 @@ void SSeriesDBReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReaderService::starting() throw(::fwTools::Failed)
+void SSeriesDBReader::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReaderService::stopping() throw(::fwTools::Failed)
+void SSeriesDBReader::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReaderService::info(std::ostream &_sstream )
+void SSeriesDBReader::info(std::ostream &_sstream )
 {
-    _sstream << "SSeriesDBReaderService::info" ;
+    _sstream << "SSeriesDBReader::info" ;
 }
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReaderService::ExtensionsType SSeriesDBReaderService::getSupportedExtensions()
+SSeriesDBReader::ExtensionsType SSeriesDBReader::getSupportedExtensions()
 {
     ExtensionsType extensions ;
     return extensions ;
@@ -97,7 +99,7 @@ SSeriesDBReaderService::ExtensionsType SSeriesDBReaderService::getSupportedExten
 
 //------------------------------------------------------------------------------
 
-std::string SSeriesDBReaderService::getSelectorDialogTitle()
+std::string SSeriesDBReader::getSelectorDialogTitle()
 {
     return "Choose a directory with DICOM images";
 }
@@ -105,7 +107,7 @@ std::string SSeriesDBReaderService::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SSeriesDBReaderService::createSeriesDB(const ::boost::filesystem::path& dicomDir)
+::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
 {
     SLM_TRACE_FUNC();
     ::vtkGdcmIO::SeriesDBReader::NewSptr myLoader;
@@ -137,7 +139,7 @@ std::string SSeriesDBReaderService::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReaderService::updating() throw(::fwTools::Failed)
+void SSeriesDBReader::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
@@ -166,13 +168,13 @@ void SSeriesDBReaderService::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReaderService::notificationOfDBUpdate()
+void SSeriesDBReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
-    ::fwComEd::SeriesDBMsg::NewSptr msg;
+    ::fwComEd::SeriesDBMsg::sptr msg = ::fwComEd::SeriesDBMsg::New();
     msg->addEvent( ::fwComEd::SeriesDBMsg::ADDED_OBJECTS );
 
     ::fwServices::IEditionService::notify(this->getSptr(),  seriesDB, msg);
@@ -180,7 +182,7 @@ void SSeriesDBReaderService::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SSeriesDBReaderService::getIOPathType() const
+::io::IOPathType SSeriesDBReader::getIOPathType() const
 {
     return ::io::FOLDER;
 }

@@ -24,24 +24,24 @@ namespace fwMedData
 namespace ioVtkGdcm
 {
 
-class IOVTKGDCM_CLASS_API SSeriesDBReaderService : public ::io::IReader
+class IOVTKGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 
 public :
     typedef std::string                  ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReaderService)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) ) ;
     /**
      * @brief   constructor
      *
      */
-    IOVTKGDCM_API SSeriesDBReaderService() throw();
+    IOVTKGDCM_API SSeriesDBReader() throw();
 
     /**
      * @brief   destructor
      */
-    IOVTKGDCM_API virtual ~SSeriesDBReaderService() throw();
+    IOVTKGDCM_API virtual ~SSeriesDBReader() throw();
 
 protected:
 

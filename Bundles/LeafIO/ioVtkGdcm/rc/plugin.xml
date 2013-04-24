@@ -5,7 +5,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioVtkGdcm::SSeriesDBReaderService</service>
+        <service>::ioVtkGdcm::SSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
         <desc>Series DB Reader (VTK/gdcm)</desc>
     </extension>

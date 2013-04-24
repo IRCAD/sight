@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,7 +68,7 @@ void IoVtkGdcmTest::seriesDBReaderTest()
     readerCfg->addConfigurationElement(folderCfg);
 
     ::fwServices::IService::sptr srv =
-            ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::SSeriesDBReaderService" );
+            ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::SSeriesDBReader" );
     CPPUNIT_ASSERT(srv);
 
     ::fwServices::OSR::registerService( seriesDB, srv );
@@ -186,7 +186,7 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
     // Load Dicom from disk
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
-    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::SSeriesDBReaderService" );
+    ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::SSeriesDBReader" );
     CPPUNIT_ASSERT(readerSrv);
 
     ::fwServices::OSR::registerService( seriesDB , readerSrv );
