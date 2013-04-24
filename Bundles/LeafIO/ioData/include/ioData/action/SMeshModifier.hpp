@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_ACTION_MESHGENERATORSRV_HPP_
-#define _IODATA_ACTION_MESHGENERATORSRV_HPP_
+#ifndef _IODATA_ACTION_SMESHMODIFIER_HPP_
+#define _IODATA_ACTION_SMESHMODIFIER_HPP_
 
 #include <fwServices/IService.hpp>
 
@@ -20,29 +20,26 @@ namespace action
 {
 
 /**
- * @brief   This action generates a mesh using specified functor in configuration.
+ * @brief   This action modifies a mesh using specified functor in configuration.
  * The purpose is to test all possibilities provide by the new mesh structure.
- * @class   MeshGeneratorSrv.
- * @author  IRCAD (Research and Development Team).
-
- * @date    2011.
+ * @class   SMeshModifier.
  */
-class IODATA_CLASS_API MeshGeneratorSrv : public ::fwGui::IActionSrv
+class IODATA_CLASS_API SMeshModifier : public ::fwGui::IActionSrv
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshGeneratorSrv)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SMeshModifier)(::fwGui::IActionSrv) ) ;
 
     /**
     * @brief Constructor. Do nothing.
     */
-    IODATA_API MeshGeneratorSrv() throw() ;
+    IODATA_API SMeshModifier() throw() ;
 
     /**
     * @brief Destructor. Do nothing.
     */
-    IODATA_API virtual ~MeshGeneratorSrv() throw() ;
+    IODATA_API virtual ~SMeshModifier() throw() ;
 
 protected:
 
@@ -56,10 +53,18 @@ protected:
       * Example of configuration :
       * @verbatim
          <service ... >
-             <config functor="GenTriangle" />
+             <config functor="ShakeMeshPoint" />
          </service>
         @endverbatim
-      * - functor available : "GenTriangle", "GenQuad", "GenTriangleQuad" and "ShakeMeshPoint"
+      * Functor available :
+      *  - ShakeMeshPoint
+      *  - ColorizeMeshPoints
+      *  - ColorizeMeshCells
+      *  - ComputePointNormals
+      *  - ComputeCellNormals
+      *  - ShakePointNormals
+      *  - ShakeCellNormals
+      *  - MeshDeformation
       */
     IODATA_API virtual void configuring() throw( ::fwTools::Failed ) ;
 
@@ -73,10 +78,7 @@ protected:
     IODATA_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
-     * @brief Process the action: generate the mesh using the selected functor.
-     * GenTriangle functor generate a random mesh with cells are triangle.
-     * GenQuad functor generate a random mesh with cells are quad.
-     * GenTriangleQuad functor generate a random mesh which contains triangle and quad cells.
+     * @brief Process the action: modifies the mesh using the selected functor.
      */
     IODATA_API virtual void updating() throw(::fwTools::Failed);
 
@@ -101,4 +103,4 @@ private:
 } // namespace ioData
 
 
-#endif /*_IODATA_ACTION_MESHGENERATORSRV_HPP_*/
+#endif /*_IODATA_ACTION_SMESHMODIFIER_HPP_*/

@@ -59,7 +59,7 @@
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::ioData::action::MeshGeneratorSrv</service>
+        <service>::ioData::action::SMeshModifier</service>
         <object>::fwData::Mesh</object>
     </extension>
 

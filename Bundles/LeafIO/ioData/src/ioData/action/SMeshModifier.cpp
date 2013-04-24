@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,34 +14,34 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include "ioData/action/MeshGeneratorSrv.hpp"
+#include "ioData/action/SMeshModifier.hpp"
 
 namespace ioData
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::ioData::action::MeshGeneratorSrv , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::ioData::action::SMeshModifier , ::fwData::Mesh ) ;
 
 //-----------------------------------------------------------------------------
 
-MeshGeneratorSrv::MeshGeneratorSrv() throw()
+SMeshModifier::SMeshModifier() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-MeshGeneratorSrv::~MeshGeneratorSrv() throw()
+SMeshModifier::~SMeshModifier() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshGeneratorSrv::configuring() throw( ::fwTools::Failed )
+void SMeshModifier::configuring() throw( ::fwTools::Failed )
 {
     this->initialize();
 
@@ -53,10 +53,7 @@ void MeshGeneratorSrv::configuring() throw( ::fwTools::Failed )
     SLM_ASSERT( "Sorry, missing attribute functor in <config> xml element.", configElement->hasAttribute("functor") );
     m_functor = configElement->getExistingAttributeValue("functor");
     OSLM_ASSERT("Wrong functor name "<<m_functor << " (required GenTriangle, GenQuad or GenTriangleQuad)",
-            m_functor == "GenTriangle"
-                    || m_functor == "GenQuad"
-                    || m_functor == "GenTriangleQuad"
-                    || m_functor == "ShakeMeshPoint"
+                       m_functor == "ShakeMeshPoint"
                     || m_functor == "ColorizeMeshPoints"
                     || m_functor == "ColorizeMeshCells"
                     || m_functor == "ComputePointNormals"
@@ -70,16 +67,16 @@ void MeshGeneratorSrv::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void MeshGeneratorSrv::starting() throw( ::fwTools::Failed )
+void SMeshModifier::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
-    ::fwDataTools::MeshGenerator::initRand();
+    ::fwDataTools::Mesh::initRand();
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshGeneratorSrv::stopping() throw( ::fwTools::Failed )
+void SMeshModifier::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -87,14 +84,14 @@ void MeshGeneratorSrv::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void MeshGeneratorSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void SMeshModifier::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
+void SMeshModifier::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
@@ -102,54 +99,39 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
     ::fwComEd::MeshMsg::NewSptr msg;
     try
     {
-        if(m_functor == "GenTriangle")
+        if(m_functor == "ShakeMeshPoint")
         {
-            ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
-            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-        }
-        else if(m_functor == "GenQuad")
-        {
-            ::fwDataTools::MeshGenerator::generateQuadMesh(mesh);
-            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-        }
-        else if(m_functor == "GenTriangleQuad")
-        {
-            ::fwDataTools::MeshGenerator::generateTriangleQuadMesh(mesh);
-            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-        }
-        else if(m_functor == "ShakeMeshPoint")
-        {
-            ::fwDataTools::MeshGenerator::shakePoint(mesh);
+            ::fwDataTools::Mesh::shakePoint(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED );
         }
         else if(m_functor == "ColorizeMeshCells")
         {
-            ::fwDataTools::MeshGenerator::colorizeMeshCells(mesh);
+            ::fwDataTools::Mesh::colorizeMeshCells(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
         }
         else if(m_functor == "ColorizeMeshPoints")
         {
-            ::fwDataTools::MeshGenerator::colorizeMeshPoints(mesh);
+            ::fwDataTools::Mesh::colorizeMeshPoints(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
         }
         else if(m_functor == "ComputeCellNormals")
         {
-            ::fwDataTools::MeshGenerator::generateCellNormals(mesh);
+            ::fwDataTools::Mesh::generateCellNormals(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
         }
         else if(m_functor == "ComputePointNormals")
         {
-            ::fwDataTools::MeshGenerator::generatePointNormals(mesh);
+            ::fwDataTools::Mesh::generatePointNormals(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
         }
         else if(m_functor == "ShakeCellNormals")
         {
-            ::fwDataTools::MeshGenerator::shakeCellNormals(mesh);
+            ::fwDataTools::Mesh::shakeCellNormals(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
         }
         else if(m_functor == "ShakePointNormals")
         {
-            ::fwDataTools::MeshGenerator::shakePointNormals(mesh);
+            ::fwDataTools::Mesh::shakePointNormals(mesh);
             msg->addEvent( ::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
         }
         else if(m_functor == "MeshDeformation")
@@ -175,7 +157,7 @@ void MeshGeneratorSrv::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void MeshGeneratorSrv::info(std::ostream &_sstream )
+void SMeshModifier::info(std::ostream &_sstream )
 {
     _sstream << "MeshGenerator Action" << std::endl;
 }
