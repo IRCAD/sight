@@ -81,9 +81,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sliceListEditor" start="no" />
-                <view sid="showScanEditor" start="no" />
-                <view sid="sliderIndexEditor" start="no" />
+                <view sid="sliceListEditor" start="yes" />
+                <view sid="showScanEditor" start="yes" />
+                <view sid="sliderIndexEditor" start="yes" />
                 <view sid="snapshotScene1Editor" start="yes" />
             </registry>
         </service>
@@ -94,60 +94,10 @@
             </snap>
         </service>
 
-        <!-- patientDB description -->
-        <item key="patientDB">
-            <object uid="patientDB" type="::fwData::PatientDB">
-
-                <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
-                    <type mode="reader" />
-                    <selection mode="exclude" />
-                    <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
-                </service>
-                <service uid="writerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
-                    <type mode="writer" />
-                    <selection mode="exclude" />
-                    <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
-                </service>
-
-
-                <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-
-            </object>
-        </item>
-
         <!-- CompositeVisu description -->
         <item key="compositeVisu">
             <object uid="compositeVisu" type="::fwData::Composite">
 
-                <service uid="updaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                    <update compositeKey="acquisition" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                    <update compositeKey="acquisition" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
-                </service>
-
-                <service uid="updaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                    <update compositeKey="image" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                    <update compositeKey="image" onEvent="NEW_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                    <update compositeKey="image" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
-                </service>
-
-                <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
-                    <mode type="stop" />
-                    <config>
-                        <object id="image" type="::fwData::Image">
-                            <!-- This service convert a simple fwData::Image to medical Image -->
-                            <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="no" />
-                            <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
-                                <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
-                            </service>
-                            <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
-                                <negatoAdaptor uid="MPRNegatoScene3D" />
-                            </service>
-                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
-                                <sliceIndex>axial</sliceIndex>
-                            </service>
-                        </object>
-                    </config>
-                </service>
 
                 <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
@@ -155,10 +105,6 @@
 
                         <renderer id="default" background="0.5" />
                         <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                            <config renderer="default" picker="" />
-                        </adaptor>
-
-                        <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
                             <config renderer="default" picker="" />
                         </adaptor>
 
@@ -175,21 +121,37 @@
                         </adaptor>
                     </scene>
                 </service>
-                
-                <connect>
-                    <signal>patientDB/objectModified</signal>
-                    <slot>updaterAcq/receive</slot>
-                    <slot>updaterImg/receive</slot>
-                </connect>
 
+                <item key="image">
+
+                    <object uid="image" type="::fwData::Image">
+
+                        <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no"> 
+                            <type mode="reader"/>
+                        </service>
+
+                        <service uid="writerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no"> 
+                            <type mode="writer"/>
+                        </service>
+
+                        <!-- This service convert a simple fwData::Image to medical Image -->
+                        <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="no" />
+
+                        <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
+                            <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                        </service>
+                        <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
+                            <negatoAdaptor uid="MPRNegatoScene3D" />
+                        </service>
+                        <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
+                            <sliceIndex>axial</sliceIndex>
+                        </service>
+                    </object>
+                </item>
             </object>
         </item>
 
         <start uid="IHM" />
-        <start uid="updaterAcq" />
-        <start uid="updaterImg" />
-        <start uid="manager" />
-        <start uid="newOBject2newPatientDB"/>
 
     </object>
 
