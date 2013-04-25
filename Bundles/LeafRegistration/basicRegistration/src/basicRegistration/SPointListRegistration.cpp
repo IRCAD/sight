@@ -19,8 +19,6 @@
 #include <fwComEd/MeshMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
-
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <arlcore/PointsList.h>

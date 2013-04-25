@@ -19,7 +19,7 @@
 #include <fwComEd/MeshMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <arlcore/PointsList.h>
 
@@ -73,7 +73,7 @@ void STransformMesh::updating() throw ( ::fwTools::Failed )
     transform->setCoefficient(3,0, 0);        transform->setCoefficient(3,1, 0);         transform->setCoefficient(3,2, 0); transform->setCoefficient(3,3, 1);
 
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast( ::fwTools::fwID::getObject("myToolMesh") );
-    ::fwDataTools::MeshGenerator::transform( mesh, transform );
+    ::fwDataTools::Mesh::transform( mesh, transform );
 
     // Notify reading
     ::fwComEd::MeshMsg::NewSptr msg;
