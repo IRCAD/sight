@@ -8,7 +8,6 @@ BUNDLES = [
     'guiQt_0-1'         ,
     'ioData_0-1'        ,
     'ioVTK_0-1'         ,
-    'ioAtoms_0-1'       ,
     'io_0-1'            ,
     'servicesReg_0-1'   ,
     'uiVisuQt_0-1'      ,

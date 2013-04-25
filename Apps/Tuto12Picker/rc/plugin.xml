@@ -61,8 +61,8 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="vertical" />
-                    <view caption="Picker world coordinate." />
-                    <view caption="Generic scene" border="11" />
+                    <view caption="Picker world coordinate." proportion="0" />
+                    <view caption="Generic scene" border="11" proportion="1" />
                 </layout>
             </gui>
             <registry>
@@ -96,9 +96,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sliceListEditor" start="yes" />
-                <view sid="showScanEditor" start="yes" />
-                <view sid="sliderIndexEditor" start="yes" />
+                <view sid="sliceListEditor" start="no" />
+                <view sid="showScanEditor" start="no" />
+                <view sid="sliderIndexEditor" start="no" />
                 <view sid="snapshotScene1Editor" start="yes" />
             </registry>
         </service>
@@ -109,9 +109,30 @@
             </snap>
         </service>
 
+        <item key="mesh">
+            <object uid="meshUID" type="::fwData::Mesh">
+                <service uid="meshReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                    <type mode="reader" />
+                </service>
+            </object>
+        </item>
+        <item key="image">
+            <object uid="imageUID"  type="::fwData::Image">
+                <service uid="imageReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                    <type mode="reader" />
+                </service>
+            </object>
+        </item>
+        
         <!-- CompositeVisu description -->
         <item key="myCompositeVisu">
             <object uid="myCompositeVisu" type="::fwData::Composite">                
+                
+                <service uid="updaterUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                    <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP"/>
+                    <update compositeKey="mesh" onEvent="NEW_MESH" fromUID="meshUID" actionType="ADD_OR_SWAP"/>
+                </service>
+                
                 <service uid="pointView" impl="::uiVisu::PointEditor" type="::gui::editor::IEditor" autoConnect="yes"/>
                 
                 <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
@@ -119,15 +140,12 @@
                         <picker id="myPicker" vtkclass="fwVtkCellPicker" />
 
                         <renderer id="default" background="0.0" />
-                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+
+                        <adaptor id="meshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="mesh">
                             <config renderer="default" picker="" />
                         </adaptor>
 
-                        <adaptor id="myAcquisitionAdaptor" class="::visuVTKAdaptor::Mesh" objectId="mesh">
-                            <config renderer="default" picker="" />
-                        </adaptor>
-
-                        <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                        <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                             <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
                         </adaptor>
                         <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self" >
@@ -140,38 +158,37 @@
                     </scene>
                 </service>
                 
-                <item key="myImage">
-                    <object type="::fwData::Image">
-                        <service uid="imageReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
-                            <type mode="reader" />
-                        </service>
-                        <!-- This service convert a simple fwData::Image to medical Image -->
-                        <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="no" />
-                        <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
-                            <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
-                        </service>
-                        <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
-                            <negatoAdaptor uid="MPRNegatoScene3D" />
-                        </service>
-                        <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
-                            <sliceIndex>axial</sliceIndex>
-                        </service>
-                    </object>
-                </item>
+                <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes"  >
+                    <mode type="stop" />
+                    <config>
+                        <object id="image" type="::fwData::Image">
+                            <!-- This service convert a simple fwData::Image to medical Image -->
+                            <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="yes" />
+                            <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
+                                <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                            </service>
+                            <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
+                                <negatoAdaptor uid="MPRNegatoScene3D" />
+                            </service>
+                            <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
+                                <sliceIndex>axial</sliceIndex>
+                            </service>
+                        </object>
+                    </config>
+                </service>
                 
-                <item key="mesh">
-                    <object type="::fwData::Mesh">
-                        <service uid="meshReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
-                            <type mode="reader" />
-                        </service>
-                    </object>
-                </item>
+                <proxy channel="UPDATER_CHANNEL" >
+                    <signal>imageUID/objectModified</signal>
+                    <signal>meshUID/objectModified</signal>
+                    <slot>updaterUID/receive</slot>
+                </proxy>
                 
             </object>
         </item>
 
         <start uid="MyIHM" />
-        <start uid="medicalImageConverter" />
+        <start uid="updaterUID" />
+        <start uid="manager" />
 
     </object>
     </config>
