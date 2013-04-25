@@ -90,20 +90,6 @@ protected:
      */
     IOVTK_API void info(std::ostream &_sstream ) ;
 
-
-private :
-
-    /**
-     * @brief the m_bServiceIsConfigured value is \b true
-     * if the image path is known.
-     */
-    bool m_bServiceIsConfigured;
-
-    /**
-     * @brief Mesh path .
-     */
-    ::boost::filesystem::path m_fsMeshPath;
-
 };
 
 } // namespace ioVTK

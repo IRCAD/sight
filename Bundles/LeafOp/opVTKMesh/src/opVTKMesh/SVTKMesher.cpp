@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/lexical_cast.hpp>
+
 #include <fwTools/fwID.hpp>
 
 #include <fwData/Image.hpp>
@@ -67,9 +69,11 @@ void SVTKMesher::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwT
 
 void SVTKMesher::configuring() throw ( ::fwTools::Failed )
 {
-    const ::fwServices::IService::ConfigType& config = this->getConfigTree();
+    const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
 
-    SLM_ASSERT("You must have one <config/> element.", config.get_child("service").count("config") == 1 );
+    SLM_ASSERT("You must have one <config/> element.", srvConfig.get_child("service").count("config") == 1 );
+
+    const ::fwServices::IService::ConfigType& config = srvConfig.get_child("service.config");
 
     SLM_ASSERT("You must have one <percentReduction/> element.", config.count("percentReduction") == 1);
     SLM_ASSERT("You must have one <image/> element.", config.count("image") == 1);
@@ -157,7 +161,9 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
 
     ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
 
-    reconstruction->setCRefOrganName("OrganMesher_VTK_" + reconstruction->getID());
+    static unsigned int organNumber = 0;
+    ++organNumber;
+    reconstruction->setCRefOrganName("OrganMesher_VTK_" + ::boost::lexical_cast<std::string>(organNumber));
     reconstruction->setCRefStructureType("OrganType");
     reconstruction->setIsVisible(true);
     // Set Triangular Mesh
@@ -168,7 +174,7 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     modelSeries->setReconstructionDB(recs);
 
     /// Notification
-    ::fwComEd::ModelSeriesMsg::sptr msg;
+    ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
     msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION ) ;
     ::fwServices::IEditionService::notify( this->getSptr(), modelSeries, msg );
 }
