@@ -16,11 +16,12 @@
 
 #include <fwData/location/ILocation.hpp>
 
-#include <fwData/Reconstruction.hpp>
 #include <fwData/Image.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/ModelSeries.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
 #include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Series.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 

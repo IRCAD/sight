@@ -18,6 +18,10 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwData/Composite.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>

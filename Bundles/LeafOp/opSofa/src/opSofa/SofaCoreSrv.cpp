@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -187,10 +187,6 @@ void SofaCoreSrv::addMesh(std::string meshPath, std::string meshName)
     ::fwData::Reconstruction::NewSptr reconstruction;
     reconstruction->setCRefStructureType("OrganType");
     reconstruction->setIsVisible(true);
-    reconstruction->setGenerated3D(true);
-    reconstruction->setMaskGenerated(true);
-    reconstruction->setIsAutomatic(true);
-    reconstruction->setAvgVolume(-1);
     reconstruction->setMesh(mesh);
     reconstruction->setOrganName(meshName);
 

@@ -9,6 +9,9 @@
 #include <fwTools/Type.hpp>
 
 #include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/String.hpp>
 
@@ -219,19 +222,6 @@ void SeriesDB::generateReconstruction(::fwData::Reconstruction::sptr rec)
     rec->setIsVisible(true);
     rec->setOrganName("liver");
     rec->setStructureType("LIVER");
-    rec->setIsClosed(true);
-    rec->setIsAutomatic(true);
-    rec->setAvgVolume(rand()%1000/100.0);
-    rec->setVolStdDeviation(rand()%1000/100.0);
-    rec->setVolPctConfidence(rand()%1000/100.0);
-    rec->setReconstructionTime("2007-Feb-24 18:55:00");
-    rec->setMaskGenerated(true);
-    rec->setLevel(rand()%127);
-    rec->setLabel(rand()%500);
-    rec->setGenerated3D(true);
-    rec->setType3D("recType3D");
-    rec->setPath("/tmp/myFile.trian");
-    rec->setDbID(rand()%1000);
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
     Image::generateRandomImage(img, ::fwTools::Type::create("uint16"));

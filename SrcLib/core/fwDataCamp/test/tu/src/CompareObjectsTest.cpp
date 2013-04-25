@@ -135,20 +135,16 @@ void CompareObjectsTest::compareReconstructionTest()
     ::fwData::Reconstruction::sptr recComp = ::fwData::Object::copy< ::fwData::Reconstruction >(rec);
 
     recComp->setOrganName("Unknown organ name");
-    recComp->setIsAutomatic(!rec->getIsAutomatic());
     recComp->setIsVisible(!rec->getIsVisible());
 
     visitor::CompareObjects visitor;
     visitor.compare(rec, recComp);
 
     SPTR(visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)3);
+    CPPUNIT_ASSERT_EQUAL((size_t)2, props->size());
 
     CPPUNIT_ASSERT(props->find("organ_name") != props->end());
     CPPUNIT_ASSERT_EQUAL(std::string("Unknown organ name"), (*props)["organ_name"]);
-
-    CPPUNIT_ASSERT(props->find("is_automatic") != props->end());
-    CPPUNIT_ASSERT_EQUAL(std::string(recComp->getIsAutomatic() ? "true" : "false"), (*props)["is_automatic"]);
 
     CPPUNIT_ASSERT(props->find("is_visible") != props->end());
     CPPUNIT_ASSERT_EQUAL(std::string(recComp->getIsVisible() ? "true" : "false"), (*props)["is_visible"]);

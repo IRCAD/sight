@@ -160,10 +160,6 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     reconstruction->setCRefOrganName("OrganMesher_VTK_" + reconstruction->getID());
     reconstruction->setCRefStructureType("OrganType");
     reconstruction->setIsVisible(true);
-    reconstruction->setGenerated3D(true);
-    reconstruction->setMaskGenerated(true);
-    reconstruction->setIsAutomatic(true);
-    reconstruction->setAvgVolume(-1);
     // Set Triangular Mesh
     reconstruction->setMesh(mesh);
 

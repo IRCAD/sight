@@ -18,6 +18,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Reconstruction.hpp>
+#include <fwData/Material.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 

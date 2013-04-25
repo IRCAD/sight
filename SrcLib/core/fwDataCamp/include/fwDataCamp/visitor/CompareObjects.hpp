@@ -8,15 +8,11 @@
 #define  __FWDATACAMP_VISITOR_COMPAREOBJECTS_HPP__
 
 #include <fwCore/macros.hpp>
+#include <fwCore/Exception.hpp>
 
 #include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
 #include "fwDataCamp/config.hpp"
-
-namespace fwCore
-{
-    class Exception;
-}
 
 namespace fwData
 {
