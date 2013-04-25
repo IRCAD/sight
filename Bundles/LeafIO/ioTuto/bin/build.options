@@ -8,8 +8,10 @@ LIB = [
       'fwDataIO_0-2',
       'fwServices_0-1',
       'fwCore_0-1',
-      'fwXML_0-1',
-      'fwGui_0-1',   
+      'fwGui_0-1',
+      'fwAtomConversion_0-1',
+      'fwZip_0-1',
+      'fwAtomsBoostIO_0-1',
       ]
 BUNDLES = ['io_0-1']
 

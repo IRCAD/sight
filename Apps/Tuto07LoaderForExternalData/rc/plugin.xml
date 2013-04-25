@@ -68,8 +68,8 @@
                     <gui>
                         <layout>
                             <menuItem name="Import External data (*.us file)" />
-                            <menuItem name="Load External data (*.xml file)" />
-                            <menuItem name="Save External data (*.xml file)" />
+                            <menuItem name="Load External data" />
+                            <menuItem name="Save External data" />
                         </layout>
                     </gui>
                     <registry>
@@ -91,7 +91,11 @@
                     <start uid="saveAllData" />
                 </service>
 
-                <service impl="::ioTuto::CompositeWriterService" type="::io::IWriter" uid="saveAllData" autoConnect="no" />
+                <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="saveAllData" autoConnect="no">
+                    <type mode="writer" />
+                    <selection mode="include" />
+                    <addSelection service="::ioAtoms::SWriter" />
+                </service>
 
                 <!--  a ::fwData::Image. -->
                 <item key="tutoLoaderExternalDataImage">
@@ -106,8 +110,6 @@
                         </service>
                         <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
                             <type mode="reader" />
-                            <selection mode="exclude" />
-                            <addSelection service="::ioXML::FwXMLGenericReaderService" />
                         </service>
 
                         <!--
@@ -120,8 +122,6 @@
                         </service>
                         <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myWriterPathFile" autoConnect="no">
                             <type mode="writer" />
-                            <selection mode="exclude" />
-                            <addSelection service="::ioXML::FwXMLGenericWriterService" />
                         </service>
 
                         <!-- This service (::vtkSimpleNegato::RendererService) is a 3D visualization service of medical images.-->
@@ -135,9 +135,15 @@
                     <object type="::fwData::Composite">
                         <service impl="::ioTuto::ExternalDataReaderService" type="::io::IReader" uid="loadExternalData" autoConnect="no">
                         </service>
-                        <service impl="::ioTuto::CompositeReaderService" type="::io::IReader" uid="loadExternalDataNative" autoConnect="no">
+                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="loadExternalDataNative" autoConnect="no">
+                            <type mode="reader" />
+                            <selection mode="include" />
+                            <addSelection service="::ioAtoms::SReader" />
                         </service>
-                        <service impl="::ioTuto::CompositeWriterService" type="::io::IWriter" uid="saveExternalData" autoConnect="no">
+                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="saveExternalData" autoConnect="no">
+                            <type mode="writer" />
+                            <selection mode="include" />
+                            <addSelection service="::ioAtoms::SWriter" />
                         </service>
 
                         <service uid="ActionLoadExternalData" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
@@ -248,8 +254,6 @@
                         </service>
                         <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
                             <type mode="reader" />
-                            <selection mode="exclude" />
-                            <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                         </service>
                         <service impl="::ctrlSelection::wrapper::ImageWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newImage" autoConnect="yes" />
 

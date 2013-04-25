@@ -104,10 +104,8 @@ IOTUTO_API virtual void configuring( ) throw(::fwTools::Failed);
     IOTUTO_API virtual void info(std::ostream &_sstream ) ;
     /// @}
 
-private:
-
-    ::boost::filesystem::path m_fsExternalDataPath;
-
+    /// Returns managed path type, here service manages only single file
+    IOTUTO_API ::io::IOPathType getIOPathType() const;
 };
 }
 #endif /*_IOTUTO_EXTERNALDATAREADER_HPP_*/

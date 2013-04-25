@@ -14,7 +14,7 @@
     </activate>
 
     <!-- List of specific bundles. -->
-    <activate id="ioXML" version="0-1" />
+    <activate id="ioAtoms" version="0-1" />
     <activate id="ioVTK" version="0-1" />
     <activate id="ioData" version="0-1"/>
     <activate id="ioTuto" version="0-1"/>    
@@ -27,7 +27,6 @@
     
     <!-- List of the specific bundles that need to be loaded in this application context. -->
     <start id="dataReg" />
-    <start id="ioXML" />
     <start id="ioData"/>
     <start id="ioTuto"/>
     <start id="visuVTKQt" />

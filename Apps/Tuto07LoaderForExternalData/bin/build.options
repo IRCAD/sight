@@ -11,7 +11,7 @@ BUNDLES = [
     'visuVTKQt_0-1'         ,
     'launcher_0-1'          ,
     'ioVTK_0-1'             ,
-    'ioXML_0-1'             ,
+    'ioAtoms_0-1'           ,
     'ioTuto_0-1'            ,
     'vtkSimpleNegato_0-1'   ,
     'uiIO_0-1'              ,
