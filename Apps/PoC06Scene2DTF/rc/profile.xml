@@ -19,7 +19,7 @@
 
     <activate id="ctrlSelection" version="0-1" />
     <activate id="ioVTK" version="0-1" />
-    <activate id="ioXML" version="0-1" />
+    <activate id="ioAtoms" version="0-1" />
     <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKAdaptor" version="0-1" />
     <activate id="uiIO" version="0-1" />

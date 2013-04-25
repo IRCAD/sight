@@ -134,15 +134,12 @@
                 </service>
 
                 <!-- patientDB description -->
-                <item key="patientDB">
-                    <object uid="patientDB" type="::fwData::PatientDB">
+                <item key="image">
+                    <object uid="imageUID" type="::fwData::Image">
 
                         <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
-                            <selection mode="exclude" />
-                            <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                         </service>
-                        <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
 
                     </object>
                 </item>
@@ -288,15 +285,8 @@
 
                         </service>
 
-                        <service uid="updaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="acquisition" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="acquisition" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
-                        </service>
-
-                        <service uid="updaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="image" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="image" onEvent="NEW_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="image" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
+                        <service uid="updaterUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP" />
                         </service>
 
                         <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
@@ -371,12 +361,10 @@
                         </item>
 
                         <!-- <item key="histogramPoint"> <object uid="GENERIC_UID_HistogramPoint" type="::fwData::Point" /> </item> -->
-
-                        <connect>
-                            <signal>patientDB/objectModified</signal>
-                            <slot>updaterAcq/receive</slot>
-                            <slot>updaterImg/receive</slot>
-                        </connect>
+                        <proxy channel="UPDATER_CHANNEL" >
+                            <signal>imageUID/objectModified</signal>
+                            <slot>updaterUID/receive</slot>
+                        </proxy>
 
                     </object>
                 </item>
@@ -384,10 +372,8 @@
                 <start uid="IHM" />
                 <start uid="GENERIC_UID_Scene2D_Shutter" />
                 <start uid="GENERIC_UID_Scene2D" />
-                <start uid="updaterAcq" />
-                <start uid="updaterImg" />
+                <start uid="updaterUID" />
                 <start uid="manager" />
-                <start uid="newOBject2newPatientDB" />
 
             </object>
 
