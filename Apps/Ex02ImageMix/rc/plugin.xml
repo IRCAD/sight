@@ -78,10 +78,10 @@
                 </service>
 
                 <service uid="action_openBackgroundFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                    <start uid="readerBackgroundPatientDB" />
+                    <start uid="readerBackgroundImage" />
                 </service>
                 <service uid="action_openFrontFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                    <start uid="readerFrontPatientDB" />
+                    <start uid="readerFrontImage" />
                 </service>
                 <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
@@ -129,34 +129,27 @@
                 </service>
 
 
-
                 <service uid="snapshotBlendSceneEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
                     <snap>
                         <scene uid="blendGenericScene" />
                     </snap>
                 </service>
 
-                <!-- backgroundPatientDB description -->
-                <item key="backgroundPatientDB">
-                    <object uid="backgroundPatientDB" type="::fwData::PatientDB">
-                        <service uid="readerBackgroundPatientDB" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                <!-- backgroundImage description -->
+                <item key="backgroundImage">
+                    <object uid="backgroundImageUID" type="::fwData::Image">
+                        <service uid="readerBackgroundImage" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
-                            <selection mode="exclude" />
-                            <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                         </service>
-                        <service uid="newOBject2newBgPatientDB" impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="yes" />
                     </object>
                 </item>
                 
-                <!-- frontPatientDB description -->
-                <item key="frontPatientDB">
-                    <object uid="frontPatientDB" type="::fwData::PatientDB">
-                        <service uid="readerFrontPatientDB" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                <!-- frontImage description -->
+                <item key="frontImage">
+                    <object uid="frontImageUID" type="::fwData::Image">
+                        <service uid="readerFrontImage" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
-                            <selection mode="exclude" />
-                            <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                         </service>
-                        <service uid="newOBject2newFrontPatientDB" impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="yes" />
                     </object>
                 </item>
 
@@ -164,6 +157,11 @@
                 <item key="compositeVisu">
                     <object uid="compositeVisu" type="::fwData::Composite">
 
+                        <service uid="updaterImgUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="backgroundImage" onEvent="NEW_IMAGE" fromUID="backgroundImageUID" actionType="ADD_OR_SWAP"/>
+                            <update compositeKey="frontImage" onEvent="NEW_IMAGE" fromUID="frontImageUID" actionType="ADD_OR_SWAP"/>
+                        </service>
+                        
                         <!-- Service to forward received message with specified event to the composite's object with specified key (frontImage)
                              It is use to forward the slider changes from background image to front image. So the images slider are synchronized. -->
                         <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::MsgForwarderSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
@@ -171,17 +169,6 @@
                             <forward compositeKey="frontImage" onEvent="CHANGE_SLICE_TYPE" fromUID="*" msgType="::fwComEd::ImageMsg" />
                         </service>
 
-                        <!-- Service to add,remove or swap images in composite when a patient is loaded or emptied -->
-                        <service uid="updaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="backgroundImage" onEvent="NEW_LOADED_PATIENT" fromUID="backgroundPatientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="backgroundImage" onEvent="NEW_PATIENT" fromUID="backgroundPatientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="backgroundImage" onEvent="CLEAR_PATIENT" fromUID="backgroundPatientDB" actionType="REMOVE" />
-
-                            <update compositeKey="frontImage" onEvent="NEW_LOADED_PATIENT" fromUID="frontPatientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="frontImage" onEvent="NEW_PATIENT" fromUID="frontPatientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="frontImage" onEvent="CLEAR_PATIENT" fromUID="frontPatientDB" actionType="REMOVE" />
-                        </service>
-                        
                         <!-- Manager to start/stop/swap services when background/front images are added/deleted/swapped -->
                         <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                             <mode type="stop" />
@@ -258,10 +245,7 @@
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <vtkObject id="imageBlend" class="vtkImageBlend" />
                                 <renderer id="default" background="0.0" />
-
-                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                                    <config renderer="default" picker="" />
-                                </adaptor>
+                                
                                 <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
                                     <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
                                 </adaptor>
@@ -304,9 +288,6 @@
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                                    <config renderer="default" picker="" />
-                                </adaptor>
                                 <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
                                     <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial"
                                             selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
@@ -326,9 +307,6 @@
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                                    <config renderer="default" picker="" />
-                                </adaptor>
                                 <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="frontImage">
                                     <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial"
                                             selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
@@ -345,20 +323,18 @@
                             <object uid="TFSelections" type="::fwData::Composite" />
                         </item>
                         
-                        <proxy channel="updaterChannel">
-                            <signal>backgroundPatientDB/objectModified</signal>
-                            <signal>frontPatientDB/objectModified</signal>
-                            <slot>updaterImg/receive</slot>
+                        <proxy channel="UPDATER_CHANNEL">
+                            <signal>backgroundImageUID/objectModified</signal>
+                            <signal>frontImageUID/objectModified</signal>
+                            <slot>updaterImgUID/receive</slot>
                         </proxy>
                     </object>
                 </item>
 
                 <start uid="MainFrame" />
-                <start uid="updaterImg" />
+                <start uid="updaterImgUID" />
                 <start uid="manager" />
                 <start uid="forwarderMsg" />
-                <start uid="newOBject2newBgPatientDB" />
-                <start uid="newOBject2newFrontPatientDB" />
 
             </object>
 
