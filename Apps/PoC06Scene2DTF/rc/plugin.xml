@@ -337,10 +337,6 @@
                                     <config renderer="default" picker="" />
                                 </adaptor>
 
-                                <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
-                                    <config renderer="default" picker="" />
-                                </adaptor>
-
                                 <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                                     <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
