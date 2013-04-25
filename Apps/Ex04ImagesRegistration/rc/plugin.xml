@@ -269,8 +269,6 @@ Detail of the ToolBar
                             </service>
                             <service uid="writerFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="writer" />
-                                <selection mode="exclude" />
-                                <addSelection service="::ioXML::FwXMLGenericWriterService" />
                             </service>
 
                         </object>
@@ -376,8 +374,6 @@ Detail of the ToolBar
 
                             <service uid="readerFile1" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="reader" />
-                                <selection mode="exclude" />
-                                <addSelection service="::ioXML::FwXMLGenericReaderService" />
                             </service>
 
                             <!-- Editors for Negato1 -->
@@ -395,8 +391,6 @@ Detail of the ToolBar
 
                             <service uid="readerFile2" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="reader" />
-                                <selection mode="exclude" />
-                                <addSelection service="::ioXML::FwXMLGenericReaderService" />
                             </service>
 
                             <!-- Editors for Negato2 -->
