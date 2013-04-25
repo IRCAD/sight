@@ -31,7 +31,8 @@
     <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
         <gui>
             <layout>
-                <menuItem name="Load patient" shortcut="Ctrl+O" />
+                <menuItem name="Load image" shortcut="Ctrl+I" />
+                <menuItem name="Load meshes" shortcut="Ctrl+M" />
                 <separator />
                 <menuItem name="Load camera representation" shortcut="Ctrl+P" />
                 <separator />
@@ -39,7 +40,8 @@
             </layout>
         </gui>
         <registry>
-            <menuItem sid="action_openFile" start="yes" />
+            <menuItem sid="action_openImage" start="yes" />
+            <menuItem sid="action_openMeshes" start="yes" />
             <menuItem sid="action_openCamFile" start="yes" />
             <menuItem sid="action_quit" start="yes" />
         </registry>
@@ -64,30 +66,50 @@
 
     <service uid="action_manageOrgansColors" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
         <config>
-            <appConfig id="organManagerConfig" />
+            <appConfig id="organManagerConfig" >
+                <parameters>
+                    <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID"  />
+                </parameters>
+            </appConfig>
         </config>
     </service>
 
     <service uid="action_manageView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
         <config>
-            <appConfig id="camViewManagerConfig" />
+            <appConfig id="camViewManagerConfig" >
+                <parameters>
+                    <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID"  />
+                </parameters>
+            </appConfig>
         </config>
     </service>
 
     <service uid="action_manageRegistration" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
         <config>
-            <appConfig id="manualRegistrationEditorConfig" />
+            <appConfig id="manualRegistrationEditorConfig" >
+                <parameters>
+                    <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID"  />
+                    <parameter replace="MESHDB_UID" by="meshDBUid"  />
+                </parameters>
+            </appConfig>
         </config>
     </service>
 
     <service uid="action_worldView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
         <config>
-            <appConfig id="worldViewConfig" />
+            <appConfig id="worldViewConfig" >
+                <parameters>
+                    <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID"  />
+                </parameters>
+            </appConfig>
         </config>
     </service>
 
-    <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-        <start uid="readerPathFile" />
+    <service uid="action_openImage" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+        <start uid="imageReaderUid" />
+    </service>
+    <service uid="action_openMeshes" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+        <start uid="modelSeriesReaderUid" />
     </service>
 
     <service uid="action_openCamFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">

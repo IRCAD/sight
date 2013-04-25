@@ -1,7 +1,10 @@
 <extension implements="::fwServices::registry::AppConfig">
-        <id>camViewManagerConfig</id>
-        <type>parameters</type>
-        <config>
+    <id>camViewManagerConfig</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="COMPOSITE_VISU_UID" />
+    </parameters>
+    <config>
         
 
     <object type="::fwData::Composite">
@@ -23,8 +26,7 @@
         </service>
 
         <item key="compositeVisu">
-            <object uid="compositeVisu" src="ref" type="::fwData::Composite">
-
+            <object uid="${COMPOSITE_VISU_UID}" src="ref" type="::fwData::Composite">
                 <service uid="genericScene3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
                         <picker id="picker" vtkclass="fwVtkCellPicker" />
@@ -41,7 +43,7 @@
                             <config renderer="default" picker="" />
                         </adaptor>
 
-                        <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
+                        <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                             <config renderer="default" picker="" />
                         </adaptor>
 

@@ -1,13 +1,18 @@
 <extension implements="::fwServices::registry::AppConfig">
-        <id>manualRegistrationEditorConfig</id>
-        <type>parameters</type>
-        <config>
+    <id>manualRegistrationEditorConfig</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="MODEL_SERIES_UID" />
+        <param name="MESHDB_UID" />
+        <param name="GENERIC_UID" />
+    </parameters>
+    <config>
         
 
     <object type="::fwData::Composite">
 
         <!-- MAIN FRAME -->
-        <service uid="registrationEditorFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+        <service uid="${GENERIC_UID}_registrationEditorFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -18,32 +23,23 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="listOrganTransformationEditor" />
+                <view sid="${GENERIC_UID}_OrganTransformation" start="yes" />
             </registry>
         </service>
 
-        <item key="compositeVisu">
-            <object uid="compositeVisu" src="ref" type="::fwData::Composite">
-
-                <service uid="managerForManualRegistEditor" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                    <mode type="dummy" />
-                    <config>
-                        <object id="acquisition" type="::fwData::Acquisition">
-                            <service uid="listOrganTransformationEditor" impl="::uiAcquisition::OrganTransformationEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                <TMSUid>meshDB</TMSUid>
-                            </service>
-                        </object>
-                    </config>
+        <item key="modelSeries">
+            <object uid="${MODEL_SERIES_UID}" src="ref" type="::fwMedData::ModelSeries">
+                <service uid="${GENERIC_UID}_OrganTransformation" impl="::uiMedData::editor::SOrganTransformation" type="::gui::editor::IEditor" autoConnect="yes">
+                    <TMSUid>${MESHDB_UID}</TMSUid>
                 </service>
             </object>
         </item>
 
         <!-- START AND STOP SERVICES -->
-        <start uid="registrationEditorFrame" />
-        <start uid="managerForManualRegistEditor" />
+        <start uid="${GENERIC_UID}_registrationEditorFrame" />
 
     </object>
 
 
-        </config>
-    </extension>
+    </config>
+</extension>

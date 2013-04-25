@@ -98,14 +98,14 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
     QObject::connect(m_reconstructionListBox,
                      SIGNAL(itemClicked (QListWidgetItem * )),
                      this,
-                     SLOT(OnReconstructionCheck(QListWidgetItem *)));
-    QObject::connect(m_resetButton, SIGNAL(clicked( )), this, SLOT(OnResetClick()));
-    QObject::connect(m_saveButton, SIGNAL(clicked( )), this, SLOT(OnSaveClick()));
-    QObject::connect(m_loadButton, SIGNAL(clicked( )), this, SLOT(OnLoadClick()));
+                     SLOT(onReconstructionCheck(QListWidgetItem *)));
+    QObject::connect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
+    QObject::connect(m_saveButton, SIGNAL(clicked( )), this, SLOT(onSaveClick()));
+    QObject::connect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
 
     //testing
     m_testButton = new QPushButton(tr("Test"), container);
-    QObject::connect(m_testButton, SIGNAL(clicked()), this, SLOT(OnTestClick()));
+    QObject::connect(m_testButton, SIGNAL(clicked()), this, SLOT(onTestClick()));
 
     layoutGroupBox->addWidget( m_reconstructionListBox, 1);
     layoutGroupBox->addWidget( m_resetButton, 0);
@@ -128,13 +128,13 @@ void SOrganTransformation::stopping() throw( ::fwTools::Failed )
     QObject::disconnect(m_reconstructionListBox,
                         SIGNAL(itemClicked (QListWidgetItem * )),
                         this,
-                        SLOT(OnReconstructionCheck(QListWidgetItem *)));
-    QObject::disconnect(m_resetButton, SIGNAL(clicked( )), this, SLOT(OnResetClick()));
-    QObject::disconnect(m_saveButton, SIGNAL(clicked( )), this, SLOT(OnSaveClick()));
-    QObject::disconnect(m_loadButton, SIGNAL(clicked( )), this, SLOT(OnLoadClick()));
+                        SLOT(onReconstructionCheck(QListWidgetItem *)));
+    QObject::disconnect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
+    QObject::disconnect(m_saveButton, SIGNAL(clicked( )), this, SLOT(onSaveClick()));
+    QObject::disconnect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
 
     //test
-    QObject::disconnect(m_testButton, SIGNAL(clicked( )), this, SLOT(OnTestClick()));
+    QObject::disconnect(m_testButton, SIGNAL(clicked( )), this, SLOT(onTestClick()));
 
     this->getContainer()->clean();
     this->destroy();

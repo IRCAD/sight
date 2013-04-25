@@ -23,35 +23,22 @@
                     </snap>
                 </service>
 
-                <!-- patientDB description -->
-                <item key="patientDB">
-                    <object uid="patientDB" type="::fwData::PatientDB">
-
-                        <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                <item key="image">
+                    <object uid="imageUID"  type="::fwData::Image">
+                        <service uid="imageReaderUid" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
-                            <selection mode="exclude" />
-                            <addSelection service="::ioXML::FwXMLPatientDBReaderService" />
                         </service>
-                        
-                        <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
-                                                
                     </object>
                 </item>
-
+                
+                
                 <!-- CompositeVisu description -->
                 <item key="compositeVisu">
-                    <object uid="compositeVisu" type="::fwData::Composite">
+                    <object uid="compositeVisuUID" type="::fwData::Composite">
 
-                        <service uid="updaterAcq" impl="::ctrlSelection::updater::AcqFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="acquisition" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="acquisition" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
-                        </service>
-                        
-                        <service uid="updaterImg" impl="::ctrlSelection::updater::ImageFromPDBUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="image" onEvent="NEW_LOADED_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="image" onEvent="NEW_PATIENT" fromUID="patientDB" actionType="ADD_OR_SWAP" />
-                            <update compositeKey="image" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE" />
-                        </service>
+                        <service uid="updaterImageUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP"/>
+                        </service>                       
 
                         <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                             <mode type="stop" />
@@ -78,10 +65,8 @@
 
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
-                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                                    <config renderer="default" picker="" />
-                                </adaptor>
-                                <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
+
+                                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                     <config renderer="default" picker="" autoresetcamera="no" />
                                 </adaptor>
                                 <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
@@ -102,7 +87,6 @@
                                     <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
                                 </adaptor>
 
-
                                 <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDB">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
@@ -112,16 +96,10 @@
                         <service uid="genericScene2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
-
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
-
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                                    <config renderer="default" picker="" />
-                                </adaptor>
-
-                                <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
+                                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                     <config renderer="default" picker="" autoresetcamera="no" />
                                 </adaptor>
 
@@ -146,9 +124,17 @@
                             </scene>
                         </service>
 
+                        <item key="modelSeries">
+                            <object uid="modelSeriesUID"  type="::fwMedData::ModelSeries">
+                                <service uid="modelSeriesReaderUid" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                                    <type mode="reader" />
+                                </service>
+                            </object>
+                        </item>
+                
                         <!-- meshDB description -->
                         <item key="meshDB">
-                            <object uid="meshDB" type="::fwData::Composite">
+                            <object uid="meshDBUid" type="::fwData::Composite">
                             </object>
                         </item>
                         
@@ -180,20 +166,17 @@
                             </object>
                         </item>
                         
-                        <proxy channel="updaters">
-                            <signal>patientDB/objectModified</signal>
-                            <slot>updaterAcq/receive</slot>
-                            <slot>updaterImg/receive</slot>
-                        </proxy>
+                        <connect>
+                            <signal>imageUID/objectModified</signal>
+                            <slot>updaterImageUID/receive</slot>
+                        </connect>
                         
                     </object>
                 </item>
 
                 <start uid="IHM" />
-                <start uid="updaterAcq" />
-                <start uid="updaterImg" />
+                <start uid="updaterImageUID" />
                 <start uid="manager" />
-                <start uid="newOBject2newPatientDB" />
                 <start uid="cam1ReaderFile" />
                 <start uid="cam2ReaderFile" />
 

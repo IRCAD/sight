@@ -1,13 +1,17 @@
 <extension implements="::fwServices::registry::AppConfig">
-        <id>worldViewConfig</id>
-        <type>parameters</type>
-        <config>
+    <id>worldViewConfig</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="COMPOSITE_VISU_UID" />
+        <param name="GENERIC_UID" />
+    </parameters>
+    <config>
         
 
     <object type="::fwData::Composite">
 
         <!-- MAIN FRAME -->
-        <service uid="worldViewConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+        <service uid="${GENERIC_UID}_worldViewConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -18,14 +22,14 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="genericWorld" start="yes" />
+                <view sid="${GENERIC_UID}_genericWorld" start="yes" />
             </registry>
         </service>
 
         <item key="compositeVisu">
-            <object uid="compositeVisu" src="ref" type="::fwData::Composite">
+            <object uid="${COMPOSITE_VISU_UID}" src="ref" type="::fwData::Composite">
 
-                <service uid="genericWorld" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                <service uid="${GENERIC_UID}_genericWorld" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
                         <picker id="picker" vtkclass="fwVtkCellPicker" />
 
@@ -38,7 +42,7 @@
                             <config renderer="default" picker="" />
                         </adaptor>
 
-                        <adaptor id="acquisitionAdaptor" class="::visuVTKAdaptor::Acquisition" objectId="acquisition">
+                        <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                             <config renderer="default" picker="" autoresetcamera="no" />
                         </adaptor>
 
@@ -68,10 +72,10 @@
         </item>
 
         <!-- START AND STOP SERVICES -->
-        <start uid="worldViewConfigFrame" />
+        <start uid="${GENERIC_UID}_worldViewConfigFrame" />
 
     </object>
 
 
-        </config>
-    </extension>
+    </config>
+</extension>

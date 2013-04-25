@@ -1,6 +1,9 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>organManagerConfig</id>
     <type>parameters</type>
+    <parameters>
+        <param name="MODEL_SERIES_UID" />
+    </parameters>
     <config>
 
 
@@ -32,46 +35,36 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="listOrganEditor" />
+                    <view sid="listOrganEditor" start="yes" />
                     <view sid="organMaterialEditor" />
                     <view sid="representationEditor" />
                 </registry>
             </service>
 
-            <item key="compositeVisu">
-                <object uid="compositeVisu" src="ref" type="::fwData::Composite">
-
-                    <service uid="managerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                        <mode type="dummy" />
-                        <config>
-                            <object id="acquisition" type="::fwData::Acquisition">
-                                <service uid="listOrganEditor" impl="::uiAcquisition::OrganListEditor" type="::gui::editor::IEditor" autoConnect="yes" />
-
-                                <connect>
-                                    <signal>objectModified</signal>
-                                    <slot>updaterReconst/receive</slot>
-                                </connect>
-                            </object>
-                            <object id="reconstruction" type="::fwData::Reconstruction">
-                                <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                                <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                            </object>
-                        </config>
-                    </service>
-
-                    <service uid="updaterReconst" impl="::ctrlSelection::updater::ReconstructionFromAcqUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="reconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
-                        <update compositeKey="reconstruction" onEvent="NEW_IMAGE_SELECTED" fromUID="patientDB" actionType="REMOVE_IF_PRESENT" />
-                        <update compositeKey="reconstruction" onEvent="CLEAR_PATIENT" fromUID="patientDB" actionType="REMOVE_IF_PRESENT" />
-                    </service>
-
-                    <connect>
-                        <signal>patientDB/objectModified</signal>
-                        <slot>updaterReconst/receive</slot>
-                    </connect>
-
+            <service uid="updaterReconst" impl="::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                <update compositeKey="reconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
+            </service>
+                        
+            <service uid="managerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                <mode type="dummy" />
+                <config>
+                    <object id="reconstruction" type="::fwData::Reconstruction">
+                        <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                        <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                    </object>
+                </config>
+            </service>
+            
+            <item key="modelSeries">
+                <object uid="${MODEL_SERIES_UID}" src="ref" type="::fwMedData::ModelSeries">
+                    <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" />
                 </object>
             </item>
+            
+            <connect>
+                <signal>${MODEL_SERIES_UID}/objectModified</signal>
+                <slot>updaterReconst/receive</slot>
+            </connect>
 
             <!-- START AND STOP SERVICES -->
             <start uid="organManagerFrame" />
