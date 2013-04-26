@@ -25,7 +25,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/SeriesDBReader.hpp>
+#include <fwVtkIO/SeriesDBReader.hpp>
 
 #include "ioVTK/SSeriesDBReader.hpp"
 
@@ -103,7 +103,7 @@ void SSeriesDBReader::info(std::ostream &_sstream )
 void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPathType& vtkFiles,
                                     ::fwMedData::SeriesDB::sptr seriesDB )
 {
-    ::vtkIO::SeriesDBReader::sptr reader = ::vtkIO::SeriesDBReader::New();
+    ::fwVtkIO::SeriesDBReader::sptr reader = ::fwVtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFiles(vtkFiles);
 

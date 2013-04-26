@@ -23,8 +23,8 @@
 // Helper to manipulate buffer image
 #include <fwComEd/helper/Image.hpp>
 
-// vtkIO lib : intern lib used to convert image between vtk and fw4spl
-#include <vtkIO/vtk.hpp>
+// fwVtkIO lib : intern lib used to convert image between vtk and fw4spl
+#include <fwVtkIO/vtk.hpp>
 
 #include "devForum/tuto01/ImageViewerService.hpp"
 
@@ -126,7 +126,7 @@ void ImageViewerService::initVTKPipeline()
 
     // Converts an ::fwDada::Image to a vtk Image
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( associatedImage, vtk_img );
+    ::fwVtkIO::toVTKImage( associatedImage, vtk_img );
 
     // Creates an image picker
     vtkCellPicker* picker = vtkCellPicker::New();

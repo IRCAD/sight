@@ -32,7 +32,7 @@ namespace ioVTK
  * @author  IRCAD (Research and Development Team).
  * @date    2011.
  *
- * Service writing a VTK Mesh using the vtkIO lib.
+ * Service writing a VTK Mesh using the fwVtkIO lib.
  *
  * Service registered details : \n
  * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh )

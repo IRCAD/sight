@@ -29,7 +29,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "visuVTKAdaptor/Image.hpp"
 #include "visuVTKAdaptor/ImagesBlend.hpp"

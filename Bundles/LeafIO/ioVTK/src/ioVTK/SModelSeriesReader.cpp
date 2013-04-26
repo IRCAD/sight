@@ -32,7 +32,7 @@
 
 #include <fwTools/UUID.hpp>
 
-#include <vtkIO/MeshReader.hpp>
+#include <fwVtkIO/MeshReader.hpp>
 
 #include "ioVTK/MeshWriterService.hpp"
 #include "ioVTK/SModelSeriesReader.hpp"
@@ -140,7 +140,7 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
 
 void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwData::Mesh::sptr mesh )
 {
-    ::vtkIO::MeshReader::sptr reader = ::vtkIO::MeshReader::New();
+    ::fwVtkIO::MeshReader::sptr reader = ::fwVtkIO::MeshReader::New();
 
     reader->setObject(mesh);
     reader->setFile(file);

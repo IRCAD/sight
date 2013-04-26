@@ -14,7 +14,7 @@
 #include <fwData/TransferFunction.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/String.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageData.h>
 #include <vtkImageBlend.h>

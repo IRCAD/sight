@@ -21,7 +21,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/MeshWriter.hpp>
+#include <fwVtkIO/MeshWriter.hpp>
 
 #include "ioVTK/MeshWriterService.hpp"
 
@@ -92,7 +92,7 @@ void MeshWriterService::info(std::ostream &_sstream )
 void MeshWriterService::saveMesh(const ::boost::filesystem::path& meshFile, const SPTR( ::fwData::Mesh)& mesh)
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::MeshWriter::sptr writer = ::vtkIO::MeshWriter::New();
+    ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
 
     writer->setObject(mesh);
     writer->setFile(meshFile);

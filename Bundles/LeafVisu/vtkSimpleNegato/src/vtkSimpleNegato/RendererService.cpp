@@ -21,7 +21,7 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "vtkSimpleNegato/RendererService.hpp"
 
@@ -161,7 +161,7 @@ void RendererService::refresh()
 void RendererService::initVTKPipeline()
 {
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
+    ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
 
     m_outline = vtkOutlineFilter::New();
     m_outline->SetInput(vtk_img);
@@ -231,7 +231,7 @@ void RendererService::updateVTKPipeline()
 {
     assert(this->getObject< ::fwData::Image >());
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
+    ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
 
     m_outline->SetInput(vtk_img);
     m_negatoSagittal->SetInput(vtk_img);

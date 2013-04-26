@@ -31,8 +31,8 @@
 
 //VAG DEBUG
 //#include <fwMath/MeshFunctions.hpp>
-//#include <vtkIO/vtk.hpp>
-//#include <vtkIO/MeshWriter.hpp>
+//#include <fwVtkIO/vtk.hpp>
+//#include <fwVtkIO/MeshWriter.hpp>
 //#include <boost/filesystem.hpp>
 
 

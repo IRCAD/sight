@@ -28,9 +28,9 @@
 
 #include <fwTools/UUID.hpp>
 
-#include <vtkIO/ModelSeriesObjWriter.hpp>
+#include <fwVtkIO/ModelSeriesObjWriter.hpp>
 
-#include <vtkIO/ModelSeriesObjWriter.hpp>
+#include <fwVtkIO/ModelSeriesObjWriter.hpp>
 
 #include "ioVTK/MeshWriterService.hpp"
 #include "ioVTK/SModelSeriesObjWriter.hpp"
@@ -127,7 +127,7 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
         ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >() ;
         SLM_ASSERT("ModelSeries is not instanced", modelSeries);
 
-        ::vtkIO::ModelSeriesObjWriter::sptr writer = ::vtkIO::ModelSeriesObjWriter::New();
+        ::fwVtkIO::ModelSeriesObjWriter::sptr writer = ::fwVtkIO::ModelSeriesObjWriter::New();
         writer->setObject(modelSeries);
         writer->setFolder(this->getFolder());
 

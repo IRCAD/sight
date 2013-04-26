@@ -17,7 +17,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/String.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkActor.h>
 #include <vtkCellArray.h>

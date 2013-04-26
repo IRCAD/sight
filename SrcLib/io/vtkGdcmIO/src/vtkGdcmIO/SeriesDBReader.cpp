@@ -41,8 +41,8 @@
 #include <gdcmReader.h>
 #include <gdcmIPPSorter.h>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/ProgressVtkToFw.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
 
 #include "vtkGdcmIO/SeriesDBReader.hpp"
 #include "vtkGdcmIO/helper/GdcmHelper.hpp"
@@ -281,11 +281,11 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                     {
                         SLM_TRACE ( "Read all files" );
                         //add progress observation
-                        ::vtkIO::Progressor progress(reader, this->getSptr(), "Serie " + iter->first);
+                        ::fwVtkIO::Progressor progress(reader, this->getSptr(), "Serie " + iter->first);
                         reader->Update();
                         try
                         {
-                            ::vtkIO::fromVTKImage(reader->GetOutput(), pDataImage);
+                            ::fwVtkIO::fromVTKImage(reader->GetOutput(), pDataImage);
                             res = true;
                         }
                         catch(std::exception &e)

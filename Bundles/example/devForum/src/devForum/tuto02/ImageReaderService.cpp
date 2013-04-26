@@ -8,7 +8,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <vtkIO/ImageReader.hpp>
+#include <fwVtkIO/ImageReader.hpp>
 
 #include "devForum/tuto02/ImageReaderService.hpp"
 
@@ -71,8 +71,8 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
     // Retrieve dataStruct associated with this service
     ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >() ;
 
-    // Use a reader of vtkIO library to read a vtk image
-    ::vtkIO::ImageReader::sptr myReader = ::vtkIO::ImageReader::New();
+    // Use a reader of fwVtkIO library to read a vtk image
+    ::fwVtkIO::ImageReader::sptr myReader = ::fwVtkIO::ImageReader::New();
 
     // Set the image (already created, but empty) that will be modifed
     myReader->setObject(associatedImage);

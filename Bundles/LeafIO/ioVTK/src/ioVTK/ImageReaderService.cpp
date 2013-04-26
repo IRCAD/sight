@@ -21,9 +21,9 @@
 #include <io/IReader.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
-#include <vtkIO/ImageReader.hpp>
-#include <vtkIO/MetaImageReader.hpp>
-#include <vtkIO/VtiImageReader.hpp>
+#include <fwVtkIO/ImageReader.hpp>
+#include <fwVtkIO/MetaImageReader.hpp>
+#include <fwVtkIO/VtiImageReader.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -140,7 +140,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
     SLM_TRACE_FUNC();
     bool ok = true;
 
-    // Use a reader of vtkIO library to read an image
+    // Use a reader of fwVtkIO library to read an image
     ::fwDataIO::reader::IObjectReader::sptr myReader;
     // Create a progress bar and attach it to reader
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
@@ -149,7 +149,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
 
     if(ext == ".vtk")
     {
-        ::vtkIO::ImageReader::sptr vtkReader = ::vtkIO::ImageReader::New();
+        ::fwVtkIO::ImageReader::sptr vtkReader = ::fwVtkIO::ImageReader::New();
         vtkReader->addHandler( progressMeterGUI );
         // Set the file system path
         vtkReader->setFile(imgFile);
@@ -157,14 +157,14 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
     }
     else if(ext == ".vti")
     {
-        ::vtkIO::VtiImageReader::sptr vtiReader = ::vtkIO::VtiImageReader::New();
+        ::fwVtkIO::VtiImageReader::sptr vtiReader = ::fwVtkIO::VtiImageReader::New();
         vtiReader->addHandler( progressMeterGUI );
         vtiReader->setFile(imgFile);
         myReader = vtiReader;
     }
     else if(ext == ".mhd")
     {
-        ::vtkIO::MetaImageReader::sptr mhdReader = ::vtkIO::MetaImageReader::New();
+        ::fwVtkIO::MetaImageReader::sptr mhdReader = ::fwVtkIO::MetaImageReader::New();
         mhdReader->addHandler( progressMeterGUI );
         mhdReader->setFile(imgFile);
         myReader = mhdReader;

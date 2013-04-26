@@ -29,7 +29,7 @@ namespace ioVTK
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
- * Service reading a VTK Image using the vtkIO lib.
+ * Service reading a VTK Image using the fwVtkIO lib.
  *
  * Service registered details : \n
  * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image )

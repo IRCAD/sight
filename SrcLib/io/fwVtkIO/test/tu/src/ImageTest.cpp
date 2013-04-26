@@ -26,13 +26,13 @@
 
 #include <fwComEd/helper/Image.hpp>
 
-#include <vtkIO/ImageWriter.hpp>
-#include <vtkIO/ImageReader.hpp>
-#include <vtkIO/MetaImageReader.hpp>
-#include <vtkIO/MetaImageWriter.hpp>
-#include <vtkIO/VtiImageReader.hpp>
-#include <vtkIO/VtiImageWriter.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/ImageWriter.hpp>
+#include <fwVtkIO/ImageReader.hpp>
+#include <fwVtkIO/MetaImageReader.hpp>
+#include <fwVtkIO/MetaImageWriter.hpp>
+#include <fwVtkIO/VtiImageReader.hpp>
+#include <fwVtkIO/VtiImageWriter.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "ImageTest.hpp"
 
@@ -143,7 +143,7 @@ void ImageTest::testImageToVtk()
     ::fwComEd::helper::Image imageHelper(image);                                                                               \
                                                                                                                                \
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();                                         \
-    ::vtkIO::toVTKImage(image, vtkImage);                                                                                      \
+    ::fwVtkIO::toVTKImage(image, vtkImage);                                                                                      \
                                                                                                                                \
     COMPARE_IMAGE_ATTRS_MACRO(                                                                                                 \
             size,                                                                                                              \
@@ -201,7 +201,7 @@ void ImageTest::testFromVtk()
         CPPUNIT_ASSERT(vtkImage);                                                                                      \
                                                                                                                        \
         ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                \
-        ::vtkIO::fromVTKImage(vtkImage, image);                                                                        \
+        ::fwVtkIO::fromVTKImage(vtkImage, image);                                                                        \
                                                                                                                        \
         ::fwComEd::helper::Image imageHelper(image);                                                                   \
                                                                                                                        \
@@ -251,7 +251,7 @@ void ImageTest::mhdReaderTest()
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd" );
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::vtkIO::MetaImageReader::sptr reader = ::vtkIO::MetaImageReader::New();
+    ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
@@ -279,12 +279,12 @@ void ImageTest::mhdWriterTest()
     const ::boost::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::vtkIO::MetaImageReader::sptr reader = ::vtkIO::MetaImageReader::New();
+    ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
 
-    ::vtkIO::MetaImageWriter::sptr writer = ::vtkIO::MetaImageWriter::New();
+    ::fwVtkIO::MetaImageWriter::sptr writer = ::fwVtkIO::MetaImageWriter::New();
     writer->setObject(image);
     writer->setFile(testFile);
     writer->write();
@@ -300,14 +300,14 @@ void ImageTest::mhdWriterTest()
 
 
 
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"int8", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"uint8", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"int16", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"uint16", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"int32", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"uint32", "imageTest.mhd");
-    // WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"int64", "imageTest.mhd");
-    // WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"uint64", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int8", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint8", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int16", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint16", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int32", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint32", "imageTest.mhd");
+    // WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int64", "imageTest.mhd");
+    // WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint64", "imageTest.mhd");
 
     const ::boost::filesystem::path zFile(::fwTools::System::getTemporaryFolder() / "imagetestfile.zraw");
     ::boost::filesystem::remove(zFile);
@@ -320,7 +320,7 @@ void ImageTest::vtiReaderTest()
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vti/BostonTeapot.vti" );
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::vtkIO::VtiImageReader::sptr reader = ::vtkIO::VtiImageReader::New();
+    ::fwVtkIO::VtiImageReader::sptr reader = ::fwVtkIO::VtiImageReader::New();
 
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -345,14 +345,14 @@ void ImageTest::vtiReaderTest()
 void ImageTest::vtiWriterTest()
 {
 
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"int8", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"uint8", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"int16", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"uint16", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"int32", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"uint32", "imageTest.vti");
-    // WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"int64", "imageTest.vti");
-    // WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"uint64", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int8", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint8", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int16", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint16", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int32", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint32", "imageTest.vti");
+    // WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int64", "imageTest.vti");
+    // WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint64", "imageTest.vti");
 }
 
 //------------------------------------------------------------------------------
@@ -362,7 +362,7 @@ void ImageTest::vtkReaderTest()
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    ::vtkIO::ImageReader::sptr reader = ::vtkIO::ImageReader::New();
+    ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();
 
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -394,7 +394,7 @@ void ImageTest::vtkReaderTest()
                                                                                                                                                    \
     ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                                                \
                                                                                                                                                    \
-    ::vtkIO::ImageReader::sptr reader = ::vtkIO::ImageReader::New();                                                                                                          \
+    ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();                                                                                                          \
     reader->setObject(image);                                                                                                                      \
     reader->setFile(testFile);                                                                                                                     \
     reader->read();                                                                                                                                \
@@ -433,14 +433,14 @@ void ImageTest::vtkReaderTest()
 
 void ImageTest::vtkWriterTest()
 {
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"int8", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"uint8", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"int16", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"uint16", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"int32", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"uint32", "imageTest.vtk");
-    // WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"int64", "imageTest.vtk");
-    // WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"uint64", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int8", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint8", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int16", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint16", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int32", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint32", "imageTest.vtk");
+    // WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int64", "imageTest.vtk");
+    // WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint64", "imageTest.vtk");
 }
 
 //------------------------------------------------------------------------------

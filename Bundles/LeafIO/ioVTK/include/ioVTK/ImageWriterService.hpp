@@ -30,7 +30,7 @@ namespace ioVTK
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
- * Service writing a VTK Image using the vtkIO lib.
+ * Service writing a VTK Image using the fwVtkIO lib.
  *
  * Service registered details : \n
  * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image )

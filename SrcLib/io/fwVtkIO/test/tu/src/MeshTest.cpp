@@ -20,9 +20,9 @@
 #include <fwTest/generator/Mesh.hpp>
 #include <fwDataTools/Mesh.hpp>
 
-#include <vtkIO/MeshWriter.hpp>
-#include <vtkIO/MeshReader.hpp>
-#include <vtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/MeshWriter.hpp>
+#include <fwVtkIO/MeshReader.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
 
 #include "MeshTest.hpp"
 
@@ -80,13 +80,13 @@ void MeshTest::testMeshToVtk()
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Id)0);
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Id)0);
 
-    ::vtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
 
     vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
-    ::vtkIO::helper::Mesh::toVTKMesh( mesh1, vtkMesh);
+    ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, vtkMesh);
     CPPUNIT_ASSERT( vtkMesh );
 
     CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfVerts(), vtkMesh->GetNumberOfVerts());
@@ -96,7 +96,7 @@ void MeshTest::testMeshToVtk()
 
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
     CPPUNIT_ASSERT( mesh2 );
-    ::vtkIO::helper::Mesh::fromVTKMesh(vtkMesh, mesh2);
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(vtkMesh, mesh2);
 
     compare(mesh1, mesh2);
 }
@@ -111,11 +111,11 @@ void MeshTest::testSyntheticMesh()
     mesh1->adjustAllocatedMemory();
 
     vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
-    ::vtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
+    ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
     CPPUNIT_ASSERT( poly );
 
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
-    ::vtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
 
     compare(mesh1, mesh2);
 }
@@ -136,14 +136,14 @@ void MeshTest::testExportImportSyntheticMesh()
 
     ::boost::filesystem::path testFile = ::fwTools::System::getTemporaryFolder() / "testExportImportSyntheticMesh.vtk";
 
-    ::vtkIO::MeshWriter::sptr writer = ::vtkIO::MeshWriter::New();
+    ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
     writer->setObject(mesh1);
     writer->setFile(testFile);
     writer->write();
     CPPUNIT_ASSERT(::boost::filesystem::exists(testFile));
 
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
-    ::vtkIO::MeshReader::sptr reader = ::vtkIO::MeshReader::New();
+    ::fwVtkIO::MeshReader::sptr reader = ::fwVtkIO::MeshReader::New();
     reader->setObject(mesh2);
     reader->setFile(testFile);
     reader->read();

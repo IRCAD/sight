@@ -20,7 +20,7 @@
 #include <fwServices/macros.hpp>
 #include <fwComEd/MeshMsg.hpp>
 
-#include <vtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
 
 #include "visuVTKAdaptor/MeshNormals.hpp"
 
@@ -135,7 +135,7 @@ void MeshNormals::updateMeshNormals()
     else
     {
         m_polyData = vtkSmartPointer< vtkPolyData >::New();
-        ::vtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
+        ::fwVtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
 
         vtkSmartPointer<vtkPolyDataAlgorithm> algo;
         if(m_normalRepresentation == CELL_NORMAL)
@@ -202,21 +202,21 @@ void MeshNormals::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTool
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED) )
     {
-        ::vtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
-        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
-        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED))
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::vtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
 

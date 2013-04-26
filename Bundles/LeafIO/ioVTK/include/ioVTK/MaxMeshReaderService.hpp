@@ -22,7 +22,7 @@ namespace ioVTK
  * @author  IRCAD (Research and Development Team).
  * @date    2009.
  *
- * Service reading a 3ds Max file using the vtkIO lib
+ * Service reading a 3ds Max file using the fwVtkIO lib
  * (for .3ds at this time).
  *
  * Service registered details : \n

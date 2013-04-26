@@ -6,11 +6,11 @@
 
 #include <fwData/TransferFunction.hpp>
 
-#include <vtkIO/helper/TransferFunction.hpp>
+#include <fwVtkIO/helper/TransferFunction.hpp>
 
 #include "TransferFunctionTest.hpp"
 
-using vtkIO::helper::TransferFunction;
+using fwVtkIO::helper::TransferFunction;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::TransferFunctionTest );
@@ -66,7 +66,7 @@ void TransferFunctionTest::toVtkLookupTableTest()
     double opacity;
     double colorTolerance = 1.0/255.0;
 
-    ::vtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
     lt->GetColor( 0, color);
     opacity = lt->GetOpacity(0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
@@ -89,7 +89,7 @@ void TransferFunctionTest::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.75, opacity  , colorTolerance );
 
     tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
-    ::vtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
     lt->GetColor(120,color);
     opacity = lt->GetOpacity(120);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
@@ -98,7 +98,7 @@ void TransferFunctionTest::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, opacity  , colorTolerance );
 
 //    tf->setLevel(200);
-//    ::vtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
+//    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
 //    lt->GetColor(200,color);
 //    opacity = lt->GetOpacity(200);
 //    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
@@ -108,7 +108,7 @@ void TransferFunctionTest::toVtkLookupTableTest()
 //
 //    tf->setLevel(0);
 //    tf->setWindow(800);
-//    ::vtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
+//    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
 //    lt->GetColor(200,color);
 //    opacity = lt->GetOpacity(200);
 //    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
@@ -123,7 +123,7 @@ void TransferFunctionTest::toVtkLookupTableTest()
 void TransferFunctionTest::toBWVtkLookupTableTest()
 {
     vtkSmartPointer<vtkLookupTable> lt = vtkSmartPointer<vtkLookupTable>::New();
-    ::vtkIO::helper::TransferFunction::toBWVtkLookupTable( 0.0, 100.0, lt, 4096 );
+    ::fwVtkIO::helper::TransferFunction::toBWVtkLookupTable( 0.0, 100.0, lt, 4096 );
 
     double color[3];
     double opacity;

@@ -33,8 +33,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <vtkIO/helper/Mesh.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "vtkSimpleMesh/RendererService.hpp"
 
@@ -185,7 +185,7 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
             ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
             {
                 ::fwData::mt::ObjectReadLock lock(mesh);
-                ::vtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
+                ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
             }
             m_mapper->SetInput(m_vtkPolyData);
         }
@@ -217,7 +217,7 @@ void RendererService::initVTKPipeline()
 
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::vtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
+        ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
     }
 
     m_mapper = vtkPolyDataMapper::New();
@@ -247,10 +247,10 @@ void RendererService::updateVTKPipeline(bool resetCamera)
 
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::vtkIO::helper::Mesh::updatePolyDataPoints(m_vtkPolyData, mesh);
-        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_vtkPolyData, mesh);
-        ::vtkIO::helper::Mesh::updatePolyDataPointColor(m_vtkPolyData, mesh);
-        ::vtkIO::helper::Mesh::updatePolyDataCellNormals(m_vtkPolyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_vtkPolyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_vtkPolyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointColor(m_vtkPolyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_vtkPolyData, mesh);
     }
 
     if (resetCamera)

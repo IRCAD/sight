@@ -28,7 +28,7 @@ namespace ioVTK
  * @brief   Image series writer service.
  * @class   SImageSeriesWriter.
  *
- * Service writing an image series using the vtkIO lib.
+ * Service writing an image series using the fwVtkIO lib.
  */
 class IOVTK_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {

@@ -17,7 +17,7 @@
 #include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/TriangularMeshMsg.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -470,7 +470,7 @@ void TriangularMesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwT
        ::fwData::TriangularMesh::sptr mesh = this->getObject < ::fwData::TriangularMesh >();
        SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-       ::vtkIO::updatePolyDataPoints(m_polyData, mesh);
+       ::fwVtkIO::updatePolyDataPoints(m_polyData, mesh);
 
        this->setVtkPipelineModified();
     }
@@ -826,7 +826,7 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
             m_polyData = 0;
         }
 
-        m_polyData = ::vtkIO::toVTKMesh(mesh);
+        m_polyData = ::fwVtkIO::toVTKMesh(mesh);
 
         if (m_computeNormalsAtUpdate)
         {

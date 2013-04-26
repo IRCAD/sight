@@ -27,7 +27,7 @@
 
 #include <fwTools/UUID.hpp>
 
-#include <vtkIO/MeshWriter.hpp>
+#include <fwVtkIO/MeshWriter.hpp>
 
 #include "ioVTK/MeshWriterService.hpp"
 #include "ioVTK/SModelSeriesWriter.hpp"

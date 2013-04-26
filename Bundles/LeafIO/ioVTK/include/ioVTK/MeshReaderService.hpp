@@ -28,7 +28,7 @@ namespace ioVTK
  * @author  IRCAD (Research and Development Team).
  * @date    2011.
  *
- * Service reading a VTK mesh using the vtkIO lib.
+ * Service reading a VTK mesh using the fwVtkIO lib.
  *
  * Service registered details : \n
  * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh )

@@ -416,7 +416,7 @@ void DicomImageWriter::writeMultiFrame()
     // Image's number of frames
     const ::fwData::Image::SizeType & size = image->getSize();
     helper::GdcmData::setTagValue< ::boost::int32_t ,0x0028,0x0008>(size[2], gDsRoot);
-    OSLM_TRACE("Image's number of frames : "<<::fwTools::getString(size[2]));
+    OSLM_TRACE("Image's number of frames : "<< ::fwTools::getString(size[2]));
 
     // Frame Increment Pointer (0028,0009) //TODO
     helper::GdcmData::setTagValue<int,0x0028,0x0009>(1, gDsRoot);   // It is right?

@@ -30,9 +30,9 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
-#include <vtkIO/ImageWriter.hpp>
-#include <vtkIO/MetaImageWriter.hpp>
-#include <vtkIO/VtiImageWriter.hpp>
+#include <fwVtkIO/ImageWriter.hpp>
+#include <fwVtkIO/MetaImageWriter.hpp>
+#include <fwVtkIO/VtiImageWriter.hpp>
 
 #include "ioVTK/ImageWriterService.hpp"
 #include "ioVTK/SImageSeriesWriter.hpp"

@@ -13,7 +13,7 @@
 #include <fwData/TransferFunction.hpp>
 #include <fwData/Color.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkCommand.h>
 #include <vtkPlaneCollection.h>
@@ -304,7 +304,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     this->updateImageInfos(image);
 
     vtkImageImport *imageImport = vtkImageImport::New();
-    ::vtkIO::configureVTKImageImport( imageImport, image );
+    ::fwVtkIO::configureVTKImageImport( imageImport, image );
 
     m_volumeMapper->RemoveAllClippingPlanes();
     if (m_clippingPlanes)

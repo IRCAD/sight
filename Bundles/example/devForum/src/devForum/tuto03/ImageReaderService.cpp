@@ -8,7 +8,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <vtkIO/ImageReader.hpp>
+#include <fwVtkIO/ImageReader.hpp>
 
 // Management of Image Message
 #include <fwComEd/ImageMsg.hpp>

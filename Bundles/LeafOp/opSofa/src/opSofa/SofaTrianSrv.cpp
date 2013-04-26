@@ -9,7 +9,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwComEd/MeshMsg.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <QInputDialog>
 

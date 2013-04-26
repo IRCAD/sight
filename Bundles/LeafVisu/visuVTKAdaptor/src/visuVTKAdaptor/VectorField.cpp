@@ -19,8 +19,8 @@
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/TransferFunction.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/TransferFunction.hpp>
 
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
@@ -145,7 +145,7 @@ void VectorField::buildPipeline( )
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::vtkIO::toVTKImage(image, m_imageData);
+    ::fwVtkIO::toVTKImage(image, m_imageData);
 
     // m_imageData->GetPointData()->SetActiveVectors("ImageScalars");
 

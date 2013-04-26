@@ -20,8 +20,8 @@
 // Services tools
 #include <fwServices/Base.hpp>
 
-// vtkIO lib : intern lib used to convert image between vtk and fw4spl
-#include <vtkIO/vtk.hpp>
+// fwVtkIO lib : intern lib used to convert image between vtk and fw4spl
+#include <fwVtkIO/vtk.hpp>
 
 #include "devForum/tuto02/ImageViewerService.hpp"
 
@@ -68,7 +68,7 @@ void ImageViewerService::updateVTKPipeline()
 
     // Convert an ::fwDada::Image to a vtk Image
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( associatedImage, vtk_img );
+    ::fwVtkIO::toVTKImage( associatedImage, vtk_img );
 
     // Change negato input
     m_negatoSagittal->SetInput(vtk_img);

@@ -17,7 +17,7 @@
 
 #include <fwTest/Data.hpp>
 
-#include <vtkIO/SeriesDBReader.hpp>
+#include <fwVtkIO/SeriesDBReader.hpp>
 
 #include "SeriesDBTest.hpp"
 
@@ -60,7 +60,7 @@ void SeriesDBTest::testImportSeriesDB()
     paths.push_back(meshPath);
     paths.push_back(meshPath);
 
-    ::vtkIO::SeriesDBReader::sptr reader = ::vtkIO::SeriesDBReader::New();
+    ::fwVtkIO::SeriesDBReader::sptr reader = ::fwVtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFiles(paths);
     reader->read();

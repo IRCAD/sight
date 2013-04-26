@@ -14,8 +14,8 @@
 
 #include <fwComEd/MeshMsg.hpp>
 
-#include <vtkIO/helper/Mesh.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkDiscreteMarchingCubes.h>
 #include <vtkWindowedSincPolyDataFilter.h>
@@ -113,7 +113,7 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
 
     // vtk img
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( pImage, vtkImage );
+    ::fwVtkIO::toVTKImage( pImage, vtkImage );
 
     // contour filter
     vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
@@ -152,18 +152,18 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
         decimate->Update();
         polyData = decimate->GetOutput();
         OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-        ::vtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
+        ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
     else
     {
         polyData = smoothFilter->GetOutput();
         OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-        ::vtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
+        ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
 
 
 //    OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-//    bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
+//    bool res = ::fwVtkIO::fromVTKMesh( polyData, pMesh);
 
     /// Notification
     ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();;

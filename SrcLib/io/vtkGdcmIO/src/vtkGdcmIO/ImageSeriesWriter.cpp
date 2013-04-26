@@ -33,8 +33,8 @@
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/ProgressVtkToFw.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
 
 #include "vtkGdcmIO/ImageSeriesWriter.hpp"
 
@@ -78,7 +78,7 @@ void ImageSeriesWriter::write()
 
     // Vtk Conversion
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( dataImage, vtkImage );
+    ::fwVtkIO::toVTKImage( dataImage, vtkImage );
 
     ::boost::filesystem::path outputDirectory = this->getFolder();
     FW_RAISE_IF("'" << outputDirectory << "' is not a directory.",
@@ -219,7 +219,7 @@ void ImageSeriesWriter::write()
     vtkSmartPointer< vtkGDCMImageWriter > writer = vtkSmartPointer< vtkGDCMImageWriter >::New();
 
     //add progress observation
-    ::vtkIO::Progressor progress(writer, this->getSptr(), outputDirectory.string());
+    ::fwVtkIO::Progressor progress(writer, this->getSptr(), outputDirectory.string());
     writer->SetStudyUID(study->getInstanceUID().c_str());
     writer->SetSeriesUID(imgSeries->getInstanceUID().c_str());
     writer->SetInput( vtkImage );

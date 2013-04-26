@@ -29,7 +29,7 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "visuVTKAdaptor/Normals.hpp"
 

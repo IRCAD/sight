@@ -26,7 +26,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <vtkIO/TriangularMeshReader.hpp>
+#include <fwVtkIO/TriangularMeshReader.hpp>
 
 #include "ioVTK/VtkModelReaderService.hpp"
 
@@ -145,7 +145,7 @@ void VtkModelReaderService::loadMesh( const ::boost::filesystem::path vtkFile, :
 {
     SLM_TRACE_FUNC();
 
-    ::vtkIO::TriangularMeshReader::sptr myReader = ::vtkIO::TriangularMeshReader::New();
+    ::fwVtkIO::TriangularMeshReader::sptr myReader = ::fwVtkIO::TriangularMeshReader::New();
     myReader->setObject(_pTriangularMesh);
     myReader->setFile(vtkFile);
 

@@ -19,8 +19,8 @@
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/TransferFunction.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/TransferFunction.hpp>
 
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
@@ -199,7 +199,7 @@ void Image::configuring() throw(fwTools::Failed)
 
 void Image::updateImage( ::fwData::Image::sptr image  )
 {
-    ::vtkIO::toVTKImage(image,m_imageData);
+    ::fwVtkIO::toVTKImage(image,m_imageData);
 
     this->updateImageInfos(image);
     this->setVtkPipelineModified();
@@ -222,7 +222,7 @@ void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
     this->updateTransferFunction(image, this->getSptr());
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    ::vtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
 
     m_lut->SetClamping( !tf->getIsClamped() );
 

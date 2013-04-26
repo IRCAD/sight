@@ -17,8 +17,8 @@
 #include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/MeshMsg.hpp>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -459,7 +459,7 @@ void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Fail
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
         SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-        ::vtkIO::helper::Mesh::updatePolyDataPointColor(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointColor(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_COLORS_MODIFIED))
@@ -467,7 +467,7 @@ void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Fail
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
         SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-        ::vtkIO::helper::Mesh::updatePolyDataCellColor(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataCellColor(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED) )
@@ -475,19 +475,19 @@ void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Fail
        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
        SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-       ::vtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
+       ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
        this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED))
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::vtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if (meshMsg && meshMsg->hasEvent("SHOW_POINT_COLORS"))
@@ -797,7 +797,7 @@ void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
         m_polyData = 0;
     }
     m_polyData = vtkPolyData::New();
-    ::vtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
+    ::fwVtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
     m_mapper->SetInput(m_polyData);
 
     if (m_autoResetCamera)

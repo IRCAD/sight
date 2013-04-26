@@ -28,9 +28,9 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
-#include <vtkIO/ImageWriter.hpp>
-#include <vtkIO/MetaImageWriter.hpp>
-#include <vtkIO/VtiImageWriter.hpp>
+#include <fwVtkIO/ImageWriter.hpp>
+#include <fwVtkIO/MetaImageWriter.hpp>
+#include <fwVtkIO/VtiImageWriter.hpp>
 
 #include "ioVTK/ImageWriterService.hpp"
 
@@ -111,7 +111,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
 
     if(ext == ".vtk")
     {
-        ::vtkIO::ImageWriter::sptr vtkWriter = ::vtkIO::ImageWriter::New();
+        ::fwVtkIO::ImageWriter::sptr vtkWriter = ::fwVtkIO::ImageWriter::New();
         vtkWriter->addHandler( progressMeterGUI );
         // Set the file system path
         vtkWriter->setFile(imgFile);
@@ -119,14 +119,14 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
     }
     else if(ext == ".vti")
     {
-        ::vtkIO::VtiImageWriter::sptr vtiWriter = ::vtkIO::VtiImageWriter::New();
+        ::fwVtkIO::VtiImageWriter::sptr vtiWriter = ::fwVtkIO::VtiImageWriter::New();
         vtiWriter->addHandler( progressMeterGUI );
         vtiWriter->setFile(imgFile);
         myWriter = vtiWriter;
     }
     else if(ext == ".mhd")
     {
-        ::vtkIO::MetaImageWriter::sptr mhdWriter = ::vtkIO::MetaImageWriter::New();
+        ::fwVtkIO::MetaImageWriter::sptr mhdWriter = ::fwVtkIO::MetaImageWriter::New();
         mhdWriter->addHandler( progressMeterGUI );
         mhdWriter->setFile(imgFile);
         myWriter = mhdWriter;

@@ -25,7 +25,7 @@ namespace ioVTK
  * @author  IRCAD Fr & Tw.
  * @date    2010.
  *
- * Service reading a vtk file using the vtkIO lib
+ * Service reading a vtk file using the fwVtkIO lib
  * (for .vtk at this time).
  *
  * Service registered details : \n

@@ -35,8 +35,8 @@
 #include <fwComEd/MeshMsg.hpp>
 
 
-#include <vtkIO/helper/Mesh.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "vtkCompositeMesh/RendererService.hpp"
 
@@ -229,7 +229,7 @@ void RendererService::createAndAddActorToRender()
         if( myMesh )
         {
             vtkSmartPointer<vtkPolyData> vtk_polyData = vtkSmartPointer<vtkPolyData>::New();
-            ::vtkIO::helper::Mesh::toVTKMesh( myMesh, vtk_polyData);
+            ::fwVtkIO::helper::Mesh::toVTKMesh( myMesh, vtk_polyData);
             OSLM_INFO("Loaded: " << it->first);
             vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
 

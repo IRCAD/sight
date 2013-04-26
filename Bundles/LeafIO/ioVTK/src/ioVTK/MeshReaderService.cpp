@@ -26,7 +26,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/MeshReader.hpp>
+#include <fwVtkIO/MeshReader.hpp>
 
 #include "ioVTK/MeshReaderService.hpp"
 
@@ -99,7 +99,7 @@ void MeshReaderService::info(std::ostream &_sstream )
 void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::MeshReader::sptr myReader = ::vtkIO::MeshReader::New();
+    ::fwVtkIO::MeshReader::sptr myReader = ::fwVtkIO::MeshReader::New();
 
     myReader->setObject(_pMesh);
     myReader->setFile(vtkFile);

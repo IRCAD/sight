@@ -19,8 +19,8 @@
 
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkBoxRepresentation.h>
@@ -257,7 +257,7 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-        ::vtkIO::helper::Mesh::toVTKMesh( mesh, vtkMesh);
+        ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, vtkMesh);
 
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
         fieldTransform = mesh->setDefaultField("TransformMatrix", ::fwData::TransformationMatrix3D::New());
