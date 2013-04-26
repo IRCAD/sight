@@ -46,7 +46,7 @@ void ImageReaderWriterTest::tearDown()
 void ImageReaderWriterTest::testSaveLoadInr()
 {
     // create Image
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
     this->checkSaveLoadInr( image );
 }
@@ -93,7 +93,7 @@ void ImageReaderWriterTest::stressTestInrWithType(::fwTools::Type type, int nbTe
 {
     for (int nb=0 ; nb < nbTest ; ++nb)
     {
-        ::fwData::Image::NewSptr image;
+        ::fwData::Image::sptr image = ::fwData::Image::New();
         ::fwTest::generator::Image::generateRandomImage(image, type);
         this->checkSaveLoadInr(image);
     }

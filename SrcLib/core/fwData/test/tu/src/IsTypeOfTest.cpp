@@ -37,12 +37,12 @@ void IsTypeOfTest::tearDown()
 
 void IsTypeOfTest::methode1()
 {
-    ::fwData::Composite::NewSptr         dataComposite ;
-    ::fwData::Boolean::NewSptr           dataBoolean ;
-    ::fwData::Float::NewSptr             dataFloat ;
-    ::fwData::Integer::NewSptr           dataInteger ;
-    ::fwData::Image::NewSptr             dataImage ;
-    ::fwData::TransferFunction::NewSptr dataTransferFunction ;
+    ::fwData::Composite::sptr dataComposite = ::fwData::Composite::New();
+    ::fwData::Boolean::sptr dataBoolean = ::fwData::Boolean::New();
+    ::fwData::Float::sptr dataFloat = ::fwData::Float::New();
+    ::fwData::Integer::sptr dataInteger = ::fwData::Integer::New();
+    ::fwData::Image::sptr dataImage = ::fwData::Image::New();
+    ::fwData::TransferFunction::sptr dataTransferFunction = ::fwData::TransferFunction::New();
 
     ::fwData::Composite::isTypeOf         ( "::fwData::Object" );
     ::fwData::Boolean::isTypeOf           ( "::fwData::Object" );

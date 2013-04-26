@@ -127,7 +127,7 @@ void ImageFilter::updating() throw ( ::fwTools::Failed )
     ::fwTools::DynamicType type = param.imageIn->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ThresholdFilter >::invoke( type , param );
 
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
 //  msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
 

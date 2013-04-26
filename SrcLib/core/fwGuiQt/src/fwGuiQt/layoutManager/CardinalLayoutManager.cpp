@@ -149,7 +149,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
         // - viewInfo.m_row
         // - viewInfo.m_visible
 
-        ::fwGuiQt::container::QtContainer::NewSptr subContainer;
+        ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
         subContainer->setQtContainer(insideWidget);
         m_subViews.push_back(subContainer);
     }

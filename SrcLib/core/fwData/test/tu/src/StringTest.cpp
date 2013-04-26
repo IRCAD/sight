@@ -36,7 +36,7 @@ void StringTest::methode1()
     {
         ::fwData::String::sptr s0 = ::fwData::String::New();
         s0->value() = VALUE;
-        ::fwData::String::NewSptr s1( VALUE );
+        ::fwData::String::sptr s1 = ::fwData::String::New( VALUE );
 
         CPPUNIT_ASSERT_EQUAL( VALUE , s0->value() );
         CPPUNIT_ASSERT_EQUAL( VALUE , s1->value() );

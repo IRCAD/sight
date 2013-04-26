@@ -49,7 +49,7 @@ void ImageWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
     if ( message->hasEvent( ::fwServices:: ObjectMsg::UPDATED_OBJECT ) )
     {
         assert( message->getDataInfo( ::fwServices:: ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
-        fwComEd::ImageMsg::NewSptr msg;
+        fwComEd::ImageMsg::sptr msg = fwComEd::ImageMsg::New();
         msg->addEvent( fwComEd::ImageMsg::NEW_IMAGE , this->getObject() );
         msg->addEvent( fwComEd::ImageMsg::BUFFER , this->getObject() );
         ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);

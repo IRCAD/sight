@@ -75,7 +75,7 @@ void ServiceFactory::parseBundleInformation()
         SLM_ASSERT("Missing service element.", !service.empty());
         SLM_ASSERT("Missing object element.", !object.empty());
 
-        ServiceInfo::NewSptr info;
+        ServiceInfo::sptr info = ServiceInfo::New();
         info->serviceType = type;
         info->objectImpl = object;
         info->desc = desc;

@@ -108,7 +108,7 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
             ++index;
         }
         // notify
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }

@@ -54,10 +54,10 @@ void DicomSurfaceWriter::write() throw (::fwTools::Failed)
 
     //*****     Get the dictionary *****//
     // Reading of the dictionary
-    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
     // Ready of the dictionary file.
 
-    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
     std::string dictionaryPath("./share/fwDataIO_0-2/OrganDictionary.dic");
     dictionaryReader->setFile(dictionaryPath);
@@ -84,7 +84,7 @@ void DicomSurfaceWriter::write() throw (::fwTools::Failed)
             ::fwData::StructureTraitsDictionary::StructureTypeNameContainer segmentLabels = structDico->getStructureTypeNames();
             ::fwData::StructureTraitsDictionary::StructureTypeNameContainer::const_iterator itr = std::find(segmentLabels.begin(), segmentLabels.end(),segmentLabel);
             ::fwData::StructureTraits::sptr structure;
-            ::fwData::StructureTraits::NewSptr emptyStructure;
+            ::fwData::StructureTraits::sptr emptyStructure = ::fwData::StructureTraits::New();
             if(itr != segmentLabels.end())
             {
                 structure = structDico->getStructure(segmentLabel);

@@ -33,7 +33,7 @@ bool MedicalImageHelpers::checkLandmarks( ::fwData::Image::sptr _pImg )
     // Manage image landmarks
     if ( ! _pImg->getField( ::fwComEd::Dictionary::m_imageLandmarksId ) )
     {
-        ::fwData::PointList::NewSptr pl;
+        ::fwData::PointList::sptr pl = ::fwData::PointList::New();
         _pImg->setField( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
         fieldIsModified = true;
     }
@@ -136,7 +136,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 {
     SLM_ASSERT("_pImg pointer null", _pImg);
 
-    ::fwData::Point::NewSptr point;
+    ::fwData::Point::sptr point = ::fwData::Point::New();
 
     MedicalImageHelpers::checkImageSliceIndex(_pImg);
 
@@ -158,7 +158,7 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
     if ( ! _pImg->getField( ::fwComEd::Dictionary::m_commentId ) )
     {
         // Set value
-        ::fwData::String::NewSptr param("Original image");
+        ::fwData::String::sptr param = ::fwData::String::New("Original image");
         _pImg->setField( ::fwComEd::Dictionary::m_commentId, param );
         fieldIsModified = true;
     }

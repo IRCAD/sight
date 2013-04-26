@@ -96,7 +96,7 @@ void VtkRenderService::configureRenderer( ConfigurationType conf )
     {
         if(background[0] == '#')
         {
-            ::fwData::Color::NewSptr color;
+            ::fwData::Color::sptr color = ::fwData::Color::New();
             color->setRGBA(background);
             m_renderers[id]->SetBackground(color->getRefRGBA()[0], color->getRefRGBA()[1], color->getRefRGBA()[2]);
         }

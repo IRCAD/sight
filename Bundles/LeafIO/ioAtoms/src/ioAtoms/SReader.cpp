@@ -259,7 +259,7 @@ void SReader::resetDumpPolicy()
 void SReader::notificationOfUpdate()
 {
     ::fwData::Object::sptr object = this->getObject();
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
     ::fwServices::IEditionService::notify( this->getSptr(),  object, msg );
 }

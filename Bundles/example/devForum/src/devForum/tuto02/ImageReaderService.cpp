@@ -72,7 +72,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
     ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >() ;
 
     // Use a reader of vtkIO library to read a vtk image
-    ::vtkIO::ImageReader::NewSptr myReader;
+    ::vtkIO::ImageReader::sptr myReader = ::vtkIO::ImageReader::New();
 
     // Set the image (already created, but empty) that will be modifed
     myReader->setObject(associatedImage);

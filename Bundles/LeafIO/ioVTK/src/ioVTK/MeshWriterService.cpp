@@ -92,7 +92,7 @@ void MeshWriterService::info(std::ostream &_sstream )
 void MeshWriterService::saveMesh(const ::boost::filesystem::path& meshFile, const SPTR( ::fwData::Mesh)& mesh)
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::MeshWriter::NewSptr writer;
+    ::vtkIO::MeshWriter::sptr writer = ::vtkIO::MeshWriter::New();
 
     writer->setObject(mesh);
     writer->setFile(meshFile);

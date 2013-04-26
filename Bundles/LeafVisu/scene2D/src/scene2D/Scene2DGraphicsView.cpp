@@ -55,7 +55,7 @@ void Scene2DGraphicsView::setSceneRender( SPTR(::scene2D::Render) sceneRender )
 
 void Scene2DGraphicsView::keyPressEvent(QKeyEvent* _event)
 {
-    ::scene2D::data::Event::NewSptr sceneEvent;
+    ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::KeyPress);
     sceneEvent->setButton( ::scene2D::data::Event::NoButton);
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
@@ -68,7 +68,7 @@ void Scene2DGraphicsView::keyPressEvent(QKeyEvent* _event)
 
 void Scene2DGraphicsView::keyReleaseEvent(QKeyEvent* _event)
 {
-    ::scene2D::data::Event::NewSptr sceneEvent;
+    ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::KeyRelease);
     sceneEvent->setButton( ::scene2D::data::Event::NoButton);
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
@@ -83,7 +83,7 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent *_event)
 {
     this->updateFromViewport();
 
-    ::scene2D::data::Event::NewSptr sceneEvent;
+    ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::Resize);
     sceneEvent->setButton( ::scene2D::data::Event::NoButton);
     sceneEvent->setModifier( ::scene2D::data::Event::NoModifier);
@@ -101,7 +101,7 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
 
     OSLM_TRACE("Press in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
 
-    ::scene2D::data::Event::NewSptr sceneEvent;
+    ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonPress );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
@@ -175,7 +175,7 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
 
     OSLM_TRACE("DoubleClick in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
 
-    ::scene2D::data::Event::NewSptr sceneEvent;
+    ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonDoubleClick );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
@@ -190,7 +190,7 @@ void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
     OSLM_TRACE("Release in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
-    ::scene2D::data::Event::NewSptr sceneEvent;
+    ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonRelease );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
@@ -206,7 +206,7 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent * _event )
     SLM_TRACE_FUNC();
 
     OSLM_TRACE("Move in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
-    ::scene2D::data::Event::NewSptr sceneEvent;
+    ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::MouseMove );
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
@@ -223,7 +223,7 @@ void Scene2DGraphicsView::wheelEvent ( QWheelEvent * _event )
 
     const bool scrollUp = _event->delta() > 0;
     OSLM_TRACE("Scroll " << (scrollUp ? "up" : "down") << " _event");
-    ::scene2D::data::Event::NewSptr sceneEvent;
+    ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( (scrollUp) ? ::scene2D::data::Event::MouseWheelUp : ::scene2D::data::Event::MouseWheelDown);
     sceneEvent->setCoord( ::scene2D::data::Coord( _event->pos().x(), _event->pos().y() ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );

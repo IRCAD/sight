@@ -60,7 +60,7 @@ void CompositeMessageTest::testCompositeMessage()
     ::fwRuntime::ConfigurationElement::sptr config = buildConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager::NewSptr configManager;
+    ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->setConfig( config );
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
@@ -83,7 +83,7 @@ void CompositeMessageTest::testCompositeMessage()
     CPPUNIT_ASSERT(serviceCompo2->isStarted());
 
     // register communication channel
-    ::fwServices::helper::SigSlotConnection::NewSptr helper;
+    ::fwServices::helper::SigSlotConnection::sptr helper = ::fwServices::helper::SigSlotConnection::New();
     helper->connect( compo, serviceCompo, serviceCompo->getObjSrvConnections() );
     helper->connect( compo, serviceCompo2, serviceCompo2->getObjSrvConnections() );
 

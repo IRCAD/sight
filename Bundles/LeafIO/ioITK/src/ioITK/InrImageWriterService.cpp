@@ -104,7 +104,7 @@ void InrImageWriterService::info(std::ostream &_sstream )
 void InrImageWriterService::saveImage( const ::boost::filesystem::path inrFile, ::fwData::Image::sptr _pImage )
 {
     SLM_TRACE_FUNC();
-    ::itkIO::ImageWriter::NewSptr myWriter;
+    ::itkIO::ImageWriter::sptr myWriter = ::itkIO::ImageWriter::New();
 
     myWriter->setObject(_pImage);
     myWriter->setFile(inrFile);

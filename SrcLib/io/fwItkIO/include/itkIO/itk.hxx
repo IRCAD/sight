@@ -67,7 +67,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
 template< class ITKIMAGE>
 ::fwData::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage )
 {
-    ::fwData::Image::NewSptr data;
+    ::fwData::Image::sptr data = ::fwData::Image::New();
     ::itkIO::dataImageFactory< ITKIMAGE >(itkImage,data, bufferManagerIsDataImage) ;
     return data;
 }

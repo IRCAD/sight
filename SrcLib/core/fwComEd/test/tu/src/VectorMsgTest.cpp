@@ -46,10 +46,10 @@ void VectorMsgTest::tearDown()
 
 void VectorMsgTest::basicTest()
 {
-    ::fwData::String::NewSptr str1("Str1");
-    ::fwData::String::NewSptr str2("Str2");
+    ::fwData::String::sptr str1 = ::fwData::String::New("Str1");
+    ::fwData::String::sptr str2 = ::fwData::String::New("Str2");
 
-    ::fwComEd::VectorMsg::NewSptr msg;
+    ::fwComEd::VectorMsg::sptr msg = ::fwComEd::VectorMsg::New();
     msg->appendAddedObject(str1);
     msg->appendAddedObject(str2);
 
@@ -59,7 +59,7 @@ void VectorMsgTest::basicTest()
     CPPUNIT_ASSERT(std::find(vecAddedObj->begin(), vecAddedObj->end(), str1) != vecAddedObj->end());
     CPPUNIT_ASSERT(std::find(vecAddedObj->begin(), vecAddedObj->end(), str2) != vecAddedObj->end());
 
-    ::fwComEd::VectorMsg::NewSptr msg2;
+    ::fwComEd::VectorMsg::sptr msg2 = ::fwComEd::VectorMsg::New();
     msg2->appendRemovedObject(str1);
     msg2->appendRemovedObject(str2);
 
@@ -78,10 +78,10 @@ void VectorMsgTest::vectorHelperTest()
     activeWorkers->initRegistry();
 
 
-    ::fwData::String::NewSptr str1("Str1");
-    ::fwData::String::NewSptr str2("Str2");
+    ::fwData::String::sptr str1 = ::fwData::String::New("Str1");
+    ::fwData::String::sptr str2 = ::fwData::String::New("Str2");
 
-    ::fwData::Vector::NewSptr vector;
+    ::fwData::Vector::sptr vector = ::fwData::Vector::New();
 
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
     ::fwServices::IService::sptr srv = srvFactory->create("::fwComEd::ut::SVectorTest");
@@ -90,7 +90,7 @@ void VectorMsgTest::vectorHelperTest()
 
     srv->start().wait();
 
-    ::fwServices::helper::SigSlotConnection::NewSptr helper;
+    ::fwServices::helper::SigSlotConnection::sptr helper = ::fwServices::helper::SigSlotConnection::New();
     helper->connect( vector, srv, srv->getObjSrvConnections() );
 
     {

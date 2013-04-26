@@ -50,7 +50,7 @@ void TransferFunctionTest::constructorTest()
     TransferFunction::TFColor expectedBackgroundColor = TransferFunction::TFColor();
     size_t expectedSize = 0;
 
-    ::fwData::TransferFunction::NewSptr tf;
+    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 0.0);
@@ -177,7 +177,7 @@ void TransferFunctionTest::shallowAndDeepCopyTest()
     deepCopyTf = ::fwData::Object::copy( tf );
     this->checkTFColor(deepCopyTf);
 
-    ::fwData::TransferFunction::NewSptr shallowCopyTf;
+    ::fwData::TransferFunction::sptr shallowCopyTf = ::fwData::TransferFunction::New();
     shallowCopyTf->shallowCopy( tf );
     this->checkTFColor(shallowCopyTf);
 }
@@ -187,7 +187,7 @@ void TransferFunctionTest::shallowAndDeepCopyTest()
 
 ::fwData::TransferFunction::sptr TransferFunctionTest::createTFColor()
 {
-    ::fwData::TransferFunction::NewSptr tf;
+    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
 
     tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( 1.0, 0.3, 0.6, 0.1) );
     tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
@@ -201,7 +201,7 @@ void TransferFunctionTest::shallowAndDeepCopyTest()
     tf->addTFColor( -0.2,   ::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) );
     tf->addTFColor( 150,    ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) );
 
-    ::fwData::String::NewSptr myString ("fieldStringValue");
+    ::fwData::String::sptr myString = ::fwData::String::New("fieldStringValue");
     tf->setField( "fieldStringKey", myString );
 
     return tf;

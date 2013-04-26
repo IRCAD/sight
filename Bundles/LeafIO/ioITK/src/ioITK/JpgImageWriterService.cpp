@@ -101,10 +101,10 @@ void JpgImageWriterService::info(std::ostream &_sstream )
 void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, const SPTR(::fwData::Image)& img)
 {
     SLM_TRACE_FUNC();
-    ::itkIO::JpgImageWriter::NewSptr writer;
+    ::itkIO::JpgImageWriter::sptr writer = ::itkIO::JpgImageWriter::New();
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
-    ::fwData::location::Folder::NewSptr loc;
+    ::fwData::location::Folder::sptr loc = ::fwData::location::Folder::New();
     loc->setFolder(imgPath);
     writer->setLocation(loc);
     writer->setObject(img);

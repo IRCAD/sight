@@ -218,7 +218,7 @@ void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
         OSLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
         lock.downgrade();
 
-        ::fwComEd::MeshMsg::NewSptr msg;;
+        ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();;
         msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED ) ;
 
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;

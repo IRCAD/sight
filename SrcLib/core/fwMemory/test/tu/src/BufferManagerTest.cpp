@@ -32,7 +32,7 @@ void BufferManagerTest::tearDown()
 
 void BufferManagerTest::allocateTest()
 {
-    ::fwMemory::BufferManager::NewSptr manager;
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
     ::fwTools::IBufferManager::setCurrent( manager );
 
     const int SIZE = 100000;
@@ -131,7 +131,7 @@ void BufferManagerTest::allocateTest()
 
 void BufferManagerTest::memoryInfoTest()
 {
-    ::fwMemory::BufferManager::NewSptr manager;
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
     ::fwTools::IBufferManager::setCurrent( manager );
 
     {

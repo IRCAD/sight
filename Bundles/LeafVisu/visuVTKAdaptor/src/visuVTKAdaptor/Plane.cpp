@@ -193,14 +193,14 @@ void Plane::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Fa
         if (pointMsg->hasEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED ) )
         {
             this->doUpdate();
-            ::fwComEd::PlaneMsg::NewSptr msg;
+            ::fwComEd::PlaneMsg::sptr msg = ::fwComEd::PlaneMsg::New();
             msg->addEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
             ::fwServices::IEditionService::notify( this->getSptr(), m_pPlane.lock(), msg );
         }
 
         if ( pointMsg->hasEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION ))
         {
-            ::fwComEd::PlaneMsg::NewSptr msg;
+            ::fwComEd::PlaneMsg::sptr msg = ::fwComEd::PlaneMsg::New();
             msg->addEvent( ::fwComEd::PlaneMsg::START_PLANE_INTERACTION );
             ::fwServices::IEditionService::notify( this->getSptr(), m_pPlane.lock(), msg );
         }

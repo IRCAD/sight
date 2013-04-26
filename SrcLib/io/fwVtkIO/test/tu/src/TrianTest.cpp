@@ -40,7 +40,7 @@ void TrianTest::tearDown()
 
 void TrianTest::testTrianToVtk()
 {
-    ::fwData::TriangularMesh::NewSptr trian1;
+    ::fwData::TriangularMesh::sptr trian1 = ::fwData::TriangularMesh::New();
     CPPUNIT_ASSERT( trian1 );
 
     vtkSmartPointer< vtkSphereSource > source = vtkSmartPointer< vtkSphereSource >::New();
@@ -67,7 +67,7 @@ void TrianTest::testTrianToVtk()
     CPPUNIT_ASSERT_EQUAL(poly_source->GetNumberOfStrips(), mesh->GetNumberOfStrips());
 
 
-    ::fwData::TriangularMesh::NewSptr trian2;
+    ::fwData::TriangularMesh::sptr trian2 = ::fwData::TriangularMesh::New();
     CPPUNIT_ASSERT( trian2 );
     ::vtkIO::fromVTKMesh(mesh, trian2);
 

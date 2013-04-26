@@ -117,7 +117,7 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
         /// Retrieve object
         ::fwData::Model::sptr model = this->getObject< ::fwData::Model >( );
         SLM_ASSERT("model not instanced", model);
-        ::fwData::Model::NewSptr backupModel;
+        ::fwData::Model::sptr backupModel = ::fwData::Model::New();
         backupModel->shallowCopy(model);
         model->getRefMap().clear();
 
@@ -132,7 +132,7 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
         for (mesh3ds = MeshList; mesh3ds != (vtk3DSMesh *) NULL; mesh3ds = (vtk3DSMesh *) mesh3ds->next)
         {
             OSLM_DEBUG("read : " << mesh3ds->name);
-            ::fwData::TriangularMesh::NewSptr mesh;
+            ::fwData::TriangularMesh::sptr mesh = ::fwData::TriangularMesh::New();
             vtk3DSFace *face;
             face = mesh3ds->face;
             OSLM_DEBUG("mesh->faces : " << mesh3ds->faces);
@@ -162,14 +162,14 @@ void MaxMeshReaderService::updating() throw(::fwTools::Failed)
             m_vRGBA[1] = vtkMmat->ambient.green;
             m_vRGBA[2] = vtkMmat->ambient.blue;
             m_vRGBA[3] = 1.0;
-            ::fwData::Material::NewSptr dataMat;
+            ::fwData::Material::sptr dataMat = ::fwData::Material::New();
             dataMat->ambient()->setCRefRGBA(m_vRGBA);
             model->getRefMap().insert (
                     std::pair< ::fwData::TriangularMesh::sptr , ::fwData::Material::sptr >(mesh, dataMat));
 
         }
         /// Notify reading
-        ::fwComEd::ModelMsg::NewSptr msg;;
+        ::fwComEd::ModelMsg::sptr msg = ::fwComEd::ModelMsg::New();;
         msg->addEvent( ::fwComEd::ModelMsg::NEW_MODEL, backupModel ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), model, msg);
         importer1->Delete();

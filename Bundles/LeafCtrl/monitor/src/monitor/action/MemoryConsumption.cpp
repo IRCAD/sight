@@ -34,7 +34,7 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
 {
     try
     {
-        ::fwData::Array::NewSptr buffer;
+        ::fwData::Array::sptr buffer = ::fwData::Array::New();
         ::fwData::Array::SizeType size(1, memorySizeInBytes);
         buffer->resize(::fwTools::Type::s_UINT8_TYPENAME, size, 1, true);
 

@@ -99,7 +99,7 @@ void MeshReaderService::info(std::ostream &_sstream )
 void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::MeshReader::NewSptr myReader;
+    ::vtkIO::MeshReader::sptr myReader = ::vtkIO::MeshReader::New();
 
     myReader->setObject(_pMesh);
     myReader->setFile(vtkFile);
@@ -162,7 +162,7 @@ void MeshReaderService::notificationOfUpdate()
     ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
     SLM_ASSERT("pMesh not instanced", pMesh);
 
-    ::fwComEd::MeshMsg::NewSptr msg;;
+    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();;
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), pMesh, msg);
 }

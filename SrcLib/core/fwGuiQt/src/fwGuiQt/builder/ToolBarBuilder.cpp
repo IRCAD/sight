@@ -48,7 +48,7 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
     toolBar->setFloatable(false);
 
-    ::fwGuiQt::container::QtToolBarContainer::NewSptr toolBarContainer;
+    ::fwGuiQt::container::QtToolBarContainer::sptr toolBarContainer = ::fwGuiQt::container::QtToolBarContainer::New();
     if (window)
     {
         bool visible = window->isVisible();

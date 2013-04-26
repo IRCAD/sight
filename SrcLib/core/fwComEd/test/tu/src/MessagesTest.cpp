@@ -44,7 +44,7 @@ void MessagesTest::tearDown()
 void MessagesTest::testFloatMsg()
 {
     // create message
-    ::fwComEd::FloatMsg::NewSptr floatMsg;
+    ::fwComEd::FloatMsg::sptr floatMsg = ::fwComEd::FloatMsg::New();
     floatMsg->addEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED);
 
     // check Event
@@ -59,10 +59,10 @@ void MessagesTest::testImageMsg()
     const std::string MYMODIF2 = ::fwComEd::ImageMsg::SLICE_INDEX;
 
     ::fwData::Integer::sptr intField = ::fwData::Integer::New(23);
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
 
     // create message
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent(MYMODIF1);
     imageMsg->addEvent(MYMODIF2, intField);
 

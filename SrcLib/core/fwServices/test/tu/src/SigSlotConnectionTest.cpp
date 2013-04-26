@@ -44,7 +44,7 @@ void SigSlotConnectionTest::basicTest()
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
-    Buffer::NewSptr buffer;
+    Buffer::sptr buffer = Buffer::New();
 
     SShowTest::sptr showTestSrv = ::fwServices::factory::New<SShowTest>();
     ::fwServices::OSR::registerService(buffer, showTestSrv);
@@ -52,10 +52,10 @@ void SigSlotConnectionTest::basicTest()
     ::fwData::Object::ObjectModifiedSignalType::sptr sig =
             buffer->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent(ObjectMsg::NEW_OBJECT);
 
-    ::fwServices::helper::SigSlotConnection::NewSptr helper;
+    ::fwServices::helper::SigSlotConnection::sptr helper = ::fwServices::helper::SigSlotConnection::New();
 
     helper->connect( buffer, showTestSrv, showTestSrv->getObjSrvConnections() );
     showTestSrv->start().wait();

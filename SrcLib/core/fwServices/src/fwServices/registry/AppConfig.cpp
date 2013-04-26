@@ -109,7 +109,7 @@ void AppConfig::addAppInfo
 
     SLM_ASSERT("Sorry, app config id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
-    AppInfo::NewSptr info;
+    AppInfo::sptr info = AppInfo::New();
     info->type = type;
     info->group = group;
     info->desc = desc;
@@ -257,7 +257,7 @@ std::string AppConfig::getUniqueIdentifier( std::string _serviceUid, bool _useCp
 {
     SLM_TRACE_FUNC();
 
-    ::fwRuntime::EConfigurationElement::NewSptr result ( _cfgElem->getName() );
+    ::fwRuntime::EConfigurationElement::sptr result = ::fwRuntime::EConfigurationElement::New( _cfgElem->getName() );
     result->setValue( this->adaptField( _cfgElem->getValue(), fieldAdaptors ) );
 
     typedef std::map<std::string, std::string> MapAttributesType;

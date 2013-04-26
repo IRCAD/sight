@@ -120,7 +120,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         matrix->setCoefficient(3,0, T.get(3,0) ); matrix->setCoefficient(3,1, T.get(3,1) ); matrix->setCoefficient(3,2, T.get(3,2) ); matrix->setCoefficient(3,3, T.get(3,3) );
 
         // Notify Matrix modified
-        ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+        ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
         msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), matrix, msg);
     }

@@ -248,7 +248,7 @@ void SliceIndexPositionEditor::updateSliceType(Orientation type )
 void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 {
     // Fire the message
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->setSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
@@ -269,9 +269,9 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
             type == Z_AXIS );
 
     // Change data info
-    ::fwData::Composite::NewSptr info;
-    ::fwData::Integer::NewSptr fromSliceType;
-    ::fwData::Integer::NewSptr toSliceType;
+    ::fwData::Composite::sptr info = ::fwData::Composite::New();
+    ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::New();
+    ::fwData::Integer::sptr toSliceType = ::fwData::Integer::New();
     fromSliceType->value() = static_cast< int > ( m_orientation ) ;
     toSliceType->value() = static_cast< int > ( type ) ;
     info->getContainer()["fromSliceType"] = fromSliceType;
@@ -281,7 +281,7 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     m_orientation = type;
 
     // Fire the message
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE, info ) ;
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwServices::IEditionService::notify(this->getSptr(),  image, msg);

@@ -72,12 +72,12 @@ void ShowDistance::updating() throw(::fwTools::Failed)
         bool isShown = showDistances->value();
 
         bool toShow = !isShown;
-        image->setField("ShowDistances", ::fwData::Boolean::NewSptr(toShow));
+        image->setField("ShowDistances", ::fwData::Boolean::New(toShow));
 
         // auto manage hide/show : use Field Information instead let gui manage checking
         this->::fwGui::IActionSrv::setIsActive(!toShow);
 
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }

@@ -85,7 +85,7 @@ void IFrameSrv::initialize()
         SLM_ASSERT("Invalid onclose value : " << m_closePolicy << ". Should be 'exit' or 'notify'", m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT);
     }
 
-    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr(this->getID());
+    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     if(!vectRegistrar.empty())
@@ -221,7 +221,7 @@ void IFrameSrv::onCloseExit()
 void IFrameSrv::onCloseNotify()
 {
     SLM_TRACE_FUNC();
-    ::fwServices::ObjectMsg::NewSptr objectMsg;
+    ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::ObjectMsg::New();
     ::fwData::Object::sptr srvObj = this->getObject();
     objectMsg->addEvent( "WINDOW_CLOSED" );
     ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);

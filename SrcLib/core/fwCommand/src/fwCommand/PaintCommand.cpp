@@ -154,7 +154,7 @@ void PaintCommand::notifyImageModification()
 {
     if ( ! this->m_serviceNotifier.expired() )
     {
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent( fwComEd::ImageMsg::BUFFER );
         ::fwServices::IEditionService::notify( this->getNotifier(), m_image.lock(), msg );
     }

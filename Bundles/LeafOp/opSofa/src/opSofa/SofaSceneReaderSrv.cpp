@@ -79,8 +79,8 @@ void SofaSceneReaderSrv::updating() throw ( ::fwTools::Failed )
 
     if (fileScn != "") {
         // Notification
-        ::fwServices::ObjectMsg::NewSptr msg;
-        ::fwData::String::NewSptr data(fileScn);
+        ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
+        ::fwData::String::sptr data = ::fwData::String::New(fileScn);
         msg->addEvent( "NEW_SOFA_SCENE", data );
         ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
     }

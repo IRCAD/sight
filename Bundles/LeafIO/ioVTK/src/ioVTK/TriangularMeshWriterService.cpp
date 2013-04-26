@@ -94,7 +94,7 @@ void TriangularMeshWriterService::info(std::ostream &_sstream )
 void TriangularMeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::TriangularMeshWriter::NewSptr myWriter;
+    ::vtkIO::TriangularMeshWriter::sptr myWriter = ::vtkIO::TriangularMeshWriter::New();
 
     myWriter->setObject(_pMesh);
     myWriter->setFile(vtkFile);

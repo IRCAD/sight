@@ -49,7 +49,7 @@ void TransferFunction::initTF()
 
 fwData::TransferFunction::sptr TransferFunction::createDefaultTF()
 {
-    TransferFunction::NewSptr tf;
+    TransferFunction::sptr tf = TransferFunction::New();
 
     tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
     tf->addTFColor(0.0, TFColor());

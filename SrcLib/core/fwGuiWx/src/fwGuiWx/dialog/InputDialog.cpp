@@ -47,7 +47,7 @@ std::string InputDialog::getInput()
     wxString title = ::fwGuiWx::std2wx(m_title);
     wxString message = ::fwGuiWx::std2wx(m_message);
     wxString inputText = ::fwGuiWx::std2wx(m_input);
-    ::fwData::String::NewSptr url;
+    ::fwData::String::sptr url = ::fwData::String::New();
     wxString text =  wxGetTextFromUser( wxGetTranslation(message), wxGetTranslation(title), wxGetTranslation(inputText));
     return (::fwGuiWx::wx2std(text));
 }

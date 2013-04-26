@@ -151,7 +151,7 @@ void DicomPatientReader::read() throw(::fwTools::Failed)
 
             studyReader.setFileNames(itMap->second);
 
-            ::fwData::Study::NewSptr study;
+            ::fwData::Study::sptr study = ::fwData::Study::New();
             studyReader.setObject(study);
             try
             {

@@ -507,7 +507,7 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, :
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     // Fire the message
-    ::fwComEd::TransferFunctionMsg::NewSptr msg;
+    ::fwComEd::TransferFunctionMsg::sptr msg = ::fwComEd::TransferFunctionMsg::New();
     msg->setWindowLevel( tf->getWindow(), tf->getLevel() );
     ::fwServices::IEditionService::notify( srv, tf, msg );
     return msg;

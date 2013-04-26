@@ -43,7 +43,7 @@ void MeshTest::tearDown()
 
 void MeshTest::allocation()
 {
-    ::fwData::Mesh::NewSptr mesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
     size_t pointSize = 3000;
     size_t cellSize = 2000;
     size_t cellDataSize = 8000;
@@ -146,7 +146,7 @@ void MeshTest::allocation()
 
 void MeshTest::insertion()
 {
-    ::fwData::Mesh::NewSptr mesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
     ::fwComEd::helper::Mesh helper(mesh);
     helper.insertNextPoint(10, 20, 30);
     helper.insertNextPoint(10, 10, 10);
@@ -217,7 +217,7 @@ void MeshTest::insertion()
 
 void MeshTest::colorsNormals()
 {
-    ::fwData::Mesh::NewSptr mesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
     ::fwComEd::helper::Mesh helper(mesh);
     helper.insertNextPoint(10, 20, 30);
     helper.insertNextPoint(10, 10, 10);
@@ -288,13 +288,13 @@ void MeshTest::colorsNormals()
 
 void MeshTest::addingArray()
 {
-    ::fwData::Mesh::NewSptr mesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
     ::fwData::Mesh::Id nbPoints = 60;
     ::fwData::Mesh::Id nbCells = 20;
 
     // Add point array
-    ::fwData::Array::NewSptr pointArray;
+    ::fwData::Array::sptr pointArray = ::fwData::Array::New();
 
     pointArray->resize(::fwTools::Type::create< ::fwData::Mesh::PointValueType >() , list_of(nbPoints), 3, true);
     ::fwComEd::helper::Array pointArrayHelper(pointArray);
@@ -328,9 +328,9 @@ void MeshTest::addingArray()
 
 
     // add cells arrays
-    ::fwData::Array::NewSptr cellTypeArray;
-    ::fwData::Array::NewSptr cellDataOffsetArray;
-    ::fwData::Array::NewSptr cellDataArray;
+    ::fwData::Array::sptr cellTypeArray = ::fwData::Array::New();
+    ::fwData::Array::sptr cellDataOffsetArray = ::fwData::Array::New();
+    ::fwData::Array::sptr cellDataArray = ::fwData::Array::New();
 
 
     cellTypeArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellTypes >() , list_of(nbCells), 1, true);
@@ -391,8 +391,8 @@ void MeshTest::addingArray()
 
 void MeshTest::copy()
 {
-    ::fwData::Mesh::NewSptr mesh;
-    ::fwData::Mesh::NewSptr shallowCopyMesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwData::Mesh::sptr shallowCopyMesh = ::fwData::Mesh::New();
 
     ::fwComEd::helper::Mesh meshHelper(mesh);
 

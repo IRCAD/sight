@@ -117,8 +117,8 @@ void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const
 
 void atomTest(const ::boost::filesystem::path & filePath)
 {
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("file");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
     fileCfg->setValue(filePath.string());
     srvCfg->addConfigurationElement(fileCfg);
 
@@ -145,7 +145,7 @@ void atomTest(const ::boost::filesystem::path & filePath)
 
 
     // 'Change' UUID policy
-    ::fwRuntime::EConfigurationElement::NewSptr uuidPolicyCfg("uuidPolicy");
+    ::fwRuntime::EConfigurationElement::sptr uuidPolicyCfg = ::fwRuntime::EConfigurationElement::New("uuidPolicy");
     uuidPolicyCfg->setValue("Change");
 
     srvCfg->addConfigurationElement(uuidPolicyCfg);
@@ -175,7 +175,7 @@ void atomTest(const ::boost::filesystem::path & filePath)
     // 'Reuse' UUID policy
     uuidPolicyCfg->setValue("Reuse");
 
-    ::fwRuntime::EConfigurationElement::NewSptr injectCfg("inject");
+    ::fwRuntime::EConfigurationElement::sptr injectCfg = ::fwRuntime::EConfigurationElement::New("inject");
     injectCfg->setValue("seriesDB");
     srvCfg->addConfigurationElement(injectCfg);
 

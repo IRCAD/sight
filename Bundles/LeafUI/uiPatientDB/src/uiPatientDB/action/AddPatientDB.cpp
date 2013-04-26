@@ -84,7 +84,7 @@ void AddPatientDB::updating( ) throw(::fwTools::Failed)
     SLM_ASSERT("pDocumentPDB not instanced", pDocumentPDB);
 
     // Load a new patient DB
-    ::fwData::PatientDB::NewSptr pPDB;
+    ::fwData::PatientDB::sptr pPDB = ::fwData::PatientDB::New();
 
     /// Create IOSelectorService on the new patientDB and execute it.
 

@@ -47,7 +47,7 @@ void ReconstructionTest::methode1() //test des setters et getters
     const std::string CREFSTRUCTURETYPE     = "StructureType" ;
 
     // process
-    ::fwData::Reconstruction::NewSptr p1;
+    ::fwData::Reconstruction::sptr p1 = ::fwData::Reconstruction::New();
 
     p1->setIsVisible( ISVISIBLE );
     p1->setCRefOrganName( CREFORGANNAME );
@@ -78,7 +78,7 @@ void ReconstructionTest::methode2()
     const std::string CREFSTRUCTURETYPE     = "StructureType" ;
 
     // process
-    ::fwData::Reconstruction::NewSptr p1;
+    ::fwData::Reconstruction::sptr p1 = ::fwData::Reconstruction::New();
 
     p1->setCRefIsVisible( ISVISIBLE );
     p1->setCRefOrganName( CREFORGANNAME );
@@ -103,7 +103,7 @@ void ReconstructionTest::methode2()
 
 void ReconstructionTest::image()
 {
-    ::fwData::Reconstruction::NewSptr p1;
+    ::fwData::Reconstruction::sptr p1 = ::fwData::Reconstruction::New();
     ::fwData::Image::sptr i1(::fwData::Image::New()) ;
 
     p1->setImage(i1) ;

@@ -83,7 +83,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             panel->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
             panel->setContentsMargins(border, border,border, border);
 
-            ::fwGuiQt::container::QtContainer::NewSptr subContainer;
+            ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
             subContainer->setQtContainer(panel);
             m_subViews.push_back(subContainer);
 

@@ -154,11 +154,11 @@ void ShowScanEditor::onChangeScanMode()
         ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
         SLM_ASSERT("ShowScanEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
 
-        ::fwData::Boolean::NewSptr dataInfo;
+        ::fwData::Boolean::sptr dataInfo = ::fwData::Boolean::New();
         dataInfo->value() = m_scanAreShown;
 
-        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
-        ::fwComEd::ImageMsg::NewSptr imageMsg;
+        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::New( m_adaptorUID ) );
+        ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
         imageMsg->addEvent( "SCAN_SHOW", dataInfo );
         ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
     }

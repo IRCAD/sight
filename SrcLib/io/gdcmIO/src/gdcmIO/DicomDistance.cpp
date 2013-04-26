@@ -65,11 +65,11 @@ void DicomDistance::convertToData(::fwData::Image::sptr a_image)
         for (unsigned int i = 0; i < nb_distances; ++i)    // For each distance
         {
             // Create a new distance
-            ::fwData::PointList::NewSptr pl;
+            ::fwData::PointList::sptr pl = ::fwData::PointList::New();
 
             // Create 2 points
-            ::fwData::Point::NewSptr pt1;
-            ::fwData::Point::NewSptr pt2;
+            ::fwData::Point::sptr pt1 = ::fwData::Point::New();
+            ::fwData::Point::sptr pt2 = ::fwData::Point::New();
 
             // Set x, y coordinates
             const SCoord & scoord = m_SCoords[i];
@@ -100,7 +100,7 @@ void DicomDistance::convertToData(::fwData::Image::sptr a_image)
         }
 
         // force distance to be shown
-        a_image->setField("ShowDistances",  ::fwData::Boolean::NewSptr(true));
+        a_image->setField("ShowDistances",  ::fwData::Boolean::New(true));
     }
     else
     {

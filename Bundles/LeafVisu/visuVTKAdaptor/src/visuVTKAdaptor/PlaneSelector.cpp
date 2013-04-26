@@ -110,7 +110,7 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
     {
         if (oldObject)
         {
-            ::fwComEd::PlaneMsg::NewSptr deselectMsg;
+            ::fwComEd::PlaneMsg::sptr deselectMsg = ::fwComEd::PlaneMsg::New();
             deselectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
             ::fwServices::IEditionService::notify( this->getSptr(), oldObject, deselectMsg); //TODO: remove option
         }
@@ -121,7 +121,7 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
         {
             if ( object )
             {
-                ::fwComEd::PlaneMsg::NewSptr selectMsg;
+                ::fwComEd::PlaneMsg::sptr selectMsg = ::fwComEd::PlaneMsg::New();
                 selectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
                 ::fwServices::IEditionService::notify( this->getSptr(), object, selectMsg); //TODO: remove option
             }

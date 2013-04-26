@@ -82,8 +82,8 @@ void runModelSeriesSrv(
 
 ::fwRuntime::EConfigurationElement::sptr getIOCfgFromFolder(const fs::path& file)
 {
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr cfg("folder");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr cfg = ::fwRuntime::EConfigurationElement::New("folder");
     cfg->setValue(file.string());
     srvCfg->addConfigurationElement(cfg);
 
@@ -94,11 +94,11 @@ void runModelSeriesSrv(
 
 ::fwRuntime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainerType& files)
 {
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
 
     BOOST_FOREACH(std::string file, files)
     {
-        ::fwRuntime::EConfigurationElement::NewSptr cfg("file");
+        ::fwRuntime::EConfigurationElement::sptr cfg = ::fwRuntime::EConfigurationElement::New("file");
         cfg->setValue(file);
         srvCfg->addConfigurationElement(cfg);
     }

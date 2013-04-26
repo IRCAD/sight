@@ -76,13 +76,13 @@ void IoGdcmTest::testPatientDBReaderDicom()
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
 
     // Create Config 1
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("folder");
     fileCfg->setValue(path.string());
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    ::fwData::PatientDB::NewSptr patientDB;
+    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
     this->executeService( patientDB, "::io::IReader", "::ioGdcm::DicomPatientDBReaderService", srvCfg );
 
     // Get patient
@@ -101,12 +101,12 @@ void IoGdcmTest::testDicomPatientWriter()
     ::boost::filesystem::create_directories( path );
 
     // Create data
-    ::fwData::Patient::NewSptr patient;
+    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
     ::fwDataTools::Patient::generatePatient(patient, 2, 2, 0);
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("folder");
     fileCfg->setValue(path.string());
     srvCfg->addConfigurationElement(fileCfg);
 
@@ -126,17 +126,17 @@ void IoGdcmTest::testDicomPatientDBWriter()
     ::boost::filesystem::create_directories( path );
 
     // Create data
-    ::fwData::PatientDB::NewSptr patientDB;
-    ::fwData::Patient::NewSptr patient1;
+    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
+    ::fwData::Patient::sptr patient1 = ::fwData::Patient::New();
     ::fwDataTools::Patient::generatePatient(patient1, 2, 2, 0);
     patientDB->addPatient( patient1 );
-    ::fwData::Patient::NewSptr patient2;
+    ::fwData::Patient::sptr patient2 = ::fwData::Patient::New();
     ::fwDataTools::Patient::generatePatient(patient2, 1, 3, 0);
     patientDB->addPatient( patient2 );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("folder");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("folder");
     fileCfg->setValue(path.string());
     srvCfg->addConfigurationElement(fileCfg);
 

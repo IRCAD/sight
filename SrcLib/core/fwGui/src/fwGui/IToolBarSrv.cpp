@@ -29,7 +29,7 @@ IToolBarSrv::~IToolBarSrv()
 
 void IToolBarSrv::initialize()
 {
-    m_registrar = ::fwGui::registrar::ToolBarRegistrar::NewSptr(this->getID());
+    m_registrar = ::fwGui::registrar::ToolBarRegistrar::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );

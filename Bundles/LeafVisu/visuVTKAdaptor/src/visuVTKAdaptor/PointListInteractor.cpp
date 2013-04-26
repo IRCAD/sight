@@ -210,7 +210,7 @@ void PointListInteractor::resetPointList()
     ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
     list->getRefPoints().clear();
 
-    ::fwComEd::PointListMsg::NewSptr msg;
+    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED);
     ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
 }
@@ -221,12 +221,12 @@ void PointListInteractor::addPoint(const double &x, const double &y, const doubl
 {
     ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
     ::fwData::Point::PointCoordArrayType coord = {{ x, y, z }};
-    ::fwData::Point::NewSptr p;
+    ::fwData::Point::sptr p = ::fwData::Point::New();
     p->getRefCoord() = coord;
 
     list->getRefPoints().push_back(p);
 
-    ::fwComEd::PointListMsg::NewSptr msg;
+    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
     ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
 }

@@ -111,7 +111,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
 
     if(ext == ".vtk")
     {
-        ::vtkIO::ImageWriter::NewSptr vtkWriter;
+        ::vtkIO::ImageWriter::sptr vtkWriter = ::vtkIO::ImageWriter::New();
         vtkWriter->addHandler( progressMeterGUI );
         // Set the file system path
         vtkWriter->setFile(imgFile);
@@ -119,14 +119,14 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
     }
     else if(ext == ".vti")
     {
-        ::vtkIO::VtiImageWriter::NewSptr vtiWriter;
+        ::vtkIO::VtiImageWriter::sptr vtiWriter = ::vtkIO::VtiImageWriter::New();
         vtiWriter->addHandler( progressMeterGUI );
         vtiWriter->setFile(imgFile);
         myWriter = vtiWriter;
     }
     else if(ext == ".mhd")
     {
-        ::vtkIO::MetaImageWriter::NewSptr mhdWriter;
+        ::vtkIO::MetaImageWriter::sptr mhdWriter = ::vtkIO::MetaImageWriter::New();
         mhdWriter->addHandler( progressMeterGUI );
         mhdWriter->setFile(imgFile);
         myWriter = mhdWriter;

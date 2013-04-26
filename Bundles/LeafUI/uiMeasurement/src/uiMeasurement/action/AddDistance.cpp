@@ -61,10 +61,10 @@ void AddDistance::updating() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     if (!image) {return; }
 
-    ::fwData::Point::NewSptr pt1;
+    ::fwData::Point::sptr pt1 = ::fwData::Point::New();
     std::copy( image->getOrigin().begin(),  image->getOrigin().begin() +3, pt1->getRefCoord().begin() );
 
-    ::fwData::Point::NewSptr pt2;
+    ::fwData::Point::sptr pt2 = ::fwData::Point::New();
     std::copy( image->getSize().begin(),  image->getSize().begin() +3, pt2->getRefCoord().begin() );
 
     std::transform( pt2->getRefCoord().begin(),pt2->getRefCoord().end(),
@@ -76,7 +76,7 @@ void AddDistance::updating() throw(::fwTools::Failed)
             pt2->getRefCoord().begin(),
             std::plus<double>() );
 
-    ::fwData::PointList::NewSptr pl;
+    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
 
     pl->getRefPoints().push_back( pt1 );
     pl->getRefPoints().push_back( pt2 );
@@ -87,10 +87,10 @@ void AddDistance::updating() throw(::fwTools::Failed)
     vectDist->getContainer().push_back(pl);
 
     // force distance to be shown
-    image->setField("ShowDistances",  ::fwData::Boolean::NewSptr(true));
+    image->setField("ShowDistances",  ::fwData::Boolean::New(true));
 
 
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }

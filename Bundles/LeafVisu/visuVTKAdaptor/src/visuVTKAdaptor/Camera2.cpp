@@ -192,7 +192,7 @@ void Camera2::updateFromVtk()
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 

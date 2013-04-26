@@ -96,7 +96,7 @@ void SMeshModifier::updating() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
     SLM_ASSERT("Mesh dynamicCast failed", mesh);
-    ::fwComEd::MeshMsg::NewSptr msg;
+    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
     try
     {
         if(m_functor == "ShakeMeshPoint")

@@ -59,7 +59,7 @@ void MacrosTest::factoryMacroTest()
     ClassTest::sptr classTest1;
     ClassTest::sptr classTest2 = ClassTest::New();
     ClassTest::sptr classTest3 = ClassTest::New(NUM);
-    ClassTest::NewSptr classTest4;
+    ClassTest::sptr classTest4 = ClassTest::New();
 
     CPPUNIT_ASSERT(classTest1 == NULL);
     CPPUNIT_ASSERT_EQUAL(classTest2->getNum(), 1);

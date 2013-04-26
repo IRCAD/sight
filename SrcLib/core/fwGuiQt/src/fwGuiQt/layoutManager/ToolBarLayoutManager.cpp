@@ -82,7 +82,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else if (actionInfo.m_isMenu)
         {
-            ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+            ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
             QMenu* qtMenu = new QMenu(toolBar);
             menu->setQtMenu(qtMenu);
 
@@ -110,7 +110,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else if (actionInfo.m_isEditor)
         {
-            ::fwGuiQt::container::QtContainer::NewSptr container;
+            ::fwGuiQt::container::QtContainer::sptr container = ::fwGuiQt::container::QtContainer::New();
             QWidget* widget = new QWidget(toolBar);
             container->setQtContainer(widget);
 
@@ -129,7 +129,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else
         {
-            ::fwGuiQt::container::QtMenuItemContainer::NewSptr menuItem;
+            ::fwGuiQt::container::QtMenuItemContainer::sptr menuItem = ::fwGuiQt::container::QtMenuItemContainer::New();
             QAction *action;
             if (!actionInfo.m_icon.empty())
             {

@@ -40,7 +40,7 @@ namespace visuVTKAdaptor
 
 void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwData::Plane::sptr plane )
 {
-    ::fwComEd::PlaneListMsg::NewSptr msg;
+    ::fwComEd::PlaneListMsg::sptr msg = ::fwComEd::PlaneListMsg::New();
     msg->addEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES );
     msg->addEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE, plane );
 

@@ -177,7 +177,7 @@ void PlaneInteractor::switchPlaneNormal()
         {
             plane->setValue(pt0,pt2,pt1);
 
-            ::fwComEd::PlaneMsg::NewSptr modifiedMsg;
+            ::fwComEd::PlaneMsg::sptr modifiedMsg = ::fwComEd::PlaneMsg::New();
             modifiedMsg->addEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
             ::fwServices::IEditionService::notify( this->getSptr(), plane, modifiedMsg);
         }
@@ -217,13 +217,13 @@ void PlaneInteractor::pushPlane(double factor)
 
             normal = ::fwMath::getNormal(plane->getPlane());
 
-            ::fwComEd::PointMsg::NewSptr modifiedMsg;
+            ::fwComEd::PointMsg::sptr modifiedMsg = ::fwComEd::PointMsg::New();
             modifiedMsg->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
             ::fwServices::IEditionService::notify( this->getSptr(), pt0, modifiedMsg);
-            ::fwComEd::PointMsg::NewSptr modifiedMsg2;
+            ::fwComEd::PointMsg::sptr modifiedMsg2 = ::fwComEd::PointMsg::New();
             modifiedMsg2->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
             ::fwServices::IEditionService::notify( this->getSptr(), pt1, modifiedMsg2);
-            ::fwComEd::PointMsg::NewSptr modifiedMsg3;
+            ::fwComEd::PointMsg::sptr modifiedMsg3 = ::fwComEd::PointMsg::New();
             modifiedMsg3->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
             ::fwServices::IEditionService::notify( this->getSptr(), pt2, modifiedMsg3);
             this->setVtkPipelineModified();
@@ -238,7 +238,7 @@ void PlaneInteractor::deselectPlane()
     ::fwData::Plane::sptr plane ( ::fwData::Plane::dynamicCast( this->getObject() ) );
     if (plane)
     {
-        ::fwComEd::PlaneMsg::NewSptr deselectMsg;
+        ::fwComEd::PlaneMsg::sptr deselectMsg = ::fwComEd::PlaneMsg::New();
         deselectMsg->addEvent( ::fwComEd::PlaneMsg::DESELECT_PLANE );
         ::fwServices::IEditionService::notify( this->getSptr(), plane, deselectMsg);
     }

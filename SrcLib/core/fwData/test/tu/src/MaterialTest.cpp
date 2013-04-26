@@ -37,13 +37,13 @@ void MaterialTest::tearDown()
 void MaterialTest::methode1()
 {
     //-----------test values
-    ::fwData::Color::NewSptr CAMBIENT;
+    ::fwData::Color::sptr CAMBIENT = ::fwData::Color::New();
     CAMBIENT->setRGBA(0.5f,0.5f,0.5f,0.5f);
 
-    ::fwData::Color::NewSptr CDIFF;
+    ::fwData::Color::sptr CDIFF = ::fwData::Color::New();
     CDIFF->setRGBA(0.8f,0.2f,0.5f,0.4f);
 
-    ::fwData::Material::NewSptr material;
+    ::fwData::Material::sptr material = ::fwData::Material::New();
 
     material->setAmbient(::fwData::Object::copy(CAMBIENT));
     material->setDiffuse(::fwData::Object::copy(CDIFF));

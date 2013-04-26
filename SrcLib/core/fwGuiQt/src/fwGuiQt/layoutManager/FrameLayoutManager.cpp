@@ -91,11 +91,11 @@ void FrameLayoutManager::createFrame()
 
     QObject::connect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
 
-    ::fwGuiQt::container::QtContainer::NewSptr container;
+    ::fwGuiQt::container::QtContainer::sptr container = ::fwGuiQt::container::QtContainer::New();
     container->setQtContainer(m_qtWindow->centralWidget());
     m_container = container;
 
-    ::fwGuiQt::container::QtContainer::NewSptr frameContainer;
+    ::fwGuiQt::container::QtContainer::sptr frameContainer = ::fwGuiQt::container::QtContainer::New();
     frameContainer->setQtContainer(m_qtWindow);
     m_frame = frameContainer;
 }

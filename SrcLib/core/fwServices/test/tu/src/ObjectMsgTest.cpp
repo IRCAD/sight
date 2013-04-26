@@ -42,7 +42,7 @@ void ObjectMsgTest::testObjectMsg()
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
     // create message with events
-    ::fwServices::ObjectMsg::NewSptr objMsg;
+    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::ObjectMsg::New();
     objMsg->addEvent(EVENT1);
     objMsg->addEvent(EVENT2, image);
 

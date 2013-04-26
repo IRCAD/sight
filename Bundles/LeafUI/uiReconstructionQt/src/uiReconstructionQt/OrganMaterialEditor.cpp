@@ -230,7 +230,7 @@ void OrganMaterialEditor::materialNotification( )
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
-    ::fwComEd::MaterialMsg::NewSptr msg;
+    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
     msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMaterial(), msg);
 }

@@ -173,7 +173,7 @@ void DicomdirPatientDBReaderService::updating() throw(::fwTools::Failed)
 //        case ::ioGdcm::ITK_GDCM :
 //            // ITK/GDCM
 //            // Some work is necessary for using itkIO::DicomPatientDBReader with list of files.
-//            patientDB = createPatientDB <::itkIO::DicomPatientDBReader>( m_readerAndFilenames.second);
+//            patientDB = createPatientDB < ::itkIO::DicomPatientDBReader >( m_readerAndFilenames.second);
 //            break;
 //        case ::ioGdcm::IRCAD :
 //            ::dicomIO::DicomPatientDBReader readerDicomPatientDb;
@@ -211,9 +211,9 @@ void DicomdirPatientDBReaderService::updating() throw(::fwTools::Failed)
 template < typename READER> ::fwData::PatientDB::sptr DicomdirPatientDBReaderService::createPatientDB(const std::vector< ::boost::filesystem::path>& filenames)
 {
     SLM_TRACE_FUNC();
-    typename READER::NewSptr reader;
+    typename READER::sptr reader = READER::New();
 
-    ::fwData::PatientDB::NewSptr dummy;
+    ::fwData::PatientDB::sptr dummy = ::fwData::PatientDB::New();
     reader->setObject( dummy );
     reader->setFiles(filenames);
 
@@ -247,7 +247,7 @@ void DicomdirPatientDBReaderService::notificationOfDBUpdate()
     ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >();
     SLM_ASSERT("pDPDB not instanced", pDPDB);
 
-    ::fwComEd::PatientDBMsg::NewSptr msg;
+    ::fwComEd::PatientDBMsg::sptr msg = ::fwComEd::PatientDBMsg::New();
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT );
 
     ::fwServices::IEditionService::notify(this->getSptr(),  pDPDB, msg);

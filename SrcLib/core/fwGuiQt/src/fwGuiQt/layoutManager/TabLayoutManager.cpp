@@ -58,7 +58,7 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     {
         QWidget *widget = new QWidget(m_tabWidget);
 
-        ::fwGuiQt::container::QtContainer::NewSptr subContainer;
+        ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
         subContainer->setQtContainer(widget);
         m_subViews.push_back(subContainer);
 

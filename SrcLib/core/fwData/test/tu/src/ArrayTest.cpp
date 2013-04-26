@@ -43,7 +43,7 @@ void ArrayTest::tearDown()
 
 void ArrayTest::allocation()
 {
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper(array);
 
     CPPUNIT_ASSERT(array->empty());
@@ -107,7 +107,7 @@ void ArrayTest::allocation()
 
 void ArrayTest::resize()
 {
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
@@ -203,7 +203,7 @@ void ArrayTest::resize()
 
 void ArrayTest::reallocate()
 {
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
@@ -331,7 +331,7 @@ void ArrayTest::reallocate()
 
 void ArrayTest::copy()
 {
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;

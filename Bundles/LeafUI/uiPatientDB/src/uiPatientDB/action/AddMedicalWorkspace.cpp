@@ -85,7 +85,7 @@ void AddMedicalWorkspace::updating( ) throw(::fwTools::Failed)
     /// Create IOSelectorService on the new medicalWorkspace and execute it.
 
     // Create composite
-    ::fwData::Composite::NewSptr loadedMedicalWorkspace;
+    ::fwData::Composite::sptr loadedMedicalWorkspace = ::fwData::Composite::New();
 
     // Get the config
     ::fwRuntime::ConfigurationElement::csptr ioCfg;

@@ -199,7 +199,7 @@ void ImageTransparency::onModifyTransparency(int value)
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "TRANSPARENCY" );
     ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
 }
@@ -229,7 +229,7 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "VISIBILITY" );
     ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
 }

@@ -43,8 +43,8 @@ void SlotsSignalsTest::basicTest()
     SLM_TRACE_FUNC();
     using namespace ::fwServices::registry;
 
-    Buffer::NewSptr buffer;
-    Buffer::NewSptr buffer2;
+    Buffer::sptr buffer = Buffer::New();
+    Buffer::sptr buffer2 = Buffer::New();
 
     ActiveWorkers::sptr activeWorkers = ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
@@ -82,7 +82,7 @@ void SlotsSignalsTest::basicTest()
 void SlotsSignalsTest::comObjectServiceTest()
 {
     SLM_TRACE_FUNC();
-    Buffer::NewSptr buffer;
+    Buffer::sptr buffer = Buffer::New();
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
@@ -166,7 +166,7 @@ void SlotsSignalsTest::comObjectServiceTest()
 void SlotsSignalsTest::comServiceToServiceTest()
 {
     SLM_TRACE_FUNC();
-    Buffer::NewSptr buffer;
+    Buffer::sptr buffer = Buffer::New();
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
@@ -207,7 +207,7 @@ void SlotsSignalsTest::comServiceToServiceTest()
 void SlotsSignalsTest::blockConnectionTest()
 {
     SLM_TRACE_FUNC();
-    Buffer::NewSptr buffer;
+    Buffer::sptr buffer = Buffer::New();
 
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();

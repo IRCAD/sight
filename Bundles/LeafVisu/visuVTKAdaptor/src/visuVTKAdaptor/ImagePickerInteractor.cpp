@@ -142,7 +142,7 @@ public:
             ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
             OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
 
-            ::fwComEd::InteractionMsg::NewSptr msg;
+            ::fwComEd::InteractionMsg::sptr msg = ::fwComEd::InteractionMsg::New();
 
             int index[3];
             m_adaptor->worldToImageSliceIndex(world, index);

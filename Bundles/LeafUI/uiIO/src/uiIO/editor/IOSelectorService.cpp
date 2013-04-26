@@ -199,7 +199,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         // Selection of extension when availableExtensions.size() > 1
         if ( availableExtensionsSelector.size() > 1 )
         {
-            ::fwGui::dialog::SelectorDialog::NewSptr selector;
+            ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
 
             if ( m_mode != READER_MODE )
             {

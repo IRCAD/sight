@@ -82,16 +82,16 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
     m_mesh = ::fwData::Mesh::New();
     m_readerSrv = ::fwServices::add(m_mesh, "::io::IReader", "::ioData::MeshReaderService");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "service" );
-    ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "file" );
+    ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New( "service" );
+    ::fwRuntime::EConfigurationElement::sptr readerFilenameCfg = ::fwRuntime::EConfigurationElement::New( "file" );
     readerFilenameCfg->setValue(trianMeshPath);
     readerCfg->addConfigurationElement(readerFilenameCfg);
     m_readerSrv->setConfiguration( readerCfg ) ;
     m_readerSrv->configure();
 
     m_writerSrv = ::fwServices::add(m_mesh, "::io::IWriter", "::ioVTK::MeshWriterService");
-    ::fwRuntime::EConfigurationElement::NewSptr writerCfg( "service" );
-    ::fwRuntime::EConfigurationElement::NewSptr writerFilenameCfg( "file" );
+    ::fwRuntime::EConfigurationElement::sptr writerCfg = ::fwRuntime::EConfigurationElement::New( "service" );
+    ::fwRuntime::EConfigurationElement::sptr writerFilenameCfg = ::fwRuntime::EConfigurationElement::New( "file" );
     writerFilenameCfg->setValue(vtkMeshPath);
     writerCfg->addConfigurationElement(writerFilenameCfg);
     m_writerSrv->setConfiguration( writerCfg ) ;

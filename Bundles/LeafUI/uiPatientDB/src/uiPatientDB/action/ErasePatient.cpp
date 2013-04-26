@@ -74,7 +74,7 @@ void ErasePatient::updating( ) throw(::fwTools::Failed)
 
         ErasePatient::eraseSelectedAcquisition( pPatientDB );
 
-        ::fwComEd::PatientDBMsg::NewSptr msg;
+        ::fwComEd::PatientDBMsg::sptr msg = ::fwComEd::PatientDBMsg::New();
         msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
         ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
     }

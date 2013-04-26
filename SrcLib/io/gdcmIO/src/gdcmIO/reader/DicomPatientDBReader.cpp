@@ -111,7 +111,7 @@ void DicomPatientDBReader::read() throw(::fwTools::Failed)
 
             patientReader.setFileNames(itMap->second);
 
-            ::fwData::Patient::NewSptr patient;
+            ::fwData::Patient::sptr patient = ::fwData::Patient::New();
             patientReader.setObject(patient);
             try
             {

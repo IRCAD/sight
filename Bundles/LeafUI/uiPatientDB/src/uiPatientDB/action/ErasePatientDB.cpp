@@ -76,7 +76,7 @@ void ErasePatientDB::updating( ) throw(::fwTools::Failed)
         pPatientDB->removeField("SELECTED_STUDY");
         pPatientDB->removeField("SELECTED_ACQUISITION");
 
-        ::fwComEd::PatientDBMsg::NewSptr msg;
+        ::fwComEd::PatientDBMsg::sptr msg = ::fwComEd::PatientDBMsg::New();
         msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
         ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
     }

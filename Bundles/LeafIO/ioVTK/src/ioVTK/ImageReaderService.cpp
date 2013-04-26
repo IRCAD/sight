@@ -149,7 +149,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
 
     if(ext == ".vtk")
     {
-        ::vtkIO::ImageReader::NewSptr vtkReader;
+        ::vtkIO::ImageReader::sptr vtkReader = ::vtkIO::ImageReader::New();
         vtkReader->addHandler( progressMeterGUI );
         // Set the file system path
         vtkReader->setFile(imgFile);
@@ -157,14 +157,14 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
     }
     else if(ext == ".vti")
     {
-        ::vtkIO::VtiImageReader::NewSptr vtiReader;
+        ::vtkIO::VtiImageReader::sptr vtiReader = ::vtkIO::VtiImageReader::New();
         vtiReader->addHandler( progressMeterGUI );
         vtiReader->setFile(imgFile);
         myReader = vtiReader;
     }
     else if(ext == ".mhd")
     {
-        ::vtkIO::MetaImageReader::NewSptr mhdReader;
+        ::vtkIO::MetaImageReader::sptr mhdReader = ::vtkIO::MetaImageReader::New();
         mhdReader->addHandler( progressMeterGUI );
         mhdReader->setFile(imgFile);
         myReader = mhdReader;
@@ -222,7 +222,7 @@ void ImageReaderService::notificationOfDBUpdate()
     SLM_ASSERT("pImage not instanced", pImage);
 
     // Creation of an image message to say that image is an new image ( or all fields are modified (old version of msg ) )
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
     msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
     msg->addEvent( ::fwComEd::ImageMsg::REGION ) ;

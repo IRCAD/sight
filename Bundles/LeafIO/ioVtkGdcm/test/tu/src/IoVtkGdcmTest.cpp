@@ -62,8 +62,8 @@ void IoVtkGdcmTest::seriesDBReaderTest()
     ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433");
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr folderCfg("folder");
+    ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");
     folderCfg->setValue(dicomDataPath.string());
     readerCfg->addConfigurationElement(folderCfg);
 

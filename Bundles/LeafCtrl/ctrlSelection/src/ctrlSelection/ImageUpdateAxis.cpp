@@ -132,7 +132,7 @@ void ImageUpdateAxis::updating() throw ( ::fwTools::Failed )
 
     dataFloat->value() = (float) m_orientation;
     OSLM_TRACE(dataFloat->getID() << " new value : " << *dataFloat);
-    ::fwComEd::FloatMsg::NewSptr msg;
+    ::fwComEd::FloatMsg::sptr msg = ::fwComEd::FloatMsg::New();
     msg->addEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
     ::fwServices::IEditionService::notify(this->getSptr(), dataFloat, msg);
 }

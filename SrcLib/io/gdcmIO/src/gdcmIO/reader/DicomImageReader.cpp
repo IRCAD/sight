@@ -140,7 +140,7 @@ void DicomImageReader::read() throw(::fwTools::Failed)
     gImageReader.SetFileName( this->getCRefFileNames()[0].c_str() );
     if (gImageReader.Read())
     {
-        ::fwData::Image::NewSptr img;
+        ::fwData::Image::sptr img = ::fwData::Image::New();
         try
         {
             // Set the fwData::image

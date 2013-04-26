@@ -55,7 +55,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
     unsigned int menuItemIndex = 0;
     BOOST_FOREACH ( ::fwGui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo, m_actionInfo)
     {
-        ::fwGuiQt::container::QtMenuItemContainer::NewSptr menuItem;
+        ::fwGuiQt::container::QtMenuItemContainer::sptr menuItem = ::fwGuiQt::container::QtMenuItemContainer::New();
 
         QAction *action = menu->addAction( QString::fromStdString(actionInfo.m_name) );
 
@@ -98,7 +98,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 
         if (actionInfo.m_isMenu)
         {
-            ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+            ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
             QMenu* qtMenu = new QMenu();
             menu->setQtMenu(qtMenu);
             action->setMenu(qtMenu);

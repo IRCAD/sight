@@ -68,7 +68,7 @@ void SPatientDBInserter::configureWithIHM()
         }
         ::fwData::Object::sptr object = this->getObject();
 
-        ::fwGui::dialog::SelectorDialog::NewSptr selector;
+        ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
         selector->setSelections(availablePatientDB);
         selector->setTitle("Select PatientDB");
         std::stringstream stream;
@@ -208,7 +208,7 @@ void SPatientDBInserter::swapping() throw ( ::fwTools::Failed )
 
 ::fwData::PatientDB::sptr SPatientDBInserter::createPDB(::fwData::Patient::sptr patient) const
 {
-    ::fwData::PatientDB::NewSptr patientDB;
+    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
     patientDB->addPatient( patient );
     return patientDB;
 }
@@ -217,7 +217,7 @@ void SPatientDBInserter::swapping() throw ( ::fwTools::Failed )
 
 ::fwData::PatientDB::sptr SPatientDBInserter::createPDB(::fwData::Study::sptr study) const
 {
-    ::fwData::Patient::NewSptr patient;
+    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
     patient->addStudy(study);
     patient->setName("anonymous");
     patient->setFirstname("anonymous");
@@ -228,7 +228,7 @@ void SPatientDBInserter::swapping() throw ( ::fwTools::Failed )
 
 ::fwData::PatientDB::sptr SPatientDBInserter::createPDB(::fwData::Acquisition::sptr acq) const
 {
-    ::fwData::Study::NewSptr study;
+    ::fwData::Study::sptr study = ::fwData::Study::New();
     study->setHospital("Ircad");
     study->addAcquisition(acq);
     return this->createPDB(study);
@@ -238,7 +238,7 @@ void SPatientDBInserter::swapping() throw ( ::fwTools::Failed )
 
 ::fwData::PatientDB::sptr SPatientDBInserter::createPDB(::fwData::Image::sptr img) const
 {
-    ::fwData::Acquisition::NewSptr acquisition;
+    ::fwData::Acquisition::sptr acquisition = ::fwData::Acquisition::New();
     acquisition->setImage(img);
     return this->createPDB(acquisition);
 }

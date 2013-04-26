@@ -120,7 +120,7 @@ void SStringReader::notifyMessage()
     ::fwData::String::sptr associatedObj = this->getObject< ::fwData::String >();
 
     // Creation of an object message to say that data is modified
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) ;
 
     // Notifies message to all service listeners

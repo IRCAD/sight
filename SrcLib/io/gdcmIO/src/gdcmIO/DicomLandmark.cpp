@@ -62,7 +62,7 @@ void DicomLandmark::convertToData(::fwData::Image::sptr a_image)
         for (unsigned int i = 0; i < nb_landmarks; ++i)
         {
             // create a new point
-            ::fwData::Point::NewSptr   newPoint;
+            ::fwData::Point::sptr newPoint = ::fwData::Point::New();
 
             const SCoord & scoord = m_SCoords[i];
             newPoint->getRefCoord()[0] = scoord[0];
@@ -75,13 +75,13 @@ void DicomLandmark::convertToData(::fwData::Image::sptr a_image)
             landmarks->getRefPoints().push_back( newPoint );
 
             // append to point the label
-            ::fwData::String::NewSptr label;
+            ::fwData::String::sptr label = ::fwData::String::New();
             label->value() = this->getLabels()[i];
             newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
 
             OSLM_TRACE("new landmark : "<<label->value()<<" ( "<<newPoint->getRefCoord()[0]<<"x"<<newPoint->getRefCoord()[1]<<"x"<<newPoint->getRefCoord()[2]<<" )");
         }
-        a_image->setField("ShowLandmarks", ::fwData::Boolean::NewSptr(true));
+        a_image->setField("ShowLandmarks", ::fwData::Boolean::New(true));
     }
     else
     {

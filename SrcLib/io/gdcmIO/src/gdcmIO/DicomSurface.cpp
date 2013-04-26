@@ -184,7 +184,7 @@ struct cell_data_offset_generator {
 void DicomSurface::convertToData(fwData::Reconstruction::sptr a_reconstruction)
 {
     // Get mesh
-    ::fwData::Mesh::NewSptr mesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
     // Initialize members
     const unsigned long sizePoints   = m_pointCoordSize / 3;
@@ -256,7 +256,7 @@ void DicomSurface::convertToData(fwData::Reconstruction::sptr a_reconstruction)
                                                  const uint32_t * index, const unsigned long indexSize,
                                                  const float * normalCoord)
 {
-    ::fwData::Mesh::NewSptr mesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
     // Initialize members
     const unsigned long sizePoints   = coordSize / 3;

@@ -43,7 +43,7 @@ namespace visuVTKAdaptor
 
 void notifyRemoveLandMark( ::fwData::Point::sptr point )
 {
-    ::fwComEd::PointListMsg::NewSptr msgPointList;
+    ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
     msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
 
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;

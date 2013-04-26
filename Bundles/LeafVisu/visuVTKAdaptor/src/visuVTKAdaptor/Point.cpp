@@ -73,7 +73,7 @@ public :
         SLM_ASSERT("handler not instanced", handler);
         double *world = representation->GetWorldPosition();
 
-        ::fwComEd::PointMsg::NewSptr msg;// (  new fwServices::ObjectMsg(point) );
+        ::fwComEd::PointMsg::sptr msg = ::fwComEd::PointMsg::New();// (  new fwServices::ObjectMsg(point) );
 
         if ( (m_pickLimiter-- == 0 && eventId == vtkCommand::InteractionEvent)
                 || eventId == vtkCommand::EndInteractionEvent )

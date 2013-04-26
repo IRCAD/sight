@@ -58,7 +58,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
     unsigned int menuItemIndex = 0;
     BOOST_FOREACH ( ::fwGui::layoutManager::IToolBarLayoutManager::ActionInfo actionInfo, m_actionInfo)
     {
-        ::fwGuiWx::container::WxMenuItemContainer::NewSptr menuItem;
+        ::fwGuiWx::container::WxMenuItemContainer::sptr menuItem = ::fwGuiWx::container::WxMenuItemContainer::New();
 
         int actionIdInMenu = wxNewId();
         wxItemKind kind = wxITEM_NORMAL;

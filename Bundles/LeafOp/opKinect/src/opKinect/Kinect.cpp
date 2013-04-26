@@ -47,13 +47,13 @@ void XN_CALLBACK_TYPE OnWaveCB(void* cxt)
 void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext, void* cxt)
 {
      // data
-    ::fwData::Vector::NewSptr data;
-    ::fwData::Integer::NewSptr v1(pContext->ptPosition.X);
-    ::fwData::Integer::NewSptr v2(pContext->ptPosition.Y);
-    ::fwData::Integer::NewSptr v3(pContext->ptPosition.Z);
-    ::fwData::Integer::NewSptr v4(pContext->nID);
+    ::fwData::Vector::sptr data = ::fwData::Vector::New();
+    ::fwData::Integer::sptr v1 = ::fwData::Integer::New(pContext->ptPosition.X);
+    ::fwData::Integer::sptr v2 = ::fwData::Integer::New(pContext->ptPosition.Y);
+    ::fwData::Integer::sptr v3 = ::fwData::Integer::New(pContext->ptPosition.Z);
+    ::fwData::Integer::sptr v4 = ::fwData::Integer::New(pContext->nID);
 
-    std::vector<::fwData::Integer::sptr> points;
+    std::vector< ::fwData::Integer::sptr > points;
     points.push_back(v1);
     points.push_back(v2);
     points.push_back(v3);
@@ -62,7 +62,7 @@ void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext,
     data->setDataContainer(points);
 
     // Notification
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("KINECT_NEW_POSITION_HAND", data);
     ::fwServices::IEditionService::notify(g_service, g_acquisition, msg);
 }

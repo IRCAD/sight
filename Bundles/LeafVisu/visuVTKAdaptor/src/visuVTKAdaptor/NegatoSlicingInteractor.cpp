@@ -382,11 +382,11 @@ void NegatoSlicingInteractor::stopSlicing( )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Fire the message to stop full cross display
-    ::fwData::Integer::NewSptr dataInfo;
-    ::fwData::String::NewSptr sliceMode;
+    ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
+    ::fwData::String::sptr sliceMode = ::fwData::String::New();
     sliceMode->value() = "STOP_SLICING";
     dataInfo->setField("SLICE_MODE", sliceMode);
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
@@ -421,13 +421,13 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
 
     if(setSliceIndex(index))
     {
-        ::fwData::Integer::NewSptr dataInfo;
-        ::fwData::String::NewSptr sliceMode;
+        ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
+        ::fwData::String::sptr sliceMode = ::fwData::String::New();
         sliceMode->value() = "UPDATE_SLICING";
         dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
@@ -462,13 +462,13 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-        ::fwData::Integer::NewSptr dataInfo;
-        ::fwData::String::NewSptr sliceMode;
+        ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
+        ::fwData::String::sptr sliceMode = ::fwData::String::New();
         sliceMode->value() = "STOP_SLICING";
         dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }

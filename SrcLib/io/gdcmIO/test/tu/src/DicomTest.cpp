@@ -52,14 +52,14 @@ void DicomTest::setUp()
 
     ::boost::filesystem::create_directories( PATH );
 
-    ::gdcmIO::writer::DicomPatientDBWriterManager::NewSptr writer;
+    ::gdcmIO::writer::DicomPatientDBWriterManager::sptr writer = ::gdcmIO::writer::DicomPatientDBWriterManager::New();
     writer->setObject(m_originalPatientDB);
     writer->setFolder(PATH);
     writer->write();
 
     // load patientDB
     m_readedPatientDB = ::fwData::PatientDB::New();
-    ::gdcmIO::reader::DicomPatientDBReader::NewSptr reader;
+    ::gdcmIO::reader::DicomPatientDBReader::sptr reader = ::gdcmIO::reader::DicomPatientDBReader::New();
     reader->setObject(m_readedPatientDB);
     reader->setFolder(PATH);
     reader->read();
@@ -325,8 +325,8 @@ void DicomTest::checkDistance()
     }
 
     //create patientDB
-    ::fwData::PatientDB::NewSptr pPatientDB;
-    ::fwData::Patient::NewSptr pPatient;
+    ::fwData::PatientDB::sptr pPatientDB = ::fwData::PatientDB::New();
+    ::fwData::Patient::sptr pPatient = ::fwData::Patient::New();
     pPatientDB->addPatient(pPatient);
 
     pPatient->setCRefName( PATIENT_NAME );
@@ -336,25 +336,25 @@ void DicomTest::checkDistance()
     pPatient->setIsMale( PATIENT_SEX );
     pPatient->setDbID( PATIENT_DBID );
 
-    ::fwData::Study::NewSptr pStudy1;
+    ::fwData::Study::sptr pStudy1 = ::fwData::Study::New();
     pPatient->addStudy(pStudy1);
 
     pStudy1->setCRefHospital( STUDY1_HOSPITAL );
     pStudy1->setCRefModality( STUDY1_MODALITY );
     pStudy1->setCRefAcquisitionZone( STUDY1_ZONE );
 
-    ::fwData::Acquisition::NewSptr pAcq1;
+    ::fwData::Acquisition::sptr pAcq1 = ::fwData::Acquisition::New();
     pStudy1->addAcquisition(pAcq1);
     pAcq1->setBitsPerPixel(IMG1_BITSPERPIXEL);
 
-    ::fwData::Image::NewSptr pImage1;
+    ::fwData::Image::sptr pImage1 = ::fwData::Image::New();
     pAcq1->setImage(pImage1);
 
     pImage1->setSize( IMG1_VSIZE );
     pImage1->setOrigin( IMG1_ORIGIN );
     pImage1->setSpacing( IMG1_VSPACING );
     pImage1->setType( IMG1_PIXELTYPE );
-    ::fwData::Array::NewSptr array1;
+    ::fwData::Array::sptr array1 = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper1(array1);
     arrayHelper1.setBuffer( static_cast<void *>(buffer1), true, IMG1_PIXELTYPE, IMG1_VSIZE, 1 );
     pImage1->setDataArray( array1 );
@@ -373,7 +373,7 @@ void DicomTest::checkDistance()
     landmarks->getRefPoints().push_back(point3);
 
     // Add distance
-    ::fwData::PointList::NewSptr pl;
+    ::fwData::PointList::sptr pl = ::fwData::PointList::New();
     ::fwData::Point::sptr pt1 = ::fwData::Point::New(0., 0., 0.);
     ::fwData::Point::sptr pt2 = ::fwData::Point::New((IMG1_VSIZE[0]-1) * IMG1_VSPACING[0], (IMG1_VSIZE[1]-1) * IMG1_VSPACING[1], (IMG1_VSIZE[2]-1) * IMG1_VSPACING[2]);
     pl->getRefPoints().push_back( pt1 );
@@ -385,11 +385,11 @@ void DicomTest::checkDistance()
 
 
     ::fwData::Mesh::sptr mesh = this->generateMesh();
-    ::fwData::Material::NewSptr material;
+    ::fwData::Material::sptr material = ::fwData::Material::New();
     material->ambient()->red()   = 0.;
     material->ambient()->green() = 0.;
     material->ambient()->blue()  = 1.;
-    ::fwData::Reconstruction::NewSptr reconstruction;
+    ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
     reconstruction->setMesh(mesh);
     reconstruction->setMaterial(material);
     reconstruction->setOrganName("portalVein");
@@ -397,11 +397,11 @@ void DicomTest::checkDistance()
     reconstruction->setIsVisible(true);
     pAcq1->addReconstruction(reconstruction);
 
-    ::fwData::Acquisition::NewSptr pAcq2;
+    ::fwData::Acquisition::sptr pAcq2 = ::fwData::Acquisition::New();
     pStudy1->addAcquisition(pAcq2);
     pAcq2->setBitsPerPixel(IMG2_BITSPERPIXEL);
 
-    ::fwData::Image::NewSptr pImage2;
+    ::fwData::Image::sptr pImage2 = ::fwData::Image::New();
     pAcq2->setImage(pImage2);
 
 
@@ -409,7 +409,7 @@ void DicomTest::checkDistance()
     pImage2->setOrigin( IMG1_ORIGIN );
     pImage2->setSpacing( IMG1_VSPACING );
     pImage2->setType(IMG2_PIXELTYPE);
-    ::fwData::Array::NewSptr array2;
+    ::fwData::Array::sptr array2 = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper2(array2);
     arrayHelper2.setBuffer( static_cast<void *>(buffer2), true, IMG2_PIXELTYPE, IMG1_VSIZE, 1 );
     pImage2->setDataArray( array2 );
@@ -424,7 +424,7 @@ void DicomTest::checkDistance()
 
 ::fwData::Mesh::sptr DicomTest::generateMesh()
 {
-    ::fwData::Mesh::NewSptr mesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
     ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::shakePoint(mesh);
 

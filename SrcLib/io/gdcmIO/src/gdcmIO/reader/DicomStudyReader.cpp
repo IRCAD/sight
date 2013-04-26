@@ -170,7 +170,7 @@ void DicomStudyReader::read() throw(::fwTools::Failed)
 
             seriesReader.setFileNames(itMap->second);
 
-            ::fwData::Acquisition::NewSptr series;
+            ::fwData::Acquisition::sptr series = ::fwData::Acquisition::New();
             seriesReader.setObject(series);
             try
             {

@@ -61,7 +61,7 @@ bool SAddLabeledPoint::defineLabel(std::string &name)
     bool res = false;
     name = "Label" + ::boost::lexical_cast< std::string >(m_count);
 
-    ::fwData::String::NewSptr url;
+    ::fwData::String::sptr url = ::fwData::String::New();
     ::fwGui::dialog::InputDialog inputDlg;
     inputDlg.setTitle("Label");
     inputDlg.setMessage("Which label for the point?");
@@ -90,18 +90,18 @@ void SAddLabeledPoint::updating() throw(::fwTools::Failed)
     if ( this->defineLabel(value) )
     {
         // create a new point
-        ::fwData::Point::NewSptr newPoint;
+        ::fwData::Point::sptr newPoint = ::fwData::Point::New();
 
         // append to landmark
         landmarks->getRefPoints().push_back( newPoint );
 
         // append to point the label
-        ::fwData::String::NewSptr label;
+        ::fwData::String::sptr label = ::fwData::String::New();
         label->value() = value;
         newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
 
         // notify
-        ::fwComEd::PointListMsg::NewSptr msgPointList;
+        ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
         msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED, newPoint );
         ::fwServices::IEditionService::notify( this->getSptr(), landmarks, msgPointList);
     }

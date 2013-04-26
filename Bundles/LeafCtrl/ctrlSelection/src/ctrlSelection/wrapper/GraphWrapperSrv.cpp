@@ -49,7 +49,7 @@ void GraphWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
     if ( message->hasEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) )
     {
         assert( message->getDataInfo( ::fwServices::ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
-        fwComEd::GraphMsg::NewSptr msg;
+        fwComEd::GraphMsg::sptr msg = fwComEd::GraphMsg::New();
         msg->addEvent( fwComEd::GraphMsg::NEW_GRAPH , this->getObject() );
         ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
     }

@@ -38,7 +38,7 @@ void TransferFunctionTest::tearDown()
 
 ::fwData::TransferFunction::sptr TransferFunctionTest::createTFColor()
 {
-    ::fwData::TransferFunction::NewSptr tf;
+    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
 
     tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( 1.0, 0.3, 0.6, 0.1) );
     tf->setInterpolationMode( ::fwData::TransferFunction::LINEAR );

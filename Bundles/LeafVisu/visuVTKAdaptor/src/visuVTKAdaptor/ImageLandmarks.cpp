@@ -47,12 +47,12 @@ void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* 
 {
     SLM_ASSERT("NULL Service", _service);
 
-    ::fwComEd::PointListMsg::NewSptr msgPointList;
+    ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
     msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
     ::fwData::PointList::sptr pointList = image->getField< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
     ::fwServices::IEditionService::notify( _service->getSptr(), pointList, msgPointList);
 
-    ::fwComEd::ImageMsg::NewSptr msgLandmark;
+    ::fwComEd::ImageMsg::sptr msgLandmark = ::fwComEd::ImageMsg::New();
     msgLandmark->addEvent( ::fwComEd::ImageMsg::LANDMARK, point );
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );

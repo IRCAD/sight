@@ -91,10 +91,10 @@ void CrossTypeAction::updating() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwData::Float::NewSptr dataInfo;
+    ::fwData::Float::sptr dataInfo = ::fwData::Float::New();
     dataInfo->value() = m_scaleConversion[m_crossType];
 
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "CROSS_TYPE", dataInfo );
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
 }

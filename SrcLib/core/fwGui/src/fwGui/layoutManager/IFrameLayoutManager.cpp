@@ -174,20 +174,20 @@ void IFrameLayoutManager::writeConfig()
     {
         if(m_frameInfo.m_state != ICONIZED)
         {
-            ::fwData::Integer::NewSptr state(m_frameInfo.m_state);
+            ::fwData::Integer::sptr state = ::fwData::Integer::New(m_frameInfo.m_state);
             (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] = state;
         }
 
-        ::fwData::Integer::NewSptr sizew(m_frameInfo.m_size.first);
+        ::fwData::Integer::sptr sizew = ::fwData::Integer::New(m_frameInfo.m_size.first);
         (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_W_UI ] = sizew;
 
-        ::fwData::Integer::NewSptr sizeh(m_frameInfo.m_size.second);
+        ::fwData::Integer::sptr sizeh = ::fwData::Integer::New(m_frameInfo.m_size.second);
         (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_H_UI ] = sizeh;
 
-        ::fwData::Integer::NewSptr posx(m_frameInfo.m_position.first);
+        ::fwData::Integer::sptr posx = ::fwData::Integer::New(m_frameInfo.m_position.first);
         (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_X_UI ] = posx;
 
-        ::fwData::Integer::NewSptr posy(m_frameInfo.m_position.second);
+        ::fwData::Integer::sptr posy = ::fwData::Integer::New(m_frameInfo.m_position.second);
         (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_Y_UI ] = posy;
     }
 }

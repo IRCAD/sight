@@ -62,7 +62,7 @@ void RealDataDicomTest::tearDown()
 void RealDataDicomTest::testWriteImage()
 {
     // create Image
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
 
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("uint8"));
     this->writeImage( image );
@@ -124,13 +124,13 @@ void RealDataDicomTest::writeImage( ::fwData::Image::sptr image )
 //void RealDataDicomTest::testWritePatient()
 //{
 //    // create Patient
-//    ::fwData::Patient::NewSptr patient;
+//    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
 //    ::fwDataTools::Patient::generatePatient(patient, 2, 2, 0);
 //
 //    const ::boost::filesystem::path PATH = "imageDicomTest";
 //    ::boost::filesystem::create_directories( PATH );
 //
-//    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
+//    ::gdcmIO::writer::DicomGlobalWriterManager::sptr myWriter = ::gdcmIO::writer::DicomGlobalWriterManager::New();
 //    myWriter->setObject(patient);
 //    myWriter->setFolder(PATH);
 //    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
@@ -143,18 +143,18 @@ void RealDataDicomTest::writeImage( ::fwData::Image::sptr image )
 //void RealDataDicomTest::testWritePatientDB()
 //{
 //    // create PatientDB
-//    ::fwData::PatientDB::NewSptr patientDB;
-//    ::fwData::Patient::NewSptr patient1;
+//    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
+//    ::fwData::Patient::sptr patient1 = ::fwData::Patient::New();
 //    ::fwDataTools::Patient::generatePatient(patient1, 2, 2, 0);
 //    patientDB->addPatient( patient1 );
-//    ::fwData::Patient::NewSptr patient2;
+//    ::fwData::Patient::sptr patient2 = ::fwData::Patient::New();
 //    ::fwDataTools::Patient::generatePatient(patient2, 1, 3, 0);
 //    patientDB->addPatient( patient2 );
 //
 //    const ::boost::filesystem::path PATH = "imageDicomTest";
 //    ::boost::filesystem::create_directories( PATH );
 //
-//    ::gdcmIO::writer::DicomPatientDBWriterManager::NewSptr myWriter;
+//    ::gdcmIO::writer::DicomPatientDBWriterManager::sptr myWriter = ::gdcmIO::writer::DicomPatientDBWriterManager::New();
 //    myWriter->setObject(patientDB);
 //    myWriter->setFolder(PATH);
 //    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
@@ -167,11 +167,11 @@ void RealDataDicomTest::writeImage( ::fwData::Image::sptr image )
 void RealDataDicomTest::testReadPatientDB()
 {
     // create PatientDB
-    ::fwData::PatientDB::NewSptr patientDB;
+    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
 
     const ::boost::filesystem::path PATH = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433/";
 
-    ::gdcmIO::reader::DicomPatientDBReader::NewSptr myReader;
+    ::gdcmIO::reader::DicomPatientDBReader::sptr myReader = ::gdcmIO::reader::DicomPatientDBReader::New();
     myReader->setObject(patientDB);
     myReader->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(myReader->read());
@@ -239,11 +239,11 @@ void RealDataDicomTest::testReadPatientDB()
 void RealDataDicomTest::testReadPatientDBACHGenou()
 {
     // create PatientDB
-    ::fwData::PatientDB::NewSptr patientDB;
+    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
 
     const ::boost::filesystem::path PATH = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
 
-    ::gdcmIO::reader::DicomPatientDBReader::NewSptr myReader;
+    ::gdcmIO::reader::DicomPatientDBReader::sptr myReader = ::gdcmIO::reader::DicomPatientDBReader::New();
     myReader->setObject(patientDB);
     myReader->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(myReader->read());
@@ -264,16 +264,16 @@ void RealDataDicomTest::testReadPatientDBACHGenou()
 //    ::boost::filesystem::create_directories( PATH );
 //
 //    // create and write patient1
-//    ::fwData::Patient::NewSptr patient1;
+//    ::fwData::Patient::sptr patient1 = ::fwData::Patient::New();
 //    ::fwDataTools::Patient::generatePatient(patient1, 1, 1, 0);
-//    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
+//    ::gdcmIO::writer::DicomGlobalWriterManager::sptr myWriter = ::gdcmIO::writer::DicomGlobalWriterManager::New();
 //    myWriter->setObject(patient1);
 //    myWriter->setFolder(PATH);
 //    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
 //
 //    // read and  create patient2
-//    ::fwData::PatientDB::NewSptr patientDB;
-//    ::gdcmIO::reader::DicomPatientDBReader::NewSptr myReader;
+//    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
+//    ::gdcmIO::reader::DicomPatientDBReader::sptr myReader = ::gdcmIO::reader::DicomPatientDBReader::New();
 //    myReader->setObject(patientDB);
 //    myReader->setFolder(PATH);
 //    CPPUNIT_ASSERT_NO_THROW(myReader->read());

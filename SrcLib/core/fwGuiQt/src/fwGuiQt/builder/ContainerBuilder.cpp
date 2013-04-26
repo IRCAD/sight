@@ -40,7 +40,7 @@ void ContainerBuilder::createContainer( ::fwGui::container::fwContainer::sptr pa
     m_parent = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
 
-    ::fwGuiQt::container::QtContainer::NewSptr qtContainer;
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::New();
     QWidget *qtParent = m_parent->getQtContainer();
     QWidget *widget = new QWidget();
     qtContainer->setQtContainer(widget);

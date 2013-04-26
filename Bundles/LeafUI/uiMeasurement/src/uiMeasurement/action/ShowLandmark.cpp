@@ -72,14 +72,14 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     bool isShown = showLandmarks->value();
 
     bool toShow = !isShown;
-    image->setField("ShowLandmarks",  ::fwData::Boolean::NewSptr(toShow));
+    image->setField("ShowLandmarks",  ::fwData::Boolean::New(toShow));
 
     std::vector< ::fwServices::IService::sptr > services = ::fwServices::OSR::getServices < ::fwServices::IService > (image);
 
     this->::fwGui::IActionSrv::setIsActive(isShown);
 
     // notify
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }

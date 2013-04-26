@@ -31,7 +31,7 @@ IActionSrv::~IActionSrv()
 
 void IActionSrv::initialize()
 {
-    m_registrar = ::fwGui::registrar::ActionRegistrar::NewSptr(this->getID());
+    m_registrar = ::fwGui::registrar::ActionRegistrar::New(this->getID());
 
     OSLM_ASSERT("Depreciated tag <name> in "<< this->getID() << " configuration.", ! m_configuration->hasAttribute("name"));
     OSLM_ASSERT("Depreciated tag <shortcut> in "<< this->getID() << " configuration.", ! m_configuration->hasAttribute("shortcut"));

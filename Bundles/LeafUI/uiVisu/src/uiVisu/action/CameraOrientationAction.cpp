@@ -91,10 +91,10 @@ void CameraOrientationAction::updating() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwData::String::NewSptr dataInfo;
+    ::fwData::String::sptr dataInfo = ::fwData::String::New();
     dataInfo->value() = m_orientation;
 
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "CAMERA_ORIENTATION", dataInfo );
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
 }

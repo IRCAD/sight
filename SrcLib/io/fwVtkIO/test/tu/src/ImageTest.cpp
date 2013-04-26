@@ -200,7 +200,7 @@ void ImageTest::testFromVtk()
                                                                                                                        \
         CPPUNIT_ASSERT(vtkImage);                                                                                      \
                                                                                                                        \
-        ::fwData::Image::NewSptr image;                                                                                \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                \
         ::vtkIO::fromVTKImage(vtkImage, image);                                                                        \
                                                                                                                        \
         ::fwComEd::helper::Image imageHelper(image);                                                                   \
@@ -250,8 +250,8 @@ void ImageTest::mhdReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd" );
 
-    ::fwData::Image::NewSptr image;
-    ::vtkIO::MetaImageReader::NewSptr reader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::vtkIO::MetaImageReader::sptr reader = ::vtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
@@ -278,13 +278,13 @@ void ImageTest::mhdWriterTest()
     const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
     const ::boost::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
 
-    ::fwData::Image::NewSptr image;
-    ::vtkIO::MetaImageReader::NewSptr reader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::vtkIO::MetaImageReader::sptr reader = ::vtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
 
-    ::vtkIO::MetaImageWriter::NewSptr writer;
+    ::vtkIO::MetaImageWriter::sptr writer = ::vtkIO::MetaImageWriter::New();
     writer->setObject(image);
     writer->setFile(testFile);
     writer->write();
@@ -319,8 +319,8 @@ void ImageTest::vtiReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vti/BostonTeapot.vti" );
 
-    ::fwData::Image::NewSptr image;
-    ::vtkIO::VtiImageReader::NewSptr reader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::vtkIO::VtiImageReader::sptr reader = ::vtkIO::VtiImageReader::New();
 
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -361,8 +361,8 @@ void ImageTest::vtkReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
 
-    ::fwData::Image::NewSptr image;
-    ::vtkIO::ImageReader::NewSptr reader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::vtkIO::ImageReader::sptr reader = ::vtkIO::ImageReader::New();
 
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -392,9 +392,9 @@ void ImageTest::vtkReaderTest()
 {                                                                                                                                                  \
     const ::boost::filesystem::path testFile(::fwTest::Data::dir() / "fw4spl/image/vtk/img-" imagetype ".vtk");                                    \
                                                                                                                                                    \
-    ::fwData::Image::NewSptr image;                                                                                                                \
+    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                                                \
                                                                                                                                                    \
-    ::vtkIO::ImageReader::NewSptr reader;                                                                                                          \
+    ::vtkIO::ImageReader::sptr reader = ::vtkIO::ImageReader::New();                                                                                                          \
     reader->setObject(image);                                                                                                                      \
     reader->setFile(testFile);                                                                                                                     \
     reader->read();                                                                                                                                \

@@ -55,7 +55,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager::NewSptr configManager;
+    ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->setConfig( config );
     configManager->create();
     ::fwData::Image::sptr image = configManager->getConfigRoot< ::fwData::Image >();
@@ -98,7 +98,7 @@ void ConfigParserTest::testBuildComposite()
     ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildCompositeConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager::NewSptr configManager;
+    ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->setConfig( config );
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();

@@ -30,8 +30,8 @@ void StructureTraitsDictionaryTest::tearDown()
 
 void StructureTraitsDictionaryTest::testAddingStructure()
 {
-    ::fwData::StructureTraitsDictionary::NewSptr structDico;
-    ::fwData::StructureTraits::NewSptr skin;
+    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
+    ::fwData::StructureTraits::sptr skin = ::fwData::StructureTraits::New();
     std::string skinType = "Skin";
     skin->setType(skinType);
     skin->setClass(::fwData::StructureTraits::ENVIRONMENT);
@@ -45,7 +45,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     CPPUNIT_ASSERT(skinColor == skin->getColor());
     CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(skin));
 
-    ::fwData::StructureTraits::NewSptr liver;
+    ::fwData::StructureTraits::sptr liver = ::fwData::StructureTraits::New();
     liver->setType("Liver");
     liver->setClass(::fwData::StructureTraits::ORGAN);
     liver->setColor(::fwData::Color::New(204.0f/255.0f, 51.0f/255.0f, 51.0f/255.0f, 1.0));
@@ -57,7 +57,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     CPPUNIT_ASSERT_EQUAL(nativeExp, liver->getNativeExp());
     CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(liver));
 
-    ::fwData::StructureTraits::NewSptr liverTumor;
+    ::fwData::StructureTraits::sptr liverTumor = ::fwData::StructureTraits::New();
     liverTumor->setType("Liver_Tumor");
     liverTumor->setClass(::fwData::StructureTraits::LESION);
     liverTumor->setColor(::fwData::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
@@ -67,7 +67,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     liverTumor->setAttachmentType("Liver");
     CPPUNIT_ASSERT_NO_THROW(structDico->addStructure(liverTumor));
 
-    ::fwData::StructureTraits::NewSptr tumor;
+    ::fwData::StructureTraits::sptr tumor = ::fwData::StructureTraits::New();
     tumor->setType("Tumor");
     tumor->setClass(::fwData::StructureTraits::LESION);
     tumor->setColor(::fwData::Color::New(0.0f, 0.0f, 1.0f, 1.0f));
@@ -89,7 +89,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     CPPUNIT_ASSERT(liverTumor == structDico->getStructure("Liver_Tumor"));
 
     // check exception is raised if wrong structure
-    ::fwData::StructureTraits::NewSptr badClassStructure;
+    ::fwData::StructureTraits::sptr badClassStructure = ::fwData::StructureTraits::New();
     badClassStructure->setType("my_structure");
     badClassStructure->setClass(::fwData::StructureTraits::ORGAN);
     badClassStructure->setColor(::fwData::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
@@ -99,7 +99,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     badClassStructure->setAttachmentType("Liver");
     CPPUNIT_ASSERT_THROW(structDico->addStructure(badClassStructure), ::fwCore::Exception);
 
-    ::fwData::StructureTraits::NewSptr badAttachmentStructure;
+    ::fwData::StructureTraits::sptr badAttachmentStructure = ::fwData::StructureTraits::New();
     badAttachmentStructure->setType("my_structure");
     badAttachmentStructure->setClass(::fwData::StructureTraits::LESION);
     badAttachmentStructure->setColor(::fwData::Color::New(0.0f, 179.0f/255.0f, 0.0f, 1.0f));
@@ -108,7 +108,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     CPPUNIT_ASSERT_THROW(structDico->addStructure(badAttachmentStructure), ::fwCore::Exception);
 
     // check exception is raised if structure already exist
-    ::fwData::StructureTraits::NewSptr liver2;
+    ::fwData::StructureTraits::sptr liver2 = ::fwData::StructureTraits::New();
     liver2->setType("Liver");
     liver2->setClass(::fwData::StructureTraits::ORGAN);
     liver2->setColor(::fwData::Color::New(204.0f/255.0f, 51.0f/255.0f, 51.0f/255.0f, 1.0));

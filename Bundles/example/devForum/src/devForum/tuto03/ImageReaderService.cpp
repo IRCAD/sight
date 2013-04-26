@@ -60,7 +60,7 @@ void ImageReaderService::notifyMessage()
     assert( associatedImage );
 
     // Creation of an image message to say that image is an new image
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
 
     // Notifies message to all service listeners

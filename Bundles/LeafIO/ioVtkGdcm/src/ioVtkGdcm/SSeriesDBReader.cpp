@@ -110,8 +110,8 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
 {
     SLM_TRACE_FUNC();
-    ::vtkGdcmIO::SeriesDBReader::NewSptr myLoader;
-    ::fwMedData::SeriesDB::NewSptr dummy;
+    ::vtkGdcmIO::SeriesDBReader::sptr myLoader = ::vtkGdcmIO::SeriesDBReader::New();
+    ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
 

@@ -47,13 +47,13 @@ void ImageReaderWriterJPGTest::tearDown()
 void ImageReaderWriterJPGTest::testImageWriter()
 {
     // create Image
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // save image in inr
     const ::boost::filesystem::path PATH = "imageJPG";
     ::boost::filesystem::create_directories( PATH );
-    ::itkIO::JpgImageWriter::NewSptr myWriter;
+    ::itkIO::JpgImageWriter::sptr myWriter = ::itkIO::JpgImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
@@ -67,8 +67,8 @@ void ImageReaderWriterJPGTest::testImageWriter2()
 {
     // create Image
     ::boost::filesystem::path pathInr = ::fwTest::Data::dir() / "rd/patient/mfo/cas01/0/0/patientImage.inr.gz";
-    ::fwData::Image::NewSptr image;
-    ::itkIO::ImageReader::NewSptr myReader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::itkIO::ImageReader::sptr myReader = ::itkIO::ImageReader::New();
     myReader->setObject(image);
     myReader->setFile(pathInr);
     myReader->read();
@@ -76,7 +76,7 @@ void ImageReaderWriterJPGTest::testImageWriter2()
     // save image in inr
     const ::boost::filesystem::path PATH = "imageJPG";
     ::boost::filesystem::create_directories( PATH );
-    ::itkIO::JpgImageWriter::NewSptr myWriter;
+    ::itkIO::JpgImageWriter::sptr myWriter = ::itkIO::JpgImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFolder(PATH);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());

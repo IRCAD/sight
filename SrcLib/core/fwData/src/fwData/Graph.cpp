@@ -90,7 +90,7 @@ Edge::sptr Graph::makeConnection(
         std::string nodeDestinationInputPortID,
         std::string EdgeNature )
 {
-    ::fwData::Edge::NewSptr nEdge;
+    ::fwData::Edge::sptr nEdge = ::fwData::Edge::New();
     nEdge->setIdentifiers( nodeSourceOutputPortID, nodeDestinationInputPortID );
     nEdge->setNature( EdgeNature );
     if ( addEdge( nEdge, nodeSource, nodeDestination ) )

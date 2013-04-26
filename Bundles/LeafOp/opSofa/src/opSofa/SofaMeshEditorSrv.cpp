@@ -126,14 +126,14 @@ void SofaMeshEditorSrv::onStrengthSlider(int value)
         ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
         SLM_ASSERT("Invalid object", ms);
 
-        ::fwData::Vector::NewSptr data;
-        ::fwData::String::NewSptr v1(m_idReconstruction->value());
-        ::fwData::Integer::NewSptr v2(value);
+        ::fwData::Vector::sptr data = ::fwData::Vector::New();
+        ::fwData::String::sptr v1 = ::fwData::String::New(m_idReconstruction->value());
+        ::fwData::Integer::sptr v2 = ::fwData::Integer::New(value);
         data->getContainer().push_back(v2);
         data->getContainer().push_back(v1);
 
         // Notification
-        ::fwServices::ObjectMsg::NewSptr msg;
+        ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
         msg->addEvent("EDITOR_MESH_SOFA", data);
         ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
     }
@@ -155,18 +155,18 @@ void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
     if (event->key() == Qt::Key_A) z += 1;
     if (event->key() == Qt::Key_Q) z -= 1;
 
-    ::fwData::Vector::NewSptr data;
-    ::fwData::String::NewSptr v1(m_idReconstruction->value());
-    ::fwData::Integer::NewSptr v2(x);
-    ::fwData::Integer::NewSptr v3(y);
-    ::fwData::Integer::NewSptr v4(z);
+    ::fwData::Vector::sptr data = ::fwData::Vector::New();
+    ::fwData::String::sptr v1 = ::fwData::String::New(m_idReconstruction->value());
+    ::fwData::Integer::sptr v2 = ::fwData::Integer::New(x);
+    ::fwData::Integer::sptr v3 = ::fwData::Integer::New((y);
+    ::fwData::Integer::sptr v4 = ::fwData::Integer::New((z);
     data->getContainer().push_back(v1);
     data->getContainer().push_back(v2);
     data->getContainer().push_back(v3);
     data->getContainer().push_back(v4);
 
     // Notification
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("MOVE_MESH_SOFA", data);
     ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
 }

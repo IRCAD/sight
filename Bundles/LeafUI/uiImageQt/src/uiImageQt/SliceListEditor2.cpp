@@ -191,7 +191,7 @@ void SliceListEditor2::onChangeSliceMode( bool checked )
         ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
         SLM_ASSERT("SliceListEditor2 adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
 
-        ::fwData::Integer::NewSptr dataInfo;
+        ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
 
         if(m_noSliceItem->isChecked())
         {
@@ -216,8 +216,8 @@ void SliceListEditor2::onChangeSliceMode( bool checked )
         {
             OSLM_FATAL("Unknown slice mode");
         }
-        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
-        ::fwComEd::ImageMsg::NewSptr imageMsg;
+        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::New( m_adaptorUID ) );
+        ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
         imageMsg->addEvent( "SLICE_MODE", dataInfo );
         ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
     }

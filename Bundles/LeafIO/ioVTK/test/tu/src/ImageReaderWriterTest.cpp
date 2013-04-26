@@ -59,8 +59,8 @@ void ImageReaderWriterTest::tearDown()
 
 ::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path &file)
 {
-    ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("file");
+    ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New("file");
     readerCfg->setValue(file.string());
     readerSrvCfg->addConfigurationElement(readerCfg);
 
@@ -74,7 +74,7 @@ void ImageReaderWriterTest::testVtkImageReader()
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
 
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
 
     // Data expected
     const size_t dim = 3;
@@ -124,7 +124,7 @@ void ImageReaderWriterTest::testVtiImageReader()
 {
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/image/vti/BostonTeapot.vti";
 
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
 
     // Data expected
@@ -177,7 +177,7 @@ void ImageReaderWriterTest::testMhdImageReader()
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd";
 
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
 
     // Data expected
@@ -235,7 +235,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
     ofile.open(file.string().c_str());
     ofile.close();
 
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
 
     {
         const std::string srvtype("::io::IReader");
@@ -447,7 +447,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
     this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image);
 
     // Read image from disk
-    ::fwData::Image::NewSptr imageFromDisk;
+    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
 
     // Data read

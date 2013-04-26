@@ -58,7 +58,7 @@ void MeshTest::testMeshToTriangularMesh()
     ::fwDataTools::Mesh::shakePoint(mesh1);
     mesh1->adjustAllocatedMemory();
 
-    ::fwData::TriangularMesh::NewSptr trian;
+    ::fwData::TriangularMesh::sptr trian = ::fwData::TriangularMesh::New();
     ::fwDataTools::Mesh::toTriangularMesh(mesh1, trian);
 
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();

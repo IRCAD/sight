@@ -52,8 +52,8 @@ void ImageTest::roiApplyTest()
         ::fwTools::Type imageType(imageTypeName);                                                       \
         ::fwTools::Type roiType(roiTypeName);                                                           \
         ::fwData::Image::sptr imageRef;                                                                 \
-        ::fwData::Image::NewSptr image;                                                                 \
-        ::fwData::Image::NewSptr roi;                                                                   \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                 \
+        ::fwData::Image::sptr roi = ::fwData::Image::New();                                                                   \
                                                                                                         \
         ::fwTest::generator::Image::generateRandomImage(image, imageType);                                    \
         ::fwData::Image::SizeType    size = image->getSize();                                           \

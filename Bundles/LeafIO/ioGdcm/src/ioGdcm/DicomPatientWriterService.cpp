@@ -140,7 +140,7 @@ void DicomPatientWriterService::savePatient( const ::boost::filesystem::path _pa
 {
     SLM_TRACE_FUNC();
 
-    ::gdcmIO::writer::DicomGlobalWriterManager::NewSptr myWriter;
+    ::gdcmIO::writer::DicomGlobalWriterManager::sptr myWriter = ::gdcmIO::writer::DicomGlobalWriterManager::New();
 
     myWriter->setObject(_pPatient);
     myWriter->setFolder(_patientDBPath);

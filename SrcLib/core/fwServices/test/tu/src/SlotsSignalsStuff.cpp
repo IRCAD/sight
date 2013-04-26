@@ -79,7 +79,7 @@ void SReaderTest::updating() throw ( ::fwTools::Failed )
     Buffer::sptr buff = this->getObject< Buffer >();
 
     // Emit object Modified
-    ObjectMsg::NewSptr msg;
+    ObjectMsg::sptr msg = ObjectMsg::New();
     msg->addEvent(ObjectMsg::NEW_OBJECT);
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
@@ -173,7 +173,7 @@ void SShow2Test::updating() throw ( ::fwTools::Failed )
     Buffer::sptr buff = this->getObject< Buffer >();
 
     // Emit object Modified
-    ObjectMsg::NewSptr msg;
+    ObjectMsg::sptr msg = ObjectMsg::New();
     msg->addEvent(ObjectMsg::NEW_OBJECT);
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );

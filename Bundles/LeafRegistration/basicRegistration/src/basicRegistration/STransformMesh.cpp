@@ -59,7 +59,7 @@ void STransformMesh::stopping() throw ( ::fwTools::Failed )
 void STransformMesh::updating() throw ( ::fwTools::Failed )
 {
     // Get fw4spl data
-    ::fwData::TransformationMatrix3D::NewSptr transform;
+    ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
 
     double angle = 10;
     double angleRad = angle*M_PI/180.0;
@@ -76,7 +76,7 @@ void STransformMesh::updating() throw ( ::fwTools::Failed )
     ::fwDataTools::Mesh::transform( mesh, transform );
 
     // Notify reading
-    ::fwComEd::MeshMsg::NewSptr msg;
+    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
     ::fwServices::IEditionService::notify( this->getSptr(), mesh, msg );
 }

@@ -119,7 +119,7 @@ public :
                     if(plist)
                     {
                         ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
-                        ::fwComEd::ImageMsg::NewSptr msg;
+                        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
                         msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, plist );
 
                         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
@@ -205,27 +205,27 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
     static std::vector< Color::sptr >::iterator current;
     if ( colors.empty() )
     {
-        Color::NewSptr magenta;
+        Color::sptr magenta = Color::New();
         magenta->setRGBA( 1, 0, 1);
         colors.push_back( magenta );
 
-        Color::NewSptr cyan;
+        Color::sptr cyan = Color::New();
         cyan->setRGBA(0, 1, 1);
         colors.push_back( cyan );
 
-        Color::NewSptr orange;
+        Color::sptr orange = Color::New();
         orange->setRGBA(  1, 0.647, 0);
         colors.push_back( orange );
 
-        Color::NewSptr violet;
+        Color::sptr violet = Color::New();
         violet->setRGBA( .5, 0.26, 1);
         colors.push_back( violet );
 
-        Color::NewSptr vertpomme;
+        Color::sptr vertpomme = Color::New();
         vertpomme->setRGBA( .65, 1 , 0);
         colors.push_back( vertpomme );
 
-        Color::NewSptr jaune;
+        Color::sptr jaune = Color::New();
         jaune->setRGBA( 1, 1, 0);
         colors.push_back( jaune );
 
@@ -320,7 +320,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         camera->SetClippingRange( clippingCamBackup );
     }
 
-    ::fwData::Point::NewSptr pt;
+    ::fwData::Point::sptr pt = ::fwData::Point::New();
     std::copy( world, world +3, pt->getRefCoord().begin() );
     this->setVtkPipelineModified();
     return pt;
@@ -393,9 +393,9 @@ void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove ) 
 void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::PointList::NewSptr newPL;
+    ::fwData::PointList::sptr newPL = ::fwData::PointList::New();
 
-    newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId, ::fwData::String::NewSptr( sceneId ) );
+    newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId, ::fwData::String::New( sceneId ) );
 
     ::fwData::Vector::sptr distanceField;
     distanceField = image->setDefaultField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
@@ -435,7 +435,7 @@ void ImageMultiDistances::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(
         if ( dataInfo->value() == sceneId )
         {
             this->createNewDistance( sceneId );
-            ::fwComEd::ImageMsg::NewSptr msg;
+            ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
             msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
             ::fwServices::IEditionService::notify( this->getSptr(), image, msg );
         }

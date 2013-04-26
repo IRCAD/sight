@@ -47,7 +47,7 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
 
     BOOST_FOREACH ( std::string name, m_menuNames)
     {
-        ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+        ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
         QMenu *qtMenu = menuBar->addMenu(QString::fromStdString( name ));
         menu->setQtMenu(qtMenu);
         m_menus.push_back(menu);

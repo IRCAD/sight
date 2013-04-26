@@ -311,7 +311,7 @@ void DictionaryReader::read()
 
     BOOST_FOREACH(::fwDataIO::line line, dicolines)
     {
-        ::fwData::StructureTraits::NewSptr newOrgan;
+        ::fwData::StructureTraits::sptr newOrgan = ::fwData::StructureTraits::New();
         newOrgan->setType(line.type);
 
         std::string classReformated = reformatString(line.organClass);

@@ -43,7 +43,7 @@ void FloatTest::methode1()
     {
         ::fwData::Float::sptr f0 = ::fwData::Float::New();
         f0->value() = VALUE;
-        ::fwData::Float::NewSptr f1( VALUE );
+        ::fwData::Float::sptr f1 = ::fwData::Float::New( VALUE );
 
         CPPUNIT_ASSERT_EQUAL( VALUE, f0->value() );
         CPPUNIT_ASSERT_EQUAL( VALUE, f1->value() );
@@ -54,7 +54,7 @@ void FloatTest::methode1()
     {
         ::fwData::Float::sptr f0 = ::fwData::Float::New();
         f0->value() = VALUE;
-        ::fwData::Float::NewSptr f1( VALUE );
+        ::fwData::Float::sptr f1 = ::fwData::Float::New( VALUE );
 
         CPPUNIT_ASSERT( !( VALUE == f0->value() ) );
         CPPUNIT_ASSERT( !( VALUE  < f0->value() ) );

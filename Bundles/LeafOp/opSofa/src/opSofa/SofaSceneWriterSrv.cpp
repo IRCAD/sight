@@ -168,7 +168,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
                 std::stringstream meshPath;
                 meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
                 filename = ::boost::filesystem::path(meshPath.str());
-                ::fwDataIO::writer::MeshWriter::NewSptr writer;
+                ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();
                 writer->setObject(mesh);
                 writer->setFile(filename);
                 writer->write();
@@ -210,8 +210,8 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     // If answer is yes
     if (answer == QMessageBox::Yes) {
         // Notification
-        ::fwServices::ObjectMsg::NewSptr msg;
-        ::fwData::String::NewSptr data(scnFile);
+        ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
+        ::fwData::String::sptr data = ::fwData::String::New(scnFile);
         msg->addEvent( "NEW_SOFA_SCENE", data );
         ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
     }

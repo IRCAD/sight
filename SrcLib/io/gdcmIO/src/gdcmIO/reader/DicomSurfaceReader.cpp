@@ -82,7 +82,7 @@ void DicomSurfaceReader::read() throw (::fwTools::Failed)
 
     OSLM_TRACE("series->getNumberOfReconstructions() : "<<series->getNumberOfReconstructions());
 
-    series->setField("ShowReconstructions", ::fwData::Boolean::NewSptr(true));
+    series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ void DicomSurfaceReader::readSurfaceMeshs() throw (::fwTools::Failed)
 
 void DicomSurfaceReader::readSurfaceMesh( ::gdcm::SmartPointer< ::gdcm::Segment > a_segment) throw (::fwTools::Failed)
 {
-    ::fwData::Reconstruction::NewSptr reconstruction;
+    ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
 
     try
     {
@@ -136,7 +136,7 @@ void DicomSurfaceReader::readSurfaceMesh( ::gdcm::SmartPointer< ::gdcm::Segment 
     ::gdcm::SmartPointer< ::gdcm::Surface > surface = a_segment->GetSurface(0);
 
     //*****     Set the reconstruction      *****//
-    fwData::Material::NewSptr   material;
+    fwData::Material::sptr material = fwData::Material::New();
 
     // Convert CIE Lab to RGBA
     const unsigned short *              lab = surface->GetRecommendedDisplayCIELabValue();

@@ -137,7 +137,7 @@ void Image::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
             this->doUpdate();
 
             // Hack to force imageSlice update until it is not able to detect a new image
-            ::fwComEd::ImageMsg::NewSptr msg;
+            ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
             msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
             ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
         }

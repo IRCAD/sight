@@ -101,8 +101,8 @@ void IoItkTest::testImageSeriesWriterJPG()
     ::boost::filesystem::create_directories(path);
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr folderCfg("folder");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");
     folderCfg->setValue(path.string());
     srvCfg->addConfigurationElement(folderCfg);
 
@@ -127,8 +127,8 @@ void IoItkTest::testImageWriterJPG()
     ::boost::filesystem::create_directories( path );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr folderCfg("folder");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");
     folderCfg->setValue(path.string());
     srvCfg->addConfigurationElement(folderCfg);
 
@@ -160,8 +160,8 @@ void IoItkTest::testSaveLoadInr()
     ::boost::filesystem::create_directories( PATH.parent_path() );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr fileCfg("file");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
     fileCfg->setValue(PATH.string());
     srvCfg->addConfigurationElement(fileCfg);
 

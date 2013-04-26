@@ -67,8 +67,8 @@ void TrianTest::tearDown()
 
 void TrianTest::test_1()
 {
-    ::fwData::TriangularMesh::NewSptr trianMesh;
-    ::fwDataIO::reader::TriangularMeshReader::NewSptr reader;
+    ::fwData::TriangularMesh::sptr trianMesh = ::fwData::TriangularMesh::New();
+    ::fwDataIO::reader::TriangularMeshReader::sptr reader = ::fwDataIO::reader::TriangularMeshReader::New();
 
     reader->setObject(trianMesh);
     reader->setFile(m_tmpTrianPath1);
@@ -82,11 +82,11 @@ void TrianTest::test_1()
 
 void TrianTest::test_2()
 {
-    ::fwData::TriangularMesh::NewSptr trianMesh1;
-    ::fwData::TriangularMesh::NewSptr trianMesh2;
+    ::fwData::TriangularMesh::sptr trianMesh1 = ::fwData::TriangularMesh::New();
+    ::fwData::TriangularMesh::sptr trianMesh2 = ::fwData::TriangularMesh::New();
 
-    ::fwDataIO::reader::TriangularMeshReader::NewSptr reader;
-    ::fwDataIO::writer::TriangularMeshWriter::NewSptr writer;
+    ::fwDataIO::reader::TriangularMeshReader::sptr reader = ::fwDataIO::reader::TriangularMeshReader::New();
+    ::fwDataIO::writer::TriangularMeshWriter::sptr writer = ::fwDataIO::writer::TriangularMeshWriter::New();
 
     reader->setObject(trianMesh1);
     reader->setFile(m_tmpTrianPath1);
@@ -155,8 +155,8 @@ void TrianTest::file_load_test()
                 parseMeshFileName( trianFile.filename().string(), nbPts, nbCells )
                 );
 
-        ::fwData::TriangularMesh::NewSptr trianMesh;
-        ::fwDataIO::reader::TriangularMeshReader::NewSptr reader;
+        ::fwData::TriangularMesh::sptr trianMesh = ::fwData::TriangularMesh::New();
+        ::fwDataIO::reader::TriangularMeshReader::sptr reader = ::fwDataIO::reader::TriangularMeshReader::New();
 
         reader->setObject(trianMesh);
         reader->setFile(trianFile);

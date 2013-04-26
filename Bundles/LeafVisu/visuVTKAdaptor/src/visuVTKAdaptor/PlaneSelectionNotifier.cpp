@@ -218,7 +218,7 @@ void PlaneSelectionNotifier::selectPlane( ::fwData::Object::sptr plane )
 
     if (plane && plane != oldPlane)
     {
-        ::fwComEd::CompositeMsg::NewSptr compositeMsg;
+        ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
         compositeMsg->appendChangedKey(m_planeSelectionId,oldPlane, plane);
         composite->getContainer()[m_planeSelectionId] = plane;
         ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
@@ -231,7 +231,7 @@ void PlaneSelectionNotifier::deselectPlane()
      ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
      if ( composite->find(m_planeSelectionId) != composite->end() )
      {
-        ::fwComEd::CompositeMsg::NewSptr compositeMsg;
+        ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
         compositeMsg->appendRemovedKey(m_planeSelectionId,(*composite)[m_planeSelectionId]);
 
         composite->getContainer().erase(m_planeSelectionId);

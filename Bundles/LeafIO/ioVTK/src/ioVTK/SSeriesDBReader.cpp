@@ -103,7 +103,7 @@ void SSeriesDBReader::info(std::ostream &_sstream )
 void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPathType& vtkFiles,
                                     ::fwMedData::SeriesDB::sptr seriesDB )
 {
-    ::vtkIO::SeriesDBReader::NewSptr reader;
+    ::vtkIO::SeriesDBReader::sptr reader = ::vtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFiles(vtkFiles);
 

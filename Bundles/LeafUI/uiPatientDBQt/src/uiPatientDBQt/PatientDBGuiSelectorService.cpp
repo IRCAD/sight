@@ -337,7 +337,7 @@ void PatientDBGuiSelectorService::onSelectionChange(QTreeWidgetItem * current, Q
         ::fwComEd::fieldHelper::BackupHelper::setSelection(pPatientDB, list[0], list[1], list[2]);
 
         // notification
-        ::fwComEd::PatientDBMsg::NewSptr msg;
+        ::fwComEd::PatientDBMsg::sptr msg = ::fwComEd::PatientDBMsg::New();
         msg->addEvent( ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED );
         ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
     }
@@ -458,7 +458,7 @@ void PatientDBGuiSelectorService::erase()
             PatientDBGuiSelectorService::eraseSelectedPatient( pPatientDB );
         }
 
-        ::fwComEd::PatientDBMsg::NewSptr msg;
+        ::fwComEd::PatientDBMsg::sptr msg = ::fwComEd::PatientDBMsg::New();
         msg->addEvent(::fwComEd::PatientDBMsg::CLEAR_PATIENT);
         ::fwServices::IEditionService::notify(this->getSptr(), pPatientDB, msg);
 

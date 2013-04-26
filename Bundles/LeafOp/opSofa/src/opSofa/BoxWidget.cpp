@@ -164,14 +164,14 @@ void BoxWidget::updateFromVtk()
     //OSLM_ERROR("orientationWXYZ = " << tab3[0] << " " << tab3[1] << " " << tab3[2] << " " << tab3[3]);
 
     // data
-    ::fwData::Vector::NewSptr data;
-    ::fwData::String::NewSptr v1(m_idMesh);
-    ::fwData::Integer::NewSptr v2(tab[0]);
-    ::fwData::Integer::NewSptr v3(tab[1]);
-    ::fwData::Integer::NewSptr v4(tab[2]);
-    ::fwData::Float::NewSptr v5(tab2[0]);
-    ::fwData::Float::NewSptr v6(tab2[1]);
-    ::fwData::Float::NewSptr v7(tab2[2]);
+    ::fwData::Vector::sptr data = ::fwData::Vector::New();
+    ::fwData::String::sptr v1 = ::fwData::String::New(m_idMesh);
+    ::fwData::Integer::sptr v2 = ::fwData::Integer::New(tab[0]);
+    ::fwData::Integer::sptr v3 = ::fwData::Integer::New(tab[1]);
+    ::fwData::Integer::sptr v4 = ::fwData::Integer::New(tab[2]);
+    ::fwData::Float::sptr v5 = ::fwData::Float::New(tab2[0]);
+    ::fwData::Float::sptr v6 = ::fwData::Float::New(tab2[1]);
+    ::fwData::Float::sptr v7 = ::fwData::Float::New(tab2[2]);
     data->getContainer().push_back(v1);
     data->getContainer().push_back(v2);
     data->getContainer().push_back(v3);
@@ -182,7 +182,7 @@ void BoxWidget::updateFromVtk()
 
     // Notification
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
-    ::fwServices::ObjectMsg::NewSptr msg2;
+    ::fwServices::ObjectMsg::sptr msg2 = ::fwServices::ObjectMsg::New();
     msg2->addEvent("MOVE_MESH_SOFA", data);
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg2);
 

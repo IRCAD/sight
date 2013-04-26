@@ -94,7 +94,7 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
     ::fwData::Composite::sptr compositeVisu =  this->getObject< ::fwData::Composite >();
     ::fwData::Image::sptr image1 = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image1Name));
     ::fwData::Image::sptr image2 = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image2Name));
-    ::fwData::Image::NewSptr imageResult;
+    ::fwData::Image::sptr imageResult = ::fwData::Image::New();
 
     OSLM_ASSERT("Sorry, " << image1Name << " object is not an image", image1);
     OSLM_ASSERT("Sorry, " << image2Name << " object is not an image", image2);

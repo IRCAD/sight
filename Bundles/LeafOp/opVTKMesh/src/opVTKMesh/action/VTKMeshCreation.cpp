@@ -166,7 +166,7 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
 //    bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
 
     /// Notification
-    ::fwComEd::MeshMsg::NewSptr msg;;
+    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();;
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
     ::fwServices::IEditionService::notify( this->getSptr(), pMesh, msg );
 }

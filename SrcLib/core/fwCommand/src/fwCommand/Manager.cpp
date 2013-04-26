@@ -33,7 +33,7 @@ Manager::Manager( const ::boost::uint32_t maxUndoLevel, const ::boost::uint32_t 
 
 Manager::sptr Manager::ManagerFactory( const ::boost::uint32_t  maxUndoLevel, const ::boost::uint32_t  maxUndoMemory, const ::boost::uint32_t  maxCommandMemory)
 {
-    ::fwCommand::Manager::NewSptr manager;
+    ::fwCommand::Manager::sptr manager = ::fwCommand::Manager::New();
     manager->m_maxUndoLevel = maxUndoLevel;
     manager->m_maxUndoMemory = maxUndoMemory;
     manager->m_maxCommandMemory = maxCommandMemory;

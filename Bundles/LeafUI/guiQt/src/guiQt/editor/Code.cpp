@@ -165,7 +165,7 @@ void Code::onModifyValue()
     if ( oldValue->value() != stringObj->value() )
     {
         OSLM_TRACE( stringObj->getID() << " modified");
-        ::fwComEd::StringMsg::NewSptr msg;
+        ::fwComEd::StringMsg::sptr msg = ::fwComEd::StringMsg::New();
         msg->addEvent( ::fwComEd::StringMsg::VALUE_IS_MODIFIED );
         ::fwServices::IEditionService::notify(this->getSptr(), stringObj, msg);
     }

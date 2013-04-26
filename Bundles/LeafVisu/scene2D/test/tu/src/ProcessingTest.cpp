@@ -94,13 +94,13 @@ void ProcessingTest::histogramTest()
     // Register service.
     ::fwServices::OSR::registerService( image , srv );
 
-    ::fwRuntime::EConfigurationElement::NewSptr srvCfg("service");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
 
-    ::fwRuntime::EConfigurationElement::NewSptr histogramIdCfg("histogramId");
+    ::fwRuntime::EConfigurationElement::sptr histogramIdCfg = ::fwRuntime::EConfigurationElement::New("histogramId");
     histogramIdCfg->setValue(histogram->getID());
     srvCfg->addConfigurationElement(histogramIdCfg);
 
-    ::fwRuntime::EConfigurationElement::NewSptr binsWidthCfg("binsWidth");
+    ::fwRuntime::EConfigurationElement::sptr binsWidthCfg = ::fwRuntime::EConfigurationElement::New("binsWidth");
     binsWidthCfg->setValue("1.0");
     srvCfg->addConfigurationElement(binsWidthCfg);
 

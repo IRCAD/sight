@@ -145,7 +145,7 @@ void ServiceTest::testStartStopUpdate()
 {
     const std::string myUUID = "myUUID";
 
-    ::fwData::Integer::NewSptr obj;
+    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
     ::fwServices::ut::TestService::sptr service;
 
     // Add service
@@ -188,7 +188,7 @@ void ServiceTest::testCommunication()
     const std::string service1UUID = "service1UUID";
     const std::string service2UUID = "service2UUID";
 
-    ::fwData::Composite::NewSptr obj;
+    ::fwData::Composite::sptr obj = ::fwData::Composite::New();
     ::fwServices::ut::TestService::sptr service1;
     ::fwServices::ut::TestService::sptr service2;
 
@@ -210,12 +210,12 @@ void ServiceTest::testCommunication()
     CPPUNIT_ASSERT(service2->isStarted());
 
     // Create message
-    ::fwServices::ObjectMsg::NewSptr objMsg;
+    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::ObjectMsg::New();
     objMsg->addEvent(EVENT);
     CPPUNIT_ASSERT(objMsg->hasEvent(EVENT));
 
     // Register communication channel
-    ::fwServices::helper::SigSlotConnection::NewSptr comHelper;
+    ::fwServices::helper::SigSlotConnection::sptr comHelper = ::fwServices::helper::SigSlotConnection::New();
     comHelper->connect( obj, service1, service1->getObjSrvConnections() );
     comHelper->connect( obj, service2, service2->getObjSrvConnections() );
 

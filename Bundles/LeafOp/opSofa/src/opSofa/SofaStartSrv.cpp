@@ -71,7 +71,7 @@ void SofaStartSrv::updating() throw ( ::fwTools::Failed )
     SLM_ASSERT("Invalid object", ms);
 
     // Create message start or stop Sofa, half the time
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("START_STOP_SOFA");
 
     // Send message

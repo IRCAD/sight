@@ -488,7 +488,7 @@ void TransferFunction::updateImageTF()
         selectedTF->setWLMinMax(::fwData::TransferFunction::TFValuePairType(max, min));
     }
 
-    ::fwComEd::TransferFunctionMsg::NewSptr msg;
+    ::fwComEd::TransferFunctionMsg::sptr msg = ::fwComEd::TransferFunctionMsg::New();
     msg->addEvent(::fwComEd::TransferFunctionMsg::MODIFIED_POINTS);
     ::fwServices::IEditionService::notify( this->getSptr(), selectedTF, msg );
 

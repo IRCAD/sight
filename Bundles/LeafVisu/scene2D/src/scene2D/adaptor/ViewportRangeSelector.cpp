@@ -112,7 +112,7 @@ void ViewportRangeSelector::doStart() throw( ::fwTools::Failed)
     QRectF rect = m_shutter->rect();
     updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
 
-    ::scene2D::data::ViewportMsg::NewSptr msg;
+    ::scene2D::data::ViewportMsg::sptr msg = ::scene2D::data::ViewportMsg::New();
     msg->addEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
     ::fwServices::IEditionService::notify( this->getSptr(), viewport, msg );
 }
@@ -306,7 +306,7 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
 
             // Update object
             updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
-            ::scene2D::data::ViewportMsg::NewSptr msg;
+            ::scene2D::data::ViewportMsg::sptr msg = ::scene2D::data::ViewportMsg::New();
             msg->addEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
             ::fwServices::IEditionService::notify( this->getSptr(), this->getObject< ::scene2D::data::Viewport>(), msg );
         }

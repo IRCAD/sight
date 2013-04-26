@@ -120,9 +120,9 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
 ::fwData::PatientDB::sptr DicomPatientDBReaderService::createPatientDB( const ::boost::filesystem::path & dicomFile)
 {
     SLM_TRACE_FUNC();
-    ::gdcmIO::reader::DicomPatientDBReader::NewSptr myLoader;
+    ::gdcmIO::reader::DicomPatientDBReader::sptr myLoader = ::gdcmIO::reader::DicomPatientDBReader::New();
 
-    ::fwData::PatientDB::NewSptr dummy;
+    ::fwData::PatientDB::sptr dummy = ::fwData::PatientDB::New();
     myLoader->setObject( dummy );
     myLoader->setFolder(dicomFile);
 
@@ -192,7 +192,7 @@ void DicomPatientDBReaderService::notificationOfDBUpdate()
     ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >() ;
     SLM_ASSERT("pDPDB not instanced", pDPDB);
 
-    ::fwComEd::PatientDBMsg::NewSptr msg;
+    ::fwComEd::PatientDBMsg::sptr msg = ::fwComEd::PatientDBMsg::New();
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT, pDPDB );
     msg->addEvent( ::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT );
 

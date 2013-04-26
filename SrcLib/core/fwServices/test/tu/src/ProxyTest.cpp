@@ -86,7 +86,7 @@ void ProxyTest::basicTest()
     ::fwCom::Slot< int (int, int) >::sptr slot = ::fwCom::newSlot( &ProxyTestClass::sum, &testObject );
     ::fwCom::Slot< int (int) >::sptr slot2 = ::fwCom::newSlot( &ProxyTestClass::square, &testObject );
     ::fwCom::Slot< void() >::sptr slot3 = ::fwCom::newSlot( &ProxyTestClass::doNothing, &testObject );
-    ::fwThread::Worker::NewSptr worker;
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
     slot->setWorker(worker);
     slot2->setWorker(worker);
     slot3->setWorker(worker);

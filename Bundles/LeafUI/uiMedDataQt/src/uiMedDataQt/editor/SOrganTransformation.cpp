@@ -223,7 +223,7 @@ void SOrganTransformation::refresh()
 
 void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat)
 {
-    ::fwComEd::TransformationMatrix3DMsg::NewSptr message;
+    ::fwComEd::TransformationMatrix3DMsg::sptr message = ::fwComEd::TransformationMatrix3DMsg::New();
     message->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
     ::fwServices::IEditionService::notify( getSptr(), aTransMat, message );
 }

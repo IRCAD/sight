@@ -52,7 +52,7 @@ void DicomPatientDBWriterManager::write()
     // Init
     unsigned int                patientID       = 1;    // Used to set name folder of the current patient.
     const std::string &         patientDBPath   = this->getFolder().string();
-    DicomGlobalWriterManager::NewSptr    myWriter;
+    DicomGlobalWriterManager::sptr myWriter = DicomGlobalWriterManager::New();
 
     // Write all patients
     BOOST_FOREACH( ::fwData::Patient::sptr patient, dataPatientDB->getPatients())

@@ -173,7 +173,7 @@ void BasicFloatEditor::onModifyValue(QString value)
     if ( *oldValue != *floatObj )
     {
         OSLM_TRACE(floatObj->getID() << " new value : " << *floatObj);
-        ::fwComEd::FloatMsg::NewSptr msg;
+        ::fwComEd::FloatMsg::sptr msg = ::fwComEd::FloatMsg::New();
         msg->addEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
         ::fwServices::IEditionService::notify(this->getSptr(), floatObj, msg);
     }

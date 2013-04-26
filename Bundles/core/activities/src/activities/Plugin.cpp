@@ -13,7 +13,7 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 Plugin::~Plugin() throw()
 {
     //Hack: force link with fwActivities
-    ::fwMedData::ActivitySeries::NewSptr aSeries;
+    ::fwMedData::ActivitySeries::sptr aSeries = ::fwMedData::ActivitySeries::New();
     aSeries->getClassname();
 }
 

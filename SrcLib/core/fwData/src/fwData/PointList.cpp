@@ -53,7 +53,7 @@ void PointList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
     m_vPoints.clear();
     BOOST_FOREACH(PointListContainer::value_type point, other->m_vPoints )
     {
-        Point::NewSptr newPoint;
+        Point::sptr newPoint = Point::New();
         newPoint = ::fwData::Object::copy(point, cache);
         m_vPoints.push_back( newPoint );
     }

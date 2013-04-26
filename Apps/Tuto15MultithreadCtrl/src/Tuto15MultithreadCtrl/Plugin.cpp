@@ -67,7 +67,7 @@ void Plugin::uninitialize() throw()
 int Plugin::run() throw()
 {
 
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
 
     ::fwServices::IService::sptr srvRead =
         ::fwServices::registry::ServiceFactory::getDefault()
@@ -87,9 +87,9 @@ int Plugin::run() throw()
     SLM_ASSERT("Failed to create service", srvShow);
     SLM_ASSERT("Failed to create service", srvIncrement);
 
-    ::fwThread::Worker::NewSptr worker1;
-    ::fwThread::Worker::NewSptr worker2;
-    ::fwThread::Worker::NewSptr worker3;
+    ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
+    ::fwThread::Worker::sptr worker2 = ::fwThread::Worker::New();
+    ::fwThread::Worker::sptr worker3 = ::fwThread::Worker::New();
 
     // ::fwServices::registry::ActiveWorkers::sptr workers = ::fwServices::registry::ActiveWorkers::getDefault();
     // workers->addWorker("worker1", worker1);

@@ -198,7 +198,7 @@ void SModelSeriesList::onCurrentItemChanged( QListWidgetItem * current, QListWid
         ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
         ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
 
-        ::fwComEd::ModelSeriesMsg::NewSptr msg;
+        ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
         msg->addEvent( ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
     }
@@ -218,7 +218,7 @@ void SModelSeriesList::onOrganChoiceVisibility(QListWidgetItem * item )
     {
         rec->setIsVisible(item->checkState());
 
-        ::fwComEd::ReconstructionMsg::NewSptr msg;
+        ::fwComEd::ReconstructionMsg::sptr msg = ::fwComEd::ReconstructionMsg::New();
         msg->addEvent( ::fwComEd::ReconstructionMsg::VISIBILITY ) ;
         ::fwServices::IEditionService::notify(this->getSptr(), rec, msg);
     }
@@ -229,9 +229,9 @@ void SModelSeriesList::onOrganChoiceVisibility(QListWidgetItem * item )
 void SModelSeriesList::onShowReconstructions(int state )
 {
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-    modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::NewSptr(state == Qt::Unchecked) );
+    modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::New(state == Qt::Unchecked) );
 
-    ::fwComEd::ModelSeriesMsg::NewSptr msg;
+    ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
     msg->addEvent( ::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS );
     ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
 

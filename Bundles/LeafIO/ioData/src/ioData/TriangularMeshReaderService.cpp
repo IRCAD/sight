@@ -95,13 +95,13 @@ void TriangularMeshReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
         SLM_ASSERT("mesh not instanced", mesh);
 
-        ::fwDataIO::reader::TriangularMeshReader::NewSptr reader;
+        ::fwDataIO::reader::TriangularMeshReader::sptr reader = ::fwDataIO::reader::TriangularMeshReader::New();
         reader->setObject( mesh );
         reader->setFile(this->getFile());
         reader->read();
 
         // Notify reading
-        ::fwComEd::TriangularMeshMsg::NewSptr msg;
+        ::fwComEd::TriangularMeshMsg::sptr msg = ::fwComEd::TriangularMeshMsg::New();
         msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH );
         ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
     }

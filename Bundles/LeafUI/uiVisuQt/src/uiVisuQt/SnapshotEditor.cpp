@@ -156,18 +156,18 @@ void SnapshotEditor::onSnapButton()
             ::fwData::Composite::sptr composite = service->getObject< ::fwData::Composite >();
             SLM_ASSERT("SnapshotEditor sceneUID " << m_scenesUID.at(i) <<" isn't a GenericScene?" , composite);
 
-            ::fwData::String::NewSptr dataInfo;
+            ::fwData::String::sptr dataInfo = ::fwData::String::New();
 
-            ::fwData::String::NewSptr sceneID;
+            ::fwData::String::sptr sceneID = ::fwData::String::New();
             sceneID->value() = m_scenesUID.at(i);
-            ::fwData::String::NewSptr filename;
+            ::fwData::String::sptr filename = ::fwData::String::New();
 
             filename->value() = this->requestFileName();
             if(!filename->value().empty())
             {
                 dataInfo->setField("sceneID", sceneID);
                 dataInfo->setField("filename", filename);
-                ::fwComEd::CompositeMsg::NewSptr compositeMsg;
+                ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
                 compositeMsg->addEvent( "SNAP", dataInfo );
                 ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
             }

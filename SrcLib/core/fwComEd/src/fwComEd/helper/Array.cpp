@@ -52,7 +52,7 @@ void Array::setBuffer(void *buf, bool takeOwnership)
     }
     else
     {
-        ::fwTools::BufferObject::NewSptr newBufferObject;
+        ::fwTools::BufferObject::sptr newBufferObject = ::fwTools::BufferObject::New();
         ::fwTools::BufferObject::sptr oldBufferObject = m_array->getBufferObject();
         oldBufferObject->swap(newBufferObject);
     }

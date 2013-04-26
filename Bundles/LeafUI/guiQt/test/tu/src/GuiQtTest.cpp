@@ -47,7 +47,7 @@ void GuiQtTest::tearDown()
 
 void GuiQtTest::testDefaultFrame()
 {
-    ::fwData::String::NewSptr object;
+    ::fwData::String::sptr object = ::fwData::String::New();
 
     ::fwServices::IService::ConfigType frameConfig;
 

@@ -182,9 +182,9 @@ void SofaCoreSrv::info ( std::ostream &_sstream )
 void SofaCoreSrv::addMesh(std::string meshPath, std::string meshName)
 {
     // Create mesh
-    ::fwData::Mesh::NewSptr mesh;
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
     mesh->setName(meshName);
-    ::fwDataIO::reader::MeshReader::NewSptr reader1;
+    ::fwDataIO::reader::MeshReader::sptr reader1 = ::fwDataIO::reader::MeshReader::New();
     reader1->setObject(mesh);
     reader1->setFile(meshPath);
     reader1->read();
