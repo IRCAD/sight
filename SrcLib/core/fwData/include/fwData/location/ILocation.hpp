@@ -59,7 +59,7 @@ inline typename LOCATION::sptr getLocation(RW *rw)
     location = LOCATION::dynamicCast( rw->getLocation() );
     if ( !location )
     {
-        location = typename LOCATION::New();
+        location = LOCATION::New();
         rw->setLocation(location);
     }
     return location;
