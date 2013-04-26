@@ -14,7 +14,7 @@
 
 #include <fwCore/base.hpp>
 
-namespace itkIO
+namespace fwItkIO
 {
 
 class LocalCommand : public itk::Command

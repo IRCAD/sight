@@ -21,7 +21,7 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <itkIO/JpgImageWriter.hpp>
+#include <fwItkIO/JpgImageWriter.hpp>
 
 #include "ioITK/JpgImageWriterService.hpp"
 
@@ -101,7 +101,7 @@ void JpgImageWriterService::info(std::ostream &_sstream )
 void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, const SPTR(::fwData::Image)& img)
 {
     SLM_TRACE_FUNC();
-    ::itkIO::JpgImageWriter::sptr writer = ::itkIO::JpgImageWriter::New();
+    ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
     ::fwData::location::Folder::sptr loc = ::fwData::location::Folder::New();

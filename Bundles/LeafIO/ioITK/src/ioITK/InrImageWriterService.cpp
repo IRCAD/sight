@@ -24,7 +24,7 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <itkIO/ImageWriter.hpp>
+#include <fwItkIO/ImageWriter.hpp>
 
 #include "ioITK/InrImageWriterService.hpp"
 
@@ -104,7 +104,7 @@ void InrImageWriterService::info(std::ostream &_sstream )
 void InrImageWriterService::saveImage( const ::boost::filesystem::path inrFile, ::fwData::Image::sptr _pImage )
 {
     SLM_TRACE_FUNC();
-    ::itkIO::ImageWriter::sptr myWriter = ::itkIO::ImageWriter::New();
+    ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
 
     myWriter->setObject(_pImage);
     myWriter->setFile(inrFile);

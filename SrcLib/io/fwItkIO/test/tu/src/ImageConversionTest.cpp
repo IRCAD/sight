@@ -11,7 +11,7 @@
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 
-#include <itkIO/itk.hpp>
+#include <fwItkIO/itk.hpp>
 
 #include "helper.hpp"
 #include "ImageConversionTest.hpp"
@@ -48,11 +48,11 @@ void ImageConversionTest::testConversion()
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     typedef itk::Image< ::boost::int16_t , 3 > ImageType;
-    ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
+    ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
     bool image2ManagesHisBuffer = false;
-    ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
+    ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
 
     ::fwItkIO::ut::helper::roundSpacing(image);
     ::fwItkIO::ut::helper::roundSpacing(image2);
@@ -63,7 +63,7 @@ void ImageConversionTest::testConversion()
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
-    ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+    ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
 }
 
@@ -111,11 +111,11 @@ void ImageConversionTest::testConversion2D()
 
     typedef itk::Image< ::boost::int16_t , 2 > ImageType;
 
-    ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
+    ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
     bool image2ManagesHisBuffer = false;
-    ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
+    ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
 
     ::fwItkIO::ut::helper::roundSpacing(image);
     ::fwItkIO::ut::helper::roundSpacing(image2);
@@ -126,7 +126,7 @@ void ImageConversionTest::testConversion2D()
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
-    ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+    ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
 }
 

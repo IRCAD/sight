@@ -12,7 +12,7 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/Dispatcher.hpp>
 
-#include <itkIO/itk.hpp>
+#include <fwItkIO/itk.hpp>
 
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
@@ -21,14 +21,14 @@
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include "itkIO/helper/ProgressItkToFw.hpp"
-#include "itkIO/ImageWriter.hpp"
+#include "fwItkIO/helper/ProgressItkToFw.hpp"
+#include "fwItkIO/ImageWriter.hpp"
 
 
-fwDataIOWriterRegisterMacro( ::itkIO::ImageWriter );
+fwDataIOWriterRegisterMacro( ::fwItkIO::ImageWriter );
 
 
-namespace itkIO
+namespace fwItkIO
 {
 //------------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ struct ITKSaverFunctor
     {
         std::string                m_filename;
         ::fwData::Image::sptr      m_dataImage;
-        ::itkIO::ImageWriter::sptr m_fwWriter;
+        ::fwItkIO::ImageWriter::sptr m_fwWriter;
     };
 
     template<class PIXELTYPE>
@@ -81,7 +81,7 @@ struct ITKSaverFunctor
         Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = ::itkIO::itkImageFactory<itkImageType>( param.m_dataImage );
+        typename itkImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<itkImageType>( param.m_dataImage );
 
         writer->SetFileName( param.m_filename.c_str() );
         writer->SetInput( itkImage );
@@ -124,4 +124,4 @@ void ImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-} // namespace itkIO
+} // namespace fwItkIO

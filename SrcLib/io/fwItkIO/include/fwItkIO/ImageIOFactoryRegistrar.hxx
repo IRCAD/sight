@@ -8,14 +8,14 @@
 
 
 /**
- * @file itkIO/ImageIOFactoryRegistrar.hpp
+ * @file fwItkIO/ImageIOFactoryRegistrar.hpp
  * @brief The purpose of this class is to automatically register a Concrete ImageIOFactory in the factory database of ITK ( itk::ObjectFactoryBase ).
  * @tparam the type of imageiofactory class to register
  * The technique used is declare a global variable as instance of a class ( see REGISTER_IMAGEIOFACTORY ). The creation of the instance will call the
  * registration of the factory
  */
 
-namespace itkIO
+namespace fwItkIO
 {
 
 template< class ConcreteImageIOFactory >
@@ -34,4 +34,4 @@ public:
  * @brief a macro helper to register an imageIOFactory
  * @note to be declared outside any namespace
  */
-#define REGISTER_IMAGEIOFACTORY( ConcreteImageIOFactory )   static ::itkIO::ImageIOFactoryRegistrar< ConcreteImageIOFactory > registrar;
+#define REGISTER_IMAGEIOFACTORY( ConcreteImageIOFactory )   static ::fwItkIO::ImageIOFactoryRegistrar< ConcreteImageIOFactory > registrar;

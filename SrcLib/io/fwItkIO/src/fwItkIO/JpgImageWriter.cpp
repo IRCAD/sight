@@ -26,18 +26,18 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <itkIO/itk.hpp>
+#include <fwItkIO/itk.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include "itkIO/helper/ProgressItkToFw.hpp"
-#include "itkIO/JpgImageWriter.hpp"
+#include "fwItkIO/helper/ProgressItkToFw.hpp"
+#include "fwItkIO/JpgImageWriter.hpp"
 
 
-fwDataIOWriterRegisterMacro( ::itkIO::JpgImageWriter );
+fwDataIOWriterRegisterMacro( ::fwItkIO::JpgImageWriter );
 
 
-namespace itkIO
+namespace fwItkIO
 {
 
 //------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ struct JpgITKSaverFunctor
     {
         std::string                   m_filename;
         ::fwData::Image::sptr         m_dataImage;
-        ::itkIO::JpgImageWriter::sptr m_fwWriter;
+        ::fwItkIO::JpgImageWriter::sptr m_fwWriter;
     };
 
     template<class PIXELTYPE>
@@ -93,7 +93,7 @@ struct JpgITKSaverFunctor
         Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
 
         // create itk Image
-        typename itkImageType::Pointer itkImage = ::itkIO::itkImageFactory<itkImageType>( image );
+        typename itkImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<itkImageType>( image );
 
         typedef ::itk::IntensityWindowingImageFilter< itkImageType, itkImageType > RescaleFilterType;
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
@@ -170,4 +170,4 @@ std::string  JpgImageWriter::extension()
     return ".jpg";
 }
 
-} // namespace itkIO
+} // namespace fwItkIO

@@ -10,7 +10,7 @@
 #include <fstream>
 #include "itkImageIOBase.h"
 
-#include "itkIO/config.hpp"
+#include "fwItkIO/config.hpp"
 
 namespace itk
 {

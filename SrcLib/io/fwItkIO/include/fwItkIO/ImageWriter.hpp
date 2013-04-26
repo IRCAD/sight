@@ -14,9 +14,9 @@
 #include <fwTools/ProgressAdviser.hpp>
 #include <fwData/Image.hpp>
 
-#include "itkIO/config.hpp"
+#include "fwItkIO/config.hpp"
 
-namespace itkIO
+namespace fwItkIO
 {
 
 class ImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
@@ -41,6 +41,6 @@ public :
     FWITKIO_API std::string extension();
 };
 
-} // namespace itkIO
+} // namespace fwItkIO
 
 #endif // _FWITKIO_IMAGEWRITER_HPP_

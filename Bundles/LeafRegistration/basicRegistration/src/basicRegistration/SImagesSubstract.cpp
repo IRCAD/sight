@@ -9,7 +9,7 @@
 
 #include <itkSubtractImageFilter.h>
 
-#include <itkIO/itk.hpp>
+#include <fwItkIO/itk.hpp>
 
 #include <fwCore/spyLog.hpp>
 
@@ -110,10 +110,10 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
         {
             typedef itk::Image< ::boost::int16_t, 3 > ImageType;
 
-            ImageType::Pointer  itkImage1 = ::itkIO::itkImageFactory< ImageType >( image1 ) ;
+            ImageType::Pointer  itkImage1 = ::fwItkIO::itkImageFactory< ImageType >( image1 ) ;
             SLM_ASSERT("Unable to convert fwData::Image to itkImage", itkImage1);
 
-            ImageType::Pointer  itkImage2 = ::itkIO::itkImageFactory< ImageType >( image2 ) ;
+            ImageType::Pointer  itkImage2 = ::fwItkIO::itkImageFactory< ImageType >( image2 ) ;
             SLM_ASSERT("Unable to convert fwData::Image to itkImage", itkImage2);
 
             ImageType::Pointer output;
@@ -129,7 +129,7 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
             filter->Update();
             output = filter->GetOutput();
             assert(output->GetSource());
-            ::itkIO::dataImageFactory< ImageType >( output, imageResult, true );
+            ::fwItkIO::dataImageFactory< ImageType >( output, imageResult, true );
 
             ::fwComEd::helper::Composite compositeHelper(compositeVisu);
             if ( compositeVisu->find(imageResultName) != compositeVisu->end() )

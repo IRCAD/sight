@@ -11,9 +11,9 @@
 
 #include <fwData/Image.hpp>
 
-#include "itkIO/config.hpp"
+#include "fwItkIO/config.hpp"
 
-namespace itkIO
+namespace fwItkIO
 {
 
 /**
@@ -54,6 +54,6 @@ typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::sptr imageData, boo
 
 }
 
-#include "itkIO/itk.hxx"
+#include "fwItkIO/itk.hxx"
 
 #endif // _FWITKIO_ITK_HPP_

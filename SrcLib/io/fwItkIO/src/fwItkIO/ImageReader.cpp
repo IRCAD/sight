@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
-#include <itkIO/itk.hpp>
+#include <fwItkIO/itk.hpp>
 
 
 #include <fwTools/IntrinsicTypes.hpp>
@@ -23,13 +23,13 @@
 
 #include "inr2itk/itkInrImageIOFactory.h"
 
-#include "itkIO/ImageReader.hpp"
-#include "itkIO/helper/ProgressItkToFw.hpp"
+#include "fwItkIO/ImageReader.hpp"
+#include "fwItkIO/helper/ProgressItkToFw.hpp"
 
-fwDataIOReaderRegisterMacro( ::itkIO::ImageReader );
+fwDataIOReaderRegisterMacro( ::fwItkIO::ImageReader );
 
 
-namespace itkIO
+namespace fwItkIO
 {
 
 //------------------------------------------------------------------------------
@@ -54,13 +54,13 @@ struct ITKLoaderFunctor
     {
         ::fwData::Image::sptr       m_dataImage;
         std::string                 m_filename;
-        ::itkIO::ImageReader::sptr  m_fwReader;
+        ::fwItkIO::ImageReader::sptr  m_fwReader;
     };
 
     template<class PIXELTYPE>
     void operator()(Parameter &param)
     {
-        OSLM_INFO( "::itkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<  ::fwTools::DynamicType::string<PIXELTYPE>() );
+        OSLM_INFO( "::fwItkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<  ::fwTools::DynamicType::string<PIXELTYPE>() );
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader ne permet pas de l'atteindre
         // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
@@ -82,7 +82,7 @@ struct ITKLoaderFunctor
 
         reader->Update();
         typename ImageType::Pointer itkimage = reader->GetOutput();
-        ::itkIO::dataImageFactory< ImageType>( itkimage, param.m_dataImage );
+        ::fwItkIO::dataImageFactory< ImageType>( itkimage, param.m_dataImage );
     }
 
     //// get pixel type from Header
@@ -130,4 +130,4 @@ void ImageReader::read()
 
 //------------------------------------------------------------------------------
 
-} // namespace itkIO
+} // namespace fwItkIO

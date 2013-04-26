@@ -10,9 +10,9 @@
 
 #include <itkCastImageFilter.h>
 
-#include "itkIO/itk.hpp"
+#include "fwItkIO/itk.hpp"
 
-namespace itkIO
+namespace fwItkIO
 {
 
 template< class PIXELTYPE , int VDimension , class ScannerType >
@@ -20,7 +20,7 @@ typename ScannerType::Pointer  itkppScannerFactory( ::fwData::Image::sptr imageD
 {
     typedef itk::Image< PIXELTYPE , VDimension >    ImageType;
 
-    typename ImageType::Pointer itkRoi = ::itkIO::itkImageFactory< ImageType >( imageData ) ;
+    typename ImageType::Pointer itkRoi = ::fwItkIO::itkImageFactory< ImageType >( imageData ) ;
     typedef itk::Image< unsigned char , VDimension  >   ROIType;
     typedef itk::CastImageFilter< ImageType , ROIType  >        CasterType;
     typename CasterType::Pointer caster = CasterType::New() ;

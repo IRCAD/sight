@@ -14,7 +14,7 @@
 #include <fwComEd/helper/Image.hpp>
 #include <fwComEd/helper/Array.hpp>
 
-namespace itkIO
+namespace fwItkIO
 {
 
 template< class ITKIMAGE>
@@ -68,7 +68,7 @@ template< class ITKIMAGE>
 ::fwData::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage )
 {
     ::fwData::Image::sptr data = ::fwData::Image::New();
-    ::itkIO::dataImageFactory< ITKIMAGE >(itkImage,data, bufferManagerIsDataImage) ;
+    ::fwItkIO::dataImageFactory< ITKIMAGE >(itkImage,data, bufferManagerIsDataImage) ;
     return data;
 }
 

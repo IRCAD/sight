@@ -9,7 +9,7 @@
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 
-#include <itkIO/itk.hpp>
+#include <fwItkIO/itk.hpp>
 
 namespace fwItkIO
 {
@@ -27,18 +27,18 @@ void ImageConversionTest::stressTestForAType()
         ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create<TYPE>());
 
         typedef itk::Image< TYPE , 3 > ImageType;
-        typename ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
+        typename ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
         ::fwTest::helper::ExcludeSetType exclude;
         exclude.insert("array.isOwner");
 
         ::fwData::Image::sptr image2 = ::fwData::Image::New();
         bool image2ManagesHisBuffer = false;
-        ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
+        ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
         CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
         bool image3ManagesHisBuffer = false;
-        ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+        ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
         CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
     }
 }

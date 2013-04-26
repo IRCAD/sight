@@ -15,9 +15,9 @@
 
 #include <fwTools/ProgressAdviser.hpp>
 
-#include "itkIO/config.hpp"
+#include "fwItkIO/config.hpp"
 
-namespace itkIO
+namespace fwItkIO
 {
 
 class ImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
@@ -40,6 +40,6 @@ public :
     FWITKIO_API void read();
 };
 
-} // namespace itkIO
+} // namespace fwItkIO
 
 #endif // _FWITKIO_IMAGEREADER_HPP_

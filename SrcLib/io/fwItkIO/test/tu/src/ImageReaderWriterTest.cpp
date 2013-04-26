@@ -12,8 +12,8 @@
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <itkIO/ImageWriter.hpp>
-#include <itkIO/ImageReader.hpp>
+#include <fwItkIO/ImageWriter.hpp>
+#include <fwItkIO/ImageReader.hpp>
 
 #include "helper.hpp"
 #include "ImageReaderWriterTest.hpp"
@@ -110,14 +110,14 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
     // save image in inr
     const ::boost::filesystem::path PATH = "imageInrTest/image.inr.gz";
     ::boost::filesystem::create_directories( PATH.parent_path() );
-    ::itkIO::ImageWriter::sptr myWriter = ::itkIO::ImageWriter::New();
+    ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFile(PATH);
     myWriter->write();
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    ::itkIO::ImageReader::sptr myReader = ::itkIO::ImageReader::New();
+    ::fwItkIO::ImageReader::sptr myReader = ::fwItkIO::ImageReader::New();
     myReader->setObject(image2);
     myReader->setFile(PATH);
     myReader->read();

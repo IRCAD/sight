@@ -12,7 +12,7 @@
 
 #include <fwTools/ProgressAdviser.hpp>
 
-namespace itkIO
+namespace fwItkIO
 {
 
 //------------------------------------------------------------------------------
@@ -63,6 +63,6 @@ class Progressor
 }
 
 
-#include "itkIO/helper/ProgressItkToFw.hxx"
+#include "fwItkIO/helper/ProgressItkToFw.hxx"
 
 #endif /* _ITKIO_PROGESSITKTOFW_HPP_ */

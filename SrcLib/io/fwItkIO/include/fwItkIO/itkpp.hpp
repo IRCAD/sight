@@ -16,9 +16,9 @@
 
 #include <fwData/Image.hpp>
 
-#include "itkIO/config.hpp"
+#include "fwItkIO/config.hpp"
 
-namespace itkIO
+namespace fwItkIO
 {
 
 
@@ -32,6 +32,6 @@ typename ScannerType::Pointer  itkppScannerFactory( ::fwData::Image::sptr imageD
 
 }
 
-#include "itkIO/itkpp.hxx"
+#include "fwItkIO/itkpp.hxx"
 
 #endif // _FWITKIO_ITKPP_HPP_
