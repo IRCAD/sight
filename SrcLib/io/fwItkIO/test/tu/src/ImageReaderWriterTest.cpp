@@ -15,7 +15,7 @@
 #include <itkIO/ImageWriter.hpp>
 #include <itkIO/ImageReader.hpp>
 
-
+#include "helper.hpp"
 #include "ImageReaderWriterTest.hpp"
 
 // Registers the fixture into the 'registry'
@@ -101,7 +101,7 @@ void ImageReaderWriterTest::stressTestInrWithType(::fwTools::Type type, int nbTe
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::NewSptr image )
+void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
 {
     // inr only support image origin (0,0,0)
     ::fwData::Image::OriginType origin(3,0);
@@ -110,19 +110,21 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::NewSptr image )
     // save image in inr
     const ::boost::filesystem::path PATH = "imageInrTest/image.inr.gz";
     ::boost::filesystem::create_directories( PATH.parent_path() );
-    ::itkIO::ImageWriter::NewSptr myWriter;
+    ::itkIO::ImageWriter::sptr myWriter = ::itkIO::ImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFile(PATH);
     myWriter->write();
 
     // load Image
-    ::fwData::Image::NewSptr image2;
-    ::itkIO::ImageReader::NewSptr myReader;
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    ::itkIO::ImageReader::sptr myReader = ::itkIO::ImageReader::New();
     myReader->setObject(image2);
     myReader->setFile(PATH);
     myReader->read();
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
+
+    ::fwItkIO::ut::helper::roundSpacing(image2);
 
     // check Image
     // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)

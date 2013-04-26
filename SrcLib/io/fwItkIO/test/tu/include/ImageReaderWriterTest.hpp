@@ -37,7 +37,7 @@ private :
 
 
    void stressTestInrWithType(::fwTools::Type type, int nbTest);
-   void checkSaveLoadInr( ::fwData::Image::NewSptr image );
+   void checkSaveLoadInr( ::fwData::Image::sptr image );
 };
 
 } //namespace ut

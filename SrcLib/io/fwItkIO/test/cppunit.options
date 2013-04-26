@@ -1,4 +1,9 @@
-CLASSTEST=['ImageReaderWriterTest','ImageConversionTest','ImageReaderWriterJPGTest','DicomReaderWriterTest']
+CLASSTEST=[
+          'ImageReaderWriterTest',
+          'ImageConversionTest',
+          'ImageReaderWriterJPGTest',
+          'helper',
+          ]
 USE = ['boost']
 LIB = [
       'fwItkIO_0-1',

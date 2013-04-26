@@ -17,11 +17,15 @@ namespace fwTest
 namespace helper
 {
 
-bool compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
+bool compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp, ExcludeSetType excludeCompare)
 {
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    BOOST_FOREACH(const ExcludeSetType::value_type& key, excludeCompare)
+    {
+        props->erase(key);
+    }
     BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );

@@ -29,15 +29,17 @@ void ImageConversionTest::stressTestForAType()
         typedef itk::Image< TYPE , 3 > ImageType;
         typename ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
 
-        ::fwData::Image::NewSptr image2;
+        ::fwTest::helper::ExcludeSetType exclude;
+        exclude.insert("array.isOwner");
+
+        ::fwData::Image::sptr image2 = ::fwData::Image::New();
         bool image2ManagesHisBuffer = false;
         ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
-        CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2));
-
+        CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
         bool image3ManagesHisBuffer = false;
         ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
-        CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3));
+        CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
     }
 }
 

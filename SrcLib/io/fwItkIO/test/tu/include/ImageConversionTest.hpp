@@ -36,6 +36,8 @@ public:
     void stressTest();
     void testConversion2D();
 
+    static void roundSpacing(::fwData::Image::sptr image);
+
     template< class TYPE >
     void stressTestForAType();
 

@@ -7,14 +7,20 @@
 #ifndef __FWTEST_HELPER_COMPARE_HPP__
 #define __FWTEST_HELPER_COMPARE_HPP__
 
+#include <set>
+#include <string>
+
 #include "fwTest/config.hpp"
 
 namespace fwTest
 {
 namespace helper
 {
+typedef std::set<std::string> ExcludeSetType;
 
-FWTEST_API bool compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp);
+FWTEST_API bool compare(::fwData::Object::sptr objRef,
+                        ::fwData::Object::sptr objComp,
+                         ExcludeSetType exclude = ExcludeSetType());
 
 } // namespace helper
 } // namespace fwTest
