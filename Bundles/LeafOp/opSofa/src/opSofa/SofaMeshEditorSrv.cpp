@@ -158,8 +158,8 @@ void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
     ::fwData::Vector::sptr data = ::fwData::Vector::New();
     ::fwData::String::sptr v1 = ::fwData::String::New(m_idReconstruction->value());
     ::fwData::Integer::sptr v2 = ::fwData::Integer::New(x);
-    ::fwData::Integer::sptr v3 = ::fwData::Integer::New((y);
-    ::fwData::Integer::sptr v4 = ::fwData::Integer::New((z);
+    ::fwData::Integer::sptr v3 = ::fwData::Integer::New(y);
+    ::fwData::Integer::sptr v4 = ::fwData::Integer::New(z);
     data->getContainer().push_back(v1);
     data->getContainer().push_back(v2);
     data->getContainer().push_back(v3);
