@@ -4,10 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/IEditionService.hpp>
-#include "opSofa/SofaThread.hpp"
-#include <fwTools/UUID.hpp>
 #include <QTime>
+#include <QMutex>
+#include <QWaitCondition>
+
+#include <fwData/Mesh.hpp>
+
+#include <fwServices/IEditionService.hpp>
+#include <fwTools/UUID.hpp>
+
+#include "opSofa/SofaThread.hpp"
 
 /**
  * @brief Constructor

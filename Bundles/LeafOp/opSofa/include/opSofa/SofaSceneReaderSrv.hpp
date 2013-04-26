@@ -4,12 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _opSofa_SOFASCENEREADERSRV_HPP_
-#define _opSofa_SOFASCENEREADERSRV_HPP_
+#ifndef __OPSOFA_SOFASCENEREADERSRV_HPP__
+#define __OPSOFA_SOFASCENEREADERSRV_HPP__
 
 #include <iostream>
+
 #include <fwTools/Failed.hpp>
+
 #include <fwServices/ObjectMsg.hpp>
+
 #include <io/IReader.hpp>
 
 namespace opSofa
@@ -37,4 +40,5 @@ class SofaSceneReaderSrv : public ::io::IReader
 
 }
 
-#endif // _opSofa_SOFASCENEREADERSRV_HPP_
+#endif // __OPSOFA_SOFASCENEREADERSRV_HPP__
+

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,21 @@
 #include <sstream>
 #include <fstream>
 
+#include <QString>
+#include <QDir>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QFile>
+
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwData/Acquisition.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
 #include <fwData/Reconstruction.hpp>
 #include <fwData/String.hpp>
 
@@ -23,19 +31,16 @@
 #include <fwServices/op/Add.hpp>
 
 #include <fwCore/spyLog.hpp>
+
 #include <fwDataIO/writer/MeshWriter.hpp>
+
 #include "opSofa/SofaSceneWriterSrv.hpp"
-#include <QString>
-#include <QDir>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QFile>
 
 namespace opSofa
 {
 
 
-fwServicesRegisterMacro( ::io::IWriter, ::opSofa::SofaSceneWriterSrv, ::fwData::Acquisition );
+fwServicesRegisterMacro( ::io::IWriter, ::opSofa::SofaSceneWriterSrv, ::fwMedData::ModelSeries );
 
 /**
  * @brief Constructor
@@ -112,9 +117,8 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     }
     if (folder == "") return;
 
-    // Get acquisition
-    ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    SLM_ASSERT("Associated object is not an acquisition", acq);
+    ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
+    SLM_ASSERT("Invalid object", ms);
 
     // Get templates
     QString templateFile;
@@ -147,7 +151,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     QString nodesData;
 
     // Travel each reconstructions
-    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, acq->getReconstructions())
+    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, ms->getReconstructionDB())
     {
         // Get info organ
         QString organName = QString(rec->getOrganName().c_str());
@@ -209,7 +213,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
         ::fwServices::ObjectMsg::NewSptr msg;
         ::fwData::String::NewSptr data(scnFile);
         msg->addEvent( "NEW_SOFA_SCENE", data );
-        ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
+        ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
     }
 }
 

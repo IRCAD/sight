@@ -1,21 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef OPSOFA_SOFATHREAD_H
-#define OPSOFA_SOFATHREAD_H
+#ifndef __OPSOFA_SOFATHREAD_HPP__
+#define __OPSOFA_SOFATHREAD_HPP__
 
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
-#include "opSofa/SofaBusiness.hpp"
+
 #include <fwComEd/MeshMsg.hpp>
+
 #include <fwServices/IEditionService.hpp>
-#include <fwData/PatientDB.hpp>
+
+#include "opSofa/SofaBusiness.hpp"
+
 
 class SofaBusiness;
+
+namespace fwData
+{
+    class Mesh;
+}
 
 /**
  * @brief Manages the separated thread dedicated to the SOFA animation processing
@@ -25,7 +33,7 @@ class SofaThread : public QThread
     Q_OBJECT
 
 public:
-    SofaThread(SofaBusiness*, std::vector<fwData::Mesh::sptr>*, ::fwServices::IService::sptr service);
+    SofaThread(SofaBusiness*, std::vector< SPTR(::fwData::Mesh) >*, ::fwServices::IService::sptr service);
     void stop();
     bool isRunning();
 
@@ -64,7 +72,7 @@ private:
     /**
      * @brief list of mesh
      */
-    std::vector<fwData::Mesh::sptr> *meshs;
+    std::vector< SPTR(::fwData::Mesh) > *meshs;
 
     /**
      * @brief mutex to synchronize threads
@@ -78,4 +86,5 @@ private:
 
 };
 
-#endif // OPSOFA_SOFATHREAD_H
+#endif // __OPSOFA_SOFATHREAD_HPP__
+

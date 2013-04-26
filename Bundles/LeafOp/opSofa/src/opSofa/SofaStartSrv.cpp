@@ -1,21 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/UUID.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
-#include "opSofa/SofaStartSrv.hpp"
-#include <fwData/Acquisition.hpp>
-#include <fwData/String.hpp>
 
+#include <fwMedData/ModelSeries.hpp>
+
+#include "opSofa/SofaStartSrv.hpp"
 
 namespace opSofa
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaStartSrv, ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaStartSrv, ::fwMedData::ModelSeries ) ;
 
 /**
  * @brief Constructor
@@ -66,15 +67,15 @@ void SofaStartSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwT
  */
 void SofaStartSrv::updating() throw ( ::fwTools::Failed )
 {
-    // Get acquisition
-    ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
+    ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
+    SLM_ASSERT("Invalid object", ms);
 
     // Create message start or stop Sofa, half the time
     ::fwServices::ObjectMsg::NewSptr msg;
     msg->addEvent("START_STOP_SOFA");
 
     // Send message
-    ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
+    ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
 }
 
 /**

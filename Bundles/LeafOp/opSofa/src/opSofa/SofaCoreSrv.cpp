@@ -6,14 +6,19 @@
 
 #include <QMessageBox>
 
-#include <fwData/Acquisition.hpp>
+#include <fwMedData/ModelSeries.hpp>
+
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+#include <fwData/Reconstruction.hpp>
+
 #include <fwDataIO/reader/MeshReader.hpp>
+
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
+
 #include <fwTools/UUID.hpp>
 
 #include "opSofa/SofaCoreSrv.hpp"
@@ -21,7 +26,7 @@
 namespace opSofa
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaCoreSrv, ::fwData::Acquisition ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaCoreSrv, ::fwMedData::ModelSeries ) ;
 
 SofaCoreSrv::SofaCoreSrv() throw()
 {
@@ -65,13 +70,14 @@ void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTo
         // Get Path Scn
         ::fwData::String::csptr pathScn = ::fwData::String::dynamicConstCast(msg->getDataInfo("NEW_SOFA_SCENE"));
 
-        // Get acquisition
-        ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
+
+        ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
+        SLM_ASSERT("Invalid object", ms);
 
         // Create object sofa
         m_sofa.reset();
         m_sofa = ::boost::make_shared< SofaBusiness >();
-        m_sofa->loadScn(pathScn->value(), acq, this->getSptr());
+        m_sofa->loadScn(pathScn->value(), ms, this->getSptr());
 
         // Apply at m_sofa the number of image by second
         m_sofa->setTimeStepAnimation(1000/50);
@@ -184,15 +190,18 @@ void SofaCoreSrv::addMesh(std::string meshPath, std::string meshName)
     reader1->read();
 
     // Create reconstruction
-    ::fwData::Reconstruction::NewSptr reconstruction;
-    reconstruction->setCRefStructureType("OrganType");
+    ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
+    reconstruction->setStructureType("OrganType");
     reconstruction->setIsVisible(true);
     reconstruction->setMesh(mesh);
     reconstruction->setOrganName(meshName);
 
-    // add reconstruction to acquisition
-    ::fwData::Acquisition::sptr acquisition = this->getObject< ::fwData::Acquisition >();
-    acquisition->addReconstruction(reconstruction);
+    ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
+    SLM_ASSERT("Invalid object", ms);
+    ::fwMedData::ModelSeries::ReconstructionVectorType recs = ms->getReconstructionDB();
+    recs.push_back(reconstruction);
+    ms->setReconstructionDB(recs);
 }
 
 }
+

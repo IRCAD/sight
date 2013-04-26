@@ -1,33 +1,33 @@
 <plugin id="opSofa" class="::opSofa::Plugin">
-    
+
     <library name="opSofa" />
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="io" />
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::opSofa::SofaCoreSrv</service>
-        <object>::fwData::Acquisition</object>
+        <object>::fwMedData::ModelSeries</object>
     </extension>
-  
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::opSofa::SofaStartSrv</service>
-        <object>::fwData::Acquisition</object>
+        <object>::fwMedData::ModelSeries</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::opSofa::SofaSceneWriterSrv</service>
-        <object>::fwData::Acquisition</object>
+        <object>::fwMedData::ModelSeries</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::opSofa::SofaSceneReaderSrv</service>
-        <object>::fwData::Acquisition</object>
+        <object>::fwMedData::ModelSeries</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -39,13 +39,14 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::opSofa::SofaMeshEditorSrv</service>
-        <object>::fwData::Acquisition</object>
+        <object>::fwMedData::ModelSeries</object>
     </extension>
 
-  <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::opSofa::BoxWidget</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
-    
+
 </plugin>
+

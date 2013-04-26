@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef OPSOFA_SOFABUSINESS_HPP_
-#define OPSOFA_SOFABUSINESS_HPP_
+#ifndef __OPSOFA_SOFABUSINESS_HPP__
+#define __OPSOFA_SOFABUSINESS_HPP__
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/visualmodel/OglModel.h>
@@ -13,8 +13,6 @@
 #include <sofa/simulation/tree/GNode.h>
 
 #include <fwServices/IEditionService.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/PatientDB.hpp>
 
 #include "opSofa/SofaThread.hpp"
 
@@ -24,6 +22,21 @@ using sofa::component::visualmodel::OglModel;
 using namespace sofa::defaulttype;
 
 class SofaThread;
+
+namespace fwData
+{
+    class Mesh;
+}
+
+namespace fwMedData
+{
+    class ModelSeries;
+}
+
+namespace fwServices
+{
+    class IService;
+}
 
 /**
  * @brief Manages the SOFA framework
@@ -50,7 +63,7 @@ public:
      * @param acquisition : object acquisition of FW4SPL
      * @param service : pointer to the SofaService object
      */
-    void loadScn(std::string, ::fwData::Acquisition::sptr, ::fwServices::IService::sptr);
+    void loadScn(std::string, SPTR(::fwMedData::ModelSeries), SPTR(::fwServices::IService));
 
     /**
      * @brief Builds the SOFA physical model and data and instantiates the SofaThread class
@@ -58,7 +71,7 @@ public:
      * @param pMesh : pointer to the triangular mesh
      * @param service : pointer to the SofaService object
      */
-    void loadMesh(::fwData::Mesh::sptr, ::fwServices::IService::sptr);
+    void loadMesh( SPTR(::fwData::Mesh), ::fwServices::IService::sptr);
 
     /**
      * @brief Gets time step animation
@@ -136,7 +149,7 @@ private:
      * @param acquisition : object acquisition of Fw4spl
      * @param meshs : Mesh vector at fill
      */
-    void fillMeshVector(::fwData::Acquisition::sptr, std::vector<fwData::Mesh::sptr>*);
+    void fillMeshVector( SPTR(::fwMedData::ModelSeries), std::vector< SPTR(fwData::Mesh) >*);
 
     /**
      * @brief Translates pointer between sofa and fw4spl to set a shared memory access
@@ -144,7 +157,7 @@ private:
      * @param visual : object visual of sofa
      * @param pMesh : object mesh of fw4spl
      */
-    void translationPointer(OglModel*, ::fwData::Mesh::sptr);
+    void translationPointer(OglModel*, SPTR(::fwData::Mesh));
 
     /**
      * @brief Cancel translates pointer between sofa and fw4spl
@@ -170,7 +183,7 @@ private:
     /**
      * @brief Vector to mesh object
      */
-    std::vector< ::fwData::Mesh::sptr > *meshs;
+    std::vector< SPTR(::fwData::Mesh) > *meshs;
 
     /**
      * @brief map to StiffSpringForceField3 object
@@ -179,4 +192,4 @@ private:
 
 };
 
-#endif // OPSOFA_SOFABUSINESS_HPP_
+#endif // __OPSOFA_SOFABUSINESS_HPP__

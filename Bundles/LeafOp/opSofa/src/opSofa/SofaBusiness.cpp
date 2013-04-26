@@ -8,6 +8,13 @@
 
 #include <fwComEd/helper/Array.hpp>
 
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwServices/IService.hpp>
+
 #include "opSofa/SofaBusiness.hpp"
 #include "opSofa/SofaThread.hpp"
 #include "opSofa/sofa/OglModelF4S.hpp"
@@ -27,8 +34,6 @@
 #include <sofa/helper/system/glut.h>
 
 
-
-
 SofaBusiness::SofaBusiness()
 {
 }
@@ -45,7 +50,7 @@ SofaBusiness::~SofaBusiness()
 }
 
 
-void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acquisition,  ::fwServices::IService::sptr service)
+void SofaBusiness::loadScn(std::string fileScn, ::fwMedData::ModelSeries::sptr ms,  ::fwServices::IService::sptr service)
 {
     // init attributs
     this->timeStepAnimation = 100;
@@ -64,7 +69,7 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwData::Acquisition::sptr acqu
 
     // Fill Mesh vector
     std::vector<fwData::Mesh::sptr> meshsF4s;
-    this->fillMeshVector(acquisition, &meshsF4s);
+    this->fillMeshVector(ms, &meshsF4s);
 
     // Fill OglModel vector
     std::vector<OglModel*> visuals;
@@ -297,9 +302,9 @@ void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, Stiff
 
 
 
-void SofaBusiness::fillMeshVector(::fwData::Acquisition::sptr acquisition, std::vector<fwData::Mesh::sptr> *meshs)
+void SofaBusiness::fillMeshVector(::fwMedData::ModelSeries::sptr ms, std::vector<fwData::Mesh::sptr> *meshs)
 {
-    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, acquisition->getReconstructions())
+    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, ms->getReconstructionDB())
     {
         // Info
         std::string organName = rec->getOrganName();

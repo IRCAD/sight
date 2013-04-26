@@ -1,25 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwData/Acquisition.hpp>
+#include <QVBoxLayout>
+#include <QSlider>
+#include <QString>
+
+#include <fwData/Integer.hpp>
+#include <fwData/Vector.hpp>
+#include <fwData/String.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
 //#include <fwServices/helper.hpp>
 #include <fwServices/Base.hpp> // new
 #include <fwServices/IEditionService.hpp> // new
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwCore/spyLog.hpp>
-#include "opSofa/SofaMeshEditorSrv.hpp"
-#include "fwData/Integer.hpp"
-#include "fwData/Vector.hpp"
-#include <QVBoxLayout>
-#include <QSlider>
-#include <QString>
 
+#include "opSofa/SofaMeshEditorSrv.hpp"
 #include "opSofa/KeyEvent.hpp"
 
 
@@ -27,7 +32,7 @@
 namespace opSofa
 {
 
-fwServicesRegisterMacro(::gui::editor::IEditor, ::opSofa::SofaMeshEditorSrv, ::fwData::Acquisition);
+fwServicesRegisterMacro(::gui::editor::IEditor, ::opSofa::SofaMeshEditorSrv, ::fwMedData::ModelSeries);
 
 /**
  * @brief Constructor
@@ -110,19 +115,19 @@ void SofaMeshEditorSrv::updating() throw ( ::fwTools::Failed )
 void SofaMeshEditorSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {
     if (msg->hasEvent("NEW_RECONSTRUCTION_SELECTED")) {
-        idReconstruction = ::fwData::String::dynamicConstCast(msg->getDataInfo("NEW_RECONSTRUCTION_SELECTED"));
+        m_idReconstruction = ::fwData::String::dynamicConstCast(msg->getDataInfo("NEW_RECONSTRUCTION_SELECTED"));
     }
 }
 
 void SofaMeshEditorSrv::onStrengthSlider(int value)
 {
-    if (idReconstruction) {
+    if (m_idReconstruction) {
         // Get acquisition
-        ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-        SLM_ASSERT("Associated object is not an Acquisition", acq);
+        ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
+        SLM_ASSERT("Invalid object", ms);
 
         ::fwData::Vector::NewSptr data;
-        ::fwData::String::NewSptr v1(idReconstruction->value());
+        ::fwData::String::NewSptr v1(m_idReconstruction->value());
         ::fwData::Integer::NewSptr v2(value);
         data->getContainer().push_back(v2);
         data->getContainer().push_back(v1);
@@ -130,15 +135,14 @@ void SofaMeshEditorSrv::onStrengthSlider(int value)
         // Notification
         ::fwServices::ObjectMsg::NewSptr msg;
         msg->addEvent("EDITOR_MESH_SOFA", data);
-        ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
+        ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
     }
 }
 
 void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
 {
-    // Get acquisition
-    ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    SLM_ASSERT("Associated object is not an Acquisition", acq);
+    ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
+    SLM_ASSERT("Invalid object", ms);
 
     static int x = 0;
     static int y = 0;
@@ -152,7 +156,7 @@ void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
     if (event->key() == Qt::Key_Q) z -= 1;
 
     ::fwData::Vector::NewSptr data;
-    ::fwData::String::NewSptr v1(idReconstruction->value());
+    ::fwData::String::NewSptr v1(m_idReconstruction->value());
     ::fwData::Integer::NewSptr v2(x);
     ::fwData::Integer::NewSptr v3(y);
     ::fwData::Integer::NewSptr v4(z);
@@ -164,7 +168,8 @@ void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
     // Notification
     ::fwServices::ObjectMsg::NewSptr msg;
     msg->addEvent("MOVE_MESH_SOFA", data);
-    ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
+    ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
 }
 
 }
+

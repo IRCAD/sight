@@ -5,23 +5,29 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <sstream>
+
+#include <QInputDialog>
+#include <QFileDialog>
+
 #include <fwRuntime/ConfigurationElement.hpp>
+
 #include <fwData/String.hpp>
-#include <fwData/Acquisition.hpp>
+#include <fwMedData/ModelSeries.hpp>
+
 //#include <fwServices/helper.hpp>
 #include <fwServices/Base.hpp> // new
 #include <fwServices/IEditionService.hpp> // new
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
+
 #include <fwCore/spyLog.hpp>
+
 #include "opSofa/SofaSceneReaderSrv.hpp"
-#include <QInputDialog>
-#include <QFileDialog>
 
 namespace opSofa
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::opSofa::SofaSceneReaderSrv, ::fwData::Acquisition );
+fwServicesRegisterMacro( ::io::IReader, ::opSofa::SofaSceneReaderSrv, ::fwMedData::ModelSeries );
 
 /**
  * @brief Constructor
@@ -63,9 +69,8 @@ void SofaSceneReaderSrv::stopping() throw ( ::fwTools::Failed )
  */
 void SofaSceneReaderSrv::updating() throw ( ::fwTools::Failed )
 {
-    // Get acquisition
-    ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition >();
-    SLM_ASSERT("Associated object is not an acquisition", acq);
+    ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
+    SLM_ASSERT("Invalid object", ms);
 
      // Open dialog box to select file .scn
     static QString defaultPath;
@@ -77,7 +82,7 @@ void SofaSceneReaderSrv::updating() throw ( ::fwTools::Failed )
         ::fwServices::ObjectMsg::NewSptr msg;
         ::fwData::String::NewSptr data(fileScn);
         msg->addEvent( "NEW_SOFA_SCENE", data );
-        ::fwServices::IEditionService::notify(this->getSptr(), acq, msg);
+        ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
     }
 }
 
