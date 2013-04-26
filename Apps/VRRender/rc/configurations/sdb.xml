@@ -43,6 +43,11 @@
                                 <parameter replace="SERIESDB" by="seriesDB"  />
                                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                             </parameters>
+                            <filter>
+                                <mode>exclude</mode>
+                                <id>ImageSeriesExport</id>
+                                <id>ModelSeriesExport</id>
+                            </filter>
                         </config>
                     </service>
 
