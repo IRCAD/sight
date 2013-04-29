@@ -36,11 +36,11 @@ Right_Atrium;(128,0,255,100);Thorax;Functional;Heart;;;;;
 Right_Ventricle;(128,0,128,100);Thorax;Functional;Heart;;;;;
 Left_Atrium;(248,61,7,100);Thorax;Functional;Heart;;;;;
 Left_Ventricle;(255,128,128,100);Thorax;Functional;Heart;;;;;
-Pulmonary_Vein;(255,128,0,100);Thorax;Vessel;;;;Pulmonary_Vein;Anat_Struct;T_Pulmonary_Vein
-Pulmonary_Artery;(255,0,255,100);Thorax;Vessel;;;;Pulmonary_Artery;Anat_Struct;Pulmonary_Artery
+Pulmonary_Vein;(250,70,10,100);Thorax;Vessel;;;;Pulmonary_Vein;Anat_Struct;T_Pulmonary_Vein
+Pulmonary_Artery;(100,75,255,100);Thorax;Vessel;;;;Pulmonary_Artery;Anat_Struct;Pulmonary_Artery
 Thymus;(255,179,128,100);Thorax;Organ;;;;;Anat_Struct;
 Diaphragm;(63,0,0,100);Thorax;Organ;;;;Diaphragm;Anat_Struct;Diaphragm
-Aorta;(255,255,26,100);Thorax;Vessel;;;;;Anat_Struct;
+Aorta;(255,26,26,100);Thorax;Vessel;;;;;Anat_Struct;
 Superior_Vena_Cava;(51,102,255,100);Thorax;Vessel;;;;Superior_Vena_Cava;Anat_Struct;Superior_Vena_Cava
 Inferior_Vena_Cava;(51,102,255,100);Thorax;Vessel;;;;Inferior_Vena_Cava;Anat_Struct;Inferior_Vena_Cava
 Portal_Vein;(0,84,255,100);Abdomen;Vessel;;;;Portal_Vein;Anat_Struct;Portal_Vein
