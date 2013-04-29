@@ -37,6 +37,7 @@ class IoItkTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( testImageSeriesWriterJPG );
     CPPUNIT_TEST( testSaveLoadInr );
     CPPUNIT_TEST( ImageSeriesInrTest );
+    CPPUNIT_TEST( SeriesDBInrTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,6 +50,7 @@ public:
     void testImageSeriesWriterJPG();
     void testSaveLoadInr();
     void ImageSeriesInrTest();
+    void SeriesDBInrTest();
 
 private :
 

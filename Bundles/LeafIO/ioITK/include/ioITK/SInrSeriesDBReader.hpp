@@ -30,6 +30,10 @@ class Series;
 namespace ioITK
 {
 
+/**
+ * @brief Reads inr files and pushes them into SeriesDB.
+ * @class SInrSeriesDBReader
+ */
 class IOITK_CLASS_API SInrSeriesDBReader : public ::io::IReader
 {
 
@@ -42,28 +46,32 @@ public :
 
 protected:
 
-    /// Override
+    /// Does nothing.
     virtual void starting() throw(::fwTools::Failed){};
 
-    /// Override
+    /// Does nothing.
     virtual void stopping() throw(::fwTools::Failed){};
 
+    /// Reads inr files specified by user (configure or configureWithIHM) and pushes them into SeriesDB.
     IOITK_API virtual void updating() throw(::fwTools::Failed) ;
 
-    /// Override
-    IOITK_API void info(std::ostream &_sstream ) ;
-
-    /// Override
+    /**
+     * @brief Configure the inr files path.
+     *
+     * This method is used to find the inr files path using a files selector.
+     */
     IOITK_API virtual void configureWithIHM();
 
-    /// Return managed file type, here FILES
+    /// Returns managed file type, here FILES
     IOITK_API ::io::IOPathType getIOPathType() const;
 
 private :
 
+    /// Initializes Series with dummy values and Study with specified instanceUID.
     void  initSeries(SPTR(::fwMedData::Series) series, const std::string& instanceUID);
 
-    bool createImage( const ::boost::filesystem::path inrFileDir, SPTR(::fwData::Image) image );
+    /// Reads specified inr file in image.
+    bool createImage( const ::boost::filesystem::path inrFile, SPTR(::fwData::Image) image );
 };
 
 } // namespace ioITK

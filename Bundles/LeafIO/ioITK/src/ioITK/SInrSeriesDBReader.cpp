@@ -96,21 +96,14 @@ void SInrSeriesDBReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::info(std::ostream &_sstream )
-{
-    _sstream << "SInrSeriesDBReader::info";
-}
-
-//------------------------------------------------------------------------------
-
-bool SInrSeriesDBReader::createImage( const ::boost::filesystem::path inrFileDir, ::fwData::Image::sptr image )
+bool SInrSeriesDBReader::createImage( const ::boost::filesystem::path inrFile, ::fwData::Image::sptr image )
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
     bool ok = true;
 
     myLoader->setObject(image);
-    myLoader->setFile(inrFileDir);
+    myLoader->setFile(inrFile);
 
     try
     {

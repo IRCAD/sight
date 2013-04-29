@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/assign/list_of.hpp>
 
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
@@ -14,6 +15,7 @@
 
 #include <fwData/Object.hpp>
 
+#include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwTest/Data.hpp>
@@ -27,14 +29,18 @@
 
 #include "IoItkTest.hpp"
 
+using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioITK::ut::IoItkTest );
+
 
 namespace ioITK
 {
 namespace ut
 {
+
+static const double EPSILON = 0.00001;
 
 //-----------------------------------------------------------------------------
 
@@ -184,7 +190,6 @@ void IoItkTest::testSaveLoadInr()
 
 //------------------------------------------------------------------------------
 
-
 void IoItkTest::ImageSeriesInrTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
@@ -222,6 +227,60 @@ void IoItkTest::ImageSeriesInrTest()
 
     // check Image
     compare(image, image2);
+}
+
+//------------------------------------------------------------------------------
+
+void IoItkTest::SeriesDBInrTest()
+{
+    /*
+     * - image.inr.gz : CT, type int16, size: 512x512x134, spacing 0.781:0.781:1.6
+     * - skin.inr.gz : mask skin, type uint8, size: 512x512x134, spacing 0.781:0.781:1.6
+     */
+    const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
+    const ::boost::filesystem::path skinFile = ::fwTest::Data::dir() / "fw4spl/image/inr/skin.inr.gz";
+    // Create Config
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr fileImageCfg = ::fwRuntime::EConfigurationElement::New("file");
+    fileImageCfg->setValue(imageFile.string());
+    srvCfg->addConfigurationElement(fileImageCfg);
+
+    ::fwRuntime::EConfigurationElement::sptr fileSkinCfg = ::fwRuntime::EConfigurationElement::New("file");
+    fileSkinCfg->setValue(skinFile.string());
+    srvCfg->addConfigurationElement(fileSkinCfg);
+
+    // load SeriesDB
+    ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
+    this->executeService( sdb, "::io::IReader", "::ioITK::SInrSeriesDBReader", srvCfg );
+
+    ::fwData::Image::SpacingType spacing = list_of(0.781)(0.781)(1.6);
+    ::fwData::Image::SizeType size = list_of(512)(512)(134);
+
+    CPPUNIT_ASSERT_EQUAL(size_t(2), sdb->getContainer().size());
+    ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[0]);
+    CPPUNIT_ASSERT(imgSeries);
+    CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
+
+    ::fwData::Image::sptr image = imgSeries->getImage();
+    CPPUNIT_ASSERT(image);
+    CPPUNIT_ASSERT_EQUAL(std::string("int16"), image->getType().string());
+    CPPUNIT_ASSERT(size == image->getSize());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
+
+    imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[1]);
+    CPPUNIT_ASSERT(imgSeries);
+    CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
+    CPPUNIT_ASSERT(imgSeries->getImage());
+
+    image = imgSeries->getImage();
+    CPPUNIT_ASSERT(image);
+    CPPUNIT_ASSERT_EQUAL(std::string("uint8"), image->getType().string());
+    CPPUNIT_ASSERT(size == image->getSize());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], image->getSpacing()[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], image->getSpacing()[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], image->getSpacing()[2], EPSILON);
 }
 
 //------------------------------------------------------------------------------
