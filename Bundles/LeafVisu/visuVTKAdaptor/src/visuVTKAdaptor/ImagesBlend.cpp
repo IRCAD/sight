@@ -116,7 +116,7 @@ void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools:
                 || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
                 || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
-            doUpdate();
+            this->doUpdate();
         }
     }
     else if (imageMsg)
@@ -126,10 +126,9 @@ void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools:
 
         if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
-            if ( ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
-                 && m_registeredImages.find(image->getID()) != m_registeredImages.end() )
+            if ( ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
             {
-                doUpdate();
+                this->doUpdate();
             }
         }
     }
