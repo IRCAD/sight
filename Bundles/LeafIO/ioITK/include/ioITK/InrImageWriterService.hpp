@@ -31,7 +31,7 @@ public :
 
     IOITK_API virtual ~InrImageWriterService() throw();
 
-    static void saveImage( const ::boost::filesystem::path &inrFile, const SPTR(::fwData::Image) &image );
+    IOITK_API static void saveImage( const ::boost::filesystem::path &inrFile, const SPTR(::fwData::Image) &image );
 
 protected:
 
