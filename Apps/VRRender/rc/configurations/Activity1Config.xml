@@ -89,6 +89,7 @@
                         <addSelection service="::ioXML::FwXMLGenericWriterService" />
                         <addSelection service="::ioAtoms::SWriter" />
                         <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericWriterService" />
+                        <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
                     </service>
 
                     <service uid="${GENERIC_UID}_action_importMedicalWorkspace" type="::fwGui::IActionSrv" impl="::uiPatientDB::action::AddMedicalWorkspace" autoConnect="no" >

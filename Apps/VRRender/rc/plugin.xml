@@ -122,6 +122,7 @@
             <type mode="reader" />
             <selection mode="exclude" />
             <addSelection service="::ioXML::FwXMLGenericReaderService" />
+            <addSelection service="::ioAtoms::SReader" />
         </config>
     </extension>
 
@@ -133,6 +134,7 @@
             <type mode="writer" />
             <selection mode="exclude" />
             <addSelection service="::ioXML::FwXMLGenericWriterService" />
+            <addSelection service="::ioAtoms::SWriter" />
         </config>
     </extension>
 
@@ -146,6 +148,15 @@
             <addSelection service="::ioXML::FwXMLGenericReaderService" />
             <addSelection service="::ioAtoms::SReader" />
             <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericReaderService" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>MDAtomsConfig</id>
+        <desc>reader/writer config to read/write an atom representing a medical data</desc>
+        <config>
+            <patcher context="MedicalData" version="V1" /> 
         </config>
     </extension>
     
