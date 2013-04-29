@@ -1,22 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "opKinect/Kinect.hpp"
-#include "fwData/Integer.hpp"
-#include "fwData/Vector.hpp"
 #include <QMessageBox>
+
 #include <XnVSessionManager.h>
 #include <XnVMultiProcessFlowClient.h>
 
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwData/Integer.hpp>
+#include <fwData/Vector.hpp>
+
+#include <fwServices/IService.hpp>
+
+#include "opKinect/Kinect.hpp"
 
 namespace opKinect
 {
 
-fwData::Acquisition::sptr g_acquisition;
-fwServices::IService::sptr g_service;
+::fwMedData::ModelSeries::sptr g_modelSeries;
+::fwServices::IService::sptr g_service;
 
 
 //-----------------------------------------------------------------------------
@@ -64,7 +70,7 @@ void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext,
     // Notification
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("KINECT_NEW_POSITION_HAND", data);
-    ::fwServices::IEditionService::notify(g_service, g_acquisition, msg);
+    ::fwServices::IEditionService::notify(g_service, g_modelSeries, msg);
 }
 
 void XN_CALLBACK_TYPE Kinect::onPush(XnFloat  fVelocity,  XnFloat  fAngle, void *cxt)
@@ -78,12 +84,12 @@ void XN_CALLBACK_TYPE Kinect::onPush(XnFloat  fVelocity,  XnFloat  fAngle, void 
  * @brief Constructor
  *
  * @param service : pointer to the service
- * @param acq : pointer to acquisition data
+ * @param ms : pointer to model series data
  */
-Kinect::Kinect(::fwServices::IService::sptr service, fwData::Acquisition::sptr acq)
+Kinect::Kinect(::fwServices::IService::sptr service, ::fwMedData::ModelSeries::sptr ms)
 {
     // init variables
-    g_acquisition = acq;
+    g_modelSeries = ms;
     g_service = service;
 }
 
