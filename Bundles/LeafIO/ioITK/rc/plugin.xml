@@ -31,6 +31,13 @@
         <object>::fwMedData::ImageSeries</object>
         <desc>ImageSeries Jpeg Writer (ITK)</desc>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioITK::SInrSeriesDBReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>SeriesDB Inrimage Reader (ITK)</desc>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
