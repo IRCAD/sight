@@ -4,34 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOITK_INRIMAGEWRITERSERVICE_HPP__
-#define __IOITK_INRIMAGEWRITERSERVICE_HPP__
+#ifndef __IOITK_SIMAGESERIESWRITER_HPP__
+#define __IOITK_SIMAGESERIESWRITER_HPP__
 
+#include <string>
 #include <boost/filesystem/path.hpp>
 
 #include <io/IWriter.hpp>
 
 #include "ioITK/export.hpp"
 
-namespace fwData
-{
-class Image;
-}
-
 namespace ioITK
 {
 
-class IOITK_CLASS_API InrImageWriterService : public ::io::IWriter
+class IOITK_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (InrImageWriterService)( ::io::IWriter) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) ) ;
 
-    IOITK_API InrImageWriterService() throw();
+    IOITK_API SImageSeriesWriter() throw();
 
-    IOITK_API virtual ~InrImageWriterService() throw();
-
-    static void saveImage( const ::boost::filesystem::path &inrFile, const SPTR(::fwData::Image) &image );
+    IOITK_API virtual ~SImageSeriesWriter() throw();
 
 protected:
 
@@ -56,9 +50,9 @@ protected:
     /// Return managed file type, here FILE
     IOITK_API ::io::IOPathType getIOPathType() const;
 
-
 };
 
 } // namespace ioITK
 
-#endif //__IOITK_INRIMAGEWRITERSERVICE_HPP__
+#endif //__IOITK_SIMAGESERIESWRITER_HPP__
+

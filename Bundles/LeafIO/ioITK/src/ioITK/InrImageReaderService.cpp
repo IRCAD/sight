@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -88,7 +88,7 @@ void InrImageReaderService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-bool InrImageReaderService::createImage( const ::boost::filesystem::path inrFileDir, ::fwData::Image::sptr _pImg )
+bool InrImageReaderService::createImage( const ::boost::filesystem::path &inrFileDir, const ::fwData::Image::sptr &_pImg )
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();

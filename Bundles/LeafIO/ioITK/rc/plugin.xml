@@ -29,7 +29,15 @@
         <type>::io::IWriter</type>
         <service>::ioITK::SJpgImageSeriesWriter</service>
         <object>::fwMedData::ImageSeries</object>
-        <desc>Image Series Jpeg Writer (ITK)</desc>
+        <desc>ImageSeries Jpeg Writer (ITK)</desc>
     </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioITK::SImageSeriesWriter</service>
+        <object>::fwMedData::ImageSeries</object>
+        <desc>ImageSeries Inr Writer (ITK)</desc>
+    </extension>
+
 
 </plugin>

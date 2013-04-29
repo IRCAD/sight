@@ -184,6 +184,48 @@ void IoItkTest::testSaveLoadInr()
 
 //------------------------------------------------------------------------------
 
+
+void IoItkTest::ImageSeriesInrTest()
+{
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+
+    imageSeries->setImage(image);
+
+    // inr only support image origin (0,0,0)
+    ::fwData::Image::OriginType origin(3,0);
+    image->setOrigin(origin);
+
+    // save image in inr
+    const ::boost::filesystem::path PATH = "imageInrTest/imageseries.inr.gz";
+    ::boost::filesystem::create_directories( PATH.parent_path() );
+
+    // Create Config
+    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+    fileCfg->setValue(PATH.string());
+    srvCfg->addConfigurationElement(fileCfg);
+
+    // Create and execute service
+    this->executeService( imageSeries, "::io::IWriter", "::ioITK::SImageSeriesWriter", srvCfg );
+
+    // load Image
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    this->executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
+
+    ::boost::filesystem::remove_all( PATH.parent_path().string() );
+
+    ::fwData::Image::SpacingType spacing = image2->getSpacing();
+    std::transform (spacing.begin(), spacing.end(), spacing.begin(), tolerance);
+    image2->setSpacing(spacing);
+
+    // check Image
+    compare(image, image2);
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace ioITK
 

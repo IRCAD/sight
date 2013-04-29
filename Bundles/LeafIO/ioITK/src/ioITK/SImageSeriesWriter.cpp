@@ -19,6 +19,8 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
+#include <fwMedData/ImageSeries.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
@@ -27,33 +29,34 @@
 #include <fwItkIO/ImageWriter.hpp>
 
 #include "ioITK/InrImageWriterService.hpp"
+#include "ioITK/SImageSeriesWriter.hpp"
 
 
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioITK::InrImageWriterService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioITK::SImageSeriesWriter , ::fwMedData::ImageSeries ) ;
 
 //------------------------------------------------------------------------------
 
-InrImageWriterService::InrImageWriterService() throw()
+SImageSeriesWriter::SImageSeriesWriter() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-InrImageWriterService::~InrImageWriterService() throw()
+SImageSeriesWriter::~SImageSeriesWriter() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType InrImageWriterService::getIOPathType() const
+::io::IOPathType SImageSeriesWriter::getIOPathType() const
 {
     return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::configureWithIHM()
+void SImageSeriesWriter::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
@@ -80,73 +83,42 @@ void InrImageWriterService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::starting() throw(::fwTools::Failed)
+void SImageSeriesWriter::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::stopping() throw(::fwTools::Failed)
+void SImageSeriesWriter::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::info(std::ostream &_sstream )
+void SImageSeriesWriter::info(std::ostream &_sstream )
 {
-    _sstream << "InrImageWriterService::info";
+    _sstream << "SImageSeriesWriter::info";
 }
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::saveImage( const ::boost::filesystem::path &inrFile, const ::fwData::Image::sptr &image )
-{
-    SLM_TRACE_FUNC();
-    ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
-
-    myWriter->setObject(image);
-    myWriter->setFile(inrFile);
-
-    try
-    {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Image ");
-        myWriter->addHandler( progressMeterGUI );
-        myWriter->write();
-
-    }
-    catch (const std::exception & e)
-    {
-        std::stringstream ss;
-               ss << "Warning during saving : " << e.what();
-               ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                                  ss.str(),
-                                                                  ::fwGui::dialog::IMessageDialog::WARNING);
-    }
-    catch( ... )
-    {
-        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                    "Warning during saving",
-                                    ::fwGui::dialog::IMessageDialog::WARNING);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void InrImageWriterService::updating() throw(::fwTools::Failed)
+void SImageSeriesWriter::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
+
+        ::fwMedData::ImageSeries::sptr iseries = this->getObject< ::fwMedData::ImageSeries >();
+        const ::fwData::Image::sptr &associatedImage = iseries->getImage();
         SLM_ASSERT("associatedImage not instanced", associatedImage);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveImage(this->getFile(),associatedImage);
+        InrImageWriterService::saveImage(this->getFile(), associatedImage);
         cursor.setDefaultCursor();
     }
 }
