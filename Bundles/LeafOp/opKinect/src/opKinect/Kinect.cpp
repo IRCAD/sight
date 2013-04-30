@@ -32,23 +32,33 @@ namespace opKinect
 // Callback for when the focus is in progress
 void XN_CALLBACK_TYPE SessionProgress(const XnChar* strFocus, const XnPoint3D& ptFocusPoint, XnFloat fProgress, void* UserCxt)
 {
-    //printf("Session progress (%6.2f,%6.2f,%6.2f) - %6.2f [%s]\n", ptFocusPoint.X, ptFocusPoint.Y, ptFocusPoint.Z, fProgress,  strFocus);
+    OSLM_TRACE("Session progress (" 
+                        << ptFocusPoint.X << ", " 
+                        << ptFocusPoint.Y << ", " 
+                        << ptFocusPoint.Z << ") - " 
+                        << fProgress << "[" <<strFocus << "]");
 }
+
 // callback for session start
 void XN_CALLBACK_TYPE SessionStart(const XnPoint3D& ptFocusPoint, void* UserCxt)
 {
-    //printf("Session started. Please wave (%6.2f,%6.2f,%6.2f)...\n", ptFocusPoint.X, ptFocusPoint.Y, ptFocusPoint.Z);
+    OSLM_TRACE("Session started. Please wave (" 
+                        << ptFocusPoint.X << ", " 
+                        << ptFocusPoint.Y << ", " 
+                        << ptFocusPoint.Z << ")");
 }
+
 // Callback for session end
 void XN_CALLBACK_TYPE SessionEnd(void* UserCxt)
 {
-    //printf("Session ended. Please perform focus gesture to start session\n");
+    SLM_TRACE("Session ended. Please perform focus gesture to start session");
 }
+
 // Callback for wave detection
 void XN_CALLBACK_TYPE OnWaveCB(void* cxt)
 {
-    //printf("Wave!\n");
 }
+
 // callback for a new position of any hand
 void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext, void* cxt)
 {
@@ -75,7 +85,6 @@ void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext,
 
 void XN_CALLBACK_TYPE Kinect::onPush(XnFloat  fVelocity,  XnFloat  fAngle, void *cxt)
 {
-    //printf("push\n");
 }
 
 
@@ -138,7 +147,8 @@ void Kinect::run()
 
 
     // start loop
-    while(!stopRun) {
+    while(!stopRun) 
+    {
         context.WaitAndUpdateAll();
         ((XnVSessionManager*)pSessionGenerator)->Update(&context);
 

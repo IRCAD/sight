@@ -26,7 +26,6 @@ namespace fwServices
 namespace opKinect
 {
 
-
 /**
  * @brief Manage Kinect
  */
@@ -51,4 +50,4 @@ private:
 
 }
 
-#endif
+#endif //__OPKINECT_KINECT_HPP__

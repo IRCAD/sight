@@ -61,7 +61,7 @@ protected:
     void info ( std::ostream &_sstream ) ;
 
 private :
-    Kinect *kinect;
+    SPTR(Kinect) m_kinect;
 };
 
 } // namespace opKinect

@@ -6,10 +6,14 @@
 
 #include <fwMedData/ModelSeries.hpp>
 
+ #include <boost/make_shared.hpp>
+
 #include <fwTools/UUID.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
+
+
 
 #include "opKinect/KinectSrv.hpp"
 
@@ -46,8 +50,8 @@ void KinectSrv::starting() throw ( ::fwTools::Failed )
     SLM_ASSERT("Invalid object", ms);
 
     // Start Kinect thread
-    kinect = new Kinect(this->getSptr(), ms);
-    kinect->start();
+    m_kinect = ::boost::make_shared<Kinect>(this->getSptr(), ms);
+    m_kinect->start();
 }
 
 //---------------------------------------------------------------------------------------
@@ -55,7 +59,7 @@ void KinectSrv::starting() throw ( ::fwTools::Failed )
 void KinectSrv::stopping() throw ( ::fwTools::Failed )
 {
     // Stop Kinect thread
-    kinect->stop();
+    m_kinect->stop();
 }
 
 //---------------------------------------------------------------------------------------
