@@ -1,10 +1,10 @@
-#include <sstream>
 
 #include <boost/foreach.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <fwTools/UUID.hpp>
 #include <fwTools/IBufferManager.hpp>
@@ -101,13 +101,15 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     ::boost::property_tree::ptree map;
     this->cache(atom, ptpath);
     std::string path = ptpath + (ptpath.empty()?"":".") + "map";
+    unsigned long long count = 0;
     BOOST_FOREACH(const ::fwAtoms::Map::MapType::value_type& elt, atom->getValue())
     {
+        const std::string nodeName = "item_" + ::boost::lexical_cast< std::string >(count++);
         ::boost::property_tree::ptree mapChild;
         mapChild.put("key", elt.first);
-        mapChild.add_child("value", this->visit(elt.second, path + "." + elt.first));
+        mapChild.add_child("value", this->visit(elt.second, path + "." + nodeName + ".value"));
 
-        map.add_child("item", mapChild);
+        map.add_child(nodeName, mapChild);
     }
     pt.add_child("map", map);
     return pt;
@@ -122,12 +124,11 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     this->cache(atom, ptpath);
     std::string path = ptpath + (ptpath.empty()?"":".") + "sequence";
 
-    unsigned long long int i = 0;
+    unsigned long long count = 0;
     BOOST_FOREACH( const ::fwAtoms::Sequence::SequenceType::value_type& elt, atom->getValue())
     {
-        std::stringstream sstr;
-        sstr << i++;
-        seq.add_child(sstr.str(), this->visit(elt, path + "." + sstr.str()));
+        const std::string nodeName = ::boost::lexical_cast< std::string >(count++);
+        seq.add_child(nodeName, this->visit(elt, path + "." + nodeName));
     }
     pt.add_child("sequence", seq);
     return pt;
@@ -144,12 +145,14 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
 
     const ::fwAtoms::Object::MetaInfosType& metaInfos = atom->getMetaInfos();
     ::boost::property_tree::ptree metaInfosPt;
+    unsigned long long count = 0;
     BOOST_FOREACH(const ::fwAtoms::Object::MetaInfosType::value_type& info, metaInfos)
     {
+        const std::string nodeName = "item_" + ::boost::lexical_cast< std::string >(count++);
         ::boost::property_tree::ptree item;
         item.put("key", info.first);
         item.put("value", info.second);
-        metaInfosPt.push_back(::boost::property_tree::ptree::value_type("item", item));
+        metaInfosPt.push_back(::boost::property_tree::ptree::value_type(nodeName, item));
     }
     object.add_child("meta_infos", metaInfosPt);
 
