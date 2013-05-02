@@ -60,7 +60,7 @@ struct SequenceGenerator
     SequenceGenerator()
     {
         META_KEY_0 = "info.a<b>.c.0";
-        META_KEY_1 = "info.a<b>.c.1";
+        META_KEY_1 = "info.a<b>.c.{1:d}";
         META_KEY_2 = "info.a<b>.c.2";
         META_KEY_3 = "info.a<b>.c.3";
         META_VALUE_0 = "A";
@@ -121,6 +121,15 @@ struct SequenceGenerator
         m_seq->push_back(num2);
         m_seq->push_back(boolTrue);
 
+        // tests the case of a a cache path hiting an object stored in a map
+        ::fwAtoms::Map::sptr map2 = ::fwAtoms::Map::New();
+        ::fwAtoms::Object::sptr obj2 = ::fwAtoms::Object::New();
+        map2->insert("obj2 ref1", obj2);
+        map2->insert("obj2 ref2", obj2);
+
+        map->insert("sequence loop key", m_seq);
+        map->insert("object one more ref", obj);
+        map->insert("map2", map2);
         map->insert("blob key", ::fwAtoms::Blob::New());
         map->insert("object key", ::fwAtoms::Object::New());
         map->insert("sequence key", ::fwAtoms::String::New("map-str"));
@@ -155,23 +164,6 @@ struct SequenceGenerator
         ::fwAtoms::Numeric::sptr  readNum2  = ::fwAtoms::Numeric::dynamicCast((*readSeq)[9]);
         ::fwAtoms::Boolean::sptr  readBoolT = ::fwAtoms::Boolean::dynamicCast((*readSeq)[10]);
 
-        ::fwTools::BufferObject::sptr bo = blob->getBufferObject();
-        ::fwTools::BufferObject::sptr readBo = readBlob->getBufferObject();
-
-        CPPUNIT_ASSERT_EQUAL( bo->getSize(),  readBo->getSize() );
-
-        ::fwTools::BufferObject::Lock lock(bo->lock());
-        ::fwTools::BufferObject::Lock readLock(readBo->lock());
-
-        void *v = lock.getBuffer();
-        void *readV = readLock.getBuffer();
-        char* buff = static_cast<char*>(v);
-        char* readBuff = static_cast<char*>(readV);
-        for (size_t i = 0; i < bo->getSize(); ++i)
-        {
-            CPPUNIT_ASSERT_EQUAL( buff[i], readBuff[i] );
-        }
-
         CPPUNIT_ASSERT( readObj0  );
         CPPUNIT_ASSERT( readObj1  );
         CPPUNIT_ASSERT( readBlob  );
@@ -183,6 +175,27 @@ struct SequenceGenerator
         CPPUNIT_ASSERT( !readNull );
         CPPUNIT_ASSERT( readNum2  );
         CPPUNIT_ASSERT( readBoolT );
+
+        ::fwTools::BufferObject::sptr bo = blob->getBufferObject();
+        ::fwTools::BufferObject::sptr readBo = readBlob->getBufferObject();
+
+        CPPUNIT_ASSERT( readBo );
+
+        CPPUNIT_ASSERT_EQUAL( bo->getSize(),  readBo->getSize() );
+
+        ::fwTools::BufferObject::Lock lock(bo->lock());
+        ::fwTools::BufferObject::Lock readLock(readBo->lock());
+
+        void *v = lock.getBuffer();
+        void *readV = readLock.getBuffer();
+        char* buff = static_cast<char*>(v);
+        char* readBuff = static_cast<char*>(readV);
+
+        CPPUNIT_ASSERT(readBlob);
+        for (size_t i = 0; i < bo->getSize(); ++i)
+        {
+            CPPUNIT_ASSERT_EQUAL( buff[i], readBuff[i] );
+        }
 
         CPPUNIT_ASSERT_EQUAL( readObj0, readObj1 );
         CPPUNIT_ASSERT_EQUAL( readSeq, readSeq2 );

@@ -111,13 +111,14 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 
     BOOST_FOREACH( const ::boost::property_tree::ptree::value_type &val, pt.get_child("map") )
     {
+        std::string subPath = ptpath + (ptpath.empty()?"":".") + "map." + val.first + ".value";
+
         ::boost::property_tree::ptree mapChild = val.second;
         ::boost::property_tree::ptree value    = mapChild.get_child("value");
+
+        ::fwAtoms::Base::sptr subAtom = this->visit( value, subPath );
+
         std::string key = mapChild.get<std::string>("key");
-
-        ::fwAtoms::Base::sptr subAtom = this->visit(
-                value, ptpath + (ptpath.empty()?"":".")+ "map.item." + key );
-
         atom->insert( key, subAtom );
     }
     return atom;
