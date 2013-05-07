@@ -3,22 +3,22 @@
     {
         "meta_infos":
         {
-            "item":
+            "item_0":
             {
                 "key": "CLASSNAME_METAINFO",
                 "value": "::fwData::TransferFunction"
             },
-            "item":
+            "item_1":
             {
                 "key": "ID_METAINFO",
                 "value": "8ba11417-6451-4bc2-832a-fd6025347774"
             },
-            "item":
+            "item_2":
             {
                 "key": "lib_name",
                 "value": "fwData"
             },
-            "item":
+            "item_3":
             {
                 "key": "object_version",
                 "value": "1"
@@ -69,7 +69,7 @@
             {
                 "map":
                 {
-                    "item":
+                    "item_0":
                     {
                         "key": "1184",
                         "value":
@@ -80,7 +80,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_1":
                     {
                         "key": "1191",
                         "value":
@@ -91,7 +91,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_2":
                     {
                         "key": "1247",
                         "value":
@@ -102,7 +102,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_3":
                     {
                         "key": "1341",
                         "value":

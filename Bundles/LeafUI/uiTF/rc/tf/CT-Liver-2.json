@@ -3,22 +3,22 @@
     {
         "meta_infos":
         {
-            "item":
+            "item_0":
             {
                 "key": "CLASSNAME_METAINFO",
                 "value": "::fwData::TransferFunction"
             },
-            "item":
+            "item_1":
             {
                 "key": "ID_METAINFO",
                 "value": "0089ccd1-740a-4466-a2cd-5840f3c88b25"
             },
-            "item":
+            "item_2":
             {
                 "key": "lib_name",
                 "value": "fwData"
             },
-            "item":
+            "item_3":
             {
                 "key": "object_version",
                 "value": "1"
@@ -69,7 +69,7 @@
             {
                 "map":
                 {
-                    "item":
+                    "item_0":
                     {
                         "key": "102",
                         "value":
@@ -80,7 +80,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_1":
                     {
                         "key": "171",
                         "value":
@@ -91,7 +91,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_2":
                     {
                         "key": "221",
                         "value":
@@ -102,7 +102,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_3":
                     {
                         "key": "283",
                         "value":
@@ -113,7 +113,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_4":
                     {
                         "key": "327",
                         "value":
@@ -124,7 +124,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_5":
                     {
                         "key": "394",
                         "value":
@@ -135,7 +135,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_6":
                     {
                         "key": "50",
                         "value":
@@ -146,7 +146,7 @@
                             }
                         }
                     },
-                    "item":
+                    "item_7":
                     {
                         "key": "82",
                         "value":

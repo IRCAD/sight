@@ -46,10 +46,10 @@
         <param id="parameters" value="VRRenderAppBase" />
     </activate>
 
-    <activate id="2DVisualizationActivity" />
-    <activate id="3DVisualizationActivity" />
-    <activate id="blendActivity" />
-    <activate id="volumeRenderingActivity" />
+    <activate id="2DVisualizationActivity" version="0-1" />
+    <activate id="3DVisualizationActivity" version="0-1" />
+    <activate id="blendActivity"           version="0-1" />
+    <activate id="volumeRenderingActivity" version="0-1" />
 
     <start id="memory" />
     <start id="scene2D" />
