@@ -1,61 +1,66 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/bind.hpp>
 
+
+
 #include <fwCore/base.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
-
-#include <fwComEd/PatientDBMsg.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <fwGui/dialog/PulseProgressDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/Cursor.hpp>
+#include <fwComEd/helper/SeriesDB.hpp>
 
-#include <fwData/PatientDB.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/IEditionService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/PulseProgressDialog.hpp>
 
 #include <io/IReader.hpp>
-#include <gdcmIO/reader/DicomPatientDBReader.hpp>
 
-#include "ioGdcm/DicomPatientDBReaderService.hpp"
+#include <gdcmIO/reader/SeriesDB.hpp>
+
+#include "ioGdcm/SSeriesDBReader.hpp"
 
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioGdcm::DicomPatientDBReaderService , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioGdcm::SSeriesDBReader , ::fwMedData::SeriesDB ) ;
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBReaderService::DicomPatientDBReaderService() throw()
+SSeriesDBReader::SSeriesDBReader() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-DicomPatientDBReaderService::~DicomPatientDBReaderService() throw()
+SSeriesDBReader::~SSeriesDBReader() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType DicomPatientDBReaderService::getIOPathType() const
+::io::IOPathType SSeriesDBReader::getIOPathType() const
 {
     return ::io::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomPatientDBReaderService::configureWithIHM()
+void SSeriesDBReader::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
@@ -81,28 +86,28 @@ void DicomPatientDBReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void DicomPatientDBReaderService::starting() throw(::fwTools::Failed)
+void SSeriesDBReader::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void DicomPatientDBReaderService::stopping() throw(::fwTools::Failed)
+void SSeriesDBReader::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void DicomPatientDBReaderService::info(std::ostream &_sstream )
+void SSeriesDBReader::info(std::ostream &_sstream )
 {
-    _sstream << "DicomPatientDBReaderService::info" ;
+    _sstream << "SSeriesDBReader::info" ;
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< std::string > DicomPatientDBReaderService::getSupportedExtensions()
+std::vector< std::string > SSeriesDBReader::getSupportedExtensions()
 {
     std::vector< std::string > extensions ;
     return extensions ;
@@ -110,34 +115,25 @@ std::vector< std::string > DicomPatientDBReaderService::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-std::string DicomPatientDBReaderService::getSelectorDialogTitle()
+std::string SSeriesDBReader::getSelectorDialogTitle()
 {
     return "Choose a directory with DICOM images";
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::PatientDB::sptr DicomPatientDBReaderService::createPatientDB( const ::boost::filesystem::path & dicomFile)
+::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const ::boost::filesystem::path & dicomFile)
 {
     SLM_TRACE_FUNC();
-    ::gdcmIO::reader::DicomPatientDBReader::sptr myLoader = ::gdcmIO::reader::DicomPatientDBReader::New();
+    ::gdcmIO::reader::SeriesDB::sptr reader = ::gdcmIO::reader::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
 
-    ::fwData::PatientDB::sptr dummy = ::fwData::PatientDB::New();
-    myLoader->setObject( dummy );
-    myLoader->setFolder(dicomFile);
+    reader->setObject(dummy);
+    reader->setFolder(dicomFile);
 
     try
     {
-#ifndef __MACOSX__
-        // NOTE: No exception can be caught
-        ::fwTools::ProgressToLogger progressMeterText("Loading DicomPatientDBReaderService : ");
-        myLoader->addHandler( progressMeterText );
-        ::fwGui::dialog::PulseProgressDialog::Stuff stuff = ::boost::bind( &::gdcmIO::reader::DicomPatientDBReader::read, myLoader);
-        ::fwGui::dialog::PulseProgressDialog p2("Load Dicom Image",  stuff ,  "Operation in progress");
-        p2.show();
-#else
-        myLoader->read();
-#endif
+        reader->read();
     }
     catch (const std::exception & e)
     {
@@ -151,29 +147,34 @@ std::string DicomPatientDBReaderService::getSelectorDialogTitle()
         ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
-    SLM_TRACE("exit createPatientDB()");
-    return myLoader->getConcreteObject();
+
+    return reader->getConcreteObject();
 }
 
 //------------------------------------------------------------------------------
 
-void DicomPatientDBReaderService::updating() throw(::fwTools::Failed)
+void SSeriesDBReader::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
-        ::fwData::PatientDB::sptr patientDB = createPatientDB( this->getFolder() );
+        ::fwMedData::SeriesDB::sptr localSeriesDB = this->createSeriesDB( this->getFolder() );
 
-        if( patientDB->getNumberOfPatients() > 0 )
+        if( !localSeriesDB->empty() )
         {
             // Retrieve dataStruct associated with this service
-            ::fwData::PatientDB::sptr associatedPatientDB = this->getObject< ::fwData::PatientDB >();
-            SLM_ASSERT("associatedPatientDB not instanced", associatedPatientDB);
-            associatedPatientDB->shallowCopy( patientDB ) ;
+            ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+            // seriesDB->shallowCopy( localSeriesDB ) ;
+
+            ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
+
+            ::fwData::mt::ObjectWriteLock lock(seriesDB);
+            sDBhelper.merge(localSeriesDB);
+            sDBhelper.notify(this->getSptr());
+
 
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);
-            this->notificationOfDBUpdate();
             cursor.setDefaultCursor();
         }
         else
@@ -182,21 +183,6 @@ void DicomPatientDBReaderService::updating() throw(::fwTools::Failed)
                     "Image Reader","This file can not be read. Retry with another file reader.", ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void DicomPatientDBReaderService::notificationOfDBUpdate()
-{
-    SLM_TRACE_FUNC();
-    ::fwData::PatientDB::sptr pDPDB = this->getObject< ::fwData::PatientDB >() ;
-    SLM_ASSERT("pDPDB not instanced", pDPDB);
-
-    ::fwComEd::PatientDBMsg::sptr msg = ::fwComEd::PatientDBMsg::New();
-    msg->addEvent( ::fwComEd::PatientDBMsg::NEW_PATIENT, pDPDB );
-    msg->addEvent( ::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT );
-
-    ::fwServices::IEditionService::notify(this->getSptr(), pDPDB, msg);
 }
 
 //------------------------------------------------------------------------------

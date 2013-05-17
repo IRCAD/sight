@@ -7,30 +7,16 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioGdcm::DicomPatientDBReaderService</service>
-        <object>::fwData::PatientDB</object>
+        <service>::ioGdcm::SSeriesDBReader</service>
+        <object>::fwMedData::SeriesDB</object>
         <desc>Dicom Reader (gdcm)</desc>
     </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioGdcm::DicomPatientDBWriterService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>Dicom Writer (gdcm)</desc>
-    </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioGdcm::DicomPatientWriterService</service>
-        <object>::fwData::Patient</object>
-        <desc>Dicom Writer (gdcm)</desc>
-    </extension>    
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioGdcm::DicomImageWriterService</service>
-        <object>::fwData::Image</object>
+        <service>::ioGdcm::SSeriesWriter</service>
+        <object>::fwMedData::ImageSeries</object>
         <desc>Dicom Writer (gdcm)</desc>
-    </extension>    
-   
+    </extension>
+    
 </plugin>

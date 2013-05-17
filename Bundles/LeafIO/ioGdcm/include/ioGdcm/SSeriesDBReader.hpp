@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOGDCM_DICOMPATIENTDBREADERSERVICE_HPP_
-#define _IOGDCM_DICOMPATIENTDBREADERSERVICE_HPP_
+#ifndef _IOGDCM_SSERIESDBREADER_HPP_
+#define _IOGDCM_SSERIESDBREADER_HPP_
 
+#include <vector>
 #include <string>
 #include <boost/filesystem/path.hpp>
 
@@ -14,31 +15,31 @@
 
 #include "ioGdcm/config.hpp"
 
-namespace fwData
+
+namespace fwMedData
 {
-    class PatientDB;
-    class Patient;
+    class SeriesDB;
 }
 
 namespace ioGdcm
 {
 
-class IOGDCM_CLASS_API DicomPatientDBReaderService : public ::io::IReader
+class IOGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 
 public :
-    fwCoreServiceClassDefinitionsMacro ( (DicomPatientDBReaderService)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) ) ;
 
     /**
      * @brief   constructor
      *
      */
-    IOGDCM_API DicomPatientDBReaderService() throw();
+    IOGDCM_API SSeriesDBReader() throw();
 
     /**
      * @brief   destructor
      */
-    IOGDCM_API virtual ~DicomPatientDBReaderService() throw();
+    IOGDCM_API virtual ~SSeriesDBReader() throw();
 
 protected:
 
@@ -73,12 +74,10 @@ protected:
 
 private :
 
-    void notificationOfDBUpdate();
-
-    ::boost::shared_ptr< ::fwData::PatientDB > createPatientDB( const ::boost::filesystem::path & dicomFile );
+    SPTR( ::fwMedData::SeriesDB ) createSeriesDB( const ::boost::filesystem::path & dicomFile );
 
 };
 
 } // namespace ioGdcm
 
-#endif //_IOGDCM_DICOMPATIENTDBREADERSERVICE_HPP_
+#endif //_IOGDCM_SSERIESDBREADER_HPP_
