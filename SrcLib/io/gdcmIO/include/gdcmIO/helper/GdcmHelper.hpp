@@ -4,8 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GDCMIO_GDCMHELPER_HPP_
-#define _GDCMIO_GDCMHELPER_HPP_
+#ifndef __GDCMIO_HELPER_GDCMHELPER_HPP__
+#define __GDCMIO_HELPER_GDCMHELPER_HPP__
+
+#include <boost/algorithm/string/trim.hpp>
 
 // GDCM
 #include <gdcmAttribute.h>
@@ -17,15 +19,16 @@
 
 // fwTools
 #include <fwTools/DynamicType.hpp>
-#include <fwTools/Failed.hpp>
+#include <fwTools/Type.hpp>
 
 // fwData
-#include <fwData/Acquisition.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 
 #include "gdcmIO/config.hpp"
-#include "gdcmIO/DicomSCoord.hpp"
-#include "gdcmIO/DicomCodedAttribute.hpp"
+#include "gdcmIO/exception/Failed.hpp"
+#include "gdcmIO/container/DicomSCoord.hpp"
+#include "gdcmIO/container/DicomCodedAttribute.hpp"
 
 namespace gdcmIO
 {
@@ -40,8 +43,6 @@ namespace helper
  * also some tools for converting GDCM data to FW4SPL one.
  *
  * @class   GdcmData
- * @author  IRCAD (Research and Development Team).
- * @date    2011.
  */
 class GDCMIO_CLASS_API GdcmData
 {
@@ -71,13 +72,19 @@ public:
                 std::stringstream strm;
                 de.GetValue().Print(strm);
 
-                // Delete binary space padding
-                ::gdcm::String<> trimStr( strm.str() );
-                return trimStr.Trim();
+                return strm.str();
             }
         }
 
         return "";
+    }
+
+    template <uint16_t GRP, uint16_t EL>
+    GDCMIO_TEMPLATE_API static const std::string getTrimmedTagValue(const ::gdcm::DataSet & a_ds)
+    {
+        std::string val = getTagValue<GRP,EL>(a_ds);
+        ::boost::algorithm::trim(val);
+        return val;
     }
 
     /**
@@ -301,13 +308,11 @@ public:
     /**
      * @brief   Return the photometric interpretation of an acquisition.
      *
-     * @note Currently, return MONOCHROME2 (Other not supported).
-     *
-     * @param   a_serie Acquisition which contains image
+     * @param   a_image image
      *
      * @return  The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
-    GDCMIO_API static const gdcm::PhotometricInterpretation getPhotometricInterpretation(const ::fwData::Acquisition & a_serie);
+    GDCMIO_API static const gdcm::PhotometricInterpretation getPhotometricInterpretation(const ::fwData::Image & a_image);
 
     /**
      * @brief   compute the pixel type for a serie of files .
@@ -332,7 +337,7 @@ public:
      */
     GDCMIO_API static void convertGdcmToDataBuffer(::gdcm::Image &          a_gImg,
                                                    ::fwData::Image::sptr    a_dest,
-                                                    const void *            a_inBuffer) throw(::fwTools::Failed);
+                                                    const void *            a_inBuffer) throw(::gdcmIO::exception::Failed);
 
     /**
      * @brief   Convert a surface representation mode (FW4SPL) into recommended presentation type (DICOM).
@@ -359,8 +364,6 @@ public:
  * @brief   This class contains helpers to set data into DICOM form.
  *
  * @class   DicomTools
- * @author  IRCAD (Research and Development Team).
- * @date    2011.
  */
 class GDCMIO_CLASS_API DicomTools
 {
@@ -387,7 +390,7 @@ public:
      * @tparam  EL          Element group of the code sequence.
      */
     template <uint16_t GRP, uint16_t EL>
-    GDCMIO_TEMPLATE_API static void createCodeSequence(const DicomCodedAttribute &  a_codedAt,
+    GDCMIO_TEMPLATE_API static void createCodeSequence(const ::gdcmIO::container::DicomCodedAttribute &  a_codedAt,
                                                        ::gdcm::DataSet &            a_gDs)
     {
         createCodeSequence<GRP,EL>(a_codedAt.CV, a_codedAt.CSD, a_codedAt.CM, a_codedAt.CSV, a_gDs);
@@ -466,9 +469,9 @@ public:
      * @tparam  EL      Element group of the code sequence.
      */
     template <uint16_t GRP, uint16_t EL>
-    GDCMIO_TEMPLATE_API static DicomCodedAttribute readCodeSequence(const ::gdcm::DataSet & a_gDs)
+    GDCMIO_TEMPLATE_API static ::gdcmIO::container::DicomCodedAttribute readCodeSequence(const ::gdcm::DataSet & a_gDs)
     {
-        DicomCodedAttribute codedAttributes;
+        ::gdcmIO::container::DicomCodedAttribute codedAttributes;
 
         const ::gdcm::Tag codeSQTag(GRP,EL);
         if ( !a_gDs.FindDataElement(codeSQTag))
@@ -497,8 +500,6 @@ public:
  * @brief   This class contains helpers for DICOM Structured Reporting (SR).
  *
  * @class   DicomSR
- * @author  IRCAD (Research and Development Team).
- * @date    2011.
  */
 class GDCMIO_CLASS_API DicomSR
 {
@@ -541,7 +542,7 @@ public:
      * @param   a_instanceUID   Referenced SOP Instance UID.
      * @param   a_sq            Sequence of items where new item will be inserted.
      */
-    GDCMIO_API static void createSCOORD(const SCoord &                                  a_scoord,
+    GDCMIO_API static void createSCOORD(const ::gdcmIO::container::DicomSCoord &                                  a_scoord,
                                         const std::string &                             a_refFrames,
                                         const std::string &                             a_classUID,
                                         const std::string &                             a_instanceUID,
@@ -557,7 +558,7 @@ public:
      * @param   a_instanceUID   Referenced SOP instance UID of the image.
      * @param   a_gDs           Data set where SCOORD node will be written.
      */
-    GDCMIO_API static void createSCOORD(const SCoord &      a_scoord,
+    GDCMIO_API static void createSCOORD(const ::gdcmIO::container::DicomSCoord &      a_scoord,
                                         const std::string & a_refFrames,
                                         const std::string & a_classUID,
                                         const std::string & a_instanceUID,
@@ -573,7 +574,7 @@ public:
      * @param   a_instanceUID   Referenced SOP instance UID of the frame.
      * @param   a_gDs           Data set where SCOORD node will be written.
      */
-    GDCMIO_API static void createSCOORD(const SCoord &      a_scoord,
+    GDCMIO_API static void createSCOORD(const ::gdcmIO::container::DicomSCoord &      a_scoord,
                                         const std::string & a_classUID,
                                         const std::string & a_instanceUID,
                                         ::gdcm::DataSet &   a_gDs);
@@ -606,7 +607,7 @@ public:
      * @return  A frame number.
      */
     GDCMIO_API static unsigned int instanceUIDToFrameNumber(const std::string &                 a_instanceUID,
-                                                            const std::vector< std::string > &  a_referencedInstanceUIDs) throw(::fwTools::Failed);
+                                                            const std::vector< std::string > &  a_referencedInstanceUIDs) throw(::gdcmIO::exception::Failed);
     /**
      * @brief   Read a SCOORD from its data set.
      *
@@ -614,7 +615,7 @@ public:
      *
      * @return  A SCoord.
      */
-    GDCMIO_API static SCoord readSCOORD(const ::gdcm::DataSet & a_gDs);
+    GDCMIO_API static ::gdcmIO::container::DicomSCoord readSCOORD(const ::gdcm::DataSet & a_gDs);
 
 };
 
@@ -622,4 +623,4 @@ public:
 
 } // namespace gdcmIO
 
-#endif /*_GDCMIO_GDCMHELPER_HPP_*/
+#endif /*_GDCMIO_HELPER_GDCMHELPER_HPP_*/

@@ -8,6 +8,7 @@
 #define __FWMEDDATA_TYPES_HPP__
 
 #include <string>
+#include <vector>
 
 namespace fwMedData
 {

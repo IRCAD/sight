@@ -59,7 +59,7 @@ typedef  ::boost::bimaps::bimap<
 
 //------------------------------------------------------------------------------
 
-TypeTranslator PixelTypeTranslation = boost::assign::list_of< TypeTranslator::relation >
+TypeTranslator PixelTypeTranslation = ::boost::assign::list_of< TypeTranslator::relation >
 ( ::fwTools::Type::create("uint8"),     ::gdcm::PixelFormat::UINT8 )
 ( ::fwTools::Type::create("int8"),      ::gdcm::PixelFormat::INT8 )
 //( ::fwTools::Type::create("xxx"),     ::gdcm::PixelFormat::UINT12 )   // Unsupported by VTK Render
@@ -95,7 +95,9 @@ void GdcmData::setSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems >    a_sq,
 
 const ::fwTools::Type GdcmData::getPixelType(const ::gdcm::PixelFormat & gPixFormat)
 {
-    assert ( PixelTypeTranslation.right.find( gPixFormat.GetScalarType() )!= PixelTypeTranslation.right.end() );
+    SLM_ASSERT("ScalarType '"<<gPixFormat.GetScalarType() <<"' not found in PixelTypeTranslation",
+            PixelTypeTranslation.right.find( gPixFormat.GetScalarType() )!= PixelTypeTranslation.right.end() );
+
     return PixelTypeTranslation.right.at( gPixFormat.GetScalarType() );
 }
 
@@ -104,8 +106,8 @@ const ::fwTools::Type GdcmData::getPixelType(const ::gdcm::PixelFormat & gPixFor
 const ::fwTools::Type GdcmData::getPixelType(const ::gdcm::Image & a_gImg)
 {
     const ::gdcm::PixelFormat & gPixFormat = a_gImg.GetPixelFormat();
-
-    assert ( PixelTypeTranslation.right.find( gPixFormat.GetScalarType() )!= PixelTypeTranslation.right.end() );
+    SLM_ASSERT("ScalarType '"<<gPixFormat.GetScalarType() <<"' not found in PixelTypeTranslation",
+            PixelTypeTranslation.right.find( gPixFormat.GetScalarType() )!= PixelTypeTranslation.right.end() );
 
     return PixelTypeTranslation.right.at( gPixFormat.GetScalarType() );
 }
@@ -115,8 +117,8 @@ const ::fwTools::Type GdcmData::getPixelType(const ::gdcm::Image & a_gImg)
 const gdcm::PixelFormat GdcmData::getPixelType(const ::fwData::Image & a_img)
 {
     const ::gdcm::PixelFormat::ScalarType st = PixelTypeTranslation.left.at( a_img.getType() );
-
-    assert ( PixelTypeTranslation.right.find( st )!= PixelTypeTranslation.right.end() );
+    SLM_ASSERT("ScalarType '"<<st<<"' not found in PixelTypeTranslation",
+     PixelTypeTranslation.right.find( st )!= PixelTypeTranslation.right.end() );
 
     return gdcm::PixelFormat(st);
 }
@@ -166,7 +168,7 @@ gdcm::PixelFormat::ScalarType GdcmData::findPixelTypeFromFiles(const std::vector
     for(; it != keys.end(); ++it)
     {
         const char *filename = it->c_str();
-        assert( gScanner.IsKey( filename ) );
+        OSLM_ASSERT("'"<<filename<<"' isn't a key in the Mapping table.", gScanner.IsKey( filename ) );
 
         valueOf(std::string(gScanner.GetValue( filename, rescaleInterceptTag)), intercept);
         valueOf(std::string(gScanner.GetValue( filename, rescaleSlopeTag)), slope);
@@ -193,7 +195,8 @@ gdcm::PixelFormat::ScalarType GdcmData::findPixelTypeFromFiles(const std::vector
     }
     else
     {
-        SLM_FATAL_IF("Sorry, The pixel type can't be deduced from series (various pixel type exist).", pixelTypes.count( gdcm::PixelFormat::FLOAT64 ) != 0 );
+        SLM_FATAL_IF("Sorry, The pixel type can't be deduced from series (various pixel type exist).",
+                pixelTypes.count( gdcm::PixelFormat::FLOAT64 ) != 0 );
         outputPixelType = gdcm::PixelFormat::FLOAT64;
     }
     return (outputPixelType);
@@ -201,27 +204,30 @@ gdcm::PixelFormat::ScalarType GdcmData::findPixelTypeFromFiles(const std::vector
 
 //------------------------------------------------------------------------------
 
-const gdcm::PhotometricInterpretation GdcmData::getPhotometricInterpretation(const ::fwData::Acquisition & a_serie)
+const gdcm::PhotometricInterpretation GdcmData::getPhotometricInterpretation(const ::fwData::Image & a_image)
 {
-    // TODO: uncomment if FW4SPL handle color image.
-//    unsigned int components = a_serie.getNumberOfScalarPerPixel();
-//
-//    // Attempt a guess (VTK do the same choice)
-//    switch (components)
-//    {
-//    case 1:// It could well be MONOCHROME1
-//        return ::gdcm::PhotometricInterpretation::MONOCHROME2;
-//    case 3:// It could well be YBR
-//        return ::gdcm::PhotometricInterpretation::RGB;
-//    case 4:// It could well be CMYK
-//        return ::gdcm::PhotometricInterpretation::ARGB;
-//    default:
-//        OSLM_ERROR("Photometric interpretation not found");
-//        return ::gdcm::PhotometricInterpretation::UNKNOW;
-//    }
+    gdcm::PhotometricInterpretation pi;
+    size_t components = a_image.getNumberOfComponents();
 
-    // FW4SPL just handle grey level image and lose color image data.
-    return ::gdcm::PhotometricInterpretation::MONOCHROME2;
+    // Attempt a guess (VTK do the same choice)
+    switch (components)
+    {
+    case 1:// It could well be MONOCHROME1
+        pi = ::gdcm::PhotometricInterpretation::MONOCHROME2;
+        break;
+    case 3:// It could well be YBR
+        pi = ::gdcm::PhotometricInterpretation::RGB;
+        break;
+    case 4:// It could well be CMYK
+        pi = ::gdcm::PhotometricInterpretation::ARGB;
+        break;
+    default:
+        OSLM_ERROR("Photometric interpretation not found");
+        pi = ::gdcm::PhotometricInterpretation::UNKNOW;
+        break;
+    }
+
+    return pi;
 }
 
 /**
@@ -285,7 +291,7 @@ struct ColorToGrayFunctor
      * @brief   Convert color image to grayscale image
      */
     template<class PIXELTYPE>
-    void operator()(Parameter & p) throw(::fwTools::Failed)
+    void operator()(Parameter & p) throw(::gdcmIO::exception::Failed)
     {
         // Cast buffers
         PIXELTYPE       * srcTyped      = (PIXELTYPE *) p.a_src;
@@ -305,7 +311,7 @@ struct ColorToGrayFunctor
         else if ( p.gPIType == ::gdcm::PhotometricInterpretation::HSV )
             HSVtoGray<PIXELTYPE>(srcTyped, dstTyped, dstTypedEnd, jump);
         else
-            throw ::fwTools::Failed("Photometric interpretation not handle");
+            throw ::gdcmIO::exception::Failed("Photometric interpretation not handle");
     }
 };
 
@@ -313,17 +319,15 @@ struct ColorToGrayFunctor
 
 void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
                                        ::fwData::Image::sptr a_dest,
-                                        const void * a_inBuffer) throw(::fwTools::Failed)
+                                        const void * a_inBuffer) throw(::gdcmIO::exception::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(a_inBuffer);
+    SLM_ASSERT("Buffer not instanced.", a_inBuffer);
 
     // Get color space
     ::gdcm::PhotometricInterpretation gPI = a_gImg.GetPhotometricInterpretation();
 
     if (gPI == ::gdcm::PhotometricInterpretation::MONOCHROME1)
-        throw ::fwTools::Failed("Monochrome 1 not handled");
+        throw ::gdcmIO::exception::Failed("Monochrome 1 not handled");
 
     // First, convert LUT to RGB image
     if ( gPI == ::gdcm::PhotometricInterpretation::PALETTE_COLOR )
@@ -344,7 +348,7 @@ void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
 
     const unsigned int      bytesPerComponent   = pixelType.sizeOf();
     if (bytesPerComponent > 4)
-        throw ::fwTools::Failed("Pixel type not handled : " + pixelType.string());
+        throw ::gdcmIO::exception::Failed("Pixel type not handled : " + pixelType.string());
 
     // Initialize fwData::Image Buffer
     void * destBuffer;
@@ -354,7 +358,7 @@ void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
     }
     catch(...)
     {
-        throw ::fwTools::Failed("Need more memory");
+        throw ::gdcmIO::exception::Failed("Need more memory");
     }
 
     // Translate GDCM into fwData::Image Buffer
@@ -378,14 +382,14 @@ void GdcmData::convertGdcmToDataBuffer(::gdcm::Image & a_gImg,
         {
             ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ColorToGrayFunctor >::invoke(a_dest->getPixelType(), saverParam);
         }
-        catch (::fwTools::Failed & e)
+        catch (::gdcmIO::exception::Failed & e)
         {
             throw;
         }
         break;
     }
     default:
-        throw ::fwTools::Failed("Color space not handled");
+        throw ::gdcmIO::exception::Failed("Color space not handled");
     }
 
     delete (char*) a_inBuffer;
@@ -494,7 +498,7 @@ const ::gdcm::DataSet * DicomSR::getCodedContainer(const std::string &      a_co
         {
             const ::gdcm::Item &    gItCode = gSqContent->GetItem(1);
             const ::gdcm::DataSet & gDsCode = gItCode.GetNestedDataSet();
-            if (GdcmData::getTagValue<0x0008,0x0100>(gDsCode) == a_codeValue)// Code Value
+            if (GdcmData::getTrimmedTagValue<0x0008,0x0100>(gDsCode) == a_codeValue)// Code Value
             {
                 return &a_ds;
             }
@@ -526,7 +530,7 @@ const ::gdcm::DataSet * DicomSR::getTypedContainer(const std::string &      a_ty
 {
     SLM_TRACE_FUNC();
 
-    if (GdcmData::getTagValue<0x0040,0xa040>(a_ds) == a_typeValue)  // Type Value
+    if (GdcmData::getTrimmedTagValue<0x0040,0xa040>(a_ds) == a_typeValue)  // Type Value
     {// Search typed container at this level
         return &a_ds;
     }
@@ -552,7 +556,7 @@ const ::gdcm::DataSet * DicomSR::getTypedContainer(const std::string &      a_ty
 
 //------------------------------------------------------------------------------
 
-void DicomSR::createSCOORD(const SCoord &                                   a_scoord,
+void DicomSR::createSCOORD(const ::gdcmIO::container::DicomSCoord &                                   a_scoord,
                            const std::string &                              a_refFrame,
                            const std::string &                              a_classUID,
                            const std::string &                              a_instanceUID,
@@ -566,10 +570,14 @@ void DicomSR::createSCOORD(const SCoord &                                   a_sc
     ::gdcm::DataSet & gDsSCOORD = gItSCOORD.GetNestedDataSet();
 
     // Relationship Type
-    GdcmData::setTagValue<0x0040,0xa010>(DicomDictionarySR::getRelationshipString(DicomDictionarySR::INFERRED_FROM),gDsSCOORD);
+    GdcmData::setTagValue<0x0040,0xa010>(
+            ::gdcmIO::container::DicomDictionarySR::getRelationshipString(
+                    ::gdcmIO::container::DicomDictionarySR::INFERRED_FROM), gDsSCOORD);
 
     // Type Value
-    GdcmData::setTagValue<0x0040,0xa040>(DicomDictionarySR::getTypeString(DicomDictionarySR::SCOORD),               gDsSCOORD);
+    GdcmData::setTagValue<0x0040,0xa040>(
+            ::gdcmIO::container::DicomDictionarySR::getTypeString(
+                    ::gdcmIO::container::DicomDictionarySR::SCOORD), gDsSCOORD);
 
     // Concept Name Code Sequence
     // Inferred from PS 3.3 C.17.3.2.1 and 3.16 Context ID 7003
@@ -578,12 +586,17 @@ void DicomSR::createSCOORD(const SCoord &                                   a_sc
     // Write coordinates
     const unsigned int dataSize = a_scoord.getGraphicDataSize();
     unsigned int nbCoords;
-    if (a_scoord.getGraphicType() == DicomDictionarySR::getGraphicTypeString(DicomDictionarySR::POINT))
+    if (a_scoord.getGraphicType() == ::gdcmIO::container::DicomDictionarySR::getGraphicTypeString(
+            ::gdcmIO::container::DicomDictionarySR::POINT))
+    {
         nbCoords = 2;
+    }
     else
+    {
         nbCoords = dataSize;
+    }
 
-    assert( nbCoords%2 == 0 );
+    OSLM_ASSERT("'"<<nbCoords<<"' isn't even.", nbCoords%2 == 0 );
 
     float * graphicData = new float[nbCoords];
     for (unsigned int i = 0; i < nbCoords; ++i)
@@ -611,7 +624,7 @@ void DicomSR::createSCOORD(const SCoord &                                   a_sc
 
 //------------------------------------------------------------------------------
 
-void DicomSR::createSCOORD(const SCoord &      a_scoord,
+void DicomSR::createSCOORD(const ::gdcmIO::container::DicomSCoord &      a_scoord,
                            const std::string & a_refFrame,
                            const std::string & a_classUID,
                            const std::string & a_instanceUID,
@@ -632,7 +645,7 @@ void DicomSR::createSCOORD(const SCoord &      a_scoord,
 
 //------------------------------------------------------------------------------
 
-void DicomSR::createSCOORD(const SCoord &       a_scoord,
+void DicomSR::createSCOORD(const ::gdcmIO::container::DicomSCoord &       a_scoord,
                            const std::string &  a_classUID,
                            const std::string &  a_instanceUID,
                            ::gdcm::DataSet &    a_gDs)
@@ -662,10 +675,14 @@ void DicomSR::createIMAGE(const std::string &                               a_re
     ::gdcm::DataSet &   gDsImage = gItImage.GetNestedDataSet();
 
     // Relationship Type
-    GdcmData::setTagValue<0x0040,0xa010>(DicomDictionarySR::getRelationshipString(DicomDictionarySR::SELECTED_FROM),gDsImage);
+    GdcmData::setTagValue<0x0040,0xa010>(
+            ::gdcmIO::container::DicomDictionarySR::getRelationshipString(
+                    ::gdcmIO::container::DicomDictionarySR::SELECTED_FROM), gDsImage);
 
     // Type Value
-    GdcmData::setTagValue<0x0040,0xa040>(DicomDictionarySR::getTypeString(DicomDictionarySR::IMAGE),                gDsImage);
+    GdcmData::setTagValue<0x0040,0xa040>(
+            ::gdcmIO::container::DicomDictionarySR::getTypeString(
+                    ::gdcmIO::container::DicomDictionarySR::IMAGE), gDsImage);
 
     //** Create a SQ which contains referenced frames of an image **//
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > gSqRefImage = new ::gdcm::SequenceOfItems();
@@ -677,10 +694,10 @@ void DicomSR::createIMAGE(const std::string &                               a_re
         ::gdcm::DataSet &   gDsRefImage = gItRefImage.GetNestedDataSet();
 
         // Referenced SOP Class UID
-        GdcmData::setTagValue<0x0008,0x1150>(a_classUID,                gDsRefImage);   // Type 1
+        GdcmData::setTagValue<0x0008,0x1150>(a_classUID, gDsRefImage);   // Type 1
 
         // Referenced SOP Instance UID
-        GdcmData::setTagValue<0x0008,0x1155>(a_instanceUID,             gDsRefImage);   // Type 1
+        GdcmData::setTagValue<0x0008,0x1155>(a_instanceUID, gDsRefImage);   // Type 1
 
         if ( !a_refFrame.empty() )
         {
@@ -692,7 +709,7 @@ void DicomSR::createIMAGE(const std::string &                               a_re
 
         gSqRefImage->AddItem(gItRefImage);
 
-        GdcmData::setSQ<0x0008,0x1199>(gSqRefImage,         gDsImage);  // Referenced SOP Sequence
+        GdcmData::setSQ<0x0008,0x1199>(gSqRefImage, gDsImage);  // Referenced SOP Sequence
     } // End container of referenced frames
 
     a_sq->AddItem(gItImage);
@@ -701,7 +718,7 @@ void DicomSR::createIMAGE(const std::string &                               a_re
 //------------------------------------------------------------------------------
 
 unsigned int DicomSR::instanceUIDToFrameNumber(const std::string &                  a_instanceUID,
-                                               const std::vector< std::string > &   a_referencedInstanceUIDs) throw(::fwTools::Failed)
+                                               const std::vector< std::string > &   a_referencedInstanceUIDs) throw(::gdcmIO::exception::Failed)
 {
     unsigned int                        frameNumber                 = 0;
     const unsigned int                  numberOfFrames              = a_referencedInstanceUIDs.size();
@@ -725,7 +742,7 @@ unsigned int DicomSR::instanceUIDToFrameNumber(const std::string &              
     }
     else
     {
-        throw ::fwTools::Failed("Referenced image not found");
+        throw ::gdcmIO::exception::Failed("Referenced image not found");
     }
 
     return 0;
@@ -733,12 +750,12 @@ unsigned int DicomSR::instanceUIDToFrameNumber(const std::string &              
 
 //------------------------------------------------------------------------------
 
-SCoord DicomSR::readSCOORD(const ::gdcm::DataSet & a_gDs)
+::gdcmIO::container::DicomSCoord DicomSR::readSCOORD(const ::gdcm::DataSet & a_gDs)
 {
-    SCoord scoord;
+    ::gdcmIO::container::DicomSCoord scoord;
 
     // Graphic Type
-    scoord.setGraphicType( GdcmData::getTagValue<0x0070,0x0023>(a_gDs) );
+    scoord.setGraphicType( GdcmData::getTrimmedTagValue<0x0070,0x0023>(a_gDs) );
 
     // Graphic Data
     ::gdcm::Attribute<0x0070,0x0022>    gAtGD;

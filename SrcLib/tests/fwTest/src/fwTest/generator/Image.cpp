@@ -74,6 +74,9 @@ void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type typ
 
     ::fwData::Array::sptr array = image->getDataArray();
     randomizeArray(array);
+
+    image->setWindowWidth( (rand()%200) / 10. + 1);
+    image->setWindowCenter((rand()%200 - 100) / 10.);
 }
 
 //------------------------------------------------------------------------------

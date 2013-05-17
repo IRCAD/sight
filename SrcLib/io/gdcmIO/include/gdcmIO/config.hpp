@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GDCMIO_CONFIG_HPP_
-#define _GDCMIO_CONFIG_HPP_
+#ifndef __GDCMIO_CONFIG_HPP__
+#define __GDCMIO_CONFIG_HPP__
 
 
 #ifdef _WIN32
@@ -46,5 +46,5 @@
 #endif
 
 
-#endif //_GDCMIO_CONFIG_HPP_
+#endif //_GDCMIO_CONFIG_HPP__
 

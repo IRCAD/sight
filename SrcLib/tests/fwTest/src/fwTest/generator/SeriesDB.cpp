@@ -73,7 +73,7 @@ namespace generator
     const std::string PATIENT_NAME          = "NomSeriesDB1" ;
     const std::string PATIENT_FIRSTNAME     = "PrenomSeriesDB1" ;
     const std::string PATIENT_ID            = "4564383757" ;
-    const std::string PATIENT_BIRTHDATE     = "19710418 095318.185236";
+    const std::string PATIENT_BIRTHDATE     = "19710418";
     const std::string PATIENT_SEX           = "O ";
 
     patient->setName( PATIENT_NAME + "^" + PATIENT_FIRSTNAME );
@@ -100,7 +100,7 @@ namespace generator
     const std::string UID         = "1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str() ;
     const std::string DATE        = "20130418";
     const std::string TIME        = "095948.689872 ";
-    const std::string PHYSICIAN   = "Dr Jekyl" ;
+    const std::string PHYSICIAN   = "Dr^Jekyl" ;
     const std::string DESCRIPTION = "Say 33. " ;
     const std::string PATIENT_AGE = "042Y" ;
 
@@ -147,9 +147,9 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     const std::string DESCRIPTION = "Description ";
 
     ::fwMedData::DicomValuesType performingPhysiciansName;
-    performingPhysiciansName.push_back("Dr Jekyl");
-    performingPhysiciansName.push_back("Dr House");
-    performingPhysiciansName.push_back("Dr Einstein ");
+    performingPhysiciansName.push_back("Dr^Jekyl");
+    performingPhysiciansName.push_back("Dr^House");
+    performingPhysiciansName.push_back("Dr^Einstein ");
     series->setPerformingPhysiciansName(performingPhysiciansName);
 
     series->setInstanceUID(UID);
@@ -221,7 +221,7 @@ void SeriesDB::generateReconstruction(::fwData::Reconstruction::sptr rec)
 {
     rec->setIsVisible(true);
     rec->setOrganName("liver");
-    rec->setStructureType("LIVER");
+    rec->setStructureType("Liver");
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
     Image::generateRandomImage(img, ::fwTools::Type::create("uint16"));
