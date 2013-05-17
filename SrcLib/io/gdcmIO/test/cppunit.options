@@ -1,7 +1,6 @@
 CLASSTEST=[
-          #'DicomTest',
-          #'RealDataDicomTest',
           'SeriesDBReaderTest',
+          'WriterReaderTest',
           ]
 USE = ['boost']
 LIB = [
