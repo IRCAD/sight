@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,18 +49,22 @@ public:
      * @name implementation of ::fwTools::IBufferManager hooks
      * @{ */
 
-    FWMEMORY_API virtual bool registerBuffer(void ** buffer, IBufferManager::LockCountFunctionType lockCount);
-    FWMEMORY_API virtual bool unregisterBuffer(void ** buffer);
+    FWMEMORY_API virtual bool registerBuffer(::fwTools::IBufferManager::BufferPtrType buffer,
+                                             IBufferManager::LockCountFunctionType lockCount);
+    FWMEMORY_API virtual bool unregisterBuffer(::fwTools::IBufferManager::BufferPtrType buffer);
 
-    FWMEMORY_API virtual bool allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy);
-    FWMEMORY_API virtual bool setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy);
-    FWMEMORY_API virtual bool reallocateBuffer(void ** buffer, SizeType newSize);
-    FWMEMORY_API virtual bool destroyBuffer(void ** buffer);
+    FWMEMORY_API virtual bool allocateBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType size,
+                                             ::fwTools::BufferAllocationPolicy::sptr policy);
+    FWMEMORY_API virtual bool setBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType size,
+                                        ::fwTools::BufferAllocationPolicy::sptr policy);
+    FWMEMORY_API virtual bool reallocateBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType newSize);
+    FWMEMORY_API virtual bool destroyBuffer(::fwTools::IBufferManager::BufferPtrType buffer);
 
-    FWMEMORY_API virtual bool swapBuffer(void ** bufA, void ** bufB);
+    FWMEMORY_API virtual bool swapBuffer(::fwTools::IBufferManager::BufferPtrType bufA,
+                                         ::fwTools::IBufferManager::BufferPtrType bufB);
 
-    FWMEMORY_API virtual bool lockBuffer(const void * const * buffer);
-    FWMEMORY_API virtual bool unlockBuffer(const void * const * buffer);
+    FWMEMORY_API virtual bool lockBuffer(::fwTools::IBufferManager::ConstBufferPtrType buffer);
+    FWMEMORY_API virtual bool unlockBuffer(::fwTools::IBufferManager::ConstBufferPtrType buffer);
 
     /**  @} */
 
@@ -76,8 +80,8 @@ public:
      *
      * @return true on success
      * @{ */
-    FWMEMORY_API bool dumpBuffer(const void * const *  buffer);
-    FWMEMORY_API bool restoreBuffer(const void * const *  buffer);
+    FWMEMORY_API bool dumpBuffer(::fwTools::IBufferManager::ConstBufferPtrType  buffer);
+    FWMEMORY_API bool restoreBuffer(::fwTools::IBufferManager::ConstBufferPtrType  buffer);
     /**  @} */
 
     /**
@@ -91,8 +95,10 @@ public:
      *
      * @return true on success
      * @{ */
-    FWMEMORY_API bool writeBuffer(const void * buffer, SizeType size, ::boost::filesystem::path &path);
-    FWMEMORY_API bool readBuffer(void * buffer, SizeType size, ::boost::filesystem::path &path);
+    FWMEMORY_API bool writeBuffer(::fwTools::IBufferManager::ConstBufferType buffer, SizeType size,
+                                  ::boost::filesystem::path &path);
+    FWMEMORY_API bool readBuffer(::fwTools::IBufferManager::BufferType buffer, SizeType size,
+                                 ::boost::filesystem::path &path);
     /**  @} */
 
 
@@ -138,12 +144,13 @@ public:
     /**
      * @brief Returns true if 'buffer' is dumped
      */
-    FWMEMORY_API bool isDumped(const void * const * const  buffer) const;
+    FWMEMORY_API bool isDumped(const ::fwTools::IBufferManager::ConstBufferPtrType buffer) const;
 
     /**
      * @brief Returns the path of the file containing the dumped buffer
      */
-    FWMEMORY_API ::boost::filesystem::path getDumpedFilePath(const void * const * const  buffer) const;
+    FWMEMORY_API ::boost::filesystem::path
+        getDumpedFilePath(const ::fwTools::IBufferManager::ConstBufferPtrType buffer) const;
 
 protected:
 
@@ -155,8 +162,9 @@ protected:
      *
      * Used by public dump/restoreBuffer methods
      * @{ */
-    FWMEMORY_API bool dumpBuffer(BufferInfo & info, void ** buffer);
-    FWMEMORY_API bool restoreBuffer(BufferInfo & info, void ** buffer, SizeType size = 0);
+    FWMEMORY_API bool dumpBuffer(BufferInfo & info, ::fwTools::IBufferManager::BufferPtrType buffer);
+    FWMEMORY_API bool restoreBuffer(BufferInfo & info, ::fwTools::IBufferManager::BufferPtrType buffer,
+                                    SizeType size = 0);
     /**  @} */
 
 

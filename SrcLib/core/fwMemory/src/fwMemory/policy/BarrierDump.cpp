@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ BarrierDump::BarrierDump() :
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void BarrierDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
@@ -47,7 +47,7 @@ void BarrierDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void BarrierDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
@@ -61,7 +61,7 @@ void BarrierDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeT
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize )
+void BarrierDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += newSize;
@@ -75,7 +75,7 @@ void BarrierDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::destroyRequest( BufferInfo &info, void **buffer )
+void BarrierDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
     if(info.isDumped)
     {
@@ -87,14 +87,14 @@ void BarrierDump::destroyRequest( BufferInfo &info, void **buffer )
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::lockRequest( BufferInfo &info, void **buffer )
+void BarrierDump::lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::unlockRequest( BufferInfo &info, void **buffer )
+void BarrierDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -102,7 +102,7 @@ void BarrierDump::unlockRequest( BufferInfo &info, void **buffer )
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::dumpSuccess( BufferInfo &info, void **buffer )
+void BarrierDump::dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
     m_totalDumped += info.size;
 }
@@ -110,7 +110,7 @@ void BarrierDump::dumpSuccess( BufferInfo &info, void **buffer )
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::restoreSuccess( BufferInfo &info, void **buffer )
+void BarrierDump::restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
     m_totalDumped -= info.size;
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ ValveDump::ValveDump() :
 
 //------------------------------------------------------------------------------
 
-void ValveDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void ValveDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply((size > info.size) ? size - info.size : 0);
 }
@@ -53,7 +53,7 @@ void ValveDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo::
 //------------------------------------------------------------------------------
 
 
-void ValveDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void ValveDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -61,7 +61,7 @@ void ValveDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeTyp
 //------------------------------------------------------------------------------
 
 
-void ValveDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize )
+void ValveDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     this->apply((newSize > info.size) ? newSize - info.size : 0);
 }
@@ -69,21 +69,21 @@ void ValveDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::
 //------------------------------------------------------------------------------
 
 
-void ValveDump::destroyRequest( BufferInfo &info, void **buffer )
+void ValveDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::lockRequest( BufferInfo &info, void **buffer )
+void ValveDump::lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::unlockRequest( BufferInfo &info, void **buffer )
+void ValveDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -91,14 +91,14 @@ void ValveDump::unlockRequest( BufferInfo &info, void **buffer )
 //------------------------------------------------------------------------------
 
 
-void ValveDump::dumpSuccess( BufferInfo &info, void **buffer )
+void ValveDump::dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::restoreSuccess( BufferInfo &info, void **buffer )
+void ValveDump::restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 

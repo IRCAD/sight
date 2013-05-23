@@ -192,11 +192,13 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
             = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
 
         // Test if buffer is not already dumped
-        const bool isDumped =  manager && manager->isDumped( (void ** ) buffObj->getBufferPointer() );
+        const bool isDumped =  manager
+            && manager->isDumped( (::fwTools::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
 
         if(isDumped)
         {
-            const ::boost::filesystem::path fileSrc = manager->getDumpedFilePath( (void ** ) buffObj->getBufferPointer() );
+            const ::boost::filesystem::path fileSrc
+                = manager->getDumpedFilePath( (::fwTools::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
             bufFile = std::string("fwAtomsArchive/") + fileSrc.filename().string();
             m_archive->putFile(fileSrc, bufFile);
         }

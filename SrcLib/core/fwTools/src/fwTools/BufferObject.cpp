@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -76,7 +76,7 @@ void BufferObject::destroy()
 
 //------------------------------------------------------------------------------
 
-void BufferObject::setBuffer(void *buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+void BufferObject::setBuffer(::fwTools::IBufferManager::BufferType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
     m_allocPolicy = policy;
     m_size   = size;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ static IPolicy::Register<AlwaysDump> registerFactory(AlwaysDump::leafClassname()
 
 //------------------------------------------------------------------------------
 
-void AlwaysDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void AlwaysDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -30,7 +30,7 @@ void AlwaysDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo:
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void AlwaysDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -38,7 +38,7 @@ void AlwaysDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeTy
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize )
+void AlwaysDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     this->apply();
 }
@@ -46,7 +46,7 @@ void AlwaysDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo:
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::destroyRequest( BufferInfo &info, void **buffer )
+void AlwaysDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -54,7 +54,7 @@ void AlwaysDump::destroyRequest( BufferInfo &info, void **buffer )
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::lockRequest( BufferInfo &info, void **buffer )
+void AlwaysDump::lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -62,7 +62,7 @@ void AlwaysDump::lockRequest( BufferInfo &info, void **buffer )
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::unlockRequest( BufferInfo &info, void **buffer )
+void AlwaysDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -70,14 +70,14 @@ void AlwaysDump::unlockRequest( BufferInfo &info, void **buffer )
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::dumpSuccess( BufferInfo &info, void **buffer )
+void AlwaysDump::dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::restoreSuccess( BufferInfo &info, void **buffer )
+void AlwaysDump::restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 

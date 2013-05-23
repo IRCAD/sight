@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ BufferManager::~BufferManager()
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::registerBuffer(void ** buffer, IBufferManager::LockCountFunctionType lockCount)
+bool BufferManager::registerBuffer(::fwTools::IBufferManager::BufferPtrType buffer, IBufferManager::LockCountFunctionType lockCount)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -47,7 +47,7 @@ bool BufferManager::registerBuffer(void ** buffer, IBufferManager::LockCountFunc
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::unregisterBuffer(void ** buffer)
+bool BufferManager::unregisterBuffer(::fwTools::IBufferManager::BufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
 
@@ -67,7 +67,7 @@ bool BufferManager::unregisterBuffer(void ** buffer)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+bool BufferManager::allocateBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -94,7 +94,7 @@ bool BufferManager::allocateBuffer(void ** buffer, SizeType size, ::fwTools::Buf
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+bool BufferManager::setBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -121,7 +121,7 @@ bool BufferManager::setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAl
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::reallocateBuffer(void ** buffer, SizeType newSize)
+bool BufferManager::reallocateBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType newSize)
 {
     SLM_TRACE_FUNC();
 
@@ -144,7 +144,7 @@ bool BufferManager::reallocateBuffer(void ** buffer, SizeType newSize)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::destroyBuffer(void ** buffer)
+bool BufferManager::destroyBuffer(::fwTools::IBufferManager::BufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -170,7 +170,7 @@ bool BufferManager::destroyBuffer(void ** buffer)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::swapBuffer(void ** bufA, void ** bufB)
+bool BufferManager::swapBuffer(::fwTools::IBufferManager::BufferPtrType bufA, ::fwTools::IBufferManager::BufferPtrType bufB)
 {
     SLM_TRACE_FUNC();
     BufferInfo & infoA = m_bufferInfos[bufA];
@@ -187,11 +187,11 @@ bool BufferManager::swapBuffer(void ** bufA, void ** bufB)
 }
 //-----------------------------------------------------------------------------
 
-bool BufferManager::lockBuffer(const void * const * buffer)
+bool BufferManager::lockBuffer(::fwTools::IBufferManager::ConstBufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
 
-    void **castedBuffer = const_cast<void **>(buffer);
+    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     m_dumpPolicy->lockRequest( info, castedBuffer );
@@ -211,11 +211,11 @@ bool BufferManager::lockBuffer(const void * const * buffer)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::unlockBuffer(const void * const * buffer)
+bool BufferManager::unlockBuffer(::fwTools::IBufferManager::ConstBufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
 
-    void **castedBuffer = const_cast<void **>(buffer);
+    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     m_dumpPolicy->unlockRequest( info, castedBuffer );
@@ -226,10 +226,10 @@ bool BufferManager::unlockBuffer(const void * const * buffer)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::dumpBuffer(const void * const *  buffer)
+bool BufferManager::dumpBuffer(::fwTools::IBufferManager::ConstBufferPtrType  buffer)
 {
 
-    void **castedBuffer = const_cast<void **>(buffer);
+    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     return this->dumpBuffer(info, castedBuffer);
@@ -238,7 +238,7 @@ bool BufferManager::dumpBuffer(const void * const *  buffer)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, void ** buffer)
+bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, ::fwTools::IBufferManager::BufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
     if ( info.isDumped || info.lockCount() > 0 || info.size == 0 )
@@ -267,9 +267,9 @@ bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, void ** buffer)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::restoreBuffer(const void * const *  buffer)
+bool BufferManager::restoreBuffer(::fwTools::IBufferManager::ConstBufferPtrType  buffer)
 {
-    void **castedBuffer = const_cast<void **>(buffer);
+    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     return this->restoreBuffer(info, castedBuffer);
@@ -278,7 +278,7 @@ bool BufferManager::restoreBuffer(const void * const *  buffer)
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info, void ** buffer, BufferManager::SizeType allocSize)
+bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferManager::SizeType allocSize)
 {
     SLM_TRACE_FUNC();
 
@@ -308,7 +308,7 @@ bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info, void ** buff
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::writeBuffer(const void * buffer, SizeType size, ::boost::filesystem::path &path)
+bool BufferManager::writeBuffer(::fwTools::IBufferManager::ConstBufferType buffer, SizeType size, ::boost::filesystem::path &path)
 {
     ::boost::filesystem::ofstream fs(path, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Memory management : Unable to open " << path, !fs.good());
@@ -321,7 +321,7 @@ bool BufferManager::writeBuffer(const void * buffer, SizeType size, ::boost::fil
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::readBuffer(void * buffer, SizeType size, ::boost::filesystem::path &path)
+bool BufferManager::readBuffer(::fwTools::IBufferManager::BufferType buffer, SizeType size, ::boost::filesystem::path &path)
 {
     ::boost::filesystem::ifstream fs(path, std::ios::in|std::ios::binary|std::ios::ate);
     FW_RAISE_IF("Unable to read " << path, !fs.good());
@@ -416,9 +416,9 @@ BufferManager::SizeType BufferManager::getManagedBufferSize() const
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::isDumped(const void * const * const  buffer) const
+bool BufferManager::isDumped(const ::fwTools::IBufferManager::ConstBufferPtrType buffer) const
 {
-    void **castedBuffer = const_cast<void **>(buffer);
+    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
     BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
     FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
     return iterInfo->second.isDumped;
@@ -426,9 +426,9 @@ bool BufferManager::isDumped(const void * const * const  buffer) const
 
 //-----------------------------------------------------------------------------
 
-::boost::filesystem::path BufferManager::getDumpedFilePath(const void * const * const  buffer) const
+::boost::filesystem::path BufferManager::getDumpedFilePath(const ::fwTools::IBufferManager::ConstBufferPtrType buffer) const
 {
-    void **castedBuffer = const_cast<void **>(buffer);
+    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
     BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
     FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
     return iterInfo->second.dumpedFile;

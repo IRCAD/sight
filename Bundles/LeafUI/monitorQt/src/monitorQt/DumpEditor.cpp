@@ -670,7 +670,7 @@ void DumpEditor::changeStatus( int index )
 {
     SLM_TRACE_FUNC();
 
-    void** selectedBuffer = m_objectsUID[index];
+    ::fwTools::IBufferManager::BufferPtrType selectedBuffer = m_objectsUID[index];
     ::fwTools::IBufferManager::sptr manager = ::fwTools::IBufferManager::getCurrent();
     ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
     if(buffManager)

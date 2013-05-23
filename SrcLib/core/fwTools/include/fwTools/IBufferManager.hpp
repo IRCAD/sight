@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,6 +37,11 @@ namespace fwTools
 class FWTOOLS_CLASS_API IBufferManager : public ::fwCore::BaseObject
 {
 public:
+    typedef void* BufferType;
+    typedef const void* ConstBufferType;
+    typedef BufferType* BufferPtrType;
+    typedef void const * const * ConstBufferPtrType;
+
     typedef size_t SizeType;
     typedef boost::function< long() > LockCountFunctionType;
 
@@ -53,7 +58,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool registerBuffer(void ** buffer, LockCountFunctionType lockCount){
+    virtual bool registerBuffer(BufferPtrType buffer, LockCountFunctionType lockCount){
         FwCoreNotUsedMacro(buffer);
         FwCoreNotUsedMacro(lockCount);
         return true;
@@ -66,7 +71,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool unregisterBuffer(void ** buffer){
+    virtual bool unregisterBuffer(BufferPtrType buffer){
         FwCoreNotUsedMacro(buffer);
         return true;
     }
@@ -80,7 +85,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool allocateBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+    virtual bool allocateBuffer(BufferPtrType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
     {
         FwCoreNotUsedMacro(buffer);
         FwCoreNotUsedMacro(size);
@@ -97,7 +102,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool setBuffer(void ** buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+    virtual bool setBuffer(BufferPtrType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
     {
         FwCoreNotUsedMacro(buffer);
         FwCoreNotUsedMacro(size);
@@ -113,7 +118,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool reallocateBuffer(void ** buffer, SizeType newSize)
+    virtual bool reallocateBuffer(BufferPtrType buffer, SizeType newSize)
     {
         FwCoreNotUsedMacro(buffer);
         FwCoreNotUsedMacro(newSize);
@@ -128,7 +133,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool destroyBuffer(void ** buffer)
+    virtual bool destroyBuffer(BufferPtrType buffer)
     {
         FwCoreNotUsedMacro(buffer);
         return true;
@@ -143,7 +148,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool swapBuffer(void ** bufA, void ** bufB)
+    virtual bool swapBuffer(BufferPtrType bufA, BufferPtrType bufB)
     {
         FwCoreNotUsedMacro(bufA);
         FwCoreNotUsedMacro(bufB);
@@ -158,7 +163,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool lockBuffer(const void * const * buffer)
+    virtual bool lockBuffer(ConstBufferPtrType buffer)
     {
         FwCoreNotUsedMacro(buffer);
         return true;
@@ -172,7 +177,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool unlockBuffer(const void * const * buffer)
+    virtual bool unlockBuffer(ConstBufferPtrType buffer)
     {
         FwCoreNotUsedMacro(buffer);
         return true;

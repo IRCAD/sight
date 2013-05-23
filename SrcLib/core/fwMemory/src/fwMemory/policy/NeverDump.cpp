@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,56 +18,56 @@ static IPolicy::Register<NeverDump> registerFactory(NeverDump::leafClassname());
 
 //------------------------------------------------------------------------------
 
-void NeverDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void NeverDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void NeverDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize )
+void NeverDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::destroyRequest( BufferInfo &info, void **buffer )
+void NeverDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::lockRequest( BufferInfo &info, void **buffer )
+void NeverDump::lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::unlockRequest( BufferInfo &info, void **buffer )
+void NeverDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::dumpSuccess( BufferInfo &info, void **buffer )
+void NeverDump::dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::restoreSuccess( BufferInfo &info, void **buffer )
+void NeverDump::restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
 {
 }
 

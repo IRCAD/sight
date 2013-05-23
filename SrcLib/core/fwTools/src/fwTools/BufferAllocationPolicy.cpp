@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@ namespace fwTools
 {
 
 
-void BufferMallocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferMallocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
     buffer = malloc( size );
     if (buffer == NULL && size > 0)
@@ -26,7 +26,7 @@ void BufferMallocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeTyp
 
 //------------------------------------------------------------------------------
 
-void BufferMallocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferMallocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
     buffer = realloc( buffer, size );
     if (buffer == NULL && size > 0)
@@ -39,7 +39,7 @@ void BufferMallocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeT
 
 //------------------------------------------------------------------------------
 
-void BufferMallocPolicy::destroy(void *&buffer)
+void BufferMallocPolicy::destroy(BufferType &buffer)
 {
     free( buffer );
     buffer = 0;
@@ -59,7 +59,7 @@ BufferAllocationPolicy::sptr BufferMallocPolicy::New()
 
 
 
-void BufferNewPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferNewPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
     try
     {
@@ -74,7 +74,7 @@ void BufferNewPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType s
 
 //------------------------------------------------------------------------------
 
-void BufferNewPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferNewPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
@@ -84,7 +84,7 @@ void BufferNewPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType
 
 //------------------------------------------------------------------------------
 
-void BufferNewPolicy::destroy(void *&buffer)
+void BufferNewPolicy::destroy(BufferType &buffer)
 {
     delete[] static_cast<char*>(buffer);
     buffer = 0;
@@ -104,7 +104,7 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 
 
 
-void BufferNoAllocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferNoAllocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
@@ -114,7 +114,7 @@ void BufferNoAllocPolicy::allocate(void *&buffer, BufferAllocationPolicy::SizeTy
 
 //------------------------------------------------------------------------------
 
-void BufferNoAllocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferNoAllocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
@@ -124,7 +124,7 @@ void BufferNoAllocPolicy::reallocate(void *&buffer, BufferAllocationPolicy::Size
 
 //------------------------------------------------------------------------------
 
-void BufferNoAllocPolicy::destroy(void *&buffer)
+void BufferNoAllocPolicy::destroy(BufferType &buffer)
 {
     FwCoreNotUsedMacro(buffer);
     SLM_ASSERT("No Alloc Policy should not be called", 0);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace fwMemory
 struct FWMEMORY_CLASS_API BufferInfo
 {
 
-    typedef std::map< void **,  BufferInfo > MapType;
+    typedef std::map< ::fwTools::IBufferManager::BufferPtrType ,  BufferInfo > MapType;
 
     typedef ::fwTools::IBufferManager::SizeType SizeType;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,15 +33,15 @@ public :
     typedef boost::function< IPolicy::sptr () > PolicyFactoryType;
     typedef std::map<std::string, PolicyFactoryType> FactoryMap;
 
-    virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) = 0 ;
-    virtual void setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) = 0 ;
-    virtual void reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize ) = 0 ;
-    virtual void destroyRequest( BufferInfo &info, void **buffer ) = 0 ;
-    virtual void lockRequest( BufferInfo &info, void **buffer ) = 0 ;
-    virtual void unlockRequest( BufferInfo &info, void **buffer ) = 0 ;
+    virtual void allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) = 0 ;
+    virtual void setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) = 0 ;
+    virtual void reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize ) = 0 ;
+    virtual void destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
+    virtual void lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
+    virtual void unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
 
-    virtual void dumpSuccess( BufferInfo &info, void **buffer ) = 0 ;
-    virtual void restoreSuccess( BufferInfo &info, void **buffer ) = 0 ;
+    virtual void dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
+    virtual void restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
 
     virtual void setManager(::fwTools::IBufferManager::sptr manager) = 0;
 
