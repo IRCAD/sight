@@ -116,7 +116,7 @@ void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools:
                 || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
                 || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
-            doUpdate();
+            this->doUpdate();
         }
     }
     else if (imageMsg)
@@ -129,7 +129,7 @@ void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools:
             if (! ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
                 || m_registeredImages.find(image->getID()) == m_registeredImages.end())
             {
-                doUpdate();
+                this->doUpdate();
             }
         }
     }
@@ -255,6 +255,15 @@ void ImagesBlend::addImageAdaptors()
 
             SLM_ASSERT("Sorry, '" << id << "' is not an image", img);
 
+            if (info->m_connections)
+            {
+                info->m_connections->disconnect();
+                info->m_connections.reset();
+            }
+
+            info->m_connections = ::fwServices::helper::SigSlotConnection::New();
+            info->m_connections->connect(img, this->getSptr(), this->getObjSrvConnections());
+
             bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
@@ -278,15 +287,6 @@ void ImagesBlend::addImageAdaptors()
 
                 imageAdaptor->start();
             }
-
-            if (info->m_connections)
-            {
-                info->m_connections->disconnect();
-                info->m_connections.reset();
-            }
-
-            info->m_connections = ::fwServices::helper::SigSlotConnection::New();
-            info->m_connections->connect(img, this->getSptr(), this->getObjSrvConnections());
         }
     }
 }
