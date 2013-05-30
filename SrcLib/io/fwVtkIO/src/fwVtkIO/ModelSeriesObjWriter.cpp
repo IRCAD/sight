@@ -99,7 +99,7 @@ void ModelSeriesObjWriter::write()
         vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
         renderWindow->AddRenderer(renderer);
 
-        std::string filename = (prefix / (rec->getOrganName() + "_" + ::fwTools::UUID::get(rec) + ".obj")).string();
+        std::string filename = (prefix / (rec->getOrganName() + "_" + ::fwTools::UUID::get(rec))).string();
 
         vtkSmartPointer< vtkOBJExporter > exporter = vtkSmartPointer< vtkOBJExporter >::New();
         exporter->SetRenderWindow(renderWindow);
