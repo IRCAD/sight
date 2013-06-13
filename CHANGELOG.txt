@@ -1,3 +1,13 @@
+=== fw4spl_0.9.1.3 ( diff from fw4spl_0.9.1.2 ) 02/05/2013 ===
+
+ * Data :
+  * Fixed deep copy bugs (multiple references to the same data, recursive data) and updated all data
+
+ * IO :
+  * Updated fwAtomConversion to support several UUID management policies : when you convert an atom to a data, if the uuid object already exists in application, you can abord the process, you can re use the object or you can generate another uuid
+  * Replace specific atoms reader/writer. Added ioAtoms SReader and SWriter services ( these services work on ::fwData::Object and support 'inject' mode). Removed SMedDataReader and SMedDataWriter services.
+  * Fixed fwAtomsBoostIO issue when hiting a cache value stored in a Atoms::Map, added unit tests
+
 === fw4spl_0.9.1.2 ( diff from fw4spl_0.9.1.1 ) 10/04/2013 ===
 
  * General :
