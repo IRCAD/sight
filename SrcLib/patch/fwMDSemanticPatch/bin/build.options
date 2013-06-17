@@ -1,0 +1,9 @@
+TYPE = 'shared'
+VERSION = '0.1'
+LIB = [
+    'fwData_0-1',
+    'fwCamp_0-1',
+    'fwAtoms_0-1',
+    'fwAtomsPatch_0-1',
+    'fwAtomConversion_0-1',
+]

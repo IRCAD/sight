@@ -1,0 +1,20 @@
+{
+    "context" : "MedicalData",
+    "origin_version" : "V1",
+    "target_version" : "V2",
+    "patcher" : "MedicalWorkspacePatcher",
+    "links" : [
+        {
+            "::fwData::Patient" : "1",
+            "::fwMedData::Patient" : "1"
+        },
+        {
+            "::fwData::Study" : "1",
+            "::fwMedData::Study" : "1"
+        },
+        {
+            "::fwData::Acquisition" : "1",
+            "::fwMedData::ImageSeries" : "1"
+        }
+    ]
+}
