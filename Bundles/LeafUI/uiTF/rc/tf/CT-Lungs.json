@@ -1,4 +1,9 @@
 {
+    "versions":
+    {
+        "atoms_version": "1",
+        "writer_version": "1"
+    },
     "object":
     {
         "meta_infos":
