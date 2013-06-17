@@ -27,6 +27,9 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SReader)(::io::IReader) );
 
     /// Does nothing
+    SReader();
+
+    /// Does nothing
     virtual ~SReader() throw() {};
 
     /// Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
@@ -46,13 +49,14 @@ protected:
         <config>
             <inject>ReadData</inject>
             <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
+            <patcher context="..." version="..." />
             ...
         </config>
     * @endverbatim
     * @see ::io::IReader
     * @throw ::fwTools::Failed
     */
-    void configuring() throw(::fwTools::Failed);
+    IOATOMS_API void configuring() throw(::fwTools::Failed);
 
     /**
      * @brief Tests file extension, applies the good atom reader, and converts atom in fwData::Composite
@@ -86,6 +90,15 @@ private:
 
     /// fwAtomsConversion uuid policy
     std::string m_uuidPolicy;
+
+    /// To enable atom patcher
+    bool m_useAtomsPatcher;
+
+    /// Defines context of data
+    std::string m_context;
+
+    /// Current version of format
+    std::string m_version;
 };
 
 } // namespace ioAtoms

@@ -19,6 +19,7 @@
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -26,6 +27,10 @@
 #include <fwZip/WriteZipArchive.hpp>
 
 #include <fwDataCamp/visitor/RecursiveLock.hpp>
+
+#include <fwAtomsPatch/VersionsManager.hpp>
+#include <fwAtomsPatch/VersionsGraph.hpp>
+#include <fwAtomsPatch/PatchingManager.hpp>
 
 #include "ioAtoms/SWriter.hpp"
 
@@ -38,6 +43,15 @@ fwServicesRegisterMacro( ::io::IWriter , ::ioAtoms::SWriter , ::fwData::Object )
 
 //-----------------------------------------------------------------------------
 
+SWriter::SWriter() :
+        m_useAtomsPatcher(false),
+        m_exportedVersion ("Undefined"),
+        m_context ("Undefined"),
+        m_version ("Undefined")
+{}
+
+//-----------------------------------------------------------------------------
+
 void SWriter::starting() throw(::fwTools::Failed)
 {}
 
@@ -45,6 +59,66 @@ void SWriter::starting() throw(::fwTools::Failed)
 
 void SWriter::stopping() throw(::fwTools::Failed)
 {}
+
+//-----------------------------------------------------------------------------
+
+void SWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+
+    typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
+
+    ConfigurationElementContainer patcher = m_configuration->find("patcher");
+    SLM_ASSERT("The <patcher> element can be set at most once.", patcher.size() <= 1 );
+    if (patcher.size() == 1)
+    {
+        m_context = patcher.at(0)->getExistingAttributeValue("context");
+        m_version = patcher.at(0)->getExistingAttributeValue("version");
+        m_exportedVersion = m_version;
+        m_useAtomsPatcher = true;
+    }
+}
+
+//----------------------------------------------------------------------------
+
+bool SWriter::versionSelection()
+{
+    using namespace boost::assign;
+
+    ::fwAtomsPatch::VersionsGraph::sptr vg = ::fwAtomsPatch::VersionsManager::getDefault()->getGraph(m_context);
+
+    // have some information about this format
+    if ( vg )
+    {
+        std::vector< std::string > versions = vg->getConnectedVersions(m_version);
+        if ( versions.size() == 0 )
+        {
+            m_exportedVersion = m_version;
+            return true;
+        }
+        else
+        {
+            versions.push_back(m_version);
+            ::fwGui::dialog::SelectorDialog dialogVersion;
+
+            dialogVersion.setTitle("Archive version");
+            dialogVersion.setMessage("Select an archive version");
+
+            dialogVersion.setSelections(versions);
+            std::string result = dialogVersion.show();
+            if ( ! result.empty() )
+            {
+                m_exportedVersion = result;
+            }
+            return ! result.empty();
+        }
+    }
+    else
+    {
+        m_exportedVersion = m_version;
+        return true;
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -69,7 +143,16 @@ void SWriter::updating() throw(::fwTools::Failed)
             ::fwDataCamp::visitor::RecursiveLock recursiveLock (obj);
 
             // Convert data to atom
-            ::fwAtoms::Base::sptr atom = ::fwAtomConversion::convert(obj);
+            ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert(obj);
+
+            // Path atom
+            atom->setMetaInfo("context", m_context);
+            atom->setMetaInfo("version_name", m_version);
+            if( m_useAtomsPatcher )
+            {
+                ::fwAtomsPatch::PatchingManager globalPatcher( atom );
+                atom = globalPatcher.transformTo( m_exportedVersion );
+            }
 
             if (extension == ".hdf5")
             {
@@ -152,30 +235,35 @@ void SWriter::configureWithIHM()
 {
    static ::boost::filesystem::path _sDefaultPath;
 
-   ::fwGui::dialog::LocationDialog dialogFile;
-   dialogFile.setTitle("Enter file name");
-   dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-   dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-   dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
-
-   dialogFile.addFilter( "JSON", "*.json");
-   dialogFile.addFilter( "Zipped JSON", "*.jsonz");
-   dialogFile.addFilter( "XML", "*.xml");
-   dialogFile.addFilter( "Zipped XML", "*.xmlz");
-   dialogFile.addFilter( "HDF5", "*.hdf5");
-
-   ::fwData::location::SingleFile::sptr result
-       = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
-
-   if (result)
+   if( ! m_useAtomsPatcher || versionSelection() )
    {
-       _sDefaultPath = result->getPath();
-       this->setFile( _sDefaultPath );
-       dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
-   }
-   else
-   {
-       this->clearLocations();
+
+       ::fwGui::dialog::LocationDialog dialogFile;
+       dialogFile.setTitle("Enter file name");
+       dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+       dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+       dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
+
+       dialogFile.addFilter( "JSON", "*.json");
+       dialogFile.addFilter( "Zipped JSON", "*.jsonz");
+       dialogFile.addFilter( "XML", "*.xml");
+       dialogFile.addFilter( "Zipped XML", "*.xmlz");
+       dialogFile.addFilter( "HDF5", "*.hdf5");
+
+       ::fwData::location::SingleFile::sptr result
+        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+
+       if (result)
+       {
+           _sDefaultPath = result->getPath();
+           this->setFile( _sDefaultPath );
+           dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
+       }
+       else
+       {
+           this->clearLocations();
+       }
+
    }
 }
 

@@ -29,12 +29,28 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SWriter)(::io::IWriter) );
 
     /// Does nothing
+    IOATOMS_API SWriter();
+
+    /// Does nothing
     IOATOMS_API  virtual ~SWriter() throw() {};
 
     /// Propose to create a medical data file (*.json,*.jsonz,*.xml, *.xmlz or *.hdf5)
     IOATOMS_API void configureWithIHM();
 
 protected:
+
+    /**
+    * @brief
+    * @verbatim
+        <config>
+            <patcher context="..." version="..." />
+            ...
+        </config>
+    * @endverbatim
+    * @see ::io::IWriter
+    * @throw ::fwTools::Failed
+    */
+    IOATOMS_API void configuring() throw(::fwTools::Failed);
 
     /// Does nothing
     IOATOMS_API void starting() throw(::fwTools::Failed);
@@ -50,6 +66,21 @@ protected:
 
     /// Returns managed path type, here service manages only single file
     IOATOMS_API ::io::IOPathType getIOPathType() const;
+
+    /// To activate atom patcher
+    bool m_useAtomsPatcher;
+
+    /// Selected exported version of atom
+    std::string m_exportedVersion;
+
+    /// Defines context of data
+    std::string m_context;
+
+    /// Current version of format
+    std::string m_version;
+
+    /// Proposes a gui to select available exports (set m_exportedVersion). Returns false if user cancel the selection
+    bool versionSelection();
 };
 
 } // namespace ioAtoms

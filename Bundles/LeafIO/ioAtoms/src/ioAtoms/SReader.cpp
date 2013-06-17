@@ -36,12 +36,22 @@
 #include <fwMemory/policy/NeverDump.hpp>
 #include <fwMemory/tools/MemoryMonitorTools.hpp>
 
+#include <fwAtomsPatch/PatchingManager.hpp>
+
 #include "ioAtoms/SReader.hpp"
 
 namespace ioAtoms
 {
 
 fwServicesRegisterMacro( ::io::IReader , ::ioAtoms::SReader , ::fwData::Object );
+
+//-----------------------------------------------------------------------------
+
+SReader::SReader() :
+        m_useAtomsPatcher(false),
+        m_context ("Undefined"),
+        m_version ("Undefined")
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -83,6 +93,15 @@ void SReader::configuring() throw(::fwTools::Failed)
         SLM_ASSERT("'Reuse' policy is available only with inject mode",
                    ("Reuse" == m_uuidPolicy && !m_inject.empty()) || "Reuse" != m_uuidPolicy
                   );
+    }
+
+    ConfigurationElementContainer patcher = m_configuration->find("patcher");
+    SLM_ASSERT("The <patcher> element can be set at most once.", patcher.size() <= 1 );
+    if (patcher.size() == 1)
+    {
+        m_context = patcher.at(0)->getExistingAttributeValue("context");
+        m_version = patcher.at(0)->getExistingAttributeValue("version");
+        m_useAtomsPatcher = true;
     }
 
 }
@@ -151,6 +170,15 @@ void SReader::updating() throw(::fwTools::Failed)
             }
 
             FW_RAISE_IF( "Invalid atoms file :'" << filePath << "'", ! atom );
+
+            /// patch atom
+            if ( m_useAtomsPatcher )
+            {
+                FW_RAISE_IF( "Unable to load data, found " << atom->getMetaInfo("context")
+                             << "context, but " << m_context << "' was excepted.", atom->getMetaInfo("context") != m_context);
+                ::fwAtomsPatch::PatchingManager globalPatcher(atom);
+                atom = globalPatcher.transformTo( m_version );
+            }
 
             ::fwData::Object::sptr newData ;
 
