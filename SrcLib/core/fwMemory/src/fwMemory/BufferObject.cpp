@@ -47,6 +47,7 @@ void BufferObject::allocate(SizeType size, ::fwMemory::BufferAllocationPolicy::s
     if(m_bufferManager->allocateBuffer(&m_buffer, size, policy))
     {
         policy->allocate(m_buffer, size);
+        m_bufferManager->setBuffer(&m_buffer, size, policy);
     }
 }
 
@@ -58,6 +59,7 @@ void BufferObject::reallocate(SizeType size)
     if(m_bufferManager->reallocateBuffer(&m_buffer, size))
     {
         m_allocPolicy->reallocate(m_buffer, size);
+        m_bufferManager->setBuffer(&m_buffer, size, m_allocPolicy);
     }
 }
 
@@ -112,7 +114,34 @@ void BufferObject::swap( BufferObject::sptr _source )
     m_allocPolicy.swap(_source->m_allocPolicy);
 }
 
-//------------------------------------------------------------------------------
+// //------------------------------------------------------------------------------
+//
+// SPTR(std::istream) BufferObject::getIStream()
+// {
+//     SPTR(std::istream) is =  m_bufferManager->getIStream(&m_buffer);
+//     if(is)
+//     {
+//         is = make_shared<MemoryStreamFactoy>(m_buffer, lock());
+//     }
+//     return is;
+// }
+//
+// //------------------------------------------------------------------------------
+//
+// boost::filesystem::path BufferObject::getFile()
+// {
+//     m_bufferManager->getIStream(&m_buffer);
+// }
+//
+// //------------------------------------------------------------------------------
+//
+// BufferObject::FileFormat BufferObject::getFileFormat()
+// {
+//     m_bufferManager->getFileFormat(&m_buffer);
+// }
+//
+
+
 
 } //namespace fwMemory
 

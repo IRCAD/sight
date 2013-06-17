@@ -7,10 +7,14 @@
 #include <iosfwd>    // streamsize
 #include <fstream>
 
+#include <boost/make_shared.hpp>
+
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/stream_buffer.hpp>
+#include <boost/iostreams/categories.hpp>  // sink_tag
+
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
-
-#include <boost/iostreams/stream_buffer.hpp>
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/date_time/posix_time/conversion.hpp>
@@ -25,24 +29,12 @@
 namespace fwZip
 {
 
-std::streamsize ZipSink::write(const char* s, std::streamsize n)
-{
-    int nRet = zipWriteInFileInZip(m_zipDescriptor, s, n);
-    FW_RAISE_EXCEPTION_IF(
-                    ::fwZip::exception::Write("Error occurred while writing archive."),
-                     nRet < 0);
-    return n;
-}
-
 //-----------------------------------------------------------------------------
 
-void * openWriteZipArchive( const ::boost::filesystem::path &archive )
+zipFile openWriteZipArchive( const ::boost::filesystem::path &archive )
 {
-    FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Write("Archive '" + archive.string() + "' already exists."),
-            ::boost::filesystem::exists(archive));
-
-    void * zip = zipOpen(archive.string().c_str(), APPEND_STATUS_CREATE);
+    int append = (::boost::filesystem::exists(archive)) ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE;
+    zipFile zip = zipOpen(archive.string().c_str(), append);
 
     FW_RAISE_EXCEPTION_IF(
                 ::fwZip::exception::Write("Archive '" + archive.string() + "' cannot be opened."),
@@ -53,55 +45,12 @@ void * openWriteZipArchive( const ::boost::filesystem::path &archive )
 
 //-----------------------------------------------------------------------------
 
-WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive ) :
-    m_archive(archive),
-    m_zipDescriptor(openWriteZipArchive(archive)),
-    m_streambuf(m_zipDescriptor),
-    m_ostream( &m_streambuf )
-{}
-
-//-----------------------------------------------------------------------------
-
-WriteZipArchive::~WriteZipArchive()
-{
-    m_ostream.flush();
-    zipClose(m_zipDescriptor, NULL);
-}
-
-//-----------------------------------------------------------------------------
-
-std::ostream& WriteZipArchive::createFile(const ::boost::filesystem::path &path)
-{
-    m_ostream.flush();
-    int nRet = this->openFile(path);
-    return m_ostream;
-}
-
-//-----------------------------------------------------------------------------
-
-void WriteZipArchive::putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path)
-{
-    std::ifstream sourceStream(sourceFile.string().c_str(), std::ios::binary);
-    FW_RAISE_EXCEPTION_IF(::fwZip::exception::Write("Source file '" + sourceFile.string() + "' cannot be opened."),
-                         !sourceStream.good());
-
-    std::ostream& oStream = this->createFile(path);
-    oStream << sourceStream.rdbuf();
-    sourceStream.close();
-}
-
-//-----------------------------------------------------------------------------
-
-bool WriteZipArchive::createDir(const ::boost::filesystem::path &path)
-{
-    int nRet = this->openFile(path);
-    this->closeFile();
-    return nRet == ZIP_OK;
-}
-
-//-----------------------------------------------------------------------------
-
-int WriteZipArchive::openFile(const ::boost::filesystem::path &path)
+/*
+ * @brief  Open a file in the zip archive for writing
+ * @note Z_BEST_SPEED compression level for '.raw' files,
+ *       Z_NO_COMPRESSION for 'raw.gz', Z_DEFAULT_COMPRESSION otherwise.
+ */
+int openFile(zipFile zipDescriptor, const ::boost::filesystem::path &path)
 {
     const std::string extension = path.extension().string();
     int compressLevel = Z_DEFAULT_COMPRESSION;
@@ -127,7 +76,7 @@ int WriteZipArchive::openFile(const ::boost::filesystem::path &path)
     zfi.tmz_date.tm_min  = ptm.tm_min;
     zfi.tmz_date.tm_sec  = ptm.tm_sec;
 
-    int nRet = zipOpenNewFileInZip(m_zipDescriptor,
+    int nRet = zipOpenNewFileInZip(zipDescriptor,
             path.generic_string().c_str(),
             &zfi,
             NULL,
@@ -143,9 +92,93 @@ int WriteZipArchive::openFile(const ::boost::filesystem::path &path)
 
 //-----------------------------------------------------------------------------
 
-void WriteZipArchive::closeFile()
+void closeZipArchive(zipFile zipDescriptor)
 {
-    zipCloseFileInZip(m_zipDescriptor);
+    zipClose(zipDescriptor, NULL);
+}
+
+//-----------------------------------------------------------------------------
+
+class ZipSink
+{
+public:
+    typedef char char_type;
+    typedef ::boost::iostreams::sink_tag  category;
+
+    ZipSink( const ::boost::filesystem::path &archive, const ::boost::filesystem::path &path ) :
+        m_zipDescriptor( openWriteZipArchive(archive), &closeZipArchive ),
+        m_archive(archive),
+        m_path(path)
+    {
+        int nRet = openFile(m_zipDescriptor.get(), m_path);
+        FW_RAISE_EXCEPTION_IF(
+                              ::fwZip::exception::Write("Cannot open file '" + path.string() +
+                                                       "' in archive '"+ archive.string() + "'."),
+                              nRet != Z_OK);
+    }
+
+    std::streamsize write(const char* s, std::streamsize n)
+    {
+        int nRet = zipWriteInFileInZip(m_zipDescriptor.get(), s, n);
+        FW_RAISE_EXCEPTION_IF(
+                        ::fwZip::exception::Write("Error occurred while writing archive '" + m_archive.string()
+                                                     + ":" + m_path.string() + "'."),
+                         nRet < 0);
+        return n;
+    }
+
+protected:
+    SPTR(void) m_zipDescriptor;
+    ::boost::filesystem::path m_archive;
+    ::boost::filesystem::path m_path;
+};
+
+//-----------------------------------------------------------------------------
+
+WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive ) :
+    m_archive(archive)
+{}
+
+//-----------------------------------------------------------------------------
+
+WriteZipArchive::~WriteZipArchive()
+{}
+
+//-----------------------------------------------------------------------------
+
+SPTR(std::ostream) WriteZipArchive::createFile(const ::boost::filesystem::path &path)
+{
+    SPTR(::boost::iostreams::stream<ZipSink>) os
+        = ::boost::make_shared< ::boost::iostreams::stream<ZipSink> >(m_archive, path);
+    return os;
+}
+
+//-----------------------------------------------------------------------------
+
+void WriteZipArchive::putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path)
+{
+    std::ifstream is(sourceFile.string().c_str(), std::ios::binary);
+    FW_RAISE_EXCEPTION_IF(::fwZip::exception::Write("Source file '" + sourceFile.string() + "' cannot be opened."),
+                         !is.good());
+
+    {
+        SPTR(std::ostream) os = this->createFile(path);
+        *os << is.rdbuf();
+    }
+    is.close();
+}
+
+//-----------------------------------------------------------------------------
+
+bool WriteZipArchive::createDir(const ::boost::filesystem::path &path)
+{
+    zipFile zipDescriptor = openWriteZipArchive(m_archive);
+    const int nRet = openFile(zipDescriptor, path);
+
+    zipCloseFileInZip(zipDescriptor);
+    zipClose(zipDescriptor, NULL);
+
+    return nRet == ZIP_OK;
 }
 
 //-----------------------------------------------------------------------------

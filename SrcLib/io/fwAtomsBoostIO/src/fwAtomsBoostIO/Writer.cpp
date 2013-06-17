@@ -41,9 +41,11 @@ typedef std::map< ::fwAtoms::Base::sptr, ::boost::property_tree::ptree > PropTre
 
 PropTreeCacheType m_cache;
 ::fwZip::IWriteArchive::sptr m_archive;
+const std::string m_dirPrefix;
 
 
-AtomVisitor( ::fwZip::IWriteArchive::sptr archive ) : m_archive(archive)
+AtomVisitor( ::fwZip::IWriteArchive::sptr archive, const std::string &dirPrefix ) :
+    m_archive(archive), m_dirPrefix(dirPrefix)
 {}
 
 //-----------------------------------------------------------------------------
@@ -189,36 +191,53 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     }
     else
     {
-        std::string bufFile;
-        const size_t buffSize = buffObj->getSize();
+        ::boost::filesystem::path bufFile = m_dirPrefix;
+        size_t buffSize = buffObj->getSize();
 
         ::fwMemory::BufferManager::sptr manager
             = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::IBufferManager::getCurrent() );
 
         // Test if buffer is not already dumped
-        const bool isDumped =  manager
+        bool isDumped =  manager
             && manager->isDumped( (::fwMemory::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
+
+        SPTR(std::istream) is;
+
+        if (manager)
+        {
+            fwMemory::BufferInfo &info = manager->getBufferInfos()[ const_cast< void** > (buffObj->getBufferPointer() ) ];
+            isDumped = isDumped && !info.dumpedFile.empty();
+            if (info.istreamFactory)
+            {
+                is = (*info.istreamFactory)();
+                buffSize = info.size;
+            }
+        }
 
         if(isDumped)
         {
             const ::boost::filesystem::path fileSrc
                 = manager->getDumpedFilePath( (::fwMemory::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
-            bufFile = std::string("fwAtomsArchive/") + fileSrc.filename().string();
+            bufFile /= fileSrc.filename();
             m_archive->putFile(fileSrc, bufFile);
         }
         else
         {
-            bufFile = "fwAtomsArchive/" + ::fwTools::UUID::generateUUID() + ".raw";
+            SLM_ASSERT("no istream", is);
+            bufFile /= ::fwTools::UUID::generateUUID() + ".raw";
 
-            ::fwMemory::BufferObject::Lock lock(buffObj->lock());
-            void *v = lock.getBuffer();
-            char* buff = static_cast<char*>(v);
+            // ::fwMemory::BufferObject::Lock lock(buffObj->lock());
+            // void *v = lock.getBuffer();
+            // char* buff = static_cast<char*>(v);
 
-            m_archive->createFile(bufFile).write(buff, buffSize);
+            // m_archive->createFile(bufFile).write(buff, buffSize);
+
+            SPTR(std::ostream) os = m_archive->createFile(bufFile);
+            *os << is->rdbuf();
         }
 
         pt.put("blob.buffer_size", buffSize);
-        pt.put("blob.buffer", bufFile);
+        pt.put("blob.buffer", bufFile.generic_string());
     }
 
     return pt;
@@ -241,7 +260,6 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     {
         return ref;
     }
-
 
     switch(atom->type())
     {
@@ -283,7 +301,7 @@ void Writer::write( ::fwZip::IWriteArchive::sptr archive,
                     FormatType format ) const
 {
     ::boost::property_tree::ptree root;
-    AtomVisitor visitor(archive);
+    AtomVisitor visitor(archive, rootFilename.stem().string());
     root = visitor.visit(m_atom);
 
     ::boost::property_tree::ptree versions;
@@ -292,17 +310,16 @@ void Writer::write( ::fwZip::IWriteArchive::sptr archive,
 
     root.add_child("versions", versions);
 
+    SPTR(std::ostream) os = archive->createFile(rootFilename);
     switch(format)
     {
     case JSON:
-        ::boost::property_tree::json_parser::write_json(archive->createFile(rootFilename), root, false);
+        ::boost::property_tree::json_parser::write_json(*os, root, false);
         break;
     case XML:
     {
         ::boost::property_tree::xml_writer_settings<char> settings(' ', 4);
-        ::boost::property_tree::xml_parser::write_xml(archive->createFile(rootFilename),
-                                                      root,
-                                                      settings);
+        ::boost::property_tree::xml_parser::write_xml(*os, root, settings);
         break;
     }
     default:

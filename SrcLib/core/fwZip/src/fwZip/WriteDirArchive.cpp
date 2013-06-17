@@ -6,6 +6,8 @@
 
 #include <fstream>
 
+#include <boost/make_shared.hpp>
+
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -34,13 +36,11 @@ WriteDirArchive::WriteDirArchive( const ::boost::filesystem::path &archive ) :
 //-----------------------------------------------------------------------------
 
 WriteDirArchive::~WriteDirArchive()
-{
-    this->closeFile();
-}
+{}
 
 //-----------------------------------------------------------------------------
 
-std::ostream& WriteDirArchive::createFile(const ::boost::filesystem::path &path)
+SPTR(std::ostream) WriteDirArchive::createFile(const ::boost::filesystem::path &path)
 {
     const ::boost::filesystem::path file = m_archive / path;
     const ::boost::filesystem::path parentFile = file.parent_path();
@@ -49,9 +49,9 @@ std::ostream& WriteDirArchive::createFile(const ::boost::filesystem::path &path)
         ::boost::filesystem::create_directories(parentFile);
     }
 
-    this->closeFile();
-    m_outfile.open(file.string().c_str(), std::fstream::binary | std::fstream::out | std::fstream::trunc);
-    return m_outfile;
+    SPTR(std::ofstream) os = ::boost::make_shared< std::ofstream >();
+    os->open(file.string().c_str(), std::fstream::binary | std::fstream::out | std::fstream::trunc);
+    return os;
 }
 
 //-----------------------------------------------------------------------------
@@ -73,17 +73,6 @@ void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile, const
         {
             ::boost::filesystem::copy_file( sourceFile, fileDest );
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void WriteDirArchive::closeFile()
-{
-    if(m_outfile.is_open())
-    {
-        m_outfile.flush();
-        m_outfile.close();
     }
 }
 

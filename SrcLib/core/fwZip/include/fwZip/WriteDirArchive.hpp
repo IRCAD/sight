@@ -48,7 +48,7 @@ public:
      *
      * @note Creates all parent directories of the path in archive.
      */
-    FWZIP_API std::ostream& createFile(const ::boost::filesystem::path &path);
+    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path &path);
 
     /**
      * @brief Writes source file in archive. If possible, creates hard link otherwise copy source file in archive.
@@ -72,10 +72,6 @@ public:
 
 protected:
 
-    /// Flush and close last output file stream.
-    FWZIP_API void closeFile();
-
-    std::ofstream m_outfile;
     ::boost::filesystem::path m_archive;
 };
 

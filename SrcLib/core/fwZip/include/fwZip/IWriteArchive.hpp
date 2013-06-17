@@ -33,7 +33,7 @@ public:
      * @param path file in archive.
      * @return output stream of file entry in archive.
      */
-    virtual std::ostream& createFile(const ::boost::filesystem::path &path) = 0;
+    virtual SPTR(std::ostream) createFile(const ::boost::filesystem::path &path) = 0;
 
     /**
      * @brief Writes source file in archive.

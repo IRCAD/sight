@@ -9,16 +9,20 @@
 #include <algorithm>
 
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 
 #include <fwTools/System.hpp>
 
+#include "fwMemory/stream/in/Raw.hpp"
+#include "fwMemory/stream/in/Buffer.hpp"
 #include "fwMemory/policy/NeverDump.hpp"
 #include "fwMemory/BufferManager.hpp"
 
 namespace fwMemory
 {
+
 
 //-----------------------------------------------------------------------------
 
@@ -115,6 +119,7 @@ bool BufferManager::setBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, 
     info.lastAccess.modified();
     info.size = size;
     info.bufferPolicy = policy;
+    info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*buffer, size);
     m_updated();
     return true;
 }
@@ -164,6 +169,8 @@ bool BufferManager::destroyBuffer(::fwMemory::IBufferManager::BufferPtrType buff
         return false;
     }
 
+    info.istreamFactory.reset();
+
     m_updated();
     return true;
 }
@@ -181,6 +188,7 @@ bool BufferManager::swapBuffer(::fwMemory::IBufferManager::BufferPtrType bufA, :
     std::swap(infoA.isDumped, infoB.isDumped);
     std::swap(infoA.dumpedFile, infoB.dumpedFile);
     std::swap(infoA.bufferPolicy, infoB.bufferPolicy);
+    std::swap(infoA.istreamFactory, infoB.istreamFactory);
     infoA.lastAccess.modified();
     infoB.lastAccess.modified();
     return false;
@@ -253,6 +261,7 @@ bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, ::fwMemory::IBu
 
     if ( this->writeBuffer(*buffer, info.size, info.dumpedFile) )
     {
+        info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Raw >(info.dumpedFile);
         info.bufferPolicy->destroy(*buffer);
         *buffer = NULL;
         info.isDumped = true;
@@ -278,7 +287,8 @@ bool BufferManager::restoreBuffer(::fwMemory::IBufferManager::ConstBufferPtrType
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferManager::SizeType allocSize)
+bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info,
+                                  ::fwMemory::IBufferManager::BufferPtrType buffer, BufferManager::SizeType allocSize)
 {
     SLM_TRACE_FUNC();
 
@@ -289,15 +299,31 @@ bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info, ::fwTools::I
 
         info.bufferPolicy->allocate(*buffer, allocSize);
 
-        if ( this->readBuffer(*buffer, std::min(allocSize, info.size), info.dumpedFile) )
+        char * charBuf = static_cast< char * >(*buffer);
+        SizeType size = std::min(allocSize, info.size);
+        bool notFailed = false;
+        {
+            SPTR(std::istream) isptr = (*info.istreamFactory)();
+            std::istream &is = *isptr;
+            SizeType read = is.read(charBuf, size).gcount();
+
+            FW_RAISE_IF(" Bad file size, expected: " << size << ", was: " << read, size - read != 0);
+            notFailed = !is.fail();
+        }
+
+        if ( notFailed )
         {
             info.isDumped = false;
-            ::boost::filesystem::remove( info.dumpedFile );
-            info.dumpedFile = "";
+            if(!info.dumpedFile.empty())
+            {
+                ::boost::filesystem::remove( info.dumpedFile );
+                info.dumpedFile.clear();
+            }
             info.lastAccess.modified();
 
             m_dumpPolicy->restoreSuccess( info, buffer );
 
+            info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*buffer, allocSize);
             m_updated();
             return true;
         }

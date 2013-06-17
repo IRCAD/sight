@@ -6,10 +6,13 @@
 
 #include <iosfwd>    // streamsize
 
+#include <boost/make_shared.hpp>
+
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include <boost/iostreams/stream_buffer.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/categories.hpp>  // source_tag
 
 #include <fwCore/exceptionmacros.hpp>
 
@@ -21,14 +24,6 @@
 namespace fwZip
 {
 
-std::streamsize ZipSource::read(char* s, std::streamsize n)
-{
-    int nRet = unzReadCurrentFile(m_zipDescriptor, s, n);
-    FW_RAISE_EXCEPTION_IF(
-                        ::fwZip::exception::Read("Error occurred while reading archive."),
-                         nRet < 0);
-    return nRet;
-}
 
 
 void * openReadZipArchive( const ::boost::filesystem::path &archive )
@@ -48,45 +43,65 @@ void * openReadZipArchive( const ::boost::filesystem::path &archive )
 
 //-----------------------------------------------------------------------------
 
+class ZipSource
+{
+public:
+    typedef char char_type;
+    typedef ::boost::iostreams::source_tag  category;
+
+    ZipSource( const ::boost::filesystem::path &archive, const ::boost::filesystem::path &path ) :
+        m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
+        m_archive(archive),
+        m_path(path)
+    {
+        int nRet = unzLocateFile(m_zipDescriptor.get(), path.string().c_str(), 0);
+
+        FW_RAISE_EXCEPTION_IF(
+                              ::fwZip::exception::Read("File '" +  path.string() + "' in archive '" +
+                                                       archive.string() + "' doesn't exist."),
+                              nRet != UNZ_OK);
+
+        nRet = unzOpenCurrentFile(m_zipDescriptor.get());
+        FW_RAISE_EXCEPTION_IF(
+                              ::fwZip::exception::Read("Cannot retrieve file '" + path.string() +
+                                                       "' in archive '"+ archive.string() + "'."),
+                              nRet != UNZ_OK);
+    }
+
+    std::streamsize read(char* s, std::streamsize n)
+    {
+        int nRet = unzReadCurrentFile(m_zipDescriptor.get(), s, n);
+        FW_RAISE_EXCEPTION_IF(
+                            ::fwZip::exception::Read("Error occurred while reading archive '" + m_archive.string()
+                                                     + ":" + m_path.string() + "'."),
+                            nRet < 0);
+        return nRet;
+    }
+
+protected:
+    SPTR(void) m_zipDescriptor;
+    ::boost::filesystem::path m_archive;
+    ::boost::filesystem::path m_path;
+};
+
+
+
+//-----------------------------------------------------------------------------
+
 ReadZipArchive::ReadZipArchive( const ::boost::filesystem::path &archive ) :
-    m_archive(archive),
-    m_zipDescriptor(openReadZipArchive(archive)),
-    m_streambuf(m_zipDescriptor),
-    m_istream( &m_streambuf )
+    m_archive(archive)
 {}
 
 //-----------------------------------------------------------------------------
 
-ReadZipArchive::~ReadZipArchive()
+SPTR(std::istream) ReadZipArchive::getFile(const ::boost::filesystem::path &path)
 {
-    unzClose(m_zipDescriptor);
+    SPTR(::boost::iostreams::stream<ZipSource>) is
+        = ::boost::make_shared< ::boost::iostreams::stream<ZipSource> >(m_archive, path);
+
+    return is;
 }
 
-//-----------------------------------------------------------------------------
-
-std::istream& ReadZipArchive::getFile(const ::boost::filesystem::path &path)
-{
-    FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Read("File '" +  path.string() + "' in archive '" +
-                                     m_archive.string() + "' doesn't exist."),
-             !this->exists(path));
-
-    int nRet = unzOpenCurrentFile(m_zipDescriptor);
-    FW_RAISE_EXCEPTION_IF(
-            ::fwZip::exception::Read("Cannot retrieve file '" + path.string() +
-                                     "' in archive '"+ m_archive.string() +"'."),
-            nRet != UNZ_OK);
-
-    return m_istream;
-}
-
-//-----------------------------------------------------------------------------
-
-bool ReadZipArchive::exists(const ::boost::filesystem::path &path)
-{
-    int nRet = unzLocateFile(m_zipDescriptor, path.string().c_str(), 0);
-    return (nRet == UNZ_OK);
-}
 
 //-----------------------------------------------------------------------------
 

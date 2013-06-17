@@ -33,12 +33,14 @@ public:
      * @param path file in archive.
      * @return input stream from request file.
      */
-    virtual std::istream& getFile(const ::boost::filesystem::path &path) = 0;
+    virtual SPTR(std::istream) getFile(const ::boost::filesystem::path &path) = 0;
 
     /**
      * @brief Returns archive path.
      */
     virtual const ::boost::filesystem::path getArchivePath() const = 0;
+
+    virtual IReadArchive::sptr clone() const = 0 ;
 };
 
 }

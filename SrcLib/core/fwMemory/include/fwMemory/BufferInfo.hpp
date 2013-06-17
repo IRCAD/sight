@@ -11,6 +11,7 @@
 
 #include <fwCore/LogicStamp.hpp>
 
+#include "fwMemory/stream/in/IFactory.hpp"
 #include "fwMemory/IBufferManager.hpp"
 #include "fwMemory/config.hpp"
 
@@ -20,9 +21,9 @@ namespace fwMemory
 struct FWMEMORY_CLASS_API BufferInfo
 {
 
-    typedef std::map< ::fwTools::IBufferManager::BufferPtrType ,  BufferInfo > MapType;
+    typedef std::map< ::fwMemory::IBufferManager::BufferPtrType, BufferInfo > MapType;
 
-    typedef ::fwTools::IBufferManager::SizeType SizeType;
+    typedef ::fwMemory::IBufferManager::SizeType SizeType;
 
     FWMEMORY_API BufferInfo()
     {
@@ -37,6 +38,8 @@ struct FWMEMORY_CLASS_API BufferInfo
     ::fwMemory::IBufferManager::LockCountFunctionType lockCount;
     ::fwCore::LogicStamp lastAccess;
     ::fwMemory::BufferAllocationPolicy::sptr bufferPolicy;
+
+    SPTR( ::fwMemory::stream::in::IFactory ) istreamFactory;
 
 
 };

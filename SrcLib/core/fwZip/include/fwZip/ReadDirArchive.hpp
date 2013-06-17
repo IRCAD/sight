@@ -48,12 +48,17 @@ public:
      *
      * @throw ::fwZip::exception::Read if file doesn't exist in archive.
      */
-    FWZIP_API std::istream& getFile(const ::boost::filesystem::path &path);
+    FWZIP_API SPTR(std::istream) getFile(const ::boost::filesystem::path &path);
 
     /**
      * @brief Returns archive path.
      */
     FWZIP_API const ::boost::filesystem::path getArchivePath() const;
+
+    IReadArchive::sptr clone() const
+    {
+        return ReadDirArchive::New(m_archive);
+    }
 
 protected:
 
@@ -62,12 +67,6 @@ protected:
      */
     FWZIP_API bool exists(const ::boost::filesystem::path &path);
 
-    /**
-     * @brief Close automatically current input file stream.
-     */
-    FWZIP_API void closeFile();
-
-    std::ifstream m_infile;
     ::boost::filesystem::path m_archive;
 };
 

@@ -9,6 +9,8 @@
 #include <fwTools/System.hpp>
 #include <fwTools/UUID.hpp>
 
+#include <fwMemory/BufferManager.hpp>
+
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
@@ -227,6 +229,8 @@ SequenceGenerator generator;
 
 void BoostIOTest::setUp()
 {
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
+    ::fwMemory::IBufferManager::setCurrent( manager );
 }
 
 void BoostIOTest::tearDown()

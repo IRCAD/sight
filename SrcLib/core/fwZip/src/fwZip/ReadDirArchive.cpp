@@ -26,31 +26,20 @@ ReadDirArchive::ReadDirArchive( const ::boost::filesystem::path &archive ) :
 
 ReadDirArchive::~ReadDirArchive()
 {
-    this->closeFile();
 }
 
 //-----------------------------------------------------------------------------
 
-std::istream& ReadDirArchive::getFile(const ::boost::filesystem::path &path)
+SPTR(std::istream) ReadDirArchive::getFile(const ::boost::filesystem::path &path)
 {
     FW_RAISE_EXCEPTION_IF(
             ::fwZip::exception::Read("File '" +  path.string() + "' "
                                      "in archive '" + m_archive.string() + "' doesn't exist."),
              !this->exists(m_archive / path));
 
-    this->closeFile();
-    m_infile.open((m_archive / path).string().c_str(), std::fstream::binary | std::fstream::in);
-    return m_infile;
-}
-
-//-----------------------------------------------------------------------------
-
-void ReadDirArchive::closeFile()
-{
-    if(m_infile.is_open())
-    {
-        m_infile.close();
-    }
+    SPTR(std::ifstream) is = ::boost::make_shared< std::ifstream >();
+    is->open((m_archive / path).string().c_str(), std::fstream::binary | std::fstream::in);
+    return is;
 }
 
 //-----------------------------------------------------------------------------

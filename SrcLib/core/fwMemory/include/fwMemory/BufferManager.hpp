@@ -114,6 +114,16 @@ public:
      *
      * @return
      */
+    BufferInfoMapType & getBufferInfos() // UARGL
+    {
+        return m_bufferInfos;
+    }
+
+    /**
+     * @brief Returns the Buffer info map
+     *
+     * @return
+     */
     const BufferInfoMapType & getBufferInfos() const
     {
         return m_bufferInfos;

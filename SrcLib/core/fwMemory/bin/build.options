@@ -4,6 +4,7 @@ USE     = [
           'boostFilesystem',
           'boostRegex',
           'boostSignals',
+          'boostIostreams',
           ]
 
 LIB     = [

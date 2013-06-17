@@ -1,11 +1,14 @@
 #include <sstream>
+#include <iosfwd>                          // streamsize
 
 #include <boost/foreach.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-
+#include <boost/iostreams/categories.hpp>  // source_tag
 
 #include <fwTools/UUID.hpp>
+
+#include <fwMemory/BufferManager.hpp>
 
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -163,6 +166,28 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 
 //-----------------------------------------------------------------------------
 
+
+class AtomsBoostIOReadStream : public ::fwMemory::stream::in::IFactory
+{
+public:
+    AtomsBoostIOReadStream(const ::fwZip::IReadArchive::sptr& archive, const boost::filesystem::path &path):
+        m_archive(archive), m_path(path)
+    {};
+
+protected:
+
+    SPTR(std::istream) get()
+    {
+        return m_archive->getFile(m_path);
+    }
+
+    ::fwZip::IReadArchive::sptr m_archive;
+    boost::filesystem::path m_path;
+};
+
+
+
+
 ::fwAtoms::Blob::sptr getBlob(const ::boost::property_tree::ptree &pt, const std::string & ptpath)
 {
     ::fwAtoms::Blob::sptr atom = ::fwAtoms::Blob::New();
@@ -176,14 +201,24 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
     {
         const std::string bufFile = pt.get<std::string>("blob.buffer");
 
-        buffObj->allocate(buffSize);
+        ::fwMemory::BufferManager::sptr manager
+            = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::IBufferManager::getCurrent() );
 
-        ::fwMemory::BufferObject::Lock lock(buffObj->lock());
-        void *v = lock.getBuffer();
-        char* buff = static_cast<char*>(v);
+        fwMemory::BufferInfo &info = manager->getBufferInfos()[ const_cast< void** > (buffObj->getBufferPointer() ) ];
+        info.istreamFactory = ::boost::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile);
+        info.size = buffSize;
+        info.isDumped = true;
+        info.bufferPolicy = ::fwMemory::BufferMallocPolicy::New();
+        info.dumpedFile.clear();
 
-        std::istream& inStream = m_archive->getFile(bufFile);
-        inStream.read(buff, buffSize);
+        // buffObj->allocate(buffSize);
+
+        // ::fwMemory::BufferObject::Lock lock(buffObj->lock());
+        // void *v = lock.getBuffer();
+        // char* buff = static_cast<char*>(v);
+
+        // SPTR(std::istream) inStream = m_archive->getFile(bufFile);
+        // inStream->read(buff, buffSize);
     }
     return atom;
 }
@@ -263,14 +298,14 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
     ::boost::property_tree::ptree root;
     ::fwAtoms::Base::sptr atom;
 
-    std::istream& in = archive->getFile(rootFilename);
+    SPTR(std::istream) in = archive->getFile(rootFilename);
     if(rootFilename.extension().string() == ".json")
     {
-        ::boost::property_tree::json_parser::read_json(in, root);
+        ::boost::property_tree::json_parser::read_json(*in, root);
     }
     else if(rootFilename.extension().string() == ".xml")
     {
-        ::boost::property_tree::xml_parser::read_xml(in, root);
+        ::boost::property_tree::xml_parser::read_xml(*in, root);
     }
     else
     {
