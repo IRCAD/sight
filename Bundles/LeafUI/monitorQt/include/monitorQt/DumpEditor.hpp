@@ -16,9 +16,11 @@
 #include <QSignalMapper>
 #include <QTableView>
 #include <QTableWidget>
+#include <QFutureWatcher>
 
 #include <fwTools/Failed.hpp>
 #include <fwCom/Connection.hpp>
+#include <fwMemory/BufferManager.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -88,9 +90,13 @@ protected Q_SLOTS:
     /// Slot called when user click on button m_refresh, call updating() method
     void onRefreshButton();
 
+    void onBufferInfo();
+
 private:
 
     typedef ::fwCom::Slot<void()> UpdateSlotType;
+
+    QFutureWatcher< ::fwMemory::BufferManager::BufferInfoMapType > m_watcher;
 
     // Managed buffers
     std::vector< const void * const * > m_objectsUID;

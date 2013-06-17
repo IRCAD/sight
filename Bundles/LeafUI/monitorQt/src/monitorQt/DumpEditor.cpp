@@ -6,6 +6,7 @@
 
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
+#include <boost/bind.hpp>
 
 #include <QComboBox>
 #include <QHeaderView>
@@ -14,6 +15,8 @@
 #include <QTableWidgetItem>
 #include <QTimer>
 #include <QVBoxLayout>
+#include <QFuture>
+#include <QtConcurrentRun>
 
 #include <fwCore/base.hpp>
 
@@ -48,7 +51,8 @@ namespace monitor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor , ::monitor::DumpEditor , ::fwData::Object ) ;
 
-
+::fwMemory::BufferManager::BufferInfoMapType m_bufferInfos;
+::fwMemory::BufferManager::BufferStats m_bufferStats = {0,0};
 
 QString getHumanReadableSize(::fwMemory::ByteSize::SizeType bytes)
 {
@@ -62,17 +66,14 @@ class PolicyComboBoxDelegate : public QItemDelegate
 {
 
 public:
-        PolicyComboBoxDelegate(QObject *parent = 0) : QItemDelegate(parent){}
+    PolicyComboBoxDelegate(QObject *parent = 0) : QItemDelegate(parent){}
 
-        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-                                const QModelIndex &index) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
-        void setEditorData(QWidget *editor, const QModelIndex &index) const;
-        void setModelData(QWidget *editor, QAbstractItemModel *model,
-                            const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 
-        void updateEditorGeometry(QWidget *editor,
-                                    const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 
@@ -288,11 +289,7 @@ Qt::ItemFlags PolicyTableModel::flags(const QModelIndex &index) const
 }
 
 
-
-
 //------------------------------------------------------------------------------
-
-
 
 
 class InfoTableModel : public QAbstractTableModel
@@ -351,22 +348,22 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
             ::fwMemory::BufferManager::SizeType bufferManagerMem;
             switch (index.row())
             {
-                case 0 :
-                    sysMem = ::fwMemory::tools::MemoryMonitorTools::getTotalSystemMemory();
-                    return QString(getHumanReadableSize(sysMem));
-                    break;
-                case 1 :
-                    sysMem = ::fwMemory::tools::MemoryMonitorTools::getFreeSystemMemory();
-                    return QString(getHumanReadableSize(sysMem));
-                    break;
-                case 2 :
-                    bufferManagerMem = m_buffManager->getBufferStats().get().totalManaged;
-                    return QString(getHumanReadableSize(bufferManagerMem));
-                    break;
-                case 3 :
-                    bufferManagerMem = m_buffManager->getBufferStats().get().totalDumped;
-                    return QString(getHumanReadableSize(bufferManagerMem));
-                    break;
+            case 0 :
+                sysMem = ::fwMemory::tools::MemoryMonitorTools::getTotalSystemMemory();
+                return QString(getHumanReadableSize(sysMem));
+                break;
+            case 1 :
+                sysMem = ::fwMemory::tools::MemoryMonitorTools::getFreeSystemMemory();
+                return QString(getHumanReadableSize(sysMem));
+                break;
+            case 2 :
+                bufferManagerMem = m_bufferStats.totalManaged;
+                return QString(getHumanReadableSize(bufferManagerMem));
+                break;
+            case 3 :
+                bufferManagerMem = m_bufferStats.totalDumped;
+                return QString(getHumanReadableSize(bufferManagerMem));
+                break;
             }
         }
     }
@@ -376,7 +373,6 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
 
 QVariant InfoTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-
     if (role == Qt::DisplayRole && orientation == Qt::Vertical)
     {
         switch (section)
@@ -403,10 +399,6 @@ QVariant InfoTableModel::headerData(int section, Qt::Orientation orientation, in
 //------------------------------------------------------------------------------
 
 
-
-
-
-
 DumpEditor::DumpEditor() throw()
 {}
 
@@ -419,7 +411,6 @@ DumpEditor::~DumpEditor() throw()
 
 void DumpEditor::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -483,6 +474,7 @@ void DumpEditor::starting() throw(::fwTools::Failed)
     QObject::connect(m_mapper, SIGNAL(mapped(int)), this, SLOT(changeStatus(int)));
 
     QObject::connect(m_updateTimer, SIGNAL(timeout ()), this, SLOT(onRefreshButton( )));
+    QObject::connect(&m_watcher, SIGNAL(finished()), this, SLOT(onBufferInfo()));
 
     ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
     if (buffManager)
@@ -500,10 +492,10 @@ void DumpEditor::starting() throw(::fwTools::Failed)
 
 void DumpEditor::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     m_connection.disconnect();
     QObject::disconnect(m_refresh, SIGNAL(clicked ()), this, SLOT(onRefreshButton()));
     QObject::disconnect(m_mapper, SIGNAL(mapped(int)), this, SLOT(changeStatus(int)));
+    QObject::disconnect(&m_watcher, SIGNAL(finished()), this, SLOT(onBufferInfo()));
 
     this->getContainer()->clean();
     this->::fwGui::IGuiContainerSrv::destroy();
@@ -520,118 +512,140 @@ void DumpEditor::configuring() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 
-class SizeTableWidgetItem : public QTableWidgetItem {
-    public:
+class SizeTableWidgetItem : public QTableWidgetItem
+{
+public:
 
-        SizeTableWidgetItem(const QString &text) : QTableWidgetItem(text) {}
+    SizeTableWidgetItem(const QString &text) : QTableWidgetItem(text) {}
 
-        virtual bool operator< ( const QTableWidgetItem & other ) const
-        {
-            return data(Qt::UserRole).toULongLong() < other.data(Qt::UserRole).toULongLong();
-        }
+    virtual bool operator< ( const QTableWidgetItem & other ) const
+    {
+        return data(Qt::UserRole).toULongLong() < other.data(Qt::UserRole).toULongLong();
+    }
 
-    protected:
+protected:
 
     size_t m_size;
 };
 
+//------------------------------------------------------------------------------
+
+::fwMemory::BufferManager::BufferInfoMapType getInfoMap()
+{
+    ::fwMemory::BufferManager::BufferInfoMapType infoMap;
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
+    if(buffManager)
+    {
+        infoMap = buffManager->getBufferInfos().get();
+    }
+    return infoMap;
+}
+
+//------------------------------------------------------------------------------
 
 void DumpEditor::updating() throw(::fwTools::Failed)
 {
     m_policyEditor->reset();
-    m_infoEditor->reset();
     m_policyEditor->resizeColumnsToContents();
-    m_infoEditor->resizeColumnsToContents();
 
-    SLM_TRACE_FUNC();
+    QFuture< ::fwMemory::BufferManager::BufferInfoMapType > qFuture = QtConcurrent::run(getInfoMap);
+    m_watcher.setFuture(qFuture);
+}
+
+//------------------------------------------------------------------------------
+
+void DumpEditor::onBufferInfo()
+{
+    m_bufferInfos = m_watcher.result();
+    m_bufferStats = ::fwMemory::BufferManager::computeBufferStats(m_bufferInfos);
+
     m_mapper->blockSignals(true);
-    ::fwCom::Connection::Blocker block(m_connection);
+   ::fwCom::Connection::Blocker block(m_connection);
 
-    for(int row = 0; row < m_list->rowCount(); row++)
-    {
-        m_mapper->removeMappings( m_list->cellWidget(row, 4) );
-    }
-    m_list->clearContents();
-    m_objectsUID.clear();
-
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
-    if(buffManager)
-    {
-        const ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap = buffManager->getBufferInfos().get();
-
-        int itemCount = 0;
-        m_list->setSortingEnabled(false);
-        m_list->setRowCount(static_cast<int>(buffInfoMap.size()));
-        m_list->setColumnCount(5);
-        QColor backColor;
-        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, buffInfoMap)
-        {
-            m_objectsUID.push_back(elt.first);
-
-            std::string status      = "?";
-            std::string date        = "?";
-            std::string lockStatus  = "?";
+   for(int row = 0; row < m_list->rowCount(); row++)
+   {
+       m_mapper->removeMappings( m_list->cellWidget(row, 4) );
+   }
+   m_list->clearContents();
+   m_objectsUID.clear();
 
 
-            const ::fwMemory::BufferInfo &dumpBuffInfo = elt.second;
-            bool loaded = dumpBuffInfo.loaded;
-            if(!loaded)
-            {
-                backColor = Qt::darkYellow;
-                status = "Dumped";
-            }
-            else
-            {
-                backColor = Qt::white;
-                status = "-";
-            }
+   int itemCount = 0;
+   m_list->setSortingEnabled(false);
+   m_list->setRowCount(static_cast<int>(m_bufferInfos.size()));
+   m_list->setColumnCount(5);
+   QColor backColor;
+   BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, m_bufferInfos)
+   {
+       m_objectsUID.push_back(elt.first);
 
-            bool isLock = dumpBuffInfo.lockCount() > 0;
-            if ( isLock )
-            {
-                lockStatus = "locked(" +  ::fwTools::getString(dumpBuffInfo.lockCount()) +")";
-            }
-            else
-            {
-                lockStatus = "unlocked";
-            }
+       std::string status      = "?";
+       std::string date        = "?";
+       std::string lockStatus  = "?";
 
 
-            date = ::fwTools::getString(dumpBuffInfo.lastAccess.getLogicStamp());
+       const ::fwMemory::BufferInfo &dumpBuffInfo = elt.second;
+       bool loaded = dumpBuffInfo.loaded;
+       if(!loaded)
+       {
+           backColor = Qt::darkYellow;
+           status = "Dumped";
+       }
+       else
+       {
+           backColor = Qt::white;
+           status = "-";
+       }
 
-            QTableWidgetItem* currentSizeItem = new SizeTableWidgetItem( getHumanReadableSize(dumpBuffInfo.size) );
-            currentSizeItem->setData(Qt::UserRole, (qulonglong)dumpBuffInfo.size );
-            currentSizeItem->setFlags(Qt::ItemIsEnabled);
-            currentSizeItem->setBackgroundColor(backColor);
-            m_list->setItem(itemCount, 0, currentSizeItem );
-
-            QTableWidgetItem* statusItem = new QTableWidgetItem( QString::fromStdString(status));
-            statusItem->setFlags(Qt::ItemIsEnabled);
-            statusItem->setBackgroundColor(backColor);
-            m_list->setItem(itemCount, 1, statusItem );
-
-            QTableWidgetItem* dateItem = new QTableWidgetItem( QString::fromStdString(date));
-            dateItem->setFlags(Qt::ItemIsEnabled);
-            dateItem->setBackgroundColor(backColor);
-            m_list->setItem(itemCount, 2, dateItem );
-
-            QTableWidgetItem* lockStatusItem = new QTableWidgetItem( QString::fromStdString(lockStatus));
-            lockStatusItem->setFlags(Qt::ItemIsEnabled);
-            lockStatusItem->setBackgroundColor(backColor);
-            m_list->setItem(itemCount, 3, lockStatusItem );
+       bool isLock = dumpBuffInfo.lockCount() > 0;
+       if ( isLock )
+       {
+           lockStatus = "locked(" +  ::fwTools::getString(dumpBuffInfo.lockCount()) +")";
+       }
+       else
+       {
+           lockStatus = "unlocked";
+       }
 
 
-            QPushButton* actionItem = new QPushButton(QString::fromStdString((loaded)?"Dump":"Restore"), m_list);
-            actionItem->setEnabled(!isLock && (dumpBuffInfo.size > 0) );
-            m_list->setCellWidget(itemCount, 4, actionItem );
-            QObject::connect(actionItem, SIGNAL(pressed()), m_mapper, SLOT(map()));
-            m_mapper->setMapping(actionItem, itemCount);
+       date = ::fwTools::getString(dumpBuffInfo.lastAccess.getLogicStamp());
 
-            ++itemCount;
-        }
-        m_list->setSortingEnabled(true);
-    }
-    m_mapper->blockSignals(false);
+       QTableWidgetItem* currentSizeItem = new SizeTableWidgetItem( getHumanReadableSize(dumpBuffInfo.size) );
+       currentSizeItem->setData(Qt::UserRole, (qulonglong)dumpBuffInfo.size );
+       currentSizeItem->setFlags(Qt::ItemIsEnabled);
+       currentSizeItem->setBackgroundColor(backColor);
+       m_list->setItem(itemCount, 0, currentSizeItem );
+
+       QTableWidgetItem* statusItem = new QTableWidgetItem( QString::fromStdString(status));
+       statusItem->setFlags(Qt::ItemIsEnabled);
+       statusItem->setBackgroundColor(backColor);
+       m_list->setItem(itemCount, 1, statusItem );
+
+       QTableWidgetItem* dateItem = new QTableWidgetItem( QString::fromStdString(date));
+       dateItem->setFlags(Qt::ItemIsEnabled);
+       dateItem->setBackgroundColor(backColor);
+       m_list->setItem(itemCount, 2, dateItem );
+
+       QTableWidgetItem* lockStatusItem = new QTableWidgetItem( QString::fromStdString(lockStatus));
+       lockStatusItem->setFlags(Qt::ItemIsEnabled);
+       lockStatusItem->setBackgroundColor(backColor);
+       m_list->setItem(itemCount, 3, lockStatusItem );
+
+
+       QPushButton* actionItem = new QPushButton(QString::fromStdString((loaded)?"Dump":"Restore"), m_list);
+       actionItem->setEnabled(!isLock && (dumpBuffInfo.size > 0) );
+       m_list->setCellWidget(itemCount, 4, actionItem );
+       QObject::connect(actionItem, SIGNAL(pressed()), m_mapper, SLOT(map()));
+       m_mapper->setMapping(actionItem, itemCount);
+
+       ++itemCount;
+   }
+   m_list->setSortingEnabled(true);
+
+   m_mapper->blockSignals(false);
+
+   m_infoEditor->reset();
+   m_infoEditor->resizeColumnsToContents();
 }
 
 //------------------------------------------------------------------------------
@@ -652,14 +666,13 @@ void DumpEditor::info( std::ostream &_sstream )
 
 void DumpEditor::onUpdate()
 {
-        m_updateTimer->start();
+    m_updateTimer->start();
 }
 
 //------------------------------------------------------------------------------
 
 void DumpEditor::onRefreshButton()
 {
-    SLM_TRACE_FUNC();
     this->updating();
 }
 
@@ -667,13 +680,12 @@ void DumpEditor::onRefreshButton()
 
 void DumpEditor::changeStatus( int index )
 {
-    SLM_TRACE_FUNC();
-
-    ::fwMemory::BufferManager::ConstBufferPtrType selectedBuffer = m_objectsUID[index];
     ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
     if(buffManager)
     {
-        const ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap = buffManager->getBufferInfos().get();
+        const ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap = m_bufferInfos;
+        ::fwMemory::BufferManager::ConstBufferPtrType selectedBuffer = m_objectsUID[index];
+
         ::fwMemory::BufferManager::BufferInfoMapType::const_iterator iter;
         iter = buffInfoMap.find(selectedBuffer);
         if( iter != buffInfoMap.end())
