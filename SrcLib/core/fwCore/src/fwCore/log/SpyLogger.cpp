@@ -56,7 +56,7 @@ void SpyLogger::createBasicConfiguration()
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::addStreamAppender( std::ostream &os )
+void SpyLogger::addStreamAppender( std::ostream &os, LevelType level )
 {
     namespace fmt = ::boost::log::formatters;
     namespace keywords = ::boost::log::keywords;
@@ -71,6 +71,8 @@ void SpyLogger::addStreamAppender( std::ostream &os )
                             << "][" << fmt::attr< ::boost::log::trivial::severity_level >("Severity", std::nothrow)
                             << "] " << fmt::message()
                         ),
+                    keywords::filter = ::boost::log::filters::attr< ::boost::log::trivial::severity_level >
+                        ("Severity", std::nothrow) >= static_cast < ::boost::log::trivial::severity_level > (level),
                     // auto-flush feature of the backend
                     keywords::auto_flush = true
         )
@@ -85,7 +87,7 @@ void SpyLogger::addStreamAppender( std::ostream &os )
 
 //-----------------------------------------------------------------------------
 
-void SpyLogger::addFileAppender(const std::string & logFile)
+void SpyLogger::addFileAppender(const std::string & logFile, LevelType level)
 {
     namespace fmt = ::boost::log::formatters;
     namespace keywords = ::boost::log::keywords;
@@ -108,6 +110,8 @@ void SpyLogger::addFileAppender(const std::string & logFile)
                     << "][" << fmt::attr< ::boost::log::trivial::severity_level >("Severity", std::nothrow)
                     << "] " << fmt::message()
                 ),
+            keywords::filter = ::boost::log::filters::attr< ::boost::log::trivial::severity_level >
+                        ("Severity", std::nothrow) >= static_cast < ::boost::log::trivial::severity_level > (level),
             // auto-flush feature of the backend
             keywords::auto_flush = true
         )
@@ -120,7 +124,7 @@ void SpyLogger::setLevel(LevelType level)
 {
     ::boost::log::core::get()->set_filter
     (
-        ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity")
+        ::boost::log::filters::attr< ::boost::log::trivial::severity_level >("Severity", std::nothrow)
                                             >= static_cast < ::boost::log::trivial::severity_level > (level)
     );
 }

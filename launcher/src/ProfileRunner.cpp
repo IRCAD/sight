@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
 
     if(consoleLog)
     {
-        logger.addStreamAppender();
+        logger.addStreamAppender(std::clog, static_cast<SpyLogger::LevelType>(logLevel));
     }
 
     if(fileLog)
@@ -214,25 +214,23 @@ int main(int argc, char* argv[])
             if(err.value() != 0)
             {
                 // replace log file appender by stream appender: default dir and temp dir unreachable
-                logger.addStreamAppender();
+                logger.addStreamAppender(std::clog, static_cast<SpyLogger::LevelType>(logLevel));
             }
             else
             {
                 // creates SLM.log in temp directory: default dir unreachable
                 sysTmp = sysTmp / "SLM.log";
                 logFile = sysTmp.string();
-                logger.addFileAppender(logFile);
+                logger.addFileAppender(logFile, static_cast<SpyLogger::LevelType>(logLevel));
             }
         }
         else
         {
             // creates SLM.log in default logFile directory
             fclose(pFile);
-            logger.addFileAppender(logFile);
+            logger.addFileAppender(logFile, static_cast<SpyLogger::LevelType>(logLevel));
         }
     }
-
-    logger.setLevel(static_cast<SpyLogger::LevelType>(logLevel));
 
 #ifdef __MACOSX__
     if (vm.count("psn"))
