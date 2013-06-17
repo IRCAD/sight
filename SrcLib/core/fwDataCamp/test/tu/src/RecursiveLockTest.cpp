@@ -42,7 +42,7 @@ void RecursiveLockTest::lockTest()
         ::fwData::Image::sptr image = ::fwData::Image::New();
         ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
         ::fwData::Array::sptr array = image->getDataArray();
-        ::fwTools::BufferObject::sptr bo = array->getBufferObject();
+        ::fwMemory::BufferObject::sptr bo = array->getBufferObject();
 
         {
             ::fwDataCamp::visitor::RecursiveLock visitor(image);
@@ -68,8 +68,8 @@ void RecursiveLockTest::lockTest()
 
         ::fwData::Array::sptr array1 = img1->getDataArray();
         ::fwData::Array::sptr array2 = img2->getDataArray();
-        ::fwTools::BufferObject::sptr bo1 = array1->getBufferObject();
-        ::fwTools::BufferObject::sptr bo2 = array2->getBufferObject();
+        ::fwMemory::BufferObject::sptr bo1 = array1->getBufferObject();
+        ::fwMemory::BufferObject::sptr bo2 = array2->getBufferObject();
 
         {
             ::fwDataCamp::visitor::RecursiveLock visitor(composite);

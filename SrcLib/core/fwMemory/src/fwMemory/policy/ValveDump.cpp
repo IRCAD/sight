@@ -20,9 +20,8 @@
 #include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
 #endif
 
-#include <fwTools/ByteSize.hpp>
-
-
+#include "fwMemory/exception/BadCast.hpp"
+#include "fwMemory/ByteSize.hpp"
 #include "fwMemory/policy/ValveDump.hpp"
 
 
@@ -45,7 +44,7 @@ ValveDump::ValveDump() :
 
 //------------------------------------------------------------------------------
 
-void ValveDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply((size > info.size) ? size - info.size : 0);
 }
@@ -53,7 +52,7 @@ void ValveDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::
 //------------------------------------------------------------------------------
 
 
-void ValveDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void ValveDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -61,7 +60,7 @@ void ValveDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferP
 //------------------------------------------------------------------------------
 
 
-void ValveDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
+void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     this->apply((newSize > info.size) ? newSize - info.size : 0);
 }
@@ -69,21 +68,21 @@ void ValveDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::
 //------------------------------------------------------------------------------
 
 
-void ValveDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void ValveDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void ValveDump::lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void ValveDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -91,14 +90,14 @@ void ValveDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::Buff
 //------------------------------------------------------------------------------
 
 
-void ValveDump::dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void ValveDump::dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void ValveDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
 }
 
@@ -106,7 +105,7 @@ void ValveDump::restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::Buf
 
 
 
-void ValveDump::setManager(::fwTools::IBufferManager::sptr manager)
+void ValveDump::setManager(::fwMemory::IBufferManager::sptr manager)
 {
     m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
 }
@@ -193,17 +192,17 @@ bool ValveDump::setParam(const std::string &name, const std::string &value)
     {
         if(name == "min_free_mem")
         {
-            m_minFreeMem = ::fwTools::ByteSize(value).getSize();
+            m_minFreeMem = ::fwMemory::ByteSize(value).getSize();
             return true;
 
         }
         else if(name == "hysteresis_offet")
         {
-            m_hysteresisOffset = ::fwTools::ByteSize(value).getSize();
+            m_hysteresisOffset = ::fwMemory::ByteSize(value).getSize();
             return true;
         }
     }
-    catch( ::fwTools::ByteSize::Exception const& )
+    catch( ::fwMemory::exception::BadCast const& )
     {
         OSLM_ERROR("Bad value for " << name << " : " << value);
         return false;
@@ -235,13 +234,13 @@ std::string ValveDump::getParam(const std::string &name, bool *ok )
     *ok = false;
     if(name == "min_free_mem")
     {
-        value = std::string(::fwTools::ByteSize( ::fwTools::ByteSize::SizeType(m_minFreeMem) ));
+        value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_minFreeMem) ));
         *ok = true;
 
     }
     else if(name == "hysteresis_offet")
     {
-        value = std::string(::fwTools::ByteSize( ::fwTools::ByteSize::SizeType(m_hysteresisOffset) ));
+        value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_hysteresisOffset) ));
         *ok = true;
     }
     return value;

@@ -36,7 +36,7 @@ BufferManager::~BufferManager()
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::registerBuffer(::fwTools::IBufferManager::BufferPtrType buffer, IBufferManager::LockCountFunctionType lockCount)
+bool BufferManager::registerBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, IBufferManager::LockCountFunctionType lockCount)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -47,7 +47,7 @@ bool BufferManager::registerBuffer(::fwTools::IBufferManager::BufferPtrType buff
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::unregisterBuffer(::fwTools::IBufferManager::BufferPtrType buffer)
+bool BufferManager::unregisterBuffer(::fwMemory::IBufferManager::BufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
 
@@ -67,7 +67,7 @@ bool BufferManager::unregisterBuffer(::fwTools::IBufferManager::BufferPtrType bu
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::allocateBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+bool BufferManager::allocateBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, SizeType size, ::fwMemory::BufferAllocationPolicy::sptr policy)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -94,7 +94,7 @@ bool BufferManager::allocateBuffer(::fwTools::IBufferManager::BufferPtrType buff
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::setBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+bool BufferManager::setBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, SizeType size, ::fwMemory::BufferAllocationPolicy::sptr policy)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -121,7 +121,7 @@ bool BufferManager::setBuffer(::fwTools::IBufferManager::BufferPtrType buffer, S
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::reallocateBuffer(::fwTools::IBufferManager::BufferPtrType buffer, SizeType newSize)
+bool BufferManager::reallocateBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, SizeType newSize)
 {
     SLM_TRACE_FUNC();
 
@@ -144,7 +144,7 @@ bool BufferManager::reallocateBuffer(::fwTools::IBufferManager::BufferPtrType bu
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::destroyBuffer(::fwTools::IBufferManager::BufferPtrType buffer)
+bool BufferManager::destroyBuffer(::fwMemory::IBufferManager::BufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
     BufferInfo & info = m_bufferInfos[buffer];
@@ -170,7 +170,7 @@ bool BufferManager::destroyBuffer(::fwTools::IBufferManager::BufferPtrType buffe
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::swapBuffer(::fwTools::IBufferManager::BufferPtrType bufA, ::fwTools::IBufferManager::BufferPtrType bufB)
+bool BufferManager::swapBuffer(::fwMemory::IBufferManager::BufferPtrType bufA, ::fwMemory::IBufferManager::BufferPtrType bufB)
 {
     SLM_TRACE_FUNC();
     BufferInfo & infoA = m_bufferInfos[bufA];
@@ -187,11 +187,11 @@ bool BufferManager::swapBuffer(::fwTools::IBufferManager::BufferPtrType bufA, ::
 }
 //-----------------------------------------------------------------------------
 
-bool BufferManager::lockBuffer(::fwTools::IBufferManager::ConstBufferPtrType buffer)
+bool BufferManager::lockBuffer(::fwMemory::IBufferManager::ConstBufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
 
-    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
+    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     m_dumpPolicy->lockRequest( info, castedBuffer );
@@ -211,11 +211,11 @@ bool BufferManager::lockBuffer(::fwTools::IBufferManager::ConstBufferPtrType buf
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::unlockBuffer(::fwTools::IBufferManager::ConstBufferPtrType buffer)
+bool BufferManager::unlockBuffer(::fwMemory::IBufferManager::ConstBufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
 
-    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
+    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     m_dumpPolicy->unlockRequest( info, castedBuffer );
@@ -226,10 +226,10 @@ bool BufferManager::unlockBuffer(::fwTools::IBufferManager::ConstBufferPtrType b
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::dumpBuffer(::fwTools::IBufferManager::ConstBufferPtrType  buffer)
+bool BufferManager::dumpBuffer(::fwMemory::IBufferManager::ConstBufferPtrType  buffer)
 {
 
-    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
+    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     return this->dumpBuffer(info, castedBuffer);
@@ -238,7 +238,7 @@ bool BufferManager::dumpBuffer(::fwTools::IBufferManager::ConstBufferPtrType  bu
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, ::fwTools::IBufferManager::BufferPtrType buffer)
+bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, ::fwMemory::IBufferManager::BufferPtrType buffer)
 {
     SLM_TRACE_FUNC();
     if ( info.isDumped || info.lockCount() > 0 || info.size == 0 )
@@ -267,9 +267,9 @@ bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, ::fwTools::IBuf
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::restoreBuffer(::fwTools::IBufferManager::ConstBufferPtrType  buffer)
+bool BufferManager::restoreBuffer(::fwMemory::IBufferManager::ConstBufferPtrType  buffer)
 {
-    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
+    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     return this->restoreBuffer(info, castedBuffer);
@@ -308,7 +308,7 @@ bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info, ::fwTools::I
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::writeBuffer(::fwTools::IBufferManager::ConstBufferType buffer, SizeType size, ::boost::filesystem::path &path)
+bool BufferManager::writeBuffer(::fwMemory::IBufferManager::ConstBufferType buffer, SizeType size, ::boost::filesystem::path &path)
 {
     ::boost::filesystem::ofstream fs(path, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Memory management : Unable to open " << path, !fs.good());
@@ -321,7 +321,7 @@ bool BufferManager::writeBuffer(::fwTools::IBufferManager::ConstBufferType buffe
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::readBuffer(::fwTools::IBufferManager::BufferType buffer, SizeType size, ::boost::filesystem::path &path)
+bool BufferManager::readBuffer(::fwMemory::IBufferManager::BufferType buffer, SizeType size, ::boost::filesystem::path &path)
 {
     ::boost::filesystem::ifstream fs(path, std::ios::in|std::ios::binary|std::ios::ate);
     FW_RAISE_IF("Unable to read " << path, !fs.good());
@@ -416,9 +416,9 @@ BufferManager::SizeType BufferManager::getManagedBufferSize() const
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::isDumped(const ::fwTools::IBufferManager::ConstBufferPtrType buffer) const
+bool BufferManager::isDumped(const ::fwMemory::IBufferManager::ConstBufferPtrType buffer) const
 {
-    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
+    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
     BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
     FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
     return iterInfo->second.isDumped;
@@ -426,9 +426,9 @@ bool BufferManager::isDumped(const ::fwTools::IBufferManager::ConstBufferPtrType
 
 //-----------------------------------------------------------------------------
 
-::boost::filesystem::path BufferManager::getDumpedFilePath(const ::fwTools::IBufferManager::ConstBufferPtrType buffer) const
+::boost::filesystem::path BufferManager::getDumpedFilePath(const ::fwMemory::IBufferManager::ConstBufferPtrType buffer) const
 {
-    ::fwTools::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwTools::IBufferManager::BufferPtrType >(buffer);
+    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
     BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
     FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
     return iterInfo->second.dumpedFile;

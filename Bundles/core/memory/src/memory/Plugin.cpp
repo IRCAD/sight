@@ -37,7 +37,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     // manager->setDumpPolicy( ::fwMemory::policy::AlwaysDump::New() );
     // manager->setDumpPolicy( ::fwMemory::policy::BarrierDump::New() );
 
-    ::fwTools::IBufferManager::setCurrent( manager );
+    ::fwMemory::IBufferManager::setCurrent( manager );
 }
 
 //------------------------------------------------------------------------------

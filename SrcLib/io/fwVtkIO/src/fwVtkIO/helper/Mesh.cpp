@@ -322,7 +322,7 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPo
         colors->SetNumberOfComponents(nbComponents);
         colors->SetName("Colors");
 
-        ::fwTools::BufferObject::Lock lock = cellColorArray->getBufferObject()->lock();
+        ::fwMemory::BufferObject::Lock lock = cellColorArray->getBufferObject()->lock();
         unsigned char *cellColor = arrayHelper.begin< unsigned char >();
         unsigned char *cellColorEnd = arrayHelper.end< unsigned char >();
 

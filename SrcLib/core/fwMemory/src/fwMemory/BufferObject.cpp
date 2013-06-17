@@ -6,17 +6,16 @@
 
 #include <boost/bind.hpp>
 
-#include "fwTools/Exception.hpp"
-#include "fwTools/BufferObject.hpp"
+#include "fwMemory/BufferObject.hpp"
 
-fwCampImplementMacro((fwTools)(BufferObject))
+fwCampImplementMacro((fwMemory)(BufferObject))
 {
     builder.tag("buffer")
-           .function("classname", &::fwTools::BufferObject::className)
-           .function("is_a", (bool (::fwTools::BufferObject::*)(const std::string &) const) &::fwTools::BufferObject::isA);
+           .function("classname", &::fwMemory::BufferObject::className)
+           .function("is_a", (bool (::fwMemory::BufferObject::*)(const std::string &) const) &::fwMemory::BufferObject::isA);
 }
 
-namespace fwTools
+namespace fwMemory
 {
 
 
@@ -24,8 +23,8 @@ namespace fwTools
 BufferObject::BufferObject():
     m_buffer(0),
     m_size(0),
-    m_bufferManager(::fwTools::IBufferManager::getCurrent()),
-    m_allocPolicy(::fwTools::BufferNoAllocPolicy::New())
+    m_bufferManager(::fwMemory::IBufferManager::getCurrent()),
+    m_allocPolicy(::fwMemory::BufferNoAllocPolicy::New())
 {
     m_bufferManager->registerBuffer(&m_buffer, boost::bind(&BufferObject::lockCount, this));
 }
@@ -41,7 +40,7 @@ BufferObject::~BufferObject()
 
 //------------------------------------------------------------------------------
 
-void BufferObject::allocate(SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+void BufferObject::allocate(SizeType size, ::fwMemory::BufferAllocationPolicy::sptr policy)
 {
     m_allocPolicy = policy;
     m_size = size;
@@ -70,13 +69,13 @@ void BufferObject::destroy()
     {
         m_allocPolicy->destroy(m_buffer);
     }
-    m_allocPolicy = ::fwTools::BufferNoAllocPolicy::New();
+    m_allocPolicy = ::fwMemory::BufferNoAllocPolicy::New();
     m_size = 0;
 }
 
 //------------------------------------------------------------------------------
 
-void BufferObject::setBuffer(::fwTools::IBufferManager::BufferType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+void BufferObject::setBuffer(::fwMemory::IBufferManager::BufferType buffer, SizeType size, ::fwMemory::BufferAllocationPolicy::sptr policy)
 {
     m_allocPolicy = policy;
     m_size   = size;
@@ -115,6 +114,6 @@ void BufferObject::swap( BufferObject::sptr _source )
 
 //------------------------------------------------------------------------------
 
-} //namespace fwTools
+} //namespace fwMemory
 
 

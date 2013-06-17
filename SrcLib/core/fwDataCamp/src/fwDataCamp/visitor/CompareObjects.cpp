@@ -13,7 +13,7 @@
 
 #include <fwData/camp/mapper.hpp>
 
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include "fwDataCamp/visitor/CompareObjects.hpp"
 
@@ -85,12 +85,12 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
                 CompareObjects visitor(value, m_prefix, m_props);
                 newMetaclass.visit(visitor);
             }
-            else if(classname == "::fwTools::BufferObject")
+            else if(classname == "::fwMemory::BufferObject")
             {
-                ::fwTools::BufferObject* bo = value.get< ::fwTools::BufferObject* >();
+                ::fwMemory::BufferObject* bo = value.get< ::fwMemory::BufferObject* >();
                 if(bo)
                 {
-                    ::fwTools::BufferObject::Lock lock = bo->lock();
+                    ::fwMemory::BufferObject::Lock lock = bo->lock();
                     if(lock.getBuffer())
                     {
                         char* buffer = static_cast< char* >(lock.getBuffer());

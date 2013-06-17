@@ -40,7 +40,7 @@ void SDumpAll::updating( ) throw(::fwTools::Failed)
 {
     size_t nbBuffDumped = 0;
     ::fwMemory::BufferInfo::MapType buffInfoMap;
-    ::fwTools::IBufferManager::sptr manager = ::fwTools::IBufferManager::getCurrent();
+    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
     ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
     if(buffManager)
     {

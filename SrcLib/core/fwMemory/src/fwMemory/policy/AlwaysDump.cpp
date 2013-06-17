@@ -22,7 +22,7 @@ static IPolicy::Register<AlwaysDump> registerFactory(AlwaysDump::leafClassname()
 
 //------------------------------------------------------------------------------
 
-void AlwaysDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void AlwaysDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -30,7 +30,7 @@ void AlwaysDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager:
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void AlwaysDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -38,7 +38,7 @@ void AlwaysDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::Buffer
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
+void AlwaysDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     this->apply();
 }
@@ -46,7 +46,7 @@ void AlwaysDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager:
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -54,7 +54,7 @@ void AlwaysDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::Bu
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -62,7 +62,7 @@ void AlwaysDump::lockRequest( BufferInfo &info, ::fwTools::IBufferManager::Buffe
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -70,20 +70,20 @@ void AlwaysDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::Buf
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void AlwaysDump::setManager(::fwTools::IBufferManager::sptr manager)
+void AlwaysDump::setManager(::fwMemory::IBufferManager::sptr manager)
 {
     m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
 }

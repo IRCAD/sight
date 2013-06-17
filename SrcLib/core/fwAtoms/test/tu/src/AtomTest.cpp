@@ -7,7 +7,7 @@
 #include <boost/foreach.hpp>
 #include <limits>
 
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Exception.hpp>
@@ -42,7 +42,7 @@ void AtomTest::blobTest()
 
     CPPUNIT_ASSERT_THROW(blob->getString(), ::fwAtoms::Exception);
 
-    ::fwTools::BufferObject::sptr bo = ::fwTools::BufferObject::New();
+    ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
     blob->setBufferObject(bo);
     CPPUNIT_ASSERT_EQUAL(bo, blob->getBufferObject());
 }

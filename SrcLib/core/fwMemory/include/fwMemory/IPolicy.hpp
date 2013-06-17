@@ -12,8 +12,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/IBufferManager.hpp>
-
+#include "fwMemory/IBufferManager.hpp"
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/config.hpp"
 
@@ -33,17 +32,17 @@ public :
     typedef boost::function< IPolicy::sptr () > PolicyFactoryType;
     typedef std::map<std::string, PolicyFactoryType> FactoryMap;
 
-    virtual void allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) = 0 ;
-    virtual void setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) = 0 ;
-    virtual void reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize ) = 0 ;
-    virtual void destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
-    virtual void lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
-    virtual void unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
+    virtual void allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) = 0 ;
+    virtual void setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) = 0 ;
+    virtual void reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize ) = 0 ;
+    virtual void destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) = 0 ;
+    virtual void lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) = 0 ;
+    virtual void unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) = 0 ;
 
-    virtual void dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
-    virtual void restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) = 0 ;
+    virtual void dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) = 0 ;
+    virtual void restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) = 0 ;
 
-    virtual void setManager(::fwTools::IBufferManager::sptr manager) = 0;
+    virtual void setManager(::fwMemory::IBufferManager::sptr manager) = 0;
 
     virtual void refresh() = 0;
 

@@ -8,7 +8,7 @@
 #define _FWCOMED_HELPER_MESH_HPP_
 
 #include <fwTools/Type.hpp>
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include <fwData/Mesh.hpp>
 

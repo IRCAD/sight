@@ -4,7 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/camp/mapper.hpp>
+#include <fwMemory/camp/mapper.hpp>
+#include <fwMemory/BufferObject.hpp>
+
 #include <fwCamp/UserObject.hpp>
 
 #include "fwDataCamp/Array.hpp"

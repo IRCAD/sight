@@ -8,7 +8,7 @@
 #define _FWDATA_ARRAY_HPP_
 
 #include <fwTools/Type.hpp>
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include "fwData/Exception.hpp"
 
@@ -224,7 +224,7 @@ public :
      */
     FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
-    fwDataGetSetSptrMacro(BufferObject, ::fwTools::BufferObject::sptr);
+    fwDataGetSetSptrMacro(BufferObject, ::fwMemory::BufferObject::sptr);
 
     /// Exchanges the content of the Array with the content of _source.
     FWDATA_API void swap( Array::sptr _source );
@@ -238,7 +238,7 @@ protected:
 
     OffsetType m_strides;
     ::fwTools::Type m_type;
-    ::fwTools::BufferObject::sptr m_attrBufferObject;
+    ::fwMemory::BufferObject::sptr m_attrBufferObject;
     SizeType m_size;
     size_t m_nbOfComponents;
     bool m_isBufferOwner;

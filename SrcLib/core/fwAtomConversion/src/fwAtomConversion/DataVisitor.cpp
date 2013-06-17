@@ -27,7 +27,7 @@
 #include <fwAtoms/Base.hpp>
 
 #include <fwTools/UUID.hpp>
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include <fwDataCamp/Version.hpp>
 
@@ -95,9 +95,9 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
         {
             DataVisitor::ClassnameType classname = value.call("classname").to<std::string>();
 
-            if( classname == "::fwTools::BufferObject" )
+            if( classname == "::fwMemory::BufferObject" )
             {
-                ::fwTools::BufferObject * ptr = value.get< ::fwTools::BufferObject * >();
+                ::fwMemory::BufferObject * ptr = value.get< ::fwMemory::BufferObject * >();
                 baseObj = ::fwAtoms::Blob::New( ptr->getSptr() );
             }
             else

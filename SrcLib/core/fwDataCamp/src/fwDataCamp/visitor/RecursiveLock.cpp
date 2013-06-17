@@ -9,7 +9,7 @@
 
 #include <fwCore/mt/types.hpp>
 
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/camp/mapper.hpp>
@@ -65,10 +65,10 @@ struct LockVisitor : public camp::ValueVisitor< void >
                     ::fwData::Object::sptr obj = ptr->getSptr();
                     ::fwDataCamp::visitor::RecursiveLock visitor( obj, m_locks );
                 }
-                else if( value.call("is_a", ::camp::Args("::fwTools::BufferObject")).to<bool>() )
+                else if( value.call("is_a", ::camp::Args("::fwMemory::BufferObject")).to<bool>() )
                 {
-                    ::fwTools::BufferObject * ptr = value.get< ::fwTools::BufferObject * >();
-                    ::fwTools::BufferObject::sptr bo = ptr->getSptr();
+                    ::fwMemory::BufferObject * ptr = value.get< ::fwMemory::BufferObject * >();
+                    ::fwMemory::BufferObject::sptr bo = ptr->getSptr();
                     SPTR(::fwCore::mt::ReadLock) lock
                             = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(bo->getMutex()));
                     m_locks->push_back(lock);

@@ -18,8 +18,8 @@
 #include <fwCore/base.hpp>
 
 #include <fwTools/fwID.hpp>
-#include <fwTools/IBufferManager.hpp>
-#include <fwTools/ByteSize.hpp>
+#include <fwMemory/IBufferManager.hpp>
+#include <fwMemory/ByteSize.hpp>
 #include <fwTools/Stringizer.hpp>
 
 #include <fwData/Object.hpp>
@@ -46,9 +46,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::monitor::DumpEditor , ::fwDa
 
 
 
-QString getHumanReadableSize(fwTools::ByteSize::SizeType bytes)
+QString getHumanReadableSize(::fwMemory::ByteSize::SizeType bytes)
 {
-    return QString::fromStdString(fwTools::ByteSize(bytes));
+    return QString::fromStdString(::fwMemory::ByteSize(bytes));
 }
 
 //------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ const int PolicyTableModel::s_EXTRA_INFO_NB = 1;
 PolicyTableModel::PolicyTableModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    ::fwTools::IBufferManager::sptr manager = ::fwTools::IBufferManager::getCurrent();
+    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
     m_buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
 }
 
@@ -310,7 +310,7 @@ private:
 InfoTableModel::InfoTableModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    ::fwTools::IBufferManager::sptr manager = ::fwTools::IBufferManager::getCurrent();
+    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
     m_buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
 }
 
@@ -479,7 +479,7 @@ void DumpEditor::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_updateTimer, SIGNAL(timeout ()), this, SLOT(onRefreshButton( )));
 
-    ::fwTools::IBufferManager::sptr manager = ::fwTools::IBufferManager::getCurrent();
+    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
     ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
     if (buffManager)
     {
@@ -550,7 +550,7 @@ void DumpEditor::updating() throw(::fwTools::Failed)
     m_list->clearContents();
     m_objectsUID.clear();
 
-    ::fwTools::IBufferManager::sptr manager = ::fwTools::IBufferManager::getCurrent();
+    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
     ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
     if(buffManager)
     {
@@ -670,8 +670,8 @@ void DumpEditor::changeStatus( int index )
 {
     SLM_TRACE_FUNC();
 
-    ::fwTools::IBufferManager::BufferPtrType selectedBuffer = m_objectsUID[index];
-    ::fwTools::IBufferManager::sptr manager = ::fwTools::IBufferManager::getCurrent();
+    ::fwMemory::IBufferManager::BufferPtrType selectedBuffer = m_objectsUID[index];
+    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
     ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
     if(buffManager)
     {

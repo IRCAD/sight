@@ -226,7 +226,7 @@ const std::string Image::getPixelAsString(SizeType::value_type x,
 
 //------------------------------------------------------------------------------
 
-::fwTools::BufferObject::Lock Image::getLock() const
+::fwMemory::BufferObject::Lock Image::getLock() const
 {
     return m_lock;
 }

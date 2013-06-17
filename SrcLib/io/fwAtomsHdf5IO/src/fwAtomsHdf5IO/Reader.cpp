@@ -325,10 +325,10 @@ Hdf5Visitor(const ::boost::filesystem::path & path)
     datasetSize.read( value, str_type );
     size_t size = ::boost::lexical_cast<size_t>(value);
 
-    ::fwTools::BufferObject::sptr buffObj = ::fwTools::BufferObject::New();
+    ::fwMemory::BufferObject::sptr buffObj = ::fwMemory::BufferObject::New();
     blob->setBufferObject(buffObj);
 
-    ::fwTools::BufferObject::Lock lock(buffObj->lock());
+    ::fwMemory::BufferObject::Lock lock(buffObj->lock());
     if (size > 0)
     {
         hsize_t fdim[] = {size};

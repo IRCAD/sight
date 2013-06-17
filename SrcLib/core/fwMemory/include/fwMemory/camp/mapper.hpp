@@ -4,18 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWTOOLS_CAMP_MAPPER_HPP__
-#define __FWTOOLS_CAMP_MAPPER_HPP__
+#ifndef __FWMEMORY_CAMP_MAPPER_HPP__
+#define __FWMEMORY_CAMP_MAPPER_HPP__
 
 #include <camp/valuemapper.hpp>
-#include "fwTools/Type.hpp"
-#include "fwTools/BufferObject.hpp"
 
-namespace camp_ext {
+#include <fwTools/Type.hpp>
+
+namespace camp_ext
+{
 
 
 template <>
-struct ValueMapper< ::fwTools::Type>
+struct ValueMapper< ::fwTools::Type >
 {
     typedef ::fwTools::Type ReturnType;
     static const int type = camp::stringType;
@@ -35,4 +36,4 @@ struct ValueMapper< ::fwTools::Type>
 
 }  // namespace camp_ext
 
-#endif
+#endif //__FWMEMORY_CAMP_MAPPER_HPP__

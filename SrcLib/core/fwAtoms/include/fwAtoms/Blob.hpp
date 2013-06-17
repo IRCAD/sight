@@ -7,7 +7,7 @@
 #ifndef __FWATOMS_BASE_BLOB_HPP__
 #define __FWATOMS_BASE_BLOB_HPP__
 
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
@@ -42,7 +42,7 @@ public:
      * @brief create a new Blob shared ptr.
      * @param buffer the buffer object
      */
-    FWATOMS_API static Blob::sptr New(::fwTools::BufferObject::sptr buffer);
+    FWATOMS_API static Blob::sptr New(::fwMemory::BufferObject::sptr buffer);
 
     /**
      * @brief create a new Blob shared ptr.
@@ -56,8 +56,8 @@ public:
      * @return the a pointer to the first buffer element.
      * @{
      */
-    FWATOMS_API ::fwTools::BufferObject::sptr getBufferObject() const;
-    FWATOMS_API void setBufferObject(const ::fwTools::BufferObject::sptr &bo);
+    FWATOMS_API ::fwMemory::BufferObject::sptr getBufferObject() const;
+    FWATOMS_API void setBufferObject(const ::fwMemory::BufferObject::sptr &bo);
     /// @}
 
     /**
@@ -72,7 +72,7 @@ public:
 
 protected:
 
-    ::fwTools::BufferObject::sptr m_bufferObject;
+    ::fwMemory::BufferObject::sptr m_bufferObject;
 };
 
 }

@@ -8,8 +8,8 @@
 #include <boost/assign.hpp>
 #include <boost/foreach.hpp>
 
-#include <fwTools/ByteSize.hpp>
-
+#include "fwMemory/exception/BadCast.hpp"
+#include "fwMemory/ByteSize.hpp"
 #include "fwMemory/policy/BarrierDump.hpp"
 
 
@@ -33,7 +33,7 @@ BarrierDump::BarrierDump() :
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
@@ -47,7 +47,7 @@ void BarrierDump::allocationRequest( BufferInfo &info, ::fwTools::IBufferManager
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
@@ -61,7 +61,7 @@ void BarrierDump::setRequest( BufferInfo &info, ::fwTools::IBufferManager::Buffe
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
+void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += newSize;
@@ -75,7 +75,7 @@ void BarrierDump::reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void BarrierDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
     if(info.isDumped)
     {
@@ -87,14 +87,14 @@ void BarrierDump::destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::B
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void BarrierDump::lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void BarrierDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -102,7 +102,7 @@ void BarrierDump::unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::Bu
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void BarrierDump::dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
     m_totalDumped += info.size;
 }
@@ -110,14 +110,14 @@ void BarrierDump::dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::Buff
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer )
+void BarrierDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
 {
     m_totalDumped -= info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::setManager(::fwTools::IBufferManager::sptr manager)
+void BarrierDump::setManager(::fwMemory::IBufferManager::sptr manager)
 {
     m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
 }
@@ -148,11 +148,11 @@ size_t BarrierDump::dump(size_t nbOfBytes)
     if(manager)
     {
 
-        const fwMemory::BufferInfo::MapType &bufferInfos = manager->getBufferInfos();
+        const ::fwMemory::BufferInfo::MapType &bufferInfos = manager->getBufferInfos();
 
         typedef std::pair<
-            fwMemory::BufferInfo::MapType::key_type,
-            fwMemory::BufferInfo::MapType::mapped_type
+            ::fwMemory::BufferInfo::MapType::key_type,
+            ::fwMemory::BufferInfo::MapType::mapped_type
                 > BufferInfosPairType;
         typedef std::vector< BufferInfosPairType > BufferVectorType;
 
@@ -215,11 +215,11 @@ bool BarrierDump::setParam(const std::string &name, const std::string &value)
     {
         if(name == "barrier")
         {
-            m_barrier = ::fwTools::ByteSize(value).getSize();
+            m_barrier = ::fwMemory::ByteSize(value).getSize();
             return true;
         }
     }
-    catch( ::fwTools::ByteSize::Exception const& )
+    catch( ::fwMemory::exception::BadCast const& )
     {
         OSLM_ERROR("Bad value for " << name << " : " << value);
         return false;
@@ -231,9 +231,9 @@ bool BarrierDump::setParam(const std::string &name, const std::string &value)
 
 //------------------------------------------------------------------------------
 
-const fwMemory::IPolicy::ParamNamesType &BarrierDump::getParamNames() const
+const ::fwMemory::IPolicy::ParamNamesType &BarrierDump::getParamNames() const
 {
-    static const fwMemory::IPolicy::ParamNamesType params = ::boost::assign::list_of("barrier");
+    static const ::fwMemory::IPolicy::ParamNamesType params = ::boost::assign::list_of("barrier");
     return params;
 }
 
@@ -250,7 +250,7 @@ std::string BarrierDump::getParam(const std::string &name, bool *ok )
     *ok = false;
     if(name == "barrier")
     {
-        value = std::string(::fwTools::ByteSize( ::fwTools::ByteSize::SizeType(m_barrier) ));
+        value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_barrier) ));
         *ok = true;
     }
     return value;

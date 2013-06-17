@@ -111,7 +111,7 @@ void visit(const ::fwAtoms::Blob::sptr &blob, const std::string &path)
 {
     H5::Group group = m_file.openGroup( path );
 
-    ::fwTools::BufferObject::sptr buffObj = blob->getBufferObject();
+    ::fwMemory::BufferObject::sptr buffObj = blob->getBufferObject();
 
     H5::StrType str_type(0, H5T_VARIABLE);
     H5::DataSpace att_space(H5S_SCALAR);
@@ -122,7 +122,7 @@ void visit(const ::fwAtoms::Blob::sptr &blob, const std::string &path)
     }
     else
     {
-        ::fwTools::BufferObject::Lock lock(buffObj->lock());
+        ::fwMemory::BufferObject::Lock lock(buffObj->lock());
 
         datasetSize.write(::boost::lexical_cast<std::string>(buffObj->getSize()), str_type);
 

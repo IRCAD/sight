@@ -166,7 +166,7 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 ::fwAtoms::Blob::sptr getBlob(const ::boost::property_tree::ptree &pt, const std::string & ptpath)
 {
     ::fwAtoms::Blob::sptr atom = ::fwAtoms::Blob::New();
-    ::fwTools::BufferObject::sptr buffObj = ::fwTools::BufferObject::New();
+    ::fwMemory::BufferObject::sptr buffObj = ::fwMemory::BufferObject::New();
     atom->setBufferObject(buffObj);
 
     this->cache(ptpath, atom);
@@ -178,7 +178,7 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 
         buffObj->allocate(buffSize);
 
-        ::fwTools::BufferObject::Lock lock(buffObj->lock());
+        ::fwMemory::BufferObject::Lock lock(buffObj->lock());
         void *v = lock.getBuffer();
         char* buff = static_cast<char*>(v);
 

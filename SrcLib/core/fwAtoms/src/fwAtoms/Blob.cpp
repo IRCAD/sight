@@ -14,7 +14,7 @@ namespace fwAtoms
 
 //------------------------------------------------------------------------------
 
-Blob::sptr Blob::New(::fwTools::BufferObject::sptr buffer)
+Blob::sptr Blob::New(::fwMemory::BufferObject::sptr buffer)
 {
     Blob::sptr blob = Blob::New();
     blob->m_bufferObject = buffer;
@@ -26,7 +26,7 @@ Blob::sptr Blob::New(::fwTools::BufferObject::sptr buffer)
 
 Blob::sptr Blob::New(void* buffer, unsigned int size)
 {
-    ::fwTools::BufferObject::sptr bufferObject = ::fwTools::BufferObject::New();
+    ::fwMemory::BufferObject::sptr bufferObject = ::fwMemory::BufferObject::New();
     bufferObject->setBuffer(buffer, size);
     Blob::sptr blob = Blob::New(bufferObject);
     return blob;
@@ -34,30 +34,30 @@ Blob::sptr Blob::New(void* buffer, unsigned int size)
 
 //------------------------------------------------------------------------------
 
-::fwTools::BufferObject::sptr Blob::getBufferObject() const
+::fwMemory::BufferObject::sptr Blob::getBufferObject() const
 {
     return m_bufferObject;
 }
 
 //------------------------------------------------------------------------------
 
-void Blob::setBufferObject(const ::fwTools::BufferObject::sptr &bo)
+void Blob::setBufferObject(const ::fwMemory::BufferObject::sptr &bo)
 {
     m_bufferObject = bo;
 }
 
 Base::sptr Blob::clone() const
 {
-    ::fwTools::BufferObject::sptr bufferObjectDest = ::fwTools::BufferObject::New();
+    ::fwMemory::BufferObject::sptr bufferObjectDest = ::fwMemory::BufferObject::New();
     Blob::sptr cloneBlob = Blob::New(bufferObjectDest);
     if(m_bufferObject)
     {
         bufferObjectDest->allocate(m_bufferObject->getSize());
 
-        ::fwTools::BufferObject::Lock lockerSource(m_bufferObject);
+        ::fwMemory::BufferObject::Lock lockerSource(m_bufferObject);
         char * buffSrc = static_cast< char * >( lockerSource.getBuffer() );
 
-        ::fwTools::BufferObject::Lock lockerDest(bufferObjectDest);
+        ::fwMemory::BufferObject::Lock lockerDest(bufferObjectDest);
         char * buffDest = static_cast< char * >( lockerDest.getBuffer() );
 
         std::copy(buffSrc, buffSrc + m_bufferObject->getSize(), buffDest );

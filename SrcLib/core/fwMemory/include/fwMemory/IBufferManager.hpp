@@ -4,18 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_IBUFFERMANAGER_HPP_
-#define _FWTOOLS_IBUFFERMANAGER_HPP_
+#ifndef _FWMEMORY_IBUFFERMANAGER_HPP_
+#define _FWMEMORY_IBUFFERMANAGER_HPP_
 
 #include <boost/function.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include "fwTools/BufferAllocationPolicy.hpp"
-#include "fwTools/config.hpp"
+#include "fwMemory/BufferAllocationPolicy.hpp"
+#include "fwMemory/config.hpp"
 
-namespace fwTools
+namespace fwMemory
 {
 
 /**
@@ -34,7 +34,7 @@ namespace fwTools
  * as usual. If false is returned, the BufferObject is informed that the action
  * have been delegated to the BufferManager.
  */
-class FWTOOLS_CLASS_API IBufferManager : public ::fwCore::BaseObject
+class FWMEMORY_CLASS_API IBufferManager : public ::fwCore::BaseObject
 {
 public:
     typedef void* BufferType;
@@ -85,7 +85,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool allocateBuffer(BufferPtrType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+    virtual bool allocateBuffer(BufferPtrType buffer, SizeType size, ::fwMemory::BufferAllocationPolicy::sptr policy)
     {
         FwCoreNotUsedMacro(buffer);
         FwCoreNotUsedMacro(size);
@@ -102,7 +102,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    virtual bool setBuffer(BufferPtrType buffer, SizeType size, ::fwTools::BufferAllocationPolicy::sptr policy)
+    virtual bool setBuffer(BufferPtrType buffer, SizeType size, ::fwMemory::BufferAllocationPolicy::sptr policy)
     {
         FwCoreNotUsedMacro(buffer);
         FwCoreNotUsedMacro(size);
@@ -188,7 +188,7 @@ public:
      * @brief Returns the current BufferManager instance
      * @note This method is thread-safe.
      */
-    FWTOOLS_API static IBufferManager::sptr getCurrent();
+    FWMEMORY_API static IBufferManager::sptr getCurrent();
 
     /**
      * @brief sets the current BufferManager instance
@@ -196,7 +196,7 @@ public:
      * @param currentManager BufferManager instance
      * @note This method is thread-safe.
      */
-    FWTOOLS_API static void setCurrent( IBufferManager::sptr currentManager );
+    FWMEMORY_API static void setCurrent( IBufferManager::sptr currentManager );
 
 
     /**
@@ -210,7 +210,7 @@ protected:
     IBufferManager(){};
     virtual ~IBufferManager(){};
 
-    FWTOOLS_API static IBufferManager::sptr s_currentManager;
+    FWMEMORY_API static IBufferManager::sptr s_currentManager;
 
     static ::fwCore::mt::ReadWriteMutex s_mutex;
 };
@@ -218,4 +218,4 @@ protected:
 
 }
 
-#endif /* _FWTOOLS_IBUFFERMANAGER_HPP_ */
+#endif /* _FWMEMORY_IBUFFERMANAGER_HPP_ */

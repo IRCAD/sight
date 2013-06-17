@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_BUFFEROBJECT_HPP_
-#define _FWTOOLS_BUFFEROBJECT_HPP_
+#ifndef _FWMEMORY_BUFFEROBJECT_HPP_
+#define _FWMEMORY_BUFFEROBJECT_HPP_
 
 #include <boost/type_traits/conditional.hpp>
 #include <boost/type_traits/is_const.hpp>
@@ -15,13 +15,13 @@
 #include <fwCore/base.hpp>
 #include <fwCamp/macros.hpp>
 
-#include "fwTools/BufferAllocationPolicy.hpp"
-#include "fwTools/IBufferManager.hpp"
-#include "fwTools/config.hpp"
+#include "fwMemory/BufferAllocationPolicy.hpp"
+#include "fwMemory/IBufferManager.hpp"
+#include "fwMemory/config.hpp"
 
-fwCampAutoDeclareMacro((fwTools)(BufferObject), FWTOOLS_API);
+fwCampAutoDeclareMacro((fwMemory)(BufferObject), FWMEMORY_API);
 
-namespace fwTools
+namespace fwMemory
 {
 
 
@@ -47,7 +47,7 @@ namespace fwTools
  * NOT GARANTEE* that an other user of this buffer object are not
  * changing/modifying the buffer.
  */
-class FWTOOLS_CLASS_API BufferObject : public ::fwCore::BaseObject
+class FWMEMORY_CLASS_API BufferObject : public ::fwCore::BaseObject
 {
 
     struct no_deleter
@@ -70,7 +70,7 @@ public:
     /// return the sub class classname : an alias of this->getClassname
     std::string className() const { return this->getClassname(); };
 
-    virtual ::fwTools::IBufferManager::BufferType getBuffer() { return m_buffer;};
+    virtual ::fwMemory::IBufferManager::BufferType getBuffer() { return m_buffer;};
 
     /**
      * @brief base class for BufferObject Lock
@@ -212,7 +212,7 @@ public:
             SLM_ASSERT("Count pointer is uninitialized", m_count != BufferObject::CounterType() );
             if( SPTR(T) bufferObject = m_bufferObject.lock() )
             {
-                if (fwTools::IBufferManager::sptr manager = bufferObject->m_bufferManager)
+                if (fwMemory::IBufferManager::sptr manager = bufferObject->m_bufferManager)
                 {
                     manager->lockBuffer(&(bufferObject->m_buffer));
                 }
@@ -227,7 +227,7 @@ public:
             SLM_ASSERT("Count pointer is uninitialized", m_count != BufferObject::CounterType() );
             if( SPTR(T) bufferObject = m_bufferObject.lock() )
             {
-                if (fwTools::IBufferManager::sptr manager = bufferObject->m_bufferManager)
+                if (fwMemory::IBufferManager::sptr manager = bufferObject->m_bufferManager)
                 {
                     manager->unlockBuffer(&(bufferObject->m_buffer));
                 }
@@ -257,14 +257,14 @@ public:
      *
      * Register the buffer to an existing buffer manager.
      */
-    FWTOOLS_API BufferObject();
+    FWMEMORY_API BufferObject();
 
     /**
      * @brief BufferObject destructor
      *
      * unregister the buffer from the buffer manager.
      */
-    FWTOOLS_API virtual ~BufferObject();
+    FWMEMORY_API virtual ~BufferObject();
 
 
     /**
@@ -277,8 +277,8 @@ public:
      * @param policy Buffer allocation policy, default is Malloc policy
      *
      */
-    FWTOOLS_API virtual void allocate(SizeType size,
-            ::fwTools::BufferAllocationPolicy::sptr policy = ::fwTools::BufferMallocPolicy::New());
+    FWMEMORY_API virtual void allocate(SizeType size,
+            ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New());
 
     /**
      * @brief Buffer reallocation
@@ -290,7 +290,7 @@ public:
      * @param size New buffer size
      *
      */
-    FWTOOLS_API virtual void reallocate(SizeType size);
+    FWMEMORY_API virtual void reallocate(SizeType size);
 
     /**
      * @brief Buffer deallocation
@@ -299,7 +299,7 @@ public:
      * The destruction may have been hooked by the buffer manager.
      *
      */
-    FWTOOLS_API virtual void destroy();
+    FWMEMORY_API virtual void destroy();
 
 
     /**
@@ -312,8 +312,8 @@ public:
      * @param policy External buffer allocation policy, default is Malloc policy
      *
      */
-    FWTOOLS_API virtual void setBuffer(fwTools::IBufferManager::BufferType buffer, SizeType size,
-            ::fwTools::BufferAllocationPolicy::sptr policy = ::fwTools::BufferMallocPolicy::New());
+    FWMEMORY_API virtual void setBuffer(fwMemory::IBufferManager::BufferType buffer, SizeType size,
+            ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New());
 
 
     /**
@@ -321,14 +321,14 @@ public:
      *
      * @return Lock on the BufferObject
      */
-    FWTOOLS_API virtual Lock lock();
+    FWMEMORY_API virtual Lock lock();
 
     /**
      * @brief Return a const lock on the BufferObject
      *
      * @return ConstLock on the BufferObject
      */
-    FWTOOLS_API virtual ConstLock lock() const;
+    FWMEMORY_API virtual ConstLock lock() const;
 
     /**
      * @brief Returns the buffer's size
@@ -353,16 +353,16 @@ public:
     /**
      * @brief Returns pointer on BufferObject's buffer
      */
-    const ::fwTools::IBufferManager::ConstBufferPtrType getBufferPointer() const {return &m_buffer;};
+    const ::fwMemory::IBufferManager::ConstBufferPtrType getBufferPointer() const {return &m_buffer;};
 
     ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
 
     /// Exchanges the content of the BufferObject with the content of _source.
-    FWTOOLS_API void swap( BufferObject::sptr _source );
+    FWMEMORY_API void swap( BufferObject::sptr _source );
 
 protected :
 
-    fwTools::IBufferManager::BufferType m_buffer;
+    ::fwMemory::IBufferManager::BufferType m_buffer;
 
     SizeType m_size;
 
@@ -370,12 +370,12 @@ protected :
     mutable ::fwCore::mt::Mutex m_lockDumpMutex;
     ::fwCore::mt::ReadWriteMutex m_mutex;
 
-    ::fwTools::IBufferManager::sptr m_bufferManager;
+    ::fwMemory::IBufferManager::sptr m_bufferManager;
 
-    ::fwTools::BufferAllocationPolicy::sptr m_allocPolicy;
+    ::fwMemory::BufferAllocationPolicy::sptr m_allocPolicy;
 };
 
 }
 
 
-#endif // _FWTOOLS_BUFFEROBJECT_HPP_
+#endif // _FWMEMORY_BUFFEROBJECT_HPP_

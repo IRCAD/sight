@@ -42,7 +42,7 @@ public :
 private :
 
 
-    typedef std::vector< ::fwTools::BufferObject::Lock > LocksType;
+    typedef std::vector< ::fwMemory::BufferObject::Lock > LocksType;
     typedef std::vector< ::fwData::Object::sptr > ObjectsType;
 
     void lock( ::fwData::Array::sptr array, LocksType & locks );

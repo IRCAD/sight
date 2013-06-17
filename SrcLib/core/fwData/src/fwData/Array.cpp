@@ -53,7 +53,7 @@ inline size_t computeSize(
 Array::Array( ::fwData::Object::Key key ):
     m_strides(0),
     m_type(),
-    m_attrBufferObject(::fwTools::BufferObject::New()),
+    m_attrBufferObject(::fwMemory::BufferObject::New()),
     m_size(0),
     m_nbOfComponents(0),
     m_isBufferOwner(true)
@@ -95,10 +95,10 @@ void Array::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 
     if( !other->m_attrBufferObject->isEmpty() )
     {
-        ::fwTools::BufferObject::Lock lockerDest(m_attrBufferObject);
+        ::fwMemory::BufferObject::Lock lockerDest(m_attrBufferObject);
         this->resize(other->m_type, other->m_size, other->m_nbOfComponents, true);
         char * buffDest = static_cast< char * >( lockerDest.getBuffer() );
-        ::fwTools::BufferObject::Lock lockerSource(other->m_attrBufferObject);
+        ::fwMemory::BufferObject::Lock lockerSource(other->m_attrBufferObject);
         char * buffSrc = static_cast< char * >( lockerSource.getBuffer() );
         std::copy(buffSrc, buffSrc+other->getSizeInBytes(), buffDest );
     }

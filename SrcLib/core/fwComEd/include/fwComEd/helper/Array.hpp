@@ -8,7 +8,7 @@
 #define _FWCOMED_HELPER_ARRAY_HPP_
 
 #include <fwTools/Type.hpp>
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include <fwData/Array.hpp>
 
@@ -138,7 +138,7 @@ public :
     ///@}
 
     /// Returns a copy of current lock on array
-    FWCOMED_API ::fwTools::BufferObject::Lock getLock() const;
+    FWCOMED_API ::fwMemory::BufferObject::Lock getLock() const;
 
 protected:
 
@@ -153,7 +153,7 @@ protected:
 
 
     ::fwData::Array::sptr m_array;
-    ::fwTools::BufferObject::Lock m_lock;
+    ::fwMemory::BufferObject::Lock m_lock;
 
 };
 

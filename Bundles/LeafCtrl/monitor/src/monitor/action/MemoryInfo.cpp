@@ -47,7 +47,7 @@ void MemoryInfo::updating( ) throw(::fwTools::Failed)
     ::fwMemory::BufferManager::SizeType managedBufferSize = 0;
     ::fwMemory::BufferManager::SizeType dumpedBufferSize = 0;
     ::fwMemory::BufferManager::sptr manager;
-    manager = ::fwMemory::BufferManager::dynamicCast( ::fwTools::IBufferManager::getCurrent() );
+    manager = ::fwMemory::BufferManager::dynamicCast( ::fwMemory::IBufferManager::getCurrent() );
 
     if( manager )
     {

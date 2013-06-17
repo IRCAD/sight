@@ -70,7 +70,7 @@ void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
 void SDumpPolicy::starting() throw ( ::fwTools::Failed )
 {
     ::fwMemory::BufferManager::sptr manager;
-    manager = ::fwMemory::BufferManager::dynamicCast(::fwTools::IBufferManager::getCurrent());
+    manager = ::fwMemory::BufferManager::dynamicCast(::fwMemory::IBufferManager::getCurrent());
 
     if (manager)
     {

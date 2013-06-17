@@ -4,36 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/Exception.hpp>
+#include "fwMemory/exception/Memory.hpp"
+#include "fwMemory/ByteSize.hpp"
+#include "fwMemory/BufferAllocationPolicy.hpp"
 
-#include "fwTools/ByteSize.hpp"
-#include "fwTools/BufferAllocationPolicy.hpp"
-
-namespace fwTools
+namespace fwMemory
 {
 
 
-void BufferMallocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferMallocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     buffer = malloc( size );
     if (buffer == NULL && size > 0)
     {
-        FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
                                 "Cannot allocate memory ("
-                                << ::fwTools::ByteSize(::fwTools::ByteSize::SizeType(size)) <<").");
+                                << ::fwMemory::ByteSize(::fwMemory::ByteSize::SizeType(size)) <<").");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void BufferMallocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferMallocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     buffer = realloc( buffer, size );
     if (buffer == NULL && size > 0)
     {
-        FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
                                 "Cannot allocate memory ("
-                                << ::fwTools::ByteSize(::fwTools::ByteSize::SizeType(size)) <<").");
+                                << ::fwMemory::ByteSize(::fwMemory::ByteSize::SizeType(size)) <<").");
     }
 }
 
@@ -59,7 +58,7 @@ BufferAllocationPolicy::sptr BufferMallocPolicy::New()
 
 
 
-void BufferNewPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferNewPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     try
     {
@@ -67,18 +66,18 @@ void BufferNewPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeT
     }
     catch (std::bad_alloc& ba)
     {
-        FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
                                 "bad_alloc caught: " << ba.what());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void BufferNewPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferNewPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
-    FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+    FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
                             "Reallocation not managed for buffer allocated with 'new' operator.");
 }
 
@@ -104,21 +103,21 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 
 
 
-void BufferNoAllocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferNoAllocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
-    FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+    FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
                             "No Allocation Policy should not be called.");
 }
 
 //------------------------------------------------------------------------------
 
-void BufferNoAllocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwTools::Exception )
+void BufferNoAllocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
-    FW_RAISE_EXCEPTION_MSG( ::fwTools::Exception,
+    FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
                             "No Allocation Policy should not be called.");
 }
 
@@ -143,6 +142,6 @@ BufferAllocationPolicy::sptr BufferNoAllocPolicy::New()
 
 
 
-} //namespace fwTools
+} //namespace fwMemory
 
 

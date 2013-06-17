@@ -77,12 +77,12 @@ struct SequenceGenerator
         ::fwAtoms::Blob::sptr blob = ::fwAtoms::Blob::New();
         m_seq = ::fwAtoms::Sequence::New();
 
-        ::fwTools::BufferObject::sptr bo = ::fwTools::BufferObject::New();
-        const ::fwTools::BufferObject::SizeType BUFF_SIZE = 1*1024*1024; // 1Mo
+        ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
+        const ::fwMemory::BufferObject::SizeType BUFF_SIZE = 1*1024*1024; // 1Mo
         bo->allocate(BUFF_SIZE);
         blob->setBufferObject(bo);
 
-        ::fwTools::BufferObject::Lock lock(bo->lock());
+        ::fwMemory::BufferObject::Lock lock(bo->lock());
         void *v = lock.getBuffer();
         char* buff = static_cast<char*>(v);
         for (size_t i = 0; i < BUFF_SIZE; ++i)
@@ -153,13 +153,13 @@ struct SequenceGenerator
         ::fwAtoms::Numeric::sptr  readNum2  = ::fwAtoms::Numeric::dynamicCast((*readSeq)[9]);
         ::fwAtoms::Boolean::sptr  readBoolT = ::fwAtoms::Boolean::dynamicCast((*readSeq)[10]);
 
-        ::fwTools::BufferObject::sptr bo = blob->getBufferObject();
-        ::fwTools::BufferObject::sptr readBo = readBlob->getBufferObject();
+        ::fwMemory::BufferObject::sptr bo = blob->getBufferObject();
+        ::fwMemory::BufferObject::sptr readBo = readBlob->getBufferObject();
 
         CPPUNIT_ASSERT_EQUAL( bo->getSize(),  readBo->getSize() );
 
-        ::fwTools::BufferObject::Lock lock(bo->lock());
-        ::fwTools::BufferObject::Lock readLock(readBo->lock());
+        ::fwMemory::BufferObject::Lock lock(bo->lock());
+        ::fwMemory::BufferObject::Lock readLock(readBo->lock());
 
         void *v = lock.getBuffer();
         void *readV = readLock.getBuffer();

@@ -90,7 +90,7 @@ public :
     // @}
 
     /// Returns a copy of current lock on image
-    FWCOMED_API ::fwTools::BufferObject::Lock getLock() const;
+    FWCOMED_API ::fwMemory::BufferObject::Lock getLock() const;
 
 private :
 
@@ -98,7 +98,7 @@ private :
 
     ::fwData::Image::sptr m_image;
 
-    ::fwTools::BufferObject::Lock m_lock;
+    ::fwMemory::BufferObject::Lock m_lock;
 };
 
 } // helper

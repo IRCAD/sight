@@ -28,24 +28,24 @@ namespace policy
  * This policy defines a memory usage barrier and will try to keep the managed
  * buffers memory usage under this barrier.
  */
-class FWMEMORY_CLASS_API BarrierDump : public fwMemory::IPolicy
+class FWMEMORY_CLASS_API BarrierDump : public ::fwMemory::IPolicy
 {
 public :
     fwCoreClassDefinitionsWithFactoryMacro((BarrierDump)(fwMemory::IPolicy), (()), new BarrierDump );
 
     FWMEMORY_API BarrierDump();
 
-    FWMEMORY_API virtual void allocationRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
-    FWMEMORY_API virtual void setRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
-    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize ) ;
-    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) ;
-    FWMEMORY_API virtual void lockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) ;
-    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer ) ;
+    FWMEMORY_API virtual void allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize ) ;
+    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) ;
+    FWMEMORY_API virtual void lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) ;
+    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) ;
 
-    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer );
-    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, ::fwTools::IBufferManager::BufferPtrType buffer );
+    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer );
+    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer );
 
-    FWMEMORY_API void setManager(::fwTools::IBufferManager::sptr manager);
+    FWMEMORY_API void setManager(::fwMemory::IBufferManager::sptr manager);
 
     FWMEMORY_API virtual void refresh();
 

@@ -9,12 +9,12 @@
 #define __FWATOMCONVERSION_VALUEMAPPER_HPP__
 #include <camp/valuemapper.hpp>
 #include <fwAtoms/Blob.hpp>
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 namespace camp_ext
 {
 
-/// New value mapper to manage conversion in camp world between ::fwAtoms::Blob and a ::fwTools::BufferObject
+/// New value mapper to manage conversion in camp world between ::fwAtoms::Blob and a ::fwMemory::BufferObject
 template <>
 struct ValueMapper< ::fwAtoms::Blob::sptr >
 {
@@ -22,7 +22,7 @@ struct ValueMapper< ::fwAtoms::Blob::sptr >
 
     static const int type = camp::userType;
 
-    static const  ::fwTools::BufferObject::sptr to(const ReturnType& source)
+    static const  ::fwMemory::BufferObject::sptr to(const ReturnType& source)
     {
         return source->getBufferObject();
     }
@@ -54,7 +54,7 @@ struct ValueMapper< ::fwAtoms::Blob::sptr >
 
     static ReturnType from(const camp::UserObject& source)
     {
-        ::fwTools::BufferObject::sptr tmp = source.get< ::fwTools::BufferObject::sptr>()->getSptr();
+        ::fwMemory::BufferObject::sptr tmp = source.get< ::fwMemory::BufferObject::sptr>()->getSptr();
         return ::fwAtoms::Blob::New(tmp);
     }
 };

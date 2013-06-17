@@ -11,8 +11,7 @@
 
 #include <fwCore/LogicStamp.hpp>
 
-#include <fwTools/IBufferManager.hpp>
-
+#include "fwMemory/IBufferManager.hpp"
 #include "fwMemory/config.hpp"
 
 namespace fwMemory
@@ -35,9 +34,9 @@ struct FWMEMORY_CLASS_API BufferInfo
     SizeType size;
     bool     isDumped;
     ::boost::filesystem::path dumpedFile;
-    ::fwTools::IBufferManager::LockCountFunctionType lockCount;
+    ::fwMemory::IBufferManager::LockCountFunctionType lockCount;
     ::fwCore::LogicStamp lastAccess;
-    ::fwTools::BufferAllocationPolicy::sptr bufferPolicy;
+    ::fwMemory::BufferAllocationPolicy::sptr bufferPolicy;
 
 
 };

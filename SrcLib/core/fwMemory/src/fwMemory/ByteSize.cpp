@@ -9,34 +9,35 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 
+#include "fwMemory/exception/BadCast.hpp"
+#include "fwMemory/ByteSize.hpp"
 
-#include "fwTools/ByteSize.hpp"
-
-namespace fwTools
+namespace fwMemory
 {
 
 
-const boost::uint64_t ByteSize::Bytes = 1 ;
+const ::boost::uint64_t ByteSize::Bytes = 1 ;
 
 // SI units
-const boost::uint64_t ByteSize::KB = 1000LL ;
-const boost::uint64_t ByteSize::MB = 1000000LL;
-const boost::uint64_t ByteSize::GB = 1000000000LL;
-const boost::uint64_t ByteSize::TB = 1000000000000LL;
-const boost::uint64_t ByteSize::PB = 1000000000000000LL;
+const ::boost::uint64_t ByteSize::KB = 1000LL ;
+const ::boost::uint64_t ByteSize::MB = 1000000LL;
+const ::boost::uint64_t ByteSize::GB = 1000000000LL;
+const ::boost::uint64_t ByteSize::TB = 1000000000000LL;
+const ::boost::uint64_t ByteSize::PB = 1000000000000000LL;
 
 // IEC units
-const boost::uint64_t ByteSize::KiB = 1LL << 10;
-const boost::uint64_t ByteSize::MiB = 1LL << 20;
-const boost::uint64_t ByteSize::GiB = 1LL << 30;
-const boost::uint64_t ByteSize::TiB = 1LL << 40;
-const boost::uint64_t ByteSize::PiB = 1LL << 50;
+const ::boost::uint64_t ByteSize::KiB = 1LL << 10;
+const ::boost::uint64_t ByteSize::MiB = 1LL << 20;
+const ::boost::uint64_t ByteSize::GiB = 1LL << 30;
+const ::boost::uint64_t ByteSize::TiB = 1LL << 40;
+const ::boost::uint64_t ByteSize::PiB = 1LL << 50;
 
 
 
 ByteSize::ByteSize () : m_size(0)
 {
 }
+
 //------------------------------------------------------------------------------
 
 ByteSize::ByteSize ( SizeType size, UnitType unit ) : m_size(0)
@@ -46,6 +47,7 @@ ByteSize::ByteSize ( SizeType size, UnitType unit ) : m_size(0)
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     this->setSize(size, unit);
 }
+
 //------------------------------------------------------------------------------
 
 ByteSize::ByteSize ( double size, UnitType unit ) : m_size(0)
@@ -55,16 +57,18 @@ ByteSize::ByteSize ( double size, UnitType unit ) : m_size(0)
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << size << " < 0");
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << size << " < 0");
     }
     this->setSize(size, unit);
 }
+
 //------------------------------------------------------------------------------
 
 ByteSize::ByteSize ( const std::string &size )
 {
     this->setSize(size);
 }
+
 //------------------------------------------------------------------------------
 
 ByteSize& ByteSize::operator= ( SizeType size )
@@ -79,12 +83,13 @@ ByteSize& ByteSize::operator= ( double size )
 {
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << size << " < 0");
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << size << " < 0");
     }
 
     this->setSize(size);
     return *this;
 }
+
 //------------------------------------------------------------------------------
 
 ByteSize& ByteSize::operator= ( const std::string &size )
@@ -92,6 +97,7 @@ ByteSize& ByteSize::operator= ( const std::string &size )
     this->setSize(size);
     return *this;
 }
+
 //------------------------------------------------------------------------------
 
 void ByteSize::setSize ( SizeType size, UnitType unit )
@@ -108,7 +114,7 @@ void ByteSize::setSize ( double size, UnitType unit )
 {
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << size << " < 0");
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << size << " < 0");
     }
 
     SLM_ASSERT("Bad Unit",
@@ -116,6 +122,7 @@ void ByteSize::setSize ( double size, UnitType unit )
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     m_size = static_cast<SizeType>(size*unit);
 }
+
 //------------------------------------------------------------------------------
 
 void ByteSize::setSize ( const std::string &size )
@@ -128,9 +135,10 @@ void ByteSize::setSize ( const std::string &size )
     }
     else
     {
-        FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << size );
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << size );
     }
 }
+
 //------------------------------------------------------------------------------
 
 std::string ByteSize::unitToString(ByteSize::UnitType unit)
@@ -161,21 +169,22 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     return "?";
 }
+
 //------------------------------------------------------------------------------
 
 
 bool ByteSize::parseSize(const std::string &s, SizeType& size)
 {
-    using boost::phoenix::ref;
-    using boost::spirit::ascii::no_case;
-    using boost::spirit::ascii::space;
-    using boost::spirit::qi::as;
-    using boost::spirit::qi::_1;
-    using boost::spirit::qi::double_;
-    using boost::spirit::qi::eoi;
-    using boost::spirit::qi::phrase_parse;
-    using boost::spirit::qi::symbols;
-    using boost::spirit::qi::ulong_long;
+    using ::boost::phoenix::ref;
+    using ::boost::spirit::ascii::no_case;
+    using ::boost::spirit::ascii::space;
+    using ::boost::spirit::qi::as;
+    using ::boost::spirit::qi::_1;
+    using ::boost::spirit::qi::double_;
+    using ::boost::spirit::qi::eoi;
+    using ::boost::spirit::qi::phrase_parse;
+    using ::boost::spirit::qi::symbols;
+    using ::boost::spirit::qi::ulong_long;
 
     std::string::const_iterator first = s.begin();
     std::string::const_iterator last  = s.end();
@@ -231,7 +240,7 @@ bool ByteSize::parseSize(const std::string &s, SizeType& size)
     {
         if(floatSize < 0)
         {
-            FW_RAISE_EXCEPTION_MSG( ByteSize::Exception , "Bad size : " << floatSize << " < 0");
+            FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << floatSize << " < 0");
         }
 
         size = static_cast< ByteSize::SizeType >(floatSize * multiplier);
@@ -242,6 +251,8 @@ bool ByteSize::parseSize(const std::string &s, SizeType& size)
     }
     return r;
 }
+
+//------------------------------------------------------------------------------
 
 std::string ByteSize::getSizeAsString( UnitType unit )
 {
@@ -263,6 +274,7 @@ std::string ByteSize::getSizeAsString( UnitType unit )
 
     return sstr.str();
 }
+
 //------------------------------------------------------------------------------
 
 std::string ByteSize::getHumanReadableSize( StandardType standard )
@@ -294,6 +306,6 @@ std::string ByteSize::getHumanReadableSize( StandardType standard )
 
 
 
-} //namespace fwTools
+} //namespace fwMemory
 
 

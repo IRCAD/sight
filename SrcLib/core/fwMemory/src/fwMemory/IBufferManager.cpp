@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwTools/IBufferManager.hpp"
+#include "fwMemory/IBufferManager.hpp"
 
-namespace fwTools
+namespace fwMemory
 {
 
 IBufferManager::sptr IBufferManager::s_currentManager = IBufferManager::New();
@@ -29,4 +29,4 @@ void IBufferManager::setCurrent( IBufferManager::sptr currentManager )
     s_currentManager = currentManager;
 }
 
-} //namespace fwTools
+} //namespace fwMemory

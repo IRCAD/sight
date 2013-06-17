@@ -6,7 +6,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <fwTools/UUID.hpp>
-#include <fwTools/IBufferManager.hpp>
+#include <fwMemory/IBufferManager.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Blob.hpp>
@@ -182,7 +182,7 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     this->cache(atom, ptpath);
     std::string path = ptpath + (ptpath.empty()?"":".") + "blob";
 
-    ::fwTools::BufferObject::sptr buffObj = atom->getBufferObject();
+    ::fwMemory::BufferObject::sptr buffObj = atom->getBufferObject();
     if (!buffObj)
     {
         pt.put("blob.buffer_size", 0);
@@ -193,16 +193,16 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
         const size_t buffSize = buffObj->getSize();
 
         ::fwMemory::BufferManager::sptr manager
-            = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwTools::IBufferManager::getCurrent() );
+            = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::IBufferManager::getCurrent() );
 
         // Test if buffer is not already dumped
         const bool isDumped =  manager
-            && manager->isDumped( (::fwTools::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
+            && manager->isDumped( (::fwMemory::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
 
         if(isDumped)
         {
             const ::boost::filesystem::path fileSrc
-                = manager->getDumpedFilePath( (::fwTools::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
+                = manager->getDumpedFilePath( (::fwMemory::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
             bufFile = std::string("fwAtomsArchive/") + fileSrc.filename().string();
             m_archive->putFile(fileSrc, bufFile);
         }
@@ -210,7 +210,7 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
         {
             bufFile = "fwAtomsArchive/" + ::fwTools::UUID::generateUUID() + ".raw";
 
-            ::fwTools::BufferObject::Lock lock(buffObj->lock());
+            ::fwMemory::BufferObject::Lock lock(buffObj->lock());
             void *v = lock.getBuffer();
             char* buff = static_cast<char*>(v);
 

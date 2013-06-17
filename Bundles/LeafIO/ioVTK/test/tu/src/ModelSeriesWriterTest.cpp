@@ -25,7 +25,7 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Array.hpp>
 
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 #include <fwTools/System.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
@@ -119,8 +119,8 @@ size_t recHash(const ::fwData::Reconstruction::sptr &rec)
 
     std::string buf;
 
-    ::fwTools::BufferObject::sptr bo;
-    ::fwTools::BufferObject::Lock lock;
+    ::fwMemory::BufferObject::sptr bo;
+    ::fwMemory::BufferObject::Lock lock;
 
     bo = points->getBufferObject();
     lock = (bo->lock());
