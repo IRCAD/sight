@@ -22,7 +22,7 @@ static IPolicy::Register<AlwaysDump> registerFactory(AlwaysDump::leafClassname()
 
 //------------------------------------------------------------------------------
 
-void AlwaysDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void AlwaysDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -30,7 +30,7 @@ void AlwaysDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void AlwaysDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -38,7 +38,7 @@ void AlwaysDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::Buffe
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
+void AlwaysDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     this->apply();
 }
@@ -46,7 +46,7 @@ void AlwaysDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -54,7 +54,7 @@ void AlwaysDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::B
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -62,7 +62,7 @@ void AlwaysDump::lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::Buff
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -70,22 +70,22 @@ void AlwaysDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::Bu
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void AlwaysDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void AlwaysDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void AlwaysDump::setManager(::fwMemory::IBufferManager::sptr manager)
+void AlwaysDump::setManager(const ::fwMemory::BufferManager::sptr &manager)
 {
-    m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
+    m_manager = manager;
 }
 
 //------------------------------------------------------------------------------
@@ -98,13 +98,13 @@ size_t AlwaysDump::dump()
     if(manager)
     {
 
-        const fwMemory::BufferInfo::MapType &bufferInfos = manager->getBufferInfos();
+        const fwMemory::BufferManager::BufferInfoMapType &bufferInfos = manager->getBufferInfos();
 
 
-        BOOST_FOREACH(const ::fwMemory::BufferInfo::MapType::value_type &elt, bufferInfos)
+        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
-            if( ! ( info.size == 0 || info.lockCount() > 0 || info.isDumped )  )
+            if( ! ( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 if( manager->dumpBuffer(elt.first) )
                 {

@@ -45,7 +45,7 @@ template <typename T> bool isPointedValueConst( T )
 
 void BufferObjectTest::allocateTest()
 {
-    const int SIZE = 100000;
+    const size_t SIZE = 100000;
     ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
 
     CPPUNIT_ASSERT( bo->isEmpty() );
@@ -139,10 +139,39 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
     CPPUNIT_ASSERT_THROW( bo->allocate(std::numeric_limits<size_t>::max()/2), ::fwMemory::exception::Memory);
+
+    bo->allocate(SIZE);
+    CPPUNIT_ASSERT( !bo->isEmpty() );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
+
     CPPUNIT_ASSERT_THROW( bo->reallocate(std::numeric_limits<size_t>::max()/2), ::fwMemory::exception::Memory);
 
+    CPPUNIT_ASSERT( !bo->isEmpty() );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
+
+    const size_t SMALLER_REALLOC_SIZE = 1024;
+    const size_t BIGGER_REALLOC_SIZE = SIZE+1024;
+
+    bo->reallocate(SMALLER_REALLOC_SIZE);
+    CPPUNIT_ASSERT( !bo->isEmpty() );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SMALLER_REALLOC_SIZE), bo->getSize() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
+
+    bo->reallocate(BIGGER_REALLOC_SIZE);
+    CPPUNIT_ASSERT( !bo->isEmpty() );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(BIGGER_REALLOC_SIZE), bo->getSize() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
+
+    bo->destroy();
+
+    CPPUNIT_ASSERT( bo->isEmpty() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
+
+
     CPPUNIT_ASSERT_THROW( bo->allocate(150, ::fwMemory::BufferNoAllocPolicy::New()), ::fwMemory::exception::Memory);
-    CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwMemory::exception::Memory);
+    // CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwMemory::exception::Memory);
 }
 
 

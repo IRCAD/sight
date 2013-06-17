@@ -6,7 +6,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <fwTools/UUID.hpp>
-#include <fwMemory/IBufferManager.hpp>
+#include <fwMemory/BufferManager.hpp>
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Blob.hpp>
@@ -194,47 +194,24 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
         ::boost::filesystem::path bufFile = m_dirPrefix;
         size_t buffSize = buffObj->getSize();
 
-        ::fwMemory::BufferManager::sptr manager
-            = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::IBufferManager::getCurrent() );
+        ::boost::filesystem::path dumpedFile = buffObj->getFile();
+        ::fwMemory::FileFormatType format = buffObj->getFileFormat();
 
-        // Test if buffer is not already dumped
-        bool isDumped =  manager
-            && manager->isDumped( (::fwMemory::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
-
-        SPTR(std::istream) is;
-
-        if (manager)
+        if ( !dumpedFile.empty() && (format & ::fwMemory::RAW) )
         {
-            fwMemory::BufferInfo &info = manager->getBufferInfos()[ const_cast< void** > (buffObj->getBufferPointer() ) ];
-            isDumped = isDumped && !info.dumpedFile.empty();
-            if (info.istreamFactory)
-            {
-                is = (*info.istreamFactory)();
-                buffSize = info.size;
-            }
-        }
-
-        if(isDumped)
-        {
-            const ::boost::filesystem::path fileSrc
-                = manager->getDumpedFilePath( (::fwMemory::IBufferManager::BufferPtrType) buffObj->getBufferPointer() );
-            bufFile /= fileSrc.filename();
-            m_archive->putFile(fileSrc, bufFile);
+            bufFile /= dumpedFile.filename(); // FIXME
+            m_archive->putFile(dumpedFile, bufFile);
         }
         else
         {
+            SPTR(std::istream) is = buffObj->getIStream();
             SLM_ASSERT("no istream", is);
             bufFile /= ::fwTools::UUID::generateUUID() + ".raw";
-
-            // ::fwMemory::BufferObject::Lock lock(buffObj->lock());
-            // void *v = lock.getBuffer();
-            // char* buff = static_cast<char*>(v);
-
-            // m_archive->createFile(bufFile).write(buff, buffSize);
 
             SPTR(std::ostream) os = m_archive->createFile(bufFile);
             *os << is->rdbuf();
         }
+
 
         pt.put("blob.buffer_size", buffSize);
         pt.put("blob.buffer", bufFile.generic_string());

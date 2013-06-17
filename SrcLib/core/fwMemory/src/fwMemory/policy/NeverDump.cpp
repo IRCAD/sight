@@ -18,56 +18,56 @@ static IPolicy::Register<NeverDump> registerFactory(NeverDump::leafClassname());
 
 //------------------------------------------------------------------------------
 
-void NeverDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void NeverDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void NeverDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
+void NeverDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void NeverDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void NeverDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void NeverDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void NeverDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void NeverDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void NeverDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
@@ -75,7 +75,7 @@ void NeverDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::Bu
 
 
 
-void NeverDump::setManager(::fwMemory::IBufferManager::sptr manager)
+void NeverDump::setManager(const ::fwMemory::BufferManager::sptr &manager)
 {
 }
 

@@ -18,7 +18,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwTools/fwID.hpp>
-#include <fwMemory/IBufferManager.hpp>
+#include <fwMemory/BufferManager.hpp>
 #include <fwMemory/ByteSize.hpp>
 #include <fwTools/Stringizer.hpp>
 
@@ -149,8 +149,7 @@ const int PolicyTableModel::s_EXTRA_INFO_NB = 1;
 PolicyTableModel::PolicyTableModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
-    m_buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
+    m_buffManager = ::fwMemory::BufferManager::getCurrent();
 }
 
 int PolicyTableModel::rowCount(const QModelIndex &parent) const
@@ -310,8 +309,7 @@ private:
 InfoTableModel::InfoTableModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
-    m_buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
+    m_buffManager = ::fwMemory::BufferManager::getCurrent();
 }
 
 int InfoTableModel::rowCount(const QModelIndex &parent) const
@@ -479,8 +477,7 @@ void DumpEditor::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_updateTimer, SIGNAL(timeout ()), this, SLOT(onRefreshButton( )));
 
-    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getCurrent();
     if (buffManager)
     {
         m_refreshSignal = buffManager->getUpdatedSignal().connect( ::boost::bind( &DumpEditor::onUpdate, this) );
@@ -550,18 +547,17 @@ void DumpEditor::updating() throw(::fwTools::Failed)
     m_list->clearContents();
     m_objectsUID.clear();
 
-    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getCurrent();
     if(buffManager)
     {
-        const ::fwMemory::BufferInfo::MapType &buffInfoMap = buffManager->getBufferInfos();
+        const ::fwMemory::BufferManager::BufferInfoMapType &buffInfoMap = buffManager->getBufferInfos();
 
         int itemCount = 0;
         m_list->setSortingEnabled(false);
         m_list->setRowCount(static_cast<int>(buffInfoMap.size()));
         m_list->setColumnCount(5);
         QColor backColor;
-        BOOST_FOREACH(const ::fwMemory::BufferInfo::MapType::value_type &elt, buffInfoMap)
+        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, buffInfoMap)
         {
             m_objectsUID.push_back(elt.first);
 
@@ -571,8 +567,8 @@ void DumpEditor::updating() throw(::fwTools::Failed)
 
 
             const ::fwMemory::BufferInfo &dumpBuffInfo = elt.second;
-            bool isDumped = dumpBuffInfo.isDumped;
-            if(isDumped)
+            bool loaded = dumpBuffInfo.loaded;
+            if(!loaded)
             {
                 backColor = Qt::darkYellow;
                 status = "Dumped";
@@ -618,7 +614,7 @@ void DumpEditor::updating() throw(::fwTools::Failed)
             m_list->setItem(itemCount, 3, lockStatusItem );
 
 
-            QPushButton* actionItem = new QPushButton(QString::fromStdString((!isDumped)?"Dump":"Restore"), m_list);
+            QPushButton* actionItem = new QPushButton(QString::fromStdString((loaded)?"Dump":"Restore"), m_list);
             actionItem->setEnabled(!isLock && (dumpBuffInfo.size > 0) );
             m_list->setCellWidget(itemCount, 4, actionItem );
             QObject::connect(actionItem, SIGNAL(pressed()), m_mapper, SLOT(map()));
@@ -670,13 +666,12 @@ void DumpEditor::changeStatus( int index )
 {
     SLM_TRACE_FUNC();
 
-    ::fwMemory::IBufferManager::BufferPtrType selectedBuffer = m_objectsUID[index];
-    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
+    ::fwMemory::BufferManager::ConstBufferPtrType selectedBuffer = m_objectsUID[index];
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getCurrent();
     if(buffManager)
     {
-        const ::fwMemory::BufferInfo::MapType &buffInfoMap = buffManager->getBufferInfos();
-        ::fwMemory::BufferInfo::MapType::const_iterator iter;
+        const ::fwMemory::BufferManager::BufferInfoMapType &buffInfoMap = buffManager->getBufferInfos();
+        ::fwMemory::BufferManager::BufferInfoMapType::const_iterator iter;
         iter = buffInfoMap.find(selectedBuffer);
         if( iter != buffInfoMap.end())
         {
@@ -687,7 +682,7 @@ void DumpEditor::changeStatus( int index )
             bool isLock = dumpBuffInfo.lockCount() > 0;
             if ( !isLock )
             {
-                if ( !dumpBuffInfo.isDumped )
+                if ( dumpBuffInfo.loaded )
                 {
                     buffManager->dumpBuffer(selectedBuffer);
                 }

@@ -23,12 +23,32 @@
 namespace fwMemory
 {
 
+BufferManager::sptr BufferManager::s_currentManager = BufferManager::New();
+
+::fwCore::mt::ReadWriteMutex BufferManager::s_mutex;
 
 //-----------------------------------------------------------------------------
 
-BufferManager::BufferManager()
+BufferManager::sptr BufferManager::getCurrent()
 {
-    m_dumpPolicy = ::fwMemory::policy::NeverDump::New();
+    ::fwCore::mt::ReadLock lock(s_mutex);
+    return s_currentManager;
+}
+
+//-----------------------------------------------------------------------------
+
+void BufferManager::setCurrent( const BufferManager::sptr &currentManager )
+{
+    ::fwCore::mt::WriteLock lock(s_mutex);
+    s_currentManager = currentManager;
+}
+
+//-----------------------------------------------------------------------------
+
+BufferManager::BufferManager() :
+    m_dumpPolicy(::fwMemory::policy::NeverDump::New()),
+    m_loadingMode(BufferManager::DIRECT)
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -40,174 +60,164 @@ BufferManager::~BufferManager()
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::registerBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, IBufferManager::LockCountFunctionType lockCount)
+void BufferManager::registerBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    SLM_TRACE_FUNC();
-    BufferInfo & info = m_bufferInfos[buffer];
-    info.lockCount = lockCount;
+    m_bufferInfos[bufferPtr];
     m_updated();
-    return false;
 }
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::unregisterBuffer(::fwMemory::IBufferManager::BufferPtrType buffer)
+void BufferManager::unregisterBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    SLM_TRACE_FUNC();
 
+    m_bufferInfos.erase(bufferPtr);
+    m_updated();
+}
+
+//-----------------------------------------------------------------------------
+
+void BufferManager::allocateBuffer(BufferManager::BufferPtrType bufferPtr, SizeType size,
+                                   const ::fwMemory::BufferAllocationPolicy::sptr &policy)
+{
+    BufferInfo & info = m_bufferInfos[bufferPtr];
+    SLM_ASSERT("Buffer has already been allocated", info.loaded && (*bufferPtr == NULL));
+
+    if(!info.loaded)
     {
-        BufferInfo & info = m_bufferInfos[buffer];
+        info.clear();
+    }
 
-        if(info.isDumped)
+    m_dumpPolicy->allocationRequest( info, bufferPtr, size );
+
+    try
+    {
+        policy->allocate(*bufferPtr, size);
+    }
+    catch( ::fwMemory::exception::Memory & )
+    {
+        info.clear();
+        throw;
+    }
+
+    info.lastAccess.modified();
+    info.size = size;
+    info.bufferPolicy = policy;
+    m_updated();
+}
+
+//-----------------------------------------------------------------------------
+
+void BufferManager::setBuffer(BufferManager::BufferPtrType bufferPtr, ::fwMemory::BufferManager::BufferType buffer,
+                              SizeType size, const ::fwMemory::BufferAllocationPolicy::sptr &policy)
+{
+    SLM_ASSERT("Buffer must be freed before setting a new one", *bufferPtr == NULL);
+
+    BufferInfo & info = m_bufferInfos[bufferPtr];
+
+    m_dumpPolicy->setRequest( info, bufferPtr, size );
+
+    if(!info.loaded)
+    {
+        info.clear();
+    }
+
+    *bufferPtr = buffer;
+
+    info.lastAccess.modified();
+    info.size = size;
+    info.bufferPolicy = policy;
+    info.fileFormat = ::fwMemory::OTHER;
+    info.fsFile.clear();
+    info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr, size, info.lockCounter);
+    info.userStreamFactory = false;
+    m_updated();
+}
+
+//-----------------------------------------------------------------------------
+
+void BufferManager::reallocateBuffer(BufferManager::BufferPtrType bufferPtr, SizeType newSize)
+{
+    BufferInfo & info = m_bufferInfos[bufferPtr];
+    SLM_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != NULL) || !info.loaded);
+
+    m_dumpPolicy->reallocateRequest( info, bufferPtr, newSize );
+
+    try
+    {
+        if(info.loaded)
         {
-            ::boost::filesystem::remove( info.dumpedFile );
+            info.bufferPolicy->reallocate(*bufferPtr, newSize);
+        }
+        else
+        {
+            this->restoreBuffer( info, bufferPtr, newSize );
         }
     }
-
-    m_bufferInfos.erase(buffer);
-    m_updated();
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-
-bool BufferManager::allocateBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, SizeType size, ::fwMemory::BufferAllocationPolicy::sptr policy)
-{
-    SLM_TRACE_FUNC();
-    BufferInfo & info = m_bufferInfos[buffer];
-
-    SLM_ASSERT("Unable to allocate a dumped buffer", !info.isDumped);
-
-    if(info.isDumped)
+    catch( ::fwMemory::exception::Memory & )
     {
-        ::boost::filesystem::remove( info.dumpedFile );
-        info.dumpedFile = "";
-        info.size = 0;
-        info.isDumped = false;
-        SLM_ASSERT("requested an allocation of a dumped buffer", 0);
+        m_updated();
+        throw;
     }
-
-    m_dumpPolicy->allocationRequest( info, buffer, size );
-
-    info.lastAccess.modified();
-    info.size = size;
-    info.bufferPolicy = policy;
-    m_updated();
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-
-bool BufferManager::setBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, SizeType size, ::fwMemory::BufferAllocationPolicy::sptr policy)
-{
-    SLM_TRACE_FUNC();
-    BufferInfo & info = m_bufferInfos[buffer];
-
-    SLM_ASSERT("Unable to overwrite a dumped buffer", !info.isDumped);
-
-    m_dumpPolicy->setRequest( info, buffer, size );
-
-    if(info.isDumped)
-    {
-        ::boost::filesystem::remove( info.dumpedFile );
-        info.dumpedFile = "";
-        info.size = 0;
-        info.isDumped = false;
-        SLM_ASSERT("requested a replacement of a dumped buffer", 0);
-    }
-
-    info.lastAccess.modified();
-    info.size = size;
-    info.bufferPolicy = policy;
-    info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*buffer, size);
-    m_updated();
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-
-bool BufferManager::reallocateBuffer(::fwMemory::IBufferManager::BufferPtrType buffer, SizeType newSize)
-{
-    SLM_TRACE_FUNC();
-
-    BufferInfo & info = m_bufferInfos[buffer];
-
-    m_dumpPolicy->reallocateRequest( info, buffer, newSize );
 
     info.lastAccess.modified();
     info.size = newSize;
 
-    if(info.isDumped)
-    {
-        this->restoreBuffer( info, buffer, newSize );
-        return false;
-    }
-
     m_updated();
-    return true;
 }
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::destroyBuffer(::fwMemory::IBufferManager::BufferPtrType buffer)
+void BufferManager::destroyBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    SLM_TRACE_FUNC();
-    BufferInfo & info = m_bufferInfos[buffer];
+    BufferInfo & info = m_bufferInfos[bufferPtr];
+    SLM_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != NULL) || !info.loaded);
 
-    m_dumpPolicy->destroyRequest( info, buffer );
+    m_dumpPolicy->destroyRequest( info, bufferPtr );
 
+    if(info.loaded)
+    {
+        info.bufferPolicy->destroy(*bufferPtr);
+    }
+
+    info.clear();
     info.lastAccess.modified();
-    info.size = 0;
-    info.bufferPolicy.reset();
-
-
-    if(info.isDumped)
-    {
-        ::boost::filesystem::remove( info.dumpedFile );
-        info.dumpedFile = "";
-        info.isDumped = false;
-        return false;
-    }
-
-    info.istreamFactory.reset();
-
     m_updated();
-    return true;
 }
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::swapBuffer(::fwMemory::IBufferManager::BufferPtrType bufA, ::fwMemory::IBufferManager::BufferPtrType bufB)
+void BufferManager::swapBuffer(BufferManager::BufferPtrType bufA, BufferManager::BufferPtrType bufB)
 {
-    SLM_TRACE_FUNC();
     BufferInfo & infoA = m_bufferInfos[bufA];
     BufferInfo & infoB = m_bufferInfos[bufB];
 
     std::swap(*bufA, *bufB);
     std::swap(infoA.size, infoB.size);
-    std::swap(infoA.isDumped, infoB.isDumped);
-    std::swap(infoA.dumpedFile, infoB.dumpedFile);
+    std::swap(infoA.loaded, infoB.loaded);
+    std::swap(infoA.fsFile, infoB.fsFile);
     std::swap(infoA.bufferPolicy, infoB.bufferPolicy);
     std::swap(infoA.istreamFactory, infoB.istreamFactory);
+    std::swap(infoA.userStreamFactory, infoB.userStreamFactory);
     infoA.lastAccess.modified();
     infoB.lastAccess.modified();
-    return false;
 }
 //-----------------------------------------------------------------------------
 
-bool BufferManager::lockBuffer(::fwMemory::IBufferManager::ConstBufferPtrType buffer)
+bool BufferManager::lockBuffer(BufferManager::ConstBufferPtrType bufferPtr, const BufferInfo::CounterType &lockCounter)
 {
-    SLM_TRACE_FUNC();
 
-    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
+    BufferManager::BufferPtrType castedBuffer = const_cast< BufferManager::BufferPtrType >(bufferPtr);
     BufferInfo & info = m_bufferInfos[castedBuffer];
+
+    info.lockCounter = lockCounter;
 
     m_dumpPolicy->lockRequest( info, castedBuffer );
 
-    if ( info.isDumped )
+    if ( !info.loaded )
     {
-        bool restored = this->restoreBuffer( buffer );
-        OSLM_ASSERT( "restore not OK ( "<< restored << " && " << *buffer <<" != 0 ).", restored && *buffer != 0 );
+        bool restored = this->restoreBuffer( bufferPtr );
+        OSLM_ASSERT( "restore not OK ( "<< restored << " && " << *bufferPtr <<" != 0 ).", restored && *bufferPtr != 0 );
         FwCoreNotUsedMacro(restored);
     }
 
@@ -219,11 +229,10 @@ bool BufferManager::lockBuffer(::fwMemory::IBufferManager::ConstBufferPtrType bu
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::unlockBuffer(::fwMemory::IBufferManager::ConstBufferPtrType buffer)
+bool BufferManager::unlockBuffer(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    SLM_TRACE_FUNC();
 
-    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
+    BufferManager::BufferPtrType castedBuffer = const_cast< BufferManager::BufferPtrType >(bufferPtr);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     m_dumpPolicy->unlockRequest( info, castedBuffer );
@@ -234,10 +243,10 @@ bool BufferManager::unlockBuffer(::fwMemory::IBufferManager::ConstBufferPtrType 
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::dumpBuffer(::fwMemory::IBufferManager::ConstBufferPtrType  buffer)
+bool BufferManager::dumpBuffer(BufferManager::ConstBufferPtrType  bufferPtr)
 {
 
-    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
+    BufferManager::BufferPtrType castedBuffer = const_cast< BufferManager::BufferPtrType >(bufferPtr);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     return this->dumpBuffer(info, castedBuffer);
@@ -246,39 +255,42 @@ bool BufferManager::dumpBuffer(::fwMemory::IBufferManager::ConstBufferPtrType  b
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::dumpBuffer(BufferManager::BufferInfo & info, ::fwMemory::IBufferManager::BufferPtrType buffer)
+bool BufferManager::dumpBuffer(BufferInfo & info, BufferManager::BufferPtrType bufferPtr)
 {
-    SLM_TRACE_FUNC();
-    if ( info.isDumped || info.lockCount() > 0 || info.size == 0 )
+    if ( !info.loaded || info.lockCount() > 0 || info.size == 0 )
     {
         return false;
     }
-    OSLM_TRACE("dumping " << buffer);
 
 
     ::boost::filesystem::path tmp = ::fwTools::System::getTemporaryFolder();
-    info.dumpedFile = ::boost::filesystem::unique_path( tmp / "fwMemory-%%%%-%%%%-%%%%-%%%%.raw" );
+    ::boost::filesystem::path dumpedFile = ::boost::filesystem::unique_path( tmp/"fwMemory-%%%%-%%%%-%%%%-%%%%.raw" );
 
-    if ( this->writeBuffer(*buffer, info.size, info.dumpedFile) )
+    OSLM_TRACE("dumping " << bufferPtr << " " << dumpedFile);
+
+    if ( this->writeBuffer(*bufferPtr, info.size, dumpedFile) )
     {
-        info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Raw >(info.dumpedFile);
-        info.bufferPolicy->destroy(*buffer);
-        *buffer = NULL;
-        info.isDumped = true;
+        info.fsFile = ::fwMemory::FileHolder(dumpedFile, true);
+        info.fileFormat = ::fwMemory::RAW;
+        info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Raw >(info.fsFile);
+        info.userStreamFactory = false;
+        info.bufferPolicy->destroy(*bufferPtr);
+        *bufferPtr = NULL;
+        info.loaded = false;
 
-        m_dumpPolicy->dumpSuccess( info, buffer );
+        m_dumpPolicy->dumpSuccess( info, bufferPtr );
 
         m_updated();
     }
 
-    return info.isDumped;
+    return !info.loaded;
 }
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::restoreBuffer(::fwMemory::IBufferManager::ConstBufferPtrType  buffer)
+bool BufferManager::restoreBuffer(BufferManager::ConstBufferPtrType  bufferPtr)
 {
-    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
+    BufferManager::BufferPtrType castedBuffer = const_cast< BufferManager::BufferPtrType >(bufferPtr);
     BufferInfo & info = m_bufferInfos[castedBuffer];
 
     return this->restoreBuffer(info, castedBuffer);
@@ -287,19 +299,18 @@ bool BufferManager::restoreBuffer(::fwMemory::IBufferManager::ConstBufferPtrType
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info,
-                                  ::fwMemory::IBufferManager::BufferPtrType buffer, BufferManager::SizeType allocSize)
+bool BufferManager::restoreBuffer(BufferInfo & info,
+                                  BufferManager::BufferPtrType bufferPtr, BufferManager::SizeType allocSize)
 {
-    SLM_TRACE_FUNC();
 
     allocSize = ((allocSize) ? allocSize : info.size);
-    if ( info.isDumped )
+    if ( !info.loaded )
     {
-        OSLM_TRACE("Restoring " << buffer);
+        OSLM_TRACE("Restoring " << bufferPtr);
 
-        info.bufferPolicy->allocate(*buffer, allocSize);
+        info.bufferPolicy->allocate(*bufferPtr, allocSize);
 
-        char * charBuf = static_cast< char * >(*buffer);
+        char * charBuf = static_cast< char * >(*bufferPtr);
         SizeType size = std::min(allocSize, info.size);
         bool notFailed = false;
         {
@@ -313,17 +324,16 @@ bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info,
 
         if ( notFailed )
         {
-            info.isDumped = false;
-            if(!info.dumpedFile.empty())
-            {
-                ::boost::filesystem::remove( info.dumpedFile );
-                info.dumpedFile.clear();
-            }
+            info.loaded = true;
+            info.fsFile.clear();
             info.lastAccess.modified();
 
-            m_dumpPolicy->restoreSuccess( info, buffer );
+            m_dumpPolicy->restoreSuccess( info, bufferPtr );
 
-            info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*buffer, allocSize);
+            info.fileFormat = ::fwMemory::OTHER;
+            info.istreamFactory
+                = ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr, allocSize, info.lockCounter);
+            info.userStreamFactory = false;
             m_updated();
             return true;
         }
@@ -334,7 +344,7 @@ bool BufferManager::restoreBuffer(BufferManager::BufferInfo & info,
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::writeBuffer(::fwMemory::IBufferManager::ConstBufferType buffer, SizeType size, ::boost::filesystem::path &path)
+bool BufferManager::writeBuffer(BufferManager::ConstBufferType buffer, SizeType size, ::boost::filesystem::path &path)
 {
     ::boost::filesystem::ofstream fs(path, std::ios::binary|std::ios::trunc);
     FW_RAISE_IF("Memory management : Unable to open " << path, !fs.good());
@@ -347,7 +357,7 @@ bool BufferManager::writeBuffer(::fwMemory::IBufferManager::ConstBufferType buff
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::readBuffer(::fwMemory::IBufferManager::BufferType buffer, SizeType size, ::boost::filesystem::path &path)
+bool BufferManager::readBuffer(BufferManager::BufferType buffer, SizeType size, ::boost::filesystem::path &path)
 {
     ::boost::filesystem::ifstream fs(path, std::ios::in|std::ios::binary|std::ios::ate);
     FW_RAISE_IF("Unable to read " << path, !fs.good());
@@ -378,7 +388,7 @@ std::string BufferManager::toString() const
             << std::setw(6) << "Access" << " "
             << std::setw(4) << "Lock" << " "
             << "DumpStatus" << " "
-            << "DumpedFile" << " "
+            << "File" << " "
             << std::endl;
     BOOST_FOREACH( BufferInfoMapType::value_type item, m_bufferInfos )
     {
@@ -388,8 +398,8 @@ std::string BufferManager::toString() const
                 << std::setw(18) << info.bufferPolicy << " "
                 << std::setw(6) << info.lastAccess << " "
                 << std::setw(4) << info.lockCount() << " "
-                << ((info.isDumped)?"    dumped":"not dumped") << " "
-                << info.dumpedFile << " "
+                << ((info.loaded)?"   ":"not") << " loaded "
+                << ::boost::filesystem::path(info.fsFile) << " "
                 << std::endl;
     }
     return sstr.str();
@@ -397,7 +407,7 @@ std::string BufferManager::toString() const
 
 //-----------------------------------------------------------------------------
 
-void BufferManager::setDumpPolicy( ::fwMemory::IPolicy::sptr policy )
+void BufferManager::setDumpPolicy( const ::fwMemory::IPolicy::sptr &policy )
 {
     m_dumpPolicy = policy;
     policy->setManager(this->getSptr());
@@ -419,7 +429,7 @@ BufferManager::SizeType BufferManager::getDumpedBufferSize() const
     BOOST_FOREACH( BufferInfoMapType::value_type item, m_bufferInfos )
     {
         BufferInfo & info = item.second;
-        if ( info.isDumped )
+        if ( !info.loaded )
         {
             dumpedBufferSize += info.size;
         }
@@ -442,25 +452,97 @@ BufferManager::SizeType BufferManager::getManagedBufferSize() const
 
 //-----------------------------------------------------------------------------
 
-bool BufferManager::isDumped(const ::fwMemory::IBufferManager::ConstBufferPtrType buffer) const
+bool BufferManager::isLoaded(const BufferManager::ConstBufferPtrType bufferPtr) const
 {
-    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
+    BufferManager::BufferPtrType castedBuffer = const_cast< BufferManager::BufferPtrType >(bufferPtr);
     BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
     FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
-    return iterInfo->second.isDumped;
+    return iterInfo->second.loaded;
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::filesystem::path BufferManager::getDumpedFilePath(const ::fwMemory::IBufferManager::ConstBufferPtrType buffer) const
+::boost::filesystem::path BufferManager::getDumpedFilePath(const BufferManager::ConstBufferPtrType bufferPtr) const
 {
-    ::fwMemory::IBufferManager::BufferPtrType castedBuffer = const_cast< ::fwMemory::IBufferManager::BufferPtrType >(buffer);
+    BufferManager::BufferPtrType castedBuffer = const_cast< BufferManager::BufferPtrType >(bufferPtr);
     BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
     FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
-    return iterInfo->second.dumpedFile;
+    return iterInfo->second.fsFile;
 }
 
 //-----------------------------------------------------------------------------
+
+::fwMemory::FileFormatType BufferManager::getDumpedFileFormat(const BufferManager::ConstBufferPtrType bufferPtr) const
+{
+    BufferManager::BufferPtrType castedBuffer = const_cast< BufferManager::BufferPtrType >(bufferPtr);
+    BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
+    FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
+    return iterInfo->second.fileFormat;
+}
+
+//-----------------------------------------------------------------------------
+
+SPTR(std::istream) BufferManager::getIStream(const ConstBufferPtrType bufferPtr) const
+{
+    BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(bufferPtr);
+    FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
+    const BufferInfo & info = iterInfo->second;
+    SPTR(std::istream) isptr = (*info.istreamFactory)();
+    return isptr;
+}
+
+//-----------------------------------------------------------------------------
+
+void BufferManager::setIStreamFactory(BufferPtrType bufferPtr,
+                                      const SPTR(::fwMemory::stream::in::IFactory) &factory,
+                                      SizeType size,
+                                      ::fwMemory::FileHolder fsFile,
+                                      ::fwMemory::FileFormatType format,
+                                      const ::fwMemory::BufferAllocationPolicy::sptr &policy
+                                     )
+{
+    BufferInfoMapType::iterator iterInfo = m_bufferInfos.find(bufferPtr);
+    FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
+    BufferInfo & info = iterInfo->second;
+
+    if (info.loaded && *bufferPtr)
+    {
+        info.bufferPolicy->destroy(*bufferPtr);
+        *bufferPtr = NULL;
+    }
+
+    info.istreamFactory = factory;
+    info.userStreamFactory = true;
+    info.size = size;
+    info.fsFile = fsFile;
+    info.fileFormat = format;
+    info.bufferPolicy = policy;
+    info.loaded = false;
+
+    switch(m_loadingMode)
+    {
+    case BufferManager::DIRECT:
+        this->restoreBuffer(bufferPtr);
+        break;
+    case BufferManager::LAZY :
+        m_dumpPolicy->dumpSuccess( info, bufferPtr );
+        m_updated();
+        break;
+    default:
+        SLM_ASSERT("You shall not pass", 0);
+    }
+
+}
+
+//-----------------------------------------------------------------------------
+
+bool BufferManager::hasUserStreamFactory(const BufferManager::ConstBufferPtrType bufferPtr) const
+{
+    BufferManager::BufferPtrType castedBuffer = const_cast< BufferManager::BufferPtrType >(bufferPtr);
+    BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(castedBuffer);
+    FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
+    return iterInfo->second.userStreamFactory;
+}
 
 } //namespace fwMemory
 

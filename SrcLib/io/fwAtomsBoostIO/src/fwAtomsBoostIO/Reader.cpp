@@ -199,26 +199,10 @@ protected:
     size_t buffSize = pt.get<size_t>("blob.buffer_size");
     if(buffSize > 0)
     {
-        const std::string bufFile = pt.get<std::string>("blob.buffer");
+        const ::boost::filesystem::path bufFile = pt.get<std::string>("blob.buffer");
 
-        ::fwMemory::BufferManager::sptr manager
-            = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::IBufferManager::getCurrent() );
-
-        fwMemory::BufferInfo &info = manager->getBufferInfos()[ const_cast< void** > (buffObj->getBufferPointer() ) ];
-        info.istreamFactory = ::boost::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile);
-        info.size = buffSize;
-        info.isDumped = true;
-        info.bufferPolicy = ::fwMemory::BufferMallocPolicy::New();
-        info.dumpedFile.clear();
-
-        // buffObj->allocate(buffSize);
-
-        // ::fwMemory::BufferObject::Lock lock(buffObj->lock());
-        // void *v = lock.getBuffer();
-        // char* buff = static_cast<char*>(v);
-
-        // SPTR(std::istream) inStream = m_archive->getFile(bufFile);
-        // inStream->read(buff, buffSize);
+        buffObj->setIStreamFactory( ::boost::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile),
+                                   buffSize, m_archive->getArchivePath() / bufFile, ::fwMemory::RAW);
     }
     return atom;
 }

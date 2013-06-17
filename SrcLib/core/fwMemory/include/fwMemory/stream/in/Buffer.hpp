@@ -22,7 +22,10 @@ namespace in
 class FWMEMORY_CLASS_API Buffer : public IFactory
 {
 public:
-    Buffer(void* buf, size_t size);
+    typedef WPTR(void) CounterType;
+    typedef SPTR(void) LockType;
+
+    Buffer(void* buf, size_t size, const CounterType &lock = CounterType());
 
 protected:
 
@@ -30,6 +33,7 @@ protected:
 
     void* m_buf;
     size_t m_size;
+    CounterType m_counter;
 };
 
 

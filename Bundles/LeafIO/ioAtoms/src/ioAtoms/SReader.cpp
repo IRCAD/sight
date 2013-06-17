@@ -12,7 +12,7 @@
 
 #include <fwAtomConversion/convert.hpp>
 
-#include <fwMemory/IBufferManager.hpp>
+#include <fwMemory/BufferManager.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
@@ -249,7 +249,7 @@ void SReader::updating() throw(::fwTools::Failed)
 void SReader::setBarrierDumpPolicy()
 {
     ::fwMemory::BufferManager::sptr manager;
-    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::IBufferManager::getCurrent() );
+    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::BufferManager::getCurrent() );
 
     if( manager )
     {
@@ -273,7 +273,7 @@ void SReader::setBarrierDumpPolicy()
 void SReader::resetDumpPolicy()
 {
     ::fwMemory::BufferManager::sptr manager;
-    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::IBufferManager::getCurrent() );
+    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::BufferManager::getCurrent() );
 
     if( manager && m_oldPolicy )
     {

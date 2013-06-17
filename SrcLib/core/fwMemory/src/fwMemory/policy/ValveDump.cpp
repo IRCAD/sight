@@ -44,7 +44,7 @@ ValveDump::ValveDump() :
 
 //------------------------------------------------------------------------------
 
-void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply((size > info.size) ? size - info.size : 0);
 }
@@ -52,7 +52,7 @@ void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager:
 //------------------------------------------------------------------------------
 
 
-void ValveDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void ValveDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     this->apply();
 }
@@ -60,7 +60,7 @@ void ValveDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::Buffer
 //------------------------------------------------------------------------------
 
 
-void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
+void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     this->apply((newSize > info.size) ? newSize - info.size : 0);
 }
@@ -68,21 +68,21 @@ void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager:
 //------------------------------------------------------------------------------
 
 
-void ValveDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void ValveDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void ValveDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void ValveDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -90,14 +90,14 @@ void ValveDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::Buf
 //------------------------------------------------------------------------------
 
 
-void ValveDump::dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void ValveDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void ValveDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void ValveDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
@@ -105,9 +105,9 @@ void ValveDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::Bu
 
 
 
-void ValveDump::setManager(::fwMemory::IBufferManager::sptr manager)
+void ValveDump::setManager(const ::fwMemory::BufferManager::sptr &manager)
 {
-    m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
+    m_manager = manager;
 }
 
 //------------------------------------------------------------------------------
@@ -127,20 +127,20 @@ size_t ValveDump::dump(size_t nbOfBytes)
     if(manager)
     {
 
-        const fwMemory::BufferInfo::MapType &bufferInfos = manager->getBufferInfos();
+        const fwMemory::BufferManager::BufferInfoMapType &bufferInfos = manager->getBufferInfos();
 
         typedef std::pair<
-            fwMemory::BufferInfo::MapType::key_type,
-            fwMemory::BufferInfo::MapType::mapped_type
+            fwMemory::BufferManager::BufferInfoMapType::key_type,
+            fwMemory::BufferManager::BufferInfoMapType::mapped_type
                 > BufferInfosPairType;
         typedef std::vector< BufferInfosPairType > BufferVectorType;
 
         BufferVectorType buffers;
 
-        BOOST_FOREACH(const ::fwMemory::BufferInfo::MapType::value_type &elt, bufferInfos)
+        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
-            if( ! ( info.size == 0 || info.lockCount() > 0 || info.isDumped )  )
+            if( ! ( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 buffers.push_back(elt);
             }

@@ -35,17 +35,17 @@ public :
 
     FWMEMORY_API BarrierDump();
 
-    FWMEMORY_API virtual void allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
-    FWMEMORY_API virtual void setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
-    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize ) ;
-    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) ;
-    FWMEMORY_API virtual void lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) ;
-    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer ) ;
+    FWMEMORY_API virtual void allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void setRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize ) ;
+    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer ) ;
+    FWMEMORY_API virtual void lockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer ) ;
+    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer ) ;
 
-    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer );
-    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer );
+    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer );
+    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer );
 
-    FWMEMORY_API void setManager(::fwMemory::IBufferManager::sptr manager);
+    FWMEMORY_API void setManager(const ::fwMemory::BufferManager::sptr &manager);
 
     FWMEMORY_API virtual void refresh();
 

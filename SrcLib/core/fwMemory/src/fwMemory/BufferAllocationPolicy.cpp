@@ -27,13 +27,15 @@ void BufferMallocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::Si
 
 void BufferMallocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
-    buffer = realloc( buffer, size );
-    if (buffer == NULL && size > 0)
+    BufferType newBuffer;
+    newBuffer = realloc( buffer, size );
+    if (newBuffer == NULL && size > 0)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
                                 "Cannot allocate memory ("
                                 << ::fwMemory::ByteSize(::fwMemory::ByteSize::SizeType(size)) <<").");
     }
+    buffer = newBuffer;
 }
 
 //------------------------------------------------------------------------------

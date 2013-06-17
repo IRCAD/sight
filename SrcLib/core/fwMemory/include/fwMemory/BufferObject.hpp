@@ -7,16 +7,19 @@
 #ifndef _FWMEMORY_BUFFEROBJECT_HPP_
 #define _FWMEMORY_BUFFEROBJECT_HPP_
 
+#include <istream>
+
 #include <boost/type_traits/conditional.hpp>
 #include <boost/type_traits/is_const.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <fwCore/mt/types.hpp>
 #include <fwCore/base.hpp>
 #include <fwCamp/macros.hpp>
 
 #include "fwMemory/BufferAllocationPolicy.hpp"
-#include "fwMemory/IBufferManager.hpp"
+#include "fwMemory/BufferManager.hpp"
 #include "fwMemory/config.hpp"
 
 fwCampAutoDeclareMacro((fwMemory)(BufferObject), FWMEMORY_API);
@@ -24,7 +27,10 @@ fwCampAutoDeclareMacro((fwMemory)(BufferObject), FWMEMORY_API);
 namespace fwMemory
 {
 
-
+namespace stream {
+namespace in {
+class IFactory ;
+}}
 
 /**
  * @brief   Define Base class for FW4SPL buffers
@@ -70,7 +76,7 @@ public:
     /// return the sub class classname : an alias of this->getClassname
     std::string className() const { return this->getClassname(); };
 
-    virtual ::fwMemory::IBufferManager::BufferType getBuffer() { return m_buffer;};
+    virtual ::fwMemory::BufferManager::BufferType getBuffer() { return m_buffer;};
 
     /**
      * @brief base class for BufferObject Lock
@@ -106,7 +112,7 @@ public:
          *
          * @param bo BufferObject to lock
          */
-        LockBase( SPTR(T) bo ) :
+        LockBase( const SPTR(T) &bo ) :
             m_bufferObject(bo)
         {
             SLM_ASSERT("Can't lock NULL object", bo);
@@ -212,9 +218,9 @@ public:
             SLM_ASSERT("Count pointer is uninitialized", m_count != BufferObject::CounterType() );
             if( SPTR(T) bufferObject = m_bufferObject.lock() )
             {
-                if (fwMemory::IBufferManager::sptr manager = bufferObject->m_bufferManager)
+                if (fwMemory::BufferManager::sptr manager = bufferObject->m_bufferManager)
                 {
-                    manager->lockBuffer(&(bufferObject->m_buffer));
+                    manager->lockBuffer(&(bufferObject->m_buffer), m_count);
                 }
             }
         }
@@ -227,7 +233,7 @@ public:
             SLM_ASSERT("Count pointer is uninitialized", m_count != BufferObject::CounterType() );
             if( SPTR(T) bufferObject = m_bufferObject.lock() )
             {
-                if (fwMemory::IBufferManager::sptr manager = bufferObject->m_bufferManager)
+                if (fwMemory::BufferManager::sptr manager = bufferObject->m_bufferManager)
                 {
                     manager->unlockBuffer(&(bufferObject->m_buffer));
                 }
@@ -278,7 +284,7 @@ public:
      *
      */
     FWMEMORY_API virtual void allocate(SizeType size,
-            ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New());
+            const ::fwMemory::BufferAllocationPolicy::sptr &policy = ::fwMemory::BufferMallocPolicy::New());
 
     /**
      * @brief Buffer reallocation
@@ -312,8 +318,8 @@ public:
      * @param policy External buffer allocation policy, default is Malloc policy
      *
      */
-    FWMEMORY_API virtual void setBuffer(fwMemory::IBufferManager::BufferType buffer, SizeType size,
-            ::fwMemory::BufferAllocationPolicy::sptr policy = ::fwMemory::BufferMallocPolicy::New());
+    FWMEMORY_API virtual void setBuffer(::fwMemory::BufferManager::BufferType buffer, SizeType size,
+            const ::fwMemory::BufferAllocationPolicy::sptr &policy = ::fwMemory::BufferMallocPolicy::New());
 
 
     /**
@@ -353,16 +359,43 @@ public:
     /**
      * @brief Returns pointer on BufferObject's buffer
      */
-    const ::fwMemory::IBufferManager::ConstBufferPtrType getBufferPointer() const {return &m_buffer;};
+    const ::fwMemory::BufferManager::ConstBufferPtrType getBufferPointer() const {return &m_buffer;};
 
     ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
 
     /// Exchanges the content of the BufferObject with the content of _source.
-    FWMEMORY_API void swap( BufferObject::sptr _source );
+    FWMEMORY_API void swap( const BufferObject::sptr &_source );
+
+    /// Returns the path to the file containing data of this BufferObject if it is dumped
+    FWMEMORY_API boost::filesystem::path getFile();
+
+    /// Returns the format of the file returned by BufferObject::getFile
+    FWMEMORY_API ::fwMemory::FileFormatType getFileFormat();
+
+    /// Returns a stream to BufferObject content, no needs to lock
+    FWMEMORY_API SPTR(std::istream) getIStream();
+
+    /**
+     * @brief Set a stream factory for the buffer manager
+     * The factory will be used to load data on demand by the buffer manager.
+     *
+     * @param ::fwMemory::stream::in::IFactory stream factory
+     * @param size size of data provided by the stream
+     * @param sourceFile Filesystem path of the source file, if applicable
+     * @param format file format (RAW,RAWZ,OTHER), if sourceFile is provided
+     * @param policy Buffer allocation policy
+     */
+    FWMEMORY_API void setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory) &factory,
+                           SizeType size,
+                           const ::boost::filesystem::path &sourceFile = "",
+                           ::fwMemory::FileFormatType format = ::fwMemory::OTHER,
+                           const ::fwMemory::BufferAllocationPolicy::sptr &policy = ::fwMemory::BufferMallocPolicy::New()
+                          );
+
 
 protected :
 
-    ::fwMemory::IBufferManager::BufferType m_buffer;
+    ::fwMemory::BufferManager::BufferType m_buffer;
 
     SizeType m_size;
 
@@ -370,7 +403,7 @@ protected :
     mutable ::fwCore::mt::Mutex m_lockDumpMutex;
     ::fwCore::mt::ReadWriteMutex m_mutex;
 
-    ::fwMemory::IBufferManager::sptr m_bufferManager;
+    ::fwMemory::BufferManager::sptr m_bufferManager;
 
     ::fwMemory::BufferAllocationPolicy::sptr m_allocPolicy;
 };

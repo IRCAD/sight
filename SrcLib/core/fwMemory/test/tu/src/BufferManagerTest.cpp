@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwMemory/IBufferManager.hpp>
+#include <fwMemory/BufferManager.hpp>
 #include <fwMemory/BufferObject.hpp>
 
 #include <fwMemory/BufferManager.hpp>
@@ -32,7 +32,7 @@ void BufferManagerTest::tearDown()
 void BufferManagerTest::allocateTest()
 {
     ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
-    ::fwMemory::IBufferManager::setCurrent( manager );
+    ::fwMemory::BufferManager::setCurrent( manager );
 
     const int SIZE = 100000;
     ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
@@ -131,7 +131,7 @@ void BufferManagerTest::allocateTest()
 void BufferManagerTest::memoryInfoTest()
 {
     ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
-    ::fwMemory::IBufferManager::setCurrent( manager );
+    ::fwMemory::BufferManager::setCurrent( manager );
 
     {
         SLM_INFO(manager->toString());

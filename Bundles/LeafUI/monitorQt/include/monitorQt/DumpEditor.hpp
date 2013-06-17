@@ -84,7 +84,7 @@ protected Q_SLOTS:
 private:
 
     // Managed buffers
-    std::vector< void ** > m_objectsUID;
+    std::vector< const void * const * > m_objectsUID;
 
     /// Widget to print some information on managed buffer by system
     QTableWidget* m_list;

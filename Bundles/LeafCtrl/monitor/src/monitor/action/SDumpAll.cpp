@@ -39,19 +39,18 @@ SDumpAll::~SDumpAll() throw()
 void SDumpAll::updating( ) throw(::fwTools::Failed)
 {
     size_t nbBuffDumped = 0;
-    ::fwMemory::BufferInfo::MapType buffInfoMap;
-    ::fwMemory::IBufferManager::sptr manager = ::fwMemory::IBufferManager::getCurrent();
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::dynamicCast(manager);
+    ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap;
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getCurrent();
     if(buffManager)
     {
         buffInfoMap = buffManager->getBufferInfos();
     }
-    BOOST_FOREACH(::fwMemory::BufferInfo::MapType::value_type elt, buffInfoMap)
+    BOOST_FOREACH(::fwMemory::BufferManager::BufferInfoMapType::value_type elt, buffInfoMap)
     {
         ::fwMemory::BufferInfo dumpBuffInfo = elt.second;
-        bool isDumped = dumpBuffInfo.isDumped;
+        bool loaded = dumpBuffInfo.loaded;
         bool isLock = dumpBuffInfo.lockCount() > 0;
-        if(!isDumped && !isLock)
+        if(loaded && !isLock)
         {
             bool dumped = buffManager->dumpBuffer(elt.first);
             if(dumped)

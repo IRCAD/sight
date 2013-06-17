@@ -33,11 +33,11 @@ BarrierDump::BarrierDump() :
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
-    if(info.isDumped)
+    if(!info.loaded)
     {
         m_totalDumped -= info.size;
     }
@@ -47,11 +47,11 @@ void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::IBufferManage
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
-    if(info.isDumped)
+    if(!info.loaded)
     {
         m_totalDumped -= info.size;
     }
@@ -61,11 +61,11 @@ void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::IBufferManager::Buff
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
+void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += newSize;
-    if(info.isDumped)
+    if(!info.loaded)
     {
         m_totalDumped -= info.size;
     }
@@ -75,9 +75,9 @@ void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::IBufferManage
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void BarrierDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
-    if(info.isDumped)
+    if(!info.loaded)
     {
         m_totalDumped -= info.size;
     }
@@ -87,14 +87,14 @@ void BarrierDump::destroyRequest( BufferInfo &info, ::fwMemory::IBufferManager::
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::lockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void BarrierDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void BarrierDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
     this->apply();
 }
@@ -102,7 +102,7 @@ void BarrierDump::unlockRequest( BufferInfo &info, ::fwMemory::IBufferManager::B
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void BarrierDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
     m_totalDumped += info.size;
 }
@@ -110,16 +110,16 @@ void BarrierDump::dumpSuccess( BufferInfo &info, ::fwMemory::IBufferManager::Buf
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::restoreSuccess( BufferInfo &info, ::fwMemory::IBufferManager::BufferPtrType buffer )
+void BarrierDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
 {
     m_totalDumped -= info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::setManager(::fwMemory::IBufferManager::sptr manager)
+void BarrierDump::setManager(const ::fwMemory::BufferManager::sptr &manager)
 {
-    m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
+    m_manager = manager;
 }
 
 //------------------------------------------------------------------------------
@@ -148,20 +148,20 @@ size_t BarrierDump::dump(size_t nbOfBytes)
     if(manager)
     {
 
-        const ::fwMemory::BufferInfo::MapType &bufferInfos = manager->getBufferInfos();
+        const ::fwMemory::BufferManager::BufferInfoMapType &bufferInfos = manager->getBufferInfos();
 
         typedef std::pair<
-            ::fwMemory::BufferInfo::MapType::key_type,
-            ::fwMemory::BufferInfo::MapType::mapped_type
+            ::fwMemory::BufferManager::BufferInfoMapType::key_type,
+            ::fwMemory::BufferManager::BufferInfoMapType::mapped_type
                 > BufferInfosPairType;
         typedef std::vector< BufferInfosPairType > BufferVectorType;
 
         BufferVectorType buffers;
 
-        BOOST_FOREACH(const ::fwMemory::BufferInfo::MapType::value_type &elt, bufferInfos)
+        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
-            if( ! ( info.size == 0 || info.lockCount() > 0 || info.isDumped )  )
+            if( ! ( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 buffers.push_back(elt);
             }

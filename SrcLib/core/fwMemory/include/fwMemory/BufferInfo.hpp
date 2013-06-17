@@ -4,38 +4,48 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWMEMORY_BUFFERINFO_HPP_
-#define FWMEMORY_BUFFERINFO_HPP_
+#ifndef __FWMEMORY_BUFFERINFO_HPP__
+#define __FWMEMORY_BUFFERINFO_HPP__
 
 #include <boost/filesystem/path.hpp>
+#include <boost/function.hpp>
 
+#include <fwCore/macros.hpp>
 #include <fwCore/LogicStamp.hpp>
 
+#include "fwMemory/BufferAllocationPolicy.hpp"
+#include "fwMemory/FileFormat.hpp"
+#include "fwMemory/FileHolder.hpp"
 #include "fwMemory/stream/in/IFactory.hpp"
-#include "fwMemory/IBufferManager.hpp"
+
 #include "fwMemory/config.hpp"
 
 namespace fwMemory
 {
 
+
 struct FWMEMORY_CLASS_API BufferInfo
 {
 
-    typedef std::map< ::fwMemory::IBufferManager::BufferPtrType, BufferInfo > MapType;
+    typedef size_t SizeType;
+    typedef WPTR( void ) CounterType;
 
-    typedef ::fwMemory::IBufferManager::SizeType SizeType;
+    FWMEMORY_API BufferInfo();
 
-    FWMEMORY_API BufferInfo()
-    {
-        this->size = 0;
-        this->isDumped = false;
-        this->lastAccess.modified();
-    }
+    FWMEMORY_API void clear();
+    long lockCount() const {return lockCounter.use_count();};
+
+
 
     SizeType size;
-    bool     isDumped;
-    ::boost::filesystem::path dumpedFile;
-    ::fwMemory::IBufferManager::LockCountFunctionType lockCount;
+    bool     loaded;
+    bool     userStreamFactory;
+
+    FileHolder fsFile;
+    FileFormatType fileFormat;
+
+    CounterType lockCounter;
+
     ::fwCore::LogicStamp lastAccess;
     ::fwMemory::BufferAllocationPolicy::sptr bufferPolicy;
 
@@ -49,5 +59,5 @@ struct FWMEMORY_CLASS_API BufferInfo
 
 } // namespace fwMemory
 
-#endif // FWMEMORY_BUFFERINFO_HPP_
+#endif // __FWMEMORY_BUFFERINFO_HPP__
 

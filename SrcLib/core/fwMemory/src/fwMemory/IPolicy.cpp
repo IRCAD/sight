@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ IPolicy::FactoryMap &IPolicy::getDefaultPolicyFactories()
 
 //------------------------------------------------------------------------------
 
-IPolicy::sptr IPolicy::createPolicy(std::string name)
+IPolicy::sptr IPolicy::createPolicy(const std::string &name)
 {
     IPolicy::sptr policy;
     IPolicy::FactoryMap &factories = IPolicy::getDefaultPolicyFactories();
