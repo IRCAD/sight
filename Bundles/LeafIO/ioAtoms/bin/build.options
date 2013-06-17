@@ -12,6 +12,7 @@ LIB     = [
           'fwTools_0-1',
           'fwMemory_0-1',
           'fwZip_0-1',
+          'fwAtomsPatch_0-1'
           ]
 BUNDLES  = ['io_0-1']
 USE = [
