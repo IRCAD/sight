@@ -1,9 +1,3 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 /*
   Additional tools for Minizip
   Code: Xavier Roche '2004
@@ -21,7 +15,7 @@ extern "C" {
 #include <zlib.h>
 #endif
 
-#include "unzip.h"
+#include "minizip/unzip.h"
 
 /* Repair a ZIP file (missing central directory)
    file: file to recover

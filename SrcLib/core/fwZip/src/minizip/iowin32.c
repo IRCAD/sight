@@ -1,9 +1,3 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 /* iowin32.c -- IO base function header for compress/uncompress .zip
      Version 1.1, February 14h, 2010
      part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
@@ -21,8 +15,8 @@
 #include <stdlib.h>
 
 #include <zlib.h>
-#include "ioapi.h"
-#include "iowin32.h"
+#include "minizip/ioapi.h"
+#include "minizip/iowin32.h"
 
 #ifndef INVALID_HANDLE_VALUE
 #define INVALID_HANDLE_VALUE (0xFFFFFFFF)

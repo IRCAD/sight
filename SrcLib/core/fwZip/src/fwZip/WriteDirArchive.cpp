@@ -15,7 +15,7 @@
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include "zip.h"
+#include "minizip/zip.h"
 #include "fwZip/WriteDirArchive.hpp"
 #include "fwZip/exception/Write.hpp"
 

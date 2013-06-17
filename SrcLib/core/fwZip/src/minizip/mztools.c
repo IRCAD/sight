@@ -1,9 +1,3 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 /*
   Additional tools for Minizip
   Code: Xavier Roche '2004
@@ -16,8 +10,8 @@
 #include <string.h>
 #include <zlib.h>
 
-#include "export.h"
-#include "unzip.h"
+#include "minizip/export.h"
+#include "minizip/unzip.h"
 
 #define READ_8(adr)  ((unsigned char)*(adr))
 #define READ_16(adr) ( READ_8(adr) | (READ_8(adr+1) << 8) )

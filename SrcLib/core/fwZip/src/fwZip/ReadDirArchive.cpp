@@ -9,7 +9,7 @@
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include "unzip.h"
+#include "minizip/unzip.h"
 #include "fwZip/ReadDirArchive.hpp"
 #include "fwZip/exception/Read.hpp"
 

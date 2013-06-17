@@ -1,9 +1,3 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 /* zip.h -- IO on .zip files using zlib
    Version 1.1, February 14h, 2010
    part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
@@ -43,7 +37,7 @@
 
 */
 
-#include "export.h"
+#include "minizip/export.h"
 
 #ifndef _zip12_H
 #define _zip12_H
@@ -59,7 +53,7 @@ extern "C" {
 #endif
 
 #ifndef _ZLIBIOAPI_H
-#include "ioapi.h"
+#include "minizip/ioapi.h"
 #endif
 
 #ifdef HAVE_BZIP2

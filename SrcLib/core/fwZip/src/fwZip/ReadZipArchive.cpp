@@ -16,7 +16,7 @@
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include "unzip.h"
+#include "minizip/unzip.h"
 #include "fwZip/ReadZipArchive.hpp"
 #include "fwZip/exception/Read.hpp"
 

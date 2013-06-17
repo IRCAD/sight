@@ -1,9 +1,3 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 /* zip.c -- IO on .zip files using zlib
    Version 1.1, February 14h, 2010
    part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
@@ -35,7 +29,7 @@
 
 #include <zlib.h>
 
-#include "zip.h"
+#include "minizip/zip.h"
 
 #ifdef STDC
 #  include <stddef.h>
@@ -191,7 +185,7 @@ typedef struct
 
 #ifndef NOCRYPT
 #define INCLUDECRYPTINGCODE_IFCRYPTALLOWED
-#include "crypt.h"
+#include "minizip/crypt.h"
 #endif
 
 local linkedlist_datablock_internal* allocate_new_datablock()

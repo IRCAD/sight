@@ -1,9 +1,3 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
 /* ioapi.h -- IO base function header for compress/uncompress .zip
    part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
 
@@ -50,7 +44,7 @@
 #include <stdlib.h>
 #include <zlib.h>
 
-#include "export.h"
+#include "minizip/export.h"
 
 #if defined(USE_FILE32API)
 #define fopen64 fopen
@@ -81,7 +75,7 @@
 */
 
 #ifdef HAVE_MINIZIP64_CONF_H
-#include "mz64conf.h"
+#include "minizip/mz64conf.h"
 #endif
 
 /* a type choosen by DEFINE */
@@ -89,7 +83,7 @@
 typedef  64BIT_INT_CUSTOM_TYPE ZPOS64_T;
 #else
 #ifdef HAS_STDINT_H
-#include "stdint.h"
+#include "minizip/stdint.h"
 typedef uint64_t ZPOS64_T;
 #else
 
