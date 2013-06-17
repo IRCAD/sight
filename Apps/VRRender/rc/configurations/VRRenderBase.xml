@@ -18,6 +18,7 @@
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="::ioAtoms::SWriter" />
+                <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
             </service>
 
 

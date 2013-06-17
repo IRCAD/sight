@@ -8,6 +8,8 @@
 
     <activate id="io" version="0-1" />
     <activate id="ioAtoms" version="0-1" />
+    <activate id="patchMedicalData" version="0-1" />
+    
     <activate id="ioITK" version="0-1" />
     <activate id="ioVTK" version="0-1" />
     <activate id="ioVtkGdcm" version="0-1" />
@@ -52,6 +54,7 @@
     <activate id="volumeRenderingActivity" version="0-1" />
 
     <start id="memory" />
+    <start id="patchMedicalData"/>
     <start id="scene2D" />
     <start id="visuVTK" />
     <start id="visuVTKQt" />

@@ -32,9 +32,17 @@
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="::ioAtoms::SReader" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>MDAtomsConfig</id>
+        <desc>reader/writer config to read/write an atom representing a medical data</desc>
+        <config>
+            <patcher context="MedicalData" version="V2" /> 
+         </config>
+     </extension>
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExportSelection</id>
