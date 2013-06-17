@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef  __FWATOMS_BASE_OBJECT_HPP__
-#define  __FWATOMS_BASE_OBJECT_HPP__
+#ifndef  __FWATOMS_OBJECT_HPP__
+#define  __FWATOMS_OBJECT_HPP__
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
@@ -50,6 +50,10 @@ public:
 
     //! Returns requested attribute if exists, empty sptr else.
     FWATOMS_API Base::sptr getAttribute(const std::string& key) const;
+
+    //! Returns requested attribute casted in OBJECT_TYPE::sptr if exists, empty sptr else.
+    template < typename OBJECT_TYPE >
+    SPTR(OBJECT_TYPE) getAttribute(const std::string& key) const;
 
     //! add a atrtribut, old value is erased
     FWATOMS_API void setAttribute(const std::string& key, const Base::sptr&);
@@ -115,5 +119,5 @@ private:
 
 }
 
-#endif /*  _FWATOMS_BASE_OBJECT_HPP_ */
+#endif /*  _FWATOMS_OBJECT_HPP_ */
 

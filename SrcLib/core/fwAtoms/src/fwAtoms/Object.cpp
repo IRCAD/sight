@@ -22,7 +22,7 @@ namespace fwAtoms
 
 void Object::setAttribute(const std::string& key, const Base::sptr &value)
 {
-    m_attributes.insert(AttributesType::value_type(key, value));
+    m_attributes[key] = value;
 }
 
 //------------------------------------------------------------------------------
@@ -53,7 +53,15 @@ Base::sptr Object::clone() const
 
     BOOST_FOREACH(const AttributesType::value_type& elem, m_attributes)
     {
-        obj->m_attributes.insert( AttributesType::value_type(elem.first, elem.second->clone() ) );
+        if ( elem.second )
+        {
+            obj->m_attributes.insert( AttributesType::value_type(elem.first, elem.second->clone() ) );
+        }
+        else
+        {
+            Base::sptr nullData;
+            obj->m_attributes.insert( AttributesType::value_type(elem.first, nullData) );
+        }
     }
 
     return obj;
@@ -63,7 +71,7 @@ Base::sptr Object::clone() const
 
 void Object::setMetaInfo(const std::string& key, const std::string& value)
 {
-    m_metaInfos.insert(MetaInfosType::value_type(key, value));
+    m_metaInfos[key] = value;
 }
 
 //------------------------------------------------------------------------------
