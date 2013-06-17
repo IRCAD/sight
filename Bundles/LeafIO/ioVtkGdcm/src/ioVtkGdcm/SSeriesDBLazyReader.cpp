@@ -26,29 +26,29 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include <vtkGdcmIO/SeriesDBReader.hpp>
+#include <vtkGdcmIO/SeriesDBLazyReader.hpp>
 
-#include "ioVtkGdcm/SSeriesDBReader.hpp"
+#include "ioVtkGdcm/SSeriesDBLazyReader.hpp"
 
 
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVtkGdcm::SSeriesDBReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioVtkGdcm::SSeriesDBLazyReader , ::fwMedData::SeriesDB ) ;
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::SSeriesDBReader() throw()
+SSeriesDBLazyReader::SSeriesDBLazyReader() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::~SSeriesDBReader() throw()
+SSeriesDBLazyReader::~SSeriesDBLazyReader() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::configureWithIHM()
+void SSeriesDBLazyReader::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
@@ -70,28 +70,28 @@ void SSeriesDBReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::starting() throw(::fwTools::Failed)
+void SSeriesDBLazyReader::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::stopping() throw(::fwTools::Failed)
+void SSeriesDBLazyReader::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::info(std::ostream &_sstream )
+void SSeriesDBLazyReader::info(std::ostream &_sstream )
 {
-    _sstream << "SSeriesDBReader::info" ;
+    _sstream << "SSeriesDBLazyReader::info" ;
 }
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::ExtensionsType SSeriesDBReader::getSupportedExtensions()
+SSeriesDBLazyReader::ExtensionsType SSeriesDBLazyReader::getSupportedExtensions()
 {
     ExtensionsType extensions ;
     return extensions ;
@@ -99,7 +99,7 @@ SSeriesDBReader::ExtensionsType SSeriesDBReader::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-std::string SSeriesDBReader::getSelectorDialogTitle()
+std::string SSeriesDBLazyReader::getSelectorDialogTitle()
 {
     return "Choose a directory with DICOM images";
 }
@@ -107,10 +107,10 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
+::fwMedData::SeriesDB::sptr SSeriesDBLazyReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
 {
     SLM_TRACE_FUNC();
-    ::vtkGdcmIO::SeriesDBReader::sptr myLoader = ::vtkGdcmIO::SeriesDBReader::New();
+    ::vtkGdcmIO::SeriesDBLazyReader::sptr myLoader = ::vtkGdcmIO::SeriesDBLazyReader::New();
     ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
@@ -139,7 +139,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::updating() throw(::fwTools::Failed)
+void SSeriesDBLazyReader::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
@@ -168,7 +168,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::notificationOfDBUpdate()
+void SSeriesDBLazyReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
@@ -185,7 +185,7 @@ void SSeriesDBReader::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SSeriesDBReader::getIOPathType() const
+::io::IOPathType SSeriesDBLazyReader::getIOPathType() const
 {
     return ::io::FOLDER;
 }

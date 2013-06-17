@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTKGDCM_SSERIESDBREADER_HPP__
-#define __IOVTKGDCM_SSERIESDBREADER_HPP__
+#ifndef __IOVTKGDCM_SSERIESDBLAZYREADER_HPP__
+#define __IOVTKGDCM_SSERIESDBLAZYREADER_HPP__
 
 #include <string>
 #include <boost/filesystem/path.hpp>
@@ -20,28 +20,24 @@ namespace fwMedData
     class Patient;
 }
 
-
 namespace ioVtkGdcm
 {
 
-class IOVTKGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
+/// This service reads a dicom dir in lazy mode, and provides a ::fwMedData::SeriesDB.
+class IOVTKGDCM_CLASS_API SSeriesDBLazyReader : public ::io::IReader
 {
 
 public :
     typedef std::string                  ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) ) ;
-    /**
-     * @brief   constructor
-     *
-     */
-    IOVTKGDCM_API SSeriesDBReader() throw();
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBLazyReader)( ::io::IReader) ) ;
 
-    /**
-     * @brief   destructor
-     */
-    IOVTKGDCM_API virtual ~SSeriesDBReader() throw();
+    /// constructor
+    IOVTKGDCM_API SSeriesDBLazyReader() throw();
+
+    /// destructor
+    IOVTKGDCM_API virtual ~SSeriesDBLazyReader() throw();
 
 protected:
 
@@ -74,12 +70,14 @@ protected:
 
 private :
 
+    /// Notifies seriesDB that few series are added
     void notificationOfDBUpdate();
 
+    /// Creates ::fwMedData::SeriesDB from a path
     SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
 
 };
 
 } // namespace ioDicom
 
-#endif //__IOVTKGDCM_SSERIESDBREADER_HPP__
+#endif //__IOVTKGDCM_SSERIESDBLAZYREADER_HPP__

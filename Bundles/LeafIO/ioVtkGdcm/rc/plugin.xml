@@ -11,6 +11,13 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioVtkGdcm::SSeriesDBLazyReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Series DB Lazy Reader (VTK/gdcm)</desc>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioVtkGdcm::SImageSeriesWriter</service>
         <object>::fwMedData::ImageSeries</object>

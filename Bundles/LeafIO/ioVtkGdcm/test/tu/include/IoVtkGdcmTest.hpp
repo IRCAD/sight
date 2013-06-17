@@ -21,6 +21,7 @@ class IoVtkGdcmTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( IoVtkGdcmTest );
     CPPUNIT_TEST( seriesDBReaderTest );
+    CPPUNIT_TEST( seriesDBLazyReaderTest );
     CPPUNIT_TEST( imageSeriesWriterTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,8 +31,10 @@ public:
     void tearDown();
 
     void seriesDBReaderTest();
+    void seriesDBLazyReaderTest();
     void imageSeriesWriterTest();
 
+    void readerDicomTest( std::string srvImpl );
 };
 
 } //namespace ut

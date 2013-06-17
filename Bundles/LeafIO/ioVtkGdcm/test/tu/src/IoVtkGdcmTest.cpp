@@ -56,9 +56,8 @@ void IoVtkGdcmTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void IoVtkGdcmTest::seriesDBReaderTest()
+void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
 {
-
     ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433");
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
@@ -68,7 +67,7 @@ void IoVtkGdcmTest::seriesDBReaderTest()
     readerCfg->addConfigurationElement(folderCfg);
 
     ::fwServices::IService::sptr srv =
-            ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", "::ioVtkGdcm::SSeriesDBReader" );
+            ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", srvImpl );
     CPPUNIT_ASSERT(srv);
 
     ::fwServices::OSR::registerService( seriesDB, srv );
@@ -116,41 +115,55 @@ void IoVtkGdcmTest::seriesDBReaderTest()
     ::fwData::Image::csptr fisrtImage = imgSeries->getImage();
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on image dimension.",
-                                fisrtImage->getNumberOfDimensions(),
-                                imgDimensionExpected);
+            fisrtImage->getNumberOfDimensions(),
+            imgDimensionExpected);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on X ",
-                                static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[0]),
-                                imgOriginExpected[0]);
+            static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[0]),
+            imgOriginExpected[0]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Y ",
-                                static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[1]),
-                                imgOriginExpected[1]);
+            static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[1]),
+            imgOriginExpected[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on origin on Z ",
-                                static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[2]),
-                                imgOriginExpected[2]);
+            static_cast< ::fwData::Image::OriginType::value_type > (fisrtImage->getOrigin()[2]),
+            imgOriginExpected[2]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window center ",
-                                fisrtImage->getWindowCenter(),
-                                imgWindowCenter);
+            fisrtImage->getWindowCenter(),
+            imgWindowCenter);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on window width ",
-                                fisrtImage->getWindowWidth(),
-                                imgWindowWidth);
+            fisrtImage->getWindowWidth(),
+            imgWindowWidth);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size x ",
-                                static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[0]),
-                                static_cast< ::fwData::Image::SizeType::value_type > (imgSizeX_Expected));
+            static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[0]),
+            static_cast< ::fwData::Image::SizeType::value_type > (imgSizeX_Expected));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size y ",
-                                static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[1]),
-                                static_cast< ::fwData::Image::SizeType::value_type > (imgSizeY_Expected));
+            static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[1]),
+            static_cast< ::fwData::Image::SizeType::value_type > (imgSizeY_Expected));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on size z ",
-                                static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[2]),
-                                static_cast< ::fwData::Image::SizeType::value_type > (imgSizeZ_Expected));
+            static_cast< ::fwData::Image::SizeType::value_type > (fisrtImage->getSize()[2]),
+            static_cast< ::fwData::Image::SizeType::value_type > (imgSizeZ_Expected));
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing x ",
-                                static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[0]),
-                                imgSpacingX);
+            static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[0]),
+            imgSpacingX);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing y ",
-                                static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[1]),
-                                imgSpacingY);
+            static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[1]),
+            imgSpacingY);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Failed on spacing z ",
-                                static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[2]),
-                                imgSpacingZ);
+            static_cast< ::fwData::Image::SpacingType::value_type > (fisrtImage->getSpacing()[2]),
+            imgSpacingZ);
+}
+
+//------------------------------------------------------------------------------
+
+void IoVtkGdcmTest::seriesDBLazyReaderTest()
+{
+    this->readerDicomTest("::ioVtkGdcm::SSeriesDBLazyReader");
+}
+
+//------------------------------------------------------------------------------
+
+void IoVtkGdcmTest::seriesDBReaderTest()
+{
+    this->readerDicomTest("::ioVtkGdcm::SSeriesDBReader");
 }
 
 //------------------------------------------------------------------------------

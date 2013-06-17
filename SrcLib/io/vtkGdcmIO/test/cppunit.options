@@ -1,5 +1,6 @@
 CLASSTEST=[
     'SeriesDBReaderTest',
+    'SeriesDBLazyReaderTest',
     'ImageSeriesWriterTest',
     ]
 
