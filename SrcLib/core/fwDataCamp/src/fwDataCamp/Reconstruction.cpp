@@ -10,7 +10,7 @@
 fwCampImplementDataMacro((fwData)(Reconstruction))
 {
     builder
-        .tag("object_version", "1")
+        .tag("object_version", "2")
         .tag("lib_name", "fwData")
         .base< ::fwData::Object>()
         .property("is_visible", &::fwData::Reconstruction::m_bIsVisible)
