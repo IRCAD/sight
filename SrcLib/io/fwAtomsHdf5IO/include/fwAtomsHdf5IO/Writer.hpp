@@ -34,6 +34,15 @@ class FWATOMSHDF5IO_CLASS_API Writer
 
 public:
 
+    /// Defines writer version.
+    FWATOMSHDF5IO_API static const std::string s_VERSION;
+
+    /// Defines key to retrieve fwAtoms version from file.
+    FWATOMSHDF5IO_API static const std::string s_ATOMS_VERSION_KEY;
+
+    /// Defines key to retrieve writer version from file.
+    FWATOMSHDF5IO_API static const std::string s_WRITER_VERSION_KEY;
+
     /// Constructor : initializes the writer.
     FWATOMSHDF5IO_API Writer( SPTR(::fwAtoms::Base) atom );
 

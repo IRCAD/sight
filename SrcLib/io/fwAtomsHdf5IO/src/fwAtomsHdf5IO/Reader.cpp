@@ -20,6 +20,7 @@
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
 
+#include "fwAtomsHdf5IO/Writer.hpp"
 #include "fwAtomsHdf5IO/Reader.hpp"
 
 namespace fwAtomsHdf5IO
@@ -59,6 +60,56 @@ void cache(const AtomCacheType::key_type &path, const AtomCacheType::mapped_type
 Hdf5Visitor(const ::boost::filesystem::path & path)
 {
     m_file = H5::H5File( path.string(), H5F_ACC_RDWR );
+
+    H5::Group versionsGroup;
+    try
+    {
+        versionsGroup = m_file.openGroup("/versions");
+    }
+    catch(H5::FileIException &fe)
+    {
+        OSLM_ERROR("Failed to read file '" << path.string()
+                << "' (exception occured '" << fe.getDetailMsg() << "')");
+        FW_RAISE("Failed to read file '" << path.string() << "' :\nno versions found.");
+    }
+
+    H5::StrType str_type(0, H5T_VARIABLE);
+
+    H5std_string strAtomsVersion;
+    try
+    {
+        H5::DataSet dsAtomsVersion = versionsGroup.openDataSet(Writer::s_ATOMS_VERSION_KEY);
+        dsAtomsVersion.read(strAtomsVersion, str_type);
+    }
+    catch(H5::GroupIException &ge)
+    {
+        OSLM_ERROR("Failed to read file '" << path.string()
+                << "' (exception occured '" << ge.getDetailMsg() << "')");
+        FW_RAISE("Failed to read file '" << path.string() << "' :\nno atoms version found.");
+
+    }
+
+    H5std_string strWriterVersion;
+    try
+    {
+        H5::DataSet dsWriterVersion = versionsGroup.openDataSet(Writer::s_WRITER_VERSION_KEY);
+        dsWriterVersion.read(strWriterVersion, str_type);
+    }
+    catch(H5::GroupIException &ge)
+    {
+        OSLM_ERROR("Failed to read file '" << path.string()
+                << "' (exception occured '" << ge.getDetailMsg() << "')");
+        FW_RAISE("Failed to read file '" << path.string() << "' :\nno writer version found.");
+    }
+
+    FW_RAISE_IF("Failed to read file '" << path.string() << "':\n" 
+            << "Detected file version is '" << strWriterVersion << "'"
+            << " whereas current version is '" << Writer::s_VERSION << "'", Writer::s_VERSION != strWriterVersion);
+
+    FW_RAISE_IF("Failed to read file '" << path.string() << "':\n" 
+            << "Detected atoms version is '" << strAtomsVersion << "'"
+            << " whereas current version is '" << ::fwAtoms::Base::s_VERSION << "'",
+            ::fwAtoms::Base::s_VERSION != strAtomsVersion);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,4 +1,3 @@
-
 #include <boost/foreach.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -9,6 +8,7 @@
 #include <fwTools/UUID.hpp>
 #include <fwTools/IBufferManager.hpp>
 
+#include <fwAtoms/Base.hpp>
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Map.hpp>
@@ -27,6 +27,10 @@
 
 namespace fwAtomsBoostIO
 {
+
+const std::string Writer::s_VERSION = "1";
+const std::string Writer::s_ATOMS_VERSION_KEY = "atoms_version";
+const std::string Writer::s_WRITER_VERSION_KEY = "writer_version";
 
 //-----------------------------------------------------------------------------
 
@@ -279,10 +283,17 @@ void Writer::write( ::fwZip::IWriteArchive::sptr archive,
     ::boost::property_tree::ptree root;
     AtomVisitor visitor(archive);
     root = visitor.visit(m_atom);
+
+    ::boost::property_tree::ptree versions;
+    versions.put(s_ATOMS_VERSION_KEY, ::fwAtoms::Base::s_VERSION);
+    versions.put(s_WRITER_VERSION_KEY, Writer::s_VERSION);
+
+    root.add_child("versions", versions);
+
     switch(format)
     {
     case JSON:
-        ::boost::property_tree::json_parser::write_json(archive->createFile(rootFilename), root);
+        ::boost::property_tree::json_parser::write_json(archive->createFile(rootFilename), root, false);
         break;
     case XML:
     {

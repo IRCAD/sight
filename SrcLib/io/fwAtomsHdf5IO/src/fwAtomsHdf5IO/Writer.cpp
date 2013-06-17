@@ -24,6 +24,11 @@
 namespace fwAtomsHdf5IO
 {
 
+const std::string Writer::s_VERSION = "1";
+const std::string Writer::s_ATOMS_VERSION_KEY = "atoms_version";
+const std::string Writer::s_WRITER_VERSION_KEY = "writer_version";
+
+
 //-----------------------------------------------------------------------------
 
 struct AtomVisitor
@@ -38,6 +43,17 @@ H5::H5File m_file;
 AtomVisitor(const ::boost::filesystem::path & path)
 {
     m_file = H5::H5File( path.string(), H5F_ACC_TRUNC );
+
+    H5::Group versionsGroup = m_file.createGroup("/versions");
+
+    H5::StrType str_type(0, H5T_VARIABLE);
+    H5::DataSpace att_space(H5S_SCALAR);
+
+    H5::DataSet atomsVersion = versionsGroup.createDataSet(Writer::s_ATOMS_VERSION_KEY, str_type, att_space);
+    atomsVersion.write(::fwAtoms::Base::s_VERSION, str_type);
+
+    H5::DataSet writerVersion = versionsGroup.createDataSet(Writer::s_WRITER_VERSION_KEY, str_type, att_space);
+    writerVersion.write(Writer::s_VERSION, str_type);
 }
 
 //-----------------------------------------------------------------------------

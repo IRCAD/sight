@@ -28,6 +28,9 @@ class FWATOMS_CLASS_API Base : public ::fwCore::BaseObject
 public:
     typedef ::fwAtoms::factory::Key Key;
 
+    /// Defines fwAtoms version.
+    FWATOMS_API static const std::string s_VERSION;
+
     /**
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )
