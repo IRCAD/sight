@@ -25,6 +25,15 @@ class FWATOMSBOOSTIO_CLASS_API Writer
 
 public:
 
+    /// Defines writer version.
+    FWATOMSBOOSTIO_API static const std::string s_VERSION;
+
+    /// Defines key to retrieve fwAtoms version from file.
+    FWATOMSBOOSTIO_API static const std::string s_ATOMS_VERSION_KEY;
+
+    /// Defines key to retrieve writer version from file.
+    FWATOMSBOOSTIO_API static const std::string s_WRITER_VERSION_KEY;
+
     typedef enum
     {
         JSON,

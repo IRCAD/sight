@@ -18,6 +18,7 @@
 
 #include <fwZip/IReadArchive.hpp>
 
+#include "fwAtomsBoostIO/Writer.hpp"
 #include "fwAtomsBoostIO/Reader.hpp"
 
 namespace fwAtomsBoostIO
@@ -275,6 +276,34 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
     {
         SLM_ASSERT("You shall not pass", 0);
     }
+
+    typedef ::boost::property_tree::ptree::const_assoc_iterator PtreeItType;
+    PtreeItType hasVersionsIt = root.find("versions");
+    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\nno versions found in specified file.",
+            hasVersionsIt == root.not_found());
+
+    ::boost::property_tree::ptree versions = root.get_child("versions");
+
+    PtreeItType hasAtomsVersionsIt = versions.find(Writer::s_ATOMS_VERSION_KEY);
+    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\nno atoms version found in specified file.",
+            hasAtomsVersionsIt == versions.not_found());
+
+    PtreeItType hasWriterVersionsIt = versions.find(Writer::s_WRITER_VERSION_KEY);
+    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\nno writer version found in specified file",
+            hasWriterVersionsIt == versions.not_found());
+
+    const std::string& atomsVersion = versions.get< std::string >(Writer::s_ATOMS_VERSION_KEY);
+    const std::string& writerVersion = versions.get< std::string >(Writer::s_WRITER_VERSION_KEY);
+
+    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\n"
+            << "Detected file version is '" << writerVersion << "'"
+            << " whereas current version is '" << Writer::s_VERSION << "'", Writer::s_VERSION != writerVersion);
+
+    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\n"
+            << "Detected atoms version is '" << atomsVersion << "'"
+            << " whereas current version is '" << ::fwAtoms::Base::s_VERSION << "'",
+            ::fwAtoms::Base::s_VERSION != atomsVersion);
+
     PTreeVisitor visitor(root, archive);
     atom = visitor.visit();
 

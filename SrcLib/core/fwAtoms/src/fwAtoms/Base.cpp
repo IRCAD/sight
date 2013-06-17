@@ -11,6 +11,7 @@
 namespace fwAtoms
 {
 
+const std::string Base::s_VERSION = "1";
 
 std::string Base::getString() const
 {
