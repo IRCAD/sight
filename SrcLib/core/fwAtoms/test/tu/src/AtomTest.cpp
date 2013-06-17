@@ -13,6 +13,7 @@
 #include <fwAtoms/Exception.hpp>
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Object.hpp>
+#include <fwAtoms/Object.hxx>
 #include <fwAtoms/Sequence.hpp>
 #include "AtomTest.hpp"
 
@@ -94,6 +95,10 @@ void AtomTest::objectTest()
     CPPUNIT_ASSERT_EQUAL( ::fwAtoms::Base::sptr(obj), obj->getAttribute("object") );
     CPPUNIT_ASSERT_EQUAL( ::fwAtoms::Base::sptr(map), obj->getAttribute("map") );
     CPPUNIT_ASSERT_EQUAL( ::fwAtoms::Base::sptr(seq), obj->getAttribute("sequence") );
+    CPPUNIT_ASSERT_EQUAL( blob, obj->getAttribute< ::fwAtoms::Blob >("blob") );
+    CPPUNIT_ASSERT_EQUAL( obj, obj->getAttribute< ::fwAtoms::Object >("object") );
+    CPPUNIT_ASSERT_EQUAL( map, obj->getAttribute< ::fwAtoms::Map >("map") );
+    CPPUNIT_ASSERT_EQUAL( seq, obj->getAttribute< ::fwAtoms::Sequence >("sequence") );
 
     CPPUNIT_ASSERT_EQUAL( size_t(4), obj->getAttributes().size() );
     CPPUNIT_ASSERT_EQUAL( size_t(1), obj->eraseAttribute("object") );
