@@ -197,21 +197,20 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
         ::boost::filesystem::path dumpedFile = buffObj->getFile();
         ::fwMemory::FileFormatType format = buffObj->getFileFormat();
 
+        bufFile /= ::fwTools::UUID::generateUUID() + ".raw";
+
         if ( !dumpedFile.empty() && (format & ::fwMemory::RAW) )
         {
-            bufFile /= dumpedFile.filename(); // FIXME
             m_archive->putFile(dumpedFile, bufFile);
         }
         else
         {
             SPTR(std::istream) is = buffObj->getIStream();
             SLM_ASSERT("no istream", is);
-            bufFile /= ::fwTools::UUID::generateUUID() + ".raw";
 
             SPTR(std::ostream) os = m_archive->createFile(bufFile);
             *os << is->rdbuf();
         }
-
 
         pt.put("blob.buffer_size", buffSize);
         pt.put("blob.buffer", bufFile.generic_string());
@@ -278,7 +277,7 @@ void Writer::write( ::fwZip::IWriteArchive::sptr archive,
                     FormatType format ) const
 {
     ::boost::property_tree::ptree root;
-    AtomVisitor visitor(archive, rootFilename.stem().string());
+    AtomVisitor visitor(archive, rootFilename.stem().string() + "-" + ((format==JSON)?"json":"xml") );
     root = visitor.visit(m_atom);
 
     ::boost::property_tree::ptree versions;
