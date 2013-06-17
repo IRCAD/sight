@@ -31,7 +31,6 @@ typedef CompareObjects::PropsMapType::value_type PropType;
 struct PropertyVisitor : public camp::ValueVisitor< PropType >
 {
     std::string m_prefix;
-    ::boost::hash< std::string > m_hasher;  // hash buffer objects
     SPTR(CompareObjects::PropsMapType) m_props;
 
     PropertyVisitor(std::string prefix) : m_prefix(prefix)
@@ -91,12 +90,17 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
                 ::fwTools::BufferObject* bo = value.get< ::fwTools::BufferObject* >();
                 if(bo)
                 {
-                    if(bo->getBuffer())
+                    ::fwTools::BufferObject::Lock lock = bo->lock();
+                    if(lock.getBuffer())
                     {
-                        char* buffer = static_cast< char* >(bo->getBuffer());
-                        std::string buffStr ( buffer, bo->getSize() );
-                        unsigned int size = m_hasher(buffStr);
-                        return std::make_pair(m_prefix, boost::lexical_cast< std::string >(size));
+                        char* buffer = static_cast< char* >(lock.getBuffer());
+                        std::size_t seed = 0;
+                        const std::size_t buffsize = bo->getSize();
+                        for(size_t i = 0; i < buffsize; ++i)
+                        {
+                            ::boost::hash_combine(seed, buffer[i]);
+                        }
+                        return std::make_pair(m_prefix, ::boost::lexical_cast< std::string >(seed));
                     }
                 }
             }
