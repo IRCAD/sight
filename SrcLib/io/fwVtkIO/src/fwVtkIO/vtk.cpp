@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,30 +52,21 @@
 namespace fwVtkIO
 {
 
-struct TypeTranslator
+
+TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate( const TypeTranslator::fwToolsToVtkMap::key_type &key )
 {
+    fwToolsToVtkMap::const_iterator it = s_toVtk.find( key );
+    FW_RAISE_IF("Unknown Type: " << key, it == s_toVtk.end() );
+    return it->second;
+}
 
-    typedef std::map< fwTools::Type, int> fwToolsToVtkMap;
-    typedef std::map< int, fwTools::Type> VtkTofwToolsMap;
+TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate( const TypeTranslator::VtkTofwToolsMap::key_type &key )
+{
+    VtkTofwToolsMap::const_iterator it = s_fromVtk.find( key );
+    FW_RAISE_IF("Unknown Type: " << key, it == s_fromVtk.end() );
+    return it->second;
+}
 
-    static fwToolsToVtkMap::mapped_type translate( const fwToolsToVtkMap::key_type &key )
-    {
-        fwToolsToVtkMap::const_iterator it = s_toVtk.find( key );
-        FW_RAISE_IF("Unknown Type: " << key, it == s_toVtk.end() );
-        return it->second;
-    }
-
-    static VtkTofwToolsMap::mapped_type translate( const VtkTofwToolsMap::key_type &key )
-    {
-        VtkTofwToolsMap::const_iterator it = s_fromVtk.find( key );
-        FW_RAISE_IF("Unknown Type: " << key, it == s_fromVtk.end() );
-        return it->second;
-    }
-
-
-    static const fwToolsToVtkMap s_toVtk;
-    static const VtkTofwToolsMap s_fromVtk;
-};
 
 
 
@@ -295,7 +286,6 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
     _pImageImport->SetDataExtentToWholeExtent();
     // no copy, no buffer destruction/management
     _pImageImport->SetImportVoidPointer( imageHelper.getBuffer() );
-    _pImageImport->SetCallbackUserData( _pDataImage.get() );
     // used to set correct pixeltype to VtkImage
     _pImageImport->SetDataScalarType( TypeTranslator::translate(_pDataImage->getType()) );
 }

@@ -34,6 +34,20 @@ class vtkLookupTable;
 namespace fwVtkIO
 {
 
+struct TypeTranslator
+{
+
+    typedef std::map< ::fwTools::Type, int> fwToolsToVtkMap;
+    typedef std::map< int, ::fwTools::Type> VtkTofwToolsMap;
+
+    static fwToolsToVtkMap::mapped_type translate( const fwToolsToVtkMap::key_type &key );
+
+    static VtkTofwToolsMap::mapped_type translate( const VtkTofwToolsMap::key_type &key );
+
+    static const fwToolsToVtkMap s_toVtk;
+    static const VtkTofwToolsMap s_fromVtk;
+};
+
 /*!
  * @brief Convert ::fwData::Image PixelType to the VTK data type of pixels.
  *

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,8 +55,10 @@ public :
     /// @return ".vtk"
     VTKIO_API  std::string extension();
 
-private:
-    void  initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID);
+    void setLazyMode(bool lazyMode) { m_lazyMode = false; }
+
+protected:
+    bool m_lazyMode;
 };
 
 } // namespace fwVtkIO
