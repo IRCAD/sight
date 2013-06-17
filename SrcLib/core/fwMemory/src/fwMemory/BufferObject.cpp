@@ -21,10 +21,10 @@ namespace fwMemory
 BufferObject::BufferObject():
     m_buffer(0),
     m_size(0),
-    m_bufferManager(::fwMemory::BufferManager::getCurrent()),
+    m_bufferManager(::fwMemory::BufferManager::getDefault()),
     m_allocPolicy(::fwMemory::BufferNoAllocPolicy::New())
 {
-    m_bufferManager->registerBuffer(&m_buffer);
+    m_bufferManager->registerBuffer(&m_buffer).get();
 }
 
 //------------------------------------------------------------------------------
@@ -33,20 +33,14 @@ BufferObject::~BufferObject()
 {
     OSLM_ASSERT("There is still " << m_count.use_count() << " locks on this BufferObject (" << this << ")",
                 m_count.expired());
-    m_bufferManager->unregisterBuffer(&m_buffer);
+    m_bufferManager->unregisterBuffer(&m_buffer).get();
 }
 
 //------------------------------------------------------------------------------
 
 void BufferObject::allocate(SizeType size, const ::fwMemory::BufferAllocationPolicy::sptr &policy)
 {
-    // if(m_bufferManager->allocateBuffer(&m_buffer, size, policy))
-    // {
-    //     policy->allocate(m_buffer, size);
-    //     m_bufferManager->setBuffer(&m_buffer, size, policy);
-    // }
-
-    m_bufferManager->allocateBuffer(&m_buffer, size, policy);
+    m_bufferManager->allocateBuffer(&m_buffer, size, policy).get();
     m_allocPolicy = policy;
     m_size = size;
 }
@@ -55,13 +49,7 @@ void BufferObject::allocate(SizeType size, const ::fwMemory::BufferAllocationPol
 
 void BufferObject::reallocate(SizeType size)
 {
-    // if(m_bufferManager->reallocateBuffer(&m_buffer, size))
-    // {
-    //     m_allocPolicy->reallocate(m_buffer, size);
-    //     m_bufferManager->setBuffer(&m_buffer, size, m_allocPolicy);
-    // }
-
-    m_bufferManager->reallocateBuffer(&m_buffer, size);
+    m_bufferManager->reallocateBuffer(&m_buffer, size).get();
     m_size = size;
 }
 
@@ -69,11 +57,7 @@ void BufferObject::reallocate(SizeType size)
 
 void BufferObject::destroy()
 {
-    // if(m_bufferManager->destroyBuffer(&m_buffer))
-    // {
-    //     m_allocPolicy->destroy(m_buffer);
-    // }
-    m_bufferManager->destroyBuffer(&m_buffer);
+    m_bufferManager->destroyBuffer(&m_buffer).get();
     m_allocPolicy = ::fwMemory::BufferNoAllocPolicy::New();
     m_size = 0;
 }
@@ -83,9 +67,7 @@ void BufferObject::destroy()
 void BufferObject::setBuffer(::fwMemory::BufferManager::BufferType buffer, SizeType size,
                              const ::fwMemory::BufferAllocationPolicy::sptr &policy)
 {
-    // m_buffer = buffer;
-
-    m_bufferManager->setBuffer(&m_buffer, buffer, size, policy);
+    m_bufferManager->setBuffer(&m_buffer, buffer, size, policy).get();
     m_allocPolicy = policy;
     m_size   = size;
 }
@@ -108,11 +90,7 @@ BufferObject::ConstLock BufferObject::lock() const
 
 void BufferObject::swap( const BufferObject::sptr &_source )
 {
-    // if (m_bufferManager->swapBuffer(&m_buffer, &(_source->m_buffer)))
-    // {
-    //     std::swap(m_buffer, _source->m_buffer);
-    // }
-    m_bufferManager->swapBuffer(&m_buffer, &(_source->m_buffer));
+    m_bufferManager->swapBuffer(&m_buffer, &(_source->m_buffer)).get();
 
     std::swap(m_size, _source->m_size);
     m_bufferManager.swap(_source->m_bufferManager);
@@ -121,24 +99,9 @@ void BufferObject::swap( const BufferObject::sptr &_source )
 
 //------------------------------------------------------------------------------
 
-SPTR(std::istream) BufferObject::getIStream()
+BufferManager::StreamInfo BufferObject::getStreamInfo() const
 {
-    SPTR(std::istream) is = m_bufferManager->getIStream(&m_buffer);
-    return is;
-}
-
-//------------------------------------------------------------------------------
-
-boost::filesystem::path BufferObject::getFile()
-{
-    return m_bufferManager->getDumpedFilePath(&m_buffer);
-}
-
-//------------------------------------------------------------------------------
-
-::fwMemory::FileFormatType BufferObject::getFileFormat()
-{
-    return m_bufferManager->getDumpedFileFormat(&m_buffer);
+    return m_bufferManager->getStreamInfo(&m_buffer).get();
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +115,7 @@ void BufferObject::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory
 {
     m_size = size;
     m_allocPolicy = policy;
-    m_bufferManager->setIStreamFactory(&m_buffer, factory, size, sourceFile, format, policy);
+    m_bufferManager->setIStreamFactory(&m_buffer, factory, size, sourceFile, format, policy).get();
 }
 
 

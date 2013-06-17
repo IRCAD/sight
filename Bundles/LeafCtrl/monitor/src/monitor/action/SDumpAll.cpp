@@ -40,10 +40,10 @@ void SDumpAll::updating( ) throw(::fwTools::Failed)
 {
     size_t nbBuffDumped = 0;
     ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap;
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getCurrent();
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
     if(buffManager)
     {
-        buffInfoMap = buffManager->getBufferInfos();
+        buffInfoMap = buffManager->getBufferInfos().get();
     }
     BOOST_FOREACH(::fwMemory::BufferManager::BufferInfoMapType::value_type elt, buffInfoMap)
     {
@@ -52,7 +52,7 @@ void SDumpAll::updating( ) throw(::fwTools::Failed)
         bool isLock = dumpBuffInfo.lockCount() > 0;
         if(loaded && !isLock)
         {
-            bool dumped = buffManager->dumpBuffer(elt.first);
+            bool dumped = buffManager->dumpBuffer(elt.first).get();
             if(dumped)
             {
                 ++nbBuffDumped;

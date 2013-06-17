@@ -31,17 +31,13 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
-    // manager->setDumpPolicy( ::fwMemory::policy::NeverDump::New() );
-    // manager->setDumpPolicy( ::fwMemory::policy::ValveDump::New() );
-    // manager->setDumpPolicy( ::fwMemory::policy::AlwaysDump::New() );
-    // manager->setDumpPolicy( ::fwMemory::policy::BarrierDump::New() );
-
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
 
     const std::string modeKey = "loading_mode";
 
     if ( this->getBundle()->hasParameter(modeKey) )
     {
+        ::fwCore::mt::WriteLock lock( manager->getMutex() );
         std::string mode = this->getBundle()->getParameterValue(modeKey);
         if (mode == "lazy")
         {
@@ -59,7 +55,6 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
         }
     }
 
-    ::fwMemory::BufferManager::setCurrent( manager );
 }
 
 //------------------------------------------------------------------------------

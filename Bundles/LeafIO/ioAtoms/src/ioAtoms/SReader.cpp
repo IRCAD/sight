@@ -108,12 +108,58 @@ void SReader::configuring() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
+
+struct SetDumpPolicy
+{
+    SetDumpPolicy()
+    {
+        ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+        m_lock = ::fwCore::mt::WriteLock( manager->getMutex() );
+        if( manager )
+        {
+            ::fwMemory::IPolicy::sptr policy = manager->getDumpPolicy();
+            if( ::fwMemory::policy::NeverDump::dynamicCast(policy) )
+            {
+                ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
+                ::fwMemory::BufferManager::BufferStats stats = manager->getBufferStats().get();
+                size_t aliveMemory = stats.totalManaged - stats.totalDumped;
+                size_t freeMemory = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
+                size_t barrier = std::max( aliveMemory, std::max( freeMemory, static_cast<size_t>(500L * 1024 * 1024) ) );
+
+                newDumpPolicy->setBarrier( barrier );
+                manager->setDumpPolicy( newDumpPolicy );
+                m_oldPolicy = policy;
+            }
+        }
+    }
+
+    ~SetDumpPolicy()
+    {
+        try
+        {
+            ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+            if( manager && m_oldPolicy )
+            {
+                manager->setDumpPolicy( m_oldPolicy );
+                m_oldPolicy.reset();
+            }
+        }
+        catch(...)
+        {
+            SLM_ASSERT("Failed to restore old policy", 0);
+        }
+    }
+
+    ::fwMemory::IPolicy::sptr m_oldPolicy;
+    ::fwCore::mt::WriteLock m_lock;
+};
+
 void SReader::updating() throw(::fwTools::Failed)
 {
 
     if(this->hasLocationDefined())
     {
-        this->setBarrierDumpPolicy();
+        SetDumpPolicy policy;
 
         ::fwData::Object::sptr data = this->getObject< ::fwData::Object >();
 
@@ -233,7 +279,6 @@ void SReader::updating() throw(::fwTools::Failed)
 
         cursor.setDefaultCursor();
 
-        this->resetDumpPolicy();
     }
 }
 
@@ -242,44 +287,6 @@ void SReader::updating() throw(::fwTools::Failed)
 ::io::IOPathType SReader::getIOPathType() const
 {
     return ::io::FILE;
-}
-
-//------------------------------------------------------------------------------
-
-void SReader::setBarrierDumpPolicy()
-{
-    ::fwMemory::BufferManager::sptr manager;
-    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::BufferManager::getCurrent() );
-
-    if( manager )
-    {
-        ::fwMemory::IPolicy::sptr policy = manager->getDumpPolicy();
-        if( ::boost::dynamic_pointer_cast< ::fwMemory::policy::NeverDump >( policy ) )
-        {
-            ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
-            size_t aliveMemory = manager->getManagedBufferSize() - manager->getDumpedBufferSize();
-            size_t freeMemory = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
-            size_t barrier = std::max( aliveMemory, std::max( freeMemory, static_cast<size_t>(500L * 1024 * 1024) ) );
-
-            newDumpPolicy->setBarrier( barrier );
-            manager->setDumpPolicy( newDumpPolicy );
-            m_oldPolicy = policy;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SReader::resetDumpPolicy()
-{
-    ::fwMemory::BufferManager::sptr manager;
-    manager = ::boost::dynamic_pointer_cast< ::fwMemory::BufferManager >( ::fwMemory::BufferManager::getCurrent() );
-
-    if( manager && m_oldPolicy )
-    {
-        manager->setDumpPolicy( m_oldPolicy );
-        m_oldPolicy.reset();
-    }
 }
 
 //------------------------------------------------------------------------------

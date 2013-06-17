@@ -18,18 +18,22 @@
 #include <fwCore/base.hpp>
 
 #include <fwTools/fwID.hpp>
+#include <fwTools/Stringizer.hpp>
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/ByteSize.hpp>
-#include <fwTools/Stringizer.hpp>
+#include <fwMemory/tools/MemoryMonitorTools.hpp>
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/IPolicy.hpp>
 
 #include <fwData/Object.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwMemory/tools/MemoryMonitorTools.hpp>
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/IPolicy.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/IMessageDialog.hpp>
@@ -78,18 +82,19 @@ QWidget *PolicyComboBoxDelegate::createEditor(QWidget *parent,
 {
     QComboBox *policyComboBox = new QComboBox(parent);
 
-    std::string value = index.model()->data(index, Qt::DisplayRole).toString().toStdString();
+    const std::string value = index.model()->data(index, Qt::DisplayRole).toString().toStdString();
 
-    const ::fwMemory::IPolicy::FactoryMap &factories = ::fwMemory::IPolicy::getPolicyFactories();
-    BOOST_FOREACH( const ::fwMemory::IPolicy::FactoryMap::value_type &policy, factories)
+    const ::fwMemory::policy::registry::Type::KeyVectorType &factories =
+            ::fwMemory::policy::registry::get()->getFactoryKeys();
+
+    BOOST_FOREACH( const ::fwMemory::policy::registry::KeyType &policy, factories)
     {
-        policyComboBox->addItem(QString::fromStdString(policy.first));
-        if(value == policy.first)
+        policyComboBox->addItem(QString::fromStdString(policy));
+        if(value == policy)
         {
             policyComboBox->setCurrentIndex(policyComboBox->count()-1);
         }
     }
-
     return policyComboBox;
 }
 
@@ -149,7 +154,7 @@ const int PolicyTableModel::s_EXTRA_INFO_NB = 1;
 PolicyTableModel::PolicyTableModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    m_buffManager = ::fwMemory::BufferManager::getCurrent();
+    m_buffManager = ::fwMemory::BufferManager::getDefault();
 }
 
 int PolicyTableModel::rowCount(const QModelIndex &parent) const
@@ -158,6 +163,7 @@ int PolicyTableModel::rowCount(const QModelIndex &parent) const
     size_t nbParam = 0;
     if(m_buffManager)
     {
+        ::fwCore::mt::ReadLock lock( m_buffManager->getMutex() );
         ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
         nbParam = currentPolicy->getParamNames().size();
     }
@@ -177,7 +183,7 @@ QVariant PolicyTableModel::data(const QModelIndex &index, int role) const
     {
         return QVariant();
     }
-
+    ::fwCore::mt::ReadLock lock( m_buffManager->getMutex() );
     ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
 
     if (index.row() > (s_EXTRA_INFO_NB + currentPolicy->getParamNames().size()) || index.row() < 0)
@@ -217,6 +223,7 @@ QVariant PolicyTableModel::headerData(int section, Qt::Orientation orientation, 
 
     if (m_buffManager && orientation == Qt::Vertical)
     {
+        ::fwCore::mt::ReadLock lock( m_buffManager->getMutex() );
         ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
         const ::fwMemory::IPolicy::ParamNamesType &names = currentPolicy->getParamNames();
         if (section <= 0)
@@ -235,41 +242,41 @@ QVariant PolicyTableModel::headerData(int section, Qt::Orientation orientation, 
 
  bool PolicyTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
  {
-         if (m_buffManager && index.isValid() && role == Qt::EditRole)
+     if (m_buffManager && index.isValid() && role == Qt::EditRole)
+     {
+         int row = index.row();
+         int col = index.column();
+         const std::string strvalue = value.toString().toStdString();
+
+         ::fwCore::mt::ReadLock lock( m_buffManager->getMutex() );
+         ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
+         const ::fwMemory::IPolicy::ParamNamesType &names = currentPolicy->getParamNames();
+
+         if (col == 0 && (unsigned int)row <= names.size() )
          {
-             int row = index.row();
-             int col = index.column();
-             std::string strvalue = value.toString().toStdString();
-
-             ::fwMemory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
-             const ::fwMemory::IPolicy::ParamNamesType &names = currentPolicy->getParamNames();
-
-             if (col == 0 && (unsigned int)row <= names.size() )
+             ::fwMemory::IPolicy::sptr dumpPolicy;
+             switch (row)
              {
-                 ::fwMemory::IPolicy::sptr dumpPolicy;
-                 switch (row)
+             case 0 :
+                 if(strvalue != currentPolicy->getLeafClassname())
                  {
-                     case 0 :
-                         if(strvalue != currentPolicy->getLeafClassname())
-                         {
-                             dumpPolicy = ::fwMemory::IPolicy::createPolicy(strvalue);
-                             if(dumpPolicy)
-                             {
-                                 m_buffManager->setDumpPolicy(dumpPolicy);
-                             }
-                             this->reset();
-                         }
-                         break;
-                     default:
-                         const ::fwMemory::IPolicy::ParamNamesType::value_type &name = names.at(row - 1);
-                         currentPolicy->setParam(name, strvalue);
-                         return true;
+                     dumpPolicy = ::fwMemory::policy::registry::get()->create(strvalue);
+                     if(dumpPolicy)
+                     {
+                         ::fwCore::mt::ReadToWriteLock lock( m_buffManager->getMutex() );
+                         m_buffManager->setDumpPolicy(dumpPolicy);
+                     }
+                     this->reset();
                  }
+                 break;
+             default:
+                 const ::fwMemory::IPolicy::ParamNamesType::value_type &name = names.at(row - 1);
+                 currentPolicy->setParam(name, strvalue);
+                 return true;
              }
-
          }
-
-         return false;
+     }
+     return false;
  }
 
 Qt::ItemFlags PolicyTableModel::flags(const QModelIndex &index) const
@@ -309,7 +316,7 @@ private:
 InfoTableModel::InfoTableModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    m_buffManager = ::fwMemory::BufferManager::getCurrent();
+    m_buffManager = ::fwMemory::BufferManager::getDefault();
 }
 
 int InfoTableModel::rowCount(const QModelIndex &parent) const
@@ -353,11 +360,11 @@ QVariant InfoTableModel::data(const QModelIndex &index, int role) const
                     return QString(getHumanReadableSize(sysMem));
                     break;
                 case 2 :
-                    bufferManagerMem = m_buffManager->getManagedBufferSize();
+                    bufferManagerMem = m_buffManager->getBufferStats().get().totalManaged;
                     return QString(getHumanReadableSize(bufferManagerMem));
                     break;
                 case 3 :
-                    bufferManagerMem = m_buffManager->getDumpedBufferSize();
+                    bufferManagerMem = m_buffManager->getBufferStats().get().totalDumped;
                     return QString(getHumanReadableSize(bufferManagerMem));
                     break;
             }
@@ -477,10 +484,13 @@ void DumpEditor::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_updateTimer, SIGNAL(timeout ()), this, SLOT(onRefreshButton( )));
 
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getCurrent();
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
     if (buffManager)
     {
-        m_refreshSignal = buffManager->getUpdatedSignal().connect( ::boost::bind( &DumpEditor::onUpdate, this) );
+        m_updateSlot = ::fwCom::newSlot( &DumpEditor::onUpdate, this ) ;
+        ::fwServices::registry::ActiveWorkers::sptr workers = ::fwServices::registry::ActiveWorkers::getDefault();
+        m_updateSlot->setWorker( workers->getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ));
+        m_connection = buffManager->getUpdatedSignal()->connect( m_updateSlot );
     }
 
     this->updating();
@@ -491,7 +501,7 @@ void DumpEditor::starting() throw(::fwTools::Failed)
 void DumpEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
+    m_connection.disconnect();
     QObject::disconnect(m_refresh, SIGNAL(clicked ()), this, SLOT(onRefreshButton()));
     QObject::disconnect(m_mapper, SIGNAL(mapped(int)), this, SLOT(changeStatus(int)));
 
@@ -535,10 +545,7 @@ void DumpEditor::updating() throw(::fwTools::Failed)
 
     SLM_TRACE_FUNC();
     m_mapper->blockSignals(true);
-    if (m_refreshSignal.connected())
-    {
-        m_refreshSignal.block();
-    }
+    ::fwCom::Connection::Blocker block(m_connection);
 
     for(int row = 0; row < m_list->rowCount(); row++)
     {
@@ -547,10 +554,10 @@ void DumpEditor::updating() throw(::fwTools::Failed)
     m_list->clearContents();
     m_objectsUID.clear();
 
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getCurrent();
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
     if(buffManager)
     {
-        const ::fwMemory::BufferManager::BufferInfoMapType &buffInfoMap = buffManager->getBufferInfos();
+        const ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap = buffManager->getBufferInfos().get();
 
         int itemCount = 0;
         m_list->setSortingEnabled(false);
@@ -624,10 +631,6 @@ void DumpEditor::updating() throw(::fwTools::Failed)
         }
         m_list->setSortingEnabled(true);
     }
-    if (m_refreshSignal.connected())
-    {
-        m_refreshSignal.unblock();
-    }
     m_mapper->blockSignals(false);
 }
 
@@ -667,10 +670,10 @@ void DumpEditor::changeStatus( int index )
     SLM_TRACE_FUNC();
 
     ::fwMemory::BufferManager::ConstBufferPtrType selectedBuffer = m_objectsUID[index];
-    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getCurrent();
+    ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
     if(buffManager)
     {
-        const ::fwMemory::BufferManager::BufferInfoMapType &buffInfoMap = buffManager->getBufferInfos();
+        const ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap = buffManager->getBufferInfos().get();
         ::fwMemory::BufferManager::BufferInfoMapType::const_iterator iter;
         iter = buffInfoMap.find(selectedBuffer);
         if( iter != buffInfoMap.end())

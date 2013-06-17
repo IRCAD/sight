@@ -69,12 +69,10 @@ void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
 
 void SDumpPolicy::starting() throw ( ::fwTools::Failed )
 {
-    ::fwMemory::BufferManager::sptr manager;
-    manager = ::fwMemory::BufferManager::getCurrent();
-
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
     if (manager)
     {
-        ::fwMemory::IPolicy::sptr policy = ::fwMemory::IPolicy::createPolicy(m_policy);
+        ::fwMemory::IPolicy::sptr policy = ::fwMemory::policy::registry::get()->create(m_policy);
 
         if (policy)
         {
@@ -87,7 +85,7 @@ void SDumpPolicy::starting() throw ( ::fwTools::Failed )
                                !success);
                 OSLM_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second , success);
             }
-
+            ::fwCore::mt::WriteLock lock( manager->getMutex() );
             manager->setDumpPolicy(policy);
             OSLM_INFO("Set dump policy to : " << m_policy);
         }

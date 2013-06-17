@@ -31,8 +31,7 @@ void BufferManagerTest::tearDown()
 
 void BufferManagerTest::allocateTest()
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
-    ::fwMemory::BufferManager::setCurrent( manager );
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
 
     const int SIZE = 100000;
     ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
@@ -130,41 +129,40 @@ void BufferManagerTest::allocateTest()
 
 void BufferManagerTest::memoryInfoTest()
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
-    ::fwMemory::BufferManager::setCurrent( manager );
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
 
     {
-        SLM_INFO(manager->toString());
+        SLM_INFO(manager->toString().get());
         ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
         const int SIZE = 100000;
         bo->allocate(SIZE);
-        SLM_INFO(manager->toString());
+        SLM_INFO(manager->toString().get());
         ::fwMemory::BufferObject::sptr bo1 = ::fwMemory::BufferObject::New();
-        SLM_INFO(manager->toString());
+        SLM_INFO(manager->toString().get());
         {
             ::fwMemory::BufferObject::Lock lock1(bo1->lock());
-            SLM_INFO(manager->toString());
+            SLM_INFO(manager->toString().get());
         }
         ::fwMemory::BufferObject::sptr bo2 = ::fwMemory::BufferObject::New();
-        SLM_INFO(manager->toString());
+        SLM_INFO(manager->toString().get());
         bo->reallocate(SIZE*2);
         {
             ::fwMemory::BufferObject::Lock lock(bo->lock());
-            SLM_INFO(manager->toString());
+            SLM_INFO(manager->toString().get());
         }
         bo->destroy();
-        SLM_INFO(manager->toString());
+        SLM_INFO(manager->toString().get());
         bo1->allocate(SIZE);
         bo2->allocate(SIZE);
         char * buff = new char[SIZE];
         bo->setBuffer( buff, SIZE, ::fwMemory::BufferNewPolicy::New() );
-        SLM_INFO(manager->toString());
+        SLM_INFO(manager->toString().get());
 
         { ::fwMemory::BufferObject::Lock lock(bo->lock()); }
         { ::fwMemory::BufferObject::Lock lock(bo1->lock()); }
         { ::fwMemory::BufferObject::Lock lock(bo2->lock()); }
     }
-    SLM_INFO(manager->toString());
+    SLM_INFO(manager->toString().get());
 }
 
 } // namespace ut

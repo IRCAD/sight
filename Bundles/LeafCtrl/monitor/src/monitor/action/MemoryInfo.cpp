@@ -46,13 +46,12 @@ void MemoryInfo::updating( ) throw(::fwTools::Failed)
 
     ::fwMemory::BufferManager::SizeType managedBufferSize = 0;
     ::fwMemory::BufferManager::SizeType dumpedBufferSize = 0;
-    ::fwMemory::BufferManager::sptr manager;
-    manager = ::fwMemory::BufferManager::getCurrent();
-
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
     if( manager )
     {
-        managedBufferSize = manager->getManagedBufferSize();
-        dumpedBufferSize  = manager->getDumpedBufferSize();
+        ::fwMemory::BufferManager::BufferStats stats = manager->getBufferStats().get();
+        managedBufferSize = stats.totalManaged;
+        dumpedBufferSize  = stats.totalDumped;
     }
     std::stringstream stream;
     stream << "Total system memory = "  << totalSystemMemory/mo << " Mo" << std::endl;

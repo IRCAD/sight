@@ -269,7 +269,6 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
     buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkStructuredPointsReader> >(file), imgObj->getSizeInBytes());
-
 }
 
 

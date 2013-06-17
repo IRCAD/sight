@@ -38,6 +38,7 @@ struct FWMEMORY_CLASS_API BufferInfo
 
 
     SizeType size;
+    /// true if 'buffer' is loaded
     bool     loaded;
     bool     userStreamFactory;
 

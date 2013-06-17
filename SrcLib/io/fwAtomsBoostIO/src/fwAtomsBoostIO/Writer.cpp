@@ -194,8 +194,9 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
         ::boost::filesystem::path bufFile = m_dirPrefix;
         size_t buffSize = buffObj->getSize();
 
-        ::boost::filesystem::path dumpedFile = buffObj->getFile();
-        ::fwMemory::FileFormatType format = buffObj->getFileFormat();
+        const ::fwMemory::BufferManager::StreamInfo streamInfo = buffObj->getStreamInfo();
+        const ::boost::filesystem::path dumpedFile = streamInfo.fsFile;
+        const ::fwMemory::FileFormatType& format = streamInfo.format;
 
         bufFile /= ::fwTools::UUID::generateUUID() + ".raw";
 
@@ -205,7 +206,7 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
         }
         else
         {
-            SPTR(std::istream) is = buffObj->getIStream();
+            SPTR(std::istream) is = streamInfo.stream;
             SLM_ASSERT("no istream", is);
 
             SPTR(std::ostream) os = m_archive->createFile(bufFile);

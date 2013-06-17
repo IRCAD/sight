@@ -22,6 +22,7 @@
 
 #include "fwMemory/exception/BadCast.hpp"
 #include "fwMemory/ByteSize.hpp"
+#include "fwMemory/policy/registry/macros.hpp"
 #include "fwMemory/policy/ValveDump.hpp"
 
 
@@ -31,7 +32,7 @@ namespace fwMemory
 namespace policy
 {
 
-static IPolicy::Register<ValveDump> registerFactory(ValveDump::leafClassname());
+fwMemoryPolicyRegisterMacro(::fwMemory::policy::ValveDump);
 
 //------------------------------------------------------------------------------
 
@@ -39,80 +40,81 @@ ValveDump::ValveDump() :
     m_minFreeMem(1024*1024*500LL),
     m_hysteresisOffset(0)
 {
-
 }
 
 //------------------------------------------------------------------------------
 
-void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+        BufferInfo::SizeType size )
 {
+    FwCoreNotUsedMacro(buffer);
     this->apply((size > info.size) ? size - info.size : 0);
 }
 
 //------------------------------------------------------------------------------
 
-
-void ValveDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size )
+void ValveDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+        BufferInfo::SizeType size )
 {
+    FwCoreNotUsedMacro(info);
+    FwCoreNotUsedMacro(buffer);
+    FwCoreNotUsedMacro(size);
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-
-void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize )
+void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+        BufferInfo::SizeType newSize )
 {
+    FwCoreNotUsedMacro(buffer);
     this->apply((newSize > info.size) ? newSize - info.size : 0);
 }
 
 //------------------------------------------------------------------------------
 
-
-void ValveDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
+void ValveDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
+    FwCoreNotUsedMacro(info);
+    FwCoreNotUsedMacro(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-
-void ValveDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
+void ValveDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
+    FwCoreNotUsedMacro(info);
+    FwCoreNotUsedMacro(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-
-void ValveDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
+void ValveDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
+    FwCoreNotUsedMacro(info);
+    FwCoreNotUsedMacro(buffer);
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-
-void ValveDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
+void ValveDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
+    FwCoreNotUsedMacro(info);
+    FwCoreNotUsedMacro(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-
-void ValveDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer )
+void ValveDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
+    FwCoreNotUsedMacro(info);
+    FwCoreNotUsedMacro(buffer);
 }
 
 //------------------------------------------------------------------------------
 
-
-
-void ValveDump::setManager(const ::fwMemory::BufferManager::sptr &manager)
-{
-    m_manager = manager;
-}
-
-//------------------------------------------------------------------------------
-
-bool ValveDump::needDump(size_t supplement)
+bool ValveDump::needDump(size_t supplement) const
 {
     return ::fwMemory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() <= (m_minFreeMem + supplement);
 }
@@ -123,11 +125,10 @@ size_t ValveDump::dump(size_t nbOfBytes)
 {
     size_t dumped = 0;
 
-    ::fwMemory::BufferManager::sptr manager = m_manager.lock();
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
     if(manager)
     {
-
-        const fwMemory::BufferManager::BufferInfoMapType &bufferInfos = manager->getBufferInfos();
+        const ::fwMemory::BufferManager::BufferInfoMapType bufferInfos = manager->getBufferInfos().get();
 
         typedef std::pair<
             fwMemory::BufferManager::BufferInfoMapType::key_type,
@@ -151,7 +152,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
         {
             if(dumped < nbOfBytes)
             {
-                if( manager->dumpBuffer(pair.first) )
+                if( manager->dumpBuffer(pair.first).get() )
                 {
                     dumped += pair.second.size;
                 }
@@ -223,25 +224,23 @@ const fwMemory::IPolicy::ParamNamesType &ValveDump::getParamNames() const
 
 //------------------------------------------------------------------------------
 
-std::string ValveDump::getParam(const std::string &name, bool *ok )
+std::string ValveDump::getParam(const std::string &name, bool *ok ) const
 {
-    bool isOk;
+    bool isOk = false;
     std::string value;
-    if (NULL == ok)
-    {
-        ok = &isOk;
-    }
-    *ok = false;
     if(name == "min_free_mem")
     {
         value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_minFreeMem) ));
-        *ok = true;
-
+        isOk = true;
     }
     else if(name == "hysteresis_offet")
     {
         value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_hysteresisOffset) ));
-        *ok = true;
+        isOk = true;
+    }
+    if (ok)
+    {
+        *ok = isOk;
     }
     return value;
 }

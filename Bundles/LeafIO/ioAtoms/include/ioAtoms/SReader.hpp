@@ -72,16 +72,6 @@ private:
     /// Notify modification on associated object if reading succeeded
     void notificationOfUpdate();
 
-    /**
-     * @brief Changes dump policy to barrier dump if needed.
-     * Dump policy is changed only if the current policy is 'never dump'
-     * Store old policy in m_oldPolicy to set it back after reading.
-     */
-    void setBarrierDumpPolicy();
-
-    /// Resets dump policy to m_oldPolicy
-    void resetDumpPolicy();
-
     /// Initial dump policy
     ::fwMemory::IPolicy::sptr m_oldPolicy;
 

@@ -18,12 +18,19 @@
 #include <QTableWidget>
 
 #include <fwTools/Failed.hpp>
+#include <fwCom/Connection.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
 #include "monitorQt/config.hpp"
 
 class QTimer;
+
+namespace fwCom
+{
+template< typename F >
+struct Slot;
+};
 
 namespace monitor
 {
@@ -78,10 +85,12 @@ protected Q_SLOTS:
     /// This method is called when an item is pressed.
     void changeStatus(int);
 
-    /// Slot called when user clic on button m_refresh, call updating() method
+    /// Slot called when user click on button m_refresh, call updating() method
     void onRefreshButton();
 
 private:
+
+    typedef ::fwCom::Slot<void()> UpdateSlotType;
 
     // Managed buffers
     std::vector< const void * const * > m_objectsUID;
@@ -101,8 +110,10 @@ private:
     /// Editor to show few memory information
     QTableView* m_infoEditor;
 
+    SPTR(UpdateSlotType) m_updateSlot;
+
     /// Manage connection between buffManager updated signal and onUpdate method
-    ::boost::signals::scoped_connection m_refreshSignal;
+    ::fwCom::Connection m_connection;
 
     /// Timer use to call each 300 ms onRefreshButton() slot
     QPointer<QTimer> m_updateTimer;

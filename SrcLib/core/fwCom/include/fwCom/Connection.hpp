@@ -19,6 +19,9 @@ struct Connection
     /// Class allowing to block a Connection.
     struct Blocker
     {
+        Blocker()
+        { }
+
         Blocker( Connection connection )
             : m_blocker(connection.getBlocker())
         { }

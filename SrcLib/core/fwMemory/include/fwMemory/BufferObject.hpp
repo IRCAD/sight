@@ -56,13 +56,6 @@ class IFactory ;
 class FWMEMORY_CLASS_API BufferObject : public ::fwCore::BaseObject
 {
 
-    struct no_deleter
-    {
-        void operator()(void * x) const
-        {
-        }
-    } ;
-
 public:
 
     typedef ::boost::shared_ptr< void > CounterType;
@@ -95,9 +88,6 @@ public:
 
         typedef typename ::boost::conditional< ::boost::is_const< T >::value, const void*, void* >::type BufferType;
 
-
-
-
         /**
          * @brief Build an empty lock.
          */
@@ -121,68 +111,10 @@ public:
             m_count = bo->m_count.lock();
             if ( ! m_count )
             {
-                m_count = CounterType( (void*) 0x01, no_deleter() );
+                m_count = bo->m_bufferManager->lockBuffer(&(bo->m_buffer)).get();
                 bo->m_count = m_count;
             }
 
-            this->lock();
-        }
-
-        /**
-         * @brief Copy constructor
-         *
-         * If the copied lock has a lock count, increment it.
-         *
-         * @param other Lock to copy
-         */
-        LockBase( const LockBase &other )
-            : m_count(other.m_count)
-        {
-            if (m_count)
-            {
-                SLM_ASSERT("Can't lock NULL object", other.m_bufferObject.lock());
-                m_bufferObject = other.m_bufferObject;
-                this->lock();
-            }
-        }
-
-        /**
-         * @brief Lock destructor
-         *
-         * Decrement a lock count if any.
-         */
-        ~LockBase()
-        {
-            if (m_count)
-            {
-                this->unlock();
-                m_count.reset();
-            }
-        }
-
-        /**
-         * @brief copy operator
-         *
-         * Decrement count if has any, and if the copied lock has a lock count,
-         * increment it.
-         *
-         * @param other lock to copy
-         *
-         * @return the lock itself
-         */
-        LockBase & operator= (const LockBase & other)
-        {
-            if (m_count)
-            {
-                this->unlock();
-            }
-            m_count = other.m_count;
-            if (m_count)
-            {
-                m_bufferObject = other.m_bufferObject;
-                this->lock();
-            }
-            return *this;
         }
 
         /**
@@ -196,54 +128,17 @@ public:
         };
 
         /**
-         * @brief Release any count on any BufferType the lock may have.
+         * @brief Release any count on any Buffer the lock may have.
          */
         void reset()
         {
-            if (m_count)
-            {
-                this->unlock();
-            }
             m_count.reset();
             m_bufferObject.reset();
         }
 
     protected:
 
-        /**
-         * @brief If any instance of BufferManager is active, triggers t's lockBuffer event.
-         */
-        void lock()
-        {
-            SLM_ASSERT("Count pointer is uninitialized", m_count != BufferObject::CounterType() );
-            if( SPTR(T) bufferObject = m_bufferObject.lock() )
-            {
-                if (fwMemory::BufferManager::sptr manager = bufferObject->m_bufferManager)
-                {
-                    manager->lockBuffer(&(bufferObject->m_buffer), m_count);
-                }
-            }
-        }
-
-        /**
-         * @brief If any instance of BufferManager is active, triggers t's unlockBuffer event.
-         */
-        void unlock()
-        {
-            SLM_ASSERT("Count pointer is uninitialized", m_count != BufferObject::CounterType() );
-            if( SPTR(T) bufferObject = m_bufferObject.lock() )
-            {
-                if (fwMemory::BufferManager::sptr manager = bufferObject->m_bufferManager)
-                {
-                    manager->unlockBuffer(&(bufferObject->m_buffer));
-                }
-            }
-        }
-
-
-
         BufferObject::CounterType m_count;
-
         WPTR(T) m_bufferObject;
     };
 
@@ -366,14 +261,7 @@ public:
     /// Exchanges the content of the BufferObject with the content of _source.
     FWMEMORY_API void swap( const BufferObject::sptr &_source );
 
-    /// Returns the path to the file containing data of this BufferObject if it is dumped
-    FWMEMORY_API boost::filesystem::path getFile();
-
-    /// Returns the format of the file returned by BufferObject::getFile
-    FWMEMORY_API ::fwMemory::FileFormatType getFileFormat();
-
-    /// Returns a stream to BufferObject content, no needs to lock
-    FWMEMORY_API SPTR(std::istream) getIStream();
+    FWMEMORY_API BufferManager::StreamInfo getStreamInfo() const;
 
     /**
      * @brief Set a stream factory for the buffer manager

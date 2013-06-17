@@ -13,6 +13,7 @@
 
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/IPolicy.hpp"
+#include "fwMemory/policy/factory/new.hpp"
 #include "fwMemory/config.hpp"
 
 namespace fwMemory
@@ -32,28 +33,43 @@ class FWMEMORY_CLASS_API NeverDump : public fwMemory::IPolicy
 {
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((NeverDump)(fwMemory::IPolicy), (()), new NeverDump );
+    fwCoreClassDefinitionsWithFactoryMacro((NeverDump)(fwMemory::IPolicy),
+                                           (()),
+                                           ::fwMemory::policy::factory::New< NeverDump >) ;
 
-    FWMEMORY_API virtual void allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
-    FWMEMORY_API virtual void setRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType size ) ;
-    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer, BufferInfo::SizeType newSize ) ;
-    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer ) ;
-    FWMEMORY_API virtual void lockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer ) ;
-    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer ) ;
+    FWMEMORY_API virtual void allocationRequest( BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType size ) ;
 
-    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer );
-    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::BufferPtrType buffer );
+    FWMEMORY_API virtual void setRequest( BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType size ) ;
 
-    FWMEMORY_API void setManager(const ::fwMemory::BufferManager::sptr &manager);
+    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType newSize ) ;
+
+    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
+
+    FWMEMORY_API virtual void lockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
+    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) ;
+
+    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
+    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
 
     FWMEMORY_API virtual void refresh();
 
-    bool setParam(const std::string &name, const std::string &value) {return false;};
-    FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL );
-    FWMEMORY_API const fwMemory::IPolicy::ParamNamesType &getParamNames() const
-    {static fwMemory::IPolicy::ParamNamesType names; return names;}
+    bool setParam(const std::string &name, const std::string &value)
+    {
+        FwCoreNotUsedMacro(name);
+        FwCoreNotUsedMacro(value);
+        return false;
+    }
 
+    FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL ) const;
 
+    const fwMemory::IPolicy::ParamNamesType &getParamNames() const
+    {
+        static fwMemory::IPolicy::ParamNamesType names;
+        return names;
+    }
 };
 
 
