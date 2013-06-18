@@ -1,3 +1,35 @@
+=== fw4spl_0.9.2.2 ( diff from fw4spl_0.9.2.1 ) 18/06/2013 ===
+ 
+ * Transplanted from fw4spl_0.9.1.4.:
+  * Added a getAttribute() template method on fwAtoms/Object.
+  * fixed on fwAtoms/Object attributes and metaInfos
+  * Added version number on atom (see fwAtoms/Base.hpp) 
+  * Updated fwCore::SpyLogger to remove logger global severity.   
+  * Updated CompareObjects visitor for BufferObject   
+  * Created a new library fwAtomsPatch which contains the base interface to transform atoms from a version to an other into a context.  
+  * Added a version generator utility to generate .versions files (files used by the patch system).
+  * Added MedicalData pacth system to VRRender
+  * Updated ioAtoms reader(SReader)/writer(SWriter) to use the patch system.
+  * Added verison on Atom writers/readers(Hdf5 reader/writer and BoostIO writer/reader). 
+  * Added test for getAttribute() template method. 
+  
+ * General : 
+  * Updated fwData::Reconstruction to version 2 (some attributes have been removed).
+  * Fixed duplicated extension filename in objWriter.
+  * Added atoms_version and writer_version in TF files (json files)
+  
+ * Patch system : 
+  * Create patch to transform atoms object into 'MediacalData' context from version V1 to version V2.
+   * V1 uses the fwData PatientDB, Acquisition, etc.
+   * V2 uses the new Data fwMedData ( ModelSeries, ImageSeries, ...)
+  * Added fwStructuralPatch library which contains structural patches.
+  * Added fwMDContexttualPatch library which contains semantic patches.
+  * Added patchMedicalData bundle.
+  * Updated VRRender config to use MedicalData patch system.
+   
+ * Test :
+  * Added unit test for fwStructuralPatch
+   
 === fw4spl_0.9.2.1 ( diff from fw4spl_0.9.2.0 ) 23/05/2013 ===
 
  * Merging
