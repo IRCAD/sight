@@ -1,3 +1,24 @@
+=== fw4spl_0.9.1.4 ( diff from fw4spl_0.9.1.3 ) 18/06/2013 ===
+
+ * General : 
+  * Added a getAttribute() template method on fwAtoms/Object.
+  * fixed on fwAtoms/Object attributes and metaInfos
+  * Added version number on atom (see fwAtoms/Base.hpp) 
+  * Updated fwCore::SpyLogger to remove logger global severity.   
+  * Updated CompareObjects visitor for BufferObject
+   
+ * Patch system : 
+  * Created a new library fwAtomsPatch which contains the base interface to transform atoms from a version to an other into a context.  
+  * Added a version generator utility to generate .versions files (files used by the patch system).
+  * Added MedicalData pacth system to VRRender
+
+ * IO :
+  * Updated ioAtoms reader(SReader)/writer(SWriter) to use the patch system.
+  * Added verison on Atom writers/readers(Hdf5 reader/writer and BoostIO writer/reader).
+  
+ * TU : 
+  * Added test for getAttribute() template method.
+  
 === fw4spl_0.9.1.3 ( diff from fw4spl_0.9.1.2 ) 02/05/2013 ===
 
  * Data :
