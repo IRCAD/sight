@@ -295,7 +295,7 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
 
 //------------------------------------------------------------------------------
 
-    template< typename DATA_READER >
+template< typename DATA_READER >
 ::fwData::Image::sptr lazyRead( const ::boost::filesystem::path &file)
 {
     vtkSmartPointer< DATA_READER > reader = vtkSmartPointer< DATA_READER >::New();
@@ -313,7 +313,6 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
 
     return imgObj;
 }
-
 
 
 //------------------------------------------------------------------------------

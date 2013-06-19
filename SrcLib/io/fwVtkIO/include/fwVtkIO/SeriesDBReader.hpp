@@ -55,7 +55,7 @@ public :
     /// @return ".vtk"
     VTKIO_API  std::string extension();
 
-    void setLazyMode(bool lazyMode) { m_lazyMode = false; }
+    void setLazyMode(bool lazyMode) { m_lazyMode = lazyMode; }
 
 protected:
     bool m_lazyMode;

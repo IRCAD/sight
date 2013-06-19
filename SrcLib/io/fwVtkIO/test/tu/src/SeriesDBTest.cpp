@@ -7,7 +7,12 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/BufferObject.hpp>
+
 #include <fwData/Reconstruction.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Array.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -96,6 +101,88 @@ void SeriesDBTest::testImportSeriesDB()
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
     CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+}
+
+//------------------------------------------------------------------------------
+
+bool isLoaded(::fwMemory::BufferObject::sptr bo)
+{
+    ::fwMemory::BufferManager::csptr manager = ::fwMemory::BufferManager::getDefault();
+    const ::fwMemory::BufferManager::BufferInfoMapType mapInfos =  manager->getBufferInfos().get();
+
+    ::fwMemory::BufferManager::BufferInfoMapType::const_iterator iter = mapInfos.find(bo->getBufferPointer());
+    CPPUNIT_ASSERT_MESSAGE("BufferInfo not found.", iter != mapInfos.end());
+    const ::fwMemory::BufferInfo& info = iter->second;
+
+    return info.loaded;
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesDBTest::testLazyImportSeriesDB()
+{
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+    {
+        ::fwCore::mt::WriteLock lock( manager->getMutex() );
+        manager->setLoadingMode(::fwMemory::BufferManager::LAZY);
+    }
+
+    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+
+    const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
+    const ::boost::filesystem::path meshPath( ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk" );
+
+    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + imagePath.string(), ::boost::filesystem::exists(imagePath));
+    CPPUNIT_ASSERT_MESSAGE(std::string("Missing file: ") + meshPath.string(), ::boost::filesystem::exists(meshPath));
+
+    ::fwData::location::ILocation::VectPathType paths;
+    paths.push_back(imagePath);
+    paths.push_back(meshPath);
+
+
+    ::fwVtkIO::SeriesDBReader::sptr reader = ::fwVtkIO::SeriesDBReader::New();
+    reader->setObject(seriesDB);
+    reader->setFiles(paths);
+    reader->setLazyMode(true);
+    reader->read();
+
+
+    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->getContainer().size());
+
+    //check ImageSeries
+    {
+        ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(seriesDB->at(0));
+        CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
+
+        ::fwMemory::BufferObject::sptr bo = imgSeries->getImage()->getDataArray()->getBufferObject();
+        CPPUNIT_ASSERT_MESSAGE("ImageSeries is not lazy-loaded", !isLoaded(bo));
+
+        ::fwMemory::BufferObject::Lock lock = bo->lock();
+
+        CPPUNIT_ASSERT_MESSAGE("ImageSeries is still lazy-loaded", isLoaded(bo));
+    }
+
+    //check ModelSeries
+    {
+        ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(seriesDB->at(1));
+        CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
+
+        ::fwMedData::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
+        CPPUNIT_ASSERT_EQUAL(size_t(1), recVect.size());
+
+        ::fwData::Mesh::sptr mesh = recVect[0]->getMesh();
+
+        ::fwMemory::BufferObject::sptr points = mesh->getPointsArray()->getBufferObject();
+        CPPUNIT_ASSERT_MESSAGE("ModelSeries points are lazy-loaded", isLoaded(points));
+
+        ::fwMemory::BufferObject::sptr cell = mesh->getCellDataArray()->getBufferObject();
+        CPPUNIT_ASSERT_MESSAGE("ModelSeries cells are lazy-loaded", isLoaded(cell));
+    }
+
+    {
+        ::fwCore::mt::WriteLock lock( manager->getMutex() );
+        manager->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+    }
 }
 
 //------------------------------------------------------------------------------
