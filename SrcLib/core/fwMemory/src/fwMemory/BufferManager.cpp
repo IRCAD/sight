@@ -113,6 +113,9 @@ void BufferManager::allocateBufferImpl(BufferManager::BufferPtrType bufferPtr, S
         throw;
     }
 
+
+    info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr, size, info.lockCounter);
+
     info.lastAccess.modified();
     info.size = size;
     info.bufferPolicy = policy;
@@ -183,6 +186,8 @@ void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr,
         m_updatedSig->asyncEmit();
         throw;
     }
+
+    info.istreamFactory = ::boost::make_shared< ::fwMemory::stream::in::Buffer>(*bufferPtr, newSize, info.lockCounter);
 
     info.lastAccess.modified();
     info.size = newSize;
