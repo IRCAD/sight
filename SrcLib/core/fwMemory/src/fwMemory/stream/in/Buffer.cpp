@@ -31,9 +31,19 @@ struct HoldCounterStream : ::boost::iostreams::stream< ::boost::iostreams::array
     Buffer::LockType m_counter;
 };
 
+Buffer::LockType noFactory()
+{
+    return Buffer::LockType();
+}
 
-Buffer::Buffer(void* buf, size_t size, const CounterType &counter) :
-    m_buf(buf), m_size(size), m_counter(counter)
+Buffer::Buffer(void* buf, size_t size) :
+    m_buf(buf), m_size(size), m_counterFactory(&noFactory)
+{
+    OSLM_ASSERT("Buffer is null.", m_buf);
+}
+
+Buffer::Buffer(void* buf, size_t size, CounterFactoryType counterFactory) :
+    m_buf(buf), m_size(size), m_counterFactory(counterFactory)
 {
     OSLM_ASSERT("Buffer is null.", m_buf);
 }
@@ -44,7 +54,7 @@ SPTR(std::istream) Buffer::get()
 
     typedef HoldCounterStream ArrayStreamType;
     SPTR( ArrayStreamType ) arrayInStream
-        = ::boost::make_shared< ArrayStreamType > ( static_cast<char *>(m_buf), m_size, m_counter.lock() );
+        = ::boost::make_shared< ArrayStreamType > ( static_cast<char *>(m_buf), m_size, m_counterFactory() );
 
     return arrayInStream;
 }

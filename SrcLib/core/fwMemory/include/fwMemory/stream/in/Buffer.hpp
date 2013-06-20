@@ -7,6 +7,8 @@
 #ifndef __FWMEMORY_STREAM_IN_BUFFER_HPP__
 #define __FWMEMORY_STREAM_IN_BUFFER_HPP__
 
+#include <boost/function.hpp>
+
 #include <fwCore/macros.hpp>
 
 #include "fwMemory/stream/in/IFactory.hpp"
@@ -22,10 +24,11 @@ namespace in
 class FWMEMORY_CLASS_API Buffer : public IFactory
 {
 public:
-    typedef WPTR(void) CounterType;
     typedef SPTR(void) LockType;
+    typedef ::boost::function< LockType () > CounterFactoryType;
 
-    Buffer(void* buf, size_t size, const CounterType &lock = CounterType());
+    Buffer(void* buf, size_t size);
+    Buffer(void* buf, size_t size, CounterFactoryType counterFactory);
 
 protected:
 
@@ -33,7 +36,7 @@ protected:
 
     void* m_buf;
     size_t m_size;
-    CounterType m_counter;
+    CounterFactoryType m_counterFactory;
 };
 
 
