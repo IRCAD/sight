@@ -1,4 +1,4 @@
-=== fw4spl_0.9.2.2 ( diff from fw4spl_0.9.2.1 ) 18/06/2013 ===
+=== fw4spl_0.9.2.2 ( diff from fw4spl_0.9.2.1 ) 20/06/2013 ===
  
  * Transplanted from fw4spl_0.9.1.4.:
   * Added a getAttribute() template method on fwAtoms/Object.
@@ -14,6 +14,8 @@
   * Added test for getAttribute() template method. 
   
  * General : 
+  * Cleaned fwZip: removed old and deprecated class/API, group minizip classes.
+  * 'MediacalData' object version change to V2
   * Updated fwData::Reconstruction to version 2 (some attributes have been removed).
   * Fixed duplicated extension filename in objWriter.
   * Added atoms_version and writer_version in TF files (json files)
@@ -26,9 +28,29 @@
   * Added fwMDContexttualPatch library which contains semantic patches.
   * Added patchMedicalData bundle.
   * Updated VRRender config to use MedicalData patch system.
-   
- * Test :
   * Added unit test for fwStructuralPatch
+
+ * Memory dump system
+  * BufferManager, BufferObject and depending classes has been moved to fwMemory library. BufferObject is not self-sufficient anymore : (Re)Allocation/destruction has been delegated to BufferManager.
+  * Updated BufferManager and BufferObject API to allow “lazy loading” and to improve dumped data access :
+   * A BufferObject may be initialised with a ‘stream factory’, allowing to load data in ‘dumped’ or ‘lazy loaded’ state, i.e. the data will be really loaded when needed (for example when the BufferObject is locked)
+   * When a buffer has been lazy-loaded or dumped by the buffer manager, an internal structure stores information about the dumped state : the filesystem path of the data (if applicable), and the format of this file (if applicable). This can be useful to reuse filesystem data if needed. For example, fwAtomsBoostIO’s writer creates hardlinks to these files when possible.
+   * If a BufferObject user need an access to the data, it is possible to get a stream to it, regardless of and without changing the buffer state. For example, fwAtomsBoostIO’s Writer use this mechanism to copy data from buffers when a BufferObject is not dumped or the dumped file do not have a compatible format for hardlinking.
+ * fwMemory has been made thread-safe :
+  * Buffer management runs in a dedicated thread
+  * BufferManager has an asynchronous API, based on boost::shared_future
+  * Naive factories has been updated to fwCore's one
+
+ * IO
+  * Added DICOM LazyReader in vtkGdcmIO.
+  * Added VTK/VTI Lazy Image Reader in fwVtkIO.
+  * Added lazy ability to json(z)/xml(z) data Reader in fwAtomsBoostIO.
+  * fwAtomsBoostIO : fixed archive buffer filename and archive's buffers dir name
+   * A new name for each buffer is generated in order to avoid to have several buffer using the same file name.
+   * The postfix -json or -xml has been appended to buffers dir name, to avoid data overwrite when saving to archive in the same place with the same name but with a different base format.
+
+ * UI
+  * Added an example of asynchronous UI in DumpEditor using QFutureWatcher
    
 === fw4spl_0.9.2.1 ( diff from fw4spl_0.9.2.0 ) 23/05/2013 ===
 
