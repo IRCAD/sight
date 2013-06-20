@@ -387,6 +387,7 @@ void SeriesDBLazyReader::preprocessImage(
     img->setSize( imgSize );
     img->setNumberOfComponents( numberOfComponents );
     img->setType( imgType );
+    img->getDataArray()->resize(imgType, imgSize, numberOfComponents, false);
 }
 
 //------------------------------------------------------------------------------

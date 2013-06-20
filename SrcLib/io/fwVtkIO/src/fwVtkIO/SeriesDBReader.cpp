@@ -265,6 +265,7 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const 
     imgReader->ReadMetaData(info);
 
     updateImageFromVtkInfo(info, imgObj);
+    imgObj->getDataArray()->resize(imgObj->getType(), imgObj->getSize(), vtkImage->GetNumberOfScalarComponents(), false);
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
@@ -286,6 +287,7 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
     imgReader->CopyOutputInformation(info,0);
 
     updateImageFromVtkInfo(info, imgObj);
+    imgObj->getDataArray()->resize(imgObj->getType(), imgObj->getSize(), vtkImage->GetNumberOfScalarComponents(), false);
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
