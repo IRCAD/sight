@@ -1,6 +1,7 @@
 #include <sstream>
 #include <iosfwd>                          // streamsize
 
+#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -200,9 +201,17 @@ protected:
     if(buffSize > 0)
     {
         const ::boost::filesystem::path bufFile = pt.get<std::string>("blob.buffer");
+        ::boost::filesystem::path sourceFile = "";
+        ::fwMemory::FileFormatType format = ::fwMemory::OTHER;
+
+        if( ::boost::filesystem::is_directory(m_archive->getArchivePath()))
+        {
+            sourceFile = m_archive->getArchivePath() / bufFile;
+            format = ::fwMemory::RAW;
+        }
 
         buffObj->setIStreamFactory( ::boost::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile),
-                                   buffSize, m_archive->getArchivePath() / bufFile, ::fwMemory::RAW);
+                                   buffSize, sourceFile, format);
     }
     return atom;
 }
