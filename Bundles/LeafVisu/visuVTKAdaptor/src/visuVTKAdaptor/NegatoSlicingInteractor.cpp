@@ -172,7 +172,6 @@ public:
                 if ( std::string(keySym) == "A" || std::string(keySym) == "a" )
                 {
                     m_adaptor->pushSlice(-1, m_adaptor->getOrientation());
-                    OSLM_ERROR("Ohoh" << m_adaptor->getOrientation());
                 }
                 else if (std::string(keySym) == "Z" || std::string(keySym) == "z" )
                 {
