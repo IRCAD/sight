@@ -39,13 +39,13 @@ Buffer::LockType noFactory()
 Buffer::Buffer(void* buf, size_t size) :
     m_buf(buf), m_size(size), m_counterFactory(&noFactory)
 {
-    OSLM_ASSERT("Buffer is null.", m_buf);
+    OSLM_ASSERT("Buffer is null.", m_buf || size == 0);
 }
 
 Buffer::Buffer(void* buf, size_t size, CounterFactoryType counterFactory) :
     m_buf(buf), m_size(size), m_counterFactory(counterFactory)
 {
-    OSLM_ASSERT("Buffer is null.", m_buf);
+    OSLM_ASSERT("Buffer is null.", m_buf || size == 0);
 }
 
 SPTR(std::istream) Buffer::get()

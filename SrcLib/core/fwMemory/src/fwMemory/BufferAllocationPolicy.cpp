@@ -14,7 +14,10 @@ namespace fwMemory
 
 void BufferMallocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
-    buffer = malloc( size );
+    if (size > 0)
+    {
+        buffer = malloc( size );
+    }
     if (buffer == NULL && size > 0)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
@@ -28,7 +31,15 @@ void BufferMallocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::Si
 void BufferMallocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     BufferType newBuffer;
-    newBuffer = realloc( buffer, size );
+    if (size > 0)
+    {
+        newBuffer = realloc( buffer, size );
+    }
+    else
+    {
+        free ( buffer );
+        newBuffer = NULL;
+    }
     if (newBuffer == NULL && size > 0)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::Memory,
@@ -64,7 +75,10 @@ void BufferNewPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeT
 {
     try
     {
-        buffer = new char[size];
+        if (size > 0)
+        {
+            buffer = new char[size];
+        }
     }
     catch (std::bad_alloc& ba)
     {

@@ -174,6 +174,27 @@ void BufferObjectTest::allocateTest()
     // CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwMemory::exception::Memory);
 }
 
+void BufferObjectTest::allocateZeroTest()
+{
+    const size_t SIZE = 100000;
+    ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
+
+    CPPUNIT_ASSERT( bo->isEmpty() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
+
+    bo->allocate(0);
+
+    CPPUNIT_ASSERT( bo->isEmpty() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
+
+    bo->allocate(SIZE);
+
+    CPPUNIT_ASSERT( !bo->isEmpty() );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
+    CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
+
+
+}
 
 
 void stressLock(::fwMemory::BufferObject::sptr bo, int nbLocks, int nbTest)
