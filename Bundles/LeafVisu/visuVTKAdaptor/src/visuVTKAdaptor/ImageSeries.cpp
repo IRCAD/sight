@@ -138,6 +138,7 @@ void ImageSeries::doUpdate() throw(fwTools::Failed)
     service->setRenderId( this->getRenderId() );
     service->setPickerId( this->getPickerId() );
     service->setRenderService(this->getRenderService());
+    service->setAutoRender( this->getAutoRender() );
     ::visuVTKAdaptor::NegatoMPR::sptr negato = ::visuVTKAdaptor::NegatoMPR::dynamicCast(service);
     negato->set3dMode(this->is3dModeEnabled());
     negato->setSliceMode(this->getSliceMode());

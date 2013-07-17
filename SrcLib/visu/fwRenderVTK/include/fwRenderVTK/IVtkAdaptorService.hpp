@@ -67,6 +67,18 @@ public :
     /// method when it have modified a  vtk structure
     FWRENDERVTK_API void setVtkPipelineModified();
 
+    /// Returns true if the service automatically triggers the rendering.
+    bool getAutoRender() const
+    {
+        return m_autoRender;
+    }
+
+    /// Sets if the service automatically triggers the rendering.
+    void setAutoRender(bool autoRender)
+    {
+        m_autoRender = autoRender;
+    }
+
 protected :
 
     /**
@@ -113,6 +125,8 @@ protected :
 
     vtkPropCollection * m_propCollection;
 
+    bool m_autoRender;
+
     FWRENDERVTK_API virtual void doStart() = 0;
     FWRENDERVTK_API virtual void doStop() = 0;
     FWRENDERVTK_API virtual void doSwap() = 0;
@@ -134,6 +148,7 @@ protected :
     FWRENDERVTK_API void removeAllPropFromRenderer();
 
     FWRENDERVTK_API static void getProps(vtkPropCollection *propc, vtkProp *prop);
+
 
 private:
     /// notify a render request iff vtkPipeline is modified

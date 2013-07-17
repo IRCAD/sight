@@ -111,6 +111,7 @@ void NegatoOneSlice::cleanImageSource()
         imageSliceAdaptor->setRenderId( this->getRenderId() );
         imageSliceAdaptor->setPickerId( this->getPickerId() );
         imageSliceAdaptor->setTransformId( this->getTransformId() );
+        imageSliceAdaptor->setAutoRender( this->getAutoRender() );
 
 
         ::visuVTKAdaptor::ImageSlice::sptr ISA;
@@ -149,6 +150,7 @@ void NegatoOneSlice::cleanImageSource()
         imageAdaptor->setRenderId( this->getRenderId() );
         imageAdaptor->setPickerId( this->getPickerId() );
         imageAdaptor->setTransformId( this->getTransformId() );
+        imageAdaptor->setAutoRender( this->getAutoRender() );
 
         ::visuVTKAdaptor::Image::sptr IA;
         IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);

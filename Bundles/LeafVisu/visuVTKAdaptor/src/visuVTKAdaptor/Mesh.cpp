@@ -301,6 +301,7 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
                 meshAdaptor->setPickerId      ( service->getPickerId()       );
                 meshAdaptor->setMaterial      ( service->getMaterial()       );
                 meshAdaptor->setVtkClippingPlanes( newCollection );
+                meshAdaptor->setAutoRender( service->getAutoRender() );
 
                 meshAdaptor->start();
                 meshAdaptor->updateVisibility ( service->getVisibility()     );
@@ -589,6 +590,7 @@ void Mesh::createTransformService()
 
     transformService->setRenderService ( this->getRenderService()  );
     transformService->setRenderId      ( this->getRenderId()       );
+    transformService->setAutoRender    ( this->getAutoRender()     );
 
     transformService->setTransform(vtkFieldTransform);
     m_transform->Concatenate(vtkFieldTransform);
@@ -664,6 +666,7 @@ void Mesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr &srv, ::
         SLM_ASSERT("srv not instanced", srv);
 
         srv->setRenderService(this->getRenderService());
+        srv->setAutoRender( this->getAutoRender() );
         srv->start();
         srv->update();
         this->registerService(srv);
@@ -720,6 +723,7 @@ void Mesh::createNormalsService()
         service->setRenderService( this->getRenderService() );
         service->setRenderId     ( this->getRenderId()      );
         service->setPickerId     ( this->getPickerId()      );
+        service->setAutoRender   ( this->getAutoRender()    );
         ::visuVTKAdaptor::MeshNormals::dynamicCast(service)->setPolyData( m_polyData );
         service->start();
 

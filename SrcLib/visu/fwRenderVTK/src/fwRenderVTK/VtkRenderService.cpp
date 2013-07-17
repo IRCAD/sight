@@ -55,7 +55,7 @@ const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT = "render";
 //-----------------------------------------------------------------------------
 
 VtkRenderService::VtkRenderService() throw() :
-     m_pendingRenderRequest(false)
+     m_pendingRenderRequest(false), m_autoRender(true)
 {
     m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
     m_slotRender->setWorker(m_associatedWorker);
@@ -189,6 +189,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         assert(adaptee.getService());
 
         adaptee.getService()->setConfiguration(adaptee.m_config);
+        adaptee.getService()->setAutoRender(m_autoRender);
         adaptee.getService()->configure();
         adaptee.getService()->setRenderService(VtkRenderService::dynamicCast(this->shared_from_this()));
         adaptee.getService()->setName(id);
@@ -318,6 +319,9 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
     //assert(m_configuration->getName() == "scene");
     assert(!vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
+
+    std::string autoRender = m_sceneConfiguration->getAttributeValue("autoRender");
+    m_autoRender = (autoRender.empty() || autoRender == "true");
 }
 
 //-----------------------------------------------------------------------------

@@ -95,6 +95,7 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
         service->setRenderService(this->getRenderService());
+        service->setAutoRender( this->getAutoRender() );
         ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor =
                 ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
         renconstructionAdaptor->setClippingPlanes( m_clippingPlanes );

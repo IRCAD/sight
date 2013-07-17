@@ -31,7 +31,8 @@ IVtkAdaptorService::IVtkAdaptorService() throw()
       m_rendererId ("default") ,
       m_pickerId   (""), // by default no Picker
       m_transformId   (""), // by default no Transform
-      m_propCollection ( vtkPropCollection::New() )
+      m_propCollection ( vtkPropCollection::New() ),
+      m_autoRender(true)
 {
     m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
@@ -122,7 +123,7 @@ void IVtkAdaptorService::setVtkPipelineModified()
 
 void IVtkAdaptorService::requestRender()
 {
-    if ( this->getRenderService()->isShownOnScreen() && m_vtkPipelineModified )
+    if ( this->getRenderService()->isShownOnScreen() && m_vtkPipelineModified && m_autoRender )
     {
         if ( !this->getRenderService()->getPendingRenderRequest())
         {

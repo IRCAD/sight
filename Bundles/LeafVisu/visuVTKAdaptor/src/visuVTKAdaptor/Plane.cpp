@@ -131,6 +131,7 @@ void Plane::doStart() throw(fwTools::Failed)
         servicePoint->setRenderService(this->getRenderService());
         servicePoint->setRenderId( this->getRenderId() );
         servicePoint->setPickerId( this->getPickerId() );
+        servicePoint->setAutoRender( this->getAutoRender() );
         servicePoint->start();
 
         this->registerService(servicePoint);

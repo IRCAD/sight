@@ -269,6 +269,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         serviceDistance->setPickerId( this->getPickerId() );
         serviceDistance->setRenderId( this->getRenderId() );
         serviceDistance->setRenderService( this->getRenderService() );
+        serviceDistance->setAutoRender( this->getAutoRender() );
         serviceDistance->start();
 
         // SERVICE POINT LIST
@@ -281,6 +282,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRenderId( this->getRenderId() );
         servicePointList->setRenderService( this->getRenderService() );
+        servicePointList->setAutoRender(m_autoRender);
         servicePointList->start();
 
         this->registerService( serviceDistance );

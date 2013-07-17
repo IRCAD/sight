@@ -135,6 +135,7 @@ void PointList::createServices(WeakPointListType &wPtList)
         service->setRenderService(this->getRenderService());
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
+        service->setAutoRender( this->getAutoRender() );
         service->start();
 
         this->registerService(service);

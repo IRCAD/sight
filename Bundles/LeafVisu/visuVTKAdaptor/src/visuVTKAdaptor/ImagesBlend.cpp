@@ -273,6 +273,7 @@ void ImagesBlend::addImageAdaptors()
                 imageAdaptor->setRenderId( this->getRenderId() );
                 imageAdaptor->setPickerId( this->getPickerId() );
                 imageAdaptor->setTransformId( this->getTransformId() );
+                imageAdaptor->setAutoRender( this->getAutoRender() );
 
                 ::visuVTKAdaptor::Image::sptr IA;
                 IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);

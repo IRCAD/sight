@@ -304,6 +304,7 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
                 meshAdaptor->setMapperInput   ( service->getMapperInput()    );
                 meshAdaptor->setSharpEdgeAngle( service->getSharpEdgeAngle() );
                 meshAdaptor->setMaterial      ( service->getMaterial()       );
+                meshAdaptor->setAutoRender( service->getAutoRender() );
 
                 meshAdaptor->setVtkClippingPlanes( newCollection );
 
@@ -556,7 +557,7 @@ void TriangularMesh::createTransformService()
 
     transformService->setRenderService ( this->getRenderService()  );
     transformService->setRenderId      ( this->getRenderId()       );
-
+    transformService->setAutoRender    ( this->getAutoRender()     );
 
     transformService->setTransform(vtkFieldTransform);
     m_transform->Concatenate(vtkFieldTransform);
@@ -656,6 +657,7 @@ void TriangularMesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::spt
         SLM_ASSERT("srv not instanced", srv);
 
         srv->setRenderService(this->getRenderService());
+        srv->setAutoRender( this->getAutoRender() );
         srv->start();
         srv->update();
         this->registerService(srv);
@@ -724,6 +726,7 @@ void TriangularMesh::createNormalsService()
         service->setRenderService( this->getRenderService() );
         service->setRenderId     ( this->getRenderId()      );
         service->setPickerId     ( this->getPickerId()      );
+        service->setAutoRender   ( this->getAutoRender()    );
         ::visuVTKAdaptor::Normals::dynamicCast(service)->setMapperInput( m_mapperInput );
         service->start();
 

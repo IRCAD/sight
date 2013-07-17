@@ -242,6 +242,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
 
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRenderService( this->getRenderService() );
+        servicePointList->setAutoRender( this->getAutoRender() );
         servicePointList->start();
 
         this->registerService( servicePointList );
@@ -253,6 +254,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
             serviceLabel = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point , "::visuVTKAdaptor::PointLabel");
             SLM_ASSERT("serviceLabel not instanced", serviceLabel);
             serviceLabel->setRenderService( this->getRenderService() );
+            serviceLabel->setAutoRender( this->getAutoRender() );
             serviceLabel->start();
             this->registerService( serviceLabel );
         }

@@ -12,6 +12,8 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -82,6 +84,13 @@ void Transform::configuring() throw(fwTools::Failed)
 
     assert(m_configuration->getName() == "config");
     this->setTransformId( m_configuration->getAttributeValue("transform") );
+
+    if ( m_configuration->hasAttribute( "autoRender" ) )
+    {
+        const std::string autoRender   = m_configuration->getAttributeValue("autoRender");
+        const bool autoRenderValue = (autoRender == "true");
+        this->setAutoRender(autoRenderValue);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -102,11 +111,14 @@ void Transform::updateFromVtk()
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
     vtkMatrix4x4* mat = getTransform()->GetMatrix();
 
-    for(int lt=0; lt<4; lt++)
     {
-        for(int ct=0; ct<4; ct++)
+        ::fwData::mt::ObjectWriteLock lock(trf);
+        for(int lt=0; lt<4; lt++)
         {
-            trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
+            for(int ct=0; ct<4; ct++)
+            {
+                trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
+            }
         }
     }
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
@@ -125,11 +137,14 @@ void Transform::doUpdate() throw(fwTools::Failed)
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
     vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
-    for(int lt=0; lt<4; lt++)
     {
-        for(int ct=0; ct<4; ct++)
+        ::fwData::mt::ObjectReadLock lock(trf);
+        for(int lt=0; lt<4; lt++)
         {
-            mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
+            for(int ct=0; ct<4; ct++)
+            {
+                mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
+            }
         }
     }
     vtkTransform* vtkTrf = this->getTransform();

@@ -38,6 +38,10 @@ namespace fwRenderVTK
 
 class IVtkAdaptorService;
 
+/**
+ * @class VtkRenderService
+ * @brief The generic scene service shows adaptors in a 3D VTK scene. 
+ */
 class FWRENDERVTK_CLASS_API VtkRenderService : public ::fwRender::IRender
 {
 public :
@@ -56,12 +60,16 @@ public :
 
     FWRENDERVTK_API virtual ~VtkRenderService() throw() ;
 
+    /// Returns the vtkRenderer with the given id
     FWRENDERVTK_API vtkRenderer * getRenderer(RendererIdType rendererId);
 
+    /// Returns true if the scene is shown on screen
     bool isShownOnScreen();
 
+    /// Returns the picker with the given id
     FWRENDERVTK_API vtkAbstractPropPicker * getPicker(PickerIdType pickerId);
 
+    /// Returns the vtkObject with the given id
     FWRENDERVTK_API vtkObject * getVtkObject(VtkObjectIdType objectId);
 
     bool getPendingRenderRequest(){return m_pendingRenderRequest;}
@@ -69,6 +77,7 @@ public :
 
 protected:
 
+    /// Renders the scene.
     FWRENDERVTK_API void render();
 
     /// Install observations : should be implemented in IService
@@ -76,10 +85,54 @@ protected:
     /// Uninstall observations : should be implemented in IService
     FWRENDERVTK_API virtual void stopping() throw( ::fwTools::Failed);
 
+    /**
+     * @brief configures the adaptor
+     * @verbatim
+    <service uid="generiSceneUID" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender">
+        <scene autoRender="false">
+            <renderer id="background" layer="0" background="0.0" />
+            <vtkObject id="transform" class="vtkTransform" />
+            <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
+
+            <adaptor id="tmAdaptor" class="::visuVTKAdaptor::Transform" uid="adaptorUID" objectId="tm3dKey">
+                <config transform="transform" />
+            </adaptor>
+
+            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                <config ...... />
+            </adaptor>
+        </scene>
+    </service> 
+       @endverbatim
+     * With : 
+     *  - \b autoRender (optional, "true" by default): this attribute is forwarded to all adaptors. For each adaptor, 
+     *    if autoRender=true,  the scene is automatically rendered after doStart, doUpdate, doSwap, doReceive and 
+     *    doStop and m_vtkPipelineModified=true.
+     *  - \b renderer 
+     *     - \b id (mandatory): the identifier of the renderer
+     *     - \b layer (optional): defines the layer of the vtkRenderer. This is only used if there are layered renderers.
+     *     - \b background (optional): the background color of the rendering screen. The color value can be defines as a 
+     *       grey level value (ex . 1.0 for white) or as a hexadecimal value (ex : \#ffffff for white).
+     *  - \b vtkObject
+     *    - \b id (mandatory): the identifier of the vtkObject
+     *    - \b class (mandatory): the classname of the vtkObject to create. For example vtkTransform, vtkImageBlend, ...
+     *  - \b picker
+     *    - \b id (mandatory): the identifier of the picker
+     *    - \b vtkclass (optional, by default vtkCellPicker): the classname of the picker to create.
+     *  - \b adaptor
+     *    - \b id (mandatory): the identifier of the adaptor
+     *    - \b class (mandatory): the classname of the adaptor service
+     *    - \b uid (optional): the fwID to specify for the adaptor service
+     *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used 
+     *     when the adaptor works on the scene's composite.
+     *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
+     */
     FWRENDERVTK_API virtual void configuring() throw( ::fwTools::Failed) ;
 
+    /// Updates the scene's adaptors with the modified objects contained in the composite.
     FWRENDERVTK_API void receiving( ::fwServices::ObjectMsg::csptr message ) throw( ::fwTools::Failed);
 
+    /// Does nothing.
     FWRENDERVTK_API void updating() throw( ::fwTools::Failed);
 
     /// Add a vtk object in the VtkRenderService, referenced by a key.
@@ -127,6 +180,8 @@ private :
     VtkObjectMapType     m_vtkObjects;
 
     bool m_pendingRenderRequest;
+
+    bool m_autoRender;
 
     void startContext();
     void stopContext();

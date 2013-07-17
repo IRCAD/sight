@@ -94,6 +94,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
         service->setRenderService(this->getRenderService());
+        service->setAutoRender( this->getAutoRender() );
         ::visuVTKAdaptor::Resection::dynamicCast(service)->setClippingPlanes( m_clippingPlanes );
         ::visuVTKAdaptor::Resection::dynamicCast(service)->setSharpEdgeAngle( m_sharpEdgeAngle );
         service->start();
@@ -113,6 +114,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
         service->setRenderService(this->getRenderService());
+        service->setAutoRender( this->getAutoRender() );
         service->start();
 
         this->registerService(service);

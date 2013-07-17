@@ -229,6 +229,7 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
             servicePlane->setRenderService(this->getRenderService());
             servicePlane->setRenderId( this->getRenderId() );
             servicePlane->setPickerId( this->getPickerId() );
+            servicePlane->setAutoRender( this->getAutoRender() );
 
             if (!m_planeCollectionId.empty())
             {

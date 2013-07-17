@@ -88,6 +88,7 @@ void Model::doUpdate() throw(fwTools::Failed)
         trianAdaptor->setRenderId( this->getRenderId() );
         trianAdaptor->setPickerId( this->getPickerId() );
         trianAdaptor->setRenderService(this->getRenderService());
+        trianAdaptor->setAutoRender( this->getAutoRender() );
         trianAdaptor->start();
 
         this->registerService(trianAdaptor);

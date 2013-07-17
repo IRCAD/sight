@@ -366,6 +366,7 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     service->setRenderId( this->getRenderId() );
     service->setPickerId( this->getPickerId() );
     service->setTransformId( this->getTransformId() );
+    service->setAutoRender( this->getAutoRender() );
 
     service->start();
     service->update();

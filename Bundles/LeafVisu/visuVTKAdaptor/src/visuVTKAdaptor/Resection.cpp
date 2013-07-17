@@ -110,6 +110,7 @@ void Resection::doUpdate() throw(fwTools::Failed)
             service->setRenderId( this->getRenderId() );
             service->setPickerId( this->getPickerId() );
             service->setRenderService(this->getRenderService());
+            service->setAutoRender( this->getAutoRender() );
             ::visuVTKAdaptor::Reconstruction::sptr reconstAdaptor = ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
             if(!resectionIsValid)
             {
