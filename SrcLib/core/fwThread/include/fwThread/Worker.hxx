@@ -19,7 +19,7 @@ template< typename R, typename TASK >
 ::boost::shared_future< R > Worker::postTask(TASK f)
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 

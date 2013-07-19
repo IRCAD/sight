@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ void SIncrementArray::starting() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     m_timer = m_associatedWorker->createTimer();
     m_timer->setFunction( ::boost::bind(&SIncrementArray::updating, this) );
-    m_timer->setDuration( ::boost::posix_time::milliseconds(m_periodInMillisec) );
+    m_timer->setDuration( ::boost::chrono::milliseconds(m_periodInMillisec) );
 }
 
 void SIncrementArray::stopping() throw( ::fwTools::Failed )

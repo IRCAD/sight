@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/chrono/duration.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -107,7 +109,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
         seriesDBHelper.notify(srv, true);
 
         // Wait a little notification system
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
 
         CPPUNIT_ASSERT(testSrv->getIsUpdated());
 
@@ -129,7 +131,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
         seriesDBHelper.notify(srv, true);
 
         // Wait a little notification system
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
 
         CPPUNIT_ASSERT(testSrv->getIsUpdated());
 
@@ -152,7 +154,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
         seriesDBHelper.notify(srv, true);
 
         // Wait a little notification system
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
 
         CPPUNIT_ASSERT(testSrv->getIsUpdated());
 
@@ -179,7 +181,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
         seriesDBHelper.notify(srv, true);
 
         // Wait a little notification system
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
 
         CPPUNIT_ASSERT(testSrv->getIsUpdated());
 

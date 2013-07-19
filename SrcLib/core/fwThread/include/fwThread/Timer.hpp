@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,7 @@
 #ifndef __FWTHREAD_TIMER_HPP__
 #define __FWTHREAD_TIMER_HPP__
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/chrono/duration.hpp>
 
 #include <fwCore/mt/types.hpp>
 
@@ -37,7 +37,7 @@ public:
      * @{ */
     typedef ::boost::shared_ptr< Timer >        sptr;
     typedef ::boost::function< void() >         FunctionType;
-    typedef ::boost::posix_time::time_duration  TimeDurationType;
+    typedef ::boost::chrono::duration<double>   TimeDurationType;
     /**  @} */
 
 

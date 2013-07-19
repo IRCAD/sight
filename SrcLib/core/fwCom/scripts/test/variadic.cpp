@@ -475,7 +475,7 @@ public :
     ::boost::shared_future< void > asyncRun( Worker &worker, A... args )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A... >( args... ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -489,7 +489,7 @@ public :
     ::boost::shared_future< R > asyncCall( Worker &worker, A... args )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A... >( args... ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 

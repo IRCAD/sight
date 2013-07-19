@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,7 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/typeof/typeof.hpp>
+#include <boost/chrono/duration.hpp>
 
 #include <cppunit/Exception.h>
 
@@ -53,7 +54,7 @@ struct TestHandler
 
     void nextStep()
     {
-        ::boost::this_thread::sleep(::boost::posix_time::milliseconds(50));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(50));
         this->nextStepNoSleep();
     }
 
@@ -203,7 +204,7 @@ void echo()
 void runBasicTimerTest(
         TestHandler &handler,
         const ::fwThread::Timer::sptr &timer,
-        ::boost::posix_time::time_duration duration
+        ::fwThread::Timer::TimeDurationType duration
         )
 {
     timer->start();
@@ -222,7 +223,7 @@ void oneShotBasicTimerTest(
         int &i,
         TestHandler &handler,
         const ::fwThread::Timer::sptr &timer,
-        ::boost::posix_time::time_duration duration,
+        ::fwThread::Timer::TimeDurationType duration,
         const ::fwThread::Worker::sptr &worker
         )
 {
@@ -262,7 +263,7 @@ void WorkerQtTest::basicTimerTest()
 
         ::fwThread::Timer::sptr timer = m_worker->createTimer();
 
-        ::boost::posix_time::time_duration duration = ::boost::posix_time::milliseconds(10) ;
+        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(10) ;
 
         int i = 1;
         timer->setFunction(

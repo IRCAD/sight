@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,6 +9,8 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <boost/typeof/typeof.hpp>
+#include <boost/chrono/duration.hpp>
+
 
 #include <fwThread/Worker.hpp>
 
@@ -336,7 +338,7 @@ struct B
         ::boost::thread::id oldId = m_threadId;
         m_threadId = ::boost::this_thread::get_id();
 
-        ::boost::this_thread::sleep( ::boost::posix_time::seconds(nbSeconds));
+        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(nbSeconds));
 
         return oldId;
     }

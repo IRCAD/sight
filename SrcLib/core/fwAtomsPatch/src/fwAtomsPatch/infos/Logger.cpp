@@ -5,15 +5,18 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-#include <boost/log/filters.hpp>
-#include <boost/log/formatters.hpp>
+#include <boost/log/attributes.hpp>
+#include <boost/log/expressions.hpp>
 #include <boost/log/sources/channel_logger.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/sinks.hpp>
 #include <boost/parameter/keyword.hpp>
 #include <boost/log/keywords/channel.hpp>
-#include <boost/log/utility/init/common_attributes.hpp>
-#include <boost/log/utility/init/to_file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/sources/global_logger_storage.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/expressions/formatters/date_time.hpp>
+#include <boost/log/support/date_time.hpp>
 
 #include "fwAtomsPatch/infos/Logger.hpp"
 
@@ -25,36 +28,38 @@ namespace infos
 Logger::StreamPtrType Logger::s_stream = ::boost::make_shared< Logger::StreamType >();
 Logger Logger::s_logger;
 
-BOOST_LOG_DECLARE_GLOBAL_LOGGER_CTOR_ARGS(lg_channel,
-                                          ::boost::log::sources::channel_logger<std::string>,
-                                           (std::string("patch")));
+BOOST_LOG_GLOBAL_LOGGER(lg_channel,
+                        ::boost::log::sources::channel_logger<std::string>);
+
+BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS(lg_channel,
+                                  ::boost::log::sources::channel_logger_mt<std::string>,
+                                   (std::string("patch")));
+
 
 Logger::Logger()
 {
-    namespace fmt = ::boost::log::formatters;
+    namespace expr = ::boost::log::expressions;
     namespace keywords = ::boost::log::keywords;
 
-    ::boost::log::core::get()->add_sink(
-            ::boost::log::init_log_to_file (
-                    // file name pattern
-                    keywords::file_name = "PATCH.log",
-                    // rotate files every 10 MiB...
-                    keywords::rotation_size = 10 * 1024 * 1024,
-                    // ...or at midnight
-                    keywords::time_based_rotation = ::boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
-                    // log record format
-                    keywords::format = (
-                            fmt::stream
-                            << "[" << fmt::date_time< boost::posix_time::ptime >("TimeStamp", "%d.%m.%Y %H:%M:%S.%f")
-                            << "][" << fmt::time_duration("Uptime", std::nothrow)
-                            << "][" << fmt::attr< std::string >("Channel", std::nothrow)
-                            << "] " << fmt::message()
-                    ),
-                    // auto-flush feature of the backend
-                    keywords::auto_flush = true,
-                    keywords::filter = (::boost::log::filters::attr< std::string >("Channel", std::nothrow) == "patch")
-                )
-            );
+    ::boost::log::add_file_log (
+                // file name pattern
+                keywords::file_name = "PATCH.log",
+                // rotate files every 10 MiB...
+                keywords::rotation_size = 10 * 1024 * 1024,
+                // ...or at midnight
+                keywords::time_based_rotation = ::boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
+                // log record format
+                keywords::format = (
+                        expr::stream
+                        << "[" << expr::format_date_time< ::boost::posix_time::ptime >("TimeStamp", "%d.%m.%Y %H:%M:%S.%f")
+                        << "][" << expr::format_date_time< ::boost::posix_time::ptime >("Uptime", "%H:%M:%S.%f")
+                        << "][" << expr::attr< std::string >("Channel")
+                        << "] " << expr::smessage
+                ),
+                // auto-flush feature of the backend
+                keywords::auto_flush = true,
+                keywords::filter = (expr::attr< std::string >("Channel") == "patch")
+    );
 
     // Construct the sink
     typedef ::boost::log::sinks::synchronous_sink< ::boost::log::sinks::text_ostream_backend > text_sink;

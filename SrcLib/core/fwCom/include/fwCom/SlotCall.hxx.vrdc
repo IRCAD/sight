@@ -52,7 +52,7 @@ template< typename R, typename ...A >
     //                             this->bindCall( args... ),
     //                             this->m_workerMutex ));
 
-    // ::boost::unique_future< R > ufuture = task.get_future();
+    // ::boost::future< R > ufuture = task.get_future();
     // ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
     // worker->post(f);
 
@@ -99,7 +99,7 @@ template< typename WEAKCALL >
 ::boost::shared_future< R > SlotCall< R (A...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 

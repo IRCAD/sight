@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,8 @@
 
 #include <boost/thread.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/chrono/duration.hpp>
+
 
 #include "fwCom/exception/BadSlot.hpp"
 #include "fwCom/exception/AlreadyConnected.hpp"
@@ -468,7 +470,7 @@ void SignalTest::asyncArgumentLossTest()
 
     sig->asyncEmit(21.0f, 42.0, "asyncEmit");
 
-    ::boost::this_thread::sleep(::boost::posix_time::milliseconds(100));
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
 
     CPPUNIT_ASSERT(testObject.m_method0);
     CPPUNIT_ASSERT(testObject.m_method1);
@@ -574,7 +576,7 @@ void SignalTest::asyncEmitTest()
 
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
         sig->asyncEmit();
-        ::boost::this_thread::sleep( ::boost::posix_time::seconds(1));
+        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method0);
     }
@@ -597,7 +599,7 @@ void SignalTest::asyncEmitTest()
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
 
         sig->asyncEmit(21.0f);
-        ::boost::this_thread::sleep( ::boost::posix_time::seconds(1));
+        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method1);
     }
@@ -620,7 +622,7 @@ void SignalTest::asyncEmitTest()
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
 
         sig->asyncEmit(21.0f, 42);
-        ::boost::this_thread::sleep( ::boost::posix_time::seconds(1));
+        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method2);
     }
@@ -643,7 +645,7 @@ void SignalTest::asyncEmitTest()
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
 
         sig->asyncEmit(21.0f, 42.0, "emit");
-        ::boost::this_thread::sleep( ::boost::posix_time::seconds(1));
+        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method3);
     }

@@ -345,7 +345,7 @@ template< typename R, typename WEAKCALL >
 ::boost::shared_future< R > SlotRun< void ( A1, A2, A3 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
@@ -361,7 +361,7 @@ template< typename R, typename WEAKCALL >
 ::boost::shared_future< R > SlotRun< void ( A1, A2 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
@@ -377,7 +377,7 @@ template< typename R, typename WEAKCALL >
 ::boost::shared_future< R > SlotRun< void ( A1 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
@@ -393,7 +393,7 @@ template< typename R, typename WEAKCALL >
 ::boost::shared_future< R > SlotRun< void () >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
@@ -414,7 +414,7 @@ template< typename R, typename WEAKCALL >
 ::boost::shared_future< R > SlotRun< void (A...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 

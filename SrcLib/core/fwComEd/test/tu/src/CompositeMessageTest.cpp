@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include <boost/chrono/duration.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -93,7 +95,7 @@ void CompositeMessageTest::testCompositeMessage()
     ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
 
     // Wait a little notification system
-    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
 
     // test message is received
     CPPUNIT_ASSERT(serviceCompo->getIsUpdatedMessage());
@@ -111,7 +113,7 @@ void CompositeMessageTest::testCompositeMessage()
     ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
 
     // Wait a little notification system
-    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
 
     // test message is received
     CPPUNIT_ASSERT(serviceCompo->getIsUpdatedMessage());
@@ -131,7 +133,7 @@ void CompositeMessageTest::testCompositeMessage()
     ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
 
     // Wait a little notification system
-    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(500) );
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
 
     // test message is received
     CPPUNIT_ASSERT(serviceCompo->getIsUpdatedMessage());

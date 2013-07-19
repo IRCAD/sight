@@ -1149,7 +1149,7 @@ template< typename A1, typename A2, typename A3, typename A4, typename A5, typen
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5, A6 args6, A7 args7, A8 args8, A9 args9 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1, A2, A3, A4, A5, A6, A7, A8, A9 >( args1, args2, args3, args4, args5, args6, args7, args8, args9 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1164,7 +1164,7 @@ template< typename A1, typename A2, typename A3, typename A4, typename A5, typen
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5, A6 args6, A7 args7, A8 args8 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1, A2, A3, A4, A5, A6, A7, A8 >( args1, args2, args3, args4, args5, args6, args7, args8 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1179,7 +1179,7 @@ template< typename A1, typename A2, typename A3, typename A4, typename A5, typen
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5, A6 args6, A7 args7 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1, A2, A3, A4, A5, A6, A7 >( args1, args2, args3, args4, args5, args6, args7 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1194,7 +1194,7 @@ template< typename A1, typename A2, typename A3, typename A4, typename A5, typen
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5, A6 args6 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1, A2, A3, A4, A5, A6 >( args1, args2, args3, args4, args5, args6 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1209,7 +1209,7 @@ template< typename A1, typename A2, typename A3, typename A4, typename A5 >
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1, A2, A3, A4, A5 >( args1, args2, args3, args4, args5 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1224,7 +1224,7 @@ template< typename A1, typename A2, typename A3, typename A4 >
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1, A2, A3, A4 >( args1, args2, args3, args4 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1239,7 +1239,7 @@ template< typename A1, typename A2, typename A3 >
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1, A2 args2, A3 args3 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1, A2, A3 >( args1, args2, args3 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1254,7 +1254,7 @@ template< typename A1, typename A2 >
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1, A2 args2 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1, A2 >( args1, args2 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1269,7 +1269,7 @@ template< typename A1 >
     ::boost::shared_future< void > asyncRun( Worker &worker, A1 args1 )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A1 >( args1 ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1284,7 +1284,7 @@ template< typename A1 >
     ::boost::shared_future< void > asyncRun( Worker &worker)
     {
         ::boost::packaged_task<void> task(  this->bindRun() );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1304,7 +1304,7 @@ template< typename ...A >
     ::boost::shared_future< void > asyncRun( Worker &worker, A... args )
     {
         ::boost::packaged_task<void> task(  this->bindRun< A... >( args... ) );
-        ::boost::unique_future< void > ufuture = task.get_future();
+        ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
 
@@ -1325,7 +1325,7 @@ template< typename R, typename A1, typename A2, typename A3, typename A4, typena
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5, A6 args6, A7 args7, A8 args8, A9 args9 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1, A2, A3, A4, A5, A6, A7, A8, A9 >( args1, args2, args3, args4, args5, args6, args7, args8, args9 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1341,7 +1341,7 @@ template< typename R, typename A1, typename A2, typename A3, typename A4, typena
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5, A6 args6, A7 args7, A8 args8 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1, A2, A3, A4, A5, A6, A7, A8 >( args1, args2, args3, args4, args5, args6, args7, args8 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1357,7 +1357,7 @@ template< typename R, typename A1, typename A2, typename A3, typename A4, typena
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5, A6 args6, A7 args7 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1, A2, A3, A4, A5, A6, A7 >( args1, args2, args3, args4, args5, args6, args7 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1373,7 +1373,7 @@ template< typename R, typename A1, typename A2, typename A3, typename A4, typena
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5, A6 args6 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1, A2, A3, A4, A5, A6 >( args1, args2, args3, args4, args5, args6 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1389,7 +1389,7 @@ template< typename R, typename A1, typename A2, typename A3, typename A4, typena
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4, A5 args5 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1, A2, A3, A4, A5 >( args1, args2, args3, args4, args5 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1405,7 +1405,7 @@ template< typename R, typename A1, typename A2, typename A3, typename A4 >
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1, A2 args2, A3 args3, A4 args4 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1, A2, A3, A4 >( args1, args2, args3, args4 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1421,7 +1421,7 @@ template< typename R, typename A1, typename A2, typename A3 >
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1, A2 args2, A3 args3 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1, A2, A3 >( args1, args2, args3 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1437,7 +1437,7 @@ template< typename R, typename A1, typename A2 >
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1, A2 args2 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1, A2 >( args1, args2 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1453,7 +1453,7 @@ template< typename R, typename A1 >
     ::boost::shared_future< R > asyncCall( Worker &worker, A1 args1 )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A1 >( args1 ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1469,7 +1469,7 @@ template< typename R>
     ::boost::shared_future< R > asyncCall( Worker &worker)
     {
         ::boost::packaged_task<R> task( this->bindCall< R>() );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 
@@ -1490,7 +1490,7 @@ template< typename R, typename ...A >
     ::boost::shared_future< R > asyncCall( Worker &worker, A... args )
     {
         ::boost::packaged_task<R> task( this->bindCall< R, A... >( args... ) );
-        ::boost::unique_future< R > ufuture = task.get_future();
+        ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
 

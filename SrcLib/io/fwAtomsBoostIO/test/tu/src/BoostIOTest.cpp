@@ -229,8 +229,6 @@ SequenceGenerator generator;
 
 void BoostIOTest::setUp()
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
-    ::fwMemory::BufferManager::setCurrent( manager );
 }
 
 void BoostIOTest::tearDown()

@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include <boost/chrono/duration.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -230,7 +232,7 @@ void SlotsSignalsTest::blockConnectionTest()
 
     readerTestSrv->update();
 
-    ::boost::this_thread::sleep(::boost::posix_time::seconds(8));
+    ::boost::this_thread::sleep_for( ::boost::chrono::seconds(8));
 
     IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
     IService::SharedFutureType stopShowFuture = showTestSrv->stop();

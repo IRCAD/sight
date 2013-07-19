@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <iostream>
 #include <exception>
+
+#include <boost/chrono/duration.hpp>
 
 #include <fwCore/spyLog.hpp>
 
@@ -48,7 +50,7 @@ struct TestHandler
 
     void nextStep()
     {
-        ::boost::this_thread::sleep(::boost::posix_time::milliseconds(50));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(50));
         this->nextStepNoSleep();
     }
 
@@ -118,7 +120,7 @@ void WorkerTest::timerTest()
 
     ::fwThread::Timer::sptr timer = worker->createTimer();
 
-    ::boost::posix_time::time_duration duration = ::boost::posix_time::milliseconds(100) ;
+    ::boost::chrono::milliseconds duration = ::boost::chrono::milliseconds(100) ;
 
     timer->setFunction(  ::boost::bind( &TestHandler::nextStepNoSleep, &handler)  );
     timer->setDuration(duration);
@@ -133,11 +135,11 @@ void WorkerTest::timerTest()
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-    ::boost::this_thread::sleep( duration/10. );
+    ::boost::this_thread::sleep_for( duration/10. );
 
     for (int i = 1 ; i < 50 ; ++i)
     {
-        ::boost::this_thread::sleep( duration );
+        ::boost::this_thread::sleep_for( duration );
 
         CPPUNIT_ASSERT(timer->isRunning());
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
@@ -147,7 +149,7 @@ void WorkerTest::timerTest()
 
     timer->stop();
 
-    ::boost::this_thread::sleep( duration*3 );
+    ::boost::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
@@ -163,11 +165,11 @@ void WorkerTest::timerTest()
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-    ::boost::this_thread::sleep( duration/10. );
+    ::boost::this_thread::sleep_for( duration/10. );
 
     for (int i = 1 ; i < 50 ; ++i)
     {
-        ::boost::this_thread::sleep( duration );
+        ::boost::this_thread::sleep_for( duration );
 
         CPPUNIT_ASSERT(timer->isRunning());
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
@@ -177,7 +179,7 @@ void WorkerTest::timerTest()
 
     timer->stop();
 
-    ::boost::this_thread::sleep( duration*3 );
+    ::boost::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
@@ -197,11 +199,11 @@ void WorkerTest::timerTest()
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-    ::boost::this_thread::sleep( duration/10. );
+    ::boost::this_thread::sleep_for( duration/10. );
 
     for (int i = 1 ; i < 25 ; ++i)
     {
-        ::boost::this_thread::sleep( duration );
+        ::boost::this_thread::sleep_for( duration );
 
         CPPUNIT_ASSERT(timer->isRunning());
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
@@ -209,12 +211,12 @@ void WorkerTest::timerTest()
 
     }
 
-    duration = ::boost::posix_time::milliseconds(50);
+    duration = ::boost::chrono::milliseconds(50);
     timer->setDuration(duration);
 
     for (int i = 24 ; i < 50 ; ++i)
     {
-        ::boost::this_thread::sleep( duration );
+        ::boost::this_thread::sleep_for( duration );
 
         CPPUNIT_ASSERT(timer->isRunning());
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
@@ -225,7 +227,7 @@ void WorkerTest::timerTest()
 
     timer->stop();
 
-    ::boost::this_thread::sleep( duration*3 );
+    ::boost::this_thread::sleep_for( duration*3 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
@@ -238,7 +240,7 @@ void WorkerTest::timerTest()
     // one shot test
     handler.m_step = 0;
 
-    duration = ::boost::posix_time::milliseconds(10);
+    duration = ::boost::chrono::milliseconds(10);
     timer->setDuration(duration);
     timer->setOneShot(true);
 
@@ -248,7 +250,7 @@ void WorkerTest::timerTest()
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
     CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-    ::boost::this_thread::sleep( duration*10 );
+    ::boost::this_thread::sleep_for( duration*10 );
 
     CPPUNIT_ASSERT(!timer->isRunning());
     CPPUNIT_ASSERT(handler.m_threadCheckOk);

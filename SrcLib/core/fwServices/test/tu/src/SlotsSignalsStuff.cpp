@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,21 +45,21 @@ SBasicTest::SBasicTest() : m_updateFinished(false), m_swapFinished(false)
 
 void SBasicTest::starting() throw ( ::fwTools::Failed )
 {
-    ::boost::this_thread::sleep(m_startRetarder);
+    ::boost::this_thread::sleep_for(m_startRetarder);
 }
 
 //------------------------------------------------------------------------------
 
 void SBasicTest::stopping() throw ( ::fwTools::Failed )
 {
-    ::boost::this_thread::sleep(m_stopRetarder);
+    ::boost::this_thread::sleep_for(m_stopRetarder);
 }
 
 //------------------------------------------------------------------------------
 
 void SBasicTest::swapping() throw ( ::fwTools::Failed )
 {
-    ::boost::this_thread::sleep(m_swapRetarder);
+    ::boost::this_thread::sleep_for(m_swapRetarder);
     m_swapFinished = true;
 }
 
@@ -67,7 +67,7 @@ void SBasicTest::swapping() throw ( ::fwTools::Failed )
 
 void SBasicTest::updating() throw ( ::fwTools::Failed )
 {
-    ::boost::this_thread::sleep(m_updateRetarder);
+    ::boost::this_thread::sleep_for(m_updateRetarder);
     m_updateFinished = true;
 }
 
@@ -108,7 +108,7 @@ SShowTest::SShowTest() : m_receiveCount(0), m_changeCount(0)
 void SShowTest::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     Buffer::sptr buffer = this->getObject<Buffer>();
-    ::boost::this_thread::sleep(m_receiveRetarder);
+    ::boost::this_thread::sleep_for(m_receiveRetarder);
     ::fwData::mt::ObjectWriteLock lock(buffer);
     ++m_receiveCount;
 }
@@ -159,7 +159,7 @@ SShow2Test::SShow2Test() : m_receiveCount(0)
 void SShow2Test::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     Buffer::sptr buffer = this->getObject<Buffer>();
-    ::boost::this_thread::sleep(m_receiveRetarder);
+    ::boost::this_thread::sleep_for(m_receiveRetarder);
     ::fwData::mt::ObjectWriteLock lock(buffer);
     ++m_receiveCount;
 

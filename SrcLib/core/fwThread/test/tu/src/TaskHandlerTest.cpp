@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <iostream>
 #include <exception>
+
+#include <boost/chrono/duration.hpp>
 
 #include <fwCore/spyLog.hpp>
 
@@ -36,7 +38,7 @@ void TaskHandlerTest::tearDown()
 
 int copy(int val)
 {
-    ::boost::this_thread::sleep(::boost::posix_time::seconds(1));
+    ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
     return val;
 }
 
@@ -54,11 +56,11 @@ void TaskHandlerTest::basicTest()
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
 
     ::boost::packaged_task<int> task( ::boost::bind( &copy, 5) );
-    ::boost::unique_future< int > future = task.get_future();
+    ::boost::future< int > future = task.get_future();
     ::boost::function< void () > f = moveTaskIntoFunction(task);
 
     ::boost::packaged_task<int> task2( ::boost::bind( &copy, 8) );
-    ::boost::unique_future< int > future2 = task2.get_future();
+    ::boost::future< int > future2 = task2.get_future();
     ::boost::function< void () > f2 = moveTaskIntoFunction(task2);
 
     worker->post(f);
@@ -81,11 +83,11 @@ void TaskHandlerTest::basicTest()
 
 
     ::boost::packaged_task<int> task3( ::boost::bind( &copy, 5) );
-    ::boost::unique_future< int > future3 = task3.get_future();
+    ::boost::future< int > future3 = task3.get_future();
     ::boost::function< void () > f3 = moveTaskIntoFunction(task3);
 
     ::boost::packaged_task<int> task4( ::boost::bind( &copy, 8) );
-    ::boost::unique_future< int > future4 = task4.get_future();
+    ::boost::future< int > future4 = task4.get_future();
     ::boost::function< void () > f4 = moveTaskIntoFunction(task4);
 
     worker->post(f3);
@@ -114,7 +116,7 @@ void TaskHandlerTest::exceptionTest()
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
 
     ::boost::packaged_task<void> task( ::boost::bind( &throwException ) );
-    ::boost::unique_future< void > future = task.get_future();
+    ::boost::future< void > future = task.get_future();
     ::boost::function< void () > f = moveTaskIntoFunction(task);
 
     worker->post(f);

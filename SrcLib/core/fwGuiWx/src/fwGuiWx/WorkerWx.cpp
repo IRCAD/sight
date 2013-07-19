@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/once.hpp>
+#include <boost/chrono/duration.hpp>
 
 #include <wx/wx.h>
 
@@ -273,7 +274,7 @@ int onRun()
             ! m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
 
         ::boost::packaged_task< ExitReturnType > task( ::boost::bind(&onRun) );
-        ::boost::unique_future< ExitReturnType > ufuture = task.get_future();
+        ::boost::future< ExitReturnType > ufuture = task.get_future();
         m_future = ::boost::move(ufuture);
         task();
     }
@@ -348,7 +349,9 @@ void TimerWx::setDuration(TimeDurationType duration)
 void TimerWx::start()
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
-    m_timerWx->Start(m_duration.total_milliseconds(), m_isOneShot);
+    m_timerWx->Start( 
+                ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(m_duration).count(), 
+                m_isOneShot);
 }
 
 void TimerWx::stop()

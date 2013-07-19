@@ -99,7 +99,7 @@ public :
     //@{
     typedef ::boost::shared_future< void > SharedFutureType;
     typedef ::boost::packaged_task< void > PackagedTaskType;
-    typedef ::boost::unique_future< void > UniqueFutureType;
+    typedef ::boost::future< void > UniqueFutureType;
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_SLOT;
     typedef ::fwCom::Slot<SharedFutureType()> StartSlotType;

@@ -94,7 +94,7 @@ template< typename R, typename A1, typename A2, typename A3 >
     //                             this->bindCall( args1, args2, args3 ),
     //                             this->m_workerMutex ));
 
-    // ::boost::unique_future< R > ufuture = task.get_future();
+    // ::boost::future< R > ufuture = task.get_future();
     // ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
     // worker->post(f);
 
@@ -128,7 +128,7 @@ template< typename R, typename A1, typename A2 >
     //                             this->bindCall( args1, args2 ),
     //                             this->m_workerMutex ));
 
-    // ::boost::unique_future< R > ufuture = task.get_future();
+    // ::boost::future< R > ufuture = task.get_future();
     // ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
     // worker->post(f);
 
@@ -162,7 +162,7 @@ template< typename R, typename A1 >
     //                             this->bindCall( args1 ),
     //                             this->m_workerMutex ));
 
-    // ::boost::unique_future< R > ufuture = task.get_future();
+    // ::boost::future< R > ufuture = task.get_future();
     // ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
     // worker->post(f);
 
@@ -196,7 +196,7 @@ template< typename R>
     //                             this->bindCall(),
     //                             this->m_workerMutex ));
 
-    // ::boost::unique_future< R > ufuture = task.get_future();
+    // ::boost::future< R > ufuture = task.get_future();
     // ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
     // worker->post(f);
 
@@ -235,7 +235,7 @@ template< typename R, typename ...A >
     //                             this->bindCall( args... ),
     //                             this->m_workerMutex ));
 
-    // ::boost::unique_future< R > ufuture = task.get_future();
+    // ::boost::future< R > ufuture = task.get_future();
     // ::boost::function< void() > f = ::fwThread::moveTaskIntoFunction(task);
     // worker->post(f);
 
@@ -409,7 +409,7 @@ template< typename WEAKCALL >
 ::boost::shared_future< R > SlotCall< R ( A1, A2, A3 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
@@ -425,7 +425,7 @@ template< typename WEAKCALL >
 ::boost::shared_future< R > SlotCall< R ( A1, A2 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
@@ -441,7 +441,7 @@ template< typename WEAKCALL >
 ::boost::shared_future< R > SlotCall< R ( A1 ) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
@@ -457,7 +457,7 @@ template< typename WEAKCALL >
 ::boost::shared_future< R > SlotCall< R () >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
@@ -478,7 +478,7 @@ template< typename WEAKCALL >
 ::boost::shared_future< R > SlotCall< R (A...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
-    ::boost::unique_future< R > ufuture = task.get_future();
+    ::boost::future< R > ufuture = task.get_future();
 
     ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
 
