@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,14 +57,7 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
 
         for ( size_t k = 0; dataImageIsAllocated && k < nbDim; ++k )
         {
-            if(k == 2 && nbDim == 3) // special test for 2D jpeg image (size[2] == 1)
-            {
-                dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
-            }
-            else
-            {
-                dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] != 0 && ( _pImg->getSize()[k] != 1 ) );
-            }
+            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
         }
     }
 
