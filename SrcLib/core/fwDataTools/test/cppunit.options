@@ -1,6 +1,7 @@
 CLASSTEST=[
           'MeshTest',
           'ImageTest',
+          'TransformationMatrix3DTest',
           ]
 
 USE = ['boost']
