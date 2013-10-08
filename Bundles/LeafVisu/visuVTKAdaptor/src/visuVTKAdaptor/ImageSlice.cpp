@@ -29,6 +29,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
+#include <vtkImageMapper3D.h>
 
 #include "visuVTKAdaptor/ImageSlice.hpp"
 
@@ -319,7 +320,7 @@ void ImageSlice::buildPipeline( )
     if (algorithm)
     {
         SLM_TRACE("Input is a vtkImageAlgorithm");
-        m_imageActor->SetInput(algorithm->GetOutput());
+        m_imageActor->GetMapper()->SetInputConnection(algorithm->GetOutputPort());
         //if (imageBlend)
         //{
             //imageBlend->SetBlendModeToCompound();
@@ -329,7 +330,7 @@ void ImageSlice::buildPipeline( )
     else if (imageData)
     {
         SLM_TRACE("Input is a vtkImageData");
-        m_imageActor->SetInput(imageData);
+        m_imageActor->SetInputData(imageData);
     }
 
     if(!this->getTransformId().empty())
@@ -375,7 +376,7 @@ void ImageSlice::buildOutline()
     cells = NULL;
 
     m_planeOutlineMapper = vtkPolyDataMapper::New();
-    m_planeOutlineMapper->SetInput( m_planeOutlinePolyData );
+    m_planeOutlineMapper->SetInputData( m_planeOutlinePolyData );
     m_planeOutlineMapper->SetResolveCoincidentTopologyToPolygonOffset();
     m_planeOutlineActor->SetMapper(m_planeOutlineMapper);
     m_planeOutlineActor->PickableOff();

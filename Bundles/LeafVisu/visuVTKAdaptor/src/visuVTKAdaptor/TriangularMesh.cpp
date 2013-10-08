@@ -833,7 +833,7 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
 
         if (m_computeNormalsAtUpdate)
         {
-            m_normals->SetInput( m_polyData );
+            m_normals->SetInputData( m_polyData );
             m_normals->Update();
             m_polyData->DeepCopy(m_normals->GetOutput());
         }
@@ -859,14 +859,14 @@ void TriangularMesh::updateMapper()
 
     if( (algo = vtkPolyDataAlgorithm::SafeDownCast(m_pipelineInput)) )
     {
-        algo->SetInput( m_polyData );
+        algo->SetInputData( m_polyData );
         SLM_ASSERT ("missing mapper input", m_mapperInput);
         m_mapper->SetInputConnection(m_mapperInput);
     }
     else if ( (mapper = vtkPolyDataMapper::SafeDownCast(m_pipelineInput)) )
     {
         SLM_ASSERT ("mapper input should be 0", m_mapperInput == 0 );
-        mapper->SetInput( m_polyData );
+        mapper->SetInputData( m_polyData );
     }
 
     SLM_ASSERT( "Bad pipeline input", algo || mapper);

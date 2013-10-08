@@ -283,6 +283,8 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                         //add progress observation
                         ::fwVtkIO::Progressor progress(reader, this->getSptr(), "Serie " + iter->first);
                         reader->Update();
+                        reader->UpdateInformation();
+                        reader->PropagateUpdateExtent();
                         try
                         {
                             ::fwVtkIO::fromVTKImage(reader->GetOutput(), pDataImage);
@@ -367,8 +369,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                         imgOrigin.resize(3);
                         imgOrigin[2] = 0.;
                         pDataImage->setOrigin(imgOrigin);
-
-                        width = 4096;
                     }
 
 

@@ -1,7 +1,7 @@
 TYPE = 'bundle'
 VERSION = '0-1'
 
-#USE = ['vtkWidgets','boostFilesystem']
+#USE = ['vtk6InteractionWidgets','boostFilesystem']
 #LIB = [
 #        'fwCore_0-1',
 #        'fwRuntime_0-3',
@@ -18,7 +18,7 @@ VERSION = '0-1'
 
 
 # Tuto 01
-#USE = ['vtkWidgets']
+#USE = ['vtk6InteractionWidgets']
 #LIB = [
 #        'fwCore_0-1',
 #        'fwRuntime_0-3',
@@ -32,7 +32,7 @@ VERSION = '0-1'
 #        ]
 
 # Tuto 02
-#USE = ['vtkWidgets','boostFilesystem']
+#USE = ['vtk6InteractionWidgets','boostFilesystem']
 #LIB = [
 #        'fwCore_0-1',
 #        'fwRuntime_0-3',
@@ -48,7 +48,7 @@ VERSION = '0-1'
 #BUNDLES = ['io_0-1']
 
 # Tuto 03
-#USE = ['vtkWidgets','boostFilesystem']
+#USE = ['vtk6InteractionWidgets','boostFilesystem']
 #LIB = [
 #       'fwCore_0-1',
 #       'fwRuntime_0-3',

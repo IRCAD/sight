@@ -113,7 +113,7 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
 
     // contour filter
     vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
-    contourFilter->SetInput(vtkImage);
+    contourFilter->SetInputData(vtkImage);
     contourFilter->SetValue(0, 255);
     contourFilter->ComputeScalarsOn();
     contourFilter->ComputeNormalsOn();
@@ -121,7 +121,7 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
 
     // smooth filter
     vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter = vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
-    smoothFilter->SetInput(contourFilter->GetOutput());
+    smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
     smoothFilter->SetNumberOfIterations( 50 );
     smoothFilter->BoundarySmoothingOn();
     smoothFilter->SetPassBand ( 0.1 );
@@ -139,7 +139,7 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     if( reduction > 0 )
     {
         vtkSmartPointer< vtkDecimatePro > decimate = vtkSmartPointer< vtkDecimatePro >::New();
-        decimate->SetInput( smoothFilter->GetOutput() );
+        decimate->SetInputConnection( smoothFilter->GetOutputPort() );
         decimate->SetTargetReduction( reduction/100.0 );
         decimate->PreserveTopologyOff();
         decimate->SplittingOn();

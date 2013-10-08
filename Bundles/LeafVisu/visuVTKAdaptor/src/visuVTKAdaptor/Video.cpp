@@ -75,7 +75,7 @@ void Video::doStart() throw(fwTools::Failed)
 {
     vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
     vtkPlaneSource* plan = vtkPlaneSource ::New();
-    mapper->SetInput(plan->GetOutput());
+    mapper->SetInputConnection(plan->GetOutputPort());
     vtkActor* actor = this->getActor();
     actor->SetMapper(mapper);
     this->setVtkPipelineModified();
@@ -99,15 +99,15 @@ void Video::doUpdate() throw(fwTools::Failed)
 
     m_array->SetNumberOfComponents(video->m_ui8BPP );
     m_array->SetVoidArray( (unsigned char*)_pImageBuffer, video->getXSize() * video->getYSize() ,1);
+    m_imageData->AllocateScalars(VTK_UNSIGNED_CHAR, video->m_ui8BPP);
     m_imageData->GetPointData()->SetScalars(m_array) ;
     m_imageData->SetDimensions(size) ;
-    m_imageData->SetScalarType(VTK_UNSIGNED_CHAR) ;
     m_imageData->SetSpacing(1.0, 1.0, 1.0 );
     m_imageData->SetOrigin(0.0, 0.0, 0.0 );
 
     if(!bText_init)
     {
-        m_texture->SetInput(m_imageData ) ;
+        m_texture->SetInputData(m_imageData ) ;
         this->getActor()->SetScale(size[0], size[1], 1.0);
         this->getRenderer()->InteractiveOff();
         this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();

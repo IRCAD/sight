@@ -49,7 +49,7 @@ Distance::Distance() throw():
     m_lineSource = vtkLineSource::New();
     m_lineSource->SetResolution(1);
     LineMapper = vtkPolyDataMapper::New();
-    LineMapper->SetInput(m_lineSource->GetOutput());
+    LineMapper->SetInputConnection(m_lineSource->GetOutputPort());
     m_lineActor = vtkActor::New();
     m_lineActor->SetMapper(LineMapper);
     m_lineActor->GetProperty()->SetLineWidth(5.);

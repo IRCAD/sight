@@ -441,7 +441,7 @@ int fwVtkPicker::PickPolyData( double p1[3], double p2[3], vtkPolyData *polydata
     vtkActor *actor = vtkActor::New();
     vtkPropCollection *props = vtkPropCollection::New();
 
-    mapper->SetInput(polydata);
+    mapper->SetInputData(polydata);
     actor->SetMapper(mapper);
     props->AddItem(actor);
 

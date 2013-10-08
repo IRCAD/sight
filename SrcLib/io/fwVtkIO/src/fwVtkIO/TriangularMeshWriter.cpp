@@ -47,7 +47,7 @@ void TriangularMeshWriter::write()
 
     vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
     vtkPolyData* vtkMesh = ::fwVtkIO::toVTKMesh( pTriangularMesh );
-    writer->SetInput( vtkMesh );
+    writer->SetInputData( vtkMesh );
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary();
 

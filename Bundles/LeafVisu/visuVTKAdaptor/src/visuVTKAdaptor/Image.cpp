@@ -263,7 +263,7 @@ void Image::updateImageOpacity()
 void Image::buildPipeline( )
 {
     SLM_TRACE_FUNC();
-    m_map2colors->SetInput(m_imageData);
+    m_map2colors->SetInputData(m_imageData);
     m_map2colors->SetLookupTable(m_lut);
     m_map2colors->SetOutputFormatToRGBA();
 
@@ -296,6 +296,7 @@ void Image::buildPipeline( )
     {
         SLM_TRACE("Register is a vtkImageData");
         m_map2colors->SetOutput(imageData);
+        m_map2colors->Update();
     }
 
     this->setVtkPipelineModified();

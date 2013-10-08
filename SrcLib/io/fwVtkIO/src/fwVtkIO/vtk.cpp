@@ -13,6 +13,7 @@
 
 #include <vtkImageImport.h>
 #include <vtkSetGet.h>
+#include <vtkType.h>
 
 // for mesh
 #include <vtkCell.h>
@@ -197,8 +198,8 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     ::fwComEd::helper::Image imageHelper(destination);
 
     // ensure image size correct
-    source->UpdateInformation();
-    source->PropagateUpdateExtent();
+//    source->UpdateInformation();
+//    source->PropagateUpdateExtent();
 
     int dim = source->GetDataDimension() ;
     OSLM_TRACE("source->GetDataDimension() : " << dim);
@@ -411,12 +412,12 @@ double computeVolume( ::fwData::TriangularMesh::sptr _triangularMesh )
     vtkPolyData*  vtkMeshRaw = toVTKMesh( closedMesh );
 
     vtkSmartPointer< vtkPolyDataNormals > filter = vtkSmartPointer< vtkPolyDataNormals >::New();
-    filter->SetInput(vtkMeshRaw);
+    filter->SetInputData(vtkMeshRaw);
     filter->AutoOrientNormalsOn();
     filter->FlipNormalsOff();
 
     vtkSmartPointer< vtkMassProperties > calculator = vtkSmartPointer< vtkMassProperties >::New();
-    calculator->SetInput( filter->GetOutput() );
+    calculator->SetInputConnection( filter->GetOutputPort() );
     calculator->Update();
     double volume =  calculator->GetVolume();
     OSLM_DEBUG("GetVolume : " << volume << " vtkMassProperties::GetVolumeProjected = " << calculator->GetVolumeProjected() );
@@ -445,15 +446,14 @@ double computeVolumeWithStencil(  ::fwData::TriangularMesh::sptr _triangularMesh
     vi->SetOrigin( 0,0,0 ); // adjust these to your needs
     vi->SetSpacing( 0.5, 0.5, 0.5 ); // adjust these to your needs
     vi->SetDimensions( vtkMesh->GetBounds()[1]*2,  vtkMesh->GetBounds()[3]*2,  vtkMesh->GetBounds()[5]*2 ); // adjust these to your needs
-    vi->SetScalarTypeToUnsignedChar ();
-    vi->AllocateScalars();
+    vi->AllocateScalars(VTK_UNSIGNED_CHAR, 1);
     vi->GetPointData()->GetScalars()->FillComponent(0, 1.0);
     // outputMesh is of vtkPolyData* type and contains your mesh data
     vtkPolyDataToImageStencil* pti = vtkPolyDataToImageStencil::New();
-    pti->SetInput( vtkMesh );
+    pti->SetInputData( vtkMesh );
     vtkImageAccumulate* ac = vtkImageAccumulate::New();
-    ac->SetInput( vi );
-    ac->SetStencil( pti->GetOutput() );
+    ac->SetInputData( vi );
+    ac->SetStencilData( pti->GetOutput() );
     ac->ReverseStencilOff();
     ac->Update();
 

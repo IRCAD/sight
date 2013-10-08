@@ -168,7 +168,7 @@ void Normals::updateNormals()
 
     vtkGlyph3D* glyph = vtkGlyph3D::New();
     glyph->SetInputConnection(ptMask->GetOutputPort());
-    glyph->SetSource(arrow->GetOutput());
+    glyph->SetSourceConnection(arrow->GetOutputPort());
     glyph->SetVectorModeToUseNormal();
     glyph->SetScaleModeToScaleByVector();
     glyph->SetScaleFactor(10.0);

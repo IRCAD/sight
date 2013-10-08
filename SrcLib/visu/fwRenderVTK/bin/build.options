@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 USE = [
     'boost',
-    'vtkWidgets'
+    'vtk6InteractionWidgets',
+    'vtk6InteractionStyle',
+    'vtk6RenderingFreeTypeOpenGL',
+    'vtk6RenderingVolumeOpenGL',
     ]
 LIB = [
     'fwComEd_0-1',
@@ -18,3 +21,15 @@ LIB = [
     ]
 TYPE = 'shared'
 VERSION = '0-1'
+
+# Required for proper object factory initialization
+if os.name == 'nt':
+    DEF = [
+        ["vtkRenderingCore_AUTOINIT","4(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL)"],
+        ["vtkRenderingVolume_AUTOINIT","1(vtkRenderingVolumeOpenGL)"],
+    ]
+else:
+    DEF = [
+        ["vtkRenderingCore_AUTOINIT","4\(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL\)"],
+        ["vtkRenderingVolume_AUTOINIT","1\(vtkRenderingVolumeOpenGL\)"],
+    ]

@@ -139,7 +139,7 @@ void ImageViewerService::initVTKPipeline()
     m_negatoSagittal->SetPicker(picker);
     m_negatoSagittal->GetPlaneProperty()->SetColor(1,0,0);
     m_negatoSagittal->TextureInterpolateOn();
-    m_negatoSagittal->SetInput(vtk_img);
+    m_negatoSagittal->SetInputData(vtk_img);
     m_negatoSagittal->SetPlaneOrientationToXAxes();
     m_negatoSagittal->DisplayTextOn();
     m_negatoSagittal->On();
@@ -151,7 +151,7 @@ void ImageViewerService::initVTKPipeline()
     m_negatoFrontal->SetPicker(picker);
     m_negatoFrontal->GetPlaneProperty()->SetColor(0,1,0);
     m_negatoFrontal->TextureInterpolateOn();
-    m_negatoFrontal->SetInput(vtk_img);
+    m_negatoFrontal->SetInputData(vtk_img);
     m_negatoFrontal->SetPlaneOrientationToYAxes();
     m_negatoFrontal->SetLookupTable( m_negatoSagittal->GetLookupTable());
     m_negatoFrontal->DisplayTextOn();
@@ -164,7 +164,7 @@ void ImageViewerService::initVTKPipeline()
     m_negatoAxial->SetPicker(picker);
     m_negatoAxial->GetPlaneProperty()->SetColor(0,0,1);
     m_negatoAxial->TextureInterpolateOn();
-    m_negatoAxial->SetInput(vtk_img);
+    m_negatoAxial->SetInputData(vtk_img);
     m_negatoAxial->SetPlaneOrientationToZAxes();
     m_negatoAxial->SetLookupTable( m_negatoSagittal->GetLookupTable());
     m_negatoAxial->DisplayTextOn();

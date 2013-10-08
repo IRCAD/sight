@@ -17,6 +17,7 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageData.h>
+#include <vtkImageMapToColors.h>
 #include <vtkImageBlend.h>
 
 #include "visuVTKAdaptor/Image.hpp"
@@ -69,7 +70,7 @@ vtkObject* NegatoOneSlice::getImageSource()
         }
         else
         {
-            m_imageSource = vtkImageData::New();
+            m_imageSource = vtkImageMapToColors::New();
             m_manageImageSource = true;
         }
     }

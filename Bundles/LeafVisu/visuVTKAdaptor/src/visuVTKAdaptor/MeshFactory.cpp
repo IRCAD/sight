@@ -60,7 +60,7 @@ void MeshFactory::updateTriangulaMesh( ::fwData::TriangularMesh::sptr mesh)
     vtkPolyData * polyData       = ::fwVtkIO::toVTKMesh(mesh);
     vtkPolyDataMapper  * mapper  = vtkPolyDataMapper::New();
 
-    m_normals->SetInput(polyData);
+    m_normals->SetInputData(polyData);
     m_normals->ComputePointNormalsOn ();
     m_normals->ComputeCellNormalsOff ();
     m_normals->ConsistencyOn ();

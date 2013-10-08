@@ -196,12 +196,14 @@ void ImageTest::testFromVtk()
         vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();   \
         reader->SetFileName(imagePath.string().c_str());                                                               \
         reader->Update();                                                                                              \
+        reader->UpdateInformation();                                                                                   \
+        reader->PropagateUpdateExtent();                                                                               \
         vtkSmartPointer< vtkImageData > vtkImage = vtkImageData::SafeDownCast(reader->GetOutput());                    \
                                                                                                                        \
         CPPUNIT_ASSERT(vtkImage);                                                                                      \
                                                                                                                        \
-        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                \
-        ::fwVtkIO::fromVTKImage(vtkImage, image);                                                                        \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                          \
+        ::fwVtkIO::fromVTKImage(vtkImage, image);                                                                      \
                                                                                                                        \
         ::fwComEd::helper::Image imageHelper(image);                                                                   \
                                                                                                                        \

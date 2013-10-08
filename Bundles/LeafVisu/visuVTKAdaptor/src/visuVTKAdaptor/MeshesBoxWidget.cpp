@@ -273,7 +273,7 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
         }
 
         vtkSmartPointer<vtkPolyDataMapper> meshMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        meshMapper->SetInput(vtkMesh);
+        meshMapper->SetInputData(vtkMesh);
 
         vtkActor *meshActor = vtkActor::New();
         meshActor->SetMapper(meshMapper);

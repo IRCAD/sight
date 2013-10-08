@@ -13,5 +13,10 @@ USE = [
        'boost',
        'boostFilesystem',
        'boostDateTime',
-       'vtkHybrid'
+       'vtk6FiltersModeling',
+       'vtk6IOLegacy',
+       'vtk6IOExport',
+       'vtk6IOXML',
+       'vtk6ImagingStencil',
+       'vtk6ImagingStatistics',
        ]

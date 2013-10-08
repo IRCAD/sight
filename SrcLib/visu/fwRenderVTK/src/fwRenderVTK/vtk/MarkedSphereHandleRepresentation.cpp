@@ -51,7 +51,7 @@ MarkedSphereHandleRepresentation::MarkedSphereHandleRepresentation() : vtkSphere
     MarkerNormals->SetInputConnection( 0, this->CleanPolyData->GetOutputPort(0) );
 
     this->MarkerMapper = vtkPolyDataMapper::New();
-    this->MarkerMapper->SetInput( MarkerNormals->GetOutput() );
+    this->MarkerMapper->SetInputConnection( MarkerNormals->GetOutputPort() );
     MarkerNormals->Delete();
 
     this->Follower = vtkFollower::New();
