@@ -8,6 +8,7 @@
 #include <QString>
 #include <QFutureWatcher>
 #include <QApplication>
+#include <QtConcurrent>
 
 #include <fwCore/base.hpp>
 #include <fwGui/registry/macros.hpp>

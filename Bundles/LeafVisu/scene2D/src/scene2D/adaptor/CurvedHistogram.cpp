@@ -536,14 +536,14 @@ void CurvedHistogram::processInteraction( ::scene2D::data::Event::sptr _event)
     if( _event->getType() == ::scene2D::data::Event::MouseWheelUp )
     {
         m_scale *= SCALE;
-        m_layer->scale(1, SCALE);
+        m_layer->setTransform(QTransform::fromScale(1, SCALE), true);
 
         updatePointedPos = true;
     }
     else if( _event->getType() == ::scene2D::data::Event::MouseWheelDown )
     {
         m_scale /= SCALE;
-        m_layer->scale(1, 1 / SCALE);
+        m_layer->setTransform(QTransform::fromScale(1, 1 / SCALE), true);
 
         updatePointedPos = true;
     }

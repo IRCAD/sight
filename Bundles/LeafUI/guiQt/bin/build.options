@@ -12,7 +12,7 @@ LIB     = [
           'fwGuiQt_0-1',
           'fwDataCamp_0-1',
           ]
-USE     = ['qtCore','boost']
+USE     = ['qt5Widgets','boost']
 BUNDLES = ['gui_0-1']
 
 

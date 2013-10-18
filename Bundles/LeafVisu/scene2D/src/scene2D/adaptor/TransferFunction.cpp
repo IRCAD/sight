@@ -706,7 +706,9 @@ void TransferFunction::leftButtonEvent(QGraphicsEllipseItem* circle, ::scene2D::
     m_oldCoord = this->coordViewToCoordItem( _event->getCoord() );
 
     // Set the selected circle pen to yellow to get a visual feedback that the selected circle is selected
-    circle->setPen( QPen( Qt::GlobalColor( Qt::yellow ) ) );
+    QPen circlePen(Qt::yellow);
+    circlePen.setCosmetic(true);
+    circle->setPen( circlePen );
 
     _event->setAccepted(true);
 }

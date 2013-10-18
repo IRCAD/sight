@@ -29,6 +29,8 @@ Line::~Line() throw()
 {
 }
 
+//---------------------------------------------------------------------------------------------------------------
+
 void Line::configuring() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -51,6 +53,8 @@ void Line::configuring() throw ( ::fwTools::Failed )
         ::scene2D::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"));
     }
 }
+
+//---------------------------------------------------------------------------------------------------------------
 
 void Line::draw()
 {
@@ -76,29 +80,41 @@ void Line::draw()
     this->getScene2DRender()->getScene()->addItem(m_layer);
 }
 
+//---------------------------------------------------------------------------------------------------------------
+
 void Line::doStart() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
+    m_pen.setCosmetic(true);
+
     this->draw();
 }
+
+//---------------------------------------------------------------------------------------------------------------
 
 void Line::doUpdate() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
+//---------------------------------------------------------------------------------------------------------------
+
 void Line::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
+//---------------------------------------------------------------------------------------------------------------
+
 void Line::doSwap() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
+
+//---------------------------------------------------------------------------------------------------------------
 
 void Line::doStop() throw ( ::fwTools::Failed )
 {

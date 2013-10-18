@@ -186,7 +186,8 @@ QRgb Negato::getQImageVal(
 
     ::fwData::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
 
-    return qRgba(color.r*255, color.g*255, color.b*255, color.a*255);
+    // use QImage::Format_RGBA8888 in QImage if you need alpha value
+    return qRgb(color.r*255, color.g*255, color.b*255);
 }
 
 //---------------------------------------------------------------------------
@@ -244,7 +245,7 @@ QImage * Negato::createQImage()
 
     // Place m_pixmapItem
     m_pixmapItem->resetTransform();
-    m_pixmapItem->scale(qImageSpacing[0], qImageSpacing[1]);
+    m_pixmapItem->setTransform(QTransform::fromScale(qImageSpacing[0], qImageSpacing[1]), true);
     m_pixmapItem->setPos(qImageOrigin[0], qImageOrigin[1]);
 
     // Force bounding box recomputing ( Qt bug )
@@ -252,7 +253,7 @@ QImage * Negato::createQImage()
     m_layer->addToGroup( m_pixmapItem );
 
     // Update image scene
-    this->getScene2DRender()->updateSceneSize( 0.20 );
+    this->getScene2DRender()->updateSceneSize( 0.20f );
 
     return qimage;
 }

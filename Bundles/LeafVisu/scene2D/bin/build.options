@@ -1,6 +1,6 @@
 TYPE = 'bundle'
 VERSION = '0-1'
-USE = ['qtGui']
+USE = ['qt5Widgets']
 LIB     = [
           'fwRuntime_0-3',
           'fwData_0-1',

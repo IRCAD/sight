@@ -116,7 +116,7 @@ void ViewportInteractor::zoom( bool zoomIn )
 {
     ::scene2D::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
-    float zoomPercent = 10 / 100.0;
+    float zoomPercent = 10. / 100.0;
     float y = sceneViewport->getY();
     float x = sceneViewport->getX();
     float width = sceneViewport->getWidth();

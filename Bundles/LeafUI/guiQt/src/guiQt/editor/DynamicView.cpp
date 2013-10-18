@@ -5,6 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <QtGui>
+#include <QTabWidget>
+#include <QBoxLayout>
 
 #include <fwCore/base.hpp>
 

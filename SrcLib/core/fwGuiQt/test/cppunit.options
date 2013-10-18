@@ -3,8 +3,8 @@ CLASSTEST=[
 ]
 
 USE = [
-    'qtCore',
-    'qtGui',
+    'qt5Core',
+    'qt5Widgets',
     'boost',
     'boostThread',
     'boostDateTime',

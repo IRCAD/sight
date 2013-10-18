@@ -22,17 +22,16 @@ namespace fwGuiQt
 
 //------------------------------------------------------------------------------
 
-const QStringList SliceSelector::m_sliceTypesArray = (QStringList() << tr("Sagittal") << tr("Frontal") << tr("Axial"));
-
-//------------------------------------------------------------------------------
-
 SliceSelector::SliceSelector(QWidget* const parent ) throw(): QWidget( parent )
 {
     m_fctChangeIndexCallback = ::boost::bind( &::fwGuiQt::SliceSelector::printIndex, this, _1);
     m_fctChangeTypeCallback = ::boost::bind( &::fwGuiQt::SliceSelector::printType, this, _1);
 
     m_sliceType = new QComboBox( this );
-    m_sliceType->addItems(m_sliceTypesArray);
+    /// Slice type names as a qt string array.
+    QStringList sliceTypesArray;
+    sliceTypesArray << tr("Sagittal") << tr("Frontal") << tr("Axial");
+    m_sliceType->addItems(sliceTypesArray);
 
     m_sliceIndex = new QSlider(Qt::Horizontal, this);
 

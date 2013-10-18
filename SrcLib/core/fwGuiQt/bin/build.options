@@ -1,8 +1,10 @@
 USE        = [
         'boost',
-        'qtGui',
-        'qtIconenginesPlugins',
-        'qtImageformatsPlugins',
+        'qt5Widgets',
+        'qt5Concurrent',
+        'qt5IconenginesPlugins',
+        'qt5ImageformatsPlugins',
+        'qt5Platforms',
     ]
 
 LIB        = [
