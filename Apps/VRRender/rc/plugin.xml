@@ -29,7 +29,7 @@
                         </params>
                     </config>
                 </service>
-            
+
                 <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
@@ -52,7 +52,7 @@
                                 <service impl="::ctrlSelection::wrapper::PatientDBWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newPatientDB" autoConnect="yes" />
                             </object>
                         </item>
-                        
+
                         <!-- Processing DB Composite declaration -->
                         <item key="processingDB">
                             <object uid="processingDB" type="::fwData::Composite" />
@@ -62,7 +62,7 @@
                         <item key="planningDB">
                             <object uid="planningDB" type="::fwData::Composite" />
                         </item>
-                    
+
                     </object>
                 </item>
 
@@ -94,7 +94,7 @@
                             <slot>updaterAcq/receive</slot>
                             <slot>updaterImg/receive</slot>
                         </proxy>
-                        
+
                     </object>
                 </item>
 
@@ -106,7 +106,7 @@
                 <start uid="action_activity1" />
 
                 <update uid="action_activity1" />
-                
+
             </object>
 
         </config>
@@ -123,6 +123,7 @@
             <selection mode="exclude" />
             <addSelection service="::ioXML::FwXMLGenericReaderService" />
             <addSelection service="::ioAtoms::SReader" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
 
@@ -135,6 +136,7 @@
             <selection mode="exclude" />
             <addSelection service="::ioXML::FwXMLGenericWriterService" />
             <addSelection service="::ioAtoms::SWriter" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
         </config>
     </extension>
 
@@ -151,13 +153,14 @@
             <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
         <desc>reader/writer config to read/write an atom representing a medical data</desc>
         <config>
-            <patcher context="MedicalData" version="V1" /> 
+            <patcher context="MedicalData" version="V1" />
+            <filter>VRRenderMedicalDataV1</filter>
         </config>
     </extension>
-    
+
 </plugin>

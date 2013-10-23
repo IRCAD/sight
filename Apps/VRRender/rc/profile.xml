@@ -49,6 +49,9 @@
 
     <activate id="monitorQt" version="0-1" />
 
+    <activate id="filterVRRender" version="0-1" />
+
+    <start id="filterVRRender" />
     <start id="memory" />
     <start id="ioITK" />
     <start id="ioVTK" />

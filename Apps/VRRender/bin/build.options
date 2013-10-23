@@ -37,4 +37,5 @@ BUNDLES = [
     'uiMeasurementQt_0-1'      ,
     'uiTF_0-1'                 ,
     'appXml_0-1'               ,
+    'filterVRRender_0-1'       ,
  ]

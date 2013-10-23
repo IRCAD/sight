@@ -157,7 +157,7 @@
         </registry>
     </service>
 
-    <service uid="${GENERIC_UID}_action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAbout" autoConnect="no">
+    <service uid="${GENERIC_UID}_action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::SShowAbout" autoConnect="no">
         <filename id="Bundles/VRRender_0-9/about/about.html" />
     </service>
 
