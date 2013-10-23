@@ -11,6 +11,7 @@
 
 #include <boost/function.hpp>
 #include <boost/utility.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include "fwCore/base.hpp"
 
@@ -126,6 +127,11 @@ public:
      */
     void setName(std::string _sName) { m_sName = _sName; }
 
+    /// Get profile m_filePath
+    ::boost::filesystem::path getFilePath() {return  m_filePath; } const
+
+    /// Set profile m_filePath
+    void setFilePath( const ::boost::filesystem::path& _filePath) { m_filePath = _filePath; }
 
     /**
      * @brief   Return profile version.
@@ -186,8 +192,10 @@ private:
     InitializerContainer      m_initializers;   ///< all managed initializers
     UninitializerContainer    m_uninitializers; ///< all managed uninitializers
 
-    std::string         m_sName;        ///< name profile
-    std::string         m_sVersion;     ///< profile app version
+    std::string         m_sName;            ///< name profile
+    std::string         m_sVersion;         ///< profile app version
+    ::boost::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
+
     bool                m_checkSingleInstance;
 
     ParamsContainer     m_params;
