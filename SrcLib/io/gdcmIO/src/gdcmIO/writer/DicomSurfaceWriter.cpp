@@ -59,8 +59,7 @@ void DicomSurfaceWriter::write() throw (::fwTools::Failed)
 
     ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
     dictionaryReader->setObject(structDico);
-    std::string dictionaryPath("./share/fwDataIO_0-2/OrganDictionary.dic");
-    dictionaryReader->setFile(dictionaryPath);
+    dictionaryReader->setFile( ::fwDataIO::reader::DictionaryReader::getDefaultDictionaryPath() );
     try
     {
         dictionaryReader->read();

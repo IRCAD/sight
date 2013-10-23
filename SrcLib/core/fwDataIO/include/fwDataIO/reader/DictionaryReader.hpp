@@ -8,6 +8,7 @@
 #define _FWDATAIO_READER_DICTIONARY_HPP_
 
 #include <boost/shared_ptr.hpp>
+#include <boost/filesystem.hpp>
 
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -57,6 +58,9 @@ public :
     FWDATAIO_API virtual void read();
 
     FWDATAIO_API std::string  extension();
+
+    /// Returns the default dictionary path ( file in rc directory path of fwDataIO library )
+    FWDATAIO_API static ::boost::filesystem::path  getDefaultDictionaryPath();
 };
 
 } // namespace reader
