@@ -171,20 +171,30 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 
     this->cache(ptpath, atom);
 
-    size_t buffSize = pt.get<size_t>("blob.buffer_size");
-    if(buffSize > 0)
+    const std::string bufType = pt.get<std::string>("blob.buffer_type");
+
+    if(bufType == "raw")
     {
-        const std::string bufFile = pt.get<std::string>("blob.buffer");
+        size_t buffSize = pt.get<size_t>("blob.buffer_size");
+        if(buffSize > 0)
+        {
+            const std::string bufFile = pt.get<std::string>("blob.buffer");
 
-        buffObj->allocate(buffSize);
+            buffObj->allocate(buffSize);
 
-        ::fwTools::BufferObject::Lock lock(buffObj->lock());
-        void *v = lock.getBuffer();
-        char* buff = static_cast<char*>(v);
+            ::fwTools::BufferObject::Lock lock(buffObj->lock());
+            void *v = lock.getBuffer();
+            char* buff = static_cast<char*>(v);
 
-        std::istream& inStream = m_archive->getFile(bufFile);
-        inStream.read(buff, buffSize);
+            std::istream& inStream = m_archive->getFile(bufFile);
+            inStream.read(buff, buffSize);
+        }
     }
+    else
+    {
+        FW_RAISE("Buffer type '" << bufType << "' unknown.");
+    }
+
     return atom;
 }
 

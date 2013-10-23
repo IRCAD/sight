@@ -182,6 +182,9 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     this->cache(atom, ptpath);
     std::string path = ptpath + (ptpath.empty()?"":".") + "blob";
 
+    std::string bufType = "raw";
+    pt.put("blob.buffer_type", bufType);
+
     ::fwTools::BufferObject::sptr buffObj = atom->getBufferObject();
     if (!buffObj)
     {
