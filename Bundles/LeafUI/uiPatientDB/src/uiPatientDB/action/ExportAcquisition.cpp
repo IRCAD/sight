@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,14 +25,14 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include "uiIO/action/ExportAcquisition.hpp"
+#include "uiPatientDB/action/ExportAcquisition.hpp"
 
-namespace uiIO
+namespace uiPatientDB
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::ExportAcquisition , ::fwData::PatientDB ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPatientDB::action::ExportAcquisition , ::fwData::PatientDB ) ;
 
 //------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ ExportAcquisition::~ExportAcquisition() throw()
 
 void ExportAcquisition::info(std::ostream &_sstream )
 {
-    _sstream << "Action for export Acquisition" << std::endl;
+    _sstream << "Action to export an acquisition" << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -146,4 +146,4 @@ void ExportAcquisition::receiving(::fwServices::ObjectMsg::csptr _msg) throw(::f
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace basicVRCtrl
+} // namespace uiPatientDB
