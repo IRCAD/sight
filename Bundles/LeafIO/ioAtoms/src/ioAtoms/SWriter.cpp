@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 #include <fwAtomsBoostIO/Writer.hpp>
 
@@ -33,6 +34,7 @@
 #include <fwAtomsPatch/VersionsGraph.hpp>
 #include <fwAtomsPatch/PatchingManager.hpp>
 
+#include "ioAtoms/SReader.hpp"
 #include "ioAtoms/SWriter.hpp"
 
 namespace ioAtoms
@@ -67,7 +69,28 @@ void SWriter::configuring() throw(::fwTools::Failed)
 {
     ::io::IWriter::configuring();
 
-    typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
+    typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationElement;
+    typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
+
+    ConfigurationElementContainer extensionsList = m_configuration->find("extensions");
+    SLM_ASSERT("The <extensions> element can be set at most once.", extensionsList.size() <= 1);
+
+    if(extensionsList.size() == 1)
+    {
+        ConfigurationElementContainer extensions = extensionsList.at(0)->find("extension");
+        BOOST_FOREACH(ConfigurationElement extension, extensions)
+        {
+            const std::string& ext = extension->getValue();
+            SReader::FileExtension2NameType::const_iterator it = SReader::s_EXTENSIONS.find(ext);
+
+            OSLM_ASSERT("Extension '" << ext << "' is not allowed in configuration", it != SReader::s_EXTENSIONS.end());
+
+            if(it != SReader::s_EXTENSIONS.end())
+            {
+                m_allowedExts.insert(m_allowedExts.end(), ext);
+            }
+        }
+    }
 
     ConfigurationElementContainer patcher = m_configuration->find("patcher");
     SLM_ASSERT("The <patcher> element can be set at most once.", patcher.size() <= 1 );
@@ -155,6 +178,17 @@ void SWriter::updating() throw(::fwTools::Failed)
                 atom = globalPatcher.transformTo( m_exportedVersion );
             }
 
+            if(!m_allowedExts.empty())
+            {
+                FW_RAISE_IF("This file extension '" << extension << "' is not managed",
+                        m_allowedExts.find(extension) == m_allowedExts.end());
+            }
+            else
+            {
+                FW_RAISE_IF("This file extension '" << extension << "' is not managed",
+                        SReader::s_EXTENSIONS.find(extension) == SReader::s_EXTENSIONS.end());
+            }
+
             if (extension == ".hdf5")
             {
                 ::fwAtomsHdf5IO::Writer(atom).write( filePath );
@@ -234,38 +268,54 @@ void SWriter::updating() throw(::fwTools::Failed)
 
 void SWriter::configureWithIHM()
 {
-   static ::boost::filesystem::path _sDefaultPath;
+    static ::boost::filesystem::path _sDefaultPath;
 
-   if( ! m_useAtomsPatcher || versionSelection() )
-   {
+    if( ! m_useAtomsPatcher || versionSelection() )
+    {
 
-       ::fwGui::dialog::LocationDialog dialogFile;
-       dialogFile.setTitle("Enter file name");
-       dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-       dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-       dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
+        ::fwGui::dialog::LocationDialog dialogFile;
+        dialogFile.setTitle("Enter file name");
+        dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+        dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
 
-       dialogFile.addFilter( "JSON", "*.json");
-       dialogFile.addFilter( "Zipped JSON", "*.jsonz");
-       dialogFile.addFilter( "XML", "*.xml");
-       dialogFile.addFilter( "Zipped XML", "*.xmlz");
-       dialogFile.addFilter( "HDF5", "*.hdf5");
+        if(m_allowedExts.empty() || m_allowedExts.size() == SReader::s_EXTENSIONS.size())  // all extensions allowed
+        {
+            dialogFile.addFilter("Medical data", "*.json *.jsonz *.xml *.xmlz *.hdf5");
+            BOOST_FOREACH(const SReader::FileExtension2NameType::value_type& ext, SReader::s_EXTENSIONS)
+            {
+                dialogFile.addFilter(ext.second, "*" + ext.first);
+            }
+        }
+        else
+        {
+            dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
 
-       ::fwData::location::SingleFile::sptr result
-        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+            BOOST_FOREACH(const std::string& ext, m_allowedExts)
+            {
+                SReader::FileExtension2NameType::const_iterator it = SReader::s_EXTENSIONS.find(ext);
+                OSLM_ASSERT("Didn't find extension '" << ext << "' in managed extensions map",
+                        it != SReader::s_EXTENSIONS.end());
 
-       if (result)
-       {
-           _sDefaultPath = result->getPath();
-           this->setFile( _sDefaultPath );
-           dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
-       }
-       else
-       {
-           this->clearLocations();
-       }
+                dialogFile.addFilter(it->second, "*" + ext);
+            }
+        }
 
-   }
+        ::fwData::location::SingleFile::sptr result
+            = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+
+        if (result)
+        {
+            _sDefaultPath = result->getPath();
+            this->setFile( _sDefaultPath );
+            dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
+        }
+        else
+        {
+            this->clearLocations();
+        }
+
+    }
 }
 
 //-----------------------------------------------------------------------------

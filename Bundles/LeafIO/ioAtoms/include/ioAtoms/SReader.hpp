@@ -7,9 +7,17 @@
 #ifndef __IOATOMS_SREADER_HPP__
 #define __IOATOMS_SREADER_HPP__
 
+#include <map>
+#include <set>
+
 #include <io/IReader.hpp>
 
 #include "ioAtoms/config.hpp"
+
+namespace fwMemory
+{
+    class IPolicy;
+}
 
 namespace ioAtoms
 {
@@ -35,6 +43,12 @@ public:
     /// Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
     IOATOMS_API void configureWithIHM();
 
+    /// Maps file extension to format name.
+    typedef std::map< std::string, std::string > FileExtension2NameType;
+
+    /// Managed file extensions
+    static const FileExtension2NameType s_EXTENSIONS;
+
 protected:
 
     /// Does nothing
@@ -44,18 +58,25 @@ protected:
     IOATOMS_API void stopping() throw(::fwTools::Failed);
 
     /**
-    * @brief
-    * @verbatim
-        <config>
-            <inject>ReadData</inject>
-            <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
-            <patcher context="..." version="..." />
+     * @brief Configures the reader.
+     * @verbatim
+     <config>
+        <inject>ReadData</inject>
+        <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
+        <patcher context="..." version="..." />
+        <extensions>
+            <extension>.xml</extension>
+            <extension>.xmlz</extension>
             ...
-        </config>
-    * @endverbatim
-    * @see ::io::IReader
-    * @throw ::fwTools::Failed
-    */
+        </extensions>
+     </config>
+     * @endverbatim
+     *
+     * extensions : defines allowed extensions 
+     *
+     * @see ::io::IReader
+     * @throw ::fwTools::Failed
+     */
     IOATOMS_API void configuring() throw(::fwTools::Failed);
 
     /**
@@ -83,7 +104,7 @@ private:
     void resetDumpPolicy();
 
     /// Initial dump policy
-    ::fwMemory::IPolicy::sptr m_oldPolicy;
+    SPTR(::fwMemory::IPolicy) m_oldPolicy;
 
     /// fwAtomsConversion uuid policy
     std::string m_inject;
@@ -99,6 +120,12 @@ private:
 
     /// Current version of format
     std::string m_version;
+
+    /// Allowed file extensions
+    std::set< std::string > m_allowedExts;
+
+    /// IFilter name used to make an atom compliant with current context
+    std::string m_filter;
 };
 
 } // namespace ioAtoms
