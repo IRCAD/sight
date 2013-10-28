@@ -4,6 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+ #include <string>
+ #include <iomanip>
+ #include <sstream>
+ 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
@@ -59,6 +63,15 @@ AcquisitionWriter::AcquisitionWriter(::fwDataIO::writer::IObjectWriter::Key key)
 
 AcquisitionWriter::~AcquisitionWriter()
 {}
+
+//------------------------------------------------------------------------------
+
+std::string castColorVal( double d )
+{
+    std::stringstream sstr;
+    sstr << std::setprecision(4) << d;
+    return sstr.str();
+}
 
 //------------------------------------------------------------------------------
 
@@ -129,9 +142,9 @@ void AcquisitionWriter::write()
         // add the reconstruction to the XML file
         item_node = xmlNewChild(root_node, NULL, BAD_CAST "Item", NULL);
         xmlNewChild(item_node, NULL, BAD_CAST "Name", BAD_CAST organName.c_str());
-        xmlNewChild(item_node, NULL, BAD_CAST "Red", BAD_CAST ( ::fwTools::getString< double > (red) ).c_str());
-        xmlNewChild(item_node, NULL, BAD_CAST "Green", BAD_CAST ( ::fwTools::getString< double > (green) ).c_str());
-        xmlNewChild(item_node, NULL, BAD_CAST "Blue", BAD_CAST ( ::fwTools::getString< double > (blue) ).c_str());
+        xmlNewChild(item_node, NULL, BAD_CAST "Red", BAD_CAST ( castColorVal(red) ).c_str());
+        xmlNewChild(item_node, NULL, BAD_CAST "Green", BAD_CAST ( castColorVal(green) ).c_str());
+        xmlNewChild(item_node, NULL, BAD_CAST "Blue", BAD_CAST ( castColorVal(blue) ).c_str());
         xmlNewChild(item_node, NULL, BAD_CAST "FileName", BAD_CAST ( fileName + extension() ).c_str() );
         xmlNewChild(item_node, NULL, BAD_CAST "Layer", BAD_CAST layer.c_str());
         xmlNewChild(item_node, NULL, BAD_CAST "IsVisible",
