@@ -9,13 +9,13 @@
 
 /**
  * @brief       The namespace fwNetwork contains the primary methods to access network.
- * @namespace   fwNetwork.
+ * @namespace   fwNetwork
  */
 namespace fwNetwork
 {
 /**
  * @brief       The namespace exceptions contains exceptions associated with network
- * @namespace   fwNetwork::exceptions.
+ * @namespace   fwNetwork::exceptions
  */
 namespace exceptions
 {
@@ -23,7 +23,7 @@ namespace exceptions
 
 /**
  * @brief       The namespace http contains the primary methods to acces network with http protocol
- * @namespace   fwNetwork::http.
+ * @namespace   fwNetwork::http
  */
 namespace http
 {

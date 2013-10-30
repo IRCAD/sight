@@ -24,10 +24,9 @@ namespace midasIO
 {
 
 /**
- * @brief   Write a reconstruction.
- * @class   ReconstructionWriter.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @brief   Write a reconstruction
+ * @class   ReconstructionWriter
+ * @date    2009
  *
  * Write a ::fwData::Reconstruction using the VTK lib and the obj format
  */
