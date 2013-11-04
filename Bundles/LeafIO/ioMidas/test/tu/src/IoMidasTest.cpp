@@ -15,7 +15,7 @@
 
 #include <fwData/Acquisition.hpp>
 
-#include <midasIO/ResponseHandler.hpp>
+#include <midasIO/IResponseHandler.hpp>
 
 #include "ioMidas/SAcquisitionWriter.hpp"
 
@@ -46,7 +46,7 @@ void IoMidasTest::tearDown()
 
     ::midasIO::IConfiguration::sptr config;
 
-    config = ::midasIO::factory::New(version);
+    config = ::midasIO::configurationFactory::New(version);
     CPPUNIT_ASSERT(config);
     config->setAppName(appname);
     config->setUrl("http://code.google.com/p/fw4spl/midas");
@@ -81,8 +81,9 @@ void IoMidasTest::checkGetTest()
     std::string CRESPAPIKEY = "{\"stat\":\"ok\",\"code\":\"0\",\"message\":\"Hello\",\"data\":{\"apikey\"";
     CRESPAPIKEY += ":\"cbd37826afeb77d20f4834383efff254\"}}";
 
-    ::midasIO::ResponseHandler resp(CRESPAPIKEY);
-    ::midasIO::ResponseHandler::ObjectType obj = resp.get();
+    ::midasIO::IResponseHandler::sptr resp = ::midasIO::responseHandlerFactory::New("3.2.6");
+    resp->setJsonData(CRESPAPIKEY);
+    ::midasIO::IResponseHandler::ObjectType obj = resp->get();
 
     CPPUNIT_ASSERT(obj.find("stat")!= obj.end());
     CPPUNIT_ASSERT_EQUAL(CREFRESPSTAT , obj["stat"].get_str());
@@ -93,7 +94,7 @@ void IoMidasTest::checkGetTest()
     CPPUNIT_ASSERT(obj.find("message")!= obj.end());
     CPPUNIT_ASSERT_EQUAL(CREFRESPMESSAGE , obj["message"].get_str());
 
-    ::midasIO::ResponseHandler::ObjectType objectData =  resp.getObjectData();
+    ::midasIO::IResponseHandler::ObjectType objectData =  resp->getObjectData();
 
     CPPUNIT_ASSERT(objectData.find("apikey")!= objectData.end());
     CPPUNIT_ASSERT_EQUAL(CREFRESPAPIKEY, objectData["apikey"].get_str());
@@ -106,13 +107,14 @@ void IoMidasTest::checkStatFieldTest()
     std::string CRESPAPIKEY = "{\"stat\":\"ok\",\"code\":\"0\",\"message\":\"\",\"data\":{\"apikey\"";
     CRESPAPIKEY += ":\"cbd37826afeb77d20f4834383efff254\"}}";
 
-    ::midasIO::ResponseHandler resp(CRESPAPIKEY);
-    CPPUNIT_ASSERT_EQUAL(true, resp.isOk());
+    ::midasIO::IResponseHandler::sptr resp = ::midasIO::responseHandlerFactory::New("3.2.6");
+    resp->setJsonData(CRESPAPIKEY);
+    CPPUNIT_ASSERT_EQUAL(true, resp->isSuccess());
 
     std::string CRESPAUTHENTIFICATIONWRONG = "{\"stat\":\"fail\",\"message\":\"Unable to authenticate.";
     CRESPAUTHENTIFICATIONWRONG += "Please check credentials.\",\"code\":-150}";
-    ::midasIO::ResponseHandler respWrong(CRESPAUTHENTIFICATIONWRONG);
-    CPPUNIT_ASSERT_EQUAL(false, respWrong.isOk());
+    resp->setJsonData(CRESPAUTHENTIFICATIONWRONG);
+    CPPUNIT_ASSERT_EQUAL(false, resp->isSuccess());
 
 }
 
@@ -124,8 +126,9 @@ void IoMidasTest::checkGetMessageTest()
     std::string CRSP = "{\"stat\":\"fail\",\"message\":\"Unable to authenticate.";
     CRSP += "Please check credentials.\",\"code\":-150}";
 
-    ::midasIO::ResponseHandler resp(CRSP);
-    CPPUNIT_ASSERT_EQUAL(CREFMSG, resp.getMessage());
+    ::midasIO::IResponseHandler::sptr resp = ::midasIO::responseHandlerFactory::New("3.2.6");
+    resp->setJsonData(CRSP);
+    CPPUNIT_ASSERT_EQUAL(CREFMSG, resp->getErrorMsg());
 }
 
 //------------------------------------------------------------------------------
@@ -135,9 +138,10 @@ void IoMidasTest::checkSetMessageTest()
     const std::string CREFMSG("Here the message.");
     std::string CRSP = "{\"stat\":\"ok\",\"code\":\"0\",\"message\":\"\",\"data\":{\"apikey\"";
     CRSP += ":\"cbd37826afeb77d20f4834383efff254\"}}";
-    ::midasIO::ResponseHandler resp(CRSP);
-    resp.setMessage(CREFMSG);
-    CPPUNIT_ASSERT_EQUAL(CREFMSG, resp.getMessage());
+    ::midasIO::IResponseHandler::sptr resp = ::midasIO::responseHandlerFactory::New("3.2.6");
+    resp->setJsonData(CRSP);
+    resp->setErrorMsg(CREFMSG);
+    CPPUNIT_ASSERT_EQUAL(CREFMSG, resp->getErrorMsg());
 }
 
 //------------------------------------------------------------------------------
@@ -157,11 +161,13 @@ void IoMidasTest::checkGetDataTest()
     r += "\"privatefolder_id\":\"40\",\"admingroup_id\":\"4\",\"moderatorgroup_id\":\"5\",\"membergroup_id\":\"6\",";
     r += "\"can_join\":\"0\",\"view\":\"2\",\"uuid\":\"51e7fde68650a181a10da39e5f3b8794b7b3bb19080e9\"}]}";
 
-    ::midasIO::ResponseHandler resp(r);
-    ::midasIO::ResponseHandler::ArrayType array = resp.getArrayData();
+    ::midasIO::IResponseHandler::sptr resp = ::midasIO::responseHandlerFactory::New("3.2.6");
+    resp->setJsonData(r);
 
-    ::midasIO::ResponseHandler::ArrayType::iterator it = array.begin();
-    ::midasIO::ResponseHandler::ObjectType& obj = it->get_obj();
+    ::midasIO::IResponseHandler::ArrayType array = resp->getArrayData();
+
+    ::midasIO::IResponseHandler::ArrayType::iterator it = array.begin();
+    ::midasIO::IResponseHandler::ObjectType& obj = it->get_obj();
 
     CPPUNIT_ASSERT(obj.find("_model")!= obj.end());
     CPPUNIT_ASSERT_EQUAL(CREFMODEL , obj["_model"].get_str());
