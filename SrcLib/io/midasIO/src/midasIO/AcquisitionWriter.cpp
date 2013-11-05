@@ -7,7 +7,7 @@
  #include <string>
  #include <iomanip>
  #include <sstream>
- 
+
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
@@ -145,7 +145,7 @@ void AcquisitionWriter::write()
         xmlNewChild(item_node, NULL, BAD_CAST "Red", BAD_CAST ( castColorVal(red) ).c_str());
         xmlNewChild(item_node, NULL, BAD_CAST "Green", BAD_CAST ( castColorVal(green) ).c_str());
         xmlNewChild(item_node, NULL, BAD_CAST "Blue", BAD_CAST ( castColorVal(blue) ).c_str());
-        xmlNewChild(item_node, NULL, BAD_CAST "FileName", BAD_CAST ( fileName + extension() ).c_str() );
+        xmlNewChild(item_node, NULL, BAD_CAST "FileName", BAD_CAST ( fileName + ".obj" ).c_str() );
         xmlNewChild(item_node, NULL, BAD_CAST "Layer", BAD_CAST layer.c_str());
         xmlNewChild(item_node, NULL, BAD_CAST "IsVisible",
                 BAD_CAST ( ::fwTools::getString< bool > (rec->getIsVisible()) ).c_str());
