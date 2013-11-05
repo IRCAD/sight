@@ -22,7 +22,7 @@ Request::Request(const std::string & url) : m_url(url)
 
 Request::sptr Request::New(const std::string& url)
 {
-    return Request::sptr(new Request(url));
+    return ::boost::make_shared<Request>(url);
 }
 
 void Request::addHeader(const std::string & key, const std::string & value)

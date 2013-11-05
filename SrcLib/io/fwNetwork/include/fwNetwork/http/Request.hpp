@@ -36,6 +36,12 @@ public:
      * @name Constructor/Destructor
      * @{ */
     FWNETWORK_API Request();
+
+    /**
+     * @brief Construct a new Request with given url.
+     */
+    FWNETWORK_API Request(const std::string& url);
+
     virtual ~Request(){};
     /**  @} */
 
@@ -74,11 +80,6 @@ public:
     FWNETWORK_API void setUrl(const std::string& url);
 
 private:
-
-    /**
-     * @brief Construct a new Request
-     */
-    Request(const std::string& url);
 
     HeadersType m_headers;
 
