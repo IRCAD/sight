@@ -30,13 +30,13 @@ void RequestHandler::setLicence(const std::string& itemId, const int& licenseId)
     }
     catch(::fwNetwork::exceptions::Base& e)
     {
-        OSLM_ERROR(
+        SLM_ERROR(
                 "Failed to set licence '" + std::string("" + licenseId) + "' for item '" + itemId + "' : " + e.what());
     }
 
     if(!h->isSuccess())
     {
-        OSLM_ERROR("Failed to set licence : '" + reply + "'");
+        SLM_ERROR("Failed to set licence : '" + reply + "'");
     }
 }
 
