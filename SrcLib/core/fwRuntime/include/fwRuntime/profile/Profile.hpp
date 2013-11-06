@@ -25,7 +25,6 @@ namespace fwRuntime
  * @namespace   ::fwRuntime::profile
  * @brief       Namespace ::fwRuntime::profile
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
  */
 namespace profile
 {
@@ -41,7 +40,6 @@ class Uninitializer;
  * @brief   Implements a bundle set profile.
  * @class  Profile
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
  */
 class Profile : public ::fwCore::BaseObject
 {
