@@ -11,5 +11,6 @@ LIB = [
        'fwTest_0-1',
        ]
 
-BUNDLES = ['filterVRRender_0-1', 'dataReg_0-1', 'servicesReg_0-1']
+BUNDLES = []
+REQUIREMENTS = ['filterVRRender_0-1', 'dataReg_0-1', 'servicesReg_0-1']
 CONSOLE = 'yes'
