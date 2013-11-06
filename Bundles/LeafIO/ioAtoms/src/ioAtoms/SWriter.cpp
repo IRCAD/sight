@@ -83,7 +83,7 @@ void SWriter::configuring() throw(::fwTools::Failed)
             const std::string& ext = extension->getValue();
             SReader::FileExtension2NameType::const_iterator it = SReader::s_EXTENSIONS.find(ext);
 
-            OSLM_ASSERT("Extension '" << ext << "' is not allowed in configuration", it != SReader::s_EXTENSIONS.end());
+            SLM_ASSERT("Extension '" + ext + "' is not allowed in configuration", it != SReader::s_EXTENSIONS.end());
 
             if(it != SReader::s_EXTENSIONS.end())
             {
@@ -294,7 +294,7 @@ void SWriter::configureWithIHM()
             BOOST_FOREACH(const std::string& ext, m_allowedExts)
             {
                 SReader::FileExtension2NameType::const_iterator it = SReader::s_EXTENSIONS.find(ext);
-                OSLM_ASSERT("Didn't find extension '" << ext << "' in managed extensions map",
+                SLM_ASSERT("Didn't find extension '" + ext + "' in managed extensions map",
                         it != SReader::s_EXTENSIONS.end());
 
                 dialogFile.addFilter(it->second, "*" + ext);

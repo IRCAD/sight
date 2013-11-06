@@ -71,14 +71,14 @@ void SShowAbout::configuring() throw(::fwTools::Failed)
 
         m_fsAboutPath = ::boost::filesystem::path(filename);
         m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAboutPath);
-        OSLM_WARN_IF("About file " << filename << " doesn't exist", !m_bServiceIsConfigured);
-        OSLM_TRACE("Filename found '" << filename << "'");
+        SLM_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
+        SLM_TRACE("Filename found '" + filename + "'");
     }
 
     if(cfgTitle)
     {
         m_title = cfgTitle->getValue();
-        OSLM_TRACE("Set title to '" << m_title << "'");
+        SLM_TRACE("Set title to '" + m_title + "'");
     }
 
     if(cfgSize)

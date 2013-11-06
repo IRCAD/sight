@@ -99,7 +99,7 @@ void SReader::configuring() throw(::fwTools::Failed)
             const std::string& ext = extension->getValue();
             FileExtension2NameType::const_iterator it = s_EXTENSIONS.find(ext);
 
-            OSLM_ASSERT("Extension '" << ext << "' is not allowed in configuration", it != s_EXTENSIONS.end());
+            SLM_ASSERT("Extension '" + ext + "' is not allowed in configuration", it != s_EXTENSIONS.end());
 
             if(it != s_EXTENSIONS.end())
             {
@@ -128,8 +128,8 @@ void SReader::configuring() throw(::fwTools::Failed)
     {
         m_uuidPolicy = uuidPolicy.at(0)->getValue();
         SLM_ASSERT("Unknown policy : '"
-                   << m_uuidPolicy
-                   <<"', available policies : 'Strict','Change' or 'Reuse'.",
+                   + m_uuidPolicy +
+                   "', available policies : 'Strict','Change' or 'Reuse'.",
                    "Strict" == m_uuidPolicy || "Change" == m_uuidPolicy || "Reuse" == m_uuidPolicy );
 
         SLM_ASSERT("'Reuse' policy is available only with inject mode",
