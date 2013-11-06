@@ -17,7 +17,7 @@ namespace action
 {
 /**
  * @brief   Action to export the selected acquisition of a patientDB.
- * @class   ExportAcquisition.
+ * @class   ExportAcquisition
  *
  * The available writer can be configured
  * @verbatim
