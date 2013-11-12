@@ -26,45 +26,45 @@ namespace http {
 class FWNETWORK_CLASS_API Client
 {
 public:
-    virtual ~Client(){};
+    virtual ~Client() {};
 
     /**
-     * @brief get http request
+     * @brief Get http request
      */
     FWNETWORK_API virtual std::string get(Request::sptr request) = 0;
 
     /**
-     * @brief get http request set the buffer with the content
+     * @brief Get http request set the buffer with the content
      */
     FWNETWORK_API virtual bool get(Request::sptr request, char* buffer, size_t size) = 0;
 
     /**
-     * @brief post http request
+     * @brief Post http request
      */
     FWNETWORK_API virtual std::string post(Request::sptr request, const std::string& content) = 0;
 
     /**
-     * @brief put http request
+     * @brief Put http request
      */
     FWNETWORK_API virtual std::string put(Request::sptr url, const std::string& content) = 0;
 
     /**
-     * @brief put http request asynchronously
+     * @brief Put http request asynchronously
      */
     FWNETWORK_API virtual void putAsync(Request::sptr url, const std::string& content) = 0;
 
     /**
-     * @brief put http request
+     * @brief Put http request
      */
     FWNETWORK_API virtual std::string put(Request::sptr request, char* buffer, size_t size) = 0;
 
     /**
-     * @brief put http request asynchronously
+     * @brief Put http request asynchronously
      */
     FWNETWORK_API virtual void putAsync(Request::sptr request, char* buffer, size_t size) = 0;
 
     /**
-     * @brief head http request
+     * @brief Head http request
      */
     FWNETWORK_API virtual Request::HeadersType head(Request::sptr request) = 0;
 };

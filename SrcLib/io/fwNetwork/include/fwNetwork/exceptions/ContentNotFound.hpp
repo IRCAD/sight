@@ -15,11 +15,18 @@ namespace fwNetwork
 namespace exceptions
 {
 
+/**
+ * @brief Implements exception for HTTP content not found errors.
+ */
 class ContentNotFound: public fwNetwork::exceptions::Base
 {
 public:
+    /**
+     * @name Constructor/Destructor.
+     * @{ */
     ContentNotFound(const std::string& message);
     virtual ~ContentNotFound() throw();
+    /**  @} */
 };
 
 } /* namespace exceptions */

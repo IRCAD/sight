@@ -15,11 +15,18 @@ namespace fwNetwork
 namespace exceptions
 {
 
+/**
+ * @brief Implements exception for an HTTP connection refused.
+ */
 class ConnectionRefused: public fwNetwork::exceptions::Base
 {
 public:
+    /**
+     * @name Constructor/Destructor.
+     * @{ */
     ConnectionRefused(const std::string& message);
     virtual ~ConnectionRefused() throw();
+    /**  @} */
 };
 
 } /* namespace exceptions */

@@ -15,11 +15,18 @@ namespace fwNetwork
 namespace exceptions
 {
 
+/**
+ * @brief Implements exception for an HTTP host not found errors.
+ */
 class HostNotFound : public fwNetwork::exceptions::Base
 {
 public:
+    /**
+     * @name Constructor/Destructor.
+     * @{ */
     HostNotFound(const std::string& message);
     virtual ~HostNotFound() throw();
+    /**  @} */
 };
 
 } /* namespace exceptions */

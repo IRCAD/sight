@@ -105,11 +105,17 @@ public:
 
 
 public Q_SLOTS:
+    /// Slot triggered when an error occurs.
     void processError(QNetworkReply::NetworkError errorCode);
+
+    /// Slot triggered when an asynchronous requested has completed.
     void onPutAsyncFinished();
 
 private:
+    /// Set request headers with given values.
     void computeHeaders(QNetworkRequest& request,  const Request::HeadersType& headers);
+
+    // Performs requests.
     QNetworkAccessManager* m_networkManager;
 
 };
