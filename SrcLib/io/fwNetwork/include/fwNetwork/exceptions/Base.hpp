@@ -16,7 +16,7 @@ namespace exceptions
 {
 
 /**
- * @brief Base class of camp Exception
+ * @brief Base class of fwNetwork Exception
  */
 class Base: public fwCore::Exception
 {
