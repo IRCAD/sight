@@ -10,6 +10,7 @@
 #include <fwData/Acquisition.hpp>
 
 #include <io/IWriter.hpp>
+#include <io/ioTypes.hpp>
 
 #include "ioMidas/SAcquisitionWriter.hpp"
 #include "ioMidas/ExportDialog.hpp"
@@ -55,7 +56,7 @@ void SAcquisitionWriter::configuring() throw(::fwTools::Failed)
     SLM_ASSERT("Failed to create Midas configuration using factory with key '" << versionStr << "'", m_config);
 
     ConfigurationElementContainer url = m_configuration->find("url");
-    SLM_ASSERT("The <url> element can be set at most once.", url.size() <= 1 );
+    SLM_ASSERT("The <url> element can be set once.", url.size() == 1 );
     if (url.size() == 1)
     {
         m_config->setUrl(url.at(0)->getValue());
@@ -130,6 +131,11 @@ void SAcquisitionWriter::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void SAcquisitionWriter::updating() throw(::fwTools::Failed)
+{}
+
+//------------------------------------------------------------------------------
+
 void SAcquisitionWriter::stopping() throw(::fwTools::Failed)
 {}
 
@@ -144,7 +150,7 @@ void SAcquisitionWriter::info(std::ostream &_sstream )
 
 ::io::IOPathType SAcquisitionWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::io::FILES;
 }
 
 //------------------------------------------------------------------------------
@@ -164,9 +170,5 @@ std::string SAcquisitionWriter::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-void SAcquisitionWriter::updating() throw(::fwTools::Failed)
-{}
-
-//------------------------------------------------------------------------------
-
 } // namespace ioMidas
+

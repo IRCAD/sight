@@ -23,6 +23,7 @@ namespace ioMidas
 /**
  * @class SAcquisitionWriter
  * @brief Writer exporting ::fwData::Acquisition to a Midas server.
+ * @note This writer cannot be used without calling configureWithIHM().
  */
 class IOMIDAS_CLASS_API SAcquisitionWriter : public ::io::IWriter
 {
@@ -49,10 +50,23 @@ protected:
      * Example :
      @verbatim
      <config>
-        <url>http://midasserverurl.org/midas</url>   <!-- not mandatory, default value is empty   -->
+        <url>http://midasserverurl.org/midas</url>  <!-- mandatory -->
         <serverVersion>3.2.8</serverVersion>        <!-- not mandatory, default value is "3.2.6" -->
+        <appName>Default</appName>                  <!-- not mandatory, default value is "Default" -->
+        <license>3</license>                        <!-- not mandatory, default value is "3" -->
+        <privacy>Private</privacy>                  <!-- not mandatory, default value is "Private" -->
+        <rootFolder>Patients</rootFolder>           <!-- not mandatory, default value is "Patients" -->
      </config>
      @endverbatim
+     *
+     * XML attributes :
+     * - url : URL of the server
+     * - serverVersion : server version (supported versions are "3.2.6" and "3.2.8")
+     * - appName : Midas application name defined by server
+     * - license : index of uploaded files license defined in ::midasIO::IConfiguration::LicenseIDType
+     * - privacy : privacy of uploaded files (supported values are "Public", "Parent", "Private")
+     * - rootFolder : main folder in Midas community where files are uploaded.
+     *   This folder is automatically created if it doesn't exists.
      */
     IOMIDAS_API virtual void configuring() throw(::fwTools::Failed) ;
 
@@ -66,12 +80,9 @@ protected:
     IOMIDAS_API virtual std::vector< std::string > getSupportedExtensions() ;
     IOMIDAS_API virtual std::string getSelectorDialogTitle();
     IOMIDAS_API virtual void configureWithIHM();
-
-    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg )
-        throw(::fwTools::Failed) {} ;
     /**  @} */
 
-    /// Returns managed path type, here service manages only single file
+    /// Returns managed path type, here service manages a list of files
     IOMIDAS_API ::io::IOPathType getIOPathType() const;
 
 private :
