@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef itk_InrImageIO_h
-#define itk_InrImageIO_h
+#ifndef __FWITKIO_INR2ITK_INRIMAGEIO_HPP__
+#define __FWITKIO_INR2ITK_INRIMAGEIO_HPP__
 
 #include <fstream>
-#include "itkImageIOBase.h"
+#include <itkImageIOBase.h>
 
 #include "fwItkIO/config.hpp"
 
@@ -28,28 +28,28 @@ public :
     typedef InrImageIO Self;
     typedef ImageIOBase SuperClass;
     typedef SmartPointer<Self> Pointer;
-    
+
     /** Method for creation through the object factory. */
     itkNewMacro(Self);
 
     /** Run-time type information (and related methods). */
     itkTypeMacro(InrImageIO, Superclass);
-    
+
     /*-------- This part of the interfaces deals with reading data. ----- */
-    
+
     /** Determine if the file can be read with this ImageIO implementation.
      * \param FileNameToRead The name of the file to test for reading.
      * \post Sets classes ImageIOBase::m_FileName variable to be FileNameToWrite
      * \return Returns true if this ImageIO can read the file specified.
      */
     virtual bool CanReadFile(const char* FileNameToRead);
-    
+
     /** Set the spacing and dimension information for the set filename. */
     virtual void ReadImageInformation();
-    
+
     /** Reads the data from disk into the memory buffer provided. */
     virtual void Read(void* buffer);
-    
+
     /*-------- This part of the interfaces deals with writing data. ----- */
 
     /** Determine if the file can be written with this ImageIO implementation.
@@ -65,7 +65,7 @@ public :
     /** Writes the data to disk from the memory buffer provided. Make sure
      * that the IORegions has been set properly. */
     virtual void Write(const void* buffer);
-    
+
 protected:
     FWITKIO_API InrImageIO();
     FWITKIO_API ~InrImageIO();
@@ -73,11 +73,11 @@ protected:
 private:
     InrImageIO(const Self&); //purposely not implemented
     void operator=(const Self&); //purposely not implemented
-    
+
     std::streampos m_headerSize;
     //bool m_swapBytes;
 }; // class InrImageIO()
 
 } // namespace itk
 
-#endif // itk_InrImageIO_h
+#endif // __FWITKIO_INR2ITK_INRIMAGEIO_HPP__

@@ -7,6 +7,8 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
+#include <fwCore/base.hpp>
+
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 

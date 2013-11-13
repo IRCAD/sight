@@ -6,11 +6,11 @@
 
 #include "fwItkIO/ImageIOFactoryRegistrar.hxx"
 
-#include "inr2itk/itkInrImageIOFactory.h"
+#include "inr2itk/itkInrImageIOFactory.hpp"
 
-#include "itkCreateObjectFunction.h"
-#include "inr2itk/itkInrImageIO.h"
-#include "itkVersion.h"
+#include <itkCreateObjectFunction.h>
+#include "inr2itk/itkInrImageIO.hpp"
+#include <itkVersion.h>
 
 #include <fwCore/base.hpp>
 

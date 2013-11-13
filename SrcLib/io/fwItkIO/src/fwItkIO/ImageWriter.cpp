@@ -6,21 +6,19 @@
 
 #include <boost/filesystem.hpp>
 
+#include <fwCore/base.hpp>
+
 #include <itkImageFileWriter.h>
 
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/Dispatcher.hpp>
-
-#include <fwItkIO/itk.hpp>
-
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
-#include <fwCore/base.hpp>
-
 #include <fwDataIO/writer/registry/macros.hpp>
 
+#include "fwItkIO/itk.hpp"
 #include "fwItkIO/helper/ProgressItkToFw.hpp"
 #include "fwItkIO/ImageWriter.hpp"
 
@@ -105,7 +103,7 @@ void ImageWriter::write()
     saverParam.m_fwWriter =  this->getSptr();
     assert( saverParam.m_dataImage );
 
-    fwTools::Dispatcher< fwTools::IntrinsicTypes , ITKSaverFunctor >::invoke( saverParam.m_dataImage->getPixelType(), saverParam );
+    ::fwTools::Dispatcher< fwTools::IntrinsicTypes , ITKSaverFunctor >::invoke( saverParam.m_dataImage->getPixelType(), saverParam );
 }
 
 

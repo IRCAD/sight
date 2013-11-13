@@ -6,14 +6,12 @@
 
 #include <boost/filesystem.hpp>
 
+#include <fwCore/base.hpp>
+
 #include <itkImageFileReader.h>
 #include <itkImageIOFactory.h>
 
-#include <fwCore/base.hpp>
-
 #include <fwData/Image.hpp>
-#include <fwItkIO/itk.hpp>
-
 
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/Dispatcher.hpp>
@@ -21,8 +19,9 @@
 
 #include <fwDataIO/reader/registry/macros.hpp>
 
-#include "inr2itk/itkInrImageIOFactory.h"
+#include "inr2itk/itkInrImageIOFactory.hpp"
 
+#include "fwItkIO/itk.hpp"
 #include "fwItkIO/ImageReader.hpp"
 #include "fwItkIO/helper/ProgressItkToFw.hpp"
 

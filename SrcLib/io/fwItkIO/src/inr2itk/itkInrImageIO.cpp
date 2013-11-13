@@ -19,7 +19,7 @@
 #include <fwCore/spyLog.hpp>
 #include <fwCore/Exception.hpp>
 
-#include "inr2itk/itkInrImageIO.h"
+#include "inr2itk/itkInrImageIO.hpp"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #define min(a,b) ((a) <= (b) ? (a) : (b))

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "itkObjectFactoryBase.h"
+#include <itkObjectFactoryBase.h>
 
 
 

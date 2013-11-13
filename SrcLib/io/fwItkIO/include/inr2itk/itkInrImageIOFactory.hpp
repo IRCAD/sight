@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef itk_InrImageIOFactory_h
-#define itk_InrImageIOFactory_h
+#ifndef __FWITKIO_INR2ITK_INRIMAGEIOFACTORY_HPP__
+#define __FWITKIO_INR2ITK_INRIMAGEIOFACTORY_HPP__
 
-#include "itkObjectFactoryBase.h"
-#include "itkImageIOBase.h"
+#include <itkObjectFactoryBase.h>
+#include <itkImageIOBase.h>
 
 namespace itk
 {
-/** 
+/**
  * \class InrImageIOFactory
  * \brief Create instances of InrImageIO objects using an object factory.
  */
@@ -53,8 +53,7 @@ private:
 
 };
 
-
 } // end namespace itk
 
 
-#endif // itk_InrImageIOFactory_h
+#endif // __FWITKIO_INR2ITK_INRIMAGEIOFACTORY_HPP__
