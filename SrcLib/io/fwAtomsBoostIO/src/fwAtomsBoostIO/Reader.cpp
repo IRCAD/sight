@@ -1,15 +1,11 @@
 #include <sstream>
-#include <iosfwd>                          // streamsize
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include <boost/iostreams/categories.hpp>  // source_tag
 
 #include <fwTools/UUID.hpp>
-
-#include <fwMemory/BufferManager.hpp>
 
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -197,22 +193,32 @@ protected:
 
     this->cache(ptpath, atom);
 
-    size_t buffSize = pt.get<size_t>("blob.buffer_size");
-    if(buffSize > 0)
+    const std::string bufType = pt.get<std::string>("blob.buffer_type");
+
+    if(bufType == "raw")
     {
-        const ::boost::filesystem::path bufFile = pt.get<std::string>("blob.buffer");
-        ::boost::filesystem::path sourceFile = "";
-        ::fwMemory::FileFormatType format = ::fwMemory::OTHER;
-
-        if( ::boost::filesystem::is_directory(m_archive->getArchivePath()))
+        size_t buffSize = pt.get<size_t>("blob.buffer_size");
+        if(buffSize > 0)
         {
-            sourceFile = m_archive->getArchivePath() / bufFile;
-            format = ::fwMemory::RAW;
-        }
+            const ::boost::filesystem::path bufFile = pt.get<std::string>("blob.buffer");
+            ::boost::filesystem::path sourceFile = "";
+            ::fwMemory::FileFormatType format = ::fwMemory::OTHER;
 
-        buffObj->setIStreamFactory( ::boost::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile),
-                                   buffSize, sourceFile, format);
+            if( ::boost::filesystem::is_directory(m_archive->getArchivePath()))
+            {
+                sourceFile = m_archive->getArchivePath() / bufFile;
+                format = ::fwMemory::RAW;
+            }
+
+            buffObj->setIStreamFactory( ::boost::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile),
+                                       buffSize, sourceFile, format);
+        }
     }
+    else
+    {
+        FW_RAISE("Buffer type '" << bufType << "' unknown.");
+    }
+
     return atom;
 }
 

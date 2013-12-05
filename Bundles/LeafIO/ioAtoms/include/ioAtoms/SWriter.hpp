@@ -7,6 +7,8 @@
 #ifndef __IOATOMS_SWRITER_HPP__
 #define __IOATOMS_SWRITER_HPP__
 
+#include <set>
+
 #include <io/IWriter.hpp>
 
 #include <fwAtomsBoostIO/Writer.hpp>
@@ -42,11 +44,19 @@ protected:
     /**
     * @brief
     * @verbatim
-        <config>
-            <patcher context="..." version="..." />
+    <config>
+        <patcher context="..." version="..." />
+        <extensions>
+            <extension>.xml</extension>
+            <extension>.xmlz</extension>
             ...
-        </config>
+        </extensions>
+        ...
+    </config>
     * @endverbatim
+    *
+    * extensions : allowed extensions defined in ::ioAtoms::SReader
+    *
     * @see ::io::IWriter
     * @throw ::fwTools::Failed
     */
@@ -81,6 +91,9 @@ protected:
 
     /// Proposes a gui to select available exports (set m_exportedVersion). Returns false if user cancel the selection
     bool versionSelection();
+
+    /// Allowed file extensions
+    std::set< std::string > m_allowedExts;
 };
 
 } // namespace ioAtoms

@@ -43,6 +43,12 @@
         <service>::uiPatientDB::action::ErasePatient</service>
         <object>::fwData::PatientDB</object>
     </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPatientDB::action::ExportAcquisition</service>
+        <object>::fwData::PatientDB</object>
+    </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>

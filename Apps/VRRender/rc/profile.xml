@@ -52,7 +52,10 @@
     <activate id="3DVisualizationActivity" version="0-1" />
     <activate id="blendActivity"           version="0-1" />
     <activate id="volumeRenderingActivity" version="0-1" />
+    
+    <activate id="filterVRRender" version="0-1" />
 
+    <start id="filterVRRender" />
     <start id="memory" />
     <start id="patchMedicalData"/>
     <start id="scene2D" />

@@ -112,7 +112,7 @@
 
             <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
-            <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAbout" autoConnect="no">
+            <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::SShowAbout" autoConnect="no">
                 <filename id="Bundles/VRRender_0-9/about/about.html" />
             </service>
 
