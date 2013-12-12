@@ -1,0 +1,16 @@
+<plugin id="uiViewPoints" class="::uiViewPoints::Plugin">
+
+    <library name="uiViewPoints" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="io"/>
+    <requirement id="gui"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiViewPoints::SViewPointsEditor</service>
+        <object>::fwData::Vector</object>
+    </extension>
+
+</plugin>

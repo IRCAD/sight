@@ -1,0 +1,21 @@
+<plugin id="ctrlComputeCPR" class="::ctrlComputeCPR::Plugin">
+
+    <library name="ctrlComputeCPR" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ctrlComputeCPR::SComputeCPR3D</service>
+        <object>::fwData::Mesh</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ctrlComputeCPR::SComputeCPR2D</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+</plugin>
+

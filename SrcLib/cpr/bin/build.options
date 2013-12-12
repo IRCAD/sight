@@ -1,0 +1,9 @@
+TYPE    = 'shared'
+LIB     = [
+          'fwData_0-1',
+          'fwServices_0-1',
+          'fwComEd_0-1',
+          'fwTools_0-1',
+          'navigation_0-1'
+          ]
+VERSION = '0-1'

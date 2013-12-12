@@ -1,0 +1,14 @@
+<plugin id="uiCPR" class="::uiCPR::Plugin">
+
+    <library name="uiCPR" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiCPR::SCPREditor</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+</plugin>
