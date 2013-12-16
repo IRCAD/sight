@@ -7,8 +7,6 @@
 #ifndef _VISUVTKADAPTOR_CONFIG_HPP_
 #define _VISUVTKADAPTOR_CONFIG_HPP_
 
-#define vtkRenderingCore_AUTOINIT 4(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL)
-
 #ifdef _WIN32
 
     #ifdef VISUVTKADAPTOR_EXPORTS
