@@ -19,8 +19,8 @@ namespace uiMedData
 /**
  * @brief  This Service allows to preview the selected series in the Vector. For the moment, it works only on a
  * single selection.
- * @class   SSeriesViewer.
- * @author  IRCAD (Research and Development Team).
+ * @class   SSeriesViewer
+ * 
  * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController

@@ -19,7 +19,7 @@ namespace fwThread
 namespace guiWx
 {
 /**
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009-2010.
  */
 class GUIWX_CLASS_API Plugin : public ::fwRuntime::Plugin

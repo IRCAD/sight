@@ -11,8 +11,8 @@ namespace opVTKMesh
 {
 /**
  * @brief       The namespace opVTKMesh::action contains operator to create mesh with VTK .
- * @namespace   opVTKMesh::action.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   opVTKMesh::action
+ * 
  * @date        2009-2010.
  *
  */

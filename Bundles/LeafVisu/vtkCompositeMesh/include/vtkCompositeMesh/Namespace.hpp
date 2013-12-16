@@ -9,8 +9,8 @@
 
 /**
  * @brief       The namespace vtkCompositeMesh contains a service which renders several meshes and store it on Composite.
- * @namespace   vtkCompositeMesh.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   vtkCompositeMesh
+ * 
  * @date        2009-2010.
  *
  */

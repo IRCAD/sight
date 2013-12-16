@@ -17,9 +17,9 @@ namespace ctrlSelection
 
 
 /**
- * @class  MedicalImageSrv.
+ * @class  MedicalImageSrv
  * @brief  This service convert its attached image to a medical image by adding specific fields.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2010.
  */

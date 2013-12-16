@@ -25,7 +25,7 @@ namespace fwRuntime
  * function must be implemented.
  *
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct FWRUNTIME_CLASS_API Plugin : public IPlugin
 {

@@ -28,7 +28,7 @@ namespace editor
 /**
  * @class   Code
  * @brief   Code Editor working on a ::fwData::String
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  */
 class GUIQT_CLASS_API Code : public QObject,public ::gui::editor::IEditor

@@ -22,8 +22,8 @@ namespace helper
 
 /**
  * @brief   Helper to manage vtk data from ::fwData::TransferFunction.
- * @class   TransferFunction.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransferFunction
+ * 
  * @date    2012.
  *
  */

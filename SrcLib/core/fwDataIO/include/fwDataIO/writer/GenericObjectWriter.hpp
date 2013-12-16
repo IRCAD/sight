@@ -20,8 +20,8 @@ namespace writer
 
 /**
  * @brief   generic class for all object writers.
- * @class   GenericObjectWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   GenericObjectWriter
+ * 
  * @date    2009
  *
  * This class adds 2 methods to the API of IObjectWriter. This

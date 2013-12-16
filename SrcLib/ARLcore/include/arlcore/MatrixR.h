@@ -39,7 +39,6 @@ namespace arlCore
     class PointList;
     class vnl_rigid_vector;
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Matrice de transformation rigide
      */

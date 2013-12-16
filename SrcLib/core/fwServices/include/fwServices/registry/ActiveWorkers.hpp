@@ -21,7 +21,7 @@ namespace registry
 /**
  * @class ActiveWorkers
  * @brief This class to register active worker in the system, creates a default worker
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date 2012.
  */
 class FWSERVICES_CLASS_API ActiveWorkers : public ::fwCore::BaseObject

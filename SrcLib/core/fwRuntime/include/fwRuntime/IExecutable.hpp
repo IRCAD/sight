@@ -35,7 +35,7 @@ struct Runtime;
  * point of a plugin.
  *
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct FWRUNTIME_CLASS_API IExecutable
 {

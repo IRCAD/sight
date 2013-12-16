@@ -209,7 +209,6 @@ namespace arlRandom
     {
     /**
      * @class   Random
-     * @author  IRCAD (Research and Development Team)
      * @date    2007, 11/2008
      * @brief   Randomize values
      * @remark  While no initRandom has launched, random values are generate from random seeds
@@ -268,7 +267,6 @@ namespace arlRandom
 namespace arlTime
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2008
      * @brief   Time functions
      */
@@ -287,7 +285,6 @@ namespace arlTime
 namespace arlString
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Fonctions de traitements de chaines
      */
@@ -353,7 +350,6 @@ namespace arlString
 namespace arlFile
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Fonctions sur les fichiers
      */
@@ -375,7 +371,6 @@ namespace arlFile
 namespace arlSound
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    11/2008
      * @brief   Sound functions
      */

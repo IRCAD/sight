@@ -25,8 +25,8 @@ namespace uiVisu
 
 /**
  * @brief   PointEditor service allows to display point information.
- * @class   PointEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   PointEditor
+ * 
  * @date    2010.
  */
 class UIVISUQT_CLASS_API PointEditor : public QObject, public ::gui::editor::IEditor

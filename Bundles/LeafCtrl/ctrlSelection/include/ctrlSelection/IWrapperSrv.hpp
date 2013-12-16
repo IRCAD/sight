@@ -16,8 +16,8 @@ namespace ctrlSelection
 {
 
 /**
- * @class   IWrapperSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IWrapperSrv
+ * 
  * @date    2007-2009.
  * @brief The purpose of this service is to wrap messages incoming to the object to new messages.
  *

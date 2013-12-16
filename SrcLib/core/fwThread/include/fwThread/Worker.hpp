@@ -29,11 +29,11 @@ FWTHREAD_API ThreadIdType getCurrentThreadId();
 class Timer;
 
 /**
- * @class   Worker.
+ * @class   Worker
  * @brief   This class creates and manages a task loop.
  * The default implementation create a loop in a new thread.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2012.
  */
 class FWTHREAD_CLASS_API Worker : public ::fwCore::BaseObject

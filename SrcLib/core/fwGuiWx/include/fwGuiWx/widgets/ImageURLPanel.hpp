@@ -19,8 +19,8 @@ namespace widgets
 
 /**
  * @brief   This class is used to show an image file or image url
- * @class   ImageURLPanel.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImageURLPanel
+ * 
  * @date    2009.
  * @note    This class is not commented, because it is not used in the open framework tutorial.
  * @todo    ImageURLPanel is not commented.

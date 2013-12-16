@@ -20,8 +20,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the toolbox layout manager.
- * @class   ToolboxLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   ToolboxLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

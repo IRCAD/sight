@@ -18,8 +18,8 @@ namespace fwGuiWx
 
 /**
  * @brief   Gives access to the wx application part
- * @class   Application.
- * @author  IRCAD (Research and Development Team).
+ * @class   Application
+ * 
  * @date    2009-2010.
  *
  */

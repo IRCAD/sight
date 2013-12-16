@@ -9,8 +9,8 @@
 
 /**
  * @brief       The namespace opImageFilter contains several operators on image.
- * @namespace   opImageFilter.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   opImageFilter
+ * 
  * @date        2009-2010.
  *
  */

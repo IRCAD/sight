@@ -22,12 +22,9 @@ namespace manager
 {
 
 /**
- * @class  SField.
+ * @class  SField
  * @brief  This services is a manager which starts, stops or swaps services on field contained in a composite when
  * it receive specific message (mainly sent by updater).
- * @author IRCAD (Research and Development Team).
-
- * @date   2007-2009.
  */
 class CTRLSELECTION_CLASS_API SField : public ::ctrlSelection::IManagerSrv
 {

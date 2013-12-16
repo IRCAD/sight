@@ -19,8 +19,8 @@ namespace dialog
 /**
  * @brief   Defines the generic input dialog for IHM.
  * Use the Delegate design pattern
- * @class   InputDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   InputDialog
+ * 
  * @date    2009-2010.
  *
  * Example of use:

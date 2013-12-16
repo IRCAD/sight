@@ -37,8 +37,8 @@ typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
 
 /**
  * @brief   Base class for all services.
- * @class   IService.
- * @author IRCAD (Research and Development Team).
+ * @class   IService
+ * 
  * @date    2007-2009.
  *
  * This class defines the API to use and declare services. The service state aims at imposing method execution order (i.e. configure(), start(), update() or update(const fwServices::ObjectMsg::sptr), stop()).
@@ -181,8 +181,8 @@ public :
      * This method provides to associate te service to another object without stopping
      * and deleting it. Furthermore, this method modify all observations to be aware to
      * _obj notifications.
-     * @author IRCAD (Research and Development Team).
-     * @author  IRCAD (Research and Development Team).
+     * 
+     * 
      */
     FWSERVICES_API SharedFutureType swap( ::fwData::Object::sptr _obj ); //throw( ::fwTools::Failed );
 

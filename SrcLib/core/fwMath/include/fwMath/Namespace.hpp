@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace fwMath contains classes which provide the implementation of several mathematic functions and objects (plane, line, point).
  * @namespace   fwMath
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

@@ -25,7 +25,7 @@ namespace fwData
  *
  * Float object is essentially used as a field in other objects.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Float : public GenericField< float >

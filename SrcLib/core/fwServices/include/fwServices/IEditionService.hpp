@@ -26,8 +26,8 @@ namespace fwServices
 
 /**
  * @brief   This interface defines edition service API. It mainly has the role of the subject in the observer design pattern.
- * @class   IEditionService.
- * @author IRCAD (Research and Development Team).
+ * @class   IEditionService
+ * 
 
  * @date    2007-2009.
  *

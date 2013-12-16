@@ -24,8 +24,8 @@ namespace dialog
 {
 /**
  * @brief   This class allows us to select an acquisition in a patient data base.
- * @class   ProgressDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   ProgressDialog
+ * 
  * @date    2009.
  * @note Do not inherit from fwProgressDialog but embed a fwProgressDialog because this lasted is not copiable.
  * @todo ProgressDialog is not commented.

@@ -13,10 +13,10 @@ namespace fwThread
 {
 
 /**
- * @class   TaskHandler.
+ * @class   TaskHandler
  * @brief   This class encapsulates packaged task and provides a copy constructor.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2012.
  */
 template <typename R>

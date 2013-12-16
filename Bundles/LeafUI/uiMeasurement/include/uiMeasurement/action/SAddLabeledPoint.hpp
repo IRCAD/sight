@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action adds landmaks on image.
- * @class   SAddLabeledPoint.
- * @author  IRCAD (Research and Development Team).
+ * @class   SAddLabeledPoint
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API SAddLabeledPoint : public ::fwGui::IActionSrv

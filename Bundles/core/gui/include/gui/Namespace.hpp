@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace gui contains the basic services to build the application IHM.
  * @namespace   gui
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

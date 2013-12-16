@@ -30,8 +30,8 @@ namespace visuVTKAdaptor
 
 /**
  * @brief   Manage blend for image given in configuration.
- * @class   ImagesProbeCursor.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImagesProbeCursor
+ * 
  * @date    2010.
  */
 class VISUVTKADAPTOR_CLASS_API ImagesBlend: public ::fwRenderVTK::IVtkAdaptorService

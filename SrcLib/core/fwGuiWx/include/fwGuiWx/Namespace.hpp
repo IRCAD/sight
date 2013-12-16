@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace fwGuiWx contains classes which provide the implementation of the Gui using wxwidgets library.
  * @namespace   fwGuiWx
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

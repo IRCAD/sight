@@ -22,8 +22,8 @@ namespace uiVisu
 
 /**
  * @brief   BasicFloatEditor service permits to edit a float value.
- * @class   BasicFloatEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   BasicFloatEditor
+ * 
  * @date    2011.
  */
 class UIVISUQT_CLASS_API BasicFloatEditor : public QObject, public ::gui::editor::IEditor

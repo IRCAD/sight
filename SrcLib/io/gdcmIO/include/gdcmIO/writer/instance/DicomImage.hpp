@@ -30,7 +30,7 @@ namespace instance
  * @note    This is a common image writer.
  *          It does not certify a properly written DICOM file.
  *
- * @class   DicomImage.
+ * @class   DicomImage
  */
 class GDCMIO_CLASS_API DicomImage : public DicomInstance< ::fwData::Image >
 {

@@ -14,7 +14,7 @@ namespace gui
 /**
  * @brief       The namespace gui::view contains basic services managing view.
  * @namespace   gui::view
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

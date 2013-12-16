@@ -19,7 +19,7 @@ namespace fwTools
 /**
  * @brief   Implements fwTools exception class
  * @class   Exception
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 struct FWTOOLS_CLASS_API Exception : public ::fwCore::Exception

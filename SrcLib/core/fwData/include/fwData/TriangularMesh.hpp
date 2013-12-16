@@ -27,7 +27,7 @@ namespace fwData
  * A mesh is represented by a container of 3D points and a container of cells.
  * A cell contains indices of the three points related to a triangular cell.
  *
- * @author    IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API TriangularMesh : public Object

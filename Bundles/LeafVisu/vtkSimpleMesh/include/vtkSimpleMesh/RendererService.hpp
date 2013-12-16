@@ -28,8 +28,8 @@ namespace vtkSimpleMesh
 
 /**
  * @brief   Renderer service.
- * @class   RendererService.
- * @author  IRCAD (Research and Development Team).
+ * @class   RendererService
+ * 
  * @date    2009.
  *
  * Service rendering a ::fwData::Mesh using VTK.

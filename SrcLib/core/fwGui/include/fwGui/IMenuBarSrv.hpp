@@ -20,8 +20,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing the menu bar.
- * @class   IMenuBarSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMenuBarSrv
+ * 
  * @date    2009-2010.
  *
  */

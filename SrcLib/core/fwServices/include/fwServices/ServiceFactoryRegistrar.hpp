@@ -18,7 +18,7 @@ namespace fwServices
 /**
  * @brief Helper for registering a service
  * Creates internally the service factory and adds it to the FactoryRegistry
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2012.
  */
 template<class SRV_IMPL>

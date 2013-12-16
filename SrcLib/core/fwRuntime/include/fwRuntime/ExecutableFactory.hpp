@@ -28,7 +28,7 @@ namespace fwRuntime
  * @brief   Defines the abstract executable factory class.
  * @struct  ExecutableFactory
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
 {

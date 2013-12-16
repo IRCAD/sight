@@ -25,8 +25,8 @@ namespace uiTF
 
 /**
  * @brief   TransferFunctionEditor service.
- * @class   TransferFunctionEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransferFunctionEditor
+ * 
  * @date    2011.
  */
 class UITF_CLASS_API TransferFunctionEditor : public QObject, public ::gui::editor::IEditor

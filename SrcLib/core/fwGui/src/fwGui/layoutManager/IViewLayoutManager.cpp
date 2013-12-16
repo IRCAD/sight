@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IViewLayoutManagerBase.cpp
+ * @file fwGui/layoutManager/IViewLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 

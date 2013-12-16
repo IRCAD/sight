@@ -22,7 +22,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for interaction : store modification information
  * @class   InteractionMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */

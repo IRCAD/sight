@@ -21,8 +21,8 @@ namespace dialog
  *
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro
  * The specific implementation are in fwWX and fwQT libraries
- * @class   MultiSelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   MultiSelectorDialog
+ * 
  * @date    2009-2010.
  *
  */

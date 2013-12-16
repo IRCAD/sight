@@ -17,8 +17,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the menu item callback.
- * @class   ActionCallbackBase.
- * @author  IRCAD (Research and Development Team).
+ * @class   ActionCallbackBase
+ * 
  * @date    2009-2010.
  *
  */

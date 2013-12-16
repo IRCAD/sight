@@ -20,10 +20,7 @@ namespace manager
 
 /**
  * @brief  This manager converts the images specified by key to medical image (with landmarks, transfer function fields)
- * @class  MedicalImageManagerSrv.
- * @author IRCAD (Research and Development Team).
- *
- * @date   2007-2009.
+ * @class  MedicalImageManagerSrv
  */
 class CTRLSELECTION_CLASS_API MedicalImageManagerSrv : public ::ctrlSelection::IManagerSrv
 {

@@ -8,7 +8,7 @@
  * @file fwCore/concept_checks.hpp
  * @brief This file defines some fw4spl concept checks.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 #ifndef __FWCORE_CONCEPT_CHECK_HPP
 #define __FWCORE_CONCEPT_CHECK_HPP

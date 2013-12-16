@@ -18,8 +18,6 @@ struct SlotBase;
 /**
  * @class   HasSlots
  * @brief   This class proposes a mapping between a SlotKeyType and a SlotBase.
- *
- * @author IRCAD (Research and Development Team).
  * @date   2012.
  */
 class HasSlots

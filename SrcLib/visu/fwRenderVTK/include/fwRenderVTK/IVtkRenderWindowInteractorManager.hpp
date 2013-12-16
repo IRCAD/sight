@@ -25,8 +25,8 @@ namespace fwRenderVTK
 
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
- * @class   IVtkRenderWindowInteractorManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   IVtkRenderWindowInteractorManager
+ * 
  * @date    2009-2010.
  *
  */

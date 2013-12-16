@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiImage contains several editors on image written with Qt. This namespace is included in uiImageQt bundle.
  * @namespace   uiImage
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

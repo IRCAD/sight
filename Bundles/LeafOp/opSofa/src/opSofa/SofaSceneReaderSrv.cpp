@@ -89,7 +89,7 @@ void SofaSceneReaderSrv::updating() throw ( ::fwTools::Failed )
 /**
  * @brief Called by a data to notify a service.
  *
- * @param _pMsg : Incoming message
+ * @param msg : Incoming message
  */
 void SofaSceneReaderSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {}

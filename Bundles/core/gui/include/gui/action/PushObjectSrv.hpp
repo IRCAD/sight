@@ -27,7 +27,7 @@ namespace action
 /**
  * @class   PushObjectSrv
  * @brief   To add or remove object in composite with specific key.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class GUI_CLASS_API PushObjectSrv : public ::fwGui::IActionSrv

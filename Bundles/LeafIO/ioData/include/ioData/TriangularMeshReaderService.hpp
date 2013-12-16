@@ -16,8 +16,8 @@ namespace ioData
 {
 /**
  * @brief   Triangular mesh reader service.
- * @class   TriangularMeshReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshReaderService
+ * 
  * @date    2009.
  *
  * Service reading a mesh object.

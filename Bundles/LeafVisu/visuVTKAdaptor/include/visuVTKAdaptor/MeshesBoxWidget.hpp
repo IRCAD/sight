@@ -24,7 +24,7 @@ namespace visuVTKAdaptor
 /**
  * @brief   Create a Box widget around the meshes contained in the composite.
  * @class   MeshesBoxWidget
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  */
 class VISUVTKADAPTOR_CLASS_API MeshesBoxWidget: public ::fwRenderVTK::IVtkAdaptorService

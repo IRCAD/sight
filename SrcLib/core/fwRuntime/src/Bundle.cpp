@@ -40,7 +40,7 @@ namespace
      * @brief   Defines a STL compatible predicate telling if an executable factory
      *          matches the given type identifier
      *
-     * @author  IRCAD (Research and Development Team).
+     * 
      */
     struct IsOfType
     {

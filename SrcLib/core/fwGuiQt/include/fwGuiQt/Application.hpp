@@ -18,8 +18,8 @@ namespace fwGuiQt
 
 /**
  * @brief   Gives access to the qt application part
- * @class   Application.
- * @author  IRCAD (Research and Development Team).
+ * @class   Application
+ * 
  * @date    2009-2010.
  *
  */

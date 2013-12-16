@@ -28,7 +28,7 @@ namespace fwData
  * @class   Mesh
  * @brief   Data holding a geometric structure composed of points, lines,
  * triangles, quads or polygons
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  *
  * It is the new structure that represent mesh in fw4spl. For the moment, this new structure is available

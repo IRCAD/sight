@@ -47,7 +47,7 @@ namespace fwRuntime
  * @brief   Defines the bundle class.
  * @struct  Bundle
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Bundle : public ::boost::enable_shared_from_this< Bundle >
 {

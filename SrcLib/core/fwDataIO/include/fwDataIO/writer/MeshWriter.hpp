@@ -24,8 +24,8 @@ namespace writer
 
 /**
  * @brief   Mesh writer. Write file format .trian
- * @class   MeshWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   MeshWriter
+ * 
  * @date    2011
  *
  * Ircad writer to write a ::fwData::Mesh (with only triangular cells) on filesystem which the file format

@@ -18,7 +18,7 @@ namespace fwData
 /**
  * @class   StructureTraitsDictionary
  * @brief   This class defines a dictionary of structure traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  *
  * @note The dictionary cannot contain two structure with the same type.

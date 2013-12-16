@@ -17,7 +17,6 @@ namespace arlCore
     {
     /**
      * @class   Particle
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Basic class that represents an object in space
      */

@@ -22,8 +22,8 @@ namespace writer
 
 /**
  * @brief   Array Writer. Write file format .raw
- * @class   ArrayWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   ArrayWriter
+ * 
  * @date    2011
  *
  * Ircad writer to write a ::fwData::Array on filesystem in a raw format

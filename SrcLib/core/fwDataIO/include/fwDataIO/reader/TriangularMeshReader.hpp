@@ -28,8 +28,8 @@ namespace reader
 
 /**
  * @brief   Mesh reader. Read file format .trian
- * @class   TriangularMeshReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshReader
+ * 
  * @date    2009
  *
  * Ircad reader to read a ::fwData::TriangularMesh on filesystem which the file format

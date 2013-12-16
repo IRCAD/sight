@@ -21,7 +21,7 @@ namespace ioVTK
 
 /**
  * @brief   Model series reader service.
- * @class   SModelSeriesReader.
+ * @class   SModelSeriesReader
  *
  * Service reading a model series as .vtk files using the fwVtkIO lib.
  */

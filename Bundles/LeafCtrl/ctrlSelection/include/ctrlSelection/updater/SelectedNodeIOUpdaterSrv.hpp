@@ -20,7 +20,7 @@ namespace updater
  * @class  SelectedNodeIOUpdaterSrv
  * @brief  Update the composite related to this service according to port information
  * ( key= portID , value= data in dataNode ), port mode can be "input" or "output"
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date    2009-2010.
  */

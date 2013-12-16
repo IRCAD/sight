@@ -9,9 +9,6 @@
 /**
  * @file fwCore/macros.hpp
  * @brief This file defines fwCore base macros.
- *
- *
- * @author IRCAD (Research and Development Team).
  */
 
 #include <string>
@@ -366,7 +363,7 @@
 /**
  * @brief Generate predeclarations
  *
- * @param _cls_ Class to predeclare, in the form (some)(namespace)(class)
+ * @param \_cls_ Class to predeclare, in the form (some)(namespace)(class)
  *
  *   Example :
  *   fwCorePredeclare( (fwData)(Image) ) expands to :
@@ -488,11 +485,11 @@ struct pointer_holder;
  * @brief Generate common construction methods for classes with one factory
  *
  * For this macro parameters, each bracket is significant.
- * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  *
- * @param _parameters_ ( types_param_factory0 ) (...) ( types_param_factoryN )
+ * @param \_parameters_ ( types_param_factory0 ) (...) ( types_param_factoryN )
  *                      - where types_param_factoryX can be :
  *                        - for a 0-arg factory : ()
  *                        - for a 1-arg of T type factory : ((T)) or ((T)(d))
@@ -501,7 +498,7 @@ struct pointer_holder;
  *                      - Several types_param_factory can be declared if a factory have several signatures
  *                        - Example for several signatures : () ( ((int)) ) ( ((int)) ((std::string)("default")) )
  *
- * @param _factory_ A factory that can take arguments as defined in _parameters_ arguments
+ * @param \_factory_ A factory that can take arguments as defined in _parameters_ arguments
  */
 #define fwCoreClassDefinitionsWithFactoryMacro(_classinfo_, _parameters_, _factory_)                     \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                \
@@ -529,11 +526,11 @@ struct pointer_holder;
  * @brief Generate common construction methods for classes with several factories
  *
  * For this macro parameters, each bracket is significant.
- * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  *
- * @param _factories_args_ ((factory0, types_param_factory0)) ((factory1, types_param_factory1) ... ((factoryN, types_param_factoryN))
+ * @param \_factories_args_ ((factory0, types_param_factory0)) ((factory1, types_param_factory1) ... ((factoryN, types_param_factoryN))
  *                          - where types_param_factoryX can be :
  *                            - for a 0-arg factory : ()
  *                            - for a 1-arg of T type factory : ((T)) or ((T)(d))
@@ -568,7 +565,7 @@ struct pointer_holder;
 /**
  * @brief Generate common code for services classes
  *
- * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  */
@@ -587,7 +584,7 @@ struct pointer_holder;
  * @brief Generate common code for Non Instanciable classes (Interfaces, Abstract classes, ...)
  *
 
- * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  */

@@ -23,8 +23,8 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic file/folder selector dialog for IHM.
- * @class   LocationDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   LocationDialog
+ * 
  * @date    2009-2010.
  *
  */

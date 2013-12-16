@@ -17,7 +17,6 @@ namespace arlCore
     {
     /**
      * @class   Recorder
-     * @author  IRCAD (Research and Development Team)
      * @date    04/2008
      * @brief   Abstract class for recorder devices
      */

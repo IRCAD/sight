@@ -19,7 +19,7 @@ namespace updater
 /**
  * @class   TranslateUpdater
  * @brief   Update the composite related to this service according to the receiving composite message and translate the composite keys.
- * @author IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class CTRLSELECTION_CLASS_API TranslateUpdater : public ::ctrlSelection::IUpdaterSrv

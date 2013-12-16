@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for Color : store modification information
  * @class   ColorMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */

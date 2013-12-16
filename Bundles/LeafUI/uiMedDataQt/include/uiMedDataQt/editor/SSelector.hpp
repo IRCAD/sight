@@ -26,8 +26,8 @@ namespace editor
 /**
  * @brief   This editor shows information about the medical data. It allows to manipulate
  *          (select, erase, ...) studies and series.
- * @class   SSelector.
- * @author  IRCAD (Research and Development Team).
+ * @class   SSelector
+ * 
  * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SSelector : public QObject, public ::gui::editor::IEditor

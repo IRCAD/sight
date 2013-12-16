@@ -4,18 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef TUTO02DATASERVICEBASICCTRLNAMESPACE_HPP_
-#define TUTO02DATASERVICEBASICCTRLNAMESPACE_HPP_
+#ifndef __TUTO02DATASERVICEBASICCTRL_NAMESPACE_HPP__
+#define __TUTO02DATASERVICEBASICCTRL_NAMESPACE_HPP__
 
 /**
  * @brief      The namespace tuto02DataServiceBasicCtrl.
  * @namespace  tuto02DataServiceBasicCtrl
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
- *
  */
 namespace tuto02DataServiceBasicCtrl
 {
 
 }
-#endif /* TUTO02DATASERVICEBASICCTRLNAMESPACE_HPP_ */
+#endif /* __TUTO02DATASERVICEBASICCTRL_NAMESPACE_HPP__ */

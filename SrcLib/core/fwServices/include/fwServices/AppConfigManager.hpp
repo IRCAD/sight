@@ -25,10 +25,10 @@
 namespace fwServices
 {
 /**
- * @class   AppConfigManager.
+ * @class   AppConfigManager
  * @brief   This class provides an API to manage config template.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWSERVICES_CLASS_API AppConfigManager : public ::fwTools::Object

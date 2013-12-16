@@ -22,8 +22,8 @@ namespace builder
 
 /**
  * @brief   Defines the generic layout manager for IHM.
- * @class   ContainerBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   ContainerBuilder
+ * 
  * @date    2009-2010.
  *
  */

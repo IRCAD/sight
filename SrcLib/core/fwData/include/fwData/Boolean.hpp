@@ -22,7 +22,7 @@ namespace fwData
  *
  * Boolean object is essentially used as a field in other objects.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Boolean : public GenericField< bool >

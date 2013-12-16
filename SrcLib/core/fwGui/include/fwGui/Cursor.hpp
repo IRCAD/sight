@@ -18,8 +18,8 @@ namespace fwGui
 /**
  * @brief   Defines the generic cursor for IHM.
  * Use the Delegate design pattern
- * @class   Cursor.
- * @author  IRCAD (Research and Development Team).
+ * @class   Cursor
+ * 
  * @date    2009-2010.
  *
  */

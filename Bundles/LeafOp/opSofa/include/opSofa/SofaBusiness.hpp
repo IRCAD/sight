@@ -60,18 +60,18 @@ public:
      * @brief Builds the SOFA physical model and data and instanciates the SofaThread class
      *
      * @param fileScn : path of the file .scn
-     * @param acquisition : object acquisition of FW4SPL
+     * @param ms : model series of FW4SPL
      * @param service : pointer to the SofaService object
      */
-    void loadScn(std::string, SPTR(::fwMedData::ModelSeries), SPTR(::fwServices::IService));
+    void loadScn(std::string fileScn, SPTR(::fwMedData::ModelSeries) ms, SPTR(::fwServices::IService) service);
 
     /**
      * @brief Builds the SOFA physical model and data and instantiates the SofaThread class
      *
-     * @param pMesh : pointer to the triangular mesh
+     * @param mesh : pointer to the triangular mesh
      * @param service : pointer to the SofaService object
      */
-    void loadMesh( SPTR(::fwData::Mesh), ::fwServices::IService::sptr);
+    void loadMesh( SPTR(::fwData::Mesh) mesh, ::fwServices::IService::sptr service);
 
     /**
      * @brief Gets time step animation
@@ -122,7 +122,7 @@ public:
     * @param idMesh : id organ
     * @param value : value of force
     */
-    void shakeMesh(std::string, int);
+    void shakeMesh(std::string idMesh, int value);
     void moveMesh(std::string, int, int, int, float, float, float);
 
 private:
@@ -141,15 +141,15 @@ private:
      * @param node : scene root of Sofa
      * @param model : SpringForceField map at fill
      */
-    void fillSpringForceField(GNode*, std::map<std::string, StiffSpringForceField3*>*);
+    void fillSpringForceField(GNode* node, std::map<std::string, StiffSpringForceField3*>* model);
 
     /**
      * @brief Bring Mesh of Fw4spl
      *
-     * @param acquisition : object acquisition of Fw4spl
+     * @param ms : object acquisition of Fw4spl
      * @param meshs : Mesh vector at fill
      */
-    void fillMeshVector( SPTR(::fwMedData::ModelSeries), std::vector< SPTR(fwData::Mesh) >*);
+    void fillMeshVector( SPTR(::fwMedData::ModelSeries) ms, std::vector< SPTR(fwData::Mesh) >* meshs);
 
     /**
      * @brief Translates pointer between sofa and fw4spl to set a shared memory access
@@ -157,7 +157,7 @@ private:
      * @param visual : object visual of sofa
      * @param pMesh : object mesh of fw4spl
      */
-    void translationPointer(OglModel*, SPTR(::fwData::Mesh));
+    void translationPointer(OglModel* visual, SPTR(::fwData::Mesh) pMesh);
 
     /**
      * @brief Cancel translates pointer between sofa and fw4spl

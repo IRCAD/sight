@@ -28,7 +28,7 @@ namespace fwRuntime
  * classes being exported by bundles.
  *
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct FWRUNTIME_CLASS_API Executable : public IExecutable
 {

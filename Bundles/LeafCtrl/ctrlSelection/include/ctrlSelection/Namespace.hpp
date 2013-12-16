@@ -10,7 +10,7 @@
 /**
  * @brief      The namespace ctrlSelection contains several interfaces for manager, updater and wrapper.
  * @namespace  ctrlSelection
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
  *
  */

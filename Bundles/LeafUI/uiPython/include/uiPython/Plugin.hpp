@@ -16,8 +16,8 @@ namespace uiPython
 
 /**
  * @brief   This class is called when the uiPython bundle is loaded.
- * @class   Plugin.
- * @author  IRCAD (Research and Development Team).
+ * @class   Plugin
+ * 
  * @date    2009.
  */
 

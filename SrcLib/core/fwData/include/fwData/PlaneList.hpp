@@ -21,7 +21,7 @@ namespace fwData
  * @class   PlaneList
  * @brief   This class defines a list of planes
  * @see     ::fwData::Point
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API PlaneList : public Object

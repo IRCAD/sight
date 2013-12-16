@@ -23,7 +23,7 @@ namespace fwData
  *
  * An edge is reprensented by a to identifier ("from" and "to") and a nature.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Edge : public ::fwData::Object

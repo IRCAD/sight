@@ -9,8 +9,8 @@
 
 /**
  * @brief       The namespace vtkSimpleNegato has a visualization service of medical image (::fwData::Image).
- * @namespace   vtkSimpleNegato.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   vtkSimpleNegato
+ * 
  * @date        2009-2010.
  *
  */

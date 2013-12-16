@@ -9,8 +9,8 @@
 
 /**
  * @brief       The namespace opVTKMesh contains interface class for mesh and an implementation of a VTK mesher.
- * @namespace   opVTKMesh.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   opVTKMesh
+ * 
  * @date        2009-2010.
  *
  */

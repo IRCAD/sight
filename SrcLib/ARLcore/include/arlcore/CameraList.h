@@ -18,7 +18,6 @@ namespace arlCore
     class PlaneSystem;
     /**
      * @class   CameraList
-     * @author  IRCAD (Research and Development Team)
      * @date    06/2009
      * @brief   List of physical cameras
      */

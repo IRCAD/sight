@@ -18,10 +18,7 @@ namespace aspect
 
 /**
  * @brief   Defines the default menubar for standard application
- * @class   DefaultMenuBarSrv.
- * @author  IRCAD (Research and Development Team)
-
- * @date    2009-2010.
+ * @class   DefaultMenuBarSrv
  */
 class GUI_CLASS_API DefaultMenuBarSrv : public ::fwGui::IMenuBarSrv
 {

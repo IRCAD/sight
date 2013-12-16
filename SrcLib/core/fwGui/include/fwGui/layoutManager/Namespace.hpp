@@ -12,7 +12,7 @@ namespace fwGui
 /**
  * @brief       The namespace fwGui::layoutManager contains the base interface of managers use to handle the GUI layout available in FW4SPL.
  * @namespace   fwGui::layoutManager
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

@@ -25,7 +25,7 @@ namespace utils
  * @brief   Defines a generic template executable factory class.
  * @struct  GenericExecutableFactory
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 template<typename E>
 struct GenericExecutableFactory : public ExecutableFactory

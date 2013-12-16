@@ -51,7 +51,7 @@ namespace fwData
  * An Object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific Object. When accessing to this object with getField("dummy") we get the specific Object
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >,
@@ -201,6 +201,7 @@ public:
 
     //-----------------------------------------------------------------------------
 
+    /// Returns the object's mutex.
     ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
 
     FWDATA_API virtual ~Object() ;
@@ -240,6 +241,7 @@ protected:
     /// Fields
     FieldMapType m_fields;
 
+    /// Mutex to protect object access.
     ::fwCore::mt::ReadWriteMutex m_mutex;
 
     /// Signal that emits ObjectMsg when object is modified

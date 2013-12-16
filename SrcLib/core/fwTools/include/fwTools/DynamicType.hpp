@@ -24,7 +24,7 @@ namespace fwTools
 /**
  * @brief   Class defining an elementary C++ type aka unsigned char, signed char, .... signed long, float, double
  * @class   DynamicType
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  **/

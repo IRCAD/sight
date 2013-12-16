@@ -19,9 +19,9 @@ namespace mt
 {
 
 /**
- * @class  ObjectWriteLock.
+ * @class  ObjectWriteLock
  * @brief  A helper to lock object on exclusive mode.
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2012.
  */
 class FWDATA_CLASS_API ObjectWriteLock

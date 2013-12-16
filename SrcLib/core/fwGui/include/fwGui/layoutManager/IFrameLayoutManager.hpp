@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IFrameLayoutManager.hpp
+ * @file fwGui/layoutManager/IFrameLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a frame.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -35,8 +35,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the frame layout manager.
- * @class   IFrameLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   IFrameLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

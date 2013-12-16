@@ -64,7 +64,7 @@ public:
 
     FWATOMSPATCH_API SPTR(::fwAtoms::Object) create(const std::string& classname, const std::string& version);
 
-    /// Returns the number of creators.
+   /// Returns the number of creators.
    FWATOMSPATCH_API size_t size() const;
 
    /// Returns the default instance of StructuralCreatorDB.

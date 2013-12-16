@@ -63,7 +63,7 @@ public:
 
     /**
      * @brief Convert a ::fwAtoms::Object to a ::fwData::Object.
-     * @param object atom to convert
+     * @param atom atom to convert
      * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times.
      * @param uuidPolicy AtomVisitor's policy
      */

@@ -24,7 +24,7 @@ namespace dicom
 *
 * It will create a new fwData::Reconstruction for one segmentation.
 *
-* @class   DicomSurface.
+* @class   DicomSurface
 */
 class GDCMIO_CLASS_API DicomSurface : public DicomSegment
 {

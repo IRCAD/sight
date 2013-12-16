@@ -24,7 +24,7 @@ namespace fwData
 /**
  * @class   Camera
  * @brief   This class defines a camera object.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Camera : public Object

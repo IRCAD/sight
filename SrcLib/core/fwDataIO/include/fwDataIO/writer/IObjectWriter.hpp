@@ -27,8 +27,8 @@ namespace writer
 
 /**
  * @brief   Base class for all object writers.
- * @class   IObjectWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   IObjectWriter
+ * 
  * @date    2009
  *
  * This class defines the API to use basic object writers. This writer is not

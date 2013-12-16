@@ -20,8 +20,8 @@ namespace action
 
 /**
  * @brief   This action allows to clone an Image in a PatientDB
- * @class   CloneImage.
- * @author  IRCAD (Research and Development Team).
+ * @class   CloneImage
+ * 
  * @date    2010.
  */
 class UIPATIENTDB_CLASS_API CloneImage : public ::fwGui::IActionSrv

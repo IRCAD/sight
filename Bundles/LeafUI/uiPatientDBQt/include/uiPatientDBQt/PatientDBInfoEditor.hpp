@@ -20,8 +20,8 @@ namespace uiPatientDB
 {
 /**
  * @brief   This editor show information about the selected patient, study and acquisition.
- * @class   PatientDBInfoEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   PatientDBInfoEditor
+ * 
  * @date    2010.
  */
 class UIPATIENTDBQT_CLASS_API PatientDBInfoEditor : public QObject, public ::gui::editor::IEditor

@@ -18,7 +18,7 @@ namespace fwData
 /**
  * @class   Port
  * @brief   A port is defined by an identifier and a type.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Port : public ::fwData::Object

@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for histogram field.
  * @class   HistogramMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  * @see     ::fwServices::ObjectMsg
  */

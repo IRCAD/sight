@@ -25,7 +25,6 @@ namespace arlCore
     {
     /**
      * @class   Scene
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Virtual scene generator
      * A scene is a plane system with cameras and tags wich contain lists of point

@@ -25,7 +25,7 @@ namespace fwDataTools
 
 /**
  * @brief   This class contains helper to generate and compare images.
- * @class   Image.
+ * @class   Image
  */
 class Image
 {

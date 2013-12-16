@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace guiQt contains the basic services to build the application IHM with Qt.
  * @namespace   guiQt
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

@@ -37,7 +37,6 @@ namespace arlCore
     {
     /**
      * @class   Point
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Point with a dimension that can be specified by the user. This class allows
      * to attribute several important properties to a point. Generally, these properties

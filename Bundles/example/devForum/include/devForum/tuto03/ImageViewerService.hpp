@@ -27,9 +27,7 @@ namespace tuto03
 
 /**
  * @brief   Service rendering a ::fwData::Image using VTK.
- * @class   ImageViewerService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   ImageViewerService
  */
 class DEVFORUM_CLASS_API ImageViewerService : public ::devForum::tuto02::ImageViewerService
 {

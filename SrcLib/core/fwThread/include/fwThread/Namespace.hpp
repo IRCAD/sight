@@ -10,7 +10,7 @@
 /**
  * @brief       This namespace fwThread provides few tools to execute asynchronous tasks on different threads.
  * @namespace   fwThread
- * @author      IRCAD (Research and Development Team)
+ * 
  * @date        2012
  *
  */

@@ -21,8 +21,8 @@ namespace registrar
 
 /**
  * @brief   Defines the action registrar for IHM.
- * @class   ActionRegistrar.
- * @author  IRCAD (Research and Development Team).
+ * @class   ActionRegistrar
+ * 
  * @date    2009-2010.
  *
  */

@@ -24,7 +24,6 @@ namespace arlCore
     class PlaneSystem;
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Detection tag
      */

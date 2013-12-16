@@ -18,8 +18,8 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic input dialog box for IHM.
- * @class   IInputDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   IInputDialog
+ * 
  * @date    2009-2010.
  *
  */

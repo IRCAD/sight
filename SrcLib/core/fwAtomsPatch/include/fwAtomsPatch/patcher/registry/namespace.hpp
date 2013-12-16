@@ -17,7 +17,7 @@ namespace patcher
 /**
  * @brief       fwAtomsPatch fwAtomsPatch::registry details
  * @namespace   registry
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2013
  *
  */

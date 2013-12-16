@@ -11,8 +11,8 @@ namespace gui
 {
 /**
  * @brief       The namespace gui::editor contains a basic editor written with Wx.
- * @namespace   gui::editor.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   gui::editor
+ * 
  * @date        2009-2010.
  *
  */

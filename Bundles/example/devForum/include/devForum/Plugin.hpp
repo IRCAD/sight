@@ -11,8 +11,8 @@
 
 /**
  * @brief Namespace devForum.
- * @namespace devForum.
- * @author IRCAD (Research and Development Team).
+ * @namespace devForum
+ * 
  * @date 2009.
  *
  *  The namespace devForum contains tutorial to use framework.

@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiMeasurement contains actions to add/show/remove distances and landmarks.
  * @namespace   uiMeasurement
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

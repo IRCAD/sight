@@ -11,8 +11,8 @@
 
 /**
  * @brief   Namespace vtkCompositeMesh.
- * @namespace   vtkCompositeMesh.
- * @author  IRCAD (Research and Development Team).
+ * @namespace   vtkCompositeMesh
+ * 
  * @date    2009.
  *
  *  The namespace vtkCompositeMesh contains a COMPOSITE mesh renderer using vtk.

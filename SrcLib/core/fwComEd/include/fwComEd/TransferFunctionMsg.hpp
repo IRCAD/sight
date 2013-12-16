@@ -21,7 +21,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for transfer function : store modification information
  * @class   TransferFunctionMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */

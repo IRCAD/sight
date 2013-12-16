@@ -29,7 +29,7 @@ namespace module
  *
  * @see     DICOM PS 3.3 C.7.5.1
  *
- * @class   DicomEquipment.
+ * @class   DicomEquipment
  */
 class GDCMIO_CLASS_API DicomEquipment : public DicomModule< ::fwMedData::Equipment >
 {

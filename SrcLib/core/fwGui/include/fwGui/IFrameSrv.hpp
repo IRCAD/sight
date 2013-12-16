@@ -22,8 +22,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing a frame.
- * @class   IFrameSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IFrameSrv
+ * 
  * @date    2009-2010.
  *
  */

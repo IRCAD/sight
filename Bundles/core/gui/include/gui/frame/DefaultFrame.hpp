@@ -19,10 +19,7 @@ namespace frame
 
 /**
  * @brief   Defines the default frame for standard application.
- * @class   DefaultFrame.
- * @author  IRCAD (Research and Development Team)
-
- * @date    2009.
+ * @class   DefaultFrame
  */
 class GUI_CLASS_API DefaultFrame : public ::fwGui::IFrameSrv
 {

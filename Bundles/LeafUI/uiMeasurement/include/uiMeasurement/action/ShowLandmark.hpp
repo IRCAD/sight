@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action allows to show/hide image landmarks.
- * @class   ShowLandmark.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowLandmark
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API ShowLandmark : public ::fwGui::IActionSrv

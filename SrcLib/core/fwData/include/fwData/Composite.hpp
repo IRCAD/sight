@@ -44,7 +44,7 @@ namespace fwData
  *
  * Composite contains a map of ::fwData::Object.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 

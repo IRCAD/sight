@@ -17,7 +17,7 @@ namespace fwGui
 /**
  * @brief   This class define a message event, used to manage fwServices
  * notification in wx's events loop.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  * @todo Comment.
  */

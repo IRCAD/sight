@@ -8,10 +8,8 @@
 
 
 /**
-* @brief
-* @namespace     TODO Doxygen documentation
-* @author
-* @date
+* @brief The namespace basicRegistration contains services to perfom a basic registration between images and meshes.
+* @namespace basicRegistration
 **/
 
 namespace basicRegistration

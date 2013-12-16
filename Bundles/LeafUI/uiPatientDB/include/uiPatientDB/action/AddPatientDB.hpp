@@ -20,8 +20,8 @@ namespace action
 
 /**
  * @brief   This action allows to load a new PatientDB and merge it with the current PatientDB
- * @class   AddPatientDB.
- * @author  IRCAD (Research and Development Team).
+ * @class   AddPatientDB
+ * 
  * @date    2010.
  *
  * The available reader can be configured

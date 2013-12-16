@@ -12,7 +12,7 @@
 namespace ioGdcm
 {
 /**
- * @author  Jean-Baptiste Fasquel
+ * 
  */
 struct Plugin : public ::fwRuntime::Plugin
 {

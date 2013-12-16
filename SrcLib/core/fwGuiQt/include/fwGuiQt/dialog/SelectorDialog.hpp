@@ -24,8 +24,8 @@ namespace dialog
 
 /**
  * @brief   SelectorDialog allowing the choice of an element among severals (_selections)
- * @class   SelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   SelectorDialog
+ * 
  * @date    2009.
  */
 

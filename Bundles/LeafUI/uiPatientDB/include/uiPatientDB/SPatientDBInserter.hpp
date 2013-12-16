@@ -24,8 +24,8 @@ namespace uiPatientDB
 /**
  * @brief   A writer to push associated object in a patientDB
  * @note    Associated object must be a patientDB, patient, study, acquisition or image.
- * @class   SPatientDBInserter.
- * @author  IRCAD (Research and Development Team).
+ * @class   SPatientDBInserter
+ * 
  * @date    2012.
  */
 class UIPATIENTDB_CLASS_API SPatientDBInserter : public ::io::IWriter

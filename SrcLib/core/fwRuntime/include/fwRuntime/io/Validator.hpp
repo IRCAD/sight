@@ -33,7 +33,7 @@ namespace io
  * It seems that this class use a static ivar to save schemaValidationContext. If your call a instance of an visitor this ivar should not be
  * directly well positionned. So the recommandation is to construct Validator-Use it-destry it and never store him
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Validator
 {

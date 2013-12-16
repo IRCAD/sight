@@ -21,8 +21,8 @@ namespace dialog
 
 /**
  * @brief   SelectorDialog allowing the choice of an element among severals (_selections)
- * @class   SelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   SelectorDialog
+ * 
  * @date    2009.
  */
 
@@ -50,7 +50,6 @@ public:
 
     /**
      * @brief Show the selector and return the selection.
-     * @param[in] _parent Parent container for the selector.
      */
     FWGUIWX_API virtual std::string show();
 

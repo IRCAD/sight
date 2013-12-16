@@ -31,7 +31,7 @@ namespace fwData
  *
  * @see     ::fwData::TriangularMesh, ::fwData::Material
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Model : public Object

@@ -23,8 +23,8 @@ namespace container
 
 /**
  * @brief   Defines the wxWidgets toolBar bar container for IHM.
- * @class   WxToolBarContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   WxToolBarContainer
+ * 
  * @date    2009-2010.
  *
  */

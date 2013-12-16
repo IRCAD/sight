@@ -19,7 +19,7 @@ namespace fwData
 /**
  * @class   StructureTraits
  * @brief   This class defines structure traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  *
  * A structure traits contains :

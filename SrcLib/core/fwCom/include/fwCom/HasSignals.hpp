@@ -18,8 +18,6 @@ struct SignalBase;
 /**
  * @class   HasSignals
  * @brief   This class proposes a mapping between a SignalKeyType and a SignalBase.
- *
- * @author IRCAD (Research and Development Team).
  * @date   2012.
  */
 class HasSignals

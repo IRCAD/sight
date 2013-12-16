@@ -34,7 +34,7 @@ namespace fwRuntime
  * @brief   Defines the runtime class.
  * @struct  Runtime
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Runtime
 {

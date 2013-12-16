@@ -30,7 +30,7 @@ namespace fwMedData
  * @class ImageSeries
  * Holds images data
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWMEDDATA_CLASS_API ImageSeries : public ::fwMedData::Series
 {

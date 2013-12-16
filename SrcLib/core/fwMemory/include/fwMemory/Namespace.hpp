@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace fwMemory contains tools to manage memory. Use for dump.
  * @namespace   fwMemory
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2011.
  *
  */

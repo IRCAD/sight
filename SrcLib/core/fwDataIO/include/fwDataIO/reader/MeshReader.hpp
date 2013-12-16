@@ -28,8 +28,8 @@ namespace reader
 
 /**
  * @brief   Mesh reader. Read file format .trian
- * @class   MeshReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   MeshReader
+ * 
  * @date    2011
  *
  * Load trian file into fwData::Mesh

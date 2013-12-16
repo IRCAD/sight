@@ -22,7 +22,7 @@ namespace dl
  * @brief   Defines the interface of library name decorators.
  * @struct  INameDecorator
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct INameDecorator
 {

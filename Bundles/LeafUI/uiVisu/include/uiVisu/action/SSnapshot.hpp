@@ -22,8 +22,8 @@ namespace action
 
 /**
  * @brief   This action allows to snapshot a generic scene
- * @class   SSnapshot.
- * @author  IRCAD (Research and Development Team).
+ * @class   SSnapshot
+ * 
  * @date    2012.
  *
  * Send a CompositeMsg with SNAP event containing the uid of the scene to the scene's composite.

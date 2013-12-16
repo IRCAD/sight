@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiIO contains a simple service to manipulate IO with IHM..
  * @namespace   uiIO
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

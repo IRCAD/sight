@@ -48,7 +48,7 @@ public:
 
     /**
      * @brief Visits the current atom to save it.
-     * @path path of the HDF5 file to create.
+     * @param path path of the HDF5 file to create.
      */
     FWATOMSHDF5IO_API void write(const ::boost::filesystem::path &path);
 

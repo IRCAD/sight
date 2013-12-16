@@ -25,8 +25,8 @@ namespace registrar
 
 /**
  * @brief   Defines the toolBar registrar for IHM.
- * @class   ToolBarRegistrar.
- * @author  IRCAD (Research and Development Team).
+ * @class   ToolBarRegistrar
+ * 
  * @date    2009-2010.
  *
  */

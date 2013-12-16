@@ -20,8 +20,8 @@ namespace dialog
  * @brief   SelectorDialog allows the choice of an element among several (_selections)
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
  * The specific implementation are in fwWX and fwQT libraries
- * @class   SelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   SelectorDialog
+ * 
  * @date    2009-2010.
  *
  */

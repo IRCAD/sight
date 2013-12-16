@@ -13,7 +13,7 @@ namespace uiMedDataQt
 {
 
 /**
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009-2013.
  */
 struct Plugin : public ::fwRuntime::Plugin

@@ -22,8 +22,8 @@ namespace uiVisu
 
 /**
  * @brief   SnapshotEditor service is represented by a button. It allows to snap shot a generic scene.
- * @class   SnapshotEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   SnapshotEditor
+ * 
  * @date    2010.
  */
 class UIVISUQT_CLASS_API SnapshotEditor : public QObject, public ::gui::editor::IEditor

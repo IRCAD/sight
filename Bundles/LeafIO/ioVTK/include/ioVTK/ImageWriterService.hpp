@@ -26,9 +26,7 @@ namespace ioVTK
 
 /**
  * @brief   VTK image writer service.
- * @class   ImageWriterService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   ImageWriterService
  *
  * Service writing a VTK Image using the fwVtkIO lib.
  *

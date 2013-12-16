@@ -20,8 +20,8 @@ namespace vtkSimpleMesh
 
 /**
  * @brief   Service used to deform mesh
- * @class   SSimpleMeshDeformation.
- * @author  IRCAD (Research and Development Team).
+ * @class   SSimpleMeshDeformation
+ * 
  * @date    2012.
  */
 class VTKSIMPLEMESH_CLASS_API SSimpleMeshDeformation : public ::fwServices::IController

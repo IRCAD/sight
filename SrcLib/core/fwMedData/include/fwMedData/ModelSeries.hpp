@@ -32,7 +32,7 @@ namespace fwMedData
  * @class ModelSeries
  * Holds models data
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWMEDDATA_CLASS_API ModelSeries : public ::fwMedData::Series
 {

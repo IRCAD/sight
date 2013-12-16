@@ -16,8 +16,8 @@ namespace ioData
 {
 /**
  * @brief   Mesh reader service.
- * @class   MeshReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   MeshReaderService
+ * 
  * @date    2009.
  *
  * Service reading a trian file into a fwData::Mesh object.

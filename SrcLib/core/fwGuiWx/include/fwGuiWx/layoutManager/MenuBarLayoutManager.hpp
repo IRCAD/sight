@@ -24,8 +24,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the menu bar layout manager for IHM.
- * @class   MenuBarLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   MenuBarLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

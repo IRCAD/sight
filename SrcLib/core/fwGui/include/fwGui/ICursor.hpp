@@ -15,8 +15,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the generic cursor for IHM.
- * @class   ICursor.
- * @author  IRCAD (Research and Development Team).
+ * @class   ICursor
+ * 
  * @date    2009-2010.
  *
  */

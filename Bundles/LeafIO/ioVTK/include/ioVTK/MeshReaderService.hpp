@@ -24,9 +24,7 @@ namespace ioVTK
 
 /**
  * @brief   Mesh reader service.
- * @class   MeshReaderService .
- * @author  IRCAD (Research and Development Team).
- * @date    2011.
+ * @class   MeshReaderService
  *
  * Service reading a VTK mesh using the fwVtkIO lib.
  *

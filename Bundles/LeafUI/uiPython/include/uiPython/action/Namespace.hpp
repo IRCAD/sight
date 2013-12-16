@@ -12,7 +12,7 @@ namespace uiPython
 /**
  * @brief       The namespace uiPython::action contains basic services managing action.
  * @namespace   uiPython::action
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

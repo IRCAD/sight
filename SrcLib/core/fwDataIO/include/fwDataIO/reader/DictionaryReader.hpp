@@ -28,8 +28,8 @@ namespace reader
 
 /**
  * @brief   Dictionary reader. Read file with .dic extension.
- * @class   DictionaryReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   DictionaryReader
+ * 
  * @date    2011
  *
  * Ircad reader to read a ::fwData::StructureTraitsDictionary on filesystem which the file format

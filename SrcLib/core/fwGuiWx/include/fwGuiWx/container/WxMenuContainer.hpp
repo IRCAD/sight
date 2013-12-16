@@ -23,8 +23,8 @@ namespace container
 
 /**
  * @brief   Defines the wxWidgets menu bar container for IHM.
- * @class   WxMenuContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   WxMenuContainer
+ * 
  * @date    2009-2010.
  *
  */

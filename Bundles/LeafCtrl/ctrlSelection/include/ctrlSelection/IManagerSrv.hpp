@@ -16,10 +16,10 @@ namespace ctrlSelection
 {
 
 /**
- * @class   IManagerSrv.
+ * @class   IManagerSrv
  * @brief   Base class for manager.
  * A manager starts, stops or swaps services on object contained in a composite when it receives specific message.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class CTRLSELECTION_CLASS_API IManagerSrv : public ::fwServices::IService

@@ -14,7 +14,7 @@ namespace fwGui
 /**
  * @brief       Contains fwGui::factory utilities
  * @namespace   fwGui::factory
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2012
  *
  */

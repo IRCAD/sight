@@ -18,9 +18,7 @@ namespace ioVTK
 
 /**
  * @brief   3ds Max reader service.
- * @class   MaxMeshReaderService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   MaxMeshReaderService
  *
  * Service reading a 3ds Max file using the fwVtkIO lib
  * (for .3ds at this time).

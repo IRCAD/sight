@@ -21,8 +21,8 @@ namespace action
 
 /**
  * @brief   This action tries to close the window and reset root object.
- * @class   Test.
- * @author  IRCAD (Research and Development Team).
+ * @class   Test
+ * 
 
  * @date    2009-2010.
  */

@@ -25,8 +25,8 @@ namespace uiImage
 
 /**
  * @brief   SliceListEditor2 service allows to change the number of slice to show.
- * @class   SliceListEditor2.
- * @author  IRCAD (Research and Development Team).
+ * @class   SliceListEditor2
+ * 
  * @date    2010.
  */
 class UIIMAGEQT_CLASS_API SliceListEditor2 : public QObject, public ::gui::editor::IEditor

@@ -24,7 +24,7 @@ namespace fwZip
 
 /**
  * @brief   This class defines functions to write a file in a file system archive.
- * @class   WriteDirArchive.
+ * @class   WriteDirArchive
  */
 class FWZIP_CLASS_API WriteDirArchive : public IWriteArchive
 {

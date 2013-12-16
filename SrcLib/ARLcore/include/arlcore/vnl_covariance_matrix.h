@@ -16,7 +16,6 @@ namespace arlCore
     {
     /**
      * @class   vnl_covariance_vector
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Covariance matrix
      */

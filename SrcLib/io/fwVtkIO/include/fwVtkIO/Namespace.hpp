@@ -10,7 +10,7 @@
 /*
  * @brief       The namespace fwVtkIO provides classes for writting/reading data (image, mesh reconstruction) based on vtk lib .
  * @namespace   fwVtkIO
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

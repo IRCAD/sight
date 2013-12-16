@@ -7,7 +7,7 @@
 namespace activities
 {
 /**
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2012.
  */
 struct ACTIVITIES_CLASS_API Plugin : public ::fwRuntime::Plugin

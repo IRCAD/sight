@@ -22,8 +22,8 @@ namespace builder
 
 /**
  * @brief   Defines the interface class  for the toolbar builder.
- * @class   IToolBarBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   IToolBarBuilder
+ * 
  * @date    2009-2010.
  *
  */

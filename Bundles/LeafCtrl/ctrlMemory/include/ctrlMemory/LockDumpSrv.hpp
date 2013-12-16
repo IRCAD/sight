@@ -22,9 +22,8 @@ namespace ctrlMemory
 {
 
 /**
- * @class  LockDumpSrv.
+ * @class  LockDumpSrv
  * @brief  This services dump lock object. Unlock it on stopping.
- * @date   2012-2013.
  */
 class CTRLMEMORY_CLASS_API LockDumpSrv : public ::fwServices::IController
 {

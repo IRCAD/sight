@@ -27,7 +27,7 @@ namespace fwRuntime
  *          it-self.
  *
  * @date    2004-2005
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct EmptyPlugin : public Plugin
 {

@@ -24,8 +24,8 @@ namespace writer
 
 /**
  * @brief   Image Writer. Write file format .raw.gz
- * @class   GzBufferImageWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   GzBufferImageWriter
+ * 
  * @date    2009
  *
  * Ircad writer to write a ::fwData::Image on filesystem which the file format

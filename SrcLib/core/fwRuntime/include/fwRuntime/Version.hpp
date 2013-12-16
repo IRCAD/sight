@@ -20,7 +20,7 @@ namespace fwRuntime
  * @brief   Managment of lib and bundle version.
  * @struct  Version
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Version
 {

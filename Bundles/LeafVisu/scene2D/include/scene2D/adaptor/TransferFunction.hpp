@@ -48,7 +48,7 @@ protected:
         <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/>
     </adaptor>
     @endverbatim
-    * - <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/> : Set the config.
+    * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the config.
     *
     * \b lineColor : no mandatory (default value : black) : Set the color of the lines between the TF points.
     *

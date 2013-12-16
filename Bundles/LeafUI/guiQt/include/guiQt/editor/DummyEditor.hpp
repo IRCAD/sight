@@ -25,8 +25,8 @@ namespace editor
 
 /**
  * @brief   Defines the service interface managing the basic editor service for object. Do nothing.
- * @class   DummyEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   DummyEditor
+ * 
 
  * @date    2009.
  *

@@ -23,8 +23,8 @@ namespace reader
 
 /**
  * @brief   Array Reader. Read file format .raw.gz
- * @class   GzArrayReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   GzArrayReader
+ * 
  * @date    2011
  *
  * Ircad reader to read a ::fwData::Array on filesystem which the file format

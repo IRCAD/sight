@@ -19,9 +19,9 @@ namespace mt
 {
 
 /**
- * @class  ObjectReadToWriteLock.
+ * @class  ObjectReadToWriteLock
  * @brief  A helper to lock object on upgradable mode.
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2012.
  */
 class FWDATA_CLASS_API ObjectReadToWriteLock

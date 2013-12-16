@@ -24,7 +24,7 @@ namespace parser
 /**
  * @brief   Specific service for the construction of a TransformationMatrix3D and its associated services from an XML-based description.
  * @class   TransformationMatrix3D
- * @author  IRCAD (Research and Development Team).
+ * 
 
  * @date    2007-2009
  * @see     ::fwServices::IXMLParser

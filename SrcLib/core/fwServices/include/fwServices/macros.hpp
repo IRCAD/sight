@@ -26,7 +26,7 @@ namespace fwServices
 /**
  * @brief Service object type association including all string-based registration
  * Associations concern Service-ObjectType are ObjectType-Service. Keys are typeid.
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 
 #define fwServicesRegisterMacro( ServiceType , ServiceImpl, ServiceObject )                        \

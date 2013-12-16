@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/ToolboxLayoutManagerBase.hpp
+ * @file fwGui/layoutManager/ToolboxLayoutManagerBase.hpp
  * @brief This file defines the interface of the class for managing a line layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -29,8 +29,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for line layout manager.
- * @class   ToolboxLayoutManagerBase.
- * @author  IRCAD (Research and Development Team).
+ * @class   ToolboxLayoutManagerBase
+ * 
  * @date    2009-2010.
  *
  */

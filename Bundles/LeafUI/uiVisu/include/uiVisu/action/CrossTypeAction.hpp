@@ -22,8 +22,8 @@ namespace action
 
 /**
  * @brief   This action allows change the cross type
- * @class   CrossTypeAction.
- * @author  IRCAD (Research and Development Team).
+ * @class   CrossTypeAction
+ * 
  * @date    2010.
  */
 class UIVISU_CLASS_API CrossTypeAction : public ::fwGui::IActionSrv

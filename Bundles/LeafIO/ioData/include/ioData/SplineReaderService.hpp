@@ -19,8 +19,8 @@ namespace ioData
 {
 /**
  * @brief   Spline reader service.
- * @class   SplineReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   SplineReaderService
+ * 
  * @date    2009.
  *
  * Service reading a spline object.

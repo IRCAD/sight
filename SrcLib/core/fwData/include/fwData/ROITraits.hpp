@@ -19,7 +19,7 @@ namespace fwData
 /**
  * @class   ROITraits
  * @brief   This class defines ROI traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  *
  * A ROI traits contains :

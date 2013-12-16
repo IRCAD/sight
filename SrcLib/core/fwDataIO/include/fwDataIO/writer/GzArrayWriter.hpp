@@ -22,8 +22,8 @@ namespace writer
 
 /**
  * @brief   Array Writer. Write file format .raw.gz
- * @class   GzArrayWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   GzArrayWriter
+ * 
  * @date    2011
  *
  * Ircad writer to write a ::fwData::Array on filesystem which the file format

@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IMenuLayoutManager.cpp
+ * @file fwGui/layoutManager/IMenuLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a menu.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 

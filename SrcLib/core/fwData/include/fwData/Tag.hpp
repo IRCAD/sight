@@ -24,7 +24,7 @@ namespace fwData
  * @brief   This class represent a tag. A tag contains a list of points.
  *
  * @see ::fwData::PointList
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Tag : public Object

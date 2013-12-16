@@ -26,7 +26,7 @@ class vtkLookupTable;
 /**
  * @brief   Namespace fwVtkIO.
  * @namespace   fwVtkIO
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009.
  *
  *  The namespace fwVtkIO contains reader, writer and helper using the VTK lib for output and input actions between data and the frameWork

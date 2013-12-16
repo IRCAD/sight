@@ -21,7 +21,7 @@ namespace fwData
 /**
  * @class   Point
  * @brief   This class define a 3D point.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 

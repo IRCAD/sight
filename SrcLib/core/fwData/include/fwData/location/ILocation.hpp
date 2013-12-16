@@ -16,7 +16,7 @@ namespace fwData
 /**
  * @namespace ::fwData::location
  * @brief This namespace contains the classes which define a %location ( fileSystem, directory(IES) etc.... ).
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  */

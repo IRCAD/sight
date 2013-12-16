@@ -9,11 +9,7 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-/**
- * @brief   Namespace ctrlMemory.
- * @namespace   ctrlMemory.
- * @date    2009.
- */
+
 namespace ctrlMemory
 {
 

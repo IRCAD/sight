@@ -28,7 +28,7 @@ namespace fwData
  *
  * Vector contains a vector of ::fwData::Object.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 

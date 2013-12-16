@@ -18,8 +18,8 @@ namespace fwGuiWx
 
 /**
  * @brief   Defines the menu item callback.
- * @class   ActionCallback.
- * @author  IRCAD (Research and Development Team).
+ * @class   ActionCallback
+ * 
  * @date    2009-2010.
  *
  */

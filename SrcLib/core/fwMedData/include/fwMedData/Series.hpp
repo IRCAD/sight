@@ -27,7 +27,7 @@ class Equipment;
  * @class Series
  * Holds series information.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class FWMEDDATA_CLASS_API Series : public ::fwData::Object
 {

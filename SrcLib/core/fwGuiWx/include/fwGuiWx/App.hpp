@@ -27,8 +27,8 @@ namespace fwGuiWx
 
 /**
  * @brief   Defines the wx application.
- * @class   App.
- * @author  IRCAD (Research and Development Team).
+ * @class   App
+ * 
  * @date    2009.
  */
 

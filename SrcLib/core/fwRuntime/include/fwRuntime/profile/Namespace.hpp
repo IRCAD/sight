@@ -13,7 +13,7 @@ namespace fwRuntime
 /**
  * @brief       The namespace fwRuntime::profile contains classes to manage bundle declares in profile.xml file (activate/start/stop).
  * @namespace   fwRuntime::profile
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

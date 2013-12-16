@@ -27,7 +27,7 @@ namespace action
 /**
  * @class   ConfigActionSrv
  * @brief   To manage configuration file defines in xml extension.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  *
  * This action starts/stops a template configuration given by its identifier in this action configuration.

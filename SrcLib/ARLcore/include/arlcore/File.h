@@ -20,7 +20,6 @@ namespace arlCore
     {
     /**
      * @class   File
-     * @author  IRCAD (Research and Development Team)
      * @date    04/2008, 12/2008
      * @brief   Normalized file
      */

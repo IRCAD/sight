@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IMenuLayoutManager.hpp
+ * @file fwGui/layoutManager/IMenuLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a menu.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -30,8 +30,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the menu layout manager for IHM.
- * @class   IMenuLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMenuLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

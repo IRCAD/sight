@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for PointList : store modification information
  * @class   PointListMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */

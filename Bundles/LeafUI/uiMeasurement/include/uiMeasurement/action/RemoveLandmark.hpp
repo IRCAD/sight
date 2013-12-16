@@ -22,8 +22,8 @@ namespace action
 
 /**
  * @brief   This action removes landmarks.
- * @class   RemoveLandmark.
- * @author  IRCAD (Research and Development Team).
+ * @class   RemoveLandmark
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API RemoveLandmark : public ::fwGui::IActionSrv

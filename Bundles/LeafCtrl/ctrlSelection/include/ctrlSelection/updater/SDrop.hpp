@@ -17,9 +17,9 @@ namespace updater
 {
 
 /**
- * @class  SDrop.
+ * @class  SDrop
  * @brief  Drop received object to associated ::fwData::Composite.
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class CTRLSELECTION_CLASS_API SDrop : public ::ctrlSelection::IUpdaterSrv
 {

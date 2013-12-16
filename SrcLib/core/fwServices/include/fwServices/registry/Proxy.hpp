@@ -27,7 +27,7 @@ namespace registry
 /**
  * @class Proxy
  * @brief This class defines a proxy for signal/slot connections.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date 2012.
  *
  * @note All the signals registered in a Proxy's channel are connected to all slots registered in the same channel.

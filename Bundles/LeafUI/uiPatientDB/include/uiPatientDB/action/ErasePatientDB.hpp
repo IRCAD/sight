@@ -19,7 +19,7 @@ namespace action
 /**
  * @brief   This action allows to clear the PatientDB
  * @class   ErasePatientDB
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  */
 class UIPATIENTDB_CLASS_API ErasePatientDB : public ::fwGui::IActionSrv

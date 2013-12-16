@@ -13,7 +13,7 @@ namespace uiPatientDB
 {
 
 /**
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009.
  */
 struct Plugin : public ::fwRuntime::Plugin

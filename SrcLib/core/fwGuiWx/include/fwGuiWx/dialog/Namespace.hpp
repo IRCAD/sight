@@ -12,7 +12,7 @@ namespace fwGuiWx
 /**
  * @brief       The namespace fwGuiWx::dialog contains the classes used for container implementation with wxWidgets Library.
  * @namespace   fwGuiWx::dialog
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

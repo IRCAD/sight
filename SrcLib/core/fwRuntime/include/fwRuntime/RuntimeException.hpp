@@ -23,7 +23,7 @@ namespace fwRuntime
  * @brief   Defines the runtime exception class.
  * @struct  RuntimeException
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
 {

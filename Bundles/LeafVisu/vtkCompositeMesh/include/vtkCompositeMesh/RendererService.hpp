@@ -31,8 +31,8 @@ namespace vtkCompositeMesh
 
 /**
  * @brief   Renderer service.
- * @class   RendererService.
- * @author  IRCAD (Research and Development Team).
+ * @class   RendererService
+ * 
  * @date    2009.
  *
  * Service rendering ::fwData::Mesh contained in a ::fwData::Composite using VTK.

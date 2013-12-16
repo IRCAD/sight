@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiMedData contains editors for medical data.
  * @namespace   uiMedData
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2013.
  *
  */
@@ -30,7 +30,7 @@ namespace action
 /**
  * @brief       The namespace ::uiMedData::widget contains widgets for medical data.
  * @namespace   ::uiMedData::widget
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2013.
  *
  */
@@ -41,7 +41,7 @@ namespace widget
 /**
  * @brief       The namespace ::uiMedData::editor contains editors for medical data.
  * @namespace   ::uiMedData::editor
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2013.
  *
  */

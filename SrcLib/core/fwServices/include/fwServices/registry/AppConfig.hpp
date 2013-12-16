@@ -31,7 +31,7 @@ namespace registry
 
 /**
  * @class AppInfo
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWSERVICES_CLASS_API AppInfo : public ::fwCore::BaseObject
 {
@@ -64,7 +64,7 @@ public :
  * @class AppConfig
  * @brief This class allows to register all the configuration which has the point extension
  *        "::fwServices::registry::AppConfig".
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date 2012.
  */
 class FWSERVICES_CLASS_API AppConfig : public ::fwCore::BaseObject

@@ -21,9 +21,9 @@ namespace ctrlSelection
 namespace wrapper
 {
 /**
- * @class  MsgForwarderSrv.
+ * @class  MsgForwarderSrv
  * @brief  This service forwards an event from specific object to object specified with key in in composite.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2011.
  */

@@ -21,7 +21,7 @@
  * Allows to generate a file with .versions extesion
  * This file contains the listof the data and theirs version.
  * HELP  : VersionGenerator.exe --help 
- * USE :   VersionGenerator.exe <options>
+ * USE :   VersionGenerator.exe \<options\>
  * Allowed options:
  *   -h [ --help ]           produce help message
  *   -o [ --output ] arg     set the output file

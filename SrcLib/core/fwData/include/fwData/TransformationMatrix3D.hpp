@@ -22,7 +22,7 @@ namespace fwData
 /**
  * @class   TransformationMatrix3D
  * @brief   This class represents a 3D transformation matrix (4x4)
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API TransformationMatrix3D : public Object
@@ -63,7 +63,7 @@ public :
      */
     FWDATA_API double getCoefficient(int l, int c) const;
     FWDATA_API void setCoefficient(int l, int c, TM3DType val);
-    // @}
+    /// @}
 
     /// maximum size of the matrix (MATRIX_SIZE x MATRIX_SIZE)
     static const int MATRIX_SIZE = 4;

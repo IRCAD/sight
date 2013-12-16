@@ -18,8 +18,8 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic message box for IHM.
- * @class   IMessageDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMessageDialog
+ * 
  * @date    2009-2010.
  *
  */

@@ -9,8 +9,8 @@
 
 /**
  * @brief       The namespace guiWx contains the basic services to build the application IHM with WxWidgets.
- * @namespace   guiWx.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   guiWx
+ * 
  * @date        2009-2010.
  *
  */

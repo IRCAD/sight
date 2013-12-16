@@ -20,7 +20,7 @@ namespace helper
 /**
  * @brief   This class contains helpers to search dicom files on filesystem...
  * @class   DicomSearch
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class VTKGDCMIO_CLASS_API DicomSearch

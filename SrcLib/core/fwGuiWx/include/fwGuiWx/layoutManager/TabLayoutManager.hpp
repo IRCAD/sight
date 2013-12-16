@@ -21,8 +21,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the tab layout manager.
- * @class   TabLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   TabLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

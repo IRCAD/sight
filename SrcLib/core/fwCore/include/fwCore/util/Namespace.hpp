@@ -12,7 +12,7 @@ namespace fwCore
 /**
  * @brief       This namespace fwCore::util provides generic utilities for FW4SPL.
  * @namespace   fwCore::util
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2012.
  */
 namespace util

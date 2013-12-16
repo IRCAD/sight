@@ -23,7 +23,7 @@ namespace helper
 /**
  * @class   Array
  * @brief   Helper to manage array buffer. Lock the buffer before to modify it.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2012
  */
 class FWCOMED_CLASS_API Array

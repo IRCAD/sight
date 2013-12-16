@@ -24,8 +24,8 @@ namespace reader
 
 /**
  * @brief   Image Reader. Read file format .raw.gz
- * @class   GzBufferImageReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   GzBufferImageReader
+ * 
  * @date    2009
  *
  * Ircad reader to read a ::fwData::Image on filesystem which the file format

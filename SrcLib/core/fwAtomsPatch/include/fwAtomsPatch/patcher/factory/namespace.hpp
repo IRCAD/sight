@@ -17,7 +17,7 @@ namespace patcher
 /**
  * @brief       Contains fwAtomsPatch::factory utilities
  * @namespace   factory
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2013
  *
  */

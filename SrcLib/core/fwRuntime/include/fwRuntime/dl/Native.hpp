@@ -34,7 +34,7 @@ struct INameDecorator;
  * @brief   Defines the abstract class for native module implementors.
  * @struct  Native
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Native
 {

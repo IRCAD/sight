@@ -22,7 +22,7 @@ namespace module
 /**
  * @brief   This class write DICOM series Modules in a data set.
  *
- * @class   DicomSeries.
+ * @class   DicomSeries
  */
 class GDCMIO_CLASS_API DicomSeries : public DicomModule< ::fwMedData::Series >
 {

@@ -24,7 +24,7 @@ namespace ioVTK
 
 /**
  * @brief   SeriesDB reader service.
- * @class   SSeriesDBReader .
+ * @class   SSeriesDBReader
  * @date    2013.
  *
  * Service reading a VTK file (mesh or image) using the fwVtkIO lib.

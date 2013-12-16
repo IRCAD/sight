@@ -29,8 +29,8 @@ namespace visuVTKQt
 
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
- * @class   VtkRenderWindowInteractorManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   VtkRenderWindowInteractorManager
+ * 
  * @date    2009-2010.
  *
  */

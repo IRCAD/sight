@@ -25,7 +25,7 @@ class UUID;
 /**
  * @brief   Define Base class for FW4SPL objects and services
  * @class   Object
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject , protected ::fwTools::fwID

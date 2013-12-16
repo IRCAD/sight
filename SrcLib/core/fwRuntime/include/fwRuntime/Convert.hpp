@@ -23,7 +23,7 @@ namespace fwRuntime
  * @brief   Defines the convert class.
  * @class   Convert
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWRUNTIME_CLASS_API Convert
 {

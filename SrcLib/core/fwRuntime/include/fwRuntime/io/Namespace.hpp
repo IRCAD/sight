@@ -13,7 +13,7 @@ namespace fwRuntime
 /**
  * @brief       The namespace fwRuntime::io contains classes to read and perform profile file  .
  * @namespace   fwRuntime::io
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

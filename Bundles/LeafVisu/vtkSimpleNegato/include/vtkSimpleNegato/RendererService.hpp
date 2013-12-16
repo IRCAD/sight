@@ -23,8 +23,8 @@ namespace vtkSimpleNegato
 
 /**
 * @brief    Renderer service.
-* @class    RendererService.
-* @author   IRCAD (Research and Development Team).
+* @class    RendererService
+* 
 * @date 2009.
 *
 * Service rendering a ::fwData::Image using VTK.
@@ -82,7 +82,7 @@ protected :
 
     /**
     * @brief Receiving method (react on data modifications).
-    * @param[in] _msg ::fwServices::ObjectMsg::csptr.
+    * @param[in] _msg ::fwServices::ObjectMsg::csptr
     *
     * This method is used to update the service.
     */

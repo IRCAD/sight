@@ -9,8 +9,8 @@
 
 /**
  * @brief       The namespace ioData contains reader and writer services for basic ::fwData::Object which doesn't need external library.
- * @namespace   ioData.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   ioData
+ * 
  * @date        2009.
  *
  */

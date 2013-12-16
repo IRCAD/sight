@@ -28,8 +28,8 @@ namespace uiReconstruction
 
 /**
  * @brief   RepresentationEditor service.
- * @class   RepresentationEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   RepresentationEditor
+ * 
  * @date    2010.
  */
 class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public  QObject, public ::gui::editor::IEditor

@@ -18,8 +18,8 @@ namespace opVTKMesh
  * @brief   This interface defines mesher service API.
  * Does nothing particularly, to be implemented by mesher services.
  *
- * @class  IMesher.
- * @author IRCAD (Research and Development Team).
+ * @class  IMesher
+ * 
  * @date   2009-2010.
  */
 class OPVTKMESH_CLASS_API IMesher : public ::fwServices::IService

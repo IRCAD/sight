@@ -86,16 +86,16 @@ public:
 
 
     /**
-     * @briefRetrieves the first undoable command.
+     * @brief Retrieves the first undoable command.
      *
-     * @returna shared pointer to the first undoable command, can be empty
+     * @return a shared pointer to the first undoable command, can be empty
      */
     FWCOMMAND_API ICommand::sptr getFirstUndoableCommand();
 
     /**
-     * @briefRetrieves the first redoable command.
+     * @brief Retrieves the first redoable command.
      *
-     * @returna shared pointer to the first undoable command, can be empty
+     * @return a shared pointer to the first undoable command, can be empty
      */
     FWCOMMAND_API ICommand::sptr getFirstRedoableCommand();
 
@@ -115,7 +115,7 @@ public:
     FWCOMMAND_API const ::boost::uint32_t getMaxCommandMemory();
 
     /**
-     * @briefReturns the number of commands that can be un-done.
+     * @brief Returns the number of commands that can be un-done.
      */
     FWCOMMAND_API const ::boost::uint32_t getUndoSize();
 

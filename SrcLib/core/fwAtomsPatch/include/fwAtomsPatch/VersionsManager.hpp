@@ -51,7 +51,9 @@ public:
 
     /**
      * @brief Generates a .versions file with currently known data versions.
-     * @param path path of file to write.
+     * @param filePath path of .versions file to write.
+     * @param context context of the VersionGraph.
+     * @param versionName name of the version to write.
      * @todo Ignoring file in ignored library.
      */
     FWATOMSPATCH_API static void generateNewFile(const ::boost::filesystem::path& filePath, const std::string& context,

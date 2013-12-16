@@ -26,9 +26,7 @@ namespace ioVTK
 
 /**
  * @brief   VTK mesh writer service.
- * @class   TriangularMeshWriterService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   TriangularMeshWriterService
  *
  * Service writing a VTK Mesh using the fwVtkIO lib.
  *

@@ -19,7 +19,7 @@ namespace container
  *
  * Concept : Singleton
  *
- * @class   DicomDictionarySR.
+ * @class   DicomDictionarySR
  */
 class GDCMIO_CLASS_API DicomDictionarySR
 {

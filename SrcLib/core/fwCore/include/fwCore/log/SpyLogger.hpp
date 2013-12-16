@@ -23,7 +23,7 @@ namespace log
 /**
  * @brief   Implements the SpyLogger.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class SpyLogger : public ::fwCore::BaseObject
 {

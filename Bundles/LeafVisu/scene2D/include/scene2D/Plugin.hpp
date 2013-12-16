@@ -16,8 +16,8 @@ namespace scene2D
 {
 /**
 * @brief   This class is started when the bundles is loaded.
-* @class   Plugin.
-* @author  IRCAD (Research and Development Team).
+* @class   Plugin
+* 
 * @date    2010.
 */
 

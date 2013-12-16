@@ -19,7 +19,7 @@ namespace fwData
 /**
  * @class   Spline
  * @brief   This class defines a spline object.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Spline : public Object

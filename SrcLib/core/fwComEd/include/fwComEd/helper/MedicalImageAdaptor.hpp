@@ -32,7 +32,7 @@ namespace helper
 /**
  * @class   MedicalImageAdaptor
  * @brief   Helpers for medical image.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010
  */
 class FWCOMED_CLASS_API MedicalImageAdaptor

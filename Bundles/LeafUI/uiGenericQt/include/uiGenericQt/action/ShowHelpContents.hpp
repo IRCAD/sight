@@ -20,8 +20,8 @@ namespace action
 
 /**
  * @brief   This action show the help contents.
- * @class   ShowHelpContents.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowHelpContents
+ * 
  * @date    2010.
  */
 class UIGENERICQT_CLASS_API ShowHelpContents : public ::fwGui::IActionSrv

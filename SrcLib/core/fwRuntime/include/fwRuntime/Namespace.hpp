@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace fwRuntime contains classes to manage bundle, configuration element, extension point in the runtime environment from a configuration file .
  * @namespace   fwRuntime
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

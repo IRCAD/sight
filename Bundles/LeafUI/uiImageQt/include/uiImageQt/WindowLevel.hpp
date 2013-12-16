@@ -34,8 +34,8 @@ namespace uiImage
 
 /**
  * @brief   WindowLevel service allows to change the min / max value of windowing.
- * @class   WindowLevel.
- * @author  IRCAD (Research and Development Team).
+ * @class   WindowLevel
+ * 
  * @date    2010-2011.
  *
  * This is represented by

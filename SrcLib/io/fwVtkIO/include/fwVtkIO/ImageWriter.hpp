@@ -23,8 +23,8 @@ namespace fwVtkIO
 
 /**
  * @brief   Write an image.
- * @class   ImageWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImageWriter
+ * 
  * @date    2009.
  *
  * Write a VTK Image using the VTK lib

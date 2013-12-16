@@ -80,7 +80,7 @@ protected:
  * @class TimerAsio
  * @brief Private Timer implementation using boost::asio.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2012.
  */
 class TimerAsio : public ::fwThread::Timer

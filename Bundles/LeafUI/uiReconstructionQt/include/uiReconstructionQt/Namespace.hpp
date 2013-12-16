@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiReconstruction contains several editors using Qt related on reconstruction. This namespace is included in uiReconstructionQt bundle.
  * @namespace   uiReconstruction
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

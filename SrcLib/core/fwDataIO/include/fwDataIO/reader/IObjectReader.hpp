@@ -27,8 +27,8 @@ namespace reader
 
 /**
  * @brief   Base class for all object readers.
- * @class   IObjectReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   IObjectReader
+ * 
  * @date    2009
  *
  * This class defines the API to use basic object readers. This reader is not

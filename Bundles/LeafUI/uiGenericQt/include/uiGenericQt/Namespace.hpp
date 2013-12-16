@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiGeneric contains actions to show help, acknowledgments and about frame.
  * @namespace   uiGeneric
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

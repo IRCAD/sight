@@ -27,8 +27,8 @@ namespace reader
 
 /**
  * @brief   Tag Reader. Read file format .tag
- * @class   TagReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   TagReader
+ * 
  * @date    2009
  *
  * Ircad reader to read a ::fwData::Tag on filesystem which the file format

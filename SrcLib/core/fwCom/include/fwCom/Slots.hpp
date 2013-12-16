@@ -25,10 +25,8 @@ template< typename F >
 struct Slot;
 
 /**
- * @class   Slots.
+ * @class   Slots
  * @brief   This class proposes a mapping between a SlotKeyType and a SlotBase.
- *
- * @author IRCAD (Research and Development Team).
  * @date   2012.
  */
 class FWCOM_CLASS_API Slots
