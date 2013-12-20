@@ -340,6 +340,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     }
     else
     {
+        ::fwGui::LockAction lock(this->getSptr());
         ::fwData::String::csptr msgData = ::fwData::String::dynamicConstCast(msg->getDataInfo("NEW_CONFIGURATION_HELPER"));
         const std::string viewConfigFieldID = "VIEWCONFIGID";
         const std::string fieldID           = "APPCONFIG";

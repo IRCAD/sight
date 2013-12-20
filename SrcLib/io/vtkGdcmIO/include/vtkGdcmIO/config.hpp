@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKGDCMIO_CONFIG_HPP_
-#define _VTKGDCMIO_CONFIG_HPP_
+#ifndef __VTKGDCMIO_CONFIG_HPP__
+#define __VTKGDCMIO_CONFIG_HPP__
 
 
 #ifdef _WIN32
@@ -46,5 +46,5 @@
 #endif
 
 
-#endif //_VTKGDCMIO_CONFIG_HPP_
+#endif //__VTKGDCMIO_CONFIG_HPP__
 

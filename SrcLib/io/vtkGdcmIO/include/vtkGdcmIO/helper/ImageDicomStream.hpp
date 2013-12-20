@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP_
-#define _VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP_
+#ifndef __VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP__
+#define __VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP__
 
 #include <vector>
 
@@ -110,4 +110,4 @@ protected:
 } // namespace helper
 } // namespace vtkGdcmIO
 
-#endif // _VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP_
+#endif // __VTKGDCMIO_HELPER_IMAGEDICOMSTREAM_HPP__

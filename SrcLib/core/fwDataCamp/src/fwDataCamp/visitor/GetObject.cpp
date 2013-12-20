@@ -137,7 +137,8 @@ void GetObject::visit(const camp::SimpleProperty& property)
 void GetObject::visit(const camp::EnumProperty& property)
 {
     SLM_TRACE_FUNC();
-    OSLM_FATAL( "EnumProperty is not still managed : name =" <<  property.name() );
+    OSLM_FATAL_IF( "EnumProperty is not still managed : name =" <<  property.name(),
+            property.name() == m_propertyName );
 }
 
 //-----------------------------------------------------------------------------

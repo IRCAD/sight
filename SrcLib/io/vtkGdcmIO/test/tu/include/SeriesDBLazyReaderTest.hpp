@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWVTKGDCMIO_TEST_TU_SERIESDBLAZYREADER_HPP_
-#define _FWVTKGDCMIO_TEST_TU_SERIESDBLAZYREADER_HPP_
+#ifndef __FWVTKGDCMIO_TEST_TU_SERIESDBLAZYREADER_HPP__
+#define __FWVTKGDCMIO_TEST_TU_SERIESDBLAZYREADER_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
@@ -42,5 +42,5 @@ private:
 } // namespace ut
 } // namespace vtkGdcmIO
 
-#endif // _FWVTKGDCMIO_TEST_TU_SERIESDBLAZYREADER_HPP_
+#endif // __FWVTKGDCMIO_TEST_TU_SERIESDBLAZYREADER_HPP__
 

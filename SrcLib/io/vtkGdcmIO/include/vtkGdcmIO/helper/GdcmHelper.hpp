@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKGDCMIO_GDCMHELPER_HPP_
-#define _VTKGDCMIO_GDCMHELPER_HPP_
+#ifndef __VTKGDCMIO_GDCMHELPER_HPP__
+#define __VTKGDCMIO_GDCMHELPER_HPP__
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
@@ -33,4 +33,4 @@ public:
 } // namespace helper
 } // namespace vtkGdcmIO
 
-#endif /*_VTKGDCMIO_GDCMHELPER_HPP_*/
+#endif /*__VTKGDCMIO_GDCMHELPER_HPP__*/

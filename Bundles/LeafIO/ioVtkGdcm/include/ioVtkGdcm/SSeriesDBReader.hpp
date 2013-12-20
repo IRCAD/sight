@@ -80,6 +80,6 @@ private :
 
 };
 
-} // namespace ioDicom
+} // namespace ioVtkGdcm
 
 #endif //__IOVTKGDCM_SSERIESDBREADER_HPP__
