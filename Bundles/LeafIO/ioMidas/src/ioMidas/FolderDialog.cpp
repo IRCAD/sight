@@ -19,10 +19,7 @@ namespace ioMidas
 
 FolderDialog::FolderDialog() : m_folderID(""), m_extraInformation(""), m_separator("-"), m_midasFolderName("")
 {
-    m_txtFolderID = new QSpinBox();
-    m_txtFolderID->setValue(1);
-    m_txtFolderID->setMinimum(1);
-    m_txtFolderID->setMaximum(10000);
+    m_txtFolderID = new QLineEdit();
 
     m_txtExtraInformation = new QLineEdit();
     m_txtExtraInformation->setValidator(new QIntValidator);
@@ -49,12 +46,13 @@ FolderDialog::FolderDialog() : m_folderID(""), m_extraInformation(""), m_separat
     QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QObject::connect(m_txtFolderID, SIGNAL(valueChanged(const QString&)),
+    QObject::connect(m_txtFolderID, SIGNAL(textChanged(const QString&)),
             this, SLOT(onFolderIDChanged(const QString&)));
     QObject::connect(m_txtExtraInformation, SIGNAL(textChanged(const QString&)),
             this, SLOT(onExtraInformationChanged(const QString&)));
 
     m_folderID =  m_txtFolderID->text().toStdString();
+
     this->setTxtMidasFolderName();
 }
 
@@ -65,7 +63,7 @@ void FolderDialog::setFolderId(const std::string& folderId)
     if(folderId != "0")
     {
         m_folderID = folderId;
-        m_txtFolderID->setValue( ::boost::lexical_cast< int >(folderId));
+        m_txtFolderID->setText(QString::fromStdString(folderId));
         this->setTxtMidasFolderName();
     }
 }

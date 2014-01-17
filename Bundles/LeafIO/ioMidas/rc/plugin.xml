@@ -5,9 +5,9 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioMidas::SAcquisitionWriter</service>
-        <object>::fwData::Acquisition</object>
-        <desc>Midas acquisition writer</desc>
+        <service>::ioMidas::SModelSeriesWriter</service>
+        <object>::fwMedData::ModelSeries</object>
+        <desc>Midas ModelSeries writer</desc>
     </extension>
 
 </plugin>

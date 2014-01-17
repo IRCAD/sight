@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,26 +21,25 @@ namespace ioMidas
 {
 
 /**
- * @class SAcquisitionWriter
- * @brief Writer exporting ::fwData::Acquisition to a Midas server.
- * @note This writer cannot be used without calling configureWithIHM().
+ * @class SModelSeriesWriter
+ * @brief Writer exporting ::fwMedData::ModelSeries to a Midas server.
  */
-class IOMIDAS_CLASS_API SAcquisitionWriter : public ::io::IWriter
+class IOMIDAS_CLASS_API SModelSeriesWriter : public ::io::IWriter
 {
 
 public :
 
-    fwCoreServiceClassDefinitionsMacro ( (SAcquisitionWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesWriter)( ::io::IWriter) );
 
     /**
      * @brief Constructor
      */
-    IOMIDAS_API SAcquisitionWriter() throw();
+    IOMIDAS_API SModelSeriesWriter() throw();
 
     /**
      * @brief Destructor
      */
-    IOMIDAS_API virtual ~SAcquisitionWriter() throw();
+    IOMIDAS_API virtual ~SModelSeriesWriter() throw();
 
 protected:
 
@@ -80,9 +79,12 @@ protected:
     IOMIDAS_API virtual std::vector< std::string > getSupportedExtensions() ;
     IOMIDAS_API virtual std::string getSelectorDialogTitle();
     IOMIDAS_API virtual void configureWithIHM();
+
+    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg )
+        throw(::fwTools::Failed) {} ;
     /**  @} */
 
-    /// Returns managed path type, here service manages a list of files
+    /// Returns managed path type, here service manages only single file
     IOMIDAS_API ::io::IOPathType getIOPathType() const;
 
 private :

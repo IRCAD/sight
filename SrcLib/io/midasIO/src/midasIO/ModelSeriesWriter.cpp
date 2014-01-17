@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,21 +29,22 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/StructureTraitsDictionary.hpp>
+#include <fwData/Material.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
-#include <vtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
 
-#include "midasIO/AcquisitionWriter.hpp"
+#include "midasIO/ModelSeriesWriter.hpp"
 
-fwDataIOWriterRegisterMacro( ::midasIO::AcquisitionWriter );
+fwDataIOWriterRegisterMacro( ::midasIO::ModelSeriesWriter );
 
 
 namespace midasIO
 {
 
-const AcquisitionWriter::OrganClass2LayerType AcquisitionWriter::s_ORGAN_LAYERS
+const ModelSeriesWriter::OrganClass2LayerType ModelSeriesWriter::s_ORGAN_LAYERS
     = ::boost::assign::map_list_of
             (::fwData::StructureTraits::TOOL, "1")
             (::fwData::StructureTraits::NO_CONSTRAINT, "1")
@@ -55,13 +56,13 @@ const AcquisitionWriter::OrganClass2LayerType AcquisitionWriter::s_ORGAN_LAYERS
 
 //------------------------------------------------------------------------------
 
-AcquisitionWriter::AcquisitionWriter(::fwDataIO::writer::IObjectWriter::Key key)
+ModelSeriesWriter::ModelSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 
 //------------------------------------------------------------------------------
 
-AcquisitionWriter::~AcquisitionWriter()
+ModelSeriesWriter::~ModelSeriesWriter()
 {}
 
 //------------------------------------------------------------------------------
@@ -75,14 +76,14 @@ std::string castColorVal( double d )
 
 //------------------------------------------------------------------------------
 
-void AcquisitionWriter::write()
+void ModelSeriesWriter::write()
 {
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
     std::string organName, layer;
 
-    ::fwData::Acquisition::sptr pAcquisition = getConcreteObject();
+    ::fwMedData::ModelSeries::sptr pModelSeries = getConcreteObject();
     int nbSerie = 0;
     xmlDocPtr xmlDoc;
     xmlNodePtr root_node, item_node;
@@ -99,7 +100,7 @@ void AcquisitionWriter::write()
 
     const ::fwData::StructureTraitsDictionary::StructureTypeNameContainer& names = structDico->getStructureTypeNames();
 
-    BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, pAcquisition->getReconstructions() )
+    BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, pModelSeries->getReconstructionDB() )
     {
         nbSerie++;
 
@@ -163,7 +164,7 @@ void AcquisitionWriter::write()
 
 //------------------------------------------------------------------------------
 
-vtkActor * AcquisitionWriter::createActor( ::fwData::Reconstruction::sptr pReconstruction )
+vtkActor * ModelSeriesWriter::createActor( ::fwData::Reconstruction::sptr pReconstruction )
 {
     vtkActor* actor = vtkActor::New();
 
@@ -171,7 +172,7 @@ vtkActor * AcquisitionWriter::createActor( ::fwData::Reconstruction::sptr pRecon
     ::fwData::Material::sptr material = pReconstruction->getMaterial();
 
     vtkSmartPointer< vtkPolyData > polyData = vtkSmartPointer< vtkPolyData >::New();
-    ::vtkIO::helper::Mesh::toVTKMesh( mesh, polyData);
+    ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, polyData);
     vtkSmartPointer<vtkPolyDataMapper> mapper  = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInput(polyData);
     actor->SetMapper(mapper);
@@ -192,7 +193,7 @@ vtkActor * AcquisitionWriter::createActor( ::fwData::Reconstruction::sptr pRecon
 
 //------------------------------------------------------------------------------
 
-std::string AcquisitionWriter::extension()
+std::string ModelSeriesWriter::extension()
 {
     return "";
 }

@@ -6,35 +6,37 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwMedData/ModelSeries.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwData/Acquisition.hpp>
+
 
 #include <io/IWriter.hpp>
-#include <io/ioTypes.hpp>
 
-#include "ioMidas/SAcquisitionWriter.hpp"
+#include "ioMidas/SModelSeriesWriter.hpp"
 #include "ioMidas/ExportDialog.hpp"
 
 namespace ioMidas
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioMidas::SAcquisitionWriter , ::fwData::Acquisition );
+fwServicesRegisterMacro( ::io::IWriter , ::ioMidas::SModelSeriesWriter , ::fwMedData::ModelSeries );
 
 //------------------------------------------------------------------------------
 
-SAcquisitionWriter::SAcquisitionWriter() throw()
+SModelSeriesWriter::SModelSeriesWriter() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-SAcquisitionWriter::~SAcquisitionWriter() throw()
+SModelSeriesWriter::~SModelSeriesWriter() throw()
 {}
 
 //------------------------------------------------------------------------------
 
-void SAcquisitionWriter::configuring() throw(::fwTools::Failed)
+void SModelSeriesWriter::configuring() throw(::fwTools::Failed)
 {
     ::io::IWriter::configuring();
+
 
     typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationElement;
     typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
@@ -56,7 +58,7 @@ void SAcquisitionWriter::configuring() throw(::fwTools::Failed)
     SLM_ASSERT("Failed to create Midas configuration using factory with key '" << versionStr << "'", m_config);
 
     ConfigurationElementContainer url = m_configuration->find("url");
-    SLM_ASSERT("The <url> element can be set once.", url.size() == 1 );
+    SLM_ASSERT("The <url> element can be set at most once.", url.size() <= 1 );
     if (url.size() == 1)
     {
         m_config->setUrl(url.at(0)->getValue());
@@ -111,14 +113,18 @@ void SAcquisitionWriter::configuring() throw(::fwTools::Failed)
     {
         m_config->setRootFolderName(rootFolder.at(0)->getValue());
     }
+
+    this->configureWithIHM();
 }
 
 //------------------------------------------------------------------------------
 
-void SAcquisitionWriter::configureWithIHM()
+void SModelSeriesWriter::configureWithIHM()
 {
-    ::fwData::Acquisition::sptr acq = this->getObject< ::fwData::Acquisition>();
+
+    ::fwMedData::ModelSeries::sptr acq = this->getObject< ::fwMedData::ModelSeries >();
     SLM_ASSERT("Failed to retrieve selected acquisition", acq);
+
 
     ::ioMidas::ExportDialog dialog(m_config, acq);
     dialog.exec();
@@ -126,36 +132,31 @@ void SAcquisitionWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SAcquisitionWriter::starting() throw(::fwTools::Failed)
+void SModelSeriesWriter::starting() throw(::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------
 
-void SAcquisitionWriter::updating() throw(::fwTools::Failed)
+void SModelSeriesWriter::stopping() throw(::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------
 
-void SAcquisitionWriter::stopping() throw(::fwTools::Failed)
-{}
-
-//------------------------------------------------------------------------------
-
-void SAcquisitionWriter::info(std::ostream &_sstream )
+void SModelSeriesWriter::info(std::ostream &_sstream )
 {
-    _sstream << "SAcquisitionWriter::info";
+    _sstream << "SModelSeriesWriter::info";
 }
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SAcquisitionWriter::getIOPathType() const
+::io::IOPathType SModelSeriesWriter::getIOPathType() const
 {
-    return ::io::FILES;
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< std::string > SAcquisitionWriter::getSupportedExtensions()
+std::vector< std::string > SModelSeriesWriter::getSupportedExtensions()
 {
     std::vector< std::string > extensions ;
     return extensions ;
@@ -163,12 +164,16 @@ std::vector< std::string > SAcquisitionWriter::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-std::string SAcquisitionWriter::getSelectorDialogTitle()
+std::string SModelSeriesWriter::getSelectorDialogTitle()
 {
     return "Export acquisition to Midas";
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ioMidas
+void SModelSeriesWriter::updating() throw(::fwTools::Failed)
+{}
 
+//------------------------------------------------------------------------------
+
+} // namespace ioMidas

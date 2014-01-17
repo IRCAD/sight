@@ -28,15 +28,15 @@
 
 #include <fwCore/Exception.hpp>
 
-#include <fwData/Patient.hpp>
-#include <fwData/Study.hpp>
-#include <fwData/Acquisition.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Patient.hpp>
+
 #include <fwData/location/Folder.hpp>
 #include <fwTools/System.hpp>
 
 #include <midasIO/RequestHandler.hpp>
 #include <midasIO/IResponseHandler.hpp>
-#include <midasIO/AcquisitionWriter.hpp>
+#include <midasIO/ModelSeriesWriter.hpp>
 
 #include "ioMidas/FolderDialog.hpp"
 #include "ioMidas/ExportDialog.hpp"
@@ -44,23 +44,23 @@
 namespace ioMidas
 {
 
-// Temporary folder to save acquisition being exported on Midas server
+// Temporary folder to save ModelSeries being exported on Midas server
 static ::boost::filesystem::path TMP_PATH = ::fwTools::System::getTemporaryFolder();
 
 //-----------------------------------------------------------------------------------------------------
 
-void write(const ::fwData::Acquisition::sptr& acquisition, const std::string& folderName)
+void write(const ::fwMedData::ModelSeries::sptr& modelSeries, const std::string& folderName)
 {
     ::boost::filesystem::path tmp_path = TMP_PATH / folderName;
-    SLM_INFO("Writing acquisition to '" + tmp_path.string() + "'");
+    SLM_INFO("Writing ModelSeries to '" + tmp_path.string() + "'");
 
     ::boost::filesystem::create_directories(tmp_path);
 
     ::fwData::location::Folder::sptr meshPath = ::fwData::location::Folder::New();
     meshPath->setFolder(tmp_path);
 
-    ::midasIO::AcquisitionWriter::sptr writer = ::midasIO::AcquisitionWriter::New();
-    writer->setObject(acquisition);
+    ::midasIO::ModelSeriesWriter::sptr writer = ::midasIO::ModelSeriesWriter::New();
+    writer->setObject(modelSeries);
     writer->setLocation(meshPath);
     writer->write();
 }
@@ -68,8 +68,8 @@ void write(const ::fwData::Acquisition::sptr& acquisition, const std::string& fo
 //-----------------------------------------------------------------------------------------------------
 
 ExportDialog::ExportDialog(
-        const ::midasIO::IConfiguration::sptr& config, const ::fwData::Acquisition::sptr& acq)
-    : m_config(config), m_acq(acq)
+        const ::midasIO::IConfiguration::sptr& config, const ::fwMedData::ModelSeries::sptr& modelSeries)
+    : m_config(config), m_modelSeries(modelSeries)
 {
     m_txtEmail = new QLineEdit();
 
@@ -345,7 +345,11 @@ void ExportDialog::onExportClicked()
         }
     }
 
-    std::string laboID = ::boost::lexical_cast< std::string >(m_acq->getLaboID());
+    //XXX Check patient
+    ::fwMedData::Patient::sptr patient = m_modelSeries->getPatient();
+
+    std::string laboID = ::boost::lexical_cast< std::string >(patient->getName());
+
 
     ::ioMidas::FolderDialog folderDialog;
     folderDialog.setFolderId(laboID);
@@ -390,7 +394,7 @@ void ExportDialog::exportAcquisition(const std::string& laboID, const std::strin
     m_progress->setEnabled(true);
 
     // Write acquisition to temporary folder
-    write(m_acq, laboID);
+    write(m_modelSeries, laboID);
 
     // Compute size of acquisition
     int totalDirectorySize = 0;

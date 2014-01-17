@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 
 #include <fwTools/ProgressAdviser.hpp>
 
-#include <fwData/Acquisition.hpp>
+#include <fwMedData/ModelSeries.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/StructureTraits.hpp>
@@ -24,30 +24,31 @@ namespace midasIO
 {
 
 /**
- * @brief   Write a reconstruction
- * @class   ReconstructionWriter
- * @date    2009
+ * @brief   Write a reconstruction.
+ * @class   ReconstructionWriter.
+ * @author  IRCAD (Research and Development Team).
+ * @date    2009.
  *
  * Write a ::fwData::Reconstruction using the VTK lib and the obj format
  */
-class MIDASIO_CLASS_API AcquisitionWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Acquisition >,
+class MIDASIO_CLASS_API ModelSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
                              public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
                              public ::fwTools::ProgressAdviser
 {
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((AcquisitionWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Acquisition >),
+    fwCoreClassDefinitionsWithFactoryMacro((ModelSeriesWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >),
                                            (()),
-                                           ::fwDataIO::writer::factory::New< AcquisitionWriter >
+                                           ::fwDataIO::writer::factory::New< ModelSeriesWriter >
                                           );
     fwCoreAllowSharedFromThis();
 
     /// Constructor. Does nothing.
-    MIDASIO_API AcquisitionWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    MIDASIO_API ModelSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Does nothing.
-    MIDASIO_API ~AcquisitionWriter();
+    MIDASIO_API ~ModelSeriesWriter();
 
     /// Writes obj files and sceneDescription.xml in the folder.
     MIDASIO_API void write();

@@ -8,7 +8,6 @@
 #define __IOMIDAS_FOLDERDIALOG_HPP__
 
 #include <QDialog>
-#include <QSpinBox>
 #include <QLineEdit>
 #include <QLabel>
 #include <QPushButton>
@@ -69,7 +68,7 @@ private :
     /**
      * @name Widgets to edit and show Midas folder name.
      * @{ */
-    QPointer< QSpinBox > m_txtFolderID;
+    QPointer< QLineEdit > m_txtFolderID;
     QPointer< QLineEdit > m_txtExtraInformation;
     QPointer< QLabel > m_txtMidasFolderName;
     /**  @} */

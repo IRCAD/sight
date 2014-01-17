@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 
 #include <midasIO/IResponseHandler.hpp>
 
-#include "ioMidas/SAcquisitionWriter.hpp"
+#include "ioMidas/SModelSeriesWriter.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioMidas::ut::IoMidasTest );
@@ -205,7 +205,7 @@ void IoMidasTest::checkConfigurationTest()
     ::fwData::Acquisition::sptr pAcq = ::fwData::Acquisition::New();
 
     const std::string srvType("::io::IWriter");
-    const std::string srvImpl("::ioMidas::SAcquisitionWriter");
+    const std::string srvImpl("::ioMidas::SModelSeriesWriter");
 
     ::fwServices::IService::sptr srv
         = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImpl );

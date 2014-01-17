@@ -23,9 +23,9 @@ class QListWidget;
 class QComboBox;
 class QProgressBar;
 
-namespace fwData
+namespace fwMedData
 {
-    class Acquisition;
+    class ModelSeries;
 }
 
 namespace midasIO
@@ -55,7 +55,7 @@ public:
      */
     IOMIDAS_API ExportDialog(
             const SPTR(::midasIO::IConfiguration)& config,
-            const SPTR(::fwData::Acquisition)& acq);
+            const SPTR(::fwMedData::ModelSeries)& modelSeries);
 
     /// Destructor
     IOMIDAS_API ~ExportDialog();
@@ -101,7 +101,7 @@ private:
     void exportAcquisition(const std::string& laboId, const std::string& folderId);
 
     /// Acquisition to export to Midas server
-    SPTR(::fwData::Acquisition) m_acq;
+    SPTR(::fwMedData::ModelSeries) m_modelSeries;
 
     /// List of Midas communities visible to the current user
     ::midasIO::IConfiguration::CommunityListType m_communityList;
