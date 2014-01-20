@@ -32,7 +32,7 @@ struct ExecutableFactory;
  * That's why this class is design to be instanciated as static object.
  *
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct ExecutableFactoryRegistrar
 {

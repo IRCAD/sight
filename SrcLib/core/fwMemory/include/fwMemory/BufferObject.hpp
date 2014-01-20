@@ -35,7 +35,7 @@ class IFactory ;
 /**
  * @brief   Define Base class for FW4SPL buffers
  * @class   BufferObject
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  * Keep a pointer to a buffer and it's allocation policy (new malloc) without
@@ -267,7 +267,7 @@ public:
      * @brief Set a stream factory for the buffer manager
      * The factory will be used to load data on demand by the buffer manager.
      *
-     * @param ::fwMemory::stream::in::IFactory stream factory
+     * @param factory ::fwMemory::stream::in::IFactory stream factory
      * @param size size of data provided by the stream
      * @param sourceFile Filesystem path of the source file, if applicable
      * @param format file format (RAW,RAWZ,OTHER), if sourceFile is provided

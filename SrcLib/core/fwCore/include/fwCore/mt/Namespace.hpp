@@ -12,7 +12,7 @@ namespace fwCore
 /**
  * @brief       This namespace fwCore::mt provides common foundations for multithread in FW4SPL.
  * @namespace   fwCore::mt
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2012.
  */
 namespace mt

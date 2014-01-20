@@ -16,7 +16,7 @@ namespace dataReg
 
 /**
  * @brief   This class is started when the bundles is loaded.
- * @class   Plugin.
+ * @class   Plugin
  */
 struct DATAREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {

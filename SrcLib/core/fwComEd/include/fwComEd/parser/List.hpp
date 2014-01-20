@@ -25,7 +25,7 @@ namespace parser
 /**
  * @brief   Specific service for the construction of a List and its associated services from an XML-based description.
  * @class   List
- * @author  IRCAD (Research and Development Team).
+ * 
 
  * @date    2007-2009
  * @see     ::fwServices::IXMLParser

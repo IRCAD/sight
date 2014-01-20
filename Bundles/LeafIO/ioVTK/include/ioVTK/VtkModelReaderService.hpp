@@ -21,9 +21,7 @@ namespace ioVTK
 
 /**
  * @brief   vtk reader service.
- * @class   VtkModelReaderService.
- * @author  IRCAD Fr & Tw.
- * @date    2010.
+ * @class   VtkModelReaderService
  *
  * Service reading a vtk file using the fwVtkIO lib
  * (for .vtk at this time).

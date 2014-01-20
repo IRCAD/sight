@@ -40,7 +40,7 @@ namespace registry
  * The API of ObjectService should not be directly invoked,
  * fwServices/op methods (i.e. add, get,...) should be used instead
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWSERVICES_CLASS_API ObjectService: public ::fwCore::BaseObject
 {
@@ -124,19 +124,19 @@ public:
      * @brief Return registered services matching serviceType
      * @note Should be optimized
      * @note Invoke getServices( ::fwData::Object::sptr , const std::string & ) for each registered object
-     * @author IRCAD (Research and Development Team).
+     * 
      */
     FWSERVICES_API ServiceVectorType getServices( const std::string & serviceType ) const;
 
     /**
      * @brief Return a container of services of type serviceType which are attached to obj
-     * @author IRCAD (Research and Development Team).
+     * 
      */
     FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj , const std::string & serviceType ) const;
 
     /**
      * @brief return a vector containing all services associated with the object obj
-     * @author IRCAD (Research and Development Team).
+     * 
      */
     FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj ) const;
 
@@ -161,7 +161,7 @@ public:
      //@{
      /**
       * @brief return true is obj has at least one service of type srvType
-      * @author IRCAD (Research and Development Team).
+      * 
       */
      FWSERVICES_API bool has( ::fwData::Object::sptr obj , const std::string &srvType) const;
 
@@ -181,7 +181,7 @@ public:
 
      /**
      * @brief Move service (service) to object objDst in the m_container
-     * @author  IRCAD (Research and Development Team).
+     * 
      */
     FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
 

@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action moves the image slice on chosen landmark.
- * @class   FocusLandmark.
- * @author  IRCAD (Research and Development Team).
+ * @class   FocusLandmark
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API FocusLandmark : public ::fwGui::IActionSrv

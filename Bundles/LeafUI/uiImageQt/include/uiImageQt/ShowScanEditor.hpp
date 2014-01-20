@@ -23,8 +23,8 @@ namespace uiImage
 
 /**
  * @brief   This editor service represent a button to show/hide scan in a generic scene.
- * @class   ShowScanEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowScanEditor
+ * 
  * @date    2010.
  */
 class UIIMAGEQT_CLASS_API ShowScanEditor : public QObject, public ::gui::editor::IEditor

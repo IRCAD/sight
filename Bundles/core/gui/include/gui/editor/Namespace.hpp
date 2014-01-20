@@ -14,7 +14,7 @@ namespace gui
 /**
  * @brief       The namespace gui::editor contains basic services managing editor.
  * @namespace   gui::editor
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

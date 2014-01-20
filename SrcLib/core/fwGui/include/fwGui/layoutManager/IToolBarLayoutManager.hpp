@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IToolBarLayoutManager.hpp
+ * @file fwGui/layoutManager/IToolBarLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a toolbar.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -32,9 +32,7 @@ namespace layoutManager
 
 /**
  * @brief   Defines the toolBar layout manager for IHM.
- * @class   IToolBarLayoutManager.
- * @author  IRCAD (Research and Development Team).
- * @date    2009-2010.
+ * @class   IToolBarLayoutManager
  *
  */
 class FWGUI_CLASS_API IToolBarLayoutManager : public ::fwGui::GuiBaseObject

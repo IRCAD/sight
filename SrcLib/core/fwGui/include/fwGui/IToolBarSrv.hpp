@@ -19,8 +19,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing the toolBar.
- * @class   IToolBarSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IToolBarSrv
+ * 
  * @date    2009-2010.
  *
  */

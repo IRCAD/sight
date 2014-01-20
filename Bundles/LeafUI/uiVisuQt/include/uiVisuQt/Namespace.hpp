@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiVisu supplies a service to take a snapshot of current scene. The graphic part was done with Qt
  * @namespace   uiVisu
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

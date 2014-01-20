@@ -20,7 +20,7 @@ namespace action
 
 /**
  * @brief   This action allows to load a new SeriesDB and merge it with the current SeriesDB
- * @class   SSeriesDBMerger.
+ * @class   SSeriesDBMerger
  * @date    2013.
  *
  * The available reader can be configured

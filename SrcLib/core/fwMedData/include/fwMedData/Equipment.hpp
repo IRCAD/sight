@@ -23,7 +23,7 @@ namespace fwMedData
  * @class Equipment
  * Holds equipment information
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class FWMEDDATA_CLASS_API Equipment : public ::fwData::Object
 {

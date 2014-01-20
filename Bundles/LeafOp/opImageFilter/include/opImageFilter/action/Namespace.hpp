@@ -11,8 +11,8 @@ namespace opImageFilter
 {
 /**
  * @brief       The namespace opImageFilter::action contains several operators on image .
- * @namespace   opImageFilter::action.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   opImageFilter::action
+ * 
  * @date        2009-2010.
  *
  */

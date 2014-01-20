@@ -19,9 +19,9 @@ namespace wrapper
 {
 
 /**
- * @class  GraphWrapperSrv.
+ * @class  GraphWrapperSrv
  * @brief  Convert generic message by specific message from Graph
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2007-2009.
  */

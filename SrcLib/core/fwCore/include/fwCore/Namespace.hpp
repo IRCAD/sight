@@ -10,7 +10,7 @@
 /**
  * @brief       This namespace fwCore provides common foundations for FW4SPL.
  * @namespace   fwCore
- * @author      IRCAD (Research and Development Team)
+ * 
  * @date        2009-2010
  *
  */

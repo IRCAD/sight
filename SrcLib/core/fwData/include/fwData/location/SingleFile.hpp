@@ -24,7 +24,7 @@ namespace location
 /**
  * @class SingleFile
  * @brief This class defines a single file %location.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API SingleFile  : public ILocation
@@ -73,7 +73,7 @@ protected :
  *
  * Reader/Writer classes should only need to implement get/setLocation
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 template<typename RW> // reader or writer class should only need to implement get/setLocation

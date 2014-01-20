@@ -22,7 +22,7 @@ namespace fwData
  * @class   PointList
  * @brief   This class defines a list of points
  * @see     ::fwData::Point
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API PointList : public Object

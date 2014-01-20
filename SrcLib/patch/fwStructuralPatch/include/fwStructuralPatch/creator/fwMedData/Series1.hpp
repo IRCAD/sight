@@ -35,7 +35,7 @@ public:
     FWSTRUCTURALPATCH_API Series1( const Series1 &cpy );
 
     /**
-     * @briefCreates the specified object.
+     * @brief Creates the specified object.
      *
      * Calls creators for 'patient', 'study' and 'equipment' attributes and sets remaining attributes.
      */

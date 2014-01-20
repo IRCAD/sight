@@ -26,7 +26,7 @@ namespace fwData
  *
  * A transfer function is composed of some points which have a color and a value.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 

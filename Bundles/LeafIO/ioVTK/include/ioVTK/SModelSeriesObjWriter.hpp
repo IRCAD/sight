@@ -27,7 +27,7 @@ namespace ioVTK
 
 /**
  * @brief   Model series .obj writer service.
- * @class   SModelSeriesObjWriter.
+ * @class   SModelSeriesObjWriter
  *
  * Service writing a model series as .obj files using the fwVtkIO lib.
  */

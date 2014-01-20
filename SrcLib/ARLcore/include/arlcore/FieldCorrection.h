@@ -19,7 +19,6 @@
 namespace arlCore
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    08/2008
      * @brief   Correction d'un champs de vecteurs
      */

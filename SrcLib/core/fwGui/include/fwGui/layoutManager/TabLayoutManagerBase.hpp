@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/TabLayoutManagerBase.hpp
+ * @file fwGui/layoutManager/TabLayoutManagerBase.hpp
  * @brief This file defines the interface of the class for managing a tab layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -30,8 +30,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for cardinal layout manager.
- * @class   TabLayoutManagerBase.
- * @author  IRCAD (Research and Development Team).
+ * @class   TabLayoutManagerBase
+ * 
  * @date    2009-2010.
  *
  */

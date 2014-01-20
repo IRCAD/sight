@@ -20,8 +20,8 @@ namespace dialog
  * @brief   Defines the generic progress dialog for IHM.
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
  * The specific implementation are in fwWX and fwQT libraries
- * @class   ProgressDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   ProgressDialog
+ * 
  * @date    2009-2010.
  *
  */

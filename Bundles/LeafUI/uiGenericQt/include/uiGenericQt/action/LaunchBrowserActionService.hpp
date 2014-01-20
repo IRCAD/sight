@@ -21,8 +21,8 @@ namespace action
 
 /**
  * @brief   This action launch a browser on the url given in configuration.
- * @class   LaunchBrowserActionService.
- * @author  IRCAD (Research and Development Team).
+ * @class   LaunchBrowserActionService
+ * 
  * @date    2010.
  */
 class UIGENERICQT_CLASS_API LaunchBrowserActionService : public ::fwGui::IActionSrv

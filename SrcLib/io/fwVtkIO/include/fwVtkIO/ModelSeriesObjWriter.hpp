@@ -30,7 +30,7 @@ namespace fwVtkIO
 
 /**
  * @brief   Write a ::fwData::Reconstruction.
- * @class   ModelSeriesObjWriter.
+ * @class   ModelSeriesObjWriter
  *
  * Write a ::fwData::Reconstruction as .obj file using the VTK lib and the obj format.
  */

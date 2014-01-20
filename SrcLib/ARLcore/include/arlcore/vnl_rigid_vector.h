@@ -19,7 +19,6 @@ namespace arlCore
     {
     /**
      * @class   vnl_rigid_vector
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Rigid transformation vector
      * Vector representation, useful for optimization

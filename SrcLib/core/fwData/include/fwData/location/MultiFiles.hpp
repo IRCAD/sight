@@ -21,7 +21,7 @@ namespace location
 /**
  * @class MultiFiles
  * @brief This class defines a multi files location.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API MultiFiles  : public ILocation
@@ -57,7 +57,7 @@ protected :
  *
  * Reader/Writer classes should only need to implement get/setLocation
  *
- * @author   IRCAD (Research and Development Team).
+ * 
  * @date 2007-2009.
  */
 template<class RW> // reader or writer class should only need to implement get/setLocation

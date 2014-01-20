@@ -23,7 +23,7 @@ namespace utils
  * @brief   Defines a generic template executable factory registrar class.
  * @struct  GenericExecutableFactoryRegistrar
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 template< typename E >
 struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar

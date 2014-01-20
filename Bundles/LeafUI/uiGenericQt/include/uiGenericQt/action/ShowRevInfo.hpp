@@ -27,8 +27,8 @@ namespace action
 
 /**
  * @brief   This action show the revision info for bundle and lib.
- * @class   ShowRevInfo.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowRevInfo
+ * 
  * @date    2011.
  */
 class UIGENERICQT_CLASS_API ShowRevInfo : public QObject, public ::fwGui::IActionSrv

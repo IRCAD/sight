@@ -90,6 +90,10 @@ void ImageSlice::doStart() throw(fwTools::Failed)
     this->addToRenderer(m_imageActor);
     this->addToRenderer(m_planeOutlineActor);
     this->addToPicker(m_imageActor);
+
+    m_connection = this->getCtrlImage()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +113,12 @@ void ImageSlice::doStop() throw(fwTools::Failed)
 
 void ImageSlice::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    if (!m_connection.expired())
+    {
+        m_connection.disconnect();
+    }
+    m_connection = this->getCtrlImage()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
     this->doUpdate();
 }
 
@@ -141,14 +150,6 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getCtrlImage();
 
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-
-    if (!m_connection.expired())
-    {
-        m_connection.disconnect();
-    }
-    m_connection = image->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                    this->slot(::fwServices::IService::s_RECEIVE_SLOT));
-
     if (imageIsValid)
     {
         this->buildPipeline();
@@ -170,7 +171,16 @@ void ImageSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
          || msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS )
          )
     {
-        doUpdate();
+        if (m_ctrlImage.expired() || m_ctrlImage.lock() != this->getCtrlImage())
+        {
+            if (!m_connection.expired())
+            {
+                m_connection.disconnect();
+            }
+            m_connection = m_ctrlImage.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        }
+        this->doUpdate();
     }
 
     if (imageIsValid)

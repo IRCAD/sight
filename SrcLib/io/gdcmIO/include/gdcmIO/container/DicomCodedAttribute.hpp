@@ -23,7 +23,7 @@ namespace container
  *
  * @see     DICOM PS 3.3 Table 8.8-1
  *
- * @class   DicomCodedAttribute.
+ * @class   DicomCodedAttribute
  */
 struct DicomCodedAttribute
 {

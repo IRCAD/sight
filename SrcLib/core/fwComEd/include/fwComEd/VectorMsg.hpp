@@ -19,7 +19,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for Vector : store modification information
  * @class   VectorMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2005-2009.
  * @see     ::fwServices::ObjectMsg
  */

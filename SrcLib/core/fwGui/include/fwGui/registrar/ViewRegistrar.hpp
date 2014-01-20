@@ -23,8 +23,8 @@ namespace registrar
 
 /**
  * @brief   Defines the generic view manager for IHM.
- * @class   ViewRegistrar.
- * @author  IRCAD (Research and Development Team).
+ * @class   ViewRegistrar
+ * 
  * @date    2009-2010.
  *
  */

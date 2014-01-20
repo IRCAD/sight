@@ -21,9 +21,9 @@ namespace fwData
 
 
 /**
- * @class  ObjectLock.
+ * @class  ObjectLock
  * @brief  A simple helper to lock specific object, manages : Image, Mesh and Array.
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2007-2012.
  */
 class FWDATA_CLASS_API ObjectLock

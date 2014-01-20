@@ -12,7 +12,7 @@ namespace fwServices
 /**
  * @brief       The namespace fwServices::op contains several methods for managing services to object
  * @namespace   fwServices::op
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

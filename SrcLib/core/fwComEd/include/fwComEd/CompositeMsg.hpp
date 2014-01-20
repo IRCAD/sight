@@ -19,7 +19,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for Composite : store modification information
  * @class   CompositeMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2005-2009.
  * @see     ::fwServices::ObjectMsg
  */

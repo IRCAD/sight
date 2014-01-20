@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for TriangularMesh : store modification information
  * @class   TriangularMeshMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009.
  * @see     ::fwServices::ObjectMsg
  */

@@ -30,8 +30,8 @@ namespace dialog
 {
 /**
  * @brief   This class allows us to show a pulse progress bar.
- * @class   PulseProgressDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   PulseProgressDialog
+ * 
  * @date    2009.
  */
 class FWGUIQT_CLASS_API PulseProgressDialog : public ::fwGui::dialog::IPulseProgressDialog

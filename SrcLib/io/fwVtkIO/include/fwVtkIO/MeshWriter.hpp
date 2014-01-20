@@ -23,8 +23,8 @@ namespace fwVtkIO
 
 /**
  * @brief   Write a mesh.
- * @class   MeshWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   MeshWriter
+ * 
  * @date    2011.
  *
  * Write a VTK Mesh using the VTK lib

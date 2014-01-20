@@ -26,7 +26,7 @@ namespace fwThread
  *
  * Timer's function must be set before starting the timer.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2012.
  */
 class FWTHREAD_CLASS_API Timer : public ::fwCore::BaseObject

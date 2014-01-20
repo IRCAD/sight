@@ -27,7 +27,7 @@ class Series;
  * @class SeriesDB
  * Holds series data
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWMEDDATA_CLASS_API SeriesDB : public ::fwData::Object
 {

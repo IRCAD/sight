@@ -18,10 +18,7 @@ namespace aspect
 
 /**
  * @brief   Defines the default menu for standard application
- * @class   DefaultMenuSrv.
- * @author  IRCAD (Research and Development Team)
-
- * @date    2009.
+ * @class   DefaultMenuSrv
  */
 class GUI_CLASS_API DefaultMenuSrv : public ::fwGui::IMenuSrv
 {

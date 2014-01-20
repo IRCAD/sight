@@ -176,7 +176,7 @@ SPTR(::fwThread::Worker) WorkerWxInstanciator::getWorker()
  * @class TimerWx
  * @brief Private Timer implementation using Wx.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2012.
  */
 class TimerWx : public ::fwThread::Timer

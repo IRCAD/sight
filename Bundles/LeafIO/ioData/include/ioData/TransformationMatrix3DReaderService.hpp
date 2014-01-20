@@ -17,8 +17,8 @@ namespace ioData
 {
 /**
  * @brief   Transformation matrix 3D reader service.
- * @class   TransformationMatrix3DReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransformationMatrix3DReaderService
+ * 
  * @date    2009.
  *
  * Service reading a TransformationMatrix3D object.

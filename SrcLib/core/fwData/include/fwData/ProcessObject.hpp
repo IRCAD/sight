@@ -23,7 +23,7 @@ namespace fwData
 /**
  * @class   ProcessObject
  * @brief   Provides the notion of Process Object: object having inputs and outputs
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API ProcessObject : public Object

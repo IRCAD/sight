@@ -25,10 +25,8 @@ namespace tuto04
 {
 
 /**
- * @brief   Service reads  a vtk image
- * @class   ImageReaderService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @brief   This service reads a vtk image.
+ * @class   ImageReaderService
  */
 class DEVFORUM_CLASS_API ImageReaderService : public ::devForum::tuto03::ImageReaderService
 {

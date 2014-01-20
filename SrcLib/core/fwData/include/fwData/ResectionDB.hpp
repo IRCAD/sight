@@ -22,7 +22,7 @@ namespace fwData
  * @brief   This class defines a resection container.
  *
  * @see     ::fwData::Resection
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API ResectionDB : public Object

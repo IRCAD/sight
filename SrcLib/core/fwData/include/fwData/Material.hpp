@@ -21,7 +21,7 @@ namespace fwData
  * @brief   This class defines a material. A material is represented by an ambient color and a diffuse color
  * @see     ::fwData::Color
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 

@@ -27,7 +27,7 @@ namespace fwData
  * If the array own his buffer, it will perform the allocation, reallocation,
  * destruction of the buffer. Else, this class will provide a array "view" of the
  * buffer
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class FWDATA_CLASS_API Array : public ::fwData::Object

@@ -21,8 +21,8 @@ namespace registrar
 
 /**
  * @brief   Defines the menuBar registrar for IHM.
- * @class   MenuBarRegistrar.
- * @author  IRCAD (Research and Development Team).
+ * @class   MenuBarRegistrar
+ * 
  * @date    2009-2010.
  *
  */

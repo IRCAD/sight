@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for Spline : store modification information
  * @class   SplineMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */

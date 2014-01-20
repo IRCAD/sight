@@ -19,7 +19,7 @@ namespace fwDataTools
 
 /**
  * @brief   This class contains helper to generate and compare TransferFunction.
- * @class   TransferFunction.
+ * @class   TransferFunction
  */
 class TransferFunction
 {

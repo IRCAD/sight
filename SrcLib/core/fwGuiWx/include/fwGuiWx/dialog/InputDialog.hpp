@@ -20,8 +20,8 @@ namespace dialog
 {
 /**
  * @brief   Defines an input dialog for IHM on WxWidget.
- * @class   InputDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   InputDialog
+ * 
  * @date    2009-2010.
  *
  */
@@ -36,12 +36,12 @@ public:
 
     /** @brief Constructor. Do nothing.\n
      * Example of use: \n
-     * @verbatinm
-          ::fwGui::dialog::InputDialog inputDlg; \n
-          inputDlg.setTitle("Identification dialog"); \n
-          inputDlg.setMessage("Enter Pin Code: "); \n
-          inputDlg.setInput ("<Enter your code here>"); \n
-          std::string inputText = inputDlg.getInput(); \n
+     * @verbatim
+          ::fwGui::dialog::InputDialog inputDlg;
+          inputDlg.setTitle("Identification dialog");
+          inputDlg.setMessage("Enter Pin Code: ");
+          inputDlg.setInput ("<Enter your code here>");
+          std::string inputText = inputDlg.getInput();
      @endverbatim
      */
 

@@ -22,7 +22,7 @@ namespace fwData
  * @class   Plane
  * @brief   This class defines a plane defined by tree points.
  * @see     ::fwData::Point
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Plane : public Object

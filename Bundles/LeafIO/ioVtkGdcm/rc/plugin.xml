@@ -16,7 +16,7 @@
         <object>::fwMedData::SeriesDB</object>
         <desc>Series DB Lazy Reader (VTK/gdcm)</desc>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioVtkGdcm::SImageSeriesWriter</service>

@@ -17,9 +17,9 @@ namespace ctrlSelection
 
 
 /**
- * @class  BookmarkSrv.
+ * @class  BookmarkSrv
  * @brief  This service bookmark its object with the name given in configuration.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2011.
  */

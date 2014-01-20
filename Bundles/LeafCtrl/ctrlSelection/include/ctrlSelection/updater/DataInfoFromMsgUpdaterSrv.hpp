@@ -20,7 +20,7 @@ namespace updater
  * @class   DataInfoFromMsgUpdaterSrv
  * @brief   Updates the composite related to this service according to the data stored (dataInfo) in the event :
  * @warning datainfo MUST be always provided (but can be null), dataInfo MUST have the same type
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date    2009-2010.
  */

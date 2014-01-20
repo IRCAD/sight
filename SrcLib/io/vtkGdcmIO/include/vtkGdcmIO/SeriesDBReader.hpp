@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKGDCMIO_SERIESDBREADER_HPP_
-#define _VTKGDCMIO_SERIESDBREADER_HPP_
+#ifndef __VTKGDCMIO_SERIESDBREADER_HPP__
+#define __VTKGDCMIO_SERIESDBREADER_HPP__
 
 
 #include <fwTools/ProgressAdviser.hpp>
@@ -75,4 +75,4 @@ private :
 
 } // namespace vtkGdcmIO
 
-#endif /*_VTKGDCMIO_SERIESDBREADER_HPP_*/
+#endif /*__VTKGDCMIO_SERIESDBREADER_HPP__*/

@@ -20,8 +20,8 @@ namespace view
 
 /**
  * @brief   Defines the generic layout for application.
- * @class   DefaultView.
- * @author  IRCAD (Research and Development Team)
+ * @class   DefaultView
+ * 
 
  * @date    2009-2010.
  */

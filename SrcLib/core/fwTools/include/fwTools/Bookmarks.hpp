@@ -25,7 +25,7 @@ class Object;
 /**
  * @brief   Allows to add a bookmark to an object, the bookmark name is unique (in time), an object can have several bookmarks
  * @class   Bookmarks
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  * @note    expired object do not erase its bookmarks
  **/

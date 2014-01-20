@@ -27,7 +27,7 @@ namespace fwServices
  * added to the object (see ::fwTools::Object). The New(::fwRuntime::ConfigurationElement::sptr ) method on the related child is invoked, therefore allowing to build
  * tree like composite object which services.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 {

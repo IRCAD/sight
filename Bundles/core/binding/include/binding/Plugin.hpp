@@ -17,9 +17,7 @@ namespace binding
 {
 /**
 * @brief   This class is started when the bundles is loaded.
-* @class   Plugin.
-* @author  IRCAD (Research and Development Team).
-* @date    2010.
+* @class   Plugin
 */
 
 class BINDING_CLASS_API Plugin : public ::fwRuntime::Plugin

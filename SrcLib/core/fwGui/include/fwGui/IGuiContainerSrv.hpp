@@ -22,8 +22,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing the layout.
- * @class   IGuiContainerSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IGuiContainerSrv
+ * 
  * @date    2009-2010.
  *
  */

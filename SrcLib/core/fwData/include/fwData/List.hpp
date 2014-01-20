@@ -27,7 +27,7 @@ namespace fwData
  *
  * List contains a list of ::fwData::Object.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 

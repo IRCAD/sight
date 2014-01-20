@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKGDCMIO_SERIESDBLAZYREADER_HPP_
-#define _VTKGDCMIO_SERIESDBLAZYREADER_HPP_
+#ifndef __VTKGDCMIO_SERIESDBLAZYREADER_HPP__
+#define __VTKGDCMIO_SERIESDBLAZYREADER_HPP__
 
 #include <gdcmScanner.h>
 
@@ -116,4 +116,4 @@ private :
 
 } // namespace vtkGdcmIO
 
-#endif // _VTKGDCMIO_SERIESDBLAZYREADER_HPP_
+#endif // __VTKGDCMIO_SERIESDBLAZYREADER_HPP__

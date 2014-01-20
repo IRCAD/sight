@@ -22,7 +22,7 @@ namespace fwData
 /**
  * @class   GenericFieldBase
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009-2010.
  */
 class FWDATA_CLASS_API GenericFieldBase : public Object

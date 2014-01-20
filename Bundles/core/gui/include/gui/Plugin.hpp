@@ -16,9 +16,7 @@ namespace gui
 
 /**
  * @brief   This class is called when the gui bundle is loaded.
- * @class   Plugin.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   Plugin
  */
 
 class GUI_CLASS_API Plugin : public ::fwRuntime::Plugin

@@ -18,7 +18,7 @@ namespace visuVTKAdaptor
  * @brief   Do a reset camera.
  * @class   ResetCamera
  * @note    The priority  of the comChannel of this Adaptor is very low (0.1). The update of the GenericScene must be done before this reset.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  */
 class VISUVTKADAPTOR_CLASS_API ResetCamera: public ::fwRenderVTK::IVtkAdaptorService

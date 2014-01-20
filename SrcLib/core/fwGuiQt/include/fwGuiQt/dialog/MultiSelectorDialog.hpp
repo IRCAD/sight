@@ -26,8 +26,8 @@ namespace dialog
 
 /**
  * @brief   MultiSelectorDialog allowing the choice of an element among severals (_selections)
- * @class   MultiSelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   MultiSelectorDialog
+ * 
  * @date    2009.
  */
 

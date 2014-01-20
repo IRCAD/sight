@@ -26,7 +26,7 @@ namespace fwRuntime
  * @brief   Implements the base class for all element managed by a bundle.
  * @struct  BundleElement
  * @date    2006-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct BundleElement
 {

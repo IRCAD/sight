@@ -27,8 +27,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the frame manager.
- * @class   FrameLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   FrameLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

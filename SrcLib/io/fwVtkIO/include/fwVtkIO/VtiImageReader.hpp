@@ -21,8 +21,8 @@ namespace fwVtkIO
 
 /**
  * @brief   Read an image.
- * @class   VtiImageReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   VtiImageReader
+ * 
  * @date    2009.
  *
  * Read a VTK Image using the VTK lib

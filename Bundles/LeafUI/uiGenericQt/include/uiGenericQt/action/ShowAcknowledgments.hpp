@@ -23,8 +23,8 @@ namespace action
 
 /**
  * @brief   This action show the acknowlegments frame.
- * @class   ShowAcknowledgments.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowAcknowledgments
+ * 
  * @date    2010.
  */
 class UIGENERICQT_CLASS_API ShowAcknowledgments : public QObject, public ::fwGui::IActionSrv

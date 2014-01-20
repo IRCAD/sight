@@ -23,7 +23,7 @@ namespace registry
 
 /**
  * @class ServiceConfigInfo
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWSERVICES_CLASS_API ServiceConfigInfo : public ::fwCore::BaseObject
 {
@@ -47,7 +47,7 @@ public :
  * @brief This class allows to register all the service configuration which has the point extension
  *        "::fwServices::registry::ServiceConfig".
  * @class ServiceConfig
- * @author  IRCAD (Research and Development Team).
+ * 
  *
  *
  * Registry config like :

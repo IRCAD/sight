@@ -12,7 +12,7 @@ namespace fwGui
 /**
  * @brief       The namespace fwGui::builder contains the base interface for GUI elements builder.
  * @namespace   fwGui::builder
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

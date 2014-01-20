@@ -42,7 +42,7 @@ namespace io
  * @brief   Reads plugin set profiles from xml files.
  * @struct  ProfileReader
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct ProfileReader
 {

@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace fwZip provides IO for compress/uncompress .zip files using zlib .
  * @namespace   fwZip
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

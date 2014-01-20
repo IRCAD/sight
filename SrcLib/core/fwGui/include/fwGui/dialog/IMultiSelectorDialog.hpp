@@ -22,8 +22,8 @@ namespace dialog
 
 /**
  * @brief   IMultiSelectorDialog allows the choice of some elements among several (_selections)
- * @class   IMultiSelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMultiSelectorDialog
+ * 
  * @date    2009-2010.
  */
 class FWGUI_CLASS_API IMultiSelectorDialog : public ::fwGui::GuiBaseObject

@@ -13,7 +13,7 @@ namespace fwData
 /**
  * @brief       This namespace fwData::mt contains helper to lock object for multi-threading.
  * @namespace   fwData::mt
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2012.
  *
  */

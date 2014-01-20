@@ -30,7 +30,7 @@ namespace fwTools
 /**
  * @brief   Class describing an elementary C++ type aka unsigned char, signed char, .... int, float, double
  * @class   Type
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  **/

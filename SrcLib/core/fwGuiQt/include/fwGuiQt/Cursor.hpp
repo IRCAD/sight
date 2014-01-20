@@ -18,8 +18,8 @@ namespace fwGuiQt
 
 /**
  * @brief   Defines the generic cursor for IHM.
- * @class   Cursor.
- * @author  IRCAD (Research and Development Team).
+ * @class   Cursor
+ * 
  * @date    2009-2010.
  *
  */

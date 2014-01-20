@@ -23,8 +23,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the tool bar layout manager for IHM.
- * @class   ToolBarLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   ToolBarLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

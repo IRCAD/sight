@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiPython contains the basic UI for fwPython
  * @namespace   uiPython
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

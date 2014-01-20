@@ -24,8 +24,8 @@ namespace fwVtkIO
 
 /**
  * @brief   Read a SeriesDB.
- * @class   SeriesDBReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   SeriesDBReader
+ * 
  * @date    2011.
  *
  * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesDB.

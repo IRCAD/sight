@@ -7,7 +7,7 @@
 /**
  * @brief       All necessary for camp binding with simple types.
  * @namespace   fwCamp
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2012
  */
 namespace fwCamp

@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/CardinalLayoutManagerBase.hpp
+ * @file fwGui/layoutManager/CardinalLayoutManagerBase.hpp
  * @brief This file defines the interface class for managing a cardinal layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -31,8 +31,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for cardinal layout manager.
- * @class   CardinalLayoutManagerBase.
- * @author  IRCAD (Research and Development Team).
+ * @class   CardinalLayoutManagerBase
+ * 
  * @date    2009-2010.
  *
  */

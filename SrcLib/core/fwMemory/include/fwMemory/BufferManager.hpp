@@ -100,7 +100,7 @@ public:
     /**
      * @brief Hook called when a new BufferObject is created
      *
-     * @param buffer BufferObject's buffer
+     * @param bufferPtr BufferObject's buffer pointer.
      */
     FWMEMORY_API virtual ::boost::shared_future<void> registerBuffer(BufferPtrType bufferPtr);
 
@@ -108,14 +108,14 @@ public:
     /**
      * @brief Hook called when a BufferObject is destroyed
      *
-     * @param buffer BufferObject's buffer
+     * @param bufferPtr BufferObject's buffer pointer.
      */
     FWMEMORY_API virtual ::boost::shared_future<void> unregisterBuffer(BufferPtrType bufferPtr);
 
     /**
      * @brief Hook called when an allocation is requested from a BufferObject
      *
-     * @param buffer BufferObject's buffer
+     * @param bufferPtr BufferObject's buffer pointer
      * @param size requested size for allocation
      * @param policy BufferObject's allocation policy
      */
@@ -137,7 +137,7 @@ public:
     /**
      * @brief Hook called when a reallocation is requested from a BufferObject
      *
-     * @param buffer BufferObject's buffer
+     * @param bufferPtr BufferObject's buffer pointer
      * @param newSize requested size for reallocation
      */
     FWMEMORY_API virtual ::boost::shared_future<void> reallocateBuffer(BufferPtrType bufferPtr, SizeType newSize) ;
@@ -146,7 +146,7 @@ public:
     /**
      * @brief Hook called when a destruction is requested from a BufferObject
      *
-     * @param buffer BufferObject's buffer
+     * @param bufferPtr BufferObject's buffer pointer
      */
     FWMEMORY_API virtual ::boost::shared_future<void> destroyBuffer(BufferPtrType bufferPtr) ;
 
@@ -163,7 +163,7 @@ public:
     /**
      * @brief Hook called when a BufferObject is locked
      *
-     * @param buffer BufferObject's buffer
+     * @param bufferPtr BufferObject's buffer pointer
      *
      * @return false if the BufferManager supported the action
      */
@@ -173,7 +173,7 @@ public:
     /**
      * @brief Hook called when a BufferObject lock is released
      *
-     * @param buffer BufferObject's buffer
+     * @param bufferPtr BufferObject's buffer pointer
      *
      * @return false if the BufferManager supported the action
      */
@@ -191,12 +191,12 @@ public:
      *
      * Keeps up to date buffer's information
      *
-     * @param buffer Buffer to dump/restore
+     * @param bufferPtr Buffer to dump/restore
      *
      * @return true on success
      * @{ */
-    FWMEMORY_API ::boost::shared_future<bool> dumpBuffer(ConstBufferPtrType  buffer);
-    FWMEMORY_API ::boost::shared_future<bool> restoreBuffer(ConstBufferPtrType  buffer);
+    FWMEMORY_API ::boost::shared_future<bool> dumpBuffer(ConstBufferPtrType  bufferPtr);
+    FWMEMORY_API ::boost::shared_future<bool> restoreBuffer(ConstBufferPtrType  bufferPtr);
     /**  @} */
 
     /**

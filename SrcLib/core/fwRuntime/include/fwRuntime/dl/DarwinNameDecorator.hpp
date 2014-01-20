@@ -24,7 +24,7 @@ namespace dl
  * @brief   Implements a posix specific name decorator.
  * @struct  DarwinNameDecorator
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct DarwinNameDecorator : public NameDecorator
 {

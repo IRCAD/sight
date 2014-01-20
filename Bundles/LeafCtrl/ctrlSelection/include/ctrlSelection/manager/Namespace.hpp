@@ -12,7 +12,7 @@ namespace ctrlSelection
 /**
  * @brief      The namespace ctrlSelection::manager contains the manager services.
  * @namespace  ctrlSelection::manager
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
  *
  */

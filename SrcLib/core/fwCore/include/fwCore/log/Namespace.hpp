@@ -12,7 +12,7 @@ namespace fwCore
 /**
  * @brief       This namespace fwCore::log provides common foundations for log in FW4SPL.
  * @namespace   fwCore::log
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2012.
  */
 namespace log

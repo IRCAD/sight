@@ -22,8 +22,8 @@ namespace editor
 {
 /**
  * @brief   Distance service is represented by a button. It allows to show distances in a generic scene.
- * @class   Distance.
- * @author  IRCAD (Research and Development Team).
+ * @class   Distance
+ * 
  * @date    2010.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject, public ::gui::editor::IEditor

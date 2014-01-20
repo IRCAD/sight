@@ -15,13 +15,7 @@
 
 #include "opSofa/SofaThread.hpp"
 
-/**
- * @brief Constructor
- *
- * @param sofa : pointer to the SofaBusiness object
- * @param meshs : vector to the list of mesh
- * @param service : pointer to the SofaService object
- */
+
 SofaThread::SofaThread(SofaBusiness* sofa, std::vector< ::fwData::Mesh::sptr > *meshs, ::fwServices::IService::sptr service)
 {
     // Update attributs
@@ -38,12 +32,6 @@ SofaThread::SofaThread(SofaBusiness* sofa, std::vector< ::fwData::Mesh::sptr > *
     connect(this, SIGNAL(refreshVtkRequestSignal()), this, SLOT(refreshVtk()));
 }
 
-/**
- * @brief Containing the separated thread loop for the SOFA deformation processing.
- *
- * Each loop emits refreshVtkRequestSignal() which triggers the refreshVtk() method.
- * Launched by calling the public start() method.
- */
 void SofaThread::run()
 {
     stopRun = false;
@@ -78,9 +66,6 @@ void SofaThread::run()
     }
 }
 
-/**
- * @brief Sending the NEW_MESH to the vtkSimpleMesh RendererService to refresh the display
- */
 void SofaThread::refreshVtk()
 {
     mutex.lock();
@@ -97,20 +82,12 @@ void SofaThread::refreshVtk()
     mutex.unlock();
 }
 
-/**
- * @brief Stop the thread
- */
 void SofaThread::stop()
 {
     stopRun = true;
     this->wait(100);
 }
 
-/**
- * @brief Get stage of the thread
- *
- * @return true if the thread is running
- */
 bool SofaThread::isRunning()
 {
     return !stopRun;

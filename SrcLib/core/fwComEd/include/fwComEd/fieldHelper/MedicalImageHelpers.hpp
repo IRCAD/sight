@@ -40,7 +40,7 @@ template <class T> struct bitwise_or : std::binary_function <T,T,T>
 /**
  * @class   MedicalImageHelpers
  * @brief   This class contains helpers for medical image fields.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009.
  */
 class FWCOMED_CLASS_API MedicalImageHelpers

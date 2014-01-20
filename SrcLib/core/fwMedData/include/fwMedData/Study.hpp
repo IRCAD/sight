@@ -23,7 +23,7 @@ namespace fwMedData
  * @class Study
  * Holds study information
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class FWMEDDATA_CLASS_API Study : public ::fwData::Object
 {

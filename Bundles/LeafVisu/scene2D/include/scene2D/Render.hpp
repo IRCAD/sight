@@ -114,7 +114,7 @@ protected:
     </service>
     @endverbatim
     *
-    * - <scene x="-1100" y="-1.1" width="2500" height="1.2" /> : Set the scene coordinates
+    * - \<scene x="-1100" y="-1.1" width="2500" height="1.2" /\> : Set the scene coordinates
     *
     * \b x : mandatory : Set the x coordinate of the top left scene corner
     *
@@ -126,7 +126,7 @@ protected:
     *
     * \b antialiasing :  not mandatory : activate scene antialiasing if attribute's value set to 'true'
     *
-    * - <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /> : Set a viewport coordinates
+    * - \<viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /\> : Set a viewport coordinates
     *
     * \b id : mandatory : Set the viewport id
     *
@@ -138,7 +138,7 @@ protected:
     *
     * \b height : mandatory : Set the height of the viewport
     *
-    * - <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /> : Set an axis specifications
+    * - \<axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /\> : Set an axis specifications
     *
     * \b id : mandatory : Set the axis id
     *
@@ -148,7 +148,7 @@ protected:
     *
     * \b scaleType : mandatory : Set the axis scaleType
     *
-    * - <adaptor id="grid" class="::scene2D::adaptor::GridFromFloat" objectId="myData"> : Set an adaptor
+    * - \<adaptor id="grid" class="::scene2D::adaptor::GridFromFloat" objectId="myData"\> : Set an adaptor
     *
     * \b id : mandatory : Set the adaptor id
     *

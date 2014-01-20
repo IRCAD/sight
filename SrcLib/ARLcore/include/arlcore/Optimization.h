@@ -29,7 +29,6 @@
 namespace arlCore
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Mother Class for observation
      * @warning the observer provides informations on the optimisation only if it has
@@ -95,7 +94,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Computation of the best plane P that fits a 3D point cloud M_i
      * The class seeks P so that sum || dist(M_i , P) ||^2 is minimal
@@ -118,7 +116,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    04/2009
      * @brief   Optimization of ICP criterion
      */
@@ -134,7 +131,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    04/2009
      * @brief   Optimization of ICP criterion with Least Squares method
      */
@@ -151,7 +147,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2008
      * @brief   Computation of the best line L that fits a 3D point cloud
      * The class seeks L so that sum || dist(M_i , L) ||^2 is minimal
@@ -170,7 +165,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Being a point list P that lies on a sphere (circle), this class computes an estimation
      * of the sphere (circle) center C. The function that is minimized is:
@@ -193,7 +187,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    08/2008
      * @brief   Détermine T en minimisant la variation de d
      * Soit une pointe tenue par l'organe terminal et observée par des caméras stéréo
@@ -220,7 +213,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    03/2009
      * @brief   Base class for End effector->Chessboard (X) & Robot base->Video (Z) calibration
      * Soit une liste de cameras calibrees (cam)
@@ -252,7 +244,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    02/2009
      * @brief   Détermine X en minimisant l'erreur de reprojection
      * Soit une liste de cameras calibrees (cam)
@@ -280,7 +271,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    08/2009
      * @brief   OptimiseVideoRobotX with Least Squares method
      */
@@ -303,7 +293,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    02/2009
      * @brief   Détermine Z en minimisant l'erreur de reprojection
      * Soit une liste de cameras calibrees (cam)
@@ -331,7 +320,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    08/2009
      * @brief   OptimiseVideoRobotZ with Least Squares method
      */
@@ -354,7 +342,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    03/2009
      * @brief   Détermine X et Z en minimisant l'erreur de reprojection
      * Soit une liste de cameras calibrees (cam)
@@ -378,7 +365,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    03/2009
      * @brief   OptimiseVideoRobotXZ with Least Squares method
      */
@@ -397,7 +383,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   This class is used to perform a triangulation from N 2D visible points
      * in N video images. Of course, the cameras need to be calibrated in the same frame.
@@ -420,7 +405,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    12/2008
      * @brief   Solve Ax=xB equation by minimization of the reprojection
      */
@@ -447,7 +431,6 @@ namespace arlCore
     };*/
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    09/2008
      * @brief   AX=XB resolution by optimization of Dornaika method
      */
@@ -465,7 +448,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    09/2008
      * @brief   AX=XB resolution by optimization of Dornaika method
      */
@@ -485,7 +467,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    09/2008
      * @brief   Evaluation by polynomial method of a field of deformation
      */
@@ -506,7 +487,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   This class is used to perform a triangulation from N 2D visible points
      * in N video images. Of course, the cameras need to be calibrated in the same frame.
@@ -538,7 +518,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Given a set of lines that should intersect in a unique point, but
      * which are in reality very close, this class finds the closest point to
@@ -563,7 +542,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   This class perform a 3D/2D projective point registration called
      * EPPC (see. S. Nicolau, X. Pennec, L. Soler, N. Ayache, An accuracy
@@ -632,7 +610,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   EPPC cost function with Least Square method
      */
@@ -664,7 +641,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   ISPPC cost function
      * The context of use of this class is the same than for EPPC, but in that case
@@ -711,7 +687,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   ISPPC cost function with Least Square method
      */
@@ -739,7 +714,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   OSPPC cost function
      * The context of use of this class is the same than for EPPC, but in that case
@@ -781,7 +755,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   OSPPC cost function with Least Square method
      */
@@ -805,7 +778,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Optimization intrinsic parameters of a camera according to the
      * method of Z. Zhang. Flexible Camera Calibration by Viewing a Plane from
@@ -844,7 +816,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Optimization intrinsic parameters with Levenberg optimization
      * see Intrinsic_cost_function for more explanation
@@ -874,7 +845,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Optimization of extrinsic parameters of several cameras
      * This class optimize a criterion that allows to calibrate in a same
@@ -905,7 +875,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Optimization extrinsic parameters with Levenberg Marquart optimization
      * Note that the step variable in fgradf plays an important role in the convergence
@@ -933,7 +902,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Optimization of the Sylvester equation AX=XB. To understand what is solved
      * please refer to arlcore::vnl_rigid_matrix::solve_AXXB
@@ -970,7 +938,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Optimization of the Sylvester equation AX=XB. To understand what is solved
      * please refer to arlcore::vnl_rigid_matrix::solve_AXXB
@@ -1004,7 +971,6 @@ namespace arlCore
     };*/
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Optimization of the AXBZ = 0 equation
      * 4 Criterions
@@ -1040,7 +1006,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   The purpose of this class is to register 2 lists of matched
      * 3D points. It minimizes the following 3D/3D registration criterion:
@@ -1068,7 +1033,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   The purpose of this class is to register 2 lists of matched
      * 3D points. See register3D3DUncertainty_cost_function for all informations.
@@ -1092,7 +1056,6 @@ namespace arlCore
     };
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Compute the average of a rotation list using a geodesic norm on SO(3)
      * It minimizes sum_i ||R_i - R_average ||^2  where R_average is the unknown

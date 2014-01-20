@@ -17,8 +17,8 @@ namespace ioData
 {
 /**
  * @brief   Transformation matrix 3D writer service.
- * @class   TransformationMatrix3DWriterService.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransformationMatrix3DWriterService
+ * 
  * @date    2009.
  *
  * Service writing a TransformationMatrix3D object

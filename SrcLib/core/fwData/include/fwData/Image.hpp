@@ -34,7 +34,7 @@ namespace fwData
  *
  * An image contains a buffer and is defined by some parameters (size, spacing, pixel type, ...)
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Image : public Object

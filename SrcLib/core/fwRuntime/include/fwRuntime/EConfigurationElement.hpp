@@ -18,7 +18,7 @@ namespace fwRuntime
  * @brief   Editable configuration element : allow the self configuration element building, which reading XML structure provided by bundle descriptions
  * @class   EConfigurationElement
  * @date    2006-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWRUNTIME_CLASS_API EConfigurationElement : public ::fwRuntime::ConfigurationElement
 {

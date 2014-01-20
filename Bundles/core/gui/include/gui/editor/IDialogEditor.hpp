@@ -21,10 +21,7 @@ namespace editor
 
 /**
  * @brief   Defines the service interface managing the editor service which create their own container.
- * @class   IDialogEditor.
- * @author  IRCAD (Research and Development Team).
-
- * @date    2010.
+ * @class   IDialogEditor
  */
 
 class GUI_CLASS_API IDialogEditor : public ::fwServices::IService

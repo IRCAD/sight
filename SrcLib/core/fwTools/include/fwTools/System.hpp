@@ -19,7 +19,7 @@ namespace fwTools
 /**
  * @class   System
  * @brief Provide a system to get a Temporary folder which allow multi-user, multi-instance separation
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @todo  change "fwDumpFolder" to "localTemp"
  */

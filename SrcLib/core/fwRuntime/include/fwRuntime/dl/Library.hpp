@@ -33,7 +33,7 @@ namespace dl
  *
  * This class is only a bridge to a native module implementor.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 template< typename Implementor >
 struct LibraryBridge

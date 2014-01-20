@@ -37,9 +37,9 @@ public:
     /**
      * @brief Default constructor.
      *
-     * @param maxUndoLevelmaximum number of command that could be stored in the history
-     * @param maxUndoMemorymaximum number of byte that could be stored in the history (but the latest queued command is ignored by the memory usage counter. See below for more explanation)
-     * @param maxCommandMemorymaximum number of byte that could be used by a single command
+     * @param maxUndoLevel maximum number of command that could be stored in the history
+     * @param maxUndoMemory maximum number of byte that could be stored in the history (but the latest queued command is ignored by the memory usage counter. See below for more explanation)
+     * @param maxCommandMemory maximum number of byte that could be used by a single command
      *
      * If the size of a single command is greater than maxCommandMemory, then it would not be stored in the history.
      *
@@ -64,8 +64,8 @@ public:
     /**
      * @brief Execute the command and push it in the history.
      *
-     * @param cmdthe command
-     * @param executesets to true if queue must execute the given command, false if not
+     * @param cmd the command
+     * @param execute sets to true if queue must execute the given command, false if not
      *
      * @todo Remove use of size on list (OPT)
      */
@@ -89,16 +89,16 @@ public:
 
 
     /**
-     * @briefRetrieves the first undoable command.
+     * @brief Retrieves the first undoable command.
      *
-     * @returna shared pointer to the first undoable command, can be empty
+     * @return a shared pointer to the first undoable command, can be empty
      */
     FWCOMMAND_API ICommand::sptr getFirstUndoableCommand();
 
     /**
-     * @briefRetrieves the first redoable command.
+     * @brief Retrieves the first redoable command.
      *
-     * @returna shared pointer to the first undoable command, can be empty
+     * @return a shared pointer to the first undoable command, can be empty
      */
     FWCOMMAND_API ICommand::sptr getFirstRedoableCommand();
 
@@ -118,12 +118,12 @@ public:
     const ::boost::uint32_t  getMaxCommandMemory() const { return m_maxCommandMemory; }
 
     /**
-     * @briefReturns the number of commands that can be un-done.
+     * @brief Returns the number of commands that can be un-done.
      */
     FWCOMMAND_API const ::boost::uint32_t  getUndoSize();
 
     /**
-     * @briefReturns the number of commans that can be re-done.
+     * @brief Returns the number of commans that can be re-done.
      */
     FWCOMMAND_API const ::boost::uint32_t  getRedoSize();
 

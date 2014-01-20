@@ -19,8 +19,8 @@ namespace action
 
 /**
  * @brief   This action allows to export the PatientDB. Asks the user if he wants to anonymize the patient.
- * @class   ExportPatientDB.
- * @author  IRCAD (Research and Development Team).
+ * @class   ExportPatientDB
+ * 
  * @date    2010.
  *
  * The available writer can be configured

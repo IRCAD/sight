@@ -20,7 +20,7 @@ namespace fwData
 /**
  * @class   Color
  * @brief   This class defines color object.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 

@@ -16,7 +16,6 @@ namespace arlCore
     {
     /**
      * @class   Tracker
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   TODO commentaire ?? Tracker
      */

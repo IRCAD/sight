@@ -22,7 +22,7 @@ namespace helper
 
 /**
  * @brief   Defines an helper to modify field on a ::fwData::Object and create a message notifying this modification.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWCOMED_CLASS_API Field

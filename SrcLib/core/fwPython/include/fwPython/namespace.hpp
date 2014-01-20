@@ -10,7 +10,7 @@
 /**
  * @brief       fwPython provides common foundations for python in fw4spl.
  * @namespace   fwPython
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  */
 namespace fwPython

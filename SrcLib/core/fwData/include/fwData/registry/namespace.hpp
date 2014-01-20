@@ -14,7 +14,7 @@ namespace fwData
 /**
  * @brief       Contains fwData::registry details
  * @namespace   fwData::registry
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2012
  *
  */

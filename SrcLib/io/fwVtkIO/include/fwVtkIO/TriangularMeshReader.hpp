@@ -21,8 +21,8 @@ namespace fwVtkIO
 
 /**
  * @brief   Read a mesh.
- * @class   TriangularMeshReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshReader
+ * 
  * @date    2009.
  *
  * Read a VTK Mesh using the VTK lib

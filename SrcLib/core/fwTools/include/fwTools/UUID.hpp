@@ -20,8 +20,8 @@ namespace fwTools
 {
 /**
  * @brief   Management of UUID on objects.
- * @class   UUID.
- * @author  IRCAD (Research and Development Team).
+ * @class   UUID
+ * 
  * @date    2007-2009.
  *
  */

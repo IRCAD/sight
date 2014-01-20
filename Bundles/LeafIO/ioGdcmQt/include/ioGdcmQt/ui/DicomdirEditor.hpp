@@ -33,7 +33,7 @@ namespace ui
 /**
  * @class DicomdirEditor
  * @brief Display the  DICOMDIR files content with a tree widget and allows to select a reader to view the selected patient, study or serie.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class IOGDCMQT_CLASS_API DicomdirEditor : public QDialog

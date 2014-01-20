@@ -25,9 +25,7 @@ namespace ioVTK
 
 /**
  * @brief   Mesh reader service.
- * @class   TriangularMeshReaderService .
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   TriangularMeshReaderService
  *
  * Service reading a VTK mesh using the fwVtkIO lib.
  *

@@ -25,9 +25,7 @@ namespace ioVTK
 
 /**
  * @brief   Image reader service.
- * @class   ImageReaderService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   ImageReaderService
  *
  * Service reading a VTK Image using the fwVtkIO lib.
  *

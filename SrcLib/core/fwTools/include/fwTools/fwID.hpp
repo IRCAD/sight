@@ -24,7 +24,7 @@ class Object;
 /**
  * @brief   Defines ID for fwTools::Object. It is used to associate ID with object.
  * @class   fwID
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2012.
  */
 class FWTOOLS_CLASS_API fwID

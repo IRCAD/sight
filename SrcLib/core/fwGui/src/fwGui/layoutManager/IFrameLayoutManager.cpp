@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IFrameLayoutManager.cpp
+ * @file fwGui/layoutManager/IFrameLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a frame.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 

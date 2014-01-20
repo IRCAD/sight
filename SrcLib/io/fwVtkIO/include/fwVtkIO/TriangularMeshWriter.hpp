@@ -21,8 +21,8 @@ namespace fwVtkIO
 
 /**
  * @brief   Write a mesh.
- * @class   TriangularMeshWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshWriter
+ * 
  * @date    2009.
  *
  * Write a VTK Mesh using the VTK lib

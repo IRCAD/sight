@@ -16,8 +16,8 @@ namespace ioData
 {
 /**
  * @brief   Mesh writer service.
- * @class   MeshWriterService.
- * @author  IRCAD (Research and Development Team).
+ * @class   MeshWriterService
+ * 
  * @date    2011.
  *
  * Service writing a mesh object.

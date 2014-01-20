@@ -16,8 +16,8 @@ namespace container
 {
 /**
  * @brief   Defines the generic container for IHM.
- * @class   fwContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   fwContainer
+ * 
  * @date    2009-2010.
  *
  */

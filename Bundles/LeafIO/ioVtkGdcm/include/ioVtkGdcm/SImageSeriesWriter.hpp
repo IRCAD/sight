@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOVTKGDCM_SIMAGESERIESWRITER_HPP_
-#define _IOVTKGDCM_SIMAGESERIESWRITER_HPP_
+#ifndef __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
+#define __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
 
 #include <string>
 #include <boost/filesystem/path.hpp>
@@ -68,4 +68,4 @@ private :
 
 } // namespace ioVtkGdcm
 
-#endif //_IOVTKGDCM_SIMAGESERIESWRITER_HPP_
+#endif //__IOVTKGDCM_SIMAGESERIESWRITER_HPP__

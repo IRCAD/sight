@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiVisu contains action to modifies cross type and 3D camera orientation
  * @namespace   uiVisu
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

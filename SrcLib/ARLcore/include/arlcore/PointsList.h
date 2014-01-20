@@ -42,7 +42,6 @@ namespace arlCore
     {
     /**
      * @class   PointList
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Point list with same dimensions. Added point are copied in the container.
      * Point destruction are managed by PointList. This class has been created to manipulate

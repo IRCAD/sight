@@ -23,7 +23,7 @@ namespace fwMedData
  * @class Patient
  * Holds patient information
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class FWMEDDATA_CLASS_API Patient : public ::fwData::Object
 {

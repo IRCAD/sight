@@ -17,7 +17,7 @@ namespace fwZip
 
 /**
  * @brief   This interface defines functions to read a file in an archive.
- * @class   IReadArchive.
+ * @class   IReadArchive
  */
 class IReadArchive
 {

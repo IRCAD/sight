@@ -21,8 +21,8 @@ namespace fwVtkIO
 
 /**
  * @brief   Read a MetaImage.
- * @class   MetaImageReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   MetaImageReader
+ * 
  * @date    2011.
  *
  * Read a MetaImage using the VTK lib

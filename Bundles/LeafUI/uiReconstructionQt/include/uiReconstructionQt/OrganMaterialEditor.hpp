@@ -24,8 +24,8 @@ namespace uiReconstruction
 {
 /**
  * @brief   OrganMaterialEditor service.
- * @class   OrganMaterialEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   OrganMaterialEditor
+ * 
  * @date    2010.
  */
 class UIRECONSTRUCTIONQT_CLASS_API OrganMaterialEditor : public QObject, public ::gui::editor::IEditor

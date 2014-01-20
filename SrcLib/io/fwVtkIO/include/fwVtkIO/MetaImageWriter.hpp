@@ -21,8 +21,8 @@ namespace fwVtkIO
 
 /**
  * @brief   Write a MetaImage.
- * @class   MetaImageWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   MetaImageWriter
+ * 
  * @date    2011.
  *
  * Write a MetaImage using the VTK lib

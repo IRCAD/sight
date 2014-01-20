@@ -24,7 +24,7 @@ namespace helper
 /**
  * @class   Mesh
  * @brief   Helper to manage Mesh. Lock the mesh buffer before to modify it.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2012
  */
 class FWCOMED_CLASS_API Mesh

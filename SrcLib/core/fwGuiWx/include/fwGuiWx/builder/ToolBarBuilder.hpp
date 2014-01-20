@@ -23,8 +23,8 @@ namespace builder
 
 /**
  * @brief   Defines the generic layout manager for IHM.
- * @class   ToolBarBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   ToolBarBuilder
+ * 
  * @date    2009-2010.
  *
  */

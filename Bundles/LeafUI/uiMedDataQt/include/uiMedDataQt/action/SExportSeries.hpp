@@ -20,8 +20,8 @@ namespace action
 {
 /**
  * @brief   This action allows to export the series specified in config to the SeriesDB.
- * @class   SExportSeries.
- * @author  IRCAD (Research and Development Team).
+ * @class   SExportSeries
+ * 
  * @date    2013.
  * @note This action is not executable if the series already exists in the SeriesDB.
  */

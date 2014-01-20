@@ -19,9 +19,9 @@ namespace wrapper
 {
 
 /**
- * @class  ImageWrapperSrv.
+ * @class  ImageWrapperSrv
  * @brief  Convert generic message by specific message from Image
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2007-2009.
  */

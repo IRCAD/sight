@@ -18,7 +18,7 @@ namespace fwData
 /**
  * @class   StructureTraitsHelper
  * @brief   This class defines some helper for the structure traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-20011.
  */
 

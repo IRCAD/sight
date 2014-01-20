@@ -55,7 +55,7 @@ struct AppConfig
 /**
  * @class   DynamicView
  * @brief   This editor manages tabs. It receive message with NEW_CONFIGURATION_HELPER event containing the view config id.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  *
  * @note The ::activities::action::SActivityLauncher action sends message to be receive by the editor.

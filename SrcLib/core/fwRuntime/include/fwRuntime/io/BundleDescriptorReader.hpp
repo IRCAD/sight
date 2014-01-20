@@ -38,7 +38,7 @@ namespace io
 /**
  * @brief   Defines the bundle descriptor reader class.
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct BundleDescriptorReader
 {

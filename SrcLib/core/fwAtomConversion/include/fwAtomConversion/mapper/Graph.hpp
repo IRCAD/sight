@@ -50,7 +50,7 @@ public:
 
     /**
      * @brief Convert a ::fwAtoms::Object to a ::fwData::Object (which represent a ::fwData::Graph).
-     * @param object atom to convert
+     * @param atom atom to convert
      * @param cache  cache to register the atoms already converted, used when an atom is referenced multiple times.
      * @param uuidPolicy AtomVisitor policy
      */

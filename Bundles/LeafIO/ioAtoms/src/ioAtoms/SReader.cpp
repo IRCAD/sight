@@ -5,6 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/filesystem/path.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
 
@@ -12,7 +14,9 @@
 
 #include <fwAtomConversion/convert.hpp>
 
-#include <fwMemory/BufferManager.hpp>
+#include <fwAtomsFilter/IFilter.hpp>
+#include <fwAtomsFilter/factory/new.hpp>
+
 
 #include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
@@ -31,6 +35,7 @@
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/ReadZipArchive.hpp>
 
+#include <fwMemory/IPolicy.hpp>
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/policy/BarrierDump.hpp>
 #include <fwMemory/policy/NeverDump.hpp>
@@ -45,12 +50,20 @@ namespace ioAtoms
 
 fwServicesRegisterMacro( ::io::IReader , ::ioAtoms::SReader , ::fwData::Object );
 
+const SReader::FileExtension2NameType SReader::s_EXTENSIONS
+    = ::boost::assign::map_list_of(".xml", "XML")
+        (".xmlz", "Zipped XML")
+        (".json", "JSON")
+        (".jsonz", "Zipped JSON")
+        (".hdf5", "HDF5");
+
 //-----------------------------------------------------------------------------
 
 SReader::SReader() :
         m_useAtomsPatcher(false),
         m_context ("Undefined"),
-        m_version ("Undefined")
+        m_version ("Undefined"),
+        m_filter  ("")
 {}
 
 //-----------------------------------------------------------------------------
@@ -71,23 +84,51 @@ void SReader::configuring() throw(::fwTools::Failed)
 
     ::io::IReader::configuring();
 
-    typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
+    typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationElement;
+    typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
+
+    ConfigurationElementContainer extensionsList = m_configuration->find("extensions");
+    SLM_ASSERT("The <extensions> element can be set at most once.", extensionsList.size() <= 1);
+
+    if(extensionsList.size() == 1)
+    {
+        ConfigurationElementContainer extensions = extensionsList.at(0)->find("extension");
+        BOOST_FOREACH(ConfigurationElement extension, extensions)
+        {
+            const std::string& ext = extension->getValue();
+            FileExtension2NameType::const_iterator it = s_EXTENSIONS.find(ext);
+
+            SLM_ASSERT("Extension '" + ext + "' is not allowed in configuration", it != s_EXTENSIONS.end());
+
+            if(it != s_EXTENSIONS.end())
+            {
+                m_allowedExts.insert(m_allowedExts.end(), ext);
+            }
+        }
+    }
 
     ConfigurationElementContainer inject = m_configuration->find("inject");
-    SLM_ASSERT("The <inject> element can be set at most once.", inject.size() <= 1 );
+    SLM_ASSERT("The <inject> element can be set at most once.", inject.size() <= 1);
     if (inject.size() == 1)
     {
         m_inject = inject.at(0)->getValue();
     }
 
+    ConfigurationElementContainer filter = m_configuration->find("filter");
+    SLM_ASSERT("The <filter> element can be set at most once.", filter.size() <= 1);
+    if (filter.size() == 1)
+    {
+        m_filter = filter.at(0)->getValue();
+    }
+
     ConfigurationElementContainer uuidPolicy = m_configuration->find("uuidPolicy");
-    SLM_ASSERT("The <uuidPolicy> element can be set at most once.", uuidPolicy.size() <= 1 );
+    SLM_ASSERT("The <uuidPolicy> element can be set at most once.", uuidPolicy.size() <= 1);
     if (uuidPolicy.size() == 1)
     {
         m_uuidPolicy = uuidPolicy.at(0)->getValue();
         SLM_ASSERT("Unknown policy : '"
-                   << m_uuidPolicy
-                   <<"', available policies : 'Strict','Change' or 'Reuse'.",
+                   + m_uuidPolicy +
+                   "', available policies : 'Strict','Change' or 'Reuse'.",
                    "Strict" == m_uuidPolicy || "Change" == m_uuidPolicy || "Reuse" == m_uuidPolicy );
 
         SLM_ASSERT("'Reuse' policy is available only with inject mode",
@@ -220,14 +261,22 @@ void SReader::updating() throw(::fwTools::Failed)
             /// patch atom
             if ( m_useAtomsPatcher )
             {
-                FW_RAISE_IF( "Unable to load data, found " << atom->getMetaInfo("context")
-                             << "context, but " << m_context << "' was excepted.", atom->getMetaInfo("context") != m_context);
+                FW_RAISE_IF( "Unable to load data, found '" << atom->getMetaInfo("context")
+                             << "' context, but '" << m_context << "' was excepted.",
+                             atom->getMetaInfo("context") != m_context);
+
                 ::fwAtomsPatch::PatchingManager globalPatcher(atom);
                 atom = globalPatcher.transformTo( m_version );
             }
 
-            ::fwData::Object::sptr newData ;
+            if(!m_filter.empty())
+            {
+                ::fwAtomsFilter::IFilter::sptr filter = ::fwAtomsFilter::factory::New(m_filter);
+                OSLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
+                filter->apply(atom);
+            }
 
+            ::fwData::Object::sptr newData ;
 
             if("Strict" == m_uuidPolicy)
             {
@@ -303,35 +352,49 @@ void SReader::notificationOfUpdate()
 
 void SReader::configureWithIHM()
 {
-   static ::boost::filesystem::path _sDefaultPath;
+    static ::boost::filesystem::path _sDefaultPath;
 
-   ::fwGui::dialog::LocationDialog dialogFile;
-   dialogFile.setTitle("Enter file name");
-   dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-   dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
-   dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-   dialogFile.setOption(::fwGui::dialog::LocationDialog::FILE_MUST_EXIST);
+    ::fwGui::dialog::LocationDialog dialogFile;
+    dialogFile.setTitle("Enter file name");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::LocationDialog::FILE_MUST_EXIST);
 
-   dialogFile.addFilter( "Medical data", "*.json *.jsonz *.xml *.xmlz *.hdf5" );
-   dialogFile.addFilter( "JSON", "*.json" );
-   dialogFile.addFilter( "Zipped JSON", "*.jsonz" );
-   dialogFile.addFilter( "XML", "*.xml" );
-   dialogFile.addFilter( "Zipped XML", "*.xmlz" );
-   dialogFile.addFilter( "HDF5", "*.hdf5" );
+    if(m_allowedExts.empty() || m_allowedExts.size() == s_EXTENSIONS.size())  // all extensions allowed
+    {
+        dialogFile.addFilter("Medical data", "*.json *.jsonz *.xml *.xmlz *.hdf5");
+        BOOST_FOREACH(const FileExtension2NameType::value_type& ext, s_EXTENSIONS)
+        {
+            dialogFile.addFilter(ext.second, "*" + ext.first);
+        }
+    }
+    else
+    {
+        dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
 
-   ::fwData::location::SingleFile::sptr result
-       = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+        BOOST_FOREACH(const std::string& ext, m_allowedExts)
+        {
+            FileExtension2NameType::const_iterator it = s_EXTENSIONS.find(ext);
+            OSLM_ASSERT("Didn't find extension '" << ext << "' in managed extensions map", it != s_EXTENSIONS.end());
 
-   if (result)
-   {
-       _sDefaultPath = result->getPath();
-       this->setFile( _sDefaultPath );
-       dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
-   }
-   else
-   {
-       this->clearLocations();
-   }
+            dialogFile.addFilter(it->second, "*" + ext);
+        }
+    }
+
+    ::fwData::location::SingleFile::sptr result
+        = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+
+    if (result)
+    {
+        _sDefaultPath = result->getPath();
+        this->setFile( _sDefaultPath );
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
+    }
+    else
+    {
+        this->clearLocations();
+    }
 }
 
 //-----------------------------------------------------------------------------

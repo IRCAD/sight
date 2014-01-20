@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IViewLayoutManagerBase.hpp
+ * @file fwGui/layoutManager/IViewLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -28,8 +28,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the generic layout manager for IHM.
- * @class   IViewLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   IViewLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

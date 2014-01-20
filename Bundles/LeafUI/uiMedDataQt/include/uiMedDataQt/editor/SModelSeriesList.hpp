@@ -37,7 +37,7 @@ namespace editor
 
 /**
  * @brief   SModelSeriesList service.
- * @class   SModelSeriesList.
+ * @class   SModelSeriesList
  * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject, public ::gui::editor::IEditor

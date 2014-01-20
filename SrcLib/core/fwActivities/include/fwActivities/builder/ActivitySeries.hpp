@@ -20,7 +20,7 @@ namespace builder
 
 /**
  * @brief   Defines the default builder for the data ActivitySeries.
- * @class   ActivitySeries.
+ * @class   ActivitySeries
  * @date    2013.
  */
 class FWACTIVITIES_CLASS_API ActivitySeries : public ::fwActivities::IBuilder

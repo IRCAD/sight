@@ -8,7 +8,7 @@
  * @file fwTools/macros.hpp
  * @brief TODO
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 
 #ifndef _FWTOOLS_ATTRIBUTESMACROS_HPP_

@@ -21,8 +21,8 @@ namespace builder
 
 /**
  * @brief   Defines the interface class  for the menubar builder.
- * @class   IMenuBarBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMenuBarBuilder
+ * 
  * @date    2009-2010.
  *
  */

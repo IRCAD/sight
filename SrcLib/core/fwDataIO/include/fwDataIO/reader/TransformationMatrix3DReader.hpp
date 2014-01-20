@@ -20,8 +20,8 @@ namespace reader {
 
 /**
  * @brief   Reader for transformation of 3D Matrix. Read file format .trf
- * @class   TransformationMatrix3DReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransformationMatrix3DReader
+ * 
  * @date    2009
  *
  * Ircad reader to read a ::fwData::TransformationMatrix3D on filesystem which the file format

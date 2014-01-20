@@ -26,7 +26,7 @@ namespace container
  *
  * Concept : Singleton
  *
- * @class   DicomDictionarySegment.
+ * @class   DicomDictionarySegment
  */
 class GDCMIO_CLASS_API DicomDictionarySegment
 {

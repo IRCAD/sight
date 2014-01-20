@@ -12,7 +12,7 @@ namespace ctrlSelection
 /**
  * @brief      The namespace ctrlSelection::wrapper contains the wrapper services.
  * @namespace  ctrlSelection::wrapper
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
  *
  */

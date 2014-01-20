@@ -16,7 +16,7 @@ namespace fwTools
 /**
  * @brief   Purpose: offer a first-class, comparable wrapper over std::type_info ( but copy construcible )
  * @class   TypeInfo
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  * Code imported from Loki-Library and adapted for FW4SPL

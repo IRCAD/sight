@@ -28,7 +28,7 @@ namespace fwGuiQt
 
 /**
  * @brief A qt panel used to control a VTK 2D Negatoscope view.
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class SliceSelector : public QWidget
 {

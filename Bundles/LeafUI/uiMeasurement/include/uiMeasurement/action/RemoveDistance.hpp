@@ -22,8 +22,8 @@ namespace action
 
 /**
  * @brief   This action removes distances.
- * @class   RemoveDistance.
- * @author  IRCAD (Research and Development Team).
+ * @class   RemoveDistance
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv

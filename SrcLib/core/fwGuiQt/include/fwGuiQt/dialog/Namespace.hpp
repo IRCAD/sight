@@ -12,7 +12,7 @@ namespace fwGuiQt
 /**
  * @brief       The namespace fwGuiQt::dialog contains the classes used for container implementation with Qt Library.
  * @namespace   fwGuiQt::dialog
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

@@ -21,10 +21,7 @@ namespace action
 
 /**
  * @brief   This action does nothing.
- * @class   NothingActionSrv.
- * @author  IRCAD (Research and Development Team).
-
- * @date    2009.
+ * @class   NothingActionSrv
  */
 class GUI_CLASS_API NothingActionSrv : public ::fwGui::IActionSrv
 {

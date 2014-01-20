@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace uiPatientDBQt contains several editors to show patient informations
  * @namespace   uiPatientDBQt
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

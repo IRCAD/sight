@@ -20,7 +20,7 @@ namespace fwTest
 /**
  * @class   DicomReaderTest
  * @brief   This class defines some tools to check dicom manipulations during tests
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2012.
  */
 class FWTEST_CLASS_API DicomReaderTest

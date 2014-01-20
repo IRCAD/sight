@@ -28,7 +28,7 @@ namespace fwData {
  *
  * @see     ::fwData::Edge, ::fwData::Node
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 

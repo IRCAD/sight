@@ -17,7 +17,7 @@ namespace fwZip
 
 /**
  * @brief   This interface defines functions to write a file in an archive.
- * @class   IWriteArchive.
+ * @class   IWriteArchive
  */
 class IWriteArchive
 {

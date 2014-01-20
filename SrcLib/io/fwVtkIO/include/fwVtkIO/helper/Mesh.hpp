@@ -22,8 +22,8 @@ namespace helper
 
 /**
  * @brief   Helper to manage vtkPolyData and fwData::Mesh.
- * @class   Mesh.
- * @author  IRCAD (Research and Development Team).
+ * @class   Mesh
+ * 
  * @date    2011.
  *
  */

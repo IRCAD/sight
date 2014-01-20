@@ -33,7 +33,7 @@
  * FATAL macros have a particular behavior : the application is aborted after
  * the message was logged.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 
 #ifndef _FWCORE_SPYLOG_HPP_

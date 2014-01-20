@@ -20,8 +20,8 @@ namespace action
 
 /**
  * @brief   This action allows change 3D camera orientation (axial, frontal, sagittal)
- * @class   CameraOrientationAction.
- * @author  IRCAD (Research and Development Team).
+ * @class   CameraOrientationAction
+ * 
  * @date    2010.
  */
 class UIVISU_CLASS_API CameraOrientationAction : public ::fwGui::IActionSrv

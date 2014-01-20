@@ -29,8 +29,8 @@ namespace helper
 /**
  * @brief  This class provides few tools to connect/disconnect signals/slots between obj/srv
  *
- * @class  SigSlotConnection.
- * @author IRCAD (Research and Development Team).
+ * @class  SigSlotConnection
+ * 
  * @date   2012.
  */
 class FWSERVICES_CLASS_API SigSlotConnection : public ::fwCore::BaseObject

@@ -27,7 +27,7 @@ namespace
  * @brief   Functor that matches configuration element identifiers
  *          against the given identifier
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct ConfigurationElementIdentifierPredicate
 {

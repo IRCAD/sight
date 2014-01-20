@@ -34,7 +34,7 @@ namespace io
  * @brief   Defines the extension class.
  * @struct  Extension
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Extension : public BundleElement, public ConfigurationElementContainer
 {

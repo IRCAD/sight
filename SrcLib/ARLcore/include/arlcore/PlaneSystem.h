@@ -20,7 +20,6 @@ namespace arlCore
     {
     /**
      * @class   PlaneSystem
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Ensemble de reperes cartesiens lies par des transformations rigides
      */
@@ -128,7 +127,6 @@ namespace arlCore
         {
         /**
         * @class    Path
-        * @author   IRCAD (Research and Development Team)
         * @date     04/2008
         * @brief    Chemin dans un planesystem
         */

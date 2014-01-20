@@ -24,7 +24,7 @@ namespace fwZip
 
 /**
  * @brief   This class defines functions to read a file in a file system archive.
- * @class   ReadDirArchive.
+ * @class   ReadDirArchive
  */
 class FWZIP_CLASS_API ReadDirArchive : public IReadArchive
 {

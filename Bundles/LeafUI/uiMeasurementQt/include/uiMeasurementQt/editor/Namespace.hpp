@@ -13,7 +13,7 @@ namespace uiMeasurement
 /**
  * @brief       The namespace uiMeasurement::editor contains editors to add distances
  * @namespace   uiMeasurement::editor
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

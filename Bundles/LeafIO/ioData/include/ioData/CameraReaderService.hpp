@@ -18,8 +18,8 @@ namespace ioData
 {
 /**
  * @brief   Camera calibration file reader service.
- * @class   CameraReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   CameraReaderService
+ * 
  * @date    2009.
  *
  * Service reading camera calibration file and create a camera object.

@@ -19,9 +19,9 @@ namespace wrapper
 {
 
 /**
- * @class  MsgWrapperSrv.
+ * @class  MsgWrapperSrv
  * @brief  Convert generic message by specific message
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2007-2009.
  */

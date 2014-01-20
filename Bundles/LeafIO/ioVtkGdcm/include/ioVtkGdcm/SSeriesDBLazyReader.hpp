@@ -78,6 +78,6 @@ private :
 
 };
 
-} // namespace ioDicom
+} // namespace ioVtkGdcm
 
 #endif //__IOVTKGDCM_SSERIESDBLAZYREADER_HPP__

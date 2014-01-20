@@ -21,10 +21,7 @@ namespace action
 
 /**
  * @brief   This action tries to close the window and reset root object.
- * @class   QuitAction.
- * @author  IRCAD (Research and Development Team).
-
- * @date    2009-2010.
+ * @class   QuitAction
  */
 class GUI_CLASS_API QuitAction : public ::fwGui::IActionSrv
 {

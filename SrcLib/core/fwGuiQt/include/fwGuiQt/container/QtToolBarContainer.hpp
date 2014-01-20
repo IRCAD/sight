@@ -29,8 +29,8 @@ namespace container
 
 /**
  * @brief   Defines the Qt toolBar bar container for IHM.
- * @class   QtToolBarContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   QtToolBarContainer
+ * 
  * @date    2009-2010.
  *
  */

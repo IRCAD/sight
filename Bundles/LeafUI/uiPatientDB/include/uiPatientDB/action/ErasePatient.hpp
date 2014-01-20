@@ -19,8 +19,8 @@ namespace action
 
 /**
  * @brief   This action allows to erase the selected Image in PatientDB
- * @class   ErasePatient.
- * @author  IRCAD (Research and Development Team).
+ * @class   ErasePatient
+ * 
  * @date    2010.
  */
 class UIPATIENTDB_CLASS_API ErasePatient : public ::fwGui::IActionSrv

@@ -27,8 +27,8 @@ namespace visuVTKAdaptor
 
 /**
  * @brief   Draw pixel information from images given by id in composite.
- * @class   ImagesProbeCursor.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImagesProbeCursor
+ * 
  * @date    2010.
  */
 class VISUVTKADAPTOR_CLASS_API ImagesProbeCursor: public  ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService

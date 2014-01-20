@@ -21,10 +21,7 @@ namespace editor
 
 /**
  * @brief   Defines the service interface managing the editor service for object.
- * @class   IEditor.
- * @author  IRCAD (Research and Development Team).
-
- * @date    2009.
+ * @class   IEditor
  */
 
 class GUI_CLASS_API IEditor : public ::fwGui::IGuiContainerSrv

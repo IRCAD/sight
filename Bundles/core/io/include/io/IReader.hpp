@@ -19,9 +19,7 @@ namespace io
 
 /**
  * @brief Reader service API. It manages extension points definition and extension configuration
- * @class   IReader.
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
+ * @class   IReader
  *
  * This class represents the base interface for reader services.
  * Use the base service methods :

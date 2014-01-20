@@ -17,7 +17,6 @@ namespace arlCore
     {
     /**
      * @class   vnl_rotation3d_matrix
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Vecteur rotation
      * L'axe de rotation est déterminé par la direction du vecteur

@@ -22,7 +22,7 @@ namespace action
 /**
  * @brief   This action modifies a mesh using specified functor in configuration.
  * The purpose is to test all possibilities provide by the new mesh structure.
- * @class   SMeshModifier.
+ * @class   SMeshModifier
  */
 class IODATA_CLASS_API SMeshModifier : public ::fwGui::IActionSrv
 {

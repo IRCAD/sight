@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action allows to export the selected image in PatientDB
- * @class   ExportImage.
- * @author  IRCAD (Research and Development Team).
+ * @class   ExportImage
+ * 
  * @date    2010.
  *
  * The available writer can be configured

@@ -22,8 +22,8 @@ namespace writer {
 
 /**
  * @brief   Writer for transformation of 3D Matrix. Write file format .trf
- * @class   TransformationMatrix3DWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransformationMatrix3DWriter
+ * 
  * @date    2009
  *
  * Ircad writer to write a ::fwData::TransformationMatrix3D on filesystem which the file format

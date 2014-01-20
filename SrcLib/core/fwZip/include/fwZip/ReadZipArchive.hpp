@@ -23,7 +23,7 @@ namespace fwZip
 
 /**
  * @brief   This class defines functions to read a file in a zip archive.
- * @class   ReadZipArchive.
+ * @class   ReadZipArchive
  */
 class FWZIP_CLASS_API ReadZipArchive : public IReadArchive
 {

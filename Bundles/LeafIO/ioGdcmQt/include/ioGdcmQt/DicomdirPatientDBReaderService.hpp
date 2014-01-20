@@ -30,7 +30,7 @@ namespace ioGdcm
 /**
  * @brief   This class read DICOMDIR file
  * @class   DicomdirPatientDBReaderService
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  *
  * \note First verison.

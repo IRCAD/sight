@@ -12,7 +12,7 @@ namespace fwGui
 /**
  * @brief       The namespace fwGui::dialog contains the base interface for GUI dialog elements.
  * @namespace   fwGui::dialog
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

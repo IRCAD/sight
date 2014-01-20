@@ -21,9 +21,7 @@ namespace action
 
 /**
  * @brief   Apply an action (start, stop, ...) on a service specify by uid.
- * @class   StarterActionService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   StarterActionService
  *
  * This action works on a ::fwData::Object. It does the action specify by the specify config.
  * This action can be :

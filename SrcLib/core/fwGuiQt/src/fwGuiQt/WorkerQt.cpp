@@ -164,7 +164,7 @@ SPTR(::fwThread::Worker) WorkerQtInstanciator::getWorker()
  * @class TimerQt
  * @brief Private Timer implementation using Qt.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2012.
  */
 class TimerQt : public ::fwThread::Timer

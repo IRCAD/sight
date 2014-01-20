@@ -143,10 +143,10 @@ protected:
 
 
 /**
- * @class ActivityConfig
+ * @class Activities
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "::activityReg::registry::Activities".
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date 2012
  */
 class FWACTIVITIES_CLASS_API Activities : public ::fwCore::BaseObject

@@ -20,10 +20,8 @@ namespace tuto04
 {
 
 /**
- * @brief   Service create an action to read  a vtk image
- * @class   ImageReaderActionService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @brief   This service creates an action to read  a vtk image.
+ * @class   ImageReaderActionService
  */
 class DEVFORUM_CLASS_API ImageReaderActionService : public ::fwGui::IActionSrv
 {

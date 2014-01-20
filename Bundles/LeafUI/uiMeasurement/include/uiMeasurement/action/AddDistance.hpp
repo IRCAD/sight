@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action adds distance on image.
- * @class   AddDistance.
- * @author  IRCAD (Research and Development Team).
+ * @class   AddDistance
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API AddDistance : public ::fwGui::IActionSrv

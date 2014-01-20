@@ -17,7 +17,7 @@ namespace fwRuntime
  * @remark  Intended to be used on extensions, extension points and bundles
  *
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 template< typename T >
 struct IsEnableAndHasIdentifier

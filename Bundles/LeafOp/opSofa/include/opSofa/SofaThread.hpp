@@ -33,8 +33,25 @@ class SofaThread : public QThread
     Q_OBJECT
 
 public:
-    SofaThread(SofaBusiness*, std::vector< SPTR(::fwData::Mesh) >*, ::fwServices::IService::sptr service);
+    /**
+     * @brief Constructor
+     *
+     * @param sofa : pointer to the SofaBusiness object
+     * @param meshes : vector to the list of mesh
+     * @param service : pointer to the SofaService object
+     */
+    SofaThread(SofaBusiness* sofa, std::vector< SPTR(::fwData::Mesh) >* meshes, ::fwServices::IService::sptr service);
+
+    /**
+     * @brief Stop the thread
+     */
     void stop();
+
+    /**
+     * @brief Get stage of the thread
+     *
+     * @return true if the thread is running
+     */
     bool isRunning();
 
 Q_SIGNALS:
@@ -44,9 +61,19 @@ Q_SIGNALS:
     void refreshVtkRequestSignal();
 
 public Q_SLOTS:
+    /**
+     * @brief Sending the NEW_MESH to the vtkSimpleMesh RendererService to refresh the display
+     */
     void refreshVtk();
 
 private:
+
+    /**
+     * @brief Containing the separated thread loop for the SOFA deformation processing.
+     *
+     * Each loop emits refreshVtkRequestSignal() which triggers the refreshVtk() method.
+     * Launched by calling the public start() method.
+     */
     void run();
 
     /**

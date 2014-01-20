@@ -31,7 +31,7 @@ namespace registry
  * @class AppConfigParameters
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "::fwServices::registry::AppConfigParameters".
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date 2012
  */
 class FWSERVICES_CLASS_API AppConfigParameters : public ::fwCore::BaseObject

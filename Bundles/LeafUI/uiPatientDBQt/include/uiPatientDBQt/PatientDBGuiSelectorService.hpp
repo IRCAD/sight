@@ -26,8 +26,8 @@ namespace uiPatientDB
 
 /**
  * @brief   This editor show the list of patient and acquisition in the PatientDB. It allows to select an acquisition.
- * @class   PatientDBGuiSelectorService.
- * @author  IRCAD (Research and Development Team).
+ * @class   PatientDBGuiSelectorService
+ * 
  * @date    2010.
  */
 class UIPATIENTDBQT_CLASS_API PatientDBGuiSelectorService : public QObject, public ::gui::editor::IEditor

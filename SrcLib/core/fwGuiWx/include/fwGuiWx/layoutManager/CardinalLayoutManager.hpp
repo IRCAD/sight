@@ -21,8 +21,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the line layout manager.
- * @class   CardinalLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   CardinalLayoutManager
+ * 
  * @date    2009-2010.
  *
  */

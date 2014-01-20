@@ -53,7 +53,7 @@ protected:
      *
      * @param msg : Incoming message
      */
-    void receiving( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+    void receiving( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
 
     /**
      * @brief info of the class

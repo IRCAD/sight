@@ -20,8 +20,8 @@ namespace uiImage
 
 /**
  * @brief   SliceIndexPositionEditor service allows to change the slice index of an image.
- * @class   SliceIndexPositionEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   SliceIndexPositionEditor
+ * 
  * @date    2010.
  *
  * This is represented by

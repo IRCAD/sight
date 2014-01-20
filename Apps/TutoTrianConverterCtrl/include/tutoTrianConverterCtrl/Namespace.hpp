@@ -10,7 +10,7 @@
 /**
  * @brief      The namespace tutoTrianConverterCtrl.
  * @namespace  tutoTrianConverterCtrl
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
  *
  */

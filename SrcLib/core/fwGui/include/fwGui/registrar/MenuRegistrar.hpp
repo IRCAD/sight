@@ -23,8 +23,8 @@ namespace registrar
 
 /**
  * @brief   Defines the menu registrar for IHM.
- * @class   MenuRegistrar.
- * @author  IRCAD (Research and Development Team).
+ * @class   MenuRegistrar
+ * 
  * @date    2009-2010.
  *
  */

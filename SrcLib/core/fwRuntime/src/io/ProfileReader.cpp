@@ -95,6 +95,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         // Creates and process the profile element.
          ::boost::shared_ptr< ::fwRuntime::profile::Profile > profile = processProfile(rootNode);
 
+        profile->setFilePath(normalizedPath);
         profile->setName(sName);
         profile->setVersion(sVersion);
         profile->setCheckSingleInstance(checkSingleInstance);

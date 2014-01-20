@@ -20,10 +20,7 @@ namespace aspect
 
 /**
  * @brief   Defines the default toolbar for standard application
- * @class   DefaultToolBarSrv.
- * @author  IRCAD (Research and Development Team)
-
- * @date    2009.
+ * @class   DefaultToolBarSrv
  */
 class GUI_CLASS_API DefaultToolBarSrv : public ::fwGui::IToolBarSrv
 {

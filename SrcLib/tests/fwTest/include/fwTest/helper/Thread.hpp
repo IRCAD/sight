@@ -25,7 +25,7 @@ namespace helper
 /**
  * @brief   Helper to manage a thread. The thread launches a function and catches its exception.
  * @class   Thread
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2012.
  *
  * @note    It is used for unit test.
@@ -50,7 +50,8 @@ public:
 
     /**
      * @brief Waits the thread of execution to complete
-     * @param time time to waits for the thread stop
+     * @param time time to waits for the thread stop.
+     * @param raise if true raises an exception when it failed.
      * @return true if the thread of execution has completed before the call times out
      */
     FWTEST_API bool timedJoin(int time, bool raise = true);

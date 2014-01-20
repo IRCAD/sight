@@ -14,7 +14,7 @@ namespace gui
 /**
  * @brief       The namespace gui::aspect contains basic services for basic widgets like menuBar, menu, toolBar....
  * @namespace   gui::aspect
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

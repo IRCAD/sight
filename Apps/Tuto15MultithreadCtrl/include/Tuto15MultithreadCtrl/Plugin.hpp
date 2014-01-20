@@ -16,7 +16,7 @@ namespace Tuto15MultithreadCtrl
 
 /**
  * @brief Class call when bundle is started/stopped
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2012
  */
 class TUTO15MULTITHREADCTRL_CLASS_API Plugin : public ::fwRuntime::Plugin

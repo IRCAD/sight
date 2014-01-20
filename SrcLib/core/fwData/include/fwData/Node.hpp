@@ -28,7 +28,7 @@ namespace fwData
  *
  * @see     ::fwData::Port
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Node : public ::fwData::Object

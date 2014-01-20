@@ -27,7 +27,7 @@ namespace profile
  * @brief   Stops a given bundle.
  * @class  Stopper
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class Stopper :  public boost::noncopyable
 {

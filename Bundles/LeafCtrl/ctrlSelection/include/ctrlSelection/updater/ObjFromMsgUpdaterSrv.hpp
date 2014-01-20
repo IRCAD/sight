@@ -17,9 +17,9 @@ namespace updater
 {
 
 /**
- * @class  ObjFromMsgUpdaterSrv : Update Object from message
+ * @class  ObjFromMsgUpdaterSrv
  * @brief  Update the composite with the object which send the message.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date    2009-2010.
  */

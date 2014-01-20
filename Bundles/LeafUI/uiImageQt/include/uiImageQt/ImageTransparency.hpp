@@ -27,8 +27,8 @@ namespace uiImage
 
 /**
  * @brief   ImageTransparency service allows to change image transparency.
- * @class   ImageTransparency.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImageTransparency
+ * 
  * @date    2011.
  */
 class UIIMAGEQT_CLASS_API ImageTransparency : public QObject, public ::gui::editor::IEditor

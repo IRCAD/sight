@@ -19,7 +19,7 @@
  * @file fwData/macros.hpp
  * @brief fwData specific macros.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 
 

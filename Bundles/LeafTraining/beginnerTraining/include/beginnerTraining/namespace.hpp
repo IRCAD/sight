@@ -5,10 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
-* @brief
-* @namespace     TODO Doxygen documentation
-* @author
-* @date
+* @brief This namespace contains some basic services examples.
+* @namespace beginnerTraining
 **/
 
 namespace beginnerTraining

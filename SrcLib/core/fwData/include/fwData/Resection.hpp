@@ -20,7 +20,7 @@ namespace fwData
 /**
  * @class   Resection
  * @brief   This class defines a resection
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Resection : public ::fwData::Object

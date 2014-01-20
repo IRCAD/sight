@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for TransformationMatrix3D : store modification information
  * @class   TransformationMatrix3DMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */

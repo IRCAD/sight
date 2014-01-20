@@ -25,10 +25,8 @@ fwCampImplementDataMacro((fwData)(Material))
 fwCampImplementEnumMacro((fwData)(Material)(OPTIONS_MODE))
 {
     builder
-        .value("SURFACE",  ::fwData::Material::MODE_SURFACE)
-        .value("POINT",  ::fwData::Material::MODE_POINT )
-        .value("WIREFRAME",  ::fwData::Material::MODE_WIREFRAME)
-        .value("EDGE",  ::fwData::Material::MODE_EDGE)
+        .value("STANDARD", ::fwData::Material::MODE_STANDARD)
+        .value("NORMALS", ::fwData::Material::MODE_NORMALS)
         ;
 }
 
@@ -39,13 +37,15 @@ fwCampImplementEnumMacro((fwData)(Material)(SHADING_MODE))
         .value("GOURAUD", ::fwData::Material::MODE_GOURAUD)
         .value("PHONG", ::fwData::Material::MODE_PHONG)
         ;
-
 }
 
 fwCampImplementEnumMacro((fwData)(Material)(REPRESENTATION_MODE))
 {
     builder
-        .value("STANDARD", ::fwData::Material::MODE_STANDARD)
-        .value("NORMALS", ::fwData::Material::MODE_NORMALS)
+        .value("SURFACE",  ::fwData::Material::MODE_SURFACE)
+        .value("POINT",  ::fwData::Material::MODE_POINT )
+        .value("WIREFRAME",  ::fwData::Material::MODE_WIREFRAME)
+        .value("EDGE",  ::fwData::Material::MODE_EDGE)
         ;
 }
+

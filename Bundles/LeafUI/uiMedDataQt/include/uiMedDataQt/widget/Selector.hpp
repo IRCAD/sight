@@ -90,8 +90,8 @@ protected Q_SLOTS:
     /**
      * @brief Slot called when the selection changed. Emits a signal containing the new selected/deselected series. If a
      * Study is selected, no series are added in signal.
-     * @param selection contains the new selected items.
-     * @param deselection contains the new deselected items.
+     * @param selected contains the new selected items.
+     * @param deselected contains the new deselected items.
      * @note selection and deselection contain only the change of selection. The items always selected or deselected
      * don't appear in this selection/deselection.
      */

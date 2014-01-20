@@ -19,11 +19,8 @@ namespace updater
 {
 
 /**
- * @class  ReconstructionFromResecUpdaterSrv.
+ * @class  ReconstructionFromResecUpdaterSrv
  * @brief  Specific updater to update PlaneList from a resection.
- * @author IRCAD (Research and Development Team).
-
- * @date    2009-2010.
  */
 class CTRLSELECTION_CLASS_API ReconstructionFromResecUpdaterSrv : public ::ctrlSelection::IUpdaterSrv
 {

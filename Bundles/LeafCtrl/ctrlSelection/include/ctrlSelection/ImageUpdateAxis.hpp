@@ -19,9 +19,9 @@ namespace ctrlSelection
 
 
 /**
- * @class  ImageUpdateAxis.
+ * @class  ImageUpdateAxis
  * @brief  This service updates a fwData::Float given in configuration with the image axis.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2011.
  */

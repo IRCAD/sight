@@ -19,7 +19,6 @@ namespace arlCore
     {
     /**
      * @class   Tags
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Ensemble de tags de detection
      */

@@ -18,8 +18,8 @@ namespace editor
 
 /**
  * @brief   Defines the service interface managing the editor service for object.
- * @class   IOSelectorService.
- * @author  IRCAD (Research and Development Team).
+ * @class   IOSelectorService
+ * 
  * @date    2009.
  */
 class UIIO_CLASS_API IOSelectorService : public ::gui::editor::IDialogEditor

@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace visuVTKQt contains a vtk Renderer window interactor manager using Qt.
  * @namespace   visuVTKQt
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

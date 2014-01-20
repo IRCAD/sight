@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/LineLayoutManagerBase.cpp
+ * @file fwGui/layoutManager/LineLayoutManagerBase.cpp
  * @brief This file defines the implementation of the class for managing a line layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 

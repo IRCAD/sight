@@ -23,8 +23,8 @@ namespace container
 
 /**
  * @brief   Defines the wxWidgets container for IHM.
- * @class   WxContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   WxContainer
+ * 
  * @date    2009-2010.
  *
  */

@@ -24,7 +24,7 @@ namespace fwTools
  * Handlers can be added using addHandler(). the Handler of type ProgessHandler can be a function or functor or boost::signal with a signature
  * ( float, std::string ) and returning nothing.
  * @class   ProgressAdviser
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWTOOLS_CLASS_API ProgressAdviser : public ::boost::signals::trackable

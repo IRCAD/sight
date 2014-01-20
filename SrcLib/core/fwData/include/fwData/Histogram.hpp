@@ -24,7 +24,7 @@ namespace fwData
  * @class   Histogram
  * @brief   This class defines the histogram of an image.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class FWDATA_CLASS_API Histogram : public Object

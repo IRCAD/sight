@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace Tuto15MultithreadCtrl contains a few multithread example.
  * @namespace   Tuto15MultithreadCtrl
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2012.
  */
 namespace Tuto15MultithreadCtrl

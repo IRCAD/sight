@@ -12,7 +12,7 @@ namespace fwRuntime
 /**
  * @brief       The namespace fwRuntime::utils contains template executable factory classes
  * @namespace   fwRuntime::utils
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

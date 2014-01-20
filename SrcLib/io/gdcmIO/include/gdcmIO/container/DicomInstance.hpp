@@ -27,7 +27,7 @@ namespace container
  * It is useful during all writing process. This class
  * allows to share data between writers.
  *
- * @class   DicomInstance.
+ * @class   DicomInstance
  */
 class GDCMIO_CLASS_API DicomInstance
 {

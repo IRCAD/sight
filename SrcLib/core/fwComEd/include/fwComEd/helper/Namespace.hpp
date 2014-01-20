@@ -12,7 +12,7 @@ namespace fwComEd
 /**
  * @brief       This namespace fwComEd::helper contains several helpers for using data like Image, Composite, Message.
  * @namespace   fwComEd::helper
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

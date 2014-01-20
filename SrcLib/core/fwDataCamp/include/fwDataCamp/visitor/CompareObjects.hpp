@@ -109,7 +109,7 @@ private:
      *
      * @param obj child data object representation in Camp world
      * @param prefix path within parent object where then child object is found
-     * @param PropsMapType properties map of parent object to complete with child ones
+     * @param props properties map of parent object to complete with child ones
      */
     CompareObjects(
             const ::camp::UserObject& obj,

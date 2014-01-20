@@ -33,8 +33,8 @@ namespace manager
 {
 
 /**
- * @class  LockDumpManagerSrv.
- * @date   2012-2013.
+ * @brief This service allows to lock an object for dump when it is contained in the composite.
+ * @class LockDumpManagerSrv
  */
 class CTRLMEMORY_CLASS_API LockDumpManagerSrv : public ::ctrlSelection::IManagerSrv
 {
@@ -68,7 +68,7 @@ protected :
 
     /**
      * @brief Implements configuring method.
-     * configuration <manageLockOn key="CompositeObjectKey" />
+     * configuration \<manageLockOn key="CompositeObjectKey" /\>
      * if configuration is empty, service locks all composite objects
      */
     CTRLMEMORY_API virtual void configuring()  throw ( ::fwTools::Failed );
