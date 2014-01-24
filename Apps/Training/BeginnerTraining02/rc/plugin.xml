@@ -1,0 +1,55 @@
+<plugin id="BeginnerTraining02">
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>BeginnerTraining02Config</id>
+        <type>parameters</type>
+        <config>
+
+            <object type="::fwData::String">
+
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                    <gui>
+                        <frame>
+                            <name>BeginnerTraining02 App</name>
+                            <minSize width="800" height="600" />
+                        </frame>
+                    </gui>
+                    <registry>
+                        <view sid="view" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="view" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager">
+                            <orientation value="horizontal" />
+                            <view />
+                            <view />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="myEditorA" start="yes" />
+                        <view sid="myEditorB" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="myEditorA" type="::gui::editor::IEditor" impl="::beginnerTraining::tuto02::SStringEditor" autoConnect="no" />
+                <service uid="myEditorB" type="::gui::editor::IEditor" impl="::beginnerTraining::tuto02::SStringEditor" autoConnect="no" />
+
+                <service uid="myReader" type="::io::IReader" impl="::beginnerTraining::tuto01::SStringReader" autoConnect="no">
+                    <file>Bundles/beginnerTraining_0-1/data.txt</file>
+                </service>
+
+                <start uid="myFrame" />
+                <start uid="myReader" />
+
+                <update uid="myReader" />
+                <update uid="myEditorA" />
+                <update uid="myEditorB" />
+
+            </object>
+
+        </config>
+    </extension>
+
+</plugin>

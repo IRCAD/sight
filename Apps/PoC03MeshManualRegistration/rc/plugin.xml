@@ -1,0 +1,191 @@
+<plugin id="PoC03MeshManualRegistration">
+
+    <requirement id="servicesReg" />
+
+    <xi:include href="configurations/organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/worldViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>PoC03MeshManualRegistration</id>
+        <type>parameters</type>
+        <config>
+
+
+            <object type="::fwData::Composite">
+
+                <xi:include href="configurations/frameAndViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
+                    <snap>
+                        <scene uid="genericScene" />
+                    </snap>
+                </service>
+
+                <item key="image">
+                    <object uid="imageUID"  type="::fwData::Image">
+                        <service uid="imageReaderUid" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                            <type mode="reader" />
+                        </service>
+                    </object>
+                </item>
+                
+                
+                <!-- CompositeVisu description -->
+                <item key="compositeVisu">
+                    <object uid="compositeVisuUID" type="::fwData::Composite">
+
+                        <service uid="updaterImageUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP"/>
+                        </service>                       
+
+                        <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                            <mode type="stop" />
+                            <config>
+                                <object id="image" type="::fwData::Image">
+                                    <!-- This service convert a simple fwData::Image to medical Image -->
+                                    <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
+                                        <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                                    </service>
+                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
+                                        <negatoAdaptor uid="MPRNegatoScene3D" />
+                                    </service>
+                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                                        <sliceIndex>axial</sliceIndex>
+                                    </service>
+                                </object>
+                            </config>
+                        </service>
+
+                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                            <scene>
+                                <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
+
+                                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                                <renderer id="default" background="0.0" />
+
+                                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                    <config renderer="default" picker="" autoresetcamera="no" />
+                                </adaptor>
+                                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                                    <config renderer="default" picker="picker" slices="3" sliceIndex="axial" />
+                                </adaptor>
+                                <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                    <config renderer="default" />
+                                </adaptor>
+
+                                <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="view1">
+                                    <config renderer="default" picker="" />
+                                </adaptor>
+
+                                <adaptor id="CamPos2MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="view2">
+                                    <config renderer="default" picker="" transform="cam2PosMatrixTransform" />
+                                </adaptor>
+                                <adaptor id="Cam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam2Mesh">
+                                    <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
+                                </adaptor>
+
+                                <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDB">
+                                    <config renderer="default" picker="picker" />
+                                </adaptor>
+                            </scene>
+                        </service>
+                        
+                        <service uid="genericScene2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                            <scene>
+                                <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
+                                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                                <renderer id="default" background="0.0" />
+
+                                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                    <config renderer="default" picker="" autoresetcamera="no" />
+                                </adaptor>
+
+                                <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                    <config renderer="default" />
+                                </adaptor>
+
+                                <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="view2">
+                                    <config renderer="default" picker="" />
+                                </adaptor>
+
+                                <adaptor id="CamPos1MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="view1">
+                                    <config renderer="default" picker="" transform="cam1PosMatrixTransform" />
+                                </adaptor>
+                                <adaptor id="Cam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam1Mesh">
+                                    <config renderer="default" picker="picker" transform="cam1PosMatrixTransform" autoresetcamera="no" />
+                                </adaptor>
+
+                                <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDB">
+                                    <config renderer="default" picker="picker" />
+                                </adaptor>
+                            </scene>
+                        </service>
+
+                        <item key="modelSeries">
+                            <object uid="modelSeriesUID"  type="::fwMedData::ModelSeries">
+                                <service uid="modelSeriesReaderUid" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                                    <type mode="reader" />
+                                </service>
+                            </object>
+                        </item>
+                
+                        <!-- meshDB description -->
+                        <item key="meshDB">
+                            <object uid="meshDBUid" type="::fwData::Composite">
+                            </object>
+                        </item>
+                        
+                        <item key="view1">
+                            <object uid="view1" type="::fwData::TransformationMatrix3D">
+                            </object>
+                        </item>
+
+                        <item key="view2">
+                            <object uid="view2" type="::fwData::TransformationMatrix3D">
+                            </object>
+                        </item>
+
+                        <item key="cam2Mesh">
+                            <object uid="cam2Mesh" type="::fwData::Mesh">
+
+                                <service uid="camReaderFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
+                                <service uid="cam2ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no">
+                                    <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
+                                </service>
+                            </object>
+                        </item>
+
+                        <item key="cam1Mesh">
+                            <object uid="cam1Mesh" type="::fwData::Mesh">
+                                <service uid="cam1ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no">
+                                    <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
+                                </service>
+                            </object>
+                        </item>
+                        
+                        <connect>
+                            <signal>imageUID/objectModified</signal>
+                            <slot>updaterImageUID/receive</slot>
+                        </connect>
+                        
+                    </object>
+                </item>
+
+                <start uid="IHM" />
+                <start uid="updaterImageUID" />
+                <start uid="manager" />
+                <start uid="cam1ReaderFile" />
+                <start uid="cam2ReaderFile" />
+
+                <update uid="cam1ReaderFile" />
+                <update uid="cam2ReaderFile" />
+
+            </object>
+
+        </config>
+    </extension>
+
+</plugin>
