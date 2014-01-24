@@ -1,0 +1,11 @@
+<plugin id="TutoDevForum">
+
+    <requirement id="servicesReg" />
+
+    <xi:include href="configurations/config-00.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/config-01.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/config-02.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/config-03.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/config-04.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+</plugin>
