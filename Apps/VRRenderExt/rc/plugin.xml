@@ -1,0 +1,101 @@
+<plugin id="VRRenderExt">
+
+    <requirement id="servicesReg" />
+
+    <xi:include href="configurations/VRRenderExtBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwServices::registry::AppConfigParameters">
+        <id>VRRenderExtAppBase</id>
+        <parameters>
+            <param name="appName" value="VRRenderExt 0.9.6" />
+            <param name="appIconPath" value="Bundles/VRRenderExt_0-9/vrrender.ico" />
+        </parameters>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>IOSelectorServiceConfigVRRenderExtSeriesDBReader</id>
+        <service>::uiIO::editor::IOSelectorService</service>
+        <desc>IOSelectorService config for VRRenderExt SeriesDB reader</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="exclude" />
+            <addSelection service="::ioAtoms::SReader" />
+            <addSelection service="::ioDicomExt::gdcm::SDicomSeriesDBReader" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>SDBOpenIOSelectorConfig</id>
+        <service>::uiIO::editor::IOSelectorService</service>
+        <desc>"Open" action's IOSelector config</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>MDAtomsConfig</id>
+        <desc>reader/writer config to read/write an atom representing a medical data</desc>
+        <config>
+            <patcher context="MedicalData" version="V2" /> 
+         </config>
+     </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExportSelection</id>
+        <type>parameters</type>
+        <parameters>
+            <param name="GENERIC_UID" />
+            <param name="selection" />
+        </parameters>
+        <config>
+            <!-- <object uid="${selection}" type="::fwData::Vector" src="ref"> -->
+            <object uid="${selection}" src="ref">
+                <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::IOSelectorService" autoConnect="yes">
+                    <type mode="writer" />
+                    <!-- <selection mode="include" /> -->
+                    <!-- <addSelection service="::ioAtoms::SReader" /> -->
+                </service>
+                <start uid="${GENERIC_UID}_export_selection" />
+                <update uid="${GENERIC_UID}_export_selection" />
+            </object>
+        </config>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ImageSeriesExport</id>
+        <title>ImageSeries Export</title>
+        <desc>ImageSeries Export</desc>
+        <icon>NONE</icon>
+        <requirements>
+            <requirement name="series" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportSelection">
+            <parameters>
+                <parameter replace="selection" by="@values.series" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ModelSeriesExport</id>
+        <title>ModelSeries Export</title>
+        <desc>ModelSeries Export</desc>
+        <icon>NONE</icon>
+        <requirements>
+            <requirement name="series" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportSelection">
+            <parameters>
+                <parameter replace="selection" by="@values.series" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>

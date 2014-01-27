@@ -1,0 +1,15 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+USE     = ['boost','qtCore', 'qtGui']
+LIB     = [
+            'fwCore_0-1',
+            'fwServices_0-1',
+            'fwMedData_0-1',
+            'fwGui_0-1',
+            'fwGuiQt_0-1',
+            'fwDicomIOExt_0-1',
+            'fwDicomData_0-1'
+          ]
+BUNDLES = ['io_0-1', 'gui_0-1' ]
+
+

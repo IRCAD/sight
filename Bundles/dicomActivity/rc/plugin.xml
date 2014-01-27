@@ -1,0 +1,30 @@
+<plugin id="dicomActivity">
+
+    <requirement id="servicesReg" />
+    <requirement id="gui" />
+    <requirement id="guiQt" />
+    <requirement id="ctrlSelection" />
+    <requirement id="uiVisu" />
+    <requirement id="uiVisuQt" />
+    <requirement id="visuVTKAdaptor" />
+    <requirement id="uiImageQt" />
+    <requirement id="media" />
+    <requirement id="uiTF" />
+    <requirement id="scene2D" />
+
+    <xi:include href="configurations/DicomRetriever.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/PacsConfigurationManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DPacsPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>DicomRetriever</id>
+        <title>Dicom Retriever</title>
+        <desc>Dicom Retriever activity</desc>
+        <icon>Bundles/mediaExt_0-1/icons/icon-DICOM.svg</icon>
+        <requirements>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="DicomRetriever">
+        </appConfig>
+    </extension>
+</plugin>
