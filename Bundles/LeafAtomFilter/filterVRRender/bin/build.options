@@ -7,4 +7,5 @@ LIB = [
     'fwAtomsFilter_0-1',
     'fwAtomsPatch_0-1',
     'fwRuntime_0-3',
+    'fwActivities_0-1',
     ]
