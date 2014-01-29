@@ -13,6 +13,7 @@
 #include <QTimer>
 #include <QStringList>
 #include <QSharedPointer>
+#include <QFont>
 
 #include <fwCore/util/LazyInstantiator.hpp>
 
@@ -239,6 +240,13 @@ WorkerQt::WorkerQt() :
 
 void WorkerQt::init( int &argc, char **argv )
 {
+#ifdef __MACOSX__
+    if ( QSysInfo::MacintoshVersion > QSysInfo::MV_10_8 )
+    {
+        // https://bugreports.qt-project.org/browse/QTBUG-32789 #fix for Mac OS X 10.9
+        QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
+    }
+#endif
     m_app = QSharedPointer< QApplication > ( new ::fwGuiQt::App( argc, argv ) );
 
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
