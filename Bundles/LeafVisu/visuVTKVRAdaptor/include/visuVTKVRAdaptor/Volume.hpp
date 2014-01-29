@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -56,6 +56,23 @@ protected :
 
     VISUVTKVRADAPTOR_API void doReceive( ::fwServices::ObjectMsg::csptr msg ) throw (fwTools::Failed);
 
+    /**
+     * @brief Configures the service
+     *
+     * Configuration example :
+     @verbatim
+     <adaptor id="VolumeScene3D" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
+         <config renderer="default" clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"/>
+     </adaptor>
+     @endverbatim
+     * 
+     * \b renderer : ID of renderer the adaptor must use
+     * \b clippingplanes : id of VTK object for clipping planes
+     * \b autoresetcamera : (not mandatory, default is yes) set if the renderer must reset camera when updating image
+     * \b croppingBox : (not mandatory, default is no) set if the cropping box must be shown
+     *
+     * @throw fwTools::Failed
+     */
     VISUVTKVRADAPTOR_API void configuring() throw(fwTools::Failed);
 
     VISUVTKVRADAPTOR_API void doSwap() throw(fwTools::Failed);
@@ -87,6 +104,9 @@ protected :
     vtkBoxWidget2 * m_boxWidget;
     vtkCommand    * m_croppingCommand;
     bool m_bClippingBoxIsActivate;
+
+    /// Croping box default state
+    bool m_croppingBoxDefaultState;
 
 private:
 

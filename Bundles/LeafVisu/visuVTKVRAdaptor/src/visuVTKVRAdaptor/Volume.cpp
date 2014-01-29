@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -124,7 +124,9 @@ Volume::Volume() throw() :
     ::fwComEd::helper::MedicalImageAdaptor(),
     ::fwRenderVTK::IVtkAdaptorService(),
      m_bClippingBoxIsActivate(false),
-     m_autoResetCamera(true)
+     m_autoResetCamera(true),
+     m_croppingBoxDefaultState(true)
+
 {
     m_clippingPlanesId = "";
     m_clippingPlanes   = 0;
@@ -207,6 +209,12 @@ void Volume::doStart() throw(fwTools::Failed)
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
     this->doUpdate(); //TODO: remove me ?
     this->installTFObserver( this->getSptr() );
+
+    if(!m_croppingBoxDefaultState)
+    {
+        m_bClippingBoxIsActivate = m_croppingBoxDefaultState;
+        this->activateBoxClipping( m_bClippingBoxIsActivate );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -295,6 +303,12 @@ void Volume::configuring() throw(fwTools::Failed)
         m_autoResetCamera = (autoresetcamera == "yes");
     }
     this->parseTFConfig( m_configuration );
+
+    if(m_configuration->hasAttribute("croppingBox") &&
+       m_configuration->getAttributeValue("croppingBox") == "no")
+    {
+        m_croppingBoxDefaultState = false;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -321,7 +335,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     m_boxWidget->On();
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->CroppingOn();
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->SetCroppingRegionPlanes( m_volumeMapper->GetBounds() );
-    m_bClippingBoxIsActivate = true;
+    m_bClippingBoxIsActivate = m_croppingBoxDefaultState;
 
     //shiftScale->Delete();
     imageImport->Delete();
@@ -414,9 +428,9 @@ void Volume::buildPipeline( )
     m_volumeProperty->ShadeOn();
     m_volumeProperty->SetInterpolationTypeToLinear();
 
-    m_volumeProperty->SetAmbient( 0.1 );
-    m_volumeProperty->SetDiffuse( 0.7 );
-    m_volumeProperty->SetSpecular( 0.2 );
+    m_volumeProperty->SetAmbient( 0.2 );
+    m_volumeProperty->SetDiffuse( 1.0 );
+    m_volumeProperty->SetSpecular( 1.0 );
     m_volumeProperty->SetSpecularPower( 10.0 );
 
     m_volume->SetMapper(m_volumeMapper);
