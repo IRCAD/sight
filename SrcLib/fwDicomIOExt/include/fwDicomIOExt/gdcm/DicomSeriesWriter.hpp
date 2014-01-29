@@ -49,6 +49,9 @@ public :
 
     /// Return an empty string
     FWDICOMIOEXT_API std::string  extension();
+
+protected :
+    unsigned int m_writeCount;
 };
 
 } // namespace gdcm

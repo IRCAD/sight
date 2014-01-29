@@ -88,8 +88,25 @@ void DicomSeries::addBinary(const std::string &filename, SPTR(::fwData::Array) b
 
 bool DicomSeries::isInstanceAvailable(unsigned int instanceIndex)
 {
-    return m_attrLocalDicomPaths.find(instanceIndex) != m_attrLocalDicomPaths.end()
-            && ::boost::filesystem::exists(m_attrLocalDicomPaths[instanceIndex]);
+    DicomPathContainerType::const_iterator localPathIter;
+
+    bool available = false;
+
+    switch(m_attrDicomAvailability)
+    {
+    case NONE:
+    case PATHS:
+        localPathIter = m_attrLocalDicomPaths.find(instanceIndex);
+        available = localPathIter != m_attrLocalDicomPaths.end() && ::boost::filesystem::exists(localPathIter->second);
+        break;
+    case BINARIES:
+        available = instanceIndex < m_attrDicomBinaries.size();
+        break;
+    default:
+        SLM_ASSERT("You shall not pass.",0);
+    }
+
+    return available;
 }
 
 } // namespace fwDicomData

@@ -28,7 +28,7 @@
                 <view sid="${GENERIC_UID}_bottomView" start="yes" />
             </registry>
         </service>
-        
+
         <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
             <gui>
                 <layout>
@@ -43,7 +43,7 @@
                 <menuItem sid="${GENERIC_UID}_action_pushSeries" start="yes" />
             </registry>
         </service>
-        
+
         <service uid="${GENERIC_UID}_topView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -55,7 +55,7 @@
                 <view sid="${GENERIC_UID}_queryEditor" start="yes" />
             </registry>
         </service>
-        
+
         <service uid="${GENERIC_UID}_centerView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -69,7 +69,7 @@
                 <view wid="${GENERIC_UID}_pacsPreview" start="yes" />
             </registry>
         </service>
-        
+
         <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -83,23 +83,23 @@
                 <view wid="${GENERIC_UID}_localPreview" start="yes" />
             </registry>
         </service>
-        
+
         <service uid="${GENERIC_UID}_progressBarController" impl="::ioDicomExt::common::controller::SProgressBarController" autoConnect="no">
         </service>
-        
-        
+
+
         <!-- MAIN -->
         <item key="mainSeriesDB">
             <object type="::fwMedData::SeriesDB" src="ref" uid="${SERIESDB}">
             </object>
         </item>
-        
+
         <!-- PACS CONFIGURATION -->
         <item key="pacsConfiguration">
-            <object type="::fwDicomIOExt::data::PacsConfiguration" uid="pacsConfiguration">
-                
+            <object type="::fwDicomIOExt::data::PacsConfiguration" uid="${GENERIC_UID}_pacsConfiguration">
+
                 <service uid="${GENERIC_UID}_pacsConfigurationInitializer" impl="::ioDicomExt::common::controller::SPacsConfigurationInitializer" autoConnect="yes">
-                    <config 
+                    <config
                         localApplicationTitle="VRRender"
                         pacsHostName="mypacs.mycompany.com"
                         pacsApplicationTitle="PACSNAME"
@@ -108,36 +108,36 @@
                         moveApplicationPort="11110"
                         retrieveMethod="GET" />
                 </service>
-                
+
                 <service uid="${GENERIC_UID}_action_editPacsConfiguration" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
                     <config>
                         <appConfig id="PacsConfigurationManager" >
                             <parameters>
-                                <parameter replace="PACS_CONFIGURATION" by="pacsConfiguration"  />
+                                <parameter replace="PACS_CONFIGURATION" by="${GENERIC_UID}_pacsConfiguration"  />
                                 <parameter replace="ICON_PATH" by="Bundles/mediaExt_0-1/icons/Settings.svg"  />
                             </parameters>
                         </appConfig>
                     </config>
                 </service>
-                                
+
             </object>
         </item>
-        
+
         <!-- PREVIEW -->
         <item key="previewSeriesDB">
             <object type="::fwMedData::SeriesDB" uid="${GENERIC_UID}_previewSeriesDB">
-                
+
                 <service uid="${GENERIC_UID}_previewSelector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
                     <selectionId>${GENERIC_UID}_previewSelections</selectionId>
                 </service>
-                
+
                 <service uid="${GENERIC_UID}_queryEditor" impl="::ioDicomExt::dcmtk::editor::SQueryEditor" autoConnect="yes">
-                    <config pacsConfigurationUID="pacsConfiguration" />
+                    <config pacsConfigurationUID="${GENERIC_UID}_pacsConfiguration" />
                 </service>
-                
+
             </object>
         </item>
-        
+
         <item key="previewSelections">
             <object type="::fwData::Vector" uid="${GENERIC_UID}_previewSelections">
                 <service uid="${GENERIC_UID}_action_pullSeries" impl="::gui::action::SSlotCaller" >
@@ -145,21 +145,23 @@
                         <slot>${GENERIC_UID}_pullSeriesController/update</slot>
                     </slots>
                 </service>
-                
+
                 <service uid="${GENERIC_UID}_pullSeriesController" impl="::ioDicomExt::dcmtk::controller::SSeriesPuller">
-                    <config pacsConfigurationUID="pacsConfiguration" dicomReader="::ioVtkGdcm::SSeriesDBReader" destinationSeriesDBUID="${GENERIC_UID}_localSeriesDB" />
+                    <config pacsConfigurationUID="${GENERIC_UID}_pacsConfiguration" dicomReader="::ioVtkGdcm::SSeriesDBReader" destinationSeriesDBUID="${GENERIC_UID}_localSeriesDB" />
                 </service>
-                
+
                 <service uid="${GENERIC_UID}_pacsViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
                     <parentView>${GENERIC_UID}_pacsPreview</parentView>
                     <configs>
-                        <config id="2DPacsPreviewConfig" type="::fwDicomData::DicomSeries" />
+                        <config id="2DPacsPreviewConfig" type="::fwDicomData::DicomSeries" >
+                            <parameter replace="PACS_CONFIGURATION" by="${GENERIC_UID}_pacsConfiguration" />
+                        </config>
                     </configs>
                 </service>
-                
+
             </object>
         </item>
-        
+
         <!-- LOCAL -->
         <item key="localSeriesDB">
             <object type="::fwMedData::SeriesDB" uid="${GENERIC_UID}_localSeriesDB">
@@ -168,7 +170,7 @@
                 </service>
             </object>
         </item>
-        
+
         <item key="localSelections">
             <object type="::fwData::Vector" uid="${GENERIC_UID}_localSelections">
                 <service uid="${GENERIC_UID}_localViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
@@ -198,7 +200,7 @@
         <start uid="${GENERIC_UID}_pacsViewer" />
         <start uid="${GENERIC_UID}_progressBarController" />
         <start uid="${GENERIC_UID}_pacsConfigurationInitializer" />
-        
+
         <update uid="${GENERIC_UID}_pacsConfigurationInitializer" />
 
     </object>

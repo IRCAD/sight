@@ -4,13 +4,15 @@
     <requirement id="gui" />
     <requirement id="guiQt" />
     <requirement id="ctrlSelection" />
-    <requirement id="uiVisu" />
-    <requirement id="uiVisuQt" />
+    <requirement id="ctrlMemory" />
+    <requirement id="visuVTKQt" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="uiImageQt" />
     <requirement id="media" />
     <requirement id="uiTF" />
     <requirement id="scene2D" />
+    <requirement id="activities" />
+    <requirement id="ioVtkGdcm" />
 
     <xi:include href="configurations/DicomRetriever.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/PacsConfigurationManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

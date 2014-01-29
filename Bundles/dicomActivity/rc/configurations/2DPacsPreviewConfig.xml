@@ -5,6 +5,7 @@
             <param name="GENERIC_UID" />
             <param name="WID_PARENT" />
             <param name="objectID" />
+            <param name="PACS_CONFIGURATION" />
         </parameters>
         <config>
             <object type="::fwData::Composite" uid="${GENERIC_UID}_previewComposite">
@@ -38,8 +39,8 @@
                             <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
                         </adaptor>
                     </scene>
-                </service>               
-                
+                </service>
+
                 <service uid="${GENERIC_UID}_manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
                     <mode type="stop" />
                     <config>
@@ -49,11 +50,11 @@
                         </object>
                     </config>
                 </service>
-                
+
                 <item key="dicomSeries">
                     <object uid="${objectID}" src="ref">
                         <service uid="${GENERIC_UID}_sliderIndexDicomPullerEditor" type="::gui::editor::IEditor" impl="::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor" autoConnect="yes">
-                            <config compositeUID="${GENERIC_UID}_previewComposite" imageKey="image" dicomReader="::ioVtkGdcm::SSeriesDBReader" pacsConfigurationUID="pacsConfiguration" />
+                            <config compositeUID="${GENERIC_UID}_previewComposite" imageKey="image" dicomReader="::ioVtkGdcm::SSeriesDBReader" pacsConfigurationUID="${PACS_CONFIGURATION}" />
                         </service>
                     </object>
                 </item>

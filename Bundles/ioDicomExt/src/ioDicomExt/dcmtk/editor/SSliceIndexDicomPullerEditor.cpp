@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <iterator>
+
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QMouseEvent>
@@ -11,6 +13,7 @@
 #include <boost/asio/placeholders.hpp>
 #include <boost/foreach.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
@@ -18,6 +21,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Array.hpp>
 #include <fwDicomData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwServices/macros.hpp>
@@ -30,9 +34,12 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
 #include <fwComEd/helper/Composite.hpp>
+#include <fwComEd/helper/Array.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwTools/System.hpp>
+
+#include <fwCom/Slot.hpp>
 
 #include "ioDicomExt/dcmtk/editor/SSliceIndexDicomPullerEditor.hpp"
 
@@ -96,7 +103,6 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
 
     // Get pacs configuration
     m_pacsConfiguration = ::fwDicomIOExt::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
-    SLM_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
 
     // Composite
     m_composite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_compositeUID));
@@ -256,7 +262,8 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice(const boost::system::error_co
         SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
         // Compute slice index
-        unsigned int selectedSliceIndex = m_numberOfSlices - m_sliceIndexSlider->value();
+        unsigned int selectedSliceIndex = m_numberOfSlices - m_sliceIndexSlider->value() - 1;
+        OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
         if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
         {
             m_pullSeriesWorker->post(::boost::bind(&::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor::pullInstance, this));
@@ -282,24 +289,64 @@ void SSliceIndexDicomPullerEditor::readImage(unsigned int selectedSliceIndex)
     // DicomSeries
     ::fwDicomData::DicomSeries::sptr dicomSeries = this->getObject< ::fwDicomData::DicomSeries >();
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+    if( dicomSeries->getModality() != "CT" && dicomSeries->getModality() != "MR")
+    {
+        return;
+    }
 
     // Clear temporary seriesDB
     ::fwComEd::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
     sDBTempohelper.clear();
 
-    //Clear tmp Folder
-    ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicom/";
-    ::boost::filesystem::path tmpPath = ::boost::filesystem::path(path.string()+"tmp/");
-    if (::boost::filesystem::exists(tmpPath))
-    {
-        ::boost::filesystem::remove_all(tmpPath);
-    }
+    // Creates unique temporary folder, no need to check if exists before (see ::fwTools::System::getTemporaryFolder)
+    ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder("dicom");
+    ::boost::filesystem::path tmpPath = path / "tmp";
+
+    SLM_INFO("Create " + tmpPath.string());
     ::boost::filesystem::create_directories(tmpPath);
 
-    ::fwDicomData::DicomSeries::DicomPathContainerType paths = dicomSeries->getLocalDicomPaths();
-    ::boost::filesystem::path src = paths[selectedSliceIndex];
-    ::boost::filesystem::path dest = tmpPath.string() + src.filename().string();
-    ::boost::filesystem::copy(src, dest);
+
+    SLM_ASSERT("Dicom data shall be available before reading them.",
+               dicomSeries->getDicomAvailability() != ::fwDicomData::DicomSeries::NONE
+               || dicomSeries->isInstanceAvailable(selectedSliceIndex));
+
+    if(dicomSeries->getDicomAvailability() != ::fwDicomData::DicomSeries::BINARIES )
+    {
+        ::fwDicomData::DicomSeries::DicomPathContainerType paths = dicomSeries->getLocalDicomPaths();
+        ::boost::filesystem::path src = paths[selectedSliceIndex];
+        ::boost::filesystem::path dest = tmpPath / src.filename();
+
+        ::boost::system::error_code err;
+        ::boost::filesystem::create_hard_link( src, dest, err );
+        if (err.value() != 0)
+        {
+            SLM_INFO("Copying " + src.string() + " to " + dest.string());
+            ::boost::filesystem::copy( src, dest );
+
+            ::boost::system::error_code errPerm;
+            ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, errPerm);
+            SLM_ERROR_IF("set permission error : " + errPerm.message(), errPerm.value());
+        }
+    }
+    else if(dicomSeries->getDicomAvailability() == ::fwDicomData::DicomSeries::BINARIES)
+    {
+
+        const ::fwDicomData::DicomSeries::DicomBinaryContainerType& binaries = dicomSeries->getDicomBinaries();
+        ::fwDicomData::DicomSeries::DicomBinaryContainerType::const_iterator binary = binaries.begin();
+        std::advance(binary, selectedSliceIndex);
+
+        ::fwData::Array::sptr array = binary->second;
+        ::fwComEd::helper::Array arrayHelper(array);
+        char* buffer = (char*)arrayHelper.getBuffer();
+        size_t size = array->getSizeInBytes();
+
+        ::boost::filesystem::path dest = tmpPath / binary->first;
+        ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
+        FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
+
+        fs.write(buffer, size);
+        fs.close();
+    }
 
     // Read image
     m_dicomReader->setFolder(tmpPath);
@@ -345,60 +392,70 @@ void SSliceIndexDicomPullerEditor::readImage(unsigned int selectedSliceIndex)
         newImage->setField(::fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
 
         helper.notify(this->getSptr());
-
     }
 
+    ::boost::system::error_code ec;
+    ::boost::filesystem::remove_all(path, ec);
+    SLM_ERROR_IF("remove_all error for path " + path.string() + ": " + ec.message(), ec.value());
 }
 
 //------------------------------------------------------------------------------
 
 void SSliceIndexDicomPullerEditor::pullInstance()
 {
-    // Catch any errors
-    try
+    SLM_ASSERT("Pacs not configured.",m_pacsConfiguration);
+
+    if( m_pacsConfiguration )
     {
-        // DicomSeries
-        ::fwDicomData::DicomSeries::sptr dicomSeries = this->getObject< ::fwDicomData::DicomSeries >();
-        SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
-
-        // Get selected slice
-        unsigned int selectedSliceIndex = m_numberOfSlices - m_sliceIndexSlider->value();
-
-        m_seriesEnquirer->initialize(
-                m_pacsConfiguration->getLocalApplicationTitle(),
-                m_pacsConfiguration->getPacsHostName(),
-                m_pacsConfiguration->getPacsApplicationPort(),
-                m_pacsConfiguration->getPacsApplicationTitle(),
-                m_pacsConfiguration->getMoveApplicationTitle());
-
-        m_seriesEnquirer->connect();
-        std::string seriesInstanceUID = dicomSeries->getInstanceUID();
-        std::string sopInstanceUID = m_seriesEnquirer->findSOPInstanceUID(seriesInstanceUID, selectedSliceIndex);
-
-        if(!sopInstanceUID.empty())
+        // Catch any errors
+        try
         {
-            // Pull Selected Series using C-GET Requests
-            m_seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
-            m_seriesEnquirer->disconnect();
+            // DicomSeries
+            ::fwDicomData::DicomSeries::sptr dicomSeries = this->getObject< ::fwDicomData::DicomSeries >();
+            SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+
+            // Get selected slice
+            unsigned int selectedSliceIndex = m_numberOfSlices - m_sliceIndexSlider->value() - 1;
+
+            m_seriesEnquirer->initialize(m_pacsConfiguration->getLocalApplicationTitle(),
+                                         m_pacsConfiguration->getPacsHostName(),
+                                         m_pacsConfiguration->getPacsApplicationPort(),
+                                         m_pacsConfiguration->getPacsApplicationTitle(),
+                                         m_pacsConfiguration->getMoveApplicationTitle());
+
+            m_seriesEnquirer->connect();
+            std::string seriesInstanceUID = dicomSeries->getInstanceUID();
+            std::string sopInstanceUID = m_seriesEnquirer->findSOPInstanceUID(seriesInstanceUID, selectedSliceIndex);
+
+            if(!sopInstanceUID.empty())
+            {
+                // Pull Selected Series using C-GET Requests
+                m_seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
+                m_seriesEnquirer->disconnect();
+            }
+
+            ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicom/";
+            ::boost::filesystem::path filePath = path.string() + seriesInstanceUID + "/" + sopInstanceUID;
+            dicomSeries->addDicomPath(selectedSliceIndex, filePath);
+            m_slotReadImage->asyncRun(selectedSliceIndex);
+
         }
-
-        ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicom/";
-        ::boost::filesystem::path filePath = path.string() + seriesInstanceUID + "/" + sopInstanceUID;
-        dicomSeries->addDicomPath(selectedSliceIndex, filePath);
-        m_slotReadImage->asyncRun(selectedSliceIndex);
-
-    }
-    catch (::fwDicomIOExt::exceptions::Base& exception)
-    {
-        std::stringstream ss;
-        ss << "Unable to connect to the pacs. Please check your configuration: \n"
+        catch (::fwDicomIOExt::exceptions::Base& exception)
+        {
+            std::stringstream ss;
+            ss << "Unable to connect to the pacs. Please check your configuration: \n"
                 << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
                 << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
                 << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
-        m_slotDisplayMessage->asyncRun(ss.str());
-        SLM_WARN(exception.what());
-    }
+            m_slotDisplayMessage->asyncRun(ss.str());
+            SLM_WARN(exception.what());
+        }
 
+    }
+    else
+    {
+        SLM_ERROR("Pacs pull aborted : no pacs configuration found.");
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -4,8 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <iomanip>
+
 #include <boost/foreach.hpp>
 #include <boost/exception/all.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <gdcmGlobal.h>
 #include <gdcmReader.h>
@@ -44,10 +47,15 @@ DicomAnonymizer::~DicomAnonymizer()
 void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
 {
     // Create temporary directory
-    const ::boost::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder() / "DicomAnonymizer";
-    DicomAnonymizer::copyDirectory(dirPath, tmpPath);
-    ::boost::filesystem::remove_all(dirPath);
-    ::boost::filesystem::create_directory(dirPath);
+    ::boost::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder("DicomAnonymizer");
+    tmpPath /= "tmp";
+
+    ::boost::system::error_code ec;
+    ::boost::filesystem::rename(dirPath, tmpPath, ec);
+    FW_RAISE_IF("rename " << dirPath.string() << " to " << tmpPath.string() << " error : " << ec.message(), ec.value());
+
+    ::boost::filesystem::create_directory(dirPath, ec);
+    FW_RAISE_IF("create_directory " << dirPath.string() << " error : " << ec.message(), ec.value());
 
     std::vector<std::string> dicomFiles;
     ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(tmpPath, dicomFiles);
@@ -384,7 +392,8 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
             writer.SetFile( reader.GetFile() );
 
             std::stringstream ss;
-            ss << "im" << fileIndex;
+            ss << "im" << std::setfill('0') << std::setw(5) << fileIndex;
+
             ::boost::filesystem::path destination = dirPath / ss.str();
             writer.SetFileName( destination.string().c_str() );
             if( !writer.Write() )
@@ -392,9 +401,16 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
                 SLM_ERROR ( "Unable to anonymise this file (File write failed) : " + file);
             }
 
+            ::boost::system::error_code ec;
+            ::boost::filesystem::remove(tmpPath / ss.str(), ec);
+            FW_RAISE_IF("remove file " << (tmpPath / ss.str()).string() << " error : " << ec.message(), ec.value());
+
         }    // Delete the scope
         ++fileIndex;
     }
+
+    ::boost::filesystem::remove_all(tmpPath, ec);
+    FW_RAISE_IF("remove anonymize dir " << tmpPath.string() << " error : " << ec.message(), ec.value());
 }
 
 //------------------------------------------------------------------------------
@@ -739,19 +755,30 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
 
 void DicomAnonymizer::copyDirectory(::boost::filesystem::path input, ::boost::filesystem::path output)
 {
-    ::boost::filesystem::copy_directory(input, output);
+    ::boost::system::error_code ec;
+    ::boost::filesystem::copy_directory(input, output, ec);
+    FW_RAISE_IF("copy_directory " << input.string() << " " << output.string() << " error : " << ec.message(), ec.value());
+
     ::boost::filesystem::directory_iterator it(input);
     ::boost::filesystem::directory_iterator end;
+    ::boost::filesystem::permissions(output, ::boost::filesystem::owner_all, ec);
+    SLM_ERROR_IF("set " + output.string() + " permission error : " + ec.message(), ec.value());
+
     for(; it != end; ++it)
     {
+        ::boost::filesystem::path dest = output / it->path().filename();
         if(::boost::filesystem::is_directory(*it))
         {
-            DicomAnonymizer::copyDirectory(*it, output / it->path().filename());
+            DicomAnonymizer::copyDirectory(*it, dest);
         }
         else
         {
-            ::boost::filesystem::copy(*it, output / it->path().filename());
+            ::boost::filesystem::copy(*it, dest, ec);
+            FW_RAISE_IF("copy_directory " << it->path().string() << " " << dest.string() << " error : " << ec.message(), ec.value());
         }
+
+        ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, ec);
+        SLM_ERROR_IF("set " + dest.string() + " permission error : " + ec.message(), ec.value());
     }
 }
 

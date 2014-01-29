@@ -341,10 +341,10 @@ void DicomSeriesDBReader::fillDicomSeries(
     BOOST_FOREACH(const std::string &str, seriesFiles)
     {
         ::boost::filesystem::path path(str);
-        series->addBinary(path.filename().string(),this->convertToBinary(str));
+        series->addDicomPath(count,path.string());
         this->notifyProgress(float(++count)/seriesFiles.size(), "Reading series...");
     }
-    series->setDicomAvailability(::fwDicomData::DicomSeries::BINARIES);
+    series->setDicomAvailability(::fwDicomData::DicomSeries::PATHS);
 }
 
 //------------------------------------------------------------------------------
