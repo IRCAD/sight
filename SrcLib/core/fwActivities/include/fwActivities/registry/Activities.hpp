@@ -134,6 +134,7 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     std::string icon;
     RequirementsType requirements;
     std::string builderImpl;
+    std::string validatorImpl;
     ActivityAppConfig appConfig;
 
 protected:
