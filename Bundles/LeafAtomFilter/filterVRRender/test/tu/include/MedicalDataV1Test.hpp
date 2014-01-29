@@ -11,8 +11,6 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwData/Patient.hpp>
-
 namespace filterVRRender
 {
 namespace ut

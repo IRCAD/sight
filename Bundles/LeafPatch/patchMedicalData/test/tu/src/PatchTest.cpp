@@ -136,8 +136,8 @@ void PatchTest::patchMedicalDataTest()
     CPPUNIT_ASSERT( ::fwMedData::ImageSeries::dynamicCast(series) );
     CPPUNIT_ASSERT_EQUAL(std::string("1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855"),
             series->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(std::string("2008/10/28"), series->getDate());
-    CPPUNIT_ASSERT_EQUAL(std::string("17:44:46"), series->getTime());
+    CPPUNIT_ASSERT_EQUAL(std::string("20081028"), series->getDate());
+    CPPUNIT_ASSERT_EQUAL(std::string("174446"), series->getTime());
     CPPUNIT_ASSERT_EQUAL(std::string("Original image"),series->getDescription());
     CPPUNIT_ASSERT_EQUAL(std::string("CT"), series->getModality());
 
@@ -145,7 +145,7 @@ void PatchTest::patchMedicalDataTest()
     ::fwMedData::Patient::sptr patient = series->getPatient();
     CPPUNIT_ASSERT( patient );
     CPPUNIT_ASSERT_EQUAL(std::string("12592 ARTHRO GENOU  G"), patient->getPatientId());
-    CPPUNIT_ASSERT_EQUAL(std::string("1979/06/18"), patient->getBirthdate());
+    CPPUNIT_ASSERT_EQUAL(std::string("19790618"), patient->getBirthdate());
     CPPUNIT_ASSERT_EQUAL(std::string("M"), patient->getSex());
 
 
@@ -153,8 +153,8 @@ void PatchTest::patchMedicalDataTest()
     CPPUNIT_ASSERT( study );
     CPPUNIT_ASSERT_EQUAL(std::string("1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775"),
             study->getInstanceUID());
-    CPPUNIT_ASSERT_EQUAL(std::string("2008/10/28"), study->getDate());
-    CPPUNIT_ASSERT_EQUAL(std::string("17:44:46"), study->getTime());
+    CPPUNIT_ASSERT_EQUAL(std::string("20081028"), study->getDate());
+    CPPUNIT_ASSERT_EQUAL(std::string("174446"), study->getTime());
     CPPUNIT_ASSERT_EQUAL(std::string(""), study->getReferringPhysicianName());
     CPPUNIT_ASSERT_EQUAL(std::string(""), study->getDescription());
     CPPUNIT_ASSERT_EQUAL(std::string(""), study->getPatientAge());
