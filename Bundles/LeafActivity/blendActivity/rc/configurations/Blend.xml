@@ -120,6 +120,7 @@
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_action_blendView" />
+            <start uid="${GENERIC_UID}_myManagerLockDump" />
 
         </object>
 
