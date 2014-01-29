@@ -64,7 +64,12 @@ SReader::SReader() :
         m_context ("Undefined"),
         m_version ("Undefined"),
         m_filter  ("")
-{}
+{
+    BOOST_FOREACH(SReader::FileExtension2NameType::value_type ext, s_EXTENSIONS)
+    {
+        m_allowedExts.insert(m_allowedExts.end(), ext.first);
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -87,23 +92,67 @@ void SReader::configuring() throw(::fwTools::Failed)
     typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationElement;
     typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
 
+    m_customExts.clear();
+    m_allowedExtLabels.clear();
+
+    ConfigurationElementContainer customExtsList = m_configuration->find("archive");
+    BOOST_FOREACH(ConfigurationElement archive, customExtsList)
+    {
+        const std::string& backend = archive->getAttributeValue("backend");
+        SLM_ASSERT("No backend attribute given in archive tag", backend != "");
+        SLM_ASSERT("Unsupported backend '" + backend + "'", s_EXTENSIONS.find("." + backend) != s_EXTENSIONS.end());
+
+        ConfigurationElementContainer exts = archive->find("extension");
+        BOOST_FOREACH(ConfigurationElement ext, exts)
+        {
+            const std::string& extension = ext->getValue();
+            SLM_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
+            SLM_ASSERT("Extension must begin with '.'", extension[0] == '.');
+
+            m_customExts[extension] = backend;
+            m_allowedExtLabels[extension] = ext->getAttributeValue("label");
+        }
+    }
+
     ConfigurationElementContainer extensionsList = m_configuration->find("extensions");
     SLM_ASSERT("The <extensions> element can be set at most once.", extensionsList.size() <= 1);
 
     if(extensionsList.size() == 1)
     {
+        m_allowedExts.clear();
+
         ConfigurationElementContainer extensions = extensionsList.at(0)->find("extension");
         BOOST_FOREACH(ConfigurationElement extension, extensions)
         {
             const std::string& ext = extension->getValue();
-            FileExtension2NameType::const_iterator it = s_EXTENSIONS.find(ext);
 
-            SLM_ASSERT("Extension '" + ext + "' is not allowed in configuration", it != s_EXTENSIONS.end());
+            // The extension must be found either in custom extensions list or in known extensions
+            FileExtension2NameType::const_iterator itKnown = s_EXTENSIONS.find(ext);
+            FileExtension2NameType::const_iterator itCustom = m_customExts.find(ext);
 
-            if(it != s_EXTENSIONS.end())
+            const bool extIsKnown = (itKnown != SReader::s_EXTENSIONS.end() || itCustom != m_customExts.end());
+            SLM_ASSERT("Extension '" + ext + "' is not allowed in configuration", extIsKnown);
+
+            if(extIsKnown)
             {
                 m_allowedExts.insert(m_allowedExts.end(), ext);
+                m_allowedExtLabels[ext] = extension->getAttributeValue("label");
             }
+        }
+    }
+    else
+    {
+        m_allowedExts.clear();
+
+        BOOST_FOREACH(FileExtension2NameType::value_type ext, m_customExts)
+        {
+            m_allowedExts.insert(m_allowedExts.end(), ext.first);
+        }
+
+        BOOST_FOREACH(SReader::FileExtension2NameType::value_type ext, SReader::s_EXTENSIONS)
+        {
+            m_allowedExts.insert(m_allowedExts.end(), ext.first);
+            m_allowedExtLabels[ext.first] = ext.second;
         }
     }
 
@@ -212,9 +261,14 @@ void SReader::updating() throw(::fwTools::Failed)
             const ::boost::filesystem::path& filePath = this->getFile();
             const ::boost::filesystem::path folderPath = filePath.parent_path();
             const ::boost::filesystem::path filename = filePath.filename();
-            const std::string extension = ::boost::filesystem::extension(filePath);
+            std::string extension = ::boost::filesystem::extension(filePath);
 
             FW_RAISE_IF( "Unable to guess file format (missing extension)", extension.empty() );
+
+            if(m_customExts.find(extension) != m_customExts.end())
+            {
+                extension = "." + m_customExts[extension];
+            }
 
             ::fwAtoms::Object::sptr atom;
             if ( extension == ".hdf5" )
@@ -275,6 +329,7 @@ void SReader::updating() throw(::fwTools::Failed)
                 OSLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
                 filter->apply(atom);
             }
+
 
             ::fwData::Object::sptr newData ;
 
@@ -361,25 +416,11 @@ void SReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::LocationDialog::FILE_MUST_EXIST);
 
-    if(m_allowedExts.empty() || m_allowedExts.size() == s_EXTENSIONS.size())  // all extensions allowed
-    {
-        dialogFile.addFilter("Medical data", "*.json *.jsonz *.xml *.xmlz *.hdf5");
-        BOOST_FOREACH(const FileExtension2NameType::value_type& ext, s_EXTENSIONS)
-        {
-            dialogFile.addFilter(ext.second, "*" + ext.first);
-        }
-    }
-    else
-    {
-        dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
+    dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
 
-        BOOST_FOREACH(const std::string& ext, m_allowedExts)
-        {
-            FileExtension2NameType::const_iterator it = s_EXTENSIONS.find(ext);
-            OSLM_ASSERT("Didn't find extension '" << ext << "' in managed extensions map", it != s_EXTENSIONS.end());
-
-            dialogFile.addFilter(it->second, "*" + ext);
-        }
+    BOOST_FOREACH(const std::string& ext, m_allowedExts)
+    {
+        dialogFile.addFilter(m_allowedExtLabels[ext], "*" + ext);
     }
 
     ::fwData::location::SingleFile::sptr result
