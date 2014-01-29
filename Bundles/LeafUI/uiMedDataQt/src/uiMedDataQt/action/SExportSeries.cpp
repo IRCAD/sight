@@ -154,7 +154,7 @@ void SExportSeries::configuring() throw(::fwTools::Failed)
     SLM_ASSERT("Missing tag 'seriesId'", !seriesCfg.empty());
 
     m_seriesId = seriesCfg.front()->getValue();
-    SLM_ASSERT("selectionId must not be empty", !m_seriesId.empty());
+    SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
 }
 
 //------------------------------------------------------------------------------
