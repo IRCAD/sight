@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <ostream>
 #include <vector>
+#include <string>
 
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
@@ -233,21 +234,32 @@ int main(int argc, char* argv[])
     }
 
 #ifdef __MACOSX__
-    if (vm.count("psn"))
+    fs::path execPath = argv[0];
+
+    if ( execPath.string().find(".app/") != std::string::npos || vm.count("psn"))
     {
-        fs::path pathOSX = argv[0];
         bool isChdirOkOSX = false;
 
-        fs::path osxTestPath = pathOSX.parent_path() / "Bundles";
-        if ( fs::is_directory( osxTestPath ) )
+        fs::path execPath = argv[0];
+
+        while ( fs::extension(execPath) != ".app"
+                && execPath != execPath.parent_path()
+                && !fs::is_directory( execPath / "Bundles" )
+                )
         {
-            isChdirOkOSX = (chdir(osxTestPath.string().c_str()) == 0);
+            execPath = execPath.parent_path();
         }
-        if ( !isChdirOkOSX )
+
+        if ( fs::is_directory( execPath / "Contents" / "Bundles" ) )
         {
-            fs::path osxTestPath = osxTestPath.parent_path() / "Bundles";
-            isChdirOkOSX = (chdir(osxTestPath.string().c_str()) == 0);
+            execPath = execPath / "Contents";
         }
+        else
+        {
+            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / "Bundles" ));
+        }
+
+        isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
 
         SLM_ERROR_IF("Was not able to find a directory to change to.", !isChdirOkOSX);
     }
