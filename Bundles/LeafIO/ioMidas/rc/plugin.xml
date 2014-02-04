@@ -1,0 +1,14 @@
+<plugin id="ioMidas" class="ioMidas::Plugin" >
+    <library name="ioMidas" />
+
+    <requirement id="io" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioMidas::SAcquisitionWriter</service>
+        <object>::fwData::Acquisition</object>
+        <desc>Midas acquisition writer</desc>
+    </extension>
+
+</plugin>
+

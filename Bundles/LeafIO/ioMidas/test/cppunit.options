@@ -1,0 +1,16 @@
+CLASSTEST=[
+          'IoMidasTest',
+          ]
+
+USE = ['boost', 'json-spirit']
+LIB = ['fwData_0-1',
+       'fwTest_0-1',
+       'midasIO_0-1',
+       ]
+
+BUNDLES = ['ioMidas_0-1']
+REQUIREMENTS = ['ioMidas_0-1','dataReg_0-1','servicesReg_0-1']
+
+CONSOLE = 'yes'
+
+LOGLEVEL='trace'
