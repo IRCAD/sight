@@ -48,7 +48,7 @@ SeriesDB::~SeriesDB()
 void SeriesDB::write()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    SLM_ASSERT("dataPatientDB not instanced", seriesDB);
+    SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
     // Used to set name folder of the current patient.
     size_t seriesID  = 1;

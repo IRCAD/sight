@@ -52,17 +52,17 @@ public :
  *
  * Registry config like :
  * @verbatim
-<extension implements="::fwServices::registry::ServiceConfig">
-    <id>IOSelectorVRMedPatientDBWriter</id>
-    <service>::uiIO::editor::IOSelectorService</service>
-    <desc>IOSelector config for VRMed patientDB writer</desc>
-    <config>
-        <type mode="writer" />
-        <selection mode="exclude" />
-        <addSelection service="::ioXML::FwXMLGenericWriterService" />
-        <addSelection service="::uiDicomViewer::DicomPatientDBWriterService" />
-    </config>
-</extension>
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>SDBOpenIOSelectorConfig</id>
+        <service>::uiIO::editor::IOSelectorService</service>
+        <desc>"Open" action's IOSelector config</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
    @endverbatim
  */
 class FWSERVICES_CLASS_API ServiceConfig : public ::fwCore::BaseObject

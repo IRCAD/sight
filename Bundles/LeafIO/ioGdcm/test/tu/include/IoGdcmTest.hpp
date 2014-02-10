@@ -11,22 +11,19 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwData/Patient.hpp>
-
 namespace ioGdcm
 {
 namespace ut
 {
 
 /**
- * @brief Test many methods to create mesh.
+ * @brief Test GDCM reader/writer for SeriesDB.
  */
 class IoGdcmTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( IoGdcmTest );
-    CPPUNIT_TEST( testPatientDBReaderDicom );
-    CPPUNIT_TEST( testDicomPatientWriter );
-    CPPUNIT_TEST( testDicomPatientDBWriter );
+    CPPUNIT_TEST( testSeriesDBReader );
+    CPPUNIT_TEST( testSeriesWriter );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -35,15 +32,9 @@ public:
     void setUp();
     void tearDown();
 
-    void testImageWriterJPG();
-    void testPatientDBReaderJPG();
-    void testSaveLoadInr();
-    void testLoadInr();
-    void testPatientDBReaderDicom();
 
-    void testDicomImageWriter();
-    void testDicomPatientWriter();
-    void testDicomPatientDBWriter();
+    void testSeriesDBReader();
+    void testSeriesWriter();
 
 private :
 

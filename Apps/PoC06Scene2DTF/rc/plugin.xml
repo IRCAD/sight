@@ -133,7 +133,7 @@
                     </snap>
                 </service>
 
-                <!-- patientDB description -->
+                <!-- image description -->
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
 

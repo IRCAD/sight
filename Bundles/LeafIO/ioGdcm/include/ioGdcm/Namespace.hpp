@@ -8,7 +8,7 @@
 #define IOGDCMNAMESPACE_HPP_
 
 /**
- * @brief       The namespace ioGdcm contains service to create a PatientDB from DICOM data with gdcm library.
+ * @brief       The namespace ioGdcm contains service to create a SeriesDB from DICOM data with gdcm library.
  * This bundle uses the FW4SPL gdcmIO library
  * @namespace   ioGdcm
  * 

@@ -67,9 +67,8 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
     bool vectorIsAlreadyCleared = false;
 
     //  Config Elem
-    //  <selection mode="exclude">
-    //  <addSelection service="::ioMfo::MfoPatientDBReaderService" />
-    //  <addSelection service="::ioMfo::MfoDBPatientDBReaderService" />
+    //  <selection mode="include" />
+    //  <addSelection service="::ioAtoms::SWriter" />
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
     for( ; iter != this->m_configuration->end() ; ++iter )
