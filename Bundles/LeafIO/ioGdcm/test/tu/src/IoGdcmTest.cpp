@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/filesystem/operations.hpp>
+
 #include <gdcmTrace.h>
 
 #include <fwTools/dateAndTime.hpp>
@@ -12,15 +14,12 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/PatientDB.hpp>
-#include <fwData/Study.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/ImageSeries.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
-
-#include <fwDataTools/Patient.hpp>
-#include <fwDataTools/Image.hpp>
+#include <fwTest/generator/SeriesDB.hpp>
 
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -71,7 +70,7 @@ void IoGdcmTest::executeService( ::fwData::Object::sptr obj, std::string srvType
 
 //------------------------------------------------------------------------------
 
-void IoGdcmTest::testPatientDBReaderDicom()
+void IoGdcmTest::testSeriesDBReader()
 {
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
 
@@ -82,27 +81,26 @@ void IoGdcmTest::testPatientDBReaderDicom()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
-    this->executeService( patientDB, "::io::IReader", "::ioGdcm::DicomPatientDBReaderService", srvCfg );
+    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    this->executeService( seriesDB, "::io::IReader", "::ioGdcm::SSeriesDBReader", srvCfg );
 
     // Get patient
-    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), patientDB->getNumberOfPatients());
-    ::fwData::Patient::sptr patient = patientDB->getPatients().front();
-
-    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkPatientACHGenou( patient ) );
+    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->getContainer().size());
+    ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(seriesDB->getContainer().front());
+    CPPUNIT_ASSERT(imgSeries);
+    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesACHGenou( imgSeries ) );
 }
 
 //------------------------------------------------------------------------------
 
-void IoGdcmTest::testDicomPatientWriter()
+void IoGdcmTest::testSeriesWriter()
 {
     // Create path
     const ::boost::filesystem::path path = "imageDicomTest";
     ::boost::filesystem::create_directories( path );
 
     // Create data
-    ::fwData::Patient::sptr patient = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient, 2, 2, 0);
+    ::fwMedData::ImageSeries::sptr imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
@@ -111,37 +109,7 @@ void IoGdcmTest::testDicomPatientWriter()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    this->executeService( patient, "::io::IWriter", "::ioGdcm::DicomPatientWriterService", srvCfg );
-
-    // Remove path
-    ::boost::filesystem::remove_all( path.string() );
-}
-
-//------------------------------------------------------------------------------
-
-void IoGdcmTest::testDicomPatientDBWriter()
-{
-    // Create path
-    const ::boost::filesystem::path path = "imageDicomTest";
-    ::boost::filesystem::create_directories( path );
-
-    // Create data
-    ::fwData::PatientDB::sptr patientDB = ::fwData::PatientDB::New();
-    ::fwData::Patient::sptr patient1 = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient1, 2, 2, 0);
-    patientDB->addPatient( patient1 );
-    ::fwData::Patient::sptr patient2 = ::fwData::Patient::New();
-    ::fwDataTools::Patient::generatePatient(patient2, 1, 3, 0);
-    patientDB->addPatient( patient2 );
-
-    // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("folder");
-    fileCfg->setValue(path.string());
-    srvCfg->addConfigurationElement(fileCfg);
-
-    // Create and execute service
-    this->executeService( patientDB, "::io::IWriter", "::ioGdcm::DicomPatientDBWriterService", srvCfg );
+    this->executeService( imgSeries, "::io::IWriter", "::ioGdcm::SSeriesWriter", srvCfg );
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );

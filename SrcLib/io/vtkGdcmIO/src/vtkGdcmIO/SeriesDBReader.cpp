@@ -426,7 +426,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
 void SeriesDBReader::read()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr patientDB = this->getConcreteObject();
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
     std::vector<std::string> filenames;
     if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
     {
@@ -439,7 +439,7 @@ void SeriesDBReader::read()
             filenames.push_back(file.string());
         }
     }
-    this->addSeries( patientDB , filenames);
+    this->addSeries( seriesDB , filenames);
 }
 
 } //namespace vtkGdcmIO

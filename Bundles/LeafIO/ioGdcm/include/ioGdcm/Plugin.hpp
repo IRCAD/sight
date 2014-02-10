@@ -11,9 +11,7 @@
 
 namespace ioGdcm
 {
-/**
- * 
- */
+
 struct Plugin : public ::fwRuntime::Plugin
 {
     /**

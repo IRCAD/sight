@@ -69,11 +69,11 @@ protected:
      * Sample of declaration configuration :
      *
      * @verbatim
-         <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
-         <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+         <update compositeKey="reconstructionKey" onEvent="NEW_RECONSTRUCTION" fromUID="modelSeriesUid" actionType="ADD_OR_SWAP" />
+         <update compositeKey="reconstructionKey" onEvent="CLEAR" fromUID="modelSeriesUid" actionType="REMOVE" />
        @endverbatim
-     * Here, when the updater receives a message with the NEW_PATIENT event from the object "myPatientDB" the object myImage is added or swapped in the composite.
-     * When the updater receives a message with the CLEAR_PATIENT event from the object "myPatientDB" the object myImage is removed from the composite
+     * Here, when the updater receives a message with the NEW_RECONSTRUCTION event from the object "modelSeriesUid" the object reconstructionKey is added or swapped in the composite.
+     * When the updater receives a message with the CLEAR event from the object "modelSeriesUid" the object reconstructionKey is removed from the composite
      *
      * The actionType can be : ADD, ADD_OR_SWAP, SWAP, REMOVE, REMOVE_IF_PRESENT and DO_NOTHING
      */

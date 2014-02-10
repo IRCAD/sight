@@ -10,7 +10,7 @@ namespace ut
 {
 
 /**
- * @brief Test basic reader/writer for PatientDB.
+ * @brief Test basic reader/writer for SeriesDB.
  */
 class IoAtomsTest : public CPPUNIT_NS::TestFixture
 {

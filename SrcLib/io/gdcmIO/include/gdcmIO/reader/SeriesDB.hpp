@@ -26,11 +26,10 @@ namespace reader
 {
 
 /**
- * @brief   This class adds patient(s) from DICOM file(s) to fwData::PatientDB.
+ * @brief   This class adds Series(s) from DICOM file(s) to fwMedData::SeriesDB.
  *
- * It will sort each patient from file(s) and launch DicomPatient.
  *
- * @class   DicomPatientDB
+ * @class   SeriesDB
  */
 class GDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
                                                  public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader > ,
@@ -47,9 +46,9 @@ public :
     typedef std::map< std::string, std::vector< std::string > > MapSeriesType;
 
     /**
-     * @brief   Launch patient(s) reading.
+     * @brief   Launch Series(s) reading.
      * First, This method filters DICOM files.
-     * Then, It adds all properly read patients.
+     * Then, It adds all properly read Series.
      *
      * @note    setFolder() have to be called before this one.
      */
