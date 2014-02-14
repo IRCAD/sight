@@ -7,6 +7,8 @@
 #ifndef _GUI_ACTION_CONFIGACTIONSRV_HPP_
 #define _GUI_ACTION_CONFIGACTIONSRV_HPP_
 
+#include <fwCom/Signal.hpp>
+
 #include <fwTools/Failed.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -78,8 +80,17 @@ public :
     /// Set the action service is activated/inactivated.
     GUI_API virtual void setIsActive(bool isActive);
 
+    // Launched signal key
+    GUI_API static const ::fwCom::Signals::SignalKeyType s_LAUNCHED_SIG;
+
 protected:
 
+    /**
+     * @name Defines signal triggered when config is started
+     * @{ */
+    typedef ::fwCom::Signal< void () > LaunchedSignalType;
+    LaunchedSignalType::sptr m_sigLaunched;
+    /**  @} */
 
     ///This method launches the IAction::starting method.
     virtual void starting() throw(::fwTools::Failed);

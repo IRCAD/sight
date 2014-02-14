@@ -19,11 +19,20 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SConfigLauncher, ::fwData::Object );
 
+const ::fwCom::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
+
 //------------------------------------------------------------------------------
 
-SConfigLauncher::SConfigLauncher() throw()
+SConfigLauncher::SConfigLauncher() throw() :
+    m_sigLaunched(LaunchedSignalType::New())
 {
     m_configLauncher = ::fwServices::helper::ConfigLauncher::New();
+
+    ::fwCom::HasSignals::m_signals( s_LAUNCHED_SIG, m_sigLaunched );
+
+#ifdef COM_LOG
+    m_sigLaunched->setID( s_LAUNCHED_SIG );
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -69,6 +78,7 @@ void SConfigLauncher::setIsActive(bool isActive)
     if ( isActive )
     {
         m_configLauncher->startConfig(this->getSptr());
+        fwServicesNotifyMacro(this->getLightID(), m_sigLaunched, ());
     }
     else
     {
