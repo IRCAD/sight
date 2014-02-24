@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,6 +81,7 @@ void SSelector::starting() throw(::fwTools::Failed)
     SLM_ASSERT("container not instanced", container);
 
     m_selectorWidget = new ::uiMedData::widget::Selector();
+    m_selectorWidget->setSeriesIcons(m_seriesIcons);
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(m_selectorWidget);
     container->setLayout(layout);
@@ -162,6 +163,25 @@ void SSelector::configuring() throw(::fwTools::Failed)
 
     m_selectionId = selectionCfg.front()->getValue();
     SLM_ASSERT("selectionId must not be empty", !m_selectionId.empty());
+
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > iconsCfg = m_configuration->find("icons");
+    if (!iconsCfg.empty())
+    {
+        SLM_ASSERT("Only one 'config' tag is allowed for SSelector configuration", iconsCfg.size() == 1);
+
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find("icon");
+
+        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, cfg)
+        {
+            std::string series = elt->getAttributeValue("series");
+            SLM_ASSERT("'series' attribute is missing", !series.empty());
+
+            std::string icon = elt->getAttributeValue("icon");
+            SLM_ASSERT("'icon' attribute is missing", !icon.empty());
+
+            m_seriesIcons[series] = icon;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

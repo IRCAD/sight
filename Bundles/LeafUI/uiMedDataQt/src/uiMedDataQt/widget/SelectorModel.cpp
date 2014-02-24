@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -254,30 +254,38 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
 
 void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr series, QStandardItem *item)
 {
-    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
-    if(imageSeries)
+    SeriesIconType::iterator iter = m_seriesIcons.find(series->getClassname());
+    if (iter != m_seriesIcons.end())
     {
-        item->setIcon(QIcon("Bundles/media_0-1/icons/ImageSeries.svg"));
-    }
-    else if (modelSeries)
-    {
-        item->setIcon(QIcon("Bundles/media_0-1/icons/ModelSeries.svg"));
-    }
-    else if (activitySeries)
-    {
-        ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
-        std::string id = activitySeries->getActivityConfigId();
-        OSLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
-
-        ::fwActivities::registry::ActivityInfo activityInfo;
-        activityInfo = registry->getInfo(id);
-        item->setIcon(QIcon(QString::fromStdString(activityInfo.icon)));
+        item->setIcon(QIcon(QString::fromStdString(iter->second)));
     }
     else
     {
-        OSLM_WARN("This type of series is not defined (" << series->getClassname() << ")");
+        ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
+        ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
+        ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
+        if(imageSeries)
+        {
+            item->setIcon(QIcon("Bundles/media_0-1/icons/ImageSeries.svg"));
+        }
+        else if (modelSeries)
+        {
+            item->setIcon(QIcon("Bundles/media_0-1/icons/ModelSeries.svg"));
+        }
+        else if (activitySeries)
+        {
+            ::fwActivities::registry::Activities::sptr registry = ::fwActivities::registry::Activities::getDefault();
+            std::string id = activitySeries->getActivityConfigId();
+            OSLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
+
+            ::fwActivities::registry::ActivityInfo activityInfo;
+            activityInfo = registry->getInfo(id);
+            item->setIcon(QIcon(QString::fromStdString(activityInfo.icon)));
+        }
+        else
+        {
+            OSLM_WARN("This type of series is not defined (" << series->getClassname() << ")");
+        }
     }
 }
 
@@ -401,6 +409,13 @@ QStandardItem* SelectorModel::findStudyItem(::fwMedData::Study::sptr study)
 
     QStandardItem* studyItem = m_items[studyInstanceUid];
     return studyItem;
+}
+
+//-----------------------------------------------------------------------------
+
+void SelectorModel::setSeriesIcons(const SeriesIconType &seriesIcons)
+{
+    m_seriesIcons = seriesIcons;
 }
 
 //-----------------------------------------------------------------------------
