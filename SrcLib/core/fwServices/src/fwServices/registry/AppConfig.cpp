@@ -225,30 +225,22 @@ AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Compos
 
 //-----------------------------------------------------------------------------
 
-std::string AppConfig::getUniqueIdentifier( std::string _serviceUid, bool _useCpt )
+std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 {
     ::fwCore::mt::ScopedLock lock(s_idMutex);
-    std::string id;
     static unsigned int srvCpt = 1;
     std::stringstream sstr;
 
-    if ( _serviceUid.empty() )
+    if ( serviceUid.empty() )
     {
         sstr <<  "AppConfigManager_" << srvCpt;
-        srvCpt++;
     }
     else
     {
-        sstr <<  _serviceUid;
-        if ( _useCpt )
-        {
-            sstr << "_" << srvCpt;
-            srvCpt++;
-        }
+        sstr <<  serviceUid << "_" << srvCpt;
     }
-    id = sstr.str();
-
-    return id;
+    ++srvCpt;
+    return sstr.str();
 }
 
 //-----------------------------------------------------------------------------

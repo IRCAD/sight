@@ -174,7 +174,7 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
             (*replaceMap)[param.replace] = ::fwData::String::New(obj->getID());
         }
     }
-    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(appConfig.id, true);
+    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(appConfig.id);
     (*replaceMap)["GENERIC_UID"] = ::fwData::String::New(genericUidAdaptor);
     info.replaceMap = replaceMap;
     return info;
