@@ -144,7 +144,7 @@ public:
      * @brief Create an unique identifier
      * @note This method is thread safe.
      */
-    FWSERVICES_API static std::string getUniqueIdentifier( std::string _serviceUid = "", bool _useCpt = false );
+    FWSERVICES_API static std::string getUniqueIdentifier(const std::string& serviceUid = "" );
 
     /// Return an instance of AppConfig.
     FWSERVICES_API static AppConfig::sptr getDefault();

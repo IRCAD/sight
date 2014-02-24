@@ -62,7 +62,7 @@ namespace helper
     title->setField( fieldID, replaceMap );
 
 
-    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.id, true);
+    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.id);
     (*replaceMap)[genericUID] = ::fwData::String::New(genericUidAdaptor);
 
     ActiReg::ActivityAppConfig::ActivityAppConfigParamsType params = info.appConfig.parameters;
