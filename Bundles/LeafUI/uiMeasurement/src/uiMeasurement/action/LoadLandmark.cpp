@@ -14,10 +14,13 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/AppConfigManager.hpp>
 
+#include <fwData/String.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -27,8 +30,6 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
-
-#include <arlcore/Misc.h>
 
 #include "uiMeasurement/action/LoadLandmark.hpp"
 
@@ -76,7 +77,7 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a file to load landmarks");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Text","*.txt");
+    dialogFile.addFilter("Landmark file","*.json");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
     ::fwData::location::SingleFile::sptr  result;
@@ -84,29 +85,12 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
 
     if( result )
     {
-        ::boost::filesystem::path filename = result->getPath();
-        _sDefaultPath = filename.parent_path();
+        ::boost::filesystem::path path = result->getPath();
+        _sDefaultPath = path.parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
 
-        //get landmarks
-        ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
-        ::fwData::PointList::sptr landmarks =  image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
-        SLM_ASSERT("landmarks not instanced", landmarks);
+        this->load(path);
 
-
-        std::vector< vnl_vector<double> > vPoints;
-        std::vector< std::string > vNames;
-        ::arlCore::load(vPoints, vNames, filename.string());
-        SLM_ASSERT("Error in landmark reader", vPoints.size() == vNames.size());
-        unsigned int index = 0;
-        BOOST_FOREACH( vnl_vector<double> point, vPoints)
-        {
-            ::fwData::Point::sptr newPoint = ::fwData::Point::New(point[0], point[1], point[2]);
-            ::fwData::String::sptr label = ::fwData::String::New(vNames[index]);
-            newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
-            landmarks->getRefPoints().push_back( newPoint );
-            ++index;
-        }
         // notify
         ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
@@ -138,6 +122,38 @@ void LoadLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwT
 void LoadLandmark::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
+}
+
+//------------------------------------------------------------------------------
+
+void LoadLandmark::load(const ::boost::filesystem::path& path)
+{
+    ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
+
+    //get landmarks
+    ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
+    ::fwData::PointList::sptr landmarks =  image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+    SLM_ASSERT("landmarks not instanced", landmarks);
+
+    ::fwData::PointList::sptr newLandmarks = ::fwData::PointList::New();
+    ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
+    (*replaceMap)["GENERIC_UID"] = ::fwData::String::New(
+            ::fwServices::registry::AppConfig::getUniqueIdentifier("LoadLandmarkApp")
+    );
+    (*replaceMap)["landmark"] = ::fwData::String::New(newLandmarks->getID());
+    (*replaceMap)["file"] = ::fwData::String::New(path.string());
+    ::fwRuntime::ConfigurationElement::csptr config =
+        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig("LoadLandmark", replaceMap);
+
+    ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+    helper->setConfig( config );
+    helper->launch();
+    helper->stopAndDestroy();
+
+    BOOST_FOREACH(::fwData::Point::sptr landmark, newLandmarks->getCRefPoints())
+    {
+        landmarks->getRefPoints().push_back( landmark );
+    }
 }
 
 //------------------------------------------------------------------------------

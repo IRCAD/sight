@@ -27,7 +27,6 @@ public:
 
 protected:
 
-
     void configuring() throw (::fwTools::Failed);
 
     void starting() throw (::fwTools::Failed);
@@ -38,8 +37,9 @@ protected:
 
     void stopping() throw (::fwTools::Failed);
 
-    UIMEASUREMENT_API void info(std::ostream &_sstream ) ;
+    void info(std::ostream &_sstream ) ;
 
+    void save(const ::boost::filesystem::path& path);
 
 };
 
