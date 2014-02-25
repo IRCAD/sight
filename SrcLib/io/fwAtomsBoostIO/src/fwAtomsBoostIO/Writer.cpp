@@ -188,7 +188,7 @@ void cache(const PropTreeCacheType::key_type &atom, const std::string &ptpath)
     pt.put("blob.buffer_type", bufType);
 
     ::fwMemory::BufferObject::sptr buffObj = atom->getBufferObject();
-    if (!buffObj)
+    if (!buffObj || buffObj->getSize() == 0)
     {
         pt.put("blob.buffer_size", 0);
     }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -643,10 +643,14 @@ BufferManager::StreamInfo BufferManager::getStreamInfoImpl(const BufferManager::
     FW_RAISE_IF("Buffer is not managed by fwMemory::BufferManager.", iterInfo == m_bufferInfos.end() );
     const BufferInfo & info = iterInfo->second;
     streamInfo.size = info.size;
-    streamInfo.stream = (*info.istreamFactory)();
     streamInfo.fsFile = info.fsFile;
     streamInfo.format = info.fileFormat;
     streamInfo.userStream = info.userStreamFactory;
+
+    if(info.istreamFactory)
+    {
+        streamInfo.stream = (*info.istreamFactory)();
+    }
 
     return streamInfo;
 }

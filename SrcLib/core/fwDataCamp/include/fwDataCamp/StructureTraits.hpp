@@ -15,4 +15,6 @@
 fwCampAutoDeclareEnumMacro((fwData)(StructureTraits)(Category));
 fwCampAutoDeclareEnumMacro((fwData)(StructureTraits)(StructureClass));
 
+fwCampDeclareAccessor((fwData)(StructureTraits), (fwData)(Color));
+
 #endif /* __FWDATACAMP_STRUCTURETRAITS_HPP__ */
