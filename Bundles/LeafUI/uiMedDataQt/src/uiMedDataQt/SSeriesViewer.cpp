@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -110,11 +110,18 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
             replaceMap["WID_PARENT"] = m_parentView;
             replaceMap["objectID"] = obj->getID();
 
-            BOOST_FOREACH(ReplaceValuesMapType::value_type elt, info.replaceValues)
+            BOOST_FOREACH(const ReplaceValuesMapType::value_type &elt, info.extractValues)
             {
                 ::fwData::Object::sptr object = ::fwDataCamp::getObject( obj, elt.second );
                 OSLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
+            }
+
+            BOOST_FOREACH(const ReplaceValuesMapType::value_type &elt, info.parameters)
+            {
+                SLM_ASSERT("Value '" << elt.first << "' already used in extracted values.",
+                           replaceMap.find(elt.first) == replaceMap.end());
+                replaceMap[elt.first] = elt.second;
             }
 
             // Init manager
@@ -144,7 +151,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
     std::vector < ::fwRuntime::ConfigurationElement::sptr > config = configsCfg[0]->find("config");
     SLM_ASSERT("Missing tag 'config'", !config.empty());
 
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, config)
+    BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &elt, config)
     {
         SeriesConfigInfo info;
         info.configId = elt->getAttributeValue("id");
@@ -154,13 +161,22 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
         OSLM_ASSERT("Type " << seriesType << " is already defined.",
                     m_seriesConfigs.find(seriesType)== m_seriesConfigs.end() );
 
-        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr extractElt, elt->find("extract"))
+        BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &extractElt, elt->find("extract"))
         {
             std::string path = extractElt->getAttributeValue("path");
             SLM_ASSERT("'path' attribute must not be empty", !path.empty());
             std::string pattern = extractElt->getAttributeValue("pattern");
             SLM_ASSERT("'pattern' attribute must not be empty", !pattern.empty());
-            info.replaceValues[pattern] = path;
+            info.extractValues[pattern] = path;
+        }
+
+        BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &param, elt->find("parameter"))
+        {
+            std::string replace = param->getAttributeValue("replace");
+            SLM_ASSERT("'replace' attribute must not be empty", !replace.empty());
+            std::string by = param->getAttributeValue("by");
+            SLM_ASSERT("'by' attribute must not be empty", !by.empty());
+            info.parameters[replace] = by;
         }
 
         m_seriesConfigs[seriesType] = info;

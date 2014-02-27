@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,14 +52,20 @@ protected:
             <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
                 <extract path="@image" pattern="imageID" />
             </config>
+            <config id="2DPacsPreviewConfig" type="::fwDicomData::DicomSeries" >
+                <parameter replace="PACS_CONFIGURATION" by="None" />
+            </config>
             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
-        </config>
+        </configs>
     </service>
      @endverbatim
      * - \b parentView : wid of the view where the config will install its windows.
      * - \b config : gives the available association between data type and associated config.
      *   - \b id : identifier of the AppConfig to launch
      *   - \b type : classname of the object stored in Vector associated to this config.
+     *   - \b parameter : allow to pass specific value to the associ config 
+     *     - \b replace : name of the parameter to be replaced
+     *     - \b by : specific value to replace for the parameter
      * - \b extract : extracts the object from the path and replaces pattern with its fwID
      */
     virtual void configuring() throw (::fwTools::Failed);
@@ -90,7 +96,10 @@ private:
         std::string configId;
 
         /// Stores the pattern to replace in the config by the fwID of the object given by a path.
-        ReplaceValuesMapType replaceValues;
+        ReplaceValuesMapType extractValues;
+
+        /// Stores the parameters to pass to config.
+        ReplaceValuesMapType parameters;
     };
 
     typedef std::map<std::string, SeriesConfigInfo> SeriesConfigMapType;
