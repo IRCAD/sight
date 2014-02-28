@@ -12,7 +12,6 @@
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
 
 class vtkTransform;
 

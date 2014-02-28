@@ -6,13 +6,15 @@
 
 #include <boost/foreach.hpp>
 
-
 #include <fwData/Boolean.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
@@ -27,7 +29,6 @@
 #include <vtkPerspectiveTransform.h>
 
 #include "visuVTKAdaptor/Camera2.hpp"
-#include <fwServices/IEditionService.hpp>
 
 class Camera2Clallback : public ::vtkCommand
 {
@@ -134,6 +135,8 @@ void Camera2::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
 
         vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
+        ::fwData::mt::ObjectReadLock lock(transMat);
+
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
@@ -141,6 +144,8 @@ void Camera2::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
                 mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
             }
         }
+
+        lock.unlock();
 
         // Position camera on origin
         vtkPerspectiveTransform* oldTrans = vtkPerspectiveTransform::New();
@@ -175,6 +180,7 @@ void Camera2::updateFromVtk()
     camera->RemoveObserver( m_cameraCommand );
 
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::mt::ObjectWriteLock lock(trf);
 
     vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
     trans->Identity();
@@ -191,6 +197,8 @@ void Camera2::updateFromVtk()
             trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
         }
     }
+
+    lock.unlock();
 
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
