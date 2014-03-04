@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 #include <fwServices/Base.hpp>
 
 #include "fwGui/IActionSrv.hpp"
+#include "fwGui/dialog/IMessageDialog.hpp"
 #include "fwGui/dialog/MessageDialog.hpp"
 
 namespace fwGui
@@ -83,6 +84,12 @@ void IActionSrv::initialize()
             {
                 m_confirmMessage = cfg->getExistingAttributeValue("message");
             }
+
+            if( cfg->hasAttribute("defaultbutton") )
+            {
+                m_defaultButton = cfg->getExistingAttributeValue("defaultbutton");
+            }
+
         }
     }
 }
@@ -149,11 +156,25 @@ bool IActionSrv::confirmAction()
             ss << std::endl << m_confirmMessage;
         }
         dialog.setMessage( ss.str() );
-        dialog.setIcon( ::fwGui::dialog::MessageDialog::QUESTION );
-        dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
-        ::fwGui::dialog::MessageDialog::Buttons button = dialog.show();
 
-        actionIsConfirmed = (button == ::fwGui::dialog::MessageDialog::YES);
+        if(m_defaultButton == "yes")
+        {
+            dialog.setDefaultButton( ::fwGui::dialog::IMessageDialog::YES );
+        }
+        else if(m_defaultButton == "no")
+        {
+            dialog.setDefaultButton( ::fwGui::dialog::IMessageDialog::NO );
+        }
+        else if(!m_defaultButton.empty())
+        {
+            SLM_WARN("unknown button: " + m_defaultButton);
+        }
+
+        dialog.setIcon( ::fwGui::dialog::IMessageDialog::QUESTION );
+        dialog.addButton( ::fwGui::dialog::IMessageDialog::YES_NO );
+        ::fwGui::dialog::IMessageDialog::Buttons button = dialog.show();
+
+        actionIsConfirmed = (button == ::fwGui::dialog::IMessageDialog::YES);
     }
 
     return actionIsConfirmed;
