@@ -166,10 +166,12 @@
             <item key="matrixA">
                 <object uid="matrixA" type="::fwData::TransformationMatrix3D">
                     <matrix>
+                    <![CDATA[
                         1 0 0 2
                         0 1 0 0
                         0 0 1 0
-                        0 0 0 1 
+                        0 0 0 1
+                    ]]>
                     </matrix>
                 </object>
             </item>
@@ -177,10 +179,12 @@
             <item key="matrixB">
                 <object uid="matrixB" type="::fwData::TransformationMatrix3D">
                     <matrix>
+                    <![CDATA[
                         1 0 0 4
                         0 1 0 0
                         0 0 1 0
                         0 0 0 1 
+                    ]]>
                     </matrix>
                 </object>
             </item>
@@ -188,10 +192,12 @@
             <item key="matrixC">
                 <object uid="matrixC" type="::fwData::TransformationMatrix3D">
                     <matrix>
+                    <![CDATA[
                         1 0 0 0
                         0 1 0 0
                         0 0 1 2
                         0 0 0 1 
+                    ]]>
                     </matrix>
                 </object>
             </item>
@@ -199,10 +205,12 @@
             <item key="matrixD">
                 <object uid="matrixD" type="::fwData::TransformationMatrix3D">
                     <matrix>
+                    <![CDATA[
                         0.75 0 0 0
                         0 0.75 0 0
                         0 0 0.75 0
                         0 0 0 1 
+                    ]]>
                     </matrix>
                 </object>
             </item>
@@ -225,7 +233,6 @@
 
         </object>
 
-    
         </config>
     </extension>
 </plugin>
