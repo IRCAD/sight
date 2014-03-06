@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -182,16 +182,7 @@ void TransferFunctionEditor::stopping() throw( ::fwTools::Failed )
     QObject::disconnect(m_importButton, SIGNAL(   clicked()), this, SLOT(importTF()));
     QObject::disconnect(m_exportButton, SIGNAL(   clicked()), this, SLOT(exportTF()));
 
-    // Buttons destruction
-    m_pTransferFunctionPreset->deleteLater();
-    m_deleteButton->deleteLater();
-    m_newButton->deleteLater();
-    m_reinitializeButton->deleteLater();
-    m_renameButton->deleteLater();
-    m_importButton->deleteLater();
-    m_exportButton->deleteLater();
-
-    // Container cleaning
+    // deletes contained widgets
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
     qtContainer->clean();
 

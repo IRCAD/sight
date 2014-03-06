@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 
     if (qtContainer->layout())
     {
-        qtContainer->layout()->deleteLater();
+        QWidget().setLayout(qtContainer->layout());
     }
     qtContainer->setLayout(layout);
 
@@ -89,7 +89,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 
             if(viewInfo.m_useScrollBar)
             {
-                QScrollArea *scrollArea = new QScrollArea();
+                QScrollArea *scrollArea = new QScrollArea(qtContainer);
                 scrollArea->setWidget(panel);
                 scrollArea->setWidgetResizable ( true );
 
@@ -113,14 +113,10 @@ void LineLayoutManager::destroyLayout()
 {
     this->destroySubViews();
     QWidget *qtContainer = m_parentContainer->getQtContainer();
-    qtContainer->layout()->deleteLater();
-    qtContainer->setLayout(0);
     m_parentContainer->clean();
 }
 
 //-----------------------------------------------------------------------------
 
 } // namespace fwGui
-
-
 

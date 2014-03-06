@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 #include <fwGui/registry/macros.hpp>
 
 
+#include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/layoutManager/ToolboxLayoutManager.hpp"
 
 
@@ -38,21 +39,23 @@ ToolboxLayoutManager::~ToolboxLayoutManager()
 void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
-    m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
+
+    ::fwGuiQt::container::QtContainer::sptr parentContainer;
+    parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
+    SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", parentContainer);
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QWidget *qtContainer = m_parentContainer->getQtContainer();
+    QWidget *qtContainer = parentContainer->getQtContainer();
     if (qtContainer->layout())
     {
-        qtContainer->layout()->deleteLater();
+        QWidget().setLayout(qtContainer->layout());
     }
     qtContainer->setLayout(layout);
 
-    ::fwGuiQt::widget::QfwToolBox* toolbox = new ::fwGuiQt::widget::QfwToolBox(qtContainer);
     QScrollArea* sv = new QScrollArea(qtContainer);
+    ::fwGuiQt::widget::QfwToolBox* toolbox = new ::fwGuiQt::widget::QfwToolBox(sv);
     sv->setWidget(toolbox);
     sv->setWidgetResizable(true);
 
@@ -71,7 +74,7 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
         int index = 0;
         if(viewInfo.m_useScrollBar)
         {
-            QScrollArea *scrollArea = new QScrollArea();
+            QScrollArea *scrollArea = new QScrollArea(toolbox);
             scrollArea->setWidget(panel);
             scrollArea->setWidgetResizable ( true );
             index = toolbox->addItem(scrollArea, QString::fromStdString(viewInfo.m_caption));
@@ -95,10 +98,6 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
 void ToolboxLayoutManager::destroyLayout()
 {
     this->destroySubViews();
-    QWidget *qtContainer = m_parentContainer->getQtContainer();
-    qtContainer->layout()->deleteLater();
-    qtContainer->setLayout(0);
-    m_parentContainer->clean();
 }
 
 //-----------------------------------------------------------------------------

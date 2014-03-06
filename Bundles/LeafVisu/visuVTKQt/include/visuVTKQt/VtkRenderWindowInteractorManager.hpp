@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,6 +23,13 @@ QT_BEGIN_NAMESPACE
 class QVTKWidget;
 QT_END_NAMESPACE
 
+namespace fwGuiQt
+{
+namespace container
+{
+class QtContainer;
+}
+}
 
 namespace visuVTKQt
 {
@@ -30,7 +37,7 @@ namespace visuVTKQt
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
  * @class   VtkRenderWindowInteractorManager
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -60,6 +67,8 @@ private:
     QPointer<QVTKWidget> m_qVTKWidget;
 
     vtkRenderWindowInteractor *m_interactor;
+
+    SPTR(::fwGuiQt::container::QtContainer) m_parentContainer;
 
 };
 

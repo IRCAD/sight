@@ -164,17 +164,11 @@ void WindowLevel::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
     QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
 
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
-    m_valueTextMin->deleteLater();
-    m_valueTextMax->deleteLater();
-    m_toggleTFButton->deleteLater();
-    m_dynamicRangeSelection->deleteLater();
-    m_dynamicRangeSelection->deleteLater();
-    m_dynamicRangeMenu->deleteLater();
-    m_rangeSlider->deleteLater();
-    m_dynamicRangeSignalMapper->deleteLater();
-
+    // deletes contained widgets
     this->getContainer()->clean();
+
     this->destroy();
 }
 
