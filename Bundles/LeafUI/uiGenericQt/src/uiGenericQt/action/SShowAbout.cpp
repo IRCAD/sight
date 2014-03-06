@@ -133,7 +133,9 @@ void SShowAbout::updating( ) throw(::fwTools::Failed)
     dialog->setLayout( layout );
 
     QObject::connect(okButton, SIGNAL(clicked()), dialog, SLOT(accept()));
-    dialog->exec();
+    QObject::connect(dialog, SIGNAL(accepted()), dialog, SLOT(deleteLater()));
+    dialog->setModal(true);
+    dialog->show();
 }
 
 //------------------------------------------------------------------------------
