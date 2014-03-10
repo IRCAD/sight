@@ -36,30 +36,58 @@ public:
     /// Does nothing
     IOATOMS_API  virtual ~SWriter() throw() {};
 
-    /// Propose to create a medical data file (*.json,*.jsonz,*.xml, *.xmlz or *.hdf5)
+    /// Propose to create a medical data file
     IOATOMS_API void configureWithIHM();
 
 protected:
 
+    /// Maps file extension to format name.
+    typedef std::map< std::string, std::string > FileExtension2NameType;
+
     /**
-    * @brief
-    * @verbatim
-    <config>
+     * @brief Configures the writer
+     @verbatim
+     <config>
         <patcher context="..." version="..." />
+
+        <archive backend="json">
+            <extension>.j</extension>
+        </archive> 
+
+        <archive backend="jsonz">
+            <extension>.vpz</extension>
+        </archive>
+
+        <archive backend="hdf5">
+            <extension>.f4s</extension>
+            <extension>.mw</extension>
+        </archive> 
+
         <extensions>
-            <extension>.xml</extension>
-            <extension>.xmlz</extension>
-            ...
+            <extension label="XML">.xml</extension>
+            <extension label="Zipped XML>.xmlz</extension>
+            <extension>.f4s</extension>
+            <extension>.j</extension>
+            <extension label="Medical workspace">.mw</extension>
+            <extension>.vpz</extension>
         </extensions>
-        ...
-    </config>
-    * @endverbatim
-    *
-    * extensions : allowed extensions defined in ::ioAtoms::SReader
-    *
-    * @see ::io::IWriter
-    * @throw ::fwTools::Failed
-    */
+
+     </config>
+     @endverbatim
+     *
+     * archive : defines custom file extensions. The file to be saved with an extension given in 'archive' tag will be
+     * written with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin with
+     * '.'.
+     * Available 'backend' values are json, xml, jsonz, xmlz, and hdf5.
+     *
+     * extensions : defines available extensions displayed in dialog to save file. If the 'extensions' is empty or not
+     * specified, all the extensions (.json, .xml, .jsonz, .xmlz, .hdf5 extensions and custom extensions) are available.
+     * The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
+     * shown.
+     *
+     * @see ::io::IWriter
+     * @throw ::fwTools::Failed
+     */
     IOATOMS_API void configuring() throw(::fwTools::Failed);
 
     /// Does nothing
@@ -94,6 +122,12 @@ protected:
 
     /// Allowed file extensions
     std::set< std::string > m_allowedExts;
+
+    /// Maps custom extensions to known format.
+    FileExtension2NameType m_customExts;
+
+    /// Labels shown in file dialog for each allowed extension
+    FileExtension2NameType m_allowedExtLabels;
 };
 
 } // namespace ioAtoms

@@ -270,15 +270,23 @@ void TimerAsio::call(const ::boost::system::error_code & error)
 {
     if(!error)
     {
-        ::fwCore::mt::ScopedLock lock(m_mutex);
-        if (!m_oneShot)
+        TimeDurationType duration;
+        bool oneShot;
         {
-            this->rearmNoLock(m_duration);
+            ::fwCore::mt::ScopedLock lock(m_mutex);
+            oneShot = m_oneShot;
+            duration = m_duration;
+        }
+
+        if (!oneShot)
+        {
+            this->rearmNoLock(duration);
             m_function();
         }
         else
         {
             m_function();
+            ::fwCore::mt::ScopedLock lock(m_mutex);
             m_running = false;
         }
     }

@@ -10,6 +10,8 @@
 #include "fwStructuralPatch/creator/fwMedData/Patient1.hpp"
 #include "fwStructuralPatch/creator/fwMedData/Study1.hpp"
 #include "fwStructuralPatch/creator/fwMedData/ModelSeries1.hpp"
+#include "fwStructuralPatch/creator/fwMedData/ImageSeries1.hpp"
+#include "fwStructuralPatch/creator/fwMedData/ActivitySeries1.hpp"
 
 namespace fwStructuralPatch
 {
@@ -26,6 +28,8 @@ struct runner
         creators->registerCreator(::fwStructuralPatch::creator::fwMedData::Patient1::New());
         creators->registerCreator(::fwStructuralPatch::creator::fwMedData::Study1::New());
         creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ModelSeries1::New());
+        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ImageSeries1::New());
+        creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ActivitySeries1::New());
     }
 
     static runner r;

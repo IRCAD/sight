@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -112,7 +112,7 @@ void SExportSeries::updating() throw(::fwTools::Failed)
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     ::fwMedData::Series::sptr series = this->getSeries();
 
-    std::string description;
+    std::string description = series->getDescription();
 
     ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
     if (activitySeries)
@@ -123,18 +123,28 @@ void SExportSeries::updating() throw(::fwTools::Failed)
 
         ::fwActivities::registry::ActivityInfo activityInfo;
         activityInfo = registry->getInfo(id);
-        description = activityInfo.description;
+
+        description = activitySeries->getDescription();
+        if(description.empty())
+        {
+            description = activityInfo.description;
+        }
     }
 
-    std::string desc = ::fwGui::dialog::InputDialog::showInputDialog(
-                                    "Export activity", "Enter the series description", description);
-    if(!desc.empty())
+    description = ::fwGui::dialog::InputDialog::showInputDialog(
+            "Export activity", "Enter the series description", description);
+
+    if(!description.empty())
     {
-        std::string username = ::fwTools::os::getEnv("USERNAME", fwTools::os::getEnv("LOGNAME", "Unknown"));
-        ::fwMedData::DicomValuesType physicians;
-        physicians.push_back(username);
+        ::fwMedData::DicomValuesType physicians = series->getPerformingPhysiciansName();
+        if(physicians.empty())
+        {
+            std::string username = ::fwTools::os::getEnv("USERNAME", fwTools::os::getEnv("LOGNAME", "Unknown"));
+            physicians.push_back(username);
+        }
+
         series->setPerformingPhysiciansName(physicians);
-        series->setDescription(desc);
+        series->setDescription(description);
 
         ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
         seriesDBHelper.add(series);
@@ -154,7 +164,7 @@ void SExportSeries::configuring() throw(::fwTools::Failed)
     SLM_ASSERT("Missing tag 'seriesId'", !seriesCfg.empty());
 
     m_seriesId = seriesCfg.front()->getValue();
-    SLM_ASSERT("selectionId must not be empty", !m_seriesId.empty());
+    SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
 }
 
 //------------------------------------------------------------------------------

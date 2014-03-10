@@ -40,6 +40,7 @@
 #include <fwDataCamp/getObject.hpp>
 
 #include <fwActivities/IBuilder.hpp>
+#include <fwActivities/IValidator.hpp>
 
 #include "activities/helper/Activity.hpp"
 #include "activities/action/SActivityLauncher.hpp"
@@ -146,6 +147,26 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
             }
         }
         OSLM_ASSERT("At most 1 <filter> tag is allowed", config.count("filter") < 2);
+
+        if(config.count("quickLaunch") == 1 )
+        {
+            m_quickLaunch.clear();
+            const ::fwServices::IService::ConfigType &configQuickLaunch = config.get_child("quickLaunch");
+            BOOST_FOREACH( const ConfigType::value_type &v, configQuickLaunch.equal_range("association") )
+            {
+                const ::fwServices::IService::ConfigType &association = v.second;
+                const ::fwServices::IService::ConfigType xmlattr = association.get_child("<xmlattr>");
+
+                SLM_FATAL_IF( "Sorry, attribute \"type\" is missing", xmlattr.count("type") != 1 );
+                SLM_FATAL_IF( "Sorry, attribute \"id\" is missing", xmlattr.count("id") != 1 );
+
+                std::string type = xmlattr.get<std::string>("type");
+                std::string id = xmlattr.get<std::string>("id");
+
+                m_quickLaunch[type] = id;
+            }
+        }
+        SLM_ASSERT("At most 1 <quickLaunch> tag is allowed", config.count("quickLaunch") < 2);
     }
 }
 
@@ -162,7 +183,17 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
     QStandardItemModel *model = new QStandardItemModel(dialog);
     BOOST_FOREACH( ::fwActivities::registry::ActivityInfo info, infos)
     {
-        QStandardItem* item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(info.id));
+        std::string text;
+        if(info.title.empty())
+        {
+            text = info.id;
+        }
+        else
+        {
+            text = info.title + (info.description.empty() ? "" : "\n" + info.description);
+        }
+
+        QStandardItem* item = new QStandardItem(QIcon(info.icon.c_str()), QString::fromStdString(text));
         item->setData(QVariant::fromValue(info));
         item->setEditable(false);
         model->appendRow(item);
@@ -246,8 +277,7 @@ void SActivityLauncher::updating() throw(::fwTools::Failed)
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 
-    bool launchAS = m_filterMode.empty() && this->launchAS(selection);
-
+    bool launchAS = this->launchAS(selection);
     if (!launchAS)
     {
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
@@ -294,21 +324,30 @@ void SActivityLauncher::updateState()
 
     bool isExecutable = false;
 
-    ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
-    dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
-    if(m_filterMode.empty() && dataCount.size() == 1)
+    if(selection->size() == 1 && ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]))
     {
-        ::fwData::Object::sptr obj = selection->front();
-        if (::fwMedData::ActivitySeries::dynamicCast(obj))
+        ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]);
+        isExecutable = ::fwActivities::registry::Activities::getDefault()->hasInfo(as->getActivityConfigId());
+    }
+    else
+    {
+        ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
+        dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
+        if(m_filterMode.empty() && dataCount.size() == 1)
         {
-            isExecutable = true;
+            ::fwData::Object::sptr obj = selection->front();
+            if (::fwMedData::ActivitySeries::dynamicCast(obj))
+            {
+                isExecutable = true;
+            }
         }
+
+        ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
+        infos = this->getEnabledActivities(infos);
+
+        isExecutable |= !infos.empty();
     }
 
-    ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
-    infos = this->getEnabledActivities(infos);
-
-    isExecutable |= !infos.empty();
     this->setIsExecutable(isExecutable);
 }
 
@@ -319,11 +358,9 @@ void SActivityLauncher::info( std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo & info )
+void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityInfo & info, const ::fwData::Vector::sptr& selection)
 {
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
-    ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
-
     ::fwActivities::IBuilder::sptr builder;
     builder = ::fwActivities::builder::factory::New(info.builderImpl);
     OSLM_ASSERT(info.builderImpl << " instantiation failed", builder);
@@ -355,6 +392,35 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
         helper->setConfig( config );
         helper->launch();
         helper->stopAndDestroy();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo & info )
+{
+    ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
+
+    if(!info.validatorImpl.empty())
+    {
+        ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(info.validatorImpl);
+        OSLM_ASSERT(info.validatorImpl << " instantiation failed", validator);
+
+        ::fwActivities::IValidator::ValidationType valid = validator->validate(info, selection);
+        if(!valid.first)
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity could not be launched",
+                    "The activity " + info.title + " can't be launched.\nReason : " + valid.second,
+                    ::fwGui::dialog::MessageDialog::WARNING);
+        }
+        else
+        {
+            this->buildActivity(info, selection);
+        }
+    }
+    else
+    {
+        this->buildActivity(info, selection);
     }
 }
 
@@ -410,7 +476,14 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
         selection->getContainer().push_back(series);
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
 
-        if ( ! infos.empty() )
+        if( m_quickLaunch.find( series->getClassname() ) != m_quickLaunch.end() )
+        {
+            std::string activityId = m_quickLaunch[ series->getClassname() ];
+            SLM_ASSERT("Activity information not found for" + activityId,
+                    ::fwActivities::registry::Activities::getDefault()->hasInfo(activityId) );
+            this->sendConfig( ::fwActivities::registry::Activities::getDefault()->getInfo(activityId) );
+        }
+        else if ( ! infos.empty() )
         {
             this->sendConfig( infos.front() );
         }

@@ -102,6 +102,16 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
             minMax.second = std::numeric_limits<unsigned int>::max();
         }
     }
+
+    ::fwRuntime::ConfigurationElement::sptr validatorCfg = ext->findConfigurationElement("validator");
+    if(validatorCfg)
+    {
+        std::string validatorImplStr = validatorCfg->getValue();
+        if(!validatorImplStr.empty())
+        {
+            validatorImpl = validatorImplStr;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

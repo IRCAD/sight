@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,6 +17,7 @@ namespace fwGui
 {
 
 IActionSrv::IActionSrv() :
+        m_activeStateValue(true),
         m_isActive(false),
         m_isExecutable(true),
         m_confirmAction(false)
@@ -46,6 +47,13 @@ void IActionSrv::initialize()
         if( (*iter)->getName() == "state" )
         {
             ConfigurationType stateCfg = *iter;
+
+            if( stateCfg->hasAttribute("inverse") )
+            {
+                std::string invertState = stateCfg->getExistingAttributeValue("inverse");
+                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'", (invertState == "true") || (invertState == "false"));
+                m_activeStateValue = !(invertState == "true") ;
+            }
 
             if( stateCfg->hasAttribute("active") )
             {
@@ -99,7 +107,7 @@ void IActionSrv::actionServiceStarting()
 void IActionSrv::setIsActive(bool isActive)
 {
     m_isActive = isActive;
-    this->m_registrar->actionServiceSetActive(isActive);
+    this->m_registrar->actionServiceSetActive(m_activeStateValue == isActive);
 }
 
 //-----------------------------------------------------------------------------

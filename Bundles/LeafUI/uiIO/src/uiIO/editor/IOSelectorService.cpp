@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -161,7 +161,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
     std::vector< std::pair < std::string, std::string > > availableExtensionsMap;
     std::vector< std::string > availableExtensionsSelector;
 
-    BOOST_FOREACH( std::string  serviceId, availableExtensionsId )
+    BOOST_FOREACH( const std::string &serviceId, availableExtensionsId )
     {
         bool serviceIsSelectedByUser = std::find( m_selectedServices.begin(), m_selectedServices.end(), serviceId ) != m_selectedServices.end();
 
@@ -172,7 +172,14 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             (! m_servicesAreExcluded && serviceIsSelectedByUser) )
         {
             // Add this service
-            const std::string infoUser = ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
+            std::string infoUser = ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
+
+            std::map< std::string, std::string >::const_iterator iter = m_serviceToConfig.find( serviceId );
+            if ( iter != m_serviceToConfig.end() )
+            {
+                infoUser = ::fwServices::registry::ServiceConfig::getDefault()->getConfigDesc(iter->second);
+            }
+
             if (infoUser != "")
             {
                 availableExtensionsMap.push_back( std::pair < std::string, std::string > (serviceId, infoUser) );

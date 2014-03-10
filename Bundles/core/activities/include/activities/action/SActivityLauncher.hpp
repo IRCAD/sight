@@ -86,6 +86,14 @@ protected:
                 <id>3DVisualizationActivity</id>
                 <id>VolumeRenderingActivity</id>
             </filter>
+
+            <!-- Definition of quick association between series type and an activity id.
+                 This mapping is used by launchSeries slot (see the function to have few details ) -->
+            <quickLaunch>
+                <association type="::fwMedData::ImageSeries" id="2DVisualizationActivity" />
+                <association type="::fwMedData::ModelSeries" id="3DVisualizationActivity" />
+            </quickLaunch>
+
          </config>
      </service>
      @endverbatim
@@ -98,6 +106,8 @@ protected:
     typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
     typedef std::vector< std::string > KeysType;
+
+    typedef std::map< std::string, std::string > QuickLaunchType;
 
     /**
      * @brief Updates action state (enable if activities are available for current selection).
@@ -122,12 +132,26 @@ private:
      * @param series the activity is launched on this series.
      *
      * If series is an ActivitySeries, it is launched, otherwise it launches the first available activity for
-     * this series.
+     * this series or used m_quickLaunch information if a default association is defined for this series type.
      */
     void launchSeries(::fwMedData::Series::sptr series);
 
-    /// Send message to launch new tab view
+    /**
+     * @brief Send message to launch new tab view
+     * If given activity info contains an ::fwActivities::IValidator, first checks if activity is valid according to
+     * validator, then build activity with activity builder.
+     *
+     * @param info activity information
+     */
     void sendConfig( const ::fwActivities::registry::ActivityInfo & info );
+
+    /**
+     * @brief Builds and launch activity with the input data given in selection.
+     *
+     * @param info activity information
+     * @param selection input data to launch the activity
+     */
+    void buildActivity(const ::fwActivities::registry::ActivityInfo & info, const ::fwData::Vector::sptr& selection);
 
     typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
 
@@ -156,6 +180,9 @@ private:
 
     /// SActivityLauncher's mode (message or immediate)
     std::string m_mode;
+
+    /// Defines quick association between series type (a classname) and an activity id used by launchSeries method
+    QuickLaunchType m_quickLaunch;
 };
 
 } //action

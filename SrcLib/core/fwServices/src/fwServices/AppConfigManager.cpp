@@ -665,6 +665,7 @@ void AppConfigManager::createConnection(::fwRuntime::ConfigurationElement::csptr
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
         ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+        SLM_ASSERT("invalid slot owner " << slotInfo.first , hasSlots);
 
         m_connections->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
     }

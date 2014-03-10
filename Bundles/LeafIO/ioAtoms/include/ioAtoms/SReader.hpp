@@ -64,15 +64,41 @@ protected:
         <inject>ReadData</inject>
         <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
         <patcher context="..." version="..." />
+
+        <archive backend="json">
+            <extension>.j</extension>
+        </archive> 
+
+        <archive backend="jsonz">
+            <extension>.vpz</extension>
+        </archive>
+
+        <archive backend="hdf5">
+            <extension>.f4s</extension>
+            <extension>.mw</extension>
+        </archive> 
+
         <extensions>
-            <extension>.xml</extension>
-            <extension>.xmlz</extension>
-            ...
+            <extension label="XML">.xml</extension>
+            <extension label="Zipped XML>.xmlz</extension>
+            <extension>.f4s</extension>
+            <extension>.j</extension>
+            <extension label="Medical workspace">.mw</extension>
+            <extension>.vpz</extension>
         </extensions>
+
      </config>
-     * @endverbatim
+     @endverbatim
      *
-     * extensions : defines allowed extensions 
+     * archive : defines custom file extensions. The file to be read with an extension given in 'archive' tag will be
+     * processed with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin 
+     * with '.'.
+     * Available 'backend' values are json, xml, jsonz, xmlz, and hdf5.
+     *
+     * extensions : defines available extensions displayed in dialog to read file. If the 'extensions' is empty or not
+     * specified, all the extensions (.json, .xml, .jsonz, .xmlz, .hdf5 extensions and custom extensions) are available.
+     * The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
+     * shown.
      *
      * @see ::io::IReader
      * @throw ::fwTools::Failed
@@ -116,6 +142,12 @@ private:
 
     /// IFilter name used to make an atom compliant with current context
     std::string m_filter;
+
+    /// Maps custom extensions to knwon format.
+    FileExtension2NameType m_customExts;
+
+    /// Labels shown in file dialog for each allowed extension
+    FileExtension2NameType m_allowedExtLabels;
 };
 
 } // namespace ioAtoms

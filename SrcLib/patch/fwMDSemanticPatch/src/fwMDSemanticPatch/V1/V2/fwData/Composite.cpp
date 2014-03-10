@@ -5,8 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <string>
+#include <vector>
 
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <fwTools/UUID.hpp>
 
@@ -15,11 +17,16 @@
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/String.hpp>
 #include <fwAtoms/Boolean.hpp>
+#include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/Map.hpp>
 
 #include <fwAtomsPatch/StructuralCreatorDB.hpp>
 #include <fwAtomsPatch/helper/functions.hpp>
+
+#include <fwMedData/ActivitySeries.hpp>
+
+#include <fwMemory/BufferObject.hpp>
 
 #include "fwMDSemanticPatch/V1/V2/fwData/Composite.hpp"
 
@@ -31,6 +38,8 @@ namespace V2
 {
 namespace fwData
 {
+
+typedef std::map< ::fwAtoms::Object::sptr, ::fwAtoms::Object::sptr > Image2ModelType;
 
 Composite::Composite() : ::fwAtomsPatch::ISemanticPatch()
 {
@@ -53,11 +62,120 @@ Composite::Composite( const Composite &cpy ) : ::fwAtomsPatch::ISemanticPatch(cp
 
 // ----------------------------------------------------------------------------
 
+void processPlanning(
+        const ::fwAtoms::Map::sptr& oldCompositeMap,
+        const ::fwAtoms::Sequence::sptr& series,
+        const Image2ModelType& image2Model,
+        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+{
+        ::fwAtoms::Object::sptr oldPlanningDB = ::fwAtoms::Object::dynamicCast( (*oldCompositeMap)["planningDB"] );
+        ::fwAtoms::Map::sptr oldPlannings = oldPlanningDB->getAttribute< ::fwAtoms::Map >("values");
+
+        BOOST_FOREACH( ::fwAtoms::Map::value_type oldPlanningAtom, oldPlannings->getValue() )
+        {
+            ::fwAtoms::Map::sptr oldPlanning
+                = ::fwAtoms::Object::dynamicCast(oldPlanningAtom.second)->getAttribute< ::fwAtoms::Map >("values");
+
+            SLM_ASSERT("Didn't find 'acquisition' in planning",
+                    oldPlanning->getValue().find("acquisition") != oldPlanning->getValue().end());
+            ::fwAtoms::Base::sptr acquisition = oldPlanning->getValue().find("acquisition")->second;
+            ::fwAtoms::Object::sptr acqObj = ::fwAtoms::Object::dynamicCast(acquisition);
+            SLM_ASSERT("Failed to cast acquisition to object", acqObj);
+
+            Image2ModelType::const_iterator it = image2Model.find(newVersions[acqObj]);
+            SLM_ASSERT("Didn't find image series related to acquisition", it != image2Model.end());
+            ::fwAtoms::Object::sptr imageSeries = it->first;
+
+            ::fwAtoms::Object::sptr resectionDB
+                = ::fwAtoms::Object::dynamicCast(oldPlanning->getValue().find("resectionDB")->second);
+
+            // Retrieves expert who performed the resection
+            ::fwAtoms::Object::sptr expert
+                = ::fwAtoms::Object::dynamicCast(oldPlanning->getValue().find("expert")->second);
+
+            ::fwAtoms::Sequence::sptr experts = ::fwAtoms::Sequence::New();
+            experts->push_back( ::fwAtoms::String::dynamicCast(expert->getAttribute< ::fwAtoms::String >("value")));
+
+            // Retrieves resection information
+            ::fwAtoms::Object::sptr information
+                = ::fwAtoms::Object::dynamicCast(oldPlanning->getValue().find("information")->second);
+            ::fwAtoms::String::sptr informationStr
+                = ::fwAtoms::String::dynamicCast(information->getAttribute< ::fwAtoms::String >("value"));
+
+            // Retrieves resection date and time
+            ::fwAtoms::Object::sptr dateTimeObj
+                = ::fwAtoms::Object::dynamicCast(oldPlanning->getValue().find("startDateTime")->second);
+            ::fwAtoms::String::sptr dateTimeStr
+                = ::fwAtoms::String::dynamicCast(dateTimeObj->getAttribute< ::fwAtoms::String >("value"));
+
+            ::fwAtoms::String::sptr time = ::fwAtoms::String::New("");
+            ::fwAtoms::String::sptr date = ::fwAtoms::String::New("");
+
+            std::string dateTimeStd = dateTimeStr->getString();
+            std::vector< std::string > strs;
+            ::boost::split(strs, dateTimeStd, ::boost::is_any_of(" "));
+
+            if(strs.size() >= 2)
+            {
+                date->setValue(strs[0]);
+                time->setValue(strs[1]);
+            }
+
+            ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
+            ::fwAtoms::Object::sptr newActivitySeries = creators->create( "::fwMedData::ActivitySeries", "1");
+
+            ::fwAtoms::Object::sptr imgComposite = ::fwAtoms::Object::New();
+            ::fwAtomsPatch::helper::setClassname(imgComposite, "::fwData::Composite");
+            ::fwAtomsPatch::helper::setVersion(imgComposite, "1");
+            ::fwAtomsPatch::helper::generateID(imgComposite);
+            ::fwAtomsPatch::helper::cleanFields(imgComposite);
+
+            ::fwAtomsPatch::helper::Object imgCompositeHelper(imgComposite);
+            ::fwAtoms::Map::sptr compositeMap = ::fwAtoms::Map::New();
+            compositeMap->insert("OptionalInputImageKey", imageSeries->getAttribute< ::fwAtoms::Object >("image"));
+            imgCompositeHelper.addAttribute("values", compositeMap);
+
+            ::fwAtoms::Map::sptr activityDataMap = ::fwAtoms::Map::New();
+            activityDataMap->insert("resectionDB", resectionDB);
+            activityDataMap->insert("modelSeries", it->second);
+            activityDataMap->insert("imageSeries", imgComposite);
+
+            ::fwAtoms::Object::sptr mapObj = ::fwAtoms::Object::New();
+            ::fwAtomsPatch::helper::setClassname(mapObj, "::fwData::Composite");
+            ::fwAtomsPatch::helper::setVersion(mapObj, "1");
+            ::fwAtomsPatch::helper::generateID(mapObj);
+            ::fwAtomsPatch::helper::cleanFields(mapObj);
+
+            ::fwAtomsPatch::helper::Object mapObjHelper(mapObj);
+            mapObjHelper.addAttribute("values", activityDataMap);
+
+            ::fwAtomsPatch::helper::Object helperActivity(newActivitySeries);
+            helperActivity.replaceAttribute("activity_config_id", ::fwAtoms::String::New("Resection"));
+            helperActivity.replaceAttribute("data", mapObj);
+
+            helperActivity.replaceAttribute("modality", ::fwAtoms::String::New("OT") );
+            helperActivity.replaceAttribute("instance_uid", ::fwAtoms::String::New(::fwTools::UUID::generateUUID()));
+            helperActivity.replaceAttribute("date", date);
+            helperActivity.replaceAttribute("time", time);
+            helperActivity.replaceAttribute("performing_physicians_name", experts);
+            helperActivity.replaceAttribute("description" , informationStr);
+            helperActivity.replaceAttribute("patient", imageSeries->getAttribute< ::fwAtoms::Object >("patient"));
+            helperActivity.replaceAttribute("study", imageSeries->getAttribute< ::fwAtoms::Object >("study"));
+            helperActivity.replaceAttribute("equipment", imageSeries->getAttribute< ::fwAtoms::Object >("equipment"));
+
+            series->push_back(newActivitySeries);
+        }
+}
+
+// ----------------------------------------------------------------------------
+
 void Composite::apply(
         const ::fwAtoms::Object::sptr& previous,
         const ::fwAtoms::Object::sptr& current,
         ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
+    Image2ModelType image2Model;
+
     ISemanticPatch::apply(previous, current, newVersions);
 
     // Create helper
@@ -81,6 +199,8 @@ void Composite::apply(
         ::fwAtoms::Object::sptr oldPatientDB =
                 ::fwAtoms::Object::dynamicCast( (*oldCompositeMap)["patientDB"] );
         ::fwAtoms::Sequence::sptr oldPatients = oldPatientDB->getAttribute< ::fwAtoms::Sequence >("patients");
+
+        ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
 
         BOOST_FOREACH( ::fwAtoms::Base::sptr oldPatientAtom, oldPatients->getValue() )
         {
@@ -144,8 +264,6 @@ void Composite::apply(
 
                     if ( oldReconstructions->size() > 0 )
                     {
-                        ::fwAtomsPatch::StructuralCreatorDB::sptr creators =
-                                ::fwAtomsPatch::StructuralCreatorDB::getDefault();
                         // Create new model series
                         ::fwAtoms::Object::sptr newModelSeries =
                                 creators->create( "::fwMedData::ModelSeries", "1");
@@ -160,7 +278,7 @@ void Composite::apply(
                         msHelper.replaceAttribute("study", msStudy );
 
                         ::fwAtoms::Object::sptr msEquipment = ::fwAtoms::Object::dynamicCast(equipment->clone());
-                                                ::fwAtomsPatch::helper::changeUID(msEquipment);
+                        ::fwAtomsPatch::helper::changeUID(msEquipment);
                         msHelper.replaceAttribute("equipment", msEquipment );
 
                         msHelper.replaceAttribute("modality", ::fwAtoms::String::New("OT") );
@@ -177,14 +295,18 @@ void Composite::apply(
                         BOOST_FOREACH( ::fwAtoms::Base::sptr oldRecAtom, oldReconstructions->getValue() )
                         {
                             ::fwAtoms::Object::sptr oldRec = ::fwAtoms::Object::dynamicCast( oldRecAtom );
-                            newReconstructions->push_back( newVersions[oldRec] );
+                            newReconstructions->push_back(newVersions[oldRec]);
                         }
 
+                        image2Model[newImgSeries] = newModelSeries;
                         series->push_back( newModelSeries );
                     }
                 }
             }
         }
+
+        processPlanning(oldCompositeMap, series, image2Model, newVersions);
+
     } // End "MedicalWorkspace"
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -104,6 +104,12 @@ public:
      */
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getServiceConfig( const std::string & configId,
                                                                               const std::string &serviceImpl="" ) const;
+
+    /**
+     * @brief Returns the description of the given configuration name.
+     * @note This method is thread safe
+     */
+    FWSERVICES_API const std::string& getConfigDesc( const std::string & configId ) const;
 
     /**
      * @brief Returns a vector containing the names of the available config for the service with the given
