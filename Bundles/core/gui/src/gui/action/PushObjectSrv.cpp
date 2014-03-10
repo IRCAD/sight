@@ -49,12 +49,14 @@ void PushObjectSrv::starting() throw(::fwTools::Failed)
     BOOST_FOREACH(const SrcKeyMapType::value_type& valElt, m_srcMap )
     {
         src_uid = valElt.first;
+        SLM_TRACE("start check : " + src_uid );
         OSLM_ASSERT( src_uid << " doesn't exist", ::fwTools::fwID::exist(src_uid) );
         ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( src_uid ) );
         OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
         BOOST_FOREACH(SrcKeyMapType::key_type keyElt, valElt.second )
         {
             executable &= (composite_src->find(keyElt)!= composite_src->end());
+            OSLM_TRACE("start check : " << src_uid << "[" << keyElt << "] : " <<(composite_src->find(keyElt)!= composite_src->end()) );
         }
     }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
@@ -75,7 +77,7 @@ void PushObjectSrv::configuring() throw( ::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->initialize();
 
-    std::vector < ConfigurationType > pushConfig = m_configuration->find("push");
+    std::vector < ConfigurationType > pushConfig = m_configuration->find("push","","",3);
     std::string src, src_uid, src_key, key;
     ::boost::regex re("(.*)\\[(.*)\\]");
     ::boost::smatch match;
@@ -92,6 +94,7 @@ void PushObjectSrv::configuring() throw( ::fwTools::Failed)
             src_key.assign(match[2].first, match[2].second);
             m_key2src[key] = std::make_pair(src_uid, src_key);
             m_srcMap[src_uid].insert(src_key);
+            SLM_TRACE("Add " + src_uid + "[" + src_key + "]");
         }
         else
         {
@@ -145,13 +148,14 @@ void PushObjectSrv::updating() throw(::fwTools::Failed)
 
 void PushObjectSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
-    bool executable = this->getIsExecutable();
+    bool executable = !m_srcMap.empty();
     ::fwData::Object::sptr subject = msg->getSubject().lock();
 
     std::string src_uid;
     BOOST_FOREACH(const SrcKeyMapType::value_type& valElt, m_srcMap )
     {
         src_uid = valElt.first;
+        SLM_TRACE("check : " + src_uid);
         if( src_uid == subject->getID() &&
                 ( msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) ||
                   msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS))  )
@@ -161,6 +165,7 @@ void PushObjectSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
             BOOST_FOREACH(SrcKeyMapType::key_type keyElt, valElt.second )
             {
                 executable &= (composite_src->find(keyElt)!= composite_src->end());
+                OSLM_TRACE("check : " << src_uid << "[" << keyElt << "] : " << (composite_src->find(keyElt)!= composite_src->end()) );
             }
         }
     }
