@@ -41,30 +41,45 @@ protected :
 
     /**
      * @brief Configuring method allows to configure an application with menu bar.
-     * Here a sample of the DefaultMenuBarSrv service declaration with two menus:
+     * Example of configuration
      * @verbatim
-        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
-            <layout>
-                <menu name="File"/>
-                <menu name="Mesher" />
-            </layout>
-            <registrar>
-                <menu sid="menu_File" strart="yes"/>
-                <menu sid="menu_Mesher" strart="yes"/>
-            </registrar>
-        </service>
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+          <gui>
+              <layout>
+                  <menu name="My Menu"/>
+                  <menu name="My Menu 2"/>
+              </layout>
+          </gui>
+          <registry>
+              <menu sid="myMenu" start="yes" />
+              <menu sid="myMenu2" start="yes" />
+          </registry>
+      </service>
        @endverbatim
-      * - \<layout\> defines the layout configuration : name of the menus.
-      * - \<registrar\> defines the services configuration :
-      *   - sid of the menu services
-      *   - start or not the menu service automatically
+     *  - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
+     *  - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *   - sid of the menu services
+     *   - start or not the menu service automatically
+     *
+     * @warning
+     * - The number of item in the gui section must be equal or greater than in the registry section.
+     * - The order of the menu in each section (gui and registry) must be the same.\n
+     *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
+     * - A menu bar can't have the same service connected on two different menu.
+     *
+     *  @see ::fwGui::IMenuBarSrv::initialize(), ::fwGui::layoutManager::IMenuBarLayoutManager::initialize()
      */
     GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
 
+    /**
+     * @brief Create the menus and start the managed services.
+     * @see ::fwGui::IMenuBarSrv::create()
+     */
     GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
 
     /**
-     * @brief Stop all actions and separator of this menu and remove menu to wxMenuBar
+     * @brief Stop all menu of this menuBar and destroy MenuBar
+     * @see ::fwGui::IMenuBarSrv::destroy()
      */
     GUI_API virtual void stopping() throw( ::fwTools::Failed ) ;
 

@@ -41,30 +41,45 @@ protected :
 
     /**
      * @brief Configuring method allows to configure a menu with several actions.
-     * Here a sample of the DefaultMenuSrv service declaration with three actions:
+
+     * Example of configuration
      * @verbatim
-            <service name="File" uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
-                <layout>
-                    <menuItem name="Load file" shortcut="Ctrl+O"/>
-                    <menuItem uid="Save file"/>
-                    <separator />
-                    <menuItem uid="Quit" />
-                </layout>
-                <registrar>
-                    <menuItem sid="action_loadFile"/>
-                    <menuItem sid="action_saveFile"/>
-                    <menuItem sid="action_quit" />
-                </registrar>
-            </service>
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+          <gui>
+              <layout>
+                  <menu name="My Menu"/>
+                  <menu name="My Menu 2"/>
+              </layout>
+          </gui>
+          <registry>
+              <menu sid="myMenu" start="yes" />
+              <menu sid="myMenu2" start="yes" />
+          </registry>
+      </service>
        @endverbatim
-      * - \<separator /\> : allows to put a separator in the menu
+     *  - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
+     *    - <separator /> : allows to put a separator in the menu
+     *  - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *
+     * @warning
+     * - The number of item in the gui section must be equal or greater than in the registry section.
+     * - The order of the menu in each section (gui and registry) must be the same.\n
+     *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
+     * - A menu bar can't have the same service connected on two different menu.
+     *
+     *  @see ::fwGui::IMenuBarSrv::initialize(), ::fwGui::layoutManager::IMenuLayoutManager::initialize()
      */
     GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
 
+    /**
+     * @brief Create the menu items and start the managed services.
+     * @see ::fwGui::IMenuSrv::create()
+     */
     GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
 
     /**
      * @brief Stop all actions and separator of this menu and remove menu to menuBar
+     * @see ::fwGui::IMenuSrv::destroy()
      */
     GUI_API virtual void stopping() throw( ::fwTools::Failed ) ;
 
