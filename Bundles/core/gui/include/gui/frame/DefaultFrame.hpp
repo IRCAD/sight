@@ -42,16 +42,19 @@ protected :
 
     /**
      * @brief This method is used to configure the class parameters.
+     * @see ::fwGui::IFrameSrv::initialize()
      */
     GUI_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**
      * @brief Register a view with defined id.
+     * @see ::fwGui::IFrameSrv::create()
      */
     GUI_API virtual void starting() throw(::fwTools::Failed);
 
     /**
      * @brief This method remove the view in the frame.
+     * @see ::fwGui::IFrameSrv::destroy()
      */
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
