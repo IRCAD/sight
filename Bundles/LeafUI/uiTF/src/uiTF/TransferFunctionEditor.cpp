@@ -476,7 +476,6 @@ void TransferFunctionEditor::initTransferFunctions()
         defaultTf->setWindow( 50. );
         defaultTf->setLevel( 500. );
         compositeHelper.add(defaultTFName, defaultTf);
-        compositeHelper.notify(this->getSptr());
     }
 
     // Test if transfer function composite has few TF
@@ -524,8 +523,6 @@ void TransferFunctionEditor::initTransferFunctions()
                 }
 
                 compositeHelper.add(newTF->getName(), newTF);
-
-                compositeHelper.notify(this->getSptr());
             }
             tf->initTF();
         }
