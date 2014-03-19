@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,9 +41,11 @@ public:
 
     /**
      * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.
-    * @param[in] activityInfo a structure which contains all the Activity configuration
+     * returns specific data ActivitySeries for the specified Activity, or a
+     * null pointer if the builder canceled the activity creation.
+     * @param[in] activityInfo a structure which contains all the Activity configuration
      * @param[in] currentSelection a vector which contains current selected data.
-     * @return specific data ActivitySeries for the specified Activity.
+     * @return ActivitySeries or null
      */
     FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
             const ::fwActivities::registry::ActivityInfo& activityInfo,
