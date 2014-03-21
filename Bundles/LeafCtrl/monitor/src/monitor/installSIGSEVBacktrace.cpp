@@ -128,12 +128,12 @@ void bt_sighandler(int sig, siginfo_t *info,
 
     if (sig == SIGSEGV)
     {
-        OSLM_FATAL("SIGSEV signal " << ss.str() );
+        SLM_FATAL("SIGSEV signal " + ss.str() );
         exit(0);
     }
     else
     {
-        OSLM_INFO("SIGUSR1 signal " << ss.str() );
+        SLM_ERROR("SIGUSR1 signal " + ss.str() );
     }
 
 }
@@ -188,7 +188,7 @@ void printDump(std::list<std::string> &loadedModules, std::list<std::string> &ca
     }
     stream << "-----------------------------------------" << std::endl;
 
-    SLM_INFO(stream.str() );
+    SLM_ERROR(stream.str() );
 }
 
 /**
