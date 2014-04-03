@@ -39,6 +39,7 @@ NegatoOneSlice::NegatoOneSlice() throw()
     m_allowAlphaInTF = false;
     m_interpolation  = true;
     m_manageImageSource = false;
+    m_actorOpacity = 1.0;
 
     m_imageSource = NULL;
 
@@ -120,6 +121,7 @@ void NegatoOneSlice::cleanImageSource()
         ISA->setVtkImageSource(this->getImageSource());
         ISA->setCtrlImage(image);
         ISA->setInterpolation(m_interpolation);
+        ISA->setActorOpacity(m_actorOpacity);
 
        ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(ISA)->setOrientation((Orientation) m_orientation);
 
@@ -290,6 +292,10 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
     if (m_configuration->hasAttribute("vtkimagesource"))
     {
         this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
+    }
+    if(m_configuration->hasAttribute("actorOpacity") )
+    {
+        m_actorOpacity = ::boost::lexical_cast<double>(m_configuration->getAttributeValue("actorOpacity"));
     }
 
     this->parseTFConfig( m_configuration );
