@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 #include "fwStructuralPatch/fwData/Patient/V1ToFwMedDataPatientV1.hpp"
 #include "fwStructuralPatch/fwData/Study/V1ToFwMedDataStudyV1.hpp"
 #include "fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
+#include "fwStructuralPatch/fwData/Image/V1ToV2.hpp"
 
 
 namespace fwStructuralPatch
@@ -26,6 +27,7 @@ struct runner
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Patient::V1ToFwMedDataPatientV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Study::V1ToFwMedDataStudyV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1::New());
+        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V1ToV2::New());
     }
 
     static runner r;
