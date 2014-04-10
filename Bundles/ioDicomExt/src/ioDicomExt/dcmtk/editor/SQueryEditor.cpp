@@ -222,7 +222,7 @@ void SQueryEditor::updateSeriesDB(::fwMedData::SeriesDB::ContainerType series)
     seriesDBHelper.clear();
 
     // Push new series in the SeriesDB
-    BOOST_FOREACH(::fwMedData::Series::sptr s, series)
+    BOOST_FOREACH(const ::fwMedData::Series::sptr& s, series)
     {
         ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::dynamicCast(s);
         seriesDBHelper.add(dicomSeries);

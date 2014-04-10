@@ -127,7 +127,7 @@ bool SeriesEnquirer::connect()
     OFCondition result = this->initNetwork();
     if (result.bad())
     {
-        std::string msg = "Unable to set up the network: " + std::string(result.text());
+        const std::string msg = "Unable to set up the network: " + std::string(result.text());
         throw ::fwDicomIOExt::exceptions::NetworkInitializationFailure(msg);
     }
 
@@ -135,7 +135,7 @@ bool SeriesEnquirer::connect()
     result = this->negotiateAssociation();
     if (result.bad())
     {
-        std::string msg = "Unable to negotiate association: " + std::string(result.text());
+        const std::string msg = "Unable to negotiate association: " + std::string(result.text());
         throw ::fwDicomIOExt::exceptions::NegociateAssociationFailure(msg);
     }
 
@@ -174,7 +174,7 @@ OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset dataset)
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_FINDStudyRootQueryRetrieveInformationModel);
     if (presID == 0)
     {
-        std::string msg = "There is no uncompressed presentation context for Study Root FIND";
+        const std::string msg = "There is no uncompressed presentation context for Study Root FIND";
         throw ::fwDicomIOExt::exceptions::PresentationContextMissing(msg);
     }
 
@@ -353,7 +353,7 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer inst
         }
         else
         {
-            std::string msg = "Unable to send a C-MOVE request to the server. "
+            const std::string msg = "Unable to send a C-MOVE request to the server. "
                     "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
                     + std::string(result.text());
             throw ::fwDicomIOExt::exceptions::RequestFailure(msg);
@@ -383,7 +383,7 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer insta
         }
         else
         {
-            std::string msg = "Unable to send a C-GET request to the server. "
+            const std::string msg = "Unable to send a C-GET request to the server. "
                     "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
                     + std::string(result.text());
             throw ::fwDicomIOExt::exceptions::RequestFailure(msg);
@@ -413,7 +413,7 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& seri
     }
     else
     {
-        std::string msg = "Unable to send a C-MOVE request to the server. "
+        const std::string msg = "Unable to send a C-MOVE request to the server. "
                 "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
                 + std::string(result.text());
         throw ::fwDicomIOExt::exceptions::RequestFailure(msg);
@@ -442,7 +442,7 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& serie
     }
     else
     {
-        std::string msg = "Unable to send a C-GET request to the server. "
+        const std::string msg = "Unable to send a C-GET request to the server. "
                 "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
                 + std::string(result.text());
         throw ::fwDicomIOExt::exceptions::RequestFailure(msg);

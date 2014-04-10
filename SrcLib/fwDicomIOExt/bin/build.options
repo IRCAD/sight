@@ -13,6 +13,7 @@ LIB = [
        'fwDataIO_0-2',
        'fwTools_0-1',
        'fwThread_0-1',
+       'fwMath_0-1',
        'fwMedData_0-1',
        'fwCom_0-1',
        'fwComEd_0-1',

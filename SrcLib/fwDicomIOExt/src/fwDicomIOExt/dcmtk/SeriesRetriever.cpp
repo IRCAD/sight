@@ -169,7 +169,7 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message *incomingMsg,
 
             if (cond.bad())
             {
-                std::string msg = "Cannot send C-STORE Response to the server. ";
+                const std::string msg = "Cannot send C-STORE Response to the server. ";
                 throw ::fwDicomIOExt::exceptions::RequestFailure(msg);
             }
             else

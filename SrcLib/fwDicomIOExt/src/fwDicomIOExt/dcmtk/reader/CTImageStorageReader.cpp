@@ -17,6 +17,7 @@
 
 #include <fwComEd/helper/Array.hpp>
 #include <fwData/Image.hpp>
+#include <fwMath/VectorFunctions.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwTools/Type.hpp>
 
@@ -221,26 +222,25 @@ void CTImageStorageReader::sortInstances()
         FW_RAISE_IF("Unable to read the file: \""+*it+"\"", status.bad());
         dataset = fileFormat.getDataset();
 
-        double imagePosition[3];
+        fwVec3d imagePosition;
         for(unsigned int i=0; i < 3; ++i)
         {
             dataset->findAndGetFloat64(DCM_ImagePositionPatient, imagePosition[i], i);
         }
 
-        double imageOrientation[6];
-        for(unsigned int i=0; i < 6; ++i)
+        fwVec3d imageOrientationU;
+        fwVec3d imageOrientationV;
+        for(unsigned int i=0; i < 3; ++i)
         {
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientation[i], i);
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i+3);
         }
 
         //Compute Z direction (cross product)
-        double zVector[3];
-        zVector[0] = imageOrientation[1]*imageOrientation[5] - imageOrientation[2]*imageOrientation[4];
-        zVector[1] = imageOrientation[2]*imageOrientation[3] - imageOrientation[0]*imageOrientation[5];
-        zVector[2] = imageOrientation[0]*imageOrientation[4] - imageOrientation[1]*imageOrientation[3];
+        fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
 
         //Compute dot product to get the index
-        double index = imagePosition[0]*zVector[0]+imagePosition[1]*zVector[1]+imagePosition[2]*zVector[2];
+        double index = ::fwMath::dot(imagePosition, zVector);
 
         sortedFiles[index] = *it;
     }

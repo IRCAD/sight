@@ -151,7 +151,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 {
     InstanceUIDContainer result;
 
-    BOOST_FOREACH( ::fwMedData::Series::sptr s, series )
+    BOOST_FOREACH(const ::fwMedData::Series::sptr& s, series )
     {
         result.push_back(s->getInstanceUID());
     }
@@ -183,7 +183,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResp
             }
             else
             {
-                std::string msg = "There is no \"SeriersInstanceUID\" tag in the selected series :"
+                const std::string msg = "There is no \"SeriersInstanceUID\" tag in the selected series :"
                         + std::string(result.text());
                 throw ::fwDicomIOExt::exceptions::TagMissing(msg);
             }

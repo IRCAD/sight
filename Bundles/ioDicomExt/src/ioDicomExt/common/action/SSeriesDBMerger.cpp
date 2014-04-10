@@ -96,11 +96,11 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
     ::fwMedData::SeriesDB::ContainerType container = m_destinationSeriesDB->getContainer();
     ::fwData::Vector::sptr selectedSeries = this->getObject< ::fwData::Vector >();
 
-    // Save added series in this container in order to display informations on the push
+    // Save added series in this container in order to display information on the push
     std::vector< ::fwMedData::Series::sptr > addedSeries;
 
     // Loop through all selected series
-    BOOST_FOREACH(::fwData::Object::sptr obj, selectedSeries->getContainer())
+    BOOST_FOREACH(const ::fwData::Object::sptr& obj, selectedSeries->getContainer())
     {
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
 
@@ -138,7 +138,7 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
             ss << addedSeries.size() << " series have been correctly pushed in the database:\n";
         }
 
-        BOOST_FOREACH(::fwMedData::Series::sptr series, addedSeries)
+        BOOST_FOREACH(const ::fwMedData::Series::sptr& series, addedSeries)
         {
             ss << "- " << series->getDescription() << std::endl;
         }
