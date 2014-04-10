@@ -7,17 +7,8 @@
 #ifndef __FWDICOMIOEXT_DCMTK_READER_IOBJECTREADER_HPP__
 #define __FWDICOMIOEXT_DCMTK_READER_IOBJECTREADER_HPP__
 
-#include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/diutil.h>
-
-#include <fwCore/BaseObject.hpp>
-
+#include <fwDicomData/DicomSeries.hpp>
 #include "fwDicomIOExt/config.hpp"
-
-namespace fwMedData
-{
-    class Series;
-}
 
 namespace fwDicomIOExt
 {
@@ -31,34 +22,21 @@ namespace reader
  * @brief Base class for Dicom instance reader.
  * @date  2013.
  */
-class FWDICOMIOEXT_CLASS_API IObjectReader : public ::fwCore::BaseObject
+class FWDICOMIOEXT_CLASS_API IObjectReader
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IObjectReader) );
-    fwCoreAllowSharedFromThis();
-
     /// Constructor
-    FWDICOMIOEXT_API IObjectReader(SPTR(::fwMedData::Series) series);
+    FWDICOMIOEXT_API IObjectReader();
 
     /// Destructor
     FWDICOMIOEXT_API virtual ~IObjectReader();
 
     /**
-     * @brief Add the dataset of an instance belonging to the series.
-     * @param[in] dataset Instance's dataset
-     * @param[in] filename Instance's filename
-     */
-    FWDICOMIOEXT_API virtual void addInstance(DcmDataset* dataset, const std::string& filename)=0;
-
-    /**
-     * @brief Create the series from the datasets.
+     * @brief Read the series from the group of instances.
      * @return Returns the created Series.
      */
-    FWDICOMIOEXT_API virtual SPTR(::fwMedData::Series) create()=0;
+    FWDICOMIOEXT_API virtual ::fwMedData::Series::sptr read(::fwDicomData::DicomSeries::sptr series)=0;
 
-protected:
-    /// Series that will be read by the reader
-    SPTR(::fwMedData::Series) m_series;
 };
 
 } //dcmtk

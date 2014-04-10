@@ -19,7 +19,7 @@ namespace ut
 class DicomSeriesWriterTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( DicomSeriesWriterTest );
-    CPPUNIT_TEST( writeReadTest );
+//    CPPUNIT_TEST( writeReadTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,7 +27,7 @@ public:
     void setUp();
     void tearDown();
 
-    void writeReadTest();
+//    void writeReadTest();
 
 };
 

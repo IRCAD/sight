@@ -425,7 +425,8 @@ void DicomSeriesDBReader::read()
     if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
     {
         // Try to read dicomdir file
-        if(!::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames))
+        if(!m_isDicomdirActivated || (m_isDicomdirActivated &&
+                !::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames)))
         {
             // Recursively search for dicom files
             ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(this->getFolder(), filenames);
@@ -440,6 +441,15 @@ void DicomSeriesDBReader::read()
         }
     }
     this->addSeries( patientDB , filenames);
+}
+
+//------------------------------------------------------------------------------
+
+bool DicomSeriesDBReader::isDicomDirAvailable()
+{
+    std::vector<std::string> filenames;
+    const bool result = ::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames);
+    return result && !filenames.empty();
 }
 
 //------------------------------------------------------------------------------
@@ -474,6 +484,13 @@ SPTR(::fwData::Array) DicomSeriesDBReader::convertToBinary(const std::string& fi
     arrayHelper.setBuffer(binary, true, ::fwTools::Type::create("uint8"), size, 1);
 
     return array;
+}
+
+//------------------------------------------------------------------------------
+
+void DicomSeriesDBReader::setDicomdirActivated(bool value)
+{
+    m_isDicomdirActivated = value;
 }
 
 } // namespace gdcm

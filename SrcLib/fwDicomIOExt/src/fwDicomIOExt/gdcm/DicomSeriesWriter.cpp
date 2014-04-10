@@ -69,7 +69,8 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
     return longestPrefix;
 }
 
-::boost::filesystem::path removePathPrefix(const ::boost::filesystem::path &path, const ::boost::filesystem::path &prefix)
+::boost::filesystem::path removePathPrefix(const ::boost::filesystem::path &path,
+        const ::boost::filesystem::path &prefix)
 {
     std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
         = std::mismatch(path.begin(), path.end(), prefix.begin());
@@ -111,12 +112,13 @@ void DicomSeriesWriter::write()
 
     if(dicomSeries->getDicomAvailability() == ::fwDicomData::DicomSeries::BINARIES)
     {
-        BOOST_FOREACH(::fwDicomData::DicomSeries::DicomBinaryContainerType::value_type value, dicomSeries->getDicomBinaries())
+        BOOST_FOREACH(::fwDicomData::DicomSeries::DicomBinaryContainerType::value_type value,
+                dicomSeries->getDicomBinaries())
         {
             ::fwData::Array::sptr array = value.second;
             ::fwComEd::helper::Array arrayHelper(array);
 
-            char* buffer = (char*)arrayHelper.getBuffer();
+            char* buffer = static_cast<char*>(arrayHelper.getBuffer());
             size_t size = array->getSizeInBytes();
 
             ::boost::filesystem::ofstream fs(folder / value.first, std::ios::binary|std::ios::trunc);
@@ -143,7 +145,8 @@ void DicomSeriesWriter::write()
 
             ::boost::system::error_code ec;
             ::boost::filesystem::copy( src, dest_file, ec );
-            FW_RAISE_IF("Copy " << src.string() << " " << dest_file.string() << " error : " << ec.message(), ec.value());
+            FW_RAISE_IF("Copy " << src.string() << " " << dest_file.string() << " error : "
+                    << ec.message(), ec.value());
 
             ::boost::filesystem::permissions(dest_file, ::boost::filesystem::owner_all, ec);
             FW_RAISE_IF("Set permission " << dest_file.string() << " error : " << ec.message(), ec.value());

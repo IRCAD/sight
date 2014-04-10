@@ -26,7 +26,8 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path &dirPath, st
 {
     std::vector<std::string> vecStr;
     std::string strIgnoreFile = ".zip|.txt|.htm|.html|.xml|.exe|.gz|.dir|.gif|.jpeg|.jpg|dicomdir|.DS_Store";
-    ::boost::algorithm::split( vecStr, strIgnoreFile, ::boost::algorithm::is_any_of("|"), ::boost::algorithm::token_compress_on );
+    ::boost::algorithm::split( vecStr, strIgnoreFile, ::boost::algorithm::is_any_of("|"),
+            ::boost::algorithm::token_compress_on );
 
     std::string lowerFilename;
     std::string filename;

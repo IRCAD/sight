@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDICOMIOEXT_TEST_TU_DICOMSERIESDBREADERTEST_HPP__
-#define __FWDICOMIOEXT_TEST_TU_DICOMSERIESDBREADERTEST_HPP__
+#ifndef __FWDICOMIOEXT_TEST_TU_SERIESDBREADERTEST_HPP__
+#define __FWDICOMIOEXT_TEST_TU_SERIESDBREADERTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
@@ -21,11 +21,11 @@ namespace fwDicomIOExt
 namespace ut
 {
 
-class DicomSeriesDBReaderTest : public CPPUNIT_NS::TestFixture
+class SeriesDBReaderTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( DicomSeriesDBReaderTest );
-    CPPUNIT_TEST( readDicomSeriesDBGDCMTest );
-    CPPUNIT_TEST( readDicomSeriesDBDCMTKTest );
+    CPPUNIT_TEST_SUITE( SeriesDBReaderTest );
+    CPPUNIT_TEST( readSeriesDBTest );
+    CPPUNIT_TEST( lazyReadSeriesDBTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -33,16 +33,14 @@ public:
     void setUp();
     void tearDown();
 
-    void readDicomSeriesDBGDCMTest();
-    void readDicomSeriesDBDCMTKTest();
+    void readSeriesDBTest();
 
-private:
-    ::fwMedData::SeriesDB::sptr m_seriesDB;
+    void lazyReadSeriesDBTest();
 
 };
 
 } // namespace ut
 } // namespace fwDicomIOExt
 
-#endif // __FWDICOMIOEXT_TEST_TU_DICOMSERIESDBREADERTEST_HPP__
+#endif // __FWDICOMIOEXT_TEST_TU_SERIESDBREADERTEST_HPP__
 

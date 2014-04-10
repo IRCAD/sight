@@ -2,14 +2,15 @@ CLASSTEST=[
     'SeriesEnquirerTest',
     'DicomSeriesDBReaderTest',
     'DicomSeriesWriterTest',
-    'DicomAnonymizerTest'
+    'DicomAnonymizerTest',
+    'SeriesDBReaderTest'
     ]
 
 USE = []
 LIB = [
        'fwDicomIOExt_0-1',
        'fwTools_0-1',
-       'fwCore_0-1', 
+       'fwCore_0-1',
        'fwTest_0-1',
        'fwThread_0-1',
        'fwData_0-1',

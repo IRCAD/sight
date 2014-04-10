@@ -1,6 +1,6 @@
 TYPE='shared'
 USE = [
-        'boost', 
+        'boost',
         'dcmtk',
         'qtCore'
         ]

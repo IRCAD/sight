@@ -47,7 +47,7 @@ void DicomSeriesTest::dicomTest()
     //Create Path
     const ::boost::filesystem::path path = ::fwTools::System::getTemporaryFolder() / "dicomtest";
     ::boost::filesystem::create_directories(path);
-    std::string filename = path.string()+"/"+"file";
+    const std::string filename = path.string()+"/"+"file";
     std::ofstream file;
     file.open(filename.c_str(), std::ofstream::out);
     file << "42";

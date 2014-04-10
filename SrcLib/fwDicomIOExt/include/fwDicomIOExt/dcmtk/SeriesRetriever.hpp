@@ -33,7 +33,8 @@ class FWDICOMIOEXT_CLASS_API SeriesRetriever : public ::fwCore::BaseObject, publ
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesRetriever)(::fwDicomIOExt::dcmtk::SeriesRetriever), (()), new SeriesRetriever);
+    fwCoreClassDefinitionsWithFactoryMacro( (SeriesRetriever)(::fwDicomIOExt::dcmtk::SeriesRetriever),
+            (()), new SeriesRetriever);
     fwCoreAllowSharedFromThis();
 
     FWDICOMIOEXT_API static const ::fwCom::Slots::SlotKeyType s_STORE_INSTANCE_CALLBACK_SLOT;

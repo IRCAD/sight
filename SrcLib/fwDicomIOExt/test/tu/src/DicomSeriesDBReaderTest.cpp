@@ -10,6 +10,7 @@
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
 
+#include <fwDicomIOExt/dcmtk/SeriesDBReader.hpp>
 #include <fwDicomIOExt/gdcm/DicomSeriesDBReader.hpp>
 
 #include "DicomSeriesDBReaderTest.hpp"
@@ -37,7 +38,7 @@ void DicomSeriesDBReaderTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesDBReaderTest::readDicomSeriesDBTest()
+void DicomSeriesDBReaderTest::readDicomSeriesDBGDCMTest()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
@@ -55,6 +56,23 @@ void DicomSeriesDBReaderTest::readDicomSeriesDBTest()
 }
 
 //------------------------------------------------------------------------------
+
+void DicomSeriesDBReaderTest::readDicomSeriesDBDCMTKTest()
+{
+    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+
+    const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
+
+    ::fwDicomIOExt::dcmtk::SeriesDBReader::sptr reader = ::fwDicomIOExt::dcmtk::SeriesDBReader::New();
+    reader->setObject(seriesDB);
+
+    reader->setFolder(path);
+
+    CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
+
+    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
+
+}
 
 } // namespace ut
 

@@ -17,6 +17,7 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
+#include <fwDicomData/DicomSeries.hpp>
 #include <fwDicomIOExt/dcmtk/helper/Series.hpp>
 #include <fwDicomIOExt/exceptions/Base.hpp>
 #include <fwComEd/SeriesDBMsg.hpp>

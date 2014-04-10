@@ -35,10 +35,9 @@ class DicomSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwDi
 
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro((DicomSeriesWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwDicomData::DicomSeries>),
-                                           (()),
-                                           ::fwDataIO::writer::factory::New< DicomSeriesWriter >
-                                          );
+    fwCoreClassDefinitionsWithFactoryMacro((DicomSeriesWriter)(
+            ::fwDataIO::writer::GenericObjectWriter< ::fwDicomData::DicomSeries>),
+             (()), ::fwDataIO::writer::factory::New< DicomSeriesWriter >);
     fwCoreAllowSharedFromThis();
 
     /// Constructor. Does nothing

@@ -40,7 +40,8 @@ public:
      * @param[in] filename Filename that must be checked.
      * @param[in] extensions Extensions to check
      */
-    FWDICOMIOEXT_API static bool checkFilenameExtension(const std::string &filename, std::vector<std::string> *extensions);
+    FWDICOMIOEXT_API static bool checkFilenameExtension(const std::string &filename,
+            std::vector<std::string> *extensions);
 };
 
 } //dcmtk

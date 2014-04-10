@@ -1,7 +1,7 @@
 TYPE = 'shared'
 VERSION = '0.1'
 USE = ['boost']
-LIB = [ 'fwData_0-1', 
+LIB = [ 'fwData_0-1',
         'fwMedData_0-1',
         'fwCamp_0-1',
         'fwDataCamp_0-1'

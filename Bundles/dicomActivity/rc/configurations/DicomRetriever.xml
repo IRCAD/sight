@@ -181,17 +181,17 @@
                         </config>
                     </configs>
                 </service>
-                
+
                 <service uid="${GENERIC_UID}_action_pushSeries" impl="::ioDicomExt::common::action::SSeriesDBMerger">
                     <config destinationSeriesDBID="${SERIESDB}" />
                 </service>
             </object>
         </item>
-        
+
         <connect>
             <signal>${GENERIC_UID}_pullSeriesController/progressed</signal>
             <slot>${GENERIC_UID}_progressBarController/progressBar</slot>
-        </connect> 
+        </connect>
 
         <!-- START AND STOP SERVICES -->
         <start uid="${GENERIC_UID}_mainView" />

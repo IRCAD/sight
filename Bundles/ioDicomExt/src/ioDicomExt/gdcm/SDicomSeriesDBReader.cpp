@@ -118,6 +118,19 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
 
+    if(myLoader->isDicomDirAvailable())
+    {
+        ::fwGui::dialog::MessageDialog messageBox;
+        messageBox.setTitle("Dicomdir file");
+        messageBox.setMessage( "There is a dicomdir file in the root folder. "
+                "Would you like to use it for the reading process ?" );
+        messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(::fwGui::dialog::IMessageDialog::YES_NO);
+        ::fwGui::dialog::IMessageDialog::Buttons button = messageBox.show();
+
+        myLoader->setDicomdirActivated(button == ::fwGui::dialog::IMessageDialog::YES);
+    }
+
     try
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Dicom Series");
@@ -164,7 +177,8 @@ void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Dicom Series Reader","This file can not be read. Retry with another file reader.", ::fwGui::dialog::IMessageDialog::WARNING);
+                    "Dicom Series Reader","This file can not be read. Retry with another file reader.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }

@@ -45,6 +45,31 @@ namespace helper
 {
 }
 
+/**
+ * @brief reader contains readers used to read the differents image types.
+ * @date 2013.
+ */
+namespace reader
+{
+
+/**
+ * @brief main contains reader helpers to read default images.
+ * @date 2013.
+ */
+namespace main
+{
+}
+
+/**
+ * @brief rgblookup contains reader helpers to read images that require a rgb lookup.
+ * @date 2013.
+ */
+namespace rgblookup
+{
+}
+
+}
+
 }
 
 }

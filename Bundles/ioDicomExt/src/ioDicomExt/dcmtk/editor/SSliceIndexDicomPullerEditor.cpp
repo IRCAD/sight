@@ -358,7 +358,7 @@ void SSliceIndexDicomPullerEditor::readImage(unsigned int selectedSliceIndex)
 
         ::fwData::Array::sptr array = binary->second;
         ::fwComEd::helper::Array arrayHelper(array);
-        char* buffer = (char*)arrayHelper.getBuffer();
+        char* buffer = static_cast<char*>(arrayHelper.getBuffer());
         size_t size = array->getSizeInBytes();
 
         ::boost::filesystem::path dest = tmpPath / binary->first;

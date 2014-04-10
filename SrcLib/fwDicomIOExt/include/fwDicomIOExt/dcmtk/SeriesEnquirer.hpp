@@ -32,7 +32,8 @@ class FWDICOMIOEXT_CLASS_API SeriesEnquirer : public ::fwCore::BaseObject, prote
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesEnquirer)(::fwDicomIOExt::dcmtk::SeriesEnquirer), (()), new SeriesEnquirer);
+    fwCoreClassDefinitionsWithFactoryMacro( (SeriesEnquirer)(::fwDicomIOExt::dcmtk::SeriesEnquirer),
+            (()), new SeriesEnquirer);
     fwCoreAllowSharedFromThis();
 
     FWDICOMIOEXT_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;

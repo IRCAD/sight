@@ -27,7 +27,8 @@ class FWDICOMIOEXT_CLASS_API DicomDir
 {
 public:
     /// Find Dicom instances in a DicomDir file.
-    FWDICOMIOEXT_API static bool readDicomDir(const ::boost::filesystem::path &root, std::vector<std::string>& dicomFiles);
+    FWDICOMIOEXT_API static bool readDicomDir(const ::boost::filesystem::path &root,
+            std::vector<std::string>& dicomFiles);
 
 private:
     /// Create a regex used to find the correct case of a filename as Dicom only store uppercase paths.

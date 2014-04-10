@@ -7,6 +7,9 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/spyLog.hpp>
+#include <fwDicomData/DicomSeries.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 #include <fwMedData/Equipment.hpp>
@@ -192,6 +195,40 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResp
 
 
     return instanceUIDContainer;
+}
+
+// ----------------------------------------------------------------------------
+
+::fwMedData::ImageSeries::sptr Series::convertToImageSeries(const ::fwDicomData::DicomSeries::sptr& series)
+{
+    ::fwMedData::ImageSeries::sptr result = ::fwMedData::ImageSeries::New();
+    result->setPatient(series->getPatient());
+    result->setStudy(series->getStudy());
+    result->setEquipment(series->getEquipment());
+    result->setInstanceUID(series->getInstanceUID());
+    result->setModality(series->getModality());
+    result->setDate(series->getDate());
+    result->setTime(series->getTime());
+    result->setDescription(series->getDescription());
+    result->setPerformingPhysiciansName(series->getPerformingPhysiciansName());
+    return result;
+}
+
+// ----------------------------------------------------------------------------
+
+::fwMedData::ModelSeries::sptr Series::convertToModelSeries(const ::fwDicomData::DicomSeries::sptr& series)
+{
+    ::fwMedData::ModelSeries::sptr result = ::fwMedData::ModelSeries::New();
+    result->setPatient(series->getPatient());
+    result->setStudy(series->getStudy());
+    result->setEquipment(series->getEquipment());
+    result->setInstanceUID(series->getInstanceUID());
+    result->setModality(series->getModality());
+    result->setDate(series->getDate());
+    result->setTime(series->getTime());
+    result->setDescription(series->getDescription());
+    result->setPerformingPhysiciansName(series->getPerformingPhysiciansName());
+    return result;
 }
 
 } //dcmtk

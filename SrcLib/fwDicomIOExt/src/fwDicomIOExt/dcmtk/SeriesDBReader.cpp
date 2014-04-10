@@ -18,9 +18,13 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
+
+#include "fwDicomIOExt/dcmtk/helper/Codec.hpp"
 #include "fwDicomIOExt/dcmtk/helper/DicomDir.hpp"
 #include "fwDicomIOExt/dcmtk/helper/DicomSearch.hpp"
-#include "fwDicomIOExt/dcmtk/reader/CTImageStorageReader.hpp"
+#include "fwDicomIOExt/dcmtk/helper/Dictionary.hpp"
+#include "fwDicomIOExt/dcmtk/reader/ImageStorageReader.hpp"
+
 #include "fwDicomIOExt/dcmtk/SeriesDBReader.hpp"
 
 fwDataIOReaderRegisterMacro( ::fwDicomIOExt::dcmtk::SeriesDBReader );
@@ -34,29 +38,36 @@ namespace dcmtk
 
 SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
-    ::fwData::location::enableMultiFiles< IObjectReader >(this)
+    ::fwData::location::enableMultiFiles< IObjectReader >(this),
+     m_isDicomdirActivated(false)
 {
     SLM_TRACE_FUNC();
+
+    // Load dictionary
+    ::fwDicomIOExt::dcmtk::helper::Dictionary::loadDictionary();
+
+    // Register codecs
+    ::fwDicomIOExt::dcmtk::helper::Codec::registerCodecs();
 }
 
 //------------------------------------------------------------------------------
 
 SeriesDBReader::~SeriesDBReader()
 {
-    SLM_TRACE_FUNC();
+    // Clean up codecs
+    ::fwDicomIOExt::dcmtk::helper::Codec::cleanup();
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::read()
+SeriesDBReader::FilenameContainerType SeriesDBReader::getFilenames()
 {
-    SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    std::vector<std::string> filenames;
+    FilenameContainerType filenames;
     if(::fwData::location::have < ::fwData::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
     {
         // Try to read dicomdir file
-        if(!::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames))
+        if(!m_isDicomdirActivated || (m_isDicomdirActivated &&
+                !::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames)))
         {
             // Recursively search for dicom files
             ::fwDicomIOExt::dcmtk::helper::DicomSearch::searchRecursively(this->getFolder(), filenames);
@@ -69,44 +80,114 @@ void SeriesDBReader::read()
             filenames.push_back(file.string());
         }
     }
-    this->addSeries( seriesDB , filenames);
+
+    return filenames;
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, const std::vector< std::string > &filenames)
+void SeriesDBReader::read()
 {
+    SLM_TRACE_FUNC();
+
+    // Get filenames
+    FilenameContainerType filenames = this->getFilenames();
+
+    // Read Dicom Series
+    this->addSeries(filenames);
+
+    // Read series
+    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)
+    {
+        this->convertDicomSeries(series);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB,
+        ::fwServices::IService::sptr notifier)
+{
+    // Read series
+    BOOST_FOREACH(::fwMedData::Series::sptr series, dicomSeriesDB->getContainer())
+    {
+        ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::dynamicCast(series);
+        OSLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
+        this->convertDicomSeries(dicomSeries, notifier);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesDBReader::readDicomSeries()
+{
+    SLM_TRACE_FUNC();
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
     ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
 
-    DcmFileFormat fileFormat;
-    for(std::vector< std::string >::const_iterator it = filenames.begin(); it != filenames.end(); ++it)
+    // Get filenames
+    FilenameContainerType filenames = this->getFilenames();
+
+    // Read Dicom Series
+    this->addSeries(filenames);
+
+    // Push Dicom Series
+    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)
     {
-        OFCondition status = fileFormat.loadFile(it->c_str());
-        FW_RAISE_IF("Unable to read the file: \""+*it+"\"", status.bad());
+        seriesDBHelper.add(series);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool SeriesDBReader::isDicomDirAvailable()
+{
+    std::vector<std::string> filenames;
+    bool result = ::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames);
+    return result && !filenames.empty();
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesDBReader::addSeries(const std::vector< std::string > &filenames)
+{
+    DcmFileFormat fileFormat;
+    BOOST_FOREACH(std::string filename, filenames)
+    {
+        OFCondition status = fileFormat.loadFile(filename.c_str());
+        FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
 
         DcmDataset* dataset = fileFormat.getDataset();
 
-        // Create data objects
+        // Create Series
+        this->createSeries(dataset, filename);
+
+    }
+
+    // Fill series
+    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)
+    {
+        // Compute number of instances
+        series->setNumberOfInstances(series->getLocalDicomPaths().size());
+
+        // Get first instance filename
+        const std::string filename = series->getLocalDicomPaths().begin()->second.string();
+
+        // Load first instance
+        DcmFileFormat fileFormat;
+        OFCondition status = fileFormat.loadFile(filename.c_str());
+        FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
+        DcmDataset* dataset = fileFormat.getDataset();
+
+        // Create data objects from first instance
         ::fwMedData::Patient::sptr patient = this->createPatient(dataset);
         ::fwMedData::Study::sptr study = this->createStudy(dataset);
         ::fwMedData::Equipment::sptr equipment = this->createEquipment(dataset);
-        ::fwMedData::Series::sptr series = this->createSeries(dataset, *it);
 
         // Fill series
         series->setPatient(patient);
         series->setStudy(study);
         series->setEquipment(equipment);
-
-
-
-
-    }
-
-    // Create every series and push them in the database.
-    for(ObjectReaderMapType::iterator it = m_objectReaderMap.begin(); it != m_objectReaderMap.end(); ++it)
-    {
-        ::fwMedData::Series::sptr s = it->second->create();
-        seriesDBHelper.add(s);
     }
 
 
@@ -160,8 +241,8 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
     ::fwMedData::Study::sptr result;
     OFString data;
 
-    // Get Patient ID
-    dataset->findAndGetOFString(DCM_StudyID,data);
+    // Get Study ID
+    dataset->findAndGetOFString(DCM_StudyInstanceUID,data);
     ::std::string studyID = data.c_str();
 
     // Check if the study already exists
@@ -233,51 +314,51 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Series::sptr SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filename)
+void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filename)
 {
-    ::fwMedData::Series::sptr result;
+    ::fwDicomData::DicomSeries::sptr series = ::fwDicomData::DicomSeries::sptr();
     OFString data;
 
     // Get Series Instance UID
     dataset->findAndGetOFString(DCM_SeriesInstanceUID,data);
-    ::std::string seriesInstanceUID = data.c_str();
+    std::string seriesInstanceUID = data.c_str();
 
     // Check if the series already exists
-    if(m_seriesMap.find(seriesInstanceUID) == m_seriesMap.end())
+    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr dicomSeries, m_dicomSeriesContainer)
     {
-        //Get SOP Class UID
-        dataset->findAndGetOFString(DCM_SOPClassUID,data);
-        ::std::string sopClassUID = data.c_str();
-        if(sopClassUID != "SurfaceSegmentationStorage")
+        if(dicomSeries->getInstanceUID() == seriesInstanceUID)
         {
-            result = ::fwMedData::ImageSeries::New();
+            series = dicomSeries;
+            break;
         }
-        else
-        {
-            result = ::fwMedData::ModelSeries::New();
-        }
+    }
 
-        m_seriesMap[seriesInstanceUID] = result;
-        this->createObjectReader(sopClassUID,result);
+    // If the series doesn't exist we create it
+    if(!series)
+    {
+        series = ::fwDicomData::DicomSeries::New();
+        series->setDicomAvailability(::fwDicomData::DicomSeries::PATHS);
+
+        m_dicomSeriesContainer.push_back(series);
 
         //Instance UID
-        result->setInstanceUID(seriesInstanceUID);
+        series->setInstanceUID(seriesInstanceUID);
 
         //Modality
         dataset->findAndGetOFString(DCM_Modality,data);
-        result->setModality(data.c_str());
+        series->setModality(data.c_str());
 
         //Date
         dataset->findAndGetOFString(DCM_SeriesDate,data);
-        result->setDate(data.c_str());
+        series->setDate(data.c_str());
 
         //Time
         dataset->findAndGetOFString(DCM_SeriesTime,data);
-        result->setTime(data.c_str());
+        series->setTime(data.c_str());
 
         //Description
         dataset->findAndGetOFString(DCM_SeriesDescription,data);
-        result->setDescription(data.c_str());
+        series->setDescription(data.c_str());
 
         //Performing Physicians Name
         std::vector<std::string> performingPhysiciansName;
@@ -285,38 +366,65 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
         {
             performingPhysiciansName.push_back(data.c_str());
         }
-        result->setPerformingPhysiciansName(performingPhysiciansName);
-
+        series->setPerformingPhysiciansName(performingPhysiciansName);
 
     }
-    else
-    {
-        result = m_seriesMap[seriesInstanceUID];
-    }
 
-    //Add the dataset to the reader
-    if(m_objectReaderMap.find(result) != m_objectReaderMap.end())
-    {
-        m_objectReaderMap[result]->addInstance(dataset, filename);
-    }
+    // Add the SOPClassUID to the series
+    dataset->findAndGetOFString(DCM_SOPClassUID,data);
+    ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
+    sopClassUIDContainer.insert(data.c_str());
+    series->setSOPClassUIDs(sopClassUIDContainer);
 
-
-    return result;
+    // Add the instance to the series
+    int instanceNumber = series->getLocalDicomPaths().size();
+    series->addDicomPath(instanceNumber, filename);
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::createObjectReader(const std::string& readerType, ::fwMedData::Series::sptr series)
+void SeriesDBReader::convertDicomSeries(SPTR(::fwDicomData::DicomSeries) dicomSeries,
+        ::fwServices::IService::sptr notifier)
 {
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
+    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedData::Series::sptr result = ::fwMedData::Series::sptr();
+
+    ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
+    FW_RAISE_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
+            sopClassUIDContainer.size() != 1);
+    std::string sopClassUID = dcmFindNameOfUID(sopClassUIDContainer.begin()->c_str());
+
     // CT Image Storage
-    if(readerType == "1.2.840.10008.5.1.4.1.1.2")
+    if(sopClassUID == "CTImageStorage" || sopClassUID == "MRImageStorage" ||
+            sopClassUID == "SecondaryCaptureImageStorage")
     {
-        m_objectReaderMap[series] = ::fwDicomIOExt::dcmtk::reader::CTImageStorageReader::New(series);
+        ::fwDicomIOExt::dcmtk::reader::ImageStorageReader reader;
+        result = reader.read(dicomSeries);
+    }
+
+    if(result)
+    {
+        // Add the series to the DB
+        seriesDBHelper.add(result);
     }
     else
     {
-        SLM_WARN("There is no reader for the SOPClassUID \""+readerType+"\". Unable to read the instance.");
+        OSLM_WARN("\""+sopClassUID+"\" SOPClassUID is not supported.");
     }
+
+    if(notifier)
+    {
+        seriesDBHelper.notify(notifier);
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
+SeriesDBReader::DicomSeriesContainerType &SeriesDBReader::getDicomSeries()
+{
+    return m_dicomSeriesContainer;
 }
 
 } //dcmtk

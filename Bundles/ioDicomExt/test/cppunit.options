@@ -8,7 +8,7 @@ LIB = [
         'fwTools_0-1',
         'fwData_0-1',
         'fwMedData_0-1',
-        'fwDicomIOExt_0-1', 
+        'fwDicomIOExt_0-1',
         'fwTest_0-1',
       ]
 

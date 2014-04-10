@@ -79,6 +79,12 @@ public :
     /// Reads DICOM data from configured path and fills SeriesDB object. Use lazy reading process to read images.
     FWDICOMIOEXT_API void read();
 
+    /// Return true if a dicomdir file can be read.
+    FWDICOMIOEXT_API bool isDicomDirAvailable();
+
+    /// Set whether the reader must use the dicomdir file or not
+    FWDICOMIOEXT_API void setDicomdirActivated(bool value);
+
 private :
 
     /**
@@ -90,7 +96,8 @@ private :
     void addSeries( const SPTR( ::fwMedData::SeriesDB ) &seriesDB, const std::vector< std::string > &filenames);
 
     /// Searches and sets equipment information
-    void fillEquipment( ::gdcm::Scanner & scanner, const std::string & dcmFile, SPTR( ::fwMedData::Equipment ) equipment);
+    void fillEquipment( ::gdcm::Scanner & scanner, const std::string & dcmFile,
+            SPTR( ::fwMedData::Equipment ) equipment);
 
     /// Searches and sets study information
     void fillStudy( ::gdcm::Scanner & scanner, const std::string & dcmFile, SPTR( ::fwMedData::Study ) study );
@@ -112,6 +119,10 @@ private :
      * @param filename file to convert
      */
     SPTR(::fwData::Array) convertToBinary(const std::string& filename);
+
+protected:
+    ///True if the reader can use the dicomdir file.
+    bool m_isDicomdirActivated;
 };
 
 } // namespace gdcm

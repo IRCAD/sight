@@ -1,9 +1,10 @@
 TYPE='shared'
 USE = [
-        'boost', 
+        'boost',
         'boostFilesystem',
         'boostRegex',
         'dcmtk',
+        'dcmjpeg',
         'z',
         'iconv',
         'vtkgdcm'

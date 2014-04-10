@@ -43,7 +43,7 @@ public :
     typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;
     typedef std::map < std::string, unsigned int > InstanceCountMapType;
-    typedef std::map < std::string, ::fwDicomData::DicomSeries::wptr > DicomSeriesMapType;
+    typedef std::map < std::string, WPTR(::fwDicomData::DicomSeries) > DicomSeriesMapType;
 
     IODICOMEXT_API static const ::fwCom::Slots::SlotKeyType s_READ_SLOT;
     typedef ::fwCom::Slot<void(DicomSeriesContainerType)> ReadDicomSlotType;

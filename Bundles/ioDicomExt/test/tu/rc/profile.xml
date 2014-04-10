@@ -5,7 +5,7 @@
 
     <activate id="gui" version="0-1" />
     <activate id="guiQt" version="0-1" />
-    
+
     <activate id="io" version="0-1" />
     <activate id="ioDicomExt" version="0-1" />
 

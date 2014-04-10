@@ -12,10 +12,20 @@
 
 #include <fwData/Vector.hpp>
 #include <fwMedData/SeriesDB.hpp>
-#include <fwDicomData/DicomSeries.hpp>
 
 #include "fwDicomIOExt/data/PacsConfiguration.hpp"
 #include "fwDicomIOExt/config.hpp"
+
+namespace fwDicomData
+{
+    class DicomSeries;
+}
+
+namespace fwMedData
+{
+    class ImageSeries;
+    class ModelSeries;
+}
 
 namespace fwDicomIOExt
 {
@@ -60,6 +70,20 @@ public:
      * @param[in] series Series vector used to extract the series instance uids
      */
     FWDICOMIOEXT_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer series);
+
+    /**
+     * @brief Convert a DicomSeries to an ImageSeries
+     * @param[in] series DicomSeries that must be converted
+     */
+    FWDICOMIOEXT_API static SPTR(::fwMedData::ImageSeries) convertToImageSeries(
+            const SPTR(::fwDicomData::DicomSeries)& series);
+
+    /**
+     * @brief Convert a DicomSeries to a ModelSeries
+     * @param[in] series DicomSeries that must be converted
+     */
+    FWDICOMIOEXT_API static SPTR(::fwMedData::ModelSeries) convertToModelSeries(
+            const SPTR(::fwDicomData::DicomSeries)& series);
 
 };
 
