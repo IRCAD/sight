@@ -45,8 +45,7 @@
                             </parameters>
                             <filter>
                                 <mode>exclude</mode>
-                                <id>ImageSeriesExport</id>
-                                <id>ModelSeriesExport</id>
+                                <id>SeriesExport</id>
                             </filter>
                         </config>
                     </service>
@@ -94,11 +93,11 @@
                         <config>
                             <mode>immediate</mode>
                             <parameters>
+                                <parameter replace="selection" by="${GENERIC_UID}_selections" />
                             </parameters>
                             <filter>
                                 <mode>include</mode>
-                                <id>ImageSeriesExport</id>
-                                <id>ModelSeriesExport</id>
+                                <id>SeriesExport</id>
                             </filter>
                         </config>
                     </service>

@@ -23,7 +23,9 @@
             <addSelection service="::ioAtoms::SReader" />
             <addSelection service="::ioDicomExt::gdcm::SDicomSeriesDBReader" />
             <addSelection service="::ioDicomExt::dcmtk::SDicomSeriesDBReader" />
+            <addSelection service="::ioGdcm::SDicomSeriesDBReader" />
             <config id="DCMTKReaderConfig" service="::ioDicomExt::dcmtk::SSeriesDBReader" />
+            <config id="GDCMReaderConfig" service="::ioGdcm::SSeriesDBReader" />
         </config>
     </extension>
 
@@ -32,6 +34,14 @@
         <desc>DCMTK Reader config</desc>
         <config>
             <FilterSelectorSrvConfig name="FilterSelectorConfig" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>GDCMReaderConfig</id>
+        <desc>GDCM Reader config</desc>
+        <config>
+            <FilterSelectorSrvConfig name="FilterSelectorConfig" /> 
         </config>
     </extension>
 
@@ -72,49 +82,51 @@
         <parameters>
             <param name="GENERIC_UID" />
             <param name="selection" />
+            <param name="modelSeries" />
+            <param name="imageSeries" />
         </parameters>
         <config>
-            <!-- <object uid="${selection}" type="::fwData::Vector" src="ref"> -->
-            <object uid="${selection}" src="ref">
-                <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::IOSelectorService" autoConnect="yes">
-                    <type mode="writer" />
-                    <!-- <selection mode="include" /> -->
-                    <!-- <addSelection service="::ioAtoms::SReader" /> -->
-                </service>
-                <start uid="${GENERIC_UID}_export_selection" />
-                <update uid="${GENERIC_UID}_export_selection" />
+            <object type="::fwData::Composite" >
+                <item key="modelSeries">
+                    <object uid="${modelSeries}" src="ref" />
+                </item>
+                <item key="imageSeries">
+                    <object uid="${imageSeries}" src="ref" />
+                </item>
+                <item key="selection">
+                    <!-- <object uid="${selection}" type="::fwData::Vector" src="ref"> -->
+                    <object uid="${selection}" src="ref">
+                        <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::IOSelectorService" autoConnect="yes">
+                            <type mode="writer" />
+                            <!-- <selection mode="include" /> -->
+                            <!-- <addSelection service="::ioAtoms::SReader" /> -->
+                        </service>
+                        <start uid="${GENERIC_UID}_export_selection" />
+                        <update uid="${GENERIC_UID}_export_selection" />
+                    </object>
+                </item>
             </object>
         </config>
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
-        <id>ImageSeriesExport</id>
-        <title>ImageSeries Export</title>
-        <desc>ImageSeries Export</desc>
+        <id>SeriesExport</id>
+        <title>Series Export</title>
+        <desc>Series Export</desc>
         <icon>NONE</icon>
         <requirements>
-            <requirement name="series" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1">
+                <key>ImageSeries</key>
+            </requirement>
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1">
+                <key>ModelSeries</key>
+            </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="ExportSelection">
             <parameters>
-                <parameter replace="selection" by="@values.series" />
-            </parameters>
-        </appConfig>
-    </extension>
-
-    <extension implements="::fwActivities::registry::Activities">
-        <id>ModelSeriesExport</id>
-        <title>ModelSeries Export</title>
-        <desc>ModelSeries Export</desc>
-        <icon>NONE</icon>
-        <requirements>
-            <requirement name="series" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
-        </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection">
-            <parameters>
-                <parameter replace="selection" by="@values.series" />
+                <parameter replace="imageSeries" by="@values.imageSeries" />
+                <parameter replace="modelSeries" by="@values.modelSeries" />
             </parameters>
         </appConfig>
     </extension>

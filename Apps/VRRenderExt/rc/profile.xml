@@ -10,6 +10,7 @@
     <activate id="ioAtoms" version="0-1" />
     <activate id="patchMedicalData" version="0-1" />
     
+    <activate id="ioGdcm" version="0-1" />
     <activate id="ioITK" version="0-1" />
     <activate id="ioVTK" version="0-1" />
     <activate id="ioVtkGdcm" version="0-1" />
