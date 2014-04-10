@@ -47,6 +47,28 @@ public :
 
 protected:
 
+    /**
+     * The reader can be configured as a regular reader.
+     * It is also possible to define a filter that must be applied prior the reading process.
+     * @verbatim
+       <config filterType="::fwDicomIOFilter::custom::NoFilter" />
+       @endverbatim
+     * On the other hand, you can specify a service configuration using the FilterSelectorSrvConfig element:
+     * @verbatim
+        <extension implements="::fwServices::registry::ServiceConfig">
+            <id>FilterSelectorConfig</id>
+            <service>::ioDicomExt::dcmtk::editor::SFilterSelectorDialog</service>
+            <desc>"Open" action's filter selector config</desc>
+            <config>
+                <selection mode="include" />
+                <addSelection filter="::fwDicomIOFilter::custom::DefaultDicomFilter" />
+                <addSelection filter="::fwDicomIOFilter::custom::NoFilter" />
+            </config>
+        </extension>
+    @endverbatim
+     */
+    IODICOMEXT_API virtual void configuring() throw (fwTools::Failed);
+
     /// Override
     IODICOMEXT_API virtual void starting() throw(::fwTools::Failed);
 
@@ -79,6 +101,12 @@ private :
     void notificationOfDBUpdate();
 
     SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
+
+    /// Selector config used to select a filter to apply
+    std::string m_filterSelectorSrvConfig;
+
+    /// Selected filter key
+    std::string m_filterType;
 
 };
 

@@ -8,9 +8,12 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/String.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
@@ -69,6 +72,58 @@ void SSeriesDBReader::configureWithIHM()
         this->setFolder( result->getFolder() );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
+
+    // Select filter
+    if(!m_filterSelectorSrvConfig.empty())
+    {
+        // Get the config
+        ::fwRuntime::ConfigurationElement::csptr filterSelectorConfig;
+        filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+                m_filterSelectorSrvConfig , "::ioDicomExt::dcmtk::editor::SFilterSelectorDialog");
+
+        SLM_ASSERT("Sorry, there is no service configuration "
+                       + m_filterSelectorSrvConfig
+                       + " for ::ioDicomExt::dcmtk::editor::SFilterSelectorDialog", filterSelectorConfig);
+
+        // Init and execute the service
+        ::fwServices::IService::sptr filterSelectorSrv;
+        ::fwData::String::sptr key = ::fwData::String::New();
+        filterSelectorSrv = ::fwServices::add(key,
+                                          "::gui::editor::IDialogEditor",
+                                          "::ioDicomExt::dcmtk::editor::SFilterSelectorDialog");
+        filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) ) ;
+        filterSelectorSrv->configure() ;
+        filterSelectorSrv->start();
+        filterSelectorSrv->update();
+        filterSelectorSrv->stop();
+        ::fwServices::OSR::unregisterService( filterSelectorSrv );
+
+        m_filterType = key->getValue();
+
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBReader::configuring() throw (fwTools::Failed)
+{
+    ::io::IReader::configuring();
+
+    // Use filter selector
+    ::fwRuntime::ConfigurationElement::sptr selectorConfig =
+            m_configuration->findConfigurationElement("FilterSelectorSrvConfig");
+    if(selectorConfig)
+    {
+        SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
+        m_filterSelectorSrvConfig = selectorConfig->getAttributeValue("name");
+    }
+
+    // Set filter
+    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    if(config)
+    {
+        m_filterType = config->getAttributeValue("filterType");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -117,6 +172,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
+    myLoader->setDicomFilterType(m_filterType);
 
     if(myLoader->isDicomDirAvailable())
     {

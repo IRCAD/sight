@@ -86,6 +86,8 @@ public :
 
     fwGettersSettersDocMacro(DicomdirActivated, isDicomdirActivated, bool,
             Set whether the reader must use the dicomdir file or not);
+    fwGettersSettersDocMacro(DicomFilterType, dicomFilterType, std::string,
+            Dicom filter type that must be applied prior the reading process);
 
 private :
 
@@ -147,6 +149,9 @@ private :
 
     ///True if the reader can use the dicomdir file.
     bool m_isDicomdirActivated;
+
+    ///Dicom filter type that must be applied prior the reading process
+    std::string m_dicomFilterType;
 
 };
 

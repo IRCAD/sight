@@ -8,6 +8,8 @@ LIB     = [
             'fwGui_0-1',
             'fwGuiQt_0-1',
             'fwDicomIOExt_0-1',
+            'fwDicomIOFilter_0-1',
+            'fwDicomIOFilterQt_0-1',
             'fwDicomData_0-1'
           ]
 BUNDLES = ['io_0-1', 'gui_0-1' ]

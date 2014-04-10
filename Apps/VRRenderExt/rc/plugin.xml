@@ -22,6 +22,26 @@
             <selection mode="exclude" />
             <addSelection service="::ioAtoms::SReader" />
             <addSelection service="::ioDicomExt::gdcm::SDicomSeriesDBReader" />
+            <config id="DCMTKReaderConfig" service="::ioDicomExt::dcmtk::SSeriesDBReader" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>DCMTKReaderConfig</id>
+        <desc>DCMTK Reader config</desc>
+        <config>
+            <FilterSelectorSrvConfig name="FilterSelectorConfig" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>FilterSelectorConfig</id>
+        <service>::ioDicomExt::dcmtk::editor::SFilterSelectorDialog</service>
+        <desc>"Open" action's filter selector config</desc>
+        <config>
+            <selection mode="include" />
+            <addSelection filter="::fwDicomIOFilter::custom::DefaultDicomFilter" />
+            <!--<addSelection filter="::fwDicomIOFilter::custom::NoFilter" />-->
         </config>
     </extension>
 

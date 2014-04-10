@@ -18,6 +18,10 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
+#include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
+#include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp>
+#include <fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp>
 
 #include "fwDicomIOExt/dcmtk/helper/Codec.hpp"
 #include "fwDicomIOExt/dcmtk/helper/DicomDir.hpp"
@@ -95,6 +99,13 @@ void SeriesDBReader::read()
 
     // Read Dicom Series
     this->addSeries(filenames);
+
+    // Apply Default filters
+    if(!m_dicomFilterType.empty())
+    {
+        ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(m_dicomFilterType);
+        ::fwDicomIOFilter::helper::Filter::applyFilter(m_dicomSeriesContainer,filter, true);
+    }
 
     // Read series
     BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)

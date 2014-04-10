@@ -5,8 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
 #include <fwServices/macros.hpp>
+
+#include <fwDicomIOFilterQt/sorter/TagValueConfigurableSorter.hpp>
 
 #include "ioDicomExt/Plugin.hpp"
 
@@ -15,7 +16,11 @@ namespace ioDicomExt
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioDicomExt::Plugin");
 
 Plugin::~Plugin() throw()
-{}
+{
+    // Hack to force link with Qt filters
+    ::fwDicomIOFilterQt::sorter::TagValueConfigurableSorter::sptr t =
+            ::fwDicomIOFilterQt::sorter::TagValueConfigurableSorter::New();
+}
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {

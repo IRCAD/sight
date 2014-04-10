@@ -81,4 +81,10 @@
         <desc>Dicom Series Anonymizer</desc>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IDialogEditor</type>
+        <service>::ioDicomExt::dcmtk::editor::SFilterSelectorDialog</service>
+        <object>::fwData::String</object>
+    </extension>
+
 </plugin>

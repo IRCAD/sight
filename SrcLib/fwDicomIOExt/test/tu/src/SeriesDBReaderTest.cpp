@@ -248,6 +248,7 @@ void SeriesDBReaderTest::lazyReadSeriesDBTest()
     ::fwDicomIOExt::dcmtk::SeriesDBReader::sptr reader = ::fwDicomIOExt::dcmtk::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
+    reader->setDicomFilterType("::fwDicomIOFilter::custom::DefaultDicomFilter");
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
