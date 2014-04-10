@@ -44,6 +44,8 @@ void DicomSeries::shallowCopy(const ::fwData::Object::csptr &_source)
     m_attrNumberOfInstances = other->m_attrNumberOfInstances;
     m_attrLocalDicomPaths = other->m_attrLocalDicomPaths;
     m_attrDicomBinaries = other->m_attrDicomBinaries;
+    m_attrSOPClassUIDs = other->m_attrSOPClassUIDs;
+    m_attrComputedTagValues = other->m_attrComputedTagValues;
 
 }
 
@@ -61,6 +63,8 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
     m_attrDicomAvailability = other->m_attrDicomAvailability;
     m_attrNumberOfInstances = other->m_attrNumberOfInstances;
     m_attrLocalDicomPaths = other->m_attrLocalDicomPaths;
+    m_attrSOPClassUIDs = other->m_attrSOPClassUIDs;
+    m_attrComputedTagValues = other->m_attrComputedTagValues;
 
     m_attrDicomBinaries.clear();
     BOOST_FOREACH(DicomBinaryContainerType::value_type array, other->m_attrDicomBinaries)
@@ -107,6 +111,27 @@ bool DicomSeries::isInstanceAvailable(unsigned int instanceIndex)
     }
 
     return available;
+}
+
+//------------------------------------------------------------------------------
+
+void DicomSeries::addSOPClassUID(const std::string& sopClassUID)
+{
+    m_attrSOPClassUIDs.insert(sopClassUID);
+}
+
+//------------------------------------------------------------------------------
+
+void DicomSeries::addComputedTagValue(const std::string& tagName, const std::string& value)
+{
+    m_attrComputedTagValues[tagName] = value;
+}
+
+//------------------------------------------------------------------------------
+
+bool DicomSeries::hasComputedValues(const std::string& tagName) const
+{
+    return m_attrComputedTagValues.find(tagName) != m_attrComputedTagValues.end();
 }
 
 } // namespace fwDicomData

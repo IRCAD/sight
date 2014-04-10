@@ -21,6 +21,8 @@ fwCampImplementDataMacro((fwDicomData)(DicomSeries))
         .property("number_of_instances", &::fwDicomData::DicomSeries::m_attrNumberOfInstances)
         .property("local_dicom_paths", &::fwDicomData::DicomSeries::m_attrLocalDicomPaths)
         .property("dicom_binaries", &::fwDicomData::DicomSeries::m_attrDicomBinaries)
+        .property("sop_class_uids", &::fwDicomData::DicomSeries::m_attrSOPClassUIDs)
+        .property("computed_tag_values", &::fwDicomData::DicomSeries::m_attrComputedTagValues)
         ;
 }
 

@@ -42,31 +42,31 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path longuestCommonPrefix( const ::fwDicomData::DicomSeries::DicomPathContainerType &paths )
+::boost::filesystem::path longestCommonPrefix( const ::fwDicomData::DicomSeries::DicomPathContainerType &paths )
 {
-    ::boost::filesystem::path longuestPrefix;
+    ::boost::filesystem::path longestPrefix;
     if( !paths.empty() )
     {
-        longuestPrefix = paths.begin()->second;
+        longestPrefix = paths.begin()->second;
     }
 
     BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value, paths)
     {
         std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
-            = std::mismatch(longuestPrefix.begin(), longuestPrefix.end(), value.second.begin());
+            = std::mismatch(longestPrefix.begin(), longestPrefix.end(), value.second.begin());
 
-        if (p.first != longuestPrefix.end())
+        if (p.first != longestPrefix.end())
         {
             ::boost::filesystem::path newPrefix;
-            BOOST_FOREACH( const ::boost::filesystem::path &subpath, std::make_pair(longuestPrefix.begin(), p.first))
+            BOOST_FOREACH( const ::boost::filesystem::path &subpath, std::make_pair(longestPrefix.begin(), p.first))
             {
                 newPrefix /= subpath;
             }
-            longuestPrefix = newPrefix;
+            longestPrefix = newPrefix;
         }
     }
 
-    return longuestPrefix;
+    return longestPrefix;
 }
 
 ::boost::filesystem::path removePathPrefix(const ::boost::filesystem::path &path, const ::boost::filesystem::path &prefix)
@@ -131,16 +131,14 @@ void DicomSeriesWriter::write()
     }
     else
     {
-        ::fwDicomData::DicomSeries::DicomPathContainerType paths = dicomSeries->getLocalDicomPaths();
+        ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
+        SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        ::boost::filesystem::path longuestPrefix = longuestCommonPrefix(paths).parent_path();
-        SLM_TRACE("Longuest prefix :" + longuestPrefix.string());
-
-        BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value, paths)
+        BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value, dicomSeries->getLocalDicomPaths())
         {
-            ::boost::filesystem::path src = value.second;
-            ::boost::filesystem::path dest_dir = folder / removePathPrefix(src.parent_path(), longuestPrefix) ;
-            ::boost::filesystem::path dest_file = dest_dir / src.filename();
+            const ::boost::filesystem::path& src = value.second;
+            const ::boost::filesystem::path& dest_dir = folder / removePathPrefix(src.parent_path(), longestPrefix) ;
+            const ::boost::filesystem::path& dest_file = dest_dir / src.filename();
             ::boost::filesystem::create_directories(dest_dir);
 
             ::boost::system::error_code ec;

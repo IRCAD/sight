@@ -45,6 +45,10 @@ public:
 
     typedef std::map < std::string, SPTR(::fwData::Array) > DicomBinaryContainerType;
 
+    typedef std::set < std::string > SOPClassUIDContainerType;
+
+    typedef std::map < std::string, std::string > ComputedTagValueContainerType;
+
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -71,6 +75,26 @@ public:
      * @todo This method could be constifiable but function std::map::at doesn't work on windows
      */
     FWDICOMDATA_API bool isInstanceAvailable(unsigned int instanceIndex);
+
+    /**
+     * @brief Add a SOPClassUID that is used by this series.
+     * @param[in] sopClassUID SOPClassUID that must be added.
+     */
+    FWDICOMDATA_API void addSOPClassUID(const std::string& sopClassUID);
+
+    /**
+     * @brief Add a computed value to the specified tag.
+     * @param[in] tagName Name of the tag
+     * @param[in] value Computed value
+     */
+    FWDICOMDATA_API void addComputedTagValue(const std::string& tagName, const std::string& value);
+
+    /**
+     * @brief Return true if there is a computed value for the specified tag
+     * @param[in] tagName Name of the tag
+     * @return True if there is a computed value for the tag
+     */
+    FWDICOMDATA_API bool hasComputedValues(const std::string& tagName) const;
 
     /**
      * @brief Availability
@@ -110,6 +134,18 @@ public:
     fwDataGetSetCRefMacro(DicomBinaries, DicomBinaryContainerType);
     /**  @} */
 
+    /**
+     * @brief SOP Class UID
+     * @{ */
+    fwDataGetSetCRefMacro(SOPClassUIDs, SOPClassUIDContainerType);
+    /**  @} */
+
+    /**
+     * @brief Computed Tag Values
+     * @{ */
+    fwDataGetSetCRefMacro(ComputedTagValues, ComputedTagValueContainerType);
+    /**  @} */
+
     /**  @} */
 
 
@@ -126,6 +162,12 @@ protected:
 
     /// Dicom binaries
     DicomBinaryContainerType m_attrDicomBinaries;
+
+    /// SOP Class UIDs
+    SOPClassUIDContainerType m_attrSOPClassUIDs;
+
+    /// Computed tag values
+    ComputedTagValueContainerType m_attrComputedTagValues;
 };
 
 }   //end namespace fwDicomData
