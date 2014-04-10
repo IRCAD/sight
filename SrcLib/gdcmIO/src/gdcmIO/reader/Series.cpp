@@ -150,7 +150,7 @@ throw(::gdcmIO::exception::Failed)
                 catch (const ::gdcmIO::exception::Failed & e)
                 {
                     //NOTE: no throw for reading error for SR and RT doc
-                    SLM_ERROR("Spatial Fiducials reading failed: " + e.what());
+                    SLM_ERROR("Spatial Fiducials reading failed: " + std::string(e.what()));
                 }
             }
             else
@@ -185,7 +185,7 @@ throw(::gdcmIO::exception::Failed)
                 catch (const ::gdcmIO::exception::Failed & e)
                 {
                     //NOTE: no throw for reading error for SR and RT doc
-                    SLM_ERROR("Structured Report reading failed: " + e.what());
+                    SLM_ERROR("Structured Report reading failed: " + std::string(e.what()));
                 }
             }
             else

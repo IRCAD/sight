@@ -106,7 +106,7 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
 
     if(segmentLabel.empty())
     {
-        SLM_WARN("Trying to retrieve structure type from organ name : \"" + segmentDescription << "\".");
+        SLM_WARN("Trying to retrieve structure type from organ name : \"" + segmentDescription + "\".");
         segmentLabel = segmentDescription;
     }
 

@@ -112,7 +112,7 @@ throw (::gdcmIO::exception::Failed)
         catch (::gdcmIO::exception::Failed & e)
         {
             ++skippedSegment;
-            SLM_ERROR("Surface mesh reading error : " + e.what());
+            SLM_ERROR("Surface mesh reading error : " + std::string(e.what()));
         }
     }
 
@@ -268,8 +268,8 @@ throw (::gdcmIO::exception::Failed)
 
    // Create a new Mesh
    ::gdcmIO::container::DicomSurface surfaceContainer;
-   ::fwData::Mesh::sptr mesh = surfaceContainer.convertToData(static_cast<float*>(coordBuffer), coordSize, static_cast<uint32_t*>(indexBuffer),
-           indexSize, static_cast<float*>(normalBuffer));
+   ::fwData::Mesh::sptr mesh = surfaceContainer.convertToData(reinterpret_cast<const float*>(coordBuffer), coordSize, reinterpret_cast<const uint32_t*>(indexBuffer),
+           indexSize, reinterpret_cast<const float*>(normalBuffer));
 
    // Set the reconstruction
    reconstruction->setMaterial( material );

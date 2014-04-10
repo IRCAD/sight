@@ -153,7 +153,7 @@ static const attributesTranslator s_ANATOMICAL_REGIONS = boost::assign::list_of<
 ("Thoracic_Aorta", s_THORACIC_AORTA)
 ("Artery", s_ARTERY)
 ("Carotid_Artery", s_CAROTID_ARTERY)
-("Femoral_Artery",FEMORAL_ARTERY)
+("Femoral_Artery", s_FEMORAL_ARTERY)
 ("Hepatic_Artery", s_HEPATIC_ARTERY)
 ("Mesenteric_Artery", s_MESENTERIC_ARTERY)
 ("Pulmonary_Artery", s_PULMONARY_ARTERY)
@@ -247,11 +247,11 @@ static const attributesTranslator s_PROPERTY_TYPES =
 ("T_Prostate", s_T_PROSTATE)
 ("T_Abdominal_Aorta", s_T_ABDOMINAL_AORTA)
 ("T_Thoracic_Aorta", s_T_THORACIC_AORTA)
-("T_Pulmonary_Vein",T_PULMONARY_VEIN)
+("T_Pulmonary_Vein", s_T_PULMONARY_VEIN)
 ("T_Cyst", s_T_CYST)
 ("T_Needle", s_T_NEEDLE)
 ("T_Catheter", s_T_CATHETER)
-("T_Marker",T_MARKER)
+("T_Marker", s_T_MARKER)
 ("T_Prosthesis", s_T_PROSTHESIS)
 ("T_Clothing", s_T_CLOTHING)
 ("T_Transverse", s_T_TRANSVERSE)
@@ -272,7 +272,7 @@ const ::gdcmIO::container::DicomCodedAttribute * DicomDictionarySegment::guessAn
             return s_ANATOMICAL_REGIONS.left.at(cleanedLabel);
         }
     }
-    return TODEFINE;
+    return s_TODEFINE;
 }
 
 //------------------------------------------------------------------------------
@@ -290,7 +290,7 @@ const ::gdcmIO::container::DicomCodedAttribute * DicomDictionarySegment::guessPr
             return s_PROPERTY_CATEGORIES.left.at(cleanedLabel);
         }
     }
-    return TODEFINE;
+    return s_TODEFINE;
 }
 
 //------------------------------------------------------------------------------
@@ -312,7 +312,7 @@ const ::gdcmIO::container::DicomCodedAttribute * DicomDictionarySegment::guessPr
             return s_PROPERTY_CATEGORIES.left.at(cleanedLabel);
         }
     }
-    return TODEFINE;
+    return s_TODEFINE;
 }
 
 } //namespace helper

@@ -97,7 +97,7 @@ void EnhancedSRLandmarkIOD::read(::fwMedData::Series::sptr series) throw(::gdcmI
                     }
                     catch(::gdcmIO::exception::Failed & e)
                     {
-                        SLM_ERROR("Structured reporting reading error : " + e.what());
+                        SLM_ERROR("Structured reporting reading error : " + std::string(e.what()));
                     }
                 }
                 // Add landmarks to fwData::Image

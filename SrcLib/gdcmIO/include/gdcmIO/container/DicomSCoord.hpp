@@ -79,7 +79,7 @@ private :
      * @param[in] coord Coordinate that must be converted
      */
     template <typename T>
-    static float toGraphicData(const T & coord) const;
+    static float toGraphicData(const T & coord);
 
     /// The spatial coordinates (eg : [x1,y1,x2,y2,...]).
     GraphicDataContainerType m_graphicData;
@@ -95,7 +95,7 @@ private :
 //------------------------------------------------------------------------------
 
 template< typename T >
-static float DicomSCoord::toGraphicData(const T & coord) const
+float DicomSCoord::toGraphicData(const T & coord)
 {
     int integerPart = std::floor(coord);
     int sign = ((integerPart > 0) ? 1 : -1);
