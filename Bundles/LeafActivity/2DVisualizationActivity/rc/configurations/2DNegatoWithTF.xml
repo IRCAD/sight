@@ -7,6 +7,7 @@
         <param name="imageUid" />
         <param name="selectedTFKey" />
         <param name="TFSelectionsUid" />
+        <param name="patient_name" default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
     </parameters>
     <config>
@@ -90,12 +91,16 @@
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
+                            <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageKey">
+                                <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+                            </adaptor>
+
                         </scene>
                     </service>
 
                     <item key="imageKey">
                         <object uid="${imageUid}" src="ref" type="::fwData::Image">
-                        
+
                             <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
 
                             <service uid="${GENERIC_UID}_slider_negato" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">

@@ -9,6 +9,7 @@
         <param name="AS_UID" />
         <param name="modelSeriesUid" />
         <param name="InputImageCompositeUID" />
+        <param name="patient_name"  default="" />
     </parameters>
     <config>
 
@@ -121,6 +122,7 @@
                             <parameter replace="modelSeriesUid" by="@values.modelSeriesKey" />
                             <parameter replace="orientation" by="axial" />
                             <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato1" />
+                            <parameter replace="patient_name" by="${patient_name}" />
                         </parameters>
                     </appConfig>
                 </config>
@@ -145,6 +147,7 @@
                                                 <parameter replace="imageUid" by="self" />
                                                 <parameter replace="orientation" by="frontal" />
                                                 <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato2" />
+                                                <parameter replace="patient_name" by="${patient_name}" />
                                             </parameters>
                                         </appConfig>
                                     </config>
@@ -157,6 +160,7 @@
                                                 <parameter replace="imageUid" by="self" />
                                                 <parameter replace="orientation" by="sagittal" />
                                                 <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato3" />
+                                                <parameter replace="patient_name" by="${patient_name}" />
                                             </parameters>
                                         </appConfig>
                                     </config>

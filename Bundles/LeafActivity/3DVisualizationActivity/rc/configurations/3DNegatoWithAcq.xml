@@ -6,6 +6,7 @@
         <param name="GENERIC_UID" />
         <param name="InputImageCompositeUID" />
         <param name="modelSeriesUid" />
+        <param name="patient_name"  default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
     </parameters>
     <config>
@@ -102,6 +103,11 @@
                             <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+
+                            <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="modelSeriesKey">
+                                <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+                            </adaptor>
+
 
                         </scene>
                     </service>
