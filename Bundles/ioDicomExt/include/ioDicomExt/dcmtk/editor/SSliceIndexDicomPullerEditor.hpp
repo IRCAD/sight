@@ -91,8 +91,8 @@ protected:
      @verbatim
      <service uid="sliderIndexDicomPullerEditor" type="::gui::editor::IEditor"
          impl="::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor" autoConnect="yes">
-         <config compositeUID="previewComposite" imageKey="image"
-             dicomReader="::ioVtkGdcm::SSeriesDBReader" pacsConfigurationUID="pacsConfiguration" />
+         <config compositeUID="previewComposite" imageKey="image" dicomReader="::ioVtkGdcm::SSeriesDBReader"
+            pacsConfigurationUID="pacsConfiguration" delay="500" />
      </service>
      @endverbatim
     */
@@ -207,6 +207,8 @@ protected:
     /// Timer used to generate the new slice selection delay
     ::boost::asio::deadline_timer m_delayTimer;
 
+    /// Delay
+    unsigned int m_delay;
 
 };
 

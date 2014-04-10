@@ -52,7 +52,8 @@ namespace dcmtk
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor , ::fwDicomData::DicomSeries ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor,
+        ::fwDicomData::DicomSeries ) ;
 
 const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_READ_IMAGE_SLOT = "readImage";
 const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
@@ -62,7 +63,8 @@ const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAG
 SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() throw():
         m_delayWork( m_delayService),
         m_delayThread( ::boost::bind( &SSliceIndexDicomPullerEditor::runDelay, this)),
-        m_delayTimer( m_delayService)
+        m_delayTimer( m_delayService),
+        m_delay(500)
 {
 
     m_slotReadImage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::readImage, this);
@@ -102,7 +104,8 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     // Get pacs configuration
-    m_pacsConfiguration = ::fwDicomIOExt::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
+    m_pacsConfiguration = ::fwDicomIOExt::data::PacsConfiguration::dynamicCast(
+            ::fwTools::fwID::getObject(m_pacsConfigurationUID));
 
     // Composite
     m_composite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_compositeUID));
@@ -163,7 +166,7 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
     m_seriesEnquirer = ::fwDicomIOExt::dcmtk::SeriesEnquirer::New();
 
     // Load a slice
-    m_delayTimer.expires_from_now( boost::posix_time::milliseconds( 500 ));
+    m_delayTimer.expires_from_now( boost::posix_time::milliseconds( m_delay ));
     m_delayTimer.async_wait( boost::bind( &SSliceIndexDicomPullerEditor::triggerNewSlice, this,
             boost::asio::placeholders::error));
 
@@ -198,26 +201,36 @@ void SSliceIndexDicomPullerEditor::configuring() throw(::fwTools::Failed)
     ::fwGui::IGuiContainerSrv::initialize();
 
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioDicomExt::dcmtk::controller::SPacsConfigurationInitializer must have a \"config\" element.",config);
+    SLM_ASSERT("The service ::ioDicomExt::dcmtk::controller::SPacsConfigurationInitializer must have "
+            "a \"config\" element.",config);
 
     bool success;
 
     // Pacs Configuration UID
     ::boost::tie(success, m_pacsConfigurationUID) = config->getSafeAttributeValue("pacsConfigurationUID");
-    SLM_ASSERT("It should be a \"pacsConfigurationUID\" tag in the ::ioDicomExt::dcmtk::editor::SQueryEditor config element.", success);
 
     // Composite UID
     ::boost::tie(success, m_compositeUID) = config->getSafeAttributeValue("compositeUID");
-    SLM_ASSERT("It should be a \"compositeUID\" tag in the ::ioDicomExt::dcmtk::editor::SQueryEditor config element.", success);
+    SLM_ASSERT("It should be a \"compositeUID\" tag in the ::ioDicomExt::dcmtk::editor::SQueryEditor config element.",
+            success);
 
     // Image Key
     ::boost::tie(success, m_imageKey) = config->getSafeAttributeValue("imageKey");
     SLM_ASSERT("It should be an \"imageKey\" tag in the "
             "::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor config element.", success);
 
-    // IODICOMEXT Reader
+    // Reader
     ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor config element.", success);
+    SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor "
+            "config element.", success);
+
+    // Delay
+    std::string delayStr;
+    ::boost::tie(success, delayStr) = config->getSafeAttributeValue("delay");
+    if(success)
+    {
+        m_delay = ::boost::lexical_cast< unsigned int >(delayStr);
+    }
 
 }
 
@@ -244,8 +257,8 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
     ss << m_sliceIndexSlider->value() << " / " << (m_numberOfSlices-1);
     m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
 
-    // Get the new slice if there is no change for 500 milliseconds
-    m_delayTimer.expires_from_now( boost::posix_time::milliseconds( 500 ));
+    // Get the new slice if there is no change for X milliseconds
+    m_delayTimer.expires_from_now( boost::posix_time::milliseconds( m_delay ));
     m_delayTimer.async_wait( boost::bind( &SSliceIndexDicomPullerEditor::triggerNewSlice, this,
             boost::asio::placeholders::error));
 
@@ -266,7 +279,15 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice(const boost::system::error_co
         OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
         if(!dicomSeries->isInstanceAvailable(selectedSliceIndex))
         {
-            m_pullSeriesWorker->post(::boost::bind(&::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor::pullInstance, this));
+            if(m_pacsConfiguration)
+            {
+                m_pullSeriesWorker->post(
+                        ::boost::bind(&::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor::pullInstance, this));
+            }
+            else
+            {
+                SLM_ERROR("There is no instance available for selected slice index.");
+            }
         }
         else
         {
