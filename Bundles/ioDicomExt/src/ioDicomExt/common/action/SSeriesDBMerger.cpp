@@ -140,7 +140,9 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
 
         BOOST_FOREACH(const ::fwMedData::Series::sptr& series, addedSeries)
         {
-            ss << "- " << series->getDescription() << std::endl;
+            std::string description = series->getDescription();
+            description = (description.empty())?"[No description]":description;
+            ss << "- " << description << std::endl;
         }
         messageBox.setMessage( ss.str() );
     }

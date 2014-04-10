@@ -22,6 +22,7 @@
             <selection mode="exclude" />
             <addSelection service="::ioAtoms::SReader" />
             <addSelection service="::ioDicomExt::gdcm::SDicomSeriesDBReader" />
+            <addSelection service="::ioDicomExt::dcmtk::SDicomSeriesDBReader" />
             <config id="DCMTKReaderConfig" service="::ioDicomExt::dcmtk::SSeriesDBReader" />
         </config>
     </extension>

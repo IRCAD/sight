@@ -115,6 +115,19 @@
                             </filter>
                         </config>
                     </service>
+                    
+                    <service uid="${GENERIC_UID}_action_DicomReader" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>DicomReader</id>
+                            </filter>
+                        </config>
+                    </service>
 
                 </object>
             </item>
@@ -130,6 +143,7 @@
                 <signal>${GENERIC_UID}_action_3DVisualization/activityLaunched</signal>
                 <signal>${GENERIC_UID}_action_volumeRendering/activityLaunched</signal>
                 <signal>${GENERIC_UID}_action_DicomRetriever/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_DicomReader/activityLaunched</signal>
             </proxy>
 
             <start uid="${GENERIC_UID}_mainview" />

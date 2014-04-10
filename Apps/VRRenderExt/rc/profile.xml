@@ -54,6 +54,7 @@
     <activate id="blendActivity"           version="0-1" />
     <activate id="volumeRenderingActivity" version="0-1" />
     <activate id="dicomActivity" version="0-1" />
+    <activate id="dicomReaderActivity" version="0-1" />
 
     <start id="ioDicomExt" />
     <start id="memory" />

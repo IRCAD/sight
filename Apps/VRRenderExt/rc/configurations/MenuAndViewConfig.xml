@@ -27,6 +27,7 @@
                 <menuItem name="3D visualization" icon="Bundles/media_0-1/icons/icon-3D.png" />
                 <menuItem name="Volume rendering" icon="Bundles/media_0-1/icons/icon-VR.png" />
                 <menuItem name="DICOM Retriever" icon="Bundles/mediaExt_0-1/icons/icon-DICOM.svg" />
+                <menuItem name="DICOM Reader" icon="Bundles/mediaExt_0-1/icons/icon-DICOM-Reader.svg" />
             </layout>
         </gui>
         <registry>
@@ -38,6 +39,7 @@
             <menuItem sid="${GENERIC_UID}_action_3DVisualization" start="yes" />
             <menuItem sid="${GENERIC_UID}_action_volumeRendering" start="yes" />
             <menuItem sid="${GENERIC_UID}_action_DicomRetriever" start="yes" />
+            <menuItem sid="${GENERIC_UID}_action_DicomReader" start="yes" />
         </registry>
     </service>
 

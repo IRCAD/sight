@@ -26,6 +26,13 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::ioDicomExt::dcmtk::action::SDicomSeriesConverter</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Read and push DicomSeries to a SeriesDB</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::ioDicomExt::common::controller::SProgressBarController</service>
         <object>::fwData::Composite</object>
@@ -54,6 +61,13 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::ioDicomExt::dcmtk::editor::SFilterSelectionEditor</service>
+        <object>::fwData::Vector</object>
+        <desc>Filter Selection Editor</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioDicomExt::dcmtk::SSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
@@ -62,9 +76,16 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
+        <service>::ioDicomExt::dcmtk::SDicomSeriesDBReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Dicom Series DB Reader (DCMTK)</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
         <service>::ioDicomExt::gdcm::SDicomSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
-        <desc>Dicom Series DB Reader (VTK/gdcm)</desc>
+        <desc>Dicom Series DB Reader (VTK/GDCM)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
