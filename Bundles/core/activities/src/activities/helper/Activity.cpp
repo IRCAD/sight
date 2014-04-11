@@ -1,8 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include <boost/regex.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include <fwTools/UUID.hpp>
 
@@ -19,6 +22,7 @@
 #include <fwActivities/registry/Activities.hpp>
 
 #include "activities/helper/Activity.hpp"
+
 
 namespace activities
 {
@@ -44,6 +48,7 @@ namespace helper
     const std::string iconFieldID          = "ICON";
     const std::string tooltipFieldID       = "TOOLTIP";
     const std::string tabIDFieldID         = "TABID";
+    const std::string tabInfoID            = "TABINFO";
     const std::string asFieldID            = "ACTIVITYSERIES";
     const std::string asUID                = "AS_UID";
     const std::string genericUID           = "GENERIC_UID";
@@ -56,6 +61,46 @@ namespace helper
     title->setField( viewConfigFieldID, ::fwData::String::New(info.appConfig.id) );
     title->setField( closableFieldID, ::fwData::Boolean::New(true));
     title->setField( tabIDFieldID, ::fwData::String::New(tabID));
+
+    if(info.tabInfo.empty())
+    {
+
+        title->setField( tabInfoID, ::fwData::String::New(info.title));
+    }
+    else
+    {
+
+        std::string newTabInfo = info.tabInfo;
+        ::boost::regex e("(!(([[:word:]]+\\.?)+[[:word:]]))");
+        ::boost::smatch what;
+        if(boost::regex_search(newTabInfo, what, e))
+        {
+            std::string submatch(what[1].first, what[1].second);
+
+            submatch.replace(0, 1, "@");
+
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(series->getData(), submatch);
+            OSLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
+
+            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+
+            std::string tabInfoSeshat;
+
+            if(stringParameter)
+            {
+                tabInfoSeshat = stringParameter->getValue();
+            }
+            else
+            {
+                OSLM_WARN("Seshat path '" << submatch << "' doesn't reference an fwData::String");
+            }
+
+            submatch.replace(0, 1, "!");
+            ::boost::algorithm::replace_all(newTabInfo, submatch, tabInfoSeshat);
+
+        }
+        title->setField( tabInfoID, ::fwData::String::New(newTabInfo));
+    }
     title->setField( iconFieldID, ::fwData::String::New(info.icon) );
     title->setField( tooltipFieldID, ::fwData::String::New(info.title) );
     title->setField( asFieldID, series );
@@ -80,9 +125,24 @@ namespace helper
         }
         else
         {
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(series->getData(), param.by);
+            std::string parameterToReplace = param.by;
+            if (parameterToReplace.substr(0,1) == "!")
+            {
+                parameterToReplace.replace(0, 1, "@");
+            }
+
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(series->getData(), parameterToReplace);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
-            (*replaceMap)[param.replace] = ::fwData::String::New(obj->getID());
+
+            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+
+            std::string parameterValue = obj->getID();
+
+            if(stringParameter && param.by.substr(0,1) == "!")
+            {
+                parameterValue = stringParameter->getValue();
+            }
+            (*replaceMap)[param.replace] = ::fwData::String::New(parameterValue);
         }
     }
     return activityMsg;

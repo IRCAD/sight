@@ -507,14 +507,29 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
 SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const ParametersType& parameters )
 {
     ParametersType transParams = parameters;
-    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Object::sptr workingObj = this->getObject();
     BOOST_FOREACH(ParametersType::value_type& param, transParams)
     {
         if(param.isSeshat())
         {
-            ::fwData::Object::sptr subObj = ::fwDataCamp::getObject(obj, param.by);
-            OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", subObj);
-            param.by = subObj->getID();
+            std::string parameterToReplace = param.by;
+            if (parameterToReplace.substr(0,1) == "!")
+            {
+                parameterToReplace.replace(0, 1, "@");
+            }
+
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(workingObj, parameterToReplace);
+            OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
+
+            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+
+            std::string parameterValue = obj->getID();
+
+            if(stringParameter && param.by.substr(0,1) == "!")
+            {
+                parameterValue = stringParameter->getValue();
+            }
+            param.by = parameterValue;
         }
     }
     return transParams;

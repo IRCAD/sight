@@ -8,6 +8,8 @@
 
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+
 
 #include <fwDataCamp/getObject.hpp>
 
@@ -76,9 +78,23 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv)
         }
         else
         {
+            std::string parameterToReplace = param.by;
+            if (parameterToReplace.substr(0,1) == "!")
+            {
+                parameterToReplace.replace(0, 1, "@");
+            }
+
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, param.by);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
-            replaceMap[param.replace] = obj->getID();
+            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+
+            std::string parameterValue = obj->getID();
+
+            if(stringParameter && param.by.substr(0,1) == "!")
+            {
+                parameterValue = stringParameter->getValue();
+            }
+            replaceMap[param.replace] = parameterValue;
         }
     }
 

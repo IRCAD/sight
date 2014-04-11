@@ -6,6 +6,7 @@
       <xs:sequence>
         <xs:element type="xs:string" name="id"/>
         <xs:element type="xs:string" name="title"/>
+        <xs:element type="xs:string" name="tabinfo" maxOccurs="1" minOccurs="0"/>
         <xs:element type="xs:string" name="desc"/>
         <xs:element type="xs:string" name="icon"/>
         <xs:element name="requirements">

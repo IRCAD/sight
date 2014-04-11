@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,6 +47,7 @@ struct AppConfig
 
     std::string id;
     std::string title;
+    std::string tabInfo;
     bool closable;
     ParametersType parameters;
 };
@@ -55,7 +56,7 @@ struct AppConfig
 /**
  * @class   DynamicView
  * @brief   This editor manages tabs. It receive message with NEW_CONFIGURATION_HELPER event containing the view config id.
- * 
+ *
  * @date    2010.
  *
  * @note The ::activities::action::SActivityLauncher action sends message to be receive by the editor.

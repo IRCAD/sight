@@ -41,7 +41,7 @@ struct FWACTIVITIES_CLASS_API ActivityAppConfigParam
 
     bool isSeshat() const
     {
-        return (by.substr(0,1) == "@");
+        return (by.substr(0,1) == "@") || (by.substr(0,1) == "!");
     }
 
     std::string replace;
@@ -90,6 +90,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
     <extension implements="::fwActivities::registry::Activities">
         <id>3DVisualization</id>
         <title>3D Visu</title>
+        <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>
         <desc>Activity description ...</desc>
         <icon>Bundles/media_0-1/icons/icon-3D.png</icon>
         <requirements>
@@ -132,6 +133,7 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     std::string title;
     std::string description;
     std::string icon;
+    std::string tabInfo;
     RequirementsType requirements;
     std::string builderImpl;
     std::string validatorImpl;
@@ -147,7 +149,7 @@ protected:
  * @class Activities
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "::activityReg::registry::Activities".
- * 
+ *
  * @date 2012
  */
 class FWACTIVITIES_CLASS_API Activities : public ::fwCore::BaseObject

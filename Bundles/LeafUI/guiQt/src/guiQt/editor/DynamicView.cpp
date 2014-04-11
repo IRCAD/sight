@@ -43,6 +43,9 @@ AppConfig::AppConfig(const DynamicView::ConfigType& config) :
     std::string closableStr = config.get_optional<std::string>("<xmlattr>.closable").get_value_or("true");
     closable = (closableStr == "true");
 
+
+    tabInfo = config.get_optional<std::string>("<xmlattr>.tabinfo").get_value_or("");
+
     if(config.count("parameters") == 1 )
     {
         const ConfigType &configParameters = config.get_child("parameters");
@@ -155,7 +158,15 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
 {
     DynamicViewInfo info;
     info.tabID = "TABID_" + this->getID();
-    info.title = appConfig.title;
+
+    if(appConfig.tabInfo.empty())
+    {
+        info.title = appConfig.title;
+    }
+    else
+    {
+        info.title = appConfig.tabInfo;
+    }
     info.viewConfigID = appConfig.id;
     info.closable = appConfig.closable;
 
@@ -169,9 +180,24 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
         }
         else
         {
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, param.by);
+            std::string parameterToReplace = param.by;
+            if (parameterToReplace.substr(0,1) == "!")
+            {
+                parameterToReplace.replace(0, 1, "@");
+            }
+
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, parameterToReplace);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
-            (*replaceMap)[param.replace] = ::fwData::String::New(obj->getID());
+
+            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
+
+            std::string parameterValue = obj->getID();
+
+            if(stringParameter && param.by.substr(0,1) == "!")
+            {
+                parameterValue = stringParameter->getValue();
+            }
+            (*replaceMap)[param.replace] = ::fwData::String::New(parameterValue);
         }
     }
     std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(appConfig.id);
@@ -207,15 +233,17 @@ void DynamicView::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTool
         const std::string tooltipFieldID       = "TOOLTIP";
         const std::string tabIDFieldID         = "TABID";
         const std::string asFieldID            = "ACTIVITYSERIES";
+        const std::string tabInfo              = "TABINFO";
 
         SLM_ASSERT("Missing field 'tabID' in message", titleData->getField(tabIDFieldID));
-        info.title         = titleData->value();
+        info.title         = titleData->getField< ::fwData::String >("TABINFO")->value();
         info.tabID         = titleData->getField< ::fwData::String >(tabIDFieldID)->value();
         info.closable      = titleData->getField(closableFieldID, ::fwData::Boolean::New(true))->value();
         info.icon          = titleData->getField(iconFieldID, ::fwData::String::New(""))->value();
         info.tooltip       = titleData->getField(tooltipFieldID, ::fwData::String::New(""))->value();
         info.viewConfigID  = titleData->getField(viewConfigFieldID, ::fwData::String::New(""))->value();
         info.replaceMap    = titleData->getField(fieldID, ::fwData::Composite::New());
+
 
         this->launchTab(info);
     }
