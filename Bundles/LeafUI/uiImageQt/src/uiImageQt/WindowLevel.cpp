@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -93,21 +93,21 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider(container);
 
     m_toggleTFButton = new QToolButton(container);
-    QIcon *ico = new QIcon();
+    QIcon ico;
     QString squareIcon("Bundles/uiImageQt_" UIIMAGEQT_VER "/square.png");
     QString rampIcon("Bundles/uiImageQt_" UIIMAGEQT_VER "/ramp.png");
-    ico->addPixmap(QPixmap(squareIcon), QIcon::Normal,QIcon::On);
-    ico->addPixmap(QPixmap(rampIcon), QIcon::Normal,QIcon::Off);
-    m_toggleTFButton->setIcon(*ico);
+    ico.addPixmap(QPixmap(squareIcon), QIcon::Normal,QIcon::On);
+    ico.addPixmap(QPixmap(rampIcon), QIcon::Normal,QIcon::Off);
+    m_toggleTFButton->setIcon(ico);
     m_toggleTFButton->setCheckable(true);
 
     m_toggleAutoButton = new QToolButton(container);
-    QIcon *icon = new QIcon();
+    QIcon icon;
     QString windo("Bundles/uiImageQt_" UIIMAGEQT_VER "/windowing.svg");
-    icon->addFile(windo, QSize(), QIcon::Normal,QIcon::On);
+    icon.addFile(windo, QSize(), QIcon::Normal,QIcon::On);
     QString nowindo("Bundles/uiImageQt_" UIIMAGEQT_VER "/nowindowing.svg");
-    icon->addFile(nowindo, QSize(), QIcon::Normal,QIcon::Off);
-    m_toggleAutoButton->setIcon(*icon);
+    icon.addFile(nowindo, QSize(), QIcon::Normal,QIcon::Off);
+    m_toggleAutoButton->setIcon(icon);
     m_toggleAutoButton->setToolTip("Automatic Windowing");
     m_toggleAutoButton->setCheckable(true);
     m_toggleAutoButton->setChecked(m_autoWindowing);
@@ -164,17 +164,11 @@ void WindowLevel::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
     QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
 
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
-    m_valueTextMin->deleteLater();
-    m_valueTextMax->deleteLater();
-    m_toggleTFButton->deleteLater();
-    m_dynamicRangeSelection->deleteLater();
-    m_dynamicRangeSelection->deleteLater();
-    m_dynamicRangeMenu->deleteLater();
-    m_rangeSlider->deleteLater();
-    m_dynamicRangeSignalMapper->deleteLater();
-
+    // deletes contained widgets
     this->getContainer()->clean();
+
     this->destroy();
 }
 

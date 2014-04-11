@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -156,6 +156,7 @@ void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > 
             OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
             OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
+            SLM_TRACE("Starting " + sid.first);
             service->start();
         }
     }
@@ -204,6 +205,7 @@ void ViewRegistrar::unmanage()
         {
             OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first ) ;
+            SLM_TRACE("Stopping " + sid.first);
             service->stop();
         }
         ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);

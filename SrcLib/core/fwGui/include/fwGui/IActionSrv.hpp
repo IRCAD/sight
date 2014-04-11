@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the menu items.
  * @class   IActionSrv
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -89,6 +89,8 @@ protected :
      * - \<confirmation value="yes" message="..." /\> : configure if the action must be confirm by user before to execute it.
      *   - \b value : if true the action will show a confirmation message before to be executed.
      *   - \b message not mandatory : if not empty the message is shown in dialog box.
+     *   - \b defaultbutton not mandatory (default defined by underlying gui backend) :
+     *                      specify the dialog default button (yes or no)
      */
     FWGUI_API void initialize();
 
@@ -103,6 +105,7 @@ private:
     bool m_isExecutable;
     bool m_confirmAction;
     std::string m_confirmMessage;
+    std::string m_defaultButton;
 };
 
 //-----------------------------------------------------------------------------

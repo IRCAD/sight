@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -367,7 +367,13 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
     ::fwMedData::ActivitySeries::sptr actSeries;
     actSeries = builder->buildData(info, selection);
-    SLM_ASSERT("ActivitySeries instantiation failed", actSeries);
+
+    if( ! actSeries )
+    {
+        OSLM_INFO("Activity <" << info.builderImpl << ">launch aborted");
+        return;
+    }
+
     ParametersType parameters = this->translateParameters(m_parameters);
     ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info, parameters);
 

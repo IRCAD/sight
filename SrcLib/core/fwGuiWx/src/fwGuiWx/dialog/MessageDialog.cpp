@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,6 +69,26 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
     else if (button == IMessageDialog::YES_NO)
     {
         m_buttons |= wxYES_NO;
+    }
+}
+
+void MessageDialog::setDefaultButton( ::fwGui::dialog::IMessageDialog::Buttons button )
+{
+    if (button == IMessageDialog::OK)
+    {
+        m_buttons |= wxOK_DEFAULT;
+    }
+    else if (button == IMessageDialog::CANCEL)
+    {
+        m_buttons |= wxCANCEL_DEFAULT;
+    }
+    else if (button == IMessageDialog::YES)
+    {
+        m_buttons |= wxYES_DEFAULT;
+    }
+    else if (button == IMessageDialog::NO)
+    {
+        m_buttons |= wxNO_DEFAULT;
     }
 }
 

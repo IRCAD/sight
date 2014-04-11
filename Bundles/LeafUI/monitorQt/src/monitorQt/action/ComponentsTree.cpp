@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -110,8 +110,8 @@ void ComponentsTree::starting() throw (::fwTools::Failed)
 void ComponentsTree::stopping() throw (::fwTools::Failed)
 {
     m_dialog->hide();
-    m_treeContainer->deleteLater();
-    m_dialog->deleteLater();
+    delete m_treeContainer;
+    delete m_dialog;
 
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

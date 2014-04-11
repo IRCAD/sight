@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -92,7 +92,7 @@ void DynamicView::starting() throw(::fwTools::Failed)
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::TopToBottom);
     if (qtContainer->layout())
     {
-        qtContainer->layout()->deleteLater();
+        QWidget().setLayout(qtContainer->layout());
     }
     qtContainer->setLayout(layout);
 
@@ -305,10 +305,11 @@ void DynamicView::closeTabSignal( int index )
 void DynamicView::closeTab( int index, bool forceClose )
 {
     QWidget *widget = m_tabWidget->widget(index);
+
+    SLM_ASSERT("Widget is not in dynamicInfoMap", m_dynamicInfoMap.find(widget) != m_dynamicInfoMap.end());
     DynamicViewInfo info = m_dynamicInfoMap[widget];
     if ( info.closable || forceClose )
     {
-        m_dynamicInfoMap.erase(widget);
         m_tabIDList.erase(info.tabID);
         if (!m_dynamicConfigStartStop)
         {
@@ -324,14 +325,16 @@ void DynamicView::closeTab( int index, bool forceClose )
         }
         info.helper.reset();
 
-        ::fwGui::GuiRegistry::unregisterWIDContainer(info.wid);
-
-        //info.container->clean();
-        info.container->destroyContainer();
-        info.container.reset();
-
+        //Remove tab first, to avoid tab beeing removed by container->destroy
         m_currentWidget = 0;
         m_tabWidget->removeTab(index);
+
+        ::fwGui::GuiRegistry::unregisterWIDContainer(info.wid);
+
+        info.container->clean();
+        info.container->destroyContainer();
+        info.container.reset();
+        m_dynamicInfoMap.erase(widget);
     }
     else
     {
