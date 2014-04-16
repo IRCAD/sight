@@ -8,11 +8,18 @@
     <requirement id="uiImageQt" />
     <requirement id="ctrlSelection" />
 
+    <xi:include href="SeriesExportCfg.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiMedData::editor::SSelector</service>
         <object>::fwMedData::SeriesDB</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SSeries</service>
+        <object>::fwData::Vector</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -26,7 +33,13 @@
         <service>::uiMedData::action::SExportSeries</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>
-    
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiMedData::action::SInitNewSeries</service>
+        <object>::fwMedData::SeriesDB</object>
+    </extension>
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiMedData::editor::SModelSeriesList</service>

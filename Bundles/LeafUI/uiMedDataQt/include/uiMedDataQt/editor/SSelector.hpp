@@ -7,6 +7,7 @@
 #ifndef _UIMEDDATAQT_EDITOR_SSELECTOR_HPP_
 #define _UIMEDDATAQT_EDITOR_SSELECTOR_HPP_
 
+#include <QAbstractItemView>
 #include <QPointer>
 #include <QObject>
 #include <QVector>
@@ -60,10 +61,15 @@ protected:
      * @verbatim
      <service uid="selector" impl="::uiMedData::editor::SSelector" type="::gui::editor::IEditor" autoConnect="yes">
         <selectionId>selections</selectionId>
+        <selectionMode>single|extended</selectionMode>
+        <allowedRemove>yes|no</allowedRemove>
+        <insertMode>yes|no</insertMode>
      </service>
      @endverbatim
-     * - \b selectionId : defines the fwId of the ::fwData::Vector where the selection
-     * will be put or get.
+     * - \b selectionId : defines the fwId of the ::fwData::Vector where the selection will be put or get.
+     * - \b selectionMode : defines the selection mode for the series
+     * - \b allowedRemove : allows user to remove series
+     * - \b insertMode : only allows selection of uiMedData::InsertSeries
      */
     virtual void configuring() throw (::fwTools::Failed);
 
@@ -117,6 +123,15 @@ private :
 
     /// Signal emitted when there is a double click on a series
     SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked;
+
+    /// Permits the user to remove series. Default is yes
+    bool m_allowedRemove;
+
+    /// Change the behaviour of the treeview selection mode
+    QAbstractItemView::SelectionMode m_selectionMode;
+
+    /// If true, allows selection of uiMedData::InsertSeries only
+    bool m_insertMode;
 
 };
 } // namespace editor

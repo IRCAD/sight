@@ -12,11 +12,11 @@ LIB     = [
           'fwMedData_0-1',
           'fwActivities_0-1',
           'fwDataCamp_0-1',
+          'fwMedDataTools_0-1',
           ]
 USE     = ['boost','qtCore']
 BUNDLES = ['gui_0-1']
 REQUIREMENTS = [
                'visuVTKAdaptor_0-1',
-               'uiImageQt_0-1',
                'ctrlSelection_0-1',
                ]

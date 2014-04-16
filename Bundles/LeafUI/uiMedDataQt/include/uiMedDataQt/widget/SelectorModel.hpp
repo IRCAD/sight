@@ -96,6 +96,8 @@ public:
     /// Returns the item representing the study.
     UIMEDDATAQT_API QStandardItem* findStudyItem(::fwMedData::Study::sptr study);
 
+    /// Sets if the selector must be in insert mode.
+    UIMEDDATAQT_API void setInsertMode(bool insert);
 
 private:
 
@@ -128,6 +130,9 @@ private:
      * It is used to associate the series to its study in the tree.
      */
     StudyUidItemMapType m_items;
+
+    /// Sets if the selector is in insert mode (adding new series, forbid selection of existing series).
+    bool m_insert;
 };
 
 
