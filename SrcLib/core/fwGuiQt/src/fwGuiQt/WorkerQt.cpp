@@ -251,10 +251,10 @@ void WorkerQt::init( int &argc, char **argv )
 
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
-    QStringList libraryPaths;
-    libraryPaths = m_app->libraryPaths();
-    libraryPaths.removeFirst();
-    m_app->setLibraryPaths(libraryPaths);
+    // QStringList libraryPaths;
+    // libraryPaths = m_app->libraryPaths();
+    // libraryPaths.removeFirst();
+    // m_app->setLibraryPaths(libraryPaths);
 
     QDir pluginDir("./qtplugins");
     if (pluginDir.exists())

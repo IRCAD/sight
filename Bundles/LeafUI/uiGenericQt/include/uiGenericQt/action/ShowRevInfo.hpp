@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIGENERICQT_UI_ACTION_SHOWACK_HPP_
-#define _UIGENERICQT_UI_ACTION_SHOWACK_HPP_
+#ifndef _UIGENERICQT_UI_ACTION_SHOWREVINFO_HPP_
+#define _UIGENERICQT_UI_ACTION_SHOWREVINFO_HPP_
 
 #include <map>
 #include <set>
@@ -88,4 +88,4 @@ protected Q_SLOTS:
 } // namespace action
 } // namespace uiGeneric
 
-#endif /*_UIGENERICQT_ACTION_SHOWACK_HPP_*/
+#endif /*_UIGENERICQT_UI_ACTION_SHOWREVINFO_HPP_*/

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_
-#define _UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_
+#ifndef _UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_
+#define _UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_
 
 #include <QObject>
 #include <QPointer>
@@ -95,6 +95,6 @@ private:
 
 } // uiReconstruction
 
-#endif /*_UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_*/
+#endif /*_UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_*/
 
 
