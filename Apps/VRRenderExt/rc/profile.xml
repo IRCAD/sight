@@ -57,6 +57,18 @@
     <activate id="dicomActivity" version="0-1" />
     <activate id="dicomReaderActivity" version="0-1" />
 
+    <activate id="uiViewPoints" version="0-1" />
+    <activate id="uiNavigation" version="0-1" />
+    <activate id="uiSpline" version="0-1" />
+    <activate id="uiCPR" version="0-1" />
+    <activate id="ctrlSplineNavigation" version="0-1" />
+    <activate id="ctrlPointSelection" version="0-1" />
+    <activate id="ctrlComputeCPR" version="0-1" />
+    <activate id="visuNavigation" version="0-1" />
+    <activate id="cprActivity" version="0-1" />
+    <activate id="viewPointsActivity" version="0-1" />
+    <activate id="splineEditionActivity" version="0-1" />
+
     <start id="ioDicomExt" />
     <start id="memory" />
     <start id="patchMedicalData"/>
