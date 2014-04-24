@@ -94,7 +94,7 @@ protected:
      *
      * @throw fwTools::Failed
      */
-    virtual void configuring() throw(fwTools::Failed);	
+    virtual void configuring() throw(fwTools::Failed);
 
     /// This method computes the mesh 3D of the CPR.
     void computeMesh();
