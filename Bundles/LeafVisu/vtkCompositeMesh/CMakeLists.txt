@@ -16,5 +16,5 @@ fwForwardInclude(
     )
 fwLink(
     ${Boost_LIBRARIES}
-    vtkWidgets
+    vtkInteractionWidgets
     )

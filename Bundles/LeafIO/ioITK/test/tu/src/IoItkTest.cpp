@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>

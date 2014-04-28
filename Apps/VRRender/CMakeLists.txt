@@ -5,16 +5,14 @@ if(VRRender_INSTALL)
     if(APPLE)
         set(FWPROJECT_NAME VRRender)
 
-        set(VRRENDER_BUNDLE_ICON_FILE vrrender.icns) 
+        set(VRRENDER_BUNDLE_ICON_FILE app.icns) 
         set_source_files_properties(rc/${VRRENDER_BUNDLE_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-
 
         add_executable(
             VRRender.app MACOSX_BUNDLE
             ${launcher_HEADERS} ${launcher_SOURCES} 
             rc/${VRRENDER_BUNDLE_ICON_FILE}
             )
-
 
         set_target_properties( VRRender.app PROPERTIES OUTPUT_NAME ${FWPROJECT_NAME})
 
@@ -25,7 +23,7 @@ if(VRRender_INSTALL)
         set_target_properties( VRRender.app PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING "${${FWPROJECT_NAME}_VERSION}")
         set_target_properties( VRRender.app PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "${${FWPROJECT_NAME}_VERSION}")
         set_target_properties( VRRender.app PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${FWPROJECT_NAME}")
-        set_target_properties( VRRender.app PROPERTIES MACOSX_BUNDLE_COPYRIGHT "Copyright 2012-2013 IRCAD")
+        set_target_properties( VRRender.app PROPERTIES MACOSX_BUNDLE_COPYRIGHT "Copyright 2012-2014 IRCAD")
         set_target_properties( VRRender.app PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "com.ircad.vrrender")
 
         find_package (Boost COMPONENTS filesystem program_options REQUIRED)
@@ -35,7 +33,7 @@ if(VRRender_INSTALL)
 
         set(APP_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/VRRender.app")
 
-        configure_file("${fwGuiQt_SOURCE_DIR}/bin/qt.conf" "${APP_PATH}/Contents/Resources/qt.conf")
+        configure_file("${fwGuiQt_DIR}/bin/qt.conf" "${APP_PATH}/Contents/Resources/qt.conf")
         INSTALL(CODE " file(WRITE \"${APP_PATH}/Contents/Resources/qt.conf\" \"\") " COMPONENT ApplicationBundle)
 
         install(
@@ -47,20 +45,20 @@ if(VRRender_INSTALL)
 
         install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/share" DESTINATION "VRRender.app/Contents/" COMPONENT ApplicationBundle)
         install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/Bundles" DESTINATION "VRRender.app/Contents/" COMPONENT ApplicationBundle)
-        install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/qtplugins/plugins" DESTINATION "VRRender.app/Contents/" COMPONENT ApplicationBundle)
+        install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/qtplugins" DESTINATION "VRRender.app/Contents/" COMPONENT ApplicationBundle)
 
         INSTALL(CODE "
-        file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+        file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/qtplugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
         file(GLOB_RECURSE BUNDLES \"${APP_INSTALL_PATH}/Contents/Bundles/*/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
         include(BundleUtilities)
         fixup_bundle(\"${APP_INSTALL_PATH}\" \"\${BUNDLES};\${QTPLUGINS}\" \"${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIR}\")
-        execute_process(
-            COMMAND sh -c \"find . -type f -exec stat --format='%s' {} \\; |sort -rn | uniq -d | xargs -I{} -n1 find . -type f -size {}c -print0 | xargs -0 stat --format='%20s %n' | sort | uniq -w20 --all-repeated=separate |cut -c22- | paste - - - -d' ' | sed 's/^/ln -s -f /' | sh \" 
-            WORKING_DIRECTORY ${APP_INSTALL_PATH}/Contents/MacOS
-            )
 
         execute_process(
-            COMMAND sh -c \"python ${CMAKE_SOURCE_DIR}/CMake/OSXTools/osx_install_name_tool.py -e MacOS/ $(find Bundles -iname '*.dylib') -f \"
+            COMMAND sh -c \"find . -type f -name '*.dylib'|sed 's/\\\\.[0-9].*//g'|sort|uniq -d|xargs -I{} -n1 find . -path '{}.*' | paste -d ' ' - -| sed 's/^/ln -s -f /' | sh \" 
+            WORKING_DIRECTORY ${APP_INSTALL_PATH}/Contents/
+            )
+        execute_process(
+            COMMAND sh -c \"python ${CMAKE_SOURCE_DIR}/CMake/OSXTools/osx_install_name_tool.py -e MacOS/ $(find Bundles -iname '*.dylib') -f\"
             WORKING_DIRECTORY ${APP_INSTALL_PATH}/Contents
             )
 

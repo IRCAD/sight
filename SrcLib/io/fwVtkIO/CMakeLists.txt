@@ -10,6 +10,6 @@ fwUseForwardInclude(
 find_package(VTK REQUIRED)
 
 fwForwardInclude(${VTK_INCLUDE_DIRS})
-fwLink(vtkHybrid)
+fwLink(vtkFiltersModeling vtkIOImage vtkIOLegacy vtkIOExport vtkIOXML vtkImagingStencil vtkImagingStatistics)
 
 get_target_property(TARGET_TYPE vtkHybrid LOCATION)

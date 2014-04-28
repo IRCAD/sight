@@ -6,6 +6,8 @@
 
 #include <fstream>
 
+#include <boost/filesystem/operations.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 

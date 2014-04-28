@@ -17,6 +17,6 @@ fwForwardInclude(
     )
 fwLink(
     ${Boost_LIBRARIES} 
-    vtkHybrid
+    vtkIOImport
     )
 
