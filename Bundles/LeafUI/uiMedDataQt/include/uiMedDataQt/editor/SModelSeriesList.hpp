@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,6 +68,19 @@ protected:
 
     virtual void swapping() throw(::fwTools::Failed);
 
+    /**
+     * @brief Configures the editor.
+     *
+     * Configuration example :
+     @verbatim
+     <config enable_hide_all="true" />
+     @endverbatim
+     *
+     * \b enable_hide_all : if 'true', allows to hide all models through a single checkbox displayed in UI (default
+     * value is 'true', allowed values are 'true' and 'false').
+     *
+     * @throw fwTools::Failed
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
@@ -92,6 +105,8 @@ private:
     QPointer< QCheckBox > m_showCheckBox;
     QPointer< QListWidget > m_organChoice;
     OrganNameReconstruction m_map ;
+
+    bool m_enableHideAll;
 
 };
 

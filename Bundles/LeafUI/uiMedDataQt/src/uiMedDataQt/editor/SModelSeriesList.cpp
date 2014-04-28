@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ namespace editor
 fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMedData::editor::SModelSeriesList , ::fwMedData::ModelSeries) ;
 
 
-SModelSeriesList::SModelSeriesList() throw()
+SModelSeriesList::SModelSeriesList() throw() : m_enableHideAll(true)
 {}
 
 //------------------------------------------------------------------------------
@@ -59,24 +59,33 @@ void SModelSeriesList::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
     QVBoxLayout* layout = new QVBoxLayout(container);
 
-    m_showCheckBox = new QCheckBox( tr("Hide all organs"));
-    m_showCheckBox->setToolTip(tr("Show or hide all organs"));
-    m_organChoice = new QListWidget() ;
 
-    layout->addWidget( m_showCheckBox, 0 );
+    if (m_enableHideAll)
+    {
+        m_showCheckBox = new QCheckBox( tr("Hide all organs"));
+        m_showCheckBox->setToolTip(tr("Show or hide all organs"));
+        layout->addWidget( m_showCheckBox, 0 );
+        QObject::connect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
+    }
+
+    m_organChoice = new QListWidget();
+
     layout->addWidget( m_organChoice, 1 );
 
     container->setLayout( layout );
 
-    QObject::connect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
-    QObject::connect(m_organChoice, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(onOrganChoiceVisibility(QListWidgetItem *)));
-    QObject::connect(m_organChoice, SIGNAL(currentItemChanged ( QListWidgetItem *, QListWidgetItem * )), this, SLOT(onCurrentItemChanged ( QListWidgetItem * , QListWidgetItem * )));
+    QObject::connect(m_organChoice, SIGNAL(itemClicked(QListWidgetItem*)),
+            this, SLOT(onOrganChoiceVisibility(QListWidgetItem*)));
+    QObject::connect(m_organChoice, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+            this, SLOT(onCurrentItemChanged(QListWidgetItem*, QListWidgetItem*)));
+
     this->updating();
 }
 
@@ -85,9 +94,16 @@ void SModelSeriesList::starting() throw(::fwTools::Failed)
 void SModelSeriesList::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
-    QObject::disconnect(m_organChoice, SIGNAL(itemClicked (QListWidgetItem * )), this, SLOT(onOrganChoiceVisibility(QListWidgetItem *)));
-    QObject::disconnect(m_organChoice, SIGNAL(currentItemChanged ( QListWidgetItem *, QListWidgetItem * )), this, SLOT(onCurrentItemChanged ( QListWidgetItem * , QListWidgetItem * )));
+
+    if(m_showCheckBox)
+    {
+        QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
+    }
+
+    QObject::disconnect(m_organChoice, SIGNAL(itemClicked (QListWidgetItem * )),
+            this, SLOT(onOrganChoiceVisibility(QListWidgetItem *)));
+    QObject::disconnect(m_organChoice, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+            this, SLOT(onCurrentItemChanged(QListWidgetItem*, QListWidgetItem*)));
 
     this->getContainer()->clean();
     this->destroy();
@@ -99,6 +115,15 @@ void SModelSeriesList::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->initialize();
+
+    if( m_configuration->findConfigurationElement( "enable_hide_all" ) )
+    {
+        const std::string& hide = m_configuration->findConfigurationElement("enable_hide_all")->getValue();
+        SLM_ASSERT("'enable_hide_all' attribute value must be 'true' or 'false' (found '" + hide + "')",
+                hide == "true" || hide == "false");
+        m_enableHideAll = (hide == "true");
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -177,8 +202,11 @@ void SModelSeriesList::updateReconstructions()
         const bool showAllRec
             = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
-        m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked );
-        m_organChoice->setEnabled(m_showCheckBox->checkState() == Qt::Unchecked);
+        if(m_showCheckBox)
+        {
+            m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked );
+            m_organChoice->setEnabled(m_showCheckBox->checkState() == Qt::Unchecked);
+        }
     }
 
     m_organChoice->blockSignals(false);
@@ -199,7 +227,7 @@ void SModelSeriesList::onCurrentItemChanged( QListWidgetItem * current, QListWid
         ::fwData::Reconstruction::sptr rec = m_map[organSelected] ;
 
         ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-        msg->addEvent( ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New( rec->getID() ) ) ;
+        msg->addEvent( ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New(rec->getID()));
         ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
     }
 }

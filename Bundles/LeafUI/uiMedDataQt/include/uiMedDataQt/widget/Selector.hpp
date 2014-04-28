@@ -78,6 +78,12 @@ public:
      */
     UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType &seriesIcons);
 
+    /// Allows removing items or not.
+    UIMEDDATAQT_API void setAllowedRemove(bool allowed);
+
+    /// Sets if the selector must be in insert mode.
+    UIMEDDATAQT_API void setInsertMode(bool insert);
+
 Q_SIGNALS:
     /**
      * @brief Signal emitted when the selection change.
@@ -133,6 +139,10 @@ private:
 
     /// Tree model
     QPointer<SelectorModel> m_model;
+
+    /// Allows to remove items.
+    bool m_allowedRemove;
+
 };
 
 } // namespace widget

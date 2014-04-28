@@ -104,6 +104,9 @@ public:
      * @param[in]  seriesIcons map\<series classname, icon path\>
      */
     UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType &seriesIcons);
+    
+    /// Sets if the selector must be in insert mode.
+    UIMEDDATAQT_API void setInsertMode(bool insert);
 
 
 private:
@@ -138,6 +141,9 @@ private:
      */
     StudyUidItemMapType m_items;
 
+    /// Sets if the selector is in insert mode (adding new series, forbid selection of existing series).
+    bool m_insert;
+    
     /// Map containing the specified icons for a series (map\<series classname, icon path\>)
     SeriesIconType m_seriesIcons;
 };

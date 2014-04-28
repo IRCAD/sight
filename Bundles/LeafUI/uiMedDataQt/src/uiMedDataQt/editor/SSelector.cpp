@@ -43,7 +43,10 @@ const ::fwCom::Signals::SignalKeyType SSelector::s_SERIES_DOUBLE_CLICKED_SIG = "
 
 //------------------------------------------------------------------------------
 
-SSelector::SSelector()
+SSelector::SSelector() :
+    m_allowedRemove(true),
+    m_selectionMode(QAbstractItemView::ExtendedSelection),
+    m_insertMode(false)
 {
     // Init
     m_sigSeriesDoubleClicked = SeriesDoubleClickedSignalType::New();
@@ -82,6 +85,10 @@ void SSelector::starting() throw(::fwTools::Failed)
 
     m_selectorWidget = new ::uiMedData::widget::Selector();
     m_selectorWidget->setSeriesIcons(m_seriesIcons);
+    m_selectorWidget->setSelectionMode(m_selectionMode);
+    m_selectorWidget->setAllowedRemove(m_allowedRemove);
+    m_selectorWidget->setInsertMode(m_insertMode);
+
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(m_selectorWidget);
     container->setLayout(layout);
@@ -91,11 +98,20 @@ void SSelector::starting() throw(::fwTools::Failed)
                      this, SLOT(onSelectedSeries(QVector< ::fwMedData::Series::sptr >,
                                                  QVector< ::fwMedData::Series::sptr >)));
 
-    QObject::connect(m_selectorWidget, SIGNAL(doubleClicked(const QModelIndex &)),
-                     this, SLOT(onDoubleClick(const QModelIndex &)));
+    if(!m_insertMode)
+    {
+        QObject::connect(m_selectorWidget, SIGNAL(doubleClicked(const QModelIndex &)),
+                this, SLOT(onDoubleClick(const QModelIndex &)));
+    }
 
-    QObject::connect(m_selectorWidget, SIGNAL(removeSeries(QVector< ::fwMedData::Series::sptr >)),
-                     this, SLOT(onRemoveSeries(QVector< ::fwMedData::Series::sptr >)));
+    if(m_allowedRemove)
+    {
+        SLM_TRACE("CONNECT remove series slot");
+        QObject::connect(m_selectorWidget, SIGNAL(removeSeries(QVector< ::fwMedData::Series::sptr >)),
+                         this, SLOT(onRemoveSeries(QVector< ::fwMedData::Series::sptr >)));
+    }
+
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -163,6 +179,66 @@ void SSelector::configuring() throw(::fwTools::Failed)
 
     m_selectionId = selectionCfg.front()->getValue();
     SLM_ASSERT("selectionId must not be empty", !m_selectionId.empty());
+
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionModeCfg = m_configuration->find("selectionMode");
+    if(!selectionModeCfg.empty())
+    {
+        const std::string& selectionMode = selectionModeCfg.front()->getValue();
+
+        if(!selectionMode.empty())
+        {
+            if(selectionMode == "single")
+            {
+                m_selectionMode = QAbstractItemView::SingleSelection;
+            }
+            else if(selectionMode == "extended")
+            {
+                m_selectionMode = QAbstractItemView::ExtendedSelection;
+            }
+            else
+            {
+                SLM_WARN("value " + selectionMode + " is not managed for <selectionMode>");
+            }
+        }
+    }
+
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > allowedRemoveCfg = m_configuration->find("allowedRemove");
+    if(!allowedRemoveCfg.empty())
+    {
+        const std::string& allowedRemove = allowedRemoveCfg.front()->getValue();
+
+        if(allowedRemove == "yes")
+        {
+            m_allowedRemove = true;
+        }
+        else if(allowedRemove == "no")
+        {
+            m_allowedRemove = false;
+        }
+        else
+        {
+            SLM_WARN("value " + allowedRemove + " is not managed for <allowedRemove>");
+        }
+    }
+
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > insertCfg = m_configuration->find("insertMode");
+    if(!insertCfg.empty())
+    {
+        const std::string& insert = insertCfg.front()->getValue();
+
+        if(insert == "yes")
+        {
+            m_insertMode = true;
+        }
+        else if(insert == "no")
+        {
+            m_insertMode = false;
+        }
+        else
+        {
+            SLM_WARN("value " + insert + " is not managed for <insertMode>");
+        }
+    }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > iconsCfg = m_configuration->find("icons");
     if (!iconsCfg.empty())

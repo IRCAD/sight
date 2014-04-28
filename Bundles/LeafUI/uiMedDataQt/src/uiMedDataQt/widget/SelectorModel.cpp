@@ -8,6 +8,7 @@
 #include <boost/math/special_functions/round.hpp>
 #include <boost/regex.hpp>
 
+#include <QFont>
 #include <QStandardItem>
 #include <QString>
 
@@ -24,6 +25,7 @@
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
+#include "uiMedDataQt/InsertSeries.hpp"
 #include "uiMedDataQt/widget/SelectorModel.hpp"
 
 namespace uiMedData
@@ -35,7 +37,8 @@ namespace widget
 
 SelectorModel::SelectorModel(QWidget *parent) :
     QStandardItemModel(parent),
-    m_studyRowCount(0)
+    m_studyRowCount(0),
+    m_insert(false)
 {
     this->init();
 }
@@ -61,6 +64,14 @@ void SelectorModel::init()
 }
 
 //-----------------------------------------------------------------------------
+
+void SelectorModel::setInsertMode(bool insert)
+{
+    m_insert = insert;
+}
+
+//-----------------------------------------------------------------------------
+
 
 SelectorModel::ItemType SelectorModel::getItemType(const QModelIndex &index)
 {
@@ -196,7 +207,8 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         this->setItem(m_studyRowCount, 11, patientBirthdate);
         this->setItem(m_studyRowCount, 12, institution);
 
-        for (int i = 0; i<13; ++i)
+        const int nbColumns = institution->index().column() + 1;
+        for (int i = 0; i < nbColumns; ++i)
         {
             QStandardItem *item = this->item(m_studyRowCount, i);
             item->setFlags(item->flags() & ~Qt::ItemIsSelectable );
@@ -219,7 +231,7 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
     seriesDescription1->setData(QVariant(QString::fromStdString(series->getID())), UID);
     QStandardItem * seriesDescription2 = new QStandardItem(QString::fromStdString(series->getDescription()));
 
-    int nbRow = studyRootItem->rowCount();
+    const int nbRow = studyRootItem->rowCount();
     studyRootItem->setChild(nbRow, 0, seriesDescription1);
     studyRootItem->setChild(nbRow, 1, seriesModality);
     studyRootItem->setChild(nbRow, 2, seriesDate);
@@ -245,6 +257,33 @@ void SelectorModel::addSeries(::fwMedData::Series::sptr series)
         ::fwData::Image::OriginType patientPosition = image->getOrigin();
         QStandardItem* originItem = this->getInfo< ::fwData::Image::OriginType>(patientPosition, ", ");
         studyRootItem->setChild(nbRow, 5, originItem);
+    }
+
+    if(m_insert)
+    {
+        ::uiMedData::InsertSeries::sptr insertSeries = ::uiMedData::InsertSeries::dynamicCast(series);
+
+        const int nbColumns = studyRootItem->columnCount();
+        for(int i = 0; i < nbColumns; ++i)
+        {
+            QStandardItem *item = studyRootItem->child(nbRow, i);
+            if(!item)
+            {
+                studyRootItem->setChild(nbRow, i, new QStandardItem());
+                item = studyRootItem->child(nbRow, i);
+            }
+
+            if(insertSeries)
+            {
+                QFont f = item->font();
+                f.setBold(true);
+                item->setFont(f);
+            }
+            else
+            {
+                item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+            }
+        }
     }
 
     this->addSeriesIcon(series, seriesDescription1);

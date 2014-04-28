@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,6 +34,13 @@
 # define FILE_LOG false;
 #endif
 
+#ifndef DEFAULT_PROFILE
+#define DEFAULT_PROFILE profile.xml
+#endif
+
+#define GET_DEFAULT_PROFILE(x) #x
+#define GET_DEFAULT_PROFILE2(x) GET_DEFAULT_PROFILE(x)
+#define DEFAULT_PROFILE_STRING  GET_DEFAULT_PROFILE2(DEFAULT_PROFILE)
 
 
 
@@ -79,9 +86,6 @@ inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
 }
 
 //-----------------------------------------------------------------------------
-static int    s_argc;
-static char** s_argv;
-//-----------------------------------------------------------------------------
 
 #ifdef __MACOSX__
 std::pair<std::string, std::string> parsePns(const std::string& s)
@@ -103,18 +107,8 @@ PathType absolute( const PathType &path )
 
 //-----------------------------------------------------------------------------
 
-#if defined(_WIN32) && defined(_WINDOWS)
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
-{
-    s_argc = __argc;
-    s_argv = __argv;
-#else
 int main(int argc, char* argv[])
 {
-    s_argc = argc;
-    s_argv = argv;
-#endif
-
     PathListType bundlePaths;
     PathType rwd;
     PathType profileFile;
@@ -126,8 +120,6 @@ int main(int argc, char* argv[])
         ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1,"./Bundles/")), "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
         ;
-
-
 
     bool consoleLog = CONSOLE_LOG;
     bool fileLog = FILE_LOG;
@@ -153,14 +145,12 @@ int main(int argc, char* argv[])
         ("log-fatal", po::value(&logLevel)->implicit_value(SpyLogger::SL_FATAL)->zero_tokens(), "Set loglevel to fatal")
         ;
 
-
-
     po::options_description hidden("Hidden options");
     hidden.add_options()
 #ifdef __MACOSX__
         ("psn", po::value<std::string>(), "Application PSN number")
 #endif
-        ("profile", po::value(&profileFile)->default_value("profile.xml"), "Profile file")
+        ("profile", po::value(&profileFile)->default_value(DEFAULT_PROFILE_STRING), "Profile file")
         ("profile-args", po::value(&profileArgs)->multitoken(), "Profile args")
         ;
 
@@ -174,7 +164,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        po::store(po::command_line_parser(s_argc, s_argv)
+        po::store(po::command_line_parser(argc, argv)
                 .options(cmdline_options)
 #ifdef __MACOSX__
                 .extra_parser(parsePns)
@@ -192,7 +182,7 @@ int main(int argc, char* argv[])
 
     if (vm.count("help"))
     {
-        std::cout << "usage: " << s_argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
+        std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
         std::cout << "  use '--' to stop processing args for launcher" << std::endl  << std::endl;
         std::cout << options << std::endl << logOptions << std::endl;
         return 0;
@@ -277,7 +267,7 @@ int main(int argc, char* argv[])
         isChdirOk = (bool)(SetCurrentDirectory(rwd.string().c_str()) != 0);
 #else
         isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
-#endif
+#endif // _WIN32
     OSLM_ERROR_IF( "Was not able to change directory to : " << rwd , !isChdirOk);
 
     BOOST_FOREACH(const fs::path &bundlePath, bundlePaths )
@@ -328,4 +318,13 @@ int main(int argc, char* argv[])
 
     return retValue;
 }
+
+//-----------------------------------------------------------------------------
+
+#ifdef _WIN32
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
+{
+    return main(__argc, __argv);
+}
+#endif // _WIN32
 

@@ -30,7 +30,7 @@ namespace widget
 //-----------------------------------------------------------------------------
 
 Selector::Selector(QWidget *parent) :
-    QTreeView(parent)
+    QTreeView(parent), m_allowedRemove(true)
 {
     m_model = new SelectorModel();
     this->setModel(m_model);
@@ -54,6 +54,13 @@ void Selector::clear()
 
 //-----------------------------------------------------------------------------
 
+void Selector::setInsertMode(bool insert)
+{
+    m_model->setInsertMode(insert);
+}
+
+//-----------------------------------------------------------------------------
+
 void Selector::addSeries(::fwMedData::Series::sptr series)
 {
     m_model->addSeries(series);
@@ -71,6 +78,13 @@ void Selector::addSeries(::fwMedData::Series::sptr series)
 void Selector::removeSeries(::fwMedData::Series::sptr series)
 {
     m_model->removeSeries(series);
+}
+
+//-----------------------------------------------------------------------------
+
+void Selector::setAllowedRemove(bool allowed)
+{
+    m_allowedRemove = allowed;
 }
 
 //-----------------------------------------------------------------------------
@@ -161,7 +175,7 @@ SelectorModel::ItemType Selector::getItemType(const QModelIndex &index)
 
  void Selector::keyPressEvent(QKeyEvent * event)
  {
-     if(event->matches(QKeySequence::Delete))
+     if(event->matches(QKeySequence::Delete) && m_allowedRemove)
      {
          this->deleteSelection();
          event->accept();
