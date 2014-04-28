@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,8 +17,11 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/VideoMsg.hpp>
+#include <fwRenderVTK/vtk/Helpers.hpp>
 
-
+#include <vtkOpenGLRenderWindow.h>
+#include <vtkOpenGLProperty.h>
+#include <vtkShaderProgram2.h>
 #include <vtkPlaneSource.h>
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
@@ -120,11 +123,19 @@ void Video::doUpdate() throw(fwTools::Failed)
 
         bText_init  = true;
 
+        ::boost::filesystem::path pathShaderVP ( "Bundles/visuVTKAdaptor_" + std::string(VISUVTKADAPTOR_VER) + "/vp.glsl" );
+        ::boost::filesystem::path pathShaderFP ( "Bundles/visuVTKAdaptor_" + std::string(VISUVTKADAPTOR_VER) + "/fp.glsl" );
+
+        vtkSmartPointer<vtkShaderProgram2> pProgram;
+        pProgram = ::fwRenderVTK::vtk::buildShaderFromFile(this->getRenderer()->GetRenderWindow(),
+                                                         pathShaderVP.string().c_str(),
+                                                         pathShaderFP.string().c_str());
+        SLM_ERROR_IF("Failed to build shader program", !pProgram);
+
         vtkProperty *property = this->getActor()->GetProperty();
-        ::boost::filesystem::path pathShader ( "Bundles/visuVTKAdaptor_" + std::string(VISUVTKADAPTOR_VER) + "/video.xml" );
-        property->LoadMaterial(pathShader.string().c_str());
-        property->SetTexture("texture", m_texture);
-        property->ShadingOn();
+        vtkOpenGLProperty *pOpenGLProperty = vtkOpenGLProperty::SafeDownCast(property);
+        SLM_ASSERT("Shader program not supported", pOpenGLProperty);
+        pOpenGLProperty->SetPropProgram(pProgram);
     }
     m_imageData->Modified();
     this->setVtkPipelineModified();
