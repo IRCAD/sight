@@ -37,6 +37,26 @@ Point::sptr Point::PointFactory(float x, float y, float z)
 
 //------------------------------------------------------------------------------
 
+Point::sptr Point::PointFactory(double x, double y, double z)
+{
+    Point::sptr point = ::fwData::Point::New();
+    point->m_vCoord[0] = x;
+    point->m_vCoord[1] = y;
+    point->m_vCoord[2] = z;
+    return point;
+}
+
+//------------------------------------------------------------------------------
+
+Point::sptr Point::PointFactory(const PointCoordArrayType& coord)
+{
+    Point::sptr point = ::fwData::Point::New();
+    point->m_vCoord = coord;
+    return point;
+}
+
+//------------------------------------------------------------------------------
+
 Point::sptr Point::PointFactory( Point::sptr p )
 {
     Point::sptr point = ::fwData::Point::New();
