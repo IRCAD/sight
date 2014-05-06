@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2013.
+* FW4SPL - Copyright (C) IRCAD, 2009-2014.
 * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
 * published by the Free Software Foundation.
 * ****** END LICENSE BLOCK ****** */
@@ -49,22 +49,6 @@ public :
     * @param[in,out] series Series that must be enriched
     */
   GDCMIO_API void read(::fwMedData::Series::sptr series) throw(::gdcmIO::exception::Failed);
-
-
-protected :
-
-  /**
-   * @brief Read and add reconstruction to modelSeries
-   * @param[in] modelSeries Model Series
-   */
-  void readSurfaceMeshes(SPTR(::fwMedData::ModelSeries) modelSeries) throw (::gdcmIO::exception::Failed);
-
-  /**
-   * @brief Read a specific reconstruction
-   * @param[in] segment Segment from which the reconstruction must be read
-   */
-  SPTR(::fwData::Reconstruction) readSurfaceMesh( ::gdcm::SmartPointer< ::gdcm::Segment > segment)
-          throw (::gdcmIO::exception::Failed);
 
 };
 

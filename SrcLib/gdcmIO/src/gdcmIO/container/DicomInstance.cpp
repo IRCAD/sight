@@ -9,6 +9,7 @@
 #include <fwCore/spyLog.hpp>
 
 #include <fwData/Image.hpp>
+#include <fwDicomData/DicomSeries.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -43,6 +44,18 @@ DicomInstance::DicomInstance(SPTR(::fwMedData::Series) series, bool isMultiFiles
 
     // Generate SOPInstanceUIDs
     this->generateSOPInstanceUIDs(series);
+}
+
+//------------------------------------------------------------------------------
+
+DicomInstance::DicomInstance(SPTR(::fwDicomData::DicomSeries) dicomSeries) :
+        m_isMultiFiles(dicomSeries->getLocalDicomPaths().size()>1),
+        m_studyInstanceUID(dicomSeries->getStudy()->getInstanceUID()),
+        m_seriesInstanceUID(dicomSeries->getInstanceUID())
+{
+    // Get SOPClassUID
+    ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
+    m_SOPClassUID = sopClassUIDContainer.begin()->c_str();
 }
 
 //------------------------------------------------------------------------------

@@ -11,6 +11,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include <io/IWriter.hpp>
+#include <gdcmIO/writer/Series.hpp>
 
 #include "ioGdcm/config.hpp"
 
@@ -67,6 +68,13 @@ private :
      * @param[in] seriesDB SeriesDB that must be writen
      */
     void saveSeriesDB( const ::boost::filesystem::path folder, SPTR(::fwMedData::SeriesDB) seriesDB );
+
+    /// Select Fiducial Export Mode using a dialog
+    bool selectFiducialsExportMode();
+
+    /// Fiducial Export Mode
+    ::gdcmIO::writer::Series::FiducialsExportMode m_fiducialsExportMode;
+
 };
 
 } // namespace ioGdcm

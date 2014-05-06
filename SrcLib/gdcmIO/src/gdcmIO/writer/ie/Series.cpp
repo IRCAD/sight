@@ -112,10 +112,9 @@ void Series::writeSRDocumentSeriesModule()
     dataset.Remove(::gdcm::Tag(0x0008, 0x0060));
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0060 >("SR", dataset);
 
-    // Serie's instance UID - Type 1 - TODO: Generate new UID
+    // Serie's instance UID - Type 1
     dataset.Remove(::gdcm::Tag(0x0020, 0x000e));
-//    ::gdcmIO::helper::DicomData::setTagValue< 0x0020, 0x000e >(uidGenerator.Generate(), dataset);
-    ::gdcmIO::helper::DicomData::setTagValue< 0x0020, 0x000e >(m_object->getInstanceUID(), dataset);
+    ::gdcmIO::helper::DicomData::setTagValue< 0x0020, 0x000e >(uidGenerator.Generate(), dataset);
 
     // Serie's number - Type 1
     ::gdcmIO::helper::DicomData::setTagValue< int, 0x0020, 0x0011 >(0, dataset);

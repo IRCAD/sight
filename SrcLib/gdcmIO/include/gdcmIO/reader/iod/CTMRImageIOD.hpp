@@ -42,17 +42,6 @@ public :
      */
     GDCMIO_API void read(::fwMedData::Series::sptr series) throw(::gdcmIO::exception::Failed);
 
-private :
-
-    /// Read DICOM image (2D or 3D) from DICOM file(s).
-    void readImage(::fwMedData::Series::sptr series) throw(::gdcmIO::exception::Failed);
-
-    /**
-     * @brief Read image buffer
-     * @return Global raw buffer of the image.
-     */
-    void* readImageBuffer() throw(::gdcmIO::exception::Failed);
-
 };
 
 }  // namespace iod

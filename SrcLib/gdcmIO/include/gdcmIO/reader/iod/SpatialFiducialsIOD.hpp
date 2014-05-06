@@ -42,21 +42,6 @@ public :
      */
     GDCMIO_API void read(::fwMedData::Series::sptr series) throw(::gdcmIO::exception::Failed);
 
-protected:
-    /**
-     * @brief Read a landmark from a fiducial item dataset
-     * @param[in] fiducialDataset Fiducial item dataset
-     * @param[in] image Image
-     */
-    void readLandmark(SPTR(::fwData::Image) image, ::gdcm::DataSet& fiducialDataset);
-
-    /**
-     * @brief Read a distance from a fiducial item dataset
-     * @param[in] fiducialDataset Fiducial item dataset
-     * @param[in] image Image
-     */
-    void readDistance(SPTR(::fwData::Image) image, ::gdcm::DataSet& fiducialDataset);
-
 };
 
 }  // namespace iod

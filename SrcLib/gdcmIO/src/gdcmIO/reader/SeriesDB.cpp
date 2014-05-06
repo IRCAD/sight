@@ -201,7 +201,7 @@ void SeriesDB::addSeries(const std::vector< std::string > &filenames)
     //Loop through every files available in the scanner
     for(it = keys.begin(); it != keys.end() ; ++it)
     {
-        std::string filename = it->c_str();
+        const std::string filename = it->c_str();
         OSLM_ASSERT("The file \"" << filename << "\" is not a key of the gdcm scanner",
                 seriesScanner.IsKey(filename.c_str()));
 
@@ -230,7 +230,7 @@ void SeriesDB::addSeries(const std::vector< std::string > &filenames)
         series->setNumberOfInstances(series->getLocalDicomPaths().size());
 
         // Get first instance filename
-        std::string filename = series->getLocalDicomPaths().begin()->second.string();
+        const std::string filename = series->getLocalDicomPaths().begin()->second.string();
 
         // Load first instance
         std::vector< std::string > firstInstanceContainer;
@@ -484,12 +484,14 @@ bool SeriesDB::dicomSeriesComparator(SPTR(::fwDicomData::DicomSeries) a, SPTR(::
     // a > b if a contains a SR and not b
     return !((::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
                 ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-                 ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
-                  ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage)
+                 aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" ||    // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+                  ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
+                   ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage)
             && !(::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
                     ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-                     ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
-                      ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage));
+                     bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" ||    // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+                      ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
+                       ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage));
 }
 
 //------------------------------------------------------------------------------

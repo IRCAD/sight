@@ -24,10 +24,10 @@
 // fwData
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/Point.hpp>
 
 #include "gdcmIO/config.hpp"
 #include "gdcmIO/exception/Failed.hpp"
-#include "gdcmIO/container/DicomSCoord.hpp"
 #include "gdcmIO/container/DicomCodedAttribute.hpp"
 
 namespace gdcmIO
@@ -85,27 +85,6 @@ public:
         std::string val = getTagValue< GROUP, ELEMENT >(dataset);
         ::boost::algorithm::trim(val);
         return val;
-    }
-
-    /**
-     * @brief Return multiple values from a tag found in \p dataset.
-     * A null pointer means tag is empty or not found.
-     * @param[in] dataset Data set of tags.
-     * @tparam GROUP Group of the tag.
-     * @tparam ELEMENT Element of the tag.
-     * @tparam T Type of value.
-     * @return Tag values.
-     */
-    template< uint16_t GROUP, uint16_t ELEMENT, typename T >
-    GDCMIO_TEMPLATE_API static const T* getTagValues(const ::gdcm::DataSet &dataset)
-    {
-        if (dataset.FindDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag()))
-        {
-            ::gdcm::Attribute< GROUP, ELEMENT > gAt;
-            gAt.SetFromDataElement(dataset.GetDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag()));
-            return gAt.GetValues();
-        }
-        return 0;
     }
 
     /**
@@ -234,7 +213,7 @@ public:
 
             // Add items of the new SQ to the old SQ
             const unsigned int nbItem = sequence->GetNumberOfItems();
-            for (unsigned int i = 1; i <= nbItem; ++i) // WARN : item start at 1 TODO: Check that the item start at 1
+            for (unsigned int i = 1; i <= nbItem; ++i) // WARN : item start at 1
             {
                 oldSequence->AddItem(sequence->GetItem(i));
             }
@@ -247,7 +226,6 @@ public:
      * @param[in] obj The content of the string converted in T type.
      * @return return true if the conversion worked.
      */
-
     template< typename T > static bool valueOf(const std::string &str, T &obj)
     {
         std::istringstream is(str);
@@ -299,6 +277,30 @@ public:
      */
     GDCMIO_API static ::fwData::Material::REPRESENTATION_MODE convertToRepresentationMode(
             ::gdcm::Surface::VIEWType presentationType);
+
+    /**
+     * @brief Convert a representation mode into a DICOM form (eg : SURFACE, POINTS, WIREFRAME).
+     * @see DICOM tag (0x0066,0x000d).
+     * @param[in] representationMode Reconstruction's material representation mode (eg : SURFACE, POINT, ...).
+     */
+    GDCMIO_API static const char* convertToPresentationTypeString(
+            ::fwData::Material::REPRESENTATION_MODE representationMode);
+
+    /***
+     * @brief Convert a 3D point to the closest frame number index
+     * @param[in] image Image containing the point
+     * @param[in] point 3D point
+     */
+    GDCMIO_API static int convertPointToFrameNumber(
+            const ::fwData::Image::csptr& image, const ::fwData::Point::sptr& point) throw(::gdcmIO::exception::Failed);
+
+    /***
+     * @brief Convert a frame number to a Z coordinate
+     * @param[in] image Image containing the point
+     * @param[in] frameNumber Frame number
+     */
+    GDCMIO_API static float convertFrameNumberToZCoordinate(
+            const ::fwData::Image::csptr& image, int frameNumber) throw(::gdcmIO::exception::Failed);
 };
 
 } // namespace helper

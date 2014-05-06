@@ -9,8 +9,7 @@
 
 #include <fwData/Image.hpp>
 
-#include "gdcmIO/container/DicomDistance.hpp"
-#include "gdcmIO/container/DicomLandmark.hpp"
+#include "gdcmIO/container/sr/DicomSRNode.hpp"
 #include "gdcmIO/writer/ie/InformationEntity.hpp"
 
 namespace gdcmIO
@@ -36,7 +35,8 @@ public:
      */
     GDCMIO_API Document(SPTR(::gdcm::Writer) writer,
             SPTR(::gdcmIO::container::DicomInstance) instance,
-            ::fwData::Image::sptr image);
+            ::fwData::Image::sptr image,
+            bool use3DSR = false);
 
     /// Destructor
     GDCMIO_API virtual ~Document();
@@ -54,39 +54,20 @@ public:
     GDCMIO_API virtual void writeSRDocumentContentModule();
 
     /**
-     * @brief Write image's landmarks in SR Document
-     */
-    GDCMIO_API void writeLandmarks();
-
-    /**
-     * @brief Write image's distances in SR Document
-     */
-    GDCMIO_API void writeDistances();
-
-    /**
      * @brief Write SOP Common Module tags
      * @see PS 3.3 C.12.1
      */
     GDCMIO_API void writeSOPCommonModule();
 
 protected:
-    /**
-     * @brief Add a landmark to the sequence
-     * @param[in] index Landmark index
-     * @param[in] sequence DICOM Sequence
-     * @param[in] landmarkContainer Landmark container
-     */
-    void writeLandmark(const unsigned int index, ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-            SPTR(::gdcmIO::container::DicomLandmark) landmarkContainer);
 
     /**
-     * @brief Add a distance to the sequence
-     * @param[in] index Distance index
-     * @param[in] sequence DICOM Sequence
-     * @param[in] distanceContainer Distance container
+     * @brief Write Pertinent Other Evidence Sequence (0040,A385)
      */
-    void writeDistance(const unsigned int index, ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-            SPTR(::gdcmIO::container::DicomDistance) distanceContainer);
+    void writePertinentOtherEvidenceSequence();
+
+    /// True if we must use 3DSR
+    bool m_use3DSR;
 
 };
 

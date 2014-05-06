@@ -15,6 +15,7 @@
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
+#include "gdcmIO/writer/Series.hpp"
 #include "gdcmIO/config.hpp"
 
 namespace gdcmIO
@@ -45,8 +46,7 @@ public:
     GDCMIO_API ~SeriesDB();
 
     /**
-     * @brief Manage writing tools to save all patients.
-     * It launches DicomGlobalManager for each patient.
+     * @brief Manage writing tools to save every series.
      */
     GDCMIO_API void write();
 
@@ -56,6 +56,8 @@ public:
      */
     GDCMIO_API std::string extension();
 
+    GDCMIO_API fwGettersSettersDocMacro(FiducialsExportMode, fiducialsExportMode, ::gdcmIO::writer::Series::FiducialsExportMode, Fiducials Export Mode);
+
 protected:
     /**
      * @brief Function used to sort Series
@@ -63,6 +65,9 @@ protected:
      * @param[in] b Second Series
      */
     static bool seriesComparator(SPTR(::fwMedData::Series) a, SPTR(::fwMedData::Series) b);
+
+    /// Fiducials Export Mode
+    ::gdcmIO::writer::Series::FiducialsExportMode m_fiducialsExportMode;
 };
 
 } // namespace writer

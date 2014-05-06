@@ -30,8 +30,7 @@
 #include "gdcmIO/reader/iod/CTMRImageIOD.hpp"
 #include "gdcmIO/reader/iod/SurfaceSegmentationIOD.hpp"
 #include "gdcmIO/reader/iod/SpatialFiducialsIOD.hpp"
-#include "gdcmIO/reader/iod/EnhancedSRLandmarkIOD.hpp"
-#include "gdcmIO/reader/iod/EnhancedSRDistanceIOD.hpp"
+#include "gdcmIO/reader/iod/ComprehensiveSRIOD.hpp"
 
 namespace gdcmIO
 {
@@ -60,22 +59,18 @@ throw(::gdcmIO::exception::Failed)
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
 
     // Create instance
-    SPTR(::gdcmIO::container::DicomInstance) instance = ::boost::make_shared< ::gdcmIO::container::DicomInstance >();
-
-    // Get SOPClassUID
-    ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
-    std::string sopClassUID = *sopClassUIDContainer.begin();
-
-    // Set Instance's UIDs
-    instance->setSOPClassUID(sopClassUID);
-    instance->setStudyInstanceUID(dicomSeries->getStudy()->getInstanceUID());
-    instance->setSeriesInstanceUID(dicomSeries->getInstanceUID());
+    SPTR(::gdcmIO::container::DicomInstance) instance =
+            ::boost::make_shared< ::gdcmIO::container::DicomInstance >(dicomSeries);
 
     // Create result
     ::fwMedData::Series::sptr result;
 
     if(!dicomSeries->getLocalDicomPaths().empty())
     {
+        // Get SOPClassUID
+        ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
+        std::string sopClassUID = *sopClassUIDContainer.begin();
+
         // If the DicomSeries contains an image (ImageSeries)
         if (::gdcm::MediaStorage::IsImage(::gdcm::MediaStorage::GetMSType(sopClassUID.c_str())) &&
                 ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) != ::gdcm::MediaStorage::SpacialFiducialsStorage)
@@ -160,7 +155,8 @@ throw(::gdcmIO::exception::Failed)
         }
         // If the DicomSeries contains a SR
         else if (::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
-                ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR)
+                ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
+                 sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
         {
             // Retrieve referenced image instance
             SPTR(::gdcmIO::container::DicomInstance) imageInstance =
@@ -174,13 +170,11 @@ throw(::gdcmIO::exception::Failed)
 
 
                 // Create readers
-                ::gdcmIO::reader::iod::EnhancedSRLandmarkIOD landmarkIOD(dicomSeries, imageInstance);
-                ::gdcmIO::reader::iod::EnhancedSRDistanceIOD distanceIOD(dicomSeries, imageInstance);
+                ::gdcmIO::reader::iod::ComprehensiveSRIOD comprehensiveSRIOD(dicomSeries, imageInstance);
 
                 try
                 {
-                    landmarkIOD.read(imageSeries);
-                    distanceIOD.read(imageSeries);
+                    comprehensiveSRIOD.read(imageSeries);
                 }
                 catch (const ::gdcmIO::exception::Failed & e)
                 {
@@ -213,7 +207,7 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSe
 
     // Path container
     ::fwDicomData::DicomSeries::DicomPathContainerType pathContainer = dicomSeries->getLocalDicomPaths();
-    std::string filename = pathContainer.begin()->second.string();
+    const std::string filename = pathContainer.begin()->second.string();
 
     // Create Reader
     ::boost::shared_ptr< ::gdcm::Reader > reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
@@ -265,17 +259,64 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSe
 SPTR(::gdcmIO::container::DicomInstance) Series::getStructuredReportReferencedSeriesInstance(
         ::fwDicomData::DicomSeries::sptr dicomSeries)
 {
+
     SPTR(::gdcmIO::container::DicomInstance) result;
 
-    // Series Instance UID of the referenced Series
-    std::string seriesInstanceUID = dicomSeries->getInstanceUID();
+    // Path container
+    ::fwDicomData::DicomSeries::DicomPathContainerType pathContainer = dicomSeries->getLocalDicomPaths();
+    const std::string filename = pathContainer.begin()->second.string();
 
-    BOOST_FOREACH(SeriesContainerMapType::value_type v, m_seriesContainerMap)
+    // Create Reader
+    ::boost::shared_ptr< ::gdcm::Reader > reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    reader->SetFileName( filename.c_str() );
+
+    // Series Instance UID of the referenced Series
+    std::string seriesInstanceUID = "";
+
+    if(reader->Read())
     {
-        if(v.first->getCRefSeriesInstanceUID() == seriesInstanceUID)
+        // Retrieve dataset
+        const ::gdcm::DataSet &datasetRoot = reader->GetFile().GetDataSet();
+
+        // Pertinent Other Evidence Sequence - Type 1C
+        if(datasetRoot.FindDataElement(::gdcm::Tag(0x0040, 0xa385)))
         {
-            result = v.first;
-            break;
+            // Get the content sequence
+            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence =
+                    datasetRoot.GetDataElement(::gdcm::Tag(0x0040, 0xa385)).GetValueAsSQ();
+
+            if(sequence->GetNumberOfItems() > 0)
+            {
+                ::gdcm::Item studyItem = sequence->GetItem(1);
+                ::gdcm::DataSet &studyItemDataset = studyItem.GetNestedDataSet();
+
+                if(studyItemDataset.FindDataElement(::gdcm::Tag(0x0008, 0x1115)))
+                {
+                    // Get the series sequence
+                    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > seriesSequence =
+                            studyItemDataset.GetDataElement(::gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
+
+                    if(seriesSequence->GetNumberOfItems() > 0)
+                    {
+                        ::gdcm::Item seriesItem = seriesSequence->GetItem(1);
+                        ::gdcm::DataSet &seriesItemDataset = seriesItem.GetNestedDataSet();
+                        seriesInstanceUID = ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0020, 0x000E >(seriesItemDataset);
+                    }
+                }
+
+            }
+        }
+    }
+
+    if(!seriesInstanceUID.empty())
+    {
+        BOOST_FOREACH(SeriesContainerMapType::value_type v, m_seriesContainerMap)
+        {
+            if(v.first->getCRefSeriesInstanceUID() == seriesInstanceUID)
+            {
+                result = v.first;
+                break;
+            }
         }
     }
 

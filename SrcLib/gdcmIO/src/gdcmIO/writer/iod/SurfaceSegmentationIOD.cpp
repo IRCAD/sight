@@ -16,7 +16,7 @@
 #include <fwMedData/Study.hpp>
 
 #include "gdcmIO/exception/Failed.hpp"
-#include "gdcmIO/writer/helper/FileWriter.hpp"
+#include "gdcmIO/helper/FileWriter.hpp"
 #include "gdcmIO/writer/ie/Patient.hpp"
 #include "gdcmIO/writer/ie/Study.hpp"
 #include "gdcmIO/writer/ie/Equipment.hpp"
@@ -133,7 +133,7 @@ void SurfaceSegmentationIOD::write(::fwMedData::Series::sptr series)
     OSLM_TRACE("Number of Surfaces : " << writer->GetNumberOfSurfaces());
 
     // Write the file
-    ::gdcmIO::writer::helper::FileWriter::write(m_folderPath.string() + "/imRT", writer);
+    ::gdcmIO::helper::FileWriter::write(m_folderPath.string() + "/imRT", writer);
 
 
 }

@@ -41,6 +41,13 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Series)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >),
             (()), ::fwDataIO::writer::factory::New< Series >);
 
+    typedef enum
+    {
+        SPATIAL_FIDUCIALS = 1,  /*! Export Fiducials using SpatialFiducialsIOD */
+        COMPREHENSIVE_SR = 2,   /*! Export Fiducials using ComprehensiveSRIOD */
+        COMPREHENSIVE_3D_SR = 3 /*! Export Fiducials using Comprehensive3DSRIOD */
+    } FiducialsExportMode;
+
     typedef std::map< std::string, SPTR(::gdcmIO::container::DicomInstance) > DicomInstanceMapType;
 
     /// Constructor
@@ -63,6 +70,8 @@ public:
      */
     GDCMIO_API std::string extension();
 
+    GDCMIO_API fwGettersSettersDocMacro(FiducialsExportMode, fiducialsExportMode, FiducialsExportMode, Fiducials Export Mode);
+
 private:
 
     /**
@@ -80,6 +89,9 @@ private:
 
     /// Dicom Instance map used to keep information between series writing calls
     DicomInstanceMapType m_dicomInstanceMap;
+
+    /// Fiducials Export Mode
+    FiducialsExportMode m_fiducialsExportMode;
 
 };
 

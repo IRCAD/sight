@@ -24,7 +24,6 @@ namespace ie
 /**
  * @class InformationEntity
  * @brief InformationEntity base class used to write modules
- * @see PS 3.3 C.7.1.1
  */
 template< class DATATYPE >
 class GDCMIO_CLASS_API InformationEntity

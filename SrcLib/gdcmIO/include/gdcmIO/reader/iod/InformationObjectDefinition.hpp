@@ -58,10 +58,6 @@ protected:
     /// Dicom Series
     ::fwDicomData::DicomSeries::sptr m_dicomSeries;
 
-    /// Pointer to the super class of GDCM reader.
-    ::boost::shared_ptr< ::gdcm::Reader > m_gdcmReader;
-
-
 };
 
 } // namespace iod

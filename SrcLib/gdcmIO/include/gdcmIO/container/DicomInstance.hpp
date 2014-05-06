@@ -12,9 +12,14 @@
 
 #include <gdcmMediaStorage.h>
 
-#include "fwData/macros.hpp"
+#include <fwData/macros.hpp>
 
 #include "gdcmIO/config.hpp"
+
+namespace fwDicomData
+{
+class DicomSeries;
+}
 
 namespace fwMedData
 {
@@ -40,13 +45,18 @@ public:
     /// Constructor
     GDCMIO_API DicomInstance();
 
-    /// Constructor
     /**
      * @brief Constructor
      * @param[in] series Series from which the instance is created
      * @param[in] isMultiFiles Set whether the instance must be split in several files or not
      */
     GDCMIO_API DicomInstance(SPTR(::fwMedData::Series) series, bool isMultiFiles);
+
+    /**
+     * @brief Constructor
+     * @param[in] dicomSeries DicomSeries from which the instance is created
+     */
+    GDCMIO_API DicomInstance(SPTR(::fwDicomData::DicomSeries) dicomSeries);
 
     /// Copy constructor
     GDCMIO_API DicomInstance(const DicomInstance & dicomInstance);

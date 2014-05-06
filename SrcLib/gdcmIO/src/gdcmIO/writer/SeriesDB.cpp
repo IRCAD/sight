@@ -18,7 +18,6 @@
 #include <fwDataIO/writer/registry/macros.hpp>
 
 #include "gdcmIO/writer/SeriesDB.hpp"
-#include "gdcmIO/writer/Series.hpp"
 
 fwDataIOWriterRegisterMacro(::gdcmIO::writer::SeriesDB);
 
@@ -31,7 +30,8 @@ namespace writer
 //------------------------------------------------------------------------------
 
 SeriesDB::SeriesDB(::fwDataIO::writer::IObjectWriter::Key key) :
-        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+         m_fiducialsExportMode(::gdcmIO::writer::Series::SPATIAL_FIDUCIALS)
 {
 }
 
@@ -52,6 +52,7 @@ void SeriesDB::write()
     SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
     ::gdcmIO::writer::Series::sptr writer = ::gdcmIO::writer::Series::New();
+    writer->setFiducialsExportMode(m_fiducialsExportMode);
 
     // Copy and sort container in order to write ImageSeries before ModelSeries
     ::fwMedData::SeriesDB::ContainerType seriesContainer = seriesDB->getContainer();

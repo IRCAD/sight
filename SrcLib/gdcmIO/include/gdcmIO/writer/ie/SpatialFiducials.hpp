@@ -62,12 +62,20 @@ protected:
     /**
      * @brief Write image landmarks into sequence
      */
-    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence);
+    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence) throw(::gdcmIO::exception::Failed);
 
     /**
      * @brief Write image distances into sequence
      */
     void writeDistances(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence);
+
+    /**
+     * @brief Add a frame number to the referenced image sequence
+     * @param[in] frameNumber Frame Number
+     * @param[in] referencedImageSequence Destination sequence
+     */
+    void addReferencedImage(int frameNumber,
+            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::gdcmIO::exception::Failed);
 };
 
 } // namespace ie

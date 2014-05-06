@@ -16,7 +16,7 @@
 #include <fwDataIO/writer/registry/macros.hpp>
 
 #include "gdcmIO/writer/iod/CTMRImageIOD.hpp"
-#include "gdcmIO/writer/iod/EnhancedSRIOD.hpp"
+#include "gdcmIO/writer/iod/ComprehensiveSRIOD.hpp"
 #include "gdcmIO/writer/iod/SpatialFiducialsIOD.hpp"
 #include "gdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 #include "gdcmIO/writer/Series.hpp"
@@ -31,7 +31,8 @@ namespace writer
 //------------------------------------------------------------------------------
 
 Series::Series(::fwDataIO::writer::IObjectWriter::Key key) :
-        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+         m_fiducialsExportMode(SPATIAL_FIDUCIALS)
 {
 }
 
@@ -48,9 +49,8 @@ void Series::write() throw (::gdcmIO::exception::Failed)
     ::fwMedData::Series::sptr series = this->getConcreteObject();
     SLM_ASSERT("::fwMedData::Series not instanced", series);
 
-    // TODO: Make the user choose those values
+    // TODO: Make the user choose this value and implement EnhancedCTImageIOD/EnhancedMRImageIOD
     bool multiFiles = true;
-    bool useSR = false;
 
     // Initialization shared object
     SPTR(::gdcmIO::container::DicomInstance) instance =
@@ -78,15 +78,16 @@ void Series::write() throw (::gdcmIO::exception::Failed)
         if((landmarks && !landmarks->getCRefPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
-            if(useSR)
-            {
-                ::gdcmIO::writer::iod::EnhancedSRIOD documentIOD(instance, this->getFolder());
-                documentIOD.write(series);
-            }
-            else
+            if(m_fiducialsExportMode == SPATIAL_FIDUCIALS)
             {
                 ::gdcmIO::writer::iod::SpatialFiducialsIOD spatialFiducialsIOD(instance, this->getFolder());
                 spatialFiducialsIOD.write(series);
+            }
+            else
+            {
+                ::gdcmIO::writer::iod::ComprehensiveSRIOD documentIOD(instance, this->getFolder(),
+                        m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
+                documentIOD.write(series);
             }
         }
     }

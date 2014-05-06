@@ -188,6 +188,69 @@ const gdcm::PhotometricInterpretation DicomData::getPhotometricInterpretation(co
     }
 }
 
+//------------------------------------------------------------------------------
+
+const char* DicomData::convertToPresentationTypeString(::fwData::Material::REPRESENTATION_MODE representationMode)
+{
+    switch (representationMode)
+    {
+    case ::fwData::Material::MODE_SURFACE:
+        return "SURFACE";
+        break;
+    case ::fwData::Material::MODE_POINT:
+        return "POINTS";
+        break;
+    case ::fwData::Material::MODE_WIREFRAME:
+        return "WIREFRAME";
+        break;
+    default:
+        SLM_WARN( "Presentation type not handle (changed to : SURFACE)" );
+        return "SURFACE";
+    }
+}
+
+//------------------------------------------------------------------------------
+
+int DicomData::convertPointToFrameNumber(const ::fwData::Image::csptr& image, const ::fwData::Point::sptr& point)
+throw(::gdcmIO::exception::Failed)
+{
+    // Retrieve Z spacing
+    float zSpacing = (image->getNumberOfDimensions() > 2)?(image->getSpacing()[2]):1;
+
+    // Retrieve Z coordinate of image origin
+    float zOrigin = (image->getNumberOfDimensions() > 2)?(image->getOrigin()[2]):0;
+
+    // Retrieve Z coordinate
+    float zCoordinate = static_cast<float>(point->getCoord()[2]);
+
+    // Compute frame number
+    int frameNumber = floor((zCoordinate - zOrigin) / zSpacing + 0.5) + 1;
+    FW_RAISE_EXCEPTION_IF(::gdcmIO::exception::Failed("Coordinates out of image bounds."),
+            frameNumber < 1 || frameNumber > image->getSize()[2]);
+
+    return frameNumber;
+}
+
+//------------------------------------------------------------------------------
+
+float DicomData::convertFrameNumberToZCoordinate(const ::fwData::Image::csptr& image, int frameNumber)
+throw(::gdcmIO::exception::Failed)
+{
+    // Retrieve Z spacing
+    float zSpacing = (image->getNumberOfDimensions() > 2)?(image->getSpacing()[2]):1;
+
+    // Retrieve Z coordinate of image origin
+    float zOrigin = (image->getNumberOfDimensions() > 2)?(image->getOrigin()[2]):0;
+
+    // Compute coordinate
+    int frameIndex = (frameNumber-1);
+    FW_RAISE_EXCEPTION_IF(::gdcmIO::exception::Failed("Coordinates out of image bounds."),
+            frameIndex < 0 || frameIndex >= image->getSize()[2]);
+    float zCoordinate = zOrigin + frameIndex * zSpacing;
+
+    return zCoordinate;
+}
+
 } //namespace helper
 
 } //namespace gdcmIO

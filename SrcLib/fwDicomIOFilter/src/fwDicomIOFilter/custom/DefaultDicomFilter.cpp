@@ -75,7 +75,15 @@ DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
         // Create filter depending on SOPClassUID
         ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = s->getSOPClassUIDs();
         std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
-        sopClassUID = dcmFindNameOfUID(sopClassUID.c_str());
+        if(sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34")    // FIXME Remove hard coded string
+        {
+            sopClassUID = "Comprehensive3DSR";
+        }
+        else
+        {
+            sopClassUID = dcmFindNameOfUID(sopClassUID.c_str());
+        }
+
         ::fwDicomIOFilter::composite::IComposite::sptr filter;
 
         // CT Image Storage

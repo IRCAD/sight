@@ -10,14 +10,16 @@
 
 #include <fwCore/spyLog.hpp>
 
+#include <fwComEd/Dictionary.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Vector.hpp>
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Study.hpp>
 
 #include "gdcmIO/helper/DicomData.hpp"
-#include "gdcmIO/writer/helper/FileWriter.hpp"
+#include "gdcmIO/helper/FileWriter.hpp"
 #include "gdcmIO/writer/ie/Patient.hpp"
 #include "gdcmIO/writer/ie/Study.hpp"
 #include "gdcmIO/writer/ie/Equipment.hpp"
@@ -59,6 +61,9 @@ void SpatialFiducialsIOD::write(::fwMedData::Series::sptr series)
     // Retrieve image
     ::fwData::Image::sptr image = imageSeries->getImage();
 
+    ::fwData::Vector::sptr distances = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+    SLM_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
+
     // Create writer
     SPTR(::gdcm::Writer) writer = ::boost::make_shared< ::gdcm::Writer >();
 
@@ -97,7 +102,7 @@ void SpatialFiducialsIOD::write(::fwMedData::Series::sptr series)
     spatialFiducialsIE.writeSOPCommonModule();
 
     // Write document
-    ::gdcmIO::writer::helper::FileWriter::write(m_folderPath.string() + "/imSF", writer);
+    ::gdcmIO::helper::FileWriter::write(m_folderPath.string() + "/imSF", writer);
 
 }
 

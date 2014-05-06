@@ -17,7 +17,7 @@
 
 #include "gdcmIO/reader/iod/SpatialFiducialsIOD.hpp"
 #include "gdcmIO/helper/DicomData.hpp"
-#include "gdcmIO/helper/DicomSR.hpp"
+#include "gdcmIO/reader/ie/SpatialFiducials.hpp"
 
 namespace gdcmIO
 {
@@ -32,8 +32,6 @@ SpatialFiducialsIOD::SpatialFiducialsIOD(::fwDicomData::DicomSeries::sptr dicomS
         SPTR(::gdcmIO::container::DicomInstance) instance) :
         ::gdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance)
 {
-    // Instantiates a specific reader
-    m_gdcmReader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
 }
 
 //------------------------------------------------------------------------------
@@ -55,132 +53,63 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series) throw (::gdcmIO
     ::fwData::Image::sptr image = imageSeries->getImage();
     SLM_ASSERT("::fwData::Image not instanced", image);
 
-    // Path container
+    // Create GDCM Reader
+    SPTR(::gdcm::Reader) reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+
+    // Read the first file
     ::fwDicomData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
     OSLM_WARN_IF("More than one Spatial Fiducials file was found in series. Only the first one will be read.",
             pathContainer.size() >1);
+    const std::string filename = pathContainer.begin()->second.string();
+    reader->SetFileName( filename.c_str() );
+    bool success = reader->Read();
+    FW_RAISE_EXCEPTION_IF(::gdcmIO::exception::Failed("Unable to read the DICOM instance using the GDCM Image Reader."),
+            !success);
 
-    // Read first file
-    std::string filename = pathContainer.begin()->second.string();
-    m_gdcmReader->SetFileName( filename.c_str() );
-    if ( m_gdcmReader->Read() )
+    // Create Information Entity helpers
+    ::gdcmIO::reader::ie::SpatialFiducials spatialFiducialsIE(
+            m_dicomSeries, reader, m_instance, imageSeries->getImage());
+
+    // Retrieve dataset
+    const ::gdcm::DataSet &datasetRoot = reader->GetFile().GetDataSet();
+
+    // Retrieve Fiducial Set Sequence
+    const ::gdcm::DataElement& fiducialSetSequenceDataElement =
+            datasetRoot.GetDataElement( ::gdcm::Tag(0x0070, 0x031C) );
+    const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSetSequence =
+            fiducialSetSequenceDataElement.GetValueAsSQ();
+
+    for(unsigned int i = 1; i <= fiducialSetSequence->GetNumberOfItems(); ++i)
     {
-        // Retrieve dataset
-        const ::gdcm::DataSet &datasetRoot = m_gdcmReader->GetFile().GetDataSet();
+        ::gdcm::Item sequenceSetItem = fiducialSetSequence->GetItem(i);
+        ::gdcm::DataSet& sequenceSetDataset = sequenceSetItem.GetNestedDataSet();
 
-        // Retireve Fiducial Set Sequence
-        const ::gdcm::DataElement& fiducialSetSequenceDataElement =
-                datasetRoot.GetDataElement( ::gdcm::Tag(0x0070, 0x031C) );
-        const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSetSequence =
-                fiducialSetSequenceDataElement.GetValueAsSQ();
+        const ::gdcm::DataElement& fiducialSequenceDataElement =
+                sequenceSetDataset.GetDataElement( ::gdcm::Tag(0x0070, 0x031E) );
+        const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSequence =
+                fiducialSequenceDataElement.GetValueAsSQ();
 
-        for(unsigned int i = 1; i <= fiducialSetSequence->GetNumberOfItems(); ++i)
+        for(unsigned int j = 1; j <= fiducialSequence->GetNumberOfItems(); ++j)
         {
-            ::gdcm::Item sequenceSetItem = fiducialSetSequence->GetItem(i);
-            ::gdcm::DataSet& sequenceSetDataset = sequenceSetItem.GetNestedDataSet();
+            ::gdcm::Item fiducialItem = fiducialSequence->GetItem(j);
+            ::gdcm::DataSet& fiducialDataset = fiducialItem.GetNestedDataSet();
+            const std::string shapeType =
+                    ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0070,0x0306>(fiducialDataset);
 
-            const ::gdcm::DataElement& fiducialSequenceDataElement =
-                    sequenceSetDataset.GetDataElement( ::gdcm::Tag(0x0070, 0x031E) );
-            const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSequence =
-                    fiducialSequenceDataElement.GetValueAsSQ();
-
-            for(unsigned int j = 1; j <= fiducialSequence->GetNumberOfItems(); ++j)
+            if(shapeType == "POINT")
             {
-                ::gdcm::Item fiducialItem = fiducialSequence->GetItem(j);
-                ::gdcm::DataSet& fiducialDataset = fiducialItem.GetNestedDataSet();
-                const std::string shapeType =
-                        ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0070,0x0306>(fiducialDataset);
-
-                if(shapeType == "POINT")
-                {
-                    this->readLandmark(image, fiducialDataset);
-                }
-                else if(shapeType == "LINE")
-                {
-                    this->readDistance(image, fiducialDataset);
-                }
-                else
-                {
-                    OSLM_WARN("Fiducial shape type not supported: \"" << shapeType << "\"");
-                }
+                spatialFiducialsIE.readLandmark(fiducialDataset);
             }
-
+            else
+            {
+                OSLM_WARN("Fiducial shape type not supported: \"" << shapeType << "\"");
+            }
         }
-    }
-
-}
-
-//------------------------------------------------------------------------------
-
-void SpatialFiducialsIOD::readLandmark(::fwData::Image::sptr image, ::gdcm::DataSet& fiducialDataset)
-{
-    ::fwData::PointList::sptr pointList =
-            image->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
-    if(!pointList)
-    {
-        pointList = ::fwData::PointList::New();
-        image->setField(::fwComEd::Dictionary::m_imageLandmarksId, pointList);
-    }
-
-    const ::gdcm::DataElement& graphicCoordinatesDataElement =
-            fiducialDataset.GetDataElement( ::gdcm::Tag(0x0070, 0x0318) );
-    const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > graphicCoordinatesDataSequence =
-            graphicCoordinatesDataElement.GetValueAsSQ();
-
-    const std::string label = ::gdcmIO::helper::DicomData::getTagValue< 0x0070, 0x030F >(fiducialDataset);
-
-    for(unsigned int i = 1; i <= graphicCoordinatesDataSequence->GetNumberOfItems(); ++i)
-    {
-        ::gdcm::Item graphicCoordinatesItem = graphicCoordinatesDataSequence->GetItem(i);
-        ::gdcm::DataSet& graphicCoordinatesDataset= graphicCoordinatesItem.GetNestedDataSet();
-
-        ::gdcm::Attribute< 0x0070, 0x0022 > coordinatesAttribute;
-        coordinatesAttribute.SetFromDataElement(graphicCoordinatesDataset.GetDataElement(::gdcm::Tag(0x0070, 0x0022)));
-        const float* pointValues = coordinatesAttribute.GetValues();
-
-        ::fwData::Point::sptr point = ::fwData::Point::New(pointValues[0], pointValues[1], pointValues[2]);
-        point->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(label));
-        pointList->getRefPoints().push_back(point);
 
     }
 }
 
 //------------------------------------------------------------------------------
-
-void SpatialFiducialsIOD::readDistance(::fwData::Image::sptr image, ::gdcm::DataSet& fiducialDataset)
-{
-    ::fwData::Vector::sptr distanceVector = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
-    if(!distanceVector)
-    {
-        distanceVector = ::fwData::Vector::New();
-        image->setField(::fwComEd::Dictionary::m_imageDistancesId, distanceVector);
-    }
-
-    const ::gdcm::DataElement& graphicCoordinatesDataElement =
-            fiducialDataset.GetDataElement( ::gdcm::Tag(0x0070, 0x0318) );
-    const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > graphicCoordinatesDataSequence =
-            graphicCoordinatesDataElement.GetValueAsSQ();
-
-    for(unsigned int i = 1; i <= graphicCoordinatesDataSequence->GetNumberOfItems(); ++i)
-    {
-        ::gdcm::Item graphicCoordinatesItem = graphicCoordinatesDataSequence->GetItem(i);
-        ::gdcm::DataSet& graphicCoordinatesDataset= graphicCoordinatesItem.GetNestedDataSet();
-
-        ::gdcm::Attribute< 0x0070, 0x0022 > coordinatesAttribute;
-        coordinatesAttribute.SetFromDataElement(graphicCoordinatesDataset.GetDataElement(::gdcm::Tag(0x0070, 0x0022)));
-        const float* pointValues = coordinatesAttribute.GetValues();
-
-        ::fwData::Point::sptr point1 = ::fwData::Point::New(pointValues[0], pointValues[1], pointValues[2]);
-        ::fwData::Point::sptr point2 = ::fwData::Point::New(pointValues[3], pointValues[4], pointValues[5]);
-
-        ::fwData::PointList::sptr pointList = ::fwData::PointList::New();
-        pointList->getRefPoints().push_back(point1);
-        pointList->getRefPoints().push_back(point2);
-        distanceVector->getContainer().push_back(pointList);
-
-    }
-}
-
 
 }  // namespace iod
 }  // namespace reader

@@ -24,8 +24,7 @@
 
 #include "gdcmIO/container/DicomSurface.hpp"
 #include "gdcmIO/helper/DicomData.hpp"
-#include "gdcmIO/helper/DicomDictionarySegment.hpp"
-#include "gdcmIO/helper/DicomTools.hpp"
+#include "gdcmIO/helper/DictionarySegment.hpp"
 #include "gdcmIO/writer/ie/Surface.hpp"
 
 namespace gdcmIO
@@ -128,19 +127,19 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
     }
     else
     {
-        OSLM_WARN("No structure traits found in dictionary for value \"" << segmentLabel << "\".");
+        SLM_WARN("No structure traits found in dictionary for value \"" + segmentLabel + "\".");
         structure = ::fwData::StructureTraits::New();
     }
 
     // Identify the segmentation from its name
     const ::gdcmIO::container::DicomCodedAttribute *anatomicRegion =
-            ::gdcmIO::helper::DicomDictionarySegment::guessAnatRegionFromLabel(structure->getAnatomicRegion());
+            ::gdcmIO::helper::DictionarySegment::guessAnatRegionFromLabel(structure->getAnatomicRegion());
 
     const ::gdcmIO::container::DicomCodedAttribute *propertyCategory =
-            ::gdcmIO::helper::DicomDictionarySegment::guessPropCategoryFromLabel(structure->getPropertyCategory());
+            ::gdcmIO::helper::DictionarySegment::guessPropCategoryFromLabel(structure->getPropertyCategory());
 
     const ::gdcmIO::container::DicomCodedAttribute *propertyType =
-            ::gdcmIO::helper::DicomDictionarySegment::guessPropTypeFromLabel(structure->getPropertyType());
+            ::gdcmIO::helper::DictionarySegment::guessPropTypeFromLabel(structure->getPropertyType());
 
 
     // Add segmentation to GDCM Surface Writer
@@ -175,8 +174,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
     if (anatomicRegion != 0)
     {
         // Anatomic Region Sequence (0x0008,0x2218) - Type 1
-        ::gdcm::SegmentHelper::BasicCodedEntry anatomicRegionEntry(anatomicRegion->m_codeValue.c_str(),
-                anatomicRegion->m_codingSchemeDesignator.c_str(), anatomicRegion->m_codeMeaning.c_str());
+        ::gdcm::SegmentHelper::BasicCodedEntry anatomicRegionEntry(anatomicRegion->getCodeValue().c_str(),
+                anatomicRegion->getCodingSchemeDesignator().c_str(), anatomicRegion->getCodeMeaning().c_str());
         segment->SetAnatomicRegion(anatomicRegionEntry);
     }
 
@@ -185,8 +184,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
     {
         // Segmented Property Category Code Sequence (0x0062,0x0003) - Type 1
         // See: PS.3.3 Table 8.8-1 and Context ID is 7150
-        ::gdcm::SegmentHelper::BasicCodedEntry propertyCategoryEntry(propertyCategory->m_codeValue.c_str(),
-                propertyCategory->m_codingSchemeDesignator.c_str(), propertyCategory->m_codeMeaning.c_str());
+        ::gdcm::SegmentHelper::BasicCodedEntry propertyCategoryEntry(propertyCategory->getCodeValue().c_str(),
+                propertyCategory->getCodingSchemeDesignator().c_str(), propertyCategory->getCodeMeaning().c_str());
         segment->SetPropertyCategory(propertyCategoryEntry);
     }
 
@@ -195,8 +194,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
     {
         // Segmented Property Type Code Sequence (0x0062,0x000F) - Type 1
         // See: PS.3.3 Table 8.8-1 and PS 3.16 Context ID 7151
-        ::gdcm::SegmentHelper::BasicCodedEntry propertyTypeEntry(propertyType->m_codeValue.c_str(),
-                propertyType->m_codingSchemeDesignator.c_str(), propertyType->m_codeMeaning.c_str());
+        ::gdcm::SegmentHelper::BasicCodedEntry propertyTypeEntry(propertyType->getCodeValue().c_str(),
+                propertyType->getCodingSchemeDesignator().c_str(), propertyType->getCodeMeaning().c_str());
         segment->SetPropertyType(propertyTypeEntry);
     }
 
@@ -331,7 +330,7 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
         surface->SetRecommendedPresentationType(
                 ::gdcmIO::helper::DicomData::convertToPresentationType(material->getRepresentationMode()));
         OSLM_TRACE( "Recommended Presentation Type : " <<
-                ::gdcmIO::helper::DicomTools::convertToPresentationTypeString(material->getRepresentationMode()));
+                ::gdcmIO::helper::DicomData::convertToPresentationTypeString(material->getRepresentationMode()));
 
         // Finite Volume (0x0066,0x000E) - Type 1
         ::fwComEd::helper::Mesh helperMesh(reconstruction->getMesh());
@@ -410,10 +409,6 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
             unsigned long indexCount = 3 * surfaceContainer->getPointIndexSize();
             pointIndexData.SetByteValue((char*) pointIndexListData, indexCount * sizeof(uint32_t));
             OSLM_TRACE("Point Index List buffer size : " << indexCount * sizeof(uint32_t));
-
-//            // Add missing tags in dataset
-//            this->completeSurfaceMeshPrimitivesMacro(segmentationNumber);
-
 
         }
 

@@ -17,7 +17,7 @@
 #include <fwMedData/Study.hpp>
 
 #include "gdcmIO/helper/DicomData.hpp"
-#include "gdcmIO/writer/helper/FileWriter.hpp"
+#include "gdcmIO/helper/FileWriter.hpp"
 #include "gdcmIO/writer/ie/Patient.hpp"
 #include "gdcmIO/writer/ie/Study.hpp"
 #include "gdcmIO/writer/ie/Equipment.hpp"
@@ -141,7 +141,7 @@ void CTMRImageIOD::write(::fwMedData::Series::sptr series)
         // Write file
         std::stringstream ss;
         ss << m_folderPath.string() << "/im" << std::setfill('0') << std::setw(5) << i;
-        ::gdcmIO::writer::helper::FileWriter::write(ss.str(), writer);
+        ::gdcmIO::helper::FileWriter::write(ss.str(), writer);
 
     }
 
