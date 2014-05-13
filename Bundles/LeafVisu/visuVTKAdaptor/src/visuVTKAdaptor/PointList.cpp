@@ -139,6 +139,19 @@ void PointList::createServices(WeakPointListType &wPtList)
         service->start();
 
         this->registerService(service);
+
+        ::fwData::Point::sptr pt1 = wpt.lock();
+
+        ::fwRenderVTK::IVtkAdaptorService::sptr service2 =
+            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( pt1, "::visuVTKAdaptor::PointLabel" );
+
+        SLM_ASSERT("service not instanced", service2);
+        service2->setRenderService(this->getRenderService());
+        service2->setRenderId(this->getRenderId());
+        service2->setPickerId(this->getPickerId());
+        service2->start();
+
+        this->registerService(service2);
     }
 }
 
