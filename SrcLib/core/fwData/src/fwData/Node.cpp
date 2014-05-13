@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,11 +17,20 @@ fwDataRegisterMacro( ::fwData::Node );
 
 namespace fwData
 {
+
+const ::fwCom::Signals::SignalKeyType Node::s_UPDATED_SIG = "updated";
+
 //------------------------------------------------------------------------------
 
-Node::Node(::fwData::Object::Key key)
+Node::Node(::fwData::Object::Key key):
+    m_sigUpdated(UpdatedSignalType::New())
 {
-    SLM_TRACE_FUNC();
+    m_signals( s_UPDATED_SIG,  m_sigUpdated);
+
+#ifdef COM_LOG
+    ::fwCom::HasSignals::m_signals.setID();
+#endif
+
 }
 
 //------------------------------------------------------------------------------

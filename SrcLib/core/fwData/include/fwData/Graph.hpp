@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ namespace fwData {
  *
  * @see     ::fwData::Edge, ::fwData::Node
  *
- * 
+ *
  * @date    2007-2009.
  */
 
@@ -44,6 +44,16 @@ public:
 
     typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
     typedef std::set< Node::sptr >                                         NodeContainer;  //  Be careful, if you change we use erase(it++)
+
+    /// Type of signal m_sigUpdated
+    typedef std::vector< ::fwData::Object::sptr > UpdatedDataType;
+
+
+    /**
+     * @brief Update signal type
+     * Signal updated is composed of two parameters which represent added and removed elements in the graph.
+     */
+    typedef ::fwCom::Signal< void (UpdatedDataType, UpdatedDataType ) > UpdatedSignalType;
 
     /**
      * @brief Constructor
@@ -167,7 +177,9 @@ public:
      *
      * @return the vector of all edges with correct nature and portID where _node is a source/destination node
      */
-    FWDATA_API std::vector< Edge::sptr > getEdges(Node::csptr _node, bool _upStream, std::string _nature="",  std::string _portID="");
+    FWDATA_API std::vector< Edge::sptr > getEdges(const Node::csptr &_node, bool _upStream,
+                                                  const std::string &_nature="",
+                                                  const std::string &_portID="");
 
     /**
      * @brief Get a vector of nodes
@@ -179,7 +191,9 @@ public:
      *
      * @return the vector of all nodes associated with _node
      */
-    FWDATA_API  std::vector< ::fwData::Node::sptr > getNodes( ::fwData::Node::csptr node, bool upStream, std::string nature="",  std::string portID="" );
+    FWDATA_API  std::vector< ::fwData::Node::sptr > getNodes( const ::fwData::Node::csptr &node, bool upStream,
+                                                              const std::string &nature="",
+                                                              const std::string &portID="" );
 
     /**
      * @return Number of nodes
@@ -202,10 +216,16 @@ public:
      */
     FWDATA_API bool haveConnectedEdges(Node::csptr _node ) const;
 
+    /// Updated signal key
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
+
 protected :
 
     NodeContainer m_nodes;
     ConnectionContainer m_connections;
+
+    /// Updated signal
+    UpdatedSignalType::sptr m_sigUpdated;
 };
 
 }
