@@ -264,14 +264,18 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 
         vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
         transform->Identity();
+
+        vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
             {
-                transform->GetMatrix()->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
+                matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
             }
         }
 
+        transform->SetMatrix(matrix);
         vtkSmartPointer<vtkPolyDataMapper> meshMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         meshMapper->SetInputData(vtkMesh);
 
@@ -305,14 +309,18 @@ void MeshesBoxWidget::updateMeshTransform()
 
         vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
         transform->Identity();
+
+        vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
             {
-                transform->GetMatrix()->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
+                matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
             }
         }
 
+        transform->SetMatrix(matrix);
         vtkActor *meshActor = m_meshMap[elt.first];
         meshActor->SetUserTransform(transform);
     }
