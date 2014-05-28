@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,6 +12,7 @@
 #include <fwZip/IWriteArchive.hpp>
 #include <fwZip/IReadArchive.hpp>
 
+#include <fwAtomsBoostIO/types.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
 
 namespace fwAtomsBoostIO
@@ -36,11 +37,12 @@ public:
 
 protected:
     void readProcess(::fwZip::IReadArchive::sptr readArchive,
-                     const ::boost::filesystem::path& rootFilename);
+                     const ::boost::filesystem::path& rootFilename,
+                    const ::fwAtomsBoostIO::FormatType& formatType = ::fwAtomsBoostIO::JSON);
 
     void writeProcess(::fwZip::IWriteArchive::sptr writeArchive,
                       const ::boost::filesystem::path& rootFilename,
-                      ::fwAtomsBoostIO::Writer::FormatType format );
+                      ::fwAtomsBoostIO::FormatType format );
 };
 
 

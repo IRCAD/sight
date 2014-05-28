@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,7 @@
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwAtoms/Sequence.hpp>
-#include <fwAtomConversion/AtomHelper.hpp>
+#include <fwAtomConversion/convert.hpp>
 #include <fwDataCamp/getObject.hpp>
 
 #include "fwMedDataCamp/SeriesDBTest.hpp"
@@ -59,14 +59,13 @@ void SeriesDBTest::propertiesTest()
     ::DataCampHelper::compareObjectPropertyValue(obj, "@values.1", vectSeries[1]);
     ::DataCampHelper::compareObjectPropertyValue(obj, "@values.2", vectSeries[2]);
 
-    ::fwAtomConversion::AtomHelper metaHelper;
-    ::fwAtoms::Object::sptr metaObject = metaHelper.dataToMeta(obj);
-    ::fwAtoms::Object::Attributes attrs = metaObject->getAttributes();
+    ::fwAtoms::Object::sptr metaObject = ::fwAtomConversion::convert(obj);
+    ::fwAtoms::Object::AttributesType attrs = metaObject->getAttributes();
 
     CPPUNIT_ASSERT_MESSAGE("Attributes values not found in SeriesDB atom",
                            attrs.find("values") != attrs.end());
 
-    ::fwAtoms::Base::sptr baseAtom = metaObject->getAttribut("values");
+    ::fwAtoms::Base::sptr baseAtom = metaObject->getAttribute("values");
     CPPUNIT_ASSERT_MESSAGE("Bad Atom SeriesDB conversion", baseAtom->isSequence());
 
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast(baseAtom);

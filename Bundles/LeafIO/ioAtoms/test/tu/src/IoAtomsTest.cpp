@@ -1,3 +1,5 @@
+#include <boost/filesystem.hpp>
+
 #include <fwAtomConversion/exception/DuplicatedDataUUID.hpp>
 
 #include <fwTools/System.hpp>
