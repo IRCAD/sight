@@ -36,6 +36,11 @@ public:
      * its represents a CT image of a knee ( 400 slices ).
      */
     FWTEST_API static bool checkSeriesACHGenou( const SPTR(::fwMedData::ImageSeries) &series );
+
+    /**
+     * @brief This method is the same as checkSeriesACHGenou but it checks trimmed strings instead of even sized strings
+     */
+    FWTEST_API static bool checkSeriesACHGenouTrimmed( const SPTR(::fwMedData::ImageSeries) &series );
 };
 
 
