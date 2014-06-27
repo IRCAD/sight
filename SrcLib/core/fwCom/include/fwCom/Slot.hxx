@@ -27,6 +27,46 @@ namespace fwCom
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+template< typename F >
+Slot< Slot< R ( A1, A2, A3, A4, A5 ) > >::Slot( SPTR( SlotRun< F > ) slot )
+    : Slot< FunctionType >(
+            ::fwCom::util::AutoBind<
+                    SignatureType,
+                    ::boost::function_types::function_arity< F >::value
+                >::wrap( &SlotRun< F >::run, slot.get() )
+                                                        )
+{
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
+    this->setWorker(slot->getWorker());
+#ifdef COM_LOG
+    this->setID("wrapped_"+ slot->getID());
+#endif
+}
+
+
+
+
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+template< typename F >
+Slot< Slot< R ( A1, A2, A3, A4 ) > >::Slot( SPTR( SlotRun< F > ) slot )
+    : Slot< FunctionType >(
+            ::fwCom::util::AutoBind<
+                    SignatureType,
+                    ::boost::function_types::function_arity< F >::value
+                >::wrap( &SlotRun< F >::run, slot.get() )
+                                                        )
+{
+    BOOST_STATIC_ASSERT( (boost::is_same<void, R>::value) );
+    this->setWorker(slot->getWorker());
+#ifdef COM_LOG
+    this->setID("wrapped_"+ slot->getID());
+#endif
+}
+
+
+
+
 template<typename R, typename A1, typename A2, typename A3 >
 template< typename F >
 Slot< Slot< R ( A1, A2, A3 ) > >::Slot( SPTR( SlotRun< F > ) slot )
@@ -138,6 +178,46 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( SlotRun< F > ) slot )
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+template< typename F >
+Slot< Slot< R ( A1, A2, A3, A4, A5 ) > >::Slot( SPTR( Slot< F > ) slot )
+: Slot< FunctionType >(
+        ::fwCom::util::AutoBind<
+                SignatureType,
+                ::boost::function_types::function_arity< F >::value
+            >::wrap( &Slot< F >::call, slot.get() )
+                                                    )
+{
+    this->setWorker(slot->getWorker());
+#ifdef COM_LOG
+    this->setID("wrapped_"+ slot->getID());
+#endif
+}
+
+
+
+
+
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+template< typename F >
+Slot< Slot< R ( A1, A2, A3, A4 ) > >::Slot( SPTR( Slot< F > ) slot )
+: Slot< FunctionType >(
+        ::fwCom::util::AutoBind<
+                SignatureType,
+                ::boost::function_types::function_arity< F >::value
+            >::wrap( &Slot< F >::call, slot.get() )
+                                                    )
+{
+    this->setWorker(slot->getWorker());
+#ifdef COM_LOG
+    this->setID("wrapped_"+ slot->getID());
+#endif
+}
+
+
+
+
+
 template<typename R, typename A1, typename A2, typename A3 >
 template< typename F >
 Slot< Slot< R ( A1, A2, A3 ) > >::Slot( SPTR( Slot< F > ) slot )
@@ -249,6 +329,34 @@ Slot< Slot< R ( A... ) > >::Slot( SPTR( Slot< F > ) slot )
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename F, typename BINDING1, typename BINDING2, typename BINDING3, typename BINDING4, typename BINDING5 >
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, BINDING1  binding1, BINDING2  binding2, BINDING3  binding3, BINDING4  binding4, BINDING5  binding5 )
+{
+#ifndef BOOST_NO_VARIADIC_TEMPLATES
+    BOOST_STATIC_ASSERT( 5 < 2 );
+#else
+    SLM_ASSERT( "Too many arguments", ( 5 < 2 ) );
+#endif
+    typedef ::boost::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
+    FunctionType func = ::fwCom::util::autobind(f, binding1, binding2, binding3, binding4, binding5 );
+    return ::boost::make_shared< Slot< FunctionType > > ( func );
+}
+
+
+template<typename F, typename BINDING1, typename BINDING2, typename BINDING3, typename BINDING4 >
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, BINDING1  binding1, BINDING2  binding2, BINDING3  binding3, BINDING4  binding4 )
+{
+#ifndef BOOST_NO_VARIADIC_TEMPLATES
+    BOOST_STATIC_ASSERT( 4 < 2 );
+#else
+    SLM_ASSERT( "Too many arguments", ( 4 < 2 ) );
+#endif
+    typedef ::boost::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
+    FunctionType func = ::fwCom::util::autobind(f, binding1, binding2, binding3, binding4 );
+    return ::boost::make_shared< Slot< FunctionType > > ( func );
+}
+
+
 template<typename F, typename BINDING1, typename BINDING2, typename BINDING3 >
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, BINDING1  binding1, BINDING2  binding2, BINDING3  binding3 )
 {
@@ -330,6 +438,24 @@ SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+template<typename F>
+SPTR( Slot< R ( A1, A2, A3, A4, A5 ) > ) Slot< R ( A1, A2, A3, A4, A5 ) >::New( F f )
+{
+    return newSlot(f);
+}
+
+
+
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+template<typename F>
+SPTR( Slot< R ( A1, A2, A3, A4 ) > ) Slot< R ( A1, A2, A3, A4 ) >::New( F f )
+{
+    return newSlot(f);
+}
+
+
+
 template<typename R, typename A1, typename A2, typename A3 >
 template<typename F>
 SPTR( Slot< R ( A1, A2, A3 ) > ) Slot< R ( A1, A2, A3 ) >::New( F f )
@@ -386,6 +512,24 @@ SPTR( Slot< R ( A... ) > ) Slot< R ( A... ) >::New( F f )
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+template<typename F, typename O>
+SPTR( Slot< R ( A1, A2, A3, A4, A5 ) > ) Slot< R ( A1, A2, A3, A4, A5 ) >::New( F f, O o )
+{
+    return newSlot(f, o);
+}
+
+
+
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+template<typename F, typename O>
+SPTR( Slot< R ( A1, A2, A3, A4 ) > ) Slot< R ( A1, A2, A3, A4 ) >::New( F f, O o )
+{
+    return newSlot(f, o);
+}
+
+
+
 template<typename R, typename A1, typename A2, typename A3 >
 template<typename F, typename O>
 SPTR( Slot< R ( A1, A2, A3 ) > ) Slot< R ( A1, A2, A3 ) >::New( F f, O o )
@@ -442,6 +586,32 @@ SPTR( Slot< R ( A... ) > ) Slot< R ( A... ) >::New( F f, O o )
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+template<typename F_IN >
+SPTR( Slot< R ( A1, A2, A3, A4, A5 ) > ) Slot< Slot< R ( A1, A2, A3, A4, A5 ) > >::New( SPTR( SlotRun< F_IN > ) slot )
+{
+    assert (
+        ::boost::function_types::function_arity< F_IN >::value <= ::boost::function_types::function_arity< R ( A1, A2, A3, A4, A5 ) >::value
+        );
+    return boost::make_shared< Slot< Slot< R ( A1, A2, A3, A4, A5 ) > > > ( slot );
+}
+
+
+
+
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+template<typename F_IN >
+SPTR( Slot< R ( A1, A2, A3, A4 ) > ) Slot< Slot< R ( A1, A2, A3, A4 ) > >::New( SPTR( SlotRun< F_IN > ) slot )
+{
+    assert (
+        ::boost::function_types::function_arity< F_IN >::value <= ::boost::function_types::function_arity< R ( A1, A2, A3, A4 ) >::value
+        );
+    return boost::make_shared< Slot< Slot< R ( A1, A2, A3, A4 ) > > > ( slot );
+}
+
+
+
+
 template<typename R, typename A1, typename A2, typename A3 >
 template<typename F_IN >
 SPTR( Slot< R ( A1, A2, A3 ) > ) Slot< Slot< R ( A1, A2, A3 ) > >::New( SPTR( SlotRun< F_IN > ) slot )

@@ -27,6 +27,7 @@ struct Slot;
 /**
  * @class   Slots
  * @brief   This class proposes a mapping between a SlotKeyType and a SlotBase.
+ *
  * @date   2012.
  */
 class FWCOM_CLASS_API Slots
@@ -51,6 +52,14 @@ public:
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    Slots& operator()( const SlotKeyType &key, SPTR(Slot< R ( A1, A2, A3, A4, A5 ) >) slot ); //{}
+
+
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+    Slots& operator()( const SlotKeyType &key, SPTR(Slot< R ( A1, A2, A3, A4 ) >) slot ); //{}
+
+
 template<typename R, typename A1, typename A2, typename A3 >
     Slots& operator()( const SlotKeyType &key, SPTR(Slot< R ( A1, A2, A3 ) >) slot ); //{}
 
@@ -82,6 +91,14 @@ template<typename R, typename ...A>
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename F, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    Slots& operator()( const SlotKeyType &key, F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{}
+
+
+template<typename F, typename A1, typename A2, typename A3, typename A4 >
+    Slots& operator()( const SlotKeyType &key, F f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{}
+
+
 template<typename F, typename A1, typename A2, typename A3 >
     Slots& operator()( const SlotKeyType &key, F f, A1 a1, A2 a2, A3 a3 ); //{}
 

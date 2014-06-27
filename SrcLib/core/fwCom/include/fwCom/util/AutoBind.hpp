@@ -46,6 +46,10 @@ struct AutoBind< F, 0 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -76,6 +80,10 @@ struct AutoBind< F, 1 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -105,6 +113,10 @@ struct AutoBind< F, 2 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -134,6 +146,10 @@ struct AutoBind< F, 3 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -163,6 +179,10 @@ struct AutoBind< F, 4 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -192,6 +212,10 @@ struct AutoBind< F, 5 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -221,6 +245,10 @@ struct AutoBind< F, 6 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -250,6 +278,10 @@ struct AutoBind< F, 7 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -279,6 +311,10 @@ struct AutoBind< F, 8 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -308,6 +344,10 @@ struct AutoBind< F, 9 >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+    static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template< typename W, typename A1, typename A2, typename A3 >
     static ::boost::function< FunctionType > wrap( W f, A1 a1, A2 a2, A3 a3 ); //{};
 template< typename W, typename A1, typename A2 >
@@ -340,6 +380,10 @@ template< typename W, typename ...A >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template <typename F, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename convert_function_type< F >::type > autobind(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ); //{};
+template <typename F, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename convert_function_type< F >::type > autobind(F f, A1 a1, A2 a2, A3 a3, A4 a4 ); //{};
 template <typename F, typename A1, typename A2, typename A3 >
 ::boost::function< typename convert_function_type< F >::type > autobind(F f, A1 a1, A2 a2, A3 a3 ); //{};
 template <typename F, typename A1, typename A2 >

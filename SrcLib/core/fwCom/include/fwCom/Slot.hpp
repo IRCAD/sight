@@ -21,6 +21,60 @@ struct Slot;
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+struct Slot< ::boost::function< R ( A1, A2, A3, A4, A5 ) > > : Slot< R ( A1, A2, A3, A4, A5 ) >
+{
+    typedef R SignatureType( A1, A2, A3, A4, A5 );
+    typedef ::boost::function< SignatureType > FunctionType;
+
+
+    template< typename FUNCTOR >
+        Slot( FUNCTOR f ) : Slot< R ( A1, A2, A3, A4, A5 ) >(),  m_func(f)
+    { }
+
+    virtual void run( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ) const
+    {
+        OSLM_COM("run '"<< this->getID() <<"' slot");
+        m_func( a1, a2, a3, a4, a5 );
+    };
+
+    virtual R   call( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ) const
+    {
+        OSLM_COM("call '"<< this->getID() <<"'  slot");
+        return m_func( a1, a2, a3, a4, a5 );
+    };
+
+
+protected:
+    FunctionType m_func;
+};
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+struct Slot< ::boost::function< R ( A1, A2, A3, A4 ) > > : Slot< R ( A1, A2, A3, A4 ) >
+{
+    typedef R SignatureType( A1, A2, A3, A4 );
+    typedef ::boost::function< SignatureType > FunctionType;
+
+
+    template< typename FUNCTOR >
+        Slot( FUNCTOR f ) : Slot< R ( A1, A2, A3, A4 ) >(),  m_func(f)
+    { }
+
+    virtual void run( A1 a1, A2 a2, A3 a3, A4 a4 ) const
+    {
+        OSLM_COM("run '"<< this->getID() <<"' slot");
+        m_func( a1, a2, a3, a4 );
+    };
+
+    virtual R   call( A1 a1, A2 a2, A3 a3, A4 a4 ) const
+    {
+        OSLM_COM("call '"<< this->getID() <<"'  slot");
+        return m_func( a1, a2, a3, a4 );
+    };
+
+
+protected:
+    FunctionType m_func;
+};
 template<typename R, typename A1, typename A2, typename A3 >
 struct Slot< ::boost::function< R ( A1, A2, A3 ) > > : Slot< R ( A1, A2, A3 ) >
 {
@@ -167,6 +221,40 @@ protected:
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+struct Slot< Slot< R ( A1, A2, A3, A4, A5 ) > > : Slot< boost::function < R ( A1, A2, A3, A4, A5 ) > >
+{
+
+
+    typedef R SignatureType ( A1, A2, A3, A4, A5 ) ;
+    typedef ::boost::function< SignatureType > FunctionType;
+
+    template< typename F >
+    Slot( SPTR( SlotRun< F > ) slot );
+    template< typename F >
+    Slot( SPTR( Slot< F > ) slot );
+
+    template< typename F_IN >
+    static SPTR( Slot< R( A1, A2, A3, A4, A5 ) > ) New( SPTR( SlotRun< F_IN > ) slot ); //{}
+
+};
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+struct Slot< Slot< R ( A1, A2, A3, A4 ) > > : Slot< boost::function < R ( A1, A2, A3, A4 ) > >
+{
+
+
+    typedef R SignatureType ( A1, A2, A3, A4 ) ;
+    typedef ::boost::function< SignatureType > FunctionType;
+
+    template< typename F >
+    Slot( SPTR( SlotRun< F > ) slot );
+    template< typename F >
+    Slot( SPTR( Slot< F > ) slot );
+
+    template< typename F_IN >
+    static SPTR( Slot< R( A1, A2, A3, A4 ) > ) New( SPTR( SlotRun< F_IN > ) slot ); //{}
+
+};
 template<typename R, typename A1, typename A2, typename A3 >
 struct Slot< Slot< R ( A1, A2, A3 ) > > : Slot< boost::function < R ( A1, A2, A3 ) > >
 {
@@ -263,6 +351,50 @@ struct Slot< Slot< R ( A... ) > > : Slot< boost::function < R ( A... ) > >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+struct Slot< R ( A1, A2, A3, A4, A5 ) > : SlotCall< R ( A1, A2, A3, A4, A5 ) >
+{
+    typedef R SignatureType( A1, A2, A3, A4, A5 );
+    typedef Slot< SignatureType > SelfType;
+    typedef SPTR( SelfType ) sptr;
+    typedef WPTR( SelfType ) wptr;
+
+
+    Slot() : SlotCall< R ( A1, A2, A3, A4, A5 ) >()
+    {
+        // 'this->' is needed by gcc 4.2
+        this->SlotBase::m_signature = SlotBase::getTypeName< R ( A1, A2, A3, A4, A5 ) >();
+    }
+
+    template< typename F >
+    static SPTR( Slot< R( A1, A2, A3, A4, A5 ) > ) New( F f ); //{}
+
+    template< typename F, typename O >
+    static SPTR( Slot< R( A1, A2, A3, A4, A5 ) > ) New( F f, O o ); //{}
+
+};
+template<typename R, typename A1, typename A2, typename A3, typename A4 >
+struct Slot< R ( A1, A2, A3, A4 ) > : SlotCall< R ( A1, A2, A3, A4 ) >
+{
+    typedef R SignatureType( A1, A2, A3, A4 );
+    typedef Slot< SignatureType > SelfType;
+    typedef SPTR( SelfType ) sptr;
+    typedef WPTR( SelfType ) wptr;
+
+
+    Slot() : SlotCall< R ( A1, A2, A3, A4 ) >()
+    {
+        // 'this->' is needed by gcc 4.2
+        this->SlotBase::m_signature = SlotBase::getTypeName< R ( A1, A2, A3, A4 ) >();
+    }
+
+    template< typename F >
+    static SPTR( Slot< R( A1, A2, A3, A4 ) > ) New( F f ); //{}
+
+    template< typename F, typename O >
+    static SPTR( Slot< R( A1, A2, A3, A4 ) > ) New( F f, O o ); //{}
+
+};
 template<typename R, typename A1, typename A2, typename A3 >
 struct Slot< R ( A1, A2, A3 ) > : SlotCall< R ( A1, A2, A3 ) >
 {
@@ -384,6 +516,18 @@ struct Slot< R ( A... ) > : SlotCall< R (A...) >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template<typename F, typename Bindings1, typename Bindings2, typename Bindings3, typename Bindings4, typename Bindings5 >
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1, Bindings2  bindings2, Bindings3  bindings3, Bindings4  bindings4, Bindings5  bindings5 ); //{}
+
+
+
+
+template<typename F, typename Bindings1, typename Bindings2, typename Bindings3, typename Bindings4 >
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1, Bindings2  bindings2, Bindings3  bindings3, Bindings4  bindings4 ); //{}
+
+
+
+
 template<typename F, typename Bindings1, typename Bindings2, typename Bindings3 >
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings1  bindings1, Bindings2  bindings2, Bindings3  bindings3 ); //{}
 
