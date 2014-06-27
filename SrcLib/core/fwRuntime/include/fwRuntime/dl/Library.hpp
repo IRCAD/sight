@@ -149,14 +149,14 @@ private:
 };
 
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
     typedef struct LibraryBridge< Posix > Library;
 #else
 #   ifdef WIN32
     typedef struct LibraryBridge< Win32 > Library;
 #   else
 #       ifdef __MACOSX__
-            typedef struct LibraryBridge< Darwin > Library;
+    typedef struct LibraryBridge< Darwin > Library;
 #       endif
 #   endif
 #endif
