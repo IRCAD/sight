@@ -103,17 +103,8 @@ protected:
 
 struct FWGUIQT_CLASS_API WorkerQtInstanciator
 {
-    FWGUIQT_API WorkerQtInstanciator(bool reg = true) :
-        m_qtWorker(::boost::make_shared< WorkerQt >())
-    {
-        m_qtWorker->init( boost::ref(s_argc), s_argv);
 
-        if(reg)
-        {
-            ::fwServices::registry::ActiveWorkers::getDefault()
-                ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_qtWorker);
-        }
-    }
+    FWGUIQT_API WorkerQtInstanciator(bool reg = true) ;
 
     FWGUIQT_API SPTR(::fwThread::Worker) getWorker();
 
@@ -125,6 +116,18 @@ struct FWGUIQT_CLASS_API WorkerQtInstanciator
 
 int WorkerQtInstanciator::s_argc = 0 ;
 char** WorkerQtInstanciator::s_argv = NULL;
+
+FWGUIQT_API WorkerQtInstanciator::WorkerQtInstanciator(bool reg ) :
+    m_qtWorker(::boost::make_shared< WorkerQt >())
+{
+    m_qtWorker->init( boost::ref(s_argc), s_argv);
+
+    if(reg)
+    {
+        ::fwServices::registry::ActiveWorkers::getDefault()
+            ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_qtWorker);
+    }
+}
 
 
 SPTR(::fwThread::Worker) WorkerQtInstanciator::getWorker()

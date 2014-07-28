@@ -1,15 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <utility>
+
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+
 #include <boost/foreach.hpp>
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 
 #include "fwData/Edge.hpp"
 #include "fwData/Port.hpp"
@@ -24,10 +30,23 @@ namespace fwData
 const bool Graph::UP_STREAM = true;
 const bool Graph::DOWN_STREAM = false;
 
+const ::fwCom::Signals::SignalKeyType Graph::s_UPDATED_SIG = "updated";
+
 //------------------------------------------------------------------------------
 
-Graph::Graph(::fwData::Object::Key key)
-{}
+Graph::Graph(::fwData::Object::Key key) :
+    m_sigUpdated(UpdatedSignalType::New())
+{
+    // Init
+
+    // Register
+    m_signals( s_UPDATED_SIG,  m_sigUpdated);
+
+#ifdef COM_LOG
+    ::fwCom::HasSignals::m_signals.setID();
+#endif
+
+}
 
 //------------------------------------------------------------------------------
 
@@ -209,29 +228,44 @@ std::vector< Edge::sptr > Graph::getOutputEdges( Node::csptr node )
 
 //------------------------------------------------------------------------------
 
-std::vector< Edge::sptr > Graph::getEdges( Node::csptr node, bool upStream, std::string nature , std::string portID)
+std::vector< Edge::sptr > Graph::getEdges( const Node::csptr &node, bool upStream,
+                                           const std::string &nature,
+                                           const std::string &portID
+                                           )
 {
-    OSLM_ASSERT("Node "<<node->getID() <<" not found in graph", m_nodes.find( Node::constCast(node) ) != m_nodes.end() );
-    OSLM_ASSERT("Port "<< portID <<" not found in graph", portID.empty() || node->findPort(portID,upStream) ); // portID if specified must be on node
+    SLM_ASSERT("Node " + node->getID()  + " not found in graph", m_nodes.find( Node::constCast(node) ) != m_nodes.end());
+    SLM_ASSERT("Port " + portID  + " not found on node" + node->getID(),
+               portID.empty() || node->findPort(portID, upStream));
 
     std::vector< Edge::sptr > result;
     result.reserve(4);
 
-    for ( ConnectionContainer::const_iterator i=m_connections.begin() ; i !=  m_connections.end() ; ++i )
+    ConnectionContainer::const_iterator end = m_connections.end();
+    for ( ConnectionContainer::const_iterator i=m_connections.begin(); i != end; ++i )
     {
-        Edge::sptr edge = i->first;
-        Node::sptr nodeFrom = i->second.first;
-        Node::sptr nodeTo = i->second.second;
+        const Edge::sptr &edge = i->first;
+        const Node::sptr &nodeFrom = i->second.first;
+        const Node::sptr &nodeTo = i->second.second;
 
-        bool isConnectedEdge = ( upStream ? ( nodeTo == node ) : ( nodeFrom == node ) );
-        bool isCorrectNature =  nature.empty() || (  edge->getNature() == nature );
-        bool isCorrectPort = portID.empty() ||
-                  ( upStream ? ( edge->getToPortID()== portID ) : (  edge->getFromPortID()== portID ) );
-
-        if ( isConnectedEdge && isCorrectNature && isCorrectPort)
+        bool isConnectedEdge = ( upStream ? nodeTo : nodeFrom ) == node ;
+        if( !isConnectedEdge)
         {
-            result.push_back( edge );
+            continue;
         }
+
+        bool isCorrectPort = portID.empty() || portID == ( upStream ? edge->getToPortID() : edge->getFromPortID() );
+        if( !isCorrectPort)
+        {
+            continue;
+        }
+
+        bool isCorrectNature =  nature.empty() || edge->getNature() == nature;
+        if( !isCorrectNature)
+        {
+            continue;
+        }
+
+        result.push_back( edge );
     }
 
     return result;
@@ -241,10 +275,10 @@ std::vector< Edge::sptr > Graph::getEdges( Node::csptr node, bool upStream, std:
 
 std::vector< ::fwData::Node::sptr >
 Graph::getNodes(
-        ::fwData::Node::csptr node,
+        const ::fwData::Node::csptr &node,
         bool upStream,
-        std::string nature,
-        std::string portID )
+        const std::string &nature,
+        const std::string &portID )
 {
     std::vector< Edge::sptr > edges;
     edges = getEdges( node, upStream, nature, portID);

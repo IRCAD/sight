@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ namespace fwData
  *
  * @see     ::fwData::Port
  *
- * 
+ *
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Node : public ::fwData::Object
@@ -40,6 +40,9 @@ public:
 
     /// Port container
     typedef std::vector< ::fwData::Port::sptr > PortContainer;
+
+    /// Type of 'updated' signal
+    typedef ::fwCom::Signal< void () > UpdatedSignalType;
 
     /**
      * @brief Constructor
@@ -84,6 +87,9 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
+    /// Updated signal key
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
+
 protected :
 
     /// node object
@@ -94,6 +100,9 @@ protected :
 
     //! Output port container
     PortContainer m_outputs;
+
+    /// Updated signal
+    UpdatedSignalType::sptr m_sigUpdated;
 };
 
 } // namespace fwData

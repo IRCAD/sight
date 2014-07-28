@@ -94,5 +94,11 @@
         <service>::gui::action::PushObjectSrv</service>
         <object>::fwData::Composite</object>
     </extension>
-    
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::SSignal</service>
+        <object>::fwData::Object</object>
+    </extension>
+
 </plugin>

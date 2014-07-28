@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -247,7 +247,7 @@ void BoostIOTest::readWriteZipTest()
 
     {
         writeArchive = ::fwZip::WriteZipArchive::New(folderPath.string());
-        this->writeProcess(writeArchive, "root.json", ::fwAtomsBoostIO::Writer::JSON);
+        this->writeProcess(writeArchive, "root.json", ::fwAtomsBoostIO::JSON);
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadZipArchive::New(folderPath.string());
@@ -259,11 +259,11 @@ void BoostIOTest::readWriteZipTest()
     }
     {
         writeArchive = ::fwZip::WriteZipArchive::New(folderPath.string());
-        this->writeProcess(writeArchive, "root.xml", ::fwAtomsBoostIO::Writer::XML);
+        this->writeProcess(writeArchive, "root.xml", ::fwAtomsBoostIO::XML);
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadZipArchive::New(folderPath.string());
-        this->readProcess(readArchive, "root.xml");
+        this->readProcess(readArchive, "root.xml", ::fwAtomsBoostIO::XML);
         readArchive.reset();
 
         bool suppr = ::boost::filesystem::remove_all(folderPath);
@@ -283,7 +283,7 @@ void BoostIOTest::readWriteDirTest()
 
     {
         writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
-        this->writeProcess(writeArchive, "root.json", ::fwAtomsBoostIO::Writer::JSON);
+        this->writeProcess(writeArchive, "root.json", ::fwAtomsBoostIO::JSON);
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
@@ -295,11 +295,11 @@ void BoostIOTest::readWriteDirTest()
     }
     {
         writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
-        this->writeProcess(writeArchive, "root.xml", ::fwAtomsBoostIO::Writer::XML);
+        this->writeProcess(writeArchive, "root.xml", ::fwAtomsBoostIO::XML);
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
-        this->readProcess(readArchive, "root.xml");
+        this->readProcess(readArchive, "root.xml" , ::fwAtomsBoostIO::XML);
         readArchive.reset();
 
         bool suppr = ::boost::filesystem::remove_all(folderPath);
@@ -311,7 +311,7 @@ void BoostIOTest::readWriteDirTest()
 
 void BoostIOTest::writeProcess(::fwZip::IWriteArchive::sptr writeArchive,
                                const ::boost::filesystem::path& rootFilename,
-                               ::fwAtomsBoostIO::Writer::FormatType format )
+                               ::fwAtomsBoostIO::FormatType format )
 {
     ::fwAtoms::Sequence::sptr seq = generator.getSequence();
     ::fwAtomsBoostIO::Writer(seq).write(writeArchive, rootFilename, format);
@@ -320,11 +320,12 @@ void BoostIOTest::writeProcess(::fwZip::IWriteArchive::sptr writeArchive,
 //-----------------------------------------------------------------------------
 
 void BoostIOTest::readProcess(::fwZip::IReadArchive::sptr readArchive,
-                              const ::boost::filesystem::path& rootFilename)
+                              const ::boost::filesystem::path& rootFilename,
+                              const ::fwAtomsBoostIO::FormatType& formatType)
 {
     ::fwAtoms::Sequence::sptr readSeq;
     {
-        readSeq = ::fwAtoms::Sequence::dynamicCast(::fwAtomsBoostIO::Reader().read(readArchive, rootFilename));
+        readSeq = ::fwAtoms::Sequence::dynamicCast(::fwAtomsBoostIO::Reader().read(readArchive, rootFilename, formatType));
     }
     generator.compare(readSeq);
 }

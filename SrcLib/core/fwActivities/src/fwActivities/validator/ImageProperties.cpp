@@ -1,12 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <boost/foreach.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Vector.hpp>
@@ -14,7 +10,6 @@
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwMath/Compare.hpp>
-//#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include "fwActivities/validator/registry/macros.hpp"
 #include "fwActivities/validator/ImageProperties.hpp"
@@ -59,9 +54,10 @@ IValidator::ValidationType ImageProperties::validate(
         ::fwData::Image::SpacingType spacing = img0->getSpacing();
         ::fwData::Image::OriginType origin = img0->getOrigin();
 
-        for(int i = 1; i < currentSelection->size(); ++i)
+        ::fwData::Vector::ContainerType::const_iterator it; 
+        for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
         {
-            ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast((*currentSelection)[i]);
+            ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(*it);
             SLM_ASSERT("Failed to retrieve an image series", imgSeries);
             ::fwData::Image::sptr img = imgSeries->getImage();
             SLM_ASSERT("Failed to retrieve an image data", img);
@@ -95,6 +91,5 @@ IValidator::ValidationType ImageProperties::validate(
 
 } // namespace validator
 } // namespace fwActivities
-
 
 

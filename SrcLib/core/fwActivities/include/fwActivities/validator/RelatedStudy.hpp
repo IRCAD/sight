@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWACTIVITIES_VALIDATOR_IMAGEPROPERTIES_HPP__
-#define __FWACTIVITIES_VALIDATOR_IMAGEPROPERTIES_HPP__
+#ifndef __FWACTIVITIES_VALIDATOR_RELATEDSTUDY_HPP__
+#define __FWACTIVITIES_VALIDATOR_RELATEDSTUDY_HPP__
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -19,22 +19,22 @@ namespace validator
 {
 
 /**
- * @brief Defines a validator which checks that properties of given images are the same.
- * @class ImageProperties.
+ * @brief Defines a validator which checks that given series refer to the same study.
+ * @class RelatedStudy.
  */
-class FWACTIVITIES_CLASS_API ImageProperties : public ::fwActivities::IValidator
+class FWACTIVITIES_CLASS_API RelatedStudy : public ::fwActivities::IValidator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageProperties)(::fwActivities::IValidator),
+    fwCoreClassDefinitionsWithFactoryMacro( (RelatedStudy)(::fwActivities::IValidator),
                                             (()),
-                                            ::fwActivities::validator::factory::New< ImageProperties > );
+                                            ::fwActivities::validator::factory::New< RelatedStudy > );
 
 
     /// Constructor. Do nothing.
-    FWACTIVITIES_API ImageProperties(::fwActivities::IValidator::Key key);
+    FWACTIVITIES_API RelatedStudy(::fwActivities::IValidator::Key key);
 
     /// Destructor. Do nothing.
-    FWACTIVITIES_API virtual ~ImageProperties();
+    FWACTIVITIES_API virtual ~RelatedStudy();
 
     /**
      * @see ::fwActivities::IValidator::validate
@@ -47,5 +47,5 @@ public:
 } // namespace validator
 } // namespace fwActivities
 
-#endif // __FWACTIVITIES_VALIDATOR_IMAGEPROPERTIES_HPP__
+#endif // __FWACTIVITIES_VALIDATOR_RELATEDSTUDY_HPP__
 

@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+* FW4SPL - Copyright (C) IRCAD, 2009-2014.
+* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+* published by the Free Software Foundation.
+* ****** END LICENSE BLOCK ****** */
+
 #include <sstream>
 
 #include <boost/filesystem/operations.hpp>
@@ -293,17 +299,18 @@ protected:
 //-----------------------------------------------------------------------------
 
 ::fwAtoms::Base::sptr Reader::read( ::fwZip::IReadArchive::sptr archive,
-                                    const ::boost::filesystem::path& rootFilename ) const
+                                    const ::boost::filesystem::path& rootFilename,
+                                    FormatType format ) const
 {
     ::boost::property_tree::ptree root;
     ::fwAtoms::Base::sptr atom;
 
     SPTR(std::istream) in = archive->getFile(rootFilename);
-    if(rootFilename.extension().string() == ".json")
+    if(format == JSON)
     {
         ::boost::property_tree::json_parser::read_json(*in, root);
     }
-    else if(rootFilename.extension().string() == ".xml")
+    else if(format == XML)
     {
         ::boost::property_tree::xml_parser::read_xml(*in, root);
     }

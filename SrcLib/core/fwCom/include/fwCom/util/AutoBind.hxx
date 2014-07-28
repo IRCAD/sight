@@ -25,6 +25,24 @@ namespace util
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 0 >::FunctionType > AutoBind< F, 0 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 0 >::FunctionType > AutoBind< F, 0 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4 );
+}
+
+
+
+template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 0 >::FunctionType > AutoBind< F, 0 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
 {
@@ -80,6 +98,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 1 >::FunctionType > AutoBind< F, 1 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 1 >::FunctionType > AutoBind< F, 1 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1 );
+}
+
+
+
 template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 1 >::FunctionType > AutoBind< F, 1 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
@@ -137,6 +173,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 2 >::FunctionType > AutoBind< F, 2 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1, _2 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 2 >::FunctionType > AutoBind< F, 2 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1, _2 );
+}
+
+
+
+template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 2 >::FunctionType > AutoBind< F, 2 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
 {
@@ -192,6 +246,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 3 >::FunctionType > AutoBind< F, 3 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1, _2, _3 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 3 >::FunctionType > AutoBind< F, 3 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1, _2, _3 );
+}
+
+
+
 template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 3 >::FunctionType > AutoBind< F, 3 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
@@ -249,6 +321,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 4 >::FunctionType > AutoBind< F, 4 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1, _2, _3, _4 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 4 >::FunctionType > AutoBind< F, 4 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1, _2, _3, _4 );
+}
+
+
+
+template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 4 >::FunctionType > AutoBind< F, 4 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
 {
@@ -304,6 +394,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 5 >::FunctionType > AutoBind< F, 5 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1, _2, _3, _4, _5 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 5 >::FunctionType > AutoBind< F, 5 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1, _2, _3, _4, _5 );
+}
+
+
+
 template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 5 >::FunctionType > AutoBind< F, 5 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
@@ -361,6 +469,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 6 >::FunctionType > AutoBind< F, 6 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1, _2, _3, _4, _5, _6 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 6 >::FunctionType > AutoBind< F, 6 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1, _2, _3, _4, _5, _6 );
+}
+
+
+
+template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 6 >::FunctionType > AutoBind< F, 6 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
 {
@@ -416,6 +542,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 7 >::FunctionType > AutoBind< F, 7 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1, _2, _3, _4, _5, _6, _7 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 7 >::FunctionType > AutoBind< F, 7 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1, _2, _3, _4, _5, _6, _7 );
+}
+
+
+
 template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 7 >::FunctionType > AutoBind< F, 7 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
@@ -473,6 +617,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 8 >::FunctionType > AutoBind< F, 8 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1, _2, _3, _4, _5, _6, _7, _8 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 8 >::FunctionType > AutoBind< F, 8 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1, _2, _3, _4, _5, _6, _7, _8 );
+}
+
+
+
+template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 8 >::FunctionType > AutoBind< F, 8 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
 {
@@ -529,6 +691,24 @@ template< typename W, typename ...A >
 //===============================================================================
 //==================================== BEGIN ====================================
 template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename AutoBind< F, 9 >::FunctionType > AutoBind< F, 9 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, a5, _1, _2, _3, _4, _5, _6, _7, _8, _9 );
+}
+
+
+
+template< typename F >
+template< typename W, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename AutoBind< F, 9 >::FunctionType > AutoBind< F, 9 >::wrap( W f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    return ::boost::bind( f, a1, a2, a3, a4, _1, _2, _3, _4, _5, _6, _7, _8, _9 );
+}
+
+
+
+template< typename F >
 template< typename W, typename A1, typename A2, typename A3 >
 ::boost::function< typename AutoBind< F, 9 >::FunctionType > AutoBind< F, 9 >::wrap( W f, A1 a1, A2 a2, A3 a3 )
 {
@@ -584,6 +764,28 @@ template< typename W, typename ...A >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template <typename F, typename A1, typename A2, typename A3, typename A4, typename A5 >
+::boost::function< typename convert_function_type< F >::type > autobind(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 )
+{
+    typedef typename convert_function_type< F >::type FunctionType;
+    const int arity = ::boost::function_types::function_arity< FunctionType >::value;
+    return AutoBind< F, arity >::wrap(f, a1, a2, a3, a4, a5 );
+}
+
+
+
+
+template <typename F, typename A1, typename A2, typename A3, typename A4 >
+::boost::function< typename convert_function_type< F >::type > autobind(F f, A1 a1, A2 a2, A3 a3, A4 a4 )
+{
+    typedef typename convert_function_type< F >::type FunctionType;
+    const int arity = ::boost::function_types::function_arity< FunctionType >::value;
+    return AutoBind< F, arity >::wrap(f, a1, a2, a3, a4 );
+}
+
+
+
+
 template <typename F, typename A1, typename A2, typename A3 >
 ::boost::function< typename convert_function_type< F >::type > autobind(F f, A1 a1, A2 a2, A3 a3 )
 {

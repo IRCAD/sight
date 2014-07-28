@@ -30,6 +30,24 @@ namespace fwCom
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+typename Signal< R ( A1, A2, A3, A4, A5 ) >::sptr Signal< R ( A1, A2, A3, A4, A5 ) >::New()
+{
+    return ::boost::make_shared< Signal< R ( A1, A2, A3, A4, A5 ) > > () ;
+}
+
+
+
+
+template < typename R, typename A1, typename A2, typename A3, typename A4 >
+typename Signal< R ( A1, A2, A3, A4 ) >::sptr Signal< R ( A1, A2, A3, A4 ) >::New()
+{
+    return ::boost::make_shared< Signal< R ( A1, A2, A3, A4 ) > > () ;
+}
+
+
+
+
 template < typename R, typename A1, typename A2, typename A3 >
 typename Signal< R ( A1, A2, A3 ) >::sptr Signal< R ( A1, A2, A3 ) >::New()
 {
@@ -86,6 +104,20 @@ typename Signal< R (A...) >::sptr Signal< R (A...) >::New()
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+Connection Signal< R ( A1, A2, A3, A4, A5 ) >::connect( SlotBase::sptr slot )
+{
+    return this->connect< SignatureType >(slot);
+}
+
+
+template < typename R, typename A1, typename A2, typename A3, typename A4 >
+Connection Signal< R ( A1, A2, A3, A4 ) >::connect( SlotBase::sptr slot )
+{
+    return this->connect< SignatureType >(slot);
+}
+
+
 template < typename R, typename A1, typename A2, typename A3 >
 Connection Signal< R ( A1, A2, A3 ) >::connect( SlotBase::sptr slot )
 {
@@ -132,6 +164,58 @@ Connection Signal< R (A...) >::connect( SlotBase::sptr slot )
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+void Signal< R ( A1, A2, A3, A4, A5 ) >::disconnect( SlotBase::sptr slot )
+{
+    ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
+
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
+
+    if (iter != m_connections.end())
+    {
+        SlotConnectionBase::sptr connection ( iter->second.lock() );
+        SLM_ASSERT( "Connection has been previously destroyed", connection );
+        if (connection)
+        {
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            connection->disconnectWeakLock();
+            // m_connections.erase(slot.get()); // done in connection->disconnect
+        }
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+    }
+}
+
+
+
+template < typename R, typename A1, typename A2, typename A3, typename A4 >
+void Signal< R ( A1, A2, A3, A4 ) >::disconnect( SlotBase::sptr slot )
+{
+    ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
+
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
+
+    if (iter != m_connections.end())
+    {
+        SlotConnectionBase::sptr connection ( iter->second.lock() );
+        SLM_ASSERT( "Connection has been previously destroyed", connection );
+        if (connection)
+        {
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            connection->disconnectWeakLock();
+            // m_connections.erase(slot.get()); // done in connection->disconnect
+        }
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+    }
+}
+
+
+
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::disconnect( SlotBase::sptr slot )
 {
@@ -273,6 +357,46 @@ void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+void Signal< R ( A1, A2, A3, A4, A5 ) >::disconnectAll()
+{
+    ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+
+    ConnectionMapType connections = m_connections;
+
+    BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
+    {
+        SlotConnectionBase::sptr connection( conn.second.lock() );
+
+        if(connection)
+        {
+            connection->disconnectWeakLock();
+        }
+    }
+
+}
+
+
+template < typename R, typename A1, typename A2, typename A3, typename A4 >
+void Signal< R ( A1, A2, A3, A4 ) >::disconnectAll()
+{
+    ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+
+    ConnectionMapType connections = m_connections;
+
+    BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
+    {
+        SlotConnectionBase::sptr connection( conn.second.lock() );
+
+        if(connection)
+        {
+            connection->disconnectWeakLock();
+        }
+    }
+
+}
+
+
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::disconnectAll()
 {
@@ -384,6 +508,40 @@ void Signal< R (A...) >::disconnectAll()
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+void Signal< R ( A1, A2, A3, A4, A5 ) >::emit( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ) const
+{
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("emit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->run( a1, a2, a3, a4, a5 );
+        }
+    }
+}
+
+
+template < typename R, typename A1, typename A2, typename A3, typename A4 >
+void Signal< R ( A1, A2, A3, A4 ) >::emit( A1 a1, A2 a2, A3 a3, A4 a4 ) const
+{
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("emit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->run( a1, a2, a3, a4 );
+        }
+    }
+}
+
+
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::emit( A1 a1, A2 a2, A3 a3 ) const
 {
@@ -480,6 +638,42 @@ void Signal< R (A...) >::emit( A...a ) const
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+void Signal< R ( A1, A2, A3, A4, A5 ) >::asyncEmit( A1 a1, A2 a2, A3 a3, A4 a4, A5 a5 ) const
+{
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("asyncEmit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->asyncRun( a1, a2, a3, a4, a5 );
+        }
+    }
+}
+
+
+
+template < typename R, typename A1, typename A2, typename A3, typename A4 >
+void Signal< R ( A1, A2, A3, A4 ) >::asyncEmit( A1 a1, A2 a2, A3 a3, A4 a4 ) const
+{
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    OSLM_COM("asyncEmit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
+    typename SlotContainerType::const_iterator iter;
+    typename SlotContainerType::const_iterator end = m_slots.end();
+    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    {
+        if ((*iter)->first)
+        {
+            (*iter)->second->asyncRun( a1, a2, a3, a4 );
+        }
+    }
+}
+
+
+
 template < typename R, typename A1, typename A2, typename A3 >
 void Signal< R ( A1, A2, A3 ) >::asyncEmit( A1 a1, A2 a2, A3 a3 ) const
 {
@@ -581,6 +775,148 @@ void Signal< R (A...) >::asyncEmit( A...a ) const
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+template< typename FROM_F >
+Connection Signal< R( A1, A2, A3, A4, A5 ) >::connect( SlotBase::sptr slot )
+{
+    {
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+        if(m_connections.find( slot ) != m_connections.end())
+        {
+            FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        }
+    }
+
+    typedef SlotConnection< void( A1, A2, A3, A4, A5 ) > ConnectionType;
+    Connection connection;
+
+    unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    if ( sigArity == slot->arity() )
+    {
+        SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
+        if(slotToConnect)
+        {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+            typename Signal< R( A1, A2, A3, A4, A5 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1, A2, A3, A4, A5 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
+            slotConnection->connectNoLock();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+        }
+    }
+    else if ( sigArity > slot->arity() )
+    {
+
+        typedef SlotRun< FROM_F > WrappedSlotRunType;
+        typename SPTR(WrappedSlotRunType) wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+
+        if(wrappedSlot)
+        {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+            SlotSptr slotToConnect = Slot < Slot < void ( A1, A2, A3, A4, A5 ) > >::New(wrappedSlot);
+            typename Signal< R( A1, A2, A3, A4, A5 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1, A2, A3, A4, A5 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
+            slotConnection->connectNoLock();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< FROM_F >::type >( slot );
+        }
+
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+    }
+
+    return connection;
+
+}
+
+
+
+template < typename R, typename A1, typename A2, typename A3, typename A4 >
+template< typename FROM_F >
+Connection Signal< R( A1, A2, A3, A4 ) >::connect( SlotBase::sptr slot )
+{
+    {
+        ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+
+        if(m_connections.find( slot ) != m_connections.end())
+        {
+            FW_RAISE_EXCEPTION( fwCom::exception::AlreadyConnected("Slot already connected") );
+        }
+    }
+
+    typedef SlotConnection< void( A1, A2, A3, A4 ) > ConnectionType;
+    Connection connection;
+
+    unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
+    if ( sigArity == slot->arity() )
+    {
+        SlotSptr slotToConnect = boost::dynamic_pointer_cast< SlotRunType >(slot);
+        if(slotToConnect)
+        {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+            typename Signal< R( A1, A2, A3, A4 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1, A2, A3, A4 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
+            slotConnection->connectNoLock();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+        }
+    }
+    else if ( sigArity > slot->arity() )
+    {
+
+        typedef SlotRun< FROM_F > WrappedSlotRunType;
+        typename SPTR(WrappedSlotRunType) wrappedSlot = boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+
+        if(wrappedSlot)
+        {
+            ::fwCore::mt::WriteLock lock(m_connectionsMutex);
+            SlotSptr slotToConnect = Slot < Slot < void ( A1, A2, A3, A4 ) > >::New(wrappedSlot);
+            typename Signal< R( A1, A2, A3, A4 ) >::sptr sig =
+                boost::dynamic_pointer_cast < Signal< R( A1, A2, A3, A4 ) > > ( this->shared_from_this() );
+            typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
+            slot->m_connections.insert(slotConnection);
+            m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
+            slotConnection->connectNoLock();
+            connection = Connection(slotConnection);
+        }
+        else
+        {
+            connection = this->connect< typename ::fwCom::util::remove_last_arg< FROM_F >::type >( slot );
+        }
+
+    }
+    else
+    {
+        FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "Incompatible slot" ) );
+    }
+
+    return connection;
+
+}
+
+
+
 template < typename R, typename A1, typename A2, typename A3 >
 template< typename FROM_F >
 Connection Signal< R( A1, A2, A3 ) >::connect( SlotBase::sptr slot )
@@ -947,6 +1283,58 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template < typename R, typename A1, typename A2, typename A3, typename A4, typename A5 >
+Connection Signal< R( A1, A2, A3, A4, A5 ) >::getConnection( SlotBase::sptr slot, bool throws )
+{
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    Connection connection;
+
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
+
+    if (iter == m_connections.end() )
+    {
+        if(throws)
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        }
+    }
+    else
+    {
+        SlotConnectionBase::sptr slotConnection (iter->second);
+        connection = Connection( slotConnection );
+    }
+
+    return connection;
+
+}
+
+
+template < typename R, typename A1, typename A2, typename A3, typename A4 >
+Connection Signal< R( A1, A2, A3, A4 ) >::getConnection( SlotBase::sptr slot, bool throws )
+{
+    ::fwCore::mt::ReadLock lock(m_connectionsMutex);
+    Connection connection;
+
+    ConnectionMapType::const_iterator iter = m_connections.find(slot);
+
+    if (iter == m_connections.end() )
+    {
+        if(throws)
+        {
+            FW_RAISE_EXCEPTION( ::fwCom::exception::BadSlot( "No such slot connected" ) );
+        }
+    }
+    else
+    {
+        SlotConnectionBase::sptr slotConnection (iter->second);
+        connection = Connection( slotConnection );
+    }
+
+    return connection;
+
+}
+
+
 template < typename R, typename A1, typename A2, typename A3 >
 Connection Signal< R( A1, A2, A3 ) >::getConnection( SlotBase::sptr slot, bool throws )
 {

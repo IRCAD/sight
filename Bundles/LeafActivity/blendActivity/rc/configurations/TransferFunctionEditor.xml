@@ -7,6 +7,7 @@
         <param name="TF_COMPOSITE_ID" />
         <param name="SELECTED_TF_KEY" />
         <param name="SELECTED_UID_myImage" />
+        <param name="patient_name"  default="" />
     </parameters>
 
 
@@ -93,18 +94,23 @@
                     <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                         <config renderer="default" style="InteractorStyle2DForNegato" />
                     </adaptor>
-                    <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="myImage">
+                    <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="displayed_image">
                         <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="${SELECTED_TF_KEY}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
                     </adaptor>
-                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="myImage">
+                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="displayed_image">
                         <config renderer="default" picker="negato2default" text="" selectedTFKey="${SELECTED_TF_KEY}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
                     </adaptor>
-                    <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="myImage">
+                    <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="displayed_image">
                         <config filter="true" renderer="default" picker="negato2default" />
                     </adaptor>
-                    <adaptor id="landmarksNegato2" class="::visuVTKAdaptor::ImageLandmarks" objectId="myImage">
+                    <adaptor id="landmarksNegato2" class="::visuVTKAdaptor::ImageLandmarks" objectId="displayed_image">
                         <config renderer="default" picker="negato2default" />
                     </adaptor>
+
+                    <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="displayed_image">
+                        <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+                    </adaptor>
+
                 </scene>
             </service>
 
@@ -138,7 +144,7 @@
                         <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
                     </adaptor>
 
-                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
+                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="displayed_image">
                         <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7"
                             viewportUID="${GENERIC_UID}_Viewport"
                             selectedTFKey="${SELECTED_TF_KEY}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
@@ -220,11 +226,11 @@
                 <object uid="${GENERIC_UID}_Histogram" type="::fwData::Histogram" />
             </item>
 
-            <item key="myImage">
+            <item key="displayed_image">
                 <object uid="${SELECTED_UID_myImage}" src="ref" type="::fwData::Image">
-                
+
                     <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
-                
+
                     <service uid="${GENERIC_UID}_myManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                         <mode type="stop" />
                         <config>

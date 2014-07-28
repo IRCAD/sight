@@ -6,6 +6,8 @@ project (fw4spl)
 enable_testing()
 
 include(CheckVariableExists)
+include(CMakeParseArguments)
+
 
 set(BUILD_SHARED_LIBS ON)
 
@@ -42,6 +44,15 @@ set(SPYLOG_LEVEL_MAP_debug 5)
 set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
 
+# Until c++11 beeing globaly enabled ...
+macro(fwEnableCpp11)
+    if(NOT WIN32)
+        add_definitions("--std=c++11")
+        if(APPLE)
+            add_definitions("--stdlib=libc++")
+        endif(APPLE)
+    endif()
+endmacro()
 
 macro(initProject PRJNAME )
     if(CREATE_SUBPROJECTS)
@@ -209,9 +220,9 @@ endmacro(fwExec)
 
 macro(fwCppunitTest FWPROJECT_NAME)
     set(options)
-    set(oneValueArgs BUNDLE)
+    set(oneValueArgs BUNDLE WORKING_DIRECTORY)
     set(multiValueArgs)
-    cmake_parse_arguments(TEST_OPTION "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments(fwCppunitTest "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
     initProject( ${FWPROJECT_NAME} tu )
 
@@ -220,14 +231,14 @@ macro(fwCppunitTest FWPROJECT_NAME)
     setVersion(${FWPROJECT_NAME} 0.0)
 
     add_executable(${FWPROJECT_NAME}
-        ${TEST_OPTION_UNPARSED_ARGUMENTS}
+        ${fwCppunitTest_UNPARSED_ARGUMENTS}
         ${${FWPROJECT_NAME}_HEADERS}
         ${${FWPROJECT_NAME}_SOURCES}
         ${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp
         )
 
-    if(TEST_OPTION_BUNDLE)
-        add_definitions(-DBUNDLE_TEST_PROFILE=\"share/tu_exec_${TEST_OPTION_BUNDLE}_0-0/profile.xml\")
+    if(fwCppunitTest_BUNDLE)
+        add_definitions(-DBUNDLE_TEST_PROFILE=\"share/tu_exec_${fwCppunitTest_BUNDLE}_0-0/profile.xml\")
     endif()
 
     configureProject( ${FWPROJECT_NAME} 0.0 )
@@ -238,7 +249,6 @@ macro(fwCppunitTest FWPROJECT_NAME)
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/tu/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
-
         if(${FWPROJECT_NAME}_INSTALL)
             createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/tu/rc"
                 "${${FWPROJECT_NAME}_RC_BUILD_DIR}" 
@@ -246,8 +256,12 @@ macro(fwCppunitTest FWPROJECT_NAME)
         endif()
     endif()
 
+    if(fwCppunitTest_WORKING_DIRECTORY)
+        set(fwCppunitTest_WORKING_DIRECTORY WORKING_DIRECTORY ${fwCppunitTest_WORKING_DIRECTORY})
+    endif()
+
     get_target_property(${FWPROJECT_NAME}_EXECUTABLE ${FWPROJECT_NAME} LOCATION)
-    add_test( ${FWPROJECT_NAME} ${${FWPROJECT_NAME}_EXECUTABLE} )
+    add_test( NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE}  )
 
 endmacro(fwCppunitTest)
 
@@ -502,7 +516,7 @@ macro(fwLoadProperties)
     elseif( TYPE STREQUAL "BUNDLE" )
         fwBundle(${NAME} ${VERSION} ${OPTIONS})
     elseif( TYPE STREQUAL "TEST" )
-        fwCppunitTest(${NAME} ${CPPUNITTEST_OPTIONS} ${OPTIONS})
+        fwCppunitTest(${NAME} "${CPPUNITTEST_OPTIONS}" "${OPTIONS}")
     endif()
 
     if(DEPENDENCIES)

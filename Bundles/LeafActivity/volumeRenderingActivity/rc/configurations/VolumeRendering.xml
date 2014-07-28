@@ -8,6 +8,7 @@
         <param name="AS_UID" />
         <param name="ICON_PATH" />
         <param name="imageUid" />
+        <param name="patient_name"  default="" />
         <param name="optionalModelSeriesCompositeUid" />
     </parameters>
     <config>
@@ -190,6 +191,10 @@
                             <adaptor id="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
                                 <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
                             </adaptor>
+
+                            <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageKey">
+                                <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+                            </adaptor>
                         </scene>
                     </service>
 
@@ -324,6 +329,7 @@
                                             <parameter replace="imageUid" by="self"  />
                                             <parameter replace="TFSelectionsUid" by="${GENERIC_UID}_TFSelections"  />
                                             <parameter replace="selectedTFKey" by="SelectedTF"  />
+                                            <parameter replace="patient_name" by="${patient_name}" />
                                             <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato"  />
                                         </parameters>
                                     </appConfig>

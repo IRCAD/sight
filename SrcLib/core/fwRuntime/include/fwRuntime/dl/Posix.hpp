@@ -8,7 +8,7 @@
 #define _FWRUNTIME_DL_POSIX_HPP
 
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
 
 
 #include <dlfcn.h>

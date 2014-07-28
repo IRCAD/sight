@@ -76,11 +76,19 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
 ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
     id(ext->findConfigurationElement("id")->getValue()),
     title(ext->findConfigurationElement("title")->getValue()),
+    tabInfo(title),
     description(ext->findConfigurationElement("desc")->getValue()),
     icon(ext->findConfigurationElement("icon")->getValue()),
     builderImpl(ext->findConfigurationElement("builder")->getValue()),
     appConfig(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
 {
+
+    if(ext->findConfigurationElement("tabinfo"))
+    {
+        tabInfo = ext->findConfigurationElement("tabinfo")->getValue();
+    }
+
+
     ::fwRuntime::ConfigurationElement::sptr req = ext->findConfigurationElement("requirements");
     for(  ::fwRuntime::ConfigurationElementContainer::Iterator elem = req->begin();
           elem != req->end();

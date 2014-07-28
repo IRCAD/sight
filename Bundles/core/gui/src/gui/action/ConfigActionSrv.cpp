@@ -19,14 +19,21 @@ namespace action
 //------------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrv, ::fwData::Object );
+const ::fwCom::Signals::SignalKeyType  ConfigActionSrv::s_LAUNCHED_SIG = "launched";
 
 //------------------------------------------------------------------------------
 
 ConfigActionSrv::ConfigActionSrv() throw() :
     m_viewConfigId(""),
-    m_configIsRunning(false)
+    m_configIsRunning(false),
+    m_sigLaunched(LaunchedSignalType::New())
 {
     //addNewHandledEvent("WINDOW_CLOSED");
+    ::fwCom::HasSignals::m_signals( s_LAUNCHED_SIG, m_sigLaunched );
+
+#ifdef COM_LOG
+    m_sigLaunched->setID( s_LAUNCHED_SIG );
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -155,6 +162,7 @@ void ConfigActionSrv::startConfig()
     this->connectToConfigRoot();
 
     m_configIsRunning = true;
+    fwServicesNotifyMacro(this->getLightID(), m_sigLaunched, ());
 }
 
 //------------------------------------------------------------------------------

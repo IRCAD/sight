@@ -26,6 +26,16 @@ struct convert_function_type;
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template <typename R, typename C, typename Args1, typename Args2, typename Args3, typename Args4, typename Args5 >
+struct convert_function_type< R (C::*) ( Args1, Args2, Args3, Args4, Args5 )  >
+{
+    typedef R type( Args1, Args2, Args3, Args4, Args5 ) ;
+};
+template <typename R, typename C, typename Args1, typename Args2, typename Args3, typename Args4 >
+struct convert_function_type< R (C::*) ( Args1, Args2, Args3, Args4 )  >
+{
+    typedef R type( Args1, Args2, Args3, Args4 ) ;
+};
 template <typename R, typename C, typename Args1, typename Args2, typename Args3 >
 struct convert_function_type< R (C::*) ( Args1, Args2, Args3 )  >
 {
@@ -64,6 +74,16 @@ struct convert_function_type< R (C::*) ( Args... )  >
 //===============================================================================
 //===============================================================================
 //==================================== BEGIN ====================================
+template <typename R, typename C, typename Args1, typename Args2, typename Args3, typename Args4, typename Args5 >
+struct convert_function_type< R (C::*) ( Args1, Args2, Args3, Args4, Args5 ) const  >
+{
+    typedef R type( Args1, Args2, Args3, Args4, Args5 ) ;
+};
+template <typename R, typename C, typename Args1, typename Args2, typename Args3, typename Args4 >
+struct convert_function_type< R (C::*) ( Args1, Args2, Args3, Args4 ) const  >
+{
+    typedef R type( Args1, Args2, Args3, Args4 ) ;
+};
 template <typename R, typename C, typename Args1, typename Args2, typename Args3 >
 struct convert_function_type< R (C::*) ( Args1, Args2, Args3 ) const  >
 {

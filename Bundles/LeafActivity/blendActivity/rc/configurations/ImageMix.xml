@@ -8,6 +8,7 @@
         <param name="TF_COMPOSITE_ID" />
         <param name="SELECTED_TF_KEYA" />
         <param name="SELECTED_TF_KEYB" />
+        <param name="patient_name"  default="" />
     </parameters>
 
     <config>
@@ -180,6 +181,10 @@
                                     <image objectId="frontImage" tfalpha="yes"
                                         selectedTFKey="${SELECTED_TF_KEYB}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
                                 </config>
+                            </adaptor>
+
+                            <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="self">
+                                <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
                             </adaptor>
 
                             <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->

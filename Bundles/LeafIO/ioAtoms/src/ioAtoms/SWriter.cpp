@@ -7,6 +7,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/algorithm/string/join.hpp>
 
+#include <fwAtomsBoostIO/types.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwAtomsHdf5IO/Writer.hpp>
@@ -256,13 +257,13 @@ void SWriter::updating() throw(::fwTools::Failed)
             {
                 // Write atom
                 ::fwZip::IWriteArchive::sptr writeArchive;
-                ::fwAtomsBoostIO::Writer::FormatType format;
+                ::fwAtomsBoostIO::FormatType format;
                 ::boost::filesystem::path archiveRootName;
                 if ( extension == ".json" )
                 {
                     writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
                     archiveRootName = filename;
-                    format = ::fwAtomsBoostIO::Writer::JSON;
+                    format = ::fwAtomsBoostIO::JSON;
                 }
                 else if ( extension == ".jsonz" )
                 {
@@ -272,13 +273,13 @@ void SWriter::updating() throw(::fwTools::Failed)
                     }
                     writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
                     archiveRootName = "root.json";
-                    format = ::fwAtomsBoostIO::Writer::JSON;
+                    format = ::fwAtomsBoostIO::JSON;
                 }
                 else if ( extension == ".xml" )
                 {
                     writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
                     archiveRootName = filename;
-                    format = ::fwAtomsBoostIO::Writer::XML;
+                    format = ::fwAtomsBoostIO::XML;
                 }
                 else if ( extension == ".xmlz" )
                 {
@@ -288,7 +289,7 @@ void SWriter::updating() throw(::fwTools::Failed)
                     }
                     writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
                     archiveRootName = "root.xml";
-                    format = ::fwAtomsBoostIO::Writer::XML;
+                    format = ::fwAtomsBoostIO::XML;
                 }
                 else
                 {

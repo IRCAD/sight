@@ -11,6 +11,7 @@ LIB = [
     'fwComEd_0-1',
     'fwCore_0-1',
     'fwData_0-1',
+    'fwDataCamp_0-1',
     'fwMath_0-1',
     'fwRenderVTK_0-1',
     'fwRender_0-1',

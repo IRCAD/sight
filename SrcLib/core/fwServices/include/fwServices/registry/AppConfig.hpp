@@ -179,6 +179,9 @@ private :
 
     /// The global instance of the app config.
     static AppConfig::sptr s_currentAppConfig;
+
+    /// The static identifier for mandatory parameters.
+    static std::string s_mandatoryParameterIdentifier;
 };
 
 } // namespace registry
