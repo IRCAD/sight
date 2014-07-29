@@ -1,0 +1,14 @@
+<plugin id="ioMidas" class="ioMidas::Plugin" >
+    <library name="ioMidas" />
+
+    <requirement id="io" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioMidas::SModelSeriesWriter</service>
+        <object>::fwMedData::ModelSeries</object>
+        <desc>Midas ModelSeries writer</desc>
+    </extension>
+
+</plugin>
+

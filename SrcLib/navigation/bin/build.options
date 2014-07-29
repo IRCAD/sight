@@ -1,0 +1,10 @@
+TYPE    = 'shared'
+LIB     = [
+          'fwData_0-1',
+          'fwCore_0-1',
+          'fwCom_0-1',
+          ]
+
+USE     = ['boost', 'vtkCommon', 'vtkFiltering']
+VERSION = '0-1'
+
