@@ -13,6 +13,12 @@ set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
+# Set warning level on Unix
+if(UNIX)
+    set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers ")
+endif()
+
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
@@ -364,7 +370,7 @@ endmacro(fwUseForward)
 
 
 macro(fwForwardInclude)
-    target_include_directories(${FWPROJECT_NAME} PUBLIC ${ARGV})
+    target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${ARGV})
 endmacro(fwForwardInclude)
 
 macro(fwForwardLink)
@@ -373,7 +379,7 @@ macro(fwForwardLink)
 endmacro(fwForwardLink)
 
 macro(fwInclude)
-    target_include_directories(${FWPROJECT_NAME} PRIVATE ${ARGV})
+    target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${ARGV})
 endmacro(fwInclude)
 
 macro(fwLink)
