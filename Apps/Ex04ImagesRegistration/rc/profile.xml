@@ -18,14 +18,10 @@
         <param id="config" value="Ex04ImagesRegistrationConfig" />
     </activate>
 
-    <activate id="uiIO" version="0-1" />
     <activate id="uiImageQt" version="0-1" />
     <activate id="uiVisu" version="0-1" />
     <activate id="uiVisuQt" version="0-1" />
-    <activate id="uiGenericQt" version="0-1" />
-    <activate id="uiMeasurement" version="0-1" />
-    <activate id="uiMeasurementQt" version="0-1" />
-
+    <activate id="uiIO" version="0-1" />
     <activate id="ioITK" version="0-1" />
     <activate id="ioVTK" version="0-1" />
     <activate id="ioData" version="0-1" />
