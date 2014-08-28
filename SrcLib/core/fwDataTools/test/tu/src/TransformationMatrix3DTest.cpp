@@ -42,9 +42,9 @@ bool isIdentity(::fwData::TransformationMatrix3D::sptr tm)
 {
     bool isIdentity = true;
 
-    for (int i=0 ; i<4 ; ++i)
+    for (size_t i=0 ; i<4 ; ++i)
     {
-        for (int j=0 ; j<4 ; ++j)
+        for (size_t j=0 ; j<4 ; ++j)
         {
             isIdentity &= (i==j?1.:0.) == tm->getCoefficient(i,j);
         }
@@ -110,12 +110,12 @@ void TransformationMatrix3DTest::matrixTest()
     ::fwData::Point::sptr p2 = ::fwData::Point::New();
 
     ::fwDataTools::TransformationMatrix3D::multiply(tm1, tm2, tm3);
-    for (int i=0 ; i<4 ; ++i)
+    for (size_t i=0 ; i<4 ; ++i)
     {
-        for (int j=0 ; j<4 ; ++j)
+        for (size_t j=0 ; j<4 ; ++j)
         {
             double val = 0;
-            for (int k=0 ; k<4 ; ++k)
+            for (size_t k=0 ; k<4 ; ++k)
             {
                 val += tm1->getCoefficient(i,k)*tm2->getCoefficient(k,j);
             }
