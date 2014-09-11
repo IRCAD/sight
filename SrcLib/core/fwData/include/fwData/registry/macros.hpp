@@ -13,9 +13,8 @@ namespace fwData
 {
 namespace registry
 {
-
 #define fwDataRegisterMacro( classname )                                  \
-    static ::fwData::Object::Registrar< classname > s__factory__record__ ## __LINE__ ;
+    static ::fwData::Object::Registrar< classname > BOOST_PP_CAT(s__factory__record__, __LINE__);
 
 } // end namespace registry
 } // end namespace fwData
