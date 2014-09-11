@@ -128,9 +128,13 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
 
     ::fwItkIO::ut::helper::roundSpacing(image2);
 
+
+    ::fwTest::helper::ExcludeSetType exclude;
+    exclude.insert("window_center");
+    exclude.insert("window_width");
     // check Image
     // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
-    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2));
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 }
 
 //------------------------------------------------------------------------------

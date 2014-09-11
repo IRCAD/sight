@@ -21,6 +21,7 @@
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
+#include <fwTest/helper/compare.hpp>
 
 #include <fwDataTools/Image.hpp>
 
@@ -42,20 +43,6 @@ namespace ut
 {
 
 static const double EPSILON = 0.00001;
-
-//-----------------------------------------------------------------------------
-
-void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
-{
-    ::fwDataCamp::visitor::CompareObjects visitor;
-    visitor.compare(objRef, objComp);
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
-    {
-        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
-    }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
-}
 
 //------------------------------------------------------------------------------
 
@@ -186,7 +173,11 @@ void IoItkTest::testSaveLoadInr()
     image2->setSpacing(spacing);
 
     // check Image
-    compare(image, image2);
+    ::fwTest::helper::ExcludeSetType exclude;
+    exclude.insert("window_center");
+    exclude.insert("window_width");
+
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 }
 
 //------------------------------------------------------------------------------
@@ -227,7 +218,11 @@ void IoItkTest::ImageSeriesInrTest()
     image2->setSpacing(spacing);
 
     // check Image
-    compare(image, image2);
+    ::fwTest::helper::ExcludeSetType exclude;
+    exclude.insert("window_center");
+    exclude.insert("window_width");
+
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 }
 
 //------------------------------------------------------------------------------

@@ -39,12 +39,12 @@ ImageSeries1::ImageSeries1( const ImageSeries1 &cpy ) : Series1(cpy)
 
 ::fwAtoms::Object::sptr ImageSeries1::create()
 {
-    ::fwAtoms::Object::sptr modelSeries = this->Series1::create();
-    ::fwAtomsPatch::helper::Object helper(modelSeries);
+    ::fwAtoms::Object::sptr imageSeries = this->Series1::create();
+    ::fwAtomsPatch::helper::Object helper(imageSeries);
 
     helper.addAttribute("image", ::fwAtoms::Blob::New());
 
-    return modelSeries;
+    return imageSeries;
 }
 
 } // namespace fwMedData
