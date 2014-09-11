@@ -258,6 +258,7 @@ void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation > &info, const
     int nbOfComponents = attrInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
     imgObj->setType( ::fwVtkIO::TypeTranslator::translate( attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE()) ) );
     imgObj->setNumberOfComponents(nbOfComponents);
+    imgObj->getDataArray()->setType(imgObj->getType());
 }
 
 void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const ::fwData::Image::sptr &imgObj)
