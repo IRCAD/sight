@@ -10,7 +10,7 @@
 fwCampImplementDataMacro((fwData)(Mesh))
 {
     builder
-        .tag("object_version", "1")
+        .tag("object_version", "2")
         .tag("lib_name", "fwData")
         .base< ::fwData::Object>()
         .property("nb_points"        , &::fwData::Mesh::m_nbPoints)
@@ -24,5 +24,6 @@ fwCampImplementDataMacro((fwData)(Mesh))
         .property("cell_colors"      , &::fwData::Mesh::m_cellColors)
         .property("point_normals"    , &::fwData::Mesh::m_pointNormals)
         .property("cell_normals"     , &::fwData::Mesh::m_cellNormals)
+        .property("array_map"     , &::fwData::Mesh::m_arrayMap)
         ;
 }
