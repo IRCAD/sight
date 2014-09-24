@@ -89,9 +89,11 @@ macro(initProject PRJNAME )
     endforeach(SUBDIR)
 
     set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE) 
-
+    set (${FWPROJECT_NAME}_DIR     ${CMAKE_CURRENT_SOURCE_DIR}  PARENT_SCOPE)
+    
     set (${FWPROJECT_NAME}_HEADERS ${${FWPROJECT_NAME}_HEADERS} PARENT_SCOPE) 
-    set (${FWPROJECT_NAME}_SOURCES ${${FWPROJECT_NAME}_SOURCES} PARENT_SCOPE) 
+    set (${FWPROJECT_NAME}_SOURCES ${${FWPROJECT_NAME}_SOURCES} PARENT_SCOPE)
+    
 endmacro(initProject)
 
 
@@ -686,3 +688,9 @@ foreach(PROJECT ${PROJECT_LIST})
     addProject(${PROJECT})
 endforeach()
 
+# Eclipse project
+option(ECLIPSE_PROJECT "Generate eclipse project" OFF)
+if(ECLIPSE_PROJECT)
+    include(${FWCMAKE_RESOURCE_PATH}eclipse/eclipse_generator.cmake)
+    eclipseGenerator(${PROJECT_LIST})
+endif(ECLIPSE_PROJECT)
