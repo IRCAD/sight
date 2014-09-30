@@ -33,7 +33,7 @@ public:
 
     /**
      * @brief Multiply two matrices.
-     * @param[in] ftrf_A First matrix.
+     * @param[in] fTrf_A First matrix.
      * @param[in] fTrf_B Second matrix.
      * @param[out] fTrf_C Output matrix.
      */
@@ -42,7 +42,7 @@ public:
 
     /**
      * @brief Set the matrix to identity.
-     * @param[in/out] trf Matrix we want to set to identity.
+     * @param[in,out] trf Matrix we want to set to identity.
      */
     FWDATATOOLS_API static void identity(::fwData::TransformationMatrix3D::sptr trf);
 
