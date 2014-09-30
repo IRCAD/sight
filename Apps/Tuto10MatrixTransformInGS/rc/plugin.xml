@@ -138,12 +138,6 @@
                         <config renderer="default" picker="" transform="mat5" />
                     </adaptor>
                     
-                    
-                    
-                    <adaptor id="Renderer" class="::visuVTKAdaptor::Render" objectId="self">
-                        <config renderer="default" picker="" />
-                    </adaptor>
-
                     <adaptor id="TMAdaptor1" class="::visuVTKAdaptor::Mesh" objectId="mesh">
                         <config renderer="default" picker="" />
                     </adaptor>

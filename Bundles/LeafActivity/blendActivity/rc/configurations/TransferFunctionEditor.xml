@@ -85,9 +85,6 @@
                 <scene>
                     <picker id="negato2default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
-                    <adaptor id="renderNegato2" class="::visuVTKAdaptor::Render" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
                     <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
                         <config renderer="default" />
                     </adaptor>

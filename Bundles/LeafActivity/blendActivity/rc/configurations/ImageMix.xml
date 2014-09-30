@@ -153,9 +153,6 @@
                             <vtkObject id="imageBlend" class="vtkImageBlend" />
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                                <config renderer="default" picker="" />
-                            </adaptor>
                             <adaptor uid="${GENERIC_UID}_MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
                                 <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend"
                                     selectedTFKey="${SELECTED_TF_KEYA}" tfSelectionFwID="${TF_COMPOSITE_ID}" />

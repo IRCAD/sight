@@ -68,10 +68,6 @@
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="renderNegato" class="::visuVTKAdaptor::Render" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
-
                             <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
