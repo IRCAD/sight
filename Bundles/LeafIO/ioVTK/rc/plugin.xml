@@ -7,13 +7,6 @@
     <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioVTK::MaxMeshReaderService</service>
-        <object>::fwData::Model</object>
-        <desc>3ds Reader (VTK)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioVTK::ImageWriterService</service>
         <object>::fwData::Image</object>
@@ -32,20 +25,6 @@
         <service>::ioVTK::ImageReaderService</service>
         <object>::fwData::Image</object>
         <desc>VTK Image Reader (VTK)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioVTK::TriangularMeshReaderService</service>
-        <object>::fwData::TriangularMesh</object>
-        <desc>VTK triangle mesh Reader (VTK)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioVTK::TriangularMeshWriterService</service>
-        <object>::fwData::TriangularMesh</object>
-        <desc>VTK triangle mesh Writer (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -81,13 +60,6 @@
         <service>::ioVTK::SModelSeriesObjWriter</service>
         <object>::fwMedData::ModelSeries</object>
         <desc>Wavefront OBJ files (VTK)</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioVTK::VtkModelReaderService</service>
-        <object>::fwData::Model</object>
-        <desc>Model Reader (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

@@ -24,13 +24,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioData::TriangularMeshReaderService</service>
-        <object>::fwData::TriangularMesh</object>
-        <desc>Trian file reader</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
         <service>::ioData::TransformationMatrix3DReaderService</service>
         <object>::fwData::TransformationMatrix3D</object>
         <desc>TransformationMatrix3D Reader</desc>
@@ -41,13 +34,6 @@
         <service>::ioData::TransformationMatrix3DWriterService</service>
         <object>::fwData::TransformationMatrix3D</object>
         <desc>TransformationMatrix3D Writer</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioData::TriangularMeshWriterService</service>
-        <object>::fwData::TriangularMesh</object>
-        <desc>Trian file writer</desc>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">

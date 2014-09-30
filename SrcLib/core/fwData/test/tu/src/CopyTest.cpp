@@ -22,7 +22,6 @@
 #include <fwData/List.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/Model.hpp>
 #include <fwData/Node.hpp>
 #include <fwData/Object.hpp>
 #include <fwData/Plane.hpp>
@@ -43,7 +42,6 @@
 #include <fwData/Tag.hpp>
 #include <fwData/TransferFunction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/Vector.hpp>
 #include <fwData/Video.hpp>
 #include <fwData/location/Folder.hpp>
@@ -107,13 +105,11 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::String);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransferFunction);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TransformationMatrix3D);
-    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::TriangularMesh);
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Vector);
 
 //Not implemented !?
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Camera);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Edge);
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Model);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Node);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Object);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Port);

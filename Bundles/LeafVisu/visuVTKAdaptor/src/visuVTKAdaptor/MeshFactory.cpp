@@ -13,7 +13,6 @@
 #include <vtkPlaneCollection.h>
 
 #include <fwData/Material.hpp>
-#include <fwData/TriangularMesh.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 
@@ -51,35 +50,6 @@ MeshFactory::~MeshFactory()
 vtkActor* MeshFactory::getActor()
 {
     return m_actor;
-}
-
-//------------------------------------------------------------------------------
-
-void MeshFactory::updateTriangulaMesh( ::fwData::TriangularMesh::sptr mesh)
-{
-    vtkPolyData * polyData       = ::fwVtkIO::toVTKMesh(mesh);
-    vtkPolyDataMapper  * mapper  = vtkPolyDataMapper::New();
-
-    m_normals->SetInputData(polyData);
-    m_normals->ComputePointNormalsOn ();
-    m_normals->ComputeCellNormalsOff ();
-    m_normals->ConsistencyOn ();
-    m_normals->SplittingOn ();
-    m_normals->SetFeatureAngle(m_normalsFeatureAngle);
-
-
-    mapper->SetInputConnection(m_normals->GetOutputPort());
-
-    m_actor->SetMapper(mapper);
-
-    if (m_clippingPlanes)
-    {
-        mapper->RemoveAllClippingPlanes();
-        mapper->SetClippingPlanes(m_clippingPlanes);
-    }
-
-    mapper->Delete();
-    polyData->Delete();
 }
 
 //------------------------------------------------------------------------------

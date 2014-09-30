@@ -127,9 +127,6 @@
                             <picker id="myPicker" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-                            <adaptor id="myTrianAdaptor" class="::visuVTKAdaptor::TriangularMesh" objectId="myTrianMesh">
-                                <config renderer="default" picker="" />
-                            </adaptor>
                             <adaptor id="myMeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="myMesh">
                                 <config renderer="default" picker="" />
                             </adaptor>
@@ -200,11 +197,6 @@
                         </object>
                     </item>
                     
-                    <item key="myTrianMesh">
-                        <object type="::fwData::TriangularMesh">
-                            
-                        </object>
-                    </item>
                 </object>
             </item>
 

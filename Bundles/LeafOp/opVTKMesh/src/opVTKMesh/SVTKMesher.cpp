@@ -166,7 +166,7 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     reconstruction->setCRefOrganName("OrganMesher_VTK_" + ::boost::lexical_cast<std::string>(organNumber));
     reconstruction->setCRefStructureType("OrganType");
     reconstruction->setIsVisible(true);
-    // Set Triangular Mesh
+    // Set Mesh
     reconstruction->setMesh(mesh);
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();

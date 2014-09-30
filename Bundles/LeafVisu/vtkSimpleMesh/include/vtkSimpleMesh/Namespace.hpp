@@ -8,7 +8,7 @@
 #define VTKSIMPLEMESHNAMESPACE_HPP_
 
 /**
- * @brief       The namespace vtkSimpleMesh contains a service which renders one mesh (::fwData::TriangularMesh).
+ * @brief       The namespace vtkSimpleMesh contains a service which renders one mesh (::fwData::Mesh).
  * @namespace   vtkSimpleMesh
  * 
  * @date        2009-2010.

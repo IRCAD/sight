@@ -221,10 +221,10 @@ void MeshesBoxWidget::updateFromVtk()
 
     BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
     {
-        ::fwData::Mesh::sptr triangularMesh = ::fwData::Mesh::dynamicCast(elt.second);
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
-        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", triangularMesh->getField("TransformMatrix"));
-        fieldTransform = triangularMesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+        SLM_ASSERT("Mesh must have a TransformMatrix field", mesh->getField("TransformMatrix"));
+        fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
         vtkTransform * transform = vtkTransform::New();
         vtkLinearTransform * meshTransform = m_meshMap[elt.first]->GetUserTransform();
