@@ -13,8 +13,6 @@
 #include <fwRenderVTK/VtkRenderService.hpp>
 #include <fwRenderVTK/vtk/Instantiator.hpp>
 
-#include <fwData/Composite.hpp>
-
 #include "visuVTK/Plugin.hpp"
 
 namespace visuVTK
