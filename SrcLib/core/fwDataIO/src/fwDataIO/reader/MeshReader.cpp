@@ -13,11 +13,9 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/home/phoenix/statement/sequence.hpp>
-#include <boost/spirit/home/phoenix/container.hpp>
-#include <boost/spirit/home/phoenix/bind/bind_member_function.hpp>
-#include <boost/spirit/home/phoenix/core/argument.hpp>
-#include <boost/spirit/home/phoenix/operator/bitwise.hpp>
+#include <boost/spirit/include/phoenix_bind.hpp>
+#include <boost/spirit/include/phoenix_statement.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/Mesh.hpp>
@@ -106,10 +104,10 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
             ulong_long
             [
                 ref(nbPoints) = _1,
-                phx::bind(&::fwData::Mesh::setNumberOfPoints, *mesh, _1),
+                phx::bind(&::fwData::Mesh::setNumberOfPoints, mesh, _1),
                 phx::push_back(phx::ref(pointArraySize),phx::ref(nbPoints)),
-                phx::bind(&::fwData::Array::resize, *pointArray, phx::ref(pointArraySize), true) ,
-                ref(pointArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::PointValueType >, pointHelper )
+                phx::bind(&::fwData::Array::resize, pointArray, phx::ref(pointArraySize), true) ,
+                ref(pointArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::PointValueType >, &pointHelper )
             ]
 
             >> repeat(ref(nbPoints))
@@ -125,11 +123,11 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
             >> ulong_long
             [
                 ref(nbCells) = _1,
-                phx::bind(&::fwData::Mesh::setNumberOfCells, *mesh, _1),
-                phx::bind(&::fwData::Mesh::setCellDataSize, *mesh, _1*3),
-                phx::bind(&::fwData::Mesh::adjustAllocatedMemory, *mesh),
-                ref(cellDataArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::CellValueType >, cellDataHelper ),
-                ref(cellNormalsArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::NormalValueType >, cellNormalsHelper )
+                phx::bind(&::fwData::Mesh::setNumberOfCells, mesh, _1),
+                phx::bind(&::fwData::Mesh::setCellDataSize, mesh, _1*3),
+                phx::bind(&::fwData::Mesh::adjustAllocatedMemory, mesh),
+                ref(cellDataArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::CellValueType >, &cellDataHelper ),
+                ref(cellNormalsArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::NormalValueType >, &cellNormalsHelper )
             ]
 
             >> repeat(ref(nbCells))

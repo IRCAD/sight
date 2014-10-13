@@ -304,7 +304,7 @@ void Writer::write( ::fwZip::IWriteArchive::sptr archive,
         break;
     case XML:
     {
-        ::boost::property_tree::xml_writer_settings<char> settings(' ', 4);
+        ::boost::property_tree::xml_writer_settings<std::string> settings(' ', 4);
         ::boost::property_tree::xml_parser::write_xml(*os, root, settings);
         break;
     }
