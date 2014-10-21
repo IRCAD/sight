@@ -4,11 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKQt/Plugin.hpp"
+
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwCore/spyLog.hpp>
 
-#include "visuVTKQt/Plugin.hpp"
+//Required for proper object factory initialization
+#include <vtkAutoInit.h>
+
+VTK_MODULE_INIT(vtkRenderingOpenGL);
 
 namespace visuVTKQt
 {
