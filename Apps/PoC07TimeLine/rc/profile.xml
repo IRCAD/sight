@@ -1,0 +1,14 @@
+﻿<profile name="PoC07TimeLine" version="0.1">
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+    
+    <activate id="PoC07TimeLine" version="0-1" />
+    <activate id="appXml" version="0-1">
+        <param id="config" value="PoC07TimeLineConfig" />
+    </activate>
+
+    <start id="PoC07TimeLine" />
+    <start id="appXml" />
+
+</profile>
