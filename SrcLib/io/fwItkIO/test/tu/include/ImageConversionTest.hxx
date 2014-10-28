@@ -31,6 +31,8 @@ void ImageConversionTest::stressTestForAType()
 
         ::fwTest::helper::ExcludeSetType exclude;
         exclude.insert("array.isOwner");
+        exclude.insert("window_center");
+        exclude.insert("window_width");
 
         ::fwData::Image::sptr image2 = ::fwData::Image::New();
         bool image2ManagesHisBuffer = false;

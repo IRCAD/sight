@@ -45,6 +45,8 @@ public:
     void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
     void setInterpolation(bool interpolation){m_interpolation = interpolation;};
 
+    void setActorOpacity(double actorOpacity) {m_actorOpacity = actorOpacity;};
+
     void setUseImageTF(bool use)               {m_useImageTF = use;};
 
 protected :
@@ -54,6 +56,26 @@ protected :
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+
+    /**
+     * @brief Configures the service
+     *
+     * @verbatim
+       <adaptor id="imageSlice" class="::visuVTKAdaptor::ImageSlice" objectId="self">
+           <config renderer="default" picker="negatodefault" sliceIndex="axial"
+                   transform="trf" ctrlimage="imageKey" interpolation="off" vtkimagesource="imgSource"
+                   actorOpacity="1.0" />
+       </adaptor>
+       @endverbatim
+     * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+     * - \b picker (mandatory): identifier of the picker
+     * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
+     * - \b transform (optional): the vtkTransform to associate to the adaptor
+     * - \b ctrlimage (mandatory): image to show
+     * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
+     * - \b vtkimagesource (optional): source image, used for blend
+     * - \b actorOpacity (optional, default=1.0): actor opacity (float)
+     */
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
@@ -74,6 +96,7 @@ protected :
 
     bool m_interpolation;
     bool m_useImageTF;
+    double m_actorOpacity;
 
     std::string m_imageSourceId;
     vtkObject  *m_imageSource;

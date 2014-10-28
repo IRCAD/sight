@@ -10,7 +10,7 @@ LIB     = [
           'fwGui_0-1',
           'fwGuiQt_0-1',
           ]
-USE     = ['qtCore','boost', 'boostFilesystem']
+USE     = ['qt5Core','boost', 'boostFilesystem']
 BUNDLES = [
     'gui_0-1',
     ]

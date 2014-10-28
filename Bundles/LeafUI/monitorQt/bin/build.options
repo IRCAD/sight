@@ -1,6 +1,6 @@
 TYPE     = 'bundle'
 VERSION  = '0-1'
-USE      = ['qtCore','qtGui','boost','libxml2']
+USE      = ['qt5Core','boost','libxml2']
 
 LIB      = [
            'fwTools_0-1',

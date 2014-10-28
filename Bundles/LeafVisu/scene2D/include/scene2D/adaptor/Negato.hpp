@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,7 +47,7 @@ private:
     void updateBufferFromImage( QImage * qimg );
     void changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord );
 
-    QRgb getQImageVal(const unsigned int index, signed short* buffer,
+    QRgb getQImageVal(const size_t index, signed short* buffer,
             const double wlMin, const double wlMax, const double window,
             const double tfMin, const double tfMax,
             ::fwData::TransferFunction::sptr tf);

@@ -28,6 +28,7 @@
 #include <vtkStructuredPointsReader.h>
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkXMLImageDataReader.h>
+#include <vtkDataSetAttributes.h>
 
 #include <fwCore/base.hpp>
 
@@ -250,22 +251,26 @@ void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation > &info, const
     ::fwData::Image::OriginType origin(3, 0);
     info->Get(vtkDataObject::ORIGIN(), &origin[0]);
     imgObj->setOrigin(origin);
+
+    vtkInformation *attrInfo = vtkDataObject::GetActiveFieldInformation(info, vtkDataObject::FIELD_ASSOCIATION_POINTS,
+                                                                        vtkDataSetAttributes::SCALARS);
+    int type = attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
+    int nbOfComponents = attrInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
+    imgObj->setType( ::fwVtkIO::TypeTranslator::translate( attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE()) ) );
+    imgObj->setNumberOfComponents(nbOfComponents);
+    imgObj->getDataArray()->setType(imgObj->getType());
 }
 
 void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const ::fwData::Image::sptr &imgObj)
 {
-    vtkSmartPointer< vtkImageData  > vtkImage = vtkImageData::SafeDownCast(reader->GetOutput());
-    imgObj->setType( ::fwVtkIO::TypeTranslator::translate( vtkImage->GetScalarType() ) );
-
-    vtkSmartPointer< vtkStructuredPointsReader > imgReader =
-        vtkSmartPointer< vtkStructuredPointsReader >::New();
+    vtkSmartPointer< vtkStructuredPointsReader > imgReader = vtkSmartPointer< vtkStructuredPointsReader >::New();
     imgReader->SetFileName(reader->GetFileName());
 
     vtkSmartPointer< vtkInformation > info = vtkSmartPointer< vtkInformation >::New();
     imgReader->ReadMetaData(info);
 
     updateImageFromVtkInfo(info, imgObj);
-    imgObj->getDataArray()->resize(imgObj->getType(), imgObj->getSize(), vtkImage->GetNumberOfScalarComponents(), false);
+    imgObj->getDataArray()->resize(imgObj->getSize(), false);
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
@@ -275,11 +280,7 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const 
 
 void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, const ::fwData::Image::sptr &imgObj)
 {
-    vtkSmartPointer< vtkImageData  > vtkImage = vtkImageData::SafeDownCast(reader->GetOutput());
-    imgObj->setType( ::fwVtkIO::TypeTranslator::translate( vtkImage->GetScalarType() ) );
-
-    vtkSmartPointer< vtkXMLImageDataReader > imgReader =
-        vtkSmartPointer< vtkXMLImageDataReader >::New();
+    vtkSmartPointer< vtkXMLImageDataReader > imgReader = vtkSmartPointer< vtkXMLImageDataReader >::New();
     imgReader->SetFileName(reader->GetFileName());
 
     vtkSmartPointer< vtkInformation > info = vtkSmartPointer< vtkInformation >::New();
@@ -287,7 +288,7 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
     imgReader->CopyOutputInformation(info,0);
 
     updateImageFromVtkInfo(info, imgObj);
-    imgObj->getDataArray()->resize(imgObj->getType(), imgObj->getSize(), vtkImage->GetNumberOfScalarComponents(), false);
+    imgObj->getDataArray()->resize(imgObj->getSize(), false);
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();

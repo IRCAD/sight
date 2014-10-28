@@ -32,7 +32,7 @@ public:
         itk::LightProcessObject* po = dynamic_cast<itk::LightProcessObject*>(caller);
         if( !po ) return;
         float percent = po->GetProgress();
-        OSLM_TRACE("LocalCommand::Execute" << m_msg << " " << percent );
+        OSLM_TRACE("LocalCommand::Execute '" << m_msg << "' " << percent );
         m_adviser->notifyProgress( percent , m_msg );
     }
 

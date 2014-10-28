@@ -11,8 +11,9 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwAtoms/Sequence.hpp>
 #include <fwAtomConversion/convert.hpp>
+
+#include <fwAtoms/Sequence.hpp>
 #include <fwDataCamp/getObject.hpp>
 
 #include "fwMedDataCamp/SeriesDBTest.hpp"

@@ -12,6 +12,7 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QComboBox>
+#include <QCheckBox>
 
 #include <map>
 
@@ -21,6 +22,7 @@
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -48,7 +50,6 @@ SOrganTransformation::SOrganTransformation() throw() :
     m_loadButton( 0 ),
     m_resetButton( 0 ),
     m_reconstructionListBox( 0 ),
-    m_testButton( 0 ),
     m_saveCount( 0 )
 {
     //addNewHandledEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION );
@@ -88,6 +89,7 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
     QVBoxLayout* layoutGroupBox = new QVBoxLayout(container);
     groupBox->setLayout(layoutGroupBox);
 
+    m_selectAllCheckBox     = new QCheckBox(tr("Select All"), container );
     m_reconstructionListBox = new QListWidget( groupBox);
     m_resetButton           = new QPushButton(tr("Reset"), container );
     m_saveButton            = new QPushButton(tr("Save"), container );
@@ -102,19 +104,14 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
     QObject::connect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
     QObject::connect(m_saveButton, SIGNAL(clicked( )), this, SLOT(onSaveClick()));
     QObject::connect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
+    QObject::connect(m_selectAllCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onSelectAllChanged(int)));
 
-    //testing
-    m_testButton = new QPushButton(tr("Test"), container);
-    QObject::connect(m_testButton, SIGNAL(clicked()), this, SLOT(onTestClick()));
-
+    layoutGroupBox->addWidget( m_selectAllCheckBox, 0);
     layoutGroupBox->addWidget( m_reconstructionListBox, 1);
     layoutGroupBox->addWidget( m_resetButton, 0);
     layoutGroupBox->addWidget( m_saveButton, 0);
     layoutGroupBox->addWidget( m_saveSelectionComboBox,0);
     layoutGroupBox->addWidget( m_loadButton, 0);
-
-    //test
-    layoutGroupBox->addWidget( m_testButton, 0);
 
     container->setLayout( layout );
 
@@ -132,9 +129,7 @@ void SOrganTransformation::stopping() throw( ::fwTools::Failed )
     QObject::disconnect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
     QObject::disconnect(m_saveButton, SIGNAL(clicked( )), this, SLOT(onSaveClick()));
     QObject::disconnect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
-
-    //test
-    QObject::disconnect(m_testButton, SIGNAL(clicked( )), this, SLOT(onTestClick()));
+    QObject::disconnect(m_selectAllCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onSelectAllChanged(int)));
 
     this->getContainer()->clean();
     this->destroy();
@@ -280,8 +275,7 @@ void SOrganTransformation::onResetClick()
                 pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
         if (pTmpMat)
         {
-            ::fwData::TransformationMatrix3D::sptr pIdentMat;
-            pTmpMat = ::fwData::Object::copy(pIdentMat);
+            ::fwDataTools::TransformationMatrix3D::identity(pTmpMat);
             this->notitfyTransformationMatrix(pTmpMat);
         }
     }
@@ -348,41 +342,45 @@ void SOrganTransformation::onLoadClick()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::onTestClick()
+void SOrganTransformation::onSelectAllChanged(int state)
 {
-    ::fwData::TransformationMatrix3D::sptr pRandTmpMat = ::fwData::TransformationMatrix3D::New();
-    srand(time(NULL));
 
-    //randomize the translation parts
-    //pRandTmpMat->setCoefficient(0, 3, (double)(-rand()%50) + 25);
-    //pRandTmpMat->setCoefficient(1, 3, (double)(-rand()%50) + 25);
-    //pRandTmpMat->setCoefficient(2, 3, (double)(-rand()%50) + 25);
-
-    //randomize the 12 parameters of affine transformation matrix
-    for (unsigned int i = 0; i < 3; i++)
+    if (::fwTools::fwID::exist(m_TMSUid))
     {
-        for(unsigned int j = 0; j < 4; j++)
+        ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
+        ::fwComEd::helper::Composite compositeHelper(composite);
+
+        if(state == Qt::Checked)
         {
-            pRandTmpMat->setCoefficient(i, j, (double)(-rand()%4 + 2));
+            m_reconstructionListBox->setEnabled(false);
+
+            ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
+
+            BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+            {
+                if(composite->find(rec->getOrganName()) == composite->end())
+                {
+                    compositeHelper.add(rec->getOrganName(), rec->getMesh());
+                }
+            }
+
         }
-    }
-
-    InnerMatMappingType matMap = m_saveListing[m_saveSelectionComboBox->currentText().toStdString()];
-
-    ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
-
-    //search the corresponding triangular mesh
-    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
-    {
-        ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
-
-        ::fwData::TransformationMatrix3D::sptr pTmpMat =
-                pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
-        if (pTmpMat)
+        else if(state == Qt::Unchecked)
         {
-            pTmpMat->setCoefficients(pRandTmpMat->getCoefficients());
-            this->notitfyTransformationMatrix(pTmpMat);
+            m_reconstructionListBox->setEnabled(true);
+
+            QList<QListWidgetItem*> itemList =  m_reconstructionListBox->findItems("", Qt::MatchContains);
+            BOOST_FOREACH(QListWidgetItem* item, itemList)
+            {
+               if(item->checkState() == Qt::Unchecked)
+               {
+                   compositeHelper.remove(item->text().toStdString());
+               }
+            }
+
+            this->refresh();
         }
+        compositeHelper.notify(this->getSptr());
     }
 }
 

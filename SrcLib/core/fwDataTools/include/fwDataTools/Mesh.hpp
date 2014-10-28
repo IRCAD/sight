@@ -9,7 +9,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Mesh.hpp>
 
@@ -97,24 +96,6 @@ public :
      * @param[in]  mesh fwData::Mesh mesh structure to colorize.
      */
     FWDATATOOLS_API static void colorizeMeshCells(::fwData::Mesh::sptr mesh);
-
-    /**
-     * @brief Convert fwData::Mesh to fwData::TriangularMesh structure.
-     *
-     * @param[in]   mesh fwData::Mesh mesh to convert.
-     * @param[out]  trian fwData::TriangularMesh destination for the converted mesh.
-     *
-     * @pre Mesh must contains only triangular cells.
-     */
-    FWDATATOOLS_API static void toTriangularMesh(::fwData::Mesh::sptr mesh, ::fwData::TriangularMesh::sptr trian);
-
-    /**
-     * @brief Convert fwData::TriangularMesh to fwData::Mesh structure.
-     *
-     * @param[in]  trian fwData::TriangularMesh triangular mesh to convert.
-     * @param[out] mesh fwData::Mesh destination for the converted triangular mesh.
-     */
-    FWDATATOOLS_API static void fromTriangularMesh(::fwData::TriangularMesh::sptr trian, ::fwData::Mesh::sptr mesh);
 
     /**
      * @brief

@@ -802,7 +802,7 @@ void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
     }
     m_polyData = vtkPolyData::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
-    m_mapper->SetInput(m_polyData);
+    m_mapper->SetInputData(m_polyData);
 
     if (m_autoResetCamera)
     {
@@ -816,7 +816,7 @@ void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
 vtkActor *Mesh::newActor()
 {
     vtkActor *actor = vtkActor::New();
-    m_mapper->SetInput(m_polyData);
+    m_mapper->SetInputData(m_polyData);
 
     if (m_clippingPlanes)
     {

@@ -9,7 +9,7 @@ LIB     = [
           'fwTools_0-1',
           'fwGuiQt_0-1'
           ]
-USE     = ['qtCore','boost']
+USE     = ['qt5Core','boost']
 BUNDLES = ['gui_0-1']
 
 

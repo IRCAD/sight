@@ -13,6 +13,6 @@ fwForwardInclude(
     ${VTK_INCLUDE_DIRS} 
     )
 fwLink(
-    vtkWidgets
+    vtkInteractionWidgets
     )
 

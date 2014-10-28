@@ -137,7 +137,8 @@ void GridFromFloat::doStart() throw ( ::fwTools::Failed )
     m_layer = new QGraphicsItemGroup();
     // Set the pen a style
     m_pen.setStyle(Qt::DashLine);
-    this->draw();  
+    m_pen.setCosmetic(true);
+    this->draw();
 }
 
 void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )

@@ -7,9 +7,7 @@
 #ifndef _VISUVTKADAPTOR_VTKADAPTOR_MESHFACTORY_HPP_
 #define _VISUVTKADAPTOR_VTKADAPTOR_MESHFACTORY_HPP_
 
-
 #include <fwData/Material.hpp>
-#include <fwData/TriangularMesh.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -34,8 +32,6 @@ public:
 protected:
 
     VISUVTKADAPTOR_API vtkActor* getActor();
-
-    VISUVTKADAPTOR_API void updateTriangulaMesh( ::fwData::TriangularMesh::sptr mesh);
 
     VISUVTKADAPTOR_API void updateMaterial( ::fwData::Material::sptr material );
 

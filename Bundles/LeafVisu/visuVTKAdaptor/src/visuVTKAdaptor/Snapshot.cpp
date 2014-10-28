@@ -154,7 +154,7 @@ void Snapshot::snap(std::string filePath)
     snapper->SetInput( this->getRenderer()->GetRenderWindow() );
 
 
-    writer->SetInput( snapper->GetOutput() );
+    writer->SetInputConnection( snapper->GetOutputPort() );
     writer->SetFileName( pathImageSnap.string().c_str() );
     writer->Write();
 

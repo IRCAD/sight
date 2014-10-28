@@ -216,7 +216,7 @@ void Histogram::processInteraction( ::scene2D::data::Event::sptr _event)
     if( _event->getType() == ::scene2D::data::Event::MouseWheelUp )
     {
         m_scale *= SCALE;
-        m_layer->scale(1, SCALE);
+        m_layer->setTransform(QTransform::fromScale(1, SCALE), true);
 
         //_event->setAccepted( true );
         m_yAxis->setScale( m_scale );
@@ -226,7 +226,7 @@ void Histogram::processInteraction( ::scene2D::data::Event::sptr _event)
     else if( _event->getType() == ::scene2D::data::Event::MouseWheelDown )
     {
         m_scale /= SCALE;
-        m_layer->scale(1, 1 / SCALE);
+        m_layer->setTransform(QTransform::fromScale(1, 1 / SCALE), true);
 
         //_event->setAccepted( true );
         m_yAxis->setScale( m_scale );

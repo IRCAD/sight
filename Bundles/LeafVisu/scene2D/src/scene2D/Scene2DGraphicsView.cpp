@@ -99,11 +99,11 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
 
-    OSLM_TRACE("Press in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
+    OSLM_TRACE("Press in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
 
     ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonPress );
-    sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
+    sceneEvent->setCoord( ::scene2D::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -173,11 +173,11 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
 
-    OSLM_TRACE("DoubleClick in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
+    OSLM_TRACE("DoubleClick in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
 
     ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonDoubleClick );
-    sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
+    sceneEvent->setCoord( ::scene2D::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -189,10 +189,10 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
 void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
-    OSLM_TRACE("Release in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
+    OSLM_TRACE("Release in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
     ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::MouseButtonRelease );
-    sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
+    sceneEvent->setCoord( ::scene2D::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 
@@ -205,10 +205,10 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent * _event )
 {
     SLM_TRACE_FUNC();
 
-    OSLM_TRACE("Move in x = " <<  _event->posF().x() << " y = " << _event->posF().y() );
+    OSLM_TRACE("Move in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
     ::scene2D::data::Event::sptr sceneEvent = ::scene2D::data::Event::New();
     sceneEvent->setType( ::scene2D::data::Event::MouseMove );
-    sceneEvent->setCoord( ::scene2D::data::Coord( _event->posF().x(), _event->posF().y() ) );
+    sceneEvent->setCoord( ::scene2D::data::Coord( _event->localPos().x(), _event->localPos().y() ) );
     sceneEvent->setButton( this->getScene2DButtonFromEvent( _event ) );
     sceneEvent->setModifier( this->getScene2DModifierFromEvent( _event) );
 

@@ -32,7 +32,6 @@
 #define __FWRENDERVTK_VTKCELLPICKER__
 
 #include <vector>
-#include <fwData/TriangularMesh.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
@@ -64,7 +63,6 @@ public:
 
   typedef std::vector< std::pair<int, fwVec3d> > PickedCellType;
 
-  FWRENDERVTK_API PickedCellType GetPickedCellIds( double p1[3], double p2[3], ::fwData::TriangularMesh::sptr mesh);
   FWRENDERVTK_API PickedCellType GetPickedCellIds( double p1[3], double p2[3], vtkPolyData *polydata);
 
 protected:

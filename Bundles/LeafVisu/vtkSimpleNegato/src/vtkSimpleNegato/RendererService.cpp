@@ -164,7 +164,7 @@ void RendererService::initVTKPipeline()
     ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
 
     m_outline = vtkOutlineFilter::New();
-    m_outline->SetInput(vtk_img);
+    m_outline->SetInputData(vtk_img);
 
     vtkPolyDataMapper* outlineMapper = vtkPolyDataMapper::New();
     outlineMapper->SetInputConnection(m_outline->GetOutputPort());
@@ -183,7 +183,7 @@ void RendererService::initVTKPipeline()
     m_negatoSagittal->SetPicker(picker);
     m_negatoSagittal->GetPlaneProperty()->SetColor(1,0,0);
     m_negatoSagittal->TextureInterpolateOn();
-    m_negatoSagittal->SetInput(vtk_img);
+    m_negatoSagittal->SetInputData(vtk_img);
     m_negatoSagittal->SetPlaneOrientationToXAxes();
     m_negatoSagittal->DisplayTextOn();
     m_negatoSagittal->On();
@@ -195,7 +195,7 @@ void RendererService::initVTKPipeline()
     m_negatoFrontal->SetPicker(picker);
     m_negatoFrontal->GetPlaneProperty()->SetColor(0,1,0);
     m_negatoFrontal->TextureInterpolateOn();
-    m_negatoFrontal->SetInput(vtk_img);
+    m_negatoFrontal->SetInputData(vtk_img);
     m_negatoFrontal->SetPlaneOrientationToYAxes();
     m_negatoFrontal->SetLookupTable( m_negatoSagittal->GetLookupTable());
     m_negatoFrontal->DisplayTextOn();
@@ -208,7 +208,7 @@ void RendererService::initVTKPipeline()
     m_negatoAxial->SetPicker(picker);
     m_negatoAxial->GetPlaneProperty()->SetColor(0,0,1);
     m_negatoAxial->TextureInterpolateOn();
-    m_negatoAxial->SetInput(vtk_img);
+    m_negatoAxial->SetInputData(vtk_img);
     m_negatoAxial->SetPlaneOrientationToZAxes();
     m_negatoAxial->SetLookupTable( m_negatoSagittal->GetLookupTable());
     m_negatoAxial->DisplayTextOn();
@@ -233,10 +233,10 @@ void RendererService::updateVTKPipeline()
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
 
-    m_outline->SetInput(vtk_img);
-    m_negatoSagittal->SetInput(vtk_img);
-    m_negatoFrontal->SetInput(vtk_img);
-    m_negatoAxial->SetInput(vtk_img);
+    m_outline->SetInputData(vtk_img);
+    m_negatoSagittal->SetInputData(vtk_img);
+    m_negatoFrontal->SetInputData(vtk_img);
+    m_negatoAxial->SetInputData(vtk_img);
 }
 
 //-----------------------------------------------------------------------------

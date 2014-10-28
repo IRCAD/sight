@@ -14,8 +14,7 @@ fwReq(
 add_definitions("-DQT_NO_KEYWORDS")
 
 find_package(Boost REQUIRED)
-find_package(Qt4 COMPONENTS QtCore QtGui QtSql QtNetWork QtOpenGL REQUIRED)
-include(${QT_USE_FILE})
+find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package(VTK REQUIRED)
 
 fwForwardInclude(
@@ -26,7 +25,7 @@ fwForwardInclude(
 fwLink(
     ${Boost_LIBRARIES} 
     ${QT_LIBRARIES}
-    QVTK
+    vtkViewsQt
     )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)

@@ -35,6 +35,7 @@ public:
     void setInterpolation(bool interpolation){m_interpolation = interpolation;};
     void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
     void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
+    void setActorOpacity(double actorOpacity) {m_actorOpacity = actorOpacity;};
 
 protected :
 
@@ -43,6 +44,27 @@ protected :
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+
+    /**
+     * @brief Configures the service
+     *
+     * @verbatim
+       <adaptor id="negatoOneSlice" class="::visuVTKAdaptor::NegatoOneSlice" objectId="imageKey">
+           <config renderer="default" picker="negatodefault" sliceIndex="axial"
+                   transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
+                   selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
+       </adaptor>
+       @endverbatim
+     * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+     * - \b picker (mandatory): identifier of the picker
+     * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
+     * - \b transform (optional): the vtkTransform to associate to the adaptor
+     * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
+     * - \b vtkimagesource (optional): source image, used for blend
+     * - \b actorOpacity (optional, default=1.0): actor opacity (float)
+     * - \b tfSelectionFwID (optional): fwID of the composite containing transfer functions
+     * - \b selectedTFKey (optional): key of the transfer function to use in negato
+     */
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
@@ -52,6 +74,7 @@ protected :
 
     bool m_allowAlphaInTF;
     bool m_interpolation;
+    double m_actorOpacity;
 
     vtkObject* getImageSource();
     void cleanImageSource();

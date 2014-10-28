@@ -145,6 +145,7 @@ void Grid2D::doStart() throw ( ::fwTools::Failed )
 
     // Set the pen a style
     m_pen.setStyle(Qt::DashLine);
+    m_pen.setCosmetic(true);
 
     this->draw();
     this->doUpdate();

@@ -127,7 +127,7 @@ void Square::processInteraction( ::scene2D::data::Event::sptr _event )
     {
         if ( this->coordViewIsInItem( _event->getCoord(), m_rec ) )
         {
-            OSLM_TRACE("Point is captured");
+            SLM_TRACE("Point is captured");
             m_pointIsCaptured = true;
             m_oldCoord = this->coordViewToCoordItem( _event->getCoord(), m_rec );
             m_rec->setBrush( Qt::yellow );

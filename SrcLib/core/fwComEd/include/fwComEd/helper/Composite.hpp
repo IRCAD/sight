@@ -70,8 +70,12 @@ public :
      */
     FWCOMED_API void swap( std::string _compositeKey, ::fwData::Object::sptr _newObject );
 
-    /// Send the message of modification
-    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource );
+    /**
+     * @brief Send the message of modification
+     * @param _serviceSource service used to send the message
+     * @param _allowLoops if true, the _serviceSource will receive the message
+     */
+    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource, bool _allowLoops=true );
 
 private :
 

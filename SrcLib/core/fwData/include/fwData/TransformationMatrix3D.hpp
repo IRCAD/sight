@@ -37,8 +37,6 @@ public :
     typedef double TM3DType;
     typedef std::vector<TM3DType> TMCoefArray;
 
-    //duplication methods
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -61,19 +59,19 @@ public :
      * @{
      * @brief Get/Set value of the coefficient in the given position (matrix[l][c])
      */
-    FWDATA_API double getCoefficient(int l, int c) const;
-    FWDATA_API void setCoefficient(int l, int c, TM3DType val);
+    FWDATA_API double getCoefficient(size_t l, size_t c) const;
+    FWDATA_API void setCoefficient(size_t l, size_t c, TM3DType val);
     /// @}
 
     /// maximum size of the matrix (MATRIX_SIZE x MATRIX_SIZE)
-    static const int MATRIX_SIZE = 4;
+    static const size_t MATRIX_SIZE = 4;
 
     /// Print the coefficients of the matrix
     friend std::ostream& operator<<(std::ostream& s, const TransformationMatrix3D& mat)
     {
-        for(int l = 0; l < MATRIX_SIZE; l++)
+        for(size_t l = 0; l < MATRIX_SIZE; l++)
         {
-            for(int c = 0; c < MATRIX_SIZE; c++)
+            for(size_t c = 0; c < MATRIX_SIZE; c++)
             {
                 s << mat.getCoefficient(l, c) << "\t";
             }

@@ -12,7 +12,13 @@ LIB     = [
           'fwGui_0-1',
           'fwGuiQt_0-1',
           ]
-USE     = ['qtCore','qtWebKit','qtSqldriversPlugins','qtHelp','boost']
+USE     = ['qt5Core','qt5SqldriversPlugins','qt5Help','boost']
+
+USE_WEBKIT = False
+
+if USE_WEBKIT:
+    USE += ['qt5WebKit']
+    
 BUNDLES = ['gui_0-1']
 
 

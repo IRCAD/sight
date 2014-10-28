@@ -51,6 +51,8 @@ void VtiImageReader::read()
     Progressor progress(reader, this->getSptr(), this->getFile().string());
 
     reader->Update();
+    reader->UpdateInformation();
+    reader->PropagateUpdateExtent();
 
     vtkDataObject *obj = reader->GetOutput();
     vtkImageData* img = vtkImageData::SafeDownCast(obj);

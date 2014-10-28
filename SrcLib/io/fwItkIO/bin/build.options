@@ -4,8 +4,8 @@ VERSION = '0-1'
 USE = [
       'boost', 
       'boostFilesystem',
-      'itkIO',
-      'gdcmMSFF'
+      'boostThread',
+      'itk4IOImageBase',
+      'itk4IOJPEG',
       ]
-
 

@@ -67,7 +67,7 @@ protected:
 
                 </object>
                 <object id="myAcquisition" type="::fwData::Acquisition" >
-                    <service uid="myServices2" impl="..." type="..." autoConnect="yes" />
+                    <service uid="myServices2" impl="..." type="..." autoConnect="yes" worker="myThread" />
 
                     <proxy channel="...">
                         <signal>...</signal>
@@ -82,6 +82,8 @@ protected:
     * With:
     * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached object is deleted but swap it on a dummy object.
     * @li the objects and services tags are defined as same as the configuration of objects and services.
+    * @li autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
+    * @li worker: optional, allows to manage the service in another thread.
     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 

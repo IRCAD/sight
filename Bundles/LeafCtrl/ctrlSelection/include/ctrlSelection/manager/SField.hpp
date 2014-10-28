@@ -65,7 +65,7 @@ protected:
                     </connect>
                 </field>
                 <field id="AxialSliceIndex" type="::fwData::Integer" >
-                    <service uid="Services2" impl="..." type="..." autoConnect="yes" />
+                    <service uid="Services2" impl="..." type="..." autoConnect="yes" worker="myThread" />
                     <proxy channel="...">
                         <signal>...</signal>
                         <signal>.../...</signal>
@@ -79,6 +79,8 @@ protected:
     * With:
     * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted but swap it on a dummy field.
     * @li the fields, services, connect and proxy tags are defined as same as the configuration of fields and services.
+    * @li autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
+    * @li worker: optional, allows to manage the service in another thread.
     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
@@ -104,16 +106,14 @@ protected:
     {
     public:
 
-        SubService()
-        {
-            m_hasAutoConnection = false;
-        }
+        SubService() : m_hasAutoConnection(false)
+        {}
 
         ~SubService()
         { }
 
         SPTR (::fwServices::IService) getService()
-                    { return m_service.lock(); }
+                            { return m_service.lock(); }
 
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;

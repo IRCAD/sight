@@ -9,6 +9,7 @@ fwUseForwardInclude(
 
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
+find_package(VTK REQUIRED)
 find_package(GDCM REQUIRED)
 include(${GDCM_USE_FILE})
 
@@ -18,6 +19,10 @@ fwForwardInclude(
     )
 fwLink(
     ${GDCM_LIBRARIES}
+    vtkRenderingCore
+    vtkInteractionStyle
+    vtkRenderingFreeTypeOpenGL
+    vtkRenderingVolumeOpenGL
     vtkgdcm
     gdcmMSFF
     gdcmDSED

@@ -104,9 +104,6 @@
                         <picker id="picker" vtkclass="fwVtkCellPicker" />
 
                         <renderer id="default" background="0.5" />
-                        <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                            <config renderer="default" picker="" />
-                        </adaptor>
 
                         <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                             <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />

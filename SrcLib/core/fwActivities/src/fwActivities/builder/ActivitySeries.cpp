@@ -48,7 +48,7 @@ ActivitySeries::~ActivitySeries()
     namespace ActReg = ::fwActivities::registry;
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
-    OSLM_ASSERT("Each possible items in requirement need to have a maching key", req.keys.size() >= req.maxOccurs );
+    OSLM_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs );
 
     ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
 
@@ -115,9 +115,20 @@ ActivitySeries::~ActivitySeries()
             OSLM_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
             (*data)[req.name] = (*vectorType)[0];
         }
-        else //optional single parameter
+        else
         {
-            (*data)[req.name] = vectorToComposite(vectorType, req);
+            SLM_ASSERT("Unknown specified container: '"+req.container+"'.",
+                       req.container.empty() ||
+                       req.container == "vector" ||
+                       req.container == "composite");
+            if(req.container == "vector")
+            {
+                (*data)[req.name] = vectorType;
+            }
+            else if(req.container == "composite" || req.container.empty())
+            {
+                (*data)[req.name] = vectorToComposite(vectorType, req);
+            }
         }
     }
 

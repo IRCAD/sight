@@ -222,7 +222,7 @@ void ImageSeriesWriter::write()
     ::fwVtkIO::Progressor progress(writer, this->getSptr(), outputDirectory.string());
     writer->SetStudyUID(study->getInstanceUID().c_str());
     writer->SetSeriesUID(imgSeries->getInstanceUID().c_str());
-    writer->SetInput( vtkImage );
+    writer->SetInputData( vtkImage );
     writer->FileLowerLeftOn();
     writer->SetFileDimensionality( 2 ); // test the 3D to 2D writing mode
     writer->SetMedicalImageProperties( medprop );

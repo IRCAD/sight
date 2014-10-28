@@ -267,7 +267,8 @@ QVariant PolicyTableModel::headerData(int section, Qt::Orientation orientation, 
                          ::fwCore::mt::ReadToWriteLock lock( m_buffManager->getMutex() );
                          m_buffManager->setDumpPolicy(dumpPolicy);
                      }
-                     this->reset();
+                     this->beginResetModel();
+                     this->endResetModel();
                  }
                  break;
              default:

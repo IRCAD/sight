@@ -7,8 +7,6 @@
 #ifndef _FWITKIO_IMAGEWRITER_HPP_
 #define _FWITKIO_IMAGEWRITER_HPP_
 
-#include <boost/filesystem/path.hpp>
-
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwTools/ProgressAdviser.hpp>

@@ -11,5 +11,5 @@ LIB     = [
           'fwGui_0-1',
           'fwGuiQt_0-1',
           ]
-USE     = ['boost','qtCore']
+USE     = ['boost','qt5Core']
 BUNDLES = ['gui_0-1',]

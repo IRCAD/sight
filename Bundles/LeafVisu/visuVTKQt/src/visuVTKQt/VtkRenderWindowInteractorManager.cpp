@@ -10,6 +10,8 @@
 
 #include <QVTKWidget.h>
 
+#include <QMimeData>
+
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>

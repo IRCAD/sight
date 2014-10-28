@@ -1,5 +1,4 @@
 CLASSTEST=[
-          'MeshTest',
           'ImageTest',
           'TransformationMatrix3DTest',
           ]

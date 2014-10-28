@@ -29,6 +29,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
+#include <vtkImageMapper3D.h>
 
 #include "visuVTKAdaptor/ImageSlice.hpp"
 
@@ -54,6 +55,7 @@ ImageSlice::ImageSlice() throw()
 
     m_interpolation = true;
 
+    m_actorOpacity = 1.0;
     m_useImageTF = false;
 
     // Manage events
@@ -61,6 +63,7 @@ ImageSlice::ImageSlice() throw()
     //this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
     //this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
     //this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
+    //this->addNewHandledEvent( "ACTOR_TRANSPARENCY");
 }
 
 //------------------------------------------------------------------------------
@@ -216,6 +219,15 @@ void ImageSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
                 this->doUpdate();
             }
         }
+        if ( msg->hasEvent( "ACTOR_OPACITY" ) )
+        {
+            ::fwData::Integer::csptr opacity =
+                    ::fwData::Integer::dynamicConstCast( msg->getDataInfo( "ACTOR_OPACITY" )) ;
+
+            double opacityDouble = static_cast<double>(opacity->value()) / 100.;
+            this->setActorOpacity(opacityDouble);
+            this->doUpdate();
+        }
     }
 }
 
@@ -259,6 +271,10 @@ void ImageSlice::configuring() throw(fwTools::Failed)
     {
         this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "off"));
     }
+    if(m_configuration->hasAttribute("actorOpacity") )
+    {
+        this->setActorOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("actorOpacity")));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -294,9 +310,9 @@ void ImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
     SLM_TRACE_FUNC();
     int extent[6];
     std::fill(  extent, extent+6, 0);
-    extent[1] = image->getSize()[0]-1;
-    extent[3] = image->getSize()[1]-1;
-    extent[5] = image->getSize()[2]-1;
+    extent[1] = static_cast<int>(image->getSize()[0]-1);
+    extent[3] = static_cast<int>(image->getSize()[1]-1);
+    extent[5] = static_cast<int>(image->getSize()[2]-1);
     extent[2*m_orientation]=slice;
     extent[2*m_orientation+1]=slice;
 
@@ -329,7 +345,7 @@ void ImageSlice::buildPipeline( )
     if (algorithm)
     {
         SLM_TRACE("Input is a vtkImageAlgorithm");
-        m_imageActor->SetInput(algorithm->GetOutput());
+        m_imageActor->GetMapper()->SetInputConnection(algorithm->GetOutputPort());
         //if (imageBlend)
         //{
             //imageBlend->SetBlendModeToCompound();
@@ -339,7 +355,7 @@ void ImageSlice::buildPipeline( )
     else if (imageData)
     {
         SLM_TRACE("Input is a vtkImageData");
-        m_imageActor->SetInput(imageData);
+        m_imageActor->SetInputData(imageData);
     }
 
     if(!this->getTransformId().empty())
@@ -348,7 +364,8 @@ void ImageSlice::buildPipeline( )
     }
 
     m_imageActor->SetInterpolate(m_interpolation);
-
+    m_imageActor->SetOpacity(m_actorOpacity);
+    
     this->buildOutline();
     this->setVtkPipelineModified();
 }
@@ -385,7 +402,7 @@ void ImageSlice::buildOutline()
     cells = NULL;
 
     m_planeOutlineMapper = vtkPolyDataMapper::New();
-    m_planeOutlineMapper->SetInput( m_planeOutlinePolyData );
+    m_planeOutlineMapper->SetInputData( m_planeOutlinePolyData );
     m_planeOutlineMapper->SetResolveCoincidentTopologyToPolygonOffset();
     m_planeOutlineActor->SetMapper(m_planeOutlineMapper);
     m_planeOutlineActor->PickableOff();

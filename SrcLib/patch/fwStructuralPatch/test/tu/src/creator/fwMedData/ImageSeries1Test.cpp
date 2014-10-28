@@ -57,7 +57,7 @@ void ImageSeries1Test::createTest()
     const std::string& imageSeriesObjectVersion = ::fwAtomsPatch::helper::getVersion(imageSeries);
     CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == imageSeriesObjectVersion );
 
-    CPPUNIT_ASSERT(imageSeries->getAttribute("reconstruction_db"));
+    CPPUNIT_ASSERT(imageSeries->getAttribute("image"));
 }
 
 //------------------------------------------------------------------------------

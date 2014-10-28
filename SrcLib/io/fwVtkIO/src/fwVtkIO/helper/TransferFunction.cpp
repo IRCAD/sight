@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <vtkLookupTable.h>
+
 #include "fwVtkIO/helper/TransferFunction.hpp"
 
 namespace fwVtkIO

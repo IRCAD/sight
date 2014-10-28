@@ -187,7 +187,7 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
                 ::fwData::mt::ObjectReadLock lock(mesh);
                 ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
             }
-            m_mapper->SetInput(m_vtkPolyData);
+            m_mapper->SetInputData(m_vtkPolyData);
         }
         m_interactorManager->getInteractor()->Render();
     }
@@ -221,7 +221,7 @@ void RendererService::initVTKPipeline()
     }
 
     m_mapper = vtkPolyDataMapper::New();
-    m_mapper->SetInput(m_vtkPolyData);
+    m_mapper->SetInputData(m_vtkPolyData);
 
     vtkActor* actor =  vtkActor::New();
     actor->SetMapper(m_mapper);

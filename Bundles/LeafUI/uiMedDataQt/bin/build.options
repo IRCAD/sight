@@ -13,8 +13,9 @@ LIB     = [
           'fwActivities_0-1',
           'fwDataCamp_0-1',
           'fwMedDataTools_0-1',
+          'fwDataTools_0-1',
           ]
-USE     = ['boost','qtCore']
+USE     = ['boost','qt5Core']
 BUNDLES = ['gui_0-1']
 REQUIREMENTS = [
                'visuVTKAdaptor_0-1',

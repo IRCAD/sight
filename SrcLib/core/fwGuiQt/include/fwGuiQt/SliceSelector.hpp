@@ -78,9 +78,6 @@ private:
 
     QPointer< QComboBox > m_sliceType;
 
-    /// @brief Slice type names as a qt string array.
-    static const QStringList m_sliceTypesArray;
-
     /// @brief The slice index slider widget.
     QPointer< QSlider > m_sliceIndex;
     QPointer< QLineEdit > m_pSliceIndexText;

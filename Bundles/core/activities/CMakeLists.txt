@@ -7,8 +7,8 @@ fwUseForwardInclude(
 )
 
 Find_package (Boost REQUIRED)
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
+find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
+QT5_USE_MODULES(activities Core Gui Widgets)
 
 
 fwForwardInclude(${Boost_INCLUDE_DIRS} ${QT_INCLUDE_DIR})

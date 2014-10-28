@@ -10,7 +10,6 @@
 #include <boost/shared_ptr.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include "fwVtkIO/config.hpp"
@@ -86,49 +85,6 @@ VTKIO_API void fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _desti
  * @param[out] _pImageImport vtkImageImport*.
  */
 VTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage );
-
-/*!
- * @brief Convert a ::fwData::TriangularMesh::sptr to a vtkPolyData*.
- *
- * @param[in] _mesh ::fwData::TriangularMesh::sptr.
- * @return vtkPolyData*.
- */
-VTKIO_API vtkPolyData*  toVTKMesh( ::fwData::TriangularMesh::sptr _mesh );
-
-/*!
- * @brief Update a vtkPolyData* with ::fwData::TriangularMesh::sptr points
- *
- * @param[out] polyDataDst vtkPolyData*
- * @param[in]  meshSrc ::fwData::TriangularMesh::sptr
- * @return vtkPolyData*
- *
- * Warning : be carefull with updatePoints : this may change the number of
- * vertex of the polydata, cells will not be updated.
- * Returns the updated vtkPolyPata
- */
-VTKIO_API vtkPolyData*  updatePolyDataPoints(vtkPolyData* polyDataDst, ::fwData::TriangularMesh::sptr meshSrc );
-
-/*!
- * @brief Convert a vtkPolyData* to a ::fwData::TriangularMesh::sptr.
- *
- * @param[in] _polyData vtkPolyData*.
- * @param[out] _triangularMesh ::fwData::TriangularMesh::sptr.
- * @return bool.
- *
- * Returns \b true if the conversion is a success and \b false if it fails
- */
-VTKIO_API  bool fromVTKMesh( vtkPolyData *_polyData, ::fwData::TriangularMesh::sptr _triangularMesh );
-
-
-/*
- * @brief compute the volume of the mesh using MassProperties vtk class
- */
-VTKIO_API  double computeVolume(  ::fwData::TriangularMesh::sptr _triangularMesh );
-
-/*
-* @brief compute the volume of the mesh using ImageStencil
-*/
-VTKIO_API  double computeVolumeWithStencil(  ::fwData::TriangularMesh::sptr _triangularMesh );
 
 /*!
  * @brief Convert a ::fwData::TransformationMatrix3D::sptr to a vtkMatrix4x4*.

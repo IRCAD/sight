@@ -221,10 +221,10 @@ void MeshesBoxWidget::updateFromVtk()
 
     BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
     {
-        ::fwData::Mesh::sptr triangularMesh = ::fwData::Mesh::dynamicCast(elt.second);
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
-        SLM_ASSERT("Triangular mesh must have a TransformMatrix field", triangularMesh->getField("TransformMatrix"));
-        fieldTransform = triangularMesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+        SLM_ASSERT("Mesh must have a TransformMatrix field", mesh->getField("TransformMatrix"));
+        fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
         vtkTransform * transform = vtkTransform::New();
         vtkLinearTransform * meshTransform = m_meshMap[elt.first]->GetUserTransform();
@@ -264,16 +264,20 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 
         vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
         transform->Identity();
+
+        vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
             {
-                transform->GetMatrix()->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
+                matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
             }
         }
 
+        transform->SetMatrix(matrix);
         vtkSmartPointer<vtkPolyDataMapper> meshMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-        meshMapper->SetInput(vtkMesh);
+        meshMapper->SetInputData(vtkMesh);
 
         vtkActor *meshActor = vtkActor::New();
         meshActor->SetMapper(meshMapper);
@@ -305,14 +309,18 @@ void MeshesBoxWidget::updateMeshTransform()
 
         vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
         transform->Identity();
+
+        vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
             {
-                transform->GetMatrix()->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
+                matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
             }
         }
 
+        transform->SetMatrix(matrix);
         vtkActor *meshActor = m_meshMap[elt.first];
         meshActor->SetUserTransform(transform);
     }

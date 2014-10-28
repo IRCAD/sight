@@ -10,10 +10,11 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IEditionService.hpp>
-#include <fwData/TriangularMesh.hpp>
-#include <fwData/Camera.hpp>
-#include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
+
+#include <fwData/Camera.hpp>
+
+#include <fwCore/base.hpp>
 #include <fwComEd/CameraMsg.hpp>
 
 #include "ioData/CameraReaderService.hpp"

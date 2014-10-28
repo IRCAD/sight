@@ -48,7 +48,7 @@ void MetaImageWriter::write()
     vtkSmartPointer< vtkMetaImageWriter > writer = vtkSmartPointer< vtkMetaImageWriter >::New();
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage( pImage, vtkImage );
-    writer->SetInput( vtkImage );
+    writer->SetInputData( vtkImage );
     writer->SetFileName( this->getFile().string().c_str() );
     writer->SetCompression(true);
 

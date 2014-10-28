@@ -1,5 +1,5 @@
 TYPE    = 'bundle'
-USE     = ['vtkWidgets','boost']
+USE     = ['vtk6InteractionWidgets','boost']
 LIB     = [
           'fwCore_0-1',
           'fwRuntime_0-3',
