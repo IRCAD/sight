@@ -46,7 +46,7 @@ namespace registry
 
 /**
  * @class ServiceInfo
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWSERVICES_CLASS_API ServiceInfo : public ::fwTools::Object
 {
@@ -68,7 +68,7 @@ class FWSERVICES_CLASS_API ServiceInfo : public ::fwTools::Object
 
 /**
  * @class ServiceFactory
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWSERVICES_CLASS_API ServiceFactory : public ::fwCore::BaseObject
 {

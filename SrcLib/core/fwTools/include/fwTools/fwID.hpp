@@ -24,7 +24,7 @@ class Object;
 /**
  * @brief   Defines ID for fwTools::Object. It is used to associate ID with object.
  * @class   fwID
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2012.
  */
 class FWTOOLS_CLASS_API fwID
@@ -68,7 +68,7 @@ protected :
     FWTOOLS_API bool   hasID() const;
 
     /**
-     * @brief Retun the id of the object. If it is not set and the policy value is
+     * @brief Returns the id of the object. If it is not set and the policy value is
      * \li EMPTY then an empty id is returned
      * \li GENERATE (default) then a new ID will be generated (and recorded ) using the pattern "CLASSNAME-NUM". NUM is always increasing
      * \li MUST_EXIST then an exception Failed is raised
@@ -77,12 +77,25 @@ protected :
      */
     FWTOOLS_API IDType getID( Policy  policy=GENERATE ) const;
 
+#ifdef COM_LOG
+    /**
+     * @brief Returns a light version the id of the object. Used for log. This method calls getID and replaces id using
+     * pattern "::NS1::NS2::CLASSNAME-NUM" by a light version "CLASSNAME-NUM"
+     * \li EMPTY then an empty id is returned
+     * \li GENERATE (default) then a new ID will be generated (and recorded ) using the pattern "CLASSNAME-NUM". NUM is always increasing
+     * \li MUST_EXIST then an exception Failed is raised
+     * @note We consider an object be constant whatever if its id is generated.
+     * @note This method is thread-safe.
+     */
+    FWTOOLS_API IDType getLightID( Policy  policy=GENERATE ) const;
+#endif
+
     /**
       * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.
       * @warning Cannot set a empty ID.
       * @note This method is thread-safe.
       */
-    FWTOOLS_API void   setID( IDType newID ); // cannot set a empty one
+    FWTOOLS_API virtual void   setID( IDType newID ); // cannot set a empty one
 
     /**
       * @brief Release the id for the object.

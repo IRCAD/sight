@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/fwID.hpp>
-#include <fwData/Reconstruction.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -30,8 +31,8 @@
 
 //VAG DEBUG
 //#include <fwMath/MeshFunctions.hpp>
-//#include <vtkIO/vtk.hpp>
-//#include <vtkIO/MeshWriter.hpp>
+//#include <fwVtkIO/vtk.hpp>
+//#include <fwVtkIO/MeshWriter.hpp>
 //#include <boost/filesystem.hpp>
 
 
@@ -48,8 +49,8 @@ Reconstruction::Reconstruction() throw()
     m_clippingPlanesId = "";
     m_sharpEdgeAngle = 180;
     m_autoResetCamera = true;
-    addNewHandledEvent( ::fwComEd::ReconstructionMsg::MESH );
-    addNewHandledEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
+    //addNewHandledEvent( ::fwComEd::ReconstructionMsg::MESH );
+    //addNewHandledEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
 }
 
 //------------------------------------------------------------------------------
@@ -108,6 +109,7 @@ void Reconstruction::createMeshService()
         meshService->setRenderId     ( this->getRenderId()      );
         meshService->setPickerId     ( this->getPickerId()      );
         meshService->setTransformId  ( this->getTransformId() );
+        meshService->setAutoRender   ( this->getAutoRender() );
 
         meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
         //meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
@@ -160,7 +162,7 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Reconstruction::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

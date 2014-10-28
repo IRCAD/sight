@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/ROITraits.hpp"
 
 fwDataRegisterMacro( ::fwData::ROITraits );
@@ -58,6 +59,18 @@ void ROITraits::setStructureTraits( ::fwData::StructureTraits::sptr structureTra
 }
 
 //------------------------------------------------------------------------------
+
+void ROITraits::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+{
+    ROITraits::csptr other = ROITraits::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source, cache );
+
+    OSLM_FATAL("Not implemented." );
+}
+
 } // namespace fwData
 
 

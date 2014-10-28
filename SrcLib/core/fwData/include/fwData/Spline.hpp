@@ -19,7 +19,7 @@ namespace fwData
 /**
  * @class   Spline
  * @brief   This class defines a spline object.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Spline : public Object
@@ -51,7 +51,7 @@ public :
             this->normal[1] = _point.normal[1];
             this->normal[2] = _point.normal[2];
             this->isVisible = _point.isVisible;
-            c->deepCopy( _point.c );
+            c = ::fwData::Object::copy( _point.c );
             return(*this);
         };
     };
@@ -80,6 +80,9 @@ public :
     fwGettersSettersDocMacro(NbSides, nbSides, int, number of slices);
 
     fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
+
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected :
 

@@ -27,7 +27,7 @@ namespace dl
  * @brief   Implements a win32 native module.
  * @struct  Win32
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Win32 : public Native
 {

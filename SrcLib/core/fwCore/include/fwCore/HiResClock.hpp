@@ -13,33 +13,33 @@ namespace fwCore
 {
 
 
-/** 
- * @brief This namespace provides several function that returns a hi 
+/**
+ * @brief This namespace provides several function that returns a hi
  * resolution EPOCH time.
  *
- * @warning EPOCH time has not the same reference on each operating 
+ * @warning EPOCH time has not the same reference on each operating
  * system.
  */
 namespace HiResClock
 {
 
-/** 
+/**
  * @brief Type returned by HiResClock Functions
  */
 typedef double HiResClockType;
 
 
-/** 
+/**
  * @return EPOCH time in microseconds
  */
 FWCORE_API HiResClockType getTimeInMicroSec();
 
-/** 
- * @return EPOCH time in miliseconds
+/**
+ * @return EPOCH time in milliseconds
  */
 FWCORE_API HiResClockType getTimeInMilliSec();
 
-/** 
+/**
  * @return EPOCH time in seconds
  */
 FWCORE_API HiResClockType getTimeInSec();

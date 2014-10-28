@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action allows to show/hide image distances.
- * @class   ShowDistance.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowDistance
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API ShowDistance : public ::fwGui::IActionSrv
@@ -35,7 +35,7 @@ public:
 protected:
 
     // update its show/hide flag according image ShowDistance field notification
-    UIMEASUREMENT_API void updating(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
+    UIMEASUREMENT_API void receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
 
     UIMEASUREMENT_API void swapping() throw(::fwTools::Failed) ;
 

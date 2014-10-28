@@ -29,7 +29,7 @@ namespace wrapper
 MsgWrapperSrv::MsgWrapperSrv() throw()
 {
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::NEW_OBJECT );
-    addNewHandledEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
+    //handlingEventOff ::fwServices::ObjectMsg::UPDATED_OBJECT );
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::DELETE_OBJECT );
 }
 
@@ -62,12 +62,12 @@ void MsgWrapperSrv::configuring()  throw ( ::fwTools::Failed )
         OSLM_INFO( "Manage event "<< onEvent <<" to " << toEvent << ".");
         EventType managedEvent ( onEvent, toEvent, msgType);
         m_managedEvents.push_back( managedEvent );
-        addNewHandledEvent( onEvent );
+        //addNewHandledEvent( onEvent );
     }
 }
 //-----------------------------------------------------------------------------
 
-void MsgWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void MsgWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

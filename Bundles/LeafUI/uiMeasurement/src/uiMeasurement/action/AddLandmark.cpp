@@ -62,7 +62,7 @@ bool defineLabel(std::string &name)
     static int count = 1;
     name = "Label" + ::boost::lexical_cast< std::string >(count );
 
-    ::fwData::String::NewSptr url;
+    ::fwData::String::sptr url = ::fwData::String::New();
     ::fwGui::dialog::InputDialog inputDlg;
     inputDlg.setTitle("Label");
     inputDlg.setMessage("Which label for the point?");
@@ -117,14 +117,14 @@ void AddLandmark::updating() throw(::fwTools::Failed)
         landmarks->getRefPoints().push_back( newPoint );
 
         // append to point the label
-        ::fwData::String::NewSptr label;
+        ::fwData::String::sptr label = ::fwData::String::New();
         label->value() = value;
         newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
 
-        image->setField("ShowLandmarks", ::fwData::Boolean::NewSptr(true));
+        image->setField("ShowLandmarks", ::fwData::Boolean::New(true));
 
         // notify
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
@@ -146,7 +146,7 @@ void AddLandmark::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void AddLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

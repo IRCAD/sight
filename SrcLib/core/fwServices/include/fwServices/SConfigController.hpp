@@ -7,16 +7,14 @@
 #ifndef _FWSERVICES_SCONFIGCONTROLLER_HPP_
 #define _FWSERVICES_SCONFIGCONTROLLER_HPP_
 
-#include <map>
-
 #include <fwTools/Failed.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include "fwServices/helper/ConfigLauncher.hpp"
 #include "fwServices/config.hpp"
 #include "fwServices/IController.hpp"
-#include "fwServices/AppConfigManager.hpp"
 
 namespace fwServices
 {
@@ -24,8 +22,7 @@ namespace fwServices
 /**
  * @class   SConfigController
  * @brief   To manage configuration file defines in xml extension.
- * @author  IRCAD (Research and Development Team).
- * @date    2010-2012.
+ * @date    2010-2013.
  *
  * This action works on a ::fwData::Composite. It action starts/stops a template configuration given by its identifier in this action configuration.
  *  - You can specified pattern to replace in the template configuration by the tag 'replace'.
@@ -36,10 +33,15 @@ namespace fwServices
  *
  * Example of this service configuration
  * @verbatim
-   <service implementation="::gui::action::SConfigController" type="::fwGui::IActionSrv">
-       <config id="IdOfTemplateConfig" />
-       <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
-       <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
+   <service impl="::fwServices::SConfigController" type="::fwServices::IController">
+       <config>
+           <appConfig id="IdOfConfig" >
+               <parameters>
+                   <parameter replace="SERIESDB" by="medicalData"  />
+                   <parameter replace="IMAGE" by="@values.image"  />
+               </parameters>
+           </appConfig>
+       </config>
    </service>
    @endverbatim
  */
@@ -65,7 +67,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Does nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Does nothing
     virtual void updating() throw(::fwTools::Failed);
@@ -78,10 +80,15 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service implementation="::fwServices::SConfigController" type="::fwServices::IController">
-           <config id="IdOfTemplateConfig" />
-           <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
-           <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
+       <service impl="::fwServices::SConfigController" type="::fwServices::IController">
+            <config>
+                <appConfig id="IdOfConfig" >
+                    <parameters>
+                        <parameter replace="SERIESDB" by="medicalData"  />
+                        <parameter replace="IMAGE" by="@values.image"  />
+                    </parameters>
+                </appConfig>
+            </config>
        </service>
         @endverbatim
      * It MUST have at least one key node and at least one replace node.
@@ -93,29 +100,9 @@ protected:
 
 private:
 
-    /// Starts config
-    void startConfig();
+    /// AppConfig manager
+    ::fwServices::helper::ConfigLauncher::sptr m_configLauncher;
 
-    /// Stops config
-    void stopConfig();
-
-    /// Adds GENERIC_UID to field to adapt
-    void addGenericUidToFieldApadtor();
-
-    /// keep the association between the PATTERN and the associated key  as fieldAdaptors[PATTERN] = AssociatedKey.
-    std::map< std::string, std::string > m_fieldAdaptors;
-
-    /// keep the association between the PATTERN and the associated key as m_keyAdaptors[PATTERN] = AssociatedKey.
-    std::map< std::string, std::string > m_keyAdaptors;
-
-    /// Id of plugin extension where the configuration is defined.
-    std::string m_viewConfigId;
-
-    /// Config manager
-    ::fwServices::AppConfigManager::sptr m_configTemplateManager;
-
-    /// Defines a special key to defines the associated object him self
-    static const std::string s_SELF_KEY;
 };
 
 } // fwServices

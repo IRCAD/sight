@@ -10,7 +10,7 @@
 /**
  * @brief      The namespace visu contains low-level visu services essential to FW4SPL.
  * @namespace  visu
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
  *
  */

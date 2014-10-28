@@ -17,7 +17,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for Mesh : store modification information
  * @class   MeshMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  * @see     ::fwServices::ObjectMsg
  */

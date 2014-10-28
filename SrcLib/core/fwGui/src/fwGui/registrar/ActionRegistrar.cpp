@@ -21,7 +21,7 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ActionRegistrar::ActionRegistrar(const std::string sid) : m_sid(sid)
+ActionRegistrar::ActionRegistrar(const std::string &sid) : m_sid(sid)
 {}
 
 //-----------------------------------------------------------------------------

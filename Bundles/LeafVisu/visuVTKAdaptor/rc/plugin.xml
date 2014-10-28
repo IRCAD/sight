@@ -47,12 +47,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
-        <service>::visuVTKAdaptor::Acquisition</service>
-        <object>::fwData::Acquisition</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ResectionDB</service>
         <object>::fwData::ResectionDB</object>
     </extension>
@@ -325,6 +319,18 @@
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::VectorField</service>
         <object>::fwData::Image</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ModelSeries</service>
+        <object>::fwMedData::ModelSeries</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ImageSeries</service>
+        <object>::fwMedData::ImageSeries</object>
     </extension>
 
 </plugin>

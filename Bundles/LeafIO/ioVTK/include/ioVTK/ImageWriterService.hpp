@@ -26,11 +26,9 @@ namespace ioVTK
 
 /**
  * @brief   VTK image writer service.
- * @class   ImageWriterService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   ImageWriterService
  *
- * Service writing a VTK Image using the vtkIO lib.
+ * Service writing a VTK Image using the fwVtkIO lib.
  *
  * Service registered details : \n
  * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image )
@@ -50,6 +48,18 @@ public :
      * the file path  using a file selector.
      */
     IOVTK_API virtual void configureWithIHM();
+
+    /**
+    * @brief Save a VTK image.
+    * @param[in] imgFile ::boost::filesystem::path.
+    * @param[out] image ::boost::shared_ptr< ::fwData::Image >.
+    * @return bool.
+    *
+    * This method is used to save an image using the file path.
+    * Returns \b true if the image saving is a success and \b false if it fails
+    */
+    IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile, const SPTR(::fwData::Image)& image );
+
 
 protected:
 
@@ -80,11 +90,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
      * @brief Info method.
@@ -94,20 +104,7 @@ protected:
      */
     IOVTK_API void info(std::ostream &_sstream ) ;
 
-
 private :
-
-    /**
-    * @brief Save a VTK image.
-    * @param[in] _vtkFile ::boost::filesystem::path.
-    * @param[out] _pImage ::boost::shared_ptr< ::fwData::Image >.
-    * @return bool.
-    *
-    * This method is used to save an image using the file path.
-    * Returns \b true if the image saving is a success and \b false if it fails
-    */
-    bool saveImage( const ::boost::filesystem::path _vtkFile, ::boost::shared_ptr< ::fwData::Image > _pImage );
-
     /**
     * @brief the m_bServiceIsConfigured value is \b true
     * if the image path is known.

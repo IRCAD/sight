@@ -45,7 +45,7 @@ public:
     static NegatoWindowingCallback *New()
     { return new NegatoWindowingCallback(); }
 
-    NegatoWindowingCallback() : m_mouseMoveObserved(false)
+    NegatoWindowingCallback() : m_picker(NULL), m_x(0), m_y(0), m_mouseMoveObserved(false)
     {
         m_windowStep = 1. ;
         m_levelStep  = 1. ;
@@ -154,9 +154,8 @@ protected :
 NegatoWindowingInteractor::NegatoWindowingInteractor() throw()
 {
     m_priority = .6;
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
 }
 
 //------------------------------------------------------------------------------
@@ -221,14 +220,14 @@ void NegatoWindowingInteractor::doStop() throw(fwTools::Failed)
     this->getInteractor()->RemoveObservers(START_WINDOWING_EVENT  , m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_WINDOWING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
-//  delete m_vtkObserver;
+    m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void NegatoWindowingInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

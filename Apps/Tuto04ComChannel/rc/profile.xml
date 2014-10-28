@@ -14,7 +14,7 @@
 
     <activate id="Tuto04ComChannel" version="0-1" />
     <activate id="appXml" version="0-1" >
-        <param id="config" value="tutoComChannelConfig" />
+        <param id="config" value="tutoComChannelConnectConfig" />
     </activate>
 
     <!-- Specific bundles list. -->

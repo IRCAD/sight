@@ -18,11 +18,9 @@ namespace ioVTK
 
 /**
  * @brief   3ds Max reader service.
- * @class   MaxMeshReaderService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   MaxMeshReaderService
  *
- * Service reading a 3ds Max file using the vtkIO lib
+ * Service reading a 3ds Max file using the fwVtkIO lib
  * (for .3ds at this time).
  *
  * Service registered details : \n
@@ -82,11 +80,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

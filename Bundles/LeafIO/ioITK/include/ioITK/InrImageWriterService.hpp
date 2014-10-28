@@ -1,23 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOITK_INRIMAGEWRITERSERVICE_HPP_
-#define _IOITK_INRIMAGEWRITERSERVICE_HPP_
+#ifndef __IOITK_INRIMAGEWRITERSERVICE_HPP__
+#define __IOITK_INRIMAGEWRITERSERVICE_HPP__
 
-#include <string>
 #include <boost/filesystem/path.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Patient.hpp>
 
 #include <io/IWriter.hpp>
 
-
 #include "ioITK/export.hpp"
 
+namespace fwData
+{
+class Image;
+}
 
 namespace ioITK
 {
@@ -32,6 +31,8 @@ public :
 
     IOITK_API virtual ~InrImageWriterService() throw();
 
+    IOITK_API static void saveImage( const ::boost::filesystem::path &inrFile, const SPTR(::fwData::Image) &image );
+
 protected:
 
     /// Override
@@ -44,7 +45,7 @@ protected:
     IOITK_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
 
     /// Override
     IOITK_API void info(std::ostream &_sstream ) ;
@@ -55,12 +56,9 @@ protected:
     /// Return managed file type, here FILE
     IOITK_API ::io::IOPathType getIOPathType() const;
 
-private :
-
-    void saveImage( const ::boost::filesystem::path inrFile, ::fwData::Image::sptr _pImage );
 
 };
 
 } // namespace ioITK
 
-#endif //_IOITK_INRIMAGEWRITERSERVICE_HPP_
+#endif //__IOITK_INRIMAGEWRITERSERVICE_HPP__

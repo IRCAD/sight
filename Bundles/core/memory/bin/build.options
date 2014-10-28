@@ -5,7 +5,6 @@ LIB     = [
           'fwRuntime_0-3',
           'fwTools_0-1',
           'fwMemory_0-1',
-          'fwItkIO_0-1'
           ]
 USE     = ['boost']
 VERSION = '0-1'

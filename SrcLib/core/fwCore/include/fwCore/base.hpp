@@ -8,7 +8,7 @@
  * @file fwCore/base.hpp
  * @brief This file includes the minimal tools to work with FW4SPL.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 //#ifndef __FWCORE_BASE_HPP
 //#define __FWCORE_BASE_HPP

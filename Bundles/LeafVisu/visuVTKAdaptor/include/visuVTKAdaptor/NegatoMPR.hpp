@@ -40,6 +40,11 @@ public:
     void setInterpolation(bool interpolation){m_interpolation = interpolation;};
     void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
 
+    void setSliceMode(SliceMode sliceMode);
+    SliceMode getSliceMode();
+    ::boost::logic::tribool is3dModeEnabled();
+    void set3dMode( bool enabled );
+
 protected :
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
@@ -48,16 +53,12 @@ protected :
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     void addAdaptor(std::string adaptor, int axis=-1);
 
-    void setSliceMode(SliceMode sliceMode);
-    SliceMode getSliceMode();
-    ::boost::logic::tribool is3dModeEnabled();
-    void set3dMode( bool enabled );
 
 private:
 

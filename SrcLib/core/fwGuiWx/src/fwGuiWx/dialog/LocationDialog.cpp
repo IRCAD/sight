@@ -95,7 +95,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
                 ::boost::filesystem::path bpath( ::fwGuiWx::wx2std(paths[i]) );
                 vPaths.push_back(bpath);
             }
-            ::fwData::location::MultiFiles::NewSptr multiFiles;
+            ::fwData::location::MultiFiles::sptr multiFiles = ::fwData::location::MultiFiles::New();
             multiFiles->setPaths(vPaths);
             location = multiFiles;
         }

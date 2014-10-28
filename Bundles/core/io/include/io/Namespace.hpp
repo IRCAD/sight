@@ -10,7 +10,7 @@
 /**
  * @brief     The namespace io contains the base interface for reader and writer services.
  * @namespace io
- * @author    IRCAD (Research and Development Team).
+ * 
  * @date      2009-2010.
  *
  */

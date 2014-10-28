@@ -44,7 +44,9 @@ struct RemoveTemporaryFolder
 
     ~RemoveTemporaryFolder()
     {
-        ::boost::filesystem::remove_all(m_path);
+        ::boost::system::error_code er;
+        ::boost::filesystem::remove_all(m_path, er);
+        OSLM_ERROR_IF( "Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
     }
     ::boost::filesystem::path m_path;
 };
@@ -107,46 +109,67 @@ const ::boost::filesystem::path &System::getTempPath() throw()
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path &System::getTemporaryFolder() throw()
+const ::boost::filesystem::path createUniqueFolder(const ::boost::filesystem::path& folderUniquePath)
 {
     namespace fs = ::boost::filesystem;
-    static fs::path tmpDirPath;
-
-    if(!tmpDirPath.empty() && fs::exists(tmpDirPath))
-    {
-        return tmpDirPath;
-    }
-
-    const fs::path &sysTmp = getTempPath();
-
-    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." F4S_TMP_EXT;
-
-    fs::path tmpDir;
-
     bool created = false;
+    fs::path tmpDir;
 
     do
     {
-        tmpDir = fs::unique_path(sysTmp/tmpDirName);
+        tmpDir = fs::unique_path(folderUniquePath);
 
         if(! fs::exists(tmpDir))
         {
             fs::create_directories(tmpDir);
-            tmpDirPath = tmpDir;
+
             created = true;
         }
 
     }
     while ( !created );
 
+    return tmpDir;
+}
+
+//------------------------------------------------------------------------------
+
+const ::boost::filesystem::path System::getTemporaryFolder(const std::string& subFolderPrefix) throw()
+{
+    namespace fs = ::boost::filesystem;
+    static fs::path tmpDirPath;
+
+    if(!tmpDirPath.empty() && fs::exists(tmpDirPath))
+    {
+        if(!subFolderPrefix.empty())
+        {
+            const std::string subDirName = subFolderPrefix + "-" + "%%%%%%%%%%%%";
+            fs::path tmpSubDir = createUniqueFolder(tmpDirPath/subDirName);
+            return tmpSubDir;
+        }
+
+        return tmpDirPath;
+    }
+
+    const fs::path &sysTmp = getTempPath();
+
+    const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." F4S_TMP_EXT;
+    fs::path tmpDir = createUniqueFolder(sysTmp/tmpDirName);
+    tmpDirPath = tmpDir;    // tmpDirPath always set to root tmp dir
 
     fs::path pidFile = tmpDir / (::boost::lexical_cast<std::string>(getPID()) + ".pid");
     fs::fstream( pidFile, std::ios::out ).close();
 
     autoRemoveTempFolder = ::boost::make_shared<RemoveTemporaryFolder>(tmpDirPath);
 
+    if(!subFolderPrefix.empty())
+    {
+        const std::string subDirName = subFolderPrefix + "-" + "%%%%%%%%%%%%";
+        tmpDir = createUniqueFolder(tmpDir/subDirName);
+    }
+
     OSLM_INFO("Temporary folder is : " << tmpDirPath);
-    return tmpDirPath;
+    return tmpDir;
 }
 
 //------------------------------------------------------------------------------
@@ -253,7 +276,11 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
         if(pid && !isProcessRunning(pid))
         {
             OSLM_INFO("Removing old temp dir : " << foundTmpDir);
-            fs::remove_all(foundTmpDir);
+
+            ::boost::system::error_code er;
+            fs::remove_all(foundTmpDir, er);
+
+            OSLM_INFO_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
         }
     }
 

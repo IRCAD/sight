@@ -20,7 +20,7 @@ namespace
      * @brief   Implements a STL compliant predicate that test if a configuration
      *          element has the given name.
      *
-     * @author  IRCAD (Research and Development Team).
+     * 
      */
     struct HasName
     {

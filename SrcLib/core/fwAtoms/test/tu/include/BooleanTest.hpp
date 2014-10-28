@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMS_UT_BOOOLEANTEST_HPP__
-#define __FWATOMS_UT_BOOOLEANTEST_HPP__
+#ifndef __FWATOMS_UT_BOOLEANTEST_HPP__
+#define __FWATOMS_UT_BOOLEANTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -34,5 +34,5 @@ public:
 
 
 
-#endif // __FWATOMS_UT_BOOOLEANTEST_HPP__
+#endif // __FWATOMS_UT_BOOLEANTEST_HPP__
 

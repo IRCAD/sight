@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -89,7 +89,7 @@ void ServiceConfig::addServiceConfigInfo
 
     SLM_ASSERT("Sorry, service config id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
-    ServiceConfigInfo::NewSptr info;
+    ServiceConfigInfo::sptr info = ServiceConfigInfo::New();
     info->service = service;
     info->desc = desc;
     info->config =  config;
@@ -122,6 +122,17 @@ void ServiceConfig::clearRegistry()
     SLM_ASSERT("Sorry, the id " <<  configId << " is not allowed for this service " << serviceImpl,
                serviceImpl.empty() || iter->second->service.empty() || iter->second->service == serviceImpl);
     return iter->second->config;
+}
+
+//-----------------------------------------------------------------------------
+
+const std::string& ServiceConfig::getConfigDesc( const std::string & configId ) const
+{
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    Registry::const_iterator iter = m_reg.find( configId );
+    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry",
+               iter != m_reg.end());
+    return iter->second->desc;
 }
 
 //-----------------------------------------------------------------------------

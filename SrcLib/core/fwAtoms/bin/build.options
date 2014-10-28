@@ -1,5 +1,5 @@
 TYPE = 'shared'
 VERSION = '0.1'
 
-USE = ['boost','camp']
-LIB = ['fwCore_0.1','fwTools_0.1', 'fwCamp_0.1']
+USE = ['boost']
+LIB = ['fwCore_0.1','fwTools_0.1','fwMemory_0-1']

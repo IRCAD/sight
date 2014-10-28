@@ -27,8 +27,8 @@ namespace fwGuiWx
 
 /**
  * @brief   Defines the wx application.
- * @class   App.
- * @author  IRCAD (Research and Development Team).
+ * @class   App
+ * 
  * @date    2009.
  */
 
@@ -75,11 +75,6 @@ private:
      * @brief   locale (internationalization) for app
      */
     wxLocale * m_locale;
-
-    /**
-     * @brief   Application Profile
-     */
-    ::fwRuntime::profile::Profile::sptr m_profile;
 
     wxSingleInstanceChecker * m_checker;
 };

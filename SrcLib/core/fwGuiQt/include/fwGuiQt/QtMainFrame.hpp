@@ -20,7 +20,7 @@ namespace fwGuiQt
 
 /**
  * @brief A qt panel used to control a VTK 2D Negatoscope view.
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class QtMainFrame : public QMainWindow
 {
@@ -30,8 +30,6 @@ class QtMainFrame : public QMainWindow
 public:
     /**
      * @brief Constructor.
-     * @param parent The parent window.
-     * @param id     The window ID.
      */
     FWGUIQT_API QtMainFrame() throw();
 

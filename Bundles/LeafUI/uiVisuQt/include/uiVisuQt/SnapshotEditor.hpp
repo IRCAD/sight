@@ -22,8 +22,8 @@ namespace uiVisu
 
 /**
  * @brief   SnapshotEditor service is represented by a button. It allows to snap shot a generic scene.
- * @class   SnapshotEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   SnapshotEditor
+ * 
  * @date    2010.
  */
 class UIVISUQT_CLASS_API SnapshotEditor : public QObject, public ::gui::editor::IEditor
@@ -56,7 +56,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Do nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
@@ -69,7 +69,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-    <service uid="snapshotEditor" type="::gui::editor::IEditor" implementation="::uiVisu::SnapshotEditor" autoComChannel="no">
+    <service uid="snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
         <snap>
             <scene uid="genericScene" />
         </snap>

@@ -34,7 +34,7 @@ struct INameDecorator;
  * @brief   Defines the abstract class for native module implementors.
  * @struct  Native
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Native
 {
@@ -84,7 +84,7 @@ struct Native
     /**
      * @brief       Retrieves the file path of the library including the owning bundle's path.
      *
-     * @param[in]   bundle is a dynamic library and we want return an exception if is not a file
+     * @param[in]   _bMustBeFile  if true : bundle is a dynamic library and we want return an exception if is not a file
      *
      * @return      a file path
      *
@@ -95,7 +95,7 @@ struct Native
     /**
      * @brief   Retrieves the file path of the native library.
      *
-     * @remark  This path is relative to the owning bundle's path.
+     * @note  This path is relative to the owning bundle's path.
      *
      * @return  a string containing the native module file path
      */

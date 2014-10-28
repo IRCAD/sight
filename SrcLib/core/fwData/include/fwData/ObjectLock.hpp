@@ -13,7 +13,6 @@
 #include "fwData/Array.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Reconstruction.hpp"
-#include "fwData/Acquisition.hpp"
 
 #include "fwData/config.hpp"
 
@@ -22,9 +21,9 @@ namespace fwData
 
 
 /**
- * @class  ObjectLock.
+ * @class  ObjectLock
  * @brief  A simple helper to lock specific object, manages : Image, Mesh and Array.
- * @author IRCAD (Research and Development Team).
+ * 
  * @date   2007-2012.
  */
 class FWDATA_CLASS_API ObjectLock
@@ -43,14 +42,13 @@ public :
 private :
 
 
-    typedef std::vector< ::fwTools::BufferObject::Lock > LocksType;
+    typedef std::vector< ::fwMemory::BufferObject::Lock > LocksType;
     typedef std::vector< ::fwData::Object::sptr > ObjectsType;
 
     void lock( ::fwData::Array::sptr array, LocksType & locks );
     void lock( ::fwData::Image::sptr image, LocksType & locks );
     void lock( ::fwData::Mesh::sptr mesh, LocksType & locks );
     void lock( ::fwData::Reconstruction::sptr rec, LocksType & locks );
-    void lock( ::fwData::Acquisition::sptr acq, LocksType & locks );
 
     LocksType m_locks;
     ObjectsType m_objects;

@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IMenuBarBuilder.cpp
+ * @file fwGui/builder/IMenuBarBuilder.cpp
  * @brief This file defines the implementation of the interface class  for the menubar builder.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 

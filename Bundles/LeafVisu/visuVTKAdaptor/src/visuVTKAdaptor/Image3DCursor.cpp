@@ -46,9 +46,9 @@ namespace visuVTKAdaptor
 
 Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 {
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( "NEW_SPHERE_CONFIG" );
+    ////handlingEventOff();
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    //addNewHandledEvent( "NEW_SPHERE_CONFIG" );
 }
 
 //------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ void Image3DCursor::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Image3DCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

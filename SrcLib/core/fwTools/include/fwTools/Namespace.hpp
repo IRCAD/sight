@@ -7,10 +7,10 @@
 #ifndef FWTOOLSNAMESPACE_HPP_
 #define FWTOOLSNAMESPACE_HPP_
 
-/*
+/**
  * @brief       The namespace fwTools contains several tools like UUID, factory, dispatche, stringizer, macros, helper.
  * @namespace   fwTools
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

@@ -30,7 +30,7 @@ protected:
     SCENE2D_API void configuring() throw (::fwTools::Failed);
     SCENE2D_API void doStart();
     SCENE2D_API void doUpdate();
-    SCENE2D_API void doUpdate( fwServices::ObjectMsg::csptr _msg );
+    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg );
     SCENE2D_API void doSwap();
     SCENE2D_API void doStop();
 

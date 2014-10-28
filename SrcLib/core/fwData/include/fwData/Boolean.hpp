@@ -22,7 +22,7 @@ namespace fwData
  *
  * Boolean object is essentially used as a field in other objects.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Boolean : public GenericField< bool >
@@ -30,7 +30,6 @@ class FWDATA_CLASS_API Boolean : public GenericField< bool >
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object),( ((const bool)(false)) ), GenericFieldFactory< Boolean >) ;
     fwCampMakeFriendDataMacro((fwData)(Boolean));
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -44,10 +43,10 @@ public:
     FWDATA_API virtual ~Boolean() throw();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Boolean::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Boolean::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected:
 

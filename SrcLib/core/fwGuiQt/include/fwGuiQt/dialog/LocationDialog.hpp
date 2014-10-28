@@ -20,7 +20,7 @@ class QString;
 /**
  * @brief       The namespace fwGuiQt contains classes which provide the implementation of the Gui using Qt library.
  * @namespace   fwGuiQt
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */
@@ -30,8 +30,8 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic file/folder dialog for IHM.
- * @class   LocationDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   LocationDialog
+ * 
  * @date    2009-2010.
  *
  */

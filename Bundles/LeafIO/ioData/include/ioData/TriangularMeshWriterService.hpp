@@ -16,8 +16,8 @@ namespace ioData
 {
 /**
  * @brief   Triangular mesh writer service.
- * @class   TriangularMeshWriterService.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshWriterService
+ * 
  * @date    2009.
  *
  * Service writing a mesh object.
@@ -97,7 +97,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
 
     /**

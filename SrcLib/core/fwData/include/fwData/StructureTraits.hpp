@@ -19,7 +19,7 @@ namespace fwData
 /**
  * @class   StructureTraits
  * @brief   This class defines structure traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  *
  * A structure traits contains :
@@ -97,6 +97,9 @@ public:
     fwGettersSettersDocMacro(PropertyCategory, propertyCategory, std::string, Dicom property category);
 
     fwGettersSettersDocMacro(PropertyType, propertyType, std::string, Dicom property type);
+
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 private:
 

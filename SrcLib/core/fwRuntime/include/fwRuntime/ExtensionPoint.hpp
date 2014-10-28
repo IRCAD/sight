@@ -40,7 +40,7 @@ namespace fwRuntime
  * @brief   Defines the extension point class.
  * @struct  ExtensionPoint
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct ExtensionPoint : public BundleElement
 {

@@ -55,7 +55,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager::NewSptr configManager;
+    ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->setConfig( config );
     configManager->create();
     ::fwData::Image::sptr image = configManager->getConfigRoot< ::fwData::Image >();
@@ -98,7 +98,7 @@ void ConfigParserTest::testBuildComposite()
     ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildCompositeConfig() ;
 
     // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager::NewSptr configManager;
+    ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->setConfig( config );
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
@@ -149,15 +149,12 @@ void ConfigParserTest::testBuildComposite()
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid" , "myTestService1" ) ;
     serviceA->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    serviceA->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    serviceA->setAttributeValue( "autoComChannel" , "no" ) ;
+    serviceA->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
 
     // Object's service B
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid" , "myTestService2" ) ;
-    serviceB->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    serviceB->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    serviceB->setAttributeValue( "autoComChannel" , "no" ) ;
+    serviceB->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
 
     // Start method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
@@ -194,15 +191,11 @@ void ConfigParserTest::testBuildComposite()
     // image's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService = objA->addConfigurationElement("service");
     imageService->setAttributeValue( "uid" , "myImageService" ) ;
-    imageService->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    imageService->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    imageService->setAttributeValue( "autoComChannel" , "no" ) ;
+    imageService->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
 
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService2 = objA->addConfigurationElement("service");
     imageService2->setAttributeValue( "uid" , "myImageService2" ) ;
-    imageService2->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    imageService2->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    imageService2->setAttributeValue( "autoComChannel" , "no" ) ;
+    imageService2->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
 
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
      itemB->setAttributeValue( "key" , "videoUUID") ;
@@ -217,9 +210,7 @@ void ConfigParserTest::testBuildComposite()
     // composite's service 1
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service = cfg->addConfigurationElement("service");
     service->setAttributeValue( "uid" , "myTestService1" ) ;
-    service->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    service->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
-    service->setAttributeValue( "autoComChannel" , "no" ) ;
+    service->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
 
     // start / stop / update on service 1
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > start = cfg->addConfigurationElement("start");
@@ -230,9 +221,7 @@ void ConfigParserTest::testBuildComposite()
     // composite's service 2
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
     service2->setAttributeValue( "uid" , "myTestService2" ) ;
-    service2->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    service2->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
-    service2->setAttributeValue( "autoComChannel" , "no" ) ;
+    service2->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationComposite" ) ;
 
     // start / stop / update on service 2
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > start2 = cfg->addConfigurationElement("start");

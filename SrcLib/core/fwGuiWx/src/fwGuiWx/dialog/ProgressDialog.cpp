@@ -23,7 +23,7 @@ namespace dialog
 {
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog(::fwGui::GuiBaseObject::Key key, const std::string title, const std::string message)
+ProgressDialog::ProgressDialog(::fwGui::GuiBaseObject::Key key, const std::string &title, const std::string &message)
 {
     fwProgressDialog *wxpd = new fwProgressDialog(
                                     ::fwGuiWx::std2wx(title),

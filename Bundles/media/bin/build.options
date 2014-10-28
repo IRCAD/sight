@@ -1,0 +1,3 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+BUNDLES = []

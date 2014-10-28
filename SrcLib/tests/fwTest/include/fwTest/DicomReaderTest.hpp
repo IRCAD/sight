@@ -7,9 +7,12 @@
 #ifndef __FWTEST__DICOMREADERTEST_HPP__
 #define __FWTEST__DICOMREADERTEST_HPP__
 
-#include <fwData/Patient.hpp>
-
 #include "fwTest/config.hpp"
+
+namespace fwMedData
+{
+    class ImageSeries;
+}
 
 namespace fwTest
 {
@@ -17,7 +20,7 @@ namespace fwTest
 /**
  * @class   DicomReaderTest
  * @brief   This class defines some tools to check dicom manipulations during tests
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2012.
  */
 class FWTEST_CLASS_API DicomReaderTest
@@ -32,7 +35,7 @@ public:
      * This file is located here on test database : "fw4spl/Patient/Dicom/ACHGenou",
      * its represents a CT image of a knee ( 400 slices ).
      */
-    FWTEST_API static bool checkPatientACHGenou( ::fwData::Patient::sptr patient );
+    FWTEST_API static bool checkSeriesACHGenou( const SPTR(::fwMedData::ImageSeries) &series );
 };
 
 

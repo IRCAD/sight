@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@ Version::Version(const std::string & version)
 {
     if( version.empty() == false )
     {
-        boost::regex    regex ("(\\d+)-(\\d+)(svn(\\d+)){0,1}");
+        boost::regex    regex ("(\\d+)[-.](\\d+)(svn(\\d+)){0,1}");
         boost::smatch   what;
 
         if( boost::regex_match(version, what, regex) )

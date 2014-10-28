@@ -20,8 +20,8 @@ namespace action
 
 /**
  * @brief   This action show the help contents.
- * @class   ShowHelpContents.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowHelpContents
+ * 
  * @date    2010.
  */
 class UIGENERICQT_CLASS_API ShowHelpContents : public ::fwGui::IActionSrv
@@ -39,7 +39,7 @@ protected:
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::uiGeneric::ui::action::ShowHelpContents" type="::fwGui::IActionSrv">
+    <service impl="::uiGeneric::ui::action::ShowHelpContents" type="::fwGui::IActionSrv">
         <filename id=".../doc.qhc"/>
     </service>
     @endverbatim
@@ -51,7 +51,7 @@ protected:
     void starting() throw (::fwTools::Failed);
 
     /// Does nothing
-    void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// Show the frame
     void updating() throw(::fwTools::Failed);

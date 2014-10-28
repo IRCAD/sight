@@ -21,7 +21,7 @@ namespace helper
 /**
  * @class   MsgHelper
  * @brief   This class contains helpers for Messages.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  */
 class FWCOMED_CLASS_API MsgHelper

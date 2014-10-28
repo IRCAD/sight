@@ -36,7 +36,7 @@ DataInfoFromMsgUpdaterSrv::~DataInfoFromMsgUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void DataInfoFromMsgUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void DataInfoFromMsgUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   ManagedEvents::iterator it = m_managedEvents.begin();
@@ -52,7 +52,7 @@ void DataInfoFromMsgUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) 
         if( _msg->hasEvent( event ) )
         {
             ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast( _msg->getSubject().lock() );
-            SLM_ASSERT(obj,"Sorry, the subject of message is not a ::fwData::Object");
+            SLM_ASSERT("Sorry, the subject of message is not a ::fwData::Object", obj);
 
             // Test if we manage this event from this object message uid
             if( obj->getID() == uuid || uuid == "*")

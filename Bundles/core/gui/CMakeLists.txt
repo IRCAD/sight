@@ -1,0 +1,15 @@
+fwLoadProperties()
+fwUseForwardInclude(
+    fwCom
+    fwCore
+    fwGui
+    fwRuntime
+    fwServices
+    fwTools
+)
+
+Find_package (Boost COMPONENTS filesystem REQUIRED)
+
+fwForwardInclude(${Boost_INCLUDE_DIRS})
+fwLink(${Boost_LIBRARIES})
+

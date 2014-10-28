@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/CardinalLayoutManagerBase.cpp
+ * @file fwGui/layoutManager/CardinalLayoutManagerBase.cpp
  * @brief This file defines the implementation of the class for managing a cardinal layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 

@@ -117,7 +117,7 @@ void ShowAcknowledgments::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowAcknowledgments::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ShowAcknowledgments::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

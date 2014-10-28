@@ -24,7 +24,7 @@ namespace fwData
  * @class   Histogram
  * @brief   This class defines the histogram of an image.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class FWDATA_CLASS_API Histogram : public Object
@@ -38,7 +38,6 @@ public:
 
     typedef std::vector< long > fwHistogramValues;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -50,10 +49,10 @@ public:
     FWDATA_API virtual ~Histogram();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Histogram::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Histogram::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
      * @brief Add the given pixel value into the histogram.

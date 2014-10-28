@@ -16,7 +16,7 @@ namespace fwData
 /**
  * @namespace ::fwData::location
  * @brief This namespace contains the classes which define a %location ( fileSystem, directory(IES) etc.... ).
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  */
@@ -34,9 +34,12 @@ class FWDATA_CLASS_API ILocation : public ::fwData::Object
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (ILocation)(::fwData::Object) );
 
+    typedef ::boost::filesystem::path PathType;
+    typedef std::vector<PathType> VectPathType;
+
 protected:
 
-    /// Constructor : cannot be instanciated but derivated class OK
+    /// Constructor : cannot be instantiated but derivated class OK
     FWDATA_API ILocation();
 
     /// Destructor
@@ -56,7 +59,7 @@ inline typename LOCATION::sptr getLocation(RW *rw)
     location = LOCATION::dynamicCast( rw->getLocation() );
     if ( !location )
     {
-        location = typename LOCATION::NewSptr();
+        location = LOCATION::New();
         rw->setLocation(location);
     }
     return location;

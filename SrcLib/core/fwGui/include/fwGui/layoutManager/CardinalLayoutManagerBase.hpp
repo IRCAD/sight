@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/CardinalLayoutManagerBase.hpp
+ * @file fwGui/layoutManager/CardinalLayoutManagerBase.hpp
  * @brief This file defines the interface class for managing a cardinal layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -31,8 +31,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for cardinal layout manager.
- * @class   CardinalLayoutManagerBase.
- * @author  IRCAD (Research and Development Team).
+ * @class   CardinalLayoutManagerBase
+ * 
  * @date    2009-2010.
  *
  */
@@ -93,7 +93,7 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @verbatim
-       <service uid="subView2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+       <service uid="subView2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
            <gui>
                <layout type="::fwGui::CardinalLayoutManager" >
                    <view caption="CardinalView1" align="center" />
@@ -108,8 +108,8 @@ public:
            </registry>
        </service>
       @endverbatim
-    *  - <layout type="::fwGui::CardinalLayoutManager" > : define a cardinal layout.
-    *  - <view caption="CardinalView1" align="center" /> : define a new view with following attribute
+    *  - \<layout type="::fwGui::CardinalLayoutManager" \> : define a cardinal layout.
+    *  - \<view caption="CardinalView1" align="center" /\> : define a new view with following attribute
     *   - \b caption : name of the view (display on the screen).
     *   - \b align  {center | bottom | top | right | left}: define the position of the view
     *   - \b minWidth : minimal width of the view

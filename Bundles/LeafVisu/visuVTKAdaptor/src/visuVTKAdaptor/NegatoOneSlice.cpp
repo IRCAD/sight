@@ -14,7 +14,7 @@
 #include <fwData/TransferFunction.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/String.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageData.h>
 #include <vtkImageBlend.h>
@@ -42,10 +42,10 @@ NegatoOneSlice::NegatoOneSlice() throw()
     m_imageSource = NULL;
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------
@@ -111,6 +111,7 @@ void NegatoOneSlice::cleanImageSource()
         imageSliceAdaptor->setRenderId( this->getRenderId() );
         imageSliceAdaptor->setPickerId( this->getPickerId() );
         imageSliceAdaptor->setTransformId( this->getTransformId() );
+        imageSliceAdaptor->setAutoRender( this->getAutoRender() );
 
 
         ::visuVTKAdaptor::ImageSlice::sptr ISA;
@@ -149,6 +150,7 @@ void NegatoOneSlice::cleanImageSource()
         imageAdaptor->setRenderId( this->getRenderId() );
         imageAdaptor->setPickerId( this->getPickerId() );
         imageAdaptor->setTransformId( this->getTransformId() );
+        imageAdaptor->setAutoRender( this->getAutoRender() );
 
         ::visuVTKAdaptor::Image::sptr IA;
         IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
@@ -215,7 +217,7 @@ void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void NegatoOneSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -237,7 +239,9 @@ void NegatoOneSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTool
             setOrientation( static_cast< Orientation >( toSliceType ));
         }
     }
-    else
+    else if (msg->hasEvent(::fwComEd::ImageMsg::BUFFER)
+              || msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE)
+              ||msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
     {
         this->doStop();
         this->doStart();

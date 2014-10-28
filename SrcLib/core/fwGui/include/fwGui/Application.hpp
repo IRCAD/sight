@@ -17,8 +17,8 @@ namespace fwGui
 
 /**
  * @brief   Gives access to the underlayed application part
- * @class   Application.
- * @author  IRCAD (Research and Development Team).
+ * @class   Application
+ * 
  * @date    2009-2010.
  *
  */

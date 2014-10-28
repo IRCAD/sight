@@ -20,8 +20,8 @@ namespace fwTools
 {
 /**
  * @brief   Management of UUID on objects.
- * @class   UUID.
- * @author  IRCAD (Research and Development Team).
+ * @class   UUID
+ * 
  * @date    2007-2009.
  *
  */
@@ -66,7 +66,7 @@ public:
 
 protected :
 
-    /// Store association ::boost::weak_ptr <--> uuid as a string
+    /// Store association \::boost::weak_ptr <--> uuid as a string
     typedef std::map< UUIDType, ::fwTools::Object::wptr > UUIDContainer;
 
     FWTOOLS_API static UUIDContainer s_uuidMap;

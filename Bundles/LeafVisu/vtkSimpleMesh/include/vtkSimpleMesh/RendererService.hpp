@@ -7,6 +7,8 @@
 #ifndef VTKSIMPLEMESH_RENDERER_SERVICE_HPP_
 #define VTKSIMPLEMESH_RENDERER_SERVICE_HPP_
 
+#include <boost/shared_array.hpp>
+
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
 #include <vtkCommand.h>
@@ -14,8 +16,6 @@
 #include <fwRender/IRender.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
-
-#include <fwData/Image.hpp>
 
 #include "vtkSimpleMesh/config.hpp"
 
@@ -28,8 +28,8 @@ namespace vtkSimpleMesh
 
 /**
  * @brief   Renderer service.
- * @class   RendererService.
- * @author  IRCAD (Research and Development Team).
+ * @class   RendererService
+ * 
  * @date    2009.
  *
  * Service rendering a ::fwData::Mesh using VTK.
@@ -43,6 +43,14 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) ) ;
 
+    typedef ::boost::shared_array< double > SharedArray;
+
+    VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
+    typedef ::fwCom::Slot<void(SharedArray, SharedArray, SharedArray)> UpdateCamPositionSlotType;
+
+    VTKSIMPLEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
+    typedef ::fwCom::Signal< void (SharedArray, SharedArray, SharedArray) > CamUpdatedSignalType;
+
     /**
     * @brief    Constructor
     */
@@ -53,12 +61,14 @@ public :
     */
     VTKSIMPLEMESH_API virtual ~RendererService() throw() ;
 
-    /**
-    * @brief VTK event managing of the VTK Camera position.
-    *
-    * This method is used to update the VTK camera position.
-    */
-    void updateCamPosition();
+
+    /// Slot to receive new camera information (position, focal, viewUp). Update camera with new information.
+    void updateCamPosition(SharedArray positionValue,
+                           SharedArray focalValue,
+                           SharedArray viewUpValue);
+
+    /// This method is used to notify that the VTK camera position is updated.
+    void notifyCamPositionUpdated();
 
 
 protected :
@@ -67,7 +77,7 @@ protected :
     * @brief Starting method.
     *
     * This method is used to initialize the service.
-    * Initialize VTK renderer and wxWidget containers
+    * Initialize VTK renderer and qt containers
     */
     VTKSIMPLEMESH_API virtual void starting() throw(fwTools::Failed);
 
@@ -77,12 +87,9 @@ protected :
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" autoComChannel="yes" >
-            <masterSlaveRelation>master</masterSlaveRelation>
-            <win guiContainerId="900"/>
-    </service>
+    <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" autoConnect="yes" />
     @endverbatim
-    * This method is used to configure the service.
+    * This method is used to configure the service. Initialize qt container.
     */
     VTKSIMPLEMESH_API virtual void configuring() throw(::fwTools::Failed);
 
@@ -90,7 +97,7 @@ protected :
     /**
     * @brief Stopping method.
     *
-    * Destroy VTK renderer and wxWidget containers
+    * Destroy VTK renderer and qt containers
     */
     VTKSIMPLEMESH_API virtual void stopping() throw(fwTools::Failed);
 
@@ -106,9 +113,9 @@ protected :
     * @brief Updating method (react on data modifications).
     * @param[in] _msg ::fwServices::ObjectMsg::csptr.
     *
-    * This method is used to update the service.
+    * This method is used to update the vtk pipeline when the mesh is modified.
     */
-    VTKSIMPLEMESH_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// @brief vtk renderer
     vtkRenderer * m_render ;
@@ -118,26 +125,14 @@ private :
     /// @brief VTK Interactor window manager
     ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
-    /**
-    * @brief VTK pipeline initialization method.
-    *
-    * This method is used to initialize the VTK pipeline.
-    */
+    /// This method is used to initialize the VTK pipeline.
     void initVTKPipeline();
 
     /**
-    * @brief VTK pipeline updating method.
-    *
-    * This method is used to update the VTK pipeline.
+    * @brief This method is used to update the VTK pipeline.
+    * @param resetCamera if true : reset the camera position
     */
-    void updateVTKPipeline();
-
-
-
-    /**
-    * @brief Contains the mesh, and allows to compute normals.
-    */
-    vtkPolyDataNormals* m_normals;
+    void updateVTKPipeline(bool resetCamera = true);
 
     /**
     * @brief the m_bPipelineIsInit value is \b true
@@ -147,8 +142,20 @@ private :
 
     vtkCommand* m_loc;
 
-    bool m_isCamMaster;
+    /// Slot to call updateCamPosition method
+    UpdateCamPositionSlotType::sptr m_slotUpdateCamPosition;
 
+    /// Signal emitted when camera position is updated.
+    CamUpdatedSignalType::sptr m_sigCamUpdated;
+
+    /// To store the polyData
+    vtkSmartPointer<vtkPolyData> m_vtkPolyData;
+
+    /// Vtk mapper
+    vtkSmartPointer<vtkPolyDataMapper> m_mapper;
+
+    /// Hight resolution timer to log information about computing function time
+    ::fwCore::HiResTimer m_hiResTimer;
 };
 
 }

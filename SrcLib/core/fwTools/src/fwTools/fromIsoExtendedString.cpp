@@ -74,8 +74,8 @@ std::string toStringWithoutAccent( const std::string & str )
                 *pCharacter = *charWithoutAccent;
             }
         }
-        charWithAccent++;
-        charWithoutAccent++;
+        ++charWithAccent;
+        ++charWithoutAccent;
     }
     return newStr;
 }

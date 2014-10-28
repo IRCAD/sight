@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/BufferManager.hpp"
 #include "fwMemory/IPolicy.hpp"
+#include "fwMemory/policy/factory/new.hpp"
 #include "fwMemory/config.hpp"
 
 namespace fwMemory
@@ -36,31 +37,36 @@ namespace policy
 class FWMEMORY_CLASS_API ValveDump : public fwMemory::IPolicy
 {
 public :
-    fwCoreClassDefinitionsWithFactoryMacro((ValveDump)(fwMemory::IPolicy), (()), new ValveDump );
+    fwCoreClassDefinitionsWithFactoryMacro((ValveDump)(fwMemory::IPolicy),
+                                           (()),
+                                           ::fwMemory::policy::factory::New< ValveDump >) ;
 
     FWMEMORY_API ValveDump();
 
-    FWMEMORY_API virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
-    FWMEMORY_API virtual void setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) ;
-    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize ) ;
-    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, void **buffer ) ;
-    FWMEMORY_API virtual void lockRequest( BufferInfo &info, void **buffer ) ;
-    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, void **buffer ) ;
+    FWMEMORY_API virtual void allocationRequest( BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void setRequest( BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType size ) ;
+    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType newSize ) ;
 
-    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, void **buffer );
-    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, void **buffer );
+    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) ;
 
-    FWMEMORY_API void setManager(::fwTools::IBufferManager::sptr manager);
+    FWMEMORY_API virtual void lockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) ;
+    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) ;
+
+    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
+    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
 
     FWMEMORY_API virtual void refresh();
 
     FWMEMORY_API bool setParam(const std::string &name, const std::string &value);
-    FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL );
-    FWMEMORY_API const fwMemory::IPolicy::ParamNamesType &getParamNames() const;
+    FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL ) const;
+    FWMEMORY_API const ::fwMemory::IPolicy::ParamNamesType &getParamNames() const;
 
 protected :
 
-    FWMEMORY_API bool needDump(size_t supplement);
+    FWMEMORY_API bool needDump(size_t supplement) const;
 
     FWMEMORY_API size_t dump(size_t nbOfBytes);
 
@@ -68,10 +74,6 @@ protected :
 
     size_t m_minFreeMem;
     size_t m_hysteresisOffset;
-
-    ::fwMemory::BufferManager::wptr m_manager;
-
-
 };
 
 

@@ -78,7 +78,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
             {
 
                 // Create and manage object config
-                ::fwServices::AppConfigManager::NewSptr ctm;
+                ::fwServices::AppConfigManager::sptr ctm = ::fwServices::AppConfigManager::New();
                 ctm->setConfig( * ( elem->getElements().begin() ) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();

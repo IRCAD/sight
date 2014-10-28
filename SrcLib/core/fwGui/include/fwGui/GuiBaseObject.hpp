@@ -22,7 +22,7 @@ namespace fwGui
 /**
  * @brief Base class for all fwGui's classes
  */
-class FWCORE_CLASS_API GuiBaseObject : public ::fwCore::BaseObject
+class FWGUI_CLASS_API GuiBaseObject : public ::fwCore::BaseObject
 {
 
 public :
@@ -47,6 +47,7 @@ public :
 
     fwCoreNonInstanciableClassDefinitionsMacro( (GuiBaseObject)(::fwCore::BaseObject) );
 
+protected :
     /**
      * @name Constructor/Destructor
      * @{ */

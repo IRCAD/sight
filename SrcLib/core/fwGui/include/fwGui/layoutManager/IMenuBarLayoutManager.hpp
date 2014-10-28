@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IMenuBarLayoutManager.hpp
+ * @file fwGui/layoutManager/IMenuBarLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a menubar.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -29,8 +29,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the menu bar layout manager for IHM.
- * @class   IMenuBarLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMenuBarLayoutManager
+ * 
  * @date    2009-2010.
  *
  */
@@ -60,7 +60,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -74,8 +74,8 @@ public:
       </service>
        @endverbatim
      * This method analyzes the gui section of the configuration.
-     *  - <layout> (mandatory) : give the list of the menu that will appear in the menu bar.
-     *  - <menu name="My Menu"/> :
+     *  - \<layout\> (mandatory) : give the list of the menu that will appear in the menu bar.
+     *  - \<menu name="My Menu"/\> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      */
 

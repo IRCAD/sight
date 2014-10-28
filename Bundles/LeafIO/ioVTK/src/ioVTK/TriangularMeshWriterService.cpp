@@ -22,7 +22,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/TriangularMeshWriter.hpp>
+#include <fwVtkIO/TriangularMeshWriter.hpp>
 
 #include "ioVTK/TriangularMeshWriterService.hpp"
 
@@ -94,7 +94,7 @@ void TriangularMeshWriterService::info(std::ostream &_sstream )
 void TriangularMeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::TriangularMeshWriter::NewSptr myWriter;
+    ::fwVtkIO::TriangularMeshWriter::sptr myWriter = ::fwVtkIO::TriangularMeshWriter::New();
 
     myWriter->setObject(_pMesh);
     myWriter->setFile(vtkFile);

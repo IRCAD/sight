@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,6 +12,9 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/Image.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>
@@ -39,7 +42,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::Representa
 
 RepresentationEditor::RepresentationEditor() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -194,7 +197,7 @@ void RepresentationEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void RepresentationEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
@@ -357,11 +360,12 @@ void RepresentationEditor::refreshNormals()
 void RepresentationEditor::onShowNormals(int state )
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
-    ::fwComEd::MeshMsg::NewSptr meshMsg;
+    ::fwComEd::MeshMsg::sptr meshMsg = ::fwComEd::MeshMsg::New();
     switch (state)
     {
         case 0:
             m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
+            meshMsg->addEvent("HIDE_NORMALS");
             break;
         case 1:
             m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
@@ -372,7 +376,7 @@ void RepresentationEditor::onShowNormals(int state )
             meshMsg->addEvent("SHOW_POINT_NORMALS");
             break;
     }
-    ::fwComEd::MaterialMsg::NewSptr msg;
+    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
     msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), msg);
     ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), meshMsg);
@@ -384,7 +388,7 @@ void RepresentationEditor::notifyMaterial()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
 
-    ::fwComEd::MaterialMsg::NewSptr msg;
+    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
     msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMaterial(), msg);
 }
@@ -395,7 +399,7 @@ void RepresentationEditor::notifyMesh()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
 
-    ::fwComEd::MaterialMsg::NewSptr msg;
+    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
     msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), msg);
 }

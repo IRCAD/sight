@@ -15,8 +15,8 @@ namespace writer
 
 /**
  * @brief       Contains fwDataIO::writer::registry details
- * @namespace   registry
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwDataIO::reader::registry
+ * 
  * @date        2009-2012
  *
  */

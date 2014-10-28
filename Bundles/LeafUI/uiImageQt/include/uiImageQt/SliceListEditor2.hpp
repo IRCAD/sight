@@ -25,8 +25,8 @@ namespace uiImage
 
 /**
  * @brief   SliceListEditor2 service allows to change the number of slice to show.
- * @class   SliceListEditor2.
- * @author  IRCAD (Research and Development Team).
+ * @class   SliceListEditor2
+ * 
  * @date    2010.
  */
 class UIIMAGEQT_CLASS_API SliceListEditor2 : public QObject, public ::gui::editor::IEditor
@@ -59,7 +59,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Management of observations : update editor according to the received message
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
@@ -72,7 +72,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" implementation="::uiImage::SliceListEditor2" autoComChannel="yes">
+     <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor2" autoConnect="yes">
          <negatoAdaptor uid="myNegatoMPR" slices="1"/>
      </service>
        @endverbatim

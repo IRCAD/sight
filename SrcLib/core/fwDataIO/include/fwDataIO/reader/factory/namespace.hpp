@@ -15,8 +15,8 @@ namespace reader
 
 /**
  * @brief       Contains fwDataIO::reader::factory utilities
- * @namespace   factory
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwDataIO::reader::factory
+ * 
  * @date        2009-2012
  *
  */

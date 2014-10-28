@@ -64,6 +64,8 @@ public :
       m_picker( vtkCellPicker::New() ),
       m_propCollection( vtkPropCollection::New() )
     {
+        m_lastPos[0] = -1;
+        m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 
@@ -117,9 +119,13 @@ public :
                     if(plist)
                     {
                         ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
-                        ::fwComEd::ImageMsg::NewSptr msg;
+                        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
                         msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, plist );
-                        ::fwServices::IEditionService::notify( m_service->getSptr(), image, msg , ::fwServices::ComChannelService::NOTIFY_SOURCE);
+
+                        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+                        fwServicesNotifyMsgMacro( image->getLightID(), sig, msg );
+
                         break;
                     }
                 }
@@ -143,9 +149,9 @@ ImageMultiDistances::ImageMultiDistances() throw():
     m_rightButtonCommand(0),
     m_needSubservicesDeletion(false)
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_DISTANCE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_DISTANCE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE );
 }
 
 //------------------------------------------------------------------------------
@@ -199,27 +205,27 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
     static std::vector< Color::sptr >::iterator current;
     if ( colors.empty() )
     {
-        Color::NewSptr magenta;
+        Color::sptr magenta = Color::New();
         magenta->setRGBA( 1, 0, 1);
         colors.push_back( magenta );
 
-        Color::NewSptr cyan;
+        Color::sptr cyan = Color::New();
         cyan->setRGBA(0, 1, 1);
         colors.push_back( cyan );
 
-        Color::NewSptr orange;
+        Color::sptr orange = Color::New();
         orange->setRGBA(  1, 0.647, 0);
         colors.push_back( orange );
 
-        Color::NewSptr violet;
+        Color::sptr violet = Color::New();
         violet->setRGBA( .5, 0.26, 1);
         colors.push_back( violet );
 
-        Color::NewSptr vertpomme;
+        Color::sptr vertpomme = Color::New();
         vertpomme->setRGBA( .65, 1 , 0);
         colors.push_back( vertpomme );
 
-        Color::NewSptr jaune;
+        Color::sptr jaune = Color::New();
         jaune->setRGBA( 1, 1, 0);
         colors.push_back( jaune );
 
@@ -237,8 +243,8 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
         current = colors.begin();
     }
 
-    Color::NewSptr newColor;
-    newColor->deepCopy( *current );
+    Color::sptr newColor;
+    newColor = ::fwData::Object::copy( *current );
     return newColor;
 }
 
@@ -263,6 +269,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         serviceDistance->setPickerId( this->getPickerId() );
         serviceDistance->setRenderId( this->getRenderId() );
         serviceDistance->setRenderService( this->getRenderService() );
+        serviceDistance->setAutoRender( this->getAutoRender() );
         serviceDistance->start();
 
         // SERVICE POINT LIST
@@ -275,6 +282,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRenderId( this->getRenderId() );
         servicePointList->setRenderService( this->getRenderService() );
+        servicePointList->setAutoRender(m_autoRender);
         servicePointList->start();
 
         this->registerService( serviceDistance );
@@ -314,7 +322,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         camera->SetClippingRange( clippingCamBackup );
     }
 
-    ::fwData::Point::NewSptr pt;
+    ::fwData::Point::sptr pt = ::fwData::Point::New();
     std::copy( world, world +3, pt->getRefCoord().begin() );
     this->setVtkPipelineModified();
     return pt;
@@ -387,9 +395,9 @@ void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove ) 
 void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::PointList::NewSptr newPL;
+    ::fwData::PointList::sptr newPL = ::fwData::PointList::New();
 
-    newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId, ::fwData::String::NewSptr( sceneId ) );
+    newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId, ::fwData::String::New( sceneId ) );
 
     ::fwData::Vector::sptr distanceField;
     distanceField = image->setDefaultField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
@@ -413,7 +421,7 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ImageMultiDistances::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
@@ -429,7 +437,7 @@ void ImageMultiDistances::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(:
         if ( dataInfo->value() == sceneId )
         {
             this->createNewDistance( sceneId );
-            ::fwComEd::ImageMsg::NewSptr msg;
+            ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
             msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
             ::fwServices::IEditionService::notify( this->getSptr(), image, msg );
         }

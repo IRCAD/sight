@@ -48,12 +48,13 @@ Plane::Plane() throw()
     m_vtkPlaneCollection = 0;
     m_vtkImplicitPlane = 0;
 
-    addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-    addNewHandledEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION );
-    addNewHandledEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
-    addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
-    addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
+    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION );
+    //addNewHandledEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
+    //addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
 
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -130,11 +131,13 @@ void Plane::doStart() throw(fwTools::Failed)
         servicePoint->setRenderService(this->getRenderService());
         servicePoint->setRenderId( this->getRenderId() );
         servicePoint->setPickerId( this->getPickerId() );
+        servicePoint->setAutoRender( this->getAutoRender() );
         servicePoint->start();
 
         this->registerService(servicePoint);
 
-        ::fwServices::registerCommunicationChannel(point, this->getSptr() )->start();
+        m_connections->connect(point, ::fwData::Object::s_OBJECT_MODIFIED_SIG,
+                               this->getSptr(), ::fwServices::IService::s_RECEIVE_SLOT);
     }
 
     if (m_vtkPlaneCollection)
@@ -181,7 +184,7 @@ void Plane::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Plane::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Plane::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
@@ -191,14 +194,14 @@ void Plane::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Fai
         if (pointMsg->hasEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED ) )
         {
             this->doUpdate();
-            ::fwComEd::PlaneMsg::NewSptr msg;
+            ::fwComEd::PlaneMsg::sptr msg = ::fwComEd::PlaneMsg::New();
             msg->addEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
             ::fwServices::IEditionService::notify( this->getSptr(), m_pPlane.lock(), msg );
         }
 
         if ( pointMsg->hasEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION ))
         {
-            ::fwComEd::PlaneMsg::NewSptr msg;
+            ::fwComEd::PlaneMsg::sptr msg = ::fwComEd::PlaneMsg::New();
             msg->addEvent( ::fwComEd::PlaneMsg::START_PLANE_INTERACTION );
             ::fwServices::IEditionService::notify( this->getSptr(), m_pPlane.lock(), msg );
         }
@@ -234,13 +237,7 @@ void Plane::doStop() throw(fwTools::Failed)
         m_vtkImplicitPlane = 0;
     }
 
-    if (!m_pPlane.expired())
-    {
-        BOOST_FOREACH( ::fwData::Point::sptr point, m_pPlane.lock()->getPoints() )
-        {
-            ::fwServices::unregisterCommunicationChannel(point, this->getSptr() );
-        }
-    }
+    m_connections->disconnect();
 
     this->unregisterServices();
     this->removeAllPropFromRenderer();

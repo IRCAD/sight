@@ -106,7 +106,7 @@ void Composite::notify( ::fwServices::IService::sptr _serviceSource )
 {
     if ( m_compositeMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg , ::fwServices::ComChannelService::NOTIFY_SOURCE );
+        ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg , true );
     }
     SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.", m_compositeMsg->getEventIds().size() == 0);
 }

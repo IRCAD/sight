@@ -1,0 +1,21 @@
+<plugin id="activities" class="activities::Plugin" >
+
+    <library name="activities" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="gui"/>
+    <requirement id="guiQt"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::activities::action::SActivityLauncher</service>
+        <object>::fwData::Vector</object>
+    </extension>
+
+    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
+    <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd"/>
+
+
+
+</plugin>

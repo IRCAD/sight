@@ -14,7 +14,7 @@
 namespace uiTF
 {
 /**
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009-2010.
  */
 class UITF_CLASS_API Plugin : public ::fwRuntime::Plugin

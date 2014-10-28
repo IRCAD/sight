@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for Tag : store modification information
  * @class   TagMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */

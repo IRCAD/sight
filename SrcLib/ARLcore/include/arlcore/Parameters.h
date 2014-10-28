@@ -19,7 +19,6 @@ namespace arlCore
     {
     /**
      * @class   Parameters
-     * @author  IRCAD (Research and Development Team)
      * @date    07/2007
      * @brief   This class should be used with real time application only.
      * The purpose of this class is to access/modify parameters (double or boolean)that are loaded 

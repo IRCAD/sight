@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 
 #include <boost/foreach.hpp>
+#include <boost/chrono/duration.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -106,28 +107,28 @@ void MTLockTest::runMultipleLock1()
 {
     {
         ::fwData::mt::ObjectWriteLock writeLock(m_string);
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
         m_string->value() += "t";
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
         m_string->value() += "o";
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
         m_string->value() += "t";
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
         m_string->value() += "o";
     }
-    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
 
     {
         ::fwData::mt::ObjectReadLock readLock(m_string);
         CPPUNIT_ASSERT(m_string->value().find("toto") != std::string::npos);
     }
-    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
 
     {
         ::fwData::mt::ObjectReadToWriteLock lock(m_string);
         if (m_string->value() == "totolili")
         {
-            ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+            ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
             lock.upgrade();
             m_string->value() = "toto";
         }
@@ -140,28 +141,28 @@ void MTLockTest::runMultipleLock2()
 {
     {
         ::fwData::mt::ObjectWriteLock writeLock(m_string);
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
         m_string->value() += "l";
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
         m_string->value() += "i";
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
         m_string->value() += "l";
-        ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
         m_string->value() += "i";
     }
-    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
 
     {
         ::fwData::mt::ObjectReadLock readLock(m_string);
         CPPUNIT_ASSERT(m_string->value().find("lili") != std::string::npos);
     }
-    ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
 
     {
         ::fwData::mt::ObjectReadToWriteLock lock(m_string);
         if (m_string->value() == "lilitoto")
         {
-            ::boost::this_thread::sleep( ::boost::posix_time::milliseconds(100));
+            ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
             lock.upgrade();
             m_string->value() = "lili";
         }

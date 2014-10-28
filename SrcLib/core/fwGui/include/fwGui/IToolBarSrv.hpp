@@ -19,8 +19,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing the toolBar.
- * @class   IToolBarSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IToolBarSrv
+ * 
  * @date    2009-2010.
  *
  */
@@ -56,7 +56,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-       <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
            <gui>
                <layout>
                    <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
@@ -80,11 +80,11 @@ protected :
            </registry>
        </service>
        @endverbatim
-     *   - <gui> </gui> : (mandatory) describe the interface of the service.
-     *   - <registry> </registry> : (mandatory) describe the service management.
-     *     - <menuItem> represents IActionSrv
-     *     - <menu> represents IMenuSrv
-     *     - <editor> represents container service (IEditor, IView, ...)
+     *   - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
+     *   - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *     - \<menuItem\> represents IActionSrv
+     *     - \<menu\> represents IMenuSrv
+     *     - \<editor\> represents container service (IEditor, IView, ...)
      *
      *   @warning
      *   - The number of item in the gui section must be EQUAL to the registry section.

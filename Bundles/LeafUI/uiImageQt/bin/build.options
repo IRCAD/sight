@@ -11,7 +11,9 @@ LIB     = [
           'fwGuiQt_0-1',
           ]
 USE     = ['qtCore','boost', 'boostFilesystem']
-BUNDLES = ['gui_0-1']
+BUNDLES = [
+    'gui_0-1',
+    ]
 
 
 

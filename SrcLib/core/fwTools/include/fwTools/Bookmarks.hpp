@@ -23,9 +23,9 @@ namespace fwTools
 
 class Object;
 /**
- * @brief   Allow to add a bookmark to an object, the bookmark name is unique (in time), an object can have several bookmarks
+ * @brief   Allows to add a bookmark to an object, the bookmark name is unique (in time), an object can have several bookmarks
  * @class   Bookmarks
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  * @note    expired object do not erase its bookmarks
  **/
@@ -38,7 +38,7 @@ public:
     typedef std::string BookmarkName;
 
     /**
-     * Test if the given id exist (i.e recorded in Bookmarks dictionary)
+     * @brief Tests if the given id exist (i.e recorded in Bookmarks dictionary)
      * @param[in] _id : the id to test
      * @return true iff the given id is recorded in Bookmarks dictionary
      */
@@ -50,20 +50,20 @@ public:
     FWTOOLS_API static void remove( Bookmarks::BookmarkName _bookmark  );
 
     /**
-     * @brief retrieve the object attached to the given id. Return a null sptr if no correspondence exist
+     * @brief Retrieves the object attached to the given id. Return a null sptr if no correspondence exist
      */
     FWTOOLS_API static SPTR(::fwTools::Object ) getObject( BookmarkName _bookmark );
 
 
     /**
-     * @brief retrieve the list of bookmarks attach to an object
+     * @brief Retrieves the list of bookmarks attach to an object
      */
     FWTOOLS_API static std::list<BookmarkName> getBookmarks(  SPTR(::fwTools::Object ) );
 
     /**
-     * @brief retrieve the list of bookmarks
+     * @brief Retrieves the list of bookmarks
      */
-    FWTOOLS_API static std::list<Bookmarks::BookmarkName> getBookmarks();
+    FWTOOLS_API static std::list<BookmarkName> getBookmarks();
 
 protected :
 

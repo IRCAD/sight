@@ -21,11 +21,9 @@ namespace ioVTK
 
 /**
  * @brief   vtk reader service.
- * @class   VtkModelReaderService.
- * @author  IRCAD Fr & Tw.
- * @date    2010.
+ * @class   VtkModelReaderService
  *
- * Service reading a vtk file using the vtkIO lib
+ * Service reading a vtk file using the fwVtkIO lib
  * (for .vtk at this time).
  *
  * Service registered details : \n
@@ -82,7 +80,7 @@ protected:
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::ioVTK::ImageReaderService" type="::io::IReader">
+    <service impl="::ioVTK::ImageReaderService" type="::io::IReader">
         <filename id=".../imageTest.vtk"/>
     </service>
     @endverbatim
@@ -100,11 +98,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

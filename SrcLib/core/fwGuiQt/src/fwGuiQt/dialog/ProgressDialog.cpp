@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string title, const std::string message)
+ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string &title, const std::string &message)
 :   m_title (""),
     m_pdialog ( NULL ),
     m_pprogressbar ( NULL ),
@@ -94,16 +94,16 @@ ProgressDialog::~ProgressDialog()
     if (m_pdialog)
     {
         m_pdialog->hide();
-        m_pdialog->deleteLater();
+        delete m_pdialog;
     }
     else if ( m_pprogressbar )
     {
         m_pmainWindow->statusBar()->removeWidget( m_pprogressbar );
         m_pmainWindow->statusBar()->removeWidget( m_pcancelButton );
         m_pcancelButton->hide();
-        m_pcancelButton->deleteLater();
+        delete m_pcancelButton;
         m_pprogressbar->hide();
-        m_pprogressbar->deleteLater();
+        delete m_pprogressbar;
 
     }
 

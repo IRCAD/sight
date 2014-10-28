@@ -41,7 +41,7 @@ void ContainerBuilder::createContainer( ::fwGui::container::fwContainer::sptr pa
     m_parent = ::fwGuiWx::container::WxContainer::dynamicCast(parent);
     SLM_ASSERT("Sorry, the parent container is not a WxContainer", m_parent);
 
-    ::fwGuiWx::container::WxContainer::NewSptr wxContainer;
+    ::fwGuiWx::container::WxContainer::sptr wxContainer = ::fwGuiWx::container::WxContainer::New();
     wxWindow *wxParent = m_parent->getWxContainer();
     wxPanel *panel = new wxPanel(wxParent, wxNewId());
     wxContainer->setWxContainer(panel);

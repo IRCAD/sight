@@ -63,7 +63,7 @@ void CameraReaderService::updating() throw(::fwTools::Failed)
         this->loadCalibration(this->getFile().string(), cam);
 
         // Notify reading
-        ::fwComEd::CameraMsg::NewSptr msg;
+        ::fwComEd::CameraMsg::sptr msg = ::fwComEd::CameraMsg::New();
         msg->addEvent( ::fwComEd::CameraMsg::NEW_CAMERA ) ;
 
         ::fwServices::IEditionService::notify(this->getSptr(), cam, msg);
@@ -80,7 +80,7 @@ bool CameraReaderService::loadCalibration( const std::string &fileName, ::fwData
         return false;
     double M[5];
     unsigned int i, j;
-    ::fwData::TransformationMatrix3D::NewSptr m_extrinsicMatrix;
+    ::fwData::TransformationMatrix3D::sptr m_extrinsicMatrix = ::fwData::TransformationMatrix3D::New();
     for( i=0 ; i<4 ; ++i )
     {
         for( j=0; j<4; ++j )

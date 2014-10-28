@@ -167,7 +167,7 @@ ImagesProbeCursor::ImagesProbeCursor() throw()
 , m_cursorMapper  ( vtkPolyDataMapper::New() )
 , m_cursorActor(    vtkActor::New() )
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -293,14 +293,14 @@ void ImagesProbeCursor::doStop() throw(fwTools::Failed)
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
-//  delete m_vtkObserver;
+    m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ImagesProbeCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------
@@ -343,7 +343,6 @@ void ImagesProbeCursor::updateView( double world[3] )
             else
             {
                 ::fwComEd::helper::Image imageHelper(image);
-                std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
                 txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
 
                 // update polyData

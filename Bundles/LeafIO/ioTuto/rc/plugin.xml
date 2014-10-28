@@ -19,17 +19,4 @@
         <object>::fwData::Composite</object>
     </extension>
 
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioTuto::CompositeReaderService</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioTuto::CompositeWriterService</service>
-        <object>::fwData::Composite</object>
-    </extension>
 </plugin>

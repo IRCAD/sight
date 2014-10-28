@@ -26,14 +26,14 @@ namespace fwTools
 /**
  * @brief   Limit cases for empty typelist
  * @class   EndTypeListAction
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see ::fwTools::Dispatcher
  */
  struct EndTypeListAction
  {
 
-    /// Perform nothing see Dispatcher<...>::invoke
+    /// Perform nothing see Dispatcher<>::invoke()
     static void invoke() {};
 
     /// Throw an exception to inform end-user that KeyType value have no correspondance in type list
@@ -70,7 +70,7 @@ namespace fwTools
 /**
  * @brief   Create an automatic template instancier exple Dispatcher< TYPESEQUENCE , FUNCTOR>::invoke("int");
  * @class   Dispatcher
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  * Will instanciante class FUNCTOR then for a type T in TYPESEQUENCE (here int) call the corresponding operator() method

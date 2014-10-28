@@ -10,6 +10,9 @@
 
 #include <fwData/Composite.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
+
+
 #include <fwComEd/CompositeMsg.hpp>
 #include <scene2D/adaptor/IAdaptor.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -28,9 +31,9 @@ Render::Render() throw()
           m_sceneWidth (200,200),
           m_antialiasing(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
+//    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+//    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
+//    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -180,7 +183,7 @@ void Render::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Render::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void Render::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -498,8 +501,6 @@ void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _obje
     ensureUniqueZValue( m_adaptorID2SceneAdaptor2D[_adaptorID] );
     m_zValue2AdaptorID[ m_adaptorID2SceneAdaptor2D[_adaptorID].m_service.lock()->getZValue() ] = _adaptorID;
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel = ::fwServices::registerCommunicationChannel( _object , m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->getSptr() );
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel.lock()->start();
 }
 
 //-----------------------------------------------------------------------------
@@ -520,10 +521,6 @@ void Render::stopAdaptor(AdaptorIDType _adaptorID)
     SceneAdaptor2D & info = m_adaptorID2SceneAdaptor2D[_adaptorID];
 
     m_zValue2AdaptorID.erase( info.getService()->getZValue() );
-
-    info.m_comChannel.lock()->stop();
-    ::fwServices::OSR::unregisterService( info.m_comChannel.lock() );
-    info.m_comChannel.reset();
 
     info.getService()->stop();
     SLM_ASSERT("Service is not stopped", info.getService()->isStopped());

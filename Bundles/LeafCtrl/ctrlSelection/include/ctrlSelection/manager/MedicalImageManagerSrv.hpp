@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MANAGER_PATIENTDBWRAPPERSRV_HPP_
-#define _CTRLSELECTION_MANAGER_PATIENTDBWRAPPERSRV_HPP_
+#ifndef _CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP_
+#define _CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP_
 
 #include <fwServices/IService.hpp>
 
@@ -19,10 +19,8 @@ namespace manager
 {
 
 /**
- * @class  MedicalImageManagerSrv.
- * @author IRCAD (Research and Development Team).
-
- * @date   2007-2009.
+ * @brief  This manager converts the images specified by key to medical image (with landmarks, transfer function fields)
+ * @class  MedicalImageManagerSrv
  */
 class CTRLSELECTION_CLASS_API MedicalImageManagerSrv : public ::ctrlSelection::IManagerSrv
 {
@@ -43,7 +41,14 @@ public :
     /// Implements stopping method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+     * @brief Configure the service.
+     * @verbatim
+     <service uid="medicalImageManager" impl="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+         <update imageCompositeKey="image" />
+     </service>
+      @endverbatim
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.
@@ -55,10 +60,11 @@ public :
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private :
 
+    /// Converts the images specified by key to medical image (with landmarks, transfer function fields).
     void convertImages( ::fwData::Composite::sptr _composite );
 
     std::vector< std::string > m_imageCompositeKeys;

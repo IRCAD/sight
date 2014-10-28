@@ -7,11 +7,13 @@
 #ifndef __FWDATACAMP_ARRAY_HPP__
 #define __FWDATACAMP_ARRAY_HPP__
 
+#include <fwMemory/BufferObject.hpp>
+
 #include <fwCamp/macros.hpp>
 #include <fwData/Array.hpp>
 
 #include "fwDataCamp/config.hpp"
 
-fwCampDeclareAccessor((fwData)(Array), (fwTools)(BufferObject));
+fwCampDeclareAccessor((fwData)(Array), (fwMemory)(BufferObject));
 
 #endif /* __FWDATACAMP_ARRAY_HPP__ */

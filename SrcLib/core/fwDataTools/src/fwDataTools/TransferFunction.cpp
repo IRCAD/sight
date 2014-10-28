@@ -17,16 +17,6 @@ namespace fwDataTools
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction()
-{}
-
-//------------------------------------------------------------------------------
-
-TransferFunction::~TransferFunction()
-{}
-
-//------------------------------------------------------------------------------
-
 void TransferFunction::generateDrawingTF(::fwData::TransferFunction::sptr tf)
 {
     tf->setTFData(TransferFunction::getDrawingTFColors());

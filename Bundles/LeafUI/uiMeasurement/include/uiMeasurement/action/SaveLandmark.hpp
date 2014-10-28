@@ -27,19 +27,19 @@ public:
 
 protected:
 
-
     void configuring() throw (::fwTools::Failed);
 
     void starting() throw (::fwTools::Failed);
 
     void updating() throw (::fwTools::Failed);
 
-    void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     void stopping() throw (::fwTools::Failed);
 
-    UIMEASUREMENT_API void info(std::ostream &_sstream ) ;
+    void info(std::ostream &_sstream ) ;
 
+    void save(const ::boost::filesystem::path& path);
 
 };
 

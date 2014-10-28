@@ -47,7 +47,7 @@ protected:
 
     GUI_API void updating()throw (fwTools::Failed);
 
-    GUI_API void updating(::fwServices::ObjectMsg::csptr _msg )throw (fwTools::Failed);
+    GUI_API void receiving(::fwServices::ObjectMsg::csptr _msg )throw (::fwTools::Failed);
 
     /**
      * @brief Configure the message to send.
@@ -58,7 +58,7 @@ protected:
             <notify type="::fwServices::ObjectMsg" event="APPLY" />
         </service>
        @endverbatim
-     * - <notify> :
+     * - \<notify\> :
      *   - \b type : the type of the message (i.e. ::fwServices::ObjectMsg)
      *   - \b event : the event of the message (i.e. "APPLY")
      */

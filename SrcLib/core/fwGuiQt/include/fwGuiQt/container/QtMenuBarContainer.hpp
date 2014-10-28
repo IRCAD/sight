@@ -30,8 +30,8 @@ namespace container
 
 /**
  * @brief   Defines the Qt menu bar container for GUI.
- * @class   QtMenuBarContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   QtMenuBarContainer
+ * 
  * @date    2009-2010.
  *
  */

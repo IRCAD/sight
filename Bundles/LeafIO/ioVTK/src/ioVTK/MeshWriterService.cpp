@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,9 +8,11 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
+#include <fwServices/ObjectMsg.hpp>
 
 #include <fwCore/base.hpp>
 
+#include <fwData/Mesh.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -19,7 +21,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/MeshWriter.hpp>
+#include <fwVtkIO/MeshWriter.hpp>
 
 #include "ioVTK/MeshWriterService.hpp"
 
@@ -87,19 +89,19 @@ void MeshWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
+void MeshWriterService::saveMesh(const ::boost::filesystem::path& meshFile, const SPTR( ::fwData::Mesh)& mesh)
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::MeshWriter::NewSptr myWriter;
+    ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
 
-    myWriter->setObject(_pMesh);
-    myWriter->setFile(vtkFile);
+    writer->setObject(mesh);
+    writer->setFile(meshFile);
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Mesh");
-        myWriter->addHandler( progressMeterGUI );
-        myWriter->write();
+        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving mesh...");
+        writer->addHandler( progressMeterGUI );
+        writer->write();
 
     }
     catch (const std::exception & e)

@@ -7,14 +7,12 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwServices/op/Com.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwServices/ComChannelService.hpp>
-
 #include "tuto02DataServiceBasicCtrl/Plugin.hpp"
+
 
 namespace tuto02DataServiceBasicCtrl
 {
@@ -53,9 +51,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     m_renderSrv = ::fwServices::add(m_image, "::fwRender::IRender", "::vtkSimpleNegato::RendererService", "myRenderingTuto");
     m_renderSrv->configure();
 
-    // ComChannel service
-    m_comChannel = ::fwServices::registerCommunicationChannel( m_image , m_renderSrv);
-    m_comChannel->configure();
+    m_connection = m_image->signal( ::fwData::Object::s_OBJECT_MODIFIED_SIG)
+        ->connect(m_renderSrv->slot( ::fwServices::IService::s_RECEIVE_SLOT));
 
     // Frame service
     m_frameSrv = ::fwServices::add(m_image, "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame");
@@ -74,7 +71,6 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     m_frameSrv->configure();
 
     // Start app
-    m_comChannel->start();
     m_readerSrv->start();
     m_frameSrv->start();
 
@@ -90,10 +86,9 @@ void Plugin::stop() throw()
 
 void Plugin::uninitialize() throw()
 {
-    m_comChannel->stop();
+    m_connection.disconnect();
     m_readerSrv->stop();
     m_frameSrv->stop();
-    ::fwServices::OSR::unregisterService( m_comChannel ) ;
     ::fwServices::OSR::unregisterService( m_readerSrv ) ;
     ::fwServices::OSR::unregisterService( m_frameSrv ) ;
     ::fwServices::OSR::unregisterService( m_renderSrv ) ;

@@ -24,7 +24,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for Graph : store modification information
  * @class   GraphMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009
  * @see     ::fwServices::ObjectMsg
  */

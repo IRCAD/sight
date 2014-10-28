@@ -14,7 +14,7 @@ namespace gui
 /**
  * @brief       The namespace gui::frame contains basic services managing frame.
  * @namespace   gui::frame
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

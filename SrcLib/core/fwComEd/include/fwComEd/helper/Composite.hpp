@@ -23,7 +23,7 @@ namespace helper
 /**
  * @brief   Defines an helper to modify an ::fwData::Composite and create in parallel the message to announce this modification.
  * @struct  Composite
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWCOMED_CLASS_API Composite

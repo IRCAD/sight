@@ -32,12 +32,12 @@ void ROITraitsTest::creation()
 {
     const std::string ID = "roiID";
     const std::string EXP = "skin_0";
-    ::fwData::ROITraits::NewSptr roiTraits;
+    ::fwData::ROITraits::sptr roiTraits = ::fwData::ROITraits::New();
     roiTraits->setIdentifier(ID);
-    ::fwData::StructureTraits::NewSptr structure;
+    ::fwData::StructureTraits::sptr structure = ::fwData::StructureTraits::New();
     roiTraits->setStructureTraits(structure);
     roiTraits->setEvaluatedExp(EXP);
-    ::fwData::Node::NewSptr opNode;
+    ::fwData::Node::sptr opNode = ::fwData::Node::New();
     roiTraits->setMaskOpNode(opNode);
 
     CPPUNIT_ASSERT_EQUAL(ID, roiTraits->getRefIdentifier());

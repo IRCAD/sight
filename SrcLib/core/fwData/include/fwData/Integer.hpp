@@ -23,7 +23,7 @@ namespace fwData
  *
  * Integer object is essentially used as a field in other objects.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Integer : public GenericField< int >
@@ -31,7 +31,6 @@ class FWDATA_CLASS_API Integer : public GenericField< int >
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object),( ((const int)(0)) ), GenericFieldFactory< Integer >) ;
     fwCampMakeFriendDataMacro((fwData)(Integer));
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -45,10 +44,10 @@ public:
     FWDATA_API virtual ~Integer() throw();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Integer::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Integer::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 };
 
 } // namespace fwData

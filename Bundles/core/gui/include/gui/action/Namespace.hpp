@@ -14,7 +14,7 @@ namespace gui
 /**
  * @brief       The namespace gui::action contains basic services managing action.
  * @namespace   gui::action
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

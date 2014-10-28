@@ -31,7 +31,7 @@ struct ConfigurationElement;
  * @brief   Defines the generic configuration element container class.
  * @struct  ConfigurationElementContainer
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 {

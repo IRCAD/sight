@@ -24,7 +24,7 @@ namespace fwTools
 /**
  * @brief   Class defining an elementary C++ type aka unsigned char, signed char, .... signed long, float, double
  * @class   DynamicType
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  **/
@@ -136,12 +136,12 @@ protected :
 
 
 
-/// Helper to create object DynamicType from a given type TYPE \in { (un)signed char, ... , double }
+/// Helper to create object DynamicType from a given type TYPE in { (un)signed char, ... , double }
 template<class TYPE>
 DynamicType makeDynamicType();
 
 /**
- * @brief   Helper to create object DynamicType from a given type from a KEYTYPE representing a type \in { (un)signed char, ... , double }
+ * @brief   Helper to create object DynamicType from a given type from a KEYTYPE representing a type in { (un)signed char, ... , double }
  *
  * Example makeDynamicType(type_id(int)) and   makeDynamicType("signed int")  should work
  */

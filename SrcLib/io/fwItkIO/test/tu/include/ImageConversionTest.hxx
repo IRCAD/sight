@@ -4,35 +4,42 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwDataTools/Image.hpp>
+#include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <itkIO/itk.hpp>
+#include <fwTest/generator/Image.hpp>
+#include <fwTest/helper/compare.hpp>
+
+#include <fwItkIO/itk.hpp>
 
 namespace fwItkIO
 {
 namespace ut
 {
 
+//-----------------------------------------------------------------------------
+
 template< class TYPE>
 void ImageConversionTest::stressTestForAType()
 {
     for(unsigned char k=0; k<5; k++)
     {
-        ::fwData::Image::NewSptr image;
-        ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create<TYPE>());
+        ::fwData::Image::sptr image = ::fwData::Image::New();
+        ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create<TYPE>());
 
         typedef itk::Image< TYPE , 3 > ImageType;
-        typename ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
+        typename ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
-        ::fwData::Image::NewSptr image2;
+        ::fwTest::helper::ExcludeSetType exclude;
+        exclude.insert("array.isOwner");
+
+        ::fwData::Image::sptr image2 = ::fwData::Image::New();
         bool image2ManagesHisBuffer = false;
-        ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
-        CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
-
+        ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
+        CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
         bool image3ManagesHisBuffer = false;
-        ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
-        CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3));
+        ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+        CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
     }
 }
 

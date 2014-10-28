@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <itkIO/ImageWriter.hpp>
+#include <fwItkIO/ImageWriter.hpp>
 
 #include "ioITK/InrImageWriterService.hpp"
 
@@ -101,12 +101,12 @@ void InrImageWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::saveImage( const ::boost::filesystem::path inrFile, ::fwData::Image::sptr _pImage )
+void InrImageWriterService::saveImage( const ::boost::filesystem::path &inrFile, const ::fwData::Image::sptr &image )
 {
     SLM_TRACE_FUNC();
-    ::itkIO::ImageWriter::NewSptr myWriter;
+    ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
 
-    myWriter->setObject(_pImage);
+    myWriter->setObject(image);
     myWriter->setFile(inrFile);
 
     try

@@ -18,6 +18,8 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
+#include <fwComEd/helper/Composite.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -59,12 +61,11 @@ ExternalDataReaderService::~ExternalDataReaderService() throw()
 
 void ExternalDataReaderService::configuring( ) throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
         OSLM_INFO( "ExternalDataReaderService::configure filename: " << filename );
-        m_fsExternalDataPath = boost::filesystem::path( filename );
+        this->setFile(filename);
     }
 }
 
@@ -72,7 +73,6 @@ void ExternalDataReaderService::configuring( ) throw(::fwTools::Failed)
 
 void ExternalDataReaderService::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -87,7 +87,11 @@ void ExternalDataReaderService::configureWithIHM()
     if (result)
     {
         _sDefaultPath = result->getPath();
-        m_fsExternalDataPath = result->getPath();
+        this->setFile(result->getPath());
+    }
+    else
+    {
+        this->clearLocations();
     }
 }
 
@@ -95,43 +99,34 @@ void ExternalDataReaderService::configureWithIHM()
 
 void ExternalDataReaderService::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     this->configureWithIHM();
 
     std::string imageName;
     ::fwData::Composite::sptr dataComposite = this->getObject< ::fwData::Composite >();
+    ::fwComEd::helper::Composite compositeHelper(dataComposite);
     SLM_ASSERT("dataComposite not instanced", dataComposite);
     try
     {
-        if (::boost::filesystem::exists(m_fsExternalDataPath))
+        if (this->hasLocationDefined())
         {
             // reading of the file
             std::fstream file;
-            file.open(m_fsExternalDataPath.string().c_str(), std::fstream::in);
+            file.open(this->getFile().string().c_str(), std::fstream::in);
             if (!file.is_open())
             {
-                OSLM_ERROR( "External data file loading error for " << m_fsExternalDataPath);
+                OSLM_ERROR( "External data file loading error for " << this->getFile());
                 std::string str = "Unable to open ";
-                str+= m_fsExternalDataPath.string();
+                str+= this->getFile().string();
                 throw std::ios_base::failure(str);
             }
             file >> imageName;
-            dataComposite->getContainer()["filename"] = ::fwData::String::NewSptr(imageName);
-            // Clean all the field
-
-            dataComposite->removeField("TF1");
-            dataComposite->removeField("TF2");
             int readedValue = 0;
             double value;
-
+            ::fwData::TransformationMatrix3D::sptr transformation1 = ::fwData::TransformationMatrix3D::New();
+            ::fwData::TransformationMatrix3D::sptr transformation2 = ::fwData::TransformationMatrix3D::New();
             while(!file.eof())
             {
                 readedValue = 0;
-                ::fwData::TransformationMatrix3D::NewSptr transformation1;
-                transformation1->getRefCoefficients().clear();
-                ::fwData::TransformationMatrix3D::NewSptr transformation2;
-                transformation2->getRefCoefficients().clear();
                 while ( !file.eof() && readedValue<32 )
                 {
                     file >> value;
@@ -145,19 +140,49 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
                     }
                     readedValue++;
                 }
-                // TF1 contains the first and third tranformations
-                dataComposite->setField("TF1",transformation1);
-                // TF2 contains the first and third tranformations
-                dataComposite->setField("TF2",transformation2);
             }
-            assert( readedValue==32 );
             file.close();
+            // TF1 contains the first and third transformations
+            if(dataComposite->find("TF1") == dataComposite->end() )
+            {
+                compositeHelper.add("TF1", transformation1);
+            }
+            else
+            {
+                compositeHelper.swap("TF1", transformation1);
+            }
+            // TF2 contains the first and third transformations
+            if(dataComposite->find("TF2") == dataComposite->end() )
+            {
+                compositeHelper.add("TF2", transformation2);
+            }
+            else
+            {
+                compositeHelper.swap("TF2", transformation2);
+            }
+            ::fwData::String::sptr imageNameStr = ::fwData::String::New(imageName);
+            if(dataComposite->find("filename") == dataComposite->end() )
+            {
+                compositeHelper.add("filename", imageNameStr);
+            }
+            else
+            {
+                compositeHelper.swap("filename", imageNameStr);
+            }
+            SLM_ASSERT("Unable to open '"+this->getFile().string()+"'.", readedValue == 32 );
         }
     }
-    catch(std::ios_base::failure exception)
+    catch(std::ios_base::failure &exception)
     {
         OSLM_ERROR( "External data file loading error for " << exception.what());
     }
+}
+
+//-----------------------------------------------------------------------------
+
+::io::IOPathType ExternalDataReaderService::getIOPathType() const
+{
+    return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------

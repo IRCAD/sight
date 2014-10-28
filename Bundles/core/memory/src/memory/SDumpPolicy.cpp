@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,6 @@
 #include <vector>
 
 #include <fwCore/base.hpp>
-
 
 // Service associated data
 #include <fwData/Object.hpp>
@@ -24,7 +23,6 @@
 namespace memory
 {
 
-
 fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, ::fwData::Object );
 
 SDumpPolicy::SDumpPolicy()
@@ -33,6 +31,7 @@ SDumpPolicy::SDumpPolicy()
 SDumpPolicy::~SDumpPolicy()
 {}
 
+//------------------------------------------------------------------------------
 
 void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
 {
@@ -64,17 +63,16 @@ void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
             }
         }
     }
-
 }
+
+//------------------------------------------------------------------------------
 
 void SDumpPolicy::starting() throw ( ::fwTools::Failed )
 {
-    ::fwMemory::BufferManager::sptr manager;
-    manager = ::fwMemory::BufferManager::dynamicCast(::fwTools::IBufferManager::getCurrent());
-
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
     if (manager)
     {
-        ::fwMemory::IPolicy::sptr policy = ::fwMemory::IPolicy::createPolicy(m_policy);
+        ::fwMemory::IPolicy::sptr policy = ::fwMemory::policy::registry::get()->create(m_policy);
 
         if (policy)
         {
@@ -87,14 +85,15 @@ void SDumpPolicy::starting() throw ( ::fwTools::Failed )
                                !success);
                 OSLM_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second , success);
             }
-
+            ::fwCore::mt::WriteLock lock( manager->getMutex() );
             manager->setDumpPolicy(policy);
             OSLM_INFO("Set dump policy to : " << m_policy);
         }
-        OSLM_ERROR_IF("Unable to instanciate '" << m_policy << "' dump policy", !policy);
+        OSLM_ERROR_IF("Unable to instantiate '" << m_policy << "' dump policy", !policy);
     }
-
 }
+
+//------------------------------------------------------------------------------
 
 void SDumpPolicy::stopping() throw ( ::fwTools::Failed )
 {}
@@ -102,8 +101,10 @@ void SDumpPolicy::stopping() throw ( ::fwTools::Failed )
 void SDumpPolicy::updating() throw ( ::fwTools::Failed )
 {}
 
-void SDumpPolicy::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SDumpPolicy::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {}
+
+//------------------------------------------------------------------------------
 
 void SDumpPolicy::swapping() throw ( ::fwTools::Failed )
 {

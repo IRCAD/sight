@@ -19,8 +19,8 @@ namespace ioData
 {
 /**
  * @brief   Spline reader service.
- * @class   SplineReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   SplineReaderService
+ * 
  * @date    2009.
  *
  * Service reading a spline object.
@@ -92,7 +92,7 @@ protected:
      *
      * XML configuration sample:
      * @verbatim
-     <service uid="tubeReader" type="::io::IReader" implementation="::ioData::SplineReaderService">
+     <service uid="tubeReader" type="::io::IReader" impl="::ioData::SplineReaderService">
        <spline id="0" matrix="../matrix.trf" nbSides="10" radius="10">
         <point id="0"/>
         <point id="4"/>
@@ -119,7 +119,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
      * @brief Info method.

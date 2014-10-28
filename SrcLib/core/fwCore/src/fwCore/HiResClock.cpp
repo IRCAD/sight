@@ -24,7 +24,7 @@ namespace HiResClock
 
 HiResClockType getTimeInMicroSec()
 {
-    HiResClockType TimeInMicroSec = 0;
+    HiResClockType TimeInMicroSec;
 
 #ifdef WIN32
     LARGE_INTEGER count;

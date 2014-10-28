@@ -25,7 +25,7 @@ class UUID;
 /**
  * @brief   Define Base class for FW4SPL objects and services
  * @class   Object
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject , protected ::fwTools::fwID
@@ -41,6 +41,9 @@ public:
     FWTOOLS_API using  ::fwTools::fwID::getID;
     FWTOOLS_API using  ::fwTools::fwID::setID;
     FWTOOLS_API using  ::fwTools::fwID::resetID;
+#ifdef COM_LOG
+    FWTOOLS_API using  ::fwTools::fwID::getLightID;
+#endif
 
     /// return the sub class classname : an alias of this->getClassname
     FWTOOLS_API std::string className() const;

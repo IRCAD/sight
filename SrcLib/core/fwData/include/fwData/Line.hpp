@@ -23,7 +23,7 @@ namespace fwData
  * @class   Line
  * @brief   This class defines a Line defined by two points.
  * @see     ::fwData::Line
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Line : public Object
@@ -33,7 +33,6 @@ public :
     fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
         (()), ::fwData::factory::New< Line >) ;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -47,10 +46,10 @@ public :
     fwCampMakeFriendDataMacro((fwData)(Line));
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Line::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Line::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     FWDATA_API void setValue( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction);
 

@@ -1,0 +1,21 @@
+CLASSTEST=[
+    'SlotTest',
+    'SignalTest',
+    'UtilTest',
+    'SlotsTest',
+    'SignalsTest',
+]
+
+USE = [
+    'boost',
+    'boostThread',
+    'boostDateTime',
+    'boostFilesystem',
+    ]
+LIB = [
+    'fwTest_0-1',
+    'fwCom_0-1',
+    'fwThread_0-1',
+    ]
+
+CONSOLE = 'yes'

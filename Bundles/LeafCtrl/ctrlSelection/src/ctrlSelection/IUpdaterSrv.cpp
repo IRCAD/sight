@@ -6,7 +6,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/helper/Composite.hpp>
 
@@ -67,7 +66,7 @@ void IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr
         OSLM_INFO( "Manage event "<< onEvent <<" from this object "<< fromUID <<" and "<< actionType << " "<< compositeKey <<" in my composite.");
         ::boost::tuple< std::string, std::string, std::string, ActionType > managedEvent (onEvent, fromUID, compositeKey, action);
         m_managedEvents.push_back( managedEvent );
-        addNewHandledEvent( onEvent );
+        //addNewHandledEvent( onEvent );
     }
 }
 

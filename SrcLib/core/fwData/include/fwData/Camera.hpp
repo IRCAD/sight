@@ -24,7 +24,7 @@ namespace fwData
 /**
  * @class   Camera
  * @brief   This class defines a camera object.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Camera : public Object
@@ -127,6 +127,9 @@ public:
      * @brief set universal ID for the physic's camera
      */
     FWDATA_API void setCameraGUID(uint32HL _cameraGUID);
+
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected:
 

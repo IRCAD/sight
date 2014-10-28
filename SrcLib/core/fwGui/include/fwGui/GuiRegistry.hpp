@@ -21,8 +21,8 @@ namespace fwGui
 
 /**
  * @brief   This class contains helpers to manage all fwContainer in the application.
- * @class   GuiRegistry.
- * @author  IRCAD (Research and Development Team).
+ * @class   GuiRegistry
+ * 
  * @date    2009-2010.
  *
  */

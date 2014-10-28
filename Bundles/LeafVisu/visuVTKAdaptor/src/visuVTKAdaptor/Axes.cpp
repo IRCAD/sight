@@ -71,7 +71,7 @@ void Axes::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Axes::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void Axes::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
 }
 

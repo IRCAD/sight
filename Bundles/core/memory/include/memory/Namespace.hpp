@@ -10,7 +10,7 @@
 /**
  * @brief     The namespace memory contains tools to manage memory. Used for dump.
  * @namespace memory
- * @author    IRCAD (Research and Development Team).
+ * 
  * @date      2009-2011.
  *
  */

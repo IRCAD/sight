@@ -12,7 +12,7 @@ namespace fwServices
 /**
  * @brief       The namespace fwServices::registry contains class to manage services, object and config.
  * @namespace   fwServices::registry
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

@@ -40,7 +40,7 @@ namespace fwRuntime
  * @brief   Defines the configuration element class.
  * @struct  ConfigurationElement
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
 
  */
 struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementContainer,

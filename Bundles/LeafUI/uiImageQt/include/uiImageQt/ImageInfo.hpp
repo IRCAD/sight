@@ -25,8 +25,8 @@ namespace uiImage
 
 /**
  * @brief   ImageInfo service allows to display image pixel information.
- * @class   ImageInfo.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImageInfo
+ * 
  * @date    2010.
  */
 class UIIMAGEQT_CLASS_API ImageInfo : public QObject, public ::gui::editor::IEditor
@@ -50,7 +50,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Receive InteractionMsg and updates text informations
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 

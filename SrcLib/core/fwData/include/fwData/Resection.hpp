@@ -20,7 +20,7 @@ namespace fwData
 /**
  * @class   Resection
  * @brief   This class defines a resection
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Resection : public ::fwData::Object
@@ -35,7 +35,6 @@ public :
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionOutputs;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -47,10 +46,10 @@ public :
     FWDATA_API virtual ~Resection();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Resection::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Resection::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// PlaneList
     fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, the plane list);

@@ -1,99 +1,128 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCamp/UserObject.hpp>
-#include <fwTools/UUID.hpp>
+#include <boost/foreach.hpp>
+#include <boost/type_traits.hpp>
 
+#include <fwCamp/UserObject.hpp>
+
+#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Object.hpp"
 
 
+fwAtomsRegisterMacro( ::fwAtoms::Object );
 
-fwCampImplementMacro((fwAtoms)(Object))
+namespace fwAtoms
 {
-    builder.base< ::fwAtoms::Base>()
-        .property("metaInfos", &::fwAtoms::Object::getMetaInfos)
-        .property("attributes", &::fwAtoms::Object::getAttributes);
-}
 
-namespace fwAtoms {
+//------------------------------------------------------------------------------
 
-Object::Object()
+void Object::setAttribute(const std::string& key, const Base::sptr &value)
 {
-    m_id = ::fwTools::UUID::generateUUID();
-}
-
-void Object::addAttribut(const std::string& key, Base::sptr value)
-{
-    m_attrs[key] = value;
-}
-
-void Object::setAttributs( Object::Attributes& attrs)
-{
-    m_attrs.clear();
-    m_attrs.insert(attrs.begin(), attrs.end());
-}
-
-void Object::setType(const std::string& type)
-{
-    m_metaInfos["type"] = type;
-}
-
-std::string Object::getType()
-{
-    return this->getMetaInfo("type");
+    m_attributes[key] = value;
 }
 
 //------------------------------------------------------------------------------
 
-Base::sptr Object::clone()
+Base::sptr Object::getAttribute(const std::string& key) const
 {
-    return this->getSptr();
+    AttributesType::const_iterator iterAttr = m_attributes.find(key);
+    if (iterAttr != m_attributes.end())
+    {
+        return iterAttr->second;
+    }
+    return Base::sptr();
 }
 
+//------------------------------------------------------------------------------
 
-void Object::addMetaInfo(const std::string& key, const std::string& value)
+void Object::setAttributes(const Object::AttributesType& attrs)
 {
-    if(!value.empty())
+    m_attributes = attrs;
+}
+
+//------------------------------------------------------------------------------
+
+Base::sptr Object::clone() const
+{
+    Object::sptr obj = Object::New();
+    obj->m_metaInfos = m_metaInfos;
+
+    BOOST_FOREACH(const AttributesType::value_type& elem, m_attributes)
     {
-        m_metaInfos[key] = value;
+        if ( elem.second )
+        {
+            obj->m_attributes.insert( AttributesType::value_type(elem.first, elem.second->clone() ) );
+        }
+        else
+        {
+            Base::sptr nullData;
+            obj->m_attributes.insert( AttributesType::value_type(elem.first, nullData) );
+        }
     }
 
+    return obj;
 }
-std::string Object::getMetaInfo(const std::string& key)
+
+//------------------------------------------------------------------------------
+
+void Object::setMetaInfo(const std::string& key, const std::string& value)
 {
-    MetaInfos::const_iterator cIt = m_metaInfos.find(key);
-    std::string value;
-
-    if(cIt == m_metaInfos.end())
-    {
-        value = "";
-    }
-    else
-    {
-        value = cIt->second;
-    }
-
-    return value;
+    m_metaInfos[key] = value;
 }
 
-Object::MetaInfos& Object::getMetaInfos()
+//------------------------------------------------------------------------------
+
+std::string Object::getMetaInfo(const std::string& key) const
 {
-   return m_metaInfos;
+    MetaInfosType::const_iterator iterMetaInfos = m_metaInfos.find(key);
+    if(iterMetaInfos != m_metaInfos.end())
+    {
+        return iterMetaInfos->second;
+    }
+    return "";
 }
 
-void Object::setMetaInfos(const MetaInfos& metaInfos)
+
+//------------------------------------------------------------------------------
+
+void Object::setMetaInfos(const MetaInfosType& metaInfos)
+{
+    m_metaInfos = metaInfos;
+}
+
+//------------------------------------------------------------------------------
+
+Object::AttributesType::size_type Object::eraseAttribute(const std::string& key)
+{
+    return m_attributes.erase(key);
+}
+
+//------------------------------------------------------------------------------
+
+void Object::clearAttribute()
+{
+    m_attributes.clear();
+}
+
+//------------------------------------------------------------------------------
+
+Object::MetaInfosType::size_type Object::eraseMetaInfo(const std::string& key)
+{
+    return m_metaInfos.erase(key);
+}
+
+//------------------------------------------------------------------------------
+
+void Object::clearMetaInfo()
 {
     m_metaInfos.clear();
-    m_metaInfos.insert(metaInfos.begin(), metaInfos.end());
 }
 
-void Object::removeAttribut(const std::string& key)
-{
-    m_attrs.erase(key);
-}
 
 
 }  // namespace fwAtoms
+

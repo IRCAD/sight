@@ -22,8 +22,8 @@ namespace action
 
 /**
  * @brief   This action removes distances.
- * @class   RemoveDistance.
- * @author  IRCAD (Research and Development Team).
+ * @class   RemoveDistance
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv
@@ -43,7 +43,7 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     void stopping() throw (::fwTools::Failed);
 

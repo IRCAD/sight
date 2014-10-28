@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include <fwData/Image.hpp>
 
@@ -32,28 +33,36 @@ Histogram::~Histogram()
 
 //------------------------------------------------------------------------------
 
-void Histogram::shallowCopy( Histogram::csptr _source )
+void Histogram::shallowCopy(const Object::csptr &_source )
 {
+    Histogram::csptr other = Histogram::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_values = _source->m_values;
-    m_minValue = _source->m_minValue;
-    m_maxValue = _source->m_maxValue;
-    m_binsWidth = _source->m_binsWidth;
+    m_values = other->m_values;
+    m_minValue = other->m_minValue;
+    m_maxValue = other->m_maxValue;
+    m_binsWidth = other->m_binsWidth;
 }
 
 //------------------------------------------------------------------------------
 
-void Histogram::deepCopy( Histogram::csptr _source )
+void Histogram::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
+    Histogram::csptr other = Histogram::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
 
-    m_minValue = _source->m_minValue;
-    m_maxValue = _source->m_maxValue;
-    m_binsWidth = _source->m_binsWidth;
+    m_minValue = other->m_minValue;
+    m_maxValue = other->m_maxValue;
+    m_binsWidth = other->m_binsWidth;
 
     m_values.clear();
 
-    BOOST_FOREACH( long value, _source->m_values )
+    BOOST_FOREACH( long value, other->m_values )
     {
         m_values.push_back( value );
     }

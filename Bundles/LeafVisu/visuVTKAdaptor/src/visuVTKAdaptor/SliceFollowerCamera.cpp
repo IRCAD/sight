@@ -43,9 +43,9 @@ namespace visuVTKAdaptor
 SliceFollowerCamera::SliceFollowerCamera() throw()
 {
     m_comChannelPriority = 0.49;
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void SliceFollowerCamera::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void SliceFollowerCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -186,8 +186,6 @@ void SliceFollowerCamera::initializeCamera()
 
 void SliceFollowerCamera::updateCamera(double distance, double size)
 {
-    double focalPoint[ 3 ];
-    double position[ 3 ];
 
     SLM_ASSERT("No Camera", m_camera );
 
@@ -195,6 +193,8 @@ void SliceFollowerCamera::updateCamera(double distance, double size)
     {
         // Update position according to orientation
         double center[ 3 ];
+        double focalPoint[ 3 ];
+        double position[ 3 ];
         getCurrentSliceCenter( center );
         std::copy(center, center+3, focalPoint);
 

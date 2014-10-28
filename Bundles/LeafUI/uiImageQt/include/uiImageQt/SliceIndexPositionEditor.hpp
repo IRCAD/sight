@@ -20,8 +20,8 @@ namespace uiImage
 
 /**
  * @brief   SliceIndexPositionEditor service allows to change the slice index of an image.
- * @class   SliceIndexPositionEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   SliceIndexPositionEditor
+ * 
  * @date    2010.
  *
  * This is represented by
@@ -58,7 +58,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Management of observations : update editor according to the received message
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /// Update editor information from the image
     virtual void updating() throw(::fwTools::Failed);
@@ -71,7 +71,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="slider_negato1" implementation="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoComChannel="yes">
+     <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
         <sliceIndex>axial</sliceIndex>
      </service>
        @endverbatim

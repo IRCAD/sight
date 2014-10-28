@@ -19,11 +19,8 @@ namespace updater
 {
 
 /**
- * @class  ReconstructionFromResecUpdaterSrv.
+ * @class  ReconstructionFromResecUpdaterSrv
  * @brief  Specific updater to update PlaneList from a resection.
- * @author IRCAD (Research and Development Team).
-
- * @date    2009-2010.
  */
 class CTRLSELECTION_CLASS_API ReconstructionFromResecUpdaterSrv : public ::ctrlSelection::IUpdaterSrv
 {
@@ -49,7 +46,7 @@ protected:
     /**
      * @brief Configure the services : declare the event to react.
      * @verbatim
-         <service uid="myUpdater" implementation="::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+         <service uid="myUpdater" impl="::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
             <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION" fromUID="myResection" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION" fromUID="*" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myReconstruction" onEvent="CLEAR" fromUID="myResection" actionType="REMOVE"/>
@@ -69,7 +66,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private:
 

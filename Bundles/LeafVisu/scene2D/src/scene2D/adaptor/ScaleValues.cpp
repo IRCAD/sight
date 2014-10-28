@@ -25,7 +25,7 @@ namespace adaptor
 
 ScaleValues::ScaleValues() throw() : m_interval(10), m_step(1), m_fontSize(8), m_displayedUnit(""), m_showUnit(true)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -88,11 +88,7 @@ void ScaleValues::configuring() throw ( ::fwTools::Failed )
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewport = ::scene2D::data::Viewport::dynamicCast(
-                ::fwTools::fwID::getObject( m_configuration->getAttributeValue("viewportUID") ) );
-
-        m_comChannel = ::fwServices::registerCommunicationChannel( m_viewport , this->getSptr());
-        m_comChannel->start();
+        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
     }
 
 
@@ -201,6 +197,11 @@ void ScaleValues::doStart() throw ( ::fwTools::Failed )
     m_font.setLetterSpacing( QFont::AbsoluteSpacing, 0.25 );
     m_font.setKerning( true );
     m_font.setFixedPitch( true );
+
+    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+
+    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
     this->buildValues();
     this->doUpdate();
@@ -410,7 +411,7 @@ void ScaleValues::showHideScaleValues()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void ScaleValues::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -446,8 +447,7 @@ void ScaleValues::doStop() throw ( ::fwTools::Failed )
     // Remove the layer (and therefore all its related items) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
-    m_comChannel->stop();
-    ::fwServices::OSR::unregisterService( m_comChannel );
+    m_connection.disconnect();
 }
 
 

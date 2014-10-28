@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,6 +24,12 @@ class vtkPolyData;
 class vtkPolyDataMapper;
 class vtkTransform;
 
+namespace fwData
+{
+class Mesh;
+class Material;
+}
+
 namespace visuVTKAdaptor
 {
 
@@ -40,11 +46,11 @@ public:
     VISUVTKADAPTOR_API Mesh() throw();
     VISUVTKADAPTOR_API virtual ~Mesh() throw();
 
-    VISUVTKADAPTOR_API ::fwData::Material::sptr getMaterial();
-    VISUVTKADAPTOR_API void setMaterial(::fwData::Material::sptr material);
+    VISUVTKADAPTOR_API SPTR(::fwData::Material) getMaterial();
+    VISUVTKADAPTOR_API void setMaterial(SPTR(::fwData::Material) material);
 
-    VISUVTKADAPTOR_API ::fwData::Material::sptr getUnclippedMaterial();
-    VISUVTKADAPTOR_API void setUnclippedPartMaterial(::fwData::Material::sptr material);
+    VISUVTKADAPTOR_API SPTR(::fwData::Material) getUnclippedMaterial();
+    VISUVTKADAPTOR_API void setUnclippedPartMaterial(SPTR(::fwData::Material) material);
 
     VISUVTKADAPTOR_API void setShowClippedPart ( bool show );
     VISUVTKADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::VtkRenderService::VtkObjectIdType id );
@@ -67,17 +73,17 @@ protected:
    VISUVTKADAPTOR_API void doStop     () throw(fwTools::Failed);
    VISUVTKADAPTOR_API void doSwap   () throw(fwTools::Failed);
    VISUVTKADAPTOR_API void doUpdate   () throw(fwTools::Failed);
-   VISUVTKADAPTOR_API void doUpdate   (::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+   VISUVTKADAPTOR_API void doReceive   (::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
 
     vtkActor *newActor();
     void buildPipeline();
 
-    void updateMesh ( ::fwData::Mesh::sptr mesh );
+    void updateMesh ( SPTR(::fwData::Mesh) mesh );
 
     void setServiceOnMaterial(
         ::fwRenderVTK::IVtkAdaptorService::sptr &srv,
-        ::fwData::Material::sptr material
+        SPTR(::fwData::Material) material
         );
 
     void removePlaneCollectionShifterCommand();
@@ -102,8 +108,8 @@ protected:
     MeshVtkCommand *m_planeCollectionShifterCallback;
     MeshVtkCommand *m_servicesStarterCallback;
 
-    ::fwData::Material::sptr       m_material;
-    ::fwData::Material::sptr       m_unclippedPartMaterial;
+    SPTR(::fwData::Material)       m_material;
+    SPTR(::fwData::Material)       m_unclippedPartMaterial;
 
     ::fwRenderVTK::IVtkAdaptorService::wptr m_materialService;
     ::fwRenderVTK::IVtkAdaptorService::wptr m_unclippedPartMaterialService;

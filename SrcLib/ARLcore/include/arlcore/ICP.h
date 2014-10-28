@@ -18,7 +18,6 @@ namespace arlCore
 {
     class Point;
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    04/2009
      * @brief   Iterativ Closest Point registration between two point's clouds
      */

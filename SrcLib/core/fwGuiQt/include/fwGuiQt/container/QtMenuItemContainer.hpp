@@ -27,8 +27,8 @@ namespace container
 
 /**
  * @brief   Defines the Qt menuItem bar container for IHM.
- * @class   QtMenuItemContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   QtMenuItemContainer
+ * 
  * @date    2009-2010.
  *
  */

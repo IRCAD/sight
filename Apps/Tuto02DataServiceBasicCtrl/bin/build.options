@@ -13,3 +13,10 @@ BUNDLES = [
     'ioData_0-1'            ,
     'vtkSimpleNegato_0-1'   ,
  ]
+
+LIB = [
+    'fwData_0-1'        ,
+    'fwServices_0-1'    ,
+    'fwCom_0-1'         ,
+    'fwRuntime_0-3'     ,
+ ]

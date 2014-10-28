@@ -20,8 +20,8 @@ namespace reader
 
 /**
  * @brief   generic class for all object readers.
- * @class   GenericObjectReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   GenericObjectReader
+ * 
  * @date    2009
  *
  * This class adds 2 methods to the API of IObjectReader. This
@@ -50,7 +50,7 @@ public :
 
     /**
      * @brief m_object setter.
-     * @param[out] _pObject replace weakptr m_object of the instance reader
+     * @param[out] obj replace weakptr m_object of the instance reader
      *
      * This method overload setObject to ensure that given object correspond to DATATYPE
      */

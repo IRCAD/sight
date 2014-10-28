@@ -1,0 +1,20 @@
+
+CLASSTEST=[
+    'PatientTest',
+    'StudyTest',
+    'EquipmentTest',
+    'ImageSeriesTest',
+    'ModelSeriesTest',
+    'SeriesTest',
+    'SeriesDBTest',
+    'ActivitySeriesTest',
+]
+
+USE = ['boost', 'cppunit']
+LIB = [
+      'fwData_0-1',
+      'fwMedData_0-1',
+      'fwTools_0-1',
+      'fwTest_0-1',
+      ]
+CONSOLE = 'yes'

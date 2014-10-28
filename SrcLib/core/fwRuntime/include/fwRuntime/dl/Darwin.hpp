@@ -28,7 +28,7 @@ namespace dl
  * @struct  Darwin
  * @date    2004-2009
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Darwin : public Native
 {

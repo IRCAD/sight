@@ -27,7 +27,7 @@ namespace fwData
  * A mesh is represented by a container of 3D points and a container of cells.
  * A cell contains indices of the three points related to a triangular cell.
  *
- * @author    IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API TriangularMesh : public Object
@@ -57,7 +57,6 @@ public :
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumPointsFunc;
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumCellsFunc;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -71,10 +70,10 @@ public :
     FWDATA_API virtual ~TriangularMesh() ;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( TriangularMesh::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( TriangularMesh::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
      * @brief returns editable point container

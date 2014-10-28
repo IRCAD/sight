@@ -16,8 +16,8 @@ namespace ioData
 {
 /**
  * @brief   Triangular mesh reader service.
- * @class   TriangularMeshReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshReaderService
+ * 
  * @date    2009.
  *
  * Service reading a mesh object.
@@ -95,7 +95,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
 
     /**

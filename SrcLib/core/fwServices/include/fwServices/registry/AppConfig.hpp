@@ -31,7 +31,7 @@ namespace registry
 
 /**
  * @class AppInfo
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWSERVICES_CLASS_API AppInfo : public ::fwCore::BaseObject
 {
@@ -64,7 +64,7 @@ public :
  * @class AppConfig
  * @brief This class allows to register all the configuration which has the point extension
  *        "::fwServices::registry::AppConfig".
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date 2012.
  */
 class FWSERVICES_CLASS_API AppConfig : public ::fwCore::BaseObject
@@ -106,19 +106,13 @@ public:
             ::fwRuntime::ConfigurationElement::csptr config);
 
     /**
-     * @brief  Return the config with the identifier configId.
-     * @param configId : the identifier of the requested config.
-     * @note This method is thread safe.
-     */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getStandardConfig( const std::string & configId ) const;
-
-    /**
      * @brief  Return the adapted config with the identifier configId.
      * @param configId the identifier of the requested config.
      * @param replaceFields associations between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & replaceFields ) const;
+    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId,
+            const FieldAdaptorType replaceFields = FieldAdaptorType() ) const;
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -150,7 +144,7 @@ public:
      * @brief Create an unique identifier
      * @note This method is thread safe.
      */
-    FWSERVICES_API static std::string getUniqueIdentifier( std::string _serviceUid = "", bool _useCpt = false );
+    FWSERVICES_API static std::string getUniqueIdentifier(const std::string& serviceUid = "" );
 
     /// Return an instance of AppConfig.
     FWSERVICES_API static AppConfig::sptr getDefault();
@@ -185,6 +179,9 @@ private :
 
     /// The global instance of the app config.
     static AppConfig::sptr s_currentAppConfig;
+
+    /// The static identifier for mandatory parameters.
+    static std::string s_mandatoryParameterIdentifier;
 };
 
 } // namespace registry

@@ -16,8 +16,8 @@ namespace visuVTKAdaptor
 
 /**
  * @brief   This class is started when the bundles is loaded.
- * @class   Plugin.
- * @author  IRCAD (Research and Development Team).
+ * @class   Plugin
+ * 
  * @date    2009.
  */
 struct Plugin : public ::fwRuntime::Plugin

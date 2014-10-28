@@ -12,7 +12,7 @@ namespace fwGui
 /**
 * @brief       The namespace fwGui::layoutManager contains the implementation of managers use to handle the GUI layout available in FW4SPL. The Qt library is used.
   * @namespace   fwGui::layoutManager
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

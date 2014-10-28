@@ -21,7 +21,7 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-MenuBarRegistrar::MenuBarRegistrar(const std::string sid) : m_sid(sid)
+MenuBarRegistrar::MenuBarRegistrar(const std::string &sid) : m_sid(sid)
 {}
 
 //-----------------------------------------------------------------------------

@@ -53,7 +53,7 @@ protected:
      *
      * The stopping method is empty for this service.
      */
-IOTUTO_API virtual void stopping() throw(::fwTools::Failed){};
+    IOTUTO_API virtual void stopping() throw(::fwTools::Failed){};
 
 
     /**
@@ -87,11 +87,11 @@ IOTUTO_API virtual void configuring( ) throw(::fwTools::Failed);
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    IOTUTO_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
      * @brief Info method.
@@ -104,10 +104,8 @@ IOTUTO_API virtual void configuring( ) throw(::fwTools::Failed);
     IOTUTO_API virtual void info(std::ostream &_sstream ) ;
     /// @}
 
-private:
-
-    ::boost::filesystem::path m_fsExternalDataPath;
-
+    /// Returns managed path type, here service manages only single file
+    IOTUTO_API ::io::IOPathType getIOPathType() const;
 };
 }
 #endif /*_IOTUTO_EXTERNALDATAREADER_HPP_*/

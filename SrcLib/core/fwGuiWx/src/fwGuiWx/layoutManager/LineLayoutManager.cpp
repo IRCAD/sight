@@ -58,7 +58,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
         else
         {
             wxPanel * viewPanel = new wxPanel(  wxContainer, wxNewId() , wxDefaultPosition, wxSize( viewInfo.m_minSize.first, viewInfo.m_minSize.second ), wxNO_BORDER | wxTAB_TRAVERSAL );
-            ::fwGuiWx::container::WxContainer::NewSptr subContainer;
+            ::fwGuiWx::container::WxContainer::sptr subContainer = ::fwGuiWx::container::WxContainer::New();
             subContainer->setWxContainer(viewPanel);
             m_subViews.push_back(subContainer);
 #ifndef __MACOSX__

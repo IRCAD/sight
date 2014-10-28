@@ -22,8 +22,8 @@ namespace action
 
 /**
  * @brief   This action allows to snapshot a generic scene
- * @class   SSnapshot.
- * @author  IRCAD (Research and Development Team).
+ * @class   SSnapshot
+ * 
  * @date    2012.
  *
  * Send a CompositeMsg with SNAP event containing the uid of the scene to the scene's composite.
@@ -52,7 +52,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Does nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Show a file dialog and notify the scene which must be printed.
     void updating() throw(::fwTools::Failed);
@@ -63,7 +63,7 @@ protected:
     /**
      * @brief Configure action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiData::action::SSnapshot" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiData::action::SSnapshot" autoConnect="no">
         <snap>
             <scene uid="genericScene" />
         </snap>

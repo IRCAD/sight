@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,6 @@
 
 #include <exception>
 
-#include <fwData/PatientDB.hpp>
 #include <fwData/Boolean.hpp>
 
 #include <fwServices/macros.hpp>
@@ -39,7 +38,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::ShowLand
 
 ShowLandmark::ShowLandmark( ) throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
 }
 
 //------------------------------------------------------------------------------
@@ -73,14 +72,14 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     bool isShown = showLandmarks->value();
 
     bool toShow = !isShown;
-    image->setField("ShowLandmarks",  ::fwData::Boolean::NewSptr(toShow));
+    image->setField("ShowLandmarks",  ::fwData::Boolean::New(toShow));
 
     std::vector< ::fwServices::IService::sptr > services = ::fwServices::OSR::getServices < ::fwServices::IService > (image);
 
     this->::fwGui::IActionSrv::setIsActive(isShown);
 
     // notify
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
@@ -99,7 +98,7 @@ void ShowLandmark::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::updating(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ShowLandmark::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::LANDMARK ) )

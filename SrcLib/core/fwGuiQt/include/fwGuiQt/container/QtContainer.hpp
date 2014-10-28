@@ -29,8 +29,8 @@ namespace container
 
 /**
  * @brief   Defines the QWidget container for IHM.
- * @class   QtContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   QtContainer
+ * 
  * @date    2009-2010.
  *
  */

@@ -31,7 +31,6 @@ class CompositeMessageTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( CompositeMessageTest );
     CPPUNIT_TEST( testCompositeMessage );
-//    CPPUNIT_TEST( testMessageNotification );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,9 +41,6 @@ public:
     // fonctions de tests
     /// Test the compositeMsg with sending and receiving the message in the test services
     void testCompositeMessage();
-
-    /// Test sending and receiving message from a composite's object.
-    void testMessageNotification();
 
 private:
     /// Create a configurationElement to build the composite

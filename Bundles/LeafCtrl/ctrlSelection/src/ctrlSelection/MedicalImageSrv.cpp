@@ -27,7 +27,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImag
 
 MedicalImageSrv::MedicalImageSrv() throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent(::fwComEd::ImageMsg::BUFFER );
 }
 
 //-----------------------------------------------------------------------------
@@ -37,10 +37,13 @@ MedicalImageSrv::~MedicalImageSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void MedicalImageSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->convertImage();
+    if(message->hasEvent(::fwComEd::ImageMsg::BUFFER))
+    {
+        this->convertImage();
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -5,6 +5,11 @@ CLASSTEST=[
     'ServiceConfigTest',
     'AppConfigParametersTest',
     'ObjectServiceTest',
+    'ActiveWorkersTest',
+    'SlotsSignalsTest',
+    'SigSlotConnectionTest',
+    'SlotsSignalsStuff',
+    'ProxyTest',
     ]
 
 USE = ['boost']

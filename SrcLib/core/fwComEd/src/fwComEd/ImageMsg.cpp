@@ -48,7 +48,6 @@ ImageMsg::~ImageMsg() throw()
 
 void ImageMsg::setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s, ::fwData::Object::sptr _pDataInfo )
 {
-
     this->addEvent( ::fwComEd::ImageMsg::SLICE_INDEX, _pDataInfo );
     m_axialIndex = a;
     m_frontalIndex = f;
@@ -57,12 +56,12 @@ void ImageMsg::setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr 
 
 //-----------------------------------------------------------------------------
 
-void ImageMsg::getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s) const
+void ImageMsg::getSliceIndex(::fwData::Integer::sptr &a, ::fwData::Integer::sptr &f, ::fwData::Integer::sptr &s) const
 {
     SLM_ASSERT( "SLICE_INDEX Event not found in msg", this->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ));
-    a->deepCopy(m_axialIndex   );
-    f->deepCopy(m_frontalIndex );
-    s->deepCopy(m_sagittalIndex);
+    a->setValue( m_axialIndex->getValue() );
+    f->setValue( m_frontalIndex->getValue() );
+    s->setValue( m_sagittalIndex->getValue() );
 }
 
 //-----------------------------------------------------------------------------

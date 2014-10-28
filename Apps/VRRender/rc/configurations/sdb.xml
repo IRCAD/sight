@@ -1,0 +1,127 @@
+
+<extension implements="::fwServices::registry::AppConfig">
+    <id>SDBVRRender</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="SERIESDB" />
+        <param name="WID_PARENT" />
+        <param name="DYNAMICVIEW_CHANNEL" default="channel" />
+        <param name="ICON_PATH" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <xi:include href="MenuAndViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+            <item key="seriesDB">
+                <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" >
+                    <service uid="${GENERIC_UID}_action_import" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
+                        <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderSeriesDBReader" />
+                    </service>
+                    <service uid="${GENERIC_UID}_selector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
+                        <selectionId>${GENERIC_UID}_selections</selectionId>
+                    </service>
+                </object>
+            </item>
+
+            <item key="selections">
+                <object uid="${GENERIC_UID}_selections" type="::fwData::Vector">
+                    <service uid="${GENERIC_UID}_seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
+                        <parentView>${GENERIC_UID}_preview</parentView>
+                        <configs>
+                            <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
+                                <extract path="@image" pattern="imageID" />
+                            </config>
+                            <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
+                        </configs>
+                    </service>
+                    <service uid="${GENERIC_UID}_action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>exclude</mode>
+                                <id>ImageSeriesExport</id>
+                                <id>ModelSeriesExport</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_2DVisualization" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>2DVisualization</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_3DVisualization" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>3DVisualization</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_volumeRendering" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>VolumeRendering</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_exportSeries" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <mode>immediate</mode>
+                            <parameters>
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>ImageSeriesExport</id>
+                                <id>ModelSeriesExport</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                </object>
+            </item>
+
+            <connect>
+                <signal>${GENERIC_UID}_selector/seriesDoubleClicked</signal>
+                <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
+            </connect>
+
+            <proxy channel="${DYNAMICVIEW_CHANNEL}">
+                <signal>${GENERIC_UID}_action_newActivity/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_2DVisualization/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_3DVisualization/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_volumeRendering/activityLaunched</signal>
+            </proxy>
+
+            <start uid="${GENERIC_UID}_mainview" />
+            <start uid="${GENERIC_UID}_seriesViewer" />
+        </object>
+
+    </config>
+</extension>
+

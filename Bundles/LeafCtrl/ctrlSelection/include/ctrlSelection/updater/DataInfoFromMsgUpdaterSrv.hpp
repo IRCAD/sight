@@ -18,9 +18,9 @@ namespace updater
 
 /**
  * @class   DataInfoFromMsgUpdaterSrv
- * @brief   Update the composite related to this service according to the data stored (dataInfo) in the event :
+ * @brief   Updates the composite related to this service according to the data stored (dataInfo) in the event :
  * @warning datainfo MUST be always provided (but can be null), dataInfo MUST have the same type
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date    2009-2010.
  */
@@ -48,7 +48,7 @@ protected:
     /**
      * @brief Configure the services : declare the event to react.
      * @verbatim
-         <service uid="myUpdater" implementation="::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no"  >
+         <service uid="myUpdater" impl="::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no"  >
             <update compositeKey="myObject" onEvent="NEW_OBJECT" fromUID="myPatient" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myObject" onEvent="CLEAR_OBJECT" fromUID="myPatient" actionType="REMOVE"/>
         </service>
@@ -66,7 +66,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 };
 
 } // updater

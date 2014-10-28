@@ -28,8 +28,8 @@ Resection::Resection() throw()
     m_clippingPlanes = "";
     m_sharpEdgeAngle = 50;
     m_autoResetCamera = true;
-    addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
-    addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
+    //addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
+    //addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -110,6 +110,7 @@ void Resection::doUpdate() throw(fwTools::Failed)
             service->setRenderId( this->getRenderId() );
             service->setPickerId( this->getPickerId() );
             service->setRenderService(this->getRenderService());
+            service->setAutoRender( this->getAutoRender() );
             ::visuVTKAdaptor::Reconstruction::sptr reconstAdaptor = ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
             if(!resectionIsValid)
             {
@@ -141,7 +142,7 @@ void Resection::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Resection::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Resection::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::ResectionMsg::csptr pResectionMsg = ::fwComEd::ResectionMsg::dynamicConstCast( msg ) ;
     if ( pResectionMsg)

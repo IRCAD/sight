@@ -20,8 +20,8 @@ namespace builder
 
 /**
  * @brief   Defines the interface class  for the container builder.
- * @class   IContainerBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   IContainerBuilder
+ * 
  * @date    2009-2010.
  *
  */

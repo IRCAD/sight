@@ -7,6 +7,8 @@
 #ifndef _VISUVTKADAPTOR_MESHESBOXWIDGET_HPP_
 #define _VISUVTKADAPTOR_MESHESBOXWIDGET_HPP_
 
+#include <fwCom/Connection.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
@@ -22,7 +24,7 @@ namespace visuVTKAdaptor
 /**
  * @brief   Create a Box widget around the meshes contained in the composite.
  * @class   MeshesBoxWidget
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  */
 class VISUVTKADAPTOR_CLASS_API MeshesBoxWidget: public ::fwRenderVTK::IVtkAdaptorService
@@ -46,7 +48,7 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /// Updates vtk transformation from data meshes
     void updateMeshTransform();
@@ -57,9 +59,11 @@ protected:
 
 private:
 
+    typedef std::map< std::string, ::fwCom::Connection > ConnectionMapType;
     typedef std::map< std::string, vtkActor* > MeshMapType;
 
     MeshMapType m_meshMap;
+    ConnectionMapType m_connections;
 
     vtkAssembly * m_assembly;
     vtkCommand* m_boxWidgetCommand;

@@ -20,6 +20,7 @@
 #include <fwServices/macros.hpp>
 
 #include <fwGuiQt/App.hpp>
+#include <fwGuiQt/WorkerQt.hpp>
 
 #include "guiQt/Plugin.hpp"
 
@@ -43,25 +44,14 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
-    ::fwRuntime::profile::Profile::ParamsContainer params = profile->getParams();
-    m_argc = params.size();
+    int &argc = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
-    ::fwGuiQt::App *app;
-    app = new ::fwGuiQt::App( m_argc, argv );
-    m_app = app;
+    m_workerQt = ::fwGuiQt::getQtWorker(argc, argv);
 
-    QStringList libraryPaths;
-    libraryPaths = app->libraryPaths();
-    libraryPaths.removeFirst();
-    app->setLibraryPaths(libraryPaths);
 
-    QDir pluginDir("./qtplugins");
-    if (pluginDir.exists())
-    {
-        app->addLibraryPath(pluginDir.absolutePath());
-    }
-    this->loadStyleSheet();
+    m_workerQt->post( ::boost::bind( &Plugin::loadStyleSheet, this ) );
+
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
 }
 
@@ -69,17 +59,26 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
 void Plugin::stop() throw()
 {
-    delete m_app;
 }
 
 //-----------------------------------------------------------------------------
 
-int Plugin::run() throw()
+void setup()
 {
     ::fwRuntime::profile::getCurrentProfile()->setup();
-    int res = m_app->exec();
+}
+
+int Plugin::run() throw()
+{
+    m_workerQt->post( ::boost::bind( &setup ) );
+    m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
+
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    return res;
+    int result = ::boost::any_cast<int>(m_workerQt->getFuture().get());
+#ifdef _WIN32
+    m_workerQt.reset();
+#endif
+    return result;
 }
 
 //-----------------------------------------------------------------------------

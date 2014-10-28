@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,7 @@
 #include <exception>
 
 #include <boost/thread.hpp>
+#include <boost/chrono/duration.hpp>
 
 #include <fwCore/util/LazyInstantiator.hpp>
 #include <fwCore/mt/types.hpp>
@@ -47,7 +48,7 @@ public:
     {
         ::fwCore::mt::ScopedLock lock(s_mutex);
         ++s_counter;
-        ::boost::this_thread::sleep(::boost::posix_time::seconds(SLEEP));
+        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(SLEEP));
     }
 
     static int s_counter;

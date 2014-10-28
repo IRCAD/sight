@@ -32,7 +32,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::TransformationMatrix
 
 TransformationMatrixEditor::TransformationMatrixEditor() throw()
 {
-    addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
+//    addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -101,9 +101,12 @@ void TransformationMatrixEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void TransformationMatrixEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
-    this->updating();
+    if(_msg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
+    {
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +131,7 @@ void TransformationMatrixEditor::onSliderChange( int angle  )
     tm3D->setCoefficient(2,0, 0);        tm3D->setCoefficient(2,1, 0);         tm3D->setCoefficient(2,2, 1); tm3D->setCoefficient(2,3, 0);
     tm3D->setCoefficient(3,0, 0);        tm3D->setCoefficient(3,1, 0);         tm3D->setCoefficient(3,2, 0); tm3D->setCoefficient(3,3, 1);
 
-    ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), tm3D, msg);
 }

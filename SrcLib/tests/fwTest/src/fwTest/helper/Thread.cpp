@@ -1,9 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/chrono/duration.hpp>
 #include "fwTest/helper/Thread.hpp"
 
 namespace fwTest
@@ -32,7 +33,7 @@ void Thread::join(bool raise)
 
 bool Thread::timedJoin(int time, bool raise)
 {
-    bool joined = m_thread.timed_join(boost::posix_time::milliseconds(time));
+    bool joined = m_thread.try_join_for(boost::chrono::milliseconds(time));
     if (raise)
     {
         this->throwException();

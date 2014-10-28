@@ -24,7 +24,7 @@ namespace fwData
  * @brief   This class represent a tag. A tag contains a list of points.
  *
  * @see ::fwData::PointList
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Tag : public Object
@@ -33,7 +33,6 @@ class FWDATA_CLASS_API Tag : public Object
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwData::factory::New< Tag >) ;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -53,10 +52,10 @@ public :
     fwGettersSettersDocMacro(Size, size, double, the size of the tag)
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Tag::csptr source );
+    FWDATA_API void shallowCopy( const Object::csptr& source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Tag::csptr source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType &cache);
 
 protected :
 

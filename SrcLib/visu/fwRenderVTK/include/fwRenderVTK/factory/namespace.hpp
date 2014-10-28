@@ -13,8 +13,8 @@ namespace fwRenderVTK
 
 /**
  * @brief       Contains fwRenderVTK::factory utilities
- * @namespace   factory
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwRenderVTK::factory
+ * 
  * @date        2009-2012
  *
  */

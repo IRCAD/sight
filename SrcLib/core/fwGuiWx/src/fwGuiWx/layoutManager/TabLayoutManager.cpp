@@ -54,7 +54,7 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     BOOST_FOREACH ( ViewInfo viewInfo, views)
     {
         wxPanel * viewPanel = new wxPanel(  m_notebook, wxNewId());
-        ::fwGuiWx::container::WxContainer::NewSptr subContainer;
+        ::fwGuiWx::container::WxContainer::sptr subContainer = ::fwGuiWx::container::WxContainer::New();
         subContainer->setWxContainer(viewPanel);
         m_subViews.push_back(subContainer);
 

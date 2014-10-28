@@ -17,6 +17,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 #include <fwServices/AppConfigManager.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
@@ -127,7 +129,7 @@ void ServiceTest::testServiceCreationWithUUID()
     CPPUNIT_ASSERT(service2);
     CPPUNIT_ASSERT_EQUAL(obj, service2->getObject< ::fwData::Integer >());
     CPPUNIT_ASSERT_EQUAL(myUUID2, service2 ->getID());
-    CPPUNIT_ASSERT( ::fwTools::fwID::exist(myUUID3) == NULL );
+    CPPUNIT_ASSERT( !::fwTools::fwID::exist(myUUID3) );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::fwServices::ut::TestService").size() );
 
     // Test erasing service
@@ -143,7 +145,7 @@ void ServiceTest::testStartStopUpdate()
 {
     const std::string myUUID = "myUUID";
 
-    ::fwData::Integer::NewSptr obj;
+    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
     ::fwServices::ut::TestService::sptr service;
 
     // Add service
@@ -179,11 +181,14 @@ void ServiceTest::testStartStopUpdate()
 
 void ServiceTest::testCommunication()
 {
+    registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
+    activeWorkers->initRegistry();
+
     const std::string EVENT = "EVENT";
     const std::string service1UUID = "service1UUID";
     const std::string service2UUID = "service2UUID";
 
-    ::fwData::Composite::NewSptr obj;
+    ::fwData::Composite::sptr obj = ::fwData::Composite::New();
     ::fwServices::ut::TestService::sptr service1;
     ::fwServices::ut::TestService::sptr service2;
 
@@ -199,30 +204,36 @@ void ServiceTest::testCommunication()
     CPPUNIT_ASSERT(service2);
 
     // Start services
-    service1->start();
-    service2->start();
+    service1->start().wait();
+    service2->start().wait();
     CPPUNIT_ASSERT(service1->isStarted());
     CPPUNIT_ASSERT(service2->isStarted());
 
     // Create message
-    ::fwServices::ObjectMsg::NewSptr objMsg;
+    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::ObjectMsg::New();
     objMsg->addEvent(EVENT);
     CPPUNIT_ASSERT(objMsg->hasEvent(EVENT));
 
     // Register communication channel
-    ::fwServices::registerCommunicationChannel(obj, service1)->start();
-    ::fwServices::registerCommunicationChannel(obj, service2)->start();
+    ::fwServices::helper::SigSlotConnection::sptr comHelper = ::fwServices::helper::SigSlotConnection::New();
+    comHelper->connect( obj, service1, service1->getObjSrvConnections() );
+    comHelper->connect( obj, service2, service2->getObjSrvConnections() );
 
     // Service1 send notification
     ::fwServices::IEditionService::notify(service1, obj, objMsg);
 
     // Test if service2 has received the message
+    service1->stop().wait();
+    service2->stop().wait();
     CPPUNIT_ASSERT(service2->getIsUpdatedMessage());
-    service1->stop();
-    service2->stop();
+
+    comHelper->disconnect();
+    comHelper.reset();
 
     ::fwServices::OSR::unregisterService(service1);
     ::fwServices::OSR::unregisterService(service2);
+
+    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -232,8 +243,8 @@ void ServiceTest::testCommunication()
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("service")) ;
     cfg->setAttributeValue( "uid" , "myTestService" ) ;
     cfg->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    cfg->setAttributeValue( "implementation" , "::fwServices::ut::TestServiceImplementation" ) ;
-    cfg->setAttributeValue( "autoComChannel" , "no" ) ;
+    cfg->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
+    cfg->setAttributeValue( "autoConnect" , "no" ) ;
 
     return cfg ;
 }
@@ -251,15 +262,15 @@ void ServiceTest::testCommunication()
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid" , "myTestService1" ) ;
     serviceA->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    serviceA->setAttributeValue( "implementation" , "::fwServices::ut::TestServiceImplementation" ) ;
-    serviceA->setAttributeValue( "autoComChannel" , "no" ) ;
+    serviceA->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
+    serviceA->setAttributeValue( "autoConnect" , "no" ) ;
 
     // Object's service B
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid" , "myTestService2" ) ;
     serviceB->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    serviceB->setAttributeValue( "implementation" , "::fwServices::ut::TestServiceImplementation" ) ;
-    serviceB->setAttributeValue( "autoComChannel" , "no" ) ;
+    serviceB->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
+    serviceB->setAttributeValue( "autoConnect" , "no" ) ;
 
     // Start method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");

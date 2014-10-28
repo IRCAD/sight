@@ -19,6 +19,7 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 #include "fwData/registry/macros.hpp"
@@ -53,28 +54,36 @@ Image::~Image() throw()
 
 //-----------------------------------------------------------------------------
 
-void Image::shallowCopy( Image::csptr _source )
+void Image::shallowCopy(const Object::csptr &_source )
 {
+    Image::csptr other = Image::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     // Assign
-    copyInformation(_source );
+    copyInformation( other );
 
-    m_dataArray  = _source->m_dataArray;
+    m_dataArray  = other->m_dataArray;
 }
 
 //-----------------------------------------------------------------------------
 
-void Image::deepCopy( Image::csptr _source )
+void Image::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
+    Image::csptr other = Image::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
 
     // Assign
-    copyInformation(_source );
+    copyInformation( other );
 
-    if( _source->m_dataArray )
+    if( other->m_dataArray )
     {
-        m_dataArray->deepCopy( _source->m_dataArray );
+        m_dataArray = ::fwData::Object::copy(other->m_dataArray, cache);
     }
 }
 

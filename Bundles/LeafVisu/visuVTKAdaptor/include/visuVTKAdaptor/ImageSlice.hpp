@@ -7,6 +7,8 @@
 #ifndef _VISUVTKADAPTOR_IMAGESLICE_HPP_
 #define _VISUVTKADAPTOR_IMAGESLICE_HPP_
 
+#include <fwCom/Connection.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -51,7 +53,7 @@ protected :
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
@@ -82,7 +84,7 @@ protected :
     vtkPolyDataMapper *m_planeOutlineMapper;
     vtkActor *m_planeOutlineActor;
 
-    ::fwServices::IService::wptr m_imageComChannel;
+    ::fwCom::Connection m_connection;
 
 };
 

@@ -82,7 +82,7 @@ namespace
      *
      * @return  the string with updated case
      */
-    const std::string adaptCase( const std::string source )
+    std::string adaptCase( const std::string &source )
     {
         typedef std::pair< std::string::iterator, std::string::iterator > ItPair;
 

@@ -25,11 +25,9 @@ namespace ioVTK
 
 /**
  * @brief   Image reader service.
- * @class   ImageReaderService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   ImageReaderService
  *
- * Service reading a VTK Image using the vtkIO lib.
+ * Service reading a VTK Image using the fwVtkIO lib.
  *
  * Service registered details : \n
  * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image )
@@ -71,10 +69,10 @@ protected:
 
     /**
      * @brief React on modifications : here, this method does nothing.
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      * @param[in] _msg information message for modification
      */
-    IOVTK_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw ( ::fwTools::Failed );
+    IOVTK_API void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
 
     /// Info method gives some informations on service.
     IOVTK_API void info(std::ostream &_sstream ) ;

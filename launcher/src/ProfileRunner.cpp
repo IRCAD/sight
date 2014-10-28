@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <ostream>
 #include <vector>
+#include <string>
 
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
@@ -33,6 +34,13 @@
 # define FILE_LOG false;
 #endif
 
+#ifndef DEFAULT_PROFILE
+#define DEFAULT_PROFILE profile.xml
+#endif
+
+#define GET_DEFAULT_PROFILE(x) #x
+#define GET_DEFAULT_PROFILE2(x) GET_DEFAULT_PROFILE(x)
+#define DEFAULT_PROFILE_STRING  GET_DEFAULT_PROFILE2(DEFAULT_PROFILE)
 
 
 
@@ -78,9 +86,6 @@ inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
 }
 
 //-----------------------------------------------------------------------------
-static int    s_argc;
-static char** s_argv;
-//-----------------------------------------------------------------------------
 
 #ifdef __MACOSX__
 std::pair<std::string, std::string> parsePns(const std::string& s)
@@ -102,18 +107,8 @@ PathType absolute( const PathType &path )
 
 //-----------------------------------------------------------------------------
 
-#if defined(_WIN32) && defined(_WINDOWS)
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
-{
-    s_argc = __argc;
-    s_argv = __argv;
-#else
 int main(int argc, char* argv[])
 {
-    s_argc = argc;
-    s_argv = argv;
-#endif
-
     PathListType bundlePaths;
     PathType rwd;
     PathType profileFile;
@@ -125,8 +120,6 @@ int main(int argc, char* argv[])
         ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1,"./Bundles/")), "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
         ;
-
-
 
     bool consoleLog = CONSOLE_LOG;
     bool fileLog = FILE_LOG;
@@ -152,14 +145,12 @@ int main(int argc, char* argv[])
         ("log-fatal", po::value(&logLevel)->implicit_value(SpyLogger::SL_FATAL)->zero_tokens(), "Set loglevel to fatal")
         ;
 
-
-
     po::options_description hidden("Hidden options");
     hidden.add_options()
 #ifdef __MACOSX__
         ("psn", po::value<std::string>(), "Application PSN number")
 #endif
-        ("profile", po::value(&profileFile)->default_value("profile.xml"), "Profile file")
+        ("profile", po::value(&profileFile)->default_value(DEFAULT_PROFILE_STRING), "Profile file")
         ("profile-args", po::value(&profileArgs)->multitoken(), "Profile args")
         ;
 
@@ -173,7 +164,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        po::store(po::command_line_parser(s_argc, s_argv)
+        po::store(po::command_line_parser(argc, argv)
                 .options(cmdline_options)
 #ifdef __MACOSX__
                 .extra_parser(parsePns)
@@ -191,7 +182,7 @@ int main(int argc, char* argv[])
 
     if (vm.count("help"))
     {
-        std::cout << "usage: " << s_argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
+        std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
         std::cout << "  use '--' to stop processing args for launcher" << std::endl  << std::endl;
         std::cout << options << std::endl << logOptions << std::endl;
         return 0;
@@ -201,7 +192,7 @@ int main(int argc, char* argv[])
 
     if(consoleLog)
     {
-        logger.addStreamAppender();
+        logger.addStreamAppender(std::clog, static_cast<SpyLogger::LevelType>(logLevel));
     }
 
     if(fileLog)
@@ -214,42 +205,51 @@ int main(int argc, char* argv[])
             if(err.value() != 0)
             {
                 // replace log file appender by stream appender: default dir and temp dir unreachable
-                logger.addStreamAppender();
+                logger.addStreamAppender(std::clog, static_cast<SpyLogger::LevelType>(logLevel));
             }
             else
             {
                 // creates SLM.log in temp directory: default dir unreachable
                 sysTmp = sysTmp / "SLM.log";
                 logFile = sysTmp.string();
-                logger.addFileAppender(logFile);
+                logger.addFileAppender(logFile, static_cast<SpyLogger::LevelType>(logLevel));
             }
         }
         else
         {
             // creates SLM.log in default logFile directory
             fclose(pFile);
-            logger.addFileAppender(logFile);
+            logger.addFileAppender(logFile, static_cast<SpyLogger::LevelType>(logLevel));
         }
     }
 
-    logger.setLevel(static_cast<SpyLogger::LevelType>(logLevel));
-
 #ifdef __MACOSX__
-    if (vm.count("psn"))
+    fs::path execPath = argv[0];
+
+    if ( execPath.string().find(".app/") != std::string::npos || vm.count("psn"))
     {
-        fs::path pathOSX = argv[0];
         bool isChdirOkOSX = false;
 
-        fs::path osxTestPath = pathOSX.parent_path() / "Bundles";
-        if ( fs::is_directory( osxTestPath ) )
+        fs::path execPath = argv[0];
+
+        while ( fs::extension(execPath) != ".app"
+                && execPath != execPath.parent_path()
+                && !fs::is_directory( execPath / "Bundles" )
+                )
         {
-            isChdirOkOSX = (chdir(osxTestPath.string().c_str()) == 0);
+            execPath = execPath.parent_path();
         }
-        if ( !isChdirOkOSX )
+
+        if ( fs::is_directory( execPath / "Contents" / "Bundles" ) )
         {
-            fs::path osxTestPath = osxTestPath.parent_path() / "Bundles";
-            isChdirOkOSX = (chdir(osxTestPath.string().c_str()) == 0);
+            execPath = execPath / "Contents";
         }
+        else
+        {
+            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / "Bundles" ));
+        }
+
+        isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
 
         SLM_ERROR_IF("Was not able to find a directory to change to.", !isChdirOkOSX);
     }
@@ -267,7 +267,7 @@ int main(int argc, char* argv[])
         isChdirOk = (bool)(SetCurrentDirectory(rwd.string().c_str()) != 0);
 #else
         isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
-#endif
+#endif // _WIN32
     OSLM_ERROR_IF( "Was not able to change directory to : " << rwd , !isChdirOk);
 
     BOOST_FOREACH(const fs::path &bundlePath, bundlePaths )
@@ -318,4 +318,13 @@ int main(int argc, char* argv[])
 
     return retValue;
 }
+
+//-----------------------------------------------------------------------------
+
+#ifdef _WIN32
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR args, int)
+{
+    return main(__argc, __argv);
+}
+#endif // _WIN32
 

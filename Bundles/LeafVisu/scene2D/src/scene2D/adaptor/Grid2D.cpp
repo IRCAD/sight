@@ -24,7 +24,7 @@ namespace adaptor
 
 Grid2D::Grid2D() throw() : m_xSpacing(10), m_ySpacing(10)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void Grid2D::doUpdate() throw ( ::fwTools::Failed )
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void Grid2D::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

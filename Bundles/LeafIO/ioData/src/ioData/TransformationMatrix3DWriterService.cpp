@@ -113,13 +113,13 @@ void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
         SLM_ASSERT("matrix not instanced", matrix);
 
-        ::fwDataIO::writer::TransformationMatrix3DWriter::NewSptr writer;
+        ::fwDataIO::writer::TransformationMatrix3DWriter::sptr writer = ::fwDataIO::writer::TransformationMatrix3DWriter::New();
         writer->setObject( matrix );
         writer->setFile(this->getFile());
         writer->write();
 
         // Notify writing
-        ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+        ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
         msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
         ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
     }

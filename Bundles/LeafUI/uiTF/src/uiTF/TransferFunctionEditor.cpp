@@ -1,16 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/bind.hpp>
 
-#include <fwXML/Serializer.hpp>
-#include <fwXML/policy/NeverSplitPolicy.hpp>
-#include <fwXML/policy/UniquePathPolicy.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <QWidget>
 #include <QBoxLayout>
@@ -18,30 +15,26 @@
 #include <QString>
 #include <QPushButton>
 #include <QIcon>
-#include <QDir>
-#include <QFileDialog>
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
-#include <fwData/location/MultiFiles.hpp>
-#include <fwData/location/SingleFile.hpp>
 
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/macros.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/helper/Composite.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
+
+#include <io/IWriter.hpp>
+#include <io/IReader.hpp>
 
 #include "uiTF/TransferFunctionEditor.hpp"
 
@@ -56,9 +49,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor,
 
 TransferFunctionEditor::TransferFunctionEditor() : m_selectedTFKey("")
 {
-    this->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-    this->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-    this->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
+//    this->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
+//    this->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+//    this->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -162,10 +155,13 @@ void TransferFunctionEditor::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::updating(::fwServices::ObjectMsg::csptr msg) throw( ::fwTools::Failed )
+void TransferFunctionEditor::receiving(::fwServices::ObjectMsg::csptr msg) throw( ::fwTools::Failed )
 {
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
-    if(compositeMsg)
+    if(compositeMsg &&
+            ( compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS) ||
+              compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS)   ||
+              compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS) ) )
     {
         this->updateTransferFunctionPreset();
     }
@@ -186,16 +182,7 @@ void TransferFunctionEditor::stopping() throw( ::fwTools::Failed )
     QObject::disconnect(m_importButton, SIGNAL(   clicked()), this, SLOT(importTF()));
     QObject::disconnect(m_exportButton, SIGNAL(   clicked()), this, SLOT(exportTF()));
 
-    // Buttons destruction
-    m_pTransferFunctionPreset->deleteLater();
-    m_deleteButton->deleteLater();
-    m_newButton->deleteLater();
-    m_reinitializeButton->deleteLater();
-    m_renameButton->deleteLater();
-    m_importButton->deleteLater();
-    m_exportButton->deleteLater();
-
-    // Container cleaning
+    // deletes contained widgets
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
     qtContainer->clean();
 
@@ -282,10 +269,10 @@ void TransferFunctionEditor::newTF()
     {
         if(!this->hasTransferFunctionName(newName))
         {
-            ::fwData::TransferFunction::NewSptr pNewTransferFunction ;
+            ::fwData::TransferFunction::sptr pNewTransferFunction ;
             ::fwData::TransferFunction::sptr selectedTF = this->getSelectedTransferFunction();
 
-            pNewTransferFunction->deepCopy(selectedTF);
+            pNewTransferFunction = ::fwData::Object::copy(selectedTF);
             pNewTransferFunction->setName(newName);
             ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
             ::fwComEd::helper::Composite compositeHelper(poolTF);
@@ -406,73 +393,32 @@ void TransferFunctionEditor::importTF()
     ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
     ::fwComEd::helper::Composite compositeHelper(tfPool);
 
-    ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Select one or more transfer functions to import");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setType(::fwGui::dialog::LocationDialog::MULTI_FILES);
-    dialogFile.addFilter("XML","*.xml");
-    ::fwData::location::MultiFiles::sptr  files;
-    files = ::fwData::location::MultiFiles::dynamicCast(dialogFile.show());
+    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
+    ::fwServices::IService::sptr srv =
+            ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
 
-    bool someTfHasBeenImported = false;
+    ::fwServices::OSR::registerService(tf, srv);
 
-    if ( files )
+    ::io::IReader::sptr reader = ::io::IReader::dynamicCast(srv);
+    reader->start();
+    reader->configureWithIHM();
+    reader->update();
+    reader->stop();
+    ::fwServices::OSR::unregisterService(srv);
+
+    if (!tf->getName().empty())
     {
-        ::fwXML::Serializer serializer;
-        ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > spolicy (new ::fwXML::NeverSplitPolicy);
-        serializer.setSplitPolicy(spolicy);
-
-        BOOST_FOREACH( ::boost::filesystem::path tfPath, files->getPaths() )
+        if( this->hasTransferFunctionName( tf->getName() ) )
         {
-            ::fwTools::Object::sptr  pObject;
-            ::fwData::TransferFunction::sptr pTf;
-
-            try
-            {
-                pObject = serializer.deSerialize(tfPath);
-                pTf = ::fwData::TransferFunction::dynamicCast(pObject);
-                if ( pTf )
-                {
-                    if( this->hasTransferFunctionName( pTf->getName() ) )
-                    {
-                        pTf->setName( this->createTransferFunctionName( pTf->getName() ) );
-                    }
-
-                    compositeHelper.add(pTf->getName(), pTf);
-                    m_pTransferFunctionPreset->addItem(QString(pTf->getName().c_str()));
-                    someTfHasBeenImported = true;
-                }
-                else
-                {
-                    ::fwGui::dialog::MessageDialog::showMessageDialog("Import TF",
-                        "Sorry, this file does not contain a transfer function",
-                        ::fwGui::dialog::MessageDialog::WARNING);
-                }
-            }
-            catch (::fwTools::Failed &e)
-            {
-                std::stringstream msg;
-                msg << "Sorry, TF cannot be loaded : " << e.what();
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Import TF",
-                    msg.str(),
-                    ::fwGui::dialog::MessageDialog::WARNING);
-            }
-            catch (...)
-            {
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Import TF",
-                    "This XML file is not a data object",
-                    ::fwGui::dialog::MessageDialog::WARNING);
-            }
-
-
+            tf->setName( this->createTransferFunctionName( tf->getName() ) );
         }
-    }
 
-    if( someTfHasBeenImported )
-    {
+        compositeHelper.add(tf->getName(), tf);
+        m_pTransferFunctionPreset->addItem(QString(tf->getName().c_str()));
         this->presetChoice((*tfPool).size()-1);
+
+        compositeHelper.notify(this->getSptr());
     }
-    compositeHelper.notify(this->getSptr());
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -491,45 +437,18 @@ void TransferFunctionEditor::exportTF()
         messageBox.show();
         return;
     }
+    ::fwData::TransferFunction::sptr tf = this->getSelectedTransferFunction();
+    ::fwServices::IService::sptr srv =
+            ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SWriter");
 
-    ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Export transfer function");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
-    dialogFile.addFilter("XML","*.xml");
-    ::fwData::location::SingleFile::sptr  fileName;
-    fileName = ::fwData::location::SingleFile::dynamicCast(dialogFile.show());
+    ::fwServices::OSR::registerService(tf, srv);
 
-    if ( fileName )
-    {
-        try
-        {
-            ::boost::filesystem::path tfPath = fileName->getPath();
-            ::boost::filesystem::path tfPathRoot = tfPath.parent_path();
-
-            ::fwXML::Serializer serializer;
-            serializer.rootFolder() = tfPathRoot.string();
-#if BOOST_FILESYSTEM_VERSION > 2
-            ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.filename().string()));
-#else
-            ::boost::shared_ptr< ::fwXML::UniquePathPolicy > pPathPolicy (new ::fwXML::UniquePathPolicy(tfPath.leaf()));
-#endif
-            serializer.setPathPolicy(pPathPolicy);
-            ::boost::shared_ptr< ::fwXML::NeverSplitPolicy > pSplitPolicy (new ::fwXML::NeverSplitPolicy());
-            serializer.setSplitPolicy(pSplitPolicy);
-            ::fwData::TransferFunction::sptr tf = this->getSelectedTransferFunction();
-            serializer.serialize( tf );
-
-            if ( ! ::boost::filesystem::exists(tfPath) )
-            {
-                OSLM_ERROR("Input File \"" <<  tfPath.string() <<  "\" does not exist\n");
-            }
-        }
-        catch(std::exception& e)
-        {
-            OSLM_ERROR("Error: " <<  e.what());
-        }
-    }
+    ::io::IWriter::sptr writer = ::io::IWriter::dynamicCast(srv);
+    writer->start();
+    writer->configureWithIHM();
+    writer->update();
+    writer->stop();
+    ::fwServices::OSR::unregisterService(srv);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -548,7 +467,6 @@ void TransferFunctionEditor::initTransferFunctions()
         defaultTf->setWindow( 50. );
         defaultTf->setLevel( 500. );
         compositeHelper.add(defaultTFName, defaultTf);
-        compositeHelper.notify(this->getSptr());
     }
 
     // Test if transfer function composite has few TF
@@ -557,35 +475,49 @@ void TransferFunctionEditor::initTransferFunctions()
         // Parse all TF contained in uiTF Bundle's resources
         std::vector< ::boost::filesystem::path > paths;
         ::boost::filesystem::path pathRoot ("Bundles/uiTF_" + std::string(UITF_VER) + "/tf");
-        for(    ::boost::filesystem::directory_iterator it(pathRoot);
-                it != ::boost::filesystem::directory_iterator();
-                ++it )
+        for(::boost::filesystem::directory_iterator it(pathRoot);
+            it != ::boost::filesystem::directory_iterator();
+            ++it )
         {
-            if(     ! ::boost::filesystem::is_directory(*it) &&
-                    ::boost::filesystem::extension(*it) == ".xml" )
+            if(! ::boost::filesystem::is_directory(*it) &&
+                 ::boost::filesystem::extension(*it) == ".json")
             {
                 paths.push_back(*it);
             }
         }
 
+        ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
+        ::fwServices::IService::sptr srv =
+                ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
+        ::fwServices::OSR::registerService(tf, srv);
+        ::io::IReader::sptr reader = ::io::IReader::dynamicCast(srv);
 
-        // Load TF parsed from xml file
-        ::fwXML::Serializer serializer;
-        ::fwXML::NeverSplitPolicy::NewSptr spolicy;
-        serializer.setSplitPolicy(spolicy);
+        ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+        ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+        srvCfg->addConfigurationElement(fileCfg);
 
         BOOST_FOREACH( ::boost::filesystem::path file, paths )
         {
-            ::fwTools::Object::sptr pObject = serializer.deSerialize( file, false /*NO schema verification*/ );
-            ::fwData::TransferFunction::sptr pTf =  ::fwData::TransferFunction::dynamicCast(pObject);
-            SLM_ASSERT( "Sorry, loaded object is not a TF object.", pTf );
+            fileCfg->setValue(file.string());
+            reader->setConfiguration(srvCfg);
+            reader->configure();
+            reader->start();
+            reader->update();
+            reader->stop();
 
-            if( this->hasTransferFunctionName( pTf->getName() ) )
+            if (!tf->getName().empty())
             {
-                pTf->setName( this->createTransferFunctionName( pTf->getName() ) );
+                ::fwData::TransferFunction::sptr newTF = ::fwData::Object::copy< ::fwData::TransferFunction >(tf);
+                if( this->hasTransferFunctionName( newTF->getName() ) )
+                {
+                    newTF->setName( this->createTransferFunctionName( newTF->getName() ) );
+                }
+
+                compositeHelper.add(newTF->getName(), newTF);
             }
-            compositeHelper.add(pTf->getName(), pTf);
+            tf->initTF();
         }
+        ::fwServices::OSR::unregisterService(srv);
     }
     compositeHelper.notify(this->getSptr());
 

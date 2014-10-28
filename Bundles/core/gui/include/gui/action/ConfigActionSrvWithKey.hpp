@@ -24,7 +24,7 @@ namespace action
 /**
  * @class   ConfigActionSrvWithKey
  * @brief   To manage configuration file defines in xml extension.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  *
  * This action works on a ::fwData::Composite. It action starts/stops a template configuration given by its identifier in this action configuration.
@@ -36,7 +36,7 @@ namespace action
  *
  * Example of this service configuration
  * @verbatim
-   <service implementation="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
+   <service impl="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
        <config id="IdOfTemplateConfig" />
        <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
        <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
@@ -70,7 +70,7 @@ protected:
      *
      * Stop configuration when it receives "WINDOW_CLOSED" event (ie. close the param view).
      */
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Starts the view and initialize the operator.
@@ -85,7 +85,7 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service implementation="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
+       <service impl="::gui::action::ConfigActionSrvWithKey" type="::fwGui::IActionSrv">
            <config id="IdOfTemplateConfig" />
            <replace val="VALUE" pattern="PATTERN_TO_REPLACE_BY_VALUE" />
            <key id="KEY" pattern="PATTERN_TO_REPLACE_BY_UID_OF_KEY" />
@@ -110,10 +110,12 @@ private:
      */
     void stopConfig();
 
+    typedef std::map< std::string, std::string > KeyAdaptorType;
+
     /**
      * @brief keep the association between the PATTERN and the associated key as m_keyAdaptors[PATTERN] = AssociatedKey.
      */
-    std::map< std::string, std::string > m_keyAdaptors;
+    KeyAdaptorType m_keyAdaptors;
 
 };
 

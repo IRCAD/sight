@@ -22,8 +22,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing the layout.
- * @class   IGuiContainerSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IGuiContainerSrv
+ * 
  * @date    2009-2010.
  *
  */
@@ -51,7 +51,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-        <service uid="subView1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -70,7 +70,7 @@ protected :
             </registry>
         </service>
       @endverbatim
-     *  - <layout type="::fwGui::LineLayoutManager" > : give the type of layout.
+     *  - \<layout type="::fwGui::LineLayoutManager" \> : give the type of layout.
      *    - \b type {::fwGui::LineLayoutManager |::fwGui::CardinalLayoutManager |::fwGui::TabLayoutManager |::fwGui::ToolboxLayoutManager} :
      *     - \b ::fwGui::LineLayoutManager : all views will be on the same line or column (it depends of the orientation value attribute)
      *           @see ::fwGui::layoutManager::LineLayoutManagerBase

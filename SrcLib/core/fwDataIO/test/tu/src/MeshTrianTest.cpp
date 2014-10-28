@@ -11,7 +11,8 @@
 #include <fwTools/System.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwTest/generator/Mesh.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwDataIO/reader/MeshReader.hpp>
 #include <fwDataIO/writer/MeshWriter.hpp>
@@ -48,19 +49,19 @@ void MeshTrianTest::testSimpleMesh()
 {
     ::boost::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
 
-    ::fwData::Mesh::NewSptr mesh;
-    ::fwData::Mesh::NewSptr mesh2;
-    ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
-    ::fwDataTools::MeshGenerator::shakePoint(mesh);
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    ::fwDataTools::Mesh::shakePoint(mesh);
 
     mesh->adjustAllocatedMemory();
 
-    ::fwDataIO::writer::MeshWriter::NewSptr writer;
+    ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();
     writer->setObject(mesh);
     writer->setFile(trianPath);
     writer->write();
 
-    ::fwDataIO::reader::MeshReader::NewSptr reader;
+    ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();
 
     reader->setObject(mesh2);
     reader->setFile(trianPath);
@@ -78,20 +79,20 @@ void MeshTrianTest::testMeshWithCellNormals()
 {
     ::boost::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
 
-    ::fwData::Mesh::NewSptr mesh;
-    ::fwData::Mesh::NewSptr mesh2;
-    ::fwDataTools::MeshGenerator::generateTriangleMesh(mesh);
-    ::fwDataTools::MeshGenerator::shakePoint(mesh);
-    ::fwDataTools::MeshGenerator::generateCellNormals(mesh);
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    ::fwDataTools::Mesh::shakePoint(mesh);
+    ::fwDataTools::Mesh::generateCellNormals(mesh);
 
     mesh->adjustAllocatedMemory();
 
-    ::fwDataIO::writer::MeshWriter::NewSptr writer;
+    ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();
     writer->setObject(mesh);
     writer->setFile(trianPath);
     writer->write();
 
-    ::fwDataIO::reader::MeshReader::NewSptr reader;
+    ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();
 
     reader->setObject(mesh2);
     reader->setFile(trianPath);

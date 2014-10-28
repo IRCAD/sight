@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/TabLayoutManagerBase.cpp
+ * @file fwGui/layoutManager/TabLayoutManagerBase.cpp
  * @brief This file defines the interface of the class for managing a tab layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 

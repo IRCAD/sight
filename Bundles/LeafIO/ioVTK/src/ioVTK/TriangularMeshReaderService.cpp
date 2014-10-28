@@ -28,7 +28,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/TriangularMeshReader.hpp>
+#include <fwVtkIO/TriangularMeshReader.hpp>
 
 #include "ioVTK/TriangularMeshReaderService.hpp"
 
@@ -102,7 +102,7 @@ void TriangularMeshReaderService::info(std::ostream &_sstream )
 void TriangularMeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pTriangularMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::TriangularMeshReader::NewSptr myReader;
+    ::fwVtkIO::TriangularMeshReader::sptr myReader = ::fwVtkIO::TriangularMeshReader::New();
 
     myReader->setObject(_pTriangularMesh);
     myReader->setFile(vtkFile);
@@ -164,7 +164,7 @@ void TriangularMeshReaderService::notificationOfUpdate()
     ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >();
     SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
 
-    ::fwComEd::TriangularMeshMsg::NewSptr msg;;
+    ::fwComEd::TriangularMeshMsg::sptr msg = ::fwComEd::TriangularMeshMsg::New();;
     msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), pTriangularMesh, msg);
 }

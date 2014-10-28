@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOVTKGDCM_CONFIG_HPP_
-#define _IOVTKGDCM_CONFIG_HPP_
+#ifndef __IOVTKGDCM_CONFIG_HPP__
+#define __IOVTKGDCM_CONFIG_HPP__
 
 
 #ifdef _WIN32
@@ -38,4 +38,4 @@
 
 #endif
 
-#endif // #ifndef _IOVTKGDCM_CONFIG_HPP_
+#endif // #ifndef __IOVTKGDCM_CONFIG_HPP__

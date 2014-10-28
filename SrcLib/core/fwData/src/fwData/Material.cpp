@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Material.hpp"
 
@@ -30,30 +31,38 @@ Material::~Material()
 
 //------------------------------------------------------------------------------
 
-void Material::shallowCopy( Material::csptr _source )
+void Material::shallowCopy(const Object::csptr &_source )
 {
+    Material::csptr other = Material::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    m_ambient = _source->m_ambient;
-    m_diffuse = _source->m_diffuse;
+    m_ambient = other->m_ambient;
+    m_diffuse = other->m_diffuse;
 
-    m_shadingMode = _source->m_shadingMode;
-    m_representationMode = _source->m_representationMode;
-    m_optionsMode = _source->m_optionsMode;
+    m_shadingMode = other->m_shadingMode;
+    m_representationMode = other->m_representationMode;
+    m_optionsMode = other->m_optionsMode;
 }
 
 //------------------------------------------------------------------------------
 
-void Material::deepCopy( Material::csptr _source )
+void Material::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
+    Material::csptr other = Material::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
 
-    m_ambient->deepCopy( _source->m_ambient );
-    m_diffuse->deepCopy( _source->m_diffuse );
+    m_ambient = ::fwData::Object::copy( other->m_ambient, cache );
+    m_diffuse = ::fwData::Object::copy( other->m_diffuse, cache );
 
-    m_shadingMode = _source->m_shadingMode;
-    m_representationMode = _source->m_representationMode;
-    m_optionsMode = _source->m_optionsMode;
+    m_shadingMode = other->m_shadingMode;
+    m_representationMode = other->m_representationMode;
+    m_optionsMode = other->m_optionsMode;
 }
 
 //------------------------------------------------------------------------------

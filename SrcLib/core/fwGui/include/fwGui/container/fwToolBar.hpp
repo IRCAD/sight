@@ -16,8 +16,8 @@ namespace container
 {
 /**
  * @brief   Defines the tool bar for IHM.
- * @class   fwToolBar.
- * @author  IRCAD (Research and Development Team).
+ * @class   fwToolBar
+ * 
  * @date    2009-2010.
  *
  */

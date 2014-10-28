@@ -32,8 +32,8 @@ void BooleanTest::methode1()
     const bool TRUE_VALUE  = true ;
     const bool FALSE_VALUE = ! TRUE_VALUE ;
 
-    ::fwData::Boolean::NewSptr p1( TRUE_VALUE );
-    ::fwData::Boolean::NewSptr p2( FALSE_VALUE );
+    ::fwData::Boolean::sptr p1 = ::fwData::Boolean::New( TRUE_VALUE );
+    ::fwData::Boolean::sptr p2 = ::fwData::Boolean::New( FALSE_VALUE );
 
     // check
     CPPUNIT_ASSERT_EQUAL(TRUE_VALUE , ::fwData::Boolean::New( TRUE_VALUE )->value());

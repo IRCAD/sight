@@ -13,7 +13,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/ComChannelService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/PointMsg.hpp>
@@ -66,7 +65,7 @@ Distance::Distance() throw():
     //m_distanceRepresentation->GetAxis()->GetMapper();
     //m_distanceRepresentation->GetAxis()->SetFontFactor(0.8);
 
-    addNewHandledEvent(::fwComEd::PointMsg::POINT_IS_MODIFIED);
+    //addNewHandledEvent(::fwComEd::PointMsg::POINT_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -111,8 +110,10 @@ void Distance::doStart()
     m_point1 = ptList->getPoints().front();
     m_point2 = ptList->getPoints().back();
 
-    ::fwServices::registerCommunicationChannel(m_point1.lock(), this->getSptr() )->start();
-    ::fwServices::registerCommunicationChannel(m_point2.lock(), this->getSptr() )->start();
+    m_point1Connection = m_point1.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                    this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_point2Connection = m_point2.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                    this->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
     // set color to distance if Point List have Color Field
     if ( ptList->getField( ::fwComEd::Dictionary::m_colorId ) )
@@ -156,7 +157,7 @@ void Distance::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Distance::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
     SLM_ASSERT("Message received is not PointMsg",  pointMsg);
@@ -179,8 +180,8 @@ void Distance::doSwap() throw(fwTools::Failed)
 
 void Distance::doStop()
 {
-    ::fwServices::unregisterCommunicationChannel(m_point1.lock(), this->getSptr() );
-    ::fwServices::unregisterCommunicationChannel(m_point2.lock(), this->getSptr() );
+    m_point1Connection.disconnect();
+    m_point2Connection.disconnect();
 
     m_point1.reset();
     m_point2.reset();

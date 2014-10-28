@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,13 +31,30 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::New();
-    // manager->setDumpPolicy( ::fwMemory::policy::NeverDump::New() );
-    // manager->setDumpPolicy( ::fwMemory::policy::ValveDump::New() );
-    // manager->setDumpPolicy( ::fwMemory::policy::AlwaysDump::New() );
-    // manager->setDumpPolicy( ::fwMemory::policy::BarrierDump::New() );
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
 
-    ::fwTools::IBufferManager::setCurrent( manager );
+    const std::string modeKey = "loading_mode";
+
+    if ( this->getBundle()->hasParameter(modeKey) )
+    {
+        ::fwCore::mt::WriteLock lock( manager->getMutex() );
+        std::string mode = this->getBundle()->getParameterValue(modeKey);
+        if (mode == "lazy")
+        {
+            manager->setLoadingMode(::fwMemory::BufferManager::LAZY);
+            SLM_INFO("Enabled lazy loading mode");
+        }
+        else if (mode == "direct")
+        {
+            manager->setLoadingMode(::fwMemory::BufferManager::DIRECT);
+            SLM_INFO("Enabled direct loading mode");
+        }
+        else
+        {
+            SLM_ERROR("Unknown loading mode : '" + mode + "'");
+        }
+    }
+
 }
 
 //------------------------------------------------------------------------------

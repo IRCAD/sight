@@ -17,9 +17,9 @@ namespace ctrlSelection
 
 
 /**
- * @class  MedicalImageSrv.
+ * @class  MedicalImageSrv
  * @brief  This service convert its attached image to a medical image by adding specific fields.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2010.
  */
@@ -58,7 +58,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private :
 

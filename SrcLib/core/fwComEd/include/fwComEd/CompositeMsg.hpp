@@ -19,7 +19,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for Composite : store modification information
  * @class   CompositeMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2005-2009.
  * @see     ::fwServices::ObjectMsg
  */
@@ -29,9 +29,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((CompositeMsg)(::fwServices::ObjectMsg), ( () ),
                                            ::fwServices::factory::message::New< CompositeMsg > );
-
-    /// Event identifier used to inform that keys were modified
-    FWCOMED_API static std::string MODIFIED_KEYS;
 
     /// Event identifier used to inform that keys were added
     FWCOMED_API static std::string ADDED_KEYS;
@@ -53,39 +50,6 @@ public:
      * @brief   Destructor : does nothing.
      */
     FWCOMED_API virtual ~CompositeMsg() throw();
-
-    /**
-     * @brief       This method add an event to the message from its keys identifiers.
-     * @param[in]   _modifiedkeys : list of the keys of the composite object which were modified.
-     *
-     * This method create a MODIFIED_KEYS event.
-     */
-    FWCOMED_API void addModifiedKeysEvent( const std::vector< std::string > & _modifiedkeys );
-
-    /**
-     * @brief       This method add an event to the message from its keys identifiers.
-     * @param[in]   _modifiedkeys : list of the keys of the objects which were modified.
-     * @param[in]   _oldObjects list : of objects which were modified.
-     *
-     * This method create a MODIFIED_KEYS event.
-     */
-    FWCOMED_API void addModifiedKeysEvent( const std::vector< std::string > & _modifiedkeys, std::vector< ::fwData::Object::sptr > _oldObjects );
-
-    /**
-     * @brief   Return the list modified keys.
-     * @return  The list of the modified keys identifiers.
-     * @pre     The message must contain a MODIFIED_KEYS event.
-     */
-    FWCOMED_API std::vector< std::string > getModifiedKeys() const;
-
-    /**
-     * @brief       This method add an object in the modified keys list.
-     * @param[in]   _modifiedkey : the key of the object which was modified.
-     *
-     * This method create a MODIFIED_KEYS event with an additional data information containing the keys identifiers.
-     */
-    FWCOMED_API  void addModifiedKeyEvent( std::string _modifiedKey );
-
 
     /**
      * @brief       This method add an object in the composite of added keys.
@@ -131,9 +95,6 @@ public:
     FWCOMED_API ::fwData::Composite::sptr  getNewChangedKeys() const;
 
 private :
-
-    std::vector< std::string > m_modifiedKeys;
-    std::vector< ::fwData::Object::sptr > m_modifiedObjects;
 
     ::fwData::Composite::sptr m_removedKeys;
     ::fwData::Composite::sptr m_addedKeys;

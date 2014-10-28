@@ -13,7 +13,7 @@ namespace ctrlSelection
 /**
  * @brief      The namespace ctrlSelection::updater contains the updater services.
  * @namespace  ctrlSelection::updater
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
  *
  */

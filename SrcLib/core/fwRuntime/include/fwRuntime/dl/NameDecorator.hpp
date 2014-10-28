@@ -26,7 +26,7 @@ namespace dl
  *          to do plateform specific decorations.
  * @class   NameDecorator
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct NameDecorator : public INameDecorator
 {

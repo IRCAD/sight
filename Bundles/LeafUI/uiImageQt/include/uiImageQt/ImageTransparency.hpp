@@ -27,8 +27,8 @@ namespace uiImage
 
 /**
  * @brief   ImageTransparency service allows to change image transparency.
- * @class   ImageTransparency.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImageTransparency
+ * 
  * @date    2011.
  */
 class UIIMAGEQT_CLASS_API ImageTransparency : public QObject, public ::gui::editor::IEditor
@@ -51,7 +51,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Receive InteractionMsg and updates text informations
-    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 

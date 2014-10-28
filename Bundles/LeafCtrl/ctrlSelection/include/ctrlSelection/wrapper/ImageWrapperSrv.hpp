@@ -19,9 +19,9 @@ namespace wrapper
 {
 
 /**
- * @class  ImageWrapperSrv.
+ * @class  ImageWrapperSrv
  * @brief  Convert generic message by specific message from Image
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2007-2009.
  */
@@ -61,7 +61,7 @@ protected:
     /**
      * @brief Convert the Object message with "UPDATED_OBJECT" event sent on Graph by GraphMsg with "NEW_GRAPH" event
      */
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 
 };

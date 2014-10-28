@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action adds distance on image.
- * @class   AddDistance.
- * @author  IRCAD (Research and Development Team).
+ * @class   AddDistance
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API AddDistance : public ::fwGui::IActionSrv
@@ -39,7 +39,7 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     void stopping() throw (::fwTools::Failed);
 

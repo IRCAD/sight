@@ -28,7 +28,7 @@ namespace fwData
  *
  * @see     ::fwData::Float, ::fwData::Boolean, ::fwData::Integer
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 template< typename T >

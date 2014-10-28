@@ -4,11 +4,11 @@
 
 <extension implements="::fwServices::registry::AppConfig">
     <id>Tuto14MeshGenerator</id>
-    <type>standard</type>
+    <type>parameters</type>
     <config>
 
         <object type="::fwData::Composite">
-            <service uid="MyIHM" implementation="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoComChannel="no">
+            <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Tuto14MeshGenerator</name>
@@ -22,20 +22,20 @@
                 </registry>
             </service>
             
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
                 <gui>
                     <layout>
                         <menu name="File" />
-                        <menu name="Generator" />
+                        <menu name="Modify" />
                     </layout>
                 </gui>
                 <registry>
                     <menu sid="menu_File" start="yes" />
-                    <menu sid="menu_Generator" start="yes" />
+                    <menu sid="menu_Modifier" start="yes" />
                 </registry>
             </service>
 
-            <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
                 <gui>
                     <layout>
                         <menuItem name="Open file" shortcut="Ctrl+O" />
@@ -51,13 +51,9 @@
                 </registry>
             </service>
 
-            <service uid="menu_Generator" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+            <service uid="menu_Modifier" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
                 <gui>
                     <layout>
-                        <menuItem name="Generate triangle" shortcut="A" />
-                        <menuItem name="Generate quad" shortcut="Z" />
-                        <menuItem name="Generate triangle and quad" shortcut="E" />
-                        <separator />
                         <menuItem name="Shake mesh point" shortcut="Q" />
                         <separator />
                         <menuItem name="Colorize mesh point" shortcut="U" />
@@ -81,9 +77,6 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="action_genTrian" start="yes" />
-                    <menuItem sid="action_genQuad" start="yes" />
-                    <menuItem sid="action_genTrianQuad" start="yes" />
                     <menuItem sid="action_shakeMeshPoint" start="yes" />
                     <menuItem sid="action_colorizeMeshPoints" start="yes" />
                     <menuItem sid="action_colorizeMeshCells" start="yes" />
@@ -105,15 +98,15 @@
                 </registry>
             </service>
             
-            <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="myReaderMesh" />
             </service>
-            <service uid="action_saveFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="action_saveFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="myWriterMesh" />
             </service>
-            <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
-            <service uid="multiView_scene1" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+            <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager" >
                         <view align="center" />
@@ -129,7 +122,7 @@
             <item key="myCompositeVisu">
                 <object uid="myCompositeVisu" type="::fwData::Composite">
 
-                    <service uid="genericScene" implementation="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoComChannel="yes">
+                    <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
                             <picker id="myPicker" vtkclass="fwVtkCellPicker" />
 
@@ -151,69 +144,59 @@
 
                     <item key="myMesh">
                         <object type="::fwData::Mesh">
-                            <service uid="myReaderMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                            <service uid="myReaderMesh" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="reader" />
                             </service>
-                            <service uid="myWriterMesh" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no">
+                            <service uid="myWriterMesh" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="writer" />
                             </service>
-                            
-                            <service uid="action_genTrian" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
-                                <config functor="GenTriangle" />
-                            </service>
-                            <service uid="action_genQuad" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
-                                <config functor="GenQuad" />
-                            </service>
-                            <service uid="action_genTrianQuad" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
-                                <config functor="GenTriangleQuad" />
-                            </service>
-                            <service uid="action_shakeMeshPoint" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_shakeMeshPoint" impl="::ioData::action::SMeshModifier" type="::fwGui::IActionSrv" autoConnect="no">
                                 <config functor="ShakeMeshPoint" />
                             </service>
-                            <service uid="action_colorizeMeshPoints" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_colorizeMeshPoints" impl="::ioData::action::SMeshModifier" type="::fwGui::IActionSrv" autoConnect="no">
                                 <config functor="ColorizeMeshPoints" />
                             </service>
-                            <service uid="action_colorizeMeshCells" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_colorizeMeshCells" impl="::ioData::action::SMeshModifier" type="::fwGui::IActionSrv" autoConnect="no">
                                 <config functor="ColorizeMeshCells" />
                             </service>
-                            <service uid="action_computePointNormals" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_computePointNormals" impl="::ioData::action::SMeshModifier" type="::fwGui::IActionSrv" autoConnect="no">
                                 <config functor="ComputePointNormals" />
                             </service>
-                            <service uid="action_computeCellNormals" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_computeCellNormals" impl="::ioData::action::SMeshModifier" type="::fwGui::IActionSrv" autoConnect="no">
                                 <config functor="ComputeCellNormals" />
                             </service>
-                            <service uid="action_shakePointNormals" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_shakePointNormals" impl="::ioData::action::SMeshModifier" type="::fwGui::IActionSrv" autoConnect="no">
                                 <config functor="ShakePointNormals" />
                             </service>
-                            <service uid="action_shakeCellNormals" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_shakeCellNormals" impl="::ioData::action::SMeshModifier" type="::fwGui::IActionSrv" autoConnect="no">
                                 <config functor="ShakeCellNormals" />
                             </service>
-                            <service uid="action_showCellNormals" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no" >
+                            <service uid="action_showCellNormals" impl="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoConnect="no" >
                                 <state active="true" />
                                 <notify type="::fwComEd::MeshMsg" event="SHOW_CELL_NORMALS" />
                             </service>
-                            <service uid="action_showPointNormals" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_showPointNormals" impl="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoConnect="no">
                                 <notify type="::fwComEd::MeshMsg" event="SHOW_POINT_NORMALS" />
                             </service>
-                            <service uid="action_hideNormals" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_hideNormals" impl="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoConnect="no">
                                 <notify type="::fwComEd::MeshMsg" event="HIDE_NORMALS" />
                             </service>
                             
-                            <service uid="action_meshDeformation" implementation="::ioData::action::MeshGeneratorSrv" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_meshDeformation" impl="::ioData::action::SMeshModifier" type="::fwGui::IActionSrv" autoConnect="no">
                                 <config functor="MeshDeformation" />
                             </service>
                             
-                            <service uid="action_showPointColors" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_showPointColors" impl="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoConnect="no">
                                 <notify type="::fwComEd::MeshMsg" event="SHOW_POINT_COLORS" />
                             </service>
-                            <service uid="action_showCellColors" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_showCellColors" impl="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoConnect="no">
                                 <notify type="::fwComEd::MeshMsg" event="SHOW_CELL_COLORS" />
                             </service>
-                            <service uid="action_hideColors" implementation="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoComChannel="no">
+                            <service uid="action_hideColors" impl="::gui::action::ActionNotifyService" type="::fwGui::IActionSrv" autoConnect="no">
                                 <notify type="::fwComEd::MeshMsg" event="HIDE_COLORS" />
                             </service>
                                                         
-                            <service uid="msgWrapper" implementation="::ctrlSelection::wrapper::MsgWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoComChannel="yes">
+                            <service uid="msgWrapper" impl="::ctrlSelection::wrapper::MsgWrapperSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="yes">
                                 <wrapper onEvent="ObjectMsg::UPDATED_OBJECT" toEvent="NEW_MESH" toMsgType="::fwComEd::MeshMsg" />
                             </service>
                             

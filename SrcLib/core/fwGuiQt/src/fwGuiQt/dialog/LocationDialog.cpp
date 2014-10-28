@@ -55,7 +55,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         QStringList files = QFileDialog::getOpenFileNames( parent, caption, path, filter);
         if(!files.isEmpty())
         {
-            ::fwData::location::MultiFiles::NewSptr multifiles;
+            ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
             std::vector< ::boost::filesystem::path > paths;
             BOOST_FOREACH (QString filename, files)
             {

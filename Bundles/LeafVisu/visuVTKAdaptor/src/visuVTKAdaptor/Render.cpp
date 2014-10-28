@@ -30,7 +30,7 @@ Render::Render() throw()
 {
     m_vtkPipelineModified = false;
     m_comChannelPriority = 0.1;
-    addNewHandledEvent("SCENE_RENDER_REQUEST");
+    //addNewHandledEvent("SCENE_RENDER_REQUEST");
 }
 
 //------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ void Render::configuring() throw(fwTools::Failed)
 void Render::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    addNewHandledEvent( "SCENE_RENDER_REQUEST" );
+    //addNewHandledEvent( "SCENE_RENDER_REQUEST" );
     this->getRenderService()->setPendingRenderRequest(false);
 }
 
@@ -83,7 +83,7 @@ void Render::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Render::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Render::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

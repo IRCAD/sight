@@ -14,8 +14,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Point.hpp>
-#include <fwData/PatientDB.hpp>
-#include <fwData/Patient.hpp>
 
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
@@ -42,7 +40,7 @@ template <class T> struct bitwise_or : std::binary_function <T,T,T>
 /**
  * @class   MedicalImageHelpers
  * @brief   This class contains helpers for medical image fields.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009.
  */
 class FWCOMED_CLASS_API MedicalImageHelpers
@@ -98,16 +96,6 @@ public :
     FWCOMED_API static bool checkComment( ::fwData::Image::sptr _pImg );
 
     /**
-     * @brief       Set a label in a field of the image.
-     *
-     * For each image in the patient the label is incremented (I0, I1, I2,...).
-     *
-     * @param[in]   pPatient    patient which contains the image.
-     * @param[in]   pImage      image to set the label.
-     */
-    FWCOMED_API static void setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage);
-
-    /**
      * @brief       Initialized an image to 0 from image source (same field, pixel type, buffer size...).
      *
      *
@@ -117,16 +105,6 @@ public :
      * @return      Returns initialized image.
      */
     FWCOMED_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize = ::fwData::Image::sptr());
-
-    /**
-     * @brief  Merge PatientDB:
-     *         Check if firstname, name, sex, ... are the same
-     *
-     * @param[in]    _patientDBFrom    PatientDB source.
-     * @param[inout] _patientDBTo      PatientDB destination (data are merged in this PatientDB).
-     * @param[in]    _msgSender        Service source to notify modifications
-     */
-    FWCOMED_API static void mergePatientDBInfo( ::fwData::PatientDB::sptr _patientDBFrom, ::fwData::PatientDB::sptr _patientDBTo, ::fwServices::IService::sptr _msgSender );
 
     /**
      * @brief       Return true if the pixel value is null.
@@ -160,7 +138,7 @@ public :
 
     /**
      * @brief Return a buffer of image type's size, containing 'value' casted to image data type
-     * @param[in] pImage : reference image
+     * @param[in] image : reference image
      * @param[in] value : value to map
      */
     template < typename T >

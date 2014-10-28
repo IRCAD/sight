@@ -23,10 +23,6 @@ namespace ut
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ImageTest );
-    CPPUNIT_TEST( testGetterSetter3D );
-    CPPUNIT_TEST( testDeepCopy );
-    CPPUNIT_TEST( stressTest );
-    CPPUNIT_TEST( testGetterSetter2D );
     CPPUNIT_TEST( roiApplyTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -36,15 +32,7 @@ public:
     void tearDown();
 
 
-    void testGetterSetter3D();
-    void testDeepCopy();
-    void stressTest();
-    void testGetterSetter2D();
     void roiApplyTest();
-
-private:
-    void stressTestWithType(::fwTools::Type type, int nbTest);
-
 
 };
 

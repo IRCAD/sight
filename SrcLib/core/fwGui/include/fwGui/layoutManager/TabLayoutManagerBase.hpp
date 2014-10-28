@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/TabLayoutManagerBase.hpp
+ * @file fwGui/layoutManager/TabLayoutManagerBase.hpp
  * @brief This file defines the interface of the class for managing a tab layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -30,8 +30,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for cardinal layout manager.
- * @class   TabLayoutManagerBase.
- * @author  IRCAD (Research and Development Team).
+ * @class   TabLayoutManagerBase
+ * 
  * @date    2009-2010.
  *
  */
@@ -70,7 +70,7 @@ public:
      *
      * Example of configuration with Tab layout.
      * @verbatim
-       <service uid="subView3" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+       <service uid="subView3" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
            <gui>
                <layout type="::fwGui::TabLayoutManager" >
                    <view caption="TabView1" />
@@ -85,8 +85,8 @@ public:
            </registry>
        </service>
        @endverbatim
-     *  - <layout type="::fwGui::TabLayoutManager" > : define a tab layout.
-     *  - <view caption="TabView1" selected="center" /> : define a new view which can have the following attributes
+     *  - \<layout type="::fwGui::TabLayoutManager" \> : define a tab layout.
+     *  - \<view caption="TabView1" selected="center" /\> : define a new view which can have the following attributes
      *   - \b caption : name of the view (display on the screen).
      *   - \b selected  {yes | no}: define if the tab is the current one.
      */

@@ -11,8 +11,8 @@ namespace fwDataIO
 {
 /**
  * @brief       This namespace fwDataIO::reader contains reader for several data of the framework.
- * @namespace   fwDataIO::reader.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwDataIO::reader
+ * 
  * @date        2009-2010.
  *
  */

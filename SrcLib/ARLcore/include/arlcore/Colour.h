@@ -16,7 +16,6 @@ namespace arlCore
 {
     /**
      * @class   Colour
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   RGB colour
      */

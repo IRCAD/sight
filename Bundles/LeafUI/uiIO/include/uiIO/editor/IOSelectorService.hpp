@@ -18,8 +18,8 @@ namespace editor
 
 /**
  * @brief   Defines the service interface managing the editor service for object.
- * @class   IOSelectorService.
- * @author  IRCAD (Research and Development Team).
+ * @class   IOSelectorService
+ * 
  * @date    2009.
  */
 class UIIO_CLASS_API IOSelectorService : public ::gui::editor::IDialogEditor
@@ -68,11 +68,11 @@ protected:
      *
      * Sample of configuration :
      * @verbatim
-          <service uid="GENERIC_UID_writerMedicalWorkspace" type="::gui::editor::IDialogEditor" implementation="::uiIO::editor::IOSelectorService" autoComChannel="no">
+          <service uid="GENERIC_UID_writer" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
               <type mode="writer" />
               <selection mode="include" />
-              <addSelection service="::ioXML::FwXMLGenericWriterService" />
-              <config id="FwXMLGenericWriterReaderMWZConfig" service="::ioXML::FwXMLGenericWriterService" />
+              <addSelection service="::ioAtoms::SWriter" />
+              <config id="ioAtomsConfig" service="::ioAtoms::SWriter" />
           </service>
      * @endverbatim
      * With :
@@ -93,7 +93,7 @@ protected:
     UIIO_API void updating() throw( ::fwTools::Failed ) ;
 
     /// SLM_FATAL require an implementation gui::editor::IEditor::updating(msg)
-    UIIO_API void updating( fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed );
+    UIIO_API void receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed );
 
     /// Gives the name of the class. Do nothing.
     UIIO_API void info( std::ostream &_sstream ) ;

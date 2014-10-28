@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,11 @@
 #ifndef _FWATOMS_BASE_SEQUENCE_HPP_
 #define _FWATOMS_BASE_SEQUENCE_HPP_
 
-#include <string>
 #include <vector>
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
-
-fwCampAutoDeclareMacro((fwAtoms)(Sequence), FWATOMS_API);
+#include "fwAtoms/factory/new.hpp"
 
 namespace fwAtoms
 {
@@ -24,56 +22,93 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Sequence : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Sequence), (()), new Sequence ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Sequence > ) ;
+
     typedef std::vector<Base::sptr> SequenceType;
-    typedef SequenceType::iterator Iterator;
-    typedef SequenceType::const_iterator cIterator;
+
+    typedef SequenceType::value_type ValueType;
+    typedef SequenceType::reference ReferenceType;
+    typedef SequenceType::const_reference ConstReferenceType;
+    typedef SequenceType::iterator IteratorType;
+    typedef SequenceType::const_iterator ConstIteratorType;
+    typedef SequenceType::reverse_iterator ReverseIteratorType;
+    typedef SequenceType::const_reverse_iterator ConstReverseIteratorType;
+    typedef SequenceType::size_type SizeType;
+
+    /// boost_foreach/stl compatibility
+    /// @{
+    typedef SequenceType::value_type value_type;
+    typedef SequenceType::reference reference;
+    typedef SequenceType::const_reference const_reference;
+    typedef SequenceType::iterator iterator;
+    typedef SequenceType::const_iterator const_iterator;
+    typedef SequenceType::reverse_iterator reverse_iterator;
+    typedef SequenceType::const_reverse_iterator const_reverse_iterator;
+    typedef SequenceType::size_type size_type;
+    /// @}
 
     /**
-     * @brief Append a base in back of the sequence.
-     * @param value the value to push in the sequence (the value is not copy)
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWATOMS_API void append(Base::sptr value);
+    Sequence(::fwAtoms::Base::Key key)
+    {}
 
     /**
-     * @brief set a value in the sequence.
-     * @param pos the position is the sequence.
-     * @param value the new value.
+     * @brief   Destructor
      */
-    FWATOMS_API void set(unsigned int pos, Base::sptr value);
+    virtual ~Sequence()
+    {}
+
+    /**
+     * @brief push an atom in the sequence.
+     */
+    void push_back(const Base::sptr &value){m_value.push_back(value);};
 
     //! Begin of sequence iterator
-    FWATOMS_API Iterator  begin();
+    IteratorType  begin(){return m_value.begin();}
 
     //! End of sequence iterator
-    FWATOMS_API Iterator  end();
+    IteratorType  end() {return m_value.end();}
 
     //! Begin of sequence const iterator
-    FWATOMS_API cIterator cBegin() const;
+    ConstIteratorType begin() const {return m_value.begin();}
 
     //! End of sequence const iterator
-    FWATOMS_API cIterator cEnd() const;
+    ConstIteratorType end() const {return m_value.end();}
 
+
+    //! Returns the sequence size
+    size_type size() const {return m_value.size();}
+
+    //! clear the sequence
+    void  clear() {m_value.clear();}
 
     //! Test if the sequence is empty
-    FWATOMS_API bool isEmpty() const;
+    bool empty() const {return m_value.empty();}
 
-
-    //! Retrieve internal vector
-    //FWATOMS_API const SequenceType& getValue();
-    FWATOMS_API SequenceType& getValue();
-
+    //! Returns internal vector
+    const SequenceType& getValue() const{return m_value;};
 
     //! access an element in position index
-    FWATOMS_API Base::sptr operator[](unsigned int index);
+    Base::sptr &operator[](unsigned int index){return m_value[index];}
+    const Base::sptr &operator[](unsigned int index) const {return m_value[index];}
+
+    /**
+     * @brief Returns a clone object
+     */
+    FWATOMS_API virtual Base::sptr clone() const;
+
+    /**
+     * @brief returns Atom type
+     */
+    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::SEQUENCE;};
 
 
-    FWATOMS_API virtual bool isSequence() const {return true;};
-    FWATOMS_API virtual Base::sptr clone();
 protected:
-    Sequence(){};
     SequenceType m_value;
 };
 
 }
 #endif
+

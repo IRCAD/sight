@@ -9,14 +9,7 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-/**
- * @brief   Namespace uiIO.
- * @namespace   uiIO.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
- *
- *  The namespace uiIO contains a simple service to manipulate IO with IHM.
- */
+
 namespace uiIO
 {
 

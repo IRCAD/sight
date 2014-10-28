@@ -3,6 +3,12 @@
     <library name="scene2D" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::scene2D::processing::SComputeHistogram</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
         <service>::scene2D::Render</service>
         <object>::fwData::Composite</object>

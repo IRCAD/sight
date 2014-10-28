@@ -21,8 +21,8 @@ namespace dialog
 
 /**
  * @brief   ISelectorDialog allows the choice of an element among several (_selections)
- * @class   ISelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   ISelectorDialog
+ * 
  * @date    2009-2010.
  */
 class FWGUI_CLASS_API ISelectorDialog : public ::fwGui::GuiBaseObject

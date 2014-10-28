@@ -15,8 +15,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the application manipulation API.
- * @class   IApplication.
- * @author  IRCAD (Research and Development Team).
+ * @class   IApplication
+ * 
  * @date    2009-2010.
  *
  */

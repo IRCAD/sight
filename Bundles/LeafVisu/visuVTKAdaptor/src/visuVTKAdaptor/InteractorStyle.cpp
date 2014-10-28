@@ -29,7 +29,7 @@ namespace visuVTKAdaptor
 InteractorStyle::InteractorStyle() throw()
 {
     m_interactorStyle = NULL;
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void InteractorStyle::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void InteractorStyle::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

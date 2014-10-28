@@ -16,9 +16,7 @@ namespace gui
 
 /**
  * @brief   This class is called when the gui bundle is loaded.
- * @class   Plugin.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   Plugin
  */
 
 class GUI_CLASS_API Plugin : public ::fwRuntime::Plugin
@@ -32,7 +30,7 @@ public:
     /**
      * @brief This method is used by runtime to initialize the bundle.
      *
-     * @exception ::fwRuntime::RuntimeException.
+     * @exception ::fwRuntime::RuntimeException
      *
      * Register first basic services of type IAction, IEditor and IView.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.

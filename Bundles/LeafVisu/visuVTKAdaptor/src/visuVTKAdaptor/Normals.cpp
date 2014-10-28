@@ -29,7 +29,7 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "visuVTKAdaptor/Normals.hpp"
 
@@ -186,7 +186,7 @@ void Normals::updateNormals()
 
 //------------------------------------------------------------------------------
 
-void Normals::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Normals::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

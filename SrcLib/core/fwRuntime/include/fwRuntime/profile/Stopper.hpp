@@ -27,7 +27,7 @@ namespace profile
  * @brief   Stops a given bundle.
  * @class  Stopper
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class Stopper :  public boost::noncopyable
 {
@@ -37,7 +37,7 @@ public:
     /**
      * @brief       Constructor
      *
-     * @param[in]   identifier  a string containing a bundle identifier
+     * @param[in]   _identifier  a string containing a bundle identifier
      */
     FWRUNTIME_API Stopper( const std::string   & _identifier );
 

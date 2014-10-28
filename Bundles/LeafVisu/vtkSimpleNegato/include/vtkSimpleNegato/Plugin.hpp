@@ -12,8 +12,8 @@
 
 /**
  * @brief   Namespace vtkSimpleNegato.
- * @namespace   vtkSimpleNegato.
- * @author  IRCAD (Research and Development Team).
+ * @namespace   vtkSimpleNegato
+ * 
  * @date    2009.
  *
  *  The namespace vtkSimpleNegato contains a simple negato renderer using vtk.

@@ -18,10 +18,10 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic pulse progress dialog for IHM.
- * Use the Delegate design pattern. The specific implementation selection is ensured by ::fwClassFactoryRegistry
+ * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
  * The specific implementation are in fwWX and fwQT libraries
- * @class   PulseProgressDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   PulseProgressDialog
+ * 
  * @date    2009-2010.
  *
  */

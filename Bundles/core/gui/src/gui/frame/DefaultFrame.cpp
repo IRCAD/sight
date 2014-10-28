@@ -60,7 +60,7 @@ void DefaultFrame::info(std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void DefaultFrame::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

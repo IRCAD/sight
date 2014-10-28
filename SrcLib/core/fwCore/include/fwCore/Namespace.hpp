@@ -8,10 +8,10 @@
 #define __FWCORE_NAMESPACE_HPP__
 
 /**
- * @brief       This namespace fwCore provides common foundations for FW4SPLL.
- * @namespace   fwCore.
- * @author      IRCAD (Research and Development Team).
- * @date        2009-2010.
+ * @brief       This namespace fwCore provides common foundations for FW4SPL.
+ * @namespace   fwCore
+ * 
+ * @date        2009-2010
  *
  */
 namespace fwCore

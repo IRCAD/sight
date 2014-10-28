@@ -23,7 +23,7 @@ namespace log
 /**
  * @brief   Implements the SpyLogger.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class SpyLogger : public ::fwCore::BaseObject
 {
@@ -42,9 +42,9 @@ public :
 
     FWCORE_API void createBasicConfiguration();
 
-    FWCORE_API void addStreamAppender(std::ostream &os = std::clog);
+    FWCORE_API void addStreamAppender(std::ostream &os = std::clog, LevelType level = SL_TRACE);
 
-    FWCORE_API void addFileAppender(const std::string & logFile = "SLM.log");
+    FWCORE_API void addFileAppender(const std::string & logFile = "SLM.log", LevelType level = SL_TRACE);
 
     // FWCORE_API void addSyslogAppender(const std::string & hostName, const std::string & facilityName);
 

@@ -37,9 +37,9 @@ namespace visuVTKAdaptor
 
 PointList::PointList() throw()
 {
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void PointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointList::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PointList::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -135,6 +135,7 @@ void PointList::createServices(WeakPointListType &wPtList)
         service->setRenderService(this->getRenderService());
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
+        service->setAutoRender( this->getAutoRender() );
         service->start();
 
         this->registerService(service);

@@ -4,10 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwDataTools/Image.hpp>
+#include <fwData/Object.hpp>
 
-#include <itkIO/itk.hpp>
+#include <fwDataCamp/visitor/CompareObjects.hpp>
 
+#include <fwTest/generator/Image.hpp>
+#include <fwTest/helper/compare.hpp>
+
+#include <fwItkIO/itk.hpp>
+
+#include "helper.hpp"
 #include "ImageConversionTest.hpp"
 
 // Registers the fixture into the 'registry'
@@ -38,22 +44,28 @@ void ImageConversionTest::tearDown()
 void ImageConversionTest::testConversion()
 {
     // create Image
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     typedef itk::Image< ::boost::int16_t , 3 > ImageType;
-    ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
+    ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
-    ::fwData::Image::NewSptr image2;
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();
     bool image2ManagesHisBuffer = false;
-    ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
+    ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
+
+    ::fwItkIO::ut::helper::roundSpacing(image);
+    ::fwItkIO::ut::helper::roundSpacing(image2);
+
+    ::fwTest::helper::ExcludeSetType exclude;
+    exclude.insert("array.isOwner");
+
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
-    ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3));
+    ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -80,7 +92,7 @@ void ImageConversionTest::stressTest()
 void ImageConversionTest::testConversion2D()
 {
     // create Image
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
     const ::boost::uint8_t dim = 2;
     ::fwData::Image::SizeType size(dim);
     size[0] = rand()%100 + 2;
@@ -93,22 +105,29 @@ void ImageConversionTest::testConversion2D()
     origin[1] = (rand()%200 - 100) / 3.;
     ::fwTools::Type type = ::fwTools::Type::create< ::boost::int16_t >();
 
-    ::fwDataTools::Image::generateImage(image, size, spacing, origin, type);
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
     ::fwData::Array::sptr array = image->getDataArray();
-    ::fwDataTools::Image::randomizeArray(array);
+    ::fwTest::generator::Image::randomizeArray(array);
 
     typedef itk::Image< ::boost::int16_t , 2 > ImageType;
 
-    ImageType::Pointer itkImage = ::itkIO::itkImageFactory<ImageType>( image );
+    ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
-    ::fwData::Image::NewSptr image2;
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();
     bool image2ManagesHisBuffer = false;
-    ::itkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2));
+    ::fwItkIO::dataImageFactory< ImageType >( itkImage, image2, image2ManagesHisBuffer );
+
+    ::fwItkIO::ut::helper::roundSpacing(image);
+    ::fwItkIO::ut::helper::roundSpacing(image2);
+
+    ::fwTest::helper::ExcludeSetType exclude;
+    exclude.insert("array.isOwner");
+
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
     bool image3ManagesHisBuffer = false;
-    ::fwData::Image::sptr image3 = ::itkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image3) );
+    ::fwData::Image::sptr image3 = ::fwItkIO::dataImageFactory< ImageType >( itkImage, image3ManagesHisBuffer );
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image3, exclude));
 }
 
 //------------------------------------------------------------------------------

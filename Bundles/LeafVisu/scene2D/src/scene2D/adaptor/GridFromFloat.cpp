@@ -25,7 +25,7 @@ GridFromFloat::GridFromFloat() throw()
 : m_xSpacing (10),
   m_ySpacing (10)
 {
-    addNewHandledEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
+//    addNewHandledEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
 }
 
 GridFromFloat::~GridFromFloat() throw()
@@ -137,7 +137,7 @@ void GridFromFloat::doStart() throw ( ::fwTools::Failed )
     m_layer = new QGraphicsItemGroup();
     // Set the pen a style
     m_pen.setStyle(Qt::DashLine);
-    this->draw();
+    this->draw();  
 }
 
 void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
@@ -145,7 +145,7 @@ void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 }
 
-void GridFromFloat::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void GridFromFloat::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

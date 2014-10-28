@@ -78,7 +78,7 @@ void RemoveLandmark::info(std::ostream &_sstream )
         correspondance[ *name ] = landmark;
     }
 
-    ::fwGui::dialog::SelectorDialog::NewSptr selector;
+    ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
     selector->setTitle("Select a landmark to remove");
     selector->setSelections(selections);
     std::string selection = selector->show();
@@ -102,7 +102,7 @@ void RemoveLandmark::info(std::ostream &_sstream )
 
 void RemoveLandmark::notify( ::fwData::Image::sptr image , ::fwData::Object::sptr backup)
 {
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::LANDMARK, backup );
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
@@ -161,7 +161,7 @@ void RemoveLandmark::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void RemoveLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

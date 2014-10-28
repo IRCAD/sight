@@ -35,7 +35,7 @@ ResetCamera::ResetCamera() throw()
 {
     bCameraReseted = false;
     m_comChannelPriority = 0.1;
-    addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+    //addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ void ResetCamera::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ResetCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ResetCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg );
 

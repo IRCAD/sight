@@ -32,7 +32,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService
 
 ActionNotifyService::ActionNotifyService() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void ActionNotifyService::stopping() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ActionNotifyService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ActionNotifyService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {}
 
 //-----------------------------------------------------------------------------

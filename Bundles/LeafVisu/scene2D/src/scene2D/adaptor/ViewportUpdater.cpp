@@ -24,7 +24,7 @@ namespace adaptor
 
 ViewportUpdater::ViewportUpdater() throw()
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,7 +83,7 @@ void ViewportUpdater::doUpdate() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ViewportUpdater::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
+void ViewportUpdater::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

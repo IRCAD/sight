@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,10 +18,10 @@ namespace mt
 {
 
 typedef ::boost::mutex Mutex;
-typedef ::boost::mutex::scoped_lock ScopedLock;
+typedef ::boost::unique_lock< Mutex > ScopedLock;
 
 typedef ::boost::recursive_mutex RecursiveMutex;
-typedef ::boost::recursive_mutex::scoped_lock RecursiveScopedLock;
+typedef ::boost::unique_lock< RecursiveMutex > RecursiveScopedLock;
 
 /// Defines a single writer, multiple readers mutex.
 typedef ::boost::shared_mutex ReadWriteMutex;

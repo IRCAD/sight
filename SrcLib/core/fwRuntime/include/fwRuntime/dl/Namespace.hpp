@@ -13,7 +13,7 @@ namespace fwRuntime
 /**
  * @brief       The namespace fwRuntime::dl contains classes to manage library module.
  * @namespace   fwRuntime::dl
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

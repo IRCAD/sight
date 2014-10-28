@@ -50,11 +50,10 @@ void StarterActionService::starting() throw( ::fwTools::Failed )
 void StarterActionService::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    typedef std::pair< std::string, ActionType > ServiceUidPair;
-    BOOST_FOREACH( ServiceUidPair serviceUid, m_uuidServices)
+    BOOST_FOREACH( VectPairIDActionType::value_type serviceUid, m_uuidServices)
     {
         bool srv_exists = ::fwTools::fwID::exist(serviceUid.first );
-        if (srv_exists)
+        if (srv_exists &&  (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()) )
         {
             ::fwServices::IService::sptr service = ::fwServices::get( serviceUid.first ) ;
             if (service->isStarted())
@@ -83,7 +82,7 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
     for(size_t i = 0; i < m_uuidServices.size(); i++)
     {
         ActionType action =  m_uuidServices.at(i).second;
-        std::string uid =  m_uuidServices.at(i).first;
+        IDSrvType uid =  m_uuidServices.at(i).first;
         bool srv_exists = ::fwTools::fwID::exist(uid  );
 
         // Manage special action
@@ -124,10 +123,12 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
                 {
                     service->start();
                     service->update();
+                    m_idStartedSrvSet.insert(uid);
                 }
                 else
                 {
                     service->stop();
+                    m_idStartedSrvSet.erase(uid);
                 }
                 break;
             }
@@ -136,6 +137,7 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
                 if(service->isStopped())
                 {
                     service->start();
+                    m_idStartedSrvSet.insert(uid);
                 }
                 else
                 {
@@ -165,13 +167,10 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
         }
         else
         {
-            std::string msgInfo = "Sorry, the service is unavailable.";
-            ::fwGui::dialog::MessageDialog messageBox;
-            messageBox.setTitle("Service unavailable");
-            messageBox.setMessage( msgInfo );
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.show();
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Service unavailable",
+                    "Sorry, the service is unavailable.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
 
             OSLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
         }
@@ -180,7 +179,7 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void StarterActionService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void StarterActionService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
@@ -209,7 +208,7 @@ void StarterActionService::configuring() throw( ::fwTools::Failed )
             continue;
         }
         SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid")) ;
-        std::string uuid = actionCfg->getExistingAttributeValue("uid") ;
+        IDSrvType uuid = actionCfg->getExistingAttributeValue("uid") ;
 
         m_uuidServices.push_back( std::make_pair(uuid, action) );
     }

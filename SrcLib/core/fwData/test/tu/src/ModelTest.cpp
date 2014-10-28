@@ -41,7 +41,7 @@ void ModelTest::methode1()
     ::fwData::TriangularMesh::sptr tri = ::fwData::TriangularMesh::New();
     ::fwData::Material::sptr mat = ::fwData::Material::New();
 
-    ::fwData::Model::NewSptr model;
+    ::fwData::Model::sptr model = ::fwData::Model::New();
 
     model->getRefMap()[tri] = mat;
 

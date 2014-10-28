@@ -22,9 +22,8 @@ namespace action
 {
 
 /**
- * @class   ModifyLayoutActionSrv.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @brief This action is used to modify the layout configuration.
+ * @class   ModifyLayoutActionSrv
  */
 class GUI_CLASS_API ModifyLayoutActionSrv : public ::fwGui::IActionSrv
 {
@@ -69,10 +68,26 @@ protected:
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
-     * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
+     * @brief This method is used to configure the service parameters: specifies which views to show/hide/mode.
+     *
+     * @verbatim
+     <config>
+         <move uid="srv_uid" wid="new_view_wid" />
+         <show wid="view_to_show" />
+         <hide wid="view_to_hide />
+         <show_or_hide wid="view_to_show_or_hide />
+         <enable uid="action_to_enabled" />
+         <disable uid="action_to_disabled" />
+     </config>
+       @endverbatim
+     * - \b move configures the services to move in the new view given by wid
+     * - \b show configures the view to show
+     * - \b hide configures the view to hide
+     * - \b show or hide configures the view to show or hide. If the action is activated, the view is shown else it is
+     * hidden. The action in the menu/toolbar must be checkable (style="check").
      */
     GUI_API void configuring() throw( ::fwTools::Failed );
 
@@ -82,19 +97,19 @@ protected:
 
 private:
 
-    // < fwID, WIDContainer>
+    /// < fwID, WIDContainer>
     typedef std::vector< std::pair< std::string, std::string > > MoveSrvVectType;
-    // map representing fwID's services and new associated wid parent container
+    /// map representing fwID's services and new associated wid parent container
     MoveSrvVectType m_moveSrv;
 
-    // < wid, showState>
+    /// < wid, showState>
     typedef std::vector< std::pair< std::string, ::boost::logic::tribool > > ShowSrvVectType;
-    // map representing wid container and show state
+    /// map representing wid container and show state
     ShowSrvVectType m_showSrv;
 
-    // < fwID, enableState>
+    /// < fwID, enableState>
     typedef std::vector< std::pair< std::string, bool > > EnableSrvVectType;
-    // map representing fwID's services and enable state
+    /// map representing fwID's services and enable state
     EnableSrvVectType m_enableSrv;
 };
 

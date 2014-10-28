@@ -8,13 +8,13 @@
 #define UIGENERICQT_NAMESPACE_HPP_
 
 /**
- * @brief       The namespace uiGenericQt contains actions to show help, acknowledgments and about frame.
- * @namespace   uiGenericQt
- * @author      IRCAD (Research and Development Team).
+ * @brief       The namespace uiGeneric contains actions to show help, acknowledgments and about frame.
+ * @namespace   uiGeneric
+ * 
  * @date        2009-2010.
  *
  */
-namespace uiGenericQt
+namespace uiGeneric
 {
 
 }

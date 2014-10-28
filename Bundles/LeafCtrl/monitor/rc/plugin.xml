@@ -1,0 +1,29 @@
+<plugin id="monitor" class="::monitor::Plugin">
+    <library name="monitor" />
+    <requirement id="gui" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::monitor::action::MemoryInfo</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::monitor::action::fwMetrics</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::monitor::action::MemoryConsumption</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::monitor::action::SDumpAll</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+</plugin>

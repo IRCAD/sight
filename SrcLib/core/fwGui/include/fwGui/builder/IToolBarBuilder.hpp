@@ -22,8 +22,8 @@ namespace builder
 
 /**
  * @brief   Defines the interface class  for the toolbar builder.
- * @class   IToolBarBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   IToolBarBuilder
+ * 
  * @date    2009-2010.
  *
  */
@@ -66,7 +66,7 @@ public:
         </toolBar>
        @endverbatim
         - \b align : toolbar alignment (top, bottom, left, right)
-     *  - <toolBitmapSize height= "50" width="50"/> : give the size of the icon.
+     *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */
 
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);

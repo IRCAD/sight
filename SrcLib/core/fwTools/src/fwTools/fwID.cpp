@@ -6,6 +6,9 @@
 
 #include <assert.h>
 #include <boost/lexical_cast.hpp>
+#ifdef COM_LOG
+# include <boost/regex.hpp>
+#endif
 
 #include <fwCore/Demangler.hpp>
 
@@ -95,6 +98,25 @@ fwID::IDType fwID::getID( Policy policy) const
     }
     return m_id;
 }
+
+//-----------------------------------------------------------------------------
+
+#ifdef COM_LOG
+fwID::IDType fwID::getLightID( Policy  policy ) const
+{
+    IDType id = this->getID( policy );
+    IDType lightID = id;
+
+    ::boost::regex namespaceRegex ("[:A-Za-z0-9]*::(.*)");
+    const std::string machine_format("\\1");
+    if ( ::boost::regex_match( id, namespaceRegex ) )
+    {
+        lightID = ::boost::regex_replace( id, namespaceRegex, machine_format, boost::match_default | boost::format_sed );
+    }
+
+    return lightID;
+}
+#endif
 
 //-----------------------------------------------------------------------------
 

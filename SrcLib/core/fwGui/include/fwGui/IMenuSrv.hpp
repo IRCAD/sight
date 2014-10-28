@@ -19,8 +19,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing the menu.
- * @class   IMenuSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMenuSrv
+ * 
  * @date    2009-2010.
  *
  */
@@ -56,7 +56,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-        <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="My item 1" shortcut="1" style="check" />
@@ -78,10 +78,10 @@ protected :
             </registry>
         </service>
        @endverbatim
-     * - <gui> </gui> : (mandatory) describe the interface of the service. It must contain a layout section.
-     * - <registry> </registry> : (mandatory) describe the service management.
-     *   - <menuItem> represents IActionSrv
-     *   - <menu> represents IMenuSrv
+     * - \<gui\> \</gui\> : (mandatory) describe the interface of the service. It must contain a layout section.
+     * - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *   - \<menuItem\> represents IActionSrv
+     *   - \<menu\> represents IMenuSrv
      *
      * @warning
      * - The number of item in the gui section must be <b> EQUAL </b> to the registry section.

@@ -25,7 +25,7 @@ namespace fwData
  * @brief   This class focuses on video
  * @note    This version is done for test purposes (augmented reality and visualization) and will have to be accurately design
  * @note    Information to be stored here does not necessarily concern video buffer.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @todo    implement appropriate API
  */
@@ -74,6 +74,9 @@ public:
      * @brief Increments the count of modification
      */
     FWDATA_API void Modified();
+
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     //! The buffer size along X axis
     ::boost::uint32_t  m_ui32XSize;

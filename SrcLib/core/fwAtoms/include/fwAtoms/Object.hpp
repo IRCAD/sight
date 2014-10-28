@@ -1,18 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef  __FWATOMS_BASE_OBJECT_HPP__
-#define  __FWATOMS_BASE_OBJECT_HPP__
-
-#include <fwCamp/macros.hpp>
+#ifndef  __FWATOMS_OBJECT_HPP__
+#define  __FWATOMS_OBJECT_HPP__
 
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
-
-fwCampAutoDeclareMacro((fwAtoms)(Object), FWATOMS_API);
+#include "fwAtoms/factory/new.hpp"
 
 namespace fwAtoms
 {
@@ -24,40 +21,54 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Object : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Object), (()), new Object) ;
-    typedef std::map<std::string, Base::sptr> Attributes;
-    typedef std::map<std::string, std::string> MetaInfos;
+    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Object >) ;
+
+    typedef std::map<std::string, Base::sptr> AttributesType;
+    typedef std::map<std::string, std::string> MetaInfosType;
 
     //--------------------------------------------------------------------------
 
-    //! Set the internal attributs map
-    FWATOMS_API void setAttributs(Attributes& attrs);
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    Object(::fwAtoms::Base::Key key)
+    {}
+
+    /**
+     * @brief   Destructor
+     */
+    virtual ~Object()
+    {}
+
+    //! Sets the attributes map
+    FWATOMS_API void setAttributes(const AttributesType& attrs);
+
+    //! Returns the internal map
+    const AttributesType& getAttributes() const {return m_attributes;}
+
+
+    //! Returns requested attribute if exists, empty sptr else.
+    FWATOMS_API Base::sptr getAttribute(const std::string& key) const;
+
+    //! Returns requested attribute casted in OBJECT_TYPE::sptr if exists, empty sptr else.
+    template < typename OBJECT_TYPE >
+    SPTR(OBJECT_TYPE) getAttribute(const std::string& key) const;
 
     //! add a atrtribut, old value is erased
-    FWATOMS_API void addAttribut(const std::string& key, Base::sptr);
+    FWATOMS_API void setAttribute(const std::string& key, const Base::sptr&);
 
-    //! Retrieve the internal map
-    FWATOMS_API  Attributes& getAttributes() {return m_attrs;};
+    /**
+     * @brief Removes an attributes
+     *
+     * @param key Key of the element to be removed
+     *
+     * @return returns the number of elements erased
+     */
+    FWATOMS_API AttributesType::size_type eraseAttribute(const std::string& key);
 
-    //! Retrieve one Attribut
-    FWATOMS_API  Base::sptr& getAttribut(const std::string& key) {return m_attrs[key];};
-
-    //! Remove an attributs
-    FWATOMS_API void removeAttribut(const std::string& key);
-
-    //--------------------------------------------------------------------------
-
-    //! Retrieve object type ; ex : "::fwData::Object"
-    FWATOMS_API std::string getType();
-
-    //! Set internal object type
-    FWATOMS_API void setType(const std::string& type);
-
-    //! Retrieve object id
-    FWATOMS_API std::string getId(){return m_id;};
-
-    //! Set current id
-    FWATOMS_API void setId(std::string id){m_id = id;};
+    //! clear attributes
+    FWATOMS_API void clearAttribute();
 
     //--------------------------------------------------------------------------
 
@@ -65,32 +76,48 @@ public:
      * @brief Add a metainfo in the object
      * MetaInfo coud be anything limited to string type
      */
-    FWATOMS_API void addMetaInfo(const std::string& key, const std::string& value);
+    FWATOMS_API void setMetaInfo(const std::string& key, const std::string& value);
 
     //!Replace metaInfos.
-    FWATOMS_API void setMetaInfos(const MetaInfos& metaInfos);
+    FWATOMS_API void setMetaInfos(const MetaInfosType& metaInfos);
 
-    //! Retrieve one meta information
-    FWATOMS_API std::string getMetaInfo(const std::string& key);
+    //! Returns one meta information
+    FWATOMS_API std::string getMetaInfo(const std::string& key) const;
 
     //! Get internal metaInfo mapping
-    FWATOMS_API MetaInfos& getMetaInfos()  ;
+    const MetaInfosType& getMetaInfos() const { return m_metaInfos; }
 
+    /**
+     * @brief Removes a MetaInfo
+     *
+     * @param key Key of the element to be removed
+     *
+     * @return returns the number of elements erased
+     */
+    FWATOMS_API MetaInfosType::size_type eraseMetaInfo(const std::string& key);
 
-    //--------------------------------------------------------------------------
+    //! clear MetaInfos
+    FWATOMS_API void clearMetaInfo();
 
-    FWATOMS_API virtual bool isObject() const {return true;};
-    FWATOMS_API virtual std::string getString() const {return "Object : ";};
-    FWATOMS_API virtual Base::sptr clone();
+    /**
+     * @brief Returns a clone object
+     */
+    FWATOMS_API virtual Base::sptr clone() const;
+
+    /**
+     * @brief returns Atom type
+     */
+    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::OBJECT;};
+
 
 private:
-    FWATOMS_API Object();
 
-    MetaInfos m_metaInfos;
-    Attributes m_attrs;
-    std::string m_id;
+    MetaInfosType  m_metaInfos;
+    AttributesType m_attributes;
+
 };
 
 }
 
-#endif /*  _FWATOMS_BASE_OBJECT_HPP_ */
+#endif /*  _FWATOMS_OBJECT_HPP_ */
+

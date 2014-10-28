@@ -42,7 +42,7 @@ void IntegerTest::methode1()
     {
         ::fwData::Integer::sptr i0 = ::fwData::Integer::New();
         i0->value() = VALUE;
-        ::fwData::Integer::NewSptr i1( VALUE );
+        ::fwData::Integer::sptr i1 = ::fwData::Integer::New( VALUE );
 
         CPPUNIT_ASSERT_EQUAL( VALUE , i0->value() );
         CPPUNIT_ASSERT_EQUAL( VALUE , i1->value() );

@@ -39,7 +39,7 @@ class wxColourPanel;
 
 /**
  * @brief   This class provides a widgets which allows the user to pick a colour from a palette.
- * @class   WindowingParameterEditor.
+ * @class   WindowingParameterEditor
  * @note    This class is not commented, because it is not used in the open framework tutorial.
  * @todo This class has to be removed, because it is available in the new wxWidgets release.
  *

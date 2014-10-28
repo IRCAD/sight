@@ -32,73 +32,6 @@ void AppConfigTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void AppConfigTest::standardConfigTest()
-{
-    ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
-
-    const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
-    const ::fwServices::registry::AppInfo::ConfigType configType(::fwServices::registry::AppInfo::STANDARD);
-    const std::string group("standardGroup");
-    const std::string desc("Descritpion");
-    const ::fwServices::registry::AppInfo::ParamatersType parameters;
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildConfig();
-
-    currentAppConfig->addAppInfo(configId, configType, group, desc, parameters, config);
-
-    std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
-    CPPUNIT_ASSERT( !allCconfigs.empty());
-
-    std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
-    CPPUNIT_ASSERT( ! configs.empty());
-
-    ::fwRuntime::ConfigurationElement::csptr configElt = currentAppConfig->getStandardConfig(configId);
-
-    std::string uidField = configElt->getAttributeValue("uid");
-    CPPUNIT_ASSERT_EQUAL( std::string("TEST_IMAGE"), uidField );
-}
-
-//------------------------------------------------------------------------------
-
-void AppConfigTest::templateConfigTest()
-{
-    ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
-
-    const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
-    const ::fwServices::registry::AppInfo::ConfigType configType(::fwServices::registry::AppInfo::TEMPLATE);
-    const std::string group("templateGroup");
-    const std::string desc("Descritpion");
-    const ::fwServices::registry::AppInfo::ParamatersType parameters;
-    ::fwRuntime::ConfigurationElement::csptr config = this->buildConfig();
-
-    currentAppConfig->addAppInfo(configId, configType, group, desc, parameters, config);
-
-    std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
-    CPPUNIT_ASSERT( !allCconfigs.empty());
-
-    std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
-    CPPUNIT_ASSERT( !configs.empty());
-
-    ::fwServices::registry::AppConfig::FieldAdaptorType replaceFields;
-    replaceFields["TEST_IMAGE"] = "objectUUID";
-
-    ::fwRuntime::ConfigurationElement::csptr configEltAdapted;
-    configEltAdapted = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields);
-
-    std::string uid = configEltAdapted->getAttributeValue("uid");
-    CPPUNIT_ASSERT_EQUAL( std::string("objectUUID"), uid);
-
-    ::fwData::Composite::NewSptr compositeFields;
-    (compositeFields->getContainer())["TEST_IMAGE"] = ::fwData::String::New("newObjectUUID");
-
-    ::fwRuntime::ConfigurationElement::csptr newConfigElt = currentAppConfig->getAdaptedTemplateConfig(configId,
-                                                                                                       compositeFields);
-
-    std::string uid2 = newConfigElt->getAttributeValue("uid");
-    CPPUNIT_ASSERT_EQUAL( std::string("newObjectUUID"), uid2);
-}
-
-//------------------------------------------------------------------------------
-
 void AppConfigTest::parametersConfigTest()
 {
     ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
@@ -153,20 +86,7 @@ void AppConfigTest::concurentAccessToAppConfigTest()
 {
     const unsigned int nbThreads = 20;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i=0 ; i<nbThreads ; ++i)
-    {
-        SPTR(::fwTest::helper::Thread) thread;
-        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
-                new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::standardConfigTest, this)));
-        threads.push_back(thread);
-    }
-    for (int i=0 ; i<nbThreads ; ++i)
-    {
-        SPTR(::fwTest::helper::Thread) thread;
-        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
-                new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::templateConfigTest, this)));
-        threads.push_back(thread);
-    }
+
     for (int i=0 ; i<nbThreads ; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
@@ -175,7 +95,7 @@ void AppConfigTest::concurentAccessToAppConfigTest()
         threads.push_back(thread);
     }
 
-    for (int i=0 ; i<nbThreads*3 ; ++i)
+    for (int i=0 ; i<nbThreads ; ++i)
     {
         std::stringstream str;
         str << "thread " << i;
@@ -186,42 +106,6 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     std::vector< std::string > allCconfigs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
     CPPUNIT_ASSERT(allCconfigs.empty());
 
-}
-
-//------------------------------------------------------------------------------
-
-::fwRuntime::ConfigurationElement::sptr AppConfigTest::buildConfig()
-{
-    // Configuration on fwTools::Object which uid is objectUUID
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object")) ;
-    cfg->setAttributeValue( "uid" , "TEST_IMAGE") ;
-    cfg->setAttributeValue( "type" , "::fwData::Image") ;
-
-    // Object's service A
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
-    serviceA->setAttributeValue( "uid" , "myTestService1" ) ;
-    serviceA->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    serviceA->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    serviceA->setAttributeValue( "autoComChannel" , "no" ) ;
-
-    // Object's service B
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
-    serviceB->setAttributeValue( "uid" , "myTestService2" ) ;
-    serviceB->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    serviceB->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    serviceB->setAttributeValue( "autoComChannel" , "no" ) ;
-
-    // Start method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
-    startA->setAttributeValue( "uid" , "myTestService1" ) ;
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
-    startB->setAttributeValue( "uid" , "myTestService2" ) ;
-
-    // Update method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
-    updateA->setAttributeValue( "uid" , "myTestService1" ) ;
-
-    return cfg ;
 }
 
 //------------------------------------------------------------------------------
@@ -237,15 +121,15 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid" , "${GENERIC_UID}_myTestService1" ) ;
     serviceA->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    serviceA->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    serviceA->setAttributeValue( "autoComChannel" , "no" ) ;
+    serviceA->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
+    serviceA->setAttributeValue( "autoConnect" , "no" ) ;
 
     // Object's service B
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid" , "${UID_SERVICE2}" ) ;
     serviceB->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    serviceB->setAttributeValue( "implementation" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    serviceB->setAttributeValue( "autoComChannel" , "no" ) ;
+    serviceB->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
+    serviceB->setAttributeValue( "autoConnect" , "no" ) ;
 
     // Start method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");

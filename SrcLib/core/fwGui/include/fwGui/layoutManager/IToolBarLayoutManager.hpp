@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IToolBarLayoutManager.hpp
+ * @file fwGui/layoutManager/IToolBarLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a toolbar.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -32,9 +32,7 @@ namespace layoutManager
 
 /**
  * @brief   Defines the toolBar layout manager for IHM.
- * @class   IToolBarLayoutManager.
- * @author  IRCAD (Research and Development Team).
- * @date    2009-2010.
+ * @class   IToolBarLayoutManager
  *
  */
 class FWGUI_CLASS_API IToolBarLayoutManager : public ::fwGui::GuiBaseObject
@@ -103,7 +101,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-       <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
            <gui>
                <layout>
                    <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
@@ -129,16 +127,16 @@ public:
        @endverbatim
      * This method analyzes the gui section of the configuration.
      *
-     *  - <layout> (mandatory) : give the list of the menu item that will appear in the toolbar.
-     *  - <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/> :
+     *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
+     *  - \<menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file
-     *  - <menu name="My menu" /> :
+     *  - \<menu name="My menu" /\> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      *   - \b icon : give the path of the icon file
-     *  - <editor> : to add an editor in the toolbar
-     *  - <separator/> : allow to divide the toolbar by part (draw a line).
+     *  - \<editor\> : to add an editor in the toolbar
+     *  - \<separator/\> : allow to divide the toolbar by part (draw a line).
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 

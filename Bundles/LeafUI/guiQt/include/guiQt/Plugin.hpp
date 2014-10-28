@@ -7,18 +7,20 @@
 #ifndef _GUIQT_PLUGIN_HPP_
 #define _GUIQT_PLUGIN_HPP_
 
-#include <QPointer>
-
 #include <fwRuntime/Plugin.hpp>
 
 #include "guiQt/config.hpp"
 
-class QApplication;
+namespace fwThread
+{
+    class Worker;
+} //namespace fwThread
+
 
 namespace guiQt
 {
 /**
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009-2010.
  */
 class GUIQT_CLASS_API Plugin : public ::fwRuntime::Plugin
@@ -46,8 +48,7 @@ protected:
 
 private:
 
-    QPointer< QApplication > m_app;
-    int m_argc;
+    SPTR(::fwThread::Worker) m_workerQt;
 
 };
 

@@ -17,8 +17,8 @@ namespace ioData
 {
 /**
  * @brief   Transformation matrix 3D reader service.
- * @class   TransformationMatrix3DReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransformationMatrix3DReaderService
+ * 
  * @date    2009.
  *
  * Service reading a TransformationMatrix3D object.
@@ -96,7 +96,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
 
     /**

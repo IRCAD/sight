@@ -19,8 +19,8 @@
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/TransferFunction.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/TransferFunction.hpp>
 
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
@@ -52,9 +52,9 @@ VectorField::VectorField() throw()
 
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
 }
 
 //------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ void VectorField::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void VectorField::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void VectorField::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -145,7 +145,7 @@ void VectorField::buildPipeline( )
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::vtkIO::toVTKImage(image, m_imageData);
+    ::fwVtkIO::toVTKImage(image, m_imageData);
 
     // m_imageData->GetPointData()->SetActiveVectors("ImageScalars");
 

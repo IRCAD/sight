@@ -45,8 +45,8 @@ protected:
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
     </adaptor>
     @endverbatim
-    * - <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" 
-    *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/> : Set the config.
+    * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
+    *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
     *
     * \b xMin : mandatory : Set the minimum x value of the grid.
     *
@@ -83,7 +83,7 @@ protected:
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
     /// Do nothing.
-    SCENE2D_API void doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Do nothing.
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );

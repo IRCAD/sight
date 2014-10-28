@@ -12,9 +12,6 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 
-#include <fwData/Study.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/Acquisition.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
@@ -62,7 +59,7 @@ void ImageTest::testGetterSetter()
     const double WINDOWWIDTH = 11.34 ;
 
     // process
-    ::fwData::Image::NewSptr img1;
+    ::fwData::Image::sptr img1 = ::fwData::Image::New();
 
     img1->setType( TYPE);
     img1->setSpacing(VECTORSPACING);
@@ -101,7 +98,7 @@ void ImageTest::testAllocation()
     size_t SIZE = 14*15*26*TYPE.sizeOf();
 
     // process
-    ::fwData::Image::NewSptr img1;
+    ::fwData::Image::sptr img1 = ::fwData::Image::New();
 
     img1->setType(TYPE);
     img1->setSize(VECTORSIZE);
@@ -114,7 +111,7 @@ void ImageTest::testAllocation()
     CPPUNIT_ASSERT_EQUAL(SIZE, array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(SIZE, img1->getSizeInBytes());
 
-    ::fwData::Image::NewSptr img2;
+    ::fwData::Image::sptr img2 = ::fwData::Image::New();
     img2->allocate(VECTORSIZE[0], VECTORSIZE[1], VECTORSIZE[2], TYPE);
 
     array = img2->getDataArray();
@@ -124,7 +121,7 @@ void ImageTest::testAllocation()
     CPPUNIT_ASSERT(img2->getSizeInBytes() == SIZE);
 
 
-    ::fwData::Image::NewSptr img3;
+    ::fwData::Image::sptr img3 = ::fwData::Image::New();
     img3->allocate(VECTORSIZE, TYPE);
 
     array = img3->getDataArray();
@@ -150,7 +147,7 @@ void ImageTest::testReallocation()
     size_t SIZE3 = 5*5*5*TYPE3.sizeOf();
 
     // process
-    ::fwData::Image::NewSptr img1;
+    ::fwData::Image::sptr img1 = ::fwData::Image::New();
 
     img1->allocate(VECTORSIZE1, TYPE1);
     ::fwData::Array::sptr array = img1->getDataArray();
@@ -176,7 +173,7 @@ void ImageTest::testReallocation()
 
 void ImageTest::testPixelType()
 {
-    ::fwData::Image::NewSptr img1;
+    ::fwData::Image::sptr img1 = ::fwData::Image::New();
     ::fwTools::DynamicType DT1;
 
     img1->setType(::fwTools::Type::create("int8"));
@@ -216,7 +213,7 @@ void ImageTest::testPixelType()
 
 void ImageTest::testSetGetPixel()
 {
-    ::fwData::Image::NewSptr img;
+    ::fwData::Image::sptr img = ::fwData::Image::New();
     ::fwComEd::helper::Image imgHelper(img);
 
     const ::boost::uint8_t DIMENSION = 3 ;

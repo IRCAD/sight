@@ -13,8 +13,8 @@ namespace fwCamp
 
 /**
  * @brief       Contains fwCamp::registry details
- * @namespace   registry
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwCamp::registry
+ * 
  * @date        2009-2012
  */
 namespace registry

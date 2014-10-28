@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,6 +23,8 @@ namespace registry
 {
 AppConfig::sptr AppConfig::s_currentAppConfig = AppConfig::New();
 ::fwCore::mt::Mutex AppConfig::s_idMutex;
+
+std::string AppConfig::s_mandatoryParameterIdentifier = "@mandatory@";
 
 //-----------------------------------------------------------------------------
 
@@ -63,22 +65,10 @@ void AppConfig::parseBundleInformation()
         }
 
         // get type
-        std::string typeStr = ext->findConfigurationElement("type")->getValue();
-        OSLM_ASSERT("Sorry, xml element \"type\" must be equal to \"standard\", \"template\" or \"parameters\" (here = "
-                    << typeStr << ") ", typeStr=="standard" || typeStr=="template" || typeStr=="parameters" );
-        AppInfo::ConfigType type;
-        if ( typeStr == "standard" )
-        {
-            type = AppInfo::STANDARD;
-        }
-        else if ( typeStr == "template" )
-        {
-            type=  AppInfo::TEMPLATE;
-        }
-        else
-        {
-            type = AppInfo::PARAMETERS;
-        }
+        OSLM_ASSERT("Sorry, xml element \"type\" must be equal to \"parameters\" (here = "
+                    << ext->findConfigurationElement("type")->getValue() << ") ",
+                    ext->findConfigurationElement("type")->getValue()=="parameters" );
+        AppInfo::ConfigType type = AppInfo::PARAMETERS;
 
         // Get parameters
         AppInfo::ParamatersType parameters;
@@ -89,8 +79,16 @@ void AppConfig::parseBundleInformation()
             BOOST_FOREACH( ::fwRuntime::ConfigurationElement::sptr paramConfig, elements )
             {
                 std::string name = paramConfig->getExistingAttributeValue("name");
-                std::string defaultValue = paramConfig->getAttributeValue("default");
-                parameters[name] = defaultValue;
+
+                if(paramConfig->hasAttribute("default"))
+                {
+                    parameters[name] = paramConfig->getAttributeValue("default");
+                }
+                else
+                {
+                    parameters[name] = s_mandatoryParameterIdentifier;
+                }
+
             }
         }
 
@@ -121,7 +119,7 @@ void AppConfig::addAppInfo
 
     SLM_ASSERT("Sorry, app config id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
-    AppInfo::NewSptr info;
+    AppInfo::sptr info = AppInfo::New();
     info->type = type;
     info->group = group;
     info->desc = desc;
@@ -146,17 +144,9 @@ void AppConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr AppConfig::getStandardConfig( const std::string & configId ) const
-{
-    ::fwCore::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
-    return iter->second->config;
-}
-
-//-----------------------------------------------------------------------------
-
-::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId, const FieldAdaptorType & fieldAdaptors ) const
+::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
+        const std::string & configId,
+        const FieldAdaptorType fieldAdaptors ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     // Get config template
@@ -165,35 +155,29 @@ void AppConfig::clearRegistry()
 
     // Adapt config
     ::fwRuntime::ConfigurationElement::sptr newConfig;
-    if ( iter->second->type != AppInfo::PARAMETERS )
-    {
-        newConfig = this->adaptConfig(  iter->second->config, fieldAdaptors );
-    }
-    else
-    {
-        FieldAdaptorType fields;
-        AppInfo::ParamatersType parameters = iter->second->parameters;
-        BOOST_FOREACH( AppInfo::ParamatersType::value_type param, parameters )
-        {
-            FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
-            std::stringstream key;
-            key << "\\$\\{" << param.first << "\\}";
-            if ( iter != fieldAdaptors.end() )
-            {
-                fields[key.str()] = iter->second;
-            }
-            else if ( param.second != "" )
-            {
-                fields[key.str()] = param.second;
-            }
-            else
-            {
-                FW_RAISE("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<"'.");
-            }
-        }
-        newConfig = this->adaptConfig(  iter->second->config, fields );
-    }
+    SLM_ASSERT("Config has not good type, PARAMETERS type is required", iter->second->type == AppInfo::PARAMETERS );
 
+    FieldAdaptorType fields;
+    AppInfo::ParamatersType parameters = iter->second->parameters;
+    BOOST_FOREACH( AppInfo::ParamatersType::value_type param, parameters )
+    {
+        FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
+        std::stringstream key;
+        key << "\\$\\{" << param.first << "\\}";
+        if ( iter != fieldAdaptors.end() )
+        {
+            fields[key.str()] = iter->second;
+        }
+        else if ( param.second !=  s_mandatoryParameterIdentifier)
+        {
+            fields[key.str()] = param.second;
+        }
+        else
+        {
+            FW_RAISE("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<"'.");
+        }
+    }
+    newConfig = this->adaptConfig(  iter->second->config, fields );
 
     return newConfig;
 }
@@ -251,30 +235,22 @@ AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Compos
 
 //-----------------------------------------------------------------------------
 
-std::string AppConfig::getUniqueIdentifier( std::string _serviceUid, bool _useCpt )
+std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 {
     ::fwCore::mt::ScopedLock lock(s_idMutex);
-    std::string id;
     static unsigned int srvCpt = 1;
     std::stringstream sstr;
 
-    if ( _serviceUid.empty() )
+    if ( serviceUid.empty() )
     {
         sstr <<  "AppConfigManager_" << srvCpt;
-        srvCpt++;
     }
     else
     {
-        sstr <<  _serviceUid;
-        if ( _useCpt )
-        {
-            sstr << "_" << srvCpt;
-            srvCpt++;
-        }
+        sstr <<  serviceUid << "_" << srvCpt;
     }
-    id = sstr.str();
-
-    return id;
+    ++srvCpt;
+    return sstr.str();
 }
 
 //-----------------------------------------------------------------------------
@@ -283,7 +259,7 @@ std::string AppConfig::getUniqueIdentifier( std::string _serviceUid, bool _useCp
 {
     SLM_TRACE_FUNC();
 
-    ::fwRuntime::EConfigurationElement::NewSptr result ( _cfgElem->getName() );
+    ::fwRuntime::EConfigurationElement::sptr result = ::fwRuntime::EConfigurationElement::New( _cfgElem->getName() );
     result->setValue( this->adaptField( _cfgElem->getValue(), fieldAdaptors ) );
 
     typedef std::map<std::string, std::string> MapAttributesType;

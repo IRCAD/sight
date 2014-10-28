@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,10 +8,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwComEd/ImageMsg.hpp>
-
-#include <fwTools/DynamicType.hpp>
 
 #include <io/IWriter.hpp>
 
@@ -20,13 +16,12 @@
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwGui/dialog/ProgressDialog.hpp>
-#include <itkIO/JpgImageWriter.hpp>
+#include <fwItkIO/JpgImageWriter.hpp>
 
 #include "ioITK/JpgImageWriterService.hpp"
 
@@ -103,21 +98,21 @@ void JpgImageWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::saveImage( const ::boost::filesystem::path imgPath, ::fwData::Image::sptr _pImage )
+void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, const SPTR(::fwData::Image)& img)
 {
     SLM_TRACE_FUNC();
-    ::itkIO::JpgImageWriter::NewSptr myWriter;
-    ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving Image ");
+    ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
+    ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
-    ::fwData::location::Folder::NewSptr loc;
+    ::fwData::location::Folder::sptr loc = ::fwData::location::Folder::New();
     loc->setFolder(imgPath);
-    myWriter->setLocation(loc);
-    myWriter->setObject(_pImage);
+    writer->setLocation(loc);
+    writer->setObject(img);
 
     try
     {
-        myWriter->addHandler( progressMeterGUI );
-        myWriter->write();
+        writer->addHandler( progressMeterGUI );
+        writer->write();
 
     }
     catch (const std::exception & e)

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,9 +37,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageTransparency ,
 
 ImageTransparency::ImageTransparency() throw()
 {
-    addNewHandledEvent(::fwComEd::ImageMsg::TRANSPARENCY);
-    addNewHandledEvent(::fwComEd::ImageMsg::VISIBILITY);
-    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
+//    addNewHandledEvent(::fwComEd::ImageMsg::TRANSPARENCY);
+//    addNewHandledEvent(::fwComEd::ImageMsg::VISIBILITY);
+//    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
-    QLabel* staticText = new QLabel( tr("Transparency: "), container);
+    QLabel* staticText = new QLabel( QObject::tr("Transparency: "), container);
     hLayout->addWidget( staticText, 0, Qt::AlignVCenter );
 
     m_valueSlider = new QSlider( Qt::Horizontal, container );
@@ -69,7 +69,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     m_valueSlider->setRange(0, 100);
     m_valueSlider->setMinimumWidth(100);
 
-    m_valueCheckBox = new QCheckBox( tr("visible"), container);
+    m_valueCheckBox = new QCheckBox( QObject::tr("visible"), container);
     m_action = new QAction(container);
     m_action->setCheckable(true);
     if (!m_shortcut.empty())
@@ -170,7 +170,7 @@ void ImageTransparency::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ImageTransparency::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
@@ -199,7 +199,7 @@ void ImageTransparency::onModifyTransparency(int value)
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "TRANSPARENCY" );
     ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
 }
@@ -229,7 +229,7 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "VISIBILITY" );
     ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
 }

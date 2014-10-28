@@ -19,7 +19,7 @@ namespace fwData
 /**
  * @brief   Implements data exception class
  * @class   Exception
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 struct FWDATA_CLASS_API Exception : public ::fwCore::Exception

@@ -29,7 +29,7 @@ namespace visuVTKAdaptor
 
 Model::Model() throw()
 {
-     addNewHandledEvent( ::fwComEd::ModelMsg::NEW_MODEL );
+     //addNewHandledEvent( ::fwComEd::ModelMsg::NEW_MODEL );
 }
 
 //------------------------------------------------------------------------------
@@ -88,6 +88,7 @@ void Model::doUpdate() throw(fwTools::Failed)
         trianAdaptor->setRenderId( this->getRenderId() );
         trianAdaptor->setPickerId( this->getPickerId() );
         trianAdaptor->setRenderService(this->getRenderService());
+        trianAdaptor->setAutoRender( this->getAutoRender() );
         trianAdaptor->start();
 
         this->registerService(trianAdaptor);
@@ -110,7 +111,7 @@ void Model::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Model::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw(fwTools::Failed)
+void Model::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw(fwTools::Failed)
 {
     ::fwComEd::ModelMsg::csptr msg = ::fwComEd::ModelMsg::dynamicConstCast(_msg);
 

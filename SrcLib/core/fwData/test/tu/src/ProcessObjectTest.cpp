@@ -28,7 +28,7 @@ void ProcessObjectTest::constructeur()
     ::fwData::Integer::sptr field2 = ::fwData::Integer::New(8);
 
     // process
-    ::fwData::ProcessObject::NewSptr po;
+    ::fwData::ProcessObject::sptr po = ::fwData::ProcessObject::New();
     po->setInputValue(IMAGEID1, image1);
     po->setInputValue(FIELDID1, field1);
     po->setInputValue(FIELDID2, field2);

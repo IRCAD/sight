@@ -1,0 +1,429 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>VolumeRendering</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
+        <param name="ICON_PATH" />
+        <param name="imageUid" />
+        <param name="patient_name"  default="" />
+        <param name="optionalModelSeriesCompositeUid" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="VR" align="center" />
+                        <view align="right" minWidth="450" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
+                    <view sid="${GENERIC_UID}_vr" start="no" />
+                    <view sid="${GENERIC_UID}_tf" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_tf" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" minHeight="30" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_tfm" start="no" />
+                    <view sid="${GENERIC_UID}_tfmTab" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_tfmTab" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::TabLayoutManager">
+                        <view caption="TF-Negato" />
+                        <view caption="TF-Scene2D" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view wid="${GENERIC_UID}_view_negato" />
+                    <view sid="${GENERIC_UID}_TFScene2D" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Hide cross" icon="Bundles/media_0-1/icons/HideCross.png" style="radio" />
+                        <menuItem name="Show normal cross" icon="Bundles/media_0-1/icons/NormalCross.png" style="radio" />
+                        <menuItem name="Show full cross" icon="Bundles/media_0-1/icons/FullCross.png" style="radio" />
+                        <separator />
+                        <menuItem name="Show 3d slice cursor" icon="Bundles/media_0-1/icons/icon-landmark.png" style="check" />
+                        <menuItem name="Show mesh" icon="Bundles/media_0-1/icons/icon-3D.png" style="check" />
+                        <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
+                        <separator />
+                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" />
+                        <menuItem name="Reset box cropping" icon="Bundles/media_0-1/icons/icon-box-reset.png" />
+                        <separator />
+                        <menuItem name="Snapshot VR" icon="Bundles/media_0-1/icons/camera-photo.png" />
+                        <separator />
+                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_ActionHideCross" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionShowNormalCross" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionShowFullCross" start="yes" />
+
+                    <menuItem sid="${GENERIC_UID}_ActionShowSliceCursor" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionShowMesh" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_organManager" start="no" />
+
+                    <menuItem sid="${GENERIC_UID}_ActionShowHideBoxWidget" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionResetBoxWidget" start="yes" />
+
+                    <menuItem sid="${GENERIC_UID}_ActionSnapshotVR" start="yes" />
+
+                    <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_TFScene2D" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" minHeight="100" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_Scene2D_Shutter" start="no" />
+                    <view sid="${GENERIC_UID}_Scene2D" start="no" />
+                    <view sid="${GENERIC_UID}_FloatEditor" start="no" />
+                </registry>
+            </service>
+
+            <item key="seriesDB">
+                <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
+                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
+                        <seriesId>${AS_UID}</seriesId>
+                    </service>
+                </object>
+            </item>
+
+            <item key="activitySeries">
+                <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
+            </item>
+
+            <!-- GENERIC SCENE DEFINITION -->
+            <item key="visuConfig">
+                <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
+
+                    <service uid="${GENERIC_UID}_ActionShowSliceCursor" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <push src="${GENERIC_UID}_VisuComposite[imageKey]" key="imageKeyCursor" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                        <push src="${optionalModelSeriesCompositeUid}[optionalModelSeriesKey]" key="modelSeries" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_managerModelSeries" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+                        <mode type="stop" />
+                        <config>
+
+                            <object id="modelSeries" type="::fwMedData::ModelSeries">
+                                <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
+                                    <config>
+                                        <appConfig id="OrganManagerWithSeries" >
+                                            <parameters>
+                                                <parameter replace="ORGAN_MANAGER_MODELSERIES" by="self"  />
+                                                <parameter replace="ICON_PATH" by="${ICON_PATH}"  />
+                                            </parameters>
+                                        </appConfig>
+                                    </config>
+                                </service>
+                            </object>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no">
+                        <snap>
+                            <scene uid="${GENERIC_UID}_vr" />
+                        </snap>
+                    </service>
+
+                    <!-- Generic Scene VR -->
+                    <service uid="${GENERIC_UID}_vr" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <scene>
+
+                            <picker id="negato1default" vtkclass="fwVtkCellPicker" />
+
+                            <renderer id="default" background="0.0" />
+
+                            <adaptor id="renderNegato1" class="::visuVTKAdaptor::Render" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+
+                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <config renderer="default" />
+                            </adaptor>
+
+                            <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                                <config renderer="default" style="InteractorStyle3DForNegato" />
+                            </adaptor>
+
+                            <adaptor id="Image3DCursor" class="::visuVTKAdaptor::Image3DCursor" objectId="imageKeyCursor">
+                                <config renderer="default" />
+                            </adaptor>
+
+                            <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                <config renderer="default" picker="negato1default" autoresetcamera="no" />
+                            </adaptor>
+
+                            <adaptor id="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
+                                <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
+                            </adaptor>
+
+                            <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageKey">
+                                <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+                            </adaptor>
+                        </scene>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+
+                        <scene>
+
+                            <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
+
+                            <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
+
+                            <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                            <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                            <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
+
+                            <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                                <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                            </adaptor>
+
+                            <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+                                <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                            </adaptor>
+
+                            <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
+                                <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+                            </adaptor>
+
+                            <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
+                                <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+                            </adaptor>
+
+                            <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="histogram">
+                                <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" histogramPointUID="${GENERIC_UID}_HistogramPoint" borderWidth="2.0" />
+                            </adaptor>
+
+                            <!-- A graphic cursor that follow histogram's shape according to mouse's cursor -->
+                            <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="histogram">
+                                <config xAxis="xAxis" yAxis="axeHistogramY" color="blue" borderColor="gray" zValue="9" pointSize="16" viewportUID="${GENERIC_UID}_Viewport" histogramPointUID="${GENERIC_UID}_HistogramPoint" />
+                            </adaptor>
+
+                            <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="histogram">
+                                <config xAxis="xAxis" yAxis="axeHistogramY" zValue="12" fontSize="6" viewportUID="${GENERIC_UID}_Viewport" histogramPointUID="${GENERIC_UID}_HistogramPoint" />
+                            </adaptor>
+
+                            <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="imageKey">
+                                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="${GENERIC_UID}_Viewport" selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
+                            </adaptor>
+
+                            <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
+                                <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+                            </adaptor>
+
+                            <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                                <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                            </adaptor>
+
+                            <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
+                                <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                            </adaptor>
+
+                            <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                                <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                            </adaptor>
+
+                            <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
+                                <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                            </adaptor>
+
+                        </scene>
+
+                    </service>
+
+                    <service uid="${GENERIC_UID}_Scene2D_Shutter" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+
+                        <scene>
+
+                            <scene x="-1100" y="-1.1" width="2400" height="1.2" />
+
+                            <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
+
+                            <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                            <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                            <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
+
+                            <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                                <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                            </adaptor>
+
+                            <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
+                                <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                            </adaptor>
+
+                            <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
+                                <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+                            </adaptor>
+
+                            <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="histogram">
+                                <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
+                            </adaptor>
+
+                            <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
+                                <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
+                            </adaptor>
+
+                        </scene>
+
+                    </service>
+
+
+                    <item key="TFSelectionsKey">
+                        <object uid="${GENERIC_UID}_TFSelections" type="::fwData::Composite" />
+                    </item>
+
+                    <item key="optionalModelSeriesCompositeKey">
+                        <object uid="${optionalModelSeriesCompositeUid}" src="ref" type="::fwData::Composite">
+                        </object>
+                    </item>
+
+                    <item key="imageKey">
+                        <object uid="${imageUid}" src="ref" type="::fwData::Image">
+
+                            <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+
+                            <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+
+                            <service uid="${GENERIC_UID}_cfgNegato" impl="::fwServices::SConfigController" autoConnect="no">
+                                <config>
+                                    <appConfig id="2DNegatoWithTF" >
+                                        <parameters>
+                                            <parameter replace="imageUid" by="self"  />
+                                            <parameter replace="TFSelectionsUid" by="${GENERIC_UID}_TFSelections"  />
+                                            <parameter replace="selectedTFKey" by="SelectedTF"  />
+                                            <parameter replace="patient_name" by="${patient_name}" />
+                                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato"  />
+                                        </parameters>
+                                    </appConfig>
+                                </config>
+                            </service>
+
+                            <service uid="${GENERIC_UID}_ActionHideCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                                <crossType>hide</crossType>
+                            </service>
+
+                            <service uid="${GENERIC_UID}_ActionShowNormalCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                                <crossType>half</crossType>
+                                <state active="true" />
+                            </service>
+
+                            <service uid="${GENERIC_UID}_ActionShowFullCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
+                                <crossType>full</crossType>
+                            </service>
+
+                            <service uid="${GENERIC_UID}_ActionShowHideBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::ActionNotifyService" autoConnect="no">
+                                <notify type="::fwServices::ObjectMsg" event="SHOWHIDE_BOX_WIDGET" />
+                            </service>
+
+                            <service uid="${GENERIC_UID}_ActionResetBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::ActionNotifyService" autoConnect="no">
+                                <notify type="::fwServices::ObjectMsg" event="RESET_BOX_WIDGET" />
+                            </service>
+
+                            <service uid="${GENERIC_UID}_FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                                <mode type="stop" />
+                                <config>
+                                    <field id="m_transferFunctionCompositeId" type="::fwData::Composite">
+                                        <service uid="${GENERIC_UID}_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes">
+                                            <config selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
+                                        </service>
+                                    </field>
+                                </config>
+                            </service>
+
+                            <service uid="${GENERIC_UID}_computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
+                                <histogramId>${GENERIC_UID}_Histogram</histogramId>
+                                <binsWidth>5.0</binsWidth>
+                            </service>
+
+                        </object>
+                    </item>
+
+
+
+                    <item key="viewport">
+                        <object uid="${GENERIC_UID}_Viewport" type="::scene2D::data::Viewport" />
+                    </item>
+
+                    <item key="histogram">
+                        <object uid="${GENERIC_UID}_Histogram" type="::fwData::Histogram" />
+                    </item>
+
+                    <item key="histogramPoint">
+                        <object uid="${GENERIC_UID}_HistogramPoint" type="::fwData::Point" />
+                    </item>
+
+                    <item key="LightSelection">
+                        <object uid="${GENERIC_UID}_LightSelection" type="::fwData::Composite">
+
+                            <service uid="${GENERIC_UID}_LightSwapper" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                                <mode type="stop" />
+                                <config>
+                                    <object id="selectedLight" type="::fwData::Composite">
+                                    </object>
+                                </config>
+                            </service>
+
+                        </object>
+                    </item>
+
+
+                </object>
+            </item>
+
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_LockImageSrv" />
+            <start uid="${GENERIC_UID}_mainView" />
+            <start uid="${GENERIC_UID}_Scene2D_Shutter" />
+            <start uid="${GENERIC_UID}_Scene2D" />
+            <start uid="${GENERIC_UID}_computeHistogram" />
+            <start uid="${GENERIC_UID}_MedicalImageSrv" />
+            <start uid="${GENERIC_UID}_LightSwapper" />
+            <start uid="${GENERIC_UID}_vr" />
+            <start uid="${GENERIC_UID}_FieldManager" />
+            <start uid="${GENERIC_UID}_cfgNegato" />
+            <start uid="${GENERIC_UID}_managerModelSeries" />
+
+        </object>
+
+
+    </config>
+</extension>

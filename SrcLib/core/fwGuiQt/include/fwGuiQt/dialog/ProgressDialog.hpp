@@ -35,8 +35,8 @@ namespace dialog
 {
 /**
  * @brief   This class allows us to select an acquisition in a patient data base.
- * @class   ProgressDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   ProgressDialog
+ * 
  * @date    2009.
  * @note Do not inherit from fwProgressDialog but embed a fwProgressDialog because this lasted is not copiable.
  * @todo ProgressDialog is not commented.
@@ -52,8 +52,8 @@ public:
                                             ::fwGui::factory::New< ProgressDialog > );
 
     FWGUIQT_API ProgressDialog( ::fwGui::GuiBaseObject::Key key,
-                                const std::string title="Progression",
-                                std::string message= std::string(86,' ') );
+                                const std::string &title="Progression",
+                                const std::string &message= std::string(86,' ') );
 
     FWGUIQT_API virtual ~ProgressDialog();
 

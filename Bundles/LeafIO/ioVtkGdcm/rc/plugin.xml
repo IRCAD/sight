@@ -3,35 +3,24 @@
 
     <requirement id="io" />
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioVtkGdcm::SSeriesDBReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Series DB Reader (VTK/gdcm)</desc>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioVtkGdcm::DicomPatientDBReaderService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>Dicom Reader (VTK/gdcm)</desc>
+        <service>::ioVtkGdcm::SSeriesDBLazyReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Series DB Lazy Reader (VTK/gdcm)</desc>
     </extension>
-
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioVtkGdcm::DicomPatientDBWriterService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>Dicom Writer (VTK/gdcm)</desc>
-    </extension>
-
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioVtkGdcm::DicomPatientWriterService</service>
-        <object>::fwData::Patient</object>
-        <desc>Dicom Writer (VTK/gdcm)</desc>
-    </extension>
-
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
-        <service>::ioVtkGdcm::DicomImageWriterService</service>
-        <object>::fwData::Image</object>
+        <service>::ioVtkGdcm::SImageSeriesWriter</service>
+        <object>::fwMedData::ImageSeries</object>
         <desc>Dicom Writer (VTK/gdcm)</desc>
     </extension>
 

@@ -45,7 +45,7 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
 
     BOOST_FOREACH ( std::string name, m_menuNames)
     {
-        ::fwGuiWx::container::WxMenuContainer::NewSptr menu;
+        ::fwGuiWx::container::WxMenuContainer::sptr menu = ::fwGuiWx::container::WxMenuContainer::New();
         wxMenu *menuWx = new wxMenu();
         menu->setWxMenu(menuWx);
         menuBar->Append( menuWx , ::fwGuiWx::std2wx( name ));
@@ -57,8 +57,6 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
 
 void MenuBarLayoutManager::destroyLayout()
 {
-    wxMenuBar* menuBar = m_parent->getWxMenuBar();
-
     this->destroyMenus();
     m_parent->clean();
     m_menus.clear();

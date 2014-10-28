@@ -96,7 +96,7 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
         ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
         SLM_ASSERT("mesh not instanced", mesh);
 
-        ::fwDataIO::reader::MeshReader::NewSptr reader;
+        ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();
         reader->setObject( mesh );
         reader->setFile(this->getFile());
 
@@ -105,7 +105,7 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
             // Launch reading process
             reader->read();
             // Notify reading
-            ::fwComEd::MeshMsg::NewSptr msg;
+            ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
             msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
             ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
         }

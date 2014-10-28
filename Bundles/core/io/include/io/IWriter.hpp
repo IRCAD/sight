@@ -19,9 +19,7 @@ namespace io
 
 /**
  * @brief Writer service API. It manages extension points definition and extension configuration
- * @class   IWriter.
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
+ * @class   IWriter
  *
  * This class represents the base interface for writer services.
  * Use the base service methods :

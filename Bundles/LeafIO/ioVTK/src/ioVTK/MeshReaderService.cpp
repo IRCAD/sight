@@ -17,6 +17,7 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -25,7 +26,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/MeshReader.hpp>
+#include <fwVtkIO/MeshReader.hpp>
 
 #include "ioVTK/MeshReaderService.hpp"
 
@@ -98,7 +99,7 @@ void MeshReaderService::info(std::ostream &_sstream )
 void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::MeshReader::NewSptr myReader;
+    ::fwVtkIO::MeshReader::sptr myReader = ::fwVtkIO::MeshReader::New();
 
     myReader->setObject(_pMesh);
     myReader->setFile(vtkFile);
@@ -107,6 +108,7 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
     {
         ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
         myReader->addHandler( progressMeterGUI );
+        ::fwData::mt::ObjectWriteLock lock(_pMesh);
         myReader->read();
     }
     catch (const std::exception & e)
@@ -160,7 +162,7 @@ void MeshReaderService::notificationOfUpdate()
     ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
     SLM_ASSERT("pMesh not instanced", pMesh);
 
-    ::fwComEd::MeshMsg::NewSptr msg;;
+    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();;
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), pMesh, msg);
 }

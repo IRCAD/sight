@@ -18,10 +18,10 @@ namespace dialog
 {
 /**
  * @brief   SelectorDialog allows the choice of an element among several (_selections)
- * Use the Delegate design pattern. The specific implementation selection is ensured by ::fwClassFactoryRegistry
+ * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
  * The specific implementation are in fwWX and fwQT libraries
- * @class   SelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   SelectorDialog
+ * 
  * @date    2009-2010.
  *
  */
@@ -37,7 +37,7 @@ public:
      *
      * @param title Title of the selector
      * @param message Message of the selector
-     * @param std::vector< std::string > _selections list of choices in the selector
+     * @param _selections list of choices in the selector
      * @return Returns selected choice
      */
     FWGUI_API static std::string showSelectorDialog(const std::string& title, const std::string& message, std::vector< std::string > _selections);
@@ -50,7 +50,7 @@ public:
      *
      * @param title Title of the selector
      * @param message Message of the selector
-     * @param std::vector< std::string > _selections list of choices in the selector
+     * @param _selections list of choices in the selector
      */
     FWGUI_API SelectorDialog(const std::string& title, const std::string& message, std::vector< std::string > _selections);
 

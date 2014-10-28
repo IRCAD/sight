@@ -19,7 +19,7 @@ namespace fwTools
 /**
  * @class   System
  * @brief Provide a system to get a Temporary folder which allow multi-user, multi-instance separation
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @todo  change "fwDumpFolder" to "localTemp"
  */
@@ -36,10 +36,14 @@ public:
 
     /**
      * @brief   Returns a unique per-process temporary folder.
-     * The returned folder will be automatically destroyed if the process ends
-     * properly
+     * The top level temporary folder will be automatically destroyed if the process ends properly
+     *
+     * @param   subFolderPrefix if set, creates a sub folder in temporary folder prefixed with parameter value followed
+     * by a dash.
+     * @return  created folder
      */
-    FWTOOLS_API static const ::boost::filesystem::path &getTemporaryFolder() throw();
+    FWTOOLS_API static const ::boost::filesystem::path getTemporaryFolder(
+            const std::string& subFolderPrefix = "" ) throw();
 
     /**
      * @brief   Returns the pid of a temporary folder
@@ -61,7 +65,7 @@ public:
 
     /**
      * @brief   Test if process is Active
-     * @return  true iff the process is running
+     * @return  true if the process is running
      */
     FWTOOLS_API static bool isProcessRunning(int pid) throw();
 

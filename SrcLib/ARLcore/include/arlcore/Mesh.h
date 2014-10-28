@@ -28,7 +28,6 @@ namespace arlCore
     {
     /**
      * @class   Mesh
-     * @author  IRCAD (Research and Development Team)
      * @date    04/2009
      * @brief   List of triangular shapes
      */

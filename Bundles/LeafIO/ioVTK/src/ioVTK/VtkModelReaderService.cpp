@@ -26,7 +26,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <vtkIO/TriangularMeshReader.hpp>
+#include <fwVtkIO/TriangularMeshReader.hpp>
 
 #include "ioVTK/VtkModelReaderService.hpp"
 
@@ -121,20 +121,20 @@ void VtkModelReaderService::updating() throw(::fwTools::Failed)
     ::fwData::Model::sptr model = this->getObject< ::fwData::Model >( );
     SLM_ASSERT("model not instanced", model);
 
-    ::fwData::Model::NewSptr backupModel;
+    ::fwData::Model::sptr backupModel = ::fwData::Model::New();
     backupModel->shallowCopy(model);
 
     model->getRefMap().clear();
 
     /// Create a empty triangularMesh
-    ::fwData::TriangularMesh::NewSptr mesh;
+    ::fwData::TriangularMesh::sptr mesh = ::fwData::TriangularMesh::New();
     this->loadMesh( m_fsMeshPath, mesh );
 
-    ::fwData::Material::NewSptr dataMat;
+    ::fwData::Material::sptr dataMat = ::fwData::Material::New();
     dataMat->ambient()->setCRefRGBA(m_color->getCRefRGBA());
     model->getRefMap()[ mesh ] = dataMat ;
 
-    ::fwComEd::ModelMsg::NewSptr msg;;
+    ::fwComEd::ModelMsg::sptr msg = ::fwComEd::ModelMsg::New();;
     msg->addEvent( ::fwComEd::ModelMsg::NEW_MODEL, backupModel ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), model, msg);
 }
@@ -145,7 +145,7 @@ void VtkModelReaderService::loadMesh( const ::boost::filesystem::path vtkFile, :
 {
     SLM_TRACE_FUNC();
 
-    ::vtkIO::TriangularMeshReader::NewSptr myReader;
+    ::fwVtkIO::TriangularMeshReader::sptr myReader = ::fwVtkIO::TriangularMeshReader::New();
     myReader->setObject(_pTriangularMesh);
     myReader->setFile(vtkFile);
 

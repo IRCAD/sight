@@ -177,8 +177,8 @@ bool Validator::validate( xmlNodePtr node )
     {
         xmlBufferPtr buffer = xmlBufferCreate();
         xmlNodeDump( buffer, node->doc, node, 1, 1 );
-        xmlBufferFree( buffer );
         OSLM_WARN("Validator::validation NOK, node :\n " << buffer->content) ;
+        xmlBufferFree( buffer );
         OSLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() ) ;
         OSLM_ERROR("Validator::validation NOK, error log = " << getErrorLog() ) ;
     }

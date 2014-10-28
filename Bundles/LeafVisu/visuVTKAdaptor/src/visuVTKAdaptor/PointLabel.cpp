@@ -33,7 +33,7 @@ PointLabel::PointLabel() : Text()
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToWorld();
-    addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void PointLabel::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_ASSERT("ACH : recieve a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
 

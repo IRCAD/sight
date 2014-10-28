@@ -1,18 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 
-#ifndef _IOITK_TEST_TU_IOITKTEST_HPP_
-#define _IOITK_TEST_TU_IOITKTEST_HPP_
+#ifndef __IOITK_TEST_TU_IOITKTEST_HPP__
+#define __IOITK_TEST_TU_IOITKTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwData/Patient.hpp>
+namespace fwData
+{
+    class Object;
+}
+
+namespace fwRuntime
+{
+    class EConfigurationElement;
+}
 
 namespace ioITK
 {
@@ -26,13 +34,10 @@ class IoItkTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( IoItkTest );
     CPPUNIT_TEST( testImageWriterJPG );
-    CPPUNIT_TEST( testPatientDBReaderJPG );
+    CPPUNIT_TEST( testImageSeriesWriterJPG );
     CPPUNIT_TEST( testSaveLoadInr );
-    CPPUNIT_TEST( testLoadInr );
-    CPPUNIT_TEST( testPatientDBReaderDicom );
-    CPPUNIT_TEST( testDicomImageWriter );
-    CPPUNIT_TEST( testDicomPatientWriter );
-    CPPUNIT_TEST( testDicomPatientDBWriter );
+    CPPUNIT_TEST( ImageSeriesInrTest );
+    CPPUNIT_TEST( SeriesDBInrTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,23 +47,23 @@ public:
     void tearDown();
 
     void testImageWriterJPG();
-    void testPatientDBReaderJPG();
+    void testImageSeriesWriterJPG();
     void testSaveLoadInr();
-    void testLoadInr();
-    void testPatientDBReaderDicom();
-
-    void testDicomImageWriter();
-    void testDicomPatientWriter();
-    void testDicomPatientDBWriter();
+    void ImageSeriesInrTest();
+    void SeriesDBInrTest();
 
 private :
 
-    void executeService( ::fwData::Object::sptr obj, std::string srvType, std::string srvImpl, ::fwRuntime::EConfigurationElement::sptr cfg );
+    void executeService(
+            const SPTR(::fwData::Object)& obj,
+            const std::string& srvType,
+            const std::string& srvImpl,
+            const SPTR(::fwRuntime::EConfigurationElement)& cfg);
 
 };
 
 } //namespace ut
 } //namespace ioITK
 
+#endif //__IOITK_TEST_TU_IOITKTEST_HPP__
 
-#endif //_IOITK_TEST_TU_IOITKTEST_HPP_

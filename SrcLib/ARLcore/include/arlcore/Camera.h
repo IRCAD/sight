@@ -29,7 +29,6 @@ namespace arlCore
     class Point;
     /**
      * @class   Camera
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Parametres physiques d'une camera (intrinsèques et extrinsèques)
      */
@@ -175,17 +174,17 @@ namespace arlCore
         * @param[in] focalPlane True si le calcul est effectué dans le plan de la focal ou false dans le plan pixel
         * @return True si le calcul est possible, false sinon (si le point2D est dans le plan de la focale par exemple)
         */
-        ARLCORE_API bool project3DPoint( const vnl_vector_fixed<double,4>& point3DH, vnl_vector_fixed<double,2>& point2D, bool FocalPlane=false) const;
+        ARLCORE_API bool project3DPoint( const vnl_vector_fixed<double,4>& point3DH, vnl_vector_fixed<double,2>& point2D, bool focalPlane=false) const;
 
         /**
         * @brief Reprojection du point3D dans le repère de la caméra
         * point2D est calculé dans le plan de la focale si focalPlane==true, dans le plan pixel sinon
-        * @param[in] point3DH Point 3D à reprojeter
-        * @param[out] point2D reprojeté
+        * @param[in] pt3D Point 3D à reprojeter
+        * @param[out] pt2D reprojeté
         * @param[in] focalPlane True si le calcul est effectué dans le plan de la focal ou false dans le plan pixel
         * @return True si le calcul est possible, false sinon (si le point2D est dans le plan de la focale par exemple)
         */
-        ARLCORE_API bool project3DPoint( Point::csptr  pt3D, Point::sptr pt2D, bool FocalPlane=false) const;
+        ARLCORE_API bool project3DPoint( Point::csptr  pt3D, Point::sptr pt2D, bool focalPlane=false) const;
 
         /**
         * @brief Reprojection d'une liste de points 3D dans le repère de la caméra

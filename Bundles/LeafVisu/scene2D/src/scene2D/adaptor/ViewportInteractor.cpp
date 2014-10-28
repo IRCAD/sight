@@ -23,7 +23,7 @@ namespace adaptor
 ViewportInteractor::ViewportInteractor() throw() :
         m_viewportIsTranslated(false)
 {
-    this->handlingEventOff();
+//    this->handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ void ViewportInteractor::doUpdate() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
+void ViewportInteractor::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {}
 
 //-----------------------------------------------------------------------------

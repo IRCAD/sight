@@ -12,7 +12,6 @@ namespace fwTools {
 
 /**
  * @brief template specialization for defining KeyType mapping ( here std::type_info) with their value
- * @auhtor Vincent Agnus
  */
 template<class T>
 bool isMappingTypeInfoCommon(const std::type_info &key)

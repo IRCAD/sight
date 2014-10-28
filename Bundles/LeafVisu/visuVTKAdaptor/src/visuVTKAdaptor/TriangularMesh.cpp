@@ -17,7 +17,7 @@
 #include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/TriangularMeshMsg.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -304,6 +304,7 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
                 meshAdaptor->setMapperInput   ( service->getMapperInput()    );
                 meshAdaptor->setSharpEdgeAngle( service->getSharpEdgeAngle() );
                 meshAdaptor->setMaterial      ( service->getMaterial()       );
+                meshAdaptor->setAutoRender( service->getAutoRender() );
 
                 meshAdaptor->setVtkClippingPlanes( newCollection );
 
@@ -316,7 +317,7 @@ class PlaneCollectionAdaptorStarter : public TriangularMeshVtkCommand
                 m_meshServices.push_back(meshAdaptor);
             }
 
-            bool hasItems = m_meshServices.size() > 0;
+            bool hasItems = !m_meshServices.empty();
             service->setActorPropertyToUnclippedMaterial( hasItems );
         }
         else if ( eventId == vtkCommand::UserEvent )
@@ -380,9 +381,9 @@ TriangularMesh::TriangularMesh() throw()
 
     m_transform = vtkTransform::New();
 
-    addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
-    addNewHandledEvent (::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::TriangularMeshMsg::NEW_MESH );
+    //addNewHandledEvent (::fwComEd::TriangularMeshMsg::VERTEX_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -449,7 +450,7 @@ void TriangularMesh::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void TriangularMesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
     ::fwComEd::TriangularMeshMsg::csptr meshMsg = ::fwComEd::TriangularMeshMsg::dynamicConstCast(msg);
@@ -470,7 +471,7 @@ void TriangularMesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
        ::fwData::TriangularMesh::sptr mesh = this->getObject < ::fwData::TriangularMesh >();
        SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-       ::vtkIO::updatePolyDataPoints(m_polyData, mesh);
+       ::fwVtkIO::updatePolyDataPoints(m_polyData, mesh);
 
        this->setVtkPipelineModified();
     }
@@ -556,7 +557,7 @@ void TriangularMesh::createTransformService()
 
     transformService->setRenderService ( this->getRenderService()  );
     transformService->setRenderId      ( this->getRenderId()       );
-
+    transformService->setAutoRender    ( this->getAutoRender()     );
 
     transformService->setTransform(vtkFieldTransform);
     m_transform->Concatenate(vtkFieldTransform);
@@ -656,6 +657,7 @@ void TriangularMesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::spt
         SLM_ASSERT("srv not instanced", srv);
 
         srv->setRenderService(this->getRenderService());
+        srv->setAutoRender( this->getAutoRender() );
         srv->start();
         srv->update();
         this->registerService(srv);
@@ -724,6 +726,7 @@ void TriangularMesh::createNormalsService()
         service->setRenderService( this->getRenderService() );
         service->setRenderId     ( this->getRenderId()      );
         service->setPickerId     ( this->getPickerId()      );
+        service->setAutoRender   ( this->getAutoRender()    );
         ::visuVTKAdaptor::Normals::dynamicCast(service)->setMapperInput( m_mapperInput );
         service->start();
 
@@ -826,7 +829,7 @@ void TriangularMesh::updateTriangularMesh( ::fwData::TriangularMesh::sptr mesh )
             m_polyData = 0;
         }
 
-        m_polyData = ::vtkIO::toVTKMesh(mesh);
+        m_polyData = ::fwVtkIO::toVTKMesh(mesh);
 
         if (m_computeNormalsAtUpdate)
         {

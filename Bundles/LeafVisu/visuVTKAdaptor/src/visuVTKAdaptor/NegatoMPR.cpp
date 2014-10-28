@@ -41,9 +41,9 @@ NegatoMPR::NegatoMPR() throw() :
     m_allowAlphaInTF = false;
     m_interpolation  = true;
 
-    addNewHandledEvent("SLICE_MODE");
-    addNewHandledEvent("SCAN_SHOW");
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //addNewHandledEvent("SLICE_MODE");
+    //addNewHandledEvent("SCAN_SHOW");
+    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void NegatoMPR::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
 
@@ -366,6 +366,7 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     service->setRenderId( this->getRenderId() );
     service->setPickerId( this->getPickerId() );
     service->setTransformId( this->getTransformId() );
+    service->setAutoRender( this->getAutoRender() );
 
     service->start();
     service->update();

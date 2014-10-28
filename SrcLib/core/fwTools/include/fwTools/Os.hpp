@@ -16,7 +16,7 @@ namespace fwTools {
 
 /**
  * @brief   Namespace fwTools::os contains tools methods which depend on os like get user application data directory.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009-2010.
  */
 namespace os {
@@ -43,7 +43,7 @@ FWTOOLS_API std::string getEnv(const std::string &name, const std::string &defau
 
 /**
  * @brief   Return the users's application data directory
- * @author  IRCAD (Research and Development Team).
+ * 
  * @param company The company name
  * @param appName The application name
  * @param createDirectory if true, create the returned directory if it don't exist

@@ -25,11 +25,9 @@ namespace ioVTK
 
 /**
  * @brief   Mesh reader service.
- * @class   TriangularMeshReaderService .
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   TriangularMeshReaderService
  *
- * Service reading a VTK mesh using the vtkIO lib.
+ * Service reading a VTK mesh using the fwVtkIO lib.
  *
  * Service registered details : \n
  * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh )
@@ -80,11 +78,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

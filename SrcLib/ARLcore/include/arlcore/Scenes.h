@@ -13,7 +13,6 @@
 namespace arlCore
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Scenes virtuelles specifiques
      */

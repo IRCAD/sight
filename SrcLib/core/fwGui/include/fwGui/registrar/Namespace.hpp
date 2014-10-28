@@ -12,7 +12,7 @@ namespace fwGui
 /**
  * @brief       The namespace fwGui::registrar contains the classes of service management for GUI elements (Menu, View, ToolBar).
  * @namespace   fwGui::registrar
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

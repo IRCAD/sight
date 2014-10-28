@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,13 +46,16 @@ void FrameLayoutManager::createFrame()
     FrameInfo frameInfo = this->getFrameInfo();
 
     ::fwGuiQt::QtMainFrame *mainframe = new ::fwGuiQt::QtMainFrame();
+    m_qtWindow = mainframe;
+
 
     ::fwGuiQt::QtMainFrame::CloseCallback fct = ::boost::bind( &::fwGui::FrameLayoutManager::onCloseFrame, this);
     mainframe->setCloseCallback(fct);
 
-    m_qtWindow = mainframe;
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
     m_qtWindow->setMinimumSize(std::max(frameInfo.m_minSize.first,0), std::max(frameInfo.m_minSize.second,0));
+
+
 
     if(!frameInfo.m_iconPath.empty())
     {
@@ -85,17 +88,17 @@ void FrameLayoutManager::createFrame()
 
     this->setState(frameInfo.m_state);
 
-    m_qtWindow->show();
 
-    m_qtWindow->setCentralWidget(new QWidget(m_qtWindow));
+    QWidget *qwidget = new QWidget(m_qtWindow);
+    m_qtWindow->setCentralWidget(qwidget);
 
     QObject::connect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
 
-    ::fwGuiQt::container::QtContainer::NewSptr container;
-    container->setQtContainer(m_qtWindow->centralWidget());
+    ::fwGuiQt::container::QtContainer::sptr container = ::fwGuiQt::container::QtContainer::New();
+    container->setQtContainer(qwidget);
     m_container = container;
 
-    ::fwGuiQt::container::QtContainer::NewSptr frameContainer;
+    ::fwGuiQt::container::QtContainer::sptr frameContainer = ::fwGuiQt::container::QtContainer::New();
     frameContainer->setQtContainer(m_qtWindow);
     m_frame = frameContainer;
 }
@@ -116,13 +119,14 @@ void FrameLayoutManager::destroyFrame()
 
     if (m_qtWindow->layout())
     {
-        m_qtWindow->layout()->deleteLater();
-        m_qtWindow->setLayout(0);
+        QWidget().setLayout(m_qtWindow->layout());
     }
+
+    m_container->clean();
     m_container->destroyContainer();
+
+    // m_qtWindow is cleaned/destroyed by m_frame
     m_frame->clean();
-    m_qtWindow->setParent(0);
-    m_qtWindow->deleteLater();
     m_frame->destroyContainer();
 }
 

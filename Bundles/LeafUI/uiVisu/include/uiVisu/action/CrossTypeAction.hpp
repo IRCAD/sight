@@ -22,8 +22,8 @@ namespace action
 
 /**
  * @brief   This action allows change the cross type
- * @class   CrossTypeAction.
- * @author  IRCAD (Research and Development Team).
+ * @class   CrossTypeAction
+ * 
  * @date    2010.
  */
 class UIVISU_CLASS_API CrossTypeAction : public ::fwGui::IActionSrv
@@ -50,7 +50,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Does nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Notifies message to change cross type
     void updating() throw(::fwTools::Failed);
@@ -61,7 +61,7 @@ protected:
     /**
      * @brief Configure action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiData::action::CrossTypeAction" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiData::action::CrossTypeAction" autoConnect="no">
         <crossType>hide</crossType>
     </service>
     @endverbatim

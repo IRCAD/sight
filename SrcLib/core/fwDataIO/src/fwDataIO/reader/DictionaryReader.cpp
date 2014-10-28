@@ -4,15 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifdef DEBUG
-  #define BOOST_SPIRIT_DEBUG
-#endif
-
 #define FUSION_MAX_VECTOR_SIZE 20
 
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <sstream>
+
+#ifdef DEBUG
+  static std::stringstream spiritDebugStream;
+  #define BOOST_SPIRIT_DEBUG_OUT spiritDebugStream
+  #define BOOST_SPIRIT_DEBUG
+#endif
 
 #include <boost/cstdint.hpp>
 #include <boost/algorithm/string.hpp>
@@ -195,6 +198,8 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
       BOOST_SPIRIT_DEBUG_NODE(dbl);
       BOOST_SPIRIT_DEBUG_NODE(line);
       BOOST_SPIRIT_DEBUG_NODE(lines);
+      SLM_DEBUG(spiritDebugStream.str());
+      spiritDebugStream.str( std::string() );
     #endif
 
       qi::on_error< qi::fail>
@@ -306,7 +311,7 @@ void DictionaryReader::read()
 
     BOOST_FOREACH(::fwDataIO::line line, dicolines)
     {
-        ::fwData::StructureTraits::NewSptr newOrgan;
+        ::fwData::StructureTraits::sptr newOrgan = ::fwData::StructureTraits::New();
         newOrgan->setType(line.type);
 
         std::string classReformated = reformatString(line.organClass);
@@ -346,6 +351,14 @@ std::string  DictionaryReader::extension()
 {
     SLM_TRACE_FUNC();
     return (".dic");
+}
+
+//------------------------------------------------------------------------------
+
+::boost::filesystem::path  DictionaryReader::getDefaultDictionaryPath()
+{
+    std::string dicoPath = std::string("./share/") + PRJ_NAME +"_"+ FWDATAIO_VER + "/OrganDictionary.dic";
+    return dicoPath;
 }
 
 //------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 #define _FWDATA_ARRAY_HPP_
 
 #include <fwTools/Type.hpp>
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include "fwData/Exception.hpp"
 
@@ -27,7 +27,7 @@ namespace fwData
  * If the array own his buffer, it will perform the allocation, reallocation,
  * destruction of the buffer. Else, this class will provide a array "view" of the
  * buffer
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class FWDATA_CLASS_API Array : public ::fwData::Object
@@ -35,7 +35,6 @@ class FWDATA_CLASS_API Array : public ::fwData::Object
 public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (Array)(::fwData::Object), (()), ::fwData::factory::New< Array >) ;
-    fwDataDeepCopyMacro();
 
     fwCampMakeFriendDataMacro((fwData)(Array));
 
@@ -67,7 +66,7 @@ public :
 
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Array::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -225,7 +224,7 @@ public :
      */
     FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
-    fwDataGetSetSptrMacro(BufferObject, ::fwTools::BufferObject::sptr);
+    fwDataGetSetSptrMacro(BufferObject, ::fwMemory::BufferObject::sptr);
 
     /// Exchanges the content of the Array with the content of _source.
     FWDATA_API void swap( Array::sptr _source );
@@ -239,7 +238,7 @@ protected:
 
     OffsetType m_strides;
     ::fwTools::Type m_type;
-    ::fwTools::BufferObject::sptr m_attrBufferObject;
+    ::fwMemory::BufferObject::sptr m_attrBufferObject;
     SizeType m_size;
     size_t m_nbOfComponents;
     bool m_isBufferOwner;

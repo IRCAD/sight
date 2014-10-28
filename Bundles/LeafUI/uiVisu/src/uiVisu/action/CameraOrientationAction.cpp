@@ -37,7 +37,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::CameraOrientati
 
 CameraOrientationAction::CameraOrientationAction() throw() : m_orientation("axial")
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -91,10 +91,10 @@ void CameraOrientationAction::updating() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwData::String::NewSptr dataInfo;
+    ::fwData::String::sptr dataInfo = ::fwData::String::New();
     dataInfo->value() = m_orientation;
 
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "CAMERA_ORIENTATION", dataInfo );
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
 }
@@ -107,7 +107,7 @@ void CameraOrientationAction::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void CameraOrientationAction::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void CameraOrientationAction::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 

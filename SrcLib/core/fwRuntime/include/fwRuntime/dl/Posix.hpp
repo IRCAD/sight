@@ -8,7 +8,7 @@
 #define _FWRUNTIME_DL_POSIX_HPP
 
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
 
 
 #include <dlfcn.h>
@@ -27,7 +27,7 @@ namespace dl
  * @brief   Implements a posix native module.
  * @struct  Posix
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Posix : public Native
 {

@@ -41,7 +41,7 @@ public:
         return cb;
     }
 
-     BoxClallback() {}
+     BoxClallback() : m_adaptor(NULL) {}
     ~BoxClallback() {}
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
@@ -64,7 +64,7 @@ BoxWidget::BoxWidget() throw()
 {
     m_boxWidgetCommand = BoxClallback::New(this);
 
-    addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -167,7 +167,7 @@ void BoxWidget::updateFromVtk()
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 
@@ -200,7 +200,7 @@ void BoxWidget::doUpdate() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
+void BoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
     ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
     if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED)

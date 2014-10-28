@@ -19,7 +19,7 @@ namespace fwData
 /**
  * @class   ROITraits
  * @brief   This class defines ROI traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  *
  * A ROI traits contains :
@@ -63,6 +63,9 @@ public:
 
     /// Get the associated structure traits
     FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
+
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 private:
 

@@ -12,7 +12,7 @@ namespace fwGuiWx
 /*
  * @brief       The namespace fwGuiWx::widgets provides a list of widgets based on WxWidgets .
  * @namespace   fwGuiWx::widgets
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

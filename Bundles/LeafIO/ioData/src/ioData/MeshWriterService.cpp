@@ -98,7 +98,7 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
         ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
         SLM_ASSERT("Mesh not instanced", mesh);
 
-        ::fwDataIO::writer::MeshWriter::NewSptr writer;
+        ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();
         writer->setObject( mesh );
         writer->setFile(this->getFile());
 

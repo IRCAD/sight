@@ -11,8 +11,8 @@ namespace fwDataIO
 {
 /**
  * @brief       This namespace fwDataIO::writer contains writer for severals data of the framework.
- * @namespace   fwDataIO::writer.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwDataIO::writer
+ * 
  * @date        2009-2010.
  *
  */

@@ -42,9 +42,9 @@ void DictionaryReaderTest::setUp()
 void DictionaryReaderTest::tearDown()
 {
     // Clean up after the test run.
-    bool suppr = false;
     if( ::boost::filesystem::exists(m_tmpDictionaryFilePath))
     {
+        bool suppr;
         suppr = ::boost::filesystem::remove(m_tmpDictionaryFilePath);
         CPPUNIT_ASSERT(suppr);
     }
@@ -55,7 +55,7 @@ void DictionaryReaderTest::tearDown()
 void DictionaryReaderTest::test_1()
 {
     // Expected data
-    ::fwData::StructureTraits::NewSptr expectedSkin;
+    ::fwData::StructureTraits::sptr expectedSkin = ::fwData::StructureTraits::New();
     expectedSkin->setType("Skin");
     expectedSkin->setClass(::fwData::StructureTraits::ENVIRONMENT);
     expectedSkin->setColor(::fwData::Color::New(255.0f/255.0f, 179.0f/255.0f, 140.0f/255.0f, 100.0/100.0f));
@@ -66,9 +66,9 @@ void DictionaryReaderTest::test_1()
     expectedSkin->setPropertyCategory("Anat_Struct");
     expectedSkin->setPropertyType("Entire_Body");
 
-    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
     // get data from file.
-    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
     dictionaryReader->read();
@@ -103,9 +103,9 @@ void DictionaryReaderTest::test_2()
     m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
 
-    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
     // Get data from file.
-    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
 
@@ -117,9 +117,9 @@ void DictionaryReaderTest::test_2()
 void DictionaryReaderTest::test_3()
 {
     m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "NoDictionary.dic";
-    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
     // Get data from file.
-    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
 
@@ -134,9 +134,9 @@ void DictionaryReaderTest::test_4()
     m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
 
-    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
     // Get data from file.
-    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
 
@@ -152,9 +152,9 @@ void DictionaryReaderTest::test_5()
     m_tmpDictionaryFilePath = ::fwTools::System::getTemporaryFolder() / "WrongDictionary.dic";
     this->generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
 
-    ::fwData::StructureTraitsDictionary::NewSptr structDico;
+    ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
     // Get data from file.
-    ::fwDataIO::reader::DictionaryReader::NewSptr dictionaryReader;
+    ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(structDico);
     dictionaryReader->setFile(m_tmpDictionaryFilePath);
 

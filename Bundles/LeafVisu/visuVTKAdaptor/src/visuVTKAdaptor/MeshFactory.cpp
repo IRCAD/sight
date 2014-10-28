@@ -15,7 +15,7 @@
 #include <fwData/Material.hpp>
 #include <fwData/TriangularMesh.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
@@ -57,7 +57,7 @@ vtkActor* MeshFactory::getActor()
 
 void MeshFactory::updateTriangulaMesh( ::fwData::TriangularMesh::sptr mesh)
 {
-    vtkPolyData * polyData       = ::vtkIO::toVTKMesh(mesh);
+    vtkPolyData * polyData       = ::fwVtkIO::toVTKMesh(mesh);
     vtkPolyDataMapper  * mapper  = vtkPolyDataMapper::New();
 
     m_normals->SetInput(polyData);

@@ -15,7 +15,6 @@
 //#include <arlcore/Type.h>
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Directives de compilation
      * Definition de constantes

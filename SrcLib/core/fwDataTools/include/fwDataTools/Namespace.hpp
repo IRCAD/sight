@@ -10,7 +10,7 @@
 /**
  * @brief       The namespace fwDataTools contains classes which provide helpers to manipulate fwData::Object.
  * @namespace   fwDataTools
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2011.
  *
  */

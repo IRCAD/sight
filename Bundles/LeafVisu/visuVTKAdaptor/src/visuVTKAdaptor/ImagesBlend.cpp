@@ -29,7 +29,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "visuVTKAdaptor/Image.hpp"
 #include "visuVTKAdaptor/ImagesBlend.hpp"
@@ -48,11 +48,11 @@ ImagesBlend::ImagesBlend() throw()
     SLM_TRACE_FUNC();
 
     // Manage events
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS           );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS         );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS         );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS           );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS         );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS         );
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void ImagesBlend::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -116,7 +116,7 @@ void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
                 || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
                 || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
-            doUpdate();
+            this->doUpdate();
         }
     }
     else if (imageMsg)
@@ -129,7 +129,7 @@ void ImagesBlend::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::
             if (! ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
                 || m_registeredImages.find(image->getID()) == m_registeredImages.end())
             {
-                doUpdate();
+                this->doUpdate();
             }
         }
     }
@@ -255,6 +255,15 @@ void ImagesBlend::addImageAdaptors()
 
             SLM_ASSERT("Sorry, '" << id << "' is not an image", img);
 
+            if (info->m_connections)
+            {
+                info->m_connections->disconnect();
+                info->m_connections.reset();
+            }
+
+            info->m_connections = ::fwServices::helper::SigSlotConnection::New();
+            info->m_connections->connect(img, this->getSptr(), this->getObjSrvConnections());
+
             bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
@@ -264,6 +273,7 @@ void ImagesBlend::addImageAdaptors()
                 imageAdaptor->setRenderId( this->getRenderId() );
                 imageAdaptor->setPickerId( this->getPickerId() );
                 imageAdaptor->setTransformId( this->getTransformId() );
+                imageAdaptor->setAutoRender( this->getAutoRender() );
 
                 ::visuVTKAdaptor::Image::sptr IA;
                 IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
@@ -278,15 +288,6 @@ void ImagesBlend::addImageAdaptors()
 
                 imageAdaptor->start();
             }
-
-            ::fwServices::ComChannelService::sptr comChannel;
-            comChannel = ::fwServices::getCommunicationChannel(img, this->getSptr());
-            if (!comChannel)
-            {
-                info->m_comChannel = ::fwServices::registerCommunicationChannel(img, this->getSptr());
-                ::fwServices::ComChannelService::dynamicCast(info->m_comChannel.lock())->setPriority(0.56);
-                info->m_comChannel.lock()->start();
-            }
         }
     }
 }
@@ -299,11 +300,10 @@ void ImagesBlend::removeImageAdaptors()
     {
         SPTR(ImageInfo) info = m_imagesInfo[id];
 
-        if ( !info->m_comChannel.expired())
+        if ( info->m_connections)
         {
-            info->m_comChannel.lock()->stop();
-            ::fwServices::OSR::unregisterService(info->m_comChannel.lock());
-            info->m_comChannel.reset();
+            info->m_connections->disconnect();
+            info->m_connections.reset();
         }
     }
     this->unregisterServices();

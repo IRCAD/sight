@@ -22,7 +22,7 @@ namespace fwData
  * @class   PointList
  * @brief   This class defines a list of points
  * @see     ::fwData::Point
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API PointList : public Object
@@ -36,7 +36,6 @@ public :
 
     typedef std::vector< ::fwData::Point::sptr > PointListContainer;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -48,10 +47,10 @@ public :
     FWDATA_API virtual ~PointList();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( PointList::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( PointList::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// Points container
     fwGettersSettersDocMacro(Points, vPoints, PointListContainer, a container of all points);

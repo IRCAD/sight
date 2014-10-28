@@ -1,0 +1,16 @@
+CLASSTEST=[
+          'MedicalDataV1Test',
+          ]
+
+USE = ['boost']
+LIB = [
+       'fwAtomsFilter_0-1',
+       'fwAtomsPatch_0-1',
+       'fwTools_0-1',
+       'fwCore_0-1',
+       'fwTest_0-1',
+       ]
+
+BUNDLES = []
+REQUIREMENTS = ['filterVRRender_0-1', 'dataReg_0-1', 'servicesReg_0-1']
+CONSOLE = 'yes'

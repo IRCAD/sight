@@ -20,8 +20,8 @@ namespace action
 
 /**
  * @brief   This action allows change 3D camera orientation (axial, frontal, sagittal)
- * @class   CameraOrientationAction.
- * @author  IRCAD (Research and Development Team).
+ * @class   CameraOrientationAction
+ * 
  * @date    2010.
  */
 class UIVISU_CLASS_API CameraOrientationAction : public ::fwGui::IActionSrv
@@ -44,7 +44,7 @@ protected:
     /**
      * @brief Configure action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiData::action::CameraOrientationAction" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiData::action::CameraOrientationAction" autoConnect="no">
         <orientation>frontal</orientation>
     </service>
     @endverbatim
@@ -59,7 +59,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Does nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Notifies message to change camera orientation
     void updating() throw(::fwTools::Failed);

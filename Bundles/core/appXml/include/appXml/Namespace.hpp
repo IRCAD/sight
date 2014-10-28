@@ -10,7 +10,7 @@
 /**
  * @brief      The namespace appXml.
  * @namespace  appXml
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
  *
  */

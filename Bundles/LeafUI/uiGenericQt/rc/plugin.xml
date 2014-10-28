@@ -1,10 +1,10 @@
 <plugin id="uiGenericQt" class="::uiGenericQt::Plugin">
     <library name="uiGenericQt"/>
-    
+
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
     <requirement id="gui"/>
-    
+
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
@@ -14,7 +14,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::uiGeneric::action::ShowAbout</service>
+        <service>::uiGeneric::action::SShowAbout</service>
         <object>::fwData::Object</object>
     </extension>
 

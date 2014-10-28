@@ -22,7 +22,7 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ToolBarRegistrar::ToolBarRegistrar(const std::string sid) : m_sid(sid)
+ToolBarRegistrar::ToolBarRegistrar(const std::string &sid) : m_sid(sid)
 {}
 
 //-----------------------------------------------------------------------------

@@ -36,7 +36,6 @@ namespace arlCore
     const unsigned int FIRSTUPDATEINDEX = 1;
     /**
      * @class   Object
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Classe de base
      * Contient des informations temporelles, de validit� de l'objet, de Mutex

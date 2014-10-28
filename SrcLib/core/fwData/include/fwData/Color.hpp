@@ -20,7 +20,7 @@ namespace fwData
 /**
  * @class   Color
  * @brief   This class defines color object.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 
@@ -37,8 +37,7 @@ public :
        ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
        );
 
-    fwDataObjectMacro();
-	fwCampMakeFriendDataMacro((fwData)(Color));
+    fwCampMakeFriendDataMacro((fwData)(Color));
 
     /**
      * @brief Constructor
@@ -50,10 +49,10 @@ public :
     FWDATA_API virtual ~Color();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Color::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Color::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     fwGettersSettersDocMacro(RGBA, vRGBA, ColorArray, the array of color values (red, green, blue, alpha).);
 
@@ -65,8 +64,8 @@ public :
     ///@param[in] alpha
     FWDATA_API void setRGBA( const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha=1.0 );
 
-    ///@brief set RGBA from hexadecimal format (#ffffff)
-    ///@param[in] hexaColor c hexadecimal format (#ffffff)
+    ///@brief set RGBA from hexadecimal format (\#ffffff)
+    ///@param[in] hexaColor c hexadecimal format (\#ffffff)
     FWDATA_API void setRGBA( std::string hexaColor );
     ///@}
 

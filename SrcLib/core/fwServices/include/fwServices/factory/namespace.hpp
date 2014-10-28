@@ -13,8 +13,8 @@ namespace fwServices
 
 /**
  * @brief       Contains fwServices::factory utilities
- * @namespace   factory
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwServices::factory
+ * 
  * @date        2009-2012
  *
  */

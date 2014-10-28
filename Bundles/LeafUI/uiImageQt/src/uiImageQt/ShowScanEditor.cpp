@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ShowScanEditor , ::
 
 ShowScanEditor::ShowScanEditor() throw(): m_scanAreShown(true)
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
 
 
     m_showScanButton = new QPushButton( m_imageShowScan, "", container) ;
-    m_showScanButton->setToolTip(tr("Show/Hide Scan"));
+    m_showScanButton->setToolTip(QObject::tr("Show/Hide Scan"));
     m_showScanButton->setIconSize( QSize( 40, 16 ) );
 
     QVBoxLayout* layout = new QVBoxLayout( container );
@@ -123,7 +123,7 @@ void ShowScanEditor::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void ShowScanEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ShowScanEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
@@ -154,11 +154,11 @@ void ShowScanEditor::onChangeScanMode()
         ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
         SLM_ASSERT("ShowScanEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
 
-        ::fwData::Boolean::NewSptr dataInfo;
+        ::fwData::Boolean::sptr dataInfo = ::fwData::Boolean::New();
         dataInfo->value() = m_scanAreShown;
 
-        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::NewSptr( m_adaptorUID ) );
-        ::fwComEd::ImageMsg::NewSptr imageMsg;
+        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::New( m_adaptorUID ) );
+        ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
         imageMsg->addEvent( "SCAN_SHOW", dataInfo );
         ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
     }

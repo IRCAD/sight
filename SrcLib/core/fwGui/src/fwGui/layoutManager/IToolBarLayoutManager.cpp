@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IToolBarLayoutManager.cpp
+ * @file fwGui/layoutManager/IToolBarLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a toolbar.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 

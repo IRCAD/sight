@@ -34,7 +34,7 @@ void VideoTest::methode1()
     ::boost::uint8_t VALUE1   = 1 ;
 
     // process
-    ::fwData::Video::NewSptr video;
+    ::fwData::Video::sptr video = ::fwData::Video::New();
 
     // check
     CPPUNIT_ASSERT_EQUAL(video->getXSize(), VALUE);

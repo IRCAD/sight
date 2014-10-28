@@ -23,8 +23,8 @@ namespace registrar
 
 /**
  * @brief   Defines the menu registrar for IHM.
- * @class   MenuRegistrar.
- * @author  IRCAD (Research and Development Team).
+ * @class   MenuRegistrar
+ * 
  * @date    2009-2010.
  *
  */
@@ -33,11 +33,11 @@ class FWGUI_CLASS_API MenuRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new MenuRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new MenuRegistrar );
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
-    FWGUI_API MenuRegistrar( const std::string sid);
+    FWGUI_API MenuRegistrar( const std::string &sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~MenuRegistrar();
@@ -57,7 +57,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-        <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="My item 1" shortcut="1" style="check" />
@@ -80,7 +80,7 @@ public:
         </service>
        @endverbatim
      * This method analyzes the registry section of the configuration.
-     *  - <menuItem sid="item1" start="no" /> : define the service of the menuItem to add in the menu.
+     *  - \<menuItem sid="item1" start="no" /\> : define the service of the menuItem to add in the menu.
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu service.
      */

@@ -7,9 +7,6 @@
 #ifndef _CTRLSELECTION_SDROP_HPP_
 #define _CTRLSELECTION_SDROP_HPP_
 
-#include <fwData/Acquisition.hpp>
-#include <fwData/PatientDB.hpp>
-
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
 
@@ -20,9 +17,9 @@ namespace updater
 {
 
 /**
- * @class  SDrop.
+ * @class  SDrop
  * @brief  Drop received object to associated ::fwData::Composite.
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class CTRLSELECTION_CLASS_API SDrop : public ::ctrlSelection::IUpdaterSrv
 {
@@ -57,7 +54,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private:
 

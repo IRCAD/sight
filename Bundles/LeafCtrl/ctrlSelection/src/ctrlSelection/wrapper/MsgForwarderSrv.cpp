@@ -33,7 +33,7 @@ MsgForwarderSrv::~MsgForwarderSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void MsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void MsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();

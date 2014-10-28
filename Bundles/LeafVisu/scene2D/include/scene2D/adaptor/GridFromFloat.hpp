@@ -47,7 +47,8 @@ protected:
     *
     * - objectId : ::fwData::Float
     *
-    * - <config xMin="-750" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/> : Set the config.
+    * - \<config xMin="-750" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" color="lightGray"
+    * xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
     *
     * \b xMin : mandatory : Set the minimum x value of the grid.
     *
@@ -78,7 +79,7 @@ protected:
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
     /// If a VALUE_IS_MODIFIED message is catched, check if the float object isn't negative and if not, set the xSpacing its value.
-    SCENE2D_API void doUpdate( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Do nothing.
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );

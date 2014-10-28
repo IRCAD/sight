@@ -27,8 +27,8 @@ namespace visuVTKAdaptor
 
 /**
  * @brief   Draw pixel information from images given by id in composite.
- * @class   ImagesProbeCursor.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImagesProbeCursor
+ * 
  * @date    2010.
  */
 class VISUVTKADAPTOR_CLASS_API ImagesProbeCursor: public  ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
@@ -65,7 +65,7 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     void buildTextActor();
     void buildPolyData();

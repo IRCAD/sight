@@ -25,7 +25,7 @@ namespace profile
  * @brief   Starts a given bundle.
  * @class  Uninitializer
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class Uninitializer : public boost::noncopyable
 {

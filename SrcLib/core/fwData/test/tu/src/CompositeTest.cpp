@@ -47,7 +47,7 @@ void CompositeTest::methode1()
 
     ::fwData::Composite::ContainerType stdmap;
 
-    ::fwData::Composite::NewSptr composite;
+    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
     CPPUNIT_ASSERT( composite->size() == 0 );
 
@@ -92,7 +92,7 @@ void CompositeTest::setGetContainerTest()
     myStdMap[ key1 ] = ::fwData::String::New("lolo");
     myStdMap[ key2 ] = ::fwData::String::New("lulu");
 
-    ::fwData::Composite::NewSptr myDataMap;
+    ::fwData::Composite::sptr myDataMap = ::fwData::Composite::New();
     myDataMap->setDataContainer( myStdMap );
     CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(2), myDataMap->size() );
 

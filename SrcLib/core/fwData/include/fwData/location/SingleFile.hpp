@@ -24,7 +24,7 @@ namespace location
 /**
  * @class SingleFile
  * @brief This class defines a single file %location.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API SingleFile  : public ILocation
@@ -36,7 +36,6 @@ public:
             ((SingleFileFactory ,((::boost::filesystem::path)) ))
     );
 
-    fwDataObjectMacro();
 
     /// Constructor
     FWDATA_API SingleFile( ::fwData::Object::Key key );
@@ -48,23 +47,23 @@ public:
     fwCampMakeFriendDataMacro((fwData)(location)(SingleFile));
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( SingleFile::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( SingleFile::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// Set file system path
-    FWDATA_API void setPath( ::boost::filesystem::path path);
+    FWDATA_API void setPath( PathType path);
 
     /// Get file system path
-    FWDATA_API ::boost::filesystem::path getPath() const;
+    FWDATA_API PathType getPath() const;
 
 protected :
 
-    FWDATA_API static sptr SingleFileFactory(::boost::filesystem::path _path);
+    FWDATA_API static sptr SingleFileFactory(PathType path);
 
     /// file system path
-    ::boost::filesystem::path m_path;
+    PathType m_path;
 
 };
 
@@ -74,7 +73,7 @@ protected :
  *
  * Reader/Writer classes should only need to implement get/setLocation
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 template<typename RW> // reader or writer class should only need to implement get/setLocation
@@ -84,16 +83,19 @@ struct enableSingleFile
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableSingleFile(RW *rw) : m_rw(rw) { SLM_ASSERT("m_rw not instanced", m_rw);}
+    enableSingleFile(RW *rw) : m_rw(rw)
+    {
+        SLM_ASSERT("m_rw not instanced", m_rw);
+    }
 
     /// Set file system path
-    void setFile(::boost::filesystem::path path)
+    void setFile(ILocation::PathType path)
     {
         getLocation<SingleFile>(m_rw)->setPath(path);
     }
 
     /// Get file system path
-    ::boost::filesystem::path getFile()
+    ILocation::PathType getFile()
     {
         return (getLocation<SingleFile>(m_rw))->getPath();
     }

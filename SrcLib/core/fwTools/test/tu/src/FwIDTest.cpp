@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/make_shared.hpp>
+#include <boost/chrono/duration.hpp>
 
 #include <fwTools/fwID.hpp>
 #include <fwTools/UUID.hpp>
@@ -162,13 +163,13 @@ void FwIDTest::runAccessToObjectFwID()
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(id) );
     CPPUNIT_ASSERT( m_object->hasID() );
 
-    ::boost::this_thread::sleep(::boost::posix_time::milliseconds(200));
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(200));
 
     CPPUNIT_ASSERT_EQUAL(  id, m_object->getID() );
 
     CPPUNIT_ASSERT_EQUAL( m_object, ::fwTools::fwID::getObject(id) );
 
-    ::boost::this_thread::sleep(::boost::posix_time::milliseconds(200));
+    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(200));
 
     m_object->resetID();
     CPPUNIT_ASSERT( m_object->hasID() == false );

@@ -12,7 +12,7 @@ namespace fwGui
 /**
  * @brief       The namespace fwGui::container contains the base interface for GUI containers (toolbar, menu, menuBar...).
  * @namespace   fwGui::container
- * @author      IRCAD (Research and Development Team).
+ * 
  * @date        2009-2010.
  *
  */

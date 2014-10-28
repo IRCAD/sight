@@ -40,7 +40,7 @@ void Test::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Test::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void Test::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

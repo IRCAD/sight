@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/LineLayoutManagerBase.hpp
+ * @file fwGui/layoutManager/LineLayoutManagerBase.hpp
  * @brief This file defines the interface of the class for managing a line layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -29,8 +29,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for line layout manager.
- * @class   LineLayoutManagerBase.
- * @author  IRCAD (Research and Development Team).
+ * @class   LineLayoutManagerBase
+ * 
  * @date    2009-2010.
  *
  */
@@ -84,7 +84,7 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @verbatim
-       <service uid="subView2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+       <service uid="subView2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
            <gui>
               <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -98,8 +98,8 @@ public:
            </registry>
        </service>
       @endverbatim
-     *  - <layout type="::fwGui::LineLayoutManager" > : define a line layout.
-     *  - <view proportion="0" minWidth="30" /> : define a new view which can have the following attributes
+     *  - \<layout type="::fwGui::LineLayoutManager" \> : define a line layout.
+     *  - \<view proportion="0" minWidth="30" /\> : define a new view which can have the following attributes
      *   - \b orientation {horizontal | vertical} : define if the layout is vertical or horizontal.
      *   - \b proportion : define if the space allocate in proportion of the proportion factor (bigger it is, more space are used).
      *   - \b border : define the size of the border in the layout

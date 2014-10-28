@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,6 +17,8 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Reconstruction.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>
 
@@ -42,7 +44,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::OrganMater
 
 OrganMaterialEditor::OrganMaterialEditor() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -131,7 +133,7 @@ void OrganMaterialEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void OrganMaterialEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
@@ -228,7 +230,7 @@ void OrganMaterialEditor::materialNotification( )
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
-    ::fwComEd::MaterialMsg::NewSptr msg;
+    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
     msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMaterial(), msg);
 }

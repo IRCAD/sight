@@ -21,7 +21,7 @@ namespace fwData
  * @brief   This class defines a material. A material is represented by an ambient color and a diffuse color
  * @see     ::fwData::Color
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 
@@ -33,7 +33,6 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::factory::New< Material >) ;
     fwCampMakeFriendDataMacro((fwData)(Material));
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -45,10 +44,10 @@ public:
     FWDATA_API virtual ~Material();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Material::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Material::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
     * @brief returns editable ambient color

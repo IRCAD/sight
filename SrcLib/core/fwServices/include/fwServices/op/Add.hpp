@@ -24,7 +24,7 @@ namespace fwServices
  * @brief Create and attach to the object obj a service of type serviceType, implementation _implementationId with the universal unique identifier _id
  * @return the service
  * @note the template method is also available, where the template parameter SERVICE corresponds to the serviceType
- * @author IRCAD (Research and Development Team).
+ * 
  */
 FWSERVICES_API ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , std::string serviceType , std::string _implementationId , std::string _id = "") ;
 

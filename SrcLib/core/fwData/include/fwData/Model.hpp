@@ -31,7 +31,7 @@ namespace fwData
  *
  * @see     ::fwData::TriangularMesh, ::fwData::Material
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Model : public Object
@@ -66,10 +66,10 @@ public:
     FWDATA_API const Container &getCRefMap() const ;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Model::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Model::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected:
 

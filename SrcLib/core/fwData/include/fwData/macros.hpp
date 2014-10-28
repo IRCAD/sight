@@ -19,7 +19,7 @@
  * @file fwData/macros.hpp
  * @brief fwData specific macros.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 
 
@@ -233,43 +233,5 @@ BOOST_MPL_ASSERT(                                                               
         return this->m_##var;               \
     }
 
-
-
-//-----------------------------------
-// Deep/Shallow copy
-//-----------------------------------
-
-#define fwDataShallowCopyMacro()                                                \
-    void shallowCopy( ::fwData::Object::csptr _source )                         \
-    {                                                                           \
-        ::fwData::Object::shallowCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source ); \
-    };                                                                          \
-    void shallowCopy( __FWCORE_TYPEDEF_SELF_NAME::sptr _source )                \
-    {                                                                           \
-        ::fwData::Object::shallowCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source ); \
-    };
-
-//-----------------------------------
-
-#define fwDataDeepCopyMacro()                                                \
-    void deepCopy( ::fwData::Object::csptr _source )                         \
-    {                                                                        \
-        ::fwData::Object::deepCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source ); \
-    };                                                                       \
-    void deepCopy( __FWCORE_TYPEDEF_SELF_NAME::sptr _source )                \
-    {                                                                        \
-        ::fwData::Object::deepCopy< __FWCORE_TYPEDEF_SELF_NAME >( _source ); \
-    };
-
-
-//-----------------------------------
-// General macros
-//-----------------------------------
-#define fwDataObjectMacro()                     \
-    /** @name Deep and shallow copy methods  */ \
-    /** @{                                   */ \
-    fwDataShallowCopyMacro();                   \
-    fwDataDeepCopyMacro();                      \
-    /**@}                                    */
-
 #endif //__FWDATA_MACROS_HPP__
+

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,13 +9,9 @@
 
 #include <string>
 
-#include <fwCamp/Mapper/ValueMapper.hpp>
-#include <fwCamp/macros.hpp>
-
 #include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
-
-fwCampAutoDeclareMacro((fwAtoms)(String), FWATOMS_API);
+#include "fwAtoms/factory/new.hpp"
 
 namespace fwAtoms
 {
@@ -27,13 +23,26 @@ namespace fwAtoms
 class FWATOMS_CLASS_API String : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwAtoms::String), (()), new String ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< String > ) ;
 
-    FWATOMS_API virtual bool isValue() const {return true;};
-    FWATOMS_API virtual bool isString() const {return true;};
-    FWATOMS_API virtual std::string getString() const {return m_value;};
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    String(::fwAtoms::Base::Key key) : m_value("")
+    {}
 
-    virtual void setString( const std::string value ){m_value=value;};
+    /**
+     * @brief   Destructor
+     */
+    virtual ~String()
+    {}
+
+    const std::string& getValue() const {return m_value;};
+
+    void setValue( const std::string &value ){m_value=value;};
+
+    std::string getString() const {return m_value;};
 
     /**
      * @brief Construct a new Object represented a string.
@@ -42,10 +51,19 @@ public:
      */
     FWATOMS_API static String::sptr New(std::string value);
 
-    FWATOMS_API virtual Base::sptr clone();
+    /**
+     * @brief Returns a clone object
+     */
+    FWATOMS_API virtual Base::sptr clone() const;
+
+    /**
+     * @brief returns Atom type
+     */
+    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::STRING;};
+
+
 protected:
-    String(){m_value = "";};
-    String(const std::string& value);
+
     std::string m_value;
 };
 
@@ -54,3 +72,4 @@ protected:
 
 
 #endif /* _FWATOMS_BASE_STRING_HPP_ */
+

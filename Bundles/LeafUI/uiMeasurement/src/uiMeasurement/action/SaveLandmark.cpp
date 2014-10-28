@@ -14,10 +14,13 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/AppConfigManager.hpp>
 
+#include <fwData/String.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -27,8 +30,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
-
-#include <arlcore/Misc.h>
+#include <fwGui/dialog/SelectorDialog.hpp>
 
 #include "uiMeasurement/action/SaveLandmark.hpp"
 
@@ -76,7 +78,7 @@ void SaveLandmark::updating() throw(::fwTools::Failed)
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a file to save landmarks");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Text","*.txt");
+    dialogFile.addFilter("Landmark file","*.json");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr  result;
@@ -84,36 +86,11 @@ void SaveLandmark::updating() throw(::fwTools::Failed)
 
     if( result )
     {
-        ::boost::filesystem::path filename = result->getPath();
-        _sDefaultPath = filename.parent_path();
+        ::boost::filesystem::path path = result->getPath();
+        _sDefaultPath = path.parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
 
-        //get landmarks
-        ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
-        ::fwData::PointList::sptr landmarks =  image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
-        SLM_ASSERT("landmarks not instanced", landmarks);
-
-        vnl_vector<double> ratio(3);
-        ratio[0] = image->getSpacing()[0];
-        ratio[1] = image->getSpacing()[1];
-        ratio[2] = image->getSpacing()[2];
-
-        std::vector< ::fwData::Point::sptr > vLandmarks =  landmarks->getPoints();
-        std::vector< vnl_vector<double> > vPoints;
-        std::vector< std::string > vNames;
-
-        BOOST_FOREACH(::fwData::Point::sptr landmark, vLandmarks)
-        {
-            vnl_vector<double> point(3);
-            point[0] = landmark->getCoord()[0]/ratio[0];
-            point[1] = landmark->getCoord()[1]/ratio[1];
-            point[2] = landmark->getCoord()[2]/ratio[2];
-            vPoints.push_back(point);
-
-            std::string str = landmark->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value();
-            vNames.push_back(str);
-        }
-        ::arlCore::save(vPoints, ratio, vNames, filename.string(), true);
+       this->save(path);
     }
 }
 
@@ -133,7 +110,7 @@ void SaveLandmark::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SaveLandmark::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void SaveLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------
@@ -141,6 +118,33 @@ void SaveLandmark::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTo
 void SaveLandmark::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
+}
+
+//------------------------------------------------------------------------------
+
+void SaveLandmark::save(const ::boost::filesystem::path& path)
+{
+    ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
+
+    //get landmarks
+    ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
+    ::fwData::PointList::sptr landmarks =  image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+    SLM_ASSERT("landmarks not instanced", landmarks);
+
+    ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
+    (*replaceMap)["GENERIC_UID"] = ::fwData::String::New(
+            ::fwServices::registry::AppConfig::getUniqueIdentifier("SaveLandmarkApp")
+    );
+    (*replaceMap)["landmark"] = ::fwData::String::New(landmarks->getID());
+    (*replaceMap)["file"] = ::fwData::String::New(path.string());
+    ::fwRuntime::ConfigurationElement::csptr config =
+        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig("SaveLandmark", replaceMap);
+
+    ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+    helper->setConfig( config );
+    helper->launch();
+
+    helper->stopAndDestroy();
 }
 
 //------------------------------------------------------------------------------

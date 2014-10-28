@@ -11,8 +11,8 @@
 
 /**
  * @brief   Namespace vtkSimpleMesh.
- * @namespace   vtkSimpleMesh.
- * @author  IRCAD (Research and Development Team).
+ * @namespace   vtkSimpleMesh
+ * 
  * @date    2009.
  *
  *  The namespace vtkSimpleMesh contains a simple mesh renderer using vtk.

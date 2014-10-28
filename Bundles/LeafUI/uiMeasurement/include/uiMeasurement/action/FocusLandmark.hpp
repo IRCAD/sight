@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action moves the image slice on chosen landmark.
- * @class   FocusLandmark.
- * @author  IRCAD (Research and Development Team).
+ * @class   FocusLandmark
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API FocusLandmark : public ::fwGui::IActionSrv
@@ -38,7 +38,7 @@ protected:
 
     UIMEASUREMENT_API void stopping() throw ( ::fwTools::Failed );
 
-    UIMEASUREMENT_API void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+    UIMEASUREMENT_API void receiving( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
 
     UIMEASUREMENT_API void configuring() throw ( ::fwTools::Failed );
 

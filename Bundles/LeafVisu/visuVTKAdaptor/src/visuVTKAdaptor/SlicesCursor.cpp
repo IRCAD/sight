@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,11 +46,11 @@ SlicesCursor::SlicesCursor()  throw()
 , m_isSelected(false)
 {
 
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ;
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandledEvent( "CROSS_TYPE" );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ;
+    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //addNewHandledEvent( "CROSS_TYPE" );
 }
 
 //-----------------------------------------------------------------------------
@@ -167,6 +167,7 @@ void SlicesCursor::buildPolyData()
         lineCell->GetPointIds()->SetId(0, line );
         lineCell->GetPointIds()->SetId(1, line+ 4 );
         cells->InsertNextCell(lineCell);
+        lineCell->Delete();
     }
 
     m_cursorPolyData->SetPoints(points);
@@ -364,7 +365,7 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void SlicesCursor::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     m_isSelected = false;
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -376,6 +377,7 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
         if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
             this->updateImageInfos(image);
+            this->updating();
         }
         if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
         {
@@ -389,6 +391,7 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
                 m_isSelected = ( sliceMode->value() == "UPDATE_SLICING" );
             }
             this->updateSliceIndex(image);
+            this->updating();
         }
         if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
         {
@@ -408,6 +411,7 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
             {
                 setOrientation( static_cast< Orientation >( toSliceType ));
             }
+            this->updating();
         }
         if ( imageMsg->hasEvent( "CROSS_TYPE") )
         {
@@ -416,8 +420,8 @@ void SlicesCursor::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::F
             ::fwData::Float::csptr scale = ::fwData::Float::dynamicConstCast(dataInfo);
             SLM_ASSERT("dataInfo is missing", scale);
             this->setCrossScale( scale->value() );
+            this->updating();
         }
-        this->updating();
     }
 }
 

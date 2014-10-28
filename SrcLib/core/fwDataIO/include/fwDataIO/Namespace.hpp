@@ -9,8 +9,8 @@
 
 /**
  * @brief       This namespace fwDataIO contains reader and writer for severals data of the framework.
- * @namespace   fwDataIO.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwDataIO
+ * 
  * @date        2009-2010.
  *
  */

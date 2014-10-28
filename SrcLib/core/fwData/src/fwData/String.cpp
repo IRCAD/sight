@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/GenericField.hpp"
 #include "fwData/String.hpp"
@@ -26,18 +27,26 @@ String::~String() throw()
 
 //------------------------------------------------------------------------------
 
-void String::shallowCopy( String::csptr _source )
+void String::shallowCopy(const Object::csptr &_source )
 {
+    String::csptr other = String::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_value = _source->m_value;
+    m_value = other->m_value;
 }
 
 //------------------------------------------------------------------------------
 
-void String::deepCopy( String::csptr _source )
+void String::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
-    m_value = _source->m_value;
+    String::csptr other = String::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
+    m_value = other->m_value;
 }
 
 } // namespace fwData

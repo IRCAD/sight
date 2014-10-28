@@ -18,7 +18,7 @@ namespace fwData
 /**
  * @class   Port
  * @brief   A port is defined by an identifier and a type.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Port : public ::fwData::Object
@@ -42,10 +42,10 @@ public:
     fwCampMakeFriendDataMacro((fwData)(Port));
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Port::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Port::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected :
 

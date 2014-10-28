@@ -1,23 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fstream>
+
+#include <boost/filesystem.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwTools/System.hpp>
+#include <fwTools/Type.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwData/Image.hpp>
+
+#include <fwTest/generator/Image.hpp>
+
 #include <fwDataTools/Image.hpp>
 
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
 #include <fwComEd/helper/Image.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
 
 #include <fwTest/Data.hpp>
 
@@ -50,13 +61,12 @@ void ImageReaderWriterTest::tearDown()
 
 ::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path &file)
 {
-    ::fwRuntime::EConfigurationElement::NewSptr readerSrvCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg("file");
+    ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New("file");
     readerCfg->setValue(file.string());
     readerSrvCfg->addConfigurationElement(readerCfg);
 
     return readerSrvCfg;
-
 }
 
 //------------------------------------------------------------------------------
@@ -66,7 +76,7 @@ void ImageReaderWriterTest::testVtkImageReader()
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
 
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
 
     // Data expected
     const size_t dim = 3;
@@ -114,10 +124,9 @@ void ImageReaderWriterTest::testVtkImageReader()
 
 void ImageReaderWriterTest::testVtiImageReader()
 {
-
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/image/vti/BostonTeapot.vti";
 
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
 
     // Data expected
@@ -170,7 +179,7 @@ void ImageReaderWriterTest::testMhdImageReader()
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd";
 
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
 
     // Data expected
@@ -228,14 +237,27 @@ void ImageReaderWriterTest::testImageReaderExtension()
     ofile.open(file.string().c_str());
     ofile.close();
 
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+
+    {
+        const std::string srvtype("::io::IReader");
+        const std::string srvname("::ioVTK::ImageReaderService");
 
 
-    CPPUNIT_ASSERT_THROW(
-            this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image),
-            ::fwTools::Failed
-            );
+        ::fwServices::IService::sptr srv;
+        srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
 
+        CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
+
+        ::fwServices::OSR::registerService( image , srv );
+
+        CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
+        CPPUNIT_ASSERT_NO_THROW( srv->configure() );
+        CPPUNIT_ASSERT_NO_THROW( srv->start() );
+        CPPUNIT_ASSERT_THROW( srv->update(), ::fwTools::Failed);
+        CPPUNIT_ASSERT_NO_THROW( srv->stop() );
+        ::fwServices::OSR::unregisterService( srv );
+    }
     ::boost::filesystem::remove(file);
 
 }
@@ -259,8 +281,8 @@ void ImageReaderWriterTest::testVtkImageWriter()
     originExpected[1] = 15.16;
     originExpected[2] = 11.11;
 
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
@@ -269,7 +291,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 
     // Read image from disk
-    ::fwData::Image::NewSptr imageFromDisk;
+    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
 
     ::boost::filesystem::remove(file);
@@ -306,7 +328,34 @@ void ImageReaderWriterTest::testVtkImageWriter()
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
 
 }
+
 //------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::testVtkImageSeriesWriter()
+{
+    ::fwTools::Type type = ::fwTools::Type::create< float >();
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(image, type);
+
+    ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
+    imageSeries->setImage(image);
+
+    const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "imageSeries.vtk";
+
+    // Write image series
+    this->runImageSrv("::io::IWriter", "::ioVTK::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
+
+    // Read image series
+    ::fwData::Image::sptr newImage = ::fwData::Image::New();
+    this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService", getIOConfiguration(file), newImage);
+
+    ::fwDataCamp::visitor::CompareObjects visitor;
+    visitor.compare(image, newImage);
+    CPPUNIT_ASSERT_EQUAL(visitor.getDifferences()->size(), (size_t)0);
+}
+
+//------------------------------------------------------------------------------
+
 void ImageReaderWriterTest::testVtiImageWriter()
 {
     // Data to write
@@ -325,8 +374,8 @@ void ImageReaderWriterTest::testVtiImageWriter()
     originExpected[1] = 15.16;
     originExpected[2] = 11.11;
 
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
@@ -335,7 +384,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
 
 
     // Read image from disk
-    ::fwData::Image::NewSptr imageFromDisk;
+    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
 
     // Data read
@@ -370,7 +419,9 @@ void ImageReaderWriterTest::testVtiImageWriter()
 
 
 }
+
 //------------------------------------------------------------------------------
+
 void ImageReaderWriterTest::testMhdImageWriter()
 {
     // Data to write
@@ -389,8 +440,8 @@ void ImageReaderWriterTest::testMhdImageWriter()
     originExpected[1] = 15.16;
     originExpected[2] = 11.11;
 
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
@@ -398,7 +449,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
     this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image);
 
     // Read image from disk
-    ::fwData::Image::NewSptr imageFromDisk;
+    ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
     this->runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
 
     // Data read
@@ -433,7 +484,9 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
 
 }
+
 //------------------------------------------------------------------------------
+
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
@@ -452,33 +505,55 @@ void ImageReaderWriterTest::testImageWriterExtension()
     originExpected[1] = 15.16;
     originExpected[2] = 11.11;
 
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateImage(image, sizeExpected, spacingExpected, originExpected, type);
 
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
 
 
-    CPPUNIT_ASSERT_THROW(
-            this->runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image),
-            ::fwTools::Failed
-            );
+    {
+        const std::string srvtype("::io::IWriter");
+        const std::string srvname("::ioVTK::ImageWriterService");
+
+
+        ::fwServices::IService::sptr srv;
+        srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
+
+        CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
+
+        ::fwServices::OSR::registerService( image , srv );
+
+        CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
+        CPPUNIT_ASSERT_NO_THROW( srv->configure() );
+        CPPUNIT_ASSERT_NO_THROW( srv->start() );
+        CPPUNIT_ASSERT_THROW( srv->update(), ::fwTools::Failed);
+        CPPUNIT_ASSERT_NO_THROW( srv->stop() );
+        ::fwServices::OSR::unregisterService( srv );
+    }
 }
+
 //------------------------------------------------------------------------------
-void ImageReaderWriterTest::runImageSrv(const std::string &srvtype, const std::string &srvname, const ::fwRuntime::EConfigurationElement::sptr cfg, ::fwData::Image::sptr image)
+
+void ImageReaderWriterTest::runImageSrv(
+        const std::string &srvtype,
+        const std::string &srvname,
+        const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+        const SPTR(::fwData::Object)& image)
 {
 
     ::fwServices::IService::sptr srv;
     srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
 
-    CPPUNIT_ASSERT_MESSAGE(srvname,srv);
+    CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
     ::fwServices::OSR::registerService( image , srv );
-    srv->setConfiguration( cfg );
-    srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
+
+    CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(cfg) );
+    CPPUNIT_ASSERT_NO_THROW( srv->configure() );
+    CPPUNIT_ASSERT_NO_THROW( srv->start() );
+    CPPUNIT_ASSERT_NO_THROW( srv->update() );
+    CPPUNIT_ASSERT_NO_THROW( srv->stop() );
     ::fwServices::OSR::unregisterService( srv );
 }
 
@@ -486,3 +561,4 @@ void ImageReaderWriterTest::runImageSrv(const std::string &srvtype, const std::s
 
 } //namespace ut
 } //namespace ioVTK
+

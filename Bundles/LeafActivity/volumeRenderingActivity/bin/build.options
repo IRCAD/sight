@@ -1,0 +1,22 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+
+REQUIREMENTS = [
+    '2DVisualizationActivity_0-1',
+    '3DVisualizationActivity_0-1',
+]
+
+BUNDLES = [
+    'gui_0-1'                ,
+    'guiQt_0-1'              ,
+    'ctrlSelection_0-1'      ,
+    'uiVisu_0-1'             ,
+    'uiVisuQt_0-1'           ,
+    'visuVTKAdaptor_0-1'     ,
+    'visuVTKVRAdaptor_0-1'   ,
+    'uiImageQt_0-1'          ,
+    'scene2D_0-1'            ,
+    'uiTF_0-1'               ,
+    'uiIO_0-1'               ,
+    'media_0-1'              ,
+]

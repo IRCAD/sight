@@ -8,7 +8,7 @@
  * @file fwCore/concept_checks.hpp
  * @brief This file defines some fw4spl concept checks.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 #ifndef __FWCORE_CONCEPT_CHECK_HPP
 #define __FWCORE_CONCEPT_CHECK_HPP
@@ -31,8 +31,8 @@ struct SharedPtrTypedef
 
     BOOST_CONCEPT_USAGE(SharedPtrTypedef)
     {
-        typename X::sptr::element_type *a;
-        X *b;
+        typename X::sptr::element_type *a=0;
+        X *b=0;
         FwCoreNotUsedMacro(a);
         FwCoreNotUsedMacro(b);
         same_type(a,b);

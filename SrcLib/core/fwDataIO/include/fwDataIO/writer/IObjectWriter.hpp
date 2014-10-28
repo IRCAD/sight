@@ -27,8 +27,8 @@ namespace writer
 
 /**
  * @brief   Base class for all object writers.
- * @class   IObjectWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   IObjectWriter
+ * 
  * @date    2009
  *
  * This class defines the API to use basic object writers. This writer is not
@@ -73,7 +73,7 @@ public :
 
     /**
      * @brief m_location setter.
-     * @param[in] _location set location where object will be saved
+     * @param[in] location set location where object will be saved
      */
     FWDATAIO_API virtual void setLocation( const ::fwData::location::ILocation::sptr location );
 

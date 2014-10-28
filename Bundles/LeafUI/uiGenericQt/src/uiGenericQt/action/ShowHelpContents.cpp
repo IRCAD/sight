@@ -141,7 +141,7 @@ void ShowHelpContents::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ShowHelpContents::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

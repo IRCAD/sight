@@ -7,12 +7,15 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwTest/generator/Image.hpp>
+#include <fwTest/helper/compare.hpp>
 
-#include <itkIO/ImageWriter.hpp>
-#include <itkIO/ImageReader.hpp>
+#include <fwDataCamp/visitor/CompareObjects.hpp>
 
+#include <fwItkIO/ImageWriter.hpp>
+#include <fwItkIO/ImageReader.hpp>
 
+#include "helper.hpp"
 #include "ImageReaderWriterTest.hpp"
 
 // Registers the fixture into the 'registry'
@@ -43,8 +46,8 @@ void ImageReaderWriterTest::tearDown()
 void ImageReaderWriterTest::testSaveLoadInr()
 {
     // create Image
-    ::fwData::Image::NewSptr image;
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
     this->checkSaveLoadInr( image );
 }
 
@@ -90,15 +93,15 @@ void ImageReaderWriterTest::stressTestInrWithType(::fwTools::Type type, int nbTe
 {
     for (int nb=0 ; nb < nbTest ; ++nb)
     {
-        ::fwData::Image::NewSptr image;
-        ::fwDataTools::Image::generateRandomImage(image, type);
+        ::fwData::Image::sptr image = ::fwData::Image::New();
+        ::fwTest::generator::Image::generateRandomImage(image, type);
         this->checkSaveLoadInr(image);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::NewSptr image )
+void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
 {
     // inr only support image origin (0,0,0)
     ::fwData::Image::OriginType origin(3,0);
@@ -107,23 +110,25 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::NewSptr image )
     // save image in inr
     const ::boost::filesystem::path PATH = "imageInrTest/image.inr.gz";
     ::boost::filesystem::create_directories( PATH.parent_path() );
-    ::itkIO::ImageWriter::NewSptr myWriter;
+    ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFile(PATH);
     myWriter->write();
 
     // load Image
-    ::fwData::Image::NewSptr image2;
-    ::itkIO::ImageReader::NewSptr myReader;
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    ::fwItkIO::ImageReader::sptr myReader = ::fwItkIO::ImageReader::New();
     myReader->setObject(image2);
     myReader->setFile(PATH);
     myReader->read();
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
+    ::fwItkIO::ut::helper::roundSpacing(image2);
+
     // check Image
     // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
-    CPPUNIT_ASSERT(::fwDataTools::Image::compareImage(image, image2, 0.00001, 0.00001));
+    CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2));
 }
 
 //------------------------------------------------------------------------------

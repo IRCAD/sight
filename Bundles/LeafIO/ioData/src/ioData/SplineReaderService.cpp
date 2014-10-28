@@ -123,7 +123,7 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
     spline->setIdSpline(m_idSpline);
 
     // Notify reading
-    ::fwComEd::SplineMsg::NewSptr msg;
+    ::fwComEd::SplineMsg::sptr msg = ::fwComEd::SplineMsg::New();
     msg->addEvent( ::fwComEd::SplineMsg::NEW_SPLINE ) ;
 
     if(isTransfo)
@@ -138,7 +138,7 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
 
 ::fwData::TransformationMatrix3D::sptr SplineReaderService::loadObjectTransformationMatrix3D(std::string m_file)
 {
-    ::fwData::TransformationMatrix3D::NewSptr matrix;
+    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
     ::boost::filesystem::path location(m_file) ;
 
     std::fstream file;

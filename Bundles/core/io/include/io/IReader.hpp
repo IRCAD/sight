@@ -19,9 +19,7 @@ namespace io
 
 /**
  * @brief Reader service API. It manages extension points definition and extension configuration
- * @class   IReader.
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
+ * @class   IReader
  *
  * This class represents the base interface for reader services.
  * Use the base service methods :
@@ -29,7 +27,7 @@ namespace io
  * @li The method start() initialize the service
  * @li To read the object use update() method
  * @li Finally we must call stop() before deleting the service
- * @todo ACH : remove some methods : getSupportedExtensions ? getSelectorDialogTitle ? setLocation/getLocation ? location can be replaced perhaps by ::fwData::Location ( and not a ::boost::path )
+ * @todo ACH : remove some methods : getSupportedExtensions ? getSelectorDialogTitle ?
  */
 class IO_CLASS_API IReader : public fwServices::IService
 {

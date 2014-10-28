@@ -146,7 +146,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     catch(std::exception& exception)
     {
         xmlFreeDoc(document);
-        throw exception;
+        throw ;
     }
     return bundle;
 }
@@ -217,7 +217,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     catch(std::exception& exception)
     {
         xmlFreeDoc(document);
-        throw exception;
+        throw ;
     }
     return bundle;
 }

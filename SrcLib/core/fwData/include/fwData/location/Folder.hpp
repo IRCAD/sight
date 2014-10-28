@@ -24,7 +24,7 @@ namespace location
 /**
  * @class Folder
  * @brief This class defines a folder location.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Folder  : public ILocation
@@ -37,7 +37,6 @@ public:
             ((FolderFactory ,((::boost::filesystem::path)) ((bool)(false)) ))
     );
 
-    fwDataObjectMacro();
     fwCampMakeFriendDataMacro((fwData)(location)(Folder));
 
     /// Constructor
@@ -47,16 +46,16 @@ public:
     FWDATA_API virtual ~Folder();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Folder::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Folder::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// @brief Set folder filesystem path
-    FWDATA_API void setFolder( ::boost::filesystem::path folder);
+    FWDATA_API void setFolder( PathType folder);
 
     /// @brief Get folder filesystem path
-    FWDATA_API ::boost::filesystem::path getFolder() const;
+    FWDATA_API PathType getFolder() const;
 
     /// @brief Set the flag if folder location is recursive
     FWDATA_API void setRecursive( bool recursive);
@@ -66,10 +65,10 @@ public:
 
 protected :
 
-    FWDATA_API static sptr FolderFactory(::boost::filesystem::path _path, bool recursive=false );
+    FWDATA_API static sptr FolderFactory(PathType path, bool recursive=false );
 
     /// %Folder path
-    ::boost::filesystem::path m_folder;
+    PathType m_folder;
 
     /// Flag if folder is recursive
     bool m_isRecursive;
@@ -82,7 +81,7 @@ protected :
  *
  * Reader/Writer classes should only need to implement get/setLocation
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 template<class RW> // reader or writer class should only need to implement get/setLocation
@@ -92,16 +91,19 @@ struct enableFolder
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableFolder(RW *rw) : m_rw(rw) { SLM_ASSERT("m_rw not instanced", m_rw); }
+    enableFolder(RW *rw) : m_rw(rw)
+    {
+        SLM_ASSERT("m_rw not instanced", m_rw);
+    }
 
     /// @brief Set folder filesystem path
-    void setFolder(::boost::filesystem::path folder)
+    void setFolder(ILocation::PathType folder)
     {
         getLocation<Folder>(m_rw)->setFolder(folder);
     }
 
     /// @brief Get folder filesystem path
-    ::boost::filesystem::path getFolder()
+    ILocation::PathType getFolder()
     {
         return getLocation<Folder>(m_rw)->getFolder();
     }
@@ -126,8 +128,6 @@ private :
     RW *m_rw;
 
 };
-
-
 
 }
 }

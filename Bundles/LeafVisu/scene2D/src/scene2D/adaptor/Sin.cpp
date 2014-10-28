@@ -56,7 +56,7 @@ void Sin::doUpdate()
 
 }
 
-void Sin::doUpdate( fwServices::ObjectMsg::csptr _msg)
+void Sin::doReceive( fwServices::ObjectMsg::csptr _msg)
 {
 
 }

@@ -22,7 +22,7 @@ namespace fwData
  * @class   Plane
  * @brief   This class defines a plane defined by tree points.
  * @see     ::fwData::Point
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Plane : public Object
@@ -36,7 +36,6 @@ public :
 
     typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -48,10 +47,10 @@ public :
     FWDATA_API virtual ~Plane();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Plane::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Plane::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /*
      * @brief Compare method

@@ -61,9 +61,9 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
     {
         if (actionInfo.m_isSeparator)
         {
-            QWidget * widget = new QWidget();
             if (actionInfo.m_size > 0)
             {
+                QWidget * widget = new QWidget(toolBar);
                 widget->setMinimumWidth(actionInfo.m_size);
                 toolBar->addWidget(widget);
             }
@@ -75,18 +75,18 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else if (actionInfo.m_isSpacer)
         {
-            QWidget* spacer = new QWidget();
+            QWidget* spacer = new QWidget(toolBar);
             spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             toolBar->addWidget(spacer);
             actionGroup = 0;
         }
         else if (actionInfo.m_isMenu)
         {
-            ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+            ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
             QMenu* qtMenu = new QMenu(toolBar);
             menu->setQtMenu(qtMenu);
 
-            QToolButton * toolButton = new QToolButton();
+            QToolButton * toolButton = new QToolButton(toolBar);
             if (toolBar->orientation() == Qt::Horizontal)
             {
                 toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -110,7 +110,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else if (actionInfo.m_isEditor)
         {
-            ::fwGuiQt::container::QtContainer::NewSptr container;
+            ::fwGuiQt::container::QtContainer::sptr container = ::fwGuiQt::container::QtContainer::New();
             QWidget* widget = new QWidget(toolBar);
             container->setQtContainer(widget);
 
@@ -129,7 +129,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else
         {
-            ::fwGuiQt::container::QtMenuItemContainer::NewSptr menuItem;
+            ::fwGuiQt::container::QtMenuItemContainer::sptr menuItem = ::fwGuiQt::container::QtMenuItemContainer::New();
             QAction *action;
             if (!actionInfo.m_icon.empty())
             {

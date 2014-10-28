@@ -115,7 +115,7 @@ public :
         m_isUpdated = true;
     };
 
-    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         m_isUpdatedMessage = true;
     };

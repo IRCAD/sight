@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::TopToBottom);
     if (qtContainer->layout())
     {
-        qtContainer->layout()->deleteLater();
+        QWidget().setLayout(qtContainer->layout());
     }
     qtContainer->setLayout(layout);
 
@@ -58,14 +58,14 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     {
         QWidget *widget = new QWidget(m_tabWidget);
 
-        ::fwGuiQt::container::QtContainer::NewSptr subContainer;
+        ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
         subContainer->setQtContainer(widget);
         m_subViews.push_back(subContainer);
 
         int idx = 0;
         if(viewInfo.m_useScrollBar)
         {
-            QScrollArea *scrollArea = new QScrollArea();
+            QScrollArea *scrollArea = new QScrollArea(m_tabWidget);
             scrollArea->setWidget(widget);
             scrollArea->setWidgetResizable ( true );
             idx = m_tabWidget->addTab( scrollArea, QString::fromStdString(viewInfo.m_caption));
@@ -85,9 +85,6 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
 
 void TabLayoutManager::destroyLayout()
 {
-    QWidget* qtContainer = m_parentContainer->getQtContainer();
-    qtContainer->layout()->deleteLater();
-    qtContainer->setLayout(0);
     this->destroySubViews();
     m_tabWidget->clear();
     m_parentContainer->clean();

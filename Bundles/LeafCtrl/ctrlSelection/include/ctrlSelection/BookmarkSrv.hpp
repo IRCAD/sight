@@ -17,9 +17,9 @@ namespace ctrlSelection
 
 
 /**
- * @class  BookmarkSrv.
+ * @class  BookmarkSrv
  * @brief  This service bookmark its object with the name given in configuration.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2011.
  */
@@ -36,15 +36,25 @@ public :
 
 protected:
 
-    /// Add the object in bookmark.
+    /// Adds the object in bookmark.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
 
-    /// Remove the object from bookmark
+    /// Removes the object from bookmark
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
     /// Do nothing
     CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
 
+    /**
+     * @verbatim
+       <service impl="::ctrlSelection::BookmarkSrv" type="::fwServices::IController" autoConnect="no">
+           <bookmark fromString="..." name="..." />
+       </service>
+       @endverbatim
+     * - \b fromString : prefix of the bookmark key
+     * - \b name : name of the bookmark
+     * The prefix and the name are concatenated as 'prefix_name'.
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Do nothing
@@ -56,7 +66,7 @@ protected:
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
     /// Do nothing
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private:
     std::string m_bookmarkName;

@@ -57,7 +57,7 @@ void ColorTest::methode2()
     const float B = 0.5f;
     const float A = 0.6f;
 
-    ::fwData::Color::NewSptr color;
+    ::fwData::Color::sptr color = ::fwData::Color::New();
 
     ::fwData::Color::ColorArray array;
     array[0] = R;

@@ -1,120 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
+#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Map.hpp"
 
-fwCampImplementMacro((fwAtoms)(Map))
-{
-    builder
-        .tag("object_version", "1")
-        .tag("lib_name", "fwAtoms")
-        .base< ::fwAtoms::Base>()
-        .property("value", &::fwAtoms::Map::getValue);
-}
+fwAtomsRegisterMacro( ::fwAtoms::Map );
 
 namespace fwAtoms
 {
 
-void Map::insert(const Base::sptr key, Base::sptr value)
-{
-    m_value[key] = value;
-}
-
 //------------------------------------------------------------------------------
 
-unsigned int Map::getSize()
+Base::sptr Map::clone() const
 {
-    return m_value.size();
-}
-
-//------------------------------------------------------------------------------
-
-Map::Iterator Map::begin()
-{
-    return m_value.begin();
-}
-
-//------------------------------------------------------------------------------
-
-Map::cIterator Map::cBegin() const
-{
-    return m_value.begin();
-}
-
-//------------------------------------------------------------------------------
-
-Map::Iterator Map::end()
-{
-    return m_value.end();
-}
-
-//------------------------------------------------------------------------------
-
-Map::cIterator Map::cEnd() const
-{
-    return m_value.end();
-}
-
-//------------------------------------------------------------------------------
-
-//const Map::MapType& Map::getValue() const
-//{
-//    return m_value;
-//}
-
-Map::MapType& Map::getValue()
-{
-    return m_value;
-}
-
-//------------------------------------------------------------------------------
-
-bool Map::isEmpty() const
-{
-    return m_value.empty();
-}
-
-//------------------------------------------------------------------------------
-
-Base::sptr Map::operator[](std::string index)
-{
-    MapType::const_iterator cIt = m_value.begin();
-    Base::sptr result;
-
-    for(;cIt != m_value.end(); ++cIt)
+    Map::sptr cloneMap = Map::New();
+    BOOST_FOREACH(const ValueType &elem, m_value)
     {
-        if(cIt->first->getString() == index)
-        {
-            result = cIt->second;
-            break;
-        }
+        cloneMap->m_value.insert( ValueType(elem.first, elem.second->clone() ) );
     }
-    return result;
+    return cloneMap;
 }
 
-//------------------------------------------------------------------------------
-
-Base::sptr Map::clone()
-{
-    return this->getSptr();
 }
 
-//------------------------------------------------------------------------------
-
-Map::MapType::const_iterator Map::find(Base::sptr key) const
-{
-    return m_value.find(key);
-}
-
-//------------------------------------------------------------------------------
-
-size_t Map::size()
-{
-    return m_value.size();
-}
-
-
-}

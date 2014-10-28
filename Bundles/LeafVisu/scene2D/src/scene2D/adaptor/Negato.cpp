@@ -42,9 +42,9 @@ Negato::Negato() throw()
     m_orientation(MedicalImageAdaptor::Z_AXIS), m_changeSliceTypeAllowed(true)
 {
     this->installTFSelectionEventHandler(this);
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+//    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+//    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+//    this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //-----------------------------------------------------------------------------
@@ -293,7 +293,7 @@ void Negato::doUpdate() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Negato::doUpdate( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
+void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     if( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE) && m_changeSliceTypeAllowed )

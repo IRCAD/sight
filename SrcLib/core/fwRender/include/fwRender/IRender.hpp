@@ -21,8 +21,8 @@ namespace fwRender
 
 /**
  * @brief   Defines the service interface managing the rendering service for object.
- * @class   IRender.
- * @author  IRCAD (Research and Development Team).
+ * @class   IRender
+ * 
  * @date    2007-2009.
  *
  * Use the base service methods :

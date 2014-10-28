@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for PlaneList : store modification information
  * @class   PlaneMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009
  * @see     ::fwServices::ObjectMsg
  */

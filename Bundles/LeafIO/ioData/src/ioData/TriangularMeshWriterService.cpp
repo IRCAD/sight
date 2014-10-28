@@ -94,7 +94,7 @@ void TriangularMeshWriterService::updating() throw(::fwTools::Failed)
         ::fwData::TriangularMesh::sptr mesh = this->getObject< ::fwData::TriangularMesh >( );
         SLM_ASSERT("mesh not instanced", mesh);
 
-        ::fwDataIO::writer::TriangularMeshWriter::NewSptr writer;
+        ::fwDataIO::writer::TriangularMeshWriter::sptr writer = ::fwDataIO::writer::TriangularMeshWriter::New();
         writer->setObject( mesh );
         writer->setFile(this->getFile());
         writer->write();

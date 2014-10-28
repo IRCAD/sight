@@ -28,7 +28,7 @@ namespace fwData
  * @class   Mesh
  * @brief   Data holding a geometric structure composed of points, lines,
  * triangles, quads or polygons
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  *
  * It is the new structure that represent mesh in fw4spl. For the moment, this new structure is available
@@ -80,7 +80,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >) ;
 
-    fwDataObjectMacro();
 
     fwCampMakeFriendDataMacro((fwData)(Mesh));
 
@@ -95,7 +94,8 @@ public:
         EDGE,
         TRIANGLE,
         QUAD,
-        POLY
+        POLY,
+        TETRA
     } CellTypesEnum;
 
     typedef enum {
@@ -130,10 +130,10 @@ public:
     FWDATA_API virtual ~Mesh() ;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Mesh::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Mesh::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 
     /**

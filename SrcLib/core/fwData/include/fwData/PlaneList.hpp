@@ -21,7 +21,7 @@ namespace fwData
  * @class   PlaneList
  * @brief   This class defines a list of planes
  * @see     ::fwData::Point
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API PlaneList : public Object
@@ -35,7 +35,6 @@ public :
 
     typedef std::vector< ::fwData::Plane::sptr > PlaneListContainer;
 
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -47,10 +46,10 @@ public :
     FWDATA_API virtual ~PlaneList();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( PlaneList::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( PlaneList::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     // Looking for duplicate plan
     FWDATA_API void deleteDuplicatedPlan(void);

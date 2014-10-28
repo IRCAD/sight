@@ -21,8 +21,8 @@ namespace registrar
 
 /**
  * @brief   Defines the menuBar registrar for IHM.
- * @class   MenuBarRegistrar.
- * @author  IRCAD (Research and Development Team).
+ * @class   MenuBarRegistrar
+ * 
  * @date    2009-2010.
  *
  */
@@ -31,10 +31,10 @@ class FWGUI_CLASS_API MenuBarRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string) )), new MenuBarRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new MenuBarRegistrar );
 
     /// Constructor.
-    FWGUI_API MenuBarRegistrar( const std::string sid);
+    FWGUI_API MenuBarRegistrar( const std::string &sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~MenuBarRegistrar();
@@ -54,7 +54,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -68,7 +68,7 @@ public:
       </service>
        @endverbatim
      * This method analyzes the registry section of the configuration.
-     *  - <menu sid="myMenu" start="yes" /> : define the service of the menu to add in the menu bar.
+     *  - \<menu sid="myMenu" start="yes" /\> : define the service of the menu to add in the menu bar.
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the service must be started by the menu bar service.
      */

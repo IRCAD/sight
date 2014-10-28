@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -70,7 +70,7 @@ void DummyEditor::stopping() throw(::fwTools::Failed)
     ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     SLM_ASSERT("container not instanced", qtContainer->getQtContainer());
 
-    m_staticText->deleteLater();
+    // deletes contained widgets
     qtContainer->clean();
     this->destroy();
 }
@@ -103,7 +103,7 @@ void DummyEditor::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DummyEditor::updating(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void DummyEditor::receiving(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

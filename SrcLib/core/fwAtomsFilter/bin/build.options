@@ -1,0 +1,10 @@
+TYPE = 'shared'
+VERSION = '0.1'
+USE = ['boost']
+LIB = [
+    'fwAtoms_0-1',
+    'fwAtomsPatch_0-1',
+    'fwData_0-1',
+    'fwTools_0-1',
+    'fwActivities_0-1',
+    ]

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,6 +22,8 @@
 #include <fwCore/spyLog.hpp>
 #include <fwCore/mt/types.hpp>
 
+#include <fwTest/Exception.hpp>
+
 #include "SpyLogTest.hpp"
 
 
@@ -32,6 +34,8 @@ namespace fwCore
 {
 namespace ut
 {
+
+static ::fwTest::Exception e("");
 
 void SpyLogTest::setUp()
 {
@@ -168,7 +172,7 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
 {
     CPPUNIT_ASSERT_EQUAL(logMessagesRef.size(), logMessages.size());
 
-    const std::string linePattern("([0-9]+\\])");
+    const std::string linePattern("(\\[[0-9]+\\])");
     const std::string timePattern("(\\[.+\\])");
     const std::string levelPattern("( *\\[[a-z]+\\])");
     const std::string filePattern("( .*:)");

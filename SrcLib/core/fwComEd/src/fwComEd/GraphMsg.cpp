@@ -94,7 +94,7 @@ void GraphMsg::removingNode( ::fwData::Node::csptr node )
 
 void GraphMsg::addingEdge( ::fwData::Node::csptr nodeFrom, ::fwData::Node::csptr nodeTo, std::string outputPortId, std::string inputPortId )
 {
-    ::fwData::Composite::NewSptr edgeInfo;
+    ::fwData::Composite::sptr edgeInfo = ::fwData::Composite::New();
     (*edgeInfo)["nodeFrom"] = ::fwData::Node::constCast( nodeFrom );
     (*edgeInfo)["nodeTo"] = ::fwData::Node::constCast( nodeTo );
     (*edgeInfo)["outputPortId"] = ::fwData::String::New( outputPortId );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,56 +10,50 @@
 #include <fwCamp/macros.hpp>
 
 
+#include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/Camera.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/Dictionary.hpp>
 #include <fwData/Edge.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Graph.hpp>
 #include <fwData/Histogram.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/Line.hpp>
 #include <fwData/List.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/Model.hpp>
-#include <fwData/None.hpp>
-#include <fwData/Patient.hpp>
-#include <fwData/PatientDB.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Port.hpp>
 #include <fwData/ProcessObject.hpp>
+#include <fwData/ROITraits.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/ReconstructionTraits.hpp>
+#include <fwData/Resection.hpp>
+#include <fwData/ResectionDB.hpp>
 #include <fwData/String.hpp>
+#include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
-#include <fwData/Study.hpp>
+#include <fwData/Tag.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
+#include <fwData/Video.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
 
-#include "fwDataCamp/Acquisition.hpp"
-#include "fwDataCamp/Array.hpp"
-#include "fwDataCamp/Camera.hpp"
-#include "fwDataCamp/config.hpp"
-#include "fwDataCamp/DictionaryOrgan.hpp"
-#include "fwDataCamp/Image.hpp"
-#include "fwDataCamp/Line.hpp"
 #include "fwDataCamp/Material.hpp"
-#include "fwDataCamp/Mesh.hpp"
-#include "fwDataCamp/Node.hpp"
-#include "fwDataCamp/Reconstruction.hpp"
-#include "fwDataCamp/ReconstructionTraits.hpp"
-#include "fwDataCamp/Resection.hpp"
-#include "fwDataCamp/ResectionDB.hpp"
-#include "fwDataCamp/ROITraits.hpp"
 #include "fwDataCamp/StructureTraits.hpp"
-#include "fwDataCamp/Tag.hpp"
 #include "fwDataCamp/TransferFunction.hpp"
-#include "fwDataCamp/Video.hpp"
 
 
-namespace fwDataCamp {
+namespace fwDataCamp
+{
 
 struct runner
 {
@@ -80,11 +74,7 @@ struct runner
         localDeclarefwDataMaterialSHADING_MODE();
         localDeclarefwDataMaterial();
         localDeclarefwDataReconstruction();
-        localDeclarefwDataAcquisition();
-        localDeclarefwDataStudy();
         localDeclarefwDataComposite();
-        localDeclarefwDataPatient();
-        localDeclarefwDataPatientDB();
         localDeclarefwDataPoint();
         localDeclarefwDataPointList();
         localDeclarefwDataTransformationMatrix3D();
@@ -106,14 +96,11 @@ struct runner
         localDeclarefwDataResection();
         localDeclarefwDataResectionDB();
         localDeclarefwDataCamera();
-        localDeclarefwDataDictionary();
-        localDeclarefwDataDictionaryOrgan();
         localDeclarefwDataHistogram();
         localDeclarefwDataLine();
         localDeclarefwDataList();
         localDeclarefwDatalocationSingleFile();
         localDeclarefwDataModel();
-        localDeclarefwDataNone();
         localDeclarefwDataProcessObject();
         localDeclarefwDataTag();
         localDeclarefwDataVideo();
@@ -121,7 +108,7 @@ struct runner
 
     static runner r;
 };
-}
+} //end namespace fwDataCamp
 
 
 

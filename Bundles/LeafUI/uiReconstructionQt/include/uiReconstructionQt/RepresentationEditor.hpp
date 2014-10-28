@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_
-#define _UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_
+#ifndef _UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_
+#define _UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_
 
 #include <QObject>
 #include <QPointer>
@@ -28,8 +28,8 @@ namespace uiReconstruction
 
 /**
  * @brief   RepresentationEditor service.
- * @class   RepresentationEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   RepresentationEditor
+ * 
  * @date    2010.
  */
 class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public  QObject, public ::gui::editor::IEditor
@@ -57,8 +57,8 @@ protected:
     ///This method launches the IEditor::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Managment of observations ( overides )
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    /// Management of observations ( overrides )
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 
@@ -95,6 +95,6 @@ private:
 
 } // uiReconstruction
 
-#endif /*_UIRECONSTRUCTIONQT_ORGAN_MATERIAL_EDITOR_HPP_*/
+#endif /*_UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_*/
 
 

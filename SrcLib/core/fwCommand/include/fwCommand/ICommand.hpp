@@ -46,7 +46,7 @@ public :
     virtual ~ICommand() {};
 
     /**
-     * @briefRetrieves the memory footprint of the command.
+     * @brief Retrieves the memory footprint of the command.
      */
     FWCOMMAND_API virtual const boost::uint32_t  getSize() const = 0;
 

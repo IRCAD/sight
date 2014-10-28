@@ -29,7 +29,7 @@ namespace profile
  * @brief   Activates a given bundle with optional parameters.
  * @class  Activater
  * @date    2007-2009.
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class Activater : public boost::noncopyable
 {
@@ -47,22 +47,22 @@ public:
     /**
      * @brief       Adds a new parameter to the activater.
      *
-     * @param[in]   name    a string containing the parameter name
-     * @param[in]   value   a string containing the parameter value
+     * @param[in]   identifier  a string containing the parameter name
+     * @param[in]   value       a string containing the parameter value
      */
     FWRUNTIME_API void addParameter( const std::string & identifier, const std::string & value );
 
     /**
      * @brief       Adds a new disable extension point  to the activater.
      *
-     * @param[in]   name    a string containing the parameter name
+     * @param[in]   identifier    a string containing the parameter name
      */
     FWRUNTIME_API void addDisableExtensionPoint( const std::string & identifier );
 
     /**
      * @brief       Adds a new disable extension  to the activater.
      *
-     * @param[in]   name    a string containing the parameter name
+     * @param[in]   identifier    a string containing the parameter name
      */
     FWRUNTIME_API void addDisableExtension( const std::string & identifier );
 

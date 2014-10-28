@@ -16,8 +16,8 @@ namespace ioData
 {
 /**
  * @brief   Mesh reader service.
- * @class   MeshReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   MeshReaderService
+ * 
  * @date    2009.
  *
  * Service reading a trian file into a fwData::Mesh object.
@@ -97,7 +97,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
 
     /**

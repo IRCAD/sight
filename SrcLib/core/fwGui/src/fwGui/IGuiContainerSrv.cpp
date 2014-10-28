@@ -32,7 +32,7 @@ void IGuiContainerSrv::initialize()
     SLM_ASSERT("Service hasn't configuration", m_configuration);
 
     // Create view registrar
-    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::NewSptr( this->getID() );
+    m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::New( this->getID() );
     // find ViewRegistrar configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("registry");
     if ( ! vectViewMng.empty() )

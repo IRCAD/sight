@@ -23,8 +23,8 @@ namespace uiImage
 
 /**
  * @brief   This editor service represent a button to show/hide scan in a generic scene.
- * @class   ShowScanEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowScanEditor
+ * 
  * @date    2010.
  */
 class UIIMAGEQT_CLASS_API ShowScanEditor : public QObject, public ::gui::editor::IEditor
@@ -56,7 +56,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Do nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
@@ -69,7 +69,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="showScanNegato3DEditor" type="::gui::editor::IEditor" implementation="::uiImage::ShowScanEditor" autoComChannel="no">
+     <service uid="showScanNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
          <negatoAdaptor uid="myNegatoMPR" />
      </service>
        @endverbatim

@@ -22,12 +22,9 @@ namespace manager
 {
 
 /**
- * @class  SField.
+ * @class  SField
  * @brief  This services is a manager which starts, stops or swaps services on field contained in a composite when
  * it receive specific message (mainly sent by updater).
- * @author IRCAD (Research and Development Team).
-
- * @date   2007-2009.
  */
 class CTRLSELECTION_CLASS_API SField : public ::ctrlSelection::IManagerSrv
 {
@@ -57,21 +54,31 @@ protected:
     * Sample of declaration configuration for a simple swapper service
     *
     * @verbatim
-        <service uid="myFieldManager" implementation="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
+        <service uid="FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
                 <field id="TFSelection" type="::fwData::TransferFunction" >
-                    <service uid="myServices" implementation="..." type="..." autoComChannel="yes" />
+                    <service uid="myServices" impl="..." type="..." autoConnect="yes" />
+                    <connect>
+                        <signal>key</signal>
+                        <slot>uid/key</slot>
+                    </connect>
                 </field>
                 <field id="AxialSliceIndex" type="::fwData::Integer" >
-                    <service uid="myServices2" implementation="..." type="..." autoComChannel="yes" />
+                    <service uid="Services2" impl="..." type="..." autoConnect="yes" />
+                    <proxy channel="...">
+                        <signal>...</signal>
+                        <signal>.../...</signal>
+                        <slot>.../...</slot>
+                        <slot>.../...</slot>
+                    </proxy>
                 </field>
             </config>
         </service>
     @endverbatim
     * With:
     * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted but swap it on a dummy field.
-    * @li the fields and services tags are defined as same as the configuration of fields and services.
+    * @li the fields, services, connect and proxy tags are defined as same as the configuration of fields and services.
     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
@@ -86,7 +93,7 @@ protected:
 
     /// Reacts on specifics event (ADDED_FIELDS, REMOVED_FIELDS and SWAPPED_FIELDS) and start, stop or swap the managed services
     /// on the fields defined in the message or dummy fields
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -99,7 +106,7 @@ protected:
 
         SubService()
         {
-            m_hasComChannel = false;
+            m_hasAutoConnection = false;
         }
 
         ~SubService()
@@ -108,14 +115,11 @@ protected:
         SPTR (::fwServices::IService) getService()
                     { return m_service.lock(); }
 
-        SPTR (::fwServices::IService) getComChannel()
-                            { return m_comChannel.lock(); }
-
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        WPTR(::fwServices::ComChannelService) m_comChannel;
-        bool m_hasComChannel;
+        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        bool m_hasAutoConnection;
     };
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;

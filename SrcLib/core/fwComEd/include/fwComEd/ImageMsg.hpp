@@ -21,7 +21,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for image : store modification information
  * @class   ImageMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
@@ -84,7 +84,7 @@ public:
      * @param[out] f : frontal position
      * @param[out] s : sagittal position
      */
-    FWCOMED_API void getSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s ) const;
+    FWCOMED_API void getSliceIndex(::fwData::Integer::sptr &a, ::fwData::Integer::sptr &f, ::fwData::Integer::sptr &s ) const;
 
     /**
      * @brief Get the window min and max.

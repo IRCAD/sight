@@ -59,7 +59,7 @@ bool Image::createLandmarks()
     // Manage image landmarks
     if ( ! m_image->getField( ::fwComEd::Dictionary::m_imageLandmarksId ) )
     {
-        ::fwData::PointList::NewSptr pl;
+        ::fwData::PointList::sptr pl = ::fwData::PointList::New();
         m_image->setField( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
         fieldIsCreated = true;
     }
@@ -226,7 +226,7 @@ const std::string Image::getPixelAsString(SizeType::value_type x,
 
 //------------------------------------------------------------------------------
 
-::fwTools::BufferObject::Lock Image::getLock() const
+::fwMemory::BufferObject::Lock Image::getLock() const
 {
     return m_lock;
 }

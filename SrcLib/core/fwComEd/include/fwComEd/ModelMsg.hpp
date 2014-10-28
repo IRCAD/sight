@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for model : store modification information
  * @class   ModelMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009
  * @see     ::fwServices::ObjectMsg
  */

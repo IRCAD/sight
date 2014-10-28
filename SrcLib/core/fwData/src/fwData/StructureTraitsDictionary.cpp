@@ -10,6 +10,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/StructureTraitsDictionary.hpp"
 
 fwDataRegisterMacro( ::fwData::StructureTraitsDictionary );
@@ -68,21 +69,29 @@ StructureTraitsDictionary::StructureTypeNameContainer StructureTraitsDictionary:
 
 //------------------------------------------------------------------------------
 
-void StructureTraitsDictionary::shallowCopy( StructureTraitsDictionary::csptr source )
+void StructureTraitsDictionary::shallowCopy(const Object::csptr &source )
 {
+    StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( source );
-    m_structureTraitsMap = source->m_structureTraitsMap;
+    m_structureTraitsMap = other->m_structureTraitsMap;
 }
 
 //------------------------------------------------------------------------------
 
-void StructureTraitsDictionary::deepCopy( StructureTraitsDictionary::csptr source )
+void StructureTraitsDictionary::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( source );
+    StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source, cache );
     m_structureTraitsMap.clear();
-    BOOST_FOREACH(StructureTraitsMapType::value_type elt, source->m_structureTraitsMap)
+    BOOST_FOREACH(StructureTraitsMapType::value_type elt, other->m_structureTraitsMap)
     {
-        m_structureTraitsMap[elt.first] = ::fwData::Object::copy(elt.second);
+        m_structureTraitsMap[elt.first] = ::fwData::Object::copy(elt.second, cache);
     }
 }
 

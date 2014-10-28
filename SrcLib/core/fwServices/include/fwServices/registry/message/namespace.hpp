@@ -15,8 +15,8 @@ namespace registry
 {
 /**
  * @brief       Contains fwServices::registry::message details
- * @namespace   message
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwServices::registry::message
+ * 
  * @date        2009-2012
  *
  */

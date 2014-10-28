@@ -17,7 +17,7 @@ namespace fwData
 /**
  * @class   ReconstructionTraits
  * @brief   This class defines Reconstruction traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-20011.
  *
  * A ReconstructionTraits contains :
@@ -64,6 +64,9 @@ public:
 
     /// Get the associated structure traits
     FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
+
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 private:
 

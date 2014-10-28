@@ -18,7 +18,7 @@ namespace fwData
 /**
  * @class   StructureTraitsDictionary
  * @brief   This class defines a dictionary of structure traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  *
  * @note The dictionary cannot contain two structure with the same type.
@@ -62,10 +62,10 @@ public:
     FWDATA_API StructureTypeNameContainer getStructureTypeNames() const;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( StructureTraitsDictionary::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( StructureTraitsDictionary::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 private:
 

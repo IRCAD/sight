@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include "fwData/ObjectLock.hpp"
 
@@ -93,26 +93,11 @@ void ObjectLock::lock( ::fwData::Reconstruction::sptr rec, LocksType & locks )
 
 //-----------------------------------------------------------------------------
 
-void ObjectLock::lock( ::fwData::Acquisition::sptr acq, LocksType & locks )
-{
-    if ( acq )
-    {
-        this->lock( acq->getImage(), locks ) ;
-        BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, acq->getReconstructions() )
-        {
-            this->lock( rec, locks ) ;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 ObjectLock::ObjectLock( ::fwData::Object::sptr obj )
 {
     ::fwData::Image::sptr image = ::fwData::Image::dynamicCast( obj );
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast( obj );
     ::fwData::Array::sptr array = ::fwData::Array::dynamicCast( obj );
-    ::fwData::Acquisition::sptr acq = ::fwData::Acquisition::dynamicCast( obj );
 
     if( image )
     {
@@ -125,10 +110,6 @@ ObjectLock::ObjectLock( ::fwData::Object::sptr obj )
     else if ( array )
     {
         this->lock( array, m_locks ) ;
-    }
-    else if ( acq )
-    {
-        this->lock( acq, m_locks ) ;
     }
 }
 

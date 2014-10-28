@@ -21,15 +21,13 @@ namespace action
 
 /**
  * @brief   Apply an action (start, stop, ...) on a service specify by uid.
- * @class   StarterActionService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   StarterActionService
  *
  * This action works on a ::fwData::Object. It does the action specify by the specify config.
  * This action can be :
  *   - Start a service :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <start uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -37,7 +35,7 @@ namespace action
  *
  *   - Start a service if exists :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <start_if_exists uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -45,7 +43,7 @@ namespace action
  *
  *   - Stop a service :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <stop uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -53,7 +51,7 @@ namespace action
  *
  *   - Stop a service if exists :  Test if the service exist before stopping it
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <stop_if_exists uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -61,7 +59,7 @@ namespace action
  *
  *   - Start or stop the service:
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
               <start_or_stop uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -112,7 +110,7 @@ protected:
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
@@ -121,11 +119,21 @@ protected:
 
     GUI_API virtual void starting() throw(::fwTools::Failed);
 
+    /**
+     * @brief Uninitialized the service activity.
+     * All services started by this action are stopped.
+     */
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
 private:
+    typedef ::fwTools::fwID::IDType IDSrvType;
+    typedef std::pair< IDSrvType, ActionType > PairIDActionType;
+    typedef std::vector<PairIDActionType> VectPairIDActionType;
+    typedef std::set<IDSrvType> SetIDSrvType;
+
     // vector representing uuid's services that must be started (true) or stopped (false)
-    std::vector< std::pair< std::string, ActionType > > m_uuidServices;
+    VectPairIDActionType m_uuidServices;
+    SetIDSrvType m_idStartedSrvSet;
 };
 
 

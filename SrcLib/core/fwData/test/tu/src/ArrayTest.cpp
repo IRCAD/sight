@@ -43,7 +43,7 @@ void ArrayTest::tearDown()
 
 void ArrayTest::allocation()
 {
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper(array);
 
     CPPUNIT_ASSERT(array->empty());
@@ -107,7 +107,7 @@ void ArrayTest::allocation()
 
 void ArrayTest::resize()
 {
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
@@ -203,7 +203,7 @@ void ArrayTest::resize()
 
 void ArrayTest::reallocate()
 {
-    ::fwData::Array::NewSptr array;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
@@ -331,10 +331,8 @@ void ArrayTest::reallocate()
 
 void ArrayTest::copy()
 {
-    ::fwData::Array::NewSptr array;
-    ::fwData::Array::NewSptr deepCopyArray;
+    ::fwData::Array::sptr array = ::fwData::Array::New();
     ::fwComEd::helper::Array arrayHelper(array);
-    ::fwComEd::helper::Array deepCopyArrayHelper(deepCopyArray);
 
     const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size;
@@ -351,8 +349,13 @@ void ArrayTest::copy()
         *iter = count++;
     }
 
+
+    ::fwData::Array::sptr deepCopyArray;
+    deepCopyArray = ::fwData::Object::copy(array);
+
+    ::fwComEd::helper::Array deepCopyArrayHelper(deepCopyArray);
+
     // check deepCopy
-    deepCopyArray->deepCopy(array);
     CPPUNIT_ASSERT_EQUAL(  array->getBufferOffset(list_of(1)(0), 0, 4), deepCopyArray->getBufferOffset(list_of(1)(0), 0, 4));
     CPPUNIT_ASSERT_EQUAL(  array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  array->getSizeInBytes(), deepCopyArray->getSizeInBytes());

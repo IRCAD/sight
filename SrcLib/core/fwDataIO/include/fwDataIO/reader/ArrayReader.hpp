@@ -23,8 +23,8 @@ namespace reader
 
 /**
  * @brief   Array Reader. Read file format .raw
- * @class   ArrayReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   ArrayReader
+ * 
  * @date    2011
  *
  * Ircad reader to read a ::fwData::Array on filesystem in a raw format.

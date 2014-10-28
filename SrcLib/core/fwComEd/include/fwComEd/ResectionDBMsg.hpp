@@ -21,7 +21,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for resectionDB : store modification information
  * @class   ResectionDBMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009
  * @see     ::fwServices::ObjectMsg
  */

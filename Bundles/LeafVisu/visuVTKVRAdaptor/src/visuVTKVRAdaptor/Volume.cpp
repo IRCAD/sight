@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,33 +7,22 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 #include <fwData/Color.hpp>
-#include <fwData/String.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkCommand.h>
 #include <vtkPlaneCollection.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkImageImport.h>
 #include <vtkVolumeProperty.h>
 #include <vtkVolume.h>
-#include <vtkFixedPointVolumeRayCastMapper.h>
-#include <vtkAbstractVolumeMapper.h>
-#include <vtkVolumeTextureMapper2D.h>
-#include <vtkVolumeTextureMapper3D.h>
-#include <vtkVolumeRayCastMapper.h>
-#include <vtkVolumeRayCastCompositeFunction.h>
-#include <vtkVolumeRayCastIsosurfaceFunction.h>
-#include <vtkVolumeRayCastMIPFunction.h>
+#include <vtkSmartVolumeMapper.h>
 #include <vtkBoxWidget2.h>
 #include <vtkBoxRepresentation.h>
 #include <vtkObjectFactory.h>
@@ -113,7 +102,7 @@ public :
     }
 
     //--------------------------------------------------------------------------
-    CroppingCallback( )
+    CroppingCallback( ) : mapper(NULL)
     { }
 
     //--------------------------------------------------------------------------
@@ -135,17 +124,16 @@ Volume::Volume() throw() :
     ::fwComEd::helper::MedicalImageAdaptor(),
     ::fwRenderVTK::IVtkAdaptorService(),
      m_bClippingBoxIsActivate(false),
-     m_autoResetCamera(true)
+     m_autoResetCamera(true),
+     m_croppingBoxDefaultState(true)
+
 {
     m_clippingPlanesId = "";
     m_clippingPlanes   = 0;
 
     m_volume = vtkVolume::New();
     m_volumeProperty = vtkVolumeProperty::New();
-    m_volumeMapper = vtkVolumeTextureMapper3D::New();
-
-    vtkVolumeTextureMapper3D::SafeDownCast(m_volumeMapper)->SetPreferredMethodToFragmentProgram();
-    vtkVolumeTextureMapper3D::SafeDownCast(m_volumeMapper)->SetSampleDistance (.2);
+    m_volumeMapper = vtkSmartVolumeMapper::New();
 
     m_abortCommand    = AbortCallback::New();
 
@@ -164,12 +152,12 @@ Volume::Volume() throw() :
 
     // Manage events
     this->installTFSelectionEventHandler(this);
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
-    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-    this->addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
-    this->addNewHandledEvent( "RESET_BOX_WIDGET" );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    //this->addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
+    //this->addNewHandledEvent( "RESET_BOX_WIDGET" );
 }
 
 //------------------------------------------------------------------------------
@@ -221,6 +209,12 @@ void Volume::doStart() throw(fwTools::Failed)
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
     this->doUpdate(); //TODO: remove me ?
     this->installTFObserver( this->getSptr() );
+
+    if(!m_croppingBoxDefaultState)
+    {
+        m_bClippingBoxIsActivate = m_croppingBoxDefaultState;
+        this->activateBoxClipping( m_bClippingBoxIsActivate );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -258,7 +252,7 @@ void Volume::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Volume::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void Volume::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -309,6 +303,12 @@ void Volume::configuring() throw(fwTools::Failed)
         m_autoResetCamera = (autoresetcamera == "yes");
     }
     this->parseTFConfig( m_configuration );
+
+    if(m_configuration->hasAttribute("croppingBox") &&
+       m_configuration->getAttributeValue("croppingBox") == "no")
+    {
+        m_croppingBoxDefaultState = false;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -318,7 +318,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     this->updateImageInfos(image);
 
     vtkImageImport *imageImport = vtkImageImport::New();
-    ::vtkIO::configureVTKImageImport( imageImport, image );
+    ::fwVtkIO::configureVTKImageImport( imageImport, image );
 
     m_volumeMapper->RemoveAllClippingPlanes();
     if (m_clippingPlanes)
@@ -335,7 +335,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     m_boxWidget->On();
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->CroppingOn();
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->SetCroppingRegionPlanes( m_volumeMapper->GetBounds() );
-    m_bClippingBoxIsActivate = true;
+    m_bClippingBoxIsActivate = m_croppingBoxDefaultState;
 
     //shiftScale->Delete();
     imageImport->Delete();
@@ -428,9 +428,9 @@ void Volume::buildPipeline( )
     m_volumeProperty->ShadeOn();
     m_volumeProperty->SetInterpolationTypeToLinear();
 
-    m_volumeProperty->SetAmbient( 0.1 );
-    m_volumeProperty->SetDiffuse( 0.7 );
-    m_volumeProperty->SetSpecular( 0.2 );
+    m_volumeProperty->SetAmbient( 0.2 );
+    m_volumeProperty->SetDiffuse( 1.0 );
+    m_volumeProperty->SetSpecular( 1.0 );
     m_volumeProperty->SetSpecularPower( 10.0 );
 
     m_volume->SetMapper(m_volumeMapper);

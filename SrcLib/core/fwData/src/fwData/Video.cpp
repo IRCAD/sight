@@ -6,6 +6,7 @@
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Video.hpp"
 
@@ -52,6 +53,17 @@ void Video::Modified()
 }
 
 //------------------------------------------------------------------------------
+
+void Video::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+{
+    Video::csptr other = Video::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source, cache );
+
+    OSLM_FATAL("Not implemented." );
+}
 
 
 } // namespace fwData

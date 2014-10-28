@@ -34,7 +34,7 @@ protected:
 
     OPIMAGEFILTER_API void stopping() throw ( ::fwTools::Failed );
 
-    OPIMAGEFILTER_API void updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+    OPIMAGEFILTER_API void receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
 
     OPIMAGEFILTER_API void configuring() throw ( ::fwTools::Failed );
 

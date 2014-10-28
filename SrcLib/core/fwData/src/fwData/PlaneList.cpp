@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/PlaneList.hpp"
 
 fwDataRegisterMacro( ::fwData::PlaneList );
@@ -30,26 +31,34 @@ PlaneList::~PlaneList()
 
 //------------------------------------------------------------------------------
 
-void PlaneList::shallowCopy( PlaneList::csptr _source )
+void PlaneList::shallowCopy(const Object::csptr &_source )
 {
+    PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    this->m_vPlanes = _source->m_vPlanes;
+    this->m_vPlanes = other->m_vPlanes;
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneList::deepCopy( PlaneList::csptr _source )
+void PlaneList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
+    PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
 
     this->m_vPlanes.clear();
-    for (   PlaneList::PlaneListContainer::const_iterator iter = _source->m_vPlanes.begin();
-            iter != _source->m_vPlanes.end();
+    for (   PlaneList::PlaneListContainer::const_iterator iter = other->m_vPlanes.begin();
+            iter != other->m_vPlanes.end();
             ++iter )
     {
-        Plane::NewSptr newPlane;
-        newPlane->deepCopy( *iter );
+        Plane::sptr newPlane;
+        newPlane = ::fwData::Object::copy(*iter, cache);
         this->m_vPlanes.push_back( newPlane );
     }
 }

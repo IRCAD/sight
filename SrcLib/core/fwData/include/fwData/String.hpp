@@ -22,7 +22,7 @@ namespace fwData
  *
  * String object is essentially used as a field in other objects.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API String : public GenericField< std::string >
@@ -30,7 +30,6 @@ class FWDATA_CLASS_API String : public GenericField< std::string >
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ), GenericFieldFactory< String >) ;
     fwCampMakeFriendDataMacro((fwData)(String));
-    fwDataObjectMacro();
 
     /**
      * @brief Constructor
@@ -44,10 +43,10 @@ public:
     FWDATA_API virtual ~String() throw();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( String::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( String::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 };
 

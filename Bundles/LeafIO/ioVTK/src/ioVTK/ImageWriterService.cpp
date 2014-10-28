@@ -28,9 +28,9 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
-#include <vtkIO/ImageWriter.hpp>
-#include <vtkIO/MetaImageWriter.hpp>
-#include <vtkIO/VtiImageWriter.hpp>
+#include <fwVtkIO/ImageWriter.hpp>
+#include <fwVtkIO/MetaImageWriter.hpp>
+#include <fwVtkIO/VtiImageWriter.hpp>
 
 #include "ioVTK/ImageWriterService.hpp"
 
@@ -99,19 +99,19 @@ void ImageWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-bool ImageWriterService::saveImage( const ::boost::filesystem::path imgFile, ::boost::shared_ptr< ::fwData::Image > _pImg )
+bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, const SPTR(::fwData::Image)& image )
 {
     SLM_TRACE_FUNC();
     bool bValue = true;
 
     ::fwDataIO::writer::IObjectWriter::sptr myWriter;
-    fwGui::dialog::ProgressDialog progressMeterGUI("Saving Images ");
+    fwGui::dialog::ProgressDialog progressMeterGUI("Saving images... ");
     std::string ext = ::boost::filesystem::extension(imgFile);
     ::boost::algorithm::to_lower(ext);
 
     if(ext == ".vtk")
     {
-        ::vtkIO::ImageWriter::NewSptr vtkWriter;
+        ::fwVtkIO::ImageWriter::sptr vtkWriter = ::fwVtkIO::ImageWriter::New();
         vtkWriter->addHandler( progressMeterGUI );
         // Set the file system path
         vtkWriter->setFile(imgFile);
@@ -119,24 +119,24 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path imgFile, ::b
     }
     else if(ext == ".vti")
     {
-        ::vtkIO::VtiImageWriter::NewSptr vtiWriter;
+        ::fwVtkIO::VtiImageWriter::sptr vtiWriter = ::fwVtkIO::VtiImageWriter::New();
         vtiWriter->addHandler( progressMeterGUI );
         vtiWriter->setFile(imgFile);
         myWriter = vtiWriter;
     }
     else if(ext == ".mhd")
     {
-        ::vtkIO::MetaImageWriter::NewSptr mhdWriter;
+        ::fwVtkIO::MetaImageWriter::sptr mhdWriter = ::fwVtkIO::MetaImageWriter::New();
         mhdWriter->addHandler( progressMeterGUI );
         mhdWriter->setFile(imgFile);
         myWriter = mhdWriter;
     }
     else
     {
-        throw(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
     }
 
-    myWriter->setObject(_pImg);
+    myWriter->setObject(image);
 
     try
     {
@@ -175,7 +175,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
     {
         // Retrieve dataStruct associated with this service
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
-        SLM_ASSERT("pImage not instanced", pImage);
+        SLM_ASSERT("Image not instanced", pImage);
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -187,7 +187,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
         catch(::fwTools::Failed& e)
         {
             OSLM_TRACE("Error : " << e.what());
-            throw e;
+            FW_RAISE_EXCEPTION(e);
         }
         cursor.setDefaultCursor();
     }

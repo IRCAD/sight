@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/location/Folder.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/location/SingleFile.hpp"
 
@@ -32,39 +33,47 @@ SingleFile::~SingleFile()
 
 //------------------------------------------------------------------------------
 
-void SingleFile::shallowCopy( SingleFile::csptr _source )
+void SingleFile::shallowCopy(const Object::csptr &_source )
 {
+    SingleFile::csptr other = SingleFile::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    this->m_path = _source->m_path;
+    this->m_path = other->m_path;
 }
 
 //------------------------------------------------------------------------------
 
-void SingleFile::deepCopy( SingleFile::csptr _source )
+void SingleFile::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
-    this->m_path = _source->m_path;
+    SingleFile::csptr other = SingleFile::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
+    this->m_path = other->m_path;
 }
 
 //------------------------------------------------------------------------------
 
-SingleFile::sptr SingleFile::SingleFileFactory(::boost::filesystem::path _path)
+SingleFile::sptr SingleFile::SingleFileFactory(PathType path)
 {
     SingleFile::sptr singlefile = SingleFile::New();
-    singlefile->setPath(_path);
+    singlefile->setPath(path);
     return singlefile;
 }
 
 //------------------------------------------------------------------------------
 
-void SingleFile::setPath( ::boost::filesystem::path path)
+void SingleFile::setPath( PathType path)
 {
     m_path = path;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path SingleFile::getPath() const
+ILocation::PathType SingleFile::getPath() const
 {
     return m_path;
 }

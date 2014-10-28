@@ -15,8 +15,8 @@ namespace factory
 {
 /**
  * @brief       Contains fwServices::factory::message utilities
- * @namespace   message
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwServices::factory::message
+ * 
  * @date        2009-2012
  *
  */

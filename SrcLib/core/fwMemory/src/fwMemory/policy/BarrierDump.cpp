@@ -1,15 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include <boost/assign.hpp>
 #include <boost/foreach.hpp>
 
-#include <fwTools/ByteSize.hpp>
-
+#include "fwMemory/exception/BadCast.hpp"
+#include "fwMemory/ByteSize.hpp"
+#include "fwMemory/policy/registry/macros.hpp"
 #include "fwMemory/policy/BarrierDump.hpp"
 
 
@@ -19,7 +19,7 @@ namespace fwMemory
 namespace policy
 {
 
-static IPolicy::Register<BarrierDump> registerFactory(BarrierDump::leafClassname());
+fwMemoryPolicyRegisterMacro(::fwMemory::policy::BarrierDump);
 
 //------------------------------------------------------------------------------
 
@@ -33,11 +33,12 @@ BarrierDump::BarrierDump() :
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+        BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
-    if(info.isDumped)
+    if(!info.loaded)
     {
         m_totalDumped -= info.size;
     }
@@ -47,11 +48,12 @@ void BarrierDump::allocationRequest( BufferInfo &info, void **buffer, BufferInfo
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size )
+void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+        BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
-    if(info.isDumped)
+    if(!info.loaded)
     {
         m_totalDumped -= info.size;
     }
@@ -61,11 +63,12 @@ void BarrierDump::setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeT
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize )
+void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+        BufferInfo::SizeType newSize )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += newSize;
-    if(info.isDumped)
+    if(!info.loaded)
     {
         m_totalDumped -= info.size;
     }
@@ -75,9 +78,9 @@ void BarrierDump::reallocateRequest( BufferInfo &info, void **buffer, BufferInfo
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::destroyRequest( BufferInfo &info, void **buffer )
+void BarrierDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
-    if(info.isDumped)
+    if(!info.loaded)
     {
         m_totalDumped -= info.size;
     }
@@ -87,44 +90,35 @@ void BarrierDump::destroyRequest( BufferInfo &info, void **buffer )
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::lockRequest( BufferInfo &info, void **buffer )
+void BarrierDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void BarrierDump::unlockRequest( BufferInfo &info, void **buffer )
+void BarrierDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-
-void BarrierDump::dumpSuccess( BufferInfo &info, void **buffer )
+void BarrierDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     m_totalDumped += info.size;
 }
 
 //------------------------------------------------------------------------------
 
-
-void BarrierDump::restoreSuccess( BufferInfo &info, void **buffer )
+void BarrierDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     m_totalDumped -= info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::setManager(::fwTools::IBufferManager::sptr manager)
-{
-    m_manager = ::fwMemory::BufferManager::dynamicCast(manager);
-}
-
-//------------------------------------------------------------------------------
-
-size_t BarrierDump::getTotalAlive()
+size_t BarrierDump::getTotalAlive() const
 {
     SLM_ASSERT("More dumped data than allocated data." , m_totalAllocated >= m_totalDumped);
     size_t totalAlive = m_totalAllocated - m_totalDumped;
@@ -133,7 +127,7 @@ size_t BarrierDump::getTotalAlive()
 
 //------------------------------------------------------------------------------
 
-bool BarrierDump::isBarrierCrossed()
+bool BarrierDump::isBarrierCrossed() const
 {
     return m_barrier < getTotalAlive();
 }
@@ -144,24 +138,23 @@ size_t BarrierDump::dump(size_t nbOfBytes)
 {
     size_t dumped = 0;
 
-    ::fwMemory::BufferManager::sptr manager = m_manager.lock();
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
     if(manager)
     {
-
-        const fwMemory::BufferInfo::MapType &bufferInfos = manager->getBufferInfos();
+        const ::fwMemory::BufferManager::BufferInfoMapType bufferInfos = manager->getBufferInfos().get();
 
         typedef std::pair<
-            fwMemory::BufferInfo::MapType::key_type,
-            fwMemory::BufferInfo::MapType::mapped_type
+            ::fwMemory::BufferManager::BufferInfoMapType::key_type,
+            ::fwMemory::BufferManager::BufferInfoMapType::mapped_type
                 > BufferInfosPairType;
         typedef std::vector< BufferInfosPairType > BufferVectorType;
 
         BufferVectorType buffers;
 
-        BOOST_FOREACH(const ::fwMemory::BufferInfo::MapType::value_type &elt, bufferInfos)
+        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
-            if( ! ( info.size == 0 || *(info.lockCount) > 0 || info.isDumped )  )
+            if( ! ( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 buffers.push_back(elt);
             }
@@ -172,7 +165,7 @@ size_t BarrierDump::dump(size_t nbOfBytes)
         {
             if(dumped < nbOfBytes)
             {
-                if( manager->dumpBuffer(pair.first) )
+                if( manager->dumpBuffer(pair.first).get() )
                 {
                     dumped += pair.second.size;
                 }
@@ -201,9 +194,10 @@ void BarrierDump::apply()
 
 void BarrierDump::refresh()
 {
-    ::fwMemory::BufferManager::sptr manager = m_manager.lock();
-    m_totalAllocated = manager->getManagedBufferSize();
-    m_totalDumped = manager->getDumpedBufferSize();
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+    ::fwMemory::BufferManager::BufferStats stats = manager->getBufferStats().get();
+    m_totalAllocated = stats.totalManaged;
+    m_totalDumped = stats.totalDumped;
     this->apply();
 }
 
@@ -215,11 +209,11 @@ bool BarrierDump::setParam(const std::string &name, const std::string &value)
     {
         if(name == "barrier")
         {
-            m_barrier = ::fwTools::ByteSize(value).getSize();
+            m_barrier = ::fwMemory::ByteSize(value).getSize();
             return true;
         }
     }
-    catch( ::fwTools::ByteSize::Exception const& )
+    catch( ::fwMemory::exception::BadCast const& )
     {
         OSLM_ERROR("Bad value for " << name << " : " << value);
         return false;
@@ -231,27 +225,26 @@ bool BarrierDump::setParam(const std::string &name, const std::string &value)
 
 //------------------------------------------------------------------------------
 
-const fwMemory::IPolicy::ParamNamesType &BarrierDump::getParamNames() const
+const ::fwMemory::IPolicy::ParamNamesType &BarrierDump::getParamNames() const
 {
-    static const fwMemory::IPolicy::ParamNamesType params = ::boost::assign::list_of("barrier");
+    static const ::fwMemory::IPolicy::ParamNamesType params = ::boost::assign::list_of("barrier");
     return params;
 }
 
 //------------------------------------------------------------------------------
 
-std::string BarrierDump::getParam(const std::string &name, bool *ok )
+std::string BarrierDump::getParam(const std::string &name, bool *ok ) const
 {
-    bool isOk;
+    bool isOk = false;
     std::string value;
-    if (NULL == ok)
-    {
-        ok = &isOk;
-    }
-    *ok = false;
     if(name == "barrier")
     {
-        value = std::string(::fwTools::ByteSize( ::fwTools::ByteSize::SizeType(m_barrier) ));
-        *ok = true;
+        value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_barrier) ));
+        isOk = true;
+    }
+    if (ok)
+    {
+        *ok = isOk;
     }
     return value;
 }

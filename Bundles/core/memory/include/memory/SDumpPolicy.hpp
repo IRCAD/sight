@@ -31,15 +31,17 @@ public:
 
     /**
      * Configuration example :
-     * <service ...>
-     *   <config>
-     *     <policy>ValveDump</policy>
-     *     <params>
-     *      <min_free_mem>524288000</min_free_mem>
-     *      <hysteresis_offet>104857600</hysteresis_offet>
-     *     </params>
-     *   </config>
-     * </service>
+     @verbatim
+     <service ...>
+       <config>
+         <policy>ValveDump</policy>
+         <params>
+          <min_free_mem>524288000</min_free_mem>
+          <hysteresis_offet>104857600</hysteresis_offet>
+         </params>
+       </config>
+     </service>
+      @endverbatim
      * */
     MEMORY_API virtual void configuring() throw ( ::fwTools::Failed );
 
@@ -53,7 +55,7 @@ public:
     MEMORY_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Overrides
-    MEMORY_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    MEMORY_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Overrides
     MEMORY_API virtual void swapping() throw ( ::fwTools::Failed );

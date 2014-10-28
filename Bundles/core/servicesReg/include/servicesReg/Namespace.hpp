@@ -10,7 +10,7 @@
 /**
  * @brief      The namespace servicesReg (registration service) contains all types of low-level services essential to FW4SPL.
  * @namespace  servicesReg
- * @author     IRCAD (Research and Development Team).
+ * 
  * @date       2009-2010.
  *
  */

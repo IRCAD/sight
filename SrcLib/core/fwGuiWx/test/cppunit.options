@@ -1,0 +1,17 @@
+CLASSTEST=[
+    'WorkerWxTest',
+]
+
+USE = [
+    'wxCore',
+    'boost',
+    'boostThread',
+    'boostDateTime',
+    ]
+LIB = [
+    'fwTest_0-1',
+    'fwThread_0-1',
+    'fwGuiWx_0-1',
+    ]
+
+CONSOLE = 'yes'

@@ -26,7 +26,7 @@ class SpyLogger;
  * Generate a scoped trace message with an enter and a leave message, and the
  * time elapsed between the two messages.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class FWCORE_CLASS_API ScopedMessage: public ::fwCore::BaseObject
 {
@@ -46,7 +46,6 @@ protected:
     std::string  m_baseMsg;
     std::string  m_leave;
 
-    ::fwCore::log::SpyLogger  *m_logger;
     ::fwCore::HiResTimer  m_timer;
 };
 

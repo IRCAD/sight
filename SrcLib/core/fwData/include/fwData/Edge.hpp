@@ -23,7 +23,7 @@ namespace fwData
  *
  * An edge is reprensented by a to identifier ("from" and "to") and a nature.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Edge : public ::fwData::Object
@@ -46,10 +46,10 @@ public:
 
 
     /// @brief do a shallow copy of edge
-    FWDATA_API void shallowCopy( Edge::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// @brief do a deep copy of edge
-    FWDATA_API void deepCopy( Edge::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
      * @brief Set the edge identifier ("ID_SIZEX" , ...)

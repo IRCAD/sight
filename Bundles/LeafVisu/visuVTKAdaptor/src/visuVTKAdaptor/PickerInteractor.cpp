@@ -45,7 +45,7 @@ public:
     static PickerInteractorCallback *New()
     { return new PickerInteractorCallback(); }
 
-    PickerInteractorCallback() : m_priority(-1)
+    PickerInteractorCallback() : m_caller(NULL), m_priority(-1)
     {
         m_picker = NULL;
         this->PassiveObserverOn();
@@ -140,7 +140,7 @@ public:
         ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
         OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
 
-        ::fwComEd::InteractionMsg::NewSptr msg;
+        ::fwComEd::InteractionMsg::sptr msg = ::fwComEd::InteractionMsg::New();
         msg->setEventPoint(world[0], world[1], world[2]);
         msg->setEvent(event);
 
@@ -178,7 +178,7 @@ protected :
 PickerInteractor::PickerInteractor() throw()
     : m_priority(0.999)
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
