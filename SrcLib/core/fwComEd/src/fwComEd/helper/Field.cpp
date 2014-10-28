@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <algorithm>
 
 #include <boost/bind.hpp>
@@ -87,7 +93,7 @@ void Field::notify(fwServices::IService::sptr _serviceSource)
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     if ( m_objectMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_object.lock(), m_objectMsg , ::fwServices::ComChannelService::NOTIFY_SOURCE );
+        ::fwServices::IEditionService::notify( _serviceSource, m_object.lock(), m_objectMsg , true );
     }
     SLM_INFO_IF("The message will not by notified because it has no event.", m_objectMsg->getEventIds().size() == 0);
 }
@@ -112,6 +118,9 @@ void Field::buildMessage(
             std::back_inserter(newFieldNames),
             ::boost::bind(& ::fwData::Object::FieldMapType::value_type::first, _1)
     );
+
+    std::sort(oldFieldNames.begin(), oldFieldNames.end());
+    std::sort(newFieldNames.begin(), newFieldNames.end());
 
     ::fwData::Object::FieldNameVectorType added;   // new - old
     ::fwData::Object::FieldNameVectorType changed; // old & new

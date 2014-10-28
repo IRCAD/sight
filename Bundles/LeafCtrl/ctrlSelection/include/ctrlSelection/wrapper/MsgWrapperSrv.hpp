@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,9 +19,9 @@ namespace wrapper
 {
 
 /**
- * @class  MsgWrapperSrv.
+ * @class  MsgWrapperSrv
  * @brief  Convert generic message by specific message
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2007-2009.
  */
@@ -64,10 +64,8 @@ protected:
     /// Implements info method derived from IService. Print classname.
     virtual void info( std::ostream &_sstream ) {};
 
-    /**
-     * @brief Convert the Object message with "UPDATED_OBJECT" event sent on Graph by GraphMsg with "NEW_GRAPH" event
-     */
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    /// Convert message with event by a specific message with another event and type.
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     // < onEvent, toEvent, msgType >
     typedef ::boost::tuple< std::string, std::string, std::string > EventType;

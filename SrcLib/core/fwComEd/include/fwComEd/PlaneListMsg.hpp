@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for PlaneList : store modification information
  * @class   PlaneListMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009
  * @see     ::fwServices::ObjectMsg
  */
@@ -27,7 +27,8 @@ class FWCOMED_CLASS_API PlaneListMsg : public ::fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((PlaneListMsg)(::fwServices::ObjectMsg), ( () ), new PlaneListMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PlaneListMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< PlaneListMsg >);
 
     /**
      * @name Event identifier
@@ -42,9 +43,10 @@ public:
     /// @}
 
     /**
-      * @brief  Constructor : does nothing.
-      */
-    FWCOMED_API PlaneListMsg() throw();
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWCOMED_API PlaneListMsg(::fwServices::ObjectMsg::Key key);
 
     /**
       * @brief  Destuctor : does nothing.

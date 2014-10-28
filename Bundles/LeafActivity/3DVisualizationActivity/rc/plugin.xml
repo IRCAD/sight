@@ -1,0 +1,33 @@
+<plugin id="3DVisualizationActivity">
+
+    <requirement id="servicesReg" />
+    <requirement id="2DVisualizationActivity" />
+    <requirement id="uiReconstructionQt" />
+    <requirement id="media" />
+
+    <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ManageOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/3DNegatoWithAcq.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>3DVisualization</id>
+        <title>3D Visu</title>
+        <desc>3D visualization activity</desc>
+        <icon>Bundles/media_0-1/icons/icon-3D.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="1" >
+                <key path="@image" >OptionalInputImageKey</key>
+            </requirement>
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="3DVisualization">
+            <parameters>
+                <parameter replace="InputImageCompositeUID" by="@values.imageSeries" />
+                <parameter replace="modelSeriesUid" by="@values.modelSeries" />
+                <parameter replace="orientation" by="frontal" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>

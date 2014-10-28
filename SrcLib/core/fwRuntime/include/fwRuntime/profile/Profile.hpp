@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 
 #include <boost/function.hpp>
 #include <boost/utility.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include "fwCore/base.hpp"
 
@@ -24,7 +25,6 @@ namespace fwRuntime
  * @namespace   ::fwRuntime::profile
  * @brief       Namespace ::fwRuntime::profile
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
  */
 namespace profile
 {
@@ -40,7 +40,6 @@ class Uninitializer;
  * @brief   Implements a bundle set profile.
  * @class  Profile
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
  */
 class Profile : public ::fwCore::BaseObject
 {
@@ -55,6 +54,8 @@ public:
      * @brief   Constructor : does nothing.
      */
     FWRUNTIME_API Profile();
+
+    FWRUNTIME_API ~Profile();
 
     /**
      * @brief       Adds a new activator.
@@ -80,14 +81,14 @@ public:
     /**
      * @brief       Adds a new starter.
      *
-     * @param[in]   starter a shared pointer to a starter
+     * @param[in]   initializer a shared pointer to an initializer
      */
     FWRUNTIME_API void add( SPTR( Initializer ) initializer );
 
     /**
      * @brief       Adds a new starter.
      *
-     * @param[in]   starter a shared pointer to a starter
+     * @param[in]   uninitializer a shared pointer to an uninitializer
      */
     FWRUNTIME_API void add( SPTR( Uninitializer ) uninitializer );
 
@@ -124,6 +125,11 @@ public:
      */
     void setName(std::string _sName) { m_sName = _sName; }
 
+    /// Get profile m_filePath
+    ::boost::filesystem::path getFilePath() {return  m_filePath; } const
+
+    /// Set profile m_filePath
+    void setFilePath( const ::boost::filesystem::path& _filePath) { m_filePath = _filePath; }
 
     /**
      * @brief   Return profile version.
@@ -153,8 +159,21 @@ public:
 
     FWRUNTIME_API ParamsContainer getParams();
 
+    FWRUNTIME_API void setParams(const ParamsContainer &params);
     FWRUNTIME_API void setParams(int argc, char** argv);
 
+    /**
+     * @brief Returns a reference on internal arg count.
+     * The returned int shall not be modified. This is provided for external
+     * library needs (QApplication contructor for example)
+     */
+    FWRUNTIME_API int& getRawArgCount();
+
+    /**
+     * @brief Returns a raw pointer on internal arguments.
+     * The returned data shall not be modified. This is provided for external
+     * library needs (QApplication contructor for example)
+     */
     FWRUNTIME_API char** getRawParams();
 
 private:
@@ -171,10 +190,15 @@ private:
     InitializerContainer      m_initializers;   ///< all managed initializers
     UninitializerContainer    m_uninitializers; ///< all managed uninitializers
 
-    std::string         m_sName;        ///< name profile
-    std::string         m_sVersion;     ///< profile app version
+    std::string         m_sName;            ///< name profile
+    std::string         m_sVersion;         ///< profile app version
+    ::boost::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
+
     bool                m_checkSingleInstance;
+
     ParamsContainer     m_params;
+    int                 m_argc;
+    char              **m_argv;
 
     RunCallbackType m_run;
 };

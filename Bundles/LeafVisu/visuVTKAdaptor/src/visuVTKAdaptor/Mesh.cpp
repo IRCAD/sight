@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,13 +12,13 @@
 #include <fwData/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/MeshMsg.hpp>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -42,7 +42,7 @@
 #include "visuVTKAdaptor/Mesh.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh ) ;
 
 namespace visuVTKAdaptor
 {
@@ -301,6 +301,7 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
                 meshAdaptor->setPickerId      ( service->getPickerId()       );
                 meshAdaptor->setMaterial      ( service->getMaterial()       );
                 meshAdaptor->setVtkClippingPlanes( newCollection );
+                meshAdaptor->setAutoRender( service->getAutoRender() );
 
                 meshAdaptor->start();
                 meshAdaptor->updateVisibility ( service->getVisibility()     );
@@ -311,7 +312,7 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
                 m_meshServices.push_back(meshAdaptor);
             }
 
-            bool hasItems = m_meshServices.size() > 0;
+            bool hasItems = !m_meshServices.empty();
             service->setActorPropertyToUnclippedMaterial( hasItems );
         }
         else if ( eventId == vtkCommand::UserEvent )
@@ -366,16 +367,16 @@ Mesh::Mesh() throw()
 
     m_transform = vtkTransform::New();
 
-    addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
-    addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
-    addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
-    addNewHandledEvent ("SHOW_POINT_COLORS");
-    addNewHandledEvent ("SHOW_CELL_COLORS");
-    addNewHandledEvent ("HIDE_COLORS");
+    //addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
+    //addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
+    //addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
+    //addNewHandledEvent ("SHOW_POINT_COLORS");
+    //addNewHandledEvent ("SHOW_CELL_COLORS");
+    //addNewHandledEvent ("HIDE_COLORS");
 }
 
 //------------------------------------------------------------------------------
@@ -439,7 +440,7 @@ void Mesh::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
     ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(msg);
@@ -459,7 +460,7 @@ void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Faile
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
         SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-        ::vtkIO::helper::Mesh::updatePolyDataPointColor(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointColor(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_COLORS_MODIFIED))
@@ -467,7 +468,7 @@ void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Faile
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
         SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-        ::vtkIO::helper::Mesh::updatePolyDataCellColor(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataCellColor(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED) )
@@ -475,19 +476,19 @@ void Mesh::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Faile
        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
        SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-       ::vtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
+       ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
        this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::vtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED))
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::vtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
     if (meshMsg && meshMsg->hasEvent("SHOW_POINT_COLORS"))
@@ -581,7 +582,7 @@ void Mesh::createTransformService()
     m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
         ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
                 fieldTransform,
-                "::visuVTKAdaptor::Transform" 
+                "::visuVTKAdaptor::Transform"
                 )
         );
     assert(m_transformService.lock());
@@ -589,6 +590,7 @@ void Mesh::createTransformService()
 
     transformService->setRenderService ( this->getRenderService()  );
     transformService->setRenderId      ( this->getRenderId()       );
+    transformService->setAutoRender    ( this->getAutoRender()     );
 
     transformService->setTransform(vtkFieldTransform);
     m_transform->Concatenate(vtkFieldTransform);
@@ -664,6 +666,7 @@ void Mesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr &srv, ::
         SLM_ASSERT("srv not instanced", srv);
 
         srv->setRenderService(this->getRenderService());
+        srv->setAutoRender( this->getAutoRender() );
         srv->start();
         srv->update();
         this->registerService(srv);
@@ -720,6 +723,7 @@ void Mesh::createNormalsService()
         service->setRenderService( this->getRenderService() );
         service->setRenderId     ( this->getRenderId()      );
         service->setPickerId     ( this->getPickerId()      );
+        service->setAutoRender   ( this->getAutoRender()    );
         ::visuVTKAdaptor::MeshNormals::dynamicCast(service)->setPolyData( m_polyData );
         service->start();
 
@@ -797,7 +801,7 @@ void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
         m_polyData = 0;
     }
     m_polyData = vtkPolyData::New();
-    ::vtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
+    ::fwVtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
     m_mapper->SetInput(m_polyData);
 
     if (m_autoResetCamera)

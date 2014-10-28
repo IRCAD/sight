@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ protected:
     void doStop() throw( ::fwTools::Failed);
     void doSwap() throw( ::fwTools::Failed);
     void doUpdate() throw( ::fwTools::Failed);
-    void doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed);
+    void doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed);
     void configuring() throw( ::fwTools::Failed);
 
     /// Manage the given events
@@ -80,11 +80,14 @@ private:
     /// The graphic items that refer to ticks of the axis.
     std::vector< QGraphicsLineItem* > m_ticks;
 
-    /// Communication channel between this adaptor and the viewport.
-    ::fwServices::ComChannelService::sptr m_comChannel;
-
     /// The viewport that help us to scale the axis.
     ::scene2D::data::Viewport::sptr m_viewport;
+
+    /// fWID of the viewport
+    std::string m_viewportID;
+
+    /// Connection to the viewport
+    ::fwCom::Connection m_connection;
 };
 
 

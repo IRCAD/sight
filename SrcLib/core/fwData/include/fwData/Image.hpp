@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,12 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/Array.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Image), FWDATA_API);
+
+
+
 
 namespace fwData
 {
@@ -29,14 +34,15 @@ namespace fwData
  *
  * An image contains a buffer and is defined by some parameters (size, spacing, pixel type, ...)
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::Factory::New< Image > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::factory::New< Image > ) ;
     fwCoreAllowSharedFromThis();
+    fwCampMakeFriendDataMacro((fwData)(Image));
 
     /**
      * @brief Image size type
@@ -58,13 +64,23 @@ public:
     typedef ::boost::uint8_t BufferType;
     typedef ::boost::shared_array< BufferType > SharedArray;
 
-    fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Image(::fwData::Object::Key key);
+
+    /**
+     * @brief Destructor
+     */
+    FWDATA_API virtual ~Image() throw();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Image::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Image::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     FWDATA_API void copyInformation( Image::csptr _source );
@@ -104,6 +120,12 @@ public:
      */
     fwDataGetSetMacro(WindowWidth , double);
 
+
+    /**
+     * @brief Get/set prefered window center
+     */
+    fwDataGetSetMacro(NumberOfComponents, size_t);
+
     /**
      * @brief set data array
      *
@@ -137,11 +159,10 @@ public:
      *
      * @return Allocated size in bytes
      */
-    FWDATA_API size_t allocate()
-        throw(::fwData::Exception);
-    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z, const ::fwTools::Type &type)
-        throw(::fwData::Exception);
-    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type)
+    FWDATA_API size_t allocate() throw(::fwData::Exception);
+    FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
+                               const ::fwTools::Type &type, size_t numberOfComponents = 1) throw(::fwData::Exception);
+    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1)
         throw(::fwData::Exception);
     // @}
 
@@ -152,16 +173,6 @@ public:
     size_t getAllocatedSizeInBytes() const;
 
 protected :
-
-    /**
-     * @brief Constructor
-     */
-    FWDATA_API Image();
-
-    /**
-     * @brief Destructor
-     */
-    FWDATA_API virtual ~Image() throw();
 
     //! Size of the image (in terms of points)
     SizeType m_size;
@@ -175,20 +186,21 @@ protected :
     //! Origin of the image in 3D repair
     OriginType m_origin;
 
-    //! Prefered window center/with
+    //! Preferred window center/with
     ///@{
     double m_attrWindowCenter;
     double m_attrWindowWidth;
     ///@}
 
+    //! Number of components
+    size_t m_attrNumberOfComponents;
+
     //! image buffer
     ::fwData::Array::sptr m_dataArray;
-
 };
 
 
 } // namespace fwData
-
 
 #endif //_FWDATA_IMAGE_HPP_
 

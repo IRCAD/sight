@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,7 @@
 #define _FWCOMED_HELPER_ARRAY_HPP_
 
 #include <fwTools/Type.hpp>
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include <fwData/Array.hpp>
 
@@ -22,8 +22,8 @@ namespace helper
 
 /**
  * @class   Array
- * @brief   ...
- * @author  IRCAD (Research and Development Team).
+ * @brief   Helper to manage array buffer. Lock the buffer before to modify it.
+ * 
  * @date    2012
  */
 class FWCOMED_CLASS_API Array
@@ -41,7 +41,7 @@ public :
      * @brief Setter for one item components of the array
      *
      * @param id Item id
-     * @param value Valid buffer of elements of type <m_type> with a length equal to <m_nbOfComponents> to be copied to array 'id'
+     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied to array 'id'
      */
     FWCOMED_API virtual void setItem(const ::fwData::Array::IndexType &id, const void *value);
 
@@ -50,7 +50,7 @@ public :
      *
      * @param id Item id
      * @param component Component id to write data in.
-     * @param value Valid buffer of elements of type <m_type> with a length equal to <m_nbOfComponents> to be copied to array 'id', component n° 'component'
+     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied to array 'id', component n° 'component'
      *
      */
     FWCOMED_API virtual void setItem(const ::fwData::Array::IndexType &id, const size_t component, const void *value);
@@ -106,7 +106,6 @@ public :
      * @param type           Type of the array view
      * @param size           Size of the array view
      * @param nbOfComponents Number of components of the array view, Min value : 1
-     * @param reallocate     If true, allow buffer reallocation
      */
     FWCOMED_API void setBuffer( void *buf, bool takeOwnership,
                                 const ::fwTools::Type &type,
@@ -139,7 +138,7 @@ public :
     ///@}
 
     /// Returns a copy of current lock on array
-    FWCOMED_API ::fwTools::BufferObject::Lock getLock() const;
+    FWCOMED_API ::fwMemory::BufferObject::Lock getLock() const;
 
 protected:
 
@@ -154,7 +153,7 @@ protected:
 
 
     ::fwData::Array::sptr m_array;
-    ::fwTools::BufferObject::Lock m_lock;
+    ::fwMemory::BufferObject::Lock m_lock;
 
 };
 

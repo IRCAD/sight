@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,7 @@ void EdgeTest::methode1()
     const std::string STR1 = "toto";
     const std::string STR2 = "titi";
     const std::string STR3 = ::fwData::Edge::NATURE_FLOW;
-    ::fwData::Edge::NewSptr edge;
+    ::fwData::Edge::sptr edge = ::fwData::Edge::New();
 
     edge->setIdentifiers(STR1, STR2);
     edge->setNature(STR3);

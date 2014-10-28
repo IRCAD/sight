@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,17 +13,16 @@
 
 namespace arlCore
 {
-    class ARLCORE_CLASS_API Particle
+    class ARLCORE_CLASS_API Particle : public Object
     {
     /**
      * @class   Particle
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Basic class that represents an object in space
      */
     public:
         /**
-        * @brief Créeation of a particle that have its own frame in the universe
+        * @brief CrÃ©ation of a particle that have its own frame in the universe
         * The identity ID of the frame can be got using getPlane()
         * The frame name is initialized with planeName
         */
@@ -35,7 +34,7 @@ namespace arlCore
         //! @brief Affectation
         ARLCORE_API Particle& operator=( const Particle& );
 
-        //! @brief Destruction de la particule avec libération du repère dans l'univers
+        //! @brief Destruction de la particule avec libÃ©ration du repÃ¨re dans l'univers
         ARLCORE_API virtual ~Particle( void );
 
         //! @return Name of the particle
@@ -44,17 +43,17 @@ namespace arlCore
         //! @return Description textuelle de la particule
         ARLCORE_API virtual std::string getString( void ) const;
 
-        //! @return Référence sur l'univers qui contient la particule
+        //! @return RÃ©fÃ©rence sur l'univers qui contient la particule
         ARLCORE_API PlaneSystem& getPlaneSystem( void ) const;
 
-        //! @return ID du repère de la particule dans l'univers
+        //! @return ID du repÃ¨re de la particule dans l'univers
         ARLCORE_API unsigned int getPlane( void ) const;
 
     private:
-        // Univers dans lequel la particule est plongée
+        // Univers dans lequel la particule est plongÃ©e
         PlaneSystem &m_universe;
 
-        // ID du repère de la particule dans l'univers
+        // ID du repÃ¨re de la particule dans l'univers
         unsigned int m_plane;
     };
 } // namespace arlCore

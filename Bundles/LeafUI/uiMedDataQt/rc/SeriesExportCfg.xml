@@ -1,0 +1,87 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>SeriesExportCfg</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="SERIESDB_UID" />
+        <param name="SERIES_UID" />
+    </parameters>
+
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_notify_close" impl="::gui::action::ActionNotifyService" autoConnect="no">
+                <notify type="::fwServices::ObjectMsg" event="WINDOW_CLOSED" />
+            </service>
+
+            <service uid="${GENERIC_UID}_seriesExportFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="yes">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Export series in SDB</name>
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_seriesExportView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_seriesExportView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" caption="Series" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_selector" start="yes" />
+                    <view sid="${GENERIC_UID}_selectedSeriesEditor" start="yes" />
+                </registry>
+            </service>
+
+            <item key="seriesDB">
+                <object uid="${GENERIC_UID}_newSeriesDB" type="::fwMedData::SeriesDB">
+
+                    <service uid="${GENERIC_UID}_selector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
+                        <selectionId>${GENERIC_UID}_selections</selectionId>
+                        <selectionMode>single</selectionMode>
+                        <allowedRemove>no</allowedRemove>
+                        <insertMode>yes</insertMode>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_sdbInitializer" impl="::uiMedData::action::SInitNewSeries" autoConnect="yes">
+                        <seriesDB>${SERIESDB_UID}</seriesDB>
+                    </service>
+
+                </object>
+            </item>
+
+            <item key="selections">
+                <object uid="${GENERIC_UID}_selections" type="::fwData::Vector">
+
+                    <service uid="${GENERIC_UID}_selectedSeriesEditor" impl="::uiMedData::editor::SSeries" autoConnect="yes">
+                        <seriesId>${SERIES_UID}</seriesId>
+                        <seriesDBId>${SERIESDB_UID}</seriesDBId>
+                    </service>
+                </object>
+            </item>
+
+            <connect>
+                <signal>${GENERIC_UID}_selectedSeriesEditor/seriesExported</signal>
+                <slot>${GENERIC_UID}_notify_close/update</slot>
+            </connect>
+
+            <start uid="${GENERIC_UID}_seriesExportFrame" />
+            <start uid="${GENERIC_UID}_sdbInitializer" />
+            <start uid="${GENERIC_UID}_notify_close" />
+
+            <update uid="${GENERIC_UID}_selector" />
+            <update uid="${GENERIC_UID}_sdbInitializer" />
+
+        </object>
+
+    </config>
+</extension>
+

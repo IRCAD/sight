@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,6 @@
 #include <QApplication>
 
 #include <fwCore/base.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/String.hpp>
@@ -30,12 +28,12 @@
 namespace uiVisu
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::BasicFloatEditor , ::fwData::Float ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::BasicFloatEditor , ::fwData::Float ) ;
 
 
 BasicFloatEditor::BasicFloatEditor() throw()
 {
-    addNewHandledEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -116,14 +114,17 @@ void BasicFloatEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void BasicFloatEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::FloatMsg::csptr floatMsg = ::fwComEd::FloatMsg::dynamicConstCast(_msg);
 
     if (floatMsg)
     {
-        this->updating();
+        if(floatMsg->hasEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED))
+        {
+            this->updating();
+        }
     }
 }
 
@@ -140,8 +141,8 @@ void BasicFloatEditor::onModifyValue(QString value)
 {
     SLM_TRACE_FUNC();
     ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
-    ::fwData::Float::NewSptr oldValue;
-    oldValue->deepCopy(floatObj);
+    ::fwData::Float::sptr oldValue;
+    oldValue = ::fwData::Object::copy(floatObj);
 
     std::string strValue = value.toStdString();
 
@@ -172,7 +173,7 @@ void BasicFloatEditor::onModifyValue(QString value)
     if ( *oldValue != *floatObj )
     {
         OSLM_TRACE(floatObj->getID() << " new value : " << *floatObj);
-        ::fwComEd::FloatMsg::NewSptr msg;
+        ::fwComEd::FloatMsg::sptr msg = ::fwComEd::FloatMsg::New();
         msg->addEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
         ::fwServices::IEditionService::notify(this->getSptr(), floatObj, msg);
     }

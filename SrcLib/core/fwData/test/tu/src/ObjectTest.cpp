@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwData/Object.hpp>
+#include <fwData/Float.hpp>
 
 #include "ObjectTest.hpp"
 
@@ -41,9 +42,9 @@ void ObjectTest::fieldTest()
     const std::string FIELD_ID3 = "FIELD_ID3";
 
     ::fwData::Object::sptr nullobj;
-    ::fwData::Object::sptr obj = ::fwData::Object::New();
-    ::fwData::Object::sptr fieldObj1 = ::fwData::Object::New();
-    ::fwData::Object::sptr fieldObj2 = ::fwData::Object::New();
+    ::fwData::Object::sptr obj = ::fwData::Float::New();
+    ::fwData::Object::sptr fieldObj1 = ::fwData::Float::New();
+    ::fwData::Object::sptr fieldObj2 = ::fwData::Float::New();
 
     CPPUNIT_ASSERT(obj->getFields().empty());
 
@@ -72,6 +73,8 @@ void ObjectTest::fieldTest()
     refFieldNames.push_back(FIELD_ID1);
     refFieldNames.push_back(FIELD_ID2);
     ::fwData::Object::FieldNameVectorType fieldNames = obj->getFieldNames();
+    std::sort(fieldNames.begin(), fieldNames.end());
+    std::sort(refFieldNames.begin(), refFieldNames.end());
     CPPUNIT_ASSERT(refFieldNames == fieldNames);
 
     obj->setFields(localFieldsBackup);

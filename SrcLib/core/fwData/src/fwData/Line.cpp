@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 
@@ -18,18 +19,9 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Line::Line ()
+Line::Line (::fwData::Object::Key key)
 {
     SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-Line::Line( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction)
-: m_position(_position),
-  m_direction(_direction)
-{
-
 }
 
 //------------------------------------------------------------------------------
@@ -41,20 +33,28 @@ Line::~Line ()
 
 //------------------------------------------------------------------------------
 
-void Line::shallowCopy( Line::csptr _source )
+void Line::shallowCopy(const Object::csptr &_source )
 {
+    Line::csptr other = Line::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_position = _source->m_position;
-    m_direction = _source->m_direction;
+    m_position = other->m_position;
+    m_direction = other->m_direction;
 }
 
 //------------------------------------------------------------------------------
 
-void Line::deepCopy( Line::csptr _source )
+void Line::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
-    m_position = ::fwData::Object::copy( _source->m_position );
-    m_direction = ::fwData::Object::copy( _source->m_direction );
+    Line::csptr other = Line::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
+    m_position = ::fwData::Object::copy( other->m_position, cache );
+    m_direction = ::fwData::Object::copy( other->m_direction, cache );
 }
 
 //------------------------------------------------------------------------------

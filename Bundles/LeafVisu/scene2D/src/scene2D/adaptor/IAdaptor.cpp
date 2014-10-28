@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,7 @@
 
 #include <fwData/Composite.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include "scene2D/adaptor/IAdaptor.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
@@ -19,7 +20,9 @@ namespace adaptor
 
 
 IAdaptor::IAdaptor() throw() : m_zValue(0), m_opacity(1)
-{}
+{
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
+}
 
 //-----------------------------------------------------------------------------
 
@@ -250,6 +253,8 @@ void IAdaptor::initializeViewportSize()
 
 void IAdaptor::starting() throw ( ::fwTools::Failed )
 {
+    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+
     doStart();
 }
 
@@ -262,15 +267,17 @@ void IAdaptor::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void IAdaptor::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
-    doUpdate(_msg);
+    doReceive(_msg);
 }
 
 //-----------------------------------------------------------------------------
 
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
+    m_connections->disconnect();
+    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
 }
 
@@ -278,6 +285,7 @@ void IAdaptor::swapping() throw(fwTools::Failed)
 
 void IAdaptor::stopping() throw ( ::fwTools::Failed )
 {
+    m_connections->disconnect();
     doStop();
 
     m_xAxis.reset();
@@ -303,6 +311,25 @@ void IAdaptor::stopping() throw ( ::fwTools::Failed )
 void IAdaptor::processInteraction( ::scene2D::data::Event::sptr _event )
 {
     SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void IAdaptor::registerService( ::scene2D::adaptor::IAdaptor::sptr srv )
+{
+    m_managedAdaptors.push_back( srv );
+}
+
+//-----------------------------------------------------------------------------
+
+void IAdaptor::unregisterServices()
+{
+    BOOST_FOREACH( ManagedAdaptorVector::value_type adaptor, m_managedAdaptors )
+    {        
+        adaptor.lock()->stop();
+        ::fwServices::OSR::unregisterService(adaptor.lock());
+    }
+    m_managedAdaptors.clear();
 }
 
 //-----------------------------------------------------------------------------

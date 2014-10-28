@@ -1,0 +1,143 @@
+{
+    "versions":
+    {
+        "atoms_version": "1",
+        "writer_version": "1"
+    },
+    "object":
+    {
+        "meta_infos":
+        {
+            "item_0":
+            {
+                "key": "CLASSNAME_METAINFO",
+                "value": "::fwData::TransferFunction"
+            },
+            "item_1":
+            {
+                "key": "ID_METAINFO",
+                "value": "548a6534-45ef-44ee-b572-48e8580855d7"
+            },
+            "item_2":
+            {
+                "key": "lib_name",
+                "value": "fwData"
+            },
+            "item_3":
+            {
+                "key": "object_version",
+                "value": "1"
+            }
+        },
+        "attributes":
+        {
+            "background_color":
+            {
+                "string":
+                {
+                    "value": "0;0;0;0;"
+                }
+            },
+            "fields":
+            {
+                "map": ""
+            },
+            "interpolation_mode":
+            {
+                "string":
+                {
+                    "value": "LINEAR"
+                }
+            },
+            "is_clamped":
+            {
+                "boolean":
+                {
+                    "value": "false"
+                }
+            },
+            "level":
+            {
+                "numeric":
+                {
+                    "value": "-625"
+                }
+            },
+            "name":
+            {
+                "string":
+                {
+                    "value": "CT-Lungs"
+                }
+            },
+            "tf_data":
+            {
+                "map":
+                {
+                    "item_0":
+                    {
+                        "key": "-300",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0;0;0;0;"
+                            }
+                        }
+                    },
+                    "item_1":
+                    {
+                        "key": "-600",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.50196099281311035;0;0;0.28623199462890625;"
+                            }
+                        }
+                    },
+                    "item_2":
+                    {
+                        "key": "-800",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.9803919792175293;0.67843097448348999;0.27058801054954529;0.5;"
+                            }
+                        }
+                    },
+                    "item_3":
+                    {
+                        "key": "-900",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "0.9882349967956543;0.83921599388122559;0.63529402017593384;0.60000002384185791;"
+                            }
+                        }
+                    },
+                    "item_4":
+                    {
+                        "key": "-950",
+                        "value":
+                        {
+                            "string":
+                            {
+                                "value": "1;1;1;0;"
+                            }
+                        }
+                    }
+                }
+            },
+            "window":
+            {
+                "numeric":
+                {
+                    "value": "650"
+                }
+            }
+        }
+    }
+}

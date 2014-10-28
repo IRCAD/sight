@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,8 +20,8 @@ namespace dialog
 {
 /**
  * @brief   Defines an input dialog for IHM on WxWidget.
- * @class   InputDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   InputDialog
+ * 
  * @date    2009-2010.
  *
  */
@@ -30,21 +30,23 @@ class FWGUIWX_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), (()), new InputDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog),
+                                            (()),
+                                            ::fwGui::factory::New< InputDialog > );
 
     /** @brief Constructor. Do nothing.\n
      * Example of use: \n
-     * @verbatinm
-          ::fwGui::dialog::InputDialog inputDlg; \n
-          inputDlg.setTitle("Identification dialog"); \n
-          inputDlg.setMessage("Enter Pin Code: "); \n
-          inputDlg.setInput ("<Enter your code here>"); \n
-          std::string inputText = inputDlg.getInput(); \n
+     * @verbatim
+          ::fwGui::dialog::InputDialog inputDlg;
+          inputDlg.setTitle("Identification dialog");
+          inputDlg.setMessage("Enter Pin Code: ");
+          inputDlg.setInput ("<Enter your code here>");
+          std::string inputText = inputDlg.getInput();
      @endverbatim
      */
 
-    FWGUIWX_API InputDialog();
-    /// Destructor. Do nothing.
+    FWGUIWX_API InputDialog(::fwGui::GuiBaseObject::Key key);
+
     FWGUIWX_API virtual ~InputDialog();
 
     /// Set the title of the message box.

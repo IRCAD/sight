@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,16 +38,16 @@ void CompositeTest::methode1()
 {
     typedef ::fwData::Composite::value_type pair_type;
     const pair_type PAIRS[] = {
-        std::make_pair( "object"       , ::fwData::Object::New()       ),
+        std::make_pair( "Composite"    , ::fwData::Composite::New()    ),
         std::make_pair( "boolean true" , ::fwData::Boolean::New(true)  ),
         std::make_pair( "boolean false", ::fwData::Boolean::New(false) ),
-        std::make_pair( "float"        , ::fwData::Float::New(3.14f)    ),
+        std::make_pair( "float"        , ::fwData::Float::New(3.14f)   ),
         std::make_pair( "integer"      , ::fwData::Integer::New(404)   )
     };
 
     ::fwData::Composite::ContainerType stdmap;
 
-    ::fwData::Composite::NewSptr composite;
+    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
     CPPUNIT_ASSERT( composite->size() == 0 );
 
@@ -74,7 +74,7 @@ void CompositeTest::methode1()
 
     //-----------test values
     const std::string STR = "toto";
-    ::fwData::Object::sptr obj = ::fwData::Object::New();
+    ::fwData::Object::sptr obj = ::fwData::Float::New();
 
     composite->getContainer()[STR] = obj;
 
@@ -92,7 +92,7 @@ void CompositeTest::setGetContainerTest()
     myStdMap[ key1 ] = ::fwData::String::New("lolo");
     myStdMap[ key2 ] = ::fwData::String::New("lulu");
 
-    ::fwData::Composite::NewSptr myDataMap;
+    ::fwData::Composite::sptr myDataMap = ::fwData::Composite::New();
     myDataMap->setDataContainer( myStdMap );
     CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(2), myDataMap->size() );
 

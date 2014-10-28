@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,14 +18,15 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for reconstruction : store modification information
  * @class   ReconstructionMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2009
  * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API ReconstructionMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ReconstructionMsg)(::fwServices::ObjectMsg), ( () ), new ReconstructionMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((ReconstructionMsg)(::fwServices::ObjectMsg), ( () ),
+                                            ::fwServices::factory::message::New< ReconstructionMsg >);
 
     /**
      * @name Event identifier
@@ -37,9 +38,10 @@ public:
     /// @}
 
     /**
-     * @brief   Constructor : do nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API ReconstructionMsg() throw();
+    FWCOMED_API ReconstructionMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : do nothing.

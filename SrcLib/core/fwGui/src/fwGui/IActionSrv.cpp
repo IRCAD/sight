@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,12 +11,14 @@
 #include <fwServices/Base.hpp>
 
 #include "fwGui/IActionSrv.hpp"
+#include "fwGui/dialog/IMessageDialog.hpp"
 #include "fwGui/dialog/MessageDialog.hpp"
 
 namespace fwGui
 {
 
 IActionSrv::IActionSrv() :
+        m_activeStateValue(true),
         m_isActive(false),
         m_isExecutable(true),
         m_confirmAction(false)
@@ -31,7 +33,7 @@ IActionSrv::~IActionSrv()
 
 void IActionSrv::initialize()
 {
-    m_registrar = ::fwGui::registrar::ActionRegistrar::NewSptr(this->getID());
+    m_registrar = ::fwGui::registrar::ActionRegistrar::New(this->getID());
 
     OSLM_ASSERT("Depreciated tag <name> in "<< this->getID() << " configuration.", ! m_configuration->hasAttribute("name"));
     OSLM_ASSERT("Depreciated tag <shortcut> in "<< this->getID() << " configuration.", ! m_configuration->hasAttribute("shortcut"));
@@ -46,6 +48,13 @@ void IActionSrv::initialize()
         if( (*iter)->getName() == "state" )
         {
             ConfigurationType stateCfg = *iter;
+
+            if( stateCfg->hasAttribute("inverse") )
+            {
+                std::string invertState = stateCfg->getExistingAttributeValue("inverse");
+                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'", (invertState == "true") || (invertState == "false"));
+                m_activeStateValue = !(invertState == "true") ;
+            }
 
             if( stateCfg->hasAttribute("active") )
             {
@@ -75,6 +84,12 @@ void IActionSrv::initialize()
             {
                 m_confirmMessage = cfg->getExistingAttributeValue("message");
             }
+
+            if( cfg->hasAttribute("defaultbutton") )
+            {
+                m_defaultButton = cfg->getExistingAttributeValue("defaultbutton");
+            }
+
         }
     }
 }
@@ -99,7 +114,7 @@ void IActionSrv::actionServiceStarting()
 void IActionSrv::setIsActive(bool isActive)
 {
     m_isActive = isActive;
-    this->m_registrar->actionServiceSetActive(isActive);
+    this->m_registrar->actionServiceSetActive(m_activeStateValue == isActive);
 }
 
 //-----------------------------------------------------------------------------
@@ -141,11 +156,25 @@ bool IActionSrv::confirmAction()
             ss << std::endl << m_confirmMessage;
         }
         dialog.setMessage( ss.str() );
-        dialog.setIcon( ::fwGui::dialog::MessageDialog::QUESTION );
-        dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
-        ::fwGui::dialog::MessageDialog::Buttons button = dialog.show();
 
-        actionIsConfirmed = (button == ::fwGui::dialog::MessageDialog::YES);
+        if(m_defaultButton == "yes")
+        {
+            dialog.setDefaultButton( ::fwGui::dialog::IMessageDialog::YES );
+        }
+        else if(m_defaultButton == "no")
+        {
+            dialog.setDefaultButton( ::fwGui::dialog::IMessageDialog::NO );
+        }
+        else if(!m_defaultButton.empty())
+        {
+            SLM_WARN("unknown button: " + m_defaultButton);
+        }
+
+        dialog.setIcon( ::fwGui::dialog::IMessageDialog::QUESTION );
+        dialog.addButton( ::fwGui::dialog::IMessageDialog::YES_NO );
+        ::fwGui::dialog::IMessageDialog::Buttons button = dialog.show();
+
+        actionIsConfirmed = (button == ::fwGui::dialog::IMessageDialog::YES);
     }
 
     return actionIsConfirmed;

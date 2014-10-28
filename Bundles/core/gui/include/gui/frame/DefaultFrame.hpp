@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,10 +19,7 @@ namespace frame
 
 /**
  * @brief   Defines the default frame for standard application.
- * @class   DefaultFrame.
- * @author  IRCAD (Research and Development Team)
-
- * @date    2009.
+ * @class   DefaultFrame
  */
 class GUI_CLASS_API DefaultFrame : public ::fwGui::IFrameSrv
 {
@@ -45,23 +42,26 @@ protected :
 
     /**
      * @brief This method is used to configure the class parameters.
+     * @see ::fwGui::IFrameSrv::initialize()
      */
     GUI_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**
      * @brief Register a view with defined id.
+     * @see ::fwGui::IFrameSrv::create()
      */
     GUI_API virtual void starting() throw(::fwTools::Failed);
 
     /**
      * @brief This method remove the view in the frame.
+     * @see ::fwGui::IFrameSrv::destroy()
      */
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
     /**
      * @brief This method is used to update services. Do nothing.

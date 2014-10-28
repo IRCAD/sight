@@ -4,7 +4,7 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>MesherV3Config</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
 
 
@@ -17,7 +17,7 @@
                 Service associated to the Composite data :
                 main window creation.
             -->
-            <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+            <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Mesher</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no">
+            <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Image view" align="center" />
@@ -53,7 +53,7 @@
             <!-- Menu Bar, Menus & Actions -->
 
 
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -67,7 +67,7 @@
             </service>
 
 
-            <service uid="menuFile" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+            <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Open image file" shortcut="Ctrl+O" />
@@ -84,7 +84,7 @@
             </service>
 
 
-            <service uid="menuMesher" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+            <service uid="menuMesher" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Compute Mesh 1 (VTK)" />
@@ -97,7 +97,7 @@
                 </registry>
             </service>
 
-            <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
 
 
@@ -106,21 +106,21 @@
                 menu services creation.
                 Actions in relationship with images and meshe
             -->
-            <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="readerPathImageFile" />
             </service>
 
-            <service uid="actionSaveImageFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+            <service uid="actionSaveImageFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                 <start uid="writerImageFile" />
             </service>
 
-            <service uid="actionCreateVTKMesh1" type="::fwGui::IActionSrv" implementation="::opVTKMesh::action::VTKMeshCreation" autoComChannel="no">
+            <service uid="actionCreateVTKMesh1" type="::fwGui::IActionSrv" impl="::opVTKMesh::action::VTKMeshCreation" autoConnect="no">
                 <image uid="myImage" />
                 <mesh uid="myMesh1" />
                 <percentReduction value="0" />
             </service>
 
-            <service uid="actionCreateVTKMesh2" type="::fwGui::IActionSrv" implementation="::opVTKMesh::action::VTKMeshCreation" autoComChannel="no">
+            <service uid="actionCreateVTKMesh2" type="::fwGui::IActionSrv" impl="::opVTKMesh::action::VTKMeshCreation" autoConnect="no">
                 <image uid="myImage" />
                 <mesh uid="myMesh2" />
                 <percentReduction value="30" />
@@ -128,7 +128,7 @@
 
 
 
-            <service implementation="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoComChannel="yes" />
+            <service impl="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoConnect="yes" />
 
             <!--
                 Image object creation Services contained between the tags <object> and </object>
@@ -141,13 +141,13 @@
                     Services associated to the Image data :
                     Visualization, reading and writing service creation.
                     -->
-                    <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoComChannel="yes" />
+                    <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoConnect="yes" />
 
-                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoComChannel="no">
+                    <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no">
                         <type mode="reader" />
                     </service>
 
-                    <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="writerImageFile" autoComChannel="no">
+                    <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="writerImageFile" autoConnect="no">
                         <type mode="writer" />
                     </service>
 
@@ -165,15 +165,7 @@
                         Services associated to the Mesh data :
                         Visualization, reading and writing service creation.
                     -->
-                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoComChannel="yes">
-                        <masterSlaveRelation>master</masterSlaveRelation>
-                    </service>
-
-
-                    <service uid="MyComChannelSrv1" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
-                        <target>RenderingMesh</target>
-                    </service>
-
+                    <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh1" autoConnect="yes"/>
 
                 </object>
             </item>
@@ -189,26 +181,38 @@
                         Services associated to the Mesh data :
                         Visualization, reading and writing service creation.
                     -->
-                    <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoComChannel="yes">
-                        <masterSlaveRelation>master</masterSlaveRelation>
-                    </service>
-
-
-                    <service uid="MyComChannelSrv2" implementation="::fwServices::ComChannelService" type="::fwServices::ICommunication" autoComChannel="no">
-                        <target>RenderingMesh</target>
-                    </service>
+                    <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh2" autoConnect="yes"/>
 
                 </object>
             </item>
+
+            <!-- Connect RenderingMesh 'updateCamPosition' slot to receive 'camUpdated' signal from RenderingMesh1 and RenderingMesh2 -->
+            <connect>
+                <signal>RenderingMesh1/camUpdated</signal>
+                <slot>RenderingMesh/updateCamPosition</slot>
+            </connect>
+
+            <connect>
+                <signal>RenderingMesh2/camUpdated</signal>
+                <slot>RenderingMesh/updateCamPosition</slot>
+            </connect>
+
+            <!-- Connect RenderingMesh 'receive' slot to receive 'objectModified' signal from myMesh1 and myMesh2 -->
+            <connect>
+                <signal>myMesh1/objectModified</signal>
+                <slot>RenderingMesh/receive</slot>
+            </connect>
+
+            <connect>
+                <signal>myMesh2/objectModified</signal>
+                <slot>RenderingMesh/receive</slot>
+            </connect>
 
             <!--
                 In order to start the different services, it does not need to follow the objects creation order. Note that the services associated to the Image and Mesh data are not started
                 between the tags corresponding to these two data definitions but, before the end of the Composite data definition.
             -->
             <start uid="myFrame" />
-
-            <start uid="MyComChannelSrv1" />
-            <start uid="MyComChannelSrv2" />
 
         </object>
 

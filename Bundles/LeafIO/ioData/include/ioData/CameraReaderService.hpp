@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,8 +18,8 @@ namespace ioData
 {
 /**
  * @brief   Camera calibration file reader service.
- * @class   CameraReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   CameraReaderService
+ * 
  * @date    2009.
  *
  * Service reading camera calibration file and create a camera object.
@@ -28,7 +28,7 @@ namespace ioData
  * @li Use update() to load the file, create the camera object and notify reading to observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::CameraReaderService , ::fwData::Camera )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::CameraReaderService , ::fwData::Camera )
  */
 class IODATA_CLASS_API CameraReaderService : public ::io::IReader
 {
@@ -47,17 +47,6 @@ public:
 
 
 protected:
-
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API CameraReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~CameraReaderService() throw() ;
-
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -93,7 +82,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
      * @brief Info method.

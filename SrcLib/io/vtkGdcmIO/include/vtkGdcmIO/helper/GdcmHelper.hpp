@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKGDCMIO_GDCMHELPER_HPP_
-#define _VTKGDCMIO_GDCMHELPER_HPP_
+#ifndef __VTKGDCMIO_GDCMHELPER_HPP__
+#define __VTKGDCMIO_GDCMHELPER_HPP__
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
@@ -20,7 +20,7 @@ namespace helper
 /**
  * @brief   This class contains helpers to search dicom files on filesystem...
  * @class   DicomSearch
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class VTKGDCMIO_CLASS_API DicomSearch
@@ -33,4 +33,4 @@ public:
 } // namespace helper
 } // namespace vtkGdcmIO
 
-#endif /*_VTKGDCMIO_GDCMHELPER_HPP_*/
+#endif /*__VTKGDCMIO_GDCMHELPER_HPP__*/

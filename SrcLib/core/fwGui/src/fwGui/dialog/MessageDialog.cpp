@@ -1,10 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/Factory.hpp>
 
 #include "fwGui/dialog/MessageDialog.hpp"
 
@@ -26,14 +25,16 @@ IMessageDialog::Buttons MessageDialog::showMessageDialog(const std::string& titl
 
 MessageDialog::MessageDialog()
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMessageDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
 }
 
 //-----------------------------------------------------------------------------
 
 MessageDialog::MessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IMessageDialog>( IMessageDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMessageDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
     if(m_implementation)
     {
         m_implementation->setTitle(title);
@@ -84,6 +85,16 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
     if(m_implementation)
     {
         m_implementation->addButton(button);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void MessageDialog::setDefaultButton( ::fwGui::dialog::IMessageDialog::Buttons button )
+{
+    if(m_implementation)
+    {
+        m_implementation->setDefaultButton(button);
     }
 }
 

@@ -1,16 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
-
 #ifndef _SCENE2D_DATA_EVENT_HPP_
 #define _SCENE2D_DATA_EVENT_HPP_
-
-#include <fwData/Object.hpp>
 
 #include <Qt>
 
@@ -25,7 +20,7 @@ namespace data
 
 //-----------------------------------------------------------------------------
 
-class SCENE2D_CLASS_API Event : public ::fwTools::Object
+class SCENE2D_CLASS_API Event : public ::fwData::Object
 {
 
 public:
@@ -59,10 +54,20 @@ public:
     } Modifier;
 
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwTools::Object), (()), ::fwTools::Factory::New< Event >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwData::Object), (()), ::fwData::factory::New< Event >) ;
 
-    SCENE2D_API Event() throw();
-    SCENE2D_API virtual ~Event() throw();
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    SCENE2D_API Event( ::fwData::Object::Key key );
+    SCENE2D_API virtual ~Event();
+
+    /// Defines shallow copy
+    SCENE2D_API void shallowCopy( const ::fwData::Object::csptr& _source );
+
+    /// Defines deep copy
+    SCENE2D_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache );
 
     fwGettersSettersDocMacro(OldSize, oldSize, Size, no comment);
     fwGettersSettersDocMacro(Size, size, Size, no comment);

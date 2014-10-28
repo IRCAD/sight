@@ -1,6 +1,8 @@
 
 CLASSTEST=[
     'BufferManagerTest',
+    'BufferObjectTest' ,
+    'ByteSizeTest'     ,
     ]
 
 USE = ['boost']

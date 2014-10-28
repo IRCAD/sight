@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,7 +48,7 @@ protected:
         <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/>
     </adaptor>
     @endverbatim
-    * - <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/> : Set the config.
+    * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the config.
     *
     * \b lineColor : no mandatory (default value : black) : Set the color of the lines between the TF points.
     *
@@ -71,7 +71,7 @@ protected:
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
     /// If the message is TRANSFERFUNCTION or WINDOWING, call DoUpdate().
-    SCENE2D_API void doUpdate( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// @todo
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
@@ -176,7 +176,11 @@ private:
     /// The captured circle.
     QGraphicsEllipseItem* m_capturedCircle;
 
-    ::fwServices::ComChannelService::sptr m_comChannel;
+    /// fWID of the viewport
+    std::string m_viewportID;
+
+    /// Connection to the viewport
+    ::fwCom::Connection m_connection;
 
     ::scene2D::data::Viewport::sptr m_viewport;
 

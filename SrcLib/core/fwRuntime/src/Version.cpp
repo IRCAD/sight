@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,7 @@
 #endif
 #include <limits.h>
 #include <boost/lexical_cast.hpp>
-#if defined(_USE_BOOST_REGEX) || defined(__MACOSX__) || defined(WIN32)
 #include <boost/regex.hpp>
-#endif
 #include <sstream>
 #if defined(__GNUC__)
 #pragma GCC visibility pop
@@ -35,10 +33,9 @@ Version::Version()
 Version::Version(const std::string & version)
 : m_major(-1), m_minor(-1), m_build(-1), m_defined(false)
 {
-#if defined(_USE_BOOST_REGEX) || defined(__MACOSX__) || defined(WIN32)
     if( version.empty() == false )
     {
-        boost::regex    regex ("(\\d+)-(\\d+)(svn(\\d+)){0,1}");
+        boost::regex    regex ("(\\d+)[-.](\\d+)(svn(\\d+)){0,1}");
         boost::smatch   what;
 
         if( boost::regex_match(version, what, regex) )
@@ -53,7 +50,6 @@ Version::Version(const std::string & version)
             throw RuntimeException(version + " : invalid version.");
         }
     }
-#endif
 }
 
 

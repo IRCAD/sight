@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef _ARLCORE_OBJECT_H
 #define _ARLCORE_OBJECT_H
+#include <fwTools/Object.hpp>
+
 #include <arlcore/Common.h>
 
 #include <sstream>
@@ -34,12 +36,11 @@ namespace arlCore
     const unsigned int FIRSTUPDATEINDEX = 1;
     /**
      * @class   Object
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Classe de base
-     * Contient des informations temporelles, de validité de l'objet, de Mutex
+     * Contient des informations temporelles, de validitï¿½ de l'objet, de Mutex
      */
-    class Object
+    class Object : public ::fwTools::Object
     {
     public:
         //! @brief Constructor
@@ -77,9 +78,6 @@ namespace arlCore
 
         //! @brief Unserialize the current object
         ARLCORE_API bool unserialize( const std::string & );
-
-        //! @return The name of the current object
-        ARLCORE_API std::string getName( void ) const;
 
         //! @return Is the object OK ?
         ARLCORE_API bool isOK( void ) const;
@@ -160,8 +158,6 @@ namespace arlCore
          */
         ARLCORE_API static void resetStaticVerboseLevel( void );
 
-        //! @brief Change the object's name
-        ARLCORE_API void setName( const std::string& );
 
         ARLCORE_API bool isWriteLocked( void ) const;
         ARLCORE_API bool isReadLocked( void ) const;
@@ -193,9 +189,11 @@ namespace arlCore
 
         //ARLCORE_API void setUpdateIndex( long int );
 
-    private:
-        //! @brief Private copy
+        //! @bchild classes can use it
         void copy( const Object& o );
+
+    private:
+
 
         //! @brief Class type of the object
         ARLCORE_CLASS m_class;

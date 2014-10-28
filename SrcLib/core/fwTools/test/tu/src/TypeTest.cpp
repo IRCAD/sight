@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,6 +43,43 @@ void TypeTest::typeTest()
 
     ::fwTools::Type t;
 
+    CPPUNIT_ASSERT_EQUAL( std::string("int8" ),  INT8.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int16"),  INT16.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int32"),  INT32.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int64"),  INT64.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint8" ), UINT8.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint16"), UINT16.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint32"), UINT32.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint64"), UINT64.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("float"),  FLOAT.string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("double"), DOUBLE.string() );
+
+
+    CPPUNIT_ASSERT_EQUAL( std::string("int8" ),  ::fwTools::Type::create< signed char >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int8" ),  ::fwTools::Type::create< char >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int16"),  ::fwTools::Type::create< short >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int32"),  ::fwTools::Type::create< int >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int64"),  ::fwTools::Type::create< long long >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint8" ), ::fwTools::Type::create< unsigned char >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint16"), ::fwTools::Type::create< unsigned short >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint32"), ::fwTools::Type::create< unsigned int >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint64"), ::fwTools::Type::create< unsigned long long >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("float"),  ::fwTools::Type::create< float  >().string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("double"), ::fwTools::Type::create< double >().string() );
+
+
+    CPPUNIT_ASSERT_EQUAL( std::string("int8" ),  ::fwTools::Type::create("int8").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int16"),  ::fwTools::Type::create("int16").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int32"),  ::fwTools::Type::create("int32").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("int64"),  ::fwTools::Type::create("int64").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint8" ), ::fwTools::Type::create("uint8").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint16"), ::fwTools::Type::create("uint16").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint32"), ::fwTools::Type::create("uint32").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("uint64"), ::fwTools::Type::create("uint64").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("float"),  ::fwTools::Type::create("float").string() );
+    CPPUNIT_ASSERT_EQUAL( std::string("double"), ::fwTools::Type::create("double").string() );
+
+
     CPPUNIT_ASSERT_EQUAL( ::fwTools::Type::s_UNSPECIFIED_TYPE,  ::fwTools::Type() );
 
     CPPUNIT_ASSERT_EQUAL( INT8 , ::fwTools::Type::create< signed char >() );
@@ -62,29 +99,29 @@ void TypeTest::typeTest()
     CPPUNIT_ASSERT_EQUAL( ::fwTools::Type::s_UNSPECIFIED_TYPE,  t );
 
 
-    t.setType<void       >();
+    t.setType<void >();
 
-    t.setType<signed char       >();
+    t.setType<signed char >();
     CPPUNIT_ASSERT_EQUAL( INT8   , t );
-    t.setType<char              >();
+    t.setType<char >();
     CPPUNIT_ASSERT_EQUAL( INT8   , t );
-    t.setType<short             >();
+    t.setType<short >();
     CPPUNIT_ASSERT_EQUAL( INT16  , t );
-    t.setType<int               >();
+    t.setType<int >();
     CPPUNIT_ASSERT_EQUAL( INT32  , t );
-    t.setType<long long         >();
+    t.setType<long long >();
     CPPUNIT_ASSERT_EQUAL( INT64  , t );
-    t.setType<unsigned char     >();
+    t.setType<unsigned char >();
     CPPUNIT_ASSERT_EQUAL( UINT8  , t );
-    t.setType<unsigned short    >();
+    t.setType<unsigned short >();
     CPPUNIT_ASSERT_EQUAL( UINT16 , t );
-    t.setType<unsigned int      >();
+    t.setType<unsigned int >();
     CPPUNIT_ASSERT_EQUAL( UINT32 , t );
     t.setType<unsigned long long>();
     CPPUNIT_ASSERT_EQUAL( UINT64 , t );
-    t.setType<float             >();
+    t.setType<float >();
     CPPUNIT_ASSERT_EQUAL( FLOAT  , t );
-    t.setType<double            >();
+    t.setType<double >();
     CPPUNIT_ASSERT_EQUAL( DOUBLE , t );
 
     CPPUNIT_ASSERT( typeid(void) == ::fwTools::Type::s_UNSPECIFIED_TYPE.typeId());

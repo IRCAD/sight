@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,6 @@
 #include <QLabel>
 
 #include <fwCore/base.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -34,12 +32,12 @@
 namespace uiImage
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiImage::ImageInfo , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageInfo , ::fwData::Image ) ;
 
 
 ImageInfo::ImageInfo() throw()
 {
-    addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
+//    addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +59,7 @@ void ImageInfo::starting() throw(::fwTools::Failed)
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
-    QLabel* staticText = new QLabel( tr("intensity:"), container);
+    QLabel* staticText = new QLabel( QObject::tr("intensity:"), container);
     hLayout->addWidget( staticText, 0, Qt::AlignVCenter );
 
     m_valueText = new QLineEdit( container );
@@ -105,12 +103,12 @@ void ImageInfo::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ImageInfo::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::InteractionMsg::csptr interactionMsg = ::fwComEd::InteractionMsg::dynamicConstCast(_msg);
 
-    if (interactionMsg)
+    if (interactionMsg && _msg->hasEvent(::fwComEd::InteractionMsg::MOUSE_MOVE))
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
         bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

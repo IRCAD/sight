@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,15 @@
 #ifndef _GUI_ACTION_CONFIGACTIONSRV_HPP_
 #define _GUI_ACTION_CONFIGACTIONSRV_HPP_
 
+#include <fwCom/Signal.hpp>
+
 #include <fwTools/Failed.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -26,7 +29,7 @@ namespace action
 /**
  * @class   ConfigActionSrv
  * @brief   To manage configuration file defines in xml extension.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  *
  * This action starts/stops a template configuration given by its identifier in this action configuration.
@@ -37,7 +40,7 @@ namespace action
  *
  * Example of this service configuration
  * @verbatim
-   <service implementation="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
+   <service impl="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
        <config id="IdOfTemplateConfig" />
        <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
    </service>
@@ -51,7 +54,7 @@ namespace action
        <type>template</type>
        <config>
            <object uid="GENERIC_UID_myComposite" type="::fwData::Composite">
-               <service uid="GENERIC_UID_myService" type="..." implementation="..." autoComChannel="no" />
+               <service uid="GENERIC_UID_myService" type="..." impl="..." autoConnect="no" />
                <item key="myImage">
                    <object uid="PATTERN_TO_REPLACE_BY_VALUE" src="ref" type="::fwData::Image" />
                </item>
@@ -77,8 +80,17 @@ public :
     /// Set the action service is activated/inactivated.
     GUI_API virtual void setIsActive(bool isActive);
 
+    // Launched signal key
+    GUI_API static const ::fwCom::Signals::SignalKeyType s_LAUNCHED_SIG;
+
 protected:
 
+    /**
+     * @name Defines signal triggered when config is started
+     * @{ */
+    typedef ::fwCom::Signal< void () > LaunchedSignalType;
+    LaunchedSignalType::sptr m_sigLaunched;
+    /**  @} */
 
     ///This method launches the IAction::starting method.
     virtual void starting() throw(::fwTools::Failed);
@@ -91,7 +103,7 @@ protected:
      *
      * Stop configuration when it receives "WINDOW_CLOSED" event (ie. close the param view).
      */
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Starts the view and initialize the operator.
@@ -106,7 +118,7 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service implementation="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
+       <service impl="::gui::action::ConfigActionSrv" type="::fwGui::IActionSrv">
            <config id="IdOfTemplateConfig" />
            <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
        </service>
@@ -145,6 +157,14 @@ protected:
      */
     std::map< std::string, std::string > m_fieldAdaptors;
 
+    /// helper to connect tp config root
+    void connectToConfigRoot();
+
+    /// helper to disconnect tp config root
+    void disconnectToConfigRoot();
+
+    /// To manage connection to the config root
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 };
 
 } //action

@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/ToolboxLayoutManagerBase.hpp
+ * @file fwGui/layoutManager/ToolboxLayoutManagerBase.hpp
  * @brief This file defines the interface of the class for managing a line layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
@@ -29,8 +29,8 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for line layout manager.
- * @class   ToolboxLayoutManagerBase.
- * @author  IRCAD (Research and Development Team).
+ * @class   ToolboxLayoutManagerBase
+ * 
  * @date    2009-2010.
  *
  */
@@ -75,7 +75,7 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @verbatim
-       <service uid="subView2" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+       <service uid="subView2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
            <gui>
                <layout type="::fwGui::ToolboxLayoutManager">
                    <view caption="My view 1" expanded="true" />
@@ -91,8 +91,8 @@ public:
            </registry>
        </service>
       @endverbatim
-    *  - <layout type="::fwGui::ToolboxLayoutManager" > : define a toolbox layout.
-    *  - <view caption="My view 1" expanded="true" minWidth="30" /> : define a new view which can have the following attributes
+    *  - \<layout type="::fwGui::ToolboxLayoutManager" \> : define a toolbox layout.
+    *  - \<view caption="My view 1" expanded="true" minWidth="30" /\> : define a new view which can have the following attributes
     *   - \b border : define the size of the border in the layout
     *   - \b caption : define the title to display.
     *   - \b minWidth  : minimal width of the view.

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwTools/fwID.hpp>
 #include <fwData/String.hpp>
@@ -19,7 +19,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Render, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Render, ::fwData::Object ) ;
 
 namespace visuVTKAdaptor
 {
@@ -30,7 +30,7 @@ Render::Render() throw()
 {
     m_vtkPipelineModified = false;
     m_comChannelPriority = 0.1;
-    addNewHandledEvent("SCENE_RENDER_REQUEST");
+    //addNewHandledEvent("SCENE_RENDER_REQUEST");
 }
 
 //------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ void Render::configuring() throw(fwTools::Failed)
 void Render::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    addNewHandledEvent( "SCENE_RENDER_REQUEST" );
+    //addNewHandledEvent( "SCENE_RENDER_REQUEST" );
     this->getRenderService()->setPendingRenderRequest(false);
 }
 
@@ -83,7 +83,7 @@ void Render::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Render::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Render::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

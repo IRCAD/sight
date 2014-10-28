@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,14 @@
 
 #include <vector>
 
+#include <fwCom/Connection.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
+
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include "fwComEd/TransferFunctionMsg.hpp"
 #include "fwComEd/helper/ImageGetter.hpp"
@@ -28,7 +32,7 @@ namespace helper
 /**
  * @class   MedicalImageAdaptor
  * @brief   Helpers for medical image.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010
  */
 class FWCOMED_CLASS_API MedicalImageAdaptor
@@ -58,7 +62,6 @@ public:
 
     /**
      * @brief Set the tf pool and the key that represents the current selection of TransferFunction.
-     * By defaults use ::fwComEd::Dictionary::m_transferFunctionId
      */
     FWCOMED_API void setTFParameters( ::fwData::Composite::sptr tfPool, std::string tfSelectionId );
 
@@ -249,8 +252,8 @@ protected:
 
 private :
 
-    ::fwServices::IService::wptr m_tfSelectionComChannelSrv;
-    ::fwServices::IService::wptr m_tfComChannelSrv;
+    ::fwCom::Connection m_tfSelectionConnection;
+    ::fwCom::Connection m_tfConnection;
 
     /// Transfer function selection
     ::fwData::Composite::wptr m_tfSelection;

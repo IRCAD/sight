@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,14 +11,16 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Color), FWDATA_API);
 
 namespace fwData
 {
 /**
  * @class   Color
  * @brief   This class defines color object.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 
@@ -31,17 +33,26 @@ public :
     typedef ::boost::array<ColorType,4> ColorArray;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object),
-       ((::fwData::Factory::New< Color > ,() ))
+       ((::fwData::factory::New< Color > ,() ))
        ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
        );
 
-    fwDataObjectMacro();
+    fwCampMakeFriendDataMacro((fwData)(Color));
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Color( ::fwData::Object::Key key );
+
+    /// Destructor
+    FWDATA_API virtual ~Color();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Color::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Color::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     fwGettersSettersDocMacro(RGBA, vRGBA, ColorArray, the array of color values (red, green, blue, alpha).);
 
@@ -53,8 +64,8 @@ public :
     ///@param[in] alpha
     FWDATA_API void setRGBA( const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha=1.0 );
 
-    ///@brief set RGBA from hexadecimal format (#ffffff)
-    ///@param[in] hexaColor c hexadecimal format (#ffffff)
+    ///@brief set RGBA from hexadecimal format (\#ffffff)
+    ///@param[in] hexaColor c hexadecimal format (\#ffffff)
     FWDATA_API void setRGBA( std::string hexaColor );
     ///@}
 
@@ -77,16 +88,8 @@ public :
     FWDATA_API const ColorType  &alpha() const;
     //@}
 
-
 protected :
 
-    /// Constructor
-    FWDATA_API Color();
-    /// Constructor
-    FWDATA_API Color(ColorType red, ColorType green=1.0, ColorType blue=1.0, ColorType alpha=1.0);
-
-    /// Destructor
-    FWDATA_API virtual ~Color();
 
     FWDATA_API static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
 
@@ -94,8 +97,10 @@ protected :
     ColorArray  m_vRGBA;
 
 
+
 }; // end class Color
 
 } // end namespace fwData
+
 
 #endif // _FWDATA_COLOR_HPP_

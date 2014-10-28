@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/function.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <vtkActor.h>
 #include <vtkCellPicker.h>
@@ -23,23 +24,25 @@
 #include <vtkTransform.h>
 #include <vtkCamera.h>
 
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwComEd/CompositeMsg.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwData/Color.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
+#include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/CameraMsg.hpp>
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 #include "fwRenderVTK/VtkRenderService.hpp"
 
 
-REGISTER_SERVICE( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite ) ;
 
 using namespace fwServices;
 
@@ -47,19 +50,23 @@ using namespace fwServices;
 namespace fwRenderVTK
 {
 
+const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT = "render";
+
 //-----------------------------------------------------------------------------
 
 VtkRenderService::VtkRenderService() throw() :
-     m_pendingRenderRequest(false)
+     m_pendingRenderRequest(false), m_autoRender(true)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
+    m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
+    m_slotRender->setWorker(m_associatedWorker);
+
+    ::fwCom::HasSlots::m_slots(s_RENDER_SLOT, m_slotRender);
 }
 
 //-----------------------------------------------------------------------------
 
-VtkRenderService::~VtkRenderService() throw() {
-
-}
+VtkRenderService::~VtkRenderService() throw()
+{}
 
 //-----------------------------------------------------------------------------
 
@@ -89,7 +96,7 @@ void VtkRenderService::configureRenderer( ConfigurationType conf )
     {
         if(background[0] == '#')
         {
-            ::fwData::Color::NewSptr color;
+            ::fwData::Color::sptr color = ::fwData::Color::New();
             color->setRGBA(background);
             m_renderers[id]->SetBackground(color->getRefRGBA()[0], color->getRefRGBA()[1], color->getRefRGBA()[2]);
         }
@@ -182,6 +189,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         assert(adaptee.getService());
 
         adaptee.getService()->setConfiguration(adaptee.m_config);
+        adaptee.getService()->setAutoRender(m_autoRender);
         adaptee.getService()->configure();
         adaptee.getService()->setRenderService(VtkRenderService::dynamicCast(this->shared_from_this()));
         adaptee.getService()->setName(id);
@@ -311,6 +319,9 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
     //assert(m_configuration->getName() == "scene");
     assert(!vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
+
+    std::string autoRender = m_sceneConfiguration->getAttributeValue("autoRender");
+    m_autoRender = (autoRender.empty() || autoRender == "true");
 }
 
 //-----------------------------------------------------------------------------
@@ -395,23 +406,34 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::updating( ::fwServices::ObjectMsg::csptr message ) throw(::fwTools::Failed)
+void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
 
-    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
+    if( compositeMsg )
     {
-        std::vector< std::string > objectIds = compositeMsg->getModifiedKeys();
-        std::vector< std::string >::iterator iter;
+
+        ::fwData::Composite::ContainerType objects;
+
+        ::fwData::Composite::sptr modifiedKeys;
+
+        modifiedKeys = compositeMsg->getAddedKeys();
+        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
+
+        modifiedKeys = compositeMsg->getNewChangedKeys();
+        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
+
+        modifiedKeys = compositeMsg->getRemovedKeys();
+        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
 
         assert ( m_sceneConfiguration );
 
-        BOOST_FOREACH( std::string objectId, objectIds)
+        BOOST_FOREACH( ::fwData::Composite::ContainerType::value_type objectId, objects)
         {
-        std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId);
-        BOOST_FOREACH( ConfigurationType cfg, confVec )
+            std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId.first);
+            BOOST_FOREACH( ConfigurationType cfg, confVec )
             {
                 this->configureObject(cfg);
             }
@@ -429,8 +451,8 @@ void VtkRenderService::updating() throw(fwTools::Failed)
 void VtkRenderService::render()
 {
     m_interactorManager->getInteractor()->Render();
+    this->setPendingRenderRequest(false);
 }
-
 
 //-----------------------------------------------------------------------------
 
@@ -444,6 +466,7 @@ bool VtkRenderService::isShownOnScreen()
 void VtkRenderService::startContext()
 {
     m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+    m_interactorManager->setRenderService(this->getSptr());
     m_interactorManager->installInteractor( this->getContainer() );
 
     // For Depth peeling (translucent rendering)

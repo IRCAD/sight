@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,10 @@
 
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+
+fwCampAutoDeclareDataMacro((fwData)(location)(Folder), FWDATA_API);
 
 namespace fwData
 {
@@ -20,8 +23,8 @@ namespace location
 {
 /**
  * @class Folder
- * @brief This class defines a folder %location.
- * @author  IRCAD (Research and Development Team).
+ * @brief This class defines a folder location.
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Folder  : public ILocation
@@ -30,23 +33,29 @@ public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro(
             (Folder)(ILocation),
-            ((::fwData::Factory::New< Folder > ,() ))
+            ((::fwData::factory::New< Folder > ,() ))
             ((FolderFactory ,((::boost::filesystem::path)) ((bool)(false)) ))
     );
 
-    fwDataObjectMacro();
+    fwCampMakeFriendDataMacro((fwData)(location)(Folder));
+
+    /// Constructor
+    FWDATA_API Folder( ::fwData::Object::Key key );
+
+    /// Destructor
+    FWDATA_API virtual ~Folder();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Folder::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Folder::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// @brief Set folder filesystem path
-    FWDATA_API void setFolder( ::boost::filesystem::path folder);
+    FWDATA_API void setFolder( PathType folder);
 
     /// @brief Get folder filesystem path
-    FWDATA_API ::boost::filesystem::path getFolder() const;
+    FWDATA_API PathType getFolder() const;
 
     /// @brief Set the flag if folder location is recursive
     FWDATA_API void setRecursive( bool recursive);
@@ -55,16 +64,11 @@ public:
     FWDATA_API bool getRecursive();
 
 protected :
-    /// Constructor
-    FWDATA_API Folder();
 
-    FWDATA_API static sptr FolderFactory(::boost::filesystem::path _path, bool recursive=false );
-
-    /// Destructor
-    FWDATA_API virtual ~Folder();
+    FWDATA_API static sptr FolderFactory(PathType path, bool recursive=false );
 
     /// %Folder path
-    ::boost::filesystem::path m_folder;
+    PathType m_folder;
 
     /// Flag if folder is recursive
     bool m_isRecursive;
@@ -73,30 +77,33 @@ protected :
 
 /**
  * @struct enableFolder
- * @brief This class is derivated by reader/writter.
+ * @brief This class is derived by reader/writer.
  *
- * Reader/Writter classes should only need to implement get/setLocation
+ * Reader/Writer classes should only need to implement get/setLocation
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
-template<class RW> // reader or writter class should only need to implement get/setLocation
+template<class RW> // reader or writer class should only need to implement get/setLocation
 struct enableFolder
 {
     /**
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableFolder(RW *rw) : m_rw(rw) { SLM_ASSERT("m_rw not instanced", m_rw); }
+    enableFolder(RW *rw) : m_rw(rw)
+    {
+        SLM_ASSERT("m_rw not instanced", m_rw);
+    }
 
     /// @brief Set folder filesystem path
-    void setFolder(::boost::filesystem::path folder)
+    void setFolder(ILocation::PathType folder)
     {
         getLocation<Folder>(m_rw)->setFolder(folder);
     }
 
     /// @brief Get folder filesystem path
-    ::boost::filesystem::path getFolder()
+    ILocation::PathType getFolder()
     {
         return getLocation<Folder>(m_rw)->getFolder();
     }
@@ -121,8 +128,6 @@ private :
     RW *m_rw;
 
 };
-
-
 
 }
 }

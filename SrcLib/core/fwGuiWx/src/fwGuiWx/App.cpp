@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,13 +29,10 @@
 
 #include <fwTools/Os.hpp>
 
-#include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwRuntime/RuntimeException.hpp>
 
-//#include <fwServices/RootManager.hpp>
-
-#include <fwWX/convert.hpp>
-#include <fwWX/LoggerInitializer.hpp>
+#include <fwGuiWx/convert.hpp>
+#include <fwGuiWx/LoggerInitializer.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -46,9 +43,9 @@ namespace fwGuiWx
 
 //-----------------------------------------------------------------------------
 
-App::App()
+App::App() : m_locale(0), m_checker(0)
 {
-    SetAppName( _("launcher") );
+    SetAppName( wxGetTranslation("launcher") );
 #ifdef __MACOSX__
     ProcessSerialNumber PSN;
     GetCurrentProcess(&PSN);
@@ -72,17 +69,22 @@ void App::usage( const std::string & mes ) const
 
 bool App::OnInit()
 {
-    ::fwWX::LoggerInitializer::initialize();
+    ::fwGuiWx::LoggerInitializer::initialize();
 
-    m_profile = ::fwRuntime::profile::getCurrentProfile();
-    SLM_ASSERT("Profile is not initialized", m_profile);
+    setlocale(LC_ALL,"C"); // needed for mfo save process
+    std::string appName = "No name";
+    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+    if (profile)
+    {
+        appName = profile->getName();
+    }
 
 #ifndef TDVPM_COMPLIANT
     m_locale = new wxLocale();
     ::boost::filesystem::path pathLauncher;
     pathLauncher = ::boost::filesystem::current_path() / "share" / "launcher_0-1" / "locale" ;
 
-    wxLocale::AddCatalogLookupPathPrefix( ::fwWX::std2wx( pathLauncher.string() ));
+    wxLocale::AddCatalogLookupPathPrefix( ::fwGuiWx::std2wx( pathLauncher.string() ));
     m_locale->Init(GetUILanguage());
     m_locale->AddCatalog(_T("launcher"));
     m_locale->AddCatalog(_T("runtime"));
@@ -94,11 +96,10 @@ bool App::OnInit()
 
     wxApp::OnInit();
 
-    std::string appName = m_profile->getName();
 #ifndef TDVPM_COMPLIANT
-    m_locale->AddCatalog(::fwWX::std2wx(appName), wxLANGUAGE_FRENCH, _T("utf-8"));
+    m_locale->AddCatalog(::fwGuiWx::std2wx(appName), wxLANGUAGE_FRENCH, _T("utf-8"));
 #endif
-    SetAppName( ::fwWX::std2wx(appName) );
+    SetAppName( ::fwGuiWx::std2wx(appName) );
 
     std::string checkerPath = ::fwTools::os::getUserDataDir("IRCAD", appName, true);
 
@@ -113,20 +114,17 @@ bool App::OnInit()
     SLM_ASSERT("Unable to find user's data dir.", !checkerPath.empty());
 
     m_checker = new wxSingleInstanceChecker();
-    if (m_profile->getCheckSingleInstance())
+    if (profile && profile->getCheckSingleInstance())
     {
-        m_checker->Create( ::fwWX::std2wx(appName) + _(".pid"), ::fwWX::std2wx(checkerPath));
+        m_checker->Create( ::fwGuiWx::std2wx(appName) + wxGetTranslation(".pid"), ::fwGuiWx::std2wx(checkerPath));
         if ( m_checker->IsAnotherRunning() )
         {
-            wxLogError(_("Another " + ::fwWX::std2wx(appName) + _(" instance is already running, aborting.")));
+            wxLogError(wxGetTranslation("Another " + ::fwGuiWx::std2wx(appName) + wxGetTranslation(" instance is already running, aborting.")));
             return false;
         }
     }
 
-    // Initialize root object : root object, views, ...
-    //::fwServices::RootManager::initializeRootObject();
-
-    return TRUE;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -134,60 +132,8 @@ bool App::OnInit()
 int App::OnExit()
 {
     SLM_TRACE_FUNC();
-
-    wxBeginBusyCursor();
-    //::fwServices::RootManager::uninitializeRootObject();
-    wxEndBusyCursor();
-
     delete m_checker;
     return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-bool App::OnCmdLineParsed(wxCmdLineParser & parser)
-{
-    bool parsing;
-
-    parsing = wxApp::OnCmdLineParsed(parser);
-
-    // Retrieves the substitute parameters
-    wxString value;
-    parser.Found("s", &value);
-    if(!value.IsEmpty())
-    {
-        std::string str ( ::fwWX::wx2std(value) );
-        typedef ::boost::tokenizer< ::boost::char_separator<char> >   tokenizer;
-        ::boost::char_separator<char> sep("@");
-        tokenizer tokens(str, sep);
-        assert ( std::distance (tokens.begin(),tokens.end())%2 == 0 );
-        for (tokenizer::iterator tok_iter = tokens.begin(); tok_iter != tokens.end(); ++tok_iter)
-        {
-            std::string key = *tok_iter;
-            std::string val = (*++tok_iter);
-            ::fwRuntime::io::XMLSubstitute::getDefault()->getRefDictionary()[key]= val ;
-            OSLM_TRACE("Token : "<< key << " - " << val );
-        }
-    }
-
-//  // Profile path is valid ?
-//  m_profilePathIsValid = ::boost::filesystem::exists( m_profilePath );
-//
-//  // Print a message if the path is not valid
-//  if ( ! m_profilePathIsValid )
-//  {
-//      const wxString msgPart1 = wxT("A valid profile is required to start the application. The file ");
-//      const wxString msgPart3 = wxT(" does not exist.");
-//
-//      std::stringstream mes;
-//      mes << std::string(msgPart1.mb_str());
-//      mes << m_profilePath;
-//      mes << std::string(msgPart3.mb_str());
-//
-//      usage(mes.str());
-//      parsing = false;
-//  }
-    return parsing;
 }
 
 //-----------------------------------------------------------------------------
@@ -274,7 +220,7 @@ void App::eventMac(const wxString & fileName)
     if (frame != NULL)
         frame->GetEventHandler()->ProcessEvent( tEvent );
     else
-        SLM_FATAL ("Window not found !")
+        SLM_FATAL ("Window not found !");
 }
 
 #endif
@@ -321,7 +267,7 @@ wxLanguage GetUILanguage()
         if (info != NULL)
             lang = (wxLanguage)info->Language;
         else
-            wxLogError(_("Uknown locale code '%s' in registry."), lng.c_str());
+            wxLogError(wxGetTranslation("Uknown locale code '%s' in registry."), lng.c_str());
     }
     return lang;
 #endif // NEED_CHOOSELANG_UI
@@ -340,7 +286,7 @@ wxLanguage ChooseLanguage()
 
     LangInfo langs[] =
     {
-            { _("(Use default language)"), wxLANGUAGE_DEFAULT },
+            { wxGetTranslation("(Use default language)"), wxLANGUAGE_DEFAULT },
 
             { _T("English"), wxLANGUAGE_ENGLISH },
             { _T("French"), wxLANGUAGE_FRENCH },
@@ -353,8 +299,8 @@ wxLanguage ChooseLanguage()
         arr.Add(langs[i].name);
 
     int choice = wxGetSingleChoiceIndex(
-            _("Select your prefered language"),
-            _("Language selection"),
+            wxGetTranslation("Select your prefered language"),
+            wxGetTranslation("Language selection"),
             arr);
     if (choice == -1)
         return wxLANGUAGE_UNKNOWN;

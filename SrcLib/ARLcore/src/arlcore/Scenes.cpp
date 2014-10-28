@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <arlcore/Scenes.h>
+#include <arlcore/Point.h>
 
 #include <arlcore/Camera.h>
 #include <arlcore/Misc.h>
@@ -27,9 +28,13 @@
 arlCore::SceneUnitTest::SceneUnitTest( arlCore::PlaneSystem &universe, double worldPointsSize, unsigned int nbPoints2DMax):
 Scene(universe)
 {
+    m_Centre = arlCore::Point::New();
+    assert(m_Centre);
+
     const unsigned int NbCamerasMax = 10;
     const double size_rand_mire=300, size_cam=500, distance_mire_cam_min = 1000;//, WorldPointsSize=200;
-    arlCore::Point ZERO_MONDE(0.0,0.0,0.0);
+    arlCore::Point::sptr ZERO_MONDE = arlCore::Point::New();
+    ZERO_MONDE->fill(0.0);
 
     std::vector<double> int_param, int_range;
     int_param.push_back(1000);//fx
@@ -60,17 +65,18 @@ Scene(universe)
     int_range.push_back(0.0);
     int_range.push_back(0.0);
 
-    arlCore::Point tirage_camera(1);
-    tirage_camera.set(0, 0.0);
-    tirage_camera.addUniformNoise(0,(double)NbCamerasMax);
-    tirage_camera.set(0, (tirage_camera[0]+(double)NbCamerasMax )/2 );
+    arlCore::Point::sptr tirage_camera= arlCore::Point::New();
+    tirage_camera->init(1);
+    tirage_camera->set(0, 0.0);
+    tirage_camera->addUniformNoise(0,(double)NbCamerasMax);
+    tirage_camera->set(0, ( (*tirage_camera)[0]+(double)NbCamerasMax )/2 );
 
-    unsigned int nbCameras = (unsigned int)floor(tirage_camera[0]);
+    unsigned int nbCameras = (unsigned int)floor( (*tirage_camera)[0]);
     if( nbCameras<2 ) nbCameras=2;
 //  std::cerr<< "nbCameras = " << nbCameras << std::endl;
 
     // tirage du point de mire des cameras dans un cube de dimension size_rand_mire
-    m_Centre.shapeRandom(arlCore::ARLCORE_SHAPE_CUBE, size_rand_mire);
+    m_Centre->shapeRandom(arlCore::ARLCORE_SHAPE_CUBE, size_rand_mire);
 //  m_Centre.shapeRandom(arlCore::ARLCORE_SHAPE_CUBE, 0.01);
 //  std::cerr<< "point_mire = " << m_Centre.getString() << std::endl;
 //  addCameras(2, m_Centre, 0.1, distance_mire_cam_min, int_param, int_range);
@@ -82,12 +88,12 @@ Scene(universe)
     // point_monde = point dans un volume pour tester le recalage 3D/3D et ISPPC OSPPC et EPPC
     // point_monde_plan = point dans le plan xOy pour tester le recalage homographique
     // FONCTION(point_mire, nombre de points max, parametre de tirage, points tires, points tires bruites, param bruit)
-    arlCore::Point tirage_point(1);
+    arlCore::Point::sptr tirage_point = arlCore::Point::New(1);;
 
     // il faut au moins 3 points pour le recalage 3D3D et 4 pour le calcul homographique
-    tirage_point.addUniformNoise(0,nbPoints2DMax/2);
+    tirage_point->addUniformNoise(0,nbPoints2DMax/2);
 
-    unsigned int nbPoints = (unsigned int)floor(tirage_point[0] + nbPoints2DMax/2 + 4);
+    unsigned int nbPoints = (unsigned int)floor( (*tirage_point)[0] + nbPoints2DMax/2 + 4);
     if(nbPoints2DMax ==1) nbPoints = 1;
     addTag(nbPoints, arlCore::ARLCORE_SHAPE_SPHERE, m_Centre, worldPointsSize);
     addTag(nbPoints, arlCore::ARLCORE_SHAPE_PLAINSQUARE, ZERO_MONDE, worldPointsSize);
@@ -96,7 +102,7 @@ Scene(universe)
 arlCore::SceneUnitTest::~SceneUnitTest()
 {}
 
-const arlCore::Point& arlCore::SceneUnitTest::getCentre( void ) const
+arlCore::Point::csptr arlCore::SceneUnitTest::getCentre( void ) const
 {
     return m_Centre;
 }
@@ -116,11 +122,17 @@ const arlCore::Point& arlCore::SceneUnitTest::getCentre( void ) const
 arlCore::SceneUnitTestInitIntrinsicCalib::SceneUnitTestInitIntrinsicCalib( arlCore::PlaneSystem &universe, std::vector<double> k_range, const unsigned int nbCameras_MAX, const unsigned int nbPoses_MAX):
 Scene(universe)
 {
+    m_Centre = arlCore::Point::New();
+    assert(m_Centre);
+
     const double ChessSize = 120;
-    arlCore::Point Origin(0.0,0.0,0.0), zero_monde(0.0,0.0,0.0);
+    arlCore::Point::sptr Origin =  arlCore::Point::New();
+    Origin->fill(0.0);
+    arlCore::Point::sptr zero_monde =  arlCore::Point::New();
+    zero_monde->fill(0.0),
 
 //  Origin.cubicRandom(100);
-    Origin.shapeRandom(ARLCORE_SHAPE_CUBE, 100);
+    Origin->shapeRandom(ARLCORE_SHAPE_CUBE, 100);
     m_nbPoses = (unsigned int)floor( arlRandom::Random::uniformDoubleRnd(0.0, nbPoses_MAX) + 4);//
     unsigned int nbCameras = (unsigned int)floor( arlRandom::Random::uniformDoubleRnd(0.0, nbCameras_MAX) + 1);
     if(nbCameras_MAX == 1) nbCameras = 1;
@@ -170,7 +182,7 @@ Scene(universe)
 arlCore::SceneUnitTestInitIntrinsicCalib::~SceneUnitTestInitIntrinsicCalib()
 {}
 
-const arlCore::Point& arlCore::SceneUnitTestInitIntrinsicCalib::getCentre( void ) const
+arlCore::Point::csptr arlCore::SceneUnitTestInitIntrinsicCalib::getCentre( void ) const
 {
     return m_Centre;
 }
@@ -198,12 +210,15 @@ arlCore::SceneCriterionComparison::SceneCriterionComparison( arlCore::PlaneSyste
  std::vector<double> staticStatus, std::vector<double> noiseValues, double RSB_3D, double RSB_2D ):
 Scene(universe)
 {
+    m_Centre = arlCore::Point::New();
+    assert(m_Centre);
+
     bool calibration_endo = true;
 
     unsigned int nbCameras, nbPoints, nbControlPoints;
     double angleCameras, registrationPointsSize, controlPointsSize, distanceRegControlPoints;
     const double size_rand_point_de_mire_camera=300, size_cam=500, distance_mire_cam_min = 1000;
-    arlCore::Point ZERO_MONDE(0.0,0.0,0.0);
+    arlCore::Point::sptr ZERO_MONDE = arlCore::Point::New();
     arlCore::ARLCORE_SHAPE regPointShape, controlPointShape;
 
     /////////////////////////////////////////////////////////////
@@ -359,9 +374,9 @@ Scene(universe)
 //  std::cerr<< "nbCameras = " << nbCameras << std::endl;
 
     // tirage du point de mire des cameras
-    m_Centre.shapeRandom(arlCore::ARLCORE_SHAPE_CUBE, size_rand_point_de_mire_camera);
+    m_Centre->shapeRandom(arlCore::ARLCORE_SHAPE_CUBE, size_rand_point_de_mire_camera);
     m_ControlCentre = m_Centre;
-    m_ControlCentre.shapeRandom(arlCore::ARLCORE_SHAPE_SPHERESURFACE, distanceRegControlPoints);
+    m_ControlCentre->shapeRandom(arlCore::ARLCORE_SHAPE_SPHERESURFACE, distanceRegControlPoints);
 
     if(calibration_endo == true)
     {
@@ -394,34 +409,37 @@ Scene(universe)
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     // calcul des RSB 3D et 2D
-    const arlCore::PointList &regPoints     = this->getTags().getTag(0)->getGeometry();
-    std::vector< arlCore::PointList >reprojection2D(nbCameras);
-    arlCore::SmartPointList  splMonde;
+    arlCore::PointList::sptr regPoints     = this->getTags().getTag(0)->getGeometry();
+    std::vector< arlCore::PointList::sptr > reprojection2D(nbCameras);
+    arlCore::SmartPointList::sptr  splMonde =  arlCore::SmartPointList::New();
     unsigned int i;
     for( i=0 ; i<nbCameras ; ++i )
     {
         this->detection( i+1, 0, splMonde, 0.0 );
-        splMonde.getPoints(reprojection2D[i], i+1, (void*) this->getTags().getTag(0));
+        splMonde->getPoints(reprojection2D[i], i+1, this->getTags().getTag(0));
     }
     for( i=0 ; i<5 ; ++i )
     std::cerr<<"Noise values ="<<noiseValues[i]<<std::endl;
 
     double c,d, std_3D=0, std_2D=0;
-    arlCore::Point gravity_3D(3), gravity_2D(2), a,b;
-    regPoints.properties(gravity_3D, a, b, c, d, std_3D);
+    arlCore::Point::sptr gravity_3D=arlCore::Point::New();
+    arlCore::Point::sptr a=arlCore::Point::New();
+    arlCore::Point::sptr b=arlCore::Point::New();
+    arlCore::Point::sptr gravity_2D=arlCore::Point::New(); gravity_2D->init(2);
+    regPoints->properties(gravity_3D, a, b, c, d, std_3D);
     RSB_3D = 10*log10( (std_3D/noiseValues[0] +std_3D/noiseValues[1]+std_3D/noiseValues[2])/3 );
     std::cerr<<"RSB 3D = "<<10*log10(std_3D/noiseValues[0] +std_3D/noiseValues[1]+std_3D/noiseValues[2])<<std::endl;
     for( i=0 ; i<nbCameras ; ++i)
     {
         double std_2D_ind;
-        reprojection2D[i].properties(gravity_2D, a, b, c, d, std_2D_ind);
+        reprojection2D[i]->properties( gravity_2D, a, b, c, d, std_2D_ind);
         std_2D = sqrt( std_2D*std_2D + std_2D_ind*std_2D_ind );
         std::cerr<<"RSB 2D["<<i<<"] = "<<10*log10( (std_2D/noiseValues[3]+std_2D/noiseValues[4])/2/nbCameras )<<std::endl;
     }
     RSB_2D = 10*log10( (std_2D/noiseValues[3]+std_2D/noiseValues[4])/2/nbCameras );
 }
 
-const arlCore::Point& arlCore::SceneCriterionComparison::getCentre( void ) const
+arlCore::Point::csptr arlCore::SceneCriterionComparison::getCentre( void ) const
 {
     return m_Centre;
 }
@@ -433,6 +451,9 @@ arlCore::SceneCriterionComparison::~SceneCriterionComparison()
 arlCore::SceneAXXB::SceneAXXB( arlCore::PlaneSystem &universe, unsigned int NbCameras ):
 Scene(universe)
 {
+    m_Centre = arlCore::Point::New();
+    assert(m_Centre);
+
     // Chessboard
     const unsigned int NbPoints = 13; // Number of points by side of the square
     const double SquareEdgeSize = 200; // mm
@@ -441,7 +462,8 @@ Scene(universe)
     const double size_cam = 500; // mm
     const double distance_mire_cam_min = 1000; // mm
 
-    arlCore::Point ZERO_MONDE( 0.0, 0.0, 0.0 );
+    arlCore::Point::sptr ZERO_MONDE = arlCore::Point::New();
+    ZERO_MONDE->fill( 0.0 );
 
     std::vector<double> int_param, int_range;
     int_param.push_back(1000);//fx
@@ -473,18 +495,18 @@ Scene(universe)
     int_range.push_back(0.0);
 
     // tirage du point de mire des cameras dans un cube de dimension size_rand_mire
-    m_Centre.shapeRandom(arlCore::ARLCORE_SHAPE_CUBE, size_rand_mire);
+    m_Centre->shapeRandom(arlCore::ARLCORE_SHAPE_CUBE, size_rand_mire);
     addCameras( NbCameras, m_Centre, size_cam, distance_mire_cam_min, int_param, int_range);
 
-    arlCore::Tag* tag = addTag( NbPoints, arlCore::ARLCORE_SHAPE_CHESSBOARD, ZERO_MONDE, SquareEdgeSize);
-    tag->getGeometry().save("c:/Chess.vtk",arlCore::ARLCORE_POINT_SAVE_VTK);
+    arlCore::Tag::sptr tag = addTag( NbPoints, arlCore::ARLCORE_SHAPE_CHESSBOARD, ZERO_MONDE, SquareEdgeSize);
+    tag->getGeometry()->save("c:/Chess.vtk",arlCore::ARLCORE_POINT_SAVE_VTK);
     //addTag( 150, arlCore::ARLCORE_SHAPE_PLAINSQUARE, ZERO_MONDE, SquareEdgeSize);
 }
 
 arlCore::SceneAXXB::~SceneAXXB()
 {}
 
-const arlCore::Point& arlCore::SceneAXXB::getCentre( void ) const
+arlCore::Point::csptr arlCore::SceneAXXB::getCentre( void ) const
 {
     return m_Centre;
 }

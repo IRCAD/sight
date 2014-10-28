@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ namespace io
 /**
  * @brief   Defines the bundle descriptor reader class.
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct BundleDescriptorReader
 {
@@ -54,7 +54,7 @@ struct BundleDescriptorReader
      *
      * @return      a shared pointer to the created bundle
      */
-    static ::boost::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location) throw(RuntimeException);
+    FWRUNTIME_API static ::boost::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location) throw(RuntimeException);
 
     /**
      * @brief       Look for a descriptor at the specified location,
@@ -75,6 +75,17 @@ struct BundleDescriptorReader
      */
     static const BundleContainer createBundles(const boost::filesystem::path& location) throw(RuntimeException);
 
+    /**
+     * @brief   Processes a configuration element XML node.
+     *
+     * @param   node    a pointer to the XML node that represents a configuration element
+     * @param   bundle  a pointer to the bundle the extension will be attached to
+     *
+     * @return  a pointer to the created configuration element
+     */
+    static ::boost::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
+
+
 
 private:
 
@@ -90,17 +101,6 @@ private:
     static std::string SCHEMA;          ///< Defines the schema XML element name.
     static std::string VERSION;         ///< Defines the version XML element name.
     static std::string POINT;           ///< Defines the version XML element name.
-
-
-    /**
-     * @brief   Processes a configuration element XML node.
-     *
-     * @param   node    a pointer to the XML node that represents a configuration element
-     * @param   bundle  a pointer to the bundle the extension will be attached to
-     *
-     * @return  a pointer to the created configuration element
-     */
-    static ::boost::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
 
     /**
      * @brief   Processes an extension XML node.

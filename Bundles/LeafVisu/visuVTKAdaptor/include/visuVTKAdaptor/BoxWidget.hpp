@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ protected:
     VISUVTKADAPTOR_API virtual void doStop()      throw( ::fwTools::Failed );
     VISUVTKADAPTOR_API virtual void doSwap()      throw( ::fwTools::Failed );
     VISUVTKADAPTOR_API virtual void doUpdate()    throw( ::fwTools::Failed );
-    VISUVTKADAPTOR_API virtual void doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
+    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
 
     vtkTransform* m_transform;
     WPTR(::visuVTKAdaptor::Transform) m_transformService;

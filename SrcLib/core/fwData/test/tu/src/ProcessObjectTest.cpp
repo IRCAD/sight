@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ void ProcessObjectTest::constructeur()
     ::fwData::Integer::sptr field2 = ::fwData::Integer::New(8);
 
     // process
-    ::fwData::ProcessObject::NewSptr po;
+    ::fwData::ProcessObject::sptr po = ::fwData::ProcessObject::New();
     po->setInputValue(IMAGEID1, image1);
     po->setInputValue(FIELDID1, field1);
     po->setInputValue(FIELDID2, field2);

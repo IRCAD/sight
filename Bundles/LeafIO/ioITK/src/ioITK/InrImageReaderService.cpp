@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,9 +23,7 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwTools/Factory.hpp>
-
-#include <itkIO/ImageReader.hpp>
+#include <fwItkIO/ImageReader.hpp>
 
 #include "ioITK/InrImageReaderService.hpp"
 
@@ -33,7 +31,7 @@
 namespace ioITK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioITK::InrImageReaderService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioITK::InrImageReaderService , ::fwData::Image ) ;
 
 //------------------------------------------------------------------------------
 
@@ -90,10 +88,10 @@ void InrImageReaderService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-bool InrImageReaderService::createImage( const ::boost::filesystem::path inrFileDir, ::fwData::Image::sptr _pImg )
+bool InrImageReaderService::createImage( const ::boost::filesystem::path &inrFileDir, const ::fwData::Image::sptr &_pImg )
 {
     SLM_TRACE_FUNC();
-    ::itkIO::ImageReader::NewSptr myLoader;
+    ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
     bool ok = true;
 
     myLoader->setObject(_pImg);
@@ -150,7 +148,7 @@ void InrImageReaderService::notificationOfDBUpdate()
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
     SLM_ASSERT("pImage not instanced", pImage);
 
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
     msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
     msg->addEvent( ::fwComEd::ImageMsg::REGION ) ;

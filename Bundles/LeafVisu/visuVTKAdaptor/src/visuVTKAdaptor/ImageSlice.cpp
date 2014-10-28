@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/String.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -33,7 +33,7 @@
 #include "visuVTKAdaptor/ImageSlice.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite ) ;
 
 namespace visuVTKAdaptor
 {
@@ -57,11 +57,10 @@ ImageSlice::ImageSlice() throw()
     m_useImageTF = false;
 
     // Manage events
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER              );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
-    this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
-    this->addNewHandledEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER              );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
+    //this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
 }
 
 //------------------------------------------------------------------------------
@@ -90,6 +89,10 @@ void ImageSlice::doStart() throw(fwTools::Failed)
     this->addToRenderer(m_imageActor);
     this->addToRenderer(m_planeOutlineActor);
     this->addToPicker(m_imageActor);
+
+    m_connection = this->getCtrlImage()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -97,10 +100,9 @@ void ImageSlice::doStart() throw(fwTools::Failed)
 void ImageSlice::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (!m_imageComChannel.expired())
+    if (!m_connection.expired())
     {
-        m_imageComChannel.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_imageComChannel.lock());
+        m_connection.disconnect();
     }
     this->removeFromPicker(m_imageActor);
     this->removeAllPropFromRenderer();
@@ -110,7 +112,12 @@ void ImageSlice::doStop() throw(fwTools::Failed)
 
 void ImageSlice::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    if (!m_connection.expired())
+    {
+        m_connection.disconnect();
+    }
+    m_connection = this->getCtrlImage()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
     this->doUpdate();
 }
 
@@ -139,19 +146,9 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 
 void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getCtrlImage();
 
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-
-    if (!m_imageComChannel.expired())
-    {
-        m_imageComChannel.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_imageComChannel.lock());
-    }
-    m_imageComChannel = ::fwServices::registerCommunicationChannel(image, this->getSptr());
-    m_imageComChannel.lock()->start();
-
     if (imageIsValid)
     {
         this->buildPipeline();
@@ -163,16 +160,26 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ImageSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = m_ctrlImage.lock();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
-    if ( msg->hasEvent( ::fwComEd::CompositeMsg::MODIFIED_KEYS ) )
+    if ( msg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS )
+         || msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS )
+         || msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS )
+         )
     {
-        SLM_TRACE("Has event MODIFIED_KEYS");
-        doUpdate();
+        if (m_ctrlImage.expired() || m_ctrlImage.lock() != this->getCtrlImage())
+        {
+            if (!m_connection.expired())
+            {
+                m_connection.disconnect();
+            }
+            m_connection = m_ctrlImage.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        }
+        this->doUpdate();
     }
 
     if (imageIsValid)
@@ -216,7 +223,6 @@ void ImageSlice::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
 
 void ImageSlice::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
@@ -319,7 +325,7 @@ void ImageSlice::buildPipeline( )
     vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageSource);
     //vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageSource);
 
-    SLM_ASSERT("Invalid vtk image source", algorithm||imageData )
+    SLM_ASSERT("Invalid vtk image source", algorithm||imageData );
     if (algorithm)
     {
         SLM_TRACE("Input is a vtkImageAlgorithm");

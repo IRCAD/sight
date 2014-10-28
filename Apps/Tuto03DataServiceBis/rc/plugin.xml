@@ -4,7 +4,7 @@
     
 <extension implements="::fwServices::registry::AppConfig">
         <id>tutoDataServiceConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
         
 
@@ -17,7 +17,7 @@
         In this tutorial, only one service (::gui::aspect::IMenu type) is created,
         since the application's only one menu. The unique identifier (uid) of this service is "menu_file",
         it's an FW4SPL identifier. -->
-        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <gui>
                 <frame>
                     <name>tutoDataService bis</name>
@@ -32,7 +32,7 @@
             </registry>
         </service>
 
-        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
             <gui>
                 <layout>
                      <menu name="File" />
@@ -45,7 +45,7 @@
         
         <!-- The ::gui::aspect::DefaultMenu service creates the menu "File". This menu contains two menuItems (with a separator).
         The actions associated with these two menuItem are identified with the uid "action_openFile" and "action_quit". -->
-        <service uid="menu_File" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="Open file" shortcut="Ctrl+O" />
@@ -62,7 +62,7 @@
         <!-- The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service,
         we specify the id of the services to be started and updated (start and update methods) when user click on the menuItem "OpenFile".
         In this tutorial, ::gui::action::StarterActionService service starts and updates the service with the uid "myReaderPathFile". -->
-        <service uid="action_openFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
+        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no" >
             <start uid="myReaderPathFile"/>
         </service>
         <!-- The second service (::gui::action::QuitAction) is a generic action that will close the application
@@ -73,7 +73,7 @@
                But on Mac OS, this value installs the menuItem in the system menu bar,
                and on Linux this value installs the default 'Quit' system icon in the menuItem.)    
                The attribute "shortcut" is set with the value "Ctrl+Q" to close the application with this specific shortcut. -->
-        <service uid="action_quit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+        <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
 
         <!-- The service ::uiIO::editor::IOSelectorService is started (start and update methods) by the service ::gui::action::StarterActionService. 
@@ -84,10 +84,10 @@
         (Note: 
               if there is only one reading service, it's directly selected without dialog box.)
         When the service was chosen, it is started by the ::uiIO::editor::IOSelectorService service. -->
-        <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoComChannel="no" />
+        <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoConnect="no" />
 
         <!-- This service (::vtkSimpleMesh::RendererService) is a 3D visualization service of medical meshes. -->
-        <service implementation="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoComChannel="yes" >
+        <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoConnect="yes" >
             <!--<win guiContainerId="900"/>-->
         </service>
 

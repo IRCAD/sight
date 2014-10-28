@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ namespace fwGuiWx
  * @todo    Explain the syntax of a shortcut definition.
  * @todo    References the shortcut definition syntax explanations in member method documentation.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class FWGUIWX_CLASS_API Shortcut : public ::fwCore::BaseObject
 {
@@ -125,7 +125,7 @@ public:
     /**
      * @brief   Retrieves the key code from the given shortcut definition string.
      *
-     * @param   shortcut[in]    a string containing the shortcut definition
+     * @param[in] shortcut    a string containing the shortcut definition
      *
      * @return  an integer containing the key code
      *

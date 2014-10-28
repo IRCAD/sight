@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,14 +24,14 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::MedicalImageManagerSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::MedicalImageManagerSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
 MedicalImageManagerSrv::MedicalImageManagerSrv() throw()
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+    //addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -41,23 +41,24 @@ MedicalImageManagerSrv::~MedicalImageManagerSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageManagerSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void MedicalImageManagerSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
-    SLM_FATAL_IF("Received message must be compositeMsg", compositeMsg == 0 );
-
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+    if (compositeMsg)
     {
-        ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
-        convertImages( fields );
-    }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+        {
+            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
+            convertImages( fields );
+        }
 
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
-    {
-        ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
-        convertImages( fields );
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
+        {
+            ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
+            convertImages( fields );
+        }
     }
 }
 

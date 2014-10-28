@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,6 +19,7 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 #include "fwData/registry/macros.hpp"
@@ -36,10 +37,11 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Image::Image() :
+Image::Image(::fwData::Object::Key key) :
         m_type(),
         m_attrWindowCenter(0),
         m_attrWindowWidth(0),
+        m_attrNumberOfComponents(1),
         m_dataArray( ::fwData::Array::New() )
 {}
 
@@ -52,28 +54,36 @@ Image::~Image() throw()
 
 //-----------------------------------------------------------------------------
 
-void Image::shallowCopy( Image::csptr _source )
+void Image::shallowCopy(const Object::csptr &_source )
 {
+    Image::csptr other = Image::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     // Assign
-    copyInformation(_source );
+    copyInformation( other );
 
-    m_dataArray  = _source->m_dataArray;
+    m_dataArray  = other->m_dataArray;
 }
 
 //-----------------------------------------------------------------------------
 
-void Image::deepCopy( Image::csptr _source )
+void Image::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
+    Image::csptr other = Image::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
 
     // Assign
-    copyInformation(_source );
+    copyInformation( other );
 
-    if( _source->m_dataArray )
+    if( other->m_dataArray )
     {
-        m_dataArray->deepCopy( _source->m_dataArray );
+        m_dataArray = ::fwData::Object::copy(other->m_dataArray, cache);
     }
 }
 
@@ -110,24 +120,29 @@ size_t Image::allocate() throw(::fwData::Exception)
         m_dataArray = ::fwData::Array::New();
     }
 
-    return m_dataArray->resize(m_type, m_size, 1, true);
+    OSLM_ASSERT( "NumberOfComponents must be > 0", m_attrNumberOfComponents > 0 );
+    return m_dataArray->resize(m_type, m_size, m_attrNumberOfComponents, true);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z, const ::fwTools::Type &type) throw(::fwData::Exception)
+size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
+                       const ::fwTools::Type &type, size_t numberOfComponents) throw(::fwData::Exception)
 {
     m_size = boost::assign::list_of(x)(y)(z);
     m_type = type;
+    m_attrNumberOfComponents = numberOfComponents;
     return allocate();
 }
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(const SizeType &size, const ::fwTools::Type &type) throw(::fwData::Exception)
+size_t Image::allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents)
+    throw(::fwData::Exception)
 {
     m_size = size;
     m_type = type;
+    m_attrNumberOfComponents = numberOfComponents;
     return allocate();
 }
 
@@ -190,12 +205,13 @@ void Image::setType(const std::string &type)
 
 void Image::copyInformation( Image::csptr _source )
 {
-    m_size                = _source->m_size;
-    m_type                = _source->m_type;
-    m_spacing             = _source->m_spacing;
-    m_origin             = _source->m_origin;
+    m_size                   = _source->m_size;
+    m_type                   = _source->m_type;
+    m_spacing                = _source->m_spacing;
+    m_origin                 = _source->m_origin;
     m_attrWindowCenter       = _source->m_attrWindowCenter;
     m_attrWindowWidth        = _source->m_attrWindowWidth;
+    m_attrNumberOfComponents = _source->m_attrNumberOfComponents;
 }
 
 //------------------------------------------------------------------------------
@@ -255,7 +271,10 @@ size_t Image::getSizeInBytes() const
 {
     SLM_TRACE_FUNC();
 
-    size_t size = std::accumulate( m_size.begin(), m_size.end(), static_cast<size_t>(m_type.sizeOf()), std::multiplies< size_t > () );
+    size_t size = std::accumulate(
+                                  m_size.begin(), m_size.end(),
+                                  static_cast<size_t>(m_type.sizeOf()) * m_attrNumberOfComponents,
+                                  std::multiplies< size_t > () );
     return size;
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,8 +17,8 @@ namespace visuVTKAdaptor
 /**
  * @brief   Do a reset camera.
  * @class   ResetCamera
- *    The priority  of the comChannel of this Adaptor is very low (0.1). The update of the GenericScene must be done before this reset.
- * @author  IRCAD (Research and Development Team).
+ * @note    The priority  of the comChannel of this Adaptor is very low (0.1). The update of the GenericScene must be done before this reset.
+ * 
  * @date    2010.
  */
 class VISUVTKADAPTOR_CLASS_API ResetCamera: public ::fwRenderVTK::IVtkAdaptorService
@@ -40,7 +40,7 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
 private:
 

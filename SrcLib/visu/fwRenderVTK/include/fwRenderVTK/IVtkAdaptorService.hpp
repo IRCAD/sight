@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include "fwRenderVTK/VtkRenderService.hpp"
 #include "fwRenderVTK/config.hpp"
@@ -66,6 +67,18 @@ public :
     /// method when it have modified a  vtk structure
     FWRENDERVTK_API void setVtkPipelineModified();
 
+    /// Returns true if the service automatically triggers the rendering.
+    bool getAutoRender() const
+    {
+        return m_autoRender;
+    }
+
+    /// Sets if the service automatically triggers the rendering.
+    void setAutoRender(bool autoRender)
+    {
+        m_autoRender = autoRender;
+    }
+
 protected :
 
     /**
@@ -90,7 +103,7 @@ protected :
     FWRENDERVTK_API void stopping() throw(fwTools::Failed);
     FWRENDERVTK_API void swapping() throw(fwTools::Failed);
     FWRENDERVTK_API void updating() throw(fwTools::Failed);
-    FWRENDERVTK_API void updating(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    FWRENDERVTK_API void receiving(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     //@}
 
 
@@ -104,7 +117,7 @@ protected :
     VtkRenderService::VtkObjectIdType  m_transformId;
     VtkRenderService::wptr             m_renderService;
 
-    IService::wptr m_communicationChannelService;
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 
 
     typedef std::vector < ::fwRenderVTK::IVtkAdaptorService::wptr > ServiceVector;
@@ -112,11 +125,13 @@ protected :
 
     vtkPropCollection * m_propCollection;
 
+    bool m_autoRender;
+
     FWRENDERVTK_API virtual void doStart() = 0;
     FWRENDERVTK_API virtual void doStop() = 0;
     FWRENDERVTK_API virtual void doSwap() = 0;
     FWRENDERVTK_API virtual void doUpdate() = 0;
-    FWRENDERVTK_API virtual void doUpdate(::fwServices::ObjectMsg::csptr msg) = 0;
+    FWRENDERVTK_API virtual void doReceive(::fwServices::ObjectMsg::csptr msg) = 0;
 
 
     ServiceVector & getRegisteredServices() {return m_subServices;};
@@ -133,6 +148,7 @@ protected :
     FWRENDERVTK_API void removeAllPropFromRenderer();
 
     FWRENDERVTK_API static void getProps(vtkPropCollection *propc, vtkProp *prop);
+
 
 private:
     /// notify a render request iff vtkPipeline is modified

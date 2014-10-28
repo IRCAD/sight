@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,7 @@
 
 #include "fwComEd/parser/Object.hpp"
 
-REGISTER_SERVICE( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwData::Object ) ;
 
 namespace fwComEd
 {
@@ -93,7 +93,7 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
                 OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", !associatedObject->getField( key ) );
 
                 // Create and manage object config
-                ::fwServices::AppConfigManager::NewSptr ctm;
+                ::fwServices::AppConfigManager::sptr ctm = ::fwServices::AppConfigManager::New();
                 ctm->setConfig( *(elem->getElements().begin()) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();

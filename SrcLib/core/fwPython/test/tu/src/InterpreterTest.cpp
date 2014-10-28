@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 #include <boost/foreach.hpp>
 
 #include <fwData/String.hpp>
+#include <fwData/factory/new.hpp>
 
 #include "fwPython/python.hpp"
 #include "fwPython/bindings/base.hpp"
@@ -132,7 +133,7 @@ void InterpreterTest::testFwDataBindings()
     BOOST_FOREACH(std::string name, classes)
     {
         std::string klass = base + name;
-        interpreter.addObject(name, ::fwTools::Factory::New(klass) );
+        interpreter.addObject(name, ::fwData::factory::New(klass) );
 
         std::string code = std::string();
         code += "assert " + name + "\n";

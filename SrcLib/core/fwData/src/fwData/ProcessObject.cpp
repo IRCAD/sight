@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,6 +9,7 @@
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/ProcessObject.hpp"
 
@@ -19,7 +20,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-ProcessObject::ProcessObject()
+ProcessObject::ProcessObject(::fwData::Object::Key key)
 {}
 
 //------------------------------------------------------------------------------
@@ -128,31 +129,39 @@ void ProcessObject::clearParams(ProcessObjectMapType& params)
 
 //-----------------------------------------------------------------------------
 
-void ProcessObject::shallowCopy( ::fwData::ProcessObject::csptr source )
+void ProcessObject::shallowCopy(const Object::csptr &source )
 {
+    ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( source );
 
-    m_attrInputs = source->m_attrInputs;
-    m_attrOutputs = source->m_attrOutputs;
+    m_attrInputs = other->m_attrInputs;
+    m_attrOutputs = other->m_attrOutputs;
 }
 
 //-----------------------------------------------------------------------------
 
-void ProcessObject::deepCopy( ::fwData::ProcessObject::csptr source )
+void ProcessObject::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( source );
+    ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source, cache );
 
     this->clearInputs();
     this->clearOutputs();
 
-    BOOST_FOREACH(ProcessObjectMapType::value_type elt, source->m_attrInputs)
+    BOOST_FOREACH(ProcessObjectMapType::value_type elt, other->m_attrInputs)
     {
-        m_attrInputs[elt.first] = ::fwData::Object::copy(elt.second);
+        m_attrInputs[elt.first] = ::fwData::Object::copy(elt.second, cache);
     }
 
-    BOOST_FOREACH(ProcessObjectMapType::value_type elt, source->m_attrOutputs)
+    BOOST_FOREACH(ProcessObjectMapType::value_type elt, other->m_attrOutputs)
     {
-        m_attrOutputs[elt.first] = ::fwData::Object::copy(elt.second);
+        m_attrOutputs[elt.first] = ::fwData::Object::copy(elt.second, cache);
     }
 }
 

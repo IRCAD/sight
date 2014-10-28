@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,9 @@
 #include "fwData/GenericField.hpp"
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(Boolean), FWDATA_API);
 namespace fwData
 {
 
@@ -21,33 +22,34 @@ namespace fwData
  *
  * Boolean object is essentially used as a field in other objects.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object),( ((const bool)(false)) ), GenericFieldFactory< Boolean >) ;
+    fwCampMakeFriendDataMacro((fwData)(Boolean));
 
-    fwDataObjectMacro();
-
-    /// Defines shallow copy
-    FWDATA_API void shallowCopy( Boolean::csptr _source );
-
-    /// Defines deep copy
-    FWDATA_API void deepCopy( Boolean::csptr _source );
-
-protected:
     /**
-     * @brief Constructor.
-     * @param[in] value The initial value.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWDATA_API Boolean( const bool value = false ) throw();
+    FWDATA_API Boolean( ::fwData::Object::Key key ) throw();
 
     /**
      * @brief Destructor.
      */
     FWDATA_API virtual ~Boolean() throw();
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
+
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+
+protected:
+
 };
 
 } // namespace fwData

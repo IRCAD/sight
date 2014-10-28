@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,20 +18,21 @@
 
 #include <fwTools/System.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/File.hpp>
+#include <fwTest/generator/Image.hpp>
 
 #include <fwComEd/helper/Image.hpp>
 
-#include <vtkIO/ImageWriter.hpp>
-#include <vtkIO/ImageReader.hpp>
-#include <vtkIO/MetaImageReader.hpp>
-#include <vtkIO/MetaImageWriter.hpp>
-#include <vtkIO/VtiImageReader.hpp>
-#include <vtkIO/VtiImageWriter.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/ImageWriter.hpp>
+#include <fwVtkIO/ImageReader.hpp>
+#include <fwVtkIO/MetaImageReader.hpp>
+#include <fwVtkIO/MetaImageWriter.hpp>
+#include <fwVtkIO/VtiImageReader.hpp>
+#include <fwVtkIO/VtiImageWriter.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "ImageTest.hpp"
 
@@ -72,18 +73,18 @@ static const ::fwData::Image::OriginType  bostonTeapotOrigin  = list_of(1.1)(2.2
 {                                                                                                                                  \
     const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / filename);                                  \
                                                                                                                                    \
-    ::fwData::Image::NewSptr image;                                                                                                \
-    ::fwDataTools::Image::generateRandomImage(image, ::fwTools::Type(imagetype));                                                  \
+    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                          \
+    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type(imagetype));                                            \
                                                                                                                                    \
-    writerclass::NewSptr writer;                                                                                                   \
+    writerclass::sptr writer =  writerclass::New();                                                                                \
     writer->setObject(image);                                                                                                      \
     writer->setFile(testFile);                                                                                                     \
     writer->write();                                                                                                               \
                                                                                                                                    \
     CPPUNIT_ASSERT_MESSAGE( "test on <" filename ">  of type <" imagetype "> Failed ", ::boost::filesystem::exists(testFile) );    \
                                                                                                                                    \
-    ::fwData::Image::NewSptr image2;                                                                                               \
-    readerclass::NewSptr reader;                                                                                                   \
+    ::fwData::Image::sptr image2 = ::fwData::Image::New();                                                                         \
+    readerclass::sptr reader = readerclass::New();                                                                                 \
     reader->setObject(image2);                                                                                                     \
     reader->setFile(testFile);                                                                                                     \
     reader->read();                                                                                                                \
@@ -136,13 +137,13 @@ void ImageTest::testImageToVtk()
 
 #define IMAGE_TO_VTK_TEST(imgtype, vtktypes)                                                                                   \
     {                                                                                                                          \
-    ::fwData::Image::NewSptr image;                                                                                            \
-    ::fwDataTools::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));                               \
+    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                      \
+    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));                         \
                                                                                                                                \
     ::fwComEd::helper::Image imageHelper(image);                                                                               \
                                                                                                                                \
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();                                         \
-    ::vtkIO::toVTKImage(image, vtkImage);                                                                                      \
+    ::fwVtkIO::toVTKImage(image, vtkImage);                                                                                      \
                                                                                                                                \
     COMPARE_IMAGE_ATTRS_MACRO(                                                                                                 \
             size,                                                                                                              \
@@ -199,8 +200,8 @@ void ImageTest::testFromVtk()
                                                                                                                        \
         CPPUNIT_ASSERT(vtkImage);                                                                                      \
                                                                                                                        \
-        ::fwData::Image::NewSptr image;                                                                                \
-        ::vtkIO::fromVTKImage(vtkImage, image);                                                                        \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                \
+        ::fwVtkIO::fromVTKImage(vtkImage, image);                                                                        \
                                                                                                                        \
         ::fwComEd::helper::Image imageHelper(image);                                                                   \
                                                                                                                        \
@@ -249,8 +250,8 @@ void ImageTest::mhdReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd" );
 
-    ::fwData::Image::NewSptr image;
-    ::vtkIO::MetaImageReader::NewSptr reader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
@@ -277,13 +278,13 @@ void ImageTest::mhdWriterTest()
     const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
     const ::boost::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
 
-    ::fwData::Image::NewSptr image;
-    ::vtkIO::MetaImageReader::NewSptr reader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
 
-    ::vtkIO::MetaImageWriter::NewSptr writer;
+    ::fwVtkIO::MetaImageWriter::sptr writer = ::fwVtkIO::MetaImageWriter::New();
     writer->setObject(image);
     writer->setFile(testFile);
     writer->write();
@@ -299,14 +300,14 @@ void ImageTest::mhdWriterTest()
 
 
 
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"int8", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"uint8", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"int16", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"uint16", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"int32", "imageTest.mhd");
-    WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"uint32", "imageTest.mhd");
-    // WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"int64", "imageTest.mhd");
-    // WRITER_TEST(::vtkIO::MetaImageWriter,::vtkIO::MetaImageReader,"uint64", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int8", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint8", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int16", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint16", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int32", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint32", "imageTest.mhd");
+    // WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int64", "imageTest.mhd");
+    // WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint64", "imageTest.mhd");
 
     const ::boost::filesystem::path zFile(::fwTools::System::getTemporaryFolder() / "imagetestfile.zraw");
     ::boost::filesystem::remove(zFile);
@@ -318,8 +319,8 @@ void ImageTest::vtiReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vti/BostonTeapot.vti" );
 
-    ::fwData::Image::NewSptr image;
-    ::vtkIO::VtiImageReader::NewSptr reader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwVtkIO::VtiImageReader::sptr reader = ::fwVtkIO::VtiImageReader::New();
 
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -344,14 +345,14 @@ void ImageTest::vtiReaderTest()
 void ImageTest::vtiWriterTest()
 {
 
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"int8", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"uint8", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"int16", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"uint16", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"int32", "imageTest.vti");
-    WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"uint32", "imageTest.vti");
-    // WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"int64", "imageTest.vti");
-    // WRITER_TEST(::vtkIO::VtiImageWriter,::vtkIO::VtiImageReader,"uint64", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int8", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint8", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int16", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint16", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int32", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint32", "imageTest.vti");
+    // WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int64", "imageTest.vti");
+    // WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint64", "imageTest.vti");
 }
 
 //------------------------------------------------------------------------------
@@ -360,8 +361,8 @@ void ImageTest::vtkReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
 
-    ::fwData::Image::NewSptr image;
-    ::vtkIO::ImageReader::NewSptr reader;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();
 
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -391,9 +392,9 @@ void ImageTest::vtkReaderTest()
 {                                                                                                                                                  \
     const ::boost::filesystem::path testFile(::fwTest::Data::dir() / "fw4spl/image/vtk/img-" imagetype ".vtk");                                    \
                                                                                                                                                    \
-    ::fwData::Image::NewSptr image;                                                                                                                \
+    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                                                \
                                                                                                                                                    \
-    ::vtkIO::ImageReader::NewSptr reader;                                                                                                          \
+    ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();                                                                                                          \
     reader->setObject(image);                                                                                                                      \
     reader->setFile(testFile);                                                                                                                     \
     reader->read();                                                                                                                                \
@@ -432,14 +433,14 @@ void ImageTest::vtkReaderTest()
 
 void ImageTest::vtkWriterTest()
 {
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"int8", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"uint8", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"int16", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"uint16", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"int32", "imageTest.vtk");
-    WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"uint32", "imageTest.vtk");
-    // WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"int64", "imageTest.vtk");
-    // WRITER_TEST(::vtkIO::ImageWriter,::vtkIO::ImageReader,"uint64", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int8", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint8", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int16", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint16", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int32", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint32", "imageTest.vtk");
+    // WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int64", "imageTest.vtk");
+    // WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint64", "imageTest.vtk");
 }
 
 //------------------------------------------------------------------------------

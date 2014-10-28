@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,11 +21,11 @@ class UIMEASUREMENT_CLASS_API LoadLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (LoadLandmark)( ::fwGui::IActionSrv) ) ;
 
-protected:
-
     UIMEASUREMENT_API LoadLandmark() throw() ;
 
     UIMEASUREMENT_API virtual ~LoadLandmark() throw() ;
+
+protected:
 
     void configuring() throw (::fwTools::Failed);
 
@@ -33,13 +33,13 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     void stopping() throw (::fwTools::Failed);
 
-    UIMEASUREMENT_API void info(std::ostream &_sstream ) ;
+    void info(std::ostream &_sstream ) ;
 
-
+    void load(const ::boost::filesystem::path& path);
 };
 
 } // namespace action

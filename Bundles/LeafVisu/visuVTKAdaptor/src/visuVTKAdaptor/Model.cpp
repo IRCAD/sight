@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,7 @@
 #include <fwComEd/ModelMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include "visuVTKAdaptor/Model.hpp"
@@ -20,7 +20,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Model, ::fwData::Model ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Model, ::fwData::Model ) ;
 
 namespace visuVTKAdaptor
 {
@@ -29,7 +29,7 @@ namespace visuVTKAdaptor
 
 Model::Model() throw()
 {
-     addNewHandledEvent( ::fwComEd::ModelMsg::NEW_MODEL );
+     //addNewHandledEvent( ::fwComEd::ModelMsg::NEW_MODEL );
 }
 
 //------------------------------------------------------------------------------
@@ -88,6 +88,7 @@ void Model::doUpdate() throw(fwTools::Failed)
         trianAdaptor->setRenderId( this->getRenderId() );
         trianAdaptor->setPickerId( this->getPickerId() );
         trianAdaptor->setRenderService(this->getRenderService());
+        trianAdaptor->setAutoRender( this->getAutoRender() );
         trianAdaptor->start();
 
         this->registerService(trianAdaptor);
@@ -110,7 +111,7 @@ void Model::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Model::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw(fwTools::Failed)
+void Model::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw(fwTools::Failed)
 {
     ::fwComEd::ModelMsg::csptr msg = ::fwComEd::ModelMsg::dynamicConstCast(_msg);
 

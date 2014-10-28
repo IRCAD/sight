@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -95,6 +95,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         // Creates and process the profile element.
          ::boost::shared_ptr< ::fwRuntime::profile::Profile > profile = processProfile(rootNode);
 
+        profile->setFilePath(normalizedPath);
         profile->setName(sName);
         profile->setVersion(sVersion);
         profile->setCheckSingleInstance(checkSingleInstance);
@@ -106,7 +107,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
     catch(std::exception& exception)
     {
         xmlFreeDoc(document);
-        throw exception;
+        throw ;
     }
 }
 
@@ -223,7 +224,6 @@ void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node, ::boo
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
-    std::string value;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)
@@ -244,7 +244,6 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node, ::boost::s
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
-    std::string value;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace helper
  * @brief   Defines an helper to modify an ::fwData::Image by adding few medical fields
  * and create in parallel the message to announce these modifications.
  * @struct  Image
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-20012.
  */
 class FWCOMED_CLASS_API Image
@@ -41,7 +41,7 @@ public :
     FWCOMED_API Image( ::fwData::Image::sptr image );
 
     /// Destrucotr. Do nothing.
-    FWCOMED_API ~Image();
+    FWCOMED_API virtual ~Image();
 
     /**
      * @brief Create landmark fields if not exist, NOT GENERATE MESSAGE.
@@ -90,7 +90,7 @@ public :
     // @}
 
     /// Returns a copy of current lock on image
-    FWCOMED_API ::fwTools::BufferObject::Lock getLock() const;
+    FWCOMED_API ::fwMemory::BufferObject::Lock getLock() const;
 
 private :
 
@@ -98,7 +98,7 @@ private :
 
     ::fwData::Image::sptr m_image;
 
-    ::fwTools::BufferObject::Lock m_lock;
+    ::fwMemory::BufferObject::Lock m_lock;
 };
 
 } // helper

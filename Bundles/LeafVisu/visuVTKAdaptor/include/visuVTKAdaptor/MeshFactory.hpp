@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,15 +33,15 @@ public:
 
 protected:
 
-    vtkActor* getActor();
+    VISUVTKADAPTOR_API vtkActor* getActor();
 
-    void updateTriangulaMesh( ::fwData::TriangularMesh::sptr mesh);
+    VISUVTKADAPTOR_API void updateTriangulaMesh( ::fwData::TriangularMesh::sptr mesh);
 
-    void updateMaterial( ::fwData::Material::sptr material );
+    VISUVTKADAPTOR_API void updateMaterial( ::fwData::Material::sptr material );
 
-    void updateVisibility( bool isVisible);
+    VISUVTKADAPTOR_API void updateVisibility( bool isVisible);
 
-    void setVtkClippingPlanes(vtkPlaneCollection *planes);
+    VISUVTKADAPTOR_API void setVtkClippingPlanes(vtkPlaneCollection *planes);
 
     void setNormalsFeatureAngle(double angle){ m_normalsFeatureAngle = angle; }
 
@@ -51,12 +51,7 @@ protected:
     vtkActor * m_actor ;
 
     double m_normalsFeatureAngle;
-
-
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

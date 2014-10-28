@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,8 +39,8 @@ protected:
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
     </adaptor>
     @endverbatim
-    * - <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" 
-    *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/> : Set the config.
+    * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
+    *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
     *
     * \b xMin : mandatory : Set the minimum X value to display.
     *
@@ -81,7 +81,7 @@ protected:
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
     /// Do nothing.
-    SCENE2D_API void doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Do nothing.
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
@@ -140,7 +140,10 @@ private:
     std::vector<QGraphicsItem*> m_values;
 
     /// Communication channel between this adaptor and the viewport.
-    ::fwServices::ComChannelService::sptr m_comChannel;
+    ::fwCom::Connection m_connection;
+
+    /// fWID of the viewport
+    std::string m_viewportID;
 
     /// The viewport that help us to scale the graphic items which represent axis values.
     ::scene2D::data::Viewport::sptr m_viewport;

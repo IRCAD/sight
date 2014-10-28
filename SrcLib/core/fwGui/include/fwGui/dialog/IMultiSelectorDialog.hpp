@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,10 @@
 #ifndef FWGUI_IMULTISELECTORDIALOG_HPP_
 #define FWGUI_IMULTISELECTORDIALOG_HPP_
 
+#include <map>
 #include <vector>
-#include <fwCore/base.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
@@ -21,16 +22,16 @@ namespace dialog
 
 /**
  * @brief   IMultiSelectorDialog allows the choice of some elements among several (_selections)
- * @class   IMultiSelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMultiSelectorDialog
+ * 
  * @date    2009-2010.
  */
-class FWGUI_CLASS_API IMultiSelectorDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMultiSelectorDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMultiSelectorDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMultiSelectorDialog)(::fwGui::GuiBaseObject) )
 
     typedef std::map< std::string, bool > Selections;
     typedef std::string FactoryRegistryKeyType;
@@ -58,7 +59,6 @@ public:
 
     /**
      * @brief Show the selector and return the selection.
-     * @param[in] _parent Parent container for the selector.
      */
     FWGUI_API virtual Selections show() = 0;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,8 +19,8 @@ namespace ioData
 {
 /**
  * @brief   Spline reader service.
- * @class   SplineReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   SplineReaderService
+ * 
  * @date    2009.
  *
  * Service reading a spline object.
@@ -29,7 +29,7 @@ namespace ioData
  * @li Use update() to read the spline and notify observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline )
  */
 class IODATA_CLASS_API SplineReaderService : public ::io::IReader
 {
@@ -92,7 +92,7 @@ protected:
      *
      * XML configuration sample:
      * @verbatim
-     <service uid="tubeReader" type="::io::IReader" implementation="::ioData::SplineReaderService">
+     <service uid="tubeReader" type="::io::IReader" impl="::ioData::SplineReaderService">
        <spline id="0" matrix="../matrix.trf" nbSides="10" radius="10">
         <point id="0"/>
         <point id="4"/>
@@ -119,7 +119,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
      * @brief Info method.

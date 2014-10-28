@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,7 @@
 
 #include <boost/cstdint.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwMath/IntrasecTypes.hpp>
 
 #include <fwData/Tag.hpp>
 #include <fwData/PointList.hpp>
@@ -18,10 +18,10 @@
 #include <fwData/location/SingleFile.hpp>
 
 #include "fwDataIO/reader/TagReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwMath/IntrasecTypes.hpp>
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::TagReader, ::fwDataIO::reader::TagReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::TagReader );
 
 
 namespace fwDataIO
@@ -32,7 +32,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-TagReader::TagReader()
+TagReader::TagReader(::fwDataIO::reader::IObjectReader::Key key)
 : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 
@@ -66,8 +66,7 @@ void TagReader::read()
 
     /// Read content and update tag data structure
     std::string name, type;
-    int n, nbPts;
-    double x,y,z,radius=0.0;
+    int n;
     file>>name;
     file>>n;
     if(n>=1)
@@ -76,6 +75,9 @@ void TagReader::read()
 
         if(type=="ARTAG" || type=="CHESSBOARD" || type=="ARToolKitPlus_MARKER_ID_BCH")
         {
+            int nbPts;
+            double x,y,z;
+            double radius=0.0;
             file>>x>>y>>z;
             file>>nbPts;
             tag->setType(type);

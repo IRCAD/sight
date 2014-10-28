@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace profile
  * @brief   Stops a given bundle.
  * @class  Stopper
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 class Stopper :  public boost::noncopyable
 {
@@ -37,7 +37,7 @@ public:
     /**
      * @brief       Constructor
      *
-     * @param[in]   identifier  a string containing a bundle identifier
+     * @param[in]   _identifier  a string containing a bundle identifier
      */
     FWRUNTIME_API Stopper( const std::string   & _identifier );
 

@@ -1,10 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/HasSlots.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -15,7 +18,6 @@
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwData/Composite.hpp>
-#include <fwData/Acquisition.hpp>
 
 #include "ctrlSelection/manager/SwapperSrv.hpp"
 
@@ -27,15 +29,15 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SwapperSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SwapperSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
 SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
+    //handlingEventOff ::fwComEd::CompositeMsg::ADDED_KEYS );
+    //handlingEventOff ::fwComEd::CompositeMsg::REMOVED_KEYS );
+    //handlingEventOff ::fwComEd::CompositeMsg::CHANGED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -45,29 +47,30 @@ SwapperSrv::~SwapperSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void SwapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
-    SLM_FATAL_IF("Received message must be compositeMsg", compositeMsg == 0 );
-
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+    if (compositeMsg)
     {
-        ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
-        this->addObjects( fields );
-    }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
+        {
+            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
+            this->addObjects( fields );
+        }
 
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
-    {
-        ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
-        this->removeObjects( fields );
-    }
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
+        {
+            ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
+            this->removeObjects( fields );
+        }
 
-    if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
-    {
-        ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
-        this->swapObjects( fields );
+        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
+        {
+            ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
+            this->swapObjects( fields );
+        }
     }
 }
 
@@ -95,18 +98,29 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    for( SubServicesMapType::iterator iterMap = m_objectsSubServices.begin(); iterMap != m_objectsSubServices.end(); ++iterMap )
+    while( !m_objectConnections.empty())
     {
-        SubServicesVecType subServices = iterMap->second;
+        this->removeConnections(m_objectConnections.begin()->first);
+    }
+    SLM_ASSERT("Connections must be empty", m_objectConnections.empty());
+
+    while( !m_proxyCtns.empty())
+    {
+        this->disconnectProxies(m_proxyCtns.begin()->first);
+    }
+    SLM_ASSERT("Proxy connections must be empty", m_proxyCtns.empty());
+
+
+    BOOST_FOREACH(SubServicesMapType::value_type elt, m_objectsSubServices)
+    {
+        SubServicesVecType subServices = elt.second;
         BOOST_REVERSE_FOREACH( SPTR(SubService) subSrv, subServices )
         {
-            OSLM_ASSERT("SubService on "<< iterMap->first <<" expired !", subSrv->getService() );
+            OSLM_ASSERT("SubService on "<< elt.first <<" expired !", subSrv->getService() );
 
-            if( subSrv->m_hasComChannel )
+            if( subSrv->m_hasAutoConnection )
             {
-                subSrv->getComChannel()->stop();
-                ::fwServices::OSR::unregisterService(subSrv->getComChannel());
-                subSrv->m_comChannel.reset();
+                subSrv->m_connections->disconnect();
             }
             subSrv->getService()->stop();
             ::fwServices::OSR::unregisterService(subSrv->getService());
@@ -188,12 +202,12 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 {
     OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(), _elt->getName() == "service" ) ;
     SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") ) ;
-    SLM_ASSERT("Attribute \"implementation\" is missing", _elt->hasAttribute("implementation") ) ;
+    SLM_ASSERT("Attribute \"impl\" is missing", _elt->hasAttribute("impl") ) ;
 
     ::fwServices::IService::sptr service ;
 
     std::string serviceType = _elt->getExistingAttributeValue("type") ;
-    std::string implementationType = _elt->getExistingAttributeValue("implementation");
+    std::string implementationType = _elt->getExistingAttributeValue("impl");
 
     // Add service with possible id
     if( _elt->hasAttribute("uid")  )
@@ -209,7 +223,9 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
     ::fwRuntime::ConfigurationElement::sptr cfg = _elt;
     if( _elt->hasAttribute("config"))
     {
-        cfg = ::fwRuntime::ConfigurationElement::constCast( ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( _elt->getExistingAttributeValue("config") , implementationType ) );
+        cfg = ::fwRuntime::ConfigurationElement::constCast(
+                ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+                        _elt->getExistingAttributeValue("config") , implementationType ) );
     }
 
     // Set configuration
@@ -218,33 +234,13 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
     // Configure
     service->configure();
 
-    // Standard communication management
-    SLM_ASSERT("autoComChannel attribute missing in service "<< service->getClassname(), _elt->hasAttribute("autoComChannel"));
-
-    std::string autoComChannel = _elt->getExistingAttributeValue("autoComChannel");
-    SLM_ASSERT("wrong autoComChannel definition", autoComChannel=="yes" || autoComChannel=="no");
-    if(autoComChannel=="yes")
-    {
-        ::fwServices::ComChannelService::sptr comChannel = ::fwServices::registerCommunicationChannel( obj , service);
-        // Add priority for the new comChannel if defined, otherwise the default value is 0.5
-        if( _elt->hasAttribute("priority"))
-        {
-            std::string priorityStr = _elt->getExistingAttributeValue("priority");
-            double priority = ::boost::lexical_cast< double >( priorityStr );
-            if(priority < 0.0) priority = 0.0;
-            if(priority > 1.0) priority = 1.0;
-            comChannel->setPriority(priority);
-        }
-        comChannel->start();
-    }
-
     // Return
     return service ;
 }
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::addObject( const std::string objectId, ::fwData::Object::sptr object )
+void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr object )
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {
@@ -259,10 +255,24 @@ void SwapperSrv::addObject( const std::string objectId, ::fwData::Object::sptr o
         {
             ::fwServices::IService::sptr srv = this->add( object, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
-            srv->configure();
+
             SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
             subSrv->m_config = cfg;
             subSrv->m_service = srv;
+
+            // Standard communication management
+            SLM_ASSERT("autoConnect attribute missing in service "<< srv->getClassname(),
+                       cfg->hasAttribute("autoConnect"));
+
+            if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
+            {
+                subSrv->m_hasAutoConnection = true;
+                if (!subSrv->m_connections)
+                {
+                    subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
+                }
+                subSrv->m_connections->connect( object, srv, srv->getObjSrvConnections() );
+            }
 
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
@@ -270,14 +280,12 @@ void SwapperSrv::addObject( const std::string objectId, ::fwData::Object::sptr o
             {
                 subSrv->getService()->update();
             }
-
-            if ( cfg->hasAttribute("autoComChannel") && cfg->getExistingAttributeValue("autoComChannel") == "yes" )
-            {
-                subSrv->m_hasComChannel = true;
-                subSrv->m_comChannel = ::fwServices::getCommunicationChannel( object, srv);
-            }
         }
         m_objectsSubServices[objectId] = subVecSrv;
+
+
+        this->manageConnections(objectId, object, conf);
+        this->manageProxies(objectId, object, conf);
     }
     else
     {
@@ -296,38 +304,44 @@ void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::swapObject(const std::string objectId, ::fwData::Object::sptr object)
+void SwapperSrv::swapObject(const std::string &objectId, ::fwData::Object::sptr object)
 {
-    if(m_objectsSubServices.find(objectId) != m_objectsSubServices.end())
+    std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
+    BOOST_FOREACH( ConfigurationType cfg, confVec )
     {
-        std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
-        BOOST_FOREACH( ConfigurationType cfg, confVec )
-        {
-            SubServicesVecType subServices = m_objectsSubServices[objectId];
-            BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
-            {
-                OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
-                OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
+        this->removeConnections(objectId);
+        this->disconnectProxies(objectId);
 
-                OSLM_TRACE("Swapping subService " << subSrv->getService()->getID() << " on "<< objectId );
-                if(subSrv->getService()->getObject() != object)
+        SubServicesVecType subServices = m_objectsSubServices[objectId];
+        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+        {
+            OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
+            OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
+
+            OSLM_TRACE("Swapping subService " << subSrv->getService()->getID() << " on "<< objectId );
+            if(subSrv->getService()->getObject() != object)
+            {
+                subSrv->getService()->swap(object);
+                subSrv->m_dummy.reset();
+
+                if (subSrv->m_hasAutoConnection)
                 {
-                    subSrv->getService()->swap(object);
-                    subSrv->m_dummy.reset();
-                }
-                else
-                {
-                    OSLM_WARN( subSrv->getService()->getID()
-                            << "'s object already is '"
-                            << subSrv->getService()->getObject()->getID()
-                            << "', no need to swap");
+                    subSrv->m_connections->disconnect();
+                    subSrv->m_connections->connect( object, subSrv->getService(),
+                                                    subSrv->getService()->getObjSrvConnections() );
                 }
             }
+            else
+            {
+                OSLM_WARN( subSrv->getService()->getID()
+                           << "'s object already is '"
+                           << subSrv->getService()->getObject()->getID()
+                           << "', no need to swap");
+            }
         }
-    }
-    else
-    {
-        OSLM_INFO("Object "<<objectId<<" not found in managed objects.");
+
+        this->manageConnections(objectId, object, cfg);
+        this->manageProxies(objectId, object, cfg);
     }
 }
 
@@ -343,20 +357,28 @@ void SwapperSrv::removeObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::removeObject( const std::string objectId )
+void SwapperSrv::removeObject( const std::string &objectId )
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {
         ConfigurationType conf = m_managerConfiguration->find("object", "id", objectId).at(0);
         const std::string objectType   = conf->getAttributeValue("type");
 
+        this->removeConnections(objectId);
+        this->disconnectProxies(objectId);
+
         SubServicesVecType subServices = m_objectsSubServices[objectId];
         ::fwData::Object::sptr dummyObj;
-        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(objectType));
+        dummyObj = ::fwData::factory::New(objectType);
         BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
         {
             OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
             OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
+
+            if (subSrv->m_hasAutoConnection)
+            {
+                subSrv->m_connections->disconnect();
+            }
             if(m_dummyStopMode)
             {
                 subSrv->getService()->swap(dummyObj);
@@ -364,13 +386,6 @@ void SwapperSrv::removeObject( const std::string objectId )
             }
             else
             {
-                if( subSrv->m_hasComChannel )
-                {
-                    subSrv->getComChannel()->stop();
-                    ::fwServices::OSR::unregisterService(subSrv->getComChannel());
-                    subSrv->m_comChannel.reset();
-                }
-
                 subSrv->getService()->stop();
                 ::fwServices::OSR::unregisterService(subSrv->getService());
                 subSrv->m_service.reset();
@@ -379,6 +394,11 @@ void SwapperSrv::removeObject( const std::string objectId )
         if(!m_dummyStopMode)
         {
             m_objectsSubServices.erase(objectId);
+        }
+        else
+        {
+            this->manageConnections(objectId, dummyObj, conf);
+            this->manageProxies(objectId, dummyObj, conf);
         }
     }
     else
@@ -406,26 +426,27 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
         OSLM_TRACE ( "'"<< objectId << "' nonexistent'");
 
         ::fwData::Object::sptr dummyObj;
-        dummyObj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(objectType));
+        dummyObj = ::fwData::factory::New(objectType);
         SubServicesVecType subVecSrv;
         std::vector < ConfigurationType > confVec = conf->find("service");
         BOOST_FOREACH( ConfigurationType cfg, confVec )
         {
             ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
-            srv->configure();
+
             SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
             subSrv->m_config = cfg;
             subSrv->m_service = srv;
             subSrv->m_dummy = dummyObj;
+
+            if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
+            {
+                subSrv->m_hasAutoConnection = true;
+                subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
+            }
+
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
-
-            if ( cfg->hasAttribute("autoComChannel") && cfg->getExistingAttributeValue("autoComChannel") == "yes" )
-            {
-                subSrv->m_hasComChannel = true;
-                subSrv->m_comChannel = ::fwServices::getCommunicationChannel( dummyObj, srv);
-            }
         }
         m_objectsSubServices[objectId] = subVecSrv;
     }

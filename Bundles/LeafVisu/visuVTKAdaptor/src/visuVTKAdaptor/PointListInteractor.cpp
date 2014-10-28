@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 
@@ -34,7 +34,7 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor, ::fwData::PointList ) ;
 
 namespace visuVTKAdaptor
 {
@@ -145,7 +145,7 @@ protected :
 PointListInteractor::PointListInteractor() throw()
     : m_priority(0.999)
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -210,7 +210,7 @@ void PointListInteractor::resetPointList()
     ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
     list->getRefPoints().clear();
 
-    ::fwComEd::PointListMsg::NewSptr msg;
+    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED);
     ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
 }
@@ -221,12 +221,12 @@ void PointListInteractor::addPoint(const double &x, const double &y, const doubl
 {
     ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
     ::fwData::Point::PointCoordArrayType coord = {{ x, y, z }};
-    ::fwData::Point::NewSptr p;
+    ::fwData::Point::sptr p = ::fwData::Point::New();
     p->getRefCoord() = coord;
 
     list->getRefPoints().push_back(p);
 
-    ::fwComEd::PointListMsg::NewSptr msg;
+    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
     ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
 }

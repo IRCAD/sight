@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE(  ::fwGui::IActionSrv, ::opImageFilter::action::ImageFilter, ::fwData::Object ) ;
+fwServicesRegisterMacro(  ::fwGui::IActionSrv, ::opImageFilter::action::ImageFilter, ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ void ImageFilter::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageFilter::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
+void ImageFilter::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
 {}
 
 //-----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ void ImageFilter::updating() throw ( ::fwTools::Failed )
     ::fwTools::DynamicType type = param.imageIn->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ThresholdFilter >::invoke( type , param );
 
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
 //  msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
 

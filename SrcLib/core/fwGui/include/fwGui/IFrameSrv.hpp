@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing a frame.
- * @class   IFrameSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IFrameSrv
+ * 
  * @date    2009-2010.
  *
  */
@@ -39,24 +39,17 @@ public :
 
 protected :
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    /**
-     * @brief   Constructor. Initialize default values.
-     */
     FWGUI_API IFrameSrv() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUI_API virtual ~IFrameSrv() ;
 
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     /**
      * @brief Initialize frame managers.
      *
      * Example of configuration
      * @verbatim
-        <service uid="mainFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -74,10 +67,10 @@ protected :
             </registry>
         </service>
       @endverbatim
-     * - <window onclose="notify" /> : defines what to do when the frame is closed
+     * - \<window onclose="notify" /\> : defines what to do when the frame is closed
      *   - \b exit (by default) : the application is closed. Use it for the main frame.
      *   - \b notify : notifies service's object with WINDOW_CLOSED event.
-     * - <frame> : defines the frame name, icon, size.
+     * - \<frame\> : defines the frame name, icon, size.
      * - The toolBar section isn't mandatory.
      * - The menuBar section isn't mandatory.
      *

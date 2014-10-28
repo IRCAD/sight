@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,8 +29,8 @@ namespace container
 
 /**
  * @brief   Defines the Qt menu bar container for IHM.
- * @class   QtMenuContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   QtMenuContainer
+ * 
  * @date    2009-2010.
  *
  */
@@ -39,16 +39,12 @@ class FWGUIQT_CLASS_API QtMenuContainer : public ::fwGui::container::fwMenu
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuContainer)(::fwGui::container::fwMenu), (()), new QtMenuContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtMenuContainer)(::fwGui::container::fwMenu),
+                                            (()),
+                                            ::fwGui::factory::New< QtMenuContainer > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIQT_API QtMenuContainer() throw() ;
+    FWGUIQT_API QtMenuContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIQT_API virtual ~QtMenuContainer() throw() ;
 
 

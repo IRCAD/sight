@@ -1,5 +1,5 @@
- /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,10 @@
 #include <boost/shared_ptr.hpp>
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(List), FWDATA_API);
 
 namespace fwData
 {
@@ -25,7 +27,7 @@ namespace fwData
  *
  * List contains a list of ::fwData::Object.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 
@@ -34,7 +36,10 @@ class FWDATA_CLASS_API List : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::Factory::New< List >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >) ;
+
+
+    fwCampMakeFriendDataMacro((fwData)(List));
 
     typedef std::list< Object::sptr > ContainerType;
 
@@ -46,6 +51,15 @@ public:
     typedef ContainerType::reverse_iterator ReverseIteratorType;
     typedef ContainerType::const_reverse_iterator ConstReverseIteratorType;
     typedef ContainerType::size_type SizeType;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API List(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~List();
 
     /// boost_foreach/stl compatibility
     /// @{
@@ -83,20 +97,14 @@ public:
     fwDataGetSetCRefMacro(Container, ContainerType);
     /// @}
 
-    fwDataObjectMacro();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( List::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( List::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected:
-    /// Constructor
-    FWDATA_API List();
-
-    /// Destructor
-    FWDATA_API virtual ~List();
 
     ContainerType m_attrContainer;
 };

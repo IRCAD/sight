@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 
 #include "ioData/SplineReaderService.hpp"
 
-REGISTER_SERVICE( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline ) ;
+fwServicesRegisterMacro( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline ) ;
 
 namespace ioData
 {
@@ -123,7 +123,7 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
     spline->setIdSpline(m_idSpline);
 
     // Notify reading
-    ::fwComEd::SplineMsg::NewSptr msg;
+    ::fwComEd::SplineMsg::sptr msg = ::fwComEd::SplineMsg::New();
     msg->addEvent( ::fwComEd::SplineMsg::NEW_SPLINE ) ;
 
     if(isTransfo)
@@ -138,7 +138,7 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
 
 ::fwData::TransformationMatrix3D::sptr SplineReaderService::loadObjectTransformationMatrix3D(std::string m_file)
 {
-    ::fwData::TransformationMatrix3D::NewSptr matrix;
+    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
     ::boost::filesystem::path location(m_file) ;
 
     std::fstream file;

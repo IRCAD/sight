@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,19 +21,19 @@ namespace ioVTK
 
 /**
  * @brief   vtk reader service.
- * @class   VtkModelReaderService.
- * @author  IRCAD Fr & Tw.
- * @date    2010.
+ * @class   VtkModelReaderService
  *
- * Service reading a vtk file using the vtkIO lib
+ * Service reading a vtk file using the fwVtkIO lib
  * (for .vtk at this time).
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::VtkModelReaderService , ::fwData::Model )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::VtkModelReaderService , ::fwData::Model )
  */
 class IOVTK_CLASS_API VtkModelReaderService : public ::io::IReader
 {
 public:
+    ~VtkModelReaderService() throw() {}
+
 
     fwCoreServiceClassDefinitionsMacro ( (VtkModelReaderService)( ::io::IReader) ) ;
 
@@ -54,18 +54,12 @@ public:
     */
     IOVTK_API virtual std::vector< std::string > getSupportedExtensions();
 
-
-protected:
-
     /**
      * @brief   Constructor
      */
     IOVTK_API VtkModelReaderService() throw() ;
 
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API ~VtkModelReaderService() throw() ;
+protected:
 
     /**
     * @brief Starting method : default does nothing.
@@ -86,7 +80,7 @@ protected:
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::ioVTK::ImageReaderService" type="::io::IReader">
+    <service impl="::ioVTK::ImageReaderService" type="::io::IReader">
         <filename id=".../imageTest.vtk"/>
     </service>
     @endverbatim
@@ -104,11 +98,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -39,12 +38,12 @@ namespace uiMeasurement
 namespace editor
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiMeasurement::editor::Distance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMeasurement::editor::Distance , ::fwData::Image ) ;
 
 
 Distance::Distance() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -121,7 +120,7 @@ void Distance::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void Distance::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Distance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
@@ -140,10 +139,10 @@ void Distance::onDistanceButton()
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     // force distance to be shown
-    image->setField("ShowDistances",  ::fwData::Boolean::NewSptr(true));
+    image->setField("ShowDistances",  ::fwData::Boolean::New(true));
 
-    ::fwComEd::ImageMsg::NewSptr msg;
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_DISTANCE, ::fwData::String::NewSptr(m_scenesUID) );
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
+    msg->addEvent( ::fwComEd::ImageMsg::NEW_DISTANCE, ::fwData::String::New(m_scenesUID) );
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
 

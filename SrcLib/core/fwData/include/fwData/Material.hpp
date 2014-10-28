@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,9 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Material), FWDATA_API);
 
 namespace fwData
 {
@@ -19,7 +21,7 @@ namespace fwData
  * @brief   This class defines a material. A material is represented by an ambient color and a diffuse color
  * @see     ::fwData::Color
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 
@@ -28,15 +30,24 @@ class FWDATA_CLASS_API Material : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::Factory::New< Material >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::factory::New< Material >) ;
+    fwCampMakeFriendDataMacro((fwData)(Material));
 
-    fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Material(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Material();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Material::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Material::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
     * @brief returns editable ambient color
@@ -92,17 +103,17 @@ public:
         MODE_EDGE      = 5, //MODE_SURFACE|MODE_WIREFRAME -> 101
     } REPRESENTATION_MODE;
 
+
+
+
     fwGettersSettersDocMacro(ShadingMode, shadingMode, SHADING_MODE, the shading models(flat, gouraud, phong).);
     fwGettersSettersDocMacro(RepresentationMode, representationMode, REPRESENTATION_MODE, the representation models(edge, point, wireframe, surface).);
     fwGettersSettersDocMacro(OptionsMode, optionsMode, OPTIONS_MODE, the option representation (Standard, normals).);
 
+
+
 protected :
 
-    /// Constructor
-    FWDATA_API Material();
-
-    /// Destructor
-    FWDATA_API virtual ~Material();
 
     SHADING_MODE m_shadingMode;
     REPRESENTATION_MODE m_representationMode;
@@ -112,6 +123,6 @@ protected :
     Color::sptr m_diffuse;
 };
 
-}
+} //namespace fwData
 
 #endif /* _DATA_MATERIAL_HPP_ */

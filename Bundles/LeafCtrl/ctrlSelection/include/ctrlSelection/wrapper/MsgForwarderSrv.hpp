@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,9 +21,9 @@ namespace ctrlSelection
 namespace wrapper
 {
 /**
- * @class  MsgForwarderSrv.
- * @brief  This service forward an event from specific object to object specified with key in in composite.
- * @author IRCAD (Research and Development Team).
+ * @class  MsgForwarderSrv
+ * @brief  This service forwards an event from specific object to object specified with key in in composite.
+ * 
 
  * @date   2011.
  */
@@ -34,33 +34,45 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (MsgForwarderSrv)(::ctrlSelection::IWrapperSrv) ) ;
 
-protected:
-
-    /// Constructor.  Do nothing.
     CTRLSELECTION_API MsgForwarderSrv() throw() ;
 
-    /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~MsgForwarderSrv() throw() ;
 
-    /// Implements starting method derived from IService. Convert the image.
+protected:
+
+    /// Implements starting method derived from IService. Does nothing.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
 
-    /// Implements stopping method derived from IService. Do nothing.
+    /// Implements stopping method derived from IService. Does nothing.
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
     /// Implements swapping method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
 
-    /// Implements configuring method derived from IService. Do nothing.
+    /**
+     * @brief Configures the service.
+     *
+     * @verbatim
+       <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::MsgForwarderSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
+           <forward compositeKey="frontImage" onEvent="SLICE_INDEX" fromUID="*" msgType="::fwComEd::ImageMsg" />
+           <forward compositeKey="frontImage" onEvent="CHANGE_SLICE_TYPE" fromUID="*" msgType="::fwComEd::ImageMsg" />
+       </service>
+       @endverbatim
+     * With :
+     * - \b compositeKey : key of the object in the composite,
+     * - \b onEvent : event of the message to receive,
+     * - \b fromUID : uid of the object which sent the message. If "*" the message can be received from any object,
+     * - \b msgType : type of the message to receive.
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
-    /// Implements updating method derived from IService. Do nothing.
+    /// Implements updating method derived from IService. Does nothing.
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private :
 

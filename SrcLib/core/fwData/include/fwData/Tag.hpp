@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,9 @@
 #include "fwData/config.hpp"
 #include "fwData/PointList.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Tag), FWDATA_API);
 
 namespace fwData
 {
@@ -22,16 +24,26 @@ namespace fwData
  * @brief   This class represent a tag. A tag contains a list of points.
  *
  * @see ::fwData::PointList
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Tag : public Object
 {
 
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwData::Factory::New< Tag >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwData::factory::New< Tag >) ;
 
-    fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Tag(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Tag();
+
+    fwCampMakeFriendDataMacro((fwData)(Tag));
 
     fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, the list of points )
 
@@ -40,17 +52,12 @@ public :
     fwGettersSettersDocMacro(Size, size, double, the size of the tag)
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Tag::csptr source );
+    FWDATA_API void shallowCopy( const Object::csptr& source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Tag::csptr source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType &cache);
 
 protected :
-
-    /// Constructor
-    FWDATA_API Tag();
-    /// Destructor
-    FWDATA_API virtual ~Tag();
 
     /// list of points
     ::fwData::PointList::sptr  m_pointList;
@@ -64,5 +71,6 @@ protected :
 }; // end class Tag
 
 } // end namespace fwData
+
 
 #endif // _FWDATA_TAG_HPP_

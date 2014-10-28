@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,10 @@
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/PatientDB.hpp>
 
 #include <fwComEd/FloatMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/PatientDBMsg.hpp>
+#include <fwComEd/helper/MsgHelper.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -45,7 +44,7 @@ void MessagesTest::tearDown()
 void MessagesTest::testFloatMsg()
 {
     // create message
-    ::fwComEd::FloatMsg::NewSptr floatMsg;
+    ::fwComEd::FloatMsg::sptr floatMsg = ::fwComEd::FloatMsg::New();
     floatMsg->addEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED);
 
     // check Event
@@ -60,10 +59,10 @@ void MessagesTest::testImageMsg()
     const std::string MYMODIF2 = ::fwComEd::ImageMsg::SLICE_INDEX;
 
     ::fwData::Integer::sptr intField = ::fwData::Integer::New(23);
-    ::fwData::Image::NewSptr image;
+    ::fwData::Image::sptr image = ::fwData::Image::New();
 
     // create message
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent(MYMODIF1);
     imageMsg->addEvent(MYMODIF2, intField);
 
@@ -80,25 +79,12 @@ void MessagesTest::testImageMsg()
 
 //------------------------------------------------------------------------------
 
-void MessagesTest::testPatientDBMsg()
+void MessagesTest::messageCreationTest()
 {
-    const std::string EVENT = ::fwComEd::PatientDBMsg::NEW_IMAGE_SELECTED;
-
-    ::fwData::PatientDB::NewSptr patientDB;
     ::fwData::Image::sptr image = ::fwData::Image::New();
-
-    // create message
-    ::fwComEd::PatientDBMsg::NewSptr patientDBMsg;
-    patientDBMsg->addEvent(EVENT, image);
-
-    //check event
-    CPPUNIT_ASSERT(patientDBMsg->hasEvent(EVENT));
-
-    // check data info
-    ::fwData::Object::sptr obj = ::fwData::Object::constCast(patientDBMsg->getDataInfo(EVENT));
-    ::fwData::Image::sptr img = ::fwData::Image::dynamicCast(obj);
-    CPPUNIT_ASSERT(img);
-    CPPUNIT_ASSERT_EQUAL(image, img);
+    ::fwServices::ObjectMsg::sptr msg = ::fwComEd::helper::MsgHelper::createAssociatedMsg(image);
+    CPPUNIT_ASSERT(msg);
+    CPPUNIT_ASSERT(::fwComEd::ImageMsg::dynamicCast(msg));
 }
 
 //------------------------------------------------------------------------------

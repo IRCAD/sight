@@ -1,12 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/lexical_cast.hpp>
+
 /// FW4SPL Includes
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 /// VTK Includes
@@ -17,7 +19,7 @@
 
 #include "visuVTKAdaptor/Axes.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
@@ -69,7 +71,7 @@ void Axes::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Axes::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void Axes::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
 }
 
@@ -78,7 +80,7 @@ void Axes::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 void Axes::configuring() throw(fwTools::Failed)
 {
     assert( m_configuration->getName() == "config" );
-    
+
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
 
     if ( m_configuration->hasAttribute( "transform" ) )

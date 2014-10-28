@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,8 @@
 #include <fwTools/Object.hpp>
 #include <fwData/Object.hpp>
 
-
+#include "fwServices/factory/message/new.hpp"
+#include "fwServices/registry/message/detail.hpp"
 #include "fwServices/config.hpp"
 
 namespace fwServices
@@ -27,7 +28,7 @@ class IService;
 /**
  * @brief Object message : indicate modifications having occurred or being performed on a object.
  * @class ObjectMsg
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2007-2009.
  *
  * The message only provides identifiers enabling to retrieve the modified information on the object. This should be embed the information. The m_subject is present
@@ -48,13 +49,35 @@ class FWSERVICES_CLASS_API ObjectMsg : public ::fwTools::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()), ::fwTools::Factory::New< ObjectMsg > );
+    typedef ::fwServices::factory::message::Key Key;
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the objectMsg factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar()
+        {
+            ::fwServices::registry::message::get()->addFactory(T::classname(), &::fwServices::factory::message::New<T>);
+        }
+    };
+
+
+    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()), ::fwServices::factory::message::New< ObjectMsg > );
 
     /// Defines callback type
     typedef ::boost::function< void () > MessageCallbackType;
 
-    /// Constructor, do nothing.
-    FWSERVICES_API ObjectMsg();
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWSERVICES_API ObjectMsg(::fwServices::ObjectMsg::Key key);
 
     /// Destructor, do nothing.
     FWSERVICES_API virtual ~ObjectMsg();
@@ -201,6 +224,9 @@ public:
 
 protected :
 
+    /// Constructor, do nothing.
+    FWSERVICES_API ObjectMsg();
+
     /**
      * @brief Intern map which associates an Event Id (string) to a dataInfo ( ::fwData::Object ).
      *
@@ -210,7 +236,6 @@ protected :
 
     /// Give some message informations, this method uses getGeneralInfo.
     FWSERVICES_API virtual void info(std::ostream &_sstream ) const ;
-
 
     ModifiedFieldsContainerType m_removedFields;
     ModifiedFieldsContainerType m_addedFields;

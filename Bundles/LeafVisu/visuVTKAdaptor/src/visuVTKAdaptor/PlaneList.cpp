@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@
 #include <fwComEd/PlaneListMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkCommand.h>
@@ -31,21 +31,22 @@
 #include "visuVTKAdaptor/PlaneList.hpp"
 #include <fwServices/IEditionService.hpp>
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ) ;
 
 namespace visuVTKAdaptor
 {
 
 
 
-void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwServices::IService* _service, ::fwData::Plane::sptr plane )
+void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwData::Plane::sptr plane )
 {
-    ::fwComEd::PlaneListMsg::NewSptr msg;
+    ::fwComEd::PlaneListMsg::sptr msg = ::fwComEd::PlaneListMsg::New();
     msg->addEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES );
     msg->addEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE, plane );
-    SLM_ASSERT("NULL Service", _service);
 
-    ::fwServices::IEditionService::notify( _service->getSptr(), planeList, msg, ::fwServices::ComChannelService::NOTIFY_SOURCE );
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = planeList->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    fwServicesNotifyMsgMacro( planeList->getLightID(), sig, msg );
 }
 
 class vtkPlaneDeleteCallBack : public vtkCommand
@@ -60,6 +61,8 @@ public :
       m_picker( vtkCellPicker::New() ),
       m_propCollection( vtkPropCollection::New() )
     {
+        m_lastPos[0] = -1;
+        m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 
@@ -125,7 +128,7 @@ public :
             (
                     std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock())
             );
-            notifyDeletePlane(planeList, m_service, planeBackup);
+            notifyDeletePlane(planeList, planeBackup);
         }
     }
     bool getSelectedPlane()
@@ -170,9 +173,9 @@ protected :
 PlaneList::PlaneList() throw()
     : m_planeCollectionId("")
 {
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE );
-    addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY );
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE );
+    //addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY );
 }
 
 //------------------------------------------------------------------------------
@@ -226,6 +229,7 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
             servicePlane->setRenderService(this->getRenderService());
             servicePlane->setRenderId( this->getRenderId() );
             servicePlane->setPickerId( this->getPickerId() );
+            servicePlane->setAutoRender( this->getAutoRender() );
 
             if (!m_planeCollectionId.empty())
             {
@@ -240,7 +244,7 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneList::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::PlaneListMsg::csptr planeListMsg = ::fwComEd::PlaneListMsg::dynamicConstCast( msg );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,9 +19,7 @@ namespace io
 
 /**
  * @brief Writer service API. It manages extension points definition and extension configuration
- * @class   IWriter.
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
+ * @class   IWriter
  *
  * This class represents the base interface for writer services.
  * Use the base service methods :
@@ -109,10 +107,8 @@ public :
 
 protected:
 
-    /// Constructor (by default does nothing)
     IO_API IWriter() throw() ;
 
-    /// Destructor
     IO_API virtual ~IWriter() throw() ;
 
     /**

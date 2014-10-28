@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
@@ -21,9 +21,9 @@
 #include <io/IReader.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
-#include <vtkIO/ImageReader.hpp>
-#include <vtkIO/MetaImageReader.hpp>
-#include <vtkIO/VtiImageReader.hpp>
+#include <fwVtkIO/ImageReader.hpp>
+#include <fwVtkIO/MetaImageReader.hpp>
+#include <fwVtkIO/VtiImageReader.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -38,22 +38,7 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of ::fwData::Image
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image );
-
-//------------------------------------------------------------------------------
-
-ImageReaderService::ImageReaderService() throw()
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-ImageReaderService::~ImageReaderService() throw()
-{
-    SLM_TRACE_FUNC();
-    // This method does nothing
-}
+fwServicesRegisterMacro( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +58,7 @@ void ImageReaderService::configureWithIHM()
     dialogFile.setTitle("Choose a file to load an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk","*.vtk");
-    dialogFile.addFilter("Vti","*.vtk");
+    dialogFile.addFilter("Vti","*.vti");
     dialogFile.addFilter("MetaImage","*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
@@ -141,7 +126,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
         catch(::fwTools::Failed& e)
         {
             OSLM_TRACE("Error : " << e.what());
-            throw e;
+            FW_RAISE_EXCEPTION(e);
         }
 
         cursor.setDefaultCursor();
@@ -155,7 +140,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
     SLM_TRACE_FUNC();
     bool ok = true;
 
-    // Use a reader of vtkIO library to read an image
+    // Use a reader of fwVtkIO library to read an image
     ::fwDataIO::reader::IObjectReader::sptr myReader;
     // Create a progress bar and attach it to reader
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
@@ -164,7 +149,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
 
     if(ext == ".vtk")
     {
-        ::vtkIO::ImageReader::NewSptr vtkReader;
+        ::fwVtkIO::ImageReader::sptr vtkReader = ::fwVtkIO::ImageReader::New();
         vtkReader->addHandler( progressMeterGUI );
         // Set the file system path
         vtkReader->setFile(imgFile);
@@ -172,21 +157,21 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
     }
     else if(ext == ".vti")
     {
-        ::vtkIO::VtiImageReader::NewSptr vtiReader;
+        ::fwVtkIO::VtiImageReader::sptr vtiReader = ::fwVtkIO::VtiImageReader::New();
         vtiReader->addHandler( progressMeterGUI );
         vtiReader->setFile(imgFile);
         myReader = vtiReader;
     }
     else if(ext == ".mhd")
     {
-        ::vtkIO::MetaImageReader::NewSptr mhdReader;
+        ::fwVtkIO::MetaImageReader::sptr mhdReader = ::fwVtkIO::MetaImageReader::New();
         mhdReader->addHandler( progressMeterGUI );
         mhdReader->setFile(imgFile);
         myReader = mhdReader;
     }
     else
     {
-        throw(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
     }
 
     // Set the image (already created, but empty) that will be modified
@@ -222,7 +207,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw ( ::fwTools::Failed )
+void ImageReaderService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     // This method does nothing
@@ -237,7 +222,7 @@ void ImageReaderService::notificationOfDBUpdate()
     SLM_ASSERT("pImage not instanced", pImage);
 
     // Creation of an image message to say that image is an new image ( or all fields are modified (old version of msg ) )
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
     msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
     msg->addEvent( ::fwComEd::ImageMsg::REGION ) ;

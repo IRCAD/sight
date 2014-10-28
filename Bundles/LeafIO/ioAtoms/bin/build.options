@@ -1,0 +1,23 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+LIB     = [
+          'fwAtomsBoostIO_0-1',
+          'fwAtomsHdf5IO_0-1',
+          'fwAtomConversion_0-1',
+          'fwAtomsFilter_0-1',
+          'fwAtomsPatch_0-1',
+          'fwCore_0-1',
+          'fwData_0-1',
+          'fwComEd_0-1',
+          'fwGui_0-1',
+          'fwRuntime_0-3',
+          'fwServices_0-1',
+          'fwTools_0-1',
+          'fwMemory_0-1',
+          'fwZip_0-1',
+          'fwAtomsPatch_0-1'
+          ]
+BUNDLES  = ['io_0-1']
+USE = [
+    'boost',
+    ]

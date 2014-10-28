@@ -1,11 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <assert.h>
 #include <boost/lexical_cast.hpp>
+#ifdef COM_LOG
+# include <boost/regex.hpp>
+#endif
 
 #include <fwCore/Demangler.hpp>
 
@@ -18,6 +21,8 @@ namespace fwTools
 
 fwID::CategorizedCounter fwID::m_CategorizedCounter;
 fwID::Dictionary fwID::m_dictionary;
+::fwCore::mt::ReadWriteMutex fwID::s_dictionaryMutex;
+::fwCore::mt::Mutex fwID::s_mutexCounter;
 
 //-----------------------------------------------------------------------------
 
@@ -30,6 +35,14 @@ fwID::~fwID()
 
 bool fwID::exist( IDType _id)
 {
+    ::fwCore::mt::ReadLock lock(s_dictionaryMutex);
+    return fwID::isIdFound(_id);
+}
+
+//-----------------------------------------------------------------------------
+
+bool fwID::isIdFound( IDType _id)
+{
     return m_dictionary.find( _id ) != m_dictionary.end();
 }
 
@@ -37,6 +50,7 @@ bool fwID::exist( IDType _id)
 
 bool fwID::hasID( ) const
 {
+    ::fwCore::mt::ReadLock lock(m_idMutex);
     return !m_id.empty();
 }
 
@@ -44,10 +58,20 @@ bool fwID::hasID( ) const
 
 void fwID::setID( IDType newID )
 {
-    OSLM_FATAL_IF("Try to set an existing fwID = " << newID, exist(newID));
-    resetID();
+    ::fwCore::mt::WriteLock lock(m_idMutex);
+    this->addIDInDictionary(newID);
+}
+
+//-----------------------------------------------------------------------------
+
+void fwID::addIDInDictionary( IDType newID )
+{
+    OSLM_FATAL_IF("Try to set an existing fwID = " << newID, isIdFound(newID));
+
+    ::fwCore::mt::WriteLock lock(s_dictionaryMutex);
+    fwID::removeIDfromDictionary(m_id);
     // note we use a static cast for a down cast because we do not use the classical polyvi morphic approach
-    // m_dictionary[ newID ] = (static_cast< Object *>(this))->getSptr();
+    //m_dictionary[ newID ] = (static_cast< Object *>(this))->getSptr();
     m_dictionary[ newID ] = ((Object*)(this))->getSptr();
     m_id = newID;
 }
@@ -56,12 +80,14 @@ void fwID::setID( IDType newID )
 
 fwID::IDType fwID::getID( Policy policy) const
 {
+    ::fwCore::mt::ReadToWriteLock lock(m_idMutex);
     if ( m_id.empty() ) // no id set
     {
         if ( policy==GENERATE )
         {
             IDType newID = generate();
-            const_cast<fwID *>(this)->setID(newID);
+            ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
+            const_cast<fwID *>(this)->addIDInDictionary(newID);
         }
         else if  ( policy == EMPTY )
         { /* nothing to do*/ }
@@ -75,12 +101,32 @@ fwID::IDType fwID::getID( Policy policy) const
 
 //-----------------------------------------------------------------------------
 
+#ifdef COM_LOG
+fwID::IDType fwID::getLightID( Policy  policy ) const
+{
+    IDType id = this->getID( policy );
+    IDType lightID = id;
+
+    ::boost::regex namespaceRegex ("[:A-Za-z0-9]*::(.*)");
+    const std::string machine_format("\\1");
+    if ( ::boost::regex_match( id, namespaceRegex ) )
+    {
+        lightID = ::boost::regex_replace( id, namespaceRegex, machine_format, boost::match_default | boost::format_sed );
+    }
+
+    return lightID;
+}
+#endif
+
+//-----------------------------------------------------------------------------
+
 fwID::IDType fwID::generate() const
 {
     IDType newID;
     std::string prefix = this->getRootedClassname();
     do
     {
+        ::fwCore::mt::ScopedLock lock(s_mutexCounter);
         newID = prefix  + "-" + boost::lexical_cast<std::string>( m_CategorizedCounter[prefix]++ );
     }
     while ( exist(newID ) );
@@ -91,6 +137,7 @@ fwID::IDType fwID::generate() const
 
 ::fwTools::Object::sptr fwID::getObject( fwID::IDType requestID )
 {
+    ::fwCore::mt::ReadLock lock(s_dictionaryMutex);
     Dictionary::iterator it = m_dictionary.find(requestID);
     if ( it!=m_dictionary.end() )
     {
@@ -99,7 +146,7 @@ fwID::IDType fwID::generate() const
     }
     else
     {
-        return ::fwTools::Object::NewSptr();
+        return ::fwTools::Object::sptr();
     }
 }
 
@@ -107,23 +154,20 @@ fwID::IDType fwID::generate() const
 
 void fwID::resetID()
 {
-    if ( !m_id.empty() )
-    {
-        m_dictionary.erase(m_id);
-    }
+    ::fwCore::mt::WriteLock dicoLock(s_dictionaryMutex);
+    ::fwCore::mt::WriteLock lock(m_idMutex);
+    fwID::removeIDfromDictionary(m_id);
     m_id.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void fwID::swapID( ::fwTools::Object::sptr   obj2 )
+void fwID::removeIDfromDictionary(IDType _id )
 {
-    IDType id1 = getID(GENERATE);
-    IDType id2 = obj2->getID(GENERATE);
-    resetID();
-    obj2->resetID();
-    setID(id2);
-    obj2->setID(id1);
+    if ( !_id.empty() )
+    {
+        m_dictionary.erase(_id);
+    }
 }
 
 //-----------------------------------------------------------------------------

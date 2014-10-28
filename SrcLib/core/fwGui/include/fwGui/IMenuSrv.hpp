@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,8 +19,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing the menu.
- * @class   IMenuSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMenuSrv
+ * 
  * @date    2009-2010.
  *
  */
@@ -44,24 +44,19 @@ public :
     FWGUI_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
 
 protected :
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
-    /**
-     * @brief   Constructor. Initialize default values.
-     */
     FWGUI_API IMenuSrv() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUI_API virtual ~IMenuSrv() ;
+
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Initialize the layout and registry managers.
      *
      * Example of configuration
      * @verbatim
-        <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="My item 1" shortcut="1" style="check" />
@@ -83,10 +78,10 @@ protected :
             </registry>
         </service>
        @endverbatim
-     * - <gui> </gui> : (mandatory) describe the interface of the service. It must contain a layout section.
-     * - <registry> </registry> : (mandatory) describe the service management.
-     *   - <menuItem> represents IActionSrv
-     *   - <menu> represents IMenuSrv
+     * - \<gui\> \</gui\> : (mandatory) describe the interface of the service. It must contain a layout section.
+     * - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *   - \<menuItem\> represents IActionSrv
+     *   - \<menu\> represents IMenuSrv
      *
      * @warning
      * - The number of item in the gui section must be <b> EQUAL </b> to the registry section.

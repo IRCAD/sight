@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,38 +9,45 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Port), FWDATA_API);
 
 namespace fwData
 {
 /**
  * @class   Port
  * @brief   A port is defined by an identifier and a type.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Port : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwData::Factory::New< Port >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwData::factory::New< Port >) ;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Port(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Port();
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string,the port identifier (example : "ID_SIZEX", "THRESHOLD_LOW") );
 
     fwGettersSettersDocMacro(Type, type, std::string, the port type (example : "Image", "Mesh", a %data className));
 
+    fwCampMakeFriendDataMacro((fwData)(Port));
+
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Port::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Port::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 protected :
-
-    /// Constructor
-    FWDATA_API Port();
-
-    /// Destructor
-    FWDATA_API virtual ~Port();
 
     //! port identifier
     std::string  m_identifier; // example "ID_SIZEX", "THRESHOLD_LOW"

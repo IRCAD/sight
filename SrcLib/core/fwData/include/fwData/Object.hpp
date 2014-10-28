@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,13 +13,33 @@
 #include <boost/enable_shared_from_this.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwCore/mt/types.hpp>
+
+#include <fwCamp/macros.hpp>
+#include <fwCamp/camp/customtype.hpp>
+#include <fwCamp/camp/MapProperty.hpp>
+#include <fwCamp/camp/MapMapper.hpp>
+#include <fwCamp/camp/MapValueMapper.hpp>
+#include <fwCamp/Mapper/ArrayMapper.hpp>
+#include <fwCamp/camp/detail/MapPropertyImpl.hpp>
+#include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
 #include <fwTools/Object.hpp>
 #include <fwTools/DynamicAttributes.hxx>
-#include <fwTools/Factory.hpp>
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include "fwData/factory/new.hpp"
+#include "fwData/registry/detail.hpp"
 
 #include "fwData/macros.hpp"
 #include "fwData/config.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Object), FWDATA_API);
+
+fwCorePredeclare( (fwServices)(ObjectMsg) );
 
 namespace fwData
 {
@@ -31,18 +51,43 @@ namespace fwData
  * An Object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific Object. When accessing to this object with getField("dummy") we get the specific Object
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
-class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >
+class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >,
+                                 public ::fwCom::HasSignals
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwTools::Object), (( )), ::fwTools::Factory::New< Object > );
+
+    typedef ::fwData::factory::Key Key;
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar()
+        {
+            ::fwData::registry::get()->addFactory(T::classname(), &::fwData::factory::New<T>);
+        }
+    };
+
+
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwTools::Object) );
     fwCoreAllowSharedFromThis();
+    fwCampMakeFriendDataMacro((fwData)(Object));
 
     typedef std::string FieldNameType;
     typedef std::vector<FieldNameType> FieldNameVectorType;
     typedef ::boost::unordered_map< FieldNameType, ::fwData::Object::sptr > FieldMapType;
+
+    typedef ::boost::unordered_map< ::fwData::Object::csptr, ::fwData::Object::sptr > DeepCopyCacheType;
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
@@ -120,76 +165,113 @@ public:
 
     /**
      * @brief A shallow copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
+     * @param[in] source source of the copy.
      */
-    FWDATA_API virtual void shallowCopy( ::fwData::Object::csptr source );
+    FWDATA_API virtual void shallowCopy( const ::fwData::Object::csptr &source );
 
     /**
-     * @brief A deep copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
+     * @brief Make a deep copy from the source
+     * Calling this method may invalidate any DumpLock, RescursiveLock or helper
+     * on the object. Prefer using fwData::Object::copy instead.
      */
-    FWDATA_API virtual void deepCopy( ::fwData::Object::csptr source );
+    FWDATA_API void deepCopy( const ::fwData::Object::csptr &source );
 
     /**
      * @brief return a copy of the source. if source is a null pointer, return a null pointer.
      * @{
      */
-    FWDATA_API static ::fwData::Object::sptr copy(::fwData::Object::csptr source);
+    FWDATA_API static ::fwData::Object::sptr copy(const ::fwData::Object::csptr &source);
     template <typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(SPTR(DATA_TYPE) source);
+    static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) &source);
+    template <typename DATA_TYPE>
+    static SPTR(DATA_TYPE) copy(const SPTR(DATA_TYPE) &source);
     /** @} */
 
     /**
      * @brief A shallow copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
+     * @param[in] source source of the copy.
      */
-    FWDATA_API void fieldShallowCopy( ::fwData::Object::csptr source );
+    FWDATA_API void fieldShallowCopy( const ::fwData::Object::csptr &source );
 
     /**
      * @brief A deep copy of fields (objects in m_children)
-     * @param[in] _source source of the copy.
+     * @param[in] source source of the copy.
      */
-    FWDATA_API void fieldDeepCopy( ::fwData::Object::csptr source );
+    FWDATA_API void fieldDeepCopy( const ::fwData::Object::csptr &source );
 
     //-----------------------------------------------------------------------------
 
-    template< typename DATA_TYPE >
-    void shallowCopy( ::fwData::Object::csptr source )
-    {
-        typename DATA_TYPE::csptr castSource = DATA_TYPE::dynamicConstCast( source );
-        SLM_FATAL_IF("Sorry, the classname of object source is different, shallowCopy is not possible.", castSource == 0 );
-        typename DATA_TYPE::sptr castDest = DATA_TYPE::dynamicCast( this->getSptr() );
-        castDest->DATA_TYPE::shallowCopy( castSource );
-    }
+    /// Returns the object's mutex.
+    ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
 
-    //-----------------------------------------------------------------------------
+    FWDATA_API virtual ~Object() ;
 
-    template< typename DATA_TYPE >
-    void deepCopy( ::fwData::Object::csptr source )
-    {
-        typename DATA_TYPE::csptr castSource = DATA_TYPE::dynamicConstCast( source );
-        SLM_FATAL_IF("Sorry, the classname of object source is different, deepCopy is not possible.", castSource == 0 );
-        typename DATA_TYPE::sptr castDest = DATA_TYPE::dynamicCast( this->getSptr() );
-        castDest->DATA_TYPE::deepCopy( castSource );
-    }
+    /// Type of signal m_sigObjectModified
+    typedef ::fwCom::Signal< void ( CSPTR( ::fwServices::ObjectMsg ) ) > ObjectModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigObjectModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_MODIFIED_SIG;
+
+#ifdef COM_LOG
+    /**
+      * @brief Set a newID  for the object, the oldest one is released.
+      * @warning Cannot set a empty ID.
+      * @note This method is thread-safe. This method is used to better trace communication between signals and slots
+      */
+    FWDATA_API void setID( ::fwTools::fwID::IDType newID );
+#endif
 
 protected:
 
-    /// Constructor
     FWDATA_API Object();
 
-    /// Destructor
-    FWDATA_API virtual ~Object() ;
+    /**
+     * @brief Internal-use methods to implement Object's deepCopy
+     * @{
+     */
+    FWDATA_API static ::fwData::Object::sptr copy(const ::fwData::Object::csptr &source, DeepCopyCacheType &cache);
+    FWDATA_API void fieldDeepCopy( const ::fwData::Object::csptr &source, DeepCopyCacheType &cache );
+    FWDATA_API virtual void cachedDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheType &cache) = 0;
+    template <typename DATA_TYPE>
+    static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) &source, DeepCopyCacheType &cache);
+    template <typename DATA_TYPE>
+    static SPTR(DATA_TYPE) copy(const SPTR(DATA_TYPE) &source, DeepCopyCacheType &cache);
+    /** @} */
 
     /// Fields
     FieldMapType m_fields;
+
+    /// Mutex to protect object access.
+    ::fwCore::mt::ReadWriteMutex m_mutex;
+
+    /// Signal that emits ObjectMsg when object is modified
+    ObjectModifiedSignalType::sptr m_sigObjectModified;
 };
 
 
 template <typename DATA_TYPE>
-SPTR(DATA_TYPE) Object::copy(SPTR(DATA_TYPE) source)
+SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) &source, DeepCopyCacheType &cache)
 {
-    return DATA_TYPE::dynamicCast( ::fwData::Object::copy( ::fwData::Object::csptr(source)) );
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(::fwData::Object::csptr(source), cache) );
+}
+
+
+template <typename DATA_TYPE>
+SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) &source, DeepCopyCacheType &cache)
+{
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(::fwData::Object::csptr(source), cache) );
+}
+
+template <typename DATA_TYPE>
+SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) &source)
+{
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(::fwData::Object::csptr(source)) );
+}
+
+template <typename DATA_TYPE>
+SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) &source)
+{
+    return DATA_TYPE::dynamicCast( ::fwData::Object::copy(::fwData::Object::csptr(source)) );
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace fwServices
  * added to the object (see ::fwTools::Object). The New(::fwRuntime::ConfigurationElement::sptr ) method on the related child is invoked, therefore allowing to build
  * tree like composite object which services.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 {
@@ -81,7 +81,7 @@ protected:
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void updating( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    FWSERVICES_API virtual void receiving( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
     /**
      * @brief Parse the XML configuration

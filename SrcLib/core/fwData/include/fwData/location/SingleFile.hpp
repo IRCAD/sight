@@ -1,18 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DATA_LOCATION_SIMPLEFILE_HPP_
-#define _DATA_LOCATION_SIMPLEFILE_HPP_
+#ifndef _FWDATA_LOCATION_SINGLEFILE_HPP_
+#define _FWDATA_LOCATION_SINGLEFILE_HPP_
 
 
 #include <boost/filesystem.hpp>
 
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(location)(SingleFile), FWDATA_API);
+
 
 namespace fwData
 {
@@ -21,7 +24,7 @@ namespace location
 /**
  * @class SingleFile
  * @brief This class defines a single file %location.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API SingleFile  : public ILocation
@@ -29,46 +32,48 @@ class FWDATA_CLASS_API SingleFile  : public ILocation
 public:
     fwCoreClassDefinitionsWithNFactoriesMacro(
             (SingleFile)(ILocation),
-            ((::fwData::Factory::New< SingleFile > ,() ))
+            ((::fwData::factory::New< SingleFile > ,() ))
             ((SingleFileFactory ,((::boost::filesystem::path)) ))
     );
 
-    fwDataObjectMacro();
-
-    /// Defines shallow copy
-    FWDATA_API void shallowCopy( SingleFile::csptr _source );
-
-    /// Defines deep copy
-    FWDATA_API void deepCopy( SingleFile::csptr _source );
-
-    /// Set file system path
-    FWDATA_API void setPath( ::boost::filesystem::path path);
-
-    /// Get file system path
-    FWDATA_API ::boost::filesystem::path getPath() const;
-
-protected :
-
-    FWDATA_API static sptr SingleFileFactory(::boost::filesystem::path _path);
 
     /// Constructor
-    FWDATA_API SingleFile();
+    FWDATA_API SingleFile( ::fwData::Object::Key key );
 
     /// Destructor
     FWDATA_API virtual ~SingleFile();
 
+
+    fwCampMakeFriendDataMacro((fwData)(location)(SingleFile));
+
+    /// Defines shallow copy
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
+
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+
+    /// Set file system path
+    FWDATA_API void setPath( PathType path);
+
+    /// Get file system path
+    FWDATA_API PathType getPath() const;
+
+protected :
+
+    FWDATA_API static sptr SingleFileFactory(PathType path);
+
     /// file system path
-    ::boost::filesystem::path m_path;
+    PathType m_path;
 
 };
 
 /**
  * @struct enableSingleFile
- * @brief This class is derivated by reader/writer.
+ * @brief This class is derived by reader/writer.
  *
- * Reader/Writter classes should only need to implement get/setLocation
+ * Reader/Writer classes should only need to implement get/setLocation
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 template<typename RW> // reader or writer class should only need to implement get/setLocation
@@ -78,16 +83,19 @@ struct enableSingleFile
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableSingleFile(RW *rw) : m_rw(rw) { SLM_ASSERT("m_rw not instanced", m_rw);}
+    enableSingleFile(RW *rw) : m_rw(rw)
+    {
+        SLM_ASSERT("m_rw not instanced", m_rw);
+    }
 
     /// Set file system path
-    void setFile(::boost::filesystem::path path)
+    void setFile(ILocation::PathType path)
     {
         getLocation<SingleFile>(m_rw)->setPath(path);
     }
 
     /// Get file system path
-    ::boost::filesystem::path getFile()
+    ILocation::PathType getFile()
     {
         return (getLocation<SingleFile>(m_rw))->getPath();
     }
@@ -99,9 +107,7 @@ private :
 
 };
 
-
-
 }
 }
 
-#endif /* _DATA_LOCATION_SIMPLEFILE_HPP_ */
+#endif /* _FWDATA_LOCATION_SINGLEFILE_HPP_ */

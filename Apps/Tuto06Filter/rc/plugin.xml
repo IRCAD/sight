@@ -4,13 +4,13 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>FilterConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
         
     <!-- Root object -->
     <object type="::fwData::Composite">
         <!-- Windows & Main Menu -->
-        <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no" >
+        <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no" >
             <gui>
                 <frame>
                     <name>Filter</name>
@@ -25,7 +25,7 @@
             </registry>
         </service>
         
-       <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+       <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
             <gui>
                 <layout>
                      <menu name="File" />
@@ -38,7 +38,7 @@
             </registry>
         </service>
         
-        <service uid="myDefaultView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+        <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager" >
                     <view align="center" />
@@ -52,7 +52,7 @@
         </service> 
         
         <!-- Menus -->
-        <service uid="menuFile" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="Open image file" shortcut="Ctrl+O" />
@@ -65,7 +65,7 @@
                 <menuItem sid="actionQuit" start="yes" />
             </registry>
         </service>
-        <service uid="menuFilter" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+        <service uid="menuFilter" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="Compute Image Filter" />
@@ -77,11 +77,11 @@
         </service>
         
         <!-- Actions on Menus -->         
-        <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
-        <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no" >
+        <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+        <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no" >
             <start uid="readerPathImageFile"/>
         </service>
-        <service uid="actionImageFilter" type="::fwGui::IActionSrv" implementation="::opImageFilter::action::ImageFilter" autoComChannel="no" >
+        <service uid="actionImageFilter" type="::fwGui::IActionSrv" impl="::opImageFilter::action::ImageFilter" autoConnect="no" >
             <imageIn  uid="myImage1"/>
             <imageOut uid="myImage2"/>
         </service>
@@ -89,8 +89,8 @@
         <!-- 1st Object of the composite -->
         <item key="myImage1">
             <object uid="myImage1" type="::fwData::Image">
-                <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoComChannel="yes" />
-                <service implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoComChannel="no" >
+                <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoConnect="yes" />
+                <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no" >
                     <type mode="reader"/>
                 </service>
             </object>
@@ -98,7 +98,7 @@
         <!-- 2nd Object of the composite -->       
         <item key="myImage2">
             <object uid="myImage2" type="::fwData::Image">
-                <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage2" autoComChannel="yes" />
+                <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage2" autoConnect="yes" />
             </object> 
         </item>
     

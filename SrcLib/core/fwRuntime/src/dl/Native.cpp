@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,7 @@
 #include <limits.h>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-#if defined(_USE_BOOST_REGEX) || defined(__MACOSX__) || defined(WIN32)
 #include <boost/regex.hpp>
-#endif
 
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/dl/INameDecorator.hpp"
@@ -80,13 +78,12 @@ const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
 
     ::boost::filesystem::path result;
 
-#if defined(_USE_BOOST_REGEX) || defined(__MACOSX__) || defined(WIN32)
     const ::boost::filesystem::path fullModulePath( m_bundle->getLocation() / m_modulePath );
 #if BOOST_FILESYSTEM_VERSION > 2
     const ::boost::regex nativeFileRegex( m_nameDecorator->getNativeName(fullModulePath.filename().string()) );
 #else
     const ::boost::regex nativeFileRegex( m_nameDecorator->getNativeName(fullModulePath.leaf()) );
-#endif
+#endif // BOOST_FILESYSTEM_VERSION > 2
 
     // Walk through the module directory, seeking for a matching file.
     ::boost::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
@@ -106,44 +103,8 @@ const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
             result =  m_modulePath.parent_path() / curEntryPath.leaf();
             break;
         }
-#endif
+#endif // BOOST_FILESYSTEM_VERSION > 2
     }
-
-#else
-    const ::boost::filesystem::path   fullModulePath(m_bundle->getLocation() / m_modulePath);
-
-    // Adapts the file name to a posix dynamic library name
-    // and build te regular expression.
-#if BOOST_FILESYSTEM_VERSION > 2
-    const std::string searchPrefix("lib" + fullModulePath.filename().string());
-#else
-    const std::string searchPrefix("lib" + fullModulePath.leaf());
-#endif
-    const std::string searchSuffix("_posix_gcc.so");
-
-    // Walk through the module directory, seeking for a matching file.
-    ::boost::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
-    ::boost::filesystem::directory_iterator endDirEntry;
-    for(; curDirEntry != endDirEntry; ++curDirEntry)
-    {
-        ::boost::filesystem::path curEntryPath(*curDirEntry);
-#if BOOST_FILESYSTEM_VERSION > 2
-        std::string curEntryName(curEntryPath.filename().string());
-        if(curEntryName.find(searchPrefix) != std::string::npos && curEntryName.find(searchSuffix) != std::string::npos)
-        {
-            result = m_modulePath.parent_path() / curEntryPath.filename();
-            break;
-        }
-#else
-        std::string curEntryName(curEntryPath.leaf());
-        if(curEntryName.find(searchPrefix) != std::string::npos && curEntryName.find(searchSuffix) != std::string::npos)
-        {
-            result = m_modulePath.parent_path() / curEntryPath.leaf();
-            break;
-        }
-#endif
-    }
-#endif
 
     return result;
 }

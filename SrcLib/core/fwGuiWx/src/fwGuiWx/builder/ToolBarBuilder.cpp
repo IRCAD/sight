@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,16 +10,13 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiWx/container/WxContainer.hpp"
 #include "fwGuiWx/container/WxToolBarContainer.hpp"
 #include "fwGuiWx/builder/ToolBarBuilder.hpp"
 
-REGISTER_BINDING( ::fwGui::builder::IToolBarBuilder,
-        ::fwGui::builder::ToolBarBuilder,
-         ::fwGui::builder::IToolBarBuilder::RegistryKeyType,
-          ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::builder::ToolBarBuilder, ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -28,7 +25,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ToolBarBuilder::ToolBarBuilder()
+ToolBarBuilder::ToolBarBuilder(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -43,7 +40,7 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     m_parent = ::fwGuiWx::container::WxContainer::dynamicCast(parent);
     SLM_ASSERT("Sorry, the parent container is not a WxContainer", m_parent);
     wxFrame *frame = wxDynamicCast( m_parent->getWxContainer() , wxFrame ) ;
-    ::fwGuiWx::container::WxToolBarContainer::NewSptr toolBarContainer;
+    ::fwGuiWx::container::WxToolBarContainer::sptr toolBarContainer = ::fwGuiWx::container::WxToolBarContainer::New();
 
     if (frame)
     {

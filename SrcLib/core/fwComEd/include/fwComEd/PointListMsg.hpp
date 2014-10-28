@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for PointList : store modification information
  * @class   PointListMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
@@ -27,7 +27,8 @@ class FWCOMED_CLASS_API PointListMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((PointListMsg)(::fwServices::ObjectMsg), ( ( ) ), new PointListMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((PointListMsg)(::fwServices::ObjectMsg), ( ( ) ),
+                                           ::fwServices::factory::message::New< PointListMsg >);
 
     /**
      * @name Event identifier
@@ -40,9 +41,10 @@ public:
     /// @}
 
     /**
-     * @brief   Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API PointListMsg() throw();
+    FWCOMED_API PointListMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destructor : does nothing.

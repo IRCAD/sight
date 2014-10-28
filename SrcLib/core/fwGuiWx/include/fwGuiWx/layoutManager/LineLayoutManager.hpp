@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,8 +19,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the line layout manager.
- * @class   LineLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   LineLayoutManager
+ * 
  * @date    2009-2010.
  *
  */
@@ -29,12 +29,12 @@ class FWGUIWX_CLASS_API LineLayoutManager : public ::fwGui::layoutManager::LineL
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LineLayoutManager)(::fwGui::layoutManager::LineLayoutManagerBase), (()), new LineLayoutManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (LineLayoutManager)(::fwGui::layoutManager::LineLayoutManagerBase),
+                                            (()),
+                                            ::fwGui::factory::New< LineLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIWX_API LineLayoutManager();
+    FWGUIWX_API LineLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIWX_API virtual ~LineLayoutManager();
 
     /**

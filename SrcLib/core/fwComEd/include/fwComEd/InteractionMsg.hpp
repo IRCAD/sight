@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,14 +22,15 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for interaction : store modification information
  * @class   InteractionMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API InteractionMsg : public ::fwServices::ObjectMsg
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((InteractionMsg)(::fwServices::ObjectMsg), ( () ), new InteractionMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((InteractionMsg)(::fwServices::ObjectMsg), ( () ),
+                                           ::fwServices::factory::message::New< InteractionMsg > );
 
     typedef ::fwData::Point::PointCoordType PointCoordType;
 
@@ -86,9 +87,10 @@ public:
     /// @}
 
     /**
-     * @brief Constructor : does nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API InteractionMsg() throw();
+    FWCOMED_API InteractionMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : does nothing.

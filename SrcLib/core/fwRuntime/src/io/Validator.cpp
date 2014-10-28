@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -177,8 +177,8 @@ bool Validator::validate( xmlNodePtr node )
     {
         xmlBufferPtr buffer = xmlBufferCreate();
         xmlNodeDump( buffer, node->doc, node, 1, 1 );
-        xmlBufferFree( buffer );
         OSLM_WARN("Validator::validation NOK, node :\n " << buffer->content) ;
+        xmlBufferFree( buffer );
         OSLM_WARN("Validator::validation NOK, xsd = " << getXsdContent() ) ;
         OSLM_ERROR("Validator::validation NOK, error log = " << getErrorLog() ) ;
     }

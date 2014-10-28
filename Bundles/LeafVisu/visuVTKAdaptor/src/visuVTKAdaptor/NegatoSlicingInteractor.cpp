@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 #include <fwComEd/ImageMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -36,7 +36,7 @@
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ;
 
 
 namespace visuVTKAdaptor
@@ -51,7 +51,7 @@ public:
     static NegatoSlicingCallback *New()
     { return new NegatoSlicingCallback(); }
 
-    NegatoSlicingCallback() : m_mouseMoveObserved(false)
+    NegatoSlicingCallback() :  m_picker(NULL), m_localPicker(NULL), m_pickedProp(NULL), m_mouseMoveObserved(false)
     {
         this->PassiveObserverOff();
     }
@@ -172,7 +172,6 @@ public:
                 if ( std::string(keySym) == "A" || std::string(keySym) == "a" )
                 {
                     m_adaptor->pushSlice(-1, m_adaptor->getOrientation());
-                    OSLM_ERROR("Ohoh" << m_adaptor->getOrientation());
                 }
                 else if (std::string(keySym) == "Z" || std::string(keySym) == "z" )
                 {
@@ -244,11 +243,10 @@ protected :
 NegatoSlicingInteractor::NegatoSlicingInteractor() throw()
 {
     m_priority = .6;
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //-----------------------------------------------------------------------------
@@ -311,14 +309,14 @@ void NegatoSlicingInteractor::doStop() throw(fwTools::Failed)
     this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
     this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_vtkObserver);
     this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver);
-//  delete m_vtkObserver;
+    m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void NegatoSlicingInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
     {
@@ -383,11 +381,11 @@ void NegatoSlicingInteractor::stopSlicing( )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     // Fire the message to stop full cross display
-    ::fwData::Object::NewSptr dataInfo;
-    ::fwData::String::NewSptr sliceMode;
+    ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
+    ::fwData::String::sptr sliceMode = ::fwData::String::New();
     sliceMode->value() = "STOP_SLICING";
     dataInfo->setField("SLICE_MODE", sliceMode);
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
@@ -422,13 +420,13 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
 
     if(setSliceIndex(index))
     {
-        ::fwData::Object::NewSptr dataInfo;
-        ::fwData::String::NewSptr sliceMode;
+        ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
+        ::fwData::String::sptr sliceMode = ::fwData::String::New();
         sliceMode->value() = "UPDATE_SLICING";
         dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
@@ -463,13 +461,13 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-        ::fwData::Object::NewSptr dataInfo;
-        ::fwData::String::NewSptr sliceMode;
+        ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
+        ::fwData::String::sptr sliceMode = ::fwData::String::New();
         sliceMode->value() = "STOP_SLICING";
         dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }

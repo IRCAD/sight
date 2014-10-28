@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,8 +19,6 @@
 #include <boost/spirit/home/phoenix/core/argument.hpp>
 #include <boost/spirit/home/phoenix/operator/bitwise.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/Mesh.hpp>
@@ -30,9 +28,10 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/reader/MeshReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::MeshReader, ::fwDataIO::reader::MeshReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::MeshReader );
 
 
 namespace fwDataIO
@@ -196,7 +195,7 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-MeshReader::MeshReader()
+MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key key)
 : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 

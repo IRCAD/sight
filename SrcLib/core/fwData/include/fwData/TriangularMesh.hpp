@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,8 +15,9 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(TriangularMesh), FWDATA_API);
 namespace fwData
 {
 /**
@@ -26,13 +27,15 @@ namespace fwData
  * A mesh is represented by a container of 3D points and a container of cells.
  * A cell contains indices of the three points related to a triangular cell.
  *
- * @author    IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API TriangularMesh : public Object
 {
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwData::Factory::New< TriangularMesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TriangularMesh)(::fwData::Object), (()), ::fwData::factory::New< TriangularMesh >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(TriangularMesh));
 
     /// 3D point container
     typedef std::vector< std::vector< float > >         PointContainer ;
@@ -54,13 +57,23 @@ public :
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumPointsFunc;
     typedef ::boost::function<const int ( ::fwData::TriangularMesh* ) > getNumCellsFunc;
 
-    fwDataObjectMacro();
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API TriangularMesh(::fwData::Object::Key key);
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~TriangularMesh() ;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( TriangularMesh::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( TriangularMesh::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
      * @brief returns editable point container
@@ -109,17 +122,6 @@ public :
     FWDATA_API size_t getNumCells(void) const ;
 
 protected :
-
-
-    /**
-     * @brief constructor
-     */
-    FWDATA_API TriangularMesh();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~TriangularMesh() ;
 
     PointContainer m_points ;
     CellContainer  m_cells ;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,6 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwComEd/GraphMsg.hpp>
 
 
@@ -18,7 +16,7 @@
 #include <fwServices/IEditionService.hpp>
 
 
-REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgWrapperSrv, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgWrapperSrv, ::fwData::Object ) ;
 
 namespace ctrlSelection
 {
@@ -31,7 +29,7 @@ namespace wrapper
 MsgWrapperSrv::MsgWrapperSrv() throw()
 {
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::NEW_OBJECT );
-    addNewHandledEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
+    //handlingEventOff ::fwServices::ObjectMsg::UPDATED_OBJECT );
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::DELETE_OBJECT );
 }
 
@@ -64,12 +62,12 @@ void MsgWrapperSrv::configuring()  throw ( ::fwTools::Failed )
         OSLM_INFO( "Manage event "<< onEvent <<" to " << toEvent << ".");
         EventType managedEvent ( onEvent, toEvent, msgType);
         m_managedEvents.push_back( managedEvent );
-        addNewHandledEvent( onEvent );
+        //addNewHandledEvent( onEvent );
     }
 }
 //-----------------------------------------------------------------------------
 
-void MsgWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void MsgWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -81,9 +79,8 @@ void MsgWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( :
 
         if(message->hasEvent( onEvent ))
         {
-            ::fwTools::Object::sptr msg = ::fwTools::Factory::New(msgType);
-            OSLM_ASSERT(msgType << " creation failed", msg);
-            ::fwServices::ObjectMsg::sptr wrappedMsg = ::fwServices::ObjectMsg::dynamicCast(msg);
+            ::fwServices::ObjectMsg::sptr wrappedMsg = ::fwServices::factory::message::New(msgType);
+            OSLM_ASSERT(msgType << " creation failed", wrappedMsg);
             wrappedMsg->addEvent(toEvent, message->getDataInfo(onEvent));
             ::fwServices::IEditionService::notify( this->getSptr(), this->getObject(), wrappedMsg);
         }

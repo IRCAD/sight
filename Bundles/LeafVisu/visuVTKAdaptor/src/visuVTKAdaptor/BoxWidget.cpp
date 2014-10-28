@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@ public:
         return cb;
     }
 
-     BoxClallback() {}
+     BoxClallback() : m_adaptor(NULL) {}
     ~BoxClallback() {}
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
@@ -54,7 +54,7 @@ public:
 
 // BoxWidget
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, BoxWidget, ::fwData::TransformationMatrix3D );
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::BoxWidget, ::fwData::TransformationMatrix3D );
 
 //------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ BoxWidget::BoxWidget() throw()
 {
     m_boxWidgetCommand = BoxClallback::New(this);
 
-    addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -167,7 +167,7 @@ void BoxWidget::updateFromVtk()
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 
@@ -200,7 +200,7 @@ void BoxWidget::doUpdate() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
+void BoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
 {
     ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
     if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED)

@@ -1,10 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/spyLog.hpp>
 #include <fwComEd/ResectionMsg.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
@@ -23,7 +22,7 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -37,7 +36,7 @@ ReconstructionFromResecUpdaterSrv::~ReconstructionFromResecUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void ReconstructionFromResecUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void ReconstructionFromResecUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   ManagedEvents::iterator it = m_managedEvents.begin();

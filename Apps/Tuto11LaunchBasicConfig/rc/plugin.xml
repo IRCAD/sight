@@ -6,11 +6,11 @@
     
     <extension implements="::fwServices::registry::AppConfig">
         <id>TutoLaunchBasicConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
             <object uid="myImage" type="::fwData::Image">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Tuto 11 : Launch basic config</name>
@@ -25,7 +25,7 @@
                     </registry>
                 </service>
 
-                <service uid="mainMenuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no">
+                <service uid="mainMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -36,7 +36,7 @@
                     </registry>
                 </service>
 
-                <service uid="menuFile" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no">
+                <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Open file" shortcut="Ctrl+O" />
@@ -54,20 +54,25 @@
                 </service>
 
 
-                <service uid="actionOpenFile" type="::fwGui::IActionSrv" implementation="::gui::action::StarterActionService" autoComChannel="no">
+                <service uid="actionOpenFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                     <start uid="myReaderPathFile" />
                 </service>
 
-                <service uid="actionQuit" type="::fwGui::IActionSrv" implementation="::gui::action::QuitAction" autoComChannel="no" />
+                <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
 
-                <service uid="myReaderPathFile" implementation="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoComChannel="no" />
+                <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
 
-                <service uid="actionLaunchConfig" type="::fwGui::IActionSrv" implementation="::gui::action::ConfigActionSrv" autoComChannel="no">
-                    <config id="BasicFrameConfig" />
-                    <replace val="myImage" pattern="SELECTED_UID_myImage" />
+                <service uid="actionLaunchConfig" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
+                    <config>
+                        <appConfig id="BasicFrameConfig" >
+                            <parameters>
+                                <parameter replace="imageUid" by="myImage" />
+                            </parameters>
+                        </appConfig>
+                    </config>
                 </service>
 
-                <service implementation="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="mainView" autoComChannel="yes">
+                <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="mainView" autoConnect="yes">
                 </service>
 
                 <start uid="myFrame" />

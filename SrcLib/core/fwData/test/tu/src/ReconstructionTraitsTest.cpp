@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,18 +32,18 @@ void ReconstructionTraitsTest::creation()
 {
     const std::string ID = "roiID";
     const std::string EXP = "skin_0";
-    ::fwData::ReconstructionTraits::NewSptr recTraits;
+    ::fwData::ReconstructionTraits::sptr recTraits = ::fwData::ReconstructionTraits::New();
     recTraits->setIdentifier(ID);
-    ::fwData::StructureTraits::NewSptr structure;
+    ::fwData::StructureTraits::sptr structure = ::fwData::StructureTraits::New();
     recTraits->setStructureTraits(structure);
 
     CPPUNIT_ASSERT(!recTraits->getMaskOpNode());
     CPPUNIT_ASSERT(!recTraits->getMeshOpNode());
 
-    ::fwData::Node::NewSptr opMaskNode;
+    ::fwData::Node::sptr opMaskNode = ::fwData::Node::New();
     recTraits->setMaskOpNode(opMaskNode);
 
-    ::fwData::Node::NewSptr opMeskNode;
+    ::fwData::Node::sptr opMeskNode = ::fwData::Node::New();
     recTraits->setMeshOpNode(opMeskNode);
 
     CPPUNIT_ASSERT_EQUAL(ID, recTraits->getRefIdentifier());

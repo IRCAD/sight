@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,10 +19,10 @@ namespace dialog
 /**
  * @brief   MultiSelectorDialog allows the choice of some element among several (_selections)
  *
- * Use the Delegate design pattern. The specific implementation selection is ensured by ::fwClassFactoryRegistry
+ * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro
  * The specific implementation are in fwWX and fwQT libraries
- * @class   MultiSelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   MultiSelectorDialog
+ * 
  * @date    2009-2010.
  *
  */
@@ -44,7 +44,6 @@ public:
 
     /**
      * @brief Show the selector and return the selection.
-     * @param[in] _parent Parent container for the selector.
      */
     FWGUI_API Selections show();
 

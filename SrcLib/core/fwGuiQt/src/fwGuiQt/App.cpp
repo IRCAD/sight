@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,6 @@
 
 #include <fwTools/Os.hpp>
 
-#include <fwRuntime/io/XMLSubstitute.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -32,12 +31,16 @@ App::App(int & argc, char ** argv)
 {
     SLM_TRACE_FUNC();
 
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
-    SLM_ASSERT("Profile is not initialized", profile);
-
     setlocale(LC_ALL,"C"); // needed for mfo save process
 
-    std::string appName = profile->getName();
+    std::string appName = "No name";
+
+    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+
+    if (profile)
+    {
+        appName = profile->getName();
+    }
 
     this->setApplicationName( QString::fromStdString(appName) );
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,8 +19,6 @@
 #include <fwComEd/ImageMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
-
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/Base.hpp>
 
@@ -38,7 +36,7 @@
 
 #include "visuVTKAdaptor/Image3DCursor.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image ) ;
 
 
 namespace visuVTKAdaptor
@@ -48,9 +46,9 @@ namespace visuVTKAdaptor
 
 Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 {
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    addNewHandledEvent( "NEW_SPHERE_CONFIG" );
+    ////handlingEventOff();
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    //addNewHandledEvent( "NEW_SPHERE_CONFIG" );
 }
 
 //------------------------------------------------------------------------------
@@ -153,7 +151,7 @@ void Image3DCursor::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Image3DCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

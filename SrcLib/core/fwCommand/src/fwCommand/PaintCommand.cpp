@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 /** BEGIN LICENSE BLOCK *****
  * FW4SPL - Copyright (C) IRCAD, 2009-2010.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
@@ -6,7 +12,6 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
@@ -17,9 +22,6 @@
 namespace fwCommand
 {
 
-//-----------------------------------------------------------------------------
-
-REGISTER_BINDING_BYCLASSNAME( ::fwCommand::ICommand, ::fwCommand::PaintCommand, ::fwCommand::PaintCommand );
 
 //-----------------------------------------------------------------------------
 PaintCommand::PaintCommand() : ICommand()
@@ -152,7 +154,7 @@ void PaintCommand::notifyImageModification()
 {
     if ( ! this->m_serviceNotifier.expired() )
     {
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent( fwComEd::ImageMsg::BUFFER );
         ::fwServices::IEditionService::notify( this->getNotifier(), m_image.lock(), msg );
     }

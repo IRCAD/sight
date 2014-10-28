@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,17 +9,12 @@
 #include <limits>
 #include <stdexcept>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include "fwCommand/Manager.hpp"
 #include "fwCommand/Empty.hpp"
 
 namespace fwCommand
 {
 
-//-----------------------------------------------------------------------------
-
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwCommand::Manager, ::fwCommand::Manager );
 
 //-----------------------------------------------------------------------------
 
@@ -38,7 +33,7 @@ Manager::Manager( const ::boost::uint32_t maxUndoLevel, const ::boost::uint32_t 
 
 Manager::sptr Manager::ManagerFactory( const ::boost::uint32_t  maxUndoLevel, const ::boost::uint32_t  maxUndoMemory, const ::boost::uint32_t  maxCommandMemory)
 {
-    ::fwCommand::Manager::NewSptr manager;
+    ::fwCommand::Manager::sptr manager = ::fwCommand::Manager::New();
     manager->m_maxUndoLevel = maxUndoLevel;
     manager->m_maxUndoMemory = maxUndoMemory;
     manager->m_maxCommandMemory = maxCommandMemory;

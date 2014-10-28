@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,7 @@
 #include <QToolBar>
 #include <QHBoxLayout>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
@@ -18,10 +18,7 @@
 
 
 
-REGISTER_BINDING( ::fwGui::builder::IToolBarBuilder,
-        ::fwGui::builder::ToolBarBuilder,
-        ::fwGui::builder::IToolBarBuilder::RegistryKeyType,
-        ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::builder::ToolBarBuilder, ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
 
 
 namespace fwGui
@@ -31,7 +28,7 @@ namespace builder
 
 //-----------------------------------------------------------------------------
 
-ToolBarBuilder::ToolBarBuilder()
+ToolBarBuilder::ToolBarBuilder(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -51,7 +48,7 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
     toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
     toolBar->setFloatable(false);
 
-    ::fwGuiQt::container::QtToolBarContainer::NewSptr toolBarContainer;
+    ::fwGuiQt::container::QtToolBarContainer::sptr toolBarContainer = ::fwGuiQt::container::QtToolBarContainer::New();
     if (window)
     {
         bool visible = window->isVisible();

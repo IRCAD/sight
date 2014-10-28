@@ -1,60 +1,42 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_SERVICEREGISTRAR_HPP_
-#define _FWSERVICES_SERVICEREGISTRAR_HPP_
+#ifndef __FWSERVICES_SERVICEFACTORYREGISTRAR_HPP__
+#define __FWSERVICES_SERVICEFACTORYREGISTRAR_HPP__
 
-#include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/stringize.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwCore/Demangler.hpp>
-
-#include <fwTools/ClassFactory.hpp>
-#include <fwTools/ClassFactoryRegistry.hpp>
+#include "fwServices/factory/new.hpp"
 
 #include "fwServices/registry/ServiceFactory.hpp"
-
-#define REGISTER_BINDING_ID_CPY_V2( BaseClassType , SubClassType , KeyType, keyvalue, id )                                                            \
-    static const KeyType  BOOST_PP_CAT(registredKeyValue, id ) = keyvalue;                                                                            \
-    static ::fwServices::ServiceFactoryRegistrar< BaseClassType, SubClassType, KeyType > BOOST_PP_CAT( registrar, id ) ( BOOST_PP_CAT(registredKeyValue, id ) );
-
 
 namespace fwServices
 {
 
+
 /**
- * @brief This is an helper for registering an Class : internally it create the factory and register it
- * to FactoryRegistry
- * @class ClassRegistrar
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
- *
+ * @brief Helper for registering a service
+ * Creates internally the service factory and adds it to the FactoryRegistry
+ * 
+ * @date    2007-2012.
  */
-template<class BASECLASS, class SUBCLASS,class KEY>
+template<class SRV_IMPL>
 class ServiceFactoryRegistrar
 {
 public:
 
-    /**
-     * @brief Constructor : create the factory and register it
-     * @param[in] key type that factory can candle
-     */
-    ServiceFactoryRegistrar(const KEY & key)
+    // parameters are intentionally not references
+    ServiceFactoryRegistrar(std::string simpl, std::string stype, std::string oimpl)
     {
-        std::string simpl = ::fwCore::TypeDemangler<SUBCLASS>().getClassname();
-        // create factory
-        ::boost::shared_ptr< ::fwTools::IClassFactory >  af( new ::fwTools::ClassFactory< BASECLASS, SUBCLASS, std::string >(simpl) );
-        // register it
-        ::fwServices::registry::ServiceFactory::getDefault()->addFactory( af, simpl, key.first, key.second);
+        ::fwServices::registry::ServiceFactory::getDefault()
+            ->addFactory( &::fwServices::factory::New< SRV_IMPL > , simpl, stype, oimpl);
     }
 
 };
 
+
 } //end namespace fwServices
 
 
-#endif // _FWSERVICES_SERVICEREGISTRAR_HPP_
+#endif // __FWSERVICES_SERVICEFACTORYREGISTRAR_HPP__

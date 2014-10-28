@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,8 @@ namespace writer
 
 /**
  * @brief   Array Writer. Write file format .raw
- * @class   ArrayWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   ArrayWriter
+ * 
  * @date    2011
  *
  * Ircad writer to write a ::fwData::Array on filesystem in a raw format
@@ -36,11 +36,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((ArrayWriter)(GenericObjectWriter< ::fwData::Array>),
                                            (()),
-                                           new  ArrayWriter
+                                           ::fwDataIO::writer::factory::New< ArrayWriter >
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API ArrayWriter( );
+    FWDATAIO_API ArrayWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~ArrayWriter();

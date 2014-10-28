@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace action
 /**
  * @class   PushObjectSrv
  * @brief   To add or remove object in composite with specific key.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class GUI_CLASS_API PushObjectSrv : public ::fwGui::IActionSrv
@@ -37,19 +37,20 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (PushObjectSrv)(::fwGui::IActionSrv) ) ;
 
-protected:
-
     /// Constructor. Do nothing.
     GUI_API PushObjectSrv() throw() ;
 
     /// Destructor. Do nothing.
     GUI_API virtual ~PushObjectSrv() throw() ;
 
+protected:
+
+
     virtual void starting() throw(::fwTools::Failed);
 
     virtual void stopping() throw(::fwTools::Failed);
 
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 
@@ -59,7 +60,7 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service implementation="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv">
+       <service impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv">
            <push src="COMPOSITE_UID[KEY]" key="KEY_IN_COMPOSITE" />
        </service>
         @endverbatim
@@ -71,9 +72,9 @@ protected:
 
 private:
 
-    // [dest_map]->[(dest_key1,dest_key2,...)]
+    // [src_map]->[(src_key1, src_key2, ...)]
     typedef std::map< std::string, std::set< std::string > > SrcKeyMapType;
-    // [src_key]->[<dest_map, dest_key>]
+    // [dest_key]->[<src_map, src_key>]
     typedef std::map< std::string, std::pair< std::string, std::string > > DestKeyMapType;
     /**
      * @brief keep the association between associated key and source object

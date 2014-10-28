@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,9 +19,7 @@ namespace io
 
 /**
  * @brief Reader service API. It manages extension points definition and extension configuration
- * @class   IReader.
- * @author  IRCAD (Research and Development Team).
- * @date    2007-2009.
+ * @class   IReader
  *
  * This class represents the base interface for reader services.
  * Use the base service methods :
@@ -29,7 +27,7 @@ namespace io
  * @li The method start() initialize the service
  * @li To read the object use update() method
  * @li Finally we must call stop() before deleting the service
- * @todo ACH : remove some methods : getSupportedExtensions ? getSelectorDialogTitle ? setLocation/getLocation ? location can be replaced perhaps by ::fwData::Location ( and not a ::boost::path )
+ * @todo ACH : remove some methods : getSupportedExtensions ? getSelectorDialogTitle ?
  */
 class IO_CLASS_API IReader : public fwServices::IService
 {
@@ -127,14 +125,8 @@ public :
 
 protected:
 
-    /**
-     * @brief   Constructor (by default does nothing)
-     */
     IO_API IReader() throw() ;
 
-    /**
-     * @brief   Destructor
-     */
     IO_API virtual ~IReader() throw() ;
 
     /**
@@ -148,21 +140,21 @@ protected:
      * Sample configuration for a file:
      * @verbatim
      <service ... >
-        <file>/home/user/myFile.jpg<file/>
+        <file>/home/user/myFile.jpg</file>
      </service>
      @endverbatim
      * Sample configuration for many files:
      * @verbatim
      <service ... >
-        <file>/home/user/myFile01.jpg<file/>
-        <file>/home/user/myFile02.jpg<file/>
-        <file>/home/user/myFile03.jpg<file/>
+        <file>/home/user/myFile01.jpg</file>
+        <file>/home/user/myFile02.jpg</file>
+        <file>/home/user/myFile03.jpg</file>
      </service>
      @endverbatim
      * Sample configuration for a folder:
      * @verbatim
      <service ... >
-        <folder>/home/user/myFolder<folder/>
+        <folder>/home/user/myFolder</folder>
      </service>
      @endverbatim
      */

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,12 +11,12 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/foreach.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/dialog/InputDialog.hpp"
 
 
-REGISTER_BINDING( ::fwGui::dialog::IInputDialog, ::fwGuiQt::dialog::InputDialog, ::fwGui::dialog::IInputDialog::FactoryRegistryKeyType , ::fwGui::dialog::IInputDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::dialog::InputDialog, ::fwGui::dialog::IInputDialog::REGISTRY_KEY );
 
 namespace fwGuiQt
 {
@@ -25,7 +25,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-InputDialog::InputDialog() : m_input("")
+InputDialog::InputDialog(::fwGui::GuiBaseObject::Key key) : m_input("")
 {}
 
 //------------------------------------------------------------------------------

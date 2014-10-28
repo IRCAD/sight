@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,10 @@
 
     #ifdef FWSERVICES_EXPORTS
     #define FWSERVICES_API __declspec(dllexport)
+    #define FWSERVICES_TEMPLATE_API
     #else
     #define FWSERVICES_API __declspec(dllimport)
+    #define FWSERVICES_TEMPLATE_API extern
     #endif
 
     #define FWSERVICES_CLASS_API
@@ -25,15 +27,18 @@
         #ifdef FWSERVICES_EXPORTS
         #define FWSERVICES_API __attribute__ ((visibility("default")))
         #define FWSERVICES_CLASS_API __attribute__ ((visibility("default")))
+        #define FWSERVICES_TEMPLATE_API extern
         #else
         #define FWSERVICES_API __attribute__ ((visibility("hidden")))
         #define FWSERVICES_CLASS_API __attribute__ ((visibility("hidden")))
+        #define FWSERVICES_TEMPLATE_API extern
         #endif
 
 #else
 
     #define FWSERVICES_API
     #define FWSERVICES_CLASS_API
+    #define FWSERVICES_TEMPLATE_API extern
 
 #endif
 

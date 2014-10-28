@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,15 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <camp/class.hpp>
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
+
+fwCorePredeclare((fwData)(Vector))
+
+fwCampAutoDeclareDataMacro((fwData)(Vector), FWDATA_API);
 
 namespace fwData
 {
@@ -23,7 +28,7 @@ namespace fwData
  *
  * Vector contains a vector of ::fwData::Object.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 
@@ -32,9 +37,8 @@ class FWDATA_CLASS_API Vector : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::Factory::New< Vector >) ;
-
-
+    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::factory::New< Vector >) ;
+    fwCampMakeFriendDataMacro((fwData)(Vector));
 
     typedef std::vector< Object::sptr > ContainerType;
 
@@ -46,6 +50,15 @@ public:
     typedef ContainerType::reverse_iterator ReverseIteratorType;
     typedef ContainerType::const_reverse_iterator ConstReverseIteratorType;
     typedef ContainerType::size_type SizeType;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Vector(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Vector();
 
     /// boost_foreach/stl compatibility
     /// @{
@@ -90,13 +103,13 @@ public:
     /// @}
 
 
-    fwDataObjectMacro();
+
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Vector::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Vector::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// Method to initialize a ::fwData::Vector from a std::vector
     template< class DATATYPE >
@@ -124,11 +137,6 @@ public:
     }
 
 protected:
-    /// Constructor
-    FWDATA_API Vector();
-
-    /// Destructor
-    FWDATA_API virtual ~Vector();
 
     ContainerType m_attrContainer;
 };

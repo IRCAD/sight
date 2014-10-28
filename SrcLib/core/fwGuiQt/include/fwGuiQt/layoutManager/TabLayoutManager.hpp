@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the tab layout manager.
- * @class   TabLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   TabLayoutManager
+ * 
  * @date    2009-2010.
  *
  */
@@ -37,12 +37,12 @@ class FWGUIQT_CLASS_API TabLayoutManager : public ::fwGui::layoutManager::TabLay
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TabLayoutManager)(::fwGui::layoutManager::TabLayoutManagerBase), (()), new TabLayoutManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (TabLayoutManager)(::fwGui::layoutManager::TabLayoutManagerBase),
+                                            (()),
+                                            ::fwGui::factory::New< TabLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API TabLayoutManager();
+    FWGUIQT_API TabLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIQT_API virtual ~TabLayoutManager();
 
     /**

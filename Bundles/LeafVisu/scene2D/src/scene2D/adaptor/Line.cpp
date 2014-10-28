@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 #include "scene2D/data/InitQtPen.hpp"
 
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Line  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Line  , ::fwData::Composite ) ;
 
 
 namespace scene2D
@@ -44,7 +44,7 @@ void Line::configuring() throw ( ::fwTools::Failed )
     m_x2 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("x2") );
     m_y1 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("y1") );
     m_y2 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("y2") );
-    
+
     // If the corresponding attributes are present in the config, set the color of the line
     if (!m_configuration->getAttributeValue("color").empty())
     {
@@ -90,7 +90,7 @@ void Line::doUpdate() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 }
 
-void Line::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void Line::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

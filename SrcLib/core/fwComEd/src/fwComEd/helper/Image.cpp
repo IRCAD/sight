@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 Image::Image( ::fwData::Image::sptr image )
-    : m_imageMsg(new ::fwComEd::ImageMsg()),
+    : m_imageMsg(::fwComEd::ImageMsg::New()),
       m_image(image)
 {
     if ( image )
@@ -59,7 +59,7 @@ bool Image::createLandmarks()
     // Manage image landmarks
     if ( ! m_image->getField( ::fwComEd::Dictionary::m_imageLandmarksId ) )
     {
-        ::fwData::PointList::NewSptr pl;
+        ::fwData::PointList::sptr pl = ::fwData::PointList::New();
         m_image->setField( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
         fieldIsCreated = true;
     }
@@ -226,7 +226,7 @@ const std::string Image::getPixelAsString(SizeType::value_type x,
 
 //------------------------------------------------------------------------------
 
-::fwTools::BufferObject::Lock Image::getLock() const
+::fwMemory::BufferObject::Lock Image::getLock() const
 {
     return m_lock;
 }

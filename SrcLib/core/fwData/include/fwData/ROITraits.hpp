@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,17 @@
 
 #include "fwData/Node.hpp"
 #include "fwData/StructureTraits.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+
+fwCampAutoDeclareDataMacro((fwData)(ROITraits), FWDATA_API);
 
 namespace fwData
 {
 /**
  * @class   ROITraits
  * @brief   This class defines ROI traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2011.
  *
  * A ROI traits contains :
@@ -31,7 +34,19 @@ namespace fwData
 class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::Factory::New< ROITraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::factory::New< ROITraits >) ;
+    fwCampMakeFriendDataMacro((fwData)(ROITraits));
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API ROITraits(::fwData::Object::Key key);
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~ROITraits();
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
 
@@ -49,17 +64,8 @@ public:
     /// Get the associated structure traits
     FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
 
-protected :
-
-    /**
-     * @brief constructor
-     */
-    FWDATA_API ROITraits();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~ROITraits();
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 private:
 
@@ -67,10 +73,10 @@ private:
     std::string m_identifier;
 
     /// mask node used for ROITraits
-    ::fwData::Node::wptr m_maskOpNode;
+    ::fwData::Node::sptr m_maskOpNode;
 
     /// associated structure traits
-    ::fwData::StructureTraits::wptr m_structureTraits;
+    ::fwData::StructureTraits::sptr m_structureTraits;
 
     /// roi evaluated expression
     StructureTraits::ROIExpression m_evaluatedExp;

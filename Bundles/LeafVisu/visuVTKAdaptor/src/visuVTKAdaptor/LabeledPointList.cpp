@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,7 @@
 #include <fwData/Point.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
@@ -34,19 +34,22 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList ) ;
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-void notifyRemoveLandMark( ::fwServices::IService* _service, ::fwData::Point::sptr point )
+void notifyRemoveLandMark( ::fwData::Point::sptr point )
 {
-    SLM_ASSERT("NULL Service", _service);
-    ::fwComEd::PointListMsg::NewSptr msgPointList;
+    ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
     msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
-    ::fwServices::IEditionService::notify( _service->getSptr(), _service->getObject(), msgPointList, ::fwServices::ComChannelService::NOTIFY_SOURCE );
+
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = point->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+
+    fwServicesNotifyMsgMacro( point->getLightID(), sig, msgPointList );
 }
 
 //------------------------------------------------------------------------------
@@ -63,6 +66,8 @@ public :
       m_picker( vtkCellPicker::New() ),
       m_propCollection( vtkPropCollection::New() )
     {
+        m_lastPos[0] = -1;
+        m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 
@@ -127,7 +132,7 @@ public :
             {
                 ::fwData::Point::sptr point = *itr;
                 m_pickedPointList.lock()->getRefPoints().erase(itr);
-                notifyRemoveLandMark( m_service, point );
+                notifyRemoveLandMark( point );
             }
         }
     }
@@ -173,9 +178,9 @@ LabeledPointList::LabeledPointList() throw():
     m_rightButtonCommand(0),
     m_needSubservicesDeletion(false)
 {
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 //------------------------------------------------------------------------------
@@ -237,6 +242,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
 
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRenderService( this->getRenderService() );
+        servicePointList->setAutoRender( this->getAutoRender() );
         servicePointList->start();
 
         this->registerService( servicePointList );
@@ -248,6 +254,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
             serviceLabel = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point , "::visuVTKAdaptor::PointLabel");
             SLM_ASSERT("serviceLabel not instanced", serviceLabel);
             serviceLabel->setRenderService( this->getRenderService() );
+            serviceLabel->setAutoRender( this->getAutoRender() );
             serviceLabel->start();
             this->registerService( serviceLabel );
         }
@@ -258,7 +265,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void LabeledPointList::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
     ::fwComEd::PointListMsg::csptr plMsg =  ::fwComEd::PointListMsg::dynamicConstCast( msg );

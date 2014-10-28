@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,6 @@
 
 
 #include <fwRender/IRender.hpp>
-#include <fwServices/ComChannelService.hpp>
 #include <scene2D/data/Axis.hpp>
 #include <scene2D/data/Viewport.hpp>
 
@@ -83,13 +82,16 @@ public:
     /// Returns what happens to scene's aspect ratio on view resize events
     SCENE2D_API Qt::AspectRatioMode getAspectRatioMode();
 
+    /// Update scene size from items bounding rect, this bounding can be enlarged with ratioPercent parameter
+    SCENE2D_API void updateSceneSize( float ratioPercent = 0 );
+
 protected:
     /**
     * @brief Configuring the Render service.
     *
     * Example of configuration
     * @verbatim
-    <service uid="GENERIC_UID_Scene2D" implementation="::scene2D::Render" type="::fwRender::IRender" autoComChannel="yes">
+    <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
 
         <scene>
 
@@ -112,7 +114,7 @@ protected:
     </service>
     @endverbatim
     *
-    * - <scene x="-1100" y="-1.1" width="2500" height="1.2" /> : Set the scene coordinates
+    * - \<scene x="-1100" y="-1.1" width="2500" height="1.2" /\> : Set the scene coordinates
     *
     * \b x : mandatory : Set the x coordinate of the top left scene corner
     *
@@ -124,7 +126,7 @@ protected:
     *
     * \b antialiasing :  not mandatory : activate scene antialiasing if attribute's value set to 'true'
     *
-    * - <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /> : Set a viewport coordinates
+    * - \<viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /\> : Set a viewport coordinates
     *
     * \b id : mandatory : Set the viewport id
     *
@@ -136,7 +138,7 @@ protected:
     *
     * \b height : mandatory : Set the height of the viewport
     *
-    * - <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /> : Set an axis specifications
+    * - \<axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /\> : Set an axis specifications
     *
     * \b id : mandatory : Set the axis id
     *
@@ -146,7 +148,7 @@ protected:
     *
     * \b scaleType : mandatory : Set the axis scaleType
     *
-    * - <adaptor id="grid" class="::scene2D::adaptor::GridFromFloat" objectId="myData"> : Set an adaptor
+    * - \<adaptor id="grid" class="::scene2D::adaptor::GridFromFloat" objectId="myData"\> : Set an adaptor
     *
     * \b id : mandatory : Set the adaptor id
     *
@@ -167,7 +169,7 @@ protected:
 
     /// If the message is ADDED_KEYS, call the startAdaptorsFromComposite function to start all the adaptors contained
     //  in the message composite.
-    SCENE2D_API void updating( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void receiving( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// ToDo IM
     SCENE2D_API void swapping()    throw ( ::fwTools::Failed );
@@ -212,8 +214,6 @@ private:
         /// The adaptor service.
         WPTR(::scene2D::adaptor::IAdaptor) m_service;
 
-        /// The adaptor comChannel.
-        WPTR(::fwServices::ComChannelService) m_comChannel;
     };
 
     /// Create the QtContainer, the scene, the viewport, the view.
@@ -248,15 +248,14 @@ private:
     void swapAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
 
     /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service corresponding to _object,
-    //  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map,
-    //  create the comChannel and start it.
+    ///  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map.
     void startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _object);
 
     /// Swap the SceneAdaptor2D to _object.
     void swapAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _object);
 
-    /// Stop the associated comChannel, unregister it, stop the adaptor service, unregister it, reset it and erase the SceneAdaptor2D in
-    //  the m_adaptorID2SceneAdaptor2D map.
+    /// Stops the adaptor service, unregister it, reset it and erase the SceneAdaptor2D in
+    ////  the m_adaptorID2SceneAdaptor2D map.
     void stopAdaptor(AdaptorIDType _adaptorID);
 
     typedef std::map< ObjectIDType, std::vector<AdaptorIDType> > ObjectsID2AdaptorIDVector;

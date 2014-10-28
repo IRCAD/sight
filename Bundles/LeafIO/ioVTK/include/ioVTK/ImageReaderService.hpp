@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,19 +25,19 @@ namespace ioVTK
 
 /**
  * @brief   Image reader service.
- * @class   ImageReaderService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   ImageReaderService
  *
- * Service reading a VTK Image using the vtkIO lib.
+ * Service reading a VTK Image using the fwVtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image )
  */
 class IOVTK_CLASS_API ImageReaderService : public ::io::IReader
 {
 
 public :
+    ~ImageReaderService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader) ) ;
 
     /**
@@ -50,16 +50,6 @@ public :
 
 
 protected:
-
-    /**
-     * @brief Service constructor, default parameter initialization
-     * @post ImageReaderService::m_bServiceIsConfigured is equal to false : service not configured
-     * @post ImageReaderService::m_fsImgPath is empty : path to read not defined
-     */
-    IOVTK_API ImageReaderService() throw();
-
-    /// Destructor, do nothing.
-    IOVTK_API virtual ~ImageReaderService() throw();
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
@@ -79,10 +69,10 @@ protected:
 
     /**
      * @brief React on modifications : here, this method does nothing.
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      * @param[in] _msg information message for modification
      */
-    IOVTK_API void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw ( ::fwTools::Failed );
+    IOVTK_API void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
 
     /// Info method gives some informations on service.
     IOVTK_API void info(std::ostream &_sstream ) ;

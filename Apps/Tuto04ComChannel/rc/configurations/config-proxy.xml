@@ -1,0 +1,102 @@
+﻿<extension implements="::fwServices::registry::AppConfig">
+    <id>tutoComChannelProxyConfig</id>
+    <type>parameters</type>
+    <config>
+    
+    <!-- In tutoComChannel, the main data object type is ::fwData::Mesh.-->
+    <object type="::fwData::Mesh">
+
+        <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no" >
+            <gui>
+                <frame>
+                    <name>tutoComChannel</name>
+                    <icon>Bundles/Tuto04ComChannel_0-1/tuto.ico</icon>
+                    <minSize width="720" height="600"/>
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="myMenuBar" start="yes" />
+                <view sid="myDefaultView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+             <gui>
+                <layout>
+                     <menu name="File" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menu_File" start="yes" />
+            </registry>
+        </service>
+        
+        <!-- The application contains three different views. The different views are characterized by their associated service uid.
+                 Furthermore, a minimum window height and a width are given to the last two views.-->
+         <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager" >
+                    <view caption="Rendering 1" align="center" />
+                    <view caption="Rendering 2" align="right" minWidth="400" minHeight="100" />
+                    <view caption="Rendering 3" align="right" minWidth="400" minHeight="100" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="myRenderingTuto1" start="yes" />
+                <view sid="myRenderingTuto2" start="yes" />
+                <view sid="myRenderingTuto3" start="yes" />
+            </registry>
+        </service>
+        
+        <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+            <gui>
+                <layout>
+                    <menuItem name="Open file" shortcut="Ctrl+O" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_openFile" start="yes" />
+                <menuItem sid="action_quit" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no" >
+            <start uid="myReaderPathFile"/>
+        </service>
+
+        <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+
+        <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" >
+            <type mode="reader"/>
+        </service>
+
+        <!-- Visualization service for the first window.-->
+        <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto1" autoConnect="yes" />
+
+        
+        <!-- Visualization service for the second window-->
+        <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto2" autoConnect="yes" />
+
+
+        <!-- Visualization service for the third window-->
+        <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto3" autoConnect="yes" />
+        
+        <!-- Connect the signal slot of the service to receive the updating of camera position -->
+        <proxy channel="Camera" >
+            <signal>myRenderingTuto1/camUpdated</signal>
+            <signal>myRenderingTuto2/camUpdated</signal>
+            <signal>myRenderingTuto3/camUpdated</signal>
+            
+            <slot>myRenderingTuto1/updateCamPosition</slot>
+            <slot>myRenderingTuto2/updateCamPosition</slot>
+            <slot>myRenderingTuto3/updateCamPosition</slot>
+        </proxy>
+        
+        <start uid="myFrame" />
+    </object>
+
+    </config>
+</extension>

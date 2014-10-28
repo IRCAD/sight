@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/bind.hpp>
-#include <wx/app.h>
 
 #include <fwCore/base.hpp>
 
@@ -14,16 +13,12 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwGuiWx/App.hpp>
+#include <fwGuiWx/WorkerWx.hpp>
 
 #include "guiWx/Plugin.hpp"
 
 namespace guiWx
 {
-//-----------------------------------------------------------------------------
-
-// Create a new application object
-IMPLEMENT_APP_NO_MAIN(::fwGuiWx::App);
 
 //-----------------------------------------------------------------------------
 
@@ -38,37 +33,38 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-    SLM_TRACE_FUNC();
-
-    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
-
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
-    ::fwRuntime::profile::Profile::ParamsContainer params = profile->getParams();
-    int    argc = params.size();
+    int &argc = profile->getRawArgCount();
     char** argv = profile->getRawParams();
-    ::wxEntryStart( argc, argv ) ;
+
+    m_workerWx = ::fwGuiWx::getWxWorker(argc, argv);
+
+    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
 
 void Plugin::stop() throw()
 {
-    SLM_TRACE_FUNC();
-    ::wxEntryCleanup();
+}
+
+//-----------------------------------------------------------------------------
+
+void setup()
+{
+    ::fwRuntime::profile::getCurrentProfile()->setup();
 }
 
 //-----------------------------------------------------------------------------
 
 int Plugin::run() throw()
 {
-    SLM_TRACE_FUNC();
-    int res;
+    m_workerWx->post( ::boost::bind( &setup ) );
+    m_workerWx->getFuture().wait(); // This is required to start WorkerWx loop
 
-    ::fwRuntime::profile::getCurrentProfile()->setup();
-    res = wxTheApp->OnRun();
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    return res;
+    return ::boost::any_cast<int>(m_workerWx->getFuture().get());
 }
 
 } // namespace guiWx

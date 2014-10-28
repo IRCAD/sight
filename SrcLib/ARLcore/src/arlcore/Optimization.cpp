@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -229,8 +229,8 @@ unsigned int arlCore::Optimise3DLine::size( void )
 }
 
 // OptimisePivot
-arlCore::OptimisePivot::OptimisePivot( const arlCore::PointList &points ):
-vnl_cost_function(points.getDimension()),
+arlCore::OptimisePivot::OptimisePivot( PointList::csptr points ):
+vnl_cost_function(points->getDimension()),
 m_points(points),
 m_radius(0.0)
 {}
@@ -247,12 +247,13 @@ double arlCore::OptimisePivot::f(vnl_vector< double > const &x)
 {
     m_error=0.0;
     unsigned int i;
-    vnl_vector<double> distances(m_points.size());
-    arlCore::Point center(m_points.getDimension());
-    for( i=0 ; i<center.size() ; ++i )
-        center.set(i, x[i]);
-    for( i=0 ; i<m_points.size() ; i++ )
-        distances[i] = m_points[i]->distance(center);
+    vnl_vector<double> distances(m_points->size());
+    arlCore::Point::sptr center = arlCore::Point::New();
+    center->init(m_points->getDimension());
+    for( i=0 ; i<center->size() ; ++i )
+        center->set(i, x[i]);
+    for( i=0 ; i<m_points->size() ; i++ )
+        distances[i] = (*m_points)[i]->distance(center);
     m_radius = distances.mean();
     for( i=0 ; i<distances.size() ; ++i )
         m_error += (distances[i]-m_radius)*(distances[i]-m_radius);
@@ -260,15 +261,15 @@ double arlCore::OptimisePivot::f(vnl_vector< double > const &x)
 }
 
 // OptimiseVideoRobot1
-arlCore::OptimiseVideoRobot1::OptimiseVideoRobot1( const std::vector< arlCore::vnl_rigid_matrix > &M06, const arlCore::PointList &Tip ):
+arlCore::OptimiseVideoRobot1::OptimiseVideoRobot1( const std::vector< arlCore::vnl_rigid_matrix > &M06, PointList::csptr Tip ):
 vnl_cost_function(6),
 m_tip(Tip),
 m_M06(M06),
 m_distance(0.0),
 m_stdDev(0.0)
 {
-    assert(M06.size()==m_tip.size());
-    assert(m_tip.getDimension()==3);
+    assert(M06.size()==m_tip->size());
+    assert(m_tip->getDimension()==3);
 }
 
 arlCore::OptimiseVideoRobot1::~OptimiseVideoRobot1()
@@ -299,8 +300,9 @@ double arlCore::OptimiseVideoRobot1::f(vnl_vector< double > const &x)
     m_distance = 0.0;
     unsigned int i;
     double n = 0.0;
-    const Point EndEffectorOrg(0.0, 0.0, 0.0);
-    Point TipEndEffectorPlane(3);
+    Point::sptr EndEffectorOrg= Point::New(3);
+    EndEffectorOrg->fill(0.0);
+    Point::sptr TipEndEffectorPlane = Point::New(3);
     const vnl_rigid_vector V( x );
     vnl_rigid_matrix T( V );
     vnl_rigid_matrix video2EndEffector;
@@ -309,20 +311,20 @@ double arlCore::OptimiseVideoRobot1::f(vnl_vector< double > const &x)
     vnl_vector<double> meanCoordinates(3/*, 0.0*/);
     meanCoordinates.fill(0.0);
     for( i=0 ; i<m_M06.size() ; ++i )
-        if(ReconsErrorMax<0 || m_tip[i]->getError()<ReconsErrorMax)
+        if(ReconsErrorMax<0 || (*m_tip)[i]->getError()<ReconsErrorMax)
         {
             video2EndEffector.mult( m_M06[i], T );
-            video2EndEffector.trf( *(m_tip[i]), TipEndEffectorPlane );
-            coordinates[i] = TipEndEffectorPlane.getCoordinates();
+            video2EndEffector.trf( ((*m_tip)[i]), TipEndEffectorPlane );
+            coordinates[i] = TipEndEffectorPlane->getCoordinates();
             meanCoordinates += coordinates[i];
-            distances[i]=EndEffectorOrg.distance(TipEndEffectorPlane);
+            distances[i]=EndEffectorOrg->distance(TipEndEffectorPlane);
             m_distance += distances[i];
             ++n;
         }
     if(n==0.0) return 0.0;
     m_distance /= n;
     for( i=0 ; i<distances.size() ; ++i )
-        if(ReconsErrorMax<0 || m_tip[i]->getError()<ReconsErrorMax)
+        if(ReconsErrorMax<0 || (*m_tip)[i]->getError()<ReconsErrorMax)
         {
             //const double Error = fabs(distances[i]-m_distance);
             const double Error = (meanCoordinates-coordinates[i]).two_norm();
@@ -338,9 +340,9 @@ double arlCore::OptimiseVideoRobot1::f(vnl_vector< double > const &x)
 // OptimiseVideoRobot
 arlCore::OptimiseVideoRobot::OptimiseVideoRobot(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList ):
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList ):
 m_M06(M06),
 m_chessboards(model3D),
 m_cameras(cams),
@@ -366,7 +368,9 @@ bool arlCore::OptimiseVideoRobot::criterion( const arlCore::vnl_rigid_matrix &X,
     assert(m_chessboards.size()==NbCams);
     assert(m_points2DList.size()==NbCams);
     const unsigned int NbPoses = (unsigned int)m_M06.size();
-    arlCore::Point pt2D(2), pt3D(3);
+    arlCore::Point::sptr  pt2D = arlCore::Point::New();
+    pt2D->init(2);
+    arlCore::Point::sptr  pt3D = arlCore::Point::New();
     double n = 0.0;
     m_error = 0.0;
     for( j=0 ; j<NbPoses ; ++j )
@@ -376,14 +380,14 @@ bool arlCore::OptimiseVideoRobot::criterion( const arlCore::vnl_rigid_matrix &X,
         for( i=0 ; i<NbCams ; ++i )
         {
             assert(m_chessboards[i].size()==NbPoses);
-            const unsigned int NbPoints = m_chessboards[i][j].size();
-            assert(m_points2DList[i][j].size()==NbPoints);
+            const unsigned int NbPoints = m_chessboards[i][j]->size();
+            assert(m_points2DList[i][j]->size()==NbPoints);
             for( k=0 ; k<NbPoints ; ++k, ++index )
             {
-                T.trf(*(m_chessboards[i][j][k]), pt3D);
+                T.trf( (*m_chessboards[i][j])[k], pt3D);
                 if(m_cameras[i]->project3DPoint(pt3D, pt2D))
                 {
-                    const double Error2 = pt2D.distance2(*m_points2DList[i][j][k]);
+                    const double Error2 = pt2D->distance2( (*m_points2DList[i][j])[k]);
                     m_error += Error2;
                     if(index<fx.size()) fx[index] = Error2;
                     ++n;
@@ -399,9 +403,9 @@ bool arlCore::OptimiseVideoRobot::criterion( const arlCore::vnl_rigid_matrix &X,
 arlCore::OptimiseVideoRobotX::OptimiseVideoRobotX(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
         const arlCore::vnl_rigid_matrix &Z,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList ):
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList ):
 vnl_cost_function(6),
 OptimiseVideoRobot(M06, model3D, cams, points2DList),
 m_Z(Z)
@@ -425,9 +429,9 @@ double arlCore::OptimiseVideoRobotX::f(vnl_vector< double > const &x)
 arlCore::OptimiseVideoRobotX_LS::OptimiseVideoRobotX_LS(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
         const arlCore::vnl_rigid_matrix &Z,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         unsigned int number_of_residuals, UseGradient g ):
 vnl_least_squares_function(6, number_of_residuals, g),
 OptimiseVideoRobot(M06, model3D, cams, points2DList),
@@ -456,9 +460,9 @@ void arlCore::OptimiseVideoRobotX_LS::gradf(vnl_vector< double > const &x, vnl_m
 arlCore::OptimiseVideoRobotZ::OptimiseVideoRobotZ(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
         const arlCore::vnl_rigid_matrix &X,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList ):
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList ):
 vnl_cost_function(6),
 OptimiseVideoRobot(M06, model3D, cams, points2DList),
 m_X(X)
@@ -482,9 +486,9 @@ double arlCore::OptimiseVideoRobotZ::f(vnl_vector< double > const &x)
 arlCore::OptimiseVideoRobotZ_LS::OptimiseVideoRobotZ_LS(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
         const arlCore::vnl_rigid_matrix &X,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         unsigned int number_of_residuals, UseGradient g ):
 vnl_least_squares_function(6, number_of_residuals, g),
 OptimiseVideoRobot(M06, model3D, cams, points2DList),
@@ -512,9 +516,9 @@ void arlCore::OptimiseVideoRobotZ_LS::gradf(vnl_vector< double > const &x, vnl_m
 // OptimiseVideoRobotXZ
 arlCore::OptimiseVideoRobotXZ::OptimiseVideoRobotXZ(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList ):
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList ):
 vnl_cost_function(12),
 OptimiseVideoRobot(M06, model3D, cams, points2DList)
 {}
@@ -543,9 +547,9 @@ double arlCore::OptimiseVideoRobotXZ::f(vnl_vector< double > const &x)
 // OptimiseVideoRobotXZ LS
 arlCore::OptimiseVideoRobotXZ_LS::OptimiseVideoRobotXZ_LS(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         unsigned int number_of_residuals, UseGradient g ):
 vnl_least_squares_function(12, number_of_residuals, g),
 OptimiseVideoRobot(M06, model3D, cams, points2DList)
@@ -609,7 +613,7 @@ double arlCore::OptimiseReprojection::f(vnl_vector< double > const &x)
     const std::vector< arlCore::vnl_rigid_matrix > &A,
     const std::vector< arlCore::vnl_rigid_matrix > &B,
     const std::vector<const arlCore::Camera*> &videoCams,
-    const std::vector< arlCore::PointList > &models3DList,
+    const std::vector< arlCore::PointList::sptr > &models3DList,
     const std::vector< std::vector<arlCore::PointList> > &points2DList):
 m_A_matrix(A),
 m_B_matrix(B),
@@ -646,7 +650,7 @@ double arlCore::AxxBReproj_cost_function::f(vnl_vector< double > const &v)
                 assert(m_points2DList[i][j].size()==m_models3DList[j].size());
                 if(m_points2DList[i][j].size()!=m_models3DList[j].size()) std::cerr<<"AxxBReproj_cost_function : assert(m_points2DList[i][j].size()==m_models3DList[j].size());\n";
                 vnl_rigid_matrix T = X;
-                arlCore::Point pt2D(2), pt3D(3);
+                arlCore::Point::sptr pt2D = arlCore::Point::New(2);, pt3D(3);
                 for( k=0 ; k<m_models3DList[j].size() ; ++k )
                 {
                     T.trf(*(m_models3DList[j][k]), pt3D);
@@ -802,7 +806,7 @@ void arlCore::Dornaika_LS_cost_function::gradf(vnl_vector< double > const &x, vn
 }
 
 // Polynomial_cost_function
-arlCore::Polynomial_cost_function::Polynomial_cost_function( const arlCore::PointList &real, const arlCore::PointList &distorded, unsigned int degree ) :
+arlCore::Polynomial_cost_function::Polynomial_cost_function( PointList::csptr real, PointList::csptr distorded, unsigned int degree ) :
 vnl_cost_function(nbPolynomialParameters(degree, m_nbEquations)),
 m_real(real),
 m_distorded(distorded),
@@ -813,20 +817,20 @@ arlCore::Polynomial_cost_function::~Polynomial_cost_function(){}
 
 double arlCore::Polynomial_cost_function::f( vnl_vector<double > const &x )
 {
-    assert(m_distorded.size()==m_real.size());
+    assert(m_distorded->size()==m_real->size());
     assert(nbPolynomialParameters(m_degree, m_nbEquations)==x.size());
     m_error=0;
     unsigned int i, j;
-    for( i=0 ; i<m_distorded.size() ; ++i )
+    for( i=0 ; i<m_distorded->size() ; ++i )
     {
         vnl_vector<double> distorded(m_nbEquations), distorsion;
         for( j=0 ; j<m_nbEquations ; ++j )
-            distorded[j] = m_distorded[i]->get(j);
+            distorded[j] = (*m_distorded)[i]->get(j);
         if(!computePolynomial( m_degree, x, distorded, distorsion ))
             m_error += 10000;
         else
             for( j=0 ; j<m_nbEquations ; ++j )
-                m_error += (distorded[j]-distorsion[j]-m_real[i]->get(j))*(distorded[j]-distorsion[j]-m_real[i]->get(j));
+                m_error += (distorded[j]-distorsion[j]-(*m_real)[i]->get(j))*(distorded[j]-distorsion[j]-(*m_real)[i]->get(j));
     }
     return observe(x);
 }
@@ -898,7 +902,7 @@ double arlCore::OptimiseLineIntersection::f(vnl_vector< double > const &x)
 // EPPC
 arlCore::EPPC_cost_function::EPPC_cost_function(
     const std::vector < const arlCore::Camera *> &c,
-    const std::vector<arlCore::Point*> &model3D,
+    const std::vector<Point::csptr > &model3D,
     const std::vector< std::vector<arlCore::Point::csptr> >&points2DList,
     vnl_matrix_fixed<double,4,4> &trsf):
 vnl_cost_function(3*(unsigned int)model3D.size()),
@@ -980,7 +984,7 @@ void arlCore::EPPC_cost_function::gradf(vnl_vector< double > const &x, vnl_vecto
 
 // EPPC LS
 arlCore::EPPC_LS_cost_function::EPPC_LS_cost_function(const std::vector < const Camera *> &c,
-                                                    const std::vector<Point*> &model3D, const std::vector< std::vector<Point::csptr> >&points2DList,
+                                                    const std::vector<Point::csptr > &model3D, const std::vector< std::vector<Point::csptr> >&points2DList,
                                                     vnl_matrix_fixed<double,4,4> &trsf, unsigned int number_of_unknowns,
                                                     unsigned int number_of_residuals, UseGradient g):
 vnl_least_squares_function(3*model3D.size(), number_of_residuals, g),
@@ -1255,7 +1259,7 @@ void arlCore::ISPPC_LS_cost_function::gradf(vnl_vector< double > const &x, vnl_m
 
 // OSPPC
 arlCore::OSPPC_cost_function::OSPPC_cost_function(const std::vector<const arlCore::Camera *>&a,
-    const std::vector< arlCore::Point* > &points3D,
+    const std::vector< Point::csptr  > &points3D,
     const std::vector< std::vector<arlCore::Point::csptr> > &points2D):
 vnl_cost_function(6),
 m_points3D(points3D),
@@ -1270,7 +1274,7 @@ m_cameras(a)
         for( j=0 ; j<m_points2D[i].size() ; ++j )
             if(m_points2D[i][j]!=0)
                 if(m_points2D[i][j]->isVisible())
-                    m_cameras[i]->pixelPlaneToUnitFocalPlane( *(m_points2D[i][j]), m_extPoints2D[i][j], false );
+                    m_cameras[i]->pixelPlaneToUnitFocalPlane( m_points2D[i][j], m_extPoints2D[i][j], false );
     }
 }
 
@@ -1308,7 +1312,7 @@ void arlCore::OSPPC_cost_function::gradf(vnl_vector< double > const &x, vnl_vect
 
 // OSPPC LS
 arlCore::OSPPC_LS_cost_function::OSPPC_LS_cost_function(const std::vector<const Camera *>&a,
-                                                        const std::vector< Point* > &points3D, const std::vector< std::vector<Point::csptr> > &points2D,
+                                                        const std::vector< Point::csptr  > &points3D, const std::vector< std::vector<Point::csptr> > &points2D,
     unsigned int number_of_unknowns, unsigned int number_of_residuals, UseGradient g):
 vnl_least_squares_function(number_of_unknowns, number_of_residuals, g),
 m_points3D(points3D),
@@ -1323,7 +1327,7 @@ m_cameras(a)
         for( j=0 ; j<m_points2D[i].size() ; ++j )
             if(m_points2D[i][j]!=0)
                 if(m_points2D[i][j]->isVisible())
-                    m_cameras[i]->pixelPlaneToUnitFocalPlane( *(m_points2D[i][j]), m_extPoints2D[i][j], false );
+                    m_cameras[i]->pixelPlaneToUnitFocalPlane( m_points2D[i][j], m_extPoints2D[i][j], false );
     }
 }
 
@@ -1396,15 +1400,15 @@ bool arlCore::Intrinsic_cost_function::save( const std::string &fileName ) const
     return m_camera->save(fileName);
 }
 
-unsigned int arlCore::Intrinsic_cost_function::addPattern( const std::vector<arlCore::Point*>& points2D, const std::vector<arlCore::Point*>& model3D )
+unsigned int arlCore::Intrinsic_cost_function::addPattern( const std::vector<Point::sptr >& points2D, const std::vector<Point::sptr >& model3D )
 {// Call addPattern for each rigid pattern and each pose
     assert(points2D.size()==model3D.size());
     unsigned int i, size = (unsigned int)m_2DpatternsList.size();
     PointList *patternsList2D = new PointList(2);
     PointList *patternsList3D = new PointList(3);
     for( i=0 ; i<points2D.size() ; ++i )
-        if(patternsList2D->push_back(*(points2D[i])))
-            if(!patternsList3D->push_back(*(model3D[i])))
+        if(patternsList2D->push_back( points2D[i] ))
+            if(!patternsList3D->push_back( model3D[i] ))
                 patternsList2D->pop_back();
     m_2DpatternsList.push_back(patternsList2D);
     m_3DpatternsList.push_back(patternsList3D);
@@ -1430,7 +1434,8 @@ double arlCore::Intrinsic_cost_function::f(vnl_vector< double > const &x)
     double errorX, errorY;
     unsigned int i,j;
     long int nbPoints = 0;
-    Point point2D(2);
+    Point::sptr point2D = Point::New();
+    point2D->init(2);
     m_camera->setIntrinsic(x.extract(m_nbParameters));
     for( i=0 ; i<m_2DpatternsList.size() ; ++i )
     {
@@ -1438,10 +1443,10 @@ double arlCore::Intrinsic_cost_function::f(vnl_vector< double > const &x)
         arlCore::vnl_rigid_matrix Ti(vec);
         m_camera->setExtrinsic(Ti);
         for( j=0 ; j<m_2DpatternsList[i]->size() ; ++j,++nbPoints )
-            if(m_camera->project3DPoint(*(m_3DpatternsList[i]->get(j)), point2D))
+            if(m_camera->project3DPoint( m_3DpatternsList[i]->get(j) , point2D))
             {
-                errorX = point2D.x() - m_2DpatternsList[i]->get(j)->x();
-                errorY = point2D.y() - m_2DpatternsList[i]->get(j)->y();
+                errorX = point2D->x() - m_2DpatternsList[i]->get(j)->x();
+                errorY = point2D->y() - m_2DpatternsList[i]->get(j)->y();
                 m_error += errorX*errorX + errorY*errorY;
                 if(m_available_reprojection_error)
                 {
@@ -1496,15 +1501,15 @@ bool arlCore::IntrinsicLS_cost_function::save( const std::string &fileName ) con
     return m_camera->save(fileName);
 }
 
-unsigned int arlCore::IntrinsicLS_cost_function::addPattern( const std::vector<arlCore::Point*>& points2D, const std::vector<arlCore::Point*>& model3D )
+unsigned int arlCore::IntrinsicLS_cost_function::addPattern( const std::vector<Point::sptr >& points2D, const std::vector<Point::sptr >& model3D )
 {// faire addPattern pour chaque pattern rigide et chaque pose
     assert(points2D.size()==model3D.size());
     unsigned int i, size = (unsigned int)m_2DpatternsList.size();
     PointList *patternsList2D = new PointList(2);
     PointList *patternsList3D = new PointList(3);
     for( i=0 ; i<points2D.size() ; ++i )
-        if(patternsList2D->push_back(*(points2D[i])))
-            if(!patternsList3D->push_back(*(model3D[i])))
+        if(patternsList2D->push_back( points2D[i] ))
+            if(!patternsList3D->push_back( model3D[i] ))
                 patternsList2D->pop_back();
     m_2DpatternsList.push_back(patternsList2D);
     m_3DpatternsList.push_back(patternsList3D);
@@ -1527,7 +1532,8 @@ void arlCore::IntrinsicLS_cost_function::f(vnl_vector< double > const &x, vnl_ve
     m_error = 0.0;
     unsigned int i,j;
     long int index = 0, nbPoints = 0;
-    Point point2D(2);
+    Point::sptr point2D = Point::New();
+    point2D->init(2);
     m_camera->setIntrinsic(x.extract(m_nbParameters));
     for( i=0 ; i<m_2DpatternsList.size() ; ++i )
     {
@@ -1535,10 +1541,10 @@ void arlCore::IntrinsicLS_cost_function::f(vnl_vector< double > const &x, vnl_ve
         arlCore::vnl_rigid_matrix Ti(vec);
         m_camera->setExtrinsic(Ti);
         for( j=0 ; j<m_2DpatternsList[i]->size() ; ++j,++index, ++nbPoints )
-            if(m_camera->project3DPoint(*(m_3DpatternsList[i]->get(j)), point2D))
+            if(m_camera->project3DPoint( m_3DpatternsList[i]->get(j), point2D))
             {
                 //fx[index + j] = point2D.distance(*(m_2DpatternsList[i]->get(j)));
-                fx[index] = point2D.distance(*(m_2DpatternsList[i]->get(j)));
+                fx[index] = point2D->distance( m_2DpatternsList[i]->get(j) );
                 m_error += fx[index]*fx[index];
             }else
             {   //! @todo Fixer le problme des singularits
@@ -1576,13 +1582,13 @@ m_cameras(a)
 
 arlCore::Extrinsic_cost_function::~Extrinsic_cost_function(){}
 
-unsigned int arlCore::Extrinsic_cost_function::addPattern(const std::vector<std::vector<arlCore::Point*> >& points2D, const std::vector<arlCore::Point*>& model3D)
+unsigned int arlCore::Extrinsic_cost_function::addPattern(const std::vector<std::vector<Point::csptr > >& points2D, const std::vector<Point::csptr >& model3D)
 {// faire addPattern pour chaque pattern rigide et chaque pose
     //assert(points2D.size()==model3D.size());
     unsigned int i, j;
 
-    std::vector<std::vector<arlCore::Point*> > patternsList2D;
-    std::vector< arlCore::Point* > patternsList3D(model3D.size());
+    std::vector<std::vector<Point::csptr > > patternsList2D;
+    std::vector< Point::csptr  > patternsList3D(model3D.size());
     for( i=0 ; i<model3D.size() ; ++i )
     {
         patternsList3D[i] = model3D[i];
@@ -1592,7 +1598,7 @@ unsigned int arlCore::Extrinsic_cost_function::addPattern(const std::vector<std:
     }
     for( j=0 ; j<m_cameras.size() ; ++j )
     {
-        std::vector<arlCore::Point*> tmp(points2D[j].size());
+        std::vector<Point::csptr > tmp(points2D[j].size());
         for( i=0 ; i<model3D.size() ; ++i )
             tmp[i]=points2D[j][i];
         patternsList2D.push_back(tmp);
@@ -1683,13 +1689,13 @@ arlCore::ExtrinsicLS_cost_function::~ExtrinsicLS_cost_function(){}
 void arlCore::ExtrinsicLS_cost_function::setVerbose(bool verbose)
 {m_verbose = verbose;}
 
-unsigned int arlCore::ExtrinsicLS_cost_function::addPattern( const std::vector<std::vector<arlCore::Point*> >& points2D, const std::vector<arlCore::Point*>& model3D )
+unsigned int arlCore::ExtrinsicLS_cost_function::addPattern( const std::vector<std::vector<Point::csptr > >& points2D, const std::vector<Point::csptr >& model3D )
 {// faire addPattern pour chaque pattern rigide et chaque pose
     //assert(points2D.size()==model3D.size());
     unsigned int i, j;
 
-    std::vector<std::vector<arlCore::Point*> > patternsList2D;
-    std::vector< arlCore::Point* > patternsList3D(model3D.size());
+    std::vector<std::vector<Point::csptr > > patternsList2D;
+    std::vector< Point::csptr  > patternsList3D(model3D.size());
     for( i=0 ; i<model3D.size() ; ++i )
     {
         patternsList3D[i] = model3D[i];
@@ -1699,7 +1705,7 @@ unsigned int arlCore::ExtrinsicLS_cost_function::addPattern( const std::vector<s
     }
     for( j=0 ; j<m_cameras.size() ; ++j )
     {
-        std::vector<arlCore::Point*> tmp(points2D[j].size());
+        std::vector<Point::csptr > tmp(points2D[j].size());
         for( i=0 ; i<model3D.size() ; ++i )
             tmp[i]=points2D[j][i];
         patternsList2D.push_back(tmp);
@@ -1925,19 +1931,19 @@ void arlCore::AXB_Z_cost_function::gradf(vnl_vector< double > const &x, vnl_vect
 }
 
 // register3D3DUncertainty_cost_function
-arlCore::register3D3DUncertainty_cost_function::register3D3DUncertainty_cost_function(const arlCore::PointList &points3D_source,
-            const arlCore::PointList &points3D_cible):
+arlCore::register3D3DUncertainty_cost_function::register3D3DUncertainty_cost_function(PointList::csptr points3D_source,
+            PointList::csptr points3D_cible):
 vnl_cost_function(6),
 m_points3D_source(points3D_source),
 m_points3D_cible(points3D_cible)
 {
-    assert(m_points3D_source.size()==m_points3D_cible.size());
+    assert(m_points3D_source->size()==m_points3D_cible->size());
     unsigned int i;
     //m_inv_cov_matrix.resize(m_cameras.size());
-    for( i=0 ; i<m_points3D_source.size() ; i++ )
+    for( i=0 ; i<m_points3D_source->size() ; i++ )
     {
         vnl_matrix<double> tmp(3,3);
-        tmp = vnl_matrix_inverse<double>(points3D_cible[i]->getCovMatrix());
+        tmp = vnl_matrix_inverse<double>( (*points3D_cible)[i]->getCovMatrix());
         m_inv_cov_matrix.push_back(tmp);
     }
 }
@@ -1951,15 +1957,15 @@ double arlCore::register3D3DUncertainty_cost_function::f(vnl_vector< double > co
     arlCore::vnl_rigid_vector vec(x);
     arlCore::vnl_rigid_matrix trsf(vec);
     m_error=0.0;
-    for(i=0 ; i<m_points3D_source.size() ; ++i)
+    for(i=0 ; i<m_points3D_source->size() ; ++i)
     {
-        arlCore::Point points3D_recale;
-        trsf.trf( *(m_points3D_source[i]), points3D_recale);
-        pointSubtraction[0][0] = points3D_recale[0]-(*m_points3D_cible[i])[0];
-        pointSubtraction[1][0] = points3D_recale[1]-(*m_points3D_cible[i])[1];
-        pointSubtraction[2][0] = points3D_recale[2]-(*m_points3D_cible[i])[2];
+        arlCore::Point::sptr points3D_recale = arlCore::Point::New();
+        trsf.trf( (*m_points3D_source)[i], points3D_recale);
+        pointSubtraction[0][0] = (*points3D_recale)[0]-(*(*m_points3D_cible)[i])[0];
+        pointSubtraction[1][0] = (*points3D_recale)[1]-(*(*m_points3D_cible)[i])[1];
+        pointSubtraction[2][0] = (*points3D_recale)[2]-(*(*m_points3D_cible)[i])[2];
         {
-            if(m_points3D_cible[i]->getCovMatrix().is_zero())
+            if( (*m_points3D_cible)[i]->getCovMatrix().is_zero())
             {
                 error = pointSubtraction.transpose() * pointSubtraction;
                 m_error += error(0,0);
@@ -1985,21 +1991,21 @@ void arlCore::register3D3DUncertainty_cost_function::gradf(vnl_vector< double > 
 }
 
 
-arlCore::register3D3DUncertainty_LS_cost_function::register3D3DUncertainty_LS_cost_function(const arlCore::PointList &points3D_source,
-            const arlCore::PointList &points3D_cible,
+arlCore::register3D3DUncertainty_LS_cost_function::register3D3DUncertainty_LS_cost_function(PointList::csptr points3D_source,
+            PointList::csptr points3D_cible,
             unsigned int number_of_unknowns,
             unsigned int number_of_residuals, UseGradient g):
 vnl_least_squares_function(number_of_unknowns, number_of_residuals, g),
 m_points3D_source(points3D_source),
 m_points3D_cible(points3D_cible)
 {
-    assert(m_points3D_source.size()==m_points3D_cible.size());
+    assert(m_points3D_source->size()==m_points3D_cible->size());
     unsigned int i;
     //m_inv_cov_matrix.resize(m_cameras.size());
-    for( i=0 ; i<m_points3D_source.size() ; i++ )
+    for( i=0 ; i<m_points3D_source->size() ; i++ )
     {
         vnl_matrix<double> tmp(3,3);
-        tmp = vnl_matrix_inverse<double>(points3D_cible[i]->getCovMatrix());
+        tmp = vnl_matrix_inverse<double>( (*points3D_cible)[i]->getCovMatrix());
         m_inv_cov_matrix.push_back(tmp);
     }
 }
@@ -2012,15 +2018,15 @@ void arlCore::register3D3DUncertainty_LS_cost_function::f(vnl_vector< double > c
     arlCore::vnl_rigid_vector vec(x);
     arlCore::vnl_rigid_matrix trsf(vec);
 
-    for(i=0 ; i<m_points3D_source.size() ; ++i)
+    for(i=0 ; i<m_points3D_source->size() ; ++i)
     {
-        arlCore::Point points3D_recale;
-        trsf.trf( *(m_points3D_source[i]), points3D_recale);
-        pointSubtraction[0][0] = points3D_recale[0]-(*m_points3D_cible[i])[0];
-        pointSubtraction[1][0] = points3D_recale[1]-(*m_points3D_cible[i])[1];
-        pointSubtraction[2][0] = points3D_recale[2]-(*m_points3D_cible[i])[2];
+        arlCore::Point::sptr points3D_recale= arlCore::Point::New();
+        trsf.trf( (*m_points3D_source)[i] , points3D_recale);
+        pointSubtraction[0][0] = (*points3D_recale)[0]-(*(*m_points3D_cible)[i])[0];
+        pointSubtraction[1][0] = (*points3D_recale)[1]-(*(*m_points3D_cible)[i])[1];
+        pointSubtraction[2][0] = (*points3D_recale)[2]-(*(*m_points3D_cible)[i])[2];
         {
-            if(m_points3D_cible[i]->getCovMatrix().is_zero())
+            if( (*m_points3D_cible)[i]->getCovMatrix().is_zero())
             {
                 error = pointSubtraction.transpose() * pointSubtraction;
                 fx[i] = sqrt( error(0,0) );

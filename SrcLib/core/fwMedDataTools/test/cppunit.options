@@ -1,0 +1,9 @@
+CLASSTEST = [
+        'FunctionsTest',
+]
+
+USE = ['cppunit']
+LIB = ['fwMedDataTools_0-1']
+
+CONSOLE = 'yes'
+

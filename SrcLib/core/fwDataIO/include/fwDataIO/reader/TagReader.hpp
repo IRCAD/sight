@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,8 @@ namespace reader
 
 /**
  * @brief   Tag Reader. Read file format .tag
- * @class   TagReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   TagReader
+ * 
  * @date    2009
  *
  * Ircad reader to read a ::fwData::Tag on filesystem which the file format
@@ -42,10 +42,10 @@ class FWDATAIO_CLASS_API TagReader :
 public :
     fwCoreClassDefinitionsWithFactoryMacro( (TagReader)(GenericObjectReader< ::fwData::Tag >),
                                             (()),
-                                            new  TagReader
+                                            ::fwDataIO::reader::factory::New< TagReader >
                                            );
     /// Constructor. Do nothing.
-    FWDATAIO_API TagReader();
+    FWDATAIO_API TagReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~TagReader();

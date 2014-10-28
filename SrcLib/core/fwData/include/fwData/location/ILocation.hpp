@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
 
 
 namespace fwData
@@ -17,7 +16,7 @@ namespace fwData
 /**
  * @namespace ::fwData::location
  * @brief This namespace contains the classes which define a %location ( fileSystem, directory(IES) etc.... ).
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  */
@@ -27,7 +26,7 @@ namespace location
 /**
  * @brief Abstract class to define a %location ( fileSystem, directory(IES) etc.... )
  *
- * @note cannot be instanciated but derivated class OK
+ * @note cannot be instantiated but derived class OK
  * @see Folder, MultiFiles, SingleFile
  */
 class FWDATA_CLASS_API ILocation : public ::fwData::Object
@@ -35,9 +34,12 @@ class FWDATA_CLASS_API ILocation : public ::fwData::Object
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (ILocation)(::fwData::Object) );
 
+    typedef ::boost::filesystem::path PathType;
+    typedef std::vector<PathType> VectPathType;
+
 protected:
 
-    /// Constructor : cannot be instanciated but derivated class OK
+    /// Constructor : cannot be instantiated but derivated class OK
     FWDATA_API ILocation();
 
     /// Destructor
@@ -57,7 +59,7 @@ inline typename LOCATION::sptr getLocation(RW *rw)
     location = LOCATION::dynamicCast( rw->getLocation() );
     if ( !location )
     {
-        location = typename LOCATION::NewSptr();
+        location = LOCATION::New();
         rw->setLocation(location);
     }
     return location;

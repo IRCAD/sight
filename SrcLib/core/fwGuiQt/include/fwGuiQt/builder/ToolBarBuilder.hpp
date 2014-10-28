@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,20 +23,20 @@ namespace builder
 
 /**
  * @brief   Defines the generic layout manager for IHM.
- * @class   ToolBarBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   ToolBarBuilder
+ * 
  * @date    2009-2010.
  *
  */
 class FWGUIQT_CLASS_API ToolBarBuilder : public ::fwGui::builder::IToolBarBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarBuilder)(::fwGui::builder::IToolBarBuilder) ,(()), new ToolBarBuilder);
+    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarBuilder)(::fwGui::builder::IToolBarBuilder),
+                                            (()),
+                                            ::fwGui::factory::New< ToolBarBuilder >);
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API ToolBarBuilder();
+    FWGUIQT_API ToolBarBuilder(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIQT_API virtual ~ToolBarBuilder();
 
     /**

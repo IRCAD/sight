@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,8 @@ namespace uiVisu
 
 /**
  * @brief   TransformationMatrixEditor service is represented by a slider. It update the rotation matrix from the slider angle value.
- * @class   TransformationMatrixEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransformationMatrixEditor
+ * 
  * @date    2010.
  */
 class UIVISUQT_CLASS_API TransformationMatrixEditor : public QObject, public ::gui::editor::IEditor
@@ -51,7 +51,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Do nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Do nothing
     virtual void updating() throw(::fwTools::Failed);

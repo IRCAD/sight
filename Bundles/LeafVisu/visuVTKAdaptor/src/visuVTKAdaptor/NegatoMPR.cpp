@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,7 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwData/Image.hpp>
@@ -27,7 +26,7 @@
 #include "visuVTKAdaptor/NegatoMPR.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {
@@ -42,9 +41,9 @@ NegatoMPR::NegatoMPR() throw() :
     m_allowAlphaInTF = false;
     m_interpolation  = true;
 
-    addNewHandledEvent("SLICE_MODE");
-    addNewHandledEvent("SCAN_SHOW");
-    addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    //addNewHandledEvent("SLICE_MODE");
+    //addNewHandledEvent("SCAN_SHOW");
+    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //------------------------------------------------------------------------------
@@ -117,8 +116,8 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
         this->addAdaptor("::visuVTKAdaptor::NegatoWindowingInteractor");
         this->addAdaptor("::visuVTKAdaptor::NegatoSlicingInteractor", m_orientation);
-        this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
         this->addAdaptor("::visuVTKAdaptor::SlicesCursor", m_orientation);
+        this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
     }
     if(this->is3dModeEnabled())
     {
@@ -137,7 +136,7 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void NegatoMPR::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
 
@@ -367,6 +366,7 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
     service->setRenderId( this->getRenderId() );
     service->setPickerId( this->getPickerId() );
     service->setTransformId( this->getTransformId() );
+    service->setAutoRender( this->getAutoRender() );
 
     service->start();
     service->update();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,12 +14,12 @@
 #include "fwData/config.hpp"
 
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 
 // boost 1.47 issue with FOREACH
 #include <boost/version.hpp>
-#if BOOST_VERSION == 104700
+#if BOOST_VERSION >= 104700
 #include <boost/foreach.hpp>
 
 namespace fwData
@@ -28,7 +28,11 @@ namespace fwData
 inline boost::mpl::true_ * boost_foreach_is_noncopyable( ::fwData::Composite *&, BOOST_FOREACH_TAG_DEFAULT )
 { return 0; }
 
-#endif //BOOST_VERSION == 104700
+#endif //BOOST_VERSION >= 104700
+
+
+
+fwCampAutoDeclareDataMacro((fwData)(Composite), FWDATA_API);
 
 
 namespace fwData
@@ -40,14 +44,15 @@ namespace fwData
  *
  * Composite contains a map of ::fwData::Object.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 
 class FWDATA_CLASS_API Composite : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::Factory::New< Composite >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::factory::New< Composite >) ;
+    fwCampMakeFriendDataMacro((fwData)(Composite));
 
     typedef std::map< std::string, ::fwData::Object::sptr > ContainerType;
 
@@ -70,6 +75,17 @@ public:
     typedef ContainerType::reverse_iterator reverse_iterator;
     typedef ContainerType::const_reverse_iterator const_reverse_iterator;
     typedef ContainerType::size_type size_type;
+
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Composite( ::fwData::Object::Key key );
+
+    /// Destructor
+    FWDATA_API virtual ~Composite();
+
 
     IteratorType begin() { return m_attrContainer.begin(); }
     IteratorType end()   { return m_attrContainer.end(); }
@@ -101,13 +117,12 @@ public:
     fwDataGetSetCRefMacro(Container, ContainerType);
     /// @}
 
-    fwDataObjectMacro();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Composite::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Composite::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// Method to initialize a ::fwData::Composite from a std::map< string, X >
     template< class DATATYPE >
@@ -134,12 +149,6 @@ public:
     }
 
 protected:
-    /// Constructor
-    FWDATA_API Composite();
-
-    /// Destructor
-    FWDATA_API virtual ~Composite();
-
     ContainerType m_attrContainer;
 };
 

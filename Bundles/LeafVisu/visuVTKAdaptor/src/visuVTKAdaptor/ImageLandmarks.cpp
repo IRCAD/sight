@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@
 #include <fwData/Point.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
@@ -38,7 +38,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLandmarks, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLandmarks, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {
@@ -47,14 +47,16 @@ void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* 
 {
     SLM_ASSERT("NULL Service", _service);
 
-    ::fwComEd::PointListMsg::NewSptr msgPointList;
+    ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
     msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
     ::fwData::PointList::sptr pointList = image->getField< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
     ::fwServices::IEditionService::notify( _service->getSptr(), pointList, msgPointList);
 
-    ::fwComEd::ImageMsg::NewSptr msgLandmark;
+    ::fwComEd::ImageMsg::sptr msgLandmark = ::fwComEd::ImageMsg::New();
     msgLandmark->addEvent( ::fwComEd::ImageMsg::LANDMARK, point );
-    ::fwServices::IEditionService::notify( _service->getSptr(), image, msgLandmark, ::fwServices::ComChannelService::NOTIFY_SOURCE);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    fwServicesNotifyMsgMacro( image->getLightID(), sig, msgLandmark );
 }
 
 //------------------------------------------------------------------------------
@@ -71,6 +73,8 @@ public :
       m_picker( vtkCellPicker::New() ),
       m_propCollection( vtkPropCollection::New() )
     {
+        m_lastPos[0] = -1;
+        m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 
@@ -182,7 +186,7 @@ ImageLandmarks::ImageLandmarks() throw():
     m_rightButtonCommand(0),
     m_needSubservicesDeletion(false)
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
 }
 
 //------------------------------------------------------------------------------
@@ -251,6 +255,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
 
             servicePointList->setPickerId( this->getPickerId() );
             servicePointList->setRenderService( this->getRenderService() );
+            servicePointList->setAutoRender( this->getAutoRender() );
             servicePointList->start();
 
             this->registerService( servicePointList );
@@ -262,6 +267,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
                 serviceLabel = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point , "::visuVTKAdaptor::PointLabel");
                 SLM_ASSERT("serviceLabel not instanced", serviceLabel);
                 serviceLabel->setRenderService( this->getRenderService() );
+                serviceLabel->setAutoRender( this->getAutoRender() );
                 serviceLabel->start();
                 this->registerService( serviceLabel );
             }
@@ -272,7 +278,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageLandmarks::doUpdate( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ImageLandmarks::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
      ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );

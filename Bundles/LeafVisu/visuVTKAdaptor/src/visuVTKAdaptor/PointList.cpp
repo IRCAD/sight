@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@
 #include <fwComEd/PointListMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -28,7 +28,7 @@
 
 #include "visuVTKAdaptor/PointList.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList ) ;
 
 namespace visuVTKAdaptor
 {
@@ -37,9 +37,9 @@ namespace visuVTKAdaptor
 
 PointList::PointList() throw()
 {
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void PointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointList::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PointList::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -135,6 +135,7 @@ void PointList::createServices(WeakPointListType &wPtList)
         service->setRenderService(this->getRenderService());
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
+        service->setAutoRender( this->getAutoRender() );
         service->start();
 
         this->registerService(service);

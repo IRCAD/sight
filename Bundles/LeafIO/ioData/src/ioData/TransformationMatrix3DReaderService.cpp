@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,12 +35,7 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D ) ;
-
-//-----------------------------------------------------------------------------
-
-TransformationMatrix3DReaderService::TransformationMatrix3DReaderService()
-{}
+fwServicesRegisterMacro( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D ) ;
 
 //------------------------------------------------------------------------------
 
@@ -72,11 +67,6 @@ void TransformationMatrix3DReaderService::starting( ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
-
-//-----------------------------------------------------------------------------
-
-TransformationMatrix3DReaderService::~TransformationMatrix3DReaderService() throw()
-{}
 
 //-----------------------------------------------------------------------------
 
@@ -123,13 +113,13 @@ void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
         SLM_ASSERT("matrix not instanced", matrix);
 
-        ::fwDataIO::reader::TransformationMatrix3DReader reader;
-        reader.setObject( matrix );
-        reader.setFile(this->getFile());
-        reader.read();
+        ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader = ::fwDataIO::reader::TransformationMatrix3DReader::New();
+        reader->setObject( matrix );
+        reader->setFile(this->getFile());
+        reader->read();
 
         // Notify reading
-        ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+        ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
         msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
         ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
     }

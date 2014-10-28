@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,8 +21,8 @@ namespace action
 
 /**
  * @brief   This action launch a browser on the url given in configuration.
- * @class   LaunchBrowserActionService.
- * @author  IRCAD (Research and Development Team).
+ * @class   LaunchBrowserActionService
+ * 
  * @date    2010.
  */
 class UIGENERICQT_CLASS_API LaunchBrowserActionService : public ::fwGui::IActionSrv
@@ -44,7 +44,7 @@ protected:
     /**
      * @brief configure the action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiGeneric::action::LaunchBrowserActionService" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
         <url>http://www.ircad.fr</url>
     </service>
        @endverbatim
@@ -55,9 +55,9 @@ protected:
     void starting() throw (::fwTools::Failed);
 
     /// Does nothing
-    void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
-    /// Launch a brower on the url given in the configuration
+    /// Launch a browser on the url given in the configuration
     void updating() throw(::fwTools::Failed);
 
     /// Stops action

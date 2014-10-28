@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #ifndef _ARLCORE_MISC_H
 #define _ARLCORE_MISC_H
 #include <arlcore/Common.h>
+
 
 #include <string>
 #include <vector>
@@ -18,6 +19,7 @@
 
 #include <arlcore/Point.h>
 #include <arlcore/Camera.h>
+#include <arlcore/PointsList.h>
 
 namespace arlCore
 {
@@ -33,7 +35,7 @@ namespace arlCore
     class PointList;
     /**
      * @brief Fill pointlist with a 3D square grid. The first point to be built has (0,0,0)
-     * coordinates and the grid is filled firstly along X axis, then Y axis. For example, if 
+     * coordinates and the grid is filled firstly along X axis, then Y axis. For example, if
      * nbPointsX = 3, squareSizeX = 2, nbPointsY = 2 and squareSizeX = 4, your pointList will be:
      * 0 0 0
      * 2 0 0
@@ -50,7 +52,7 @@ namespace arlCore
      * @param[in]   squareSizeZ Distance between 2 points in z-axis
      * @return  Number of points of the grid
      **/
-    ARLCORE_API unsigned int fillGrid( PointList &pl, unsigned int nbPointsX, double squareSizeX, unsigned int nbPointsY, double squareSizeY, unsigned int nbPointsZ=1, double squareSizeZ=0 );
+    ARLCORE_API unsigned int fillGrid( SPTR( PointList ) pl, unsigned int nbPointsX, double squareSizeX, unsigned int nbPointsY, double squareSizeY, unsigned int nbPointsZ=1, double squareSizeZ=0 );
 
     //! @brief Plot a serie of pointlists
     ARLCORE_API bool plot( const std::vector< const arlCore::PointList* >&, const std::string &options );
@@ -105,7 +107,7 @@ namespace arlCore
     /**
      * @brief Compute statistic values from integrate stat vector
      * @param[in] stat Contains integrate values of a statistic list
-     * @param[out] mean Mean value of the list 
+     * @param[out] mean Mean value of the list
      * @param[out] stdDev Standard deviation of the list
      * @param[out] RMS Root mean square of the list
      * @return Number of values used
@@ -140,41 +142,43 @@ namespace arlCore
      * @brief From tip, top & width of a needle (pix.), return the list of points like a shape
      * @param[in] shape 0=Quadrilateral (Tip R&L, Top L&R), 1=Triangular (Tip R&L, Top )
      **/
-    ARLCORE_API unsigned int computeNeedleROI( const arlCore::Point &tip, const arlCore::Point &top, unsigned int width, std::vector<arlCore::Point> &corners, unsigned int shape=1 );
+    ARLCORE_API unsigned int computeNeedleROI( CSPTR( Point ) tip, CSPTR( Point ) top, unsigned int width, std::vector<arlCore::Point::sptr > &corners, unsigned int shape=1 );
 
     //! @brief Compute Video1Robot transformation. Return mean distance
-//  ARLCORE_API double computeVideo1Robot( const std::vector< arlCore::vnl_rigid_matrix > &M06, const PointList &tip, vnl_rigid_matrix &T, double &distance, double &stdDev );
+//  ARLCORE_API double computeVideo1Robot( const std::vector< arlCore::vnl_rigid_matrix > &M06, CSPTR( PointList ) tip, vnl_rigid_matrix &T, double &distance, double &stdDev );
+
 
     //! @brief Compute Video2Robot transformation. Return X & RMS in pixels
     ARLCORE_API double computeVideo2RobotX(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
         const arlCore::vnl_rigid_matrix &Z,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         arlCore::vnl_rigid_matrix &X);
 
     //! @brief Compute Video2Robot transformation. Return Z & RMS in pixels
     ARLCORE_API double computeVideo2RobotZ(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
         const arlCore::vnl_rigid_matrix &X,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         arlCore::vnl_rigid_matrix &Z);
 
-    //! 
+    //!
     /**
      * @brief Compute Chessboard2EndEffector & Video2Robot transformations
      * @return X, Z & RMS in pixels
      **/
     ARLCORE_API double computeVideo2RobotXZ(
         const std::vector< arlCore::vnl_rigid_matrix > &M06,
-        const std::vector< std::vector< arlCore::PointList > > &model3D,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &model3D,
         const std::vector<const arlCore::Camera*> &cams,
-        const std::vector< std::vector< arlCore::PointList > > &points2DList,
+        const std::vector< std::vector< arlCore::PointList::csptr > > &points2DList,
         arlCore::vnl_rigid_matrix &X,
         arlCore::vnl_rigid_matrix &Z);
+
 
     /**
      * @brief Evaluate the error of reprojection with the pair of transformation X,Z from solve_AXXB
@@ -193,8 +197,8 @@ namespace arlCore
         const arlCore::vnl_rigid_matrix &Z,
         const std::vector< vnl_rigid_matrix > &B,
         const std::vector< const arlCore::Camera* > &videoCams,
-        const std::vector< std::vector<arlCore::PointList> > &models3DList, //[Nbcams][NbPoses]
-        const std::vector< std::vector<arlCore::PointList> > &points2DList, //[Nbcams][NbPoses]
+        const std::vector< std::vector<arlCore::PointList::csptr > > &models3DList, //[Nbcams][NbPoses]
+        const std::vector< std::vector<arlCore::PointList::csptr > > &points2DList, //[Nbcams][NbPoses]
         std::vector< double > &errors);
 
 } // namespace arlCore
@@ -205,7 +209,6 @@ namespace arlRandom
     {
     /**
      * @class   Random
-     * @author  IRCAD (Research and Development Team)
      * @date    2007, 11/2008
      * @brief   Randomize values
      * @remark  While no initRandom has launched, random values are generate from random seeds
@@ -264,7 +267,6 @@ namespace arlRandom
 namespace arlTime
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2008
      * @brief   Time functions
      */
@@ -283,7 +285,6 @@ namespace arlTime
 namespace arlString
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Fonctions de traitements de chaines
      */
@@ -349,7 +350,6 @@ namespace arlString
 namespace arlFile
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Fonctions sur les fichiers
      */
@@ -371,7 +371,6 @@ namespace arlFile
 namespace arlSound
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    11/2008
      * @brief   Sound functions
      */

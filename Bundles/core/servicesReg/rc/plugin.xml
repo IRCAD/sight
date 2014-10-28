@@ -7,6 +7,9 @@
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
     <extension-point id="::fwServices::registry::AppConfig" schema="appConfig.xsd"/>
     
+    <!-- EXTENSION POINT FOR APP CONFIGURATION PARAMETERS-->
+    <extension-point id="::fwServices::registry::AppConfigParameters" schema="appConfigParameters.xsd"/>
+    
     <!-- EXTENSION POINT FOR A SERVICE FACTORY -->
     <extension-point id="::fwServices::registry::ServiceFactory" schema="serviceFactory.xsd"/>
 
@@ -14,12 +17,6 @@
     <extension-point id="::fwServices::registry::ServiceConfig"  schema="serviceConfig.xsd"/>
 
     <!-- SPECIFIC SERVICES -->
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IEditionService</type>
-        <service>::fwServices::DefaultEditor</service>
-        <object>::fwData::Object</object>
-    </extension>
-
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::fwComEd::parser::Composite</service>
@@ -67,10 +64,11 @@
         <service>::fwComEd::parser::StringParser</service>
         <object>::fwData::String</object>
     </extension>
-    
+     
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::ICommunication</type>
-        <service>::fwServices::ComChannelService</service>
+        <type>::fwServices::IController</type>
+        <service>::fwServices::SConfigController</service>
         <object>::fwData::Object</object>
     </extension>
+    
 </plugin>

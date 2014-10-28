@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,14 @@
 #ifndef _ARLCORE_COMMMON_H
 #define _ARLCORE_COMMMON_H
 
-#include <float.h>
-#include <arlcore/Type.h>
+//#include <float.h>
+#include <boost/cstdint.hpp>
+#include <fwTools/Object.hpp>
+#include <fwCore/macros.hpp>
+
+//#include <arlcore/Type.h>
 
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Directives de compilation
      * Definition de constantes
@@ -63,5 +66,14 @@
         #define ARLCORE_CLASS_API
 #endif // _WIN32
 #endif // _ARLCORE_CONFIG_HPP_
+
+
+typedef struct
+{
+    ::boost::uint32_t Low; //UINT32
+    ::boost::uint32_t High; //UINT32
+}uint32HL;
+
+
 
 #endif // _ARLCORE_COMMMON_H

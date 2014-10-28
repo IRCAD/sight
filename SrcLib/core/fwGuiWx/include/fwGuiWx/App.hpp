@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,8 @@ namespace fwGuiWx
 
 /**
  * @brief   Defines the wx application.
- * @class   App.
- * @author  IRCAD (Research and Development Team).
+ * @class   App
+ * 
  * @date    2009.
  */
 
@@ -51,8 +51,6 @@ public:
     FWGUIWX_API int OnExit();
 
     FWGUIWX_API void usage(const std::string & mes) const;
-
-    FWGUIWX_API bool OnCmdLineParsed(wxCmdLineParser & parser);
 
     FWGUIWX_API void OnInitCmdLine(wxCmdLineParser & parser);
 
@@ -77,11 +75,6 @@ private:
      * @brief   locale (internationalization) for app
      */
     wxLocale * m_locale;
-
-    /**
-     * @brief   Application Profile
-     */
-    ::fwRuntime::profile::Profile::sptr m_profile;
 
     wxSingleInstanceChecker * m_checker;
 };

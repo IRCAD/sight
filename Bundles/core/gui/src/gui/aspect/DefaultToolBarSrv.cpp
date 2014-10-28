@@ -1,15 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 #include <fwServices/Base.hpp>
 
 #include "gui/aspect/DefaultToolBarSrv.hpp"
 
-REGISTER_SERVICE( ::fwGui::IToolBarSrv , ::gui::aspect::DefaultToolBarSrv , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IToolBarSrv , ::gui::aspect::DefaultToolBarSrv , ::fwData::Object ) ;
 
 namespace gui
 {
@@ -58,7 +58,7 @@ void DefaultToolBarSrv::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultToolBarSrv::updating(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void DefaultToolBarSrv::receiving(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QtMenuBarContainer::QtMenuBarContainer() throw() : m_menuBar(0)
+QtMenuBarContainer::QtMenuBarContainer(::fwGui::GuiBaseObject::Key key) throw() : m_menuBar(0)
 {}
 
 //-----------------------------------------------------------------------------
@@ -34,8 +34,8 @@ void QtMenuBarContainer::clean()
     QList<QMenu *> list = m_menuBar->findChildren<QMenu *>();
     Q_FOREACH (QMenu *m, list)
     {
-        m->setParent(0);
-        m->deleteLater();
+        m->hide();
+        delete m;
     }
 }
 
@@ -49,8 +49,7 @@ void QtMenuBarContainer::destroyContainer()
     OSLM_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
 
     m_menuBar->hide();
-    m_menuBar->setParent(0);
-    m_menuBar->deleteLater();
+    delete m_menuBar;
 }
 
 //-----------------------------------------------------------------------------

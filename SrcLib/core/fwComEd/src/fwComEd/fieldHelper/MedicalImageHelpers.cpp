@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include "fwComEd/PatientDBMsg.hpp"
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
 
@@ -34,7 +33,7 @@ bool MedicalImageHelpers::checkLandmarks( ::fwData::Image::sptr _pImg )
     // Manage image landmarks
     if ( ! _pImg->getField( ::fwComEd::Dictionary::m_imageLandmarksId ) )
     {
-        ::fwData::PointList::NewSptr pl;
+        ::fwData::PointList::sptr pl = ::fwData::PointList::New();
         _pImg->setField( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
         fieldIsModified = true;
     }
@@ -58,14 +57,7 @@ bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
 
         for ( size_t k = 0; dataImageIsAllocated && k < nbDim; ++k )
         {
-            if(k == 2 && nbDim == 3) // special test for 2D jpeg image (size[2] == 1)
-            {
-                dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
-            }
-            else
-            {
-                dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] != 0 && ( _pImg->getSize()[k] != 1 ) );
-            }
+            dataImageIsAllocated = dataImageIsAllocated && ( _pImg->getSize()[k] >= 1 );
         }
     }
 
@@ -137,7 +129,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 {
     SLM_ASSERT("_pImg pointer null", _pImg);
 
-    ::fwData::Point::NewSptr point;
+    ::fwData::Point::sptr point = ::fwData::Point::New();
 
     MedicalImageHelpers::checkImageSliceIndex(_pImg);
 
@@ -159,28 +151,12 @@ bool MedicalImageHelpers::checkComment( ::fwData::Image::sptr _pImg )
     if ( ! _pImg->getField( ::fwComEd::Dictionary::m_commentId ) )
     {
         // Set value
-        ::fwData::String::NewSptr param("Original image");
+        ::fwData::String::sptr param = ::fwData::String::New("Original image");
         _pImg->setField( ::fwComEd::Dictionary::m_commentId, param );
         fieldIsModified = true;
     }
 
     return fieldIsModified;
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwData::Image::sptr pImage)
-{
-    SLM_ASSERT("pPatient pointer null", pPatient);
-    SLM_ASSERT("pImage pointer null", pImage);
-
-    std::stringstream label;
-    ::fwData::Integer::sptr intField = pPatient->setDefaultField( ::fwComEd::Dictionary::m_acquisitionCountId , ::fwData::Integer::New(0));
-    label << "I" << intField->value();
-    ++(intField->value());
-
-    ::fwData::String::NewSptr labelField(label.str());
-    pImage->setField(::fwComEd::Dictionary::m_imageLabelId, labelField);
 }
 
 //------------------------------------------------------------------------------
@@ -197,80 +173,13 @@ void MedicalImageHelpers::setImageLabel( ::fwData::Patient::sptr pPatient, ::fwD
     ::fwData::Array::sptr imgData = imgSrc->getDataArray();
     imgSrc->setDataArray(::fwData::Array::sptr(), false);
 
-    imgToInitialize->deepCopy(imgSrc);
+    imgToInitialize = ::fwData::Object::copy(imgSrc);
 
     imgSrc->setDataArray(imgData, false);
 
     imgToInitialize->allocate();
 
     return imgToInitialize;
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageHelpers::mergePatientDBInfo( ::fwData::PatientDB::sptr _patientDBFrom, ::fwData::PatientDB::sptr _patientDBTo, ::fwServices::IService::sptr _msgSender )
-{
-    // Add new patient DB to patient DB container
-
-    // Test if the patient db contain patient
-    bool hasOldPatients = ! _patientDBTo->getPatients().empty();
-    bool hasNewPatients = ! _patientDBFrom->getPatients().empty();
-
-    int index = 0;
-
-    BOOST_FOREACH( ::fwData::Patient::sptr patient, _patientDBFrom->getPatients() )
-    {
-        BOOST_FOREACH( ::fwData::Study::sptr study, patient->getStudies() )
-        {
-            BOOST_FOREACH( ::fwData::Acquisition::sptr acq, study->getAcquisitions() )
-            {
-                BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, acq->getReconstructions() )
-                {
-                    ::fwData::Image::sptr image;
-                    reconstruction->setImage( image );
-                }
-            }
-        }
-
-        bool patientExist = false;
-        index = 0;
-        BOOST_FOREACH( ::fwData::Patient::sptr oldPatient, _patientDBTo->getPatients() )
-        {
-            if (    patient->getName()      == oldPatient->getName() &&
-                    patient->getFirstname() == oldPatient->getFirstname() &&
-                    patient->getIsMale()    == oldPatient->getIsMale() )
-            {
-                patientExist = true;
-                BOOST_FOREACH( ::fwData::Study::sptr study, patient->getStudies() )
-                {
-                    oldPatient->addStudy(study);
-                }
-                break;
-            }
-            ++index;
-        }
-        if ( !patientExist )
-        {
-            _patientDBTo->addPatient( patient );
-        }
-    }
-
-    if( hasNewPatients )
-    {
-        // Notify modifications
-        ::fwComEd::PatientDBMsg::NewSptr msg;
-        if( hasOldPatients )
-        {
-            msg->addEvent(::fwComEd::PatientDBMsg::ADD_PATIENT, ::fwData::Integer::New(index));
-            msg->addEvent(::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT);
-        }
-        else
-        {
-            msg->addEvent(::fwComEd::PatientDBMsg::NEW_PATIENT);
-            msg->addEvent(::fwComEd::PatientDBMsg::NEW_LOADED_PATIENT);
-        }
-        ::fwServices::IEditionService::notify( _msgSender, _patientDBTo, msg);
-    }
 }
 
 //------------------------------------------------------------------------------

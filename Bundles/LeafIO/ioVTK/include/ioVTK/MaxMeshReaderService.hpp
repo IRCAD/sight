@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,19 +18,19 @@ namespace ioVTK
 
 /**
  * @brief   3ds Max reader service.
- * @class   MaxMeshReaderService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   MaxMeshReaderService
  *
- * Service reading a 3ds Max file using the vtkIO lib
+ * Service reading a 3ds Max file using the fwVtkIO lib
  * (for .3ds at this time).
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::MaxMeshReaderService , ::fwData::Model )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::MaxMeshReaderService , ::fwData::Model )
  */
 class IOVTK_CLASS_API MaxMeshReaderService : public ::io::IReader
 {
 public:
+    ~MaxMeshReaderService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (MaxMeshReaderService)( ::io::IReader) ) ;
 
     /**
@@ -52,16 +52,6 @@ public:
 
 
 protected:
-
-    /**
-     * @brief   Constructor
-     */
-    IOVTK_API MaxMeshReaderService() throw() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API ~MaxMeshReaderService() throw() ;
 
     /**
     * @brief Starting method : default does nothing.
@@ -90,11 +80,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

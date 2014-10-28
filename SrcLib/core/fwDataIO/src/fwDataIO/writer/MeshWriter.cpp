@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,16 +9,15 @@
 
 #include <boost/cstdint.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Mesh.hpp>
 #include <fwComEd/helper/Array.hpp>
 
-#include <fwDataTools/MeshGenerator.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include "fwDataIO/writer/MeshWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::MeshWriter, ::fwDataIO::writer::MeshWriter );
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::MeshWriter );
 
 
 namespace fwDataIO
@@ -29,7 +28,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter()
+MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 
@@ -46,7 +45,7 @@ void MeshWriter::write()
     assert( getFile().empty() ==  false );
 
     ::fwData::Mesh::sptr mesh = this->getConcreteObject();
-    FW_RAISE_IF("Can't convert this Mesh to TriangularMesh", !::fwDataTools::MeshGenerator::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
+    FW_RAISE_IF("Can't convert this Mesh to TriangularMesh", !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);

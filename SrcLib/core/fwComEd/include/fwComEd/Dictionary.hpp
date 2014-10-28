@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@ namespace fwComEd
 /**
  * @brief   Centralization of all identifiers used for communication and storage of dynamic attributes
  * @note    probably not dynamic enough but allows at least to have an overview of information that can be exchanged
- * @author  IRCAD (Research and Development Team).
+ * 
 
  * @date    2007-2009.
  */

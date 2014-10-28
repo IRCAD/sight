@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,8 +23,8 @@ namespace reader
 
 /**
  * @brief   Array Reader. Read file format .raw.gz
- * @class   GzArrayReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   GzArrayReader
+ * 
  * @date    2011
  *
  * Ircad reader to read a ::fwData::Array on filesystem which the file format
@@ -38,11 +38,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((GzArrayReader)(GenericObjectReader< ::fwData::Array>),
                                            (()),
-                                           new  GzArrayReader
+                                           ::fwDataIO::reader::factory::New< GzArrayReader >
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API GzArrayReader();
+    FWDATAIO_API GzArrayReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~GzArrayReader();

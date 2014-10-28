@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,14 +17,14 @@
 #include <arlcore/Misc.h>
 #include <arlcore/vnl_covariance_matrix.h>
 
-bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::csptr>&list2D, const std::vector<const arlCore::Camera*> &camsList,
-     arlCore::Point &point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, std::vector<double> &log, const bool pixelFrame)
+bool arlCore::propagateCovarianceToReconst3D( const std::vector<arlCore::Point::csptr>&list2D, const std::vector<const arlCore::Camera*> &camsList,
+     arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, std::vector<double> &log, const bool pixelFrame)
 {
     unsigned int i, l, perfect_reproj2D_nb=0;;
     if(methode == arlCore::ARLCORE_R3D_TWO_LINES_PERFECT || methode == arlCore::ARLCORE_R3D_MULTI_LINES_APPROX || methode == arlCore::ARLCORE_R3D_MULTI_LINES_PERFECT)
     {
         const bool verbose=false;
-        if(verbose){std::cerr<<"point3D cov matrix= \n"<< point3D.getCovMatrix() <<std::endl;}
+        if(verbose){std::cerr<<"point3D cov matrix= \n"<< point3D->getCovMatrix() <<std::endl;}
 
         for(l=0;l<camsList.size();++l)
             if( list2D[l]->getCovMatrix().is_zero() )
@@ -32,14 +32,14 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
 
         if(perfect_reproj2D_nb > 1)// it means that 2 lines are perfect, then the cov matrix is zero
         {
-            arlCore::vnl_covariance_matrix &cov_mat = point3D.getCovMatrix();
+            arlCore::vnl_covariance_matrix &cov_mat = point3D->getCovMatrix();
             for(i=0;i<3;++i)
                 for(l=0;l<3;++l)
                     cov_mat.put(i,l,0.0);// = Sigma_Point_Rec;
             return true;
         }
 
-        arlCore::vnl_covariance_matrix &cov_mat = point3D.getCovMatrix();
+        arlCore::vnl_covariance_matrix &cov_mat = point3D->getCovMatrix();
         for(i=0;i<3;++i)
             for(l=0;l<3;++l)
                 cov_mat.put(i,l,0.0);// = Sigma_Point_Rec;
@@ -53,7 +53,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
 
         if(perfect_reproj2D_nb > 1)// it means that 2 lines are perfect, then the cov matrix is zero
         {
-            arlCore::vnl_covariance_matrix &cov_mat = point3D.getCovMatrix();
+            arlCore::vnl_covariance_matrix &cov_mat = point3D->getCovMatrix();
             for(i=0;i<3;++i)
                 for(l=0;l<3;++l)
                     cov_mat.put(i,l,0.0);// = Sigma_Point_Rec;
@@ -69,22 +69,23 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
     vnl_matrix_fixed<double,1,3> mat_Cint;
     vnl_matrix_fixed<double,2,1> tmp_mat_2_1;
     vnl_matrix_fixed<double,1,2> tilde_mi_sous_mi;
-    arlCore::Point tmp_arl_pt(3), p2D_undistorted(2);
+    arlCore::Point::sptr tmp_arl_pt = arlCore::Point::New(3);
+    arlCore::Point::sptr p2D_undistorted = arlCore::Point::New(2);
     double inner_product_Cl_Pil_M;
 
     for(l=0;l<camsList.size();++l)
     {
-        camsList[l]->undistort2DPoint(*list2D[l], p2D_undistorted);
+        camsList[l]->undistort2DPoint( list2D[l], p2D_undistorted);
         camsList[l]->getExtrinsic().trf(point3D,tmp_arl_pt);
-        inner_product_Cl_Pil_M = camsList[l]->getCint()[0] * tmp_arl_pt[0]
-                                +camsList[l]->getCint()[1] * tmp_arl_pt[1]
-                                +camsList[l]->getCint()[2] * tmp_arl_pt[2];
+        inner_product_Cl_Pil_M = camsList[l]->getCint()[0] * (*tmp_arl_pt)[0]
+                                +camsList[l]->getCint()[1] * (*tmp_arl_pt)[1]
+                                +camsList[l]->getCint()[2] * (*tmp_arl_pt)[2];
         if(verbose){std::cerr<<"inner= "<<inner_product_Cl_Pil_M<<std::endl;}
         mat_Cint.set_row(0,camsList[l]->getCint());
-        tmp_mat_2_1.set_column(0,p2D_undistorted.getCoordinates());
+        tmp_mat_2_1.set_column(0,p2D_undistorted->getCoordinates());
         if(verbose){std::cerr<<"mat_Cint= "<<mat_Cint<<std::endl;
         std::cerr<<"tmp_mat_2_1= "<<tmp_mat_2_1<<std::endl;
-        std::cerr<<"tmp_arl_pt= "<<tmp_arl_pt.print()<<std::endl;}
+        std::cerr<<"tmp_arl_pt= "<<tmp_arl_pt->print()<<std::endl;}
         if(verbose){std::cerr<<"Qint = "<<camsList[l]->getQint().as_matrix()<<std::endl;
         std::cerr<<"tmp_mat_2_1 * mat_Cint "<<tmp_mat_2_1 * mat_Cint<<std::endl;}
         //dml_dM[l] = (camsList[l]->getQint().as_matrix() + toto.as_matrix());// * camsList[l]->getExtrinsic().getRotation().as_matrix();
@@ -93,9 +94,9 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         if(verbose){std::cerr<<"dml_dM[l]= "<<dml_dM[l]<<std::endl;}
 
         vnl_matrix_fixed<double,3,3> U;
-        arlCore::Point point3Dreproj(2);
+        arlCore::Point::sptr point3Dreproj= arlCore::Point::New(2);
         camsList[l]->project3DPoint(point3D,point3Dreproj,false);
-        tilde_mi_sous_mi.set_row(0, p2D_undistorted.getCoordinates() - point3Dreproj.getCoordinates() );
+        tilde_mi_sous_mi.set_row(0, p2D_undistorted->getCoordinates() - point3Dreproj->getCoordinates() );
         if(methode == arlCore::ARLCORE_R3D_REPROJECTION_OPTIMIZATION)
         {
             double sigma2D_2 = list2D[l]->getCovMatrix()(0,0);
@@ -126,7 +127,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
     std::cerr<< "Gamma="<< Gamma <<std::endl;}
     Sigma_Point_Rec  = Hinv * Gamma.as_matrix() * Hinv.transpose();
     if(verbose){std::cerr<< "matrice covariance 3D = "<< Sigma_Point_Rec << std::endl;}
-    arlCore::vnl_covariance_matrix &cov_mat = point3D.getCovMatrix();
+    arlCore::vnl_covariance_matrix &cov_mat = point3D->getCovMatrix();
     for(i=0;i<3;++i)
         for(l=0;l<3;++l)
             cov_mat.put(i,l,Sigma_Point_Rec[i][l]);// = Sigma_Point_Rec;
@@ -145,12 +146,13 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
 //      P =  vnl_matrix_inverse<double>(PassageMatrix.as_matrix() );
         P = camsList[0]->getExtrinsic() * camsList[1]->getInvExtrinsic();
         if(verbose_cov){std::cerr<<"Passage matrix =\n"<< P;}
-            arlCore::Point focal_m1(3), focal_m2(3);
-        camsList[0]->pixelPlaneToUnitFocalPlane( *(list2D[0]), focal_m1, false );
-        camsList[1]->pixelPlaneToUnitFocalPlane( *(list2D[1]), focal_m2, false );
+        arlCore::Point::sptr focal_m1 = arlCore::Point::New(3);
+        arlCore::Point::sptr focal_m2 = arlCore::Point::New(3);
+        camsList[0]->pixelPlaneToUnitFocalPlane( list2D[0], focal_m1, false );
+        camsList[1]->pixelPlaneToUnitFocalPlane( list2D[1], focal_m2, false );
 
-        arlCore::vnl_covariance_matrix &cov_mat_focal_m1 = focal_m1.getCovMatrix();
-        arlCore::vnl_covariance_matrix &cov_mat_focal_m2 = focal_m2.getCovMatrix();
+        arlCore::vnl_covariance_matrix &cov_mat_focal_m1 = focal_m1->getCovMatrix();
+        arlCore::vnl_covariance_matrix &cov_mat_focal_m2 = focal_m2->getCovMatrix();
         vnl_matrix_fixed<double,3,3> tmp;
 
         if(verbose_cov){std::cerr<<"cov_mat_m1 =\n"<<list2D[0]->getCovMatrix()<<"\n";
@@ -176,17 +178,17 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         var.put(0, 0.0); var.put(1, 0.0); var.put(2, 0.0); var.put(3, 1.0);
         C2 = P.as_matrix() * var.as_vector();
         if(verbose){std::cerr<<"C2 ="<<C2<<"\n";}
-        // maintenant C2 est exprimée dans le repere liée à la caméra 1
-        var.put(0, focal_m2[0]);
-        var.put(1, focal_m2[1]);
-        var.put(2, focal_m2[2]);
+        // maintenant C2 est exprimï¿½e dans le repere liï¿½e ï¿½ la camï¿½ra 1
+        var.put(0, (*focal_m2)[0]);
+        var.put(1, (*focal_m2)[1]);
+        var.put(2, (*focal_m2)[2]);
         var.put(3, 1.0);
         m2 = P.as_matrix() *var.as_vector();
         if(verbose){std::cerr<<"m2 ="<<m2<<"\n";}
-        // maintenant m2 est exprimée dans le repere liée à la caméra 1
-        arlCore::Point m1C1((-1.0)*focal_m1[0], (-1.0)*focal_m1[1], (-1.0)*focal_m1[2]);
-        if(verbose){std::cerr<<"m1C1 ="<<m1C1.print()<<"\n";}
-        arlCore::vnl_covariance_matrix &cov_mat_m1C1 = m1C1.getCovMatrix();
+        // maintenant m2 est exprimï¿½e dans le repere liï¿½e ï¿½ la camï¿½ra 1
+        arlCore::Point::sptr m1C1 = arlCore::Point::New((-1.0)*(*focal_m1)[0], (-1.0)*(*focal_m1)[1], (-1.0)*(*focal_m1)[2]);
+        if(verbose){std::cerr<<"m1C1 ="<<m1C1->print()<<"\n";}
+        arlCore::vnl_covariance_matrix &cov_mat_m1C1 = m1C1->getCovMatrix();
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
                 cov_mat_m1C1.put(i,j,cov_mat_focal_m1[i][j]);
@@ -194,17 +196,17 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         if(verbose_cov){std::cerr<<"cov_mat_focal_m1C1 =\n"<<cov_mat_m1C1<<"\n";}
 
         var  = C2 - m2;
-        arlCore::Point m2C2( C2[0] - m2[0], C2[1] - m2[1], C2[2] - m2[2]);
-        if(verbose){std::cerr<<"m2C2 ="<<m2C2.print()<<"\n";}
-        arlCore::vnl_covariance_matrix &cov_mat_m2C2 = m2C2.getCovMatrix();
+        arlCore::Point::sptr m2C2 = arlCore::Point::New( C2[0] - m2[0], C2[1] - m2[1], C2[2] - m2[2]);
+        if(verbose){std::cerr<<"m2C2 ="<<m2C2->print()<<"\n";}
+        arlCore::vnl_covariance_matrix &cov_mat_m2C2 = m2C2->getCovMatrix();
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
                 cov_mat_m2C2.put(i,j,cov_mat_focal_m2[i][j]);
 
         if(verbose_cov){std::cerr<<"cov_mat_focal_m2C2 =\n"<<cov_mat_m2C2<<"\n";}
         //m2C2.put(0, var(0)); m2C2.put(1, var(1)); m2C2.put(2, var(2));
-        arlCore::Point C1C2( C2[0], C2[1], C2[2]);
-        arlCore::vnl_covariance_matrix &cov_mat_C1C2 = C1C2.getCovMatrix();
+        arlCore::Point::sptr C1C2 = arlCore::Point::New( C2[0], C2[1], C2[2]);
+        arlCore::vnl_covariance_matrix &cov_mat_C1C2 = C1C2->getCovMatrix();
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
                 cov_mat_C1C2.put(i,j,0.0);
@@ -213,91 +215,98 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
         //C1C2.put(0, C2(0)); C1C2.put(1, C2(1)); C1C2.put(2, C2(2));
         // Determination du premier point I sur la droite de reprojection
         //v = vnl_cross_3d(m1C1.as_vector() , m2C2.as_vector() );
-        arlCore::Point v(3), n1(3), n2(3);
-        v.cross_3D(m1C1 , m2C2);
-        if(verbose_cov){std::cerr<<"cov_mat_v =\n"<<v.getCovMatrix()<<"\n";}
+        arlCore::Point::sptr v  =  arlCore::Point::New(3);
+        arlCore::Point::sptr n1 =  arlCore::Point::New(3);
+        arlCore::Point::sptr n2 =  arlCore::Point::New(3);
+
+        v->cross_3D(m1C1 , m2C2);
+        if(verbose_cov){std::cerr<<"cov_mat_v =\n"<<v->getCovMatrix()<<"\n";}
         //n1= vnl_cross_3d(v.as_vector(), m1C1.as_vector() );
-        n1.cross_3D(v, m1C1);
-        if(verbose){std::cerr<<"v ="<<v.print()<<"\n";
-        std::cerr<<"n1 ="<<n1.print()<<"\n";}
-        if(verbose_cov){std::cerr<<"cov_mat_n1 =\n"<<n1.getCovMatrix()<<"\n";}
+        n1->cross_3D(v, m1C1);
+        if(verbose){std::cerr<<"v ="<<v->print()<<"\n";
+        std::cerr<<"n1 ="<<n1->print()<<"\n";}
+        if(verbose_cov){std::cerr<<"cov_mat_n1 =\n"<<n1->getCovMatrix()<<"\n";}
         //double dot1=0, dot2=0;
-        arlCore::Point dot1(1), dot2(1);
-        dot1.dotProduct(C1C2, n1);
-        dot2.dotProduct(m2C2, n1);
-        if(verbose){std::cerr<<"dot1="<<dot1[0]<<"\n";std::cerr<<"cov_mat_dot1 =\n"<<dot1.getCovMatrix()<<"\n";
-        std::cerr<<"dot2="<<dot2[0]<<"\n";std::cerr<<"cov_mat_dot2 =\n"<<dot2.getCovMatrix()<<"\n";}
+        arlCore::Point::sptr dot1 =  arlCore::Point::New(1);
+        arlCore::Point::sptr dot2 =  arlCore::Point::New(1);
+        dot1->dotProduct(C1C2, n1);
+        dot2->dotProduct(m2C2, n1);
+        if(verbose){std::cerr<<"dot1="<< (*dot1)[0]<<"\n";std::cerr<<"cov_mat_dot1 =\n"<<dot1->getCovMatrix()<<"\n";
+        std::cerr<<"dot2="<< (*dot2)[0]<<"\n";std::cerr<<"cov_mat_dot2 =\n"<<dot2->getCovMatrix()<<"\n";}
 
-        assert(dot2[0]!=0);
+        assert( (*dot2)[0]!=0);
         //landa1 = num/denom;
-        arlCore::Point landa1(1);
-        landa1.divide(dot1,dot2);
+        arlCore::Point::sptr landa1 = arlCore::Point::New(1);
+        landa1->divide(dot1,dot2);
 
-        arlCore::Point I(3),J(3), int_I(3), int_J(3);
-        int_I.multiply(landa1, m2C2);
+        arlCore::Point::sptr I = arlCore::Point::New(3);
+        arlCore::Point::sptr J = arlCore::Point::New(3);
+        arlCore::Point::sptr int_I = arlCore::Point::New(3);
+        arlCore::Point::sptr int_J = arlCore::Point::New(3);
+        int_I->multiply(landa1, m2C2);
 
-        I.set(0, C2(0) - landa1[0]* m2C2[0] );
-        I.set(1, C2(1) - landa1[0]* m2C2[1] );
-        I.set(2, C2(2) - landa1[0]* m2C2[2] );
-        arlCore::vnl_covariance_matrix &cov_mat_I = I.getCovMatrix();
+        I->set(0, C2(0) - (*landa1)[0]* (*m2C2)[0] );
+        I->set(1, C2(1) - (*landa1)[0]* (*m2C2)[1] );
+        I->set(2, C2(2) - (*landa1)[0]* (*m2C2)[2] );
+        arlCore::vnl_covariance_matrix &cov_mat_I = I->getCovMatrix();
 
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
-                cov_mat_I.put(i,j, int_I.getCovMatrix()[i][j]);
+                cov_mat_I.put(i,j, int_I->getCovMatrix()[i][j]);
 //      for(i=0;i<3;++i)
 //          for(j=0;j<3;++j)
 //              cov_mat_I.put(i,j, landa1[0]*landa1[0]*m2C2.getCovMatrix()[i][j]);
 
-        if(verbose_cov){std::cerr<<"cov_mat_int_I =\n"<<int_I.getCovMatrix()<<"\n";
-        std::cerr<<"cov_mat_I =\n"<<I.getCovMatrix()<<"\n";}
+        if(verbose_cov){std::cerr<<"cov_mat_int_I =\n"<<int_I->getCovMatrix()<<"\n";
+        std::cerr<<"cov_mat_I =\n"<<I->getCovMatrix()<<"\n";}
         // Determination du deuxieme point J sur la droite de reprojection
         //n2 = vnl_cross_3d(v, m2C2);
-        n2.cross_3D(v, m2C2);
-        if(verbose){std::cerr<<"n2="<<n2.print()<<"\n";}
+        n2->cross_3D(v, m2C2);
+        if(verbose){std::cerr<<"n2="<<n2->print()<<"\n";}
 //      dot1 = dot2 =0;
 //      for(i=0;i<3;++i)
 //      {
 //          dot1 +=  C1C2(i) * n2(i);
 //          dot2 +=  m1C1(i) * n2(i);
 //      }
-        dot1.dotProduct(C1C2, n2);
-        dot2.dotProduct(m1C1, n2);
+        dot1->dotProduct(C1C2, n2);
+        dot2->dotProduct(m1C1, n2);
         //dot2.set(0, -1*dot2[0]);
-        if(verbose){std::cerr<<"dot1="<<dot1[0]<<"\n";
-        std::cerr<<"dot2="<<dot2[0]<<"\n";}
-        assert(dot2[0]!=0);
-        arlCore::Point landa2(1);
+        if(verbose){std::cerr<<"dot1="<<(*dot1)[0]<<"\n";
+        std::cerr<<"dot2="<<(*dot2)[0]<<"\n";}
+        assert( (*dot2)[0]!=0);
+        arlCore::Point::sptr landa2 = arlCore::Point::New(1);
 //      landa2 = num/denom;
-        landa2.divide(dot1,dot2);
-        if(verbose){std::cerr<<"landa2="<<landa2[0]<<"\n";}
-        int_J.multiply(landa2, m1C1);
+        landa2->divide(dot1,dot2);
+        if(verbose){std::cerr<<"landa2="<< (*landa2)[0]<<"\n";}
+        int_J->multiply(landa2, m1C1);
 
-        J.set(0,  landa2[0]* m1C1[0] );
-        J.set(1,  landa2[0]* m1C1[1] );
-        J.set(2,  landa2[0]* m1C1[2] );
-        arlCore::vnl_covariance_matrix &cov_mat_J = J.getCovMatrix();
+        J->set(0,  (*landa2)[0]* (*m1C1)[0] );
+        J->set(1,  (*landa2)[0]* (*m1C1)[1] );
+        J->set(2,  (*landa2)[0]* (*m1C1)[2] );
+        arlCore::vnl_covariance_matrix &cov_mat_J = J->getCovMatrix();
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
-                cov_mat_J.put(i,j, int_J.getCovMatrix()[i][j]);
+                cov_mat_J.put(i,j, int_J->getCovMatrix()[i][j]);
 //      for(i=0;i<3;++i)
 //          for(j=0;j<3;++j)
 //              cov_mat_J.put(i,j, landa2[0]*landa2[0]*m1C1.getCovMatrix()[i][j]);
 
-        if(verbose_cov){std::cerr<<"cov_mat_J_int =\n"<<int_J.getCovMatrix()<<"\n";
-        std::cerr<<"cov_mat_J =\n"<<J.getCovMatrix()<<"\n";}
+        if(verbose_cov){std::cerr<<"cov_mat_J_int =\n"<<int_J->getCovMatrix()<<"\n";
+        std::cerr<<"cov_mat_J =\n"<<J->getCovMatrix()<<"\n";}
         // On prend le barycentre de I et J comme estimation de la reconstruction
-        arlCore::Point point3D_rep_cam(3);
-        point3D_rep_cam.x(0.5*I[0] + 0.5*J[0]);
-        point3D_rep_cam.y(0.5*I[1] + 0.5*J[1]);
-        point3D_rep_cam.z(0.5*I[2] + 0.5*J[2]);
+        arlCore::Point::sptr point3D_rep_cam = arlCore::Point::New(3);;
+        point3D_rep_cam->x(0.5*(*I)[0] + 0.5*(*J)[0]);
+        point3D_rep_cam->y(0.5*(*I)[1] + 0.5*(*J)[1]);
+        point3D_rep_cam->z(0.5*(*I)[2] + 0.5*(*J)[2]);
 
-        if(verbose){std::cerr<<"point3D_rep_cam="<<point3D_rep_cam.print()<<"\n";}
+        if(verbose){std::cerr<<"point3D_rep_cam="<<point3D_rep_cam->print()<<"\n";}
 
-        arlCore::vnl_covariance_matrix &cov_mat_point3D = point3D.getCovMatrix();
+        arlCore::vnl_covariance_matrix &cov_mat_point3D = point3D->getCovMatrix();
         vnl_matrix<double> toto(3,3);
         for(i=0;i<3;++i)
             for(j=0;j<3;++j)
-                toto.put(i,j, 0.5*0.5*I.getCovMatrix()[i][j] +  0.5*0.5*J.getCovMatrix()[i][j] );
+                toto.put(i,j, 0.5*0.5*I->getCovMatrix()[i][j] +  0.5*0.5*J->getCovMatrix()[i][j] );
 
         if(verbose_cov){std::cerr<<"cov_mat_toto =\n"<< toto <<"\n";}
 
@@ -315,7 +324,7 @@ bool arlCore::propagateCovarianceToReconst3D(const std::vector<arlCore::Point::c
     return true;
 }
 
-void arlCore::WriteTableau ( const char *nom, std::vector<double> tab, unsigned int n)
+void arlCore::WriteTableau ( char *nom, std::vector<double> tab, unsigned int n)
 {
     unsigned int  i;
     FILE *f = fopen (nom, "w");
@@ -330,7 +339,7 @@ double arlCore::CumulativeChi2_3(double mu2)
     return arlCore::IncompleteGammaP(3.0/2., mu2/2.);
 }
 
-double* arlCore::KSValidation3D(const char* index_file)
+double* arlCore::KSValidation3D(char* index_file)
 {
     double I,*Itab,I2,ksp,ksdiff;
     int N, i;

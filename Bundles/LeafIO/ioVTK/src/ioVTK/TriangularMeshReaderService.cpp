@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/TriangularMeshReader.hpp>
+#include <fwVtkIO/TriangularMeshReader.hpp>
 
 #include "ioVTK/TriangularMeshReaderService.hpp"
 
@@ -36,17 +36,7 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;
-
-//------------------------------------------------------------------------------
-
-TriangularMeshReaderService::TriangularMeshReaderService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-TriangularMeshReaderService::~TriangularMeshReaderService() throw()
-{}
+fwServicesRegisterMacro( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh ) ;
 
 //------------------------------------------------------------------------------
 
@@ -112,7 +102,7 @@ void TriangularMeshReaderService::info(std::ostream &_sstream )
 void TriangularMeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pTriangularMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::TriangularMeshReader::NewSptr myReader;
+    ::fwVtkIO::TriangularMeshReader::sptr myReader = ::fwVtkIO::TriangularMeshReader::New();
 
     myReader->setObject(_pTriangularMesh);
     myReader->setFile(vtkFile);
@@ -174,7 +164,7 @@ void TriangularMeshReaderService::notificationOfUpdate()
     ::fwData::TriangularMesh::sptr pTriangularMesh = this->getObject< ::fwData::TriangularMesh >();
     SLM_ASSERT("pTriangularMesh not instanced", pTriangularMesh);
 
-    ::fwComEd::TriangularMeshMsg::NewSptr msg;;
+    ::fwComEd::TriangularMeshMsg::sptr msg = ::fwComEd::TriangularMeshMsg::New();;
     msg->addEvent( ::fwComEd::TriangularMeshMsg::NEW_MESH ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), pTriangularMesh, msg);
 }

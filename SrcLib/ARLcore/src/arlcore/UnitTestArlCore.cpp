@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,13 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <time.h>
 #include <iostream>
-//#include <conio.h> // kbhit & getch
+#ifdef _WIN32
+  #include <conio.h> // kbhit & getch
+#endif //_WIN32
 
 #include <vnl/vnl_math.h>
 #include <vnl/algo/vnl_matrix_inverse.h>
@@ -64,7 +67,7 @@ bool printErrors( const std::string &name, const vnl_vector<double>& error, long
     for( i=0 ; i<error.size() ; ++i )
         stdDev += (error[i]-mean)*(error[i]-mean);
     if(error.size()>0) stdDev = sqrt(stdDev/error.size());
-    //Calcul de l'�cart type plus elegant mais couteux en memoire
+    //Calcul de l'écart type plus elegant mais couteux en memoire
     //vnl_vector<double> meanVect(error.size());
     //meanVect.fill(mean);
     //stdDev = (error-meanVect).rms();
@@ -129,6 +132,7 @@ bool printFooter( unsigned int nbIterations, bool test )
 // testRegistration3D3D
 bool arlCore::testRegistration3D3D( long int nbIterations, double tolerance )
 {
+    const bool Verbose = false;
     const double VolumeSize = 500.0;
     printHeader("Registration 3D/3D",nbIterations, tolerance);
     vnl_vector<double> errorRotation(nbIterations);
@@ -139,14 +143,14 @@ bool arlCore::testRegistration3D3D( long int nbIterations, double tolerance )
     {
         arlCore::PlaneSystem universe;
         arlCore::SceneUnitTest scene(universe);
-        const arlCore::PointList &regPoints = scene.getTags().getTag(0)->getGeometry();
-        arlCore::PointList modelPoints(3);
+        const arlCore::PointList::sptr regPoints = scene.getTags().getTag(0)->getGeometry();
+        arlCore::PointList::sptr modelPoints = arlCore::PointList::New(3);
         arlCore::vnl_rigid_matrix T1, T2;
         T1.uniform_random(VolumeSize);
         T1.trf(regPoints, modelPoints);
 //      unsigned int i;
-//      for( i=0 ; i<modelPoints.size() ; ++i )
-//          modelPoints[i]->addGaussianNoise(GaussianNoise3D);
+//      for( i=0 ; i<modelPoints->size() ; ++i )
+//          (*modelPoints)[i]->addGaussianNoise(GaussianNoise3D);
         if(T2.register3D3D(regPoints, modelPoints, true))
         {
             ++robustnessOK;
@@ -156,8 +160,8 @@ bool arlCore::testRegistration3D3D( long int nbIterations, double tolerance )
         }
         ++robustnessTotal;
     }//boucle compteur
-    bool test = printErrors("Erreur sur la translation",errorTranslation,robustnessOK,robustnessTotal,tolerance);
-    test = printErrors("Erreur sur la rotation",errorRotation,robustnessOK,robustnessTotal,tolerance) && test;
+    bool test = printErrors("Erreur sur la translation",errorTranslation,robustnessOK,robustnessTotal,tolerance , Verbose);
+    test = printErrors("Erreur sur la rotation",errorRotation,robustnessOK,robustnessTotal,tolerance , Verbose ) && test;
     return printFooter(nbIterations, test);
 }
 
@@ -177,15 +181,15 @@ bool arlCore::testICPRegistration( long int nbIterations, double tolerance )
     for( compteur=0 ; compteur<nbIterations ; ++compteur )
     {
         const double Width=50, Length=50, Degree=2.0, ModelNoise=0.0;
-        arlCore::PointList summits;
+        arlCore::PointList::sptr summits = arlCore::PointList::New();
         arlCore::Mesh meshModel(1.0);
         double altitude = 10.0, modelXStep=0.2, modelZStep=0.2;
         double cloudXStep = 0.1, cloudZStep = 2.0;
         const double FringeWidth = cloudZStep/4.0;
         unsigned int nbSummits = 8;
-        const arlCore::PointList &model = meshModel.getPointList();
+       PointList::csptr model = meshModel.getPointList();
         if(compteur==0) meshModel.load("G:/Mouse/ToSort/19052008-sd-ext.raw", GaussianNoise3D);
-        if(compteur>0 || meshModel.getPointList().size()<1 )
+        if(compteur>0 || meshModel.getPointList()->size()<1 )
         {
             for( i=0 ; i<nbSummits ; ++i )
             {
@@ -193,7 +197,7 @@ bool arlCore::testICPRegistration( long int nbIterations, double tolerance )
                 const double Z = arlRandom::Random::uniformDoubleRnd( 0, Length );
                 double Y = arlRandom::Random::uniformDoubleRnd( altitude/2, altitude );
                 if(i<4) Y = arlRandom::Random::uniformDoubleRnd( 0, altitude/2 );
-                summits.push_back(arlCore::Point(X, Y, Z));
+                summits->push_back(arlCore::Point::New(X, Y, Z));
             }
             meshModel.generateY( Width, Length, modelXStep, modelZStep, Degree, ModelNoise, summits );
         }
@@ -216,31 +220,33 @@ bool arlCore::testICPRegistration( long int nbIterations, double tolerance )
         if(Verbose) std::cout<<T1.getString();
         arlCore::Mesh meshCloud(-1.0);
         arlCore::PointList fringes(3);
-        const arlCore::PointList *cloud = 0;
+        const arlCore::PointList::sptr cloud = arlCore::PointList::New();
         if(compteur==0)
         {
-            arlCore::Point gravity, boundingBox1, boundingBox2;
+            arlCore::Point::sptr gravity =  arlCore::Point::New();
+            arlCore::Point::sptr boundingBox1 =  arlCore::Point::New();
+            arlCore::Point::sptr boundingBox2 =  arlCore::Point::New();
             double minRadius, maxRadius, std;
-            model.properties( gravity, boundingBox1, boundingBox2, minRadius, maxRadius, std );
+            model->properties( gravity, boundingBox1, boundingBox2, minRadius, maxRadius, std );
             const double Ratio = (FringeWidth/2.0)/cloudZStep;
-            for( i=0 ; i<model.size() ; ++i )
-                if(model[i])
+            for( i=0 ; i<model->size() ; ++i )
+                if( (*model)[i])
                 {
                     //if(Verbose) std::cout<<"Ratio = "<<Ratio<<"\n";
-                    arlCore::Point point(*model[i]);
-                    const double Z = point.z();
+                    arlCore::Point::sptr point = arlCore::Point::New( (*model)[i] );
+                    const double Z = point->z();
                     int fringeNo = int(Z/cloudZStep);
                     //if(Verbose) std::cout<<"FringeNo = "<<fringeNo<<"\n";
-                    point.setScalar(-fringeNo);
+                    point->setScalar(-fringeNo);
                     double d = fabs((Z/cloudZStep)-(double)fringeNo);
                     //if(Verbose) std::cout<<"d = "<<d<<"\n";
                     if(d<=Ratio) fringes.push_back(point);
                 }
-            cloud = &fringes;
+            cloud->copy(fringes);
         }else
         {
             meshCloud.generateY( Width, Length, cloudXStep, cloudZStep, Degree, GaussianNoise3D, summits );
-            cloud = &meshCloud.getPointList();
+            cloud->copy( *(meshCloud.getPointList()) );
         }
         std::stringstream cloudName, cloudName2;
         cloudName<<"../Cloud"<<compteur<<".raw";
@@ -248,7 +254,7 @@ bool arlCore::testICPRegistration( long int nbIterations, double tolerance )
         if(compteur==0) fringes.save(cloudName2.str());
         else meshCloud.save(cloudName.str());
         if(Verbose) std::cout<<"Cloud ("<<cloud->size()<<") = "<<cloudName.str()<<"\n";
-        if(Verbose) std::cout<<"Model ("<<model.size()<<") = "<<modelName.str()<<"\n";
+        if(Verbose) std::cout<<"Model ("<<model->size()<<") = "<<modelName.str()<<"\n";
         T2=T1;
         std::stringstream trfName;
         trfName<<"../init"<<compteur<<".trf";
@@ -256,7 +262,7 @@ bool arlCore::testICPRegistration( long int nbIterations, double tolerance )
         //T2.invert();
         const bool JustVisible = false;
         const unsigned int NbIterationsMax = 500;
-        arlCore::ICP icp( model, *cloud, JustVisible);
+        arlCore::ICP icp( model, cloud, JustVisible);
         icp.setMaxIterations(NbIterationsMax);
         icp.initSolution(T2);
         //if(T2.registerICP( model, *cloud, firstRMS, lastRMS, iterations, JustVisible, RmsMax, NbIterationsMax ))
@@ -311,8 +317,8 @@ bool arlCore::testRegistration3D3DUncertainty( long int nbIterations, double tol
     {
         arlCore::PlaneSystem universe;
         arlCore::SceneUnitTest scene(universe);
-        const arlCore::PointList &worldPoints = scene.getTags().getTag(0)->getGeometry();
-        arlCore::PointList modelPoints(3);
+       PointList::sptr worldPoints = scene.getTags().getTag(0)->getGeometry();
+        arlCore::PointList::sptr modelPoints= arlCore::PointList::New(3);
         arlCore::vnl_rigid_matrix T1, T2;
         T1.uniform_random(VolumeSize);
         T1.trf(worldPoints, modelPoints);
@@ -323,17 +329,17 @@ bool arlCore::testRegistration3D3DUncertainty( long int nbIterations, double tol
         if(rangeGaussianNoise3D_x < 1e-3){rangeGaussianNoise3D_x = 0.1;}
         if(rangeGaussianNoise3D_y < 1e-3){rangeGaussianNoise3D_y = 0.1;}
         if(rangeGaussianNoise3D_z < 1e-3){rangeGaussianNoise3D_z = 0.1;}
-//      for(unsigned int i=0 ; i<modelPoints.size() ; ++i )
+//      for(unsigned int i=0 ; i<modelPoints->size() ; ++i )
 //      {
-//          modelPoints[i]->set(0, modelPoints[i]->x() + arlRandom::Random::gaussianRnd(rangeGaussianNoise3D_x));
-//          modelPoints[i]->set(1, modelPoints[i]->y() + arlRandom::Random::gaussianRnd(rangeGaussianNoise3D_y));
-//          modelPoints[i]->set(2, modelPoints[i]->z() + arlRandom::Random::gaussianRnd(rangeGaussianNoise3D_z));
+//          (*modelPoints)[i]->set(0, (*modelPoints)[i]->x() + arlRandom::Random::gaussianRnd(rangeGaussianNoise3D_x));
+//          (*modelPoints)[i]->set(1, (*modelPoints)[i]->y() + arlRandom::Random::gaussianRnd(rangeGaussianNoise3D_y));
+//          (*modelPoints)[i]->set(2, (*modelPoints)[i]->z() + arlRandom::Random::gaussianRnd(rangeGaussianNoise3D_z));
 //      }
         // we fill the covariance matrix to check that the optimization process takes it into account
         // we do not apply any noise on the data !! This is only done for uncertainty prediction
-        for( unsigned int i=0 ; i<modelPoints.size() ; ++i )
+        for( unsigned int i=0 ; i<modelPoints->size() ; ++i )
         {
-            arlCore::vnl_covariance_matrix &cov_mat = modelPoints[i]->getCovMatrix();
+            arlCore::vnl_covariance_matrix &cov_mat = (*modelPoints)[i]->getCovMatrix();
             cov_mat.fill(0.0);
             cov_mat.put(0,0,rangeGaussianNoise3D_x*rangeGaussianNoise3D_x);
             cov_mat.put(1,1,rangeGaussianNoise3D_y*rangeGaussianNoise3D_y);
@@ -374,19 +380,19 @@ bool arlCore::testProjectiveRegistration( long int nbIterations, double toleranc
         arlCore::PlaneSystem universe;
         arlCore::SceneUnitTest scene(universe);
         const arlCore::CameraList &cameras = scene.getCameras();
-        const arlCore::PointList &worldPoints = scene.getTags().getTag(0)->getGeometry();
-        std::vector< std::vector<arlCore::Point::csptr> >reprojection2D(cameras.size());
-        arlCore::SmartPointList splMonde;
+        PointList::sptr worldPoints = scene.getTags().getTag(0)->getGeometry();
+        std::vector< std::vector<arlCore::Point::csptr> > reprojection2D(cameras.size());
+        arlCore::SmartPointList::sptr splMonde = arlCore::SmartPointList::New();
         //std::cerr<<"Camera Number "<<cameras.size()<<std::endl;
         //std::cerr<<"Point Number "<<worldPoints.size()<<std::endl;
         for( j=0 ; j<cameras.size() ; ++j )
         {
             scene.detection( j+1, 0, splMonde, GaussianNoise2D );
-            splMonde.getPoints(reprojection2D[j], j+1, (void*) scene.getTags().getTag(0));
+            splMonde->getPoints(reprojection2D[j], j+1, ::boost::dynamic_pointer_cast<void>(scene.getTags().getTag(0)) );
         }
         arlCore::vnl_rigid_matrix T1,T2;
         T1.uniform_random(TransfVolumeSize);
-        arlCore::PointList modelPoints(3);
+        arlCore::PointList::sptr modelPoints =arlCore::PointList::New(3);
         T1.trf(worldPoints, modelPoints);
         for(enum_3D2D=arlCore::ARLCORE_PR_UNKNOWN+1,i=0; enum_3D2D <arlCore::ARLCORE_PR_NBTYPES; ++enum_3D2D,++i)
         {
@@ -445,10 +451,10 @@ bool arlCore::testHomographyRegistration( long int nbIterations, double toleranc
         //std::cerr<<"Compteur ="<<compteur<<std::endl;
         arlCore::PlaneSystem universe;
         arlCore::SceneUnitTest scene(universe);
-        const arlCore::Point &centre=scene.getCentre();
+        arlCore::Point::csptr centre=scene.getCentre();
         const arlCore::CameraList &cameras = scene.getCameras();
-        arlCore::Tag* tag_monde_plan = scene.getTags().getTag(1);
-        arlCore::PointList &point_monde_plan = tag_monde_plan->getGeometry();
+        arlCore::Tag::sptr tag_monde_plan = scene.getTags().getTag(1);
+        arlCore::PointList::sptr point_monde_plan = tag_monde_plan->getGeometry();
         arlCore::vnl_rotation3d_vector random_rot_vec;
         arlCore::Point translation(0,0,0),tmp_trf;
         random_rot_vec.uniform_random();
@@ -458,25 +464,25 @@ bool arlCore::testHomographyRegistration( long int nbIterations, double toleranc
         T1.setRotation(random_rot_mat);
         for( i=0 ; i<3 ; ++i )
              T1.put(i,3, translation[i] );
-        arlCore::PointList point_plan_a_recaler(3);
+        arlCore::PointList::sptr point_plan_a_recaler = arlCore::PointList::New(3);
             //on change la transfo de maniere a positionner les points dans le champ de vue des cameras
-        T1.put(0,3, centre.x() );T1.put(1,3, centre.y() );T1.put(2,3, centre.z() );
-        for(i=0; i<point_monde_plan.size(); ++i)
+        T1.put(0,3, centre->x() );T1.put(1,3, centre->y() );T1.put(2,3, centre->z() );
+        for(i=0; i<point_monde_plan->size(); ++i)
         {//on met dans point_plan_a_recaler la position des points plans 3D dans le repere monde avec z=0
-            point_plan_a_recaler.push_back( *(point_monde_plan[i]) );
-            T1.trf(*(point_monde_plan[i]));
+            point_plan_a_recaler->push_back( (*point_monde_plan)[i] );
+            T1.trf( (*point_monde_plan)[i] );
         }
         T1.invert();
         for( i=0 ; i<cameras.size() ; ++i)
         {
             std::vector<arlCore::Point::csptr> reprojection2D;
-            arlCore::SmartPointList splMonde;
+            arlCore::SmartPointList::sptr splMonde = arlCore::SmartPointList::New();
             scene.detection( i+1, 1, splMonde, GaussianNoise2D );
-            splMonde.getPoints(reprojection2D, i+1, (void*) tag_monde_plan);
+            splMonde->getPoints(reprojection2D, i+1, tag_monde_plan);
             std::vector<double> log, param_optimisation;
             T2.setIdentity();
-            if( arlCore::planarHomographyRegistration_3D_2D(cameras[i], reprojection2D, point_plan_a_recaler.getList(),
-                T2, param_optimisation, log, true) )
+            std::vector< arlCore::Point::csptr> tmp =  point_plan_a_recaler->getListCopy();
+            if( arlCore::planarHomographyRegistration_3D_2D(cameras[i], reprojection2D, tmp ,  T2, param_optimisation, log, true) ) //VAG FIXME PERF getListCopy()
             {
                 T1.compareInverse(T2, errorT, errorR);
                 addValue(errorTranslation, errorT);
@@ -499,7 +505,7 @@ bool arlCore::testReconstructionPolyscopic( long int nbIterations, double tolera
     const double GaussianNoise2D=0.0;
     std::vector<double> log;
     std::vector<long int> robustnessOK, robustnessTotal;
-    arlCore::Point point_reconstruit;
+    arlCore::Point::sptr point_reconstruit = arlCore::Point::New();
     long int compteur;
     unsigned int i,j,k,enum_recons,plane=0;
     std::vector< vnl_vector_fixed<double,5> > errorReproj;
@@ -509,19 +515,20 @@ bool arlCore::testReconstructionPolyscopic( long int nbIterations, double tolera
         arlCore::PlaneSystem universe;
         arlCore::SceneUnitTest scene(universe);
         const unsigned int NbCameras = (unsigned int)scene.getCameras().size();
-        const unsigned int NbPoints = (unsigned int)scene.getTags().getTag(0)->getGeometry().size();
+        const unsigned int NbPoints = (unsigned int)scene.getTags().getTag(0)->getGeometry()->size();
         const std::vector<arlCore::Camera> &cameras = scene.getCameras().getList();
         // creation de points 3D autour du point mire
         // worldPoints = point dans un volume pour tester le recalage 3D/3D et ISPPC OSPPC et EPPC
         // FONCTION(point_mire, nombre de points max, parametre de tirage, points tires, points tires bruites, param bruit)
-        const arlCore::Tag *tag_monde = scene.getTags().getTag(0);
-        const arlCore::PointList &worldPoints = tag_monde->getGeometry();
-        std::vector< std::vector<arlCore::Point::csptr> >reprojection2D(NbCameras);
-        arlCore::SmartPointList splMonde;
+        const arlCore::Tag::sptr tag_monde = scene.getTags().getTag(0);
+        const arlCore::Tag::sptr tag_monde_plan = scene.getTags().getTag(1);
+       PointList::csptr worldPoints = tag_monde->getGeometry();
+        std::vector< std::vector<arlCore::Point::csptr> > reprojection2D(NbCameras);
+        arlCore::SmartPointList::sptr splMonde= arlCore::SmartPointList::New();
         for( j=0 ; j<NbCameras ; ++j)
         {
             scene.detection( j+1, 0, splMonde, GaussianNoise2D );
-            splMonde.getPoints(reprojection2D[j], j+1, (void*) tag_monde);
+            splMonde->getPoints(reprojection2D[j], j+1, tag_monde);
         }
         for(enum_recons=arlCore::ARLCORE_R3D_UNKNOWN +1,k=0; enum_recons<arlCore::ARLCORE_R3D_NBTYPE; ++enum_recons,++k)
         {
@@ -538,11 +545,11 @@ bool arlCore::testReconstructionPolyscopic( long int nbIterations, double tolera
                 std::vector<arlCore::Point::csptr> pointList2D;
                     for( j=0 ; j<NbCameras ; ++j )
                         pointList2D.push_back(reprojection2D[j][i]);
-                    if(arlCore::reconst3D( pointList2D, cameras, point_reconstruit, (arlCore::ARLCORE_RECONSTRUCTION3D) enum_recons, plane, log))
+                    if( arlCore::reconst3D( pointList2D, cameras, point_reconstruit, (arlCore::ARLCORE_RECONSTRUCTION3D) enum_recons, plane, log) )
                     {
-                        const double Error = point_reconstruit.distance( *(worldPoints[i]) );
+                        const double Error = point_reconstruit->distance( (*worldPoints)[i] );
                         addValue(errorReproj[k], Error);
-                        if(Verbose) std::cerr << "Point reconstruit = "<< point_reconstruit[0] <<" "<< point_reconstruit[1] <<" "<<point_reconstruit[2] <<"\n";
+                        if(Verbose) std::cerr << "Point reconstruit = "<< (*point_reconstruit)[0] <<" "<< (*point_reconstruit)[1] <<" "<<(*point_reconstruit)[2] <<"\n";
                         ++robustnessOK[k];
                     }
                     ++robustnessTotal[k];
@@ -568,7 +575,7 @@ bool arlCore::testReconstructionPolyscopicUncertainty( long int nbIterations, do
     std::vector< std::vector<double> > index_mu(6);//(nbIterations);
     std::vector< vnl_vector<double> > errorVector;
     std::vector<long int> robustnessOK, robustnessTotal;
-    arlCore::Point point_reconstruit;
+    arlCore::Point::sptr point_reconstruit =  arlCore::Point::New();
     long int compteur, nbpt=0;
     unsigned int i,j,k,enum_recons,plane=0;
     for( compteur=0 ; compteur<nbIterations ; ++compteur)
@@ -576,24 +583,24 @@ bool arlCore::testReconstructionPolyscopicUncertainty( long int nbIterations, do
         arlCore::PlaneSystem universe;
         arlCore::SceneUnitTest scene(universe,200,1);
         const unsigned int nbCameras = (unsigned int)scene.getCameras().size();
-        const unsigned int nbPoints = scene.getTags().getTag(0)->getGeometry().size();
+        const unsigned int nbPoints = scene.getTags().getTag(0)->getGeometry()->size();
         const std::vector<arlCore::Camera> &cameras = scene.getCameras().getList();
         // creation de points 3D autour du point mire
         // worldPoints = point dans un volume pour tester le recalage 3D/3D et ISPPC OSPPC et EPPC
         // FONCTION(point_mire, nombre de points max, parametre de tirage, points tires, points tires bruites, param bruit)
-        const arlCore::Tag *tag_monde = scene.getTags().getTag(0);
-        const arlCore::PointList &worldPoints = tag_monde->getGeometry();
-        std::vector< std::vector<arlCore::Point::csptr> >reprojection2D(nbCameras);
-        std::vector< std::vector<arlCore::Point::csptr> >reprojection2D_nonoise(nbCameras);
-        arlCore::SmartPointList  splMonde;
+        const arlCore::Tag::sptr tag_monde = scene.getTags().getTag(0);
+        const arlCore::Tag::sptr tag_monde_plan = scene.getTags().getTag(1);
+       PointList::csptr worldPoints = tag_monde->getGeometry();
+        std::vector< std::vector<arlCore::Point::sptr> > reprojection2D(nbCameras);
+        std::vector< std::vector<arlCore::Point::csptr> > reprojection2D_nonoise(nbCameras);
+        arlCore::SmartPointList::sptr  splMonde = arlCore::SmartPointList::New();
         for( j=0 ; j<nbCameras ; ++j)
         {
             scene.detection( j+1, 0, splMonde, 0.0 );
-            splMonde.getPoints(reprojection2D_nonoise[j], j+1, (void*) tag_monde);
+            splMonde->getPoints(reprojection2D_nonoise[j], j+1, tag_monde);
             for( i=0 ; i<nbPoints ; ++i )
             {
-                arlCore::Point* tmp;
-                tmp = new arlCore::Point(2);
+                arlCore::Point::sptr tmp = arlCore::Point::New(2);
                 reprojection2D[j].push_back(tmp);
             }
         }
@@ -637,10 +644,10 @@ bool arlCore::testReconstructionPolyscopicUncertainty( long int nbIterations, do
                     {
                         //*reprojection2D[j][i] = *reprojection2D_nonoise[j][i];
                         //std::cerr<<"reprojection2D_nonoise ="<<reprojection2D_nonoise[j][i]->x()<<" "<<reprojection2D_nonoise[j][i]->y()<<"\n";
-                        ((Point::sptr)reprojection2D[j][i])->set(0, reprojection2D_nonoise[j][i]->x() + arlRandom::Random::gaussianRnd(GaussianNoise2D));
-                        ((Point::sptr)reprojection2D[j][i])->set(1, reprojection2D_nonoise[j][i]->y() + arlRandom::Random::gaussianRnd(GaussianNoise2D));
+                        reprojection2D[j][i]->set(0, reprojection2D_nonoise[j][i]->x() + arlRandom::Random::gaussianRnd(GaussianNoise2D));
+                        reprojection2D[j][i]->set(1, reprojection2D_nonoise[j][i]->y() + arlRandom::Random::gaussianRnd(GaussianNoise2D));
                         //std::cerr<<"reprojection2D="<<reprojection2D[j][i]->x()<<" "<<reprojection2D[j][i]->y()<<"\n";
-                        arlCore::vnl_covariance_matrix &cov_mat = ((Point::sptr)reprojection2D[j][i])->getCovMatrix();
+                        arlCore::vnl_covariance_matrix &cov_mat = reprojection2D[j][i]->getCovMatrix();
                         cov_mat.put(0,0,GaussianNoise2D*GaussianNoise2D);
                         cov_mat.put(1,0,0.0);
                         cov_mat.put(0,1,0.0);
@@ -702,18 +709,18 @@ bool arlCore::testReconstructionPolyscopicUncertainty( long int nbIterations, do
                         {
                             vnl_matrix<double> soustraction(3,1);
                             vnl_vector<double> tt(3);
-                            tt[0] = worldPoints[i]->x();tt[1] = worldPoints[i]->y();tt[2] = worldPoints[i]->z();
-                            soustraction.set_column(0, point_reconstruit.getCoordinates() - tt);
+                            tt[0] = (*worldPoints)[i]->x();tt[1] = (*worldPoints)[i]->y();tt[2] = (*worldPoints)[i]->z();
+                            soustraction.set_column(0, point_reconstruit->getCoordinates() - tt);
                             //std::cerr << "soustraction =\n"<<soustraction<<std::endl;
                             //std::cerr << "cov matrice =\n"<<point_reconstruit.getCovMatrix()<<std::endl;
                             //std::cerr << "trace cov matrice =\n"<<sqrt( point_reconstruit.getCovMatrix()[0][0] +point_reconstruit.getCovMatrix()[1][1]+point_reconstruit.getCovMatrix()[2][2])<<std::endl;
 //                          index_mu[compteur] = (soustraction.transpose() * vnl_matrix_inverse<double> (point_reconstruit.getCovMatrix()) * soustraction)(0,0);
-                            index_mu[k].push_back( (soustraction.transpose() * vnl_matrix_inverse<double> (point_reconstruit.getCovMatrix()) * soustraction)(0,0) );
+                            index_mu[k].push_back( (soustraction.transpose() * vnl_matrix_inverse<double> (point_reconstruit->getCovMatrix()) * soustraction)(0,0) );
                             std::cerr << "index_mu["<<k<<"]["<<compteur<<"] =" << index_mu[k][compteur]<<std::endl;
 //                          std::cerr << "index_mu["<<compteur<<"] =" << index_mu[compteur]<<std::endl;
                         }
-                        reconstructionError += point_reconstruit.distance( *(worldPoints[i]) );
-                        if(Verbose) std::cerr << "Point reconstruit = "<< point_reconstruit[0] <<" "<< point_reconstruit[1] <<" "<<point_reconstruit[2] <<"\n";
+                        reconstructionError += point_reconstruit->distance( (*worldPoints)[i] );
+                        if(Verbose) std::cerr << "Point reconstruit = "<< (*point_reconstruit)[0] <<" "<< (*point_reconstruit)[1] <<" "<<(*point_reconstruit)[2] <<"\n";
                         ++robustnessOK[k];
                         ++nbpt;
                     }
@@ -733,14 +740,14 @@ bool arlCore::testReconstructionPolyscopicUncertainty( long int nbIterations, do
 
             if(enum_recons == arlCore::ARLCORE_R3D_TWO_LINES_APPROX)
             {
-                arlCore::WriteTableau ( "PredictionSigma3D_ARLCORE_R3D_TWO_LINES_APPROX", index_mu[k], nbIterations);
-                arlCore::KSValidation3D("PredictionSigma3D_ARLCORE_R3D_TWO_LINES_APPROX");
+                arlCore::WriteTableau ( (char *)"PredictionSigma3D_ARLCORE_R3D_TWO_LINES_APPROX", index_mu[k], nbIterations);
+                arlCore::KSValidation3D(  (char *)"PredictionSigma3D_ARLCORE_R3D_TWO_LINES_APPROX" );
             }
 
             if(enum_recons == arlCore::ARLCORE_R3D_REPROJECTION_OPTIMIZATION)
             {
-                arlCore::WriteTableau ( "PredictionSigma3D_ARLCORE_R3D_REPROJECTION_OPTIMIZATION", index_mu[k], nbIterations);
-                arlCore::KSValidation3D("PredictionSigma3D_ARLCORE_R3D_REPROJECTION_OPTIMIZATION");
+                arlCore::WriteTableau (   (char *)"PredictionSigma3D_ARLCORE_R3D_REPROJECTION_OPTIMIZATION", index_mu[k], nbIterations);
+                arlCore::KSValidation3D(  (char *)"PredictionSigma3D_ARLCORE_R3D_REPROJECTION_OPTIMIZATION" );
             }
 
         }
@@ -761,8 +768,8 @@ bool arlCore::testEpipolarMatching( long int nbIterations, double tolerance )
     const double VolumeSize = 2000.0;
     const double GaussianNoise2D = 0.0;
     printHeader("Epipolar matching",nbIterations, tolerance);
-    arlCore::Point reprojection2D(2);
-    const arlCore::Point *p;
+    arlCore::Point::sptr reprojection2D = arlCore::Point::New(2);
+    arlCore::Point::csptr p;
     unsigned int i,j,k;
     vnl_vector<double> corrects(nbIterations,0.0);
     vnl_vector<double> nonCorrects(nbIterations,0.0);
@@ -775,23 +782,23 @@ bool arlCore::testEpipolarMatching( long int nbIterations, double tolerance )
         //TODO : Gerer outliers 2D
         arlCore::PlaneSystem universe;
         arlCore::SceneUnitTest scene(universe);
-        arlCore::SmartPointList spl;
-        arlCore::PointList worldPoints;
-        worldPoints.shapeRandom(NbPointsModel, arlCore::ARLCORE_SHAPE_SPHERE,arlCore::Point(0.0,0.0,0.0), VolumeSize); //arlCore::ARLCORE_SHAPE_PLAINSQUARE
+        arlCore::SmartPointList::sptr spl = arlCore::SmartPointList::New();
+        arlCore::PointList::sptr worldPoints = arlCore::PointList::New();
+        worldPoints->shapeRandom(NbPointsModel, arlCore::ARLCORE_SHAPE_SPHERE,arlCore::Point::New(0.0,0.0,0.0), VolumeSize); //arlCore::ARLCORE_SHAPE_PLAINSQUARE
         const std::vector<arlCore::Camera> &cameras = scene.getCameras().getList();
         if(cameras.size()>=2)
         {   // Il doit y a avoir au moins 2 cameras dans la scene
             const unsigned int NbCameras = 2;
             ++robustnessTotal;
-            std::vector< std::vector<const arlCore::Point*> > realMatching(worldPoints.size());
+            std::vector< std::vector< arlCore::Point::csptr > > realMatching(worldPoints->size());
             std::vector< std::vector<arlCore::Point::csptr> > matching;
             // Creation du jeu d'essai
-            for( i=0 ; i<worldPoints.size() ; ++i )
+            for( i=0 ; i<worldPoints->size() ; ++i )
                 for( j=0 ; j<NbCameras ; ++j )
                 {
-                    cameras[j].project3DPoint(*(worldPoints[i]), reprojection2D);
-                    reprojection2D.addGaussianNoise(GaussianNoise2D);
-                    p = spl.push_back(reprojection2D, j+1);
+                    cameras[j].project3DPoint( (*worldPoints)[i], reprojection2D);
+                    reprojection2D->addGaussianNoise(GaussianNoise2D);
+                    p = spl->push_back( reprojection2D , j+1);
                     realMatching[i].push_back(p);
                 }
             arlCore::epipolarMatching( cameras, spl, matching, GaussianNoise2D );
@@ -843,12 +850,12 @@ bool arlCore::testInitIntrinsicCalibration( long int nbIterations, double tolera
         unsigned int i,j;
         const std::vector< arlCore::Camera > &liste_camera = scene.getCameras().getList();
         const arlCore::Camera &cam = liste_camera[0];
-        std::vector< arlCore::PointList > listeWorldPoints(nbPoses);
+        std::vector< arlCore::PointList::csptr > listeWorldPoints(nbPoses);
         //listeWorldPoints[k] contient la geometrie 3D de Tag[k]
         for( i=0 ; i<nbPoses ; ++i )
         {
-            const arlCore::PointList &worldPoints = scene.getTags().getTag(i)->getGeometry();
-            listeWorldPoints[i] = worldPoints;
+           PointList::csptr worldPoints = scene.getTags().getTag(i)->getGeometry();
+           listeWorldPoints[i] = worldPoints ;
         }
         arlCore::vnl_rotation3d_matrix rot_mat;
         std::vector< arlCore::vnl_rigid_matrix > liste_extrinsic_alea(nbPoses);
@@ -858,13 +865,18 @@ bool arlCore::testInitIntrinsicCalibration( long int nbIterations, double tolera
             tmp.uniform_random( 30 );
             liste_extrinsic_alea[i] = tmp;
         }//liste_extrinsic_alea[i] contient 1 transfo aleatoire representant un mouvement du Tag[i]
-        std::vector< arlCore::PointList > reprojection2D(nbPoses);
+        std::vector< arlCore::PointList::sptr > reprojection2DNC(nbPoses);
         for( i=0 ; i<nbPoses ; ++i )//pour chaque position du damier on calcule les reprojections 2D
             {   //on applique liste_extrinsic_alea[i] au Tag[i]
-                arlCore::PointList modelPoints(listeWorldPoints[i].size() );
-                liste_extrinsic_alea[i].trf(listeWorldPoints[i],modelPoints);
-                cam.project3DPoint(modelPoints, reprojection2D[i]);
+                reprojection2DNC[i] = arlCore::PointList::New();
+                arlCore::PointList::sptr  modelPoints = arlCore::PointList::New(listeWorldPoints[i]->size() );
+                liste_extrinsic_alea[i].trf( listeWorldPoints[i] , modelPoints );
+                cam.project3DPoint(modelPoints, reprojection2DNC[i]);
             }
+        //VAG FIXME PERF BEGIN
+        std::vector< arlCore::PointList::csptr > reprojection2D(nbPoses);
+        std::copy( reprojection2DNC.begin(),  reprojection2DNC.end(),  reprojection2D.begin() );
+        //VAG FIXME PERF END
 
         vnl_matrix_fixed<double,3,3> mat_arrangee;
         for( i=0 ; i<nbPoses ; ++i )// avec notre facon de creer le monde H[i] = IntrinsicMatrix * ExtrinsicMatrixModifie * liste_extrinsic_alea[i]
@@ -933,13 +945,14 @@ bool arlCore::testIntrinsicCalibration( long int nbIterations, double tolerance 
         unsigned int i,k;
 
         const arlCore::Camera &cam = scene.getCameras()[0];
-        std::vector< arlCore::PointList > listeWorldPoints(nbPoses);//listeWorldPoints[k] contient la geometrie 3D de Tag[k]
+        std::vector< arlCore::PointList::csptr > listeWorldPoints;
+        listeWorldPoints.reserve(nbPoses);//listeWorldPoints[k] contient la geometrie 3D de Tag[k]
         for( k=0 ; k<nbPoses ; ++k )
         {
-            const arlCore::PointList &worldPoints = scene.getTags().getTag(k)->getGeometry();
-            listeWorldPoints[k] = worldPoints;
+           PointList::csptr worldPoints = scene.getTags().getTag(k)->getGeometry();
+           listeWorldPoints.push_back(  worldPoints );
         }
-        arlCore::Point point2D(2);
+        arlCore::Point::sptr point2D = arlCore::Point::New(2);;
         arlCore::vnl_rotation3d_matrix rot_mat;
         std::vector< arlCore::vnl_rigid_matrix > liste_extrinsic_alea(nbPoses);
         for( k=0 ; k<nbPoses ; ++k )
@@ -947,20 +960,22 @@ bool arlCore::testIntrinsicCalibration( long int nbIterations, double tolerance 
             arlCore::vnl_rigid_matrix tmp;
             tmp.uniform_random( 30 );
             liste_extrinsic_alea[k] = tmp;
-        }//liste_extrinsic_alea[k] contient 1 transfo aleatoire repr�sentant un mouvement du Tag[k]
-        std::vector< arlCore::PointList > reprojection2D(nbPoses);
-        std::vector< arlCore::PointList > reprojection2D_bruitee(nbPoses);
+        }//liste_extrinsic_alea[k] contient 1 transfo aleatoire représentant un mouvement du Tag[k]
+        std::vector< arlCore::PointList::sptr > reprojection2DNC(nbPoses);
+        std::vector< arlCore::PointList::sptr > reprojection2D_bruiteeNC(nbPoses);
         for( k=0 ; k<nbPoses ; ++k )//pour chaque position du damier on calcule les reprojections 2D
         {   //on applique liste_extrinsic_alea[k] au Tag[k]
-            arlCore::PointList modelPoints(listeWorldPoints[k].size() );
+            reprojection2DNC[k] =  arlCore::PointList::New();
+            reprojection2D_bruiteeNC[k] =  arlCore::PointList::New();
+            arlCore::PointList::sptr modelPoints =  arlCore::PointList::New(listeWorldPoints[k]->size() );
             liste_extrinsic_alea[k].trf(listeWorldPoints[k],modelPoints);
-            cam.project3DPoint(modelPoints, reprojection2D[k]);
-            cam.project3DPoint(modelPoints, reprojection2D_bruitee[k]);
+            cam.project3DPoint(modelPoints, reprojection2DNC[k]);
+            cam.project3DPoint(modelPoints, reprojection2D_bruiteeNC[k]);
         }
         for( k=0 ; k<nbPoses ; ++k )//on rajoute du bruit 2D sur la variable reprojection2D_bruitee
             for( i=0 ; i<scene.getChessNbPoints(k) ; ++i)//cela servira a initialiser imparfaitement pour refineIntrinsicCalibration
             {
-                reprojection2D_bruitee[k][i]->addGaussianNoise(GaussianNoise2D);
+                (*(reprojection2D_bruiteeNC[k]))[i]->addGaussianNoise(GaussianNoise2D);
                 //std::cerr<<"reprojection2D_bruitee["<<k<<"]["<<i<<"]="<<reprojection2D_bruitee[k][i]->getString() <<std::endl;
                 //std::cerr<<"reprojection2D["<<k<<"]["<<i<<"]="<<reprojection2D[k][i]->getString() <<std::endl;
             }
@@ -984,6 +999,12 @@ bool arlCore::testIntrinsicCalibration( long int nbIterations, double tolerance 
         optimiser_parameters.push_back(0);//Verbose choice
 //      optimiser_parameters.push_back(1e-10);//set f_tolerance
 
+        //VAG FIXME PERF BEGIN
+        std::vector< arlCore::PointList::csptr > reprojection2D_bruitee(nbPoses);
+        std::vector< arlCore::PointList::csptr > reprojection2D(nbPoses);
+        std::copy( reprojection2D_bruiteeNC.begin(),  reprojection2D_bruiteeNC.end(),  reprojection2D_bruitee.begin() );
+        std::copy( reprojection2DNC.begin(),  reprojection2DNC.end(),  reprojection2D.begin() );
+        //VAG FIXME PERF END
         if(arlCore::initIntrinsicCalibration(listeWorldPoints, reprojection2D_bruitee, camera_init, extrinsic_init, optimiser_parameters, log))
             if(arlCore::refineIntrinsicCalibration(listeWorldPoints, reprojection2D, nbParameters, camera_init, extrinsic_init, optimiser_parameters, log))
             {   // Calcul des erreurs
@@ -1073,13 +1094,15 @@ bool arlCore::testInitExtrinsicCalibration( long int nbIterations, double tolera
         const unsigned int nbCameras = (unsigned int)scene.getCameras().size();
         unsigned int i,j,k;
         const std::vector< arlCore::Camera > &liste_camera = scene.getCameras().getList();
-        std::vector< arlCore::PointList > listeWorldPoints(nbPoses);//listeWorldPoints[k] contient la geometrie 3D de Tag[k]
+        std::vector< arlCore::PointList::csptr > listeWorldPoints(nbPoses);//listeWorldPoints[k] contient la geometrie 3D de Tag[k]
         for( k=0 ; k<nbPoses ; ++k )
         {
-            const arlCore::PointList &worldPoints = scene.getTags().getTag(k)->getGeometry();
-            listeWorldPoints[k] = worldPoints;
+           PointList::csptr worldPoints = scene.getTags().getTag(k)->getGeometry();
+           assert( worldPoints );
+           assert( worldPoints->size() );
+           listeWorldPoints[k] = worldPoints;
         }
-        arlCore::Point point2D(2);
+        arlCore::Point::sptr point2D = arlCore::Point::New(2);;
         arlCore::vnl_rotation3d_matrix rot_mat;
         std::vector< arlCore::vnl_rigid_matrix > liste_extrinsic_alea(nbPoses);
         for( k=0 ; k<nbPoses ; ++k )
@@ -1089,23 +1112,22 @@ bool arlCore::testInitExtrinsicCalibration( long int nbIterations, double tolera
             liste_extrinsic_alea[k] = tmp;
 //          std::cerr<<"liste_extrinsic_alea["<<k<<"]="<<liste_extrinsic_alea[k].getString()<<std::endl;
         }//liste_extrinsic_alea[k] contient 1 transfo aleatoire reprzsentant un mouvement du Tag[k]
-        std::vector< std::vector< std::vector< arlCore::Point* > > > reprojection2D(nbPoses);
+        std::vector< std::vector< std::vector< arlCore::Point::csptr > > > reprojection2D(nbPoses);
         for( k=0 ; k<nbPoses ; ++k)
         {
             reprojection2D[k].resize(nbCameras);
-            arlCore::PointList modelPoints(listeWorldPoints[k].size() );
+            arlCore::PointList::sptr modelPoints =  arlCore::PointList::New(listeWorldPoints[k]->size() );
             liste_extrinsic_alea[k].trf(listeWorldPoints[k],modelPoints);
             for( j=0 ; j<nbCameras ; ++j )//pour chaque position du damier on calcule les reprojections 2D
             {   //on applique liste_extrinsic_alea[k] au Tag[k]
-                reprojection2D[k][j].resize(listeWorldPoints[k].size());
+                reprojection2D[k][j].resize(listeWorldPoints[k]->size());
 //              std::cerr<<"listeWorldPoints[k].size()"<<listeWorldPoints[k].size()<<std::endl;
 //              std::cerr<<"reprojection2D["<<k<<"]["<<j<<"].size()"<<reprojection2D[k][j].size()<<std::endl;
-                for( i=0 ; i< listeWorldPoints[k].size(); ++i )
+                for( i=0 ; i< listeWorldPoints[k]->size(); ++i )
                 {
-                    reprojection2D[k][j][i] = new arlCore::Point(2);
-                    //std::cerr<<"*(modelPoints[i])"<<modelPoints[i]->getString()<<std::endl;
-                    liste_camera[j].project3DPoint(*(modelPoints[i]), *(reprojection2D[k][j][i]));
-                    //std::cerr<<"*(reprojection2D["<<k<<"]["<<j<<"]["<<i<<"])"<<reprojection2D[k][j][i]->getString()<<std::endl;
+                    arlCore::Point::sptr pt = arlCore::Point::New(2);
+                    liste_camera[j].project3DPoint( (*modelPoints)[i],  pt );
+                    reprojection2D[k][j][i] = pt;
                 }
             }
         }
@@ -1113,7 +1135,7 @@ bool arlCore::testInitExtrinsicCalibration( long int nbIterations, double tolera
             for( j=0 ; j<nbCameras ; ++j )
                 for( i=0 ; i<scene.getChessNbPoints(k) ; ++i)//cela servira a initialiser imparfaitement pour refineIntrinsicCalibration
                 {
-                    reprojection2D[k][j][i]->addGaussianNoise(gaussianNoise2D);
+                    arlCore::Point::constCast( reprojection2D[k][j][i] )->addGaussianNoise(gaussianNoise2D);
                     //std::cerr<<"reprojection2D_bruitee["<<k<<"]["<<i<<"]="<<reprojection2D_bruitee[k][i]->getString() <<std::endl;
                     //std::cerr<<"reprojection2D["<<k<<"]["<<i<<"]="<<reprojection2D[k][i]->getString() <<std::endl;
                 }
@@ -1128,7 +1150,11 @@ bool arlCore::testInitExtrinsicCalibration( long int nbIterations, double tolera
         std::vector< arlCore::vnl_rigid_matrix> init_rigid_trsf((nbCameras-1)+nbPoses);
         std::vector<double> log_init, optimiser_parameters;
         //INITIALISATION DU CALIBRAGE
-        arlCore::initExtrinsicCalibration(listeWorldPoints, reprojection2D, liste_camera_identity, init_rigid_trsf, optimiser_parameters, log_init );
+//        //VAG FIXME PERF BEGIN
+//        std::vector< arlCore::PointList::csptr > reprojection2D(nbPoses);
+//        std::copy( reprojection2DNC.begin(),  reprojection2DNC.end(),  reprojection2D.begin() );
+//        //VAG FIXME PERF END
+        arlCore::initExtrinsicCalibration( listeWorldPoints, reprojection2D, liste_camera_identity, init_rigid_trsf, optimiser_parameters, log_init );
         std::vector<arlCore::vnl_rigid_matrix> solution((nbCameras-1)+nbPoses);
         for( k=0 ; k<nbPoses ; ++k )
         {
@@ -1195,13 +1221,13 @@ bool arlCore::testExtrinsicCalibration( long int nbIterations, double tolerance 
         unsigned int i,j,k;
         const std::vector< arlCore::Camera > &liste_camera = scene.getCameras().getList();
 
-        std::vector< arlCore::PointList > listeWorldPoints(nbPoses);//listeWorldPoints[k] contient la geometrie 3D de Tag[k]
+        std::vector< arlCore::PointList::csptr > listeWorldPoints(nbPoses);//listeWorldPoints[k] contient la geometrie 3D de Tag[k]
         for( i=0 ; i<nbPoses ; ++i )
         {
-            const arlCore::PointList &worldPoints = scene.getTags().getTag(i)->getGeometry();
+           PointList::csptr worldPoints = scene.getTags().getTag(i)->getGeometry();
             listeWorldPoints[i] = worldPoints;
         }
-        arlCore::Point point2D(2);
+        arlCore::Point::sptr point2D = arlCore::Point::New(2);;
         arlCore::vnl_rotation3d_matrix rot_mat;
         std::vector< arlCore::vnl_rigid_matrix > liste_extrinsic_alea(nbPoses);
 
@@ -1211,30 +1237,31 @@ bool arlCore::testExtrinsicCalibration( long int nbIterations, double tolerance 
             tmp.uniform_random( 30 );
             liste_extrinsic_alea[i] = tmp;
 //          std::cerr<<"liste_extrinsic_alea["<<i<<"]="<<liste_extrinsic_alea[i].getString()<<std::endl;
-        }//liste_extrinsic_alea[i] contient 1 transfo aleatoire repr�sentant un mouvement du Tag[k]
-        std::vector< std::vector< std::vector< arlCore::Point* > > > reprojection2D(nbPoses);
-        std::vector< std::vector< std::vector< arlCore::Point* > > > reprojection2D_bruitee(nbPoses);
+        }//liste_extrinsic_alea[i] contient 1 transfo aleatoire représentant un mouvement du Tag[k]
+        std::vector< std::vector< std::vector< arlCore::Point::csptr > > > reprojection2D(nbPoses);
+        std::vector< std::vector< std::vector< arlCore::Point::csptr > > > reprojection2D_bruitee(nbPoses);
         for( k=0 ; k<nbPoses ; ++k)
         {
             reprojection2D[k].resize(nbCameras);
             reprojection2D_bruitee[k].resize(nbCameras);
-            arlCore::PointList modelPoints(listeWorldPoints[k].size() );
+            arlCore::PointList::sptr modelPoints = arlCore::PointList::New( listeWorldPoints[k]->size() );
             liste_extrinsic_alea[k].trf(listeWorldPoints[k],modelPoints);
             for( j=0 ; j<nbCameras ; ++j )//pour chaque position du damier on calcule les reprojections 2D
             {   //on applique liste_extrinsic_alea[k] au Tag[k]
-                reprojection2D[k][j].resize(listeWorldPoints[k].size());
+                reprojection2D[k][j].resize(listeWorldPoints[k]->size());
 //              std::cerr<<"listeWorldPoints[k].size()"<<listeWorldPoints[k].size()<<std::endl;
 //              std::cerr<<"reprojection2D["<<k<<"]["<<j<<"].size()"<<reprojection2D[k][j].size()<<std::endl;
 
-                reprojection2D_bruitee[k][j].resize(listeWorldPoints[k].size());
-                for( i=0 ; i< listeWorldPoints[k].size(); ++i )
+                reprojection2D_bruitee[k][j].resize(listeWorldPoints[k]->size());
+                for( i=0 ; i< listeWorldPoints[k]->size(); ++i )
                 {
-                    reprojection2D[k][j][i] = new arlCore::Point(2);
-                    reprojection2D_bruitee[k][j][i] = new arlCore::Point(2);
-                    //std::cerr<<"*(modelPoints[i])"<<modelPoints[i]->getString()<<std::endl;
-                    liste_camera[j].project3DPoint(*(modelPoints[i]), *(reprojection2D[k][j][i]));
-                    liste_camera[j].project3DPoint(*(modelPoints[i]), *(reprojection2D_bruitee[k][j][i]));
-                    //std::cerr<<"*(reprojection2D["<<k<<"]["<<j<<"]["<<i<<"])"<<reprojection2D[k][j][i]->getString()<<std::endl;
+                    arlCore::Point::sptr p1 = arlCore::Point::New(2);
+                    arlCore::Point::sptr p2 = arlCore::Point::New(2);
+                    //std::cerr<<"*((*modelPoints)[i])"<<(*modelPoints)[i]->getString()<<std::endl;
+                    liste_camera[j].project3DPoint( (*modelPoints)[i] , p1 );
+                    reprojection2D[k][j][i] = p1;
+                    liste_camera[j].project3DPoint( (*modelPoints)[i] , p2 );
+                    reprojection2D_bruitee[k][j][i] = p2;
                 }
             }
         }
@@ -1242,9 +1269,7 @@ bool arlCore::testExtrinsicCalibration( long int nbIterations, double tolerance 
             for( j=0 ; j<nbCameras ; ++j )
                 for( i=0 ; i<scene.getChessNbPoints(k) ; ++i)//cela servira a initialiser imparfaitement pour refineIntrinsicCalibration
                 {
-                    reprojection2D_bruitee[k][j][i]->addGaussianNoise(gaussianNoise2D);
-                    //std::cerr<<"reprojection2D_bruitee["<<k<<"]["<<i<<"]="<<reprojection2D_bruitee[k][i]->getString() <<std::endl;
-                    //std::cerr<<"reprojection2D["<<k<<"]["<<i<<"]="<<reprojection2D[k][i]->getString() <<std::endl;
+                    arlCore::Point::constCast( reprojection2D_bruitee[k][j][i])->addGaussianNoise(gaussianNoise2D);
                 }
 
 
@@ -1354,7 +1379,7 @@ bool arlCore::testRegistration3D3DwithoutMatching( long int nbIterations, double
     const unsigned int NbOutLiers = 2;
     const double ProbaSousEchantillon = 0.8;
     unsigned int i;
-    Point point3D(3);
+    Point::sptr point3D = arlCore::Point::New(3);
     printHeader("Registration 3D/3D without matching",nbIterations, tolerance);
     vnl_vector<double> errorRotation(nbIterations,0.0);
     vnl_vector<double> errorTranslation(nbIterations,0.0);
@@ -1362,20 +1387,22 @@ bool arlCore::testRegistration3D3DwithoutMatching( long int nbIterations, double
     long int compteur;
     for( compteur=0 ; compteur<nbIterations ; ++compteur )
     {
-        arlCore::PointList modelPoints(3), worldPoints(3), outLiers(3);
-        modelPoints.shapeRandom(NbpointsModel, ARLCORE_SHAPE_SPHERE,arlCore::Point(0.0,0.0,0.0), VolumeSize); //ARLCORE_SHAPE_PLAINSQUARE
+        arlCore::PointList::sptr modelPoints = arlCore::PointList::New(3);
+        arlCore::PointList::sptr worldPoints = arlCore::PointList::New(3);
+        arlCore::PointList::sptr outLiers = arlCore::PointList::New(3);
+        modelPoints->shapeRandom(NbpointsModel, ARLCORE_SHAPE_SPHERE,arlCore::Point::New(0.0,0.0,0.0), VolumeSize); //ARLCORE_SHAPE_PLAINSQUARE
         arlCore::vnl_rigid_matrix T1, T2;
         T1.uniform_random(TransfVolumeSize);
-        for( i=0 ; i<modelPoints.size() ; ++i)
+        for( i=0 ; i<modelPoints->size() ; ++i)
             if(arlRandom::Random::uniformDoubleRnd( 0.0, 1.0 )<ProbaSousEchantillon)
             {
-                T1.trf(*(modelPoints[i]), point3D);
-                worldPoints.push_back(point3D);
+                T1.trf( (*modelPoints)[i] , point3D);
+                worldPoints->push_back(point3D);
             }
-        for( i=0 ; i<worldPoints.size() ; ++i )
-            worldPoints[i]->addGaussianNoise(GaussianNoise3D);
-        outLiers.shapeRandom(NbOutLiers, ARLCORE_SHAPE_SPHERE, arlCore::Point(0.0,0.0,0.0), VolumeSize);
-        worldPoints.push_back(outLiers);
+        for( i=0 ; i<worldPoints->size() ; ++i )
+            (*worldPoints)[i]->addGaussianNoise(GaussianNoise3D);
+        outLiers->shapeRandom(NbOutLiers, ARLCORE_SHAPE_SPHERE, arlCore::Point::New(0.0,0.0,0.0), VolumeSize);
+        worldPoints->push_back(outLiers);
         if(T2.register3D3DwithoutMatching(modelPoints, worldPoints, true, GaussianNoise3D, decimage))
         {
             ++robustnessOK;
@@ -1402,7 +1429,7 @@ bool arlCore::test3D3DMatching( long int nbIterations, double tolerance )
     const double ProbaSousEchantillon = 0.8;
 
     unsigned int i,j;
-    Point point3D(3);
+    Point::sptr point3D = Point::New(3);
     printHeader("3D/3D matching",nbIterations, tolerance);
     vnl_vector<double> corrects(nbIterations,0.0);
     vnl_vector<double> nonCorrects(nbIterations,0.0);
@@ -1411,34 +1438,37 @@ bool arlCore::test3D3DMatching( long int nbIterations, double tolerance )
     long int compteur;
     for( compteur=0 ; compteur<nbIterations ; ++compteur )
     {
-        std::vector< const arlCore::Point* > realMatchingA, realMatchingB;
-        arlCore::PointList modelPoints(3), worldPoints(3), outLiers(3);
-        modelPoints.shapeRandom(NbpointsModel, ARLCORE_SHAPE_SPHERE,arlCore::Point(0.0,0.0,0.0), VolumeSize); //ARLCORE_SHAPE_PLAINSQUARE
+        std::vector< arlCore::Point::csptr > realMatchingA, realMatchingB;
+        arlCore::PointList::sptr modelPoints = arlCore::PointList::New(3);
+        arlCore::PointList::sptr worldPoints = arlCore::PointList::New(3);
+        arlCore::PointList::sptr outLiers = arlCore::PointList::New(3);
+        modelPoints->shapeRandom(NbpointsModel, ARLCORE_SHAPE_SPHERE,arlCore::Point::New(0.0,0.0,0.0), VolumeSize); //ARLCORE_SHAPE_PLAINSQUARE
         arlCore::vnl_rigid_matrix T1;
         T1.uniform_random(TransfVolumeSize);
-        for( i=0 ; i<modelPoints.size() ; ++i)
+        for( i=0 ; i<modelPoints->size() ; ++i)
             if(arlRandom::Random::uniformDoubleRnd( 0.0, 1.0 )<ProbaSousEchantillon)
             {
-                T1.trf(*(modelPoints[i]), point3D);
-                realMatchingA.push_back(modelPoints[i]);
-                worldPoints.push_back(point3D);
-                realMatchingB.push_back(worldPoints.back());
+                T1.trf( (*modelPoints)[i] , point3D);
+                realMatchingA.push_back( (*modelPoints)[i] );
+                worldPoints->push_back(point3D);
+                realMatchingB.push_back( worldPoints->back() );
             }
-        for( i=0 ; i<worldPoints.size() ; ++i )
-            worldPoints[i]->addGaussianNoise(GaussianNoise3D);
-        outLiers.shapeRandom(NbOutLiers, ARLCORE_SHAPE_SPHERE, arlCore::Point(0.0,0.0,0.0), VolumeSize);
-        worldPoints.push_back(outLiers);
-        std::vector< const arlCore::Point* > Va, Vb;
+        for( i=0 ; i<worldPoints->size() ; ++i )
+            (*worldPoints)[i]->addGaussianNoise(GaussianNoise3D);
+        outLiers->shapeRandom(NbOutLiers, ARLCORE_SHAPE_SPHERE, arlCore::Point::New(0.0,0.0,0.0), VolumeSize);
+        worldPoints->push_back(outLiers);
+        arlCore::PointList::sptr Va =  arlCore::PointList::New();
+        arlCore::PointList::sptr Vb =  arlCore::PointList::New();
         assert(realMatchingA.size()==realMatchingB.size());
-        assert(Va.size()==Vb.size());
+
         if(arlCore::matching3D3D(modelPoints, worldPoints, GaussianNoise3D, Decimage, Va, Vb)>0)
         {   // Est-ce que les appariements obtenus sont corrects ?
             ++robustnessOK;
-            for( i=0 ; i<Va.size() ; ++i )
+            for( i=0 ; i<Va->size() ; ++i )
             {
                 bool found = false;
                 for( j=0 ; j<realMatchingA.size() && !found ; ++j )
-                    found = found || (realMatchingA[j]==Va[i] && realMatchingB[j]==Vb[i]);
+                    found = found || (realMatchingA[j]==(*Va)[i] && realMatchingB[j]==(*Vb)[i]);
                 if(!found) ++nonCorrects[compteur]; else ++corrects[compteur];
             }
         }
@@ -1534,23 +1564,25 @@ bool arlCore::testRegistrationCriteriaComparison( long int nbIterations, std::ve
         //}while(RSB_3D < 35 || RSB_2D < 35);exit(0);
         arlCore::SceneCriterionComparison scene(universe, parameters, staticStatus, noiseValues, RSB_3D, RSB_2D);
         const unsigned int nbCameras = (unsigned int)scene.getCameras().size();
-        const unsigned int nbModelPoints = scene.getTags().getTag(0)->getGeometry().size();
+        const unsigned int nbModelPoints = scene.getTags().getTag(0)->getGeometry()->size();
         const std::vector<arlCore::Camera> &cameras = scene.getCameras().getList();
-        const arlCore::PointList &regPoints     = scene.getTags().getTag(0)->getGeometry();
-        const arlCore::PointList &controlPoints = scene.getTags().getTag(1)->getGeometry();
+       PointList::csptr regPoints     = scene.getTags().getTag(0)->getGeometry();
+       PointList::csptr controlPoints = scene.getTags().getTag(1)->getGeometry();
         std::vector< std::vector<arlCore::Point::csptr> >reprojection2D(cameras.size());
-        arlCore::SmartPointList  splMonde;
+        arlCore::SmartPointList::sptr  splMonde =  arlCore::SmartPointList::New();
         for( i=0 ; i<cameras.size() ; ++i )
         {
             scene.detection( i+1, 0, splMonde, 0.0 );
-            splMonde.getPoints(reprojection2D[i], i+1, (void*) scene.getTags().getTag(0));
+            splMonde->getPoints(reprojection2D[i], i+1, scene.getTags().getTag(0));
         }
         //Step 0 : creation of the seeked transformation T2 (= T1^-1 )
         // creation of the initialisation
         // application of T1 to modelPoints and controlModelPoints
         arlCore::vnl_rigid_matrix T1,T2;
         T1.uniform_random(TransfVolumeSize);
-        arlCore::PointList modelPoints(3), controlModelPoints(3);
+        arlCore::PointList::sptr modelPoints= arlCore::PointList::New(3);
+        arlCore::PointList::sptr controlModelPoints= arlCore::PointList::New(3);
+
         T1.trf(regPoints, modelPoints);
         T1.trf(controlPoints, controlModelPoints);
         T2.invert(T1);
@@ -1568,65 +1600,65 @@ bool arlCore::testRegistrationCriteriaComparison( long int nbIterations, std::ve
             trf_initialisation.uniform_random(TransfVolumeSize);
 
         //Step 1 : creation of the noisy 3D points
-        arlCore::PointList modelPointsNoisy(3);
-        for( i=0 ; i<modelPoints.size() ; ++i )
+        arlCore::PointList::sptr modelPointsNoisy = arlCore::PointList::New(3);
+        for( i=0 ; i<modelPoints->size() ; ++i )
         {
-            arlCore::Point tmp(3);
-            tmp.set(0, modelPoints[i]->x() + arlRandom::Random::gaussianRnd(GaussianNoise3D_X) );
-            tmp.set(1, modelPoints[i]->y() + arlRandom::Random::gaussianRnd(GaussianNoise3D_Y) );
-            tmp.set(2, modelPoints[i]->z() + arlRandom::Random::gaussianRnd(GaussianNoise3D_Z) );
-            modelPointsNoisy.push_back(tmp);
-            if(Verbose) std::cerr<<"modelPointsNoisy["<<i<<"]"<<modelPointsNoisy[i]->getCoordinates()<<std::endl;
-            arlCore::vnl_covariance_matrix &cov_mat = modelPointsNoisy[i]->getCovMatrix();
+            arlCore::Point::sptr tmp=arlCore::Point::New(3);
+            tmp->set(0, (*modelPoints)[i]->x() + arlRandom::Random::gaussianRnd(GaussianNoise3D_X) );
+            tmp->set(1, (*modelPoints)[i]->y() + arlRandom::Random::gaussianRnd(GaussianNoise3D_Y) );
+            tmp->set(2, (*modelPoints)[i]->z() + arlRandom::Random::gaussianRnd(GaussianNoise3D_Z) );
+            if(Verbose) std::cerr<<"modelPointsNoisy["<<i<<"]"<< (*modelPointsNoisy)[i]->getCoordinates()<<std::endl;
+            arlCore::vnl_covariance_matrix &cov_mat = tmp->getCovMatrix();
             cov_mat.fill(0.0);
             cov_mat.put(0,0,GaussianNoise3D_X*GaussianNoise3D_X);
             cov_mat.put(1,1,GaussianNoise3D_Y*GaussianNoise3D_Y);
             cov_mat.put(2,2,GaussianNoise3D_Z*GaussianNoise3D_Z);
-            if(Verbose) std::cerr<<"cov mat 3D["<<i<<"] ="<< modelPointsNoisy[i]->getCovMatrix()<<std::endl;
+            if(Verbose) std::cerr<<"cov mat 3D["<<i<<"] ="<< tmp->getCovMatrix()<<std::endl;
+            modelPointsNoisy->push_back(tmp);
         }
         //Step 2 : creation of the noisy 2D points
-        std::vector< std::vector<arlCore::Point::csptr> >reprojection2DNoisy(cameras.size());
+        std::vector< std::vector<arlCore::Point::csptr> > reprojection2DNoisy(cameras.size());
         for( j=0 ; j<(long int)nbCameras ; ++j)
         {
             //reprojection2DNoisy[j].setDimension(2);
             for( i=0 ; i<nbModelPoints ; ++i )
             {
-                arlCore::Point *tmp;
-                tmp = new arlCore::Point;
-                reprojection2DNoisy[j].push_back(tmp);
-                ((Point::sptr)reprojection2DNoisy[j][i])->init(2);
-                ((Point::sptr)reprojection2DNoisy[j][i])->set(0, reprojection2D[j][i]->x() + arlRandom::Random::gaussianRnd(GaussianNoise2D_X));
-                ((Point::sptr)reprojection2DNoisy[j][i])->set(1, reprojection2D[j][i]->y() + arlRandom::Random::gaussianRnd(GaussianNoise2D_Y));
+                arlCore::Point::sptr tmp =  arlCore::Point::New(2);
+                tmp->set(0, reprojection2D[j][i]->x() + arlRandom::Random::gaussianRnd(GaussianNoise2D_X));
+                tmp->set(1, reprojection2D[j][i]->y() + arlRandom::Random::gaussianRnd(GaussianNoise2D_Y));
                 if(Verbose) std::cerr<<"reprojection2D["<<j<<"]["<<i<<"]"<<reprojection2D[j][i]->getCoordinates()<<std::endl;
                 if(Verbose) std::cerr<<"reprojection2DNoisy["<<j<<"]["<<i<<"]"<<reprojection2DNoisy[j][i]->getCoordinates()<<std::endl;
-                arlCore::vnl_covariance_matrix &cov_mat = ((Point::sptr)reprojection2DNoisy[j][i])->getCovMatrix();
+                arlCore::vnl_covariance_matrix &cov_mat = tmp->getCovMatrix();
                 cov_mat.fill(0.0);
                 cov_mat.put(0,0,GaussianNoise2D_X*GaussianNoise2D_X);
                 cov_mat.put(1,1,GaussianNoise2D_Y*GaussianNoise2D_Y);
-                if(Verbose) std::cerr<<"cov mat 2D["<<i<<"] ="<< reprojection2DNoisy[j][i]->getCovMatrix()<<std::endl;
+                if(Verbose) std::cerr<<"cov mat 2D["<<i<<"] ="<< tmp->getCovMatrix()<<std::endl;
+                reprojection2DNoisy[j].push_back(tmp);
             }
         }
         //Step 3 : reconstruction of the 2D points for 3D/3D registration
-        arlCore::PointList reconstructedPoints_Lines(3), reconstructedPoints_Opt(3);
-        for( i=0 ; i<regPoints.size() ; ++i )
+        arlCore::PointList::sptr reconstructedPoints_Lines = arlCore::PointList::New(3);
+        arlCore::PointList::sptr reconstructedPoints_Opt = arlCore::PointList::New(3);
+        for( i=0 ; i<regPoints->size() ; ++i )
         {
-            arlCore::Point tmp;
-            reconstructedPoints_Lines.push_back(tmp);
-            reconstructedPoints_Opt.push_back(tmp);
+            arlCore::Point::sptr tmp1 = arlCore::Point::New();
+            arlCore::Point::sptr tmp2 = arlCore::Point::New();
+            reconstructedPoints_Lines->push_back(tmp1);
+            reconstructedPoints_Opt->push_back(tmp2);
             std::vector<Point::csptr> tmp_2D_point_list;
             for( j=0 ; j<(long int)cameras.size() ; ++j )
                 tmp_2D_point_list.push_back(reprojection2DNoisy[j][i]);
 
             registrationDuration.startLap();
-            reconst3D( tmp_2D_point_list, cameras, *(reconstructedPoints_Lines[i]), arlCore::ARLCORE_R3D_MULTI_LINES_APPROX, plane_reconstruction, log_reconstruction);
+            reconst3D( tmp_2D_point_list, cameras, (*reconstructedPoints_Lines)[i], arlCore::ARLCORE_R3D_MULTI_LINES_APPROX, plane_reconstruction, log_reconstruction);
             (*duree_recalage_methode[0])[compteur] = registrationDuration.getLap();
-            if(Verbose) std::cerr<<"reconstructedPoints_Lines["<<i<<"]"<<reconstructedPoints_Lines[i]->getCoordinates()<<std::endl;
+            if(Verbose) std::cerr<<"(*reconstructedPoints_Lines)["<<i<<"]"<<(*reconstructedPoints_Lines)[i]->getCoordinates()<<std::endl;
             registrationDuration.startLap();
-            reconst3D( tmp_2D_point_list, cameras, *(reconstructedPoints_Opt[i])  , arlCore::ARLCORE_R3D_REPROJECTION_OPTIMIZATION_UNCERTAINTY, plane_reconstruction, log_reconstruction, -1, true);
+            reconst3D( tmp_2D_point_list, cameras, (*reconstructedPoints_Opt)[i]  , arlCore::ARLCORE_R3D_REPROJECTION_OPTIMIZATION_UNCERTAINTY, plane_reconstruction, log_reconstruction, -1, true);
             (*duree_recalage_methode[1])[compteur] = registrationDuration.getLap();
             (*duree_recalage_methode[2])[compteur] = registrationDuration.getLap();
             (*duree_recalage_methode[3])[compteur] = registrationDuration.getLap();
-            if(Verbose) std::cerr<<"reconstructedPoints_Opt["<<i<<"]"<<reconstructedPoints_Opt[i]->getCoordinates()<<std::endl;
+            if(Verbose) std::cerr<<"reconstructedPoints_Opt["<<i<<"]"<< (*reconstructedPoints_Opt)[i]->getCoordinates()<<std::endl;
         }
 
         //Step 4 : computation of the 3D/3D registration
@@ -1656,7 +1688,7 @@ bool arlCore::testRegistrationCriteriaComparison( long int nbIterations, std::ve
             if(Verbose) std::cerr<<name<<std::endl;
             T_list.push_back(trf_initialisation);
             registrationDuration.startLap();
-            T_list[2+i].register3D3DUncertainty(modelPointsNoisy, reconstructedPoints_Opt, (arlCore::ARLCORE_REGISTER3D3D)enum_3D3D, optimise_param, log_3D3D/*, modelPoints.size()*/ );
+            T_list[2+i].register3D3DUncertainty(modelPointsNoisy, reconstructedPoints_Opt, (arlCore::ARLCORE_REGISTER3D3D)enum_3D3D, optimise_param, log_3D3D/*, modelPoints->size()*/ );
             (*duree_recalage_methode[2+i])[compteur] += registrationDuration.getLap();// += because we take into account the time to reconstruct the points
             if(Verbose)
             {
@@ -1679,7 +1711,7 @@ bool arlCore::testRegistrationCriteriaComparison( long int nbIterations, std::ve
             //std::cerr<<"T_list[offset+i] ="<<T_list[offset+i]<<std::endl;
             std::vector<double> log, param_optimisation;
             registrationDuration.startLap();
-            arlCore::multiViewPointRegistration3D2D( cameras, reprojection2DNoisy, modelPointsNoisy,
+            arlCore::multiViewPointRegistration3D2D( cameras, reprojection2DNoisy ,  modelPointsNoisy ,
                 T_list[offset+i], (arlCore::ARLCORE_PROJECTIVE_REGISTRATION)enum_3D2D, param_optimisation, log, 1);
             (*duree_recalage_methode[offset+i])[compteur] = registrationDuration.getLap();
 //          {
@@ -1703,13 +1735,13 @@ bool arlCore::testRegistrationCriteriaComparison( long int nbIterations, std::ve
         for(i=0;i<T_list.size();++i)
         {
             double error = 0;
-            arlCore::PointList temp_points(3);
-            arlCore::Point toto(3);
-            for( j=0 ; j<(long int)controlModelPoints.size() ; ++j )
-                temp_points.push_back(toto);
+            arlCore::PointList::sptr temp_points = arlCore::PointList::New(3);
+            arlCore::Point::sptr toto = arlCore::Point::New(3);
+            for( j=0 ; j<(long int)controlModelPoints->size() ; ++j )
+                temp_points->push_back(toto);
             T_list[i].trf(controlModelPoints,temp_points);
-            for( j=0 ; j<(long int)controlModelPoints.size() ; ++j )
-                error += temp_points[j]->distance(*controlPoints[j]);
+            for( j=0 ; j<(long int)controlModelPoints->size() ; ++j )
+                error += (*temp_points)[j]->distance( (*controlPoints)[j] );
             (*erreur_recalage_methode[i])[compteur] = error;
             //std::cerr<< "Erreur de recalage methode ["<<i<<"]="<<registrationError[i] <<std::endl;
         }
@@ -1773,7 +1805,7 @@ bool arlCore::testRegistrationCriteriaComparison( long int nbIterations, std::ve
 bool arlCore::testSphereCenterEstimation( long int nbIterations, double tolerance )
 {
     const bool Verbose = false;
-    const double GaussianNoise3D = 0.0;
+    const double GaussianNoise3D = 0.0; //0.001;
     std::vector< vnl_vector_fixed<double,5> >errorRadius;
     printHeader("Sphere center estimation from sparse point on its surface",nbIterations, tolerance);
     double error;
@@ -1792,29 +1824,32 @@ bool arlCore::testSphereCenterEstimation( long int nbIterations, double toleranc
                 robustnessTotal.push_back(0);
             }
             unsigned int nbPoints = (unsigned int)floor( arlRandom::Random::uniformDoubleRnd(4, 50) );
-            arlCore::PointList surface_points(3), surface_points_rotated(3);
-            arlCore::Point center(0,0,0), center_estimation(0,0,0);
+            arlCore::PointList::sptr surface_points =  arlCore::PointList::New(3);
+            arlCore::PointList::sptr  surface_points_rotated = arlCore::PointList::New(3);
+
+            arlCore::Point::sptr center =  arlCore::Point::New(0,0,0);
+            arlCore::Point::sptr center_estimation =  arlCore::Point::New(0,0,0);
             double diameter, angle, radius_estimation;
             std::vector<double> optimiser_parameter, log;
             arlCore::vnl_rigid_matrix T;
             T.uniform_random(0.0);
             diameter = arlRandom::Random::uniformDoubleRnd(20, 500);
             angle =  arlRandom::Random::uniformDoubleRnd(10, 360);
-            center.shapeRandom(arlCore::ARLCORE_SHAPE_CUBE,1000);
+            center->shapeRandom(arlCore::ARLCORE_SHAPE_CUBE,1000);
             if(Verbose) std::cerr<< "nbPoints = "<<nbPoints <<std::endl;
             if(Verbose) std::cerr<< "diameter/2 = "<<diameter/2 <<std::endl;
-            surface_points.shapeRandom(nbPoints, arlCore::ARLCORE_SHAPE_SPHERE_CAP, center, diameter, angle );
+            surface_points->shapeRandom(nbPoints, arlCore::ARLCORE_SHAPE_SPHERE_CAP, center, diameter, angle );
             T.trf(surface_points, surface_points_rotated);
             T.trf(center);
-            //if(Verbose) std::cerr<< "centre = "<<center.print() <<std::endl;
-            for( unsigned int j=0 ; j<surface_points_rotated.size() ; ++j )
-                surface_points_rotated[j]->addGaussianNoise(GaussianNoise3D);
+            //if(Verbose) std::cerr<< "centre = "<<center->print() <<std::endl;
+            for( unsigned int j=0 ; j<surface_points_rotated->size() ; ++j )
+                (*surface_points_rotated)[j]->addGaussianNoise(GaussianNoise3D);
             arlCore::ARLCORE_SCE type = (arlCore::ARLCORE_SCE)enum_method;
-            if( surface_points_rotated.sphereCenterEstimation( center_estimation, radius_estimation, type, optimiser_parameter, log) )
+            if( surface_points_rotated->sphereCenterEstimation( center_estimation, radius_estimation, type, optimiser_parameter, log) )
             {
                 ++robustnessOK[i];
-                //if(Verbose) std::cerr<< "centre_estimation = "<<center_estimation.print()<<std::endl;
-                error = center_estimation.distance(center);
+                //if(Verbose) std::cerr<< "centre_estimation = "<<center_estimation->print()<<std::endl;
+                error = center_estimation->distance(center);
                 addValue( errorRadius[i], error );
     /*          std::cerr<< "Erreur d'estimation centre sphere = " <<error<<std::endl;
                 std::cerr<< "Rayon estime = " <<radius_estimation<<std::endl;
@@ -1859,26 +1894,28 @@ bool arlCore::testPolynomialFieldDistortion( long int nbIterations, double toler
                 robustnessTotal.push_back(0);
             }
             const unsigned int NbEquations = 3;
-            arlCore::PointList real;
+            arlCore::PointList::sptr real = arlCore::PointList::New();
             vnl_vector_fixed<double,3> ResGrid(0.6);
             for( i=2 ; i<CubeRadius/ResGrid[0] ; ++i )
                 for( j=2 ; j<CubeRadius/ResGrid[1] ; ++j )
                     for( k=2 ; k<CubeRadius/ResGrid[2] ; ++k )
-                        real.push_back(arlCore::Point( ResGrid[0]*(double)i, ResGrid[1]*(double)j, ResGrid[2]*(double)k));
+                        real->push_back(arlCore::Point::New( ResGrid[0]*(double)i, ResGrid[1]*(double)j, ResGrid[2]*(double)k));
             // Distorsion model
             const unsigned int modelDegree = 2;
             const double ModelNoise = 5.0;
             vnl_vector<double>model(nbPolynomialParameters(modelDegree, NbEquations));
             for( i=0 ; i<model.size() ; ++i )
                 model[i] = arlRandom::Random::gaussianRnd( ModelNoise );
-            arlCore::PointList distorded(real);
-            for( i=0 ; i<real.size() ; ++i )
+            //VAG arlCore::PointList::sptr distorded =  arlCore::PointList::New(real);
+            arlCore::PointList::sptr distorded =  arlCore::PointList::New( ); //VAG
+            distorded->copy( *real ); //VAG
+            for( i=0 ; i<real->size() ; ++i )
             {
                 for( j=0 ; j<3 ; ++j )
-                    coordinates[j] = real[i]->get(j);
+                    coordinates[j] = (*real)[i]->get(j);
                 arlCore::computePolynomial( modelDegree, model, coordinates, distorsion );
                 for( j=0 ; j<3 ; ++j )
-                    real[i]->set(j, real[i]->x() - distorsion[j]);
+                    (*real)[i]->set(j, (*real)[i]->x() - distorsion[j]);
             }
             // Estimation of model of deformation from synthetic points
             vnl_vector<double> parameters;
@@ -1888,11 +1925,11 @@ bool arlCore::testPolynomialFieldDistortion( long int nbIterations, double toler
             FieldCorrector fc( interpolationDegree );
             fc.setParameters( parameters );
             fc.activCorrection( true );
-            for( i=0 ; i<distorded.size() ; ++i )
+            for( i=0 ; i<distorded->size() ; ++i )
             {
-                arlCore::Point undistorded(3);
-                fc.correct( *distorded[i], undistorded );
-                addValue( errorCorrection[n], undistorded.distance(*real[i]) );
+                arlCore::Point::sptr undistorded = arlCore::Point::New(3);
+                fc.correct( (*distorded)[i], undistorded );
+                addValue( errorCorrection[n], undistorded->distance( (*real)[i]) );
 
             }
             ++robustnessOK[n];

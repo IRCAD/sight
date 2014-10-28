@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,8 @@ namespace editor
 {
 /**
  * @brief   Distance service is represented by a button. It allows to show distances in a generic scene.
- * @class   Distance.
- * @author  IRCAD (Research and Development Team).
+ * @class   Distance
+ * 
  * @date    2010.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject, public ::gui::editor::IEditor
@@ -58,7 +58,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Do nothing
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
@@ -71,7 +71,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-    <service uid="distanceEditor" type="::gui::editor::IEditor" implementation="::uiMeasurement::editor::Distance" autoComChannel="no">
+    <service uid="distanceEditor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
         <placeInScene uid="genericScene" />
     </service>
      @endverbatim

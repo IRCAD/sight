@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ void StringTest::methode1()
     {
         ::fwData::String::sptr s0 = ::fwData::String::New();
         s0->value() = VALUE;
-        ::fwData::String::NewSptr s1( VALUE );
+        ::fwData::String::sptr s1 = ::fwData::String::New( VALUE );
 
         CPPUNIT_ASSERT_EQUAL( VALUE , s0->value() );
         CPPUNIT_ASSERT_EQUAL( VALUE , s1->value() );

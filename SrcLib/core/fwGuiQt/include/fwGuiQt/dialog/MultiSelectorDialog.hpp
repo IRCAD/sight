@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,8 +26,8 @@ namespace dialog
 
 /**
  * @brief   MultiSelectorDialog allowing the choice of an element among severals (_selections)
- * @class   MultiSelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   MultiSelectorDialog
+ * 
  * @date    2009.
  */
 
@@ -35,10 +35,11 @@ class FWGUIQT_CLASS_API MultiSelectorDialog : public ::fwGui::dialog::IMultiSele
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog), (()), new MultiSelectorDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog),
+                                            (()),
+                                            ::fwGui::factory::New< MultiSelectorDialog > );
 
-    /// Default constructor.
-    FWGUIQT_API MultiSelectorDialog() ;
+    FWGUIQT_API MultiSelectorDialog(::fwGui::GuiBaseObject::Key key) ;
 
     FWGUIQT_API virtual ~MultiSelectorDialog();
 
@@ -54,7 +55,6 @@ public:
 
     /**
      * @brief Show the selector and return the selection.
-     * @param[in] _parent Parent container for the selector.
      */
     FWGUIQT_API virtual Selections show();
 

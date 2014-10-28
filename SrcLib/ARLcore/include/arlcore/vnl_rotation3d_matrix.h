@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,6 @@ namespace arlCore
     {
     /**
      * @class   vnl_rotation3d_matrix
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Matrice de rotation 3x3
      * vnl_rotation3d_matrix spécialise une matrice quelconque 3x3
@@ -37,9 +36,9 @@ namespace arlCore
         /**
          * @Brief Constructor : Initialization by Euler angles
          * Notations : cf http://mathworld.wolfram.com/EulerAngles.html
-         * @param Phi = rotation about the z-axis
-         * @param Theta = rotation about the x-axis [0,Pi]
-         * @param Psy = rotation about z-axis(again)
+         * @param phi = rotation about the z-axis
+         * @param theta = rotation about the x-axis [0,Pi]
+         * @param psy = rotation about z-axis(again)
          */
         ARLCORE_API vnl_rotation3d_matrix( double phi, double theta, double psy );
 

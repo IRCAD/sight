@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,8 +28,8 @@ namespace reader
 
 /**
  * @brief   Mesh reader. Read file format .trian
- * @class   TriangularMeshReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshReader
+ * 
  * @date    2009
  *
  * Ircad reader to read a ::fwData::TriangularMesh on filesystem which the file format
@@ -46,11 +46,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (TriangularMeshReader)(GenericObjectReader< ::fwData::TriangularMesh >),
                                             (()),
-                                            new  TriangularMeshReader
+                                            ::fwDataIO::reader::factory::New< TriangularMeshReader >
                                             );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API TriangularMeshReader();
+    FWDATAIO_API TriangularMeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~TriangularMeshReader();

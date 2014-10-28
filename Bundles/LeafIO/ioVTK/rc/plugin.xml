@@ -15,15 +15,15 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioVTK::ReconstructionWriterService</service>
-        <object>::fwData::Acquisition</object>
-        <desc>Reconstructions Writer (VTK)</desc>
+        <service>::ioVTK::ImageWriterService</service>
+        <object>::fwData::Image</object>
+        <desc>VTK Image Writer (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioVTK::ImageWriterService</service>
-        <object>::fwData::Image</object>
+        <service>::ioVTK::SImageSeriesWriter</service>
+        <object>::fwMedData::ImageSeries</object>
         <desc>VTK Image Writer (VTK)</desc>
     </extension>
 
@@ -61,12 +61,26 @@
         <object>::fwData::Mesh</object>
         <desc>VTK Mesh Writer (VTK)</desc>
     </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVTK::SModelSeriesWriter</service>
+        <object>::fwMedData::ModelSeries</object>
+        <desc>VTK files (VTK)</desc>
+    </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioVTK::VtkPatientDBReaderService</service>
-        <object>::fwData::PatientDB</object>
-        <desc>VTK Image Reader (VTK)</desc>
+        <service>::ioVTK::SModelSeriesReader</service>
+        <object>::fwMedData::ModelSeries</object>
+        <desc>VTK files (VTK)</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioVTK::SModelSeriesObjWriter</service>
+        <object>::fwMedData::ModelSeries</object>
+        <desc>Wavefront OBJ files (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -74,6 +88,13 @@
         <service>::ioVTK::VtkModelReaderService</service>
         <object>::fwData::Model</object>
         <desc>Model Reader (VTK)</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioVTK::SSeriesDBReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>VTK File Reader (VTK)</desc>
     </extension>
 
 </plugin>

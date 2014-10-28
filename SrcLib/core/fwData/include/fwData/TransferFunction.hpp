@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,9 @@
 #include "fwData/config.hpp"
 #include "fwData/macros.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API);
 
 namespace fwData
 {
@@ -24,7 +26,7 @@ namespace fwData
  *
  * A transfer function is composed of some points which have a color and a value.
  *
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 
@@ -32,10 +34,11 @@ class FWDATA_CLASS_API TransferFunction : public Object
 {
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::Factory::New< TransferFunction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::factory::New< TransferFunction >) ;
 
     /// Macro for deep and shallow copies
-    fwDataObjectMacro();
+
+    fwCampMakeFriendDataMacro((fwData)(TransferFunction));
 
 
     /// Defines color structure for TF
@@ -92,6 +95,15 @@ public :
 
     typedef std::pair< TFValueType, TFValueType > TFValuePairType;
 
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API TransferFunction(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~TransferFunction();
+
     // Initialize a default TF.
     FWDATA_API void initTF();
 
@@ -99,10 +111,10 @@ public :
     FWDATA_API static TransferFunction::sptr createDefaultTF();
 
     /// Shallow copy method
-    FWDATA_API void shallowCopy( TransferFunction::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Deep copy method
-    FWDATA_API void deepCopy( TransferFunction::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// Get all the point values of the TF (keys of the map m_tfData)
     FWDATA_API TFValueVectorType getTFValues() const;
@@ -173,15 +185,6 @@ public :
     /// Default transfer function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;
 
-protected :
-
-    /// Constructor
-    FWDATA_API TransferFunction();
-
-    /// Destructor
-    FWDATA_API virtual ~TransferFunction();
-
-
 private :
 
     /// Current visualization level
@@ -213,5 +216,6 @@ private :
 }; // end class TransferFunction
 
 } // end namespace fwData
+
 
 #endif // _FWDATA_TRANSFERFUNCTION_HPP_

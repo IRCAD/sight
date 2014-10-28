@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,16 +24,9 @@ class FWCORE_CLASS_API BaseObject : public ::boost::enable_shared_from_this<Base
 
 public :
     fwCoreNonInstanciableClassDefinitionsMacro( (BaseObject) );
-    /**
-     * @name Constructor/Destructor
-     * @{ */
-
-    BaseObject(){};
-    virtual ~BaseObject(){};
-
-    /**  @} */
 
 protected :
+    virtual ~BaseObject(){};
     using ::boost::enable_shared_from_this<BaseObject>::shared_from_this;
 };
 

@@ -1,5 +1,17 @@
-CLASSTEST=['DicomTest']
+CLASSTEST=[
+    'SeriesDBReaderTest',
+    'SeriesDBLazyReaderTest',
+    'ImageSeriesWriterTest',
+    ]
 
 USE = ['boost']
-LIB = ['vtkGdcmIO_0-1','fwTools_0-1','fwCore_0-1','fwData_0-1']
+LIB = [
+       'vtkGdcmIO_0-1',
+       'fwTools_0-1',
+       'fwCore_0-1', 
+       'fwData_0-1',
+       'fwMedData_0-1',
+       'fwTest_0-1',
+       'fwDataCamp_0-1'
+       ]
 CONSOLE='yes'

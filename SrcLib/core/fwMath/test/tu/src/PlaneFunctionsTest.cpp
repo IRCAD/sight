@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,9 +49,9 @@ void PlaneFunctionsTest::checkNormal()
     const double PlanP3_Y = 2.0;
     const double PlanP3_Z = 1.0;
 
-    const fwVec3d planPt1 = {PlanP1_X, PlanP1_Y, PlanP1_Z};
-    const fwVec3d planPt2 = {PlanP2_X, PlanP2_Y, PlanP2_Z};
-    const fwVec3d planPt3 = {PlanP3_X, PlanP3_Y, PlanP3_Z};
+    const fwVec3d planPt1 = {{PlanP1_X, PlanP1_Y, PlanP1_Z}};
+    const fwVec3d planPt2 = {{PlanP2_X, PlanP2_Y, PlanP2_Z}};
+    const fwVec3d planPt3 = {{PlanP3_X, PlanP3_Y, PlanP3_Z}};
     fwPlane plane;
     ::fwMath::setValues(plane, planPt1, planPt2, planPt3);
     fwVec3d normal = ::fwMath::getNormal(plane);
@@ -71,16 +71,16 @@ void PlaneFunctionsTest::checkIntersect()
 
     fwVec3d  point;
     fwLine  line;
-    const fwVec3d linePos = {1.0, 2.0, 4.0};
-//  const fwVec3d lineDirection = {1.0, 0.0, 0.0};  // ==> pas d'intercestion
-//  const fwVec3d lineDirection = {3.0, 0.0, 4.0};  // ==> intercestion
-    const fwVec3d lineDirection = {0.0, 0.0, 4.0};  // ==> intersection en (0.0, 0.0, 0.0)
+    const fwVec3d linePos = {{1.0, 2.0, 4.0}};
+//  const fwVec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> pas d'intercestion
+//  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intercestion
+    const fwVec3d lineDirection = {{0.0, 0.0, 4.0}};  // ==> intersection en (0.0, 0.0, 0.0)
 
     line = std::make_pair < fwVec3d, fwVec3d >(linePos, lineDirection);
 
-    const fwVec3d planPt1 = {0.0,0.0,0.0};
-    const fwVec3d planPt2 = {2.0,0.0, 0.0};
-    const fwVec3d planPt3 = {0.0, 2.0, 0.0};
+    const fwVec3d planPt1 = {{0.0,0.0,0.0}};
+    const fwVec3d planPt2 = {{2.0,0.0, 0.0}};
+    const fwVec3d planPt3 = {{0.0, 2.0, 0.0}};
     fwPlane plane;
     ::fwMath::setValues(plane, planPt1, planPt2, planPt3);
     bool intersect =  ::fwMath::intersect( plane, line,  point);
@@ -117,19 +117,19 @@ void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( )
     const double PlanP3_Z = rand()%50 + 0.8;
 
     // New version
-    fwVec3d  point;
+    // fwVec3d  point;
     fwLine  line;
-    const fwVec3d linePos = {LineP1_X, LineP1_Y, LineP1_Z};
-//  const fwVec3d lineDirection = {1.0, 0.0, 0.0};  // ==> pas d'intercestion
-//  const fwVec3d lineDirection = {3.0, 0.0, 4.0};  // ==> intercestion
-    fwVec3d lineDirection = {LineP2_X, LineP2_Y, LineP2_Z};  // ==> intersection en (0.0, 0.0, 0.0)
+    const fwVec3d linePos = {{LineP1_X, LineP1_Y, LineP1_Z}};
+//  const fwVec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> pas d'intercestion
+//  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intercestion
+    fwVec3d lineDirection = {{LineP2_X, LineP2_Y, LineP2_Z}};  // ==> intersection en (0.0, 0.0, 0.0)
     line = std::make_pair < fwVec3d, fwVec3d >(linePos, lineDirection);
-    const fwVec3d planPt1 = {PlanP1_X, PlanP1_Y, PlanP1_Z};
-    const fwVec3d planPt2 = {PlanP2_X, PlanP2_Y, PlanP2_Z};
-    const fwVec3d planPt3 = {PlanP3_X, PlanP3_Y, PlanP3_Z};
+    const fwVec3d planPt1 = {{PlanP1_X, PlanP1_Y, PlanP1_Z}};
+    const fwVec3d planPt2 = {{PlanP2_X, PlanP2_Y, PlanP2_Z}};
+    const fwVec3d planPt3 = {{PlanP3_X, PlanP3_Y, PlanP3_Z}};
     fwPlane plane;
     ::fwMath::setValues(plane, planPt1, planPt2, planPt3);
-    int intersect =  ::fwMath::intersect( plane, line,  point);
+    // int intersect =  ::fwMath::intersect( plane, line,  point);
 
     // Old version
 //  SbLine aLine(SbVec3f(LineP1_X, LineP1_Y, LineP1_Z), SbVec3f(LineP2_X, LineP2_Y, LineP2_Z));
@@ -153,9 +153,9 @@ void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( )
 
 void PlaneFunctionsTest::checkIsInHalfSpace_fwMath_SoLib()
 {
-    const double P1_X = 1.0;
-    const double P1_Y = 0.0;
-    const double P1_Z = 1.0;
+    // const double P1_X = 1.0;
+    // const double P1_Y = 0.0;
+    // const double P1_Z = 1.0;
 
     const double PlanP1_X = 1.0;
     const double PlanP1_Y = 0.0;
@@ -169,15 +169,15 @@ void PlaneFunctionsTest::checkIsInHalfSpace_fwMath_SoLib()
     const double PlanP3_Y = 2.0;
     const double PlanP3_Z = 1.0;
 
-    const fwVec3d point1 = {P1_X, P1_Y, P1_Z};
+    // const fwVec3d point1 = {{P1_X, P1_Y, P1_Z}};
 
-    const fwVec3d planPt1 = {PlanP1_X, PlanP1_Y, PlanP1_Z};
-    const fwVec3d planPt2 = {PlanP2_X, PlanP2_Y, PlanP2_Z};
-    const fwVec3d planPt3 = {PlanP3_X, PlanP3_Y, PlanP3_Z};
+    const fwVec3d planPt1 = {{PlanP1_X, PlanP1_Y, PlanP1_Z}};
+    const fwVec3d planPt2 = {{PlanP2_X, PlanP2_Y, PlanP2_Z}};
+    const fwVec3d planPt3 = {{PlanP3_X, PlanP3_Y, PlanP3_Z}};
     fwPlane plane;
     ::fwMath::setValues(plane, planPt1, planPt2, planPt3);
 
-    bool result = ::fwMath::isInHalfSpace(plane, point1);
+    // bool result = ::fwMath::isInHalfSpace(plane, point1);
 
 
 //  SbPlane sbPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
@@ -204,14 +204,14 @@ void PlaneFunctionsTest::checkOffset()
     const double PlanP3_Y = 2.0;
     const double PlanP3_Z = 1.0;
 
-    const fwVec3d planPt1 = {PlanP1_X, PlanP1_Y, PlanP1_Z};
-    const fwVec3d planPt2 = {PlanP2_X, PlanP2_Y, PlanP2_Z};
-    const fwVec3d planPt3 = {PlanP3_X, PlanP3_Y, PlanP3_Z};
+    const fwVec3d planPt1 = {{PlanP1_X, PlanP1_Y, PlanP1_Z}};
+    const fwVec3d planPt2 = {{PlanP2_X, PlanP2_Y, PlanP2_Z}};
+    const fwVec3d planPt3 = {{PlanP3_X, PlanP3_Y, PlanP3_Z}};
     fwPlane plane;
     ::fwMath::setValues(plane, planPt1, planPt2, planPt3);
 
     ::fwMath::offset(plane,OFFSET );
-    double result = ::fwMath::getDistance(plane);
+    // double result = ::fwMath::getDistance(plane);
 
 //  SbPlane sbPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));
 //  sbPlane.offset(OFFSET);
@@ -222,8 +222,8 @@ void PlaneFunctionsTest::checkOffset()
 
 void PlaneFunctionsTest::checkTransform()
 {
-    const fwVec3d normal = {0.2, 0.6, 0.8};
-    const double distance = 0.28;
+    // const fwVec3d normal = {{0.2, 0.6, 0.8}};
+    // const double distance = 0.28;
 
     const double c1 = rand()%40+0.8;
     const double c2 = rand()%1+0.1;
@@ -244,12 +244,12 @@ void PlaneFunctionsTest::checkTransform()
     const double PlanP3_Z = rand()%50 + 0.8;
 
 
-    const fwVec3d planPt1 = {PlanP1_X, PlanP1_Y, PlanP1_Z};
-    const fwVec3d planPt2 = {PlanP2_X, PlanP2_Y, PlanP2_Z};
-    const fwVec3d planPt3 = {PlanP3_X, PlanP3_Y, PlanP3_Z};
+    const fwVec3d planPt1 = {{PlanP1_X, PlanP1_Y, PlanP1_Z}};
+    const fwVec3d planPt2 = {{PlanP2_X, PlanP2_Y, PlanP2_Z}};
+    const fwVec3d planPt3 = {{PlanP3_X, PlanP3_Y, PlanP3_Z}};
     fwPlane plane;
     ::fwMath::setValues(plane, planPt1, planPt2, planPt3);
-    const fwMatrix4x4 matrice = {1,c1,0,c2, c3,1,c1,0, c4,0,1,c5, 0,c1,c2,c4 };
+    const fwMatrix4x4 matrice = {{{{1,c1,0,c2}}, {{c3,1,c1,0}}, {{c4,0,1,c5}}, {{0,c1,c2,c4 }}}};
     ::fwMath::transform(plane, matrice);
 
 //  SbPlane soPlane(SbVec3f(PlanP1_X, PlanP1_Y, PlanP1_Z), SbVec3f(PlanP2_X, PlanP2_Y, PlanP2_Z), SbVec3f(PlanP3_X, PlanP3_Y, PlanP3_Z));

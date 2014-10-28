@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,19 @@
 #ifndef _FWDATA_MESH_HPP_
 #define _FWDATA_MESH_HPP_
 
+#include <camp/class.hpp>
+
+#include <fwCore/macros.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/multi_array.hpp>
 #include "fwData/Array.hpp"
 #include "fwData/Exception.hpp"
-#include "fwData/Mesh.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
 #include "fwData/config.hpp"
+#include "fwData/Array.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
 
 namespace fwData
 {
@@ -23,7 +28,7 @@ namespace fwData
  * @class   Mesh
  * @brief   Data holding a geometric structure composed of points, lines,
  * triangles, quads or polygons
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  *
  * It is the new structure that represent mesh in fw4spl. For the moment, this new structure is available
@@ -73,9 +78,10 @@ class FWDATA_CLASS_API Mesh : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::Factory::New< Mesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >) ;
 
-    fwDataObjectMacro();
+
+    fwCampMakeFriendDataMacro((fwData)(Mesh));
 
 
     typedef std::map< std::string, ::fwData::Array::sptr > ArrayMapType;
@@ -88,7 +94,8 @@ public:
         EDGE,
         TRIANGLE,
         QUAD,
-        POLY
+        POLY,
+        TETRA
     } CellTypesEnum;
 
     typedef enum {
@@ -112,11 +119,21 @@ public:
     typedef boost::multi_array_ref<NormalValueType   , 2> PointNormalsMultiArrayType;
     typedef boost::multi_array_ref<NormalValueType   , 2> CellNormalsMultiArrayType;
 
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Mesh(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Mesh() ;
+
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Mesh::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Mesh::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 
     /**
@@ -277,12 +294,6 @@ protected:
      * @brief Initializes points, cell-types, cell-data, and cell-data-offsets arrays.
      */
     FWDATA_API void initArrays();
-
-    /// Constructor, cannot be called directly, use Mesh::New()
-    FWDATA_API Mesh();
-
-    /// Destructor
-    FWDATA_API virtual ~Mesh() ;
 
     /// Number of points defined for the mesh
     Id m_nbPoints;

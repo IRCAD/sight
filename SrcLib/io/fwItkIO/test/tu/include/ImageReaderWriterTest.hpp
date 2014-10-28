@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,7 @@ private :
 
 
    void stressTestInrWithType(::fwTools::Type type, int nbTest);
-   void checkSaveLoadInr( ::fwData::Image::NewSptr image );
+   void checkSaveLoadInr( ::fwData::Image::sptr image );
 };
 
 } //namespace ut

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,7 @@ namespace fwRuntime
  * @brief   Defines the extension point class.
  * @struct  ExtensionPoint
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct ExtensionPoint : public BundleElement
 {
@@ -94,7 +94,7 @@ struct ExtensionPoint : public BundleElement
                 std::copy( extension->begin(), extension->end(), output);
             }
             OSLM_DEBUG_IF("getAllConfigurationElements for point=" <<  extension->getPoint() <<
-                    " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnable())
+                          " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnable());
         }
     }
 

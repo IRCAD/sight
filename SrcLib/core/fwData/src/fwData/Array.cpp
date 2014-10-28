@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,8 @@
 #include <functional>
 #include <numeric>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Array.hpp"
 
@@ -51,10 +50,10 @@ inline size_t computeSize(
 
 //------------------------------------------------------------------------------
 
-Array::Array():
+Array::Array( ::fwData::Object::Key key ):
     m_strides(0),
     m_type(),
-    m_attrBufferObject(::fwTools::BufferObject::New()),
+    m_attrBufferObject(::fwMemory::BufferObject::New()),
     m_size(0),
     m_nbOfComponents(0),
     m_isBufferOwner(true)
@@ -84,27 +83,31 @@ void Array::swap( Array::sptr _source )
 
 //------------------------------------------------------------------------------
 
-void Array::deepCopy( Array::csptr _source )
+void Array::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
+    Array::csptr other = Array::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
 
     this->clear();
 
-    if( !_source->m_attrBufferObject->isEmpty() )
+    if( !other->m_attrBufferObject->isEmpty() )
     {
-        ::fwTools::BufferObject::Lock lockerDest(m_attrBufferObject);
-        this->resize(_source->m_type, _source->m_size, _source->m_nbOfComponents, true);
+        ::fwMemory::BufferObject::Lock lockerDest(m_attrBufferObject);
+        this->resize(other->m_type, other->m_size, other->m_nbOfComponents, true);
         char * buffDest = static_cast< char * >( lockerDest.getBuffer() );
-        ::fwTools::BufferObject::Lock lockerSource(_source->m_attrBufferObject);
+        ::fwMemory::BufferObject::Lock lockerSource(other->m_attrBufferObject);
         char * buffSrc = static_cast< char * >( lockerSource.getBuffer() );
-        std::copy(buffSrc, buffSrc+_source->getSizeInBytes(), buffDest );
+        std::copy(buffSrc, buffSrc+other->getSizeInBytes(), buffDest );
     }
     else
     {
-        m_strides        = _source->m_strides;
-        m_type           = _source->m_type;
-        m_size           = _source->m_size;
-        m_nbOfComponents = _source->m_nbOfComponents;
+        m_strides        = other->m_strides;
+        m_type           = other->m_type;
+        m_size           = other->m_size;
+        m_nbOfComponents = other->m_nbOfComponents;
     }
 }
 

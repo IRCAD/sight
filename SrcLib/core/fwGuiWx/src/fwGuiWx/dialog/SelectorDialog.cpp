@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,12 +16,12 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwWX/convert.hpp>
+#include <fwGui/registry/macros.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/dialog/SelectorDialog.hpp"
 
-REGISTER_BINDING( ::fwGui::dialog::ISelectorDialog, ::fwGuiWx::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::FactoryRegistryKeyType , ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiWx::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
 
 namespace fwGuiWx
 {
@@ -30,7 +30,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog() : m_title(""), m_message("")
+SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key) : m_title(""), m_message("")
 {}
 
 //------------------------------------------------------------------------------
@@ -56,14 +56,14 @@ void SelectorDialog::setTitle(std::string _title)
 
 std::string SelectorDialog::show()
 {
-    wxDialog* dialog = new wxDialog( wxTheApp->GetTopWindow(), wxNewId(), ::fwWX::std2wx(this->m_title),
+    wxDialog* dialog = new wxDialog( wxTheApp->GetTopWindow(), wxNewId(), ::fwGuiWx::std2wx(this->m_title),
             wxDefaultPosition, wxDefaultSize,
             wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX );
 
     wxArrayString items;
     BOOST_FOREACH( std::string selection, m_selections)
     {
-        items.Add( ::fwWX::std2wx(selection) );
+        items.Add( ::fwGuiWx::std2wx(selection) );
     }
 
     // Creates the static fields.
@@ -73,8 +73,8 @@ std::string SelectorDialog::show()
 
     // Creates the default buttons.
     wxSizer  * defaultButtonSizer = new wxBoxSizer( wxHORIZONTAL );
-    wxButton * okButton = new wxButton( dialog, wxID_OK, _("OK") );
-    wxButton * cancelButton = new wxButton( dialog, wxID_CANCEL, _("Cancel") );
+    wxButton * okButton = new wxButton( dialog, wxID_OK, wxGetTranslation("OK") );
+    wxButton * cancelButton = new wxButton( dialog, wxID_CANCEL, wxGetTranslation("Cancel") );
 
     okButton->SetDefault();
     defaultButtonSizer->Add( okButton, 0, 0 );
@@ -85,7 +85,7 @@ std::string SelectorDialog::show()
     wxSizer * rootSizer = new wxBoxSizer( wxVERTICAL );
     if(!m_message.empty())
     {
-        wxStaticText* msgText = new wxStaticText(dialog, wxNewId(), ::fwWX::std2wx(m_message));
+        wxStaticText* msgText = new wxStaticText(dialog, wxNewId(), ::fwGuiWx::std2wx(m_message));
         rootSizer->Add( msgText, 0, wxGROW|wxALL, 10 );
     }
     rootSizer->Add( typeCtrl, 0, wxGROW|wxALL, 10 );

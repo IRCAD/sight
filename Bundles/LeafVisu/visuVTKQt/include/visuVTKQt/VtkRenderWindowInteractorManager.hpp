@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,14 +23,21 @@ QT_BEGIN_NAMESPACE
 class QVTKWidget;
 QT_END_NAMESPACE
 
+namespace fwGuiQt
+{
+namespace container
+{
+class QtContainer;
+}
+}
 
 namespace visuVTKQt
 {
 
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
- * @class   VtkRenderWindowInteractorManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   VtkRenderWindowInteractorManager
+ *
  * @date    2009-2010.
  *
  */
@@ -39,12 +46,11 @@ class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVT
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)(::fwRenderVTK::IVtkRenderWindowInteractorManager) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (VtkRenderWindowInteractorManager)
+                                                (::fwRenderVTK::IVtkRenderWindowInteractorManager) )
 
-    /// Constructor. Do nothing.
-    VISUVTKQT_API VtkRenderWindowInteractorManager();
+    VISUVTKQT_API VtkRenderWindowInteractorManager(::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key);
 
-    /// Destructor. Do nothing.
     VISUVTKQT_API virtual ~VtkRenderWindowInteractorManager();
 
     /// Creates an interactor and installs it in window.
@@ -61,6 +67,8 @@ private:
     QPointer<QVTKWidget> m_qVTKWidget;
 
     vtkRenderWindowInteractor *m_interactor;
+
+    SPTR(::fwGuiQt::container::QtContainer) m_parentContainer;
 
 };
 

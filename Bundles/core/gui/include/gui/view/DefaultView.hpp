@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,8 +20,8 @@ namespace view
 
 /**
  * @brief   Defines the generic layout for application.
- * @class   DefaultView.
- * @author  IRCAD (Research and Development Team)
+ * @class   DefaultView
+ * 
 
  * @date    2009-2010.
  */
@@ -39,29 +39,33 @@ public :
 
 protected :
 
-    /** @name Service methods ( override from ::fwServices::IService )
+    /**
+     * @name Service methods ( override from ::fwServices::IService )
      * @{
      */
 
     /**
      * @brief This method is used to configure the class parameters.
+     * @see ::fwGui::IGuiContainerSrv::initialize()
      */
     GUI_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**
      * @brief Register a view with defined id.
+     * @see ::fwGui::IGuiContainerSrv::create()
      */
     GUI_API virtual void starting() throw(::fwTools::Failed);
 
     /**
      * @brief This method remove the view in the frame.
+     * @see ::fwGui::IGuiContainerSrv::destroy()
      */
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
 
     /**
      * @brief This method is used to update services. Do nothing.

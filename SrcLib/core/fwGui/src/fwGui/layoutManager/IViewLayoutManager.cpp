@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IViewLayoutManagerBase.cpp
+ * @file fwGui/layoutManager/IViewLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a layout geometry.
  *
- * @author IRCAD (Research and Development Team).
+ *
  * @date 2009-2010
  */
 
@@ -37,6 +37,7 @@ void IViewLayoutManager::destroySubViews()
 {
     BOOST_FOREACH( ::fwGui::container::fwContainer::sptr container, m_subViews)
     {
+        container->clean();
         container->destroyContainer();
     }
     m_subViews.clear();

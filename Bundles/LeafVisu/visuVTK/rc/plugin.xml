@@ -6,7 +6,6 @@
     <requirement id="servicesReg"/>
     <requirement id="visu" />
 
-    <!--    REGISTER_SERVICE( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite) ;    -->
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
         <service>::fwRenderVTK::VtkRenderService</service>

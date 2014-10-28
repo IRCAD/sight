@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,13 +8,15 @@
 #define _FWDATA_ARRAY_HPP_
 
 #include <fwTools/Type.hpp>
-#include <fwTools/BufferObject.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include "fwData/Exception.hpp"
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Array), FWDATA_API);
 
 namespace fwData
 {
@@ -25,15 +27,16 @@ namespace fwData
  * If the array own his buffer, it will perform the allocation, reallocation,
  * destruction of the buffer. Else, this class will provide a array "view" of the
  * buffer
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2011.
  */
 class FWDATA_CLASS_API Array : public ::fwData::Object
 {
 public :
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Array)(::fwData::Object), (()), ::fwData::Factory::New< Array >) ;
-    fwDataDeepCopyMacro();
+    fwCoreClassDefinitionsWithFactoryMacro( (Array)(::fwData::Object), (()), ::fwData::factory::New< Array >) ;
+
+    fwCampMakeFriendDataMacro((fwData)(Array));
 
     /**
      * @brief Array size type
@@ -53,8 +56,17 @@ public :
      * public API
      */
 
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Array( ::fwData::Object::Key key );
+
+    FWDATA_API virtual ~Array();
+
+
     /// Defines deep copy
-    FWDATA_API void deepCopy( Array::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -212,16 +224,12 @@ public :
      */
     FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
-    fwDataGetSetSptrMacro(BufferObject, ::fwTools::BufferObject::sptr);
+    fwDataGetSetSptrMacro(BufferObject, ::fwMemory::BufferObject::sptr);
 
     /// Exchanges the content of the Array with the content of _source.
     FWDATA_API void swap( Array::sptr _source );
 
 protected:
-
-    FWDATA_API Array();
-
-    FWDATA_API virtual ~Array();
 
     /// Not implemented
     Array( const Array& );
@@ -230,7 +238,7 @@ protected:
 
     OffsetType m_strides;
     ::fwTools::Type m_type;
-    ::fwTools::BufferObject::sptr m_attrBufferObject;
+    ::fwMemory::BufferObject::sptr m_attrBufferObject;
     SizeType m_size;
     size_t m_nbOfComponents;
     bool m_isBufferOwner;

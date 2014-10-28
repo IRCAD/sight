@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IMenuLayoutManager.hpp
+ * @file fwGui/layoutManager/IMenuLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a menu.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
 #ifndef _FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_
 #define _FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
@@ -30,15 +30,15 @@ namespace layoutManager
 
 /**
  * @brief   Defines the menu layout manager for IHM.
- * @class   IMenuLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMenuLayoutManager
+ * 
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMenuLayoutManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMenuLayoutManager : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMenuLayoutManager)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMenuLayoutManager)(::fwGui::GuiBaseObject) )
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
@@ -101,7 +101,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-       <service uid="myMenu" type="::fwGui::IMenuSrv" implementation="::gui::aspect::DefaultMenuSrv" autoComChannel="no" >
+       <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="My item 1" shortcut="1" style="check" />
@@ -124,15 +124,15 @@ public:
        </service>
        @endverbatim
      * This method analyzes the gui section of the configuration.
-     * - <layout> (mandatory) : give the list of the menu item that will appear in the menu.
-     * - <menuItem name="My item 1" shortcut="1" style="check" specialAction="NEW" /> :
+     * - \<layout\> (mandatory) : give the list of the menu item that will appear in the menu.
+     * - \<menuItem name="My item 1" shortcut="1" style="check" specialAction="NEW" /\> :
      *  - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *  - \b shortcut : give the shortcut for this menu item.
      *  - \b style {check|radio} : give the style of the menu item.
      *  - \b specialAction {DEFAULT | QUIT | NEW | ABOUT | HELP}: specify a pre define action. If it isn't define the value is DEFAULT.
-     * - <menu name="My menu" /> :
+     * - \<menu name="My menu" /\> :
      *  - \b name (mandatory) : give the name of the menu that will appear in the interface.
-     * - <separator/> : allow to divide the menu by part (draw a line).
+     * - \<separator/\> : allow to divide the menu by part (draw a line).
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 

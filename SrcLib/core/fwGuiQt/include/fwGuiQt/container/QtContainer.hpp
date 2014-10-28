@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,8 +29,8 @@ namespace container
 
 /**
  * @brief   Defines the QWidget container for IHM.
- * @class   QtContainer.
- * @author  IRCAD (Research and Development Team).
+ * @class   QtContainer
+ * 
  * @date    2009-2010.
  *
  */
@@ -39,16 +39,12 @@ class FWGUIQT_CLASS_API QtContainer : public ::fwGui::container::fwContainer
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (QtContainer)(::fwGui::container::fwContainer), (()), new QtContainer );
+    fwCoreClassDefinitionsWithFactoryMacro( (QtContainer)(::fwGui::container::fwContainer),
+                                            (()),
+                                            ::fwGui::factory::New< QtContainer > );
 
-    /**
-     * @brief   Constructor.
-     */
-    FWGUIQT_API QtContainer() throw() ;
+    FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) throw() ;
 
-    /**
-     * @brief   Destructor. Do nothing.
-     */
     FWGUIQT_API virtual ~QtContainer() throw() ;
 
 

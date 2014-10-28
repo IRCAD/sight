@@ -46,6 +46,12 @@
         <service>::gui::action::StarterActionService</service>
         <object>::fwData::Object</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::SSlotCaller</service>
+        <object>::fwData::Object</object>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IToolBarSrv</type>
@@ -62,13 +68,13 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ConfigActionSrvWithKey</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Object</object>
     </extension>
-
+    
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::gui::action::ConfigActionSrvWithKeySendingConfigTemplate</service>
-        <object>::fwData::Composite</object>
+        <service>::gui::action::SConfigLauncher</service>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -77,12 +83,6 @@
         <object>::fwData::Object</object>
     </extension>
     
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IDeliveryDelegate</type>
-        <service>::fwGui::MessageHandler</service>
-        <object>::fwData::Object</object>
-    </extension>
-
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ActionNotifyService</service>
@@ -94,5 +94,11 @@
         <service>::gui::action::PushObjectSrv</service>
         <object>::fwData::Composite</object>
     </extension>
-    
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::SSignal</service>
+        <object>::fwData::Object</object>
+    </extension>
+
 </plugin>

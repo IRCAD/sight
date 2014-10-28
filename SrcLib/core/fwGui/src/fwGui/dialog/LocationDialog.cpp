@@ -1,8 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
 
 
 #include "fwGui/dialog/LocationDialog.hpp"
@@ -15,7 +16,8 @@ namespace dialog
 
 LocationDialog::LocationDialog()
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::ILocationDialog>( ::fwGui::dialog::ILocationDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
 }
 
 //------------------------------------------------------------------------------

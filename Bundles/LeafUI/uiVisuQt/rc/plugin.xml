@@ -1,35 +1,35 @@
 <plugin id="uiVisuQt" class="::uiVisuQt::Plugin">
     <library name="uiVisuQt"/>
-    
+
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
     <requirement id="gui"/>
-    
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwData::Object ) ;-->
+
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::SnapshotEditor</service>
         <object>::fwData::Object</object>
     </extension>
 
-    <!--    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::TransformationMatrixEditor , ::fwData::TransformationMatrix3D ) ;-->
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::TransformationMatrixEditor</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
 
-    <!-- REGISTER_SERVICE( ::gui::editor::IEditor, ::uiVisu::PointEditor, ::fwData::Composite ); -->
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::PointEditor</service>
         <object>::fwData::Composite</object>
     </extension>
-  
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::BasicFloatEditor</service>
         <object>::fwData::Float</object>
     </extension>
-      
+
 </plugin>

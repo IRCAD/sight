@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 
@@ -33,12 +32,12 @@ namespace uiVisu
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiVisu::action::CameraOrientationAction , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::CameraOrientationAction , ::fwData::Image ) ;
 
 
 CameraOrientationAction::CameraOrientationAction() throw() : m_orientation("axial")
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -92,10 +91,10 @@ void CameraOrientationAction::updating() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwData::String::NewSptr dataInfo;
+    ::fwData::String::sptr dataInfo = ::fwData::String::New();
     dataInfo->value() = m_orientation;
 
-    ::fwComEd::ImageMsg::NewSptr imageMsg;
+    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "CAMERA_ORIENTATION", dataInfo );
     ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
 }
@@ -108,7 +107,7 @@ void CameraOrientationAction::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void CameraOrientationAction::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void CameraOrientationAction::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 

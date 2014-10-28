@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,8 +25,8 @@ namespace uiImage
 
 /**
  * @brief   ImageInfo service allows to display image pixel information.
- * @class   ImageInfo.
- * @author  IRCAD (Research and Development Team).
+ * @class   ImageInfo
+ * 
  * @date    2010.
  */
 class UIIMAGEQT_CLASS_API ImageInfo : public QObject, public ::gui::editor::IEditor
@@ -37,14 +37,11 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (ImageInfo)(::gui::editor::IEditor) ) ;
 
-
-protected:
-
-    /// Constructor. Do nothing.
     UIIMAGEQT_API ImageInfo() throw() ;
 
-    /// Destructor. Do nothing.
     UIIMAGEQT_API virtual ~ImageInfo() throw() ;
+
+protected:
 
     /// Starts editor.
     virtual void starting() throw(::fwTools::Failed);
@@ -53,7 +50,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Receive InteractionMsg and updates text informations
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 

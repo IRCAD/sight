@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,8 +21,8 @@ namespace fwRender
 
 /**
  * @brief   Defines the service interface managing the rendering service for object.
- * @class   IRender.
- * @author  IRCAD (Research and Development Team).
+ * @class   IRender
+ * 
  * @date    2007-2009.
  *
  * Use the base service methods :

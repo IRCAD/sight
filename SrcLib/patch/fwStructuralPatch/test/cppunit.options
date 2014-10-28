@@ -1,0 +1,25 @@
+CLASSTEST=[
+          # test for creators
+          'Patient1Test',
+          'Series1Test',
+          'Study1Test',
+          'ModelSeries1Test',
+          'Equipment1Test',
+          # test for structural patches
+          'V1ToV2Test',
+          'V1ToFwMedDataImageSeriesV1Test',
+          'V1ToFwMedDataPatientV1Test',
+          'V1ToFwMedDataStudyV1Test',
+          ]
+
+USE = ['boost']
+LIB = [
+       'fwData_0-1',
+       'fwDataCamp_0-1',
+       'fwTools_0-1',
+       'fwCore_0-1',
+       'fwTest_0-1',
+       'fwStructuralPatch_0-1',
+       ]
+CONSOLE = 'yes'
+LOGLEVEL='trace'

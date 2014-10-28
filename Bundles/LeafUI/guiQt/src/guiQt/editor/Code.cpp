@@ -1,8 +1,12 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <QHBoxLayout>
 
 #include <fwCore/base.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <fwData/String.hpp>
 
@@ -24,7 +28,7 @@ namespace guiQt
 namespace editor
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::guiQt::editor::Code , ::fwData::String ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::guiQt::editor::Code , ::fwData::String ) ;
 
 //------------------------------------------------------------------------------
 
@@ -35,7 +39,7 @@ const std::string Code::CPP    = "Cpp";
 
 Code::Code() throw() : m_language(PYTHON)
 {
-    addNewHandledEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED);
+    //addNewHandledEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +74,7 @@ void Code::starting() throw(::fwTools::Failed)
     }
     else
     {
-        OSLM_WARN("Language "<<m_language<<" not yet supported.")
+        OSLM_WARN("Language "<<m_language<<" not yet supported.");
     }
 
     container->setLayout( layout );
@@ -129,11 +133,11 @@ void Code::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void Code::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Code::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::StringMsg::csptr stringMsg = ::fwComEd::StringMsg::dynamicConstCast(_msg);
 
-    if (stringMsg)
+    if (stringMsg && stringMsg->hasEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED))
     {
         this->updating();
     }
@@ -152,8 +156,8 @@ void Code::onModifyValue()
 {
     QString value = m_valueCtrl->toPlainText();
     ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
-    ::fwData::String::NewSptr oldValue;
-    oldValue->deepCopy(stringObj);
+    ::fwData::String::sptr oldValue;
+    oldValue = ::fwData::Object::copy(stringObj);
 
     std::string strValue = value.toStdString();
     stringObj->value() = strValue;
@@ -161,7 +165,7 @@ void Code::onModifyValue()
     if ( oldValue->value() != stringObj->value() )
     {
         OSLM_TRACE( stringObj->getID() << " modified");
-        ::fwComEd::StringMsg::NewSptr msg;
+        ::fwComEd::StringMsg::sptr msg = ::fwComEd::StringMsg::New();
         msg->addEvent( ::fwComEd::StringMsg::VALUE_IS_MODIFIED );
         ::fwServices::IEditionService::notify(this->getSptr(), stringObj, msg);
     }

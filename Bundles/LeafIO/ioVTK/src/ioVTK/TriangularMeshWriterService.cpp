@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <vtkIO/TriangularMeshWriter.hpp>
+#include <fwVtkIO/TriangularMeshWriter.hpp>
 
 #include "ioVTK/TriangularMeshWriterService.hpp"
 
@@ -30,17 +30,7 @@
 namespace ioVTK
 {
 
-REGISTER_SERVICE( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh ) ;
-
-//------------------------------------------------------------------------------
-
-TriangularMeshWriterService::TriangularMeshWriterService() throw()
-{}
-
-//------------------------------------------------------------------------------
-
-TriangularMeshWriterService::~TriangularMeshWriterService() throw()
-{}
+fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh ) ;
 
 //------------------------------------------------------------------------------
 
@@ -104,7 +94,7 @@ void TriangularMeshWriterService::info(std::ostream &_sstream )
 void TriangularMeshWriterService::saveMesh( const ::boost::filesystem::path vtkFile, ::fwData::TriangularMesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
-    ::vtkIO::TriangularMeshWriter::NewSptr myWriter;
+    ::fwVtkIO::TriangularMeshWriter::sptr myWriter = ::fwVtkIO::TriangularMeshWriter::New();
 
     myWriter->setObject(_pMesh);
     myWriter->setFile(vtkFile);

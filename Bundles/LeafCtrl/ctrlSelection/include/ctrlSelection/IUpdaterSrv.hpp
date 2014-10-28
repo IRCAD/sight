@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,10 +20,11 @@ namespace ctrlSelection
 {
 
 /**
- * @class   IUpdaterSrv.
- * @brief   An updater is attached on a composite. It is use to add, swap and remove object in the composite when it receive specific message (declared in configuration)
- * and send corresponding message message. It work mainly with a IManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   IUpdaterSrv
+ * @brief   An updater is attached on a composite. It is use to add, swap and remove object in the composite when it
+ * receives specific message (declared in configuration) and sends corresponding message message.
+ * It work mainly with a IManager.
+ * 
  * @date    2007-2009.
  */
 class CTRLSELECTION_CLASS_API IUpdaterSrv : public ::fwServices::IService
@@ -68,11 +69,11 @@ protected:
      * Sample of declaration configuration :
      *
      * @verbatim
-         <update compositeKey="myImage" onEvent="NEW_PATIENT" fromUID="myPatientDB" actionType="ADD_OR_SWAP" />
-         <update compositeKey="myImage" onEvent="CLEAR_PATIENT" fromUID="myPatientDB" actionType="REMOVE" />
+         <update compositeKey="reconstructionKey" onEvent="NEW_RECONSTRUCTION" fromUID="modelSeriesUid" actionType="ADD_OR_SWAP" />
+         <update compositeKey="reconstructionKey" onEvent="CLEAR" fromUID="modelSeriesUid" actionType="REMOVE" />
        @endverbatim
-     * Here, when the updater receives a message with the NEW_PATIENT event from the object "myPatientDB" the object myImage is added or swapped in the composite.
-     * When the updater receives a message with the CLEAR_PATIENT event from the object "myPatientDB" the object myImage is removed from the composite
+     * Here, when the updater receives a message with the NEW_RECONSTRUCTION event from the object "modelSeriesUid" the object reconstructionKey is added or swapped in the composite.
+     * When the updater receives a message with the CLEAR event from the object "modelSeriesUid" the object reconstructionKey is removed from the composite
      *
      * The actionType can be : ADD, ADD_OR_SWAP, SWAP, REMOVE, REMOVE_IF_PRESENT and DO_NOTHING
      */

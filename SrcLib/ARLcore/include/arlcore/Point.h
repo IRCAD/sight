@@ -1,17 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef _ARLCORE_POINT_H
 #define _ARLCORE_POINT_H
+
+#include <boost/make_shared.hpp>
+
+#include <fwCore/macros.hpp>
 #include <arlcore/Common.h>
 
 #include <vector>
 #include <vnl/vnl_vector.h>
 #include <vnl/vnl_vector_fixed.h>
 #include <vnl/vnl_matrix.h>
+
+#include <fwTools/Object.hpp>
 
 #include <arlcore/Common.h>
 #include <arlcore/Object.h>
@@ -27,32 +33,52 @@ namespace arlCore
     static std::string ARLCORE_SHAPE_NAMES[ARLCORE_SHAPE_NBSHAPES]={ "ARLCORE_SHAPE_UNKNOWN", "ARLCORE_SHAPE_CUBE", "ARLCORE_SHAPE_SPHERE", "ARLCORE_SHAPE_SPHERESURFACE", "ARLCORE_SHAPE_SPHERE_CAP", "ARLCORE_SHAPE_DISC", "ARLCORE_SHAPE_PLAINSQUARE", "ARLCORE_SHAPE_CIRCLE",
          "ARLCORE_SHAPE_EDGESQUARE", "ARLCORE_SHAPE_SOLIDANGLE", "ARLCORE_SHAPE_SOLIDANGLE_SURFACE",", ARLCORE_SHAPE_CHESSBOARD"};
 
-    class Point : public Object
+    class Point : public  Object
     {
     /**
      * @class   Point
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Point with a dimension that can be specified by the user. This class allows
      * to attribute several important properties to a point. Generally, these properties
      * are used in image processing algorithms:
      * - coordinates : corresponds to the N coordinates of the point
      * - type : corresponds to what the point physically represents in the world. This can be
-     * a radio-opaque markers, a point detected from a structured light pattern, a point 
+     * a radio-opaque markers, a point detected from a structured light pattern, a point
      * from an ARToolkit pattern...
      * - confidence : in the case you are detecting points in an image and you want to associate
      * a confidence value about its detection
      * - status : gives an information on how the point life when the software is running
-     * - covariance matrix : you can associate a covariance matrix with to the point. This is 
+     * - covariance matrix : you can associate a covariance matrix with to the point. This is
      * very useful for registration alogrithm that takes into account the uncertainty on the point
-     * detection/reconstruction 
+     * detection/reconstruction
      * - visibility : when you are tracking a chessboard for example, this boolean can help you
-     * to indicate which point of the chessboard are visible or not. Then, you can select 
+     * to indicate which point of the chessboard are visible or not. Then, you can select
      * very easily the visible points only in your algorithms
      */
     public:
-        typedef Point* sptr;
-        typedef Point const * csptr;
+
+
+        fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwTools::Object),
+                                                   ((::boost::make_shared< Point > ,() ))
+                                                   ((PointFactory ,((Point::csptr)) ))
+                                                   ((PointFactory ,((int)) ))
+                                                   ((PointFactory ,((double)) ((double)) ))
+                                                   ((PointFactory ,((double)) ((double)) ((double)) ))
+                                                   );
+
+        ARLCORE_API static Point::sptr PointFactory( Point::csptr p );
+        ARLCORE_API static Point::sptr PointFactory( int );
+        ARLCORE_API static Point::sptr PointFactory( double x, double y );
+        ARLCORE_API static Point::sptr PointFactory( double x, double y, double z );
+
+
+        /******* VAG transpose from Object ****/
+        //! @return Is the object OK ? VAG transpose from inheritance of Object
+        ARLCORE_API bool isOK( void ) const;
+        ARLCORE_API bool setOK( bool b=true );
+
+        //! @brief Setup 'updateIndex' if an extern modification occurs
+        ARLCORE_API void update( void );
 
         //! @brief Type of point (Origin)
         enum ARLCORE_POINT_TYPE { ARLCORE_POINT_TYPE_UNKNOWN, ARLCORE_POINT_TYPE_ARTK, ARLCORE_POINT_TYPE_MRO, ARLCORE_POINT_TYPE_CHESS, ARLCORE_POINT_TYPE_ROI, ARLCORE_POINT_TYPE_CLOUD, ARLCORE_POINT_TYPE_TIP, ARLCORE_POINT_TYPE_TOP, ARLCORE_POINT_TYPE_LINE, ARLCORE_POINT_TYPE_SIFT, ARLCORE_POINT_NBTYPES };
@@ -70,7 +96,7 @@ namespace arlCore
         ARLCORE_API Point( double x, double y, double z, ARLCORE_POINT_TYPE type=ARLCORE_POINT_TYPE_UNKNOWN, long int date=0, long int time=0 );
 
         //! @brief Copy constructor
-        ARLCORE_API Point( const Point& );
+        ARLCORE_API Point( CSPTR( Point )  );
 
         /**
         * @brief Initialization : Set default value
@@ -79,13 +105,13 @@ namespace arlCore
         ARLCORE_API void init( unsigned int dim );
 
         //! @brief Affectation
-        ARLCORE_API Point& operator=(const Point&);
+        ARLCORE_API Point& operator=(CSPTR( Point ) );
 
         //! @brief Copy p in the current point
-        ARLCORE_API void copy( const Point& p );
+        ARLCORE_API void copy( CSPTR( Point )  p );
 
         //! @brief Destructor
-        ARLCORE_API ~Point( void );
+        ARLCORE_API virtual ~Point( void );
 
         //! @return Description of the current point
         ARLCORE_API std::string getString( void ) const;
@@ -97,16 +123,16 @@ namespace arlCore
         ARLCORE_API bool save( std::fstream &f, unsigned no=0, ARLCORE_POINT_SAVE_TYPE=ARLCORE_POINT_SAVE_FULL ) const;
 
         //! @brief Add the current point into a SmartPointList open file stream
-        ARLCORE_API bool save( std::fstream &f, unsigned int cam, void* tag, int fringe ) const;
+        ARLCORE_API bool save( std::fstream &f, unsigned int cam,  SPTR(void) videoTag , int fringe ) const;
 
         //! @brief Load a point
         ARLCORE_API bool load( const std::string &fileName );
 
         //! @brief Load a point from an open file stream
         ARLCORE_API bool load( std::ifstream &f, int &no, unsigned int dim=0 );
-        
+
         //! @brief Load a point from an open SmartPointList file stream
-        ARLCORE_API bool load( std::ifstream &f, unsigned int &cam, void* &tag, int &fringe );
+        ARLCORE_API bool load( std::ifstream &f, unsigned int &cam,  SPTR(void) tag, int &fringe );
 
         //! @return Is the point visible?
         ARLCORE_API bool isVisible() const;
@@ -142,24 +168,24 @@ namespace arlCore
         ARLCORE_API bool isColored() const;
 
         // Accesses coordinates of the point
-        //! @return Value of the ième coordinate
+        //! @return Value of the iÃ¨me coordinate
         ARLCORE_API double get( unsigned int i ) const;
 
-        //! @brief Set the ième coordinate with v
+        //! @brief Set the iÃ¨me coordinate with v
         ARLCORE_API bool set( unsigned int i, double v );
 
         //! @brief Set the current point with p if it has the same dimension
-        ARLCORE_API bool set( const Point& p );
+        ARLCORE_API bool set( CSPTR( Point )  p );
 
         //! @brief Fill all coordinates with v
         ARLCORE_API void fill( double v );
 
         /**
-        * @brief TODO Modifie la valeur du point en l'équipondérant avec p et les précédentes pondérations
-        * Pondérer n points à partir d'un point nul revient à calculer le point moyen
-        * @remark Utiliser set pour réinitialiser une nouvelle valeur non pondérée
+        * @brief TODO Modifie la valeur du point en l'Ã©quipondÃ©rant avec p et les prÃ©cÃ©dentes pondÃ©rations
+        * PondÃ©rer n points Ã  partir d'un point nul revient Ã  calculer le point moyen
+        * @remark Utiliser set pour rÃ©initialiser une nouvelle valeur non pondÃ©rÃ©e
         */
-        ARLCORE_API bool pond( const Point& p );
+        ARLCORE_API bool pond( CSPTR( Point )  p );
 
         /**
         * @return Reference on statistic vector for each coordinates when using pond function
@@ -167,8 +193,9 @@ namespace arlCore
         */
         ARLCORE_API const std::vector< vnl_vector_fixed<double,5> > &getStatistic( void );
 
-        //! @brief Ajoute les coordonnées du point p au point courant
-        ARLCORE_API bool add( const Point& p );
+        //! @brief Ajoute les coordonnÃ©es du point p au point courant
+
+        ARLCORE_API bool add( CSPTR( Point )  p );
 
         //! @return Value of the i th coordinate [0,size-1]
         ARLCORE_API double operator[]( unsigned int i ) const;
@@ -219,25 +246,25 @@ namespace arlCore
         ARLCORE_API void normalize( void );
 
         //! @return Distance between *this and p if the dimension are the same
-        ARLCORE_API double distance( const Point& ) const;
+        ARLCORE_API double distance( CSPTR( Point )  ) const;
 
         //! @return Squared distance between *this and p if the dimension are the same
-        ARLCORE_API double distance2( const Point& ) const;
+        ARLCORE_API double distance2( CSPTR( Point )  ) const;
 
-        //! @brief Multiply each point coordinate with a scalar 
+        //! @brief Multiply each point coordinate with a scalar
         ARLCORE_API bool mult( double scalaire );
 
         //! @brief Compute the cross product of two 3D vectors and put the result in *this : *this = vec1 x vec2
-        ARLCORE_API bool cross_3D( const Point& vec1, const Point& vec2 );
+        ARLCORE_API bool cross_3D( CSPTR( Point )  vec1, CSPTR( Point )  vec2 );
 
         //! @brief Dot product of 2 vectors : *this = vec1^T x vec2. *this is of dimension 1 ! (covariance matrix is computed as well)
-        ARLCORE_API bool dotProduct( const Point& vec1, const Point& vec2 );
+        ARLCORE_API bool dotProduct( CSPTR( Point )  vec1, CSPTR( Point )  vec2 );
 
         //! @brief Point 1D = var1/var2 with computation of the covariance matrix
-        ARLCORE_API bool divide( const Point& var1, const Point& var2 );
+        ARLCORE_API bool divide( CSPTR( Point )  var1, CSPTR( Point )  var2 );
 
         //! @brief *this =  multiplication of a scalar (1D) with a vector vec (covariance matrix is computed as well)
-        ARLCORE_API bool multiply( const Point& scalar, const Point& vec );
+        ARLCORE_API bool multiply( CSPTR( Point )  scalar, CSPTR( Point )  vec );
 
         // Stochastic and noised point
         //! @brief Add a gaussian random noise with a std deviation (std) on the corrdinate 'index' of Point
@@ -266,7 +293,7 @@ namespace arlCore
         * ARLCORE_SHAPE_CIRCLE
         * ARLCORE_SHAPE_EDGESQUARE
         * ARLCORE_SHAPE_SOLIDANGLE : a random point in a solid angle oriented along the positiv Z axis
-        * According to the spherical coordinate system it chooses a point with r<size, 0< theta<2Pi,  0<phi<phi_max where 
+        * According to the spherical coordinate system it chooses a point with r<size, 0< theta<2Pi,  0<phi<phi_max where
         * phi_max = acos(1-omega/2/Pi). Here omega is the solid angle given in parameter of the function.
         * ARLCORE_SHAPE_SOLIDANGLE_SURFACE : same as before but the point is randomly chosen on the surface cone
         * corresponding to the solid angle
@@ -281,11 +308,11 @@ namespace arlCore
 
     private:
         //! @brief Add the current point into an open file stream (PointList or SmartPointList)
-        ARLCORE_API bool save( std::fstream &f, bool ctf, unsigned int cam, void* tag, int fringe, unsigned no, ARLCORE_POINT_SAVE_TYPE type ) const;
+        ARLCORE_API bool save( std::fstream &f, bool ctf, unsigned int cam, SPTR(void) tag, int fringe, unsigned no, ARLCORE_POINT_SAVE_TYPE type ) const;
 
         //! @brief Load a point from an open file stream (PointList or SmartPointList)
-        ARLCORE_API bool load( std::ifstream &f, unsigned int &cam, void* &tag, int &fringe, int &no, unsigned int dim=0 );
-        
+        ARLCORE_API bool load( std::ifstream &f, unsigned int &cam, SPTR(void) tag, int &fringe, int &no, unsigned int dim=0 );
+
         //! @brief Initialization to zero of the uncertainty matrix
         bool initUncertainty( void );
 
@@ -303,27 +330,29 @@ namespace arlCore
         double m_ponderation;
         std::vector< vnl_vector_fixed<double,5> > m_stat;
 
-        // Erreur à la création du point
-        // 2D : Différence subpixel / 1ere estimation
+        // Erreur Ã  la crÃ©ation du point
+        // 2D : DiffÃ©rence subpixel / 1ere estimation
         // 3D : reconstruction
         double m_error;
 
         // Symmetric square matrix : anisotropic uncertainties
         vnl_covariance_matrix m_covMatrix;
+
+        bool m_ok;//VAG
     };
 
     //! @return Distance between pt1 and pt2
-    ARLCORE_API double distance( const Point &pt1, const Point &pt2 );
+    ARLCORE_API double distance( CSPTR( Point ) pt1, CSPTR( Point ) pt2 );
 
     /**
-    * @brief Si l est trié par y croissant, retourne l'indice du point de l dont l'ordonnée est la plus proche de y
+    * @brief Si l est triÃ© par y croissant, retourne l'indice du point de l dont l'ordonnÃ©e est la plus proche de y
     * @param[in] indexInit Indice d'initialisation ou -1 s'il est inconnu
     */
     ARLCORE_API unsigned int closestY ( const std::vector< arlCore::Point::csptr >& l, double y, unsigned int index1=0, unsigned int index2=0, int indexInit=-1 );
 
     /**
-    * @return Surface formée par les points.
-    * Très mal approximée par la somme des distances de tous les points
+    * @return Surface formÃ©e par les points.
+    * TrÃ¨s mal approximÃ©e par la somme des distances de tous les points
     */
     ARLCORE_API double surface( const std::vector< arlCore::Point::csptr >& );
 

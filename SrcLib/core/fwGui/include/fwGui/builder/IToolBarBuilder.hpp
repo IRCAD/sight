@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef _FWGUI_BUILDER_ITOOLBARBUILDER_HPP_
 #define _FWGUI_BUILDER_ITOOLBARBUILDER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
@@ -22,15 +22,15 @@ namespace builder
 
 /**
  * @brief   Defines the interface class  for the toolbar builder.
- * @class   IToolBarBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   IToolBarBuilder
+ * 
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IToolBarBuilder : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IToolBarBuilder : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IToolBarBuilder)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IToolBarBuilder)(::fwGui::GuiBaseObject) )
 
     typedef std::string RegistryKeyType;
 
@@ -66,7 +66,7 @@ public:
         </toolBar>
        @endverbatim
         - \b align : toolbar alignment (top, bottom, left, right)
-     *  - <toolBitmapSize height= "50" width="50"/> : give the size of the icon.
+     *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */
 
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);

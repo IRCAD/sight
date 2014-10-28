@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,12 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwServices/op/Com.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwServices/ComChannelService.hpp>
-
 #include "tuto02DataServiceBasicCtrl/Plugin.hpp"
+
 
 namespace tuto02DataServiceBasicCtrl
 {
@@ -44,10 +42,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
     // Reader service
     m_readerSrv = ::fwServices::add(m_image, "::io::IReader", "::ioVTK::ImageReaderService");
-    ::fwRuntime::EConfigurationElement::NewSptr readerCfg( "service" );
-    ::fwRuntime::EConfigurationElement::NewSptr readerFilenameCfg( "file" );
-    readerFilenameCfg->setValue("./TutoData/patient1.vtk");
-    readerCfg->addConfigurationElement(readerFilenameCfg);
+    ::fwServices::IService::ConfigType readerCfg;
+    readerCfg.put("service.file", "./TutoData/patient1.vtk");
     m_readerSrv->setConfiguration( readerCfg ) ;
     m_readerSrv->configure();
 
@@ -55,43 +51,26 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     m_renderSrv = ::fwServices::add(m_image, "::fwRender::IRender", "::vtkSimpleNegato::RendererService", "myRenderingTuto");
     m_renderSrv->configure();
 
-    // ComChannel service
-    m_comChannel = ::fwServices::registerCommunicationChannel( m_image , m_renderSrv);
-    m_comChannel->configure();
+    m_connection = m_image->signal( ::fwData::Object::s_OBJECT_MODIFIED_SIG)
+        ->connect(m_renderSrv->slot( ::fwServices::IService::s_RECEIVE_SLOT));
 
     // Frame service
     m_frameSrv = ::fwServices::add(m_image, "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame");
 
-    ::fwRuntime::EConfigurationElement::NewSptr frameCfg("service");
-    ::fwRuntime::EConfigurationElement::NewSptr guiCfg("gui");
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameCfg("frame");
+    ::fwServices::IService::ConfigType frameConfig;
 
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameNameCfg("name");
-    guiFrameNameCfg->setValue("tutoDataServiceBasic");
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameIconCfg("icon");
-    guiFrameIconCfg->setValue("Bundles/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
-    ::fwRuntime::EConfigurationElement::NewSptr guiFrameMinSizeCfg("minSize");
-    guiFrameMinSizeCfg->setAttributeValue("width", "800");
-    guiFrameMinSizeCfg->setAttributeValue("height", "600");
-    guiFrameCfg->addConfigurationElement(guiFrameNameCfg);
-    guiFrameCfg->addConfigurationElement(guiFrameIconCfg);
-    guiFrameCfg->addConfigurationElement(guiFrameMinSizeCfg);
-    guiCfg->addConfigurationElement(guiFrameCfg);
+    frameConfig.put("service.gui.frame.name", "tutoDataServiceBasic");
+    frameConfig.put("service.gui.frame.icon", "Bundles/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
+    frameConfig.put("service.gui.frame.minSize.<xmlattr>.width" , "800");
+    frameConfig.put("service.gui.frame.minSize.<xmlattr>.height", "600");
 
-    ::fwRuntime::EConfigurationElement::NewSptr registryCfg("registry");
-    ::fwRuntime::EConfigurationElement::NewSptr registryViewCfg("view");
-    registryViewCfg->setAttributeValue("sid", "myRenderingTuto");
-    registryViewCfg->setAttributeValue("start", "yes");
-    registryCfg->addConfigurationElement(registryViewCfg);
+    frameConfig.put("service.registry.view.<xmlattr>.sid"  , "myRenderingTuto");
+    frameConfig.put("service.registry.view.<xmlattr>.start", "yes");
 
-    frameCfg->addConfigurationElement(guiCfg);
-    frameCfg->addConfigurationElement(registryCfg);
-
-    m_frameSrv->setConfiguration( frameCfg ) ;
+    m_frameSrv->setConfiguration( frameConfig ) ;
     m_frameSrv->configure();
 
     // Start app
-    m_comChannel->start();
     m_readerSrv->start();
     m_frameSrv->start();
 
@@ -107,10 +86,9 @@ void Plugin::stop() throw()
 
 void Plugin::uninitialize() throw()
 {
-    m_comChannel->stop();
+    m_connection.disconnect();
     m_readerSrv->stop();
     m_frameSrv->stop();
-    ::fwServices::OSR::unregisterService( m_comChannel ) ;
     ::fwServices::OSR::unregisterService( m_readerSrv ) ;
     ::fwServices::OSR::unregisterService( m_frameSrv ) ;
     ::fwServices::OSR::unregisterService( m_renderSrv ) ;

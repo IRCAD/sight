@@ -1,18 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
 
-
 #include <fwData/Boolean.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
@@ -27,7 +29,6 @@
 #include <vtkPerspectiveTransform.h>
 
 #include "visuVTKAdaptor/Camera2.hpp"
-#include <fwServices/IEditionService.hpp>
 
 class Camera2Clallback : public ::vtkCommand
 {
@@ -39,7 +40,7 @@ public:
         return cb;
     }
 
-     Camera2Clallback() {}
+     Camera2Clallback() : m_adaptor(NULL) {}
     ~Camera2Clallback() {}
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
@@ -50,7 +51,7 @@ public:
     ::visuVTKAdaptor::Camera2 *m_adaptor;
 };
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2, ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2, ::fwData::TransformationMatrix3D ) ;
 
 namespace visuVTKAdaptor
 {
@@ -123,7 +124,7 @@ void Camera2::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Camera2::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     if( msg->hasEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) )
     {
@@ -134,6 +135,8 @@ void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
 
         vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
+        ::fwData::mt::ObjectReadLock lock(transMat);
+
         for(int lt=0; lt<4; lt++)
         {
             for(int ct=0; ct<4; ct++)
@@ -141,6 +144,8 @@ void Camera2::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
                 mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
             }
         }
+
+        lock.unlock();
 
         // Position camera on origin
         vtkPerspectiveTransform* oldTrans = vtkPerspectiveTransform::New();
@@ -175,6 +180,7 @@ void Camera2::updateFromVtk()
     camera->RemoveObserver( m_cameraCommand );
 
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::mt::ObjectWriteLock lock(trf);
 
     vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
     trans->Identity();
@@ -192,7 +198,9 @@ void Camera2::updateFromVtk()
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::NewSptr msg;
+    lock.unlock();
+
+    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 

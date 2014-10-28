@@ -1,0 +1,162 @@
+<plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin">
+    <library name="uiMedDataQt" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="gui" />
+    <requirement id="visuVTKAdaptor" />
+    <requirement id="uiImageQt" />
+    <requirement id="ctrlSelection" />
+
+    <xi:include href="SeriesExportCfg.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SSelector</service>
+        <object>::fwMedData::SeriesDB</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SSeries</service>
+        <object>::fwData::Vector</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::uiMedData::SSeriesViewer</service>
+        <object>::fwData::Vector</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiMedData::action::SExportSeries</service>
+        <object>::fwMedData::SeriesDB</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiMedData::action::SInitNewSeries</service>
+        <object>::fwMedData::SeriesDB</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SModelSeriesList</service>
+        <object>::fwMedData::ModelSeries</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SOrganTransformation</service>
+        <object>::fwMedData::ModelSeries</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>2DSimpleConfig</id>
+        <type>parameters</type>
+        <parameters>
+            <param name="GENERIC_UID" />
+            <param name="WID_PARENT" />
+            <param name="objectID" />
+            <param name="imageID" />
+        </parameters>
+        <config>
+            <object type="::fwData::Composite">
+
+                <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::CardinalLayoutManager">
+                            <view align="center" />
+                            <view align="bottom" minWidth="200" minHeight="30" resizable="no" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <parent wid="${WID_PARENT}" />
+                        <view sid="${GENERIC_UID}_gs" start="yes" />
+                        <view sid="${GENERIC_UID}_sliderIndexEditor" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <scene>
+                        <picker id="picker" vtkclass="fwVtkCellPicker" />
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+                        <adaptor id="interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                            <config renderer="default" style="InteractorStyle2DForNegato" />
+                        </adaptor>
+                        <adaptor id="imageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                            <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+                        </adaptor>
+                        <adaptor id="seriesAdaptor" class="::visuVTKAdaptor::ImageSeries" objectId="imageSeries">
+                            <config renderer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="axial" />
+                        </adaptor>
+                        <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageSeries">
+                            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+                        </adaptor>
+                    </scene>
+                </service>
+
+                <item key="imageSeries">
+                    <object type="::fwMedData::ImageSeries" uid="${objectID}" src="ref">
+                    </object>
+                </item>
+
+                <item key="image">
+                    <object type="::fwData::Image" uid="${imageID}" src="ref">
+                        <service uid="${GENERIC_UID}_imageDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+                        <service uid="${GENERIC_UID}_medicalImgConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+                        <service uid="${GENERIC_UID}_sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                            <sliceIndex>axial</sliceIndex>
+                        </service>
+                    </object>
+                </item>
+
+                <start uid="${GENERIC_UID}_imageDumpLocker" />
+                <start uid="${GENERIC_UID}_medicalImgConverter" />
+                <start uid="${GENERIC_UID}_mainview" />
+            </object>
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>3DSimpleConfig</id>
+        <type>parameters</type>
+        <parameters>
+            <param name="GENERIC_UID" />
+            <param name="WID_PARENT" />
+            <param name="objectID" />
+        </parameters>
+        <config>
+            <object type="::fwData::Composite">
+                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <registry>
+                        <parent wid="${WID_PARENT}" />
+                    </registry>
+                    <scene>
+                        <picker id="picker" vtkclass="fwVtkCellPicker" />
+                        <renderer id="default" background="0.0" />
+
+                        <adaptor id="modelAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                            <config renderer="default" picker="picker" autoresetcamera="yes" />
+                        </adaptor>
+
+                        <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="modelSeries">
+                            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+                        </adaptor>
+                    </scene>
+                </service>
+                
+                <item key="modelSeries">
+                    <object type="::fwMedData::ModelSeries" uid="${objectID}" src="ref">
+                    </object>
+                </item>
+                
+                <start uid="${GENERIC_UID}_gs" />
+            </object>
+        </config>
+    </extension>
+</plugin>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,6 +35,9 @@ protected:
     : m_num(num)
     {}
 
+    virtual ~ClassTest()
+    {}
+
 private:
     int m_num;
 };
@@ -56,7 +59,7 @@ void MacrosTest::factoryMacroTest()
     ClassTest::sptr classTest1;
     ClassTest::sptr classTest2 = ClassTest::New();
     ClassTest::sptr classTest3 = ClassTest::New(NUM);
-    ClassTest::NewSptr classTest4;
+    ClassTest::sptr classTest4 = ClassTest::New();
 
     CPPUNIT_ASSERT(classTest1 == NULL);
     CPPUNIT_ASSERT_EQUAL(classTest2->getNum(), 1);

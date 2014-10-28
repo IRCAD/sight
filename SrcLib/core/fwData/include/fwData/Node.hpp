@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,9 @@
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Port.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
+
+fwCampAutoDeclareDataMacro((fwData)(Node), FWDATA_API);
 
 namespace fwData
 {
@@ -26,17 +28,30 @@ namespace fwData
  *
  * @see     ::fwData::Port
  *
- * @author  IRCAD (Research and Development Team).
+ *
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::Factory::New< Node >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::factory::New< Node >) ;
+    fwCampMakeFriendDataMacro((fwData)(Node));
 
     /// Port container
     typedef std::vector< ::fwData::Port::sptr > PortContainer;
+
+    /// Type of 'updated' signal
+    typedef ::fwCom::Signal< void () > UpdatedSignalType;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Node(::fwData::Object::Key key);
+
+    /// Destructor
+    FWDATA_API virtual ~Node();
 
     /// Add an input port
     FWDATA_API void addInputPort(::fwData::Port::sptr port);
@@ -67,18 +82,15 @@ public:
     FWDATA_API Port::sptr findPort(const std::string &_identifier, /*const std::string &type,*/ bool _modeInput) const;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( Node::csptr _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void deepCopy( Node::csptr _source );
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+
+    /// Updated signal key
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
 
 protected :
-
-    /// constructor
-    FWDATA_API Node();
-
-    /// Destructor
-    FWDATA_API virtual ~Node();
 
     /// node object
     ::fwData::Object::sptr m_object;
@@ -88,6 +100,9 @@ protected :
 
     //! Output port container
     PortContainer m_outputs;
+
+    /// Updated signal
+    UpdatedSignalType::sptr m_sigUpdated;
 };
 
 } // namespace fwData

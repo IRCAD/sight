@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,8 +28,8 @@ namespace writer
 
 /**
  * @brief   Mesh writer. Write file format .trian
- * @class   TriangularMeshWriter.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshWriter
+ * 
  * @date    2009
  *
  * Ircad writer to write a ::fwData::TriangularMesh on filesystem which the file format
@@ -46,10 +46,10 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((TriangularMeshWriter)(GenericObjectWriter< ::fwData::TriangularMesh >),
                                            (()),
-                                           new  TriangularMeshWriter
+                                           ::fwDataIO::writer::factory::New< TriangularMeshWriter >
                                            );
     /// Constructor. Do nothing.
-    FWDATAIO_API TriangularMeshWriter( );
+    FWDATAIO_API TriangularMeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~TriangularMeshWriter();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,7 @@
 #include <fwData/TransferFunction.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IEditionService.hpp>
 
@@ -420,41 +420,30 @@ void MedicalImageAdaptor::setLevel( double level )
 
 void MedicalImageAdaptor::installTFSelectionEventHandler( ::fwServices::IService* srv )
 {
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-   srv->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
+//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
+//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
+//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::installTFObserver( ::fwServices::IService::sptr srv )
 {
-   SLM_ASSERT( "Sorry TF pool observer already exist", m_tfSelectionComChannelSrv.expired() );
-   SLM_ASSERT( "Sorry TF observer already exist", m_tfComChannelSrv.expired() );
+    SLM_ASSERT( "TF connections already exist", m_tfSelectionConnection.expired() && m_tfConnection.expired());
 
+    m_tfSelectionConnection = this->getTransferFunctionSelection()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
+                                connect(srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
-   ::fwServices::IService::sptr comChannel;
-   comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunctionSelection(), srv );
-   comChannel->start();
-   m_tfSelectionComChannelSrv = comChannel;
-
-   comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunction(), srv );
-   comChannel->start();
-   m_tfComChannelSrv = comChannel;
+    m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                             srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
 }
 
 //------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::removeTFObserver()
 {
-   SLM_ASSERT( "Sorry, TF pool observer must exist", ! m_tfSelectionComChannelSrv.expired() );
-   SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
-
-   m_tfSelectionComChannelSrv.lock()->stop();
-   ::fwServices::OSR::unregisterService( m_tfSelectionComChannelSrv.lock() );
-
-   m_tfComChannelSrv.lock()->stop();
-   ::fwServices::OSR::unregisterService( m_tfComChannelSrv.lock() );
+    m_tfSelectionConnection.disconnect();
+    m_tfConnection.disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -471,57 +460,39 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, :
             ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
             if( iter != fields->end())
             {
-                if (!m_tfComChannelSrv.expired())
+                if (!m_tfConnection.expired())
                 {
-                    ::fwServices::IService::sptr tfComChannel = m_tfComChannelSrv.lock();
-                    if (tfComChannel->getObject() != iter->second)
-                    {
-                        tfComChannel->swap(iter->second);
-                        needUpdate = true;
-                    }
-                    OSLM_WARN_IF("Com channel is already on " << iter->second->getID(),
-                                            tfComChannel->getObject() == iter->second);
+                    m_tfConnection.disconnect();
                 }
-                else
-                {
-                    ::fwServices::IService::sptr comChannel;
-                    comChannel = ::fwServices::registerCommunicationChannel( this->getTransferFunction(), srv );
-                    comChannel->start();
-                    m_tfComChannelSrv = comChannel;
-                    needUpdate = true;
-                }
+
+                m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                        srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
+                needUpdate = true;
             }
         }
 
         if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
         {
-            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
+            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfConnection.expired() );
             ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
             ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
             if( iter != fields->end())
             {
-                ::fwServices::IService::sptr tfComChannel = m_tfComChannelSrv.lock();
-                tfComChannel->stop();
-                ::fwServices::OSR::unregisterService(tfComChannel);
+                m_tfConnection.disconnect();
                 needUpdate = true;
-                m_tfComChannelSrv.reset();
             }
         }
 
         if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
         {
-            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfComChannelSrv.expired() );
+            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfConnection.expired() );
             ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
             ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
             if( iter != fields->end())
             {
-                ::fwServices::IService::sptr tfComChannel = m_tfComChannelSrv.lock();
-                if (tfComChannel->getObject() != iter->second)
-                {
-                    tfComChannel->swap(iter->second);
-                }
-                OSLM_WARN_IF("Com channel is already on " << iter->second->getID(),
-                        tfComChannel->getObject() == iter->second);
+                m_tfConnection.disconnect();
+                m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+                                        srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
                 needUpdate = true;
             }
         }
@@ -536,7 +507,7 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, :
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     // Fire the message
-    ::fwComEd::TransferFunctionMsg::NewSptr msg;
+    ::fwComEd::TransferFunctionMsg::sptr msg = ::fwComEd::TransferFunctionMsg::New();
     msg->setWindowLevel( tf->getWindow(), tf->getLevel() );
     ::fwServices::IEditionService::notify( srv, tf, msg );
     return msg;

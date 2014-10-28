@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,8 +14,8 @@
 
 #include <fwComEd/MeshMsg.hpp>
 
-#include <vtkIO/helper/Mesh.hpp>
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkDiscreteMarchingCubes.h>
 #include <vtkWindowedSincPolyDataFilter.h>
@@ -36,7 +36,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::opVTKMesh::action::VTKMeshCreation , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opVTKMesh::action::VTKMeshCreation , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ void VTKMeshCreation::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void VTKMeshCreation::updating( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
+void VTKMeshCreation::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
 {}
 
 //-----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
 
     // vtk img
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( pImage, vtkImage );
+    ::fwVtkIO::toVTKImage( pImage, vtkImage );
 
     // contour filter
     vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
@@ -152,21 +152,21 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
         decimate->Update();
         polyData = decimate->GetOutput();
         OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-        ::vtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
+        ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
     else
     {
         polyData = smoothFilter->GetOutput();
         OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-        ::vtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
+        ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
 
 
 //    OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-//    bool res = ::vtkIO::fromVTKMesh( polyData, pMesh);
+//    bool res = ::fwVtkIO::fromVTKMesh( polyData, pMesh);
 
     /// Notification
-    ::fwComEd::MeshMsg::NewSptr msg;;
+    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();;
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
     ::fwServices::IEditionService::notify( this->getSptr(), pMesh, msg );
 }

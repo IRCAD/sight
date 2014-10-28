@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,28 +68,32 @@ public :
     TestService() throw()
     :   m_isUpdated(false),
         m_isUpdatedMessage(false)
-        {};
+        {}
 
-    virtual ~TestService() throw() {};
+    virtual ~TestService() throw() {}
 
     /// return true if the service is updated with updating() method
-    bool getIsUpdated() { return m_isUpdated; };
+    bool getIsUpdated() { return m_isUpdated; }
 
     /// return true if the service is updated with updating(msg) method
-    bool getIsUpdatedMessage() { return m_isUpdatedMessage; };
+    bool getIsUpdatedMessage() { return m_isUpdatedMessage; }
 
     /// return the message receiving in updating(msg) method
-    ::fwServices::ObjectMsg::sptr getMessage() { return m_compoMsg; };
+    ::fwServices::ObjectMsg::sptr getMessage() { return m_compoMsg; }
+
+    const std::string & getMessageEvent(){return m_messageEvent;}
+
 
 protected:
-    virtual void configuring() throw( ::fwTools::Failed ) {};
-    virtual void starting() throw(::fwTools::Failed) {};
-    virtual void stopping() throw(::fwTools::Failed) {};
-    virtual void updating() throw(::fwTools::Failed) {};
-    virtual void info(std::ostream &_sstream ) {_sstream << "TestService" ;};
+    virtual void configuring() throw( ::fwTools::Failed ) {}
+    virtual void starting() throw(::fwTools::Failed) {}
+    virtual void stopping() throw(::fwTools::Failed) {}
+    virtual void updating() throw(::fwTools::Failed) {}
+    virtual void info( std::ostream &_sstream ) {_sstream << "TestService" ;}
 
     bool m_isUpdated;
     bool m_isUpdatedMessage;
+    std::string m_messageEvent;
     ::fwServices::ObjectMsg::sptr m_compoMsg;
 };
 
@@ -110,12 +114,26 @@ public :
         SLM_TRACE_FUNC();
     };
     virtual void updating() throw(::fwTools::Failed) { m_isUpdated = true; };
-    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::CompositeMsg::csptr compositeMessage = ::fwComEd::CompositeMsg::dynamicConstCast( _msg );
-        if (compositeMessage && compositeMessage->hasEvent(::fwComEd::CompositeMsg::MODIFIED_KEYS))
+        m_messageEvent.clear();
+
+        if (compositeMessage)
         {
-            // if receiving a compositeMsg : tag service is updated
+            if( compositeMessage->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS))
+            {
+                m_messageEvent += ::fwComEd::CompositeMsg::ADDED_KEYS;
+            }
+            if( compositeMessage->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
+            {
+                m_messageEvent += ::fwComEd::CompositeMsg::CHANGED_KEYS;
+            }
+            if( compositeMessage->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
+            {
+                m_messageEvent += ::fwComEd::CompositeMsg::REMOVED_KEYS;
+            }
+
             m_isUpdatedMessage = true;
             m_compoMsg = ::boost::const_pointer_cast< ::fwServices::ObjectMsg >( _msg ) ;
         }
@@ -137,7 +155,7 @@ public :
     virtual void starting() throw(::fwTools::Failed) {};
     virtual void stopping() throw(::fwTools::Failed) {};
     virtual void updating() throw(::fwTools::Failed) { m_isUpdated = true; };
-    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
+    virtual void receiving( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
         if (imageMessage && imageMessage->hasEvent(::fwComEd::ImageMsg::SLICE_INDEX))

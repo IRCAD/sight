@@ -1,0 +1,34 @@
+<plugin id="2DVisualizationActivity">
+
+    <requirement id="servicesReg" />
+    <requirement id="gui" />
+    <requirement id="guiQt" />
+    <requirement id="uiMeasurement" />
+    <requirement id="uiMeasurementQt" />
+    <requirement id="ctrlSelection" />
+    <requirement id="uiImageQt" />
+    <requirement id="uiVisu" />
+    <requirement id="uiVisuQt" />
+    <requirement id="visuVTKAdaptor" />
+    <requirement id="media" />
+
+    <xi:include href="configurations/2DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DNegato.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DNegatoWithTF.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>2DVisualization</id>
+        <title>2D Visu</title>
+        <desc>2D visualization activity</desc>
+        <icon>Bundles/media_0-1/icons/icon-2D.png</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="2DVisualization">
+            <parameters>
+                <parameter replace="imageUid" by="@values.imageSeries.image" />
+            </parameters>
+        </appConfig>
+    </extension>
+</plugin>

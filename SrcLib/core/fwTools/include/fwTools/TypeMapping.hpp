@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,10 +38,10 @@ struct isMappingSingleMPLHelper;
  * @tparam TSingle_or_TSEQ a sequence or 1 element type to test
  * @tparam KeyType_or_KeyTypeContainer to keys (sequence or single one)
  * @return  true iff the value of the KeyType can deal with the specified type T
- * @author  IRCAD (Research and Development Team).
+ * 
  *
  * This function should be specializated to create a Mapping with a KeyType value and a type.
- * This function is used by Dispatcher:<..>::invoke(key) to know what instance to execute.
+ * This function is used by Dispatcher<>::invoke(key) to know what instance to execute.
  * If isMapping function is missing for a given type then a compilation error
  * "invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>" is raised
  * to inform developer.
@@ -75,10 +75,10 @@ bool isMapping(const KeyType_or_KeyTypeContainer &key)
 /**
  * @brief   an isMapping() helper : This function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType> is not specialized
  * This class is intended to avoid developer to forgive the specialization of isMapping<TYPE>
- * @class   isMappingSingleMPLHelper.
+ * @class   isMappingSingleMPLHelper
  * @tparam  T the type to test
  * @tparam  KeyType the type to match
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 template< class T, class KeyType >
@@ -101,7 +101,7 @@ struct isMappingSingleMPLHelper
 
 /**
  * @brief   Test whatever a typelist is mapping a container of KeyType
- * @author  IRCAD (Research and Development Team).
+ * 
  * @return  true if same size & each element of type list mappes a single element of KeyType
  */
 template< class TSEQ, class KeyTypeContainer >
@@ -114,9 +114,9 @@ bool isMappingMulti(const KeyTypeContainer& keys)
 
 
 /**
- * @class   EmptyListMapping.
+ * @class   EmptyListMapping
  * @brief an helper to isMapping() using iterator
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 template<  class KeyTypeContainer >
@@ -133,10 +133,10 @@ struct EmptyListMapping
 
 
 /**
- * @class   isMappingMultiMPLHelper.
+ * @class   isMappingMultiMPLHelper
  * @brief an helper to isMapping() using iterator : this class is called when TSEQ is a sequence. it is recursivelly called with head element
  * removed from TSEQ
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 template< class TSEQ, class KeyTypeContainer >

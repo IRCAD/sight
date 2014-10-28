@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,34 +7,40 @@
 #ifndef _IOVTK_MESHWRITERSERVICE_HPP_
 #define _IOVTK_MESHWRITERSERVICE_HPP_
 
-#include <string>
 #include <boost/filesystem/path.hpp>
-
-#include <fwServices/ObjectMsg.hpp>
-#include <fwData/Mesh.hpp>
 
 #include <io/IWriter.hpp>
 
 #include "ioVTK/export.hpp"
+
+namespace fwData
+{
+    class Mesh;
+}
+
+namespace fwServices
+{
+    class ObjectMsg;
+}
 
 namespace ioVTK
 {
 
 /**
  * @brief   VTK mesh writer service.
- * @class   MeshWriterService.
- * @author  IRCAD (Research and Development Team).
- * @date    2011.
+ * @class   MeshWriterService
  *
- * Service writing a VTK Mesh using the vtkIO lib.
+ * Service writing a VTK Mesh using the fwVtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh )
+ * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh )
  */
 class IOVTK_CLASS_API MeshWriterService : public ::io::IWriter
 {
 
 public :
+    ~MeshWriterService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)( ::io::IWriter) ) ;
 
     /**
@@ -45,19 +51,18 @@ public :
     */
     IOVTK_API virtual void configureWithIHM();
 
+    /**
+     * @brief Save a VTK mesh.
+     * @param[in] meshFile \b const ::boost::filesystem::path.
+     * @param[out] mesh ::boost::shared_ptr< ::fwData::Mesh >.
+     *
+     * This method is used to save a mesh using the file path.
+     */
+    IOVTK_API static void saveMesh( const ::boost::filesystem::path& meshFile, const SPTR(::fwData::Mesh)& mesh );
+
+
 
 protected:
-
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API MeshWriterService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~MeshWriterService() throw();
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
@@ -91,28 +96,17 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::fwServices::ObjectMsg::csptr ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
-    * @brief Info method.
-    *
-    * This method is used to give
-    * informations about the service.
-    */
+     * @brief Info method.
+     *
+     * This method is used to give
+     * informations about the service.
+     */
     IOVTK_API void info(std::ostream &_sstream ) ;
 
-
 private :
-
-    /**
-    * @brief Save a VTK image.
-    * @param[in] _vtkFile \b const ::boost::filesystem::path.
-    * @param[out] _pMesh ::boost::shared_ptr< ::fwData::Mesh >.
-    *
-    * This method is used to save an image using the file path.
-    */
-    void saveMesh( const ::boost::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
-
     /**
     * @brief the m_bServiceIsConfigured value is \b true
     * if the image path is known.
@@ -129,3 +123,4 @@ private :
 } // namespace ioVTK
 
 #endif //_IOVTK_MESHWRITERSERVICE_HPP_
+

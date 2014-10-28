@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 #define FWGUI_ISELECTORDIALOG_HPP_
 
 #include <vector>
-#include <fwCore/base.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
 
@@ -21,16 +21,16 @@ namespace dialog
 
 /**
  * @brief   ISelectorDialog allows the choice of an element among several (_selections)
- * @class   ISelectorDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   ISelectorDialog
+ * 
  * @date    2009-2010.
  */
-class FWGUI_CLASS_API ISelectorDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ISelectorDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ISelectorDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (ISelectorDialog)(::fwGui::GuiBaseObject) )
 
     typedef std::string FactoryRegistryKeyType;
 

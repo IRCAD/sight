@@ -1,18 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#ifdef DEBUG
-  #define BOOST_SPIRIT_DEBUG
-#endif
 
 #define FUSION_MAX_VECTOR_SIZE 20
 
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <sstream>
+
+#ifdef DEBUG
+  static std::stringstream spiritDebugStream;
+  #define BOOST_SPIRIT_DEBUG_OUT spiritDebugStream
+  #define BOOST_SPIRIT_DEBUG
+#endif
 
 #include <boost/cstdint.hpp>
 #include <boost/algorithm/string.hpp>
@@ -38,8 +41,6 @@
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
@@ -47,10 +48,11 @@
 #include <fwData/StructureTraitsHelper.hpp>
 
 #include "fwDataIO/reader/DictionaryReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 #include <string>
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::DictionaryReader, ::fwDataIO::reader::DictionaryReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::DictionaryReader );
 
 
 namespace fwDataIO
@@ -196,6 +198,8 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
       BOOST_SPIRIT_DEBUG_NODE(dbl);
       BOOST_SPIRIT_DEBUG_NODE(line);
       BOOST_SPIRIT_DEBUG_NODE(lines);
+      SLM_DEBUG(spiritDebugStream.str());
+      spiritDebugStream.str( std::string() );
     #endif
 
       qi::on_error< qi::fail>
@@ -254,7 +258,7 @@ std::pair<bool,std::string> parse(Iterator first,  Iterator last, std::string& b
 
 //------------------------------------------------------------------------------
 
-DictionaryReader::DictionaryReader()
+DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key key)
     : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
 }
@@ -307,7 +311,7 @@ void DictionaryReader::read()
 
     BOOST_FOREACH(::fwDataIO::line line, dicolines)
     {
-        ::fwData::StructureTraits::NewSptr newOrgan;
+        ::fwData::StructureTraits::sptr newOrgan = ::fwData::StructureTraits::New();
         newOrgan->setType(line.type);
 
         std::string classReformated = reformatString(line.organClass);
@@ -347,6 +351,14 @@ std::string  DictionaryReader::extension()
 {
     SLM_TRACE_FUNC();
     return (".dic");
+}
+
+//------------------------------------------------------------------------------
+
+::boost::filesystem::path  DictionaryReader::getDefaultDictionaryPath()
+{
+    std::string dicoPath = std::string("./share/") + PRJ_NAME +"_"+ FWDATAIO_VER + "/OrganDictionary.dic";
+    return dicoPath;
 }
 
 //------------------------------------------------------------------------------

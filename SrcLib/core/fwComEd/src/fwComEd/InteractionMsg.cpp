@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,11 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/InteractionMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::InteractionMsg, ::fwComEd::InteractionMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::InteractionMsg );
 
 namespace fwComEd
 {
@@ -31,7 +31,7 @@ std::string InteractionMsg::MOUSE_MOVE               = "MOUSE_MOVE";
 
 //-----------------------------------------------------------------------------
 
-InteractionMsg::InteractionMsg() throw()
+InteractionMsg::InteractionMsg(::fwServices::ObjectMsg::Key key)
 {
     m_eventPoint = ::fwData::Point::New();
     m_modifiersStatus = NONE;
@@ -76,8 +76,8 @@ bool InteractionMsg::getModifiersStatus(Modifiers k) const
 
 void InteractionMsg::setEventPoint(::fwData::Point::csptr point)
 {
-    SLM_ASSERT("Null point pointer", point)
-    m_eventPoint->deepCopy(point);
+    SLM_ASSERT("Null point pointer", point);
+    m_eventPoint = ::fwData::Object::copy(point);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,15 @@
 
 #include "fwData/Node.hpp"
 #include "fwData/StructureTraits.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 
+fwCampAutoDeclareDataMacro((fwData)(ReconstructionTraits), FWDATA_API);
 namespace fwData
 {
 /**
  * @class   ReconstructionTraits
  * @brief   This class defines Reconstruction traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-20011.
  *
  * A ReconstructionTraits contains :
@@ -30,7 +31,19 @@ namespace fwData
 class FWDATA_CLASS_API ReconstructionTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ReconstructionTraits)(::fwData::Object), (()), ::fwData::Factory::New< ReconstructionTraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ReconstructionTraits)(::fwData::Object), (()), ::fwData::factory::New< ReconstructionTraits >) ;
+    fwCampMakeFriendDataMacro((fwData)(ReconstructionTraits));
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API ReconstructionTraits(::fwData::Object::Key key);
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~ReconstructionTraits();
 
     fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
 
@@ -52,17 +65,8 @@ public:
     /// Get the associated structure traits
     FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
 
-protected :
-
-    /**
-     * @brief constructor
-     */
-    FWDATA_API ReconstructionTraits();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~ReconstructionTraits();
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
 private:
 
@@ -70,13 +74,13 @@ private:
     std::string m_identifier;
 
     /// reconstruction mask operator node
-    ::fwData::Node::wptr m_maskOpNode;
+    ::fwData::Node::sptr m_maskOpNode;
 
     /// reconstruction mesh operator node
-    ::fwData::Node::wptr m_meshOpNode;
+    ::fwData::Node::sptr m_meshOpNode;
 
     /// associated structure traits
-    ::fwData::StructureTraits::wptr m_structureTraits;
+    ::fwData::StructureTraits::sptr m_structureTraits;
 
 };
 

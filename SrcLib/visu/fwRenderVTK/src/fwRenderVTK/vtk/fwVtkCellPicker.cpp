@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@
 #include <vtkAbstractVolumeMapper.h>
 #include <vtkInstantiator.h>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 
 vtkCxxRevisionMacro(fwVtkCellPicker, "$Revision: 1.38 $");
@@ -182,7 +182,7 @@ fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3],
 {
     PickedCellType res;
 
-    vtkPolyData *polydata = vtkIO::toVTKMesh(mesh);
+    vtkPolyData *polydata = fwVtkIO::toVTKMesh(mesh);
 
     res = this->GetPickedCellIds(p1, p2, polydata);
 

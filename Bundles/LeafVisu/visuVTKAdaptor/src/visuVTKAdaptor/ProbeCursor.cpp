@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,10 +18,8 @@
 #include <fwComEd/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkAbstractPropPicker.h>
@@ -45,7 +43,7 @@
 
 #include "visuVTKAdaptor/ProbeCursor.hpp"
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image ) ;
 
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent
@@ -171,10 +169,10 @@ ProbeCursor::ProbeCursor() throw()
 , m_cursorMapper  ( vtkPolyDataMapper::New() )
 , m_cursorActor(    vtkActor::New() )
 {
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    ////handlingEventOff();
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
 }
 
 //------------------------------------------------------------------------------
@@ -289,13 +287,14 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
+    m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ProbeCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
     {

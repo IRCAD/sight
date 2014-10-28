@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
@@ -35,7 +35,7 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagePickerInteractor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagePickerInteractor, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {
@@ -46,7 +46,7 @@ public:
     static ImagePickerInteractorCallback *New()
     { return new ImagePickerInteractorCallback(); }
 
-    ImagePickerInteractorCallback() : m_priority(-1)
+    ImagePickerInteractorCallback() :  m_caller(NULL), m_priority(-1)
     {
         m_picker = NULL;
         this->PassiveObserverOn();
@@ -136,13 +136,13 @@ public:
 
     void notifyMsg(std::string event)
     {
-        double world[3] = {-1,0,0};
         if ( this->pickSomething() )
         {
+            double world[3] = {-1,0,0};
             ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
             OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
 
-            ::fwComEd::InteractionMsg::NewSptr msg;
+            ::fwComEd::InteractionMsg::sptr msg = ::fwComEd::InteractionMsg::New();
 
             int index[3];
             m_adaptor->worldToImageSliceIndex(world, index);
@@ -186,10 +186,10 @@ protected :
 ImagePickerInteractor::ImagePickerInteractor() throw()
     : m_priority(0.999)
 {
-    //handlingEventOff();
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    ////handlingEventOff();
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
 }
 
 //------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ void ImagePickerInteractor::doUpdate() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ImagePickerInteractor::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ImagePickerInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
     {

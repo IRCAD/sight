@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include <boost/foreach.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Runtime.hpp>
@@ -16,20 +18,20 @@ namespace registry
 {
 
 const std::string ServiceConfig::CONFIG_EXT_POINT = "::fwServices::registry::ServiceConfig";
+
+ServiceConfig::sptr ServiceConfig::s_currentServiceConfig = ServiceConfig::New();
+
 //-----------------------------------------------------------------------------
 
 ServiceConfig::sptr ServiceConfig::getDefault()
 {
-    SLM_TRACE_FUNC();
-    static ServiceConfig::sptr m_instance = ServiceConfig::New();
-    return m_instance;
+    return s_currentServiceConfig;
 }
 
 //-----------------------------------------------------------------------------
 
 ServiceConfig::~ServiceConfig()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +79,8 @@ void ServiceConfig::addServiceConfigInfo
     const std::string & desc,
     ::fwRuntime::ConfigurationElement::csptr config)
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::WriteLock lock(m_registryMutex);
+
     OSLM_DEBUG( "New service config registring : "
             << " configId = " << configId
             << " service = " << service
@@ -86,7 +89,7 @@ void ServiceConfig::addServiceConfigInfo
 
     SLM_ASSERT("Sorry, service config id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
-    ServiceConfigInfo::NewSptr info;
+    ServiceConfigInfo::sptr info = ServiceConfigInfo::New();
     info->service = service;
     info->desc = desc;
     info->config =  config;
@@ -97,24 +100,25 @@ void ServiceConfig::addServiceConfigInfo
 
 ServiceConfig::ServiceConfig()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void ServiceConfig::clearRegistry()
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string & configId, const std::string &serviceImpl ) const
+::fwRuntime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string & configId,
+                                                                          const std::string &serviceImpl ) const
 {
-    SLM_TRACE_FUNC();
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
+    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry",
+               iter != m_reg.end());
     SLM_ASSERT("Sorry, the id " <<  configId << " is not allowed for this service " << serviceImpl,
                serviceImpl.empty() || iter->second->service.empty() || iter->second->service == serviceImpl);
     return iter->second->config;
@@ -122,8 +126,20 @@ void ServiceConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
+const std::string& ServiceConfig::getConfigDesc( const std::string & configId ) const
+{
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
+    Registry::const_iterator iter = m_reg.find( configId );
+    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry",
+               iter != m_reg.end());
+    return iter->second->desc;
+}
+
+//-----------------------------------------------------------------------------
+
 std::vector< std::string > ServiceConfig::getAllConfigForService( std::string serviceImpl ) const
 {
+    ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > configs;
 
     BOOST_FOREACH(Registry::value_type srvCfg, m_reg)

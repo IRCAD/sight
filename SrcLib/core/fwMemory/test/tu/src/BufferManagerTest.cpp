@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/IBufferManager.hpp>
-#include <fwTools/BufferObject.hpp>
-#include <fwTools/Exception.hpp>
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/BufferObject.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 
@@ -32,11 +31,10 @@ void BufferManagerTest::tearDown()
 
 void BufferManagerTest::allocateTest()
 {
-    ::fwMemory::BufferManager::NewSptr manager;
-    ::fwTools::IBufferManager::setCurrent( manager );
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
 
     const int SIZE = 100000;
-    ::fwTools::BufferObject::sptr bo = ::fwTools::BufferObject::New();
+    ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
 
     CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
@@ -44,13 +42,13 @@ void BufferManagerTest::allocateTest()
     bo->allocate(SIZE);
 
     CPPUNIT_ASSERT( !bo->isEmpty() );
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwTools::BufferObject::SizeType>(SIZE), bo->getSize() );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     {
-        ::fwTools::BufferObject::Lock lock(bo->lock());
+        ::fwMemory::BufferObject::Lock lock(bo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
         char *buf = static_cast<char*>(lock.getBuffer());
 
@@ -61,7 +59,7 @@ void BufferManagerTest::allocateTest()
     }
 
     {
-        ::fwTools::BufferObject::Lock lock(bo->lock());
+        ::fwMemory::BufferObject::Lock lock(bo->lock());
         char *buf = static_cast<char*>(lock.getBuffer());
 
         for (int i = 0; i<SIZE; ++i)
@@ -73,12 +71,12 @@ void BufferManagerTest::allocateTest()
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     {
-        ::fwTools::BufferObject::Lock lock(bo->lock());
+        ::fwMemory::BufferObject::Lock lock(bo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
-        ::fwTools::BufferObject::Lock lock2(bo->lock());
+        ::fwMemory::BufferObject::Lock lock2(bo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(2), bo->lockCount() );
-        ::fwTools::BufferObject::csptr cbo = bo;
-        ::fwTools::BufferObject::ConstLock clock(cbo->lock());
+        ::fwMemory::BufferObject::csptr cbo = bo;
+        ::fwMemory::BufferObject::ConstLock clock(cbo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(3), bo->lockCount() );
     }
 
@@ -94,15 +92,15 @@ void BufferManagerTest::allocateTest()
     CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
-    bo->allocate(SIZE, ::fwTools::BufferNewPolicy::New());
+    bo->allocate(SIZE, ::fwMemory::BufferNewPolicy::New());
 
     CPPUNIT_ASSERT( !bo->isEmpty() );
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwTools::BufferObject::SizeType>(SIZE), bo->getSize() );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
 
     {
-        ::fwTools::BufferObject::Lock lock(bo->lock());
+        ::fwMemory::BufferObject::Lock lock(bo->lock());
         char *buf = static_cast<char*>(lock.getBuffer());
 
         for (int i = 0; i<SIZE; ++i)
@@ -112,7 +110,7 @@ void BufferManagerTest::allocateTest()
     }
 
     {
-        ::fwTools::BufferObject::Lock lock(bo->lock());
+        ::fwMemory::BufferObject::Lock lock(bo->lock());
         char *buf = static_cast<char*>(lock.getBuffer());
 
         for (int i = 0; i<SIZE; ++i)
@@ -131,41 +129,40 @@ void BufferManagerTest::allocateTest()
 
 void BufferManagerTest::memoryInfoTest()
 {
-    ::fwMemory::BufferManager::NewSptr manager;
-    ::fwTools::IBufferManager::setCurrent( manager );
+    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
 
     {
-        SLM_INFO(manager->toString());
-        ::fwTools::BufferObject::sptr bo = ::fwTools::BufferObject::New();
+        SLM_INFO(manager->toString().get());
+        ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
         const int SIZE = 100000;
         bo->allocate(SIZE);
-        SLM_INFO(manager->toString());
-        ::fwTools::BufferObject::sptr bo1 = ::fwTools::BufferObject::New();
-        SLM_INFO(manager->toString());
+        SLM_INFO(manager->toString().get());
+        ::fwMemory::BufferObject::sptr bo1 = ::fwMemory::BufferObject::New();
+        SLM_INFO(manager->toString().get());
         {
-            ::fwTools::BufferObject::Lock lock1(bo1->lock());
-            SLM_INFO(manager->toString());
+            ::fwMemory::BufferObject::Lock lock1(bo1->lock());
+            SLM_INFO(manager->toString().get());
         }
-        ::fwTools::BufferObject::sptr bo2 = ::fwTools::BufferObject::New();
-        SLM_INFO(manager->toString());
+        ::fwMemory::BufferObject::sptr bo2 = ::fwMemory::BufferObject::New();
+        SLM_INFO(manager->toString().get());
         bo->reallocate(SIZE*2);
         {
-            ::fwTools::BufferObject::Lock lock(bo->lock());
-            SLM_INFO(manager->toString());
+            ::fwMemory::BufferObject::Lock lock(bo->lock());
+            SLM_INFO(manager->toString().get());
         }
         bo->destroy();
-        SLM_INFO(manager->toString());
+        SLM_INFO(manager->toString().get());
         bo1->allocate(SIZE);
         bo2->allocate(SIZE);
         char * buff = new char[SIZE];
-        bo->setBuffer( buff, SIZE, ::fwTools::BufferNewPolicy::New() );
-        SLM_INFO(manager->toString());
+        bo->setBuffer( buff, SIZE, ::fwMemory::BufferNewPolicy::New() );
+        SLM_INFO(manager->toString().get());
 
-        { ::fwTools::BufferObject::Lock lock(bo->lock()); }
-        { ::fwTools::BufferObject::Lock lock(bo1->lock()); }
-        { ::fwTools::BufferObject::Lock lock(bo2->lock()); }
+        { ::fwMemory::BufferObject::Lock lock(bo->lock()); }
+        { ::fwMemory::BufferObject::Lock lock(bo1->lock()); }
+        { ::fwMemory::BufferObject::Lock lock(bo2->lock()); }
     }
-    SLM_INFO(manager->toString());
+    SLM_INFO(manager->toString().get());
 }
 
 } // namespace ut

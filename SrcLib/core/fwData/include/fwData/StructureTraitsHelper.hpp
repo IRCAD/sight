@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __FWDATA_STRUCTURETRAITSHELPER_HPP__
 #define __FWDATA_STRUCTURETRAITSHELPER_HPP__
 
@@ -12,7 +18,7 @@ namespace fwData
 /**
  * @class   StructureTraitsHelper
  * @brief   This class defines some helper for the structure traits.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-20011.
  */
 

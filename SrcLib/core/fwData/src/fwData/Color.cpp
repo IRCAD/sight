@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 
 
@@ -16,7 +17,7 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Color::Color ()
+Color::Color ( ::fwData::Object::Key key )
 {
     SLM_TRACE_FUNC();
     m_vRGBA[0] = 1.0;
@@ -24,16 +25,6 @@ Color::Color ()
     m_vRGBA[2] = 1.0;
     m_vRGBA[3] = 1.0;
 }
-
-Color::Color(Color::ColorType red, Color::ColorType green, Color::ColorType blue, Color::ColorType alpha)
-{
-    SLM_TRACE_FUNC();
-    m_vRGBA[0] = red;
-    m_vRGBA[1] = green;
-    m_vRGBA[2] = blue;
-    m_vRGBA[3] = alpha;
-}
-
 
 //------------------------------------------------------------------------------
 Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Color::ColorType blue, Color::ColorType alpha)
@@ -56,18 +47,26 @@ Color::~Color ()
 
 //------------------------------------------------------------------------------
 
-void Color::shallowCopy( Color::csptr _source )
+void Color::shallowCopy(const Object::csptr &_source )
 {
+    Color::csptr other = Color::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_vRGBA = _source->m_vRGBA;
+    m_vRGBA = other->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------
 
-void Color::deepCopy( Color::csptr _source )
+void Color::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
-    m_vRGBA = _source->m_vRGBA;
+    Color::csptr other = Color::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
+    m_vRGBA = other->m_vRGBA;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,9 +17,7 @@ namespace appXml
 
 /**
  * @brief   This class is started when the bundles is loaded.
- * @class   Plugin.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   Plugin
  */
 class APPXML_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -41,7 +39,8 @@ public:
     APPXML_API void uninitialize() throw();
 
 private:
-    std::string m_configurationName ;
+    std::string m_configurationName;
+    std::string m_parametersName;
     ::fwServices::AppConfigManager::sptr m_appConfigMng;
 };
 

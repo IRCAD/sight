@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,20 +22,20 @@ namespace builder
 
 /**
  * @brief   Defines the generic layout manager for IHM.
- * @class   ContainerBuilder.
- * @author  IRCAD (Research and Development Team).
+ * @class   ContainerBuilder
+ * 
  * @date    2009-2010.
  *
  */
 class FWGUIQT_CLASS_API ContainerBuilder : public ::fwGui::builder::IContainerBuilder
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ContainerBuilder)(::fwGui::builder::IContainerBuilder) ,(()), new ContainerBuilder);
+    fwCoreClassDefinitionsWithFactoryMacro( (ContainerBuilder)(::fwGui::builder::IContainerBuilder),
+                                            (()),
+                                            ::fwGui::factory::New< ContainerBuilder > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API ContainerBuilder();
+    FWGUIQT_API ContainerBuilder(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIQT_API virtual ~ContainerBuilder();
 
     /**

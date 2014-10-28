@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 #include <QString>
 #include <QApplication>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
@@ -22,10 +22,7 @@
 
 
 
-REGISTER_BINDING( ::fwGui::dialog::ILocationDialog,
-        ::fwGuiQt::dialog::LocationDialog,
-        ::fwGui::dialog::ILocationDialog::FactoryRegistryKeyType ,
-        ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQt::dialog::LocationDialog, ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
 
 
 namespace fwGuiQt
@@ -35,7 +32,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog() :
+LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         m_style(::fwGui::dialog::ILocationDialog::NONE),
         m_type(::fwGui::dialog::ILocationDialog::SINGLE_FILE)
 {}
@@ -58,7 +55,7 @@ LocationDialog::LocationDialog() :
         QStringList files = QFileDialog::getOpenFileNames( parent, caption, path, filter);
         if(!files.isEmpty())
         {
-            ::fwData::location::MultiFiles::NewSptr multifiles;
+            ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
             std::vector< ::boost::filesystem::path > paths;
             BOOST_FOREACH (QString filename, files)
             {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,8 +25,8 @@ namespace dialog
 {
 /**
  * @brief   This class allows us to show a pulse progress dialog.
- * @class   PulseProgressDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   PulseProgressDialog
+ * 
  * @date    2009.
  * @todo PulseProgressDialog is not commented.
  */
@@ -38,9 +38,6 @@ public:
     class LocalThread : public wxThread
     {
     public :
-
-
-
         LocalThread( Stuff &stuff );
         ~LocalThread();
         virtual wxThread::ExitCode  Entry ();
@@ -55,14 +52,14 @@ public:
          * catched during execution of stuff
          */
         std::string m_errorMessage;
-
-
     };
 
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog), (()), new PulseProgressDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog),
+                                            (()),
+                                            ::fwGui::factory::New< PulseProgressDialog > );
 
-    FWGUIWX_API PulseProgressDialog();
+    FWGUIWX_API PulseProgressDialog(::fwGui::GuiBaseObject::Key key);
 
     FWGUIWX_API virtual ~PulseProgressDialog();
 

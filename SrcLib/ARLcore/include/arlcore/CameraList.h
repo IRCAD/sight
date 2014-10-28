@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,6 @@ namespace arlCore
     class PlaneSystem;
     /**
      * @class   CameraList
-     * @author  IRCAD (Research and Development Team)
      * @date    06/2009
      * @brief   List of physical cameras
      */

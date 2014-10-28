@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -56,10 +56,25 @@ Profile::sptr getCurrentProfile()
 
 // =========================================================
 
-Profile::Profile(): m_checkSingleInstance(false)
+Profile::Profile():
+    m_checkSingleInstance(false),
+    m_argc(0),
+    m_argv(NULL)
 {
     m_run = ::boost::bind(&Profile::defaultRun, this);
 }
+
+// =========================================================
+
+Profile::~Profile()
+{
+    if (m_argv)
+    {
+        delete[] m_argv;
+    }
+}
+
+
 
 //------------------------------------------------------------------------------
 
@@ -175,35 +190,59 @@ Profile::ParamsContainer Profile::getParams()
 
 //------------------------------------------------------------------------------
 
+int &Profile::getRawArgCount()
+{
+    return m_argc;
+}
+
+//------------------------------------------------------------------------------
+
 char** Profile::getRawParams()
 {
-    // allocate memory for an array of character strings
-    char** rawParams = new char*[m_params.size()];
-
-    // for each string, allocate memory in the character array and copy
-    for (unsigned long i=0; i<m_params.size(); i++)
-    {
-        size_t paramSize = m_params[i].size();
-        rawParams[i] = new char[paramSize+1];
-#ifndef _WIN32
-        strncpy(rawParams[i], m_params[i].c_str(), paramSize);
-        rawParams[i][paramSize] = '\0';
-#else
-        strncpy_s(rawParams[i], paramSize+1, m_params[i].c_str(), paramSize);
-#endif
-    }
-    return rawParams;
+    return m_argv;
 }
 
 //------------------------------------------------------------------------------
 
 void Profile::setParams(int argc, char** argv)
 {
-    m_params.clear();
+    Profile::ParamsContainer params;
+
     for(int i = 0; i < argc; i++)
     {
         std::string arg = argv[i];
-        m_params.push_back( arg );
+        params.push_back( arg );
+    }
+
+    this->setParams(params);
+}
+
+//------------------------------------------------------------------------------
+void Profile::setParams(const Profile::ParamsContainer &params)
+{
+    m_params = params;
+
+
+    if (m_argv)
+    {
+        delete[] m_argv;
+    }
+
+    m_argc = m_params.size();
+    // allocate memory for an array of character strings
+    m_argv = new char*[m_params.size()];
+
+    // for each string, allocate memory in the character array and copy
+    for (unsigned long i=0; i<m_params.size(); i++)
+    {
+        size_t paramSize = m_params[i].size();
+        m_argv[i] = new char[paramSize+1];
+#ifndef _WIN32
+        strncpy(m_argv[i], m_params[i].c_str(), paramSize);
+        m_argv[i][paramSize] = '\0';
+#else
+        strncpy_s(m_argv[i], paramSize+1, m_params[i].c_str(), paramSize);
+#endif
     }
 }
 

@@ -1,11 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef _ARLCORE_POINTLIST_H
 #define _ARLCORE_POINTLIST_H
+
+#include <boost/make_shared.hpp>
+
 #include <arlcore/Common.h>
 
 #include <vector>
@@ -17,9 +20,13 @@
 #include <ANN/ANN.h>
 #endif // ANN
 
-#include <arlcore/Object.h>
+//#include <arlcore/Mutex.h>
 #include <arlcore/Point.h>
 #include <arlcore/MatrixR.h>
+
+#include <fwCore/macros.hpp>
+#include <fwTools/Object.hpp>
+
 
 namespace arlCore
 {
@@ -31,11 +38,10 @@ namespace arlCore
      * Points that are added to the contained must have the same dimension (by default 3)
      *
      */
-    class PointList : public Object
+    class PointList : public  Object
     {
     /**
      * @class   PointList
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief   Point list with same dimensions. Added point are copied in the container.
      * Point destruction are managed by PointList. This class has been created to manipulate
@@ -50,6 +56,18 @@ namespace arlCore
      * - other nice function...
      */
     public:
+
+
+        fwCoreClassDefinitionsWithNFactoriesMacro( (PointList)(::fwTools::Object),
+                                                   ((::boost::make_shared< PointList > ,() ))
+                                                   ((PointListFactory ,((int)) ))
+                                                   ((PointListFactory ,(( const std::vector< Point::csptr >&)) ))
+                                                 );
+        fwCoreAllowSharedFromThis();
+
+        ARLCORE_API static PointList::sptr PointListFactory( int );
+        ARLCORE_API static PointList::sptr PointListFactory( const std::vector< Point::csptr >& );
+
         //! @brief Constructor : An empty list of points with dimension dim
         ARLCORE_API PointList( unsigned int dim=3, const std::string &name="" );
 
@@ -57,10 +75,10 @@ namespace arlCore
         ARLCORE_API PointList( const PointList& );
 
         //! @brief Constructor with the list of points
-        ARLCORE_API PointList( const std::vector< const Point* >& list );
+        ARLCORE_API PointList( const std::vector< Point::csptr >& list );
 
-        //! @brief Constructor : Fill the list of elements of 'l' which scalar is include in [scalarMin , scalarMax] 
-        ARLCORE_API PointList( const std::vector< const Point* >& l, double scalarMin, double scalarMax );
+        //! @brief Constructor : Fill the list of elements of 'l' which scalar is include in [scalarMin , scalarMax]
+        ARLCORE_API PointList( const std::vector< Point::csptr >& l, double scalarMin, double scalarMax );
 
         //! @brief Affectation
         ARLCORE_API PointList& operator=( const PointList& );
@@ -96,29 +114,32 @@ namespace arlCore
         //! @return Reference on the intern list of points
         ARLCORE_API const std::vector< Point::sptr >& getList( void ) const;
 
-        //! @return Reference on the ith point of the list
-        ARLCORE_API Point* operator[]( unsigned int i );
-
-        //! @return Constant reference on the ith point of the list
-        ARLCORE_API const Point* operator[]( unsigned int i ) const;
+        //! @return A COPY PERF ?? VAG the intern list of points
+        ARLCORE_API const std::vector< Point::csptr > getListCopy( void ) const;
 
         //! @return Reference on the ith point of the list
-        ARLCORE_API Point* get( unsigned int i );
+        ARLCORE_API Point::sptr operator[]( unsigned int i );
 
         //! @return Constant reference on the ith point of the list
-        ARLCORE_API const Point* get( unsigned int i ) const;
+        ARLCORE_API Point::csptr operator[]( unsigned int i ) const;
+
+        //! @return Reference on the ith point of the list
+        ARLCORE_API Point::sptr get( unsigned int i );
+
+        //! @return Constant reference on the ith point of the list
+        ARLCORE_API Point::csptr get( unsigned int i ) const;
 
         //! @return Reference on the last point of the list
-        ARLCORE_API Point* back( void );
+        ARLCORE_API Point::sptr back( void );
 
         //! @return Constant reference on the last point of the list
-        ARLCORE_API const Point* back( void ) const;
+        ARLCORE_API Point::csptr back( void ) const;
 
         //! @brief Push all points of l at the end of the current list
-        ARLCORE_API unsigned int push_back( const PointList& l );
+        ARLCORE_API unsigned int push_back( CSPTR( PointList ) l );
 
         //! @brief Push a point at the end of the list
-        ARLCORE_API bool push_back( const Point& );
+        ARLCORE_API bool push_back( CSPTR( Point) );
 
         //! @brief Push the (x,y) 2D point at the end of the list
         ARLCORE_API bool push_back( double x, double y );
@@ -163,7 +184,7 @@ namespace arlCore
          * boundingBox2 : Right superior corner : Each maximum coordinates
          * std : standard deviation of the point cloud
          */
-        ARLCORE_API bool properties( Point &gravity, Point &boundingBox1, Point &boundingBox2, double &minscalar, double &maxscalar, double  &std ) const;
+        ARLCORE_API bool properties( SPTR(Point) gravity, SPTR(Point) boundingBox1, SPTR(Point) boundingBox2, double &minscalar, double &maxscalar, double  &std ) const;
 
         /**
          * @brief Find in the list the nearest point of pt
@@ -171,7 +192,7 @@ namespace arlCore
          * distance : Distance between pt and the found point
          * @return False if the list is empty
          */
-        ARLCORE_API unsigned int findNearPoint( const Point &pt, std::vector< unsigned int > &pos, double &distance, double scalar=-1.0 ) const;
+        ARLCORE_API unsigned int findNearPoint( CSPTR(Point) pt, std::vector< unsigned int > &pos, double &distance, double scalar=-1.0 ) const;
 
         /**
          * @brief Return a point list randomly chosen in a specified shape
@@ -183,7 +204,7 @@ namespace arlCore
          * @return Number of generated points
          * @remark See Point::shapeRandom for more details
          */
-        ARLCORE_API unsigned int shapeRandom( unsigned int nb, ARLCORE_SHAPE type, const Point &centre, const double size, const double angle=0 );
+        ARLCORE_API unsigned int shapeRandom( unsigned int nb, ARLCORE_SHAPE type, CSPTR(Point) centre, const double size, const double angle=0 );
 
         /**
          * @brief The function randomly choose N points within the point list A and put them in *this
@@ -191,10 +212,10 @@ namespace arlCore
          * param[in] n Number of point you want to keep
          * @return Number of point in *this
          */
-        ARLCORE_API unsigned int randomList( const arlCore::PointList &A, unsigned int n );
+        ARLCORE_API unsigned int randomList( CSPTR( PointList ) A, unsigned int n );
 
         /**
-         * @brief Compute the plane that best fits the points which m_scalar == scalar, if scalar = O, 
+         * @brief Compute the plane that best fits the points which m_scalar == scalar, if scalar = O,
          * all the points are used. The method is based on an optimization. This should be improved
          * using an SVD method (TODO ).
          * Warning : Run only with 3D points
@@ -215,17 +236,17 @@ namespace arlCore
          * more explanations on the methods are provided in PointList.cpp
          * @todo Compute the covariance on the estimation
          */
-        ARLCORE_API bool sphereCenterEstimation( Point &centerEstimation, double &radius, ARLCORE_SCE type, std::vector<double> &optimiser_parameter, std::vector<double> &log ) const;
+        ARLCORE_API bool sphereCenterEstimation( SPTR(Point) centerEstimation, double &radius, ARLCORE_SCE type, std::vector<double> &optimiser_parameter, std::vector<double> &log ) const;
 
         /**
-         * @brief This method is used to estimate the center of a sphere from several points on
+         * @brief This method is used to estimate the center of a spheetre from several points on
          * its surface. The method computes the circumcircle of a triangle and return
          * 1) the center of this circle
          * 2) the plane that contains this center
          * The center of the sphere lies on the line that passes through the center of the circle
          * and that is orthogonal to the plane
          */
-        ARLCORE_API bool triangleCircumcircleOrthoLine( arlCore::Point & centerEstimation, vgl_plane_3d< double > &trian_plane) const;
+        ARLCORE_API bool triangleCircumcircleOrthoLine( SPTR(Point)  centerEstimation, vgl_plane_3d< double > &trian_plane) const;
 
         /**
          * @brief This method computes from 2 lines (represented by the first (P1 P2) and second point pair (P3 P4) )
@@ -256,10 +277,10 @@ namespace arlCore
          *  log contains the length of the segment PaPb
          *
          */
-        ARLCORE_API bool twoLinesClosestPoint( arlCore::Point & closestPoint, double &log) const;
+        ARLCORE_API bool twoLinesClosestPoint( SPTR(Point)  closestPoint, double &log) const;
 
         //! @brief Compute the main direction of a point cloud with a least square fitting
-        ARLCORE_API bool directionEstimation( Point &vector, double &RMS  );
+        ARLCORE_API bool directionEstimation( SPTR(Point) vector, double &RMS  );
 
         /**
          * @brief : Compute the gravity center of the point cloud and the covariance
@@ -267,7 +288,7 @@ namespace arlCore
          * @param[out] pt : pt is modified and contains the information of gravity center and covariance
          * @return Number of point that are used.
          */
-        ARLCORE_API unsigned int statistic( Point& pt ) const;
+        ARLCORE_API unsigned int statistic( Point::sptr  pt ) const;
 
         /**
          * @brief Visualize the pointlist with gnuplot
@@ -290,7 +311,7 @@ namespace arlCore
          * @param[in] nbMaxIterations
          * @return Number of iterations
          */
-        ARLCORE_API unsigned int tagCalibration( const std::vector<arlCore::PointList> &tag, double delta, unsigned int nbMaxIterations, double &xLength, double &yLength );
+        ARLCORE_API unsigned int tagCalibration( const std::vector<arlCore::PointList::sptr > &tag, double delta, unsigned int nbMaxIterations, double &xLength, double &yLength );
 
     private:
         unsigned int m_dimension;
@@ -302,8 +323,8 @@ namespace arlCore
 #endif // ANN
     };
 
-    ARLCORE_API bool save( const std::vector< const Point* > &pl, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type=ARLCORE_POINT_SAVE_FULL, bool justVisible=false, bool overwrite=true );
-    ARLCORE_API bool save( const std::vector< Point* > &pl, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type=ARLCORE_POINT_SAVE_FULL, bool justVisible=false, bool overwrite=true );
+    ARLCORE_API bool save( const std::vector< Point::csptr > &pl, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type=ARLCORE_POINT_SAVE_FULL, bool justVisible=false, bool overwrite=true );
+    ARLCORE_API bool save( const std::vector< Point::sptr > &pl, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type=ARLCORE_POINT_SAVE_FULL, bool justVisible=false, bool overwrite=true );
 
 //  ARLCORE_API bool save( const std::vector<PointList>& lists, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type=ARLCORE_POINT_SAVE_FULL, bool overwrite=true );
 
@@ -312,11 +333,11 @@ namespace arlCore
      * p1 & p2 must have same dimension
      * If p1 & p2 do not have same dimension, the smallest list size will be used
      */
-    ARLCORE_API bool distance( const PointList &p1, const PointList &p2, std::vector<double> &distances );
-    ARLCORE_API unsigned int findNearPoint( const std::vector< Point::csptr >&, const Point &pt, std::vector< unsigned int > &pos, double &distance, double scalar=-1.0);
-    //ARLCORE_API unsigned int findNearPoint( const std::vector< Point*>&, const Point &pt, std::vector< unsigned int > &pos, double &distance, double scalar=-1.0);
-    ARLCORE_API unsigned int statistic( const std::vector< const Point*>&, unsigned int dimension, Point& pt );
-    ARLCORE_API unsigned int statistic( const std::vector< Point*>&, unsigned int dimension, Point& pt );
-    ARLCORE_API unsigned int matching3D3D( const PointList &a, const PointList &b, double gaussianError, double decimage, std::vector< const Point* > &Va, std::vector< const Point* > &Vb );
+    ARLCORE_API bool distance( CSPTR( PointList ) p1, CSPTR( PointList ) p2, std::vector<double> &distances );
+    ARLCORE_API unsigned int findNearPoint( const std::vector< Point::csptr >&, CSPTR(Point) pt, std::vector< unsigned int > &pos, double &distance, double scalar=-1.0);
+    //ARLCORE_API unsigned int findNearPoint( const std::vector< Point::sptr>&, CSPTR(Point) pt, std::vector< unsigned int > &pos, double &distance, double scalar=-1.0);
+    ARLCORE_API unsigned int statistic( const std::vector< Point::csptr>&, unsigned int dimension, Point::sptr  pt );
+    ARLCORE_API unsigned int statistic( const std::vector< Point::sptr>&, unsigned int dimension, Point::sptr  pt );
+    ARLCORE_API unsigned int matching3D3D( CSPTR( PointList ) a, CSPTR( PointList ) b, double gaussianError, double decimage, SPTR( PointList ) Va, SPTR( PointList ) Vb );
 } // namespace arlCore
 #endif // _ARLCORE_POINTLIST_H

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ namespace uiMeasurement
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::SAddLabeledPoint , ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::SAddLabeledPoint , ::fwData::PointList ) ;
 
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ bool SAddLabeledPoint::defineLabel(std::string &name)
     bool res = false;
     name = "Label" + ::boost::lexical_cast< std::string >(m_count);
 
-    ::fwData::String::NewSptr url;
+    ::fwData::String::sptr url = ::fwData::String::New();
     ::fwGui::dialog::InputDialog inputDlg;
     inputDlg.setTitle("Label");
     inputDlg.setMessage("Which label for the point?");
@@ -90,18 +90,18 @@ void SAddLabeledPoint::updating() throw(::fwTools::Failed)
     if ( this->defineLabel(value) )
     {
         // create a new point
-        ::fwData::Point::NewSptr newPoint;
+        ::fwData::Point::sptr newPoint = ::fwData::Point::New();
 
         // append to landmark
         landmarks->getRefPoints().push_back( newPoint );
 
         // append to point the label
-        ::fwData::String::NewSptr label;
+        ::fwData::String::sptr label = ::fwData::String::New();
         label->value() = value;
         newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
 
         // notify
-        ::fwComEd::PointListMsg::NewSptr msgPointList;
+        ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
         msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED, newPoint );
         ::fwServices::IEditionService::notify( this->getSptr(), landmarks, msgPointList);
     }
@@ -123,7 +123,7 @@ void SAddLabeledPoint::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SAddLabeledPoint::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void SAddLabeledPoint::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

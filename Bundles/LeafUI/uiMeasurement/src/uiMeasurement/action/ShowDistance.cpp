@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,14 +33,14 @@ namespace uiMeasurement
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::ShowDistance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::ShowDistance , ::fwData::Image ) ;
 
 
 //------------------------------------------------------------------------------
 
 ShowDistance::ShowDistance( ) throw()
 {
-    addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
 }
 
 //------------------------------------------------------------------------------
@@ -72,12 +72,12 @@ void ShowDistance::updating() throw(::fwTools::Failed)
         bool isShown = showDistances->value();
 
         bool toShow = !isShown;
-        image->setField("ShowDistances", ::fwData::Boolean::NewSptr(toShow));
+        image->setField("ShowDistances", ::fwData::Boolean::New(toShow));
 
         // auto manage hide/show : use Field Information instead let gui manage checking
         this->::fwGui::IActionSrv::setIsActive(!toShow);
 
-        ::fwComEd::ImageMsg::NewSptr msg;
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
         ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
     }
@@ -87,13 +87,15 @@ void ShowDistance::updating() throw(::fwTools::Failed)
 
 void ShowDistance::swapping() throw(::fwTools::Failed)
 {
-    ::fwServices::ObjectMsg::sptr dummy;
-    this->updating(dummy);
+    ::fwData::Image::csptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Boolean::sptr showDistances = img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+
+    this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
 }
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::updating( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ShowDistance::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );

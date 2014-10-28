@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,8 @@ namespace ioData
 {
 /**
  * @brief   Triangular mesh writer service.
- * @class   TriangularMeshWriterService.
- * @author  IRCAD (Research and Development Team).
+ * @class   TriangularMeshWriterService
+ * 
  * @date    2009.
  *
  * Service writing a mesh object.
@@ -26,7 +26,7 @@ namespace ioData
  * @li Use update() to write the mesh and notify observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwData::TriangularMesh )
+ * fwServicesRegisterMacro( ::io::IWriter , ::ioData::TriangularMeshWriterService , ::fwData::TriangularMesh )
  */
 class IODATA_CLASS_API TriangularMeshWriterService : public ::io::IWriter
 {
@@ -40,7 +40,7 @@ public:
     typedef ::io::IWriter   SuperClass;
 
 
-    /** @name Specified writer service methods ( override from ::io::IWriter )
+    /** @name Specified writer service methods ( override ::io::IWriter )
      * @{
      */
 
@@ -63,17 +63,7 @@ public:
 
 protected:
 
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API TriangularMeshWriterService() ;
-
-    /**
-     * @brief   destructor
-     */
-    IODATA_API ~TriangularMeshWriterService() throw() ;
-
-    /** @name Service methods ( override from ::fwServices::IService )
+    /** @name Service methods ( override ::fwServices::IService )
      * @{
      */
 
@@ -107,7 +97,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
 
     /**

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ namespace uiMeasurement
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiMeasurement::action::RemoveDistance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::RemoveDistance , ::fwData::Image ) ;
 
 //------------------------------------------------------------------------------
 
@@ -97,9 +97,9 @@ std::string distanceToStr(double dist)
             correspondance[ selections.back() ] = pl;
         }
 
-        if ( selections.size() )
+        if ( !selections.empty() )
         {
-            ::fwGui::dialog::SelectorDialog::NewSptr selector;
+            ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
             selector->setTitle("Select a distance to remove");
             selector->setSelections(selections);
             std::string selection = selector->show();
@@ -124,7 +124,7 @@ std::string distanceToStr(double dist)
 
 void RemoveDistance::notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::Object::sptr distance)
 {
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, distance );
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
@@ -133,7 +133,7 @@ void RemoveDistance::notifyDeleteDistance(::fwData::Image::sptr image, ::fwData:
 
 void RemoveDistance::notifyNewDistance(::fwData::Image::sptr image, ::fwData::Object::sptr backup)
 {
-    ::fwComEd::ImageMsg::NewSptr msg;
+    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::DISTANCE, backup );
     ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
 }
@@ -189,7 +189,7 @@ void RemoveDistance::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void RemoveDistance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

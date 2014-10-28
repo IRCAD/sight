@@ -1,0 +1,11 @@
+TYPE = "exec"
+CONSOLE="yes"
+USE=['boost', 'boostProgramOptions']
+LIB=[ 
+    'fwAtomsPatch_0-1',
+    'fwAtoms_0-1',
+    'fwData_0-1',
+    'fwCamp_0-1',
+    'fwDataCamp_0-1',
+    'fwAtomConversion_0-1'
+]

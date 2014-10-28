@@ -1,18 +1,13 @@
 
 CLASSTEST=[
-    'AcquisitionTest',
     'ArrayTest',
     'BooleanTest',
     'CameraTest',
     'ColorTest',
     'CompositeTest',
     'CopyTest',
-    'DictionaryOrganTest',
-    'DictionaryTest',
     'EdgeTest',
     'FloatTest',
-    'GenericFieldTest',
-    'GenericFieldTest',
     'GraphTest',
     'ImageTest',
     'IntegerTest',
@@ -22,19 +17,18 @@ CLASSTEST=[
     'MeshTest',
     'ModelTest',
     'ObjectTest',
-    'PatientTest',
     'ProcessObjectTest',
     'ReconstructionTest',
     'ReconstructionTraitsTest',
     'ROITraitsTest',
     'StringTest',
     'StructureTraitsDictionaryTest',
-    'StudyTest',
     'TransferFunctionTest',
     'TransformationMatrix3DTest',
     'VideoTest',
+    'MTLockTest',
 ]
 
 USE = ['boost','boostDateTime', 'boostRegex']
-LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1','fwComEd_0-1']
+LIB = ['fwData_0-1','fwTools_0-1','fwCore_0-1','fwComEd_0-1','fwTest_0-1']
 CONSOLE = 'yes'

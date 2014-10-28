@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@ namespace wrapper
 {
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgForwarderSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgForwarderSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ MsgForwarderSrv::~MsgForwarderSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void MsgForwarderSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void MsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();

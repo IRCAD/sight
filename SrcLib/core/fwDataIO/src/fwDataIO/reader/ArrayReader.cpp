@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,14 +11,13 @@
 
 #include <fwCore/Exception.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataIO/reader/ArrayReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::ArrayReader, ::fwDataIO::reader::ArrayReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::ArrayReader );
 
 
 namespace fwDataIO
@@ -29,7 +28,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-ArrayReader::ArrayReader() : ::fwData::location::enableSingleFile< IObjectReader >(this)
+ArrayReader::ArrayReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 
 //------------------------------------------------------------------------------

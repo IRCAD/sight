@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,19 +26,19 @@ namespace ioVTK
 
 /**
  * @brief   VTK mesh writer service.
- * @class   TriangularMeshWriterService.
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   TriangularMeshWriterService
  *
- * Service writing a VTK Mesh using the vtkIO lib.
+ * Service writing a VTK Mesh using the fwVtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh )
+ * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::TriangularMeshWriterService , ::fwData::TriangularMesh )
  */
 class IOVTK_CLASS_API TriangularMeshWriterService : public ::io::IWriter
 {
 
 public :
+    ~TriangularMeshWriterService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (TriangularMeshWriterService)( ::io::IWriter) ) ;
 
     /**
@@ -51,17 +51,6 @@ public :
 
 
 protected:
-
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API TriangularMeshWriterService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~TriangularMeshWriterService() throw();
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
@@ -91,11 +80,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

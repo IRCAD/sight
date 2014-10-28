@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 
 #include "ioData/MeshWriterService.hpp"
 
-REGISTER_SERVICE( ::io::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh ) ;
 
 namespace ioData
 {
@@ -98,7 +98,7 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
         ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
         SLM_ASSERT("Mesh not instanced", mesh);
 
-        ::fwDataIO::writer::MeshWriter::NewSptr writer;
+        ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();
         writer->setObject( mesh );
         writer->setFile(this->getFile());
 

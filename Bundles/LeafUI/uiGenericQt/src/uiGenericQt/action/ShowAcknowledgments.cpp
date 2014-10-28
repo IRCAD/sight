@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ namespace uiGeneric
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::ShowAcknowledgments , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiGeneric::action::ShowAcknowledgments , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 
@@ -117,7 +117,7 @@ void ShowAcknowledgments::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowAcknowledgments::updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
+void ShowAcknowledgments::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

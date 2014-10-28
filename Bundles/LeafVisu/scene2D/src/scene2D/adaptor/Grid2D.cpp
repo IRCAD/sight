@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/data/ViewportMsg.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Grid2D  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Grid2D  , ::fwData::Composite ) ;
 
 
 namespace scene2D
@@ -24,7 +24,7 @@ namespace adaptor
 
 Grid2D::Grid2D() throw() : m_xSpacing(10), m_ySpacing(10)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void Grid2D::doUpdate() throw ( ::fwTools::Failed )
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void Grid2D::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ObjFromMsgUpdaterSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ObjFromMsgUpdaterSrv, ::fwData::Composite ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ ObjFromMsgUpdaterSrv::~ObjFromMsgUpdaterSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void ObjFromMsgUpdaterSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void ObjFromMsgUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for (   ManagedEvents::iterator it = m_managedEvents.begin();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef _FWGUI_REGISTRAR_TOOLBARREGISTRYMANAGER_HPP_
 #define _FWGUI_REGISTRAR_TOOLBARREGISTRYMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
@@ -25,21 +25,21 @@ namespace registrar
 
 /**
  * @brief   Defines the toolBar registrar for IHM.
- * @class   ToolBarRegistrar.
- * @author  IRCAD (Research and Development Team).
+ * @class   ToolBarRegistrar
+ * 
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API ToolBarRegistrar : public ::fwCore::BaseObject
+class FWGUI_CLASS_API ToolBarRegistrar : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwCore::BaseObject), (( (const std::string) )), new ToolBarRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new ToolBarRegistrar );
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
-    FWGUI_API ToolBarRegistrar( const std::string sid);
+    FWGUI_API ToolBarRegistrar( const std::string &sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~ToolBarRegistrar();
@@ -50,7 +50,7 @@ public:
     /**
      * @brief Return the fwMenuItem associated with the actionSid.
      * @param actionSid sid of the action service
-     * @param toolBarItems  vector containing the fwMenuItem manages by this registrar.
+     * @param menuItems  vector containing the fwMenuItem manages by this registrar.
      */
     FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string actionSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
 
@@ -59,7 +59,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-           <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+           <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
                <gui>
                    <layout>
                        <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
@@ -85,7 +85,7 @@ public:
        @endverbatim
      * This method analyzes the registry section of the configuration.
      *
-     *  - <menuItem sid="item2" start="no" /> : define the service of the menuItem to add in the toolbar.
+     *  - \<menuItem sid="item2" start="no" /\> : define the service of the menuItem to add in the toolbar.
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the service must be started by the toolbar service.
      */

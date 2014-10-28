@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/ActionCallback.hpp"
 #include "fwGuiQt/container/QtToolBarContainer.hpp"
@@ -26,10 +26,8 @@
 #include "fwGuiQt/layoutManager/ToolBarLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IToolBarLayoutManager,
-        ::fwGui::layoutManager::ToolBarLayoutManager,
-         ::fwGui::layoutManager::IToolBarLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::layoutManager::ToolBarLayoutManager,
+                    ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -38,7 +36,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-ToolBarLayoutManager::ToolBarLayoutManager()
+ToolBarLayoutManager::ToolBarLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -63,9 +61,9 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
     {
         if (actionInfo.m_isSeparator)
         {
-            QWidget * widget = new QWidget();
             if (actionInfo.m_size > 0)
             {
+                QWidget * widget = new QWidget(toolBar);
                 widget->setMinimumWidth(actionInfo.m_size);
                 toolBar->addWidget(widget);
             }
@@ -77,18 +75,18 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else if (actionInfo.m_isSpacer)
         {
-            QWidget* spacer = new QWidget();
+            QWidget* spacer = new QWidget(toolBar);
             spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             toolBar->addWidget(spacer);
             actionGroup = 0;
         }
         else if (actionInfo.m_isMenu)
         {
-            ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+            ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
             QMenu* qtMenu = new QMenu(toolBar);
             menu->setQtMenu(qtMenu);
 
-            QToolButton * toolButton = new QToolButton();
+            QToolButton * toolButton = new QToolButton(toolBar);
             if (toolBar->orientation() == Qt::Horizontal)
             {
                 toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -112,7 +110,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else if (actionInfo.m_isEditor)
         {
-            ::fwGuiQt::container::QtContainer::NewSptr container;
+            ::fwGuiQt::container::QtContainer::sptr container = ::fwGuiQt::container::QtContainer::New();
             QWidget* widget = new QWidget(toolBar);
             container->setQtContainer(widget);
 
@@ -131,7 +129,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         }
         else
         {
-            ::fwGuiQt::container::QtMenuItemContainer::NewSptr menuItem;
+            ::fwGuiQt::container::QtMenuItemContainer::sptr menuItem = ::fwGuiQt::container::QtMenuItemContainer::New();
             QAction *action;
             if (!actionInfo.m_icon.empty())
             {

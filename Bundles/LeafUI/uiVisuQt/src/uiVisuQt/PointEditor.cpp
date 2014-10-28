@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,6 @@
 #include <QSpacerItem>
 
 #include <fwCore/base.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
@@ -38,12 +36,12 @@
 namespace uiVisu
 {
 
-    REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::PointEditor , ::fwData::Composite ) ;
+    fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::PointEditor , ::fwData::Composite ) ;
 
 
     PointEditor::PointEditor() throw()
     {
-        addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
+//        addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
     }
 
     //------------------------------------------------------------------------------
@@ -123,23 +121,26 @@ namespace uiVisu
 
     //------------------------------------------------------------------------------
 
-    void PointEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+    void PointEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         SLM_TRACE_FUNC();
         ::fwComEd::InteractionMsg::csptr interactionMsg = ::fwComEd::InteractionMsg::dynamicConstCast(_msg);
 
         if (interactionMsg)
         {
-            ::fwData::Point::csptr point = interactionMsg->getEventPoint();
-            SLM_ASSERT("Sorry, the object is null", point);
-            if(point)
+            if ( interactionMsg->hasEvent( ::fwComEd::InteractionMsg::MOUSE_MOVE ) )
             {
-                fwVec3d  pointCoord = point->getCoord();
-                m_textCtrl_x->setText(QString("%1").arg(pointCoord[0], 0, 'f', 0));
-                m_textCtrl_y->setText(QString("%1").arg(pointCoord[1], 0, 'f', 0));
-                m_textCtrl_z->setText(QString("%1").arg(pointCoord[2], 0, 'f', 0));
+                ::fwData::Point::csptr point = interactionMsg->getEventPoint();
+                SLM_ASSERT("Sorry, the object is null", point);
+                if(point)
+                {
+                    fwVec3d  pointCoord = point->getCoord();
+                    m_textCtrl_x->setText(QString("%1").arg(pointCoord[0], 0, 'f', 0));
+                    m_textCtrl_y->setText(QString("%1").arg(pointCoord[1], 0, 'f', 0));
+                    m_textCtrl_z->setText(QString("%1").arg(pointCoord[2], 0, 'f', 0));
+                }
+                //        this->updating();
             }
-            //        this->updating();
         }
     }
 

@@ -1,0 +1,6 @@
+<plugin id="filterVRRender" class="::filterVRRender::Plugin" >
+
+    <library name="filterVRRender" />
+
+</plugin>
+

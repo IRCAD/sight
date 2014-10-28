@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,17 +10,14 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/TabLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
-        ::fwGui::TabLayoutManager,
-         ::fwGui::layoutManager::TabLayoutManagerBase::RegistryKeyType,
-          ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::TabLayoutManager, ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -28,7 +25,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-TabLayoutManager::TabLayoutManager()
+TabLayoutManager::TabLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -57,11 +54,11 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     BOOST_FOREACH ( ViewInfo viewInfo, views)
     {
         wxPanel * viewPanel = new wxPanel(  m_notebook, wxNewId());
-        ::fwGuiWx::container::WxContainer::NewSptr subContainer;
+        ::fwGuiWx::container::WxContainer::sptr subContainer = ::fwGuiWx::container::WxContainer::New();
         subContainer->setWxContainer(viewPanel);
         m_subViews.push_back(subContainer);
 
-        m_notebook->AddPage( viewPanel, ::fwWX::std2wx(viewInfo.m_caption), viewInfo.m_isSelect );
+        m_notebook->AddPage( viewPanel, ::fwGuiWx::std2wx(viewInfo.m_caption), viewInfo.m_isSelect );
     }
     wxContainer->Layout();
 }

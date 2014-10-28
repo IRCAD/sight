@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 #include <boost/cstdint.hpp>
 
 #include "fwData/config.hpp"
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Color.hpp"
 
 namespace fwData
@@ -19,13 +19,13 @@ namespace fwData
 /**
  * @class   Spline
  * @brief   This class defines a spline object.
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 class FWDATA_CLASS_API Spline : public Object
 {
 public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwData::Factory::New< Spline >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwData::factory::New< Spline >) ;
 
     /**
      * @struct point
@@ -51,13 +51,24 @@ public :
             this->normal[1] = _point.normal[1];
             this->normal[2] = _point.normal[2];
             this->isVisible = _point.isVisible;
-            c->deepCopy( _point.c );
+            c = ::fwData::Object::copy( _point.c );
             return(*this);
         };
     };
 
     /// 3D %point container
     typedef std::vector< point > Points ;
+
+    /**
+     * @brief Constructor
+     * @param key Private construction key
+     */
+    FWDATA_API Spline(::fwData::Object::Key key);
+
+    /**
+     * @brief destructor
+     */
+    FWDATA_API virtual ~Spline() ;
 
     /**
      * @brief returns editable point container
@@ -70,17 +81,10 @@ public :
 
     fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
 
+    /// Defines deep copy
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+
 protected :
-
-    /**
-     * @brief constructor
-     */
-    FWDATA_API Spline();
-
-    /**
-     * @brief destructor
-     */
-    FWDATA_API virtual ~Spline() ;
 
     /// Points container
     Points      m_points ;

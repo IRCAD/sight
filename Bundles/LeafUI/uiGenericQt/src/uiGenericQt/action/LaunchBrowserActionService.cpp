@@ -1,14 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QUrl>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+
+#include <QCoreApplication>
 #include <QDesktopServices>
+#include <QUrl>
 
 #include <fwCore/base.hpp>
-#include <fwTools/Object.hpp>
+#include <fwData/Object.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -23,7 +27,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::uiGeneric::action::LaunchBrowserActionService , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiGeneric::action::LaunchBrowserActionService , ::fwData::Object ) ;
 
 //------------------------------------------------------------------------------
 
@@ -63,14 +67,27 @@ void LaunchBrowserActionService::configuring() throw( ::fwTools::Failed )
 void LaunchBrowserActionService::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
+
     SLM_WARN_IF("URL is empty.", m_url.empty());
-    bool isSuccess = QDesktopServices::openUrl(QUrl(QString::fromStdString(m_url), QUrl::TolerantMode));
+    QUrl url(QString::fromStdString(m_url), QUrl::TolerantMode);
+
+    if(url.isRelative()) // no scheme
+    {
+        ::boost::filesystem::path path(QCoreApplication::applicationDirPath().toStdString());
+        path = path.parent_path(); // install folder path
+        path /= url.path().toStdString();
+
+        QString urlStr = QString::fromStdString("file:///" + path.string());
+        url = QUrl(urlStr, QUrl::TolerantMode);
+    }
+
+    bool isSuccess = QDesktopServices::openUrl(url);
     SLM_WARN_IF("Browser wasn't successfully launched.", !isSuccess);
 }
 
 //------------------------------------------------------------------------------
 
-void LaunchBrowserActionService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void LaunchBrowserActionService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {}
 
 //------------------------------------------------------------------------------

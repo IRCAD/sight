@@ -1,0 +1,156 @@
+﻿<extension implements="::fwServices::registry::AppConfig">
+    <id>tuto15MultithreadDynamicConfig</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="GENERIC_UID" default="g"/>
+    </parameters>
+    <config>
+
+
+        <!-- In tutoComChannel, the main data object type is ::fwData::Mesh. -->
+        <object type="::fwData::Mesh">
+
+            <service uid="${GENERIC_UID}_frame" impl="::gui::frame::DefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Tuto15Multithread (dynamic version)</name>
+                        <icon>Bundles/Tuto15Multithread_0-1/tuto.ico</icon>
+                        <minSize width="720" height="600" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="${GENERIC_UID}_menuBar" start="yes" />
+                    <view sid="${GENERIC_UID}_view" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_menuBar" impl="::gui::aspect::DefaultMenuBarSrv" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="View" />
+                        <menu name="Deformation" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="${GENERIC_UID}_fileMenu" start="yes" />
+                    <menu sid="${GENERIC_UID}_viewMenu" start="yes" />
+                    <menu sid="${GENERIC_UID}_deformationMenu" start="yes" />
+                </registry>
+            </service>
+
+            <!-- The application contains three different views. The different views are characterized by their 
+            associated service uid. Furthermore, a minimum window height and a width are given to the last two views.-->
+            <service uid="${GENERIC_UID}_view" impl="::gui::view::DefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view wid="${GENERIC_UID}_rendering1View" />
+                    <view wid="${GENERIC_UID}_rendering2View" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_fileMenu" impl="::gui::aspect::DefaultMenuSrv" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open file" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_openFileAction" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_quitAction" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_deformationMenu" impl="::gui::aspect::DefaultMenuSrv" >
+                <gui>
+                    <layout>
+                        <menuItem name="Start deformation" shortcut="Ctrl+D" />
+                        <menuItem name="Stop deformation" shortcut="Ctrl+F" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_startDeformationAction" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_stopDeformationAction" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_viewMenu" impl="::gui::aspect::DefaultMenuSrv" >
+                <gui>
+                    <layout>
+                        <menuItem name="Render A" style="check" />
+                        <menuItem name="Render B" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_rendering1Action" start="no" />
+                    <menuItem sid="${GENERIC_UID}_rendering2Action" start="no" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_openFileAction" impl="::gui::action::StarterActionService" >
+                <start uid="${GENERIC_UID}_reader" />
+            </service>
+
+            <service uid="${GENERIC_UID}_quitAction" impl="::gui::action::QuitAction"  />
+
+            <service uid="${GENERIC_UID}_startDeformationAction" impl="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>${GENERIC_UID}_meshDeformation/startDeformation</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_stopDeformationAction" impl="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>${GENERIC_UID}_meshDeformation/stopDeformation</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_reader" impl="::uiIO::editor::IOSelectorService" >
+                <type mode="reader" />
+            </service>
+
+            <!-- Mesh deformation service. -->
+            <service uid="${GENERIC_UID}_meshDeformation" impl="::vtkSimpleMesh::SSimpleMeshDeformation"  worker="DEFORMATION_WORKER" />
+
+            <service uid="${GENERIC_UID}_rendering1Action" impl="::gui::action::SConfigLauncher" autoConnect="yes">
+                <config>
+                    <appConfig id="tuto15MultithreadMeshViewConfig" >
+                        <parameters>
+                            <parameter replace="meshUid" by="self" />
+                            <parameter replace="parentViewId" by="${GENERIC_UID}_rendering1View" />
+                            <parameter replace="channelId" by="camera" />
+                        </parameters>
+                    </appConfig>
+                </config>
+            </service>
+
+            <service uid="${GENERIC_UID}_rendering2Action" impl="::gui::action::SConfigLauncher" autoConnect="yes">
+                <config>
+                    <appConfig id="tuto15MultithreadMeshViewConfig" >
+                        <parameters>
+                            <parameter replace="meshUid" by="self" />
+                            <parameter replace="parentViewId" by="${GENERIC_UID}_rendering2View" />
+                            <parameter replace="channelId" by="camera" />
+                        </parameters>
+                    </appConfig>
+                </config>
+            </service>
+            
+            <start uid="${GENERIC_UID}_frame" />
+            <start uid="${GENERIC_UID}_meshDeformation" />
+            <start uid="${GENERIC_UID}_rendering1Action" />
+            <start uid="${GENERIC_UID}_rendering2Action" />
+
+        </object>
+
+    </config>
+</extension>

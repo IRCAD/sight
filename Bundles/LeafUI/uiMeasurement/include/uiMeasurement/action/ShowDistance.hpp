@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action allows to show/hide image distances.
- * @class   ShowDistance.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowDistance
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API ShowDistance : public ::fwGui::IActionSrv
@@ -27,14 +27,15 @@ class UIMEASUREMENT_CLASS_API ShowDistance : public ::fwGui::IActionSrv
 
 public:
     fwCoreServiceClassDefinitionsMacro ( (ShowDistance)( ::fwGui::IActionSrv) ) ;
+
     UIMEASUREMENT_API ShowDistance() throw() ;
 
     UIMEASUREMENT_API virtual ~ShowDistance() throw() ;
 
 protected:
 
-    // update its show/hide flag accordinf image ShowDistance field notification
-    UIMEASUREMENT_API void updating(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
+    // update its show/hide flag according image ShowDistance field notification
+    UIMEASUREMENT_API void receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
 
     UIMEASUREMENT_API void swapping() throw(::fwTools::Failed) ;
 

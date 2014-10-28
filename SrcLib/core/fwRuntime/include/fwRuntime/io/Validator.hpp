@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ namespace io
  * It seems that this class use a static ivar to save schemaValidationContext. If your call a instance of an visitor this ivar should not be
  * directly well positionned. So the recommandation is to construct Validator-Use it-destry it and never store him
  * @date    2007-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct Validator
 {

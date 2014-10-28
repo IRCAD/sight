@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 #define _FWGUI_IINPUTDIALOG_HPP_
 
 #include <string>
-#include <fwCore/base.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -18,17 +18,17 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic input dialog box for IHM.
- * @class   IInputDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   IInputDialog
+ * 
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IInputDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IInputDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IInputDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IInputDialog)(::fwGui::GuiBaseObject) )
 
     /// Constructor. Do nothing.
     FWGUI_API IInputDialog();

@@ -1,11 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef _ARLCORE_SMARTPOINTLIST_H
 #define _ARLCORE_SMARTPOINTLIST_H
+
+#include <boost/make_shared.hpp>
+
 #include <arlcore/Common.h>
 
 #include <vector>
@@ -18,28 +21,27 @@
 namespace arlCore
 {
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    2007
      * @brief
-     *  
+     *
      * In a video image you may extract information of different nature.
      * The purpose of this class is to contain the 2D coordinates of points detected/extracted
      * from all video images and to associate each point to their origin: a point can belong
      * to a point set representing an optical marker, a structured light fringe...
      * In this class, a point set representing an object is called videoTag.
-     * 
+     *
      * When you are tracking several videoTag in a scene, you may want to get all the points
      * of a particular videoTag in the camera number i. This class allows you to get efficiently
-     * this information. You can also ask for the reprojection in all cameras of a 
+     * this information. You can also ask for the reprojection in all cameras of a
      * specific 3D point, or the reprojection of all videoTag in one (or all) camera...
-     * 
-     * Briefly, this class provides efficient methods to get 2D points with respect to 
+     *
+     * Briefly, this class provides efficient methods to get 2D points with respect to
      * a videoTag, a camera, a 3D point, a fringe.
-     * 
+     *
      * Note that when you use structured light, a videoTag will contain the fringe number
      * information as well. This means that you can ask the point list of a specific fringe
      * only.
-     * 
+     *
      * French comments:
      * Liste de points 2D ordonnés par camera, videoTag et numéro de franges
      * Cette classe permet de stocker des points 2D associés à une camera et un videoTag
@@ -48,23 +50,27 @@ namespace arlCore
      * et ordonnancements.
      * Elle est notamment utilisée pour stocker les points détectés dans les images video
      */
-    class SmartPointList
+    class SmartPointList : public fwTools::Object
     {
     public:
+
+        fwCoreClassDefinitionsWithFactoryMacro( (SmartPointList)(::fwTools::Object),
+                                                (()),
+                                                ::boost::make_shared< SmartPointList >) ;
         //! @brief Default constructor of an empty list
         ARLCORE_API SmartPointList( void );
 
         //! @brief Copy constructor
-        ARLCORE_API SmartPointList( const SmartPointList& );
+        ARLCORE_API SmartPointList( CSPTR( SmartPointList ) );
 
         //! @brief Affectation
-        ARLCORE_API SmartPointList& operator=( const SmartPointList& );
+        ARLCORE_API SmartPointList& operator=( CSPTR( SmartPointList ) );
 
         //! @brief Copy of smartpointlist in the current list
-        ARLCORE_API void copy( const SmartPointList& spl );
+        ARLCORE_API void copy( CSPTR( SmartPointList ) spl );
 
         //! @brief Destructor of the list and all points
-        ARLCORE_API ~SmartPointList( void );
+        ARLCORE_API virtual ~SmartPointList( void );
 
         //! @return Provide the coordinates of each point for each camera
         ARLCORE_API std::string getString( void ) const;
@@ -83,25 +89,25 @@ namespace arlCore
          * VideoTag pointer and fringe number are optional
          * @return Point's pointer in the SmartPointList
          */
-        ARLCORE_API Point::csptr push_back( const Point& pt, unsigned int cam, void* videoTag=0, int fringe=0 );
+        ARLCORE_API Point::csptr push_back( Point::csptr  pt, unsigned int cam,  SPTR(void) videoTag=  SPTR(void)(), int fringe=0 );
 
         /**
          * @brief Add a pointlist, tagged with a cam number, videoTag pointer and number of fringe
          * VideoTag pointer and fringe number are optional
          */
-        ARLCORE_API unsigned int push_back( const std::vector< arlCore::Point::csptr >&, unsigned int cam, void* videoTag=0, int fringe=0 );
+        ARLCORE_API unsigned int push_back( const std::vector< arlCore::Point::csptr >&, unsigned int cam, SPTR(void) videoTag=  SPTR(void)(), int fringe=0 );
 
         /**
          * @brief Add a point in the list, tagged with a cam number, videoTag pointer and number of fringe
          * VideoTag pointer and fringe number are optional
          */
-        ARLCORE_API bool addPoint( const Point&, unsigned int cam, void* videoTag, unsigned int tagNo );
+        ARLCORE_API bool addPoint( Point::csptr , unsigned int cam, SPTR(void) videoTag , unsigned int tagNo );
 
         /**
          * @return Reference to a list of points tagged with a cam number, videoTag pointer and number of fringe
          * VideoTag pointer and fringe number are optional
          */
-        ARLCORE_API const std::vector< Point::csptr >& getList( unsigned int cam, void* videoTag=0, int fringe=0 ) const;
+        ARLCORE_API const std::vector< Point::csptr >& getList( unsigned int cam, SPTR(void) videoTag=  SPTR(void)() , int fringe=0 ) const;
 
         /**
          * @brief : If radius<0, find in the SmartPointList for the camera 'cam', the nearest point of (x,y)
@@ -120,40 +126,40 @@ namespace arlCore
          * @param[out] pl = List with only found points
          * @return Number of found points
          */
-        ARLCORE_API unsigned int getPointByCam( std::vector<Point::csptr>& pl, const std::vector<const arlCore::Camera*> &cams, void* videoTag, unsigned int no, std::vector< bool >&whichCams) const;
-        ARLCORE_API unsigned int getPointByCam( std::vector<Point::csptr>& pl, const std::vector<arlCore::Camera> &cams, void* videoTag, unsigned int no, std::vector< bool >&whichCams) const;
+        ARLCORE_API unsigned int getPointByCam( std::vector<Point::csptr>& pl, const std::vector<const arlCore::Camera*> &cams, SPTR(void) videoTag, unsigned int no, std::vector< bool >&whichCams) const;
+        ARLCORE_API unsigned int getPointByCam( std::vector<Point::csptr>& pl, const std::vector<arlCore::Camera> &cams, SPTR(void) videoTag, unsigned int no, std::vector< bool >&whichCams) const;
         /**
          * @brief List of 2D visible points for a cam and optionally the videoTag pointer
          * When videoTag is not given, provide the point coordinates for all videoTag
          * @return Number of points returned
          */
-        ARLCORE_API unsigned int getPoints( std::vector<Point::csptr>& pl, unsigned int cam, void* videoTag=0 ) const;
+        ARLCORE_API unsigned int getPoints( std::vector<Point::csptr>& pl, unsigned int cam, SPTR(void) videoTag=  SPTR(void)() ) const;
 
         /**
          * @brief List of 2D points for a cam and optionally the videoTag pointer
          * @return Number of points returned
          */
-        ARLCORE_API unsigned int getPoints( PointList&, unsigned int cam, void* videoTag=0 ) const;
-        ARLCORE_API unsigned int getInvisiblePoints( std::vector<Point::csptr>&, unsigned int cam, void* t=0 ) const;
+        ARLCORE_API unsigned int getPoints( PointList::sptr, unsigned int cam, SPTR(void) videoTag=  SPTR(void)() ) const;
+        ARLCORE_API unsigned int getInvisiblePoints( std::vector<Point::csptr>&, unsigned int cam, SPTR(void) t= SPTR(void)() ) const;
 
-        //! @brief Visible 2D point in the camera 'cam' which is the TagId point in VideoTag t 
-        ARLCORE_API bool getPoint( Point::csptr&, unsigned int cam, void* t, unsigned int TagId ) const;
-        
+        //! @brief Visible 2D point in the camera 'cam' which is the TagId point in VideoTag t
+        ARLCORE_API bool getPoint( Point::csptr&, unsigned int cam, SPTR(void) t, unsigned int TagId ) const;
+
         //! @brief Clear the list and all points
         ARLCORE_API bool clear( void );
 
         //! @brief Number of points in the list tagged with the triplet (cam,videotag,fringe)
-        ARLCORE_API unsigned int size( unsigned int cam, void* videoTag=0, int fringe=0 ) const;
+        ARLCORE_API unsigned int size( unsigned int cam, SPTR(void) videoTag=  SPTR(void)(), int fringe=0 ) const;
 
     protected:
         //! @return A list among m_listOfLists or m_listsByCam in function of the triplet
-        std::vector< Point::csptr >& privateGetList( unsigned int cam, void* videoTag=0, int fringe=0 );
+        std::vector< Point::csptr >& privateGetList( unsigned int cam, SPTR(void) videoTag= SPTR(void)(), int fringe=0 );
 
         //! @return Hash code for the triplet : hashcode = hash(cam, videoTag, fringe)
-        double hash( unsigned int cam, void* videoTag, int fringe=0 ) const;
+        double hash( unsigned int cam, SPTR(void) videoTag, int fringe=0 ) const;
 
         //! @return the triplet for a hashcode :  (cam, videoTag, fringe) = unhash(hashcode)
-        bool unhash( double key, unsigned int &cam, void* &tag, int &fringe ) const;
+        bool unhash( double key, unsigned int &cam, SPTR(void) videoTag , int &fringe ) const;
 
 
     private:
@@ -187,7 +193,7 @@ namespace arlCore
     * @param[in] gaussianNoise Bruit moyen en pixels sur les points 2D détectés ou cliqués
     * @return Nombre d'appariements
     */
-    ARLCORE_API unsigned int epipolarMatching( const std::vector<Camera>& cameras, const SmartPointList &points2D, std::vector< std::vector<Point::csptr> >&matching, double gaussianNoise );
+    ARLCORE_API unsigned int epipolarMatching( const std::vector<Camera>& cameras, CSPTR( SmartPointList ) points2D, std::vector< std::vector<Point::csptr> >&matching, double gaussianNoise );
 
 /*  class SynchronizedList
     {

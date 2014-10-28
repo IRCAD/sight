@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,8 +18,8 @@ namespace action
 
 /**
  * @brief   This action adds landmaks on image.
- * @class   SAddLabeledPoint.
- * @author  IRCAD (Research and Development Team).
+ * @class   SAddLabeledPoint
+ * 
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API SAddLabeledPoint : public ::fwGui::IActionSrv
@@ -29,11 +29,12 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SAddLabeledPoint)( ::fwGui::IActionSrv) ) ;
 
-protected:
-
     UIMEASUREMENT_API SAddLabeledPoint() throw() ;
 
     UIMEASUREMENT_API virtual ~SAddLabeledPoint() throw() ;
+
+protected:
+
 
     UIMEASUREMENT_API void configuring() throw (::fwTools::Failed);
 
@@ -41,7 +42,7 @@ protected:
 
     UIMEASUREMENT_API void updating() throw (::fwTools::Failed);
 
-    UIMEASUREMENT_API void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    UIMEASUREMENT_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     UIMEASUREMENT_API void stopping() throw (::fwTools::Failed);
 

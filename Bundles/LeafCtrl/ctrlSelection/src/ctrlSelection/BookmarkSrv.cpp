@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,6 @@
 #include <boost/foreach.hpp>
 
 #include <fwTools/Bookmarks.hpp>
-#include <fwTools/Object.hpp>
 
 #include <fwData/String.hpp>
 
@@ -21,13 +20,13 @@ namespace ctrlSelection
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwServices::IController, ::ctrlSelection::BookmarkSrv, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::BookmarkSrv, ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
 BookmarkSrv::BookmarkSrv() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +96,7 @@ void BookmarkSrv::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void BookmarkSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {}
 
 //-----------------------------------------------------------------------------

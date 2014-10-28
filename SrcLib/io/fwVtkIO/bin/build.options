@@ -1,6 +1,7 @@
 TYPE='shared'
 LIB = [
       'fwData_0-1',
+      'fwMedData_0-1',
       'fwCore_0-1',
       'fwDataIO_0-2',
       'fwTools_0-1',
@@ -8,4 +9,9 @@ LIB = [
       'fwComEd_0-1'
       ]
 VERSION = '0-1'
-USE = ['boost','boostFilesystem','vtkHybrid']
+USE = [
+       'boost',
+       'boostFilesystem',
+       'boostDateTime',
+       'vtkHybrid'
+       ]

@@ -13,8 +13,8 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::opVTKMesh::IMesher</type>
-        <service>::opVTKMesh::VTKMesherService</service>
-        <object>::fwData::Acquisition</object>
+        <service>::opVTKMesh::SVTKMesher</service>
+        <object>::fwData::Composite</object>
     </extension>
 
 </plugin>

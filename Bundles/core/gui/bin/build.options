@@ -9,6 +9,7 @@ LIB      = [
             'fwData_0-1',
             'fwComEd_0-1',
             'fwGui_0-1',
+            'fwActivities_0-1',
             ]
 
 

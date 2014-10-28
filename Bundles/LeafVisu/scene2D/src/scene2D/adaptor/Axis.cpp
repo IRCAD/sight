@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,11 +13,10 @@
 
 #include "scene2D/data/InitQtPen.hpp"
 #include "scene2D/data/ViewportMsg.hpp"
-
 #include "scene2D/adaptor/Axis.hpp"
 
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
 
 namespace scene2D
 {
@@ -27,7 +26,7 @@ namespace adaptor
 
 Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02), m_color("white")
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -41,6 +40,11 @@ Axis::~Axis() throw()
 
 void Axis::doStart() throw( ::fwTools::Failed)
 {
+    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+
+    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+
     this->buildAxis();
     this->doUpdate();
 }
@@ -49,8 +53,7 @@ void Axis::doStart() throw( ::fwTools::Failed)
 
 void Axis::doStop() throw( ::fwTools::Failed)
 {
-    m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    m_connection.disconnect();
 
     delete m_layer;
 }
@@ -110,11 +113,7 @@ void Axis::configuring() throw( ::fwTools::Failed)
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewport = ::scene2D::data::Viewport::dynamicCast(
-                ::fwTools::fwID::getObject( m_configuration->getAttributeValue("viewportUID") ) );
-
-        m_comChannel = ::fwServices::registerCommunicationChannel( m_viewport , this->getSptr());
-        m_comChannel->start();
+        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
     }
 
 
@@ -181,7 +180,6 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
     Scene2DRatio ratio = this->getRatio();
 
     ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    const double viewportX = viewport->getX();
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth = viewport->getWidth();
 
@@ -287,7 +285,7 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::doUpdate( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
+void Axis::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
     if( _msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
     {

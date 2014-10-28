@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <boost/python.hpp>
 #include <boost/python/stl_iterator.hpp>
 #include <boost/preprocessor/cat.hpp>
@@ -133,7 +139,7 @@ void export_image()
 {
     using namespace ::boost::python;
     size_t (::fwData::Image::*SIMPLEIMAGEALLOCATE)(void) =  &::fwData::Image::allocate;
-    class_< ::fwData::Image, bases< ::fwData::Object >, ::fwData::Image::sptr >("Image")
+    class_< ::fwData::Image, bases< ::fwData::Object >, ::fwData::Image::sptr, boost::noncopyable >("Image", no_init)
        .add_property("buffer",  &getImageBuffer )
        .add_property("type",  &getPixelTypeAsString, & setPixelTypeFromString )
        .add_property("spacing", &getSpacing,  &setSpacing )

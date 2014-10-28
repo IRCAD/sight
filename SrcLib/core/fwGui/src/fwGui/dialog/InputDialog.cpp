@@ -1,10 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/Factory.hpp>
 
 #include "fwGui/dialog/InputDialog.hpp"
 
@@ -24,14 +23,16 @@ std::string InputDialog::showInputDialog(const std::string& title, const std::st
 
 InputDialog::InputDialog()
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IInputDialog>( IInputDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IInputDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::IInputDialog::dynamicCast(guiObj);
 }
 
 //-----------------------------------------------------------------------------
 
 InputDialog::InputDialog(const std::string& title, const std::string& message, const std::string &text)
 {
-    m_implementation = ::fwTools::ClassFactoryRegistry::create< ::fwGui::dialog::IInputDialog>( IInputDialog::REGISTRY_KEY);
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IInputDialog::REGISTRY_KEY);
+    m_implementation = ::fwGui::dialog::IInputDialog::dynamicCast(guiObj);
     m_implementation->setTitle(title);
     m_implementation->setMessage(message);
     m_implementation->setInput(text);

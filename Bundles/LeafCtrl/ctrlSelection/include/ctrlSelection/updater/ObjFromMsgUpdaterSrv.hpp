@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,9 +17,9 @@ namespace updater
 {
 
 /**
- * @class  ObjFromMsgUpdaterSrv : Update Object from message
+ * @class  ObjFromMsgUpdaterSrv
  * @brief  Update the composite with the object which send the message.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date    2009-2010.
  */
@@ -47,7 +47,7 @@ protected:
     /**
      * @brief Configure the services : declare the event to react.
      * @verbatim
-         <service uid="myUpdater" implementation="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoComChannel="no">
+         <service uid="myUpdater" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
             <update compositeKey="myImage" onEvent="NEW_IMAGE_SELECTED" fromUID="myImage" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myObject" onEvent="NEW_OBJECT" fromUID="myObject" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myObject" onEvent="REMOVE_OBJECT" fromUID="myObject" actionType="REMOVE"/>
@@ -66,7 +66,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 };
 
 } // updater

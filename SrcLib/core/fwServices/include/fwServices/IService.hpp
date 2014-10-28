@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,27 @@
 #ifndef _FWSERVICES_ISERVICE_HPP_
 #define _FWSERVICES_ISERVICE_HPP_
 
+#include <boost/property_tree/ptree.hpp>
+
 #include <deque>
 
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include <fwThread/Worker.hpp>
+
+#include <fwCom/Slots.hpp>
+#include <fwCom/HasSlots.hpp>
+#include <fwCom/HasSignals.hpp>
+
 #include "fwServices/config.hpp"
 #include "fwServices/ObjectMsg.hpp"
+#include "fwServices/factory/new.hpp"
+#include "fwServices/helper/SigSlotConnection.hpp"
 
 namespace fwServices
 {
-class IEditionService;
 namespace registry
 {
 class ObjectService;
@@ -28,8 +37,8 @@ typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
 
 /**
  * @brief   Base class for all services.
- * @class   IService.
- * @author IRCAD (Research and Development Team).
+ * @class   IService
+ * 
  * @date    2007-2009.
  *
  * This class defines the API to use and declare services. The service state aims at imposing method execution order (i.e. configure(), start(), update() or update(const fwServices::ObjectMsg::sptr), stop()).
@@ -38,17 +47,16 @@ typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
  * @todo Refactoring of SWAPPING status. Perhaps must be a special status as UPDATING or UPDATING must be another GlobalStatus. it must be homogeneous.
  * @todo Add a new method to test if m_associatedObject has expired
  */
-class FWSERVICES_CLASS_API IService : public ::fwTools::Object
+class FWSERVICES_CLASS_API IService : public ::fwTools::Object, public ::fwCom::HasSlots, public ::fwCom::HasSignals
 {
 
     // to give to OSR an access on IService.m_associatedObject;
     friend class registry::ObjectService;
-    friend class IEditionService;
 
 public :
+    typedef ::boost::property_tree::ptree ConfigType;
 
     fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object) ) ;
-
     fwCoreAllowSharedFromThis();
 
     /**
@@ -66,15 +74,6 @@ public :
         STOPPED,    /**< state after stop */
         STOPPING    /**< state during stop */
     } GlobalStatus;
-
-    /// Defines all possible service status concerning communication
-    typedef enum
-    {
-        SENDING_MSG,    /**< state during the service notifies to listeners a message */
-        RECEIVING_WITH_SENDING_MSG, /**< state during the service notifies to listeners a message when it is already receiving a message */
-        RECEIVING_MSG,  /**< state during the service receives a message and analyzed it*/
-        IDLE            /**< state when service do nothing */
-    } NotificationStatus;
 
     /// Defines all possible status for an update process
     typedef enum
@@ -95,6 +94,37 @@ public :
 
 
     /**
+     * @name Slot API
+     */
+    //@{
+    typedef ::boost::shared_future< void > SharedFutureType;
+    typedef ::boost::packaged_task< void > PackagedTaskType;
+    typedef ::boost::future< void > UniqueFutureType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_SLOT;
+    typedef ::fwCom::Slot<SharedFutureType()> StartSlotType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOP_SLOT;
+    typedef ::fwCom::Slot<SharedFutureType()> StopSlotType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLOT;
+    typedef ::fwCom::Slot<SharedFutureType()> UpdateSlotType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_RECEIVE_SLOT;
+    typedef ::fwCom::Slot<void(ObjectMsg::csptr)> ReceiveSlotType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SWAP_SLOT;
+    typedef ::fwCom::Slot<SharedFutureType(::fwData::Object::sptr)> SwapSlotType;
+
+    /// Initializes m_associatedWorker and associates this worker to all service slots
+    FWSERVICES_API void setWorker( ::fwThread::Worker::sptr worker );
+
+    /// Returns associate worker
+    FWSERVICES_API ::fwThread::Worker::sptr getWorker() const;
+
+    //@}
+
+    /**
      * @name Key service API
      */
 
@@ -108,6 +138,13 @@ public :
     FWSERVICES_API void setConfiguration( const ::fwRuntime::ConfigurationElement::sptr _cfgElement ) ;
 
     /**
+     * @brief Affect the configuration, using a boost property tree
+     * @param[in] ptree property tree
+     * @post m_configurationState == UNCONFIGURED
+     */
+    FWSERVICES_API void setConfiguration( const ConfigType &ptree ) ;
+
+    /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does nothing otherwise.
      * @pre m_configurationState == UNCONFIGURED
      * @post m_configurationState == CONFIGURED
@@ -119,28 +156,21 @@ public :
      * @brief Invoke starting() if m_globalState == STOPPED. Does nothing otherwise.
      * @post m_globalState == STARTED
      */
-    FWSERVICES_API void start() throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType start(); //throw( ::fwTools::Failed );
 
     /**
-     * @brief Invoke stopping() if m_globalState == STARTED. Does nothing otherwise. Stops all observations (ICommunication for which this is destination).
+     * @brief Invoke stopping() if m_globalState == STARTED. Does nothing otherwise. Stops all observations.
      *
      * @post m_globalState == STOPPED
      *
      */
-    FWSERVICES_API void stop() throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType stop(); //throw( ::fwTools::Failed );
 
     /**
      * @brief Invoke updating() if m_globalState == STARTED. Does nothing otherwise.
      * @pre m_globalState == STARTED
      */
-    FWSERVICES_API void update() throw( ::fwTools::Failed );
-
-    /**
-     * @brief Invoke updating(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
-     * @pre m_globalState == STARTED
-     * @pre m_notificationState == IDLE
-     */
-    FWSERVICES_API void update( fwServices::ObjectMsg::csptr _msg )  ;
+    FWSERVICES_API SharedFutureType update(); //throw( ::fwTools::Failed );
 
     /**
      * @brief Associate the service to another object
@@ -151,47 +181,12 @@ public :
      * This method provides to associate te service to another object without stopping
      * and deleting it. Furthermore, this method modify all observations to be aware to
      * _obj notifications.
-     * @author IRCAD (Research and Development Team).
-     * @author  IRCAD (Research and Development Team).
+     * 
+     * 
      */
-    FWSERVICES_API void swap( ::fwData::Object::sptr _obj ) throw( ::fwTools::Failed );
+    FWSERVICES_API SharedFutureType swap( ::fwData::Object::sptr _obj ); //throw( ::fwTools::Failed );
 
     //@}
-
-    /**
-     * @name Management of event handler configuration
-     */
-
-    //@{
-
-    /**
-     * @brief this method permits to add a new event handled by the service.
-     * @param[in] a new id analyze by the service.
-     * @post isHandlingAllEvents() == false
-     */
-    FWSERVICES_API void addNewHandledEvent( std::string _eventId );
-
-    /**
-     * @brief Get a vector of the handling events.
-     * @param[out] the vector of events.
-     * @pre isHandlingAllEvents() == false
-     *
-     * This method returns a vector of the events which are handle by the services, by default all events are handle if this method is not overwritted.
-     */
-    FWSERVICES_API std::vector< std::string > getHandledEvents();
-
-    /// Return if this service analyse all events, if the value is equal to false, see the handling configuration with getHandledEvents() method.
-    FWSERVICES_API bool isHandlingAllEvents();
-
-    /**
-     * @brief When any handling event is defined in service, to not listen notifications event if the observation is set on.
-     * @pre m_handledEvents must be empty
-     * @post m_isHandlingAllEvents == false
-     */
-    FWSERVICES_API void handlingEventOff();
-
-    //@}
-
 
     /**
      * @name All concerning status access
@@ -218,22 +213,10 @@ public :
     FWSERVICES_API bool isStopped() const throw() ;
 
     /**
-     * @brief Test if the service is sending message.
-     * @return true if m_notificationState == SENDING or RECEIVING_WITH_SENDING_MSG
-     */
-    FWSERVICES_API bool isSending() const throw() ;
-
-    /**
      * @brief Return the configuration process status
      * @return m_configurationState
      */
     FWSERVICES_API ConfigurationStatus getConfigurationStatus() const throw() ;
-
-    /**
-     * @brief Return the communication state of the service
-     * @return m_notificationState
-     */
-    FWSERVICES_API NotificationStatus getNotificationStatus() const throw() ;
 
     /**
      * @brief Return the update process status
@@ -252,10 +235,14 @@ public :
     /**
      * @brief Return the configuration, in an xml format read using runtime library
      * @return m_configuration, a structure which represents the service configuration
-     * @todo getConfiguration() must not be virtual.
-     * @todo getConfiguration() must be const.
      */
-    FWSERVICES_API virtual ::fwRuntime::ConfigurationElement::sptr getConfiguration() ;
+    FWSERVICES_API ::fwRuntime::ConfigurationElement::sptr getConfiguration() const;
+
+    /**
+     * @brief Return the configuration, in an boost property tree
+     */
+    FWSERVICES_API ConfigType getConfigTree() const ;
+
 
 //    /**
 //     * @brief Check the configuration using XSD if possible
@@ -292,6 +279,20 @@ public :
 
     //@}
 
+    /**
+     * @name Communication connection between object::signals and service::slots
+     */
+    //@{
+
+    typedef ::fwServices::helper::SigSlotConnection::KeyConnectionsType KeyConnectionsType;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     */
+    FWSERVICES_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+    //@}
 
     /**
      * @name Misc
@@ -308,6 +309,15 @@ public :
 
     //@}
 
+#ifdef COM_LOG
+    /**
+      * @brief Set a newID  for the service, the oldest one is released.
+      * @warning Cannot set a empty ID.
+      * @note This method is thread-safe. This method is used to better trace communication between signals and slots
+      */
+    FWSERVICES_API void setID( ::fwTools::fwID::IDType newID );
+#endif
+
 protected :
 
     /**
@@ -320,7 +330,7 @@ protected :
      * @brief IService constructor.
      *
      * This constructor does nothing. By default, m_associatedObject is null and
-     * service is considered as STOPPED, IDLE and UNCONFIGURED.
+     * service is considered as STOPPED, NOTUPDATING and UNCONFIGURED.
      */
     FWSERVICES_API IService() ;
 
@@ -338,6 +348,12 @@ protected :
      */
 
     //@{
+
+    /**
+     * @brief Invoke receiving(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
+     * @pre m_globalState == STARTED
+     */
+    FWSERVICES_API void receive( fwServices::ObjectMsg::csptr _msg ) ;
 
     /**
      * @brief Initialize the service activity.
@@ -386,9 +402,9 @@ protected :
     /**
      * @brief Perform some computations according to modifications specified in the _msg parameter. _msg generally indicates modification to occur (or having occured) on the object the service
      * is attached to.
-     * @see update(fwServices::ObjectMsg::csptr )
+     * @see receive(fwServices::ObjectMsg::csptr )
      */
-    FWSERVICES_API virtual void updating( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed ) = 0 ;
+    FWSERVICES_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /**
      * @brief Write information in a stream.
@@ -411,17 +427,37 @@ protected :
      */
     ::fwData::Object::wptr m_associatedObject;
 
+    /**
+     * @name Slot API
+     */
+    //@{
+
+    /// Slot to call start method
+    StartSlotType::sptr m_slotStart;
+
+    /// Slot to call stop method
+    StopSlotType::sptr m_slotStop;
+
+    /// Slot to call update method
+    UpdateSlotType::sptr m_slotUpdate;
+
+    /// Slot to call receive method
+    ReceiveSlotType::sptr m_slotReceive;
+
+    /// Slot to call swap method
+    SwapSlotType::sptr m_slotSwap;
+
+    /// Associated worker
+    ::fwThread::Worker::sptr m_associatedWorker;
+
+    //@}
+
 private :
 
     /**
      * @brief Defines the current global status of the service.
      */
     GlobalStatus m_globalState;
-
-    /**
-     * @brief Defines if the service is receiving or/and sending message.
-     */
-    NotificationStatus m_notificationState;
 
     /**
      * @brief Defines if the service is updating.
@@ -432,38 +468,6 @@ private :
      * @brief Defines if the service is configured or not.
      */
     ConfigurationStatus m_configurationState;
-
-    std::deque< ::fwServices::ObjectMsg::csptr > m_msgDeque;
-
-    /// Specific event configuration, by default this vector is empty and m_isHandlingAllEvents is set to true.
-    std::vector< std::string > m_handledEvents;
-
-    /// To know if service listens all events (default value) or if it has a specific event configuration.
-    bool m_isHandlingAllEvents;
-
-
-    /**
-     * @brief Switch communication status as SENDING_MSG ( if current state is IDLE ) or RECEIVING_WITH_SENDING_MSG ( if current state is RECEIVING_MSG ).
-     * @pre this->isSending() == false
-     * @see isSending()
-     * @post this->isSending() == true
-     */
-    void sendingModeOn();
-
-    /**
-     * @brief Switch communication status as IDLE ( if current state is SENDING_MSG ) or RECEIVING_MSG ( if current state is RECEIVING_WITH_SENDING_MSG ).
-     * @pre this->isSending() == true
-     * @see isSending()
-     * @post this->isSending() == false
-     */
-    void sendingModeOff();
-
-    /**
-     * @brief process the message(s) which are in the waiting queue(m_msgDeque).
-     * @pre
-     * @post m_msgDeque will be empty.
-     */
-    void processingPendingMessages();
 
 };
 

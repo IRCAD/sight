@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IToolBarLayoutManager.hpp
+ * @file fwGui/layoutManager/IToolBarLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a toolbar.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
 #ifndef _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
 #define _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/container/fwMenu.hpp"
@@ -32,15 +32,13 @@ namespace layoutManager
 
 /**
  * @brief   Defines the toolBar layout manager for IHM.
- * @class   IToolBarLayoutManager.
- * @author  IRCAD (Research and Development Team).
- * @date    2009-2010.
+ * @class   IToolBarLayoutManager
  *
  */
-class FWGUI_CLASS_API IToolBarLayoutManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IToolBarLayoutManager : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IToolBarLayoutManager)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IToolBarLayoutManager)(::fwGui::GuiBaseObject) )
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
@@ -103,7 +101,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-       <service uid="toolbar2" type="::fwGui::IToolBarSrv" implementation="::gui::aspect::DefaultToolBarSrv" autoComChannel="no" >
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
            <gui>
                <layout>
                    <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
@@ -129,16 +127,16 @@ public:
        @endverbatim
      * This method analyzes the gui section of the configuration.
      *
-     *  - <layout> (mandatory) : give the list of the menu item that will appear in the toolbar.
-     *  - <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/> :
+     *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
+     *  - \<menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file
-     *  - <menu name="My menu" /> :
+     *  - \<menu name="My menu" /\> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      *   - \b icon : give the path of the icon file
-     *  - <editor> : to add an editor in the toolbar
-     *  - <separator/> : allow to divide the toolbar by part (draw a line).
+     *  - \<editor\> : to add an editor in the toolbar
+     *  - \<separator/\> : allow to divide the toolbar by part (draw a line).
      */
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 

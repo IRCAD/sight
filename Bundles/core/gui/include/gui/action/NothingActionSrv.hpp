@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,10 +21,7 @@ namespace action
 
 /**
  * @brief   This action does nothing.
- * @class   NothingActionSrv.
- * @author  IRCAD (Research and Development Team).
-
- * @date    2009.
+ * @class   NothingActionSrv
  */
 class GUI_CLASS_API NothingActionSrv : public ::fwGui::IActionSrv
 {
@@ -61,7 +58,7 @@ protected:
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUI_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Process the action. Do nothing.

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,9 +20,7 @@ namespace view
 
 /**
  * @brief   Defines the service interface managing a view placed in main frame.
- * @class   IView.
- * @author  IRCAD (Research and Development Team).
- * @date    2009-2010.
+ * @class   IView
  *
  */
 class GUI_CLASS_API IView : public ::fwGui::IGuiContainerSrv

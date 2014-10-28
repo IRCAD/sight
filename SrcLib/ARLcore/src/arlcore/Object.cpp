@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -160,16 +160,7 @@ unsigned int arlCore::Object::getNo( void ) const
     return m_no;
 }
 
-void arlCore::Object::setName( const std::string &name )
-{
-    update();
-    m_name = name;
-}
 
-std::string arlCore::Object::getName( void ) const
-{
-    return m_name;
-}
 
 std::string arlCore::Object::getFileName( void )const
 {
@@ -224,7 +215,7 @@ bool arlCore::Object::setTime( const long int &time )
 
 bool arlCore::Object::setMaxTime( long int date, long int time )
 {
-    if(date>m_date || (date==m_date && time>m_time))
+    if (date>m_date || (date==m_date && time>m_time))
     {
         m_date = date;
         m_time = time;
@@ -236,7 +227,7 @@ bool arlCore::Object::setMaxTime( long int date, long int time )
 
 bool arlCore::Object::setMinTime( long int date, long int time )
 {
-    if((m_date==0 && m_time==0) || ((date<m_date || (date==m_date && time<m_time)) && (date!=0 || time!=0)))
+    if ((m_date==0 && m_time==0) || (date<m_date || (((date==m_date && time<m_time)) && (date!=0 || time!=0))))
     {   // Never change if(date, time) is null
         // Change always if object time is null or
         // change if(date, time) lesser than object time

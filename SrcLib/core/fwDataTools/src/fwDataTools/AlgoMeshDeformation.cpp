@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include "fwDataTools/AlgoMeshDeformation.hpp"
-#include "fwDataTools/MeshGenerator.hpp"
+#include "fwDataTools/Mesh.hpp"
 
 namespace fwDataTools
 {
@@ -75,9 +75,13 @@ void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
 void AlgoMeshDeformation::initSimu()
 {
     SLM_TRACE_FUNC();
-    m_originPoints = ::fwData::Array::New();
-    m_originPoints->deepCopy( m_mesh.lock()->getPointsArray() );
+    m_originPoints = ::fwData::Object::copy( m_mesh.lock()->getPointsArray() );
     m_step = 0;
+
+    if ( ! m_mesh.lock()->getPointColorsArray() )
+    {
+        ::fwDataTools::Mesh::colorizeMeshPoints( m_mesh.lock() );
+    }
 
     m_meshHelper = ::fwComEd::helper::Mesh::New(m_mesh.lock());
 
@@ -94,11 +98,6 @@ void AlgoMeshDeformation::initSimu()
     }
 
     m_yCenter = (max - min) / 2 + min;
-
-    if ( ! m_mesh.lock()->getPointColorsArray() )
-    {
-        ::fwDataTools::MeshGenerator::colorizeMeshPoints( m_mesh.lock() );
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -144,7 +143,7 @@ void AlgoMeshDeformation::computeSimu()
         points[i][2] = opoints[i][2];
     }
 
-    ::fwDataTools::MeshGenerator::generatePointNormals( m_mesh.lock() );
+    ::fwDataTools::Mesh::generatePointNormals( m_mesh.lock() );
 }
 
 //-----------------------------------------------------------------------------

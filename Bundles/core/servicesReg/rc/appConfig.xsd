@@ -7,6 +7,7 @@
         <xs:sequence>
             <xs:element name="id" type="xs:string" />
             <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="parameters" type="ParametersType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="desc" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="config" type="ConfigType" />
@@ -14,6 +15,17 @@
         <xs:anyAttribute processContents="skip" />
     </xs:complexType>
 
+    <xs:complexType name="ParametersType">
+        <xs:sequence>
+            <xs:element name="param" type="ParamType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ParamType">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='default' type='xs:string' />
+    </xs:complexType>
+    
     <xs:complexType name="ConfigType">
         <xs:sequence>
             <xs:element name="object" type="ObjectType" />
@@ -35,13 +47,17 @@
             <xs:element name="matrix"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="value"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="item"  type="ItemType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="node"  type="NodeType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="edge"  type="EdgeType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="connect"  type="ConnectionType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="proxy"  type="ProxyType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
             <!-- <xs:element name="stop" minOccurs="0" maxOccurs="0" /> -->
             <!-- <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> -->
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='type' type='xs:string' use="required" />
+        <xs:attribute name='type' type='xs:string'/>
         <xs:attribute name='src' type='xs:string' />
     </xs:complexType>
     
@@ -60,9 +76,26 @@
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
         <xs:attribute name='type' type='xs:string' use="optional" />
-        <xs:attribute name='implementation' type='xs:string' use="required" />
-        <xs:attribute name='autoComChannel' type='ComChannelType' />
-        <xs:attribute name='priority' type='xs:string' />
+        <xs:attribute name='impl' type='xs:string' use="required" />
+        <xs:attribute name='autoConnect' type='AutoConnectType' />
+        <xs:attribute name='worker' type='xs:string' />
+    </xs:complexType>
+
+    <!-- Connection Type -->
+    <xs:complexType name="ConnectionType">
+        <xs:sequence>
+            <xs:element name="signal"  type="xs:string"  minOccurs="1" maxOccurs="1" />
+            <xs:element name="slot"  type="xs:string"  minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Proxy Type -->
+    <xs:complexType name="ProxyType">
+        <xs:sequence>
+            <xs:element name="signal" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="slot" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name='channel' type='xs:string' />
     </xs:complexType>
 
     <!-- Start/Update/stop Type -->
@@ -76,7 +109,7 @@
         <xs:attribute name='type' type='xs:string' />
     </xs:complexType>
         
-    <xs:simpleType name="ComChannelType">
+    <xs:simpleType name="AutoConnectType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="yes" />
             <xs:enumeration value="no" />
@@ -88,6 +121,35 @@
         <xs:sequence>
             <xs:element name="service" type="ServiceType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
+    </xs:complexType>
+
+    <!-- NodeType Type -->
+    <xs:complexType name="NodeType"> <!-- Almost the same as ObjectType -->
+        <xs:sequence>
+            <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="uid" type="xs:string" use="required" />
+        <xs:attribute name="src" type="xs:string" />
+    </xs:complexType>
+
+    <!-- EdgeType Type -->
+    <xs:complexType name="EdgeType"> <!-- Same as NodeType, but with optionnal "weight" attribute -->
+        <xs:sequence>
+            <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="origin" type="xs:string" use="required" />
+        <xs:attribute name="target" type="xs:string" use="required" />
+        <xs:attribute name="weight" type="xs:string" />
+        <xs:attribute name="uid" type="xs:string" />
+        <xs:attribute name="src" type="xs:string" />
     </xs:complexType>
 
 </xs:schema>        

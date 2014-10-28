@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,9 @@
 
 #include <fwData/Composite.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
+
+
 #include <fwComEd/CompositeMsg.hpp>
 #include <scene2D/adaptor/IAdaptor.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -17,7 +20,7 @@
 #include "scene2D/Render.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 
-REGISTER_SERVICE( ::fwRender::IRender , ::scene2D::Render , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRender::IRender , ::scene2D::Render , ::fwData::Composite ) ;
 
 namespace scene2D
 {
@@ -28,9 +31,9 @@ Render::Render() throw()
           m_sceneWidth (200,200),
           m_antialiasing(false)
 {
-    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
-    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
+//    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
+//    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
+//    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
 }
 
 //-----------------------------------------------------------------------------
@@ -180,7 +183,7 @@ void Render::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Render::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void Render::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -193,7 +196,7 @@ void Render::updating( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fai
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
     {
-        SPTR(::fwData::Composite) field = compositeMsg->getAddedKeys();
+        SPTR(::fwData::Composite) field = compositeMsg->getRemovedKeys();
         this->stopAdaptorsFromComposite(field);
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
@@ -263,6 +266,8 @@ void Render::startContext()
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(m_view);
     qtContainer->getQtContainer()->setLayout(layout);
+
+    m_view->updateFromViewport();
 }
 
 //-----------------------------------------------------------------------------
@@ -496,8 +501,6 @@ void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _obje
     ensureUniqueZValue( m_adaptorID2SceneAdaptor2D[_adaptorID] );
     m_zValue2AdaptorID[ m_adaptorID2SceneAdaptor2D[_adaptorID].m_service.lock()->getZValue() ] = _adaptorID;
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel = ::fwServices::registerCommunicationChannel( _object , m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->getSptr() );
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel.lock()->start();
 }
 
 //-----------------------------------------------------------------------------
@@ -515,15 +518,45 @@ void Render::stopAdaptor(AdaptorIDType _adaptorID)
 {
     SLM_TRACE_FUNC();
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel.lock()->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_adaptorID2SceneAdaptor2D[_adaptorID].m_comChannel.lock() );
+    SceneAdaptor2D & info = m_adaptorID2SceneAdaptor2D[_adaptorID];
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->stop();
-    SLM_ASSERT("Service is not stopped", m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->isStopped());
-    ::fwServices::OSR::unregisterService(m_adaptorID2SceneAdaptor2D[_adaptorID].getService());
-    m_adaptorID2SceneAdaptor2D[_adaptorID].m_service.reset();
-    m_adaptorID2SceneAdaptor2D.erase(_adaptorID);
+    m_zValue2AdaptorID.erase( info.getService()->getZValue() );
+
+    info.getService()->stop();
+    SLM_ASSERT("Service is not stopped", info.getService()->isStopped());
+    ::fwServices::OSR::unregisterService(info.getService());
+    info.m_service.reset();
+
 }
+
+//-----------------------------------------------------------------------------
+
+void Render::updateSceneSize( float ratioPercent )
+{
+    QRectF rec = m_scene->itemsBoundingRect();
+    qreal x,y,w,h;
+    rec.getRect(&x,&y,&w,&h);
+
+    if ( ratioPercent != 0 )
+    {
+        qreal centerX = x + w/2.0;
+        qreal centerY = y + h/2.0;
+        w = w + w * ratioPercent;
+        h = h + h * ratioPercent;
+        x = centerX - w/2.0;
+        y = centerY - h/2.0;
+        rec.setRect(x,y,w,h);
+    }
+    m_sceneStart.setX( x );
+    m_sceneStart.setY( y );
+    m_sceneWidth.setX( w );
+    m_sceneWidth.setY( h );
+
+    m_scene->setSceneRect( rec );
+
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace scene2D
 

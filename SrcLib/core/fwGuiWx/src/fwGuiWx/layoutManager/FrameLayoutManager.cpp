@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,19 +12,16 @@
 #include <boost/assign/list_of.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/FrameLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IFrameLayoutManager,
-        ::fwGui::FrameLayoutManager,
-         ::fwGui::layoutManager::IFrameLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::FrameLayoutManager, ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -38,7 +35,7 @@ const std::map< ::fwGui::layoutManager::IFrameLayoutManager::Style, long> FrameL
 
 //-----------------------------------------------------------------------------
 
-FrameLayoutManager::FrameLayoutManager()
+FrameLayoutManager::FrameLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -63,7 +60,7 @@ void FrameLayoutManager::createFrame()
 
     m_wxFrame = new wxFrame(wxTheApp->GetTopWindow(),
             wxNewId(),
-            ::fwWX::std2wx(frameInfo.m_name),
+            ::fwGuiWx::std2wx(frameInfo.m_name),
              wxDefaultPosition,
              wxSize(frameInfo.m_minSize.first, frameInfo.m_minSize.second),
              FWSTYLE_TO_WXSTYLE.find(frameInfo.m_style)->second );
@@ -76,7 +73,7 @@ void FrameLayoutManager::createFrame()
 
     if(!frameInfo.m_iconPath.empty())
     {
-        wxIcon icon( ::fwWX::std2wx(frameInfo.m_iconPath.string()), wxBITMAP_TYPE_ICO );
+        wxIcon icon( ::fwGuiWx::std2wx(frameInfo.m_iconPath.string()), wxBITMAP_TYPE_ICO );
         OSLM_ASSERT("Sorry, unable to create an icon instance from " << frameInfo.m_iconPath.string(), icon.Ok());
         m_wxFrame->SetIcon( icon );
     }
@@ -88,7 +85,7 @@ void FrameLayoutManager::createFrame()
     m_wxFrame->Show();
     m_wxFrame->Refresh();
 
-    ::fwGuiWx::container::WxContainer::NewSptr frameContainer;
+    ::fwGuiWx::container::WxContainer::sptr frameContainer = ::fwGuiWx::container::WxContainer::New();
     frameContainer->setWxContainer(m_wxFrame);
     m_frame = frameContainer;
 
@@ -99,7 +96,7 @@ void FrameLayoutManager::createFrame()
     boxSizer->Add(panel, 1, wxALL|wxEXPAND);
     m_wxFrame->Layout();
 
-    ::fwGuiWx::container::WxContainer::NewSptr container;
+    ::fwGuiWx::container::WxContainer::sptr container = ::fwGuiWx::container::WxContainer::New();
     container->setWxContainer(panel);
     m_container = container;
 }

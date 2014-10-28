@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-#define foreach BOOST_FOREACH
-#define reverse_foreach BOOST_REVERSE_FOREACH
+#include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 #include <fwRuntime/operations.hpp>
 
@@ -15,7 +15,8 @@
 #include "fwServices/Base.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
-
+#include "fwServices/registry/Proxy.hpp"
+#include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/AppConfigManager.hpp"
 
 namespace fwServices
@@ -40,12 +41,14 @@ namespace fwServices
     }
 
     ::fwData::Object::sptr obj;
-    obj = ::fwData::Object::dynamicCast(::fwTools::Factory::New(::boost::get<0>(type)));
+    obj = ::fwData::factory::New(::boost::get<0>(type));
     OSLM_ASSERT("Factory failed to build object : " <<  ::boost::get<0>(type), obj);
 
     if (::boost::get<1>(uid))
     {
+#ifndef COM_LOG
         OSLM_ASSERT("Object already has an UID.", !obj->hasID());
+#endif
 
         OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.",
                       ::fwTools::fwID::exist(::boost::get<0>(uid)));
@@ -117,7 +120,9 @@ namespace fwServices
         srv = srvFactory->create(typestr, ::boost::get<0>(implType));
     }
 
+#ifndef COM_LOG
     OSLM_ASSERT("Service already has an UID.", !srv->hasID());
+#endif
 
     OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.", ::fwTools::fwID::exist(::boost::get<0>(uid)));
     if (::boost::get<1>(uid))
@@ -130,81 +135,66 @@ namespace fwServices
 
 // ------------------------------------------------------------------------
 
-::fwServices::ComChannelService::sptr AppConfigManager::connectComChannel(
+void AppConfigManager::autoSigSlotConnection(
         ::fwData::Object::sptr obj,
         ::fwServices::IService::sptr srv,
         ConfigAttribute priority)
 {
-    ::fwServices::ComChannelService::sptr comChannel = ::fwServices::registerCommunicationChannel(obj, srv);
-    m_createdSrv.push_back(comChannel);
+    m_connections->connect( obj, srv, srv->getObjSrvConnections() );
 
-    // Add priority for the new comChannel, default is 0.5
-    if (::boost::get<1>(priority))
-    {
-        double priorityValue = ::boost::lexical_cast<double>(::boost::get<0>(priority));
-        if (priorityValue < 0.0)
-        {
-            priorityValue = 0.0;
-        }
-        else if (priorityValue > 1.0)
-        {
-            priorityValue = 1.0;
-        }
-        comChannel->setPriority(priorityValue);
-    }
-    m_startedComChannels.push_back(comChannel);
-    return comChannel;
+//    // Add priority for the new comChannel, default is 0.5
+//    if (::boost::get<1>(priority))
+//    {
+//        double priorityValue = ::boost::lexical_cast<double>(::boost::get<0>(priority));
+//        if (priorityValue < 0.0)
+//        {
+//            priorityValue = 0.0;
+//        }
+//        else if (priorityValue > 1.0)
+//        {
+//            priorityValue = 1.0;
+//        }
+//        comChannel->setPriority(priorityValue);
+//    }
 }
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::startComChannels()
+void AppConfigManager::startConnections()
 {
-    foreach(::fwServices::IService::wptr w_srv, m_startedComChannels)
-    {
-        SLM_ASSERT("Service expired.", !w_srv.expired());
-
-        ::fwServices::IService::sptr srv = w_srv.lock();
-        OSLM_ASSERT("Service " << srv->getID() << " already started.", !srv->isStarted());
-        srv->start();
-    }
+    /// Connections are already started
 }
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::stopComChannels()
+void AppConfigManager::stopConnections()
 {
-    reverse_foreach(::fwServices::IService::wptr w_srv, m_startedComChannels)
-    {
-        SLM_ASSERT("Service expired.", !w_srv.expired());
-
-        ::fwServices::IService::sptr srv = w_srv.lock();
-        OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
-        srv->stop();
-    }
-    m_startedComChannels.clear();
+    m_connections->disconnect();
 }
 
 // ------------------------------------------------------------------------
 
 void AppConfigManager::stopStartedServices()
 {
-    reverse_foreach(::fwServices::IService::wptr w_srv, m_startedSrv)
+    std::vector< ::fwServices::IService::SharedFutureType > futures;
+
+    BOOST_REVERSE_FOREACH(::fwServices::IService::wptr w_srv, m_startedSrv)
     {
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
         ::fwServices::IService::sptr srv = w_srv.lock();
         OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
-        srv->stop();
+        futures.push_back(srv->stop());
     }
-    m_startedComChannels.clear();
+    m_startedSrv.clear();
+    ::boost::wait_for_all(futures.begin(), futures.end());
 }
 
 // ------------------------------------------------------------------------
 
 void AppConfigManager::destroyCreatedServices()
 {
-    reverse_foreach(::fwServices::IService::wptr w_srv, m_createdSrv)
+    BOOST_REVERSE_FOREACH(::fwServices::IService::wptr w_srv, m_createdSrv)
     {
         SLM_ASSERT("Service expired.", !w_srv.expired());
 
@@ -219,7 +209,9 @@ void AppConfigManager::destroyCreatedServices()
 
 void AppConfigManager::processStartItems()
 {
-    foreach(fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
+    std::vector< ::fwServices::IService::SharedFutureType > futures;
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
     {
         if (elem->getName() == "start")
         {
@@ -233,17 +225,23 @@ void AppConfigManager::processStartItems()
             OSLM_ASSERT("Service with UID \"" << uid << "\" doesn't exist.", ::fwTools::fwID::exist(uid));
 
             ::fwServices::IService::sptr srv = ::fwServices::get(uid);
-            srv->start();
+
+            OSLM_ASSERT("No service registered with UID \"" << uid << "\".", srv);
+
+            futures.push_back(srv->start());
             m_startedSrv.push_back(srv);
         }
     }
+    ::boost::wait_for_all(futures.begin(), futures.end());
 }
 
 // ------------------------------------------------------------------------
 
 void AppConfigManager::processUpdateItems()
 {
-    foreach(fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
+    std::vector< ::fwServices::IService::SharedFutureType > futures;
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
     {
         if (elem->getName() == "update")
         {
@@ -256,9 +254,9 @@ void AppConfigManager::processUpdateItems()
 
                 OSLM_ASSERT("No services of type \"" << type << "\" found.", !servicesToUpdate.empty());
 
-                foreach(fwServices::IService::sptr srv, servicesToUpdate)
+                BOOST_FOREACH(::fwServices::IService::sptr srv, servicesToUpdate)
                 {
-                    srv->update();
+                    futures.push_back(srv->update());
                 }
             }
             else
@@ -268,10 +266,12 @@ void AppConfigManager::processUpdateItems()
 
                 OSLM_ASSERT("Service with UID \"" << uid << "\" doesn't exist.", ::fwTools::fwID::exist(uid));
 
-                ::fwServices::get(uid)->update();
+                futures.push_back(::fwServices::get(uid)->update());
             }
         }
     }
+
+    ::boost::wait_for_all(futures.begin(), futures.end());
 }
 
 // ------------------------------------------------------------------------
@@ -356,7 +356,7 @@ void AppConfigManager::processUpdateItems()
 
 void AppConfigManager::createServices()
 {
-    foreach(fwRuntime::ConfigurationElement::csptr elem,  m_cfgElem->getElements())
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  m_cfgElem->getElements())
     {
         if (elem->getName() == "service")
         {
@@ -373,7 +373,7 @@ void AppConfigManager::createServices()
 
 void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr cfgElem)
 {
-    foreach(fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
     {
         if (elem->getName() == "service")
         {
@@ -408,13 +408,16 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
 
     // Implementation
     ConfigAttribute implType("", false);
-    if (srvElem->hasAttribute("implementation"))
+    if (srvElem->hasAttribute("impl"))
     {
-        ::boost::get<0>(implType) = srvElem->getExistingAttributeValue("implementation");
-        SLM_ASSERT("\"implementation\" attribute is empty.", !::boost::get<0>(implType).empty());
+        ::boost::get<0>(implType) = srvElem->getExistingAttributeValue("impl");
+        SLM_ASSERT("\"impl\" attribute is empty.", !::boost::get<0>(implType).empty());
 
         ::boost::get<1>(implType) = true;
     }
+
+    // Type
+    std::string workerKey = srvElem->getAttributeValue("worker");
 
     // Config
     ConfigAttribute config("", false);
@@ -426,11 +429,12 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
         ::boost::get<1>(config) = true;
     }
 
-    // AutoComChannel
-    SLM_ASSERT("Missing attribute \"autoComChannel\".", srvElem->hasAttribute("autoComChannel"));
-    std::string autoComChannel = srvElem->getExistingAttributeValue("autoComChannel");
-    SLM_ASSERT("\"autoComChannel\" attribute must be either \"yes\" or \"no\".",
-               autoComChannel == "yes" || autoComChannel == "no");
+    // autoConnect
+    const ::fwRuntime::ConfigurationElement::AttributePair attribAutoConnect =
+            srvElem->getSafeAttributeValue("autoConnect");
+    std::string autoConnect = attribAutoConnect.second;
+    SLM_ASSERT("\"autoConnect\" attribute must be either \"yes\" or \"no\".",
+                (!attribAutoConnect.first) || autoConnect == "yes" || autoConnect == "no");
 
     // Priority
     ConfigAttribute priority("", false);
@@ -445,13 +449,26 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     // TODO: have a default implementation of service
     if (!::boost::get<1>(implType))
     {
-        OSLM_FATAL("Requesting default implementation for service of type "  << type << " is not implemented yet.");
+        OSLM_FATAL("Attribute \"impl\" is required for service "  << (::boost::get<1>(uid)?::boost::get<0>(uid):".") );
     }
 
     // Create and bind service
     ::fwServices::IService::sptr srv = this->getNewService(type, uid, implType);
     ::fwServices::OSR::registerService(m_configuredObject, srv);
     m_createdSrv.push_back(srv);
+
+    if (!workerKey.empty())
+    {
+        ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
+        ::fwThread::Worker::sptr worker;
+        worker = activeWorkers->getWorker(workerKey);
+        if (!worker)
+        {
+            worker = ::fwThread::Worker::New();
+            activeWorkers->addWorker(workerKey, worker);
+        }
+        srv->setWorker(worker);
+    }
 
     // Get service configuration
     ::fwRuntime::ConfigurationElement::csptr cfgElem = srvElem;
@@ -468,13 +485,13 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     srv->configure();
 
     // Communication channel
-    if (autoComChannel == "yes")
+    if (autoConnect == "yes")
     {
-        this->connectComChannel(m_configuredObject, srv, priority);
+        this->autoSigSlotConnection(m_configuredObject, srv, priority);
     }
 
     // Check if user did not bind a service to another service
-    foreach(::fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
     {
         SLM_ASSERT("Cannot bind a service to another service.",
                 elem->getName() != "service" &&
@@ -485,7 +502,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
 // Constructors / Destructors
 // ------------------------------------------------------------------------
 
-AppConfigManager::AppConfigManager() : m_state(STATE_DESTROYED)
+AppConfigManager::AppConfigManager() : m_state(STATE_DESTROYED), m_connections( helper::SigSlotConnection::New() )
 {}
 
 // ------------------------------------------------------------------------
@@ -503,6 +520,7 @@ void AppConfigManager::create()
     SLM_ASSERT("Manager already running.", m_state == STATE_DESTROYED);
     m_configuredObject = this->createObject();
     this->createServices();
+    this->createConnections();
 
     m_state = STATE_CREATED;
 }
@@ -515,7 +533,7 @@ void AppConfigManager::start()
 
     this->processStartItems() ;
     m_objectParser->startConfig();
-    this->startComChannels();
+    this->startConnections();
 
     m_state = STATE_STARTED;
 }
@@ -534,7 +552,8 @@ void AppConfigManager::stop()
 {
     SLM_ASSERT("Manager is not started, cannot stop.", m_state == STATE_STARTED);
 
-    this->stopComChannels();
+    this->destroyProxies();
+    this->stopConnections();
     m_objectParser->stopConfig();
     this->stopStartedServices();
 
@@ -577,6 +596,151 @@ void AppConfigManager::stopAndDestroy()
 {
     this->stop();
     this->destroy();
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::createConnections()
+{
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  m_cfgElem->getElements())
+    {
+        if (elem->getName() == "connect")
+        {
+            this->createConnection(elem);
+        }
+        else if (elem->getName() == "proxy")
+        {
+            this->createProxy(elem);
+        }
+    }
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::createConnection(::fwRuntime::ConfigurationElement::csptr connectionCfg)
+{
+    typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
+    typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
+    typedef std::vector< SlotInfoType > SlotInfoContainerType;
+
+    SignalInfoType signalInfo;
+    SlotInfoContainerType slotInfos;
+
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  connectionCfg->getElements())
+    {
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+                        !uid.empty() && !key.empty());
+
+            if (elem->getName() == "signal")
+            {
+                SLM_ASSERT("There must be only one signal by connection",
+                           signalInfo.first.empty() && signalInfo.second.empty());
+                signalInfo = std::make_pair(uid, key);
+            }
+            else if (elem->getName() == "slot")
+            {
+                slotInfos.push_back( std::make_pair(uid, key) );
+            }
+        }
+    }
+
+    ::fwTools::Object::sptr sigSource = ::fwTools::fwID::getObject(signalInfo.first);
+    ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(sigSource);
+
+    SLM_ASSERT("Signal source not found" << signalInfo.first , sigSource);
+    SLM_ASSERT("invalid signal source " << signalInfo.first , hasSignals);
+
+    BOOST_FOREACH(SlotInfoType slotInfo,  slotInfos)
+    {
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
+        ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+        SLM_ASSERT("invalid slot owner " << slotInfo.first , hasSlots);
+
+        m_connections->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
+    }
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::createProxy(::fwRuntime::ConfigurationElement::csptr config)
+{
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+    SLM_ASSERT("Missing 'channel' attribute", config->hasAttribute("channel"));
+    std::string channel = config->getAttributeValue("channel");
+    ProxyConnections proxyCnt(channel);
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
+    {
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+                        !uid.empty() && !key.empty());
+
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+
+            if (elem->getName() == "signal")
+            {
+                ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::SignalBase::sptr sig = hasSignals->signal(key);
+                proxy->connect(channel, sig);
+                proxyCnt.addSignalConnection(uid, key);
+            }
+            else if (elem->getName() == "slot")
+            {
+                ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::SlotBase::sptr slot = hasSlots->slot(key);
+                proxy->connect(channel, slot);
+                proxyCnt.addSlotConnection(uid, key);
+            }
+        }
+    }
+    m_vectProxyCtns.push_back(proxyCnt);
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::destroyProxies()
+{
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+    BOOST_FOREACH(ProxyConnectionsVectType::value_type proxyConnections,  m_vectProxyCtns)
+    {
+        BOOST_FOREACH(ProxyConnections::ProxyEltType signalElt, proxyConnections.m_signals)
+        {
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalElt.first);
+            ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+            ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
+            proxy->disconnect(proxyConnections.m_channel, sig);
+        }
+        BOOST_FOREACH(ProxyConnections::ProxyEltType slotElt, proxyConnections.m_slots)
+        {
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotElt.first);
+            ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+            ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
+            proxy->disconnect(proxyConnections.m_channel, slot);
+        }
+    }
+    m_vectProxyCtns.clear();
 }
 
 }

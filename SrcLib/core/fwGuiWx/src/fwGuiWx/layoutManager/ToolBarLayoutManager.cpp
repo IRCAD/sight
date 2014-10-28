@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,9 +16,9 @@
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/ActionCallback.hpp"
 #include "fwGuiWx/container/WxToolBarContainer.hpp"
@@ -27,10 +27,8 @@
 #include "fwGuiWx/Shortcut.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IToolBarLayoutManager,
-        ::fwGui::layoutManager::ToolBarLayoutManager,
-         ::fwGui::layoutManager::IToolBarLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::layoutManager::ToolBarLayoutManager,
+                    ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -39,7 +37,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-ToolBarLayoutManager::ToolBarLayoutManager()
+ToolBarLayoutManager::ToolBarLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -60,7 +58,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
     unsigned int menuItemIndex = 0;
     BOOST_FOREACH ( ::fwGui::layoutManager::IToolBarLayoutManager::ActionInfo actionInfo, m_actionInfo)
     {
-        ::fwGuiWx::container::WxMenuItemContainer::NewSptr menuItem;
+        ::fwGuiWx::container::WxMenuItemContainer::sptr menuItem = ::fwGuiWx::container::WxMenuItemContainer::New();
 
         int actionIdInMenu = wxNewId();
         wxItemKind kind = wxITEM_NORMAL;
@@ -72,15 +70,15 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
         wxImage image = wxNullImage ;
         if(!actionInfo.m_icon.empty())
         {
-            if ( !image.LoadFile(::fwWX::std2wx( actionInfo.m_icon )))
+            if ( !image.LoadFile(::fwGuiWx::std2wx( actionInfo.m_icon )))
             {
-                wxLogError(_("Couldn't load image from '%s'."), ::fwWX::std2wx( actionInfo.m_icon ));
+                wxLogError(wxGetTranslation("Couldn't load image from '%s'."), ::fwGuiWx::std2wx( actionInfo.m_icon ));
             }
         }
 
         if(!actionInfo.m_isSeparator)
         {
-            wxToolBarToolBase * toolBarToolBase = toolBar->AddTool(actionIdInMenu, ::fwWX::std2wx(actionInfo.m_name), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, ::fwWX::std2wx( actionInfo.m_name));
+            wxToolBarToolBase * toolBarToolBase = toolBar->AddTool(actionIdInMenu, ::fwGuiWx::std2wx(actionInfo.m_name), wxBitmap(image),  wxBitmap(image.ConvertToGreyscale()), kind, ::fwGuiWx::std2wx( actionInfo.m_name));
 
             menuItem->setWxToolItem(toolBarToolBase);
             m_menuItems.push_back(menuItem);
@@ -122,7 +120,7 @@ void ToolBarLayoutManager::destroyLayout()
 
 void ToolBarLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
-    SLM_FATAL("TODO : ToolBarLayoutManager::actionIsVisible not yet implemented.")
+    SLM_FATAL("TODO : ToolBarLayoutManager::actionIsVisible not yet implemented.");
 }
 
 //-----------------------------------------------------------------------------

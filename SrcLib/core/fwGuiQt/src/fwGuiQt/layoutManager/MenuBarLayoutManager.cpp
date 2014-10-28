@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,16 +10,14 @@
 #include <QMenuBar>
 #include <QString>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/container/QtMenuContainer.hpp"
 #include "fwGuiQt/layoutManager/MenuBarLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IMenuBarLayoutManager,
-        ::fwGui::layoutManager::MenuBarLayoutManager,
-         ::fwGui::layoutManager::IMenuBarLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::layoutManager::MenuBarLayoutManager,
+                    ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -28,7 +26,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-MenuBarLayoutManager::MenuBarLayoutManager()
+MenuBarLayoutManager::MenuBarLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -49,7 +47,7 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
 
     BOOST_FOREACH ( std::string name, m_menuNames)
     {
-        ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+        ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
         QMenu *qtMenu = menuBar->addMenu(QString::fromStdString( name ));
         menu->setQtMenu(qtMenu);
         m_menus.push_back(menu);

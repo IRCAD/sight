@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/data/ViewportMsg.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite ) ;
 
 
 namespace scene2D
@@ -25,7 +25,7 @@ namespace adaptor
 
 ScaleValues::ScaleValues() throw() : m_interval(10), m_step(1), m_fontSize(8), m_displayedUnit(""), m_showUnit(true)
 {
-    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
+//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -88,11 +88,7 @@ void ScaleValues::configuring() throw ( ::fwTools::Failed )
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewport = ::scene2D::data::Viewport::dynamicCast(
-                ::fwTools::fwID::getObject( m_configuration->getAttributeValue("viewportUID") ) );
-
-        m_comChannel = ::fwServices::registerCommunicationChannel( m_viewport , this->getSptr());
-        m_comChannel->start();
+        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
     }
 
 
@@ -202,6 +198,11 @@ void ScaleValues::doStart() throw ( ::fwTools::Failed )
     m_font.setKerning( true );
     m_font.setFixedPitch( true );
 
+    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+
+    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
+            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+
     this->buildValues();
     this->doUpdate();
 }
@@ -236,7 +237,6 @@ void ScaleValues::doUpdate() throw ( ::fwTools::Failed )
 void ScaleValues::rescaleValues()
 {
     const double viewportX = m_viewport->getX();
-    const double viewportY = m_viewport->getY();
     const double viewportWidth = m_viewport->getWidth();
     const double viewportHeight = m_viewport->getHeight();
 
@@ -332,7 +332,7 @@ void ScaleValues::rescaleValues()
 
         double textPosY = (m_align == "bottom")
             ? m_viewport->getY()
-            : textPosY = viewportHeight * 0.9;
+            : viewportHeight * 0.9;
 
         for(int i = 0; i < valuesSize; ++i, val += m_interval)
         {
@@ -411,7 +411,7 @@ void ScaleValues::showHideScaleValues()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void ScaleValues::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -447,8 +447,7 @@ void ScaleValues::doStop() throw ( ::fwTools::Failed )
     // Remove the layer (and therefore all its related items) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
-    m_comChannel->stop();
-    ::fwServices::registry::ObjectService::unregisterService( m_comChannel );
+    m_connection.disconnect();
 }
 
 

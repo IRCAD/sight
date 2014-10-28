@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,9 +17,9 @@ namespace ctrlSelection
 
 
 /**
- * @class  MedicalImageSrv.
+ * @class  MedicalImageSrv
  * @brief  This service convert its attached image to a medical image by adding specific fields.
- * @author IRCAD (Research and Development Team).
+ * 
 
  * @date   2010.
  */
@@ -30,13 +30,12 @@ public :
 
     fwCoreServiceClassDefinitionsMacro ( (MedicalImageSrv)(::fwServices::IController) ) ;
 
-protected:
 
-    /// Constructor.  Do nothing.
     CTRLSELECTION_API MedicalImageSrv() throw() ;
 
-    /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~MedicalImageSrv() throw() ;
+
+protected:
 
     /// Implements starting method derived from IService. Convert the image.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
@@ -59,7 +58,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private :
 

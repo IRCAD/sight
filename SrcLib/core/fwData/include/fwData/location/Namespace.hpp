@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,8 @@ namespace fwData
 {
 /**
  * @brief       This namespace fwData::location contains the representation of the data objects oriented to fileSystem locations (folder, file...).
- * @namespace   fwData::location.
- * @author      IRCAD (Research and Development Team).
+ * @namespace   fwData::location
+ * 
  * @date        2009-2010.
  *
  */

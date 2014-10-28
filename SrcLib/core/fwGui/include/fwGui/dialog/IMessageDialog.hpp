@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 #define _FWGUI_IMESSAGEBOX_HPP_
 
 #include <string>
-#include <fwCore/base.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -18,17 +18,17 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic message box for IHM.
- * @class   IMessageDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMessageDialog
+ *
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMessageDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMessageDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMessageDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMessageDialog)(::fwGui::GuiBaseObject) )
 
     /// Icon type
     typedef enum {
@@ -71,6 +71,9 @@ public:
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
     FWGUI_API virtual void addButton(Buttons button )=0;
+
+    /// Set the default button
+    FWGUI_API virtual void setDefaultButton(Buttons button) = 0;
 
     /// Show the message box and return the clicked button.
     FWGUI_API virtual Buttons show() = 0;

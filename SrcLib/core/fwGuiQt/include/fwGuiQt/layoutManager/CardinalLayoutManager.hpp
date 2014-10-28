@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,8 +26,8 @@ namespace fwGui
 
 /**
  * @brief   Defines the cardinal layout manager.
- * @class   CardinalLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   CardinalLayoutManager
+ * 
  * @date    2009-2010.
  *
  */
@@ -36,12 +36,12 @@ class FWGUIQT_CLASS_API CardinalLayoutManager : public ::fwGui::layoutManager::C
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (CardinalLayoutManager)(::fwGui::layoutManager::CardinalLayoutManagerBase), (()), new CardinalLayoutManager );
+    fwCoreClassDefinitionsWithFactoryMacro( (CardinalLayoutManager)(::fwGui::layoutManager::CardinalLayoutManagerBase),
+                                            (()),
+                                            ::fwGui::factory::New< CardinalLayoutManager > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API CardinalLayoutManager();
+    FWGUIQT_API CardinalLayoutManager(::fwGui::GuiBaseObject::Key key);
 
-    /// Destructor. Do nothing.
     FWGUIQT_API virtual ~CardinalLayoutManager();
 
     /**

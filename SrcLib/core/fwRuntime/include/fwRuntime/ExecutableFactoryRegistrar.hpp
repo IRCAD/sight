@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ struct ExecutableFactory;
  * That's why this class is design to be instanciated as static object.
  *
  * @date    2004-2009
- * @author  IRCAD (Research and Development Team).
+ * 
  */
 struct ExecutableFactoryRegistrar
 {

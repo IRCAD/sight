@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef VTKCOMPOSITEMESH_RENDERER_SERVICE_HPP_
 #define VTKCOMPOSITEMESH_RENDERER_SERVICE_HPP_
+
+#include <boost/shared_array.hpp>
 
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
@@ -29,20 +31,29 @@ namespace vtkCompositeMesh
 
 /**
  * @brief   Renderer service.
- * @class   RendererService.
- * @author  IRCAD (Research and Development Team).
+ * @class   RendererService
+ * 
  * @date    2009.
  *
  * Service rendering ::fwData::Mesh contained in a ::fwData::Composite using VTK.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite)
+ * fwServicesRegisterMacro( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite)
  */
 class VTKCOMPOSITEMESH_CLASS_API RendererService : public ::fwRender::IRender
 {
 public :
 
     fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) ) ;
+
+    typedef ::boost::shared_array< double > SharedArray;
+
+    VTKCOMPOSITEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
+    typedef ::fwCom::Slot<void(SharedArray, SharedArray, SharedArray)> UpdateCamPositionSlotType;
+
+    VTKCOMPOSITEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
+    typedef ::fwCom::Signal< void (SharedArray, SharedArray, SharedArray) > CamUpdatedSignalType;
+
 
     /**
     * @brief    Constructor
@@ -54,13 +65,13 @@ public :
     */
     VTKCOMPOSITEMESH_API virtual ~RendererService() throw() ;
 
-    /**
-    * @brief VTK event managing of the VTK Camera position.
-    *
-    * This method is used to update the VTK camera position.
-    */
-    void updateCamPosition();
+    /// This method is used to notify that the VTK camera position is updated.
+    void notifyCamPositionUpdated();
 
+    /// Slot to receive new camera information (position, focal, viewUp). Update camera with new information.
+    VTKCOMPOSITEMESH_API virtual void updateCamPosition(SharedArray positionValue,
+                                                        SharedArray focalValue,
+                                                        SharedArray viewUpValue);
 
 protected :
 
@@ -68,7 +79,7 @@ protected :
     * @brief Starting method.
     *
     * This method is used to initialize the service.
-    * Initialize VTK renderer and wxWidget containers
+    * Initialize VTK renderer and create qt containers
     */
     VTKCOMPOSITEMESH_API virtual void starting() throw(fwTools::Failed);
 
@@ -78,12 +89,9 @@ protected :
     *
     * XML configuration sample:
     * @verbatim
-    <service implementation="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" autoComChannel="yes" >
-            <masterSlaveRelation>master</masterSlaveRelation>
-            <win guiContainerId="900"/>
-    </service>
+    <service impl="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" autoConnect="yes" />
     @endverbatim
-    * This method is used to configure the service.
+    * This method is used to configure the service. Initialize qt container.
     */
     VTKCOMPOSITEMESH_API virtual void configuring() throw(::fwTools::Failed);
 
@@ -91,7 +99,7 @@ protected :
     /**
     * @brief Stopping method.
     *
-    * Destroy VTK renderer and wxWidget containers
+    * Destroy VTK renderer and containers
     */
     VTKCOMPOSITEMESH_API virtual void stopping() throw(fwTools::Failed);
 
@@ -104,12 +112,12 @@ protected :
     VTKCOMPOSITEMESH_API virtual void updating() throw(fwTools::Failed);
 
     /**
-    * @brief Updating method (react on data modifications).
+    * @brief Receiving method (react on data modifications).
     * @param[in] _msg ::fwServices::ObjectMsg::csptr.
     *
-    * This method is used to update the service.
+    * This method is used to update the vtk pipeline when the mesh is modified.
     */
-    VTKCOMPOSITEMESH_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    VTKCOMPOSITEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// @brief vtk renderer
     vtkRenderer * m_render ;
@@ -119,32 +127,18 @@ private :
     /// @brief VTK Interactor window manager
     ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
-    /**
-    * @brief Creating  and rendering of an actor method.
-    *
-    * This method is used to create an actor and put it through the VTK pipeline.
-    */
+    /// This method is used to create an actor and put it through the VTK pipeline.
     void createAndAddActorToRender();
 
-    /**
-    * @brief VTK pipeline initialization method.
-    *
-    * This method is used to initialize the VTK pipeline.
-    */
+    /// This method is used to initialize the VTK pipeline.
     void initVTKPipeline();
 
-    /**
-    * @brief VTK pipeline updating method.
-    *
-    * This method is used to update the VTK pipeline.
-    */
+    /// This method is used to update the VTK pipeline.
     void updateVTKPipeline();
 
 
 
-    /**
-    * @brief Contains the mesh, and allows to compute normals.
-    */
+    /// Contains the mesh, and allows to compute normals.
     vtkPolyDataNormals* m_normals;
 
     /**
@@ -155,7 +149,12 @@ private :
 
     vtkCommand* m_loc;
 
-    bool m_isCamMaster;
+    /// Slot to call updateCamPosition method.
+    UpdateCamPositionSlotType::sptr m_slotUpdateCamPosition;
+
+    /// Signal emitted when camera position is updated.
+    CamUpdatedSignalType::sptr m_sigCamUpdated;
+
 
 };
 

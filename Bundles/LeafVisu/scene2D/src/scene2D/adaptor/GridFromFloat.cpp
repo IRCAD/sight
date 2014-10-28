@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 #include "scene2D/adaptor/GridFromFloat.hpp"
 #include "scene2D/data/InitQtPen.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::GridFromFloat  , ::fwData::Float ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::GridFromFloat  , ::fwData::Float ) ;
 
 
 namespace scene2D
@@ -25,7 +25,7 @@ GridFromFloat::GridFromFloat() throw()
 : m_xSpacing (10),
   m_ySpacing (10)
 {
-    addNewHandledEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
+//    addNewHandledEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
 }
 
 GridFromFloat::~GridFromFloat() throw()
@@ -47,7 +47,7 @@ void GridFromFloat::configuring() throw ( ::fwTools::Failed )
     m_xMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xMax") );
     m_yMin = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMin") );
     m_yMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMax") );
-   
+
     // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between the lines and color of the lines
     if (!m_configuration->getAttributeValue("xSpacing").empty())
     {
@@ -67,8 +67,8 @@ void GridFromFloat::draw()
 {
     SLM_TRACE_FUNC();
 
-    SLM_ASSERT("m_xSpacing can not equal 0", m_xSpacing != 0)
-    SLM_ASSERT("m_ySpacing can not equal 0", m_ySpacing != 0)
+    SLM_ASSERT("m_xSpacing can not equal 0", m_xSpacing != 0);
+    SLM_ASSERT("m_ySpacing can not equal 0", m_ySpacing != 0);
 
     // Remove all lines from the scene
     for (std::vector<QGraphicsItem*>::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
@@ -137,7 +137,7 @@ void GridFromFloat::doStart() throw ( ::fwTools::Failed )
     m_layer = new QGraphicsItemGroup();
     // Set the pen a style
     m_pen.setStyle(Qt::DashLine);
-    this->draw();
+    this->draw();  
 }
 
 void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
@@ -145,7 +145,7 @@ void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 }
 
-void GridFromFloat::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void GridFromFloat::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -161,7 +161,7 @@ void GridFromFloat::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwToo
             // Set the xSpacing the float object value
             m_xSpacing = this->getObject< ::fwData::Float >()->getValue();
         }
-        
+
         this->draw();
     }
 }

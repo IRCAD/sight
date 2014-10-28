@@ -1,5 +1,5 @@
 TYPE    = 'shared'
 VERSION = '0-1'
-USE     = ['boost','boostFilesystem','boostSignals','boostRegex','boostDateTime','uuid']
-LIB     = ['fwCore_0-1']
+USE     = ['boost','boostFilesystem','boostSignals','boostRegex','boostDateTime']
+LIB     = ['fwCore_0-1', 'fwCamp_0-1']
 

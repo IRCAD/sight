@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,8 @@ namespace ut
 {
 
 /**
- * @brief Test many methods to create service (with uuid, with configuration,...). And test service methods (start, stop and update).
+ * @brief Test many methods to create service (with uuid, with configuration,...).
+ * And test service methods (start, stop and update).
  */
 class ServiceTest : public CPPUNIT_NS::TestFixture
 {
@@ -114,7 +115,7 @@ public :
         m_isUpdated = true;
     };
 
-    virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         m_isUpdatedMessage = true;
     };

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ namespace fwGuiQt
 
 /**
  * @brief A qt panel used to control a VTK 2D Negatoscope view.
- * @author IRCAD (Research and Development Team).
+ * 
  */
 class SliceSelector : public QWidget
 {
@@ -38,8 +38,7 @@ class SliceSelector : public QWidget
 public:
     /**
      * @brief Constructor.
-     * @param parent The parent window.
-     * @param id     The window ID.
+     * @param parent The parent widget.
      */
     FWGUIQT_API SliceSelector( QWidget* const parent) throw();
 
@@ -65,13 +64,13 @@ protected Q_SLOTS:
 
     /**
      * @brief Event handler for a slice type change.
-     * @param event The corresponding wxWidgets event.
+     * @param index index of the selected type item.
      */
     FWGUIQT_API void onSliceTypeChange( int index );
 
     /**
      * @brief Event handler for a slice index change.
-     * @param event The corresponding wxWidgets event.
+     * @param value current value of the slice index slider.
      */
     FWGUIQT_API void onSliceIndexChange( int value ) throw();
 

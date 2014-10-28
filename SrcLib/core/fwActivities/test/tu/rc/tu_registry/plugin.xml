@@ -1,0 +1,181 @@
+<plugin id="tu_fwActivities" >
+
+    <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd"/>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test0</id>
+        <title>Title Test0</title>
+        <desc>Desc Test0</desc>
+        <icon>Icon Test0</icon>
+        <requirements>
+            <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param2" type="::fwData::Mesh" maxOccurs="8" >
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+            </requirement>
+            <requirement name="param3" type="::fwData::Mesh" maxOccurs="10" > <!-- '*' not managed right now -->
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+              <key>key9</key>
+              <key>key10</key>
+            </requirement>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" >
+              <key>key1</key>
+              <key>key2</key>
+            </requirement>
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <!--# ...-->
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test0">
+            <parameters>
+                <parameter replace="refImageUid" by="@values.param1"  />
+                <parameter replace="registeredImageUid" by="@values.param2" />
+                <parameter replace="orientation" by="frontal" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test1</id>
+        <title>Title Test1</title>
+        <desc>1 image</desc>
+        <icon>Icon Test1</icon>
+        <requirements>
+            <requirement name="param1" type="::fwData::Image" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test1" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test2</id>
+        <title>Title Test2</title>
+        <desc>1 image, 1 mesh</desc>
+        <icon>Icon Test2</icon>
+        <requirements>
+            <requirement name="img" type="::fwData::Image" />
+            <requirement name="mesh" type="::fwData::Mesh" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test2" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test3</id>
+        <title>Title Test3</title>
+        <desc>1-2 image</desc>
+        <icon>Icon Test3</icon>
+        <requirements>
+          <requirement name="param1" type="::fwData::Image" maxOccurs="2" >
+            <key>key1</key>
+            <key>key2</key>
+          </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test3" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test4</id>
+        <title>Title Test4</title>
+        <desc>* image</desc>
+        <icon>Icon Test4</icon>
+        <requirements>
+            <requirement name="param1" type="::fwData::Image" maxOccurs="10" > <!-- '*' not managed right now -->
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+              <key>key9</key>
+              <key>key10</key>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test4" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test5</id>
+        <title>Title Test5</title>
+        <desc>4-8 image</desc>
+        <icon>Icon Test5</icon>
+        <requirements>
+            <requirement name="param1" type="::fwData::Image" minOccurs="4" maxOccurs="8">
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test5" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test6</id>
+        <title>Title Test6</title>
+        <desc>2 image</desc>
+        <icon>Icon Test6</icon>
+        <requirements>
+            <requirement name="param1" type="::fwData::Image" />
+            <requirement name="param2" type="::fwData::Image" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test6" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test7</id>
+        <title>Title Test7</title>
+        <desc>1 image, 0-1 mesh</desc>
+        <icon>Icon Test3</icon>
+        <requirements>
+            <requirement name="img" type="::fwData::Image" />
+            <requirement name="mesh" type="::fwData::Mesh" minOccurs="0" >
+              <key>key1</key>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test7" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+
+</plugin>
+

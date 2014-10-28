@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <boost/assign/list_of.hpp>
 
 #include "fwTools/Type.hpp"
@@ -66,20 +72,18 @@ const Type Type::s_DOUBLE = ::fwTools::Type::create< ::fwTools::Type::DoubleType
 
 
 
+template<> const std::string &Type::traitsToString< 1, true, true > () {return Type::s_INT8_TYPENAME;  }
+template<> const std::string &Type::traitsToString< 2, true, true > () {return Type::s_INT16_TYPENAME; }
+template<> const std::string &Type::traitsToString< 4, true, true > () {return Type::s_INT32_TYPENAME; }
+template<> const std::string &Type::traitsToString< 8, true, true > () {return Type::s_INT64_TYPENAME; }
 
-template<> const std::string &Type::typeToString< ::fwTools::Type::Int8Type  > () {return Type::s_INT8_TYPENAME; }
-template<> const std::string &Type::typeToString< ::fwTools::Type::Int16Type > () {return Type::s_INT16_TYPENAME;}
-template<> const std::string &Type::typeToString< ::fwTools::Type::Int32Type > () {return Type::s_INT32_TYPENAME;}
-template<> const std::string &Type::typeToString< ::fwTools::Type::Int64Type > () {return Type::s_INT64_TYPENAME;}
+template<> const std::string &Type::traitsToString< 1, false, true > () {return Type::s_UINT8_TYPENAME;  }
+template<> const std::string &Type::traitsToString< 2, false, true > () {return Type::s_UINT16_TYPENAME; }
+template<> const std::string &Type::traitsToString< 4, false, true > () {return Type::s_UINT32_TYPENAME; }
+template<> const std::string &Type::traitsToString< 8, false, true > () {return Type::s_UINT64_TYPENAME; }
 
-template<> const std::string &Type::typeToString< ::fwTools::Type::UInt8Type  >() {return Type::s_UINT8_TYPENAME; }
-template<> const std::string &Type::typeToString< ::fwTools::Type::UInt16Type >() {return Type::s_UINT16_TYPENAME;}
-template<> const std::string &Type::typeToString< ::fwTools::Type::UInt32Type >() {return Type::s_UINT32_TYPENAME;}
-template<> const std::string &Type::typeToString< ::fwTools::Type::UInt64Type >() {return Type::s_UINT64_TYPENAME;}
-
-template<> const std::string &Type::typeToString< ::fwTools::Type::FloatType  >() {return ::fwTools::Type::s_FLOAT_TYPENAME; }
-template<> const std::string &Type::typeToString< ::fwTools::Type::DoubleType >() {return ::fwTools::Type::s_DOUBLE_TYPENAME;}
-
+template<> const std::string &Type::traitsToString< 4, false, false > () {return Type::s_FLOAT_TYPENAME;  }
+template<> const std::string &Type::traitsToString< 8, false, false > () {return Type::s_DOUBLE_TYPENAME; }
 
 //------------------------------------------------------------------------------
 
@@ -205,6 +209,26 @@ void Type::setType<char>()
 {
     this->setType<signed char>();
 }
+
+//-----------------------------------------------------------------------------
+
+#ifdef linux
+
+template <>
+void Type::setType<boost::int64_t>()
+{
+    this->setType<long long>();
+}
+
+//-----------------------------------------------------------------------------
+
+template <>
+void Type::setType<boost::uint64_t>()
+{
+    this->setType<unsigned long long>();
+}
+
+#endif
 
 //-----------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,7 @@
 #include <fwData/Resection.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/ResectionDBMsg.hpp>
@@ -18,7 +18,7 @@
 
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB ) ;
 
 namespace visuVTKAdaptor
 {
@@ -30,9 +30,9 @@ ResectionDB::ResectionDB() throw()
 {
     m_clippingPlanes = "";
     m_sharpEdgeAngle = 50;
-    addNewHandledEvent( ::fwComEd::ResectionDBMsg::ADD_SAFE_PART );
-    addNewHandledEvent( ::fwComEd::ResectionDBMsg::ADD_RESECTION );
-    addNewHandledEvent( ::fwComEd::ResectionDBMsg::MODIFIED );
+    //addNewHandledEvent( ::fwComEd::ResectionDBMsg::ADD_SAFE_PART );
+    //addNewHandledEvent( ::fwComEd::ResectionDBMsg::ADD_RESECTION );
+    //addNewHandledEvent( ::fwComEd::ResectionDBMsg::MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -94,6 +94,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
         service->setRenderService(this->getRenderService());
+        service->setAutoRender( this->getAutoRender() );
         ::visuVTKAdaptor::Resection::dynamicCast(service)->setClippingPlanes( m_clippingPlanes );
         ::visuVTKAdaptor::Resection::dynamicCast(service)->setSharpEdgeAngle( m_sharpEdgeAngle );
         service->start();
@@ -113,6 +114,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
         service->setRenderService(this->getRenderService());
+        service->setAutoRender( this->getAutoRender() );
         service->start();
 
         this->registerService(service);
@@ -135,7 +137,7 @@ void ResectionDB::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ResectionDB::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::ResectionDBMsg::csptr pResectionDBMsg = ::fwComEd::ResectionDBMsg::dynamicConstCast( msg ) ;
     if ( pResectionDBMsg )

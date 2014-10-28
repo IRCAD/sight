@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,9 +20,10 @@
 #include <arlcore/File.h>
 
 arlCore::Mesh::Mesh( double pointScalar ):
-m_pointScalar(pointScalar)
+m_pointScalar(pointScalar),
+m_pointList( arlCore::PointList::New() )
 {
-    m_pointList.setDimension(3);
+    m_pointList->setDimension(3);
 }
 
 arlCore::Mesh::Mesh( const Mesh& p )
@@ -45,7 +46,7 @@ void arlCore::Mesh::copy( const Mesh& m )
 
 void arlCore::Mesh::clear( void )
 {
-    m_pointList.clear();
+    m_pointList->clear();
     m_triangles.clear();
     m_nbReferences.clear();
     m_freePoints.clear();
@@ -71,38 +72,38 @@ double arlCore::Mesh::getRMSDistance( void ) const
     return sqrt(distance/(double)(Size*3));
 }
 
-double arlCore::Mesh::computeDistance2( const arlCore::Point& p ) const
+double arlCore::Mesh::computeDistance2( Point::csptr p ) const
 {
     unsigned int noTriangle;
     const double D = computeDistance(p, noTriangle);
     return D*D;
 }
 
-double arlCore::Mesh::computeDistance2( const arlCore::Point& p, unsigned int &noTriangle ) const
+double arlCore::Mesh::computeDistance2( Point::csptr p, unsigned int &noTriangle ) const
 {
     const double D = computeDistance(p, noTriangle);
     return D*D;
 }
 
-double arlCore::Mesh::computeDistance( const arlCore::Point& p ) const
+double arlCore::Mesh::computeDistance( Point::csptr p ) const
 {
     unsigned int noTriangle;
     return computeDistance( p, noTriangle );
 }
 
-double arlCore::Mesh::computeDistance( const arlCore::Point& p, unsigned int &noTriangle ) const
+double arlCore::Mesh::computeDistance( Point::csptr p, unsigned int &noTriangle ) const
 {
-    const vgl_point_3d<double> VglPoint(p.x(), p.y(), p.z());
+    const vgl_point_3d<double> VglPoint(p->x(), p->y(), p->z());
     unsigned int i;
     double distance = -1.0;
     for( i=0 ; i<m_triangles.size() ; ++i )
     {
-        const arlCore::Point& P0 = *m_pointList[m_triangles[i][0]];
-        const vgl_point_3d<double> VglP0(P0.x(), P0.y(), P0.z());
-        const arlCore::Point& P1 = *m_pointList[m_triangles[i][1]];
-        const vgl_point_3d<double> VglP1(P1.x(), P1.y(), P1.z());
-        const arlCore::Point& P2 = *m_pointList[m_triangles[i][2]];
-        const vgl_point_3d<double> VglP2(P2.x(), P2.y(), P2.z());
+        Point::csptr P0 = (*m_pointList)[m_triangles[i][0]];
+        const vgl_point_3d<double> VglP0(P0->x(), P0->y(), P0->z());
+        Point::csptr P1 = (*m_pointList)[m_triangles[i][1]];
+        const vgl_point_3d<double> VglP1(P1->x(), P1->y(), P1->z());
+        Point::csptr P2 = (*m_pointList)[m_triangles[i][2]];
+        const vgl_point_3d<double> VglP2(P2->x(), P2->y(), P2->z());
         const double D = vgl_triangle_3d_distance( VglPoint, VglP0, VglP1, VglP2 );
         if(i==0) {distance = D, noTriangle = i;}
         else if(D<distance) {distance = D, noTriangle = i;}
@@ -110,7 +111,7 @@ double arlCore::Mesh::computeDistance( const arlCore::Point& p, unsigned int &no
     return distance;
 }
 
-const arlCore::PointList& arlCore::Mesh::getPointList( void ) const
+arlCore::PointList::csptr arlCore::Mesh::getPointList( void ) const
 {
     return m_pointList;
 }
@@ -123,31 +124,31 @@ const std::vector< vnl_vector_fixed<unsigned int, 3> >& arlCore::Mesh::getTriang
 double arlCore::Mesh::triangleSurface( unsigned int i ) const
 {
     if(i>=m_triangles.size()) return -1;
-    const arlCore::Point& P0 = *m_pointList[m_triangles[i][0]];
-    const vgl_point_3d<double> VglP0(P0.x(), P0.y(), P0.z());
-    const arlCore::Point& P1 = *m_pointList[m_triangles[i][1]];
-    const vgl_point_3d<double> VglP1(P1.x(), P1.y(), P1.z());
-    const arlCore::Point& P2 = *m_pointList[m_triangles[i][2]];
-    const vgl_point_3d<double> VglP2(P2.x(), P2.y(), P2.z());
+    Point::csptr P0 = (*m_pointList)[m_triangles[i][0]];
+    const vgl_point_3d<double> VglP0(P0->x(), P0->y(), P0->z());
+    Point::csptr P1 = (*m_pointList)[m_triangles[i][1]];
+    const vgl_point_3d<double> VglP1(P1->x(), P1->y(), P1->z());
+    Point::csptr P2 = (*m_pointList)[m_triangles[i][2]];
+    const vgl_point_3d<double> VglP2(P2->x(), P2->y(), P2->z());
     return vgl_triangle_3d_area( VglP0, VglP1, VglP2 );
 }
 
-bool arlCore::Mesh::generateX( double ySize, double zSize, double yStep, double zStep, double degree, double gaussianNoise, arlCore::PointList& summits )
+bool arlCore::Mesh::generateX( double ySize, double zSize, double yStep, double zStep, double degree, double gaussianNoise, PointList::sptr summits )
 {
     return generate( 0, ySize, zSize, yStep, zStep, degree, gaussianNoise, summits );
 }
 
-bool arlCore::Mesh::generateY( double xSize, double zSize, double xStep, double zStep, double degree, double gaussianNoise, arlCore::PointList& summits )
+bool arlCore::Mesh::generateY( double xSize, double zSize, double xStep, double zStep, double degree, double gaussianNoise, PointList::sptr summits )
 {
     return generate( 1, xSize, zSize, xStep, zStep, degree, gaussianNoise, summits );
 }
 
-bool arlCore::Mesh::generateZ( double xSize, double ySize, double xStep, double yStep, double degree, double gaussianNoise, arlCore::PointList& summits )
+bool arlCore::Mesh::generateZ( double xSize, double ySize, double xStep, double yStep, double degree, double gaussianNoise, PointList::sptr summits )
 {
     return generate( 2, xSize, ySize, xStep, yStep, degree, gaussianNoise, summits );
 }
 
-bool arlCore::Mesh::generate( unsigned int axis, double width, double length, double stepW, double stepL, double degree, double gaussianNoise, arlCore::PointList& summits )
+bool arlCore::Mesh::generate( unsigned int axis, double width, double length, double stepW, double stepL, double degree, double gaussianNoise, PointList::sptr summits )
 {
     clear();
     const unsigned int Width = (unsigned int)(width/stepW);
@@ -164,20 +165,20 @@ bool arlCore::Mesh::generate( unsigned int axis, double width, double length, do
             const double Li = (double)j*stepL;
             bool end = false;
             double altitude = 0.0;
-            vnl_vector<double> invDists(summits.size());
-            for( k=0 ; k<summits.size() && !end ; ++k )
+            vnl_vector<double> invDists(summits->size());
+            for( k=0 ; k<summits->size() && !end ; ++k )
             {
                 double distance2;
                 switch(axis)
                 {
                 case 0:
-                    distance2 = (Wi-summits[k]->y())*(Wi-summits[k]->y())+(Li-summits[k]->z())*(Li-summits[k]->z());
+                    distance2 = (Wi-(*summits)[k]->y())*(Wi-(*summits)[k]->y())+(Li-(*summits)[k]->z())*(Li-(*summits)[k]->z());
                     break;
                 case 1:
-                    distance2 = (Wi-summits[k]->x())*(Wi-summits[k]->x())+(Li-summits[k]->z())*(Li-summits[k]->z());
+                    distance2 = (Wi-(*summits)[k]->x())*(Wi-(*summits)[k]->x())+(Li-(*summits)[k]->z())*(Li-(*summits)[k]->z());
                     break;
                 case 2:
-                    distance2 = (Wi-summits[k]->x())*(Wi-summits[k]->x())+(Li-summits[k]->y())*(Li-summits[k]->y());
+                    distance2 = (Wi-(*summits)[k]->x())*(Wi-(*summits)[k]->x())+(Li-(*summits)[k]->y())*(Li-(*summits)[k]->y());
                     break;
                 default: return false;
                 }
@@ -185,17 +186,17 @@ bool arlCore::Mesh::generate( unsigned int axis, double width, double length, do
                 const double DistancePow = pow(Distance, degree);
                 if(Distance<1e-8)
                 {
-                    altitude = summits[k]->z();
+                    altitude = (*summits)[k]->z();
                     end = true;
                 }else invDists[k] = 1.0/DistancePow;
             }
             if(!end)
             {
                 const double Sum = invDists.sum();
-                for( k=0 ; k<summits.size() ; ++k )
+                for( k=0 ; k<summits->size() ; ++k )
                 {
                     const double Coeff = invDists[k]/Sum;
-                    altitude += summits[k]->z()*Coeff;
+                    altitude += (*summits)[k]->z()*Coeff;
                 }
             }
             grid[i][j]=altitude;
@@ -218,22 +219,22 @@ bool arlCore::Mesh::generate( unsigned int axis, double width, double length, do
             switch(axis)
             {
             case 0:
-                index[0] = addPoint(arlCore::Point(Alt0, Width0, Length0), gaussianNoise);
-                index[1] = addPoint(arlCore::Point(Alt1, Width1, Length0), gaussianNoise);
-                index[2] = addPoint(arlCore::Point(Alt2, Width1, Length1), gaussianNoise);
-                index[3] = addPoint(arlCore::Point(Alt3, Width0, Length1), gaussianNoise);
+                index[0] = addPoint(arlCore::Point::New(Alt0, Width0, Length0), gaussianNoise);
+                index[1] = addPoint(arlCore::Point::New(Alt1, Width1, Length0), gaussianNoise);
+                index[2] = addPoint(arlCore::Point::New(Alt2, Width1, Length1), gaussianNoise);
+                index[3] = addPoint(arlCore::Point::New(Alt3, Width0, Length1), gaussianNoise);
                 break;
             case 1:
-                index[0] = addPoint(arlCore::Point(Width0, Alt0, Length0), gaussianNoise);
-                index[1] = addPoint(arlCore::Point(Width1, Alt1, Length0), gaussianNoise);
-                index[2] = addPoint(arlCore::Point(Width1, Alt2, Length1), gaussianNoise);
-                index[3] = addPoint(arlCore::Point(Width0, Alt3, Length1), gaussianNoise);
+                index[0] = addPoint(arlCore::Point::New(Width0, Alt0, Length0), gaussianNoise);
+                index[1] = addPoint(arlCore::Point::New(Width1, Alt1, Length0), gaussianNoise);
+                index[2] = addPoint(arlCore::Point::New(Width1, Alt2, Length1), gaussianNoise);
+                index[3] = addPoint(arlCore::Point::New(Width0, Alt3, Length1), gaussianNoise);
                 break;
             case 2:
-                index[0] = addPoint(arlCore::Point(Width0, Length0, Alt0), gaussianNoise);
-                index[1] = addPoint(arlCore::Point(Width1, Length0, Alt1), gaussianNoise);
-                index[2] = addPoint(arlCore::Point(Width1, Length1, Alt2), gaussianNoise);
-                index[3] = addPoint(arlCore::Point(Width0, Length1, Alt3), gaussianNoise);
+                index[0] = addPoint(arlCore::Point::New(Width0, Length0, Alt0), gaussianNoise);
+                index[1] = addPoint(arlCore::Point::New(Width1, Length0, Alt1), gaussianNoise);
+                index[2] = addPoint(arlCore::Point::New(Width1, Length1, Alt2), gaussianNoise);
+                index[3] = addPoint(arlCore::Point::New(Width0, Length1, Alt3), gaussianNoise);
                 break;
             default: return false;
             }
@@ -283,7 +284,7 @@ bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
                             if(arlString::valueOf(names[i], index))
                             {
                                 if(PL.size()<=index) PL.resize(index+1);
-                                arlCore::Point pt(vnlPoints[i][0], vnlPoints[i][1], vnlPoints[i][2]);
+                                arlCore::Point::sptr pt = arlCore::Point::New(vnlPoints[i][0], vnlPoints[i][1], vnlPoints[i][2]);
                                 PL[index].push_back(pt);
                             }
                         }
@@ -326,11 +327,11 @@ bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
                     if(points.size()>p1 && points.size()>p2 && points.size()>p3)
                     {
                         points[p1].get_nonhomogeneous( x, y, z );
-                        const arlCore::Point Pt1( x, y, z );
+                        const arlCore::Point::sptr Pt1 = arlCore::Point::New( x, y, z );
                         points[p2].get_nonhomogeneous( x, y, z );
-                        const arlCore::Point Pt2( x, y, z );
+                        const arlCore::Point::sptr Pt2= arlCore::Point::New( x, y, z );
                         points[p3].get_nonhomogeneous( x, y, z );
-                        const arlCore::Point Pt3( x, y, z );
+                        const arlCore::Point::sptr Pt3= arlCore::Point::New( x, y, z );
                         addTriangle( Pt1, Pt2, Pt3 );
                     }
                 }
@@ -418,7 +419,7 @@ bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
         const double Version = config.readHeader();
         if(Version>0.0)
         {
-            arlCore::PointList summits(3);
+            arlCore::PointList::sptr summits = arlCore::PointList::New(); //VAG FIXME NB New(3)
             unsigned int xSize=0, ySize=0;
             double xStep = 1.0, yStep = 1.0, degree = 2.0, noise = 0.0;
             vnl_vector<double> point(3);
@@ -440,7 +441,7 @@ bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
                 if(token=="GaussianNoise") config.get(noise);
                 if(token=="Summit")
                     if(config.get(point, 3))
-                        summits.push_back(arlCore::Point(point[0],point[1],point[2]));
+                        summits->push_back( Point::New(point[0],point[1],point[2]) );
             }
             if(gaussianNoise>0.0) noise = gaussianNoise;
             generateZ( xSize, ySize, xStep, yStep, degree, noise, summits );
@@ -459,7 +460,7 @@ bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
     const bool Raw = (ext=="raw");
     unsigned int i=0, a, b, c;
     double x, y, z;
-    Point p(3);
+    Point::sptr p = Point::New(3);
     if(Trian)
     {
         unsigned int nbPts, nbTrian;
@@ -467,9 +468,9 @@ bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
         for( ; i<nbPts ; ++i )
         {
             file>>x>>y>>z;
-            p.x(x);
-            p.y(y);
-            p.z(z);
+            p->x(x);
+            p->y(y);
+            p->z(z);
             addPoint(p, gaussianNoise);
         }
         file>>nbTrian;
@@ -486,9 +487,9 @@ bool arlCore::Mesh::load( const std::string& fileName, double gaussianNoise )
         while(!file.eof())
         {
             file>>x>>y>>z;
-            p.x(x);
-            p.y(y);
-            p.z(z);
+            p->x(x);
+            p->y(y);
+            p->z(z);
             unsigned int index = addPoint(p, gaussianNoise);
             if((i+1)%3==0) addTriangle(index-2, index-1, index);
             ++i;
@@ -513,11 +514,11 @@ bool arlCore::Mesh::save( const std::string& fileName, bool overwrite ) const
     unsigned int i, j, k;
     if(Trian)
     {
-        file<<(unsigned int)m_pointList.size()<<"\n";
-        for( i=0 ; i<(unsigned int)m_pointList.size() ; ++i )
+        file<<(unsigned int)m_pointList->size()<<"\n";
+        for( i=0 ; i<(unsigned int)m_pointList->size() ; ++i )
         {
             for( j=0 ; j<3 ; ++j )
-                file<<m_pointList[i]->get(j)<<" ";
+                file<<(*m_pointList)[i]->get(j)<<" ";
             file<<"\n";
         }
         file<<(unsigned int)m_triangles.size()<<"\n";
@@ -536,7 +537,7 @@ bool arlCore::Mesh::save( const std::string& fileName, bool overwrite ) const
         {
             for( j=0 ; j<3 ; ++j )
                 for( k=0 ; k<3 ; ++k )
-                    file<<m_pointList[m_triangles[i][j]]->get(k)<<" ";
+                    file<<(*m_pointList)[m_triangles[i][j]]->get(k)<<" ";
             file<<"\n";
         }
         file.close();
@@ -547,11 +548,11 @@ bool arlCore::Mesh::save( const std::string& fileName, bool overwrite ) const
         file<<"# vtk DataFile Version 1.0\nFileName\nASCII\n\n";
         //file<<DATASET UNSTRUCTURED_GRID";
         file<<"DATASET POLYDATA";
-        file<<"\nPOINTS "<<(unsigned int)m_pointList.size()<<" double\n";
-        for( i=0 ; i<(unsigned int)m_pointList.size() ; ++i )
+        file<<"\nPOINTS "<<(unsigned int)m_pointList->size()<<" double\n";
+        for( i=0 ; i<(unsigned int)m_pointList->size() ; ++i )
         {
             for( j=0 ; j<3 ; ++j )
-                file<<m_pointList[i]->get(j)<<" ";
+                file<<(*m_pointList)[i]->get(j)<<" ";
             file<<"\n";
         }
 
@@ -580,7 +581,7 @@ bool arlCore::Mesh::resampling( double step )
     if(step<=0) return false;
     unsigned int i, j;
     const double Tol = 2.0*step;
-    std::vector<arlCore::Point> points(3);
+    std::vector<arlCore::Point::sptr > points(3);
     for( i=0 ; i<(unsigned int)m_triangles.size() ; )
     {
         vnl_vector_fixed<double,3> lengths = getLengths(i);
@@ -589,18 +590,18 @@ bool arlCore::Mesh::resampling( double step )
             std::vector<unsigned int> index(6);
             for( j=0 ; j<3 ; ++j )
                 index[j] = m_triangles[i][j];
-            const arlCore::Point &A = *m_pointList[index[0]];
-            const arlCore::Point &B = *m_pointList[index[1]];
-            const arlCore::Point &C = *m_pointList[index[2]];
+            const arlCore::Point::sptr A = (*m_pointList)[index[0]];
+            const arlCore::Point::sptr B = (*m_pointList)[index[1]];
+            const arlCore::Point::sptr C = (*m_pointList)[index[2]];
             m_freeTriangles.push_back(i);
             --m_nbReferences[m_triangles[i][0]];
             --m_nbReferences[m_triangles[i][1]];
             --m_nbReferences[m_triangles[i][2]];
             for( j=0 ; j<3 ; ++j )
             {
-                points[0].set(j, (A[j]+B[j])/2.0);
-                points[1].set(j, (B[j]+C[j])/2.0);
-                points[2].set(j, (C[j]+A[j])/2.0);
+                points[0]->set(j, ( (*A)[j]+(*B)[j])/2.0);
+                points[1]->set(j, ( (*B)[j]+(*C)[j])/2.0);
+                points[2]->set(j, ( (*C)[j]+(*A)[j])/2.0);
             }
             for( j=0 ; j<3 ; ++j )
                 index[3+j] = addPoint(points[j]);
@@ -617,22 +618,22 @@ bool arlCore::Mesh::resampling( double step )
 
 // Private methods
 
-unsigned int arlCore::Mesh::addPoint( const arlCore::Point& p, double gaussianNoise )
+unsigned int arlCore::Mesh::addPoint( Point::csptr p, double gaussianNoise )
 {
     unsigned int index;
     if(m_freePoints.size()>0)
     {
         index = m_freePoints.back();
         m_freePoints.pop_back();
-        m_pointList[index]->copy(p);
+        (*m_pointList)[index]->copy(p);
     }else
     {
-        index = m_pointList.size();
-        m_pointList.push_back(p);
-        m_pointList.back()->setScalar(m_pointScalar);
+        index = m_pointList->size();
+        m_pointList->push_back(p);
+        m_pointList->back()->setScalar(m_pointScalar);
         m_nbReferences.push_back(0);
     }
-    if(gaussianNoise>0.0) m_pointList[index]->addGaussianNoise(gaussianNoise);
+    if(gaussianNoise>0.0) (*m_pointList)[index]->addGaussianNoise(gaussianNoise);
     return index;
 }
 
@@ -643,12 +644,12 @@ unsigned int arlCore::Mesh::releasePoint( unsigned int noPoint )
     if(m_nbReferences[noPoint]<1)
     {
         m_freePoints.push_back(noPoint);
-        m_pointList[noPoint]->setVisible(false);
+        (*m_pointList)[noPoint]->setVisible(false);
     }
     return m_nbReferences[noPoint];
 }
 
-bool arlCore::Mesh::addTriangle( const arlCore::Point &P1, const arlCore::Point &P2, const arlCore::Point &P3 )
+bool arlCore::Mesh::addTriangle( Point::csptr P1, Point::csptr P2, Point::csptr P3 )
 {
     std::vector<unsigned int> index;
     index.push_back(addPoint(P1));
@@ -685,12 +686,12 @@ vnl_vector_fixed<double,3> arlCore::Mesh::getLengths( unsigned int noTriangle ) 
 {
     vnl_vector_fixed<double,3> lengths;
     assert(noTriangle<m_triangles.size());
-    const arlCore::Point &A = *m_pointList[m_triangles[noTriangle][0]];
-    const arlCore::Point &B = *m_pointList[m_triangles[noTriangle][1]];
-    const arlCore::Point &C = *m_pointList[m_triangles[noTriangle][2]];
-    lengths[0] = A.distance(B);
-    lengths[1] = B.distance(C);
-    lengths[2] = C.distance(A);
+    const arlCore::Point::sptr A = (*m_pointList)[m_triangles[noTriangle][0]];
+    const arlCore::Point::sptr B = (*m_pointList)[m_triangles[noTriangle][1]];
+    const arlCore::Point::sptr C = (*m_pointList)[m_triangles[noTriangle][2]];
+    lengths[0] = A->distance(B);
+    lengths[1] = B->distance(C);
+    lengths[2] = C->distance(A);
     return lengths;
 }
 
@@ -700,12 +701,12 @@ bool arlCore::Mesh::simplify( void )
     return false;
 #else // ANN
     unsigned int i, j;
-    const unsigned int Size = m_pointList.visibleSize();
-    const unsigned int Dimension = m_pointList.getDimension();
+    const unsigned int Size = m_pointList->visibleSize();
+    const unsigned int Dimension = m_pointList->getDimension();
     ANNpointArray ANNPoints = annAllocPts( Size, Dimension );
-    for( i=0 ; i<m_pointList.size() ; ++i )
+    for( i=0 ; i<m_pointList->size() ; ++i )
         for( j=0 ; j<Dimension ; ++j )
-            ANNPoints[i][j]=m_pointList[i]->get(j);
+            ANNPoints[i][j]=(*m_pointList)[i]->get(j);
     const int BucketSize = 1;
     ANNkd_tree* ANNtree = new ANNkd_tree( ANNPoints, Size, Dimension, BucketSize, ANN_KD_SL_MIDPT );
     const double Epsilon = 1e-8;// Error bound
@@ -714,12 +715,12 @@ bool arlCore::Mesh::simplify( void )
     const unsigned int NbNeighbors = 20;
     ANNidxArray Nn_idx = new ANNidx[NbNeighbors]; // near neighbor indices
     ANNdistArray SquaredDists = new ANNdist[NbNeighbors]; // near neighbor distances
-    for( i=0 ; i<m_pointList.size() ; ++i )
-        if(m_pointList[i]->isVisible())
+    for( i=0 ; i<m_pointList->size() ; ++i )
+        if((*m_pointList)[i]->isVisible())
         {
             std::vector<unsigned int> oldIndex;
             for( j=0 ; j<Dimension; ++j )
-                ANNPt[j] = m_pointList[i]->get(j);
+                ANNPt[j] = (*m_pointList)[i]->get(j);
             ANNtree->annkSearch( ANNPt, NbNeighbors, Nn_idx, SquaredDists, Epsilon );
             // Cherche points les plus proches
             for( j=0 ; j<NbNeighbors ; ++j )

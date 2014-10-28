@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,8 +19,8 @@
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <vtkIO/vtk.hpp>
-#include <vtkIO/helper/TransferFunction.hpp>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/TransferFunction.hpp>
 
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
@@ -31,7 +31,7 @@
 #include "visuVTKAdaptor/Image.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {
@@ -53,13 +53,13 @@ Image::Image() throw()
 
     // Manage events
     this->installTFSelectionEventHandler(this);
-    addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
-    addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
-    addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY               );
-    addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY                 );
-    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
-    addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING       );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY               );
+    //addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY                 );
+    //addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    //addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING       );
 }
 
 //------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void Image::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void Image::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -137,7 +137,7 @@ void Image::doUpdate(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed
             this->doUpdate();
 
             // Hack to force imageSlice update until it is not able to detect a new image
-            ::fwComEd::ImageMsg::NewSptr msg;
+            ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
             msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
             ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
         }
@@ -199,7 +199,7 @@ void Image::configuring() throw(fwTools::Failed)
 
 void Image::updateImage( ::fwData::Image::sptr image  )
 {
-    ::vtkIO::toVTKImage(image,m_imageData);
+    ::fwVtkIO::toVTKImage(image,m_imageData);
 
     this->updateImageInfos(image);
     this->setVtkPipelineModified();
@@ -222,7 +222,7 @@ void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
     this->updateTransferFunction(image, this->getSptr());
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    ::vtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
 
     m_lut->SetClamping( !tf->getIsClamped() );
 

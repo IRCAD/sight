@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,8 +24,8 @@ namespace reader
 
 /**
  * @brief   Image Reader. Read file format .raw.gz
- * @class   GzBufferImageReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   GzBufferImageReader
+ * 
  * @date    2009
  *
  * Ircad reader to read a ::fwData::Image on filesystem which the file format
@@ -39,11 +39,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro((GzBufferImageReader)(GenericObjectReader< ::fwData::Image>),
                                            (()),
-                                           new  GzBufferImageReader
+                                           ::fwDataIO::reader::factory::New< GzBufferImageReader >
                                            );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API GzBufferImageReader();
+    FWDATAIO_API GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~GzBufferImageReader();

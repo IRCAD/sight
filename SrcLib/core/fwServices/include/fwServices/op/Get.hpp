@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ namespace fwServices
  * @note The template method is also available, where the template parameter SERVICE relates the service type serviceType
  * @todo Do not automatically add service, raise an error instead
  * @return the requested service, null if not
- * @author IRCAD (Research and Development Team).
+ * 
  */
 FWSERVICES_API ::fwServices::IService::sptr get( ::fwData::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed );
 
@@ -34,7 +34,7 @@ SPTR(SERVICE) get( ::fwData::Object::sptr obj) throw(fwTools::Failed );
 
 /**
  * @brief Return a registered IService having uid as unique universal identifier , its an alias on fwData::Object::getID(...) method
- * @author IRCAD (Research and Development Team).
+ * 
 
  */
 FWSERVICES_API ::fwServices::IService::sptr get( std::string uid ) throw(fwTools::Failed );

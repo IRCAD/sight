@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
+#include <fwData/Composite.hpp>
+#include <fwComEd/helper/Composite.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -38,7 +39,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwData::Object );
+fwServicesRegisterMacro( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -66,9 +67,8 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
     bool vectorIsAlreadyCleared = false;
 
     //  Config Elem
-    //  <selection mode="exclude">
-    //  <addSelection service="::ioMfo::MfoPatientDBReaderService" />
-    //  <addSelection service="::ioMfo::MfoDBPatientDBReaderService" />
+    //  <selection mode="include" />
+    //  <addSelection service="::ioAtoms::SWriter" />
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
     for( ; iter != this->m_configuration->end() ; ++iter )
@@ -113,6 +113,15 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
             std::string configSrv = (*iter)->getExistingAttributeValue("service") ;
             m_serviceToConfig[ configSrv ] = configId;
         }
+
+    }
+
+    typedef std::vector < SPTR(::fwRuntime::ConfigurationElement) >  ConfigurationElementContainer;
+    ConfigurationElementContainer inject = m_configuration->find("inject");
+
+    if(!inject.empty())
+    {
+        m_inject = inject.at(0)->getValue();
     }
 
 }
@@ -152,7 +161,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
     std::vector< std::pair < std::string, std::string > > availableExtensionsMap;
     std::vector< std::string > availableExtensionsSelector;
 
-    BOOST_FOREACH( std::string  serviceId, availableExtensionsId )
+    BOOST_FOREACH( const std::string &serviceId, availableExtensionsId )
     {
         bool serviceIsSelectedByUser = std::find( m_selectedServices.begin(), m_selectedServices.end(), serviceId ) != m_selectedServices.end();
 
@@ -163,7 +172,14 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             (! m_servicesAreExcluded && serviceIsSelectedByUser) )
         {
             // Add this service
-            const std::string infoUser = ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
+            std::string infoUser = ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
+
+            std::map< std::string, std::string >::const_iterator iter = m_serviceToConfig.find( serviceId );
+            if ( iter != m_serviceToConfig.end() )
+            {
+                infoUser = ::fwServices::registry::ServiceConfig::getDefault()->getConfigDesc(iter->second);
+            }
+
             if (infoUser != "")
             {
                 availableExtensionsMap.push_back( std::pair < std::string, std::string > (serviceId, infoUser) );
@@ -187,10 +203,9 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
         bool extensionSelectionIsCanceled = false;
 
         // Selection of extension when availableExtensions.size() > 1
-        bool extensionIdFound = false;
         if ( availableExtensionsSelector.size() > 1 )
         {
-            ::fwGui::dialog::SelectorDialog::NewSptr selector;
+            ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
 
             if ( m_mode != READER_MODE )
             {
@@ -204,6 +219,8 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             std::string selection = selector->show();
             if( !selection.empty() )
             {
+                bool extensionIdFound = false;
+
                 typedef std::pair < std::string, std::string > PairType;
                 BOOST_FOREACH(PairType pair, availableExtensionsMap)
                 {
@@ -237,7 +254,31 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             // Configure and start service
             if ( m_mode == READER_MODE )
             {
-                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( this->getObject() , extensionId ) ;
+                ::fwData::Object::sptr object;
+                if(m_inject.empty() ||  this->getObject()->getClassname().compare("::fwData::Composite") )
+                {
+                    object = this->getObject< ::fwData::Object >();
+                }
+                else
+                {
+                    ::fwServices::registry::ServiceFactory::sptr services = ::fwServices::registry::ServiceFactory::getDefault();
+                    std::string objType = services->getObjectImplementation(extensionId);
+                    if(!objType.compare("::fwData::Object"))
+                    {
+                        object = this->getObject< ::fwData::Composite>();
+                    }
+                    else
+                    {
+                        object = ::fwData::factory::New(objType);
+                        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite>();
+                        ::fwComEd::helper::Composite helper(composite);
+                        helper.add(m_inject, object);
+
+                        helper.notify(this->getSptr());
+                    }
+                }
+
+                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( object , extensionId ) ;
                 if ( hasConfigForService )
                 {
                     reader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
@@ -300,7 +341,8 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 }
 
 //------------------------------------------------------------------------------
-void IOSelectorService::updating( fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed )
+
+void IOSelectorService::receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

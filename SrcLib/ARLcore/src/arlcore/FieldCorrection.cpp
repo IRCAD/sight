@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -110,23 +110,23 @@ bool arlCore::FieldCorrector::load( const std::string &fileName )
     return setParameters(parameters);
 }
 
-bool arlCore::FieldCorrector::correct( const Point &P1, Point &P2 ) const
+bool arlCore::FieldCorrector::correct( Point::csptr P1, Point::sptr P2 ) const
 {   // P1=distorted P2=undistorded
-    assert(P1.size()==3 && P2.size()==3);
+    assert(P1->size()==3 && P2->size()==3);
     const unsigned int NbEquations = 3;
     const bool Verbose = false;
-    P2.copy(P1);
-    if(!m_correction || P1.size()!=3 || P2.size()!=3) return false;
+    P2->copy(P1);
+    if(!m_correction || P1->size()!=3 || P2->size()!=3) return false;
     vnl_vector<double> coordinates(NbEquations), distorsion;
-    coordinates[0] = P1.x();
-    coordinates[1] = P1.y();
-    coordinates[2] = P1.z();
+    coordinates[0] = P1->x();
+    coordinates[1] = P1->y();
+    coordinates[2] = P1->z();
     bool b = computePolynomial( m_degree, m_parameters, coordinates, distorsion );
     if(b)
     {
-        P2.x(coordinates[0]-distorsion[0]);
-        P2.y(coordinates[1]-distorsion[1]);
-        P2.z(coordinates[2]-distorsion[2]);
+        P2->x(coordinates[0]-distorsion[0]);
+        P2->y(coordinates[1]-distorsion[1]);
+        P2->z(coordinates[2]-distorsion[2]);
         if(Verbose) std::cout<<"Distorsion correction : "<<distorsion<<"\n";
     }
     return b;
@@ -159,7 +159,7 @@ bool arlCore::FieldCorrector::correct( vnl_rigid_matrix &T ) const
     return true;
 }
 
-bool arlCore::fieldCalibration( const PointList &real, const PointList &distorded, unsigned int degree, vnl_vector<double> &parameters, double &RMS )
+bool arlCore::fieldCalibration( PointList::csptr real, PointList::csptr distorded, unsigned int degree, vnl_vector<double> &parameters, double &RMS )
 {
     if(degree<1) return false;
     Polynomial_cost_function pcf( real, distorded, degree );

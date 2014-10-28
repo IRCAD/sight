@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -215,7 +215,7 @@ bool arlCore::PlaneSystem::getTrf( unsigned int plane1, unsigned int plane2, vnl
 {
 //  verbose = false;
     // TODO : Manage the cases when there are many paths to reach plane2
-    // TODO : Prendre uniquement le chemin le plus récent, le plus court, celui de poids minimum
+    // TODO : Prendre uniquement le chemin le plus rï¿½cent, le plus court, celui de poids minimum
     // TODO : Ne pas poursuivre dans les chemins incompatible avec la date
 //  assert(!outOfRange(plane1, plane2));
     if(outOfRange(plane1, plane2))
@@ -285,11 +285,11 @@ bool arlCore::PlaneSystem::setTrf( unsigned int index, const vnl_rigid_matrix& T
     m_trfTable[index].copy(T);
     m_trfTable[index].setTime(date,time);
     if(date==0 && time==0)
-    {   // TODO : Calculez la transfo inverse lorsque date=0 et time=0 : Validité permanente
+    {   // TODO : Calculez la transfo inverse lorsque date=0 et time=0 : Validitï¿½ permanente
         m_trfState[index] = STATE_CALIBRATION;
         m_trfWeight[index] = CALIBRATION_WEIGHT;
     }else
-    {   // TODO : Calculez la transfo inverse en même temps ?
+    {   // TODO : Calculez la transfo inverse en mï¿½me temps ?
         m_trfState[index] = STATE_SET;
         m_trfWeight[index] = MEASURE_WEIGHT;
     }
@@ -363,7 +363,7 @@ bool arlCore::PlaneSystem::setIdentity ( unsigned int plane1, unsigned int plane
 }
 
 void arlCore::PlaneSystem::eraseComputedTrf( unsigned int index )
-{   //TODO : [Optimisation] Passer à STATE_UNDEFINED uniquement les transfos déduites de la transfo[index] modifiée
+{   //TODO : [Optimisation] Passer ï¿½ STATE_UNDEFINED uniquement les transfos dï¿½duites de la transfo[index] modifiï¿½e
     unsigned int i;
     for( i=0 ; i<m_trfState.size() ; ++i )
         if(m_trfState[i]==STATE_COMPUTED || m_trfState[i]==STATE_COMPUTED+NBSTATES)
@@ -389,18 +389,18 @@ bool arlCore::PlaneSystem::distance( unsigned int plane1, unsigned int plane2, d
     return true;
 }
 
-bool arlCore::PlaneSystem::chgPlane( unsigned int plane1, const Point &pt1, unsigned int plane2, Point &pt2)
+bool arlCore::PlaneSystem::chgPlane( unsigned int plane1, Point::csptr pt1, unsigned int plane2, Point::sptr pt2)
 {   // Set pt2 with the coordinates in Plane2 of pt1 set in Plane1
     arlCore::vnl_rigid_matrix T;
     if(!getTrf( plane1, plane2, T)) return false;
     return T.trf(pt1,pt2);
 }
 
-bool arlCore::PlaneSystem::getOrigin( unsigned int plane1, unsigned int plane2, Point &pt)
+bool arlCore::PlaneSystem::getOrigin( unsigned int plane1, unsigned int plane2, Point::sptr pt)
 {   // Set pt with the origin of Plane1 in the Plane2
     arlCore::vnl_rigid_matrix T;
     if(!getTrf( plane1, plane2, T)) return false;
-    arlCore::Point origin(0.0, 0.0, 0.0);
+    arlCore::Point::sptr origin = arlCore::Point::New(0.0, 0.0, 0.0);
     return T.trf(origin, pt);
 }
 

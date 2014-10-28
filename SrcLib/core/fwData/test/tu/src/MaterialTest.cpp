@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,16 +37,16 @@ void MaterialTest::tearDown()
 void MaterialTest::methode1()
 {
     //-----------test values
-    ::fwData::Color::NewSptr CAMBIENT;
+    ::fwData::Color::sptr CAMBIENT = ::fwData::Color::New();
     CAMBIENT->setRGBA(0.5f,0.5f,0.5f,0.5f);
 
-    ::fwData::Color::NewSptr CDIFF;
+    ::fwData::Color::sptr CDIFF = ::fwData::Color::New();
     CDIFF->setRGBA(0.8f,0.2f,0.5f,0.4f);
 
-    ::fwData::Material::NewSptr material;
+    ::fwData::Material::sptr material = ::fwData::Material::New();
 
-    material->ambient()->deepCopy( CAMBIENT );
-    material->diffuse()->deepCopy( CDIFF );
+    material->setAmbient(::fwData::Object::copy(CAMBIENT));
+    material->setDiffuse(::fwData::Object::copy(CDIFF));
 
     CPPUNIT_ASSERT_EQUAL(material->ambient()->getRGBA()[0], CAMBIENT->getRGBA()[0]);
     CPPUNIT_ASSERT_EQUAL(material->diffuse()->getRGBA()[0], CDIFF->getRGBA()[0]);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,9 +17,9 @@
 // created by Visual.
 #pragma warning (disable : 4786)
 
-// need a dll interface
-// (Un classe de base ou une structure doit être déclarée avec
-// le mot clé __declspec(dllexport) pour qu'une fonction d'une
+// need a dll interface 
+// (Un classe de base ou une structure doit être déclarée avec 
+// le mot clé __declspec(dllexport) pour qu'une fonction d'une 
 //classe dérivée soit exportée)
 #pragma warning (disable:4251)
 
@@ -94,7 +94,6 @@ typedef char int8;
 typedef unsigned char                           uint8;
 typedef unsigned short                          uint16;
 typedef short int16;
-
 #if defined(__alpha) || (defined(_MIPS_SZLONG) && _MIPS_SZLONG == 64)
 typedef int int32;
 typedef unsigned int uint32;    // sizeof (uint32) must == 4
@@ -102,7 +101,7 @@ typedef unsigned int uint32;    // sizeof (uint32) must == 4
 typedef long int32;
 typedef unsigned long uint32;   // sizeof (uint32) must == 4
 #endif
-/* typedef unsigned long long                      uint64; */
+typedef unsigned long long                      uint64;
 #endif
 
 typedef struct
@@ -113,7 +112,7 @@ typedef struct
 
 // Use only when you decide to delegate size to compiler
 //typedef int       int;
-typedef unsigned int    uint;
+typedef unsigned int    uint; 
 typedef unsigned long   ulong;
 typedef unsigned short  ushort;
 typedef signed char     schar;

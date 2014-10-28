@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/Vector.hpp"
 
 fwDataRegisterMacro( ::fwData::Vector );
@@ -14,7 +15,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Vector::Vector()
+Vector::Vector(::fwData::Object::Key key)
 {}
 
 //------------------------------------------------------------------------------
@@ -24,24 +25,31 @@ Vector::~Vector()
 
 //------------------------------------------------------------------------------
 
-void Vector::shallowCopy( Vector::csptr _source )
+void Vector::shallowCopy(const Object::csptr &_source )
 {
+    Vector::csptr other = Vector::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_attrContainer = _source->m_attrContainer;
+    m_attrContainer = other->m_attrContainer;
 }
 
 //------------------------------------------------------------------------------
 
-void Vector::deepCopy( Vector::csptr source )
+void Vector::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( source );
+    Vector::csptr other = Vector::dynamicConstCast(source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( source, cache );
     m_attrContainer.clear();
-    m_attrContainer.resize(source->m_attrContainer.size());
-    std::transform(
-            source->begin(), source->end(),
-            this->begin(),
-            &::fwData::Object::copy< ValueType::element_type >
-    );
+    m_attrContainer.reserve(other->m_attrContainer.size());
+    BOOST_FOREACH(const ContainerType::value_type &obj, other->m_attrContainer)
+    {
+        m_attrContainer.push_back( ::fwData::Object::copy(obj, cache) );
+    }
 }
 
 //------------------------------------------------------------------------------

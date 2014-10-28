@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,26 +10,24 @@
 #include <fwComEd/PlaneListMsg.hpp>
 #include <fwComEd/PlaneMsg.hpp>
 
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Object.hpp>
-#include <fwData/None.hpp>
-
-#include "visuVTKAdaptor/PlaneSelector.hpp"
 #include <fwServices/IEditionService.hpp>
 
+#include <fwData/Object.hpp>
+
+#include "visuVTKAdaptor/PlaneSelector.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelector, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelector, ::fwData::Object ) ;
 
 namespace visuVTKAdaptor
 {
 
 PlaneSelector::PlaneSelector() throw()
 {
-    handlingEventOff();
+    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -90,12 +88,12 @@ void PlaneSelector::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    this->selectObject( ::fwData::None::New() );
+    this->selectObject( ::fwData::Object::sptr() );
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneSelector::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneSelector::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
@@ -106,27 +104,24 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Object::sptr oldObject;
-
-    if ( ! m_currentObject.expired() )
-    {
-        oldObject = m_currentObject.lock() ;
-    }
+    ::fwData::Object::sptr oldObject = m_currentObject.lock();
 
     if (oldObject != object)
     {
-        if (oldObject && !::fwData::None::isNone(oldObject) )
+        if (oldObject)
         {
-            ::fwComEd::PlaneMsg::NewSptr deselectMsg;
+            ::fwComEd::PlaneMsg::sptr deselectMsg = ::fwComEd::PlaneMsg::New();
             deselectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
             ::fwServices::IEditionService::notify( this->getSptr(), oldObject, deselectMsg); //TODO: remove option
         }
 
+        m_currentObject.reset();
+
         if (object)
         {
-            if (!::fwData::None::isNone(object) )
+            if ( object )
             {
-                ::fwComEd::PlaneMsg::NewSptr selectMsg;
+                ::fwComEd::PlaneMsg::sptr selectMsg = ::fwComEd::PlaneMsg::New();
                 selectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
                 ::fwServices::IEditionService::notify( this->getSptr(), object, selectMsg); //TODO: remove option
             }

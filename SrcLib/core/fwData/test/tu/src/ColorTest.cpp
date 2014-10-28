@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,7 +57,7 @@ void ColorTest::methode2()
     const float B = 0.5f;
     const float A = 0.6f;
 
-    ::fwData::Color::NewSptr color;
+    ::fwData::Color::sptr color = ::fwData::Color::New();
 
     ::fwData::Color::ColorArray array;
     array[0] = R;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,15 +16,13 @@ namespace ctrlSelection
 {
 
 /**
- * @class   IWrapperSrv.
- * @author  IRCAD (Research and Development Team).
+ * @class   IWrapperSrv
+ * 
  * @date    2007-2009.
- */
-/**
- * @brief the purpose of this service is to wrap messages incoming to the object to new messages.
- * Typically when a generic message as ::ObjectMsg::UPDATED_OBJECT is receive ) by the object then a
+ * @brief The purpose of this service is to wrap messages incoming to the object to new messages.
+ *
+ * Typically when a generic message as ::fwServices::ObjectMsg::UPDATED_OBJECT is received by the object then a
  * specific service can translate it to "NEW_BUFFER" for fwData::Image, "CAMERA_MOVING" for camera ....
- * this service was created because we do not yet have a factory on msg
  */
 
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@
 #include <fwServices/IEditionService.hpp>
 
 
-REGISTER_SERVICE( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::GraphWrapperSrv, ::fwData::Graph ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::GraphWrapperSrv, ::fwData::Graph ) ;
 
 namespace ctrlSelection
 {
@@ -31,7 +31,7 @@ namespace wrapper
 GraphWrapperSrv::GraphWrapperSrv() throw()
 {
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::NEW_OBJECT );
-    addNewHandledEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
+    //handlingEventOff ::fwServices::ObjectMsg::UPDATED_OBJECT );
     //TODO addNewHandledEvent( ::fwServices:: ObjectMsg::DELETE_OBJECT );
 }
 
@@ -42,16 +42,16 @@ GraphWrapperSrv::~GraphWrapperSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void GraphWrapperSrv::updating( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void GraphWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    if ( message->hasEvent( ::fwServices:: ObjectMsg::UPDATED_OBJECT ) )
+    if ( message->hasEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) )
     {
-        assert( message->getDataInfo( ::fwServices:: ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
-        fwComEd::GraphMsg::NewSptr msg;
+        assert( message->getDataInfo( ::fwServices::ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
+        fwComEd::GraphMsg::sptr msg = fwComEd::GraphMsg::New();
         msg->addEvent( fwComEd::GraphMsg::NEW_GRAPH , this->getObject() );
-        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg,::fwServices::ComChannelService::NOTIFY_SOURCE);
+        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
     }
     //TODO other event
 }

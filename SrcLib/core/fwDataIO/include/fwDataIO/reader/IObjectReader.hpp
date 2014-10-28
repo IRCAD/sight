@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,6 +16,8 @@
 #include <fwData/location/ILocation.hpp>
 
 #include "fwDataIO/config.hpp"
+#include "fwDataIO/reader/factory/new.hpp"
+#include "fwDataIO/reader/registry/detail.hpp"
 
 namespace fwDataIO
 {
@@ -25,8 +27,8 @@ namespace reader
 
 /**
  * @brief   Base class for all object readers.
- * @class   IObjectReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   IObjectReader
+ * 
  * @date    2009
  *
  * This class defines the API to use basic object readers. This reader is not
@@ -42,11 +44,23 @@ public :
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IObjectReader) );
 
-    /// Constructor. Do nothing.
-    FWDATAIO_API IObjectReader();
+    typedef ::fwDataIO::reader::factory::Key Key;
 
-    /// Destructor. Do nothing.
-    FWDATAIO_API virtual ~IObjectReader();
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar()
+        {
+            ::fwDataIO::reader::registry::get()->addFactory(T::classname(), &::fwDataIO::reader::factory::New<T>);
+        }
+    };
 
     /**
      * @brief Defines an reader interface.
@@ -87,6 +101,12 @@ public :
     FWDATAIO_API virtual std::string  extension()=0;
 
 protected :
+
+    /// Constructor. Do nothing.
+    FWDATAIO_API IObjectReader();
+
+    /// Destructor. Do nothing.
+    FWDATAIO_API virtual ~IObjectReader();
 
     /**
      * @brief Object result of reading process.

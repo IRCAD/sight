@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2013.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/IBufferManager.hpp>
-
+#include "fwMemory/policy/factory/new.hpp"
+#include "fwMemory/BufferManager.hpp"
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/config.hpp"
 
@@ -30,41 +30,39 @@ public :
     typedef SPTR(IPolicy) sptr;
     typedef std::vector<std::string> ParamNamesType;
 
-    typedef boost::function< IPolicy::sptr () > PolicyFactoryType;
-    typedef std::map<std::string, PolicyFactoryType> FactoryMap;
+    virtual void allocationRequest(BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType size ) = 0 ;
 
-    virtual void allocationRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) = 0 ;
-    virtual void setRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType size ) = 0 ;
-    virtual void reallocateRequest( BufferInfo &info, void **buffer, BufferInfo::SizeType newSize ) = 0 ;
-    virtual void destroyRequest( BufferInfo &info, void **buffer ) = 0 ;
-    virtual void lockRequest( BufferInfo &info, void **buffer ) = 0 ;
-    virtual void unlockRequest( BufferInfo &info, void **buffer ) = 0 ;
+    virtual void setRequest(BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer,  BufferInfo::SizeType size ) = 0 ;
 
-    virtual void dumpSuccess( BufferInfo &info, void **buffer ) = 0 ;
-    virtual void restoreSuccess( BufferInfo &info, void **buffer ) = 0 ;
+    virtual void reallocateRequest(BufferInfo &info,
+            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType newSize ) = 0 ;
 
-    virtual void setManager(::fwTools::IBufferManager::sptr manager) = 0;
+    virtual void destroyRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
+
+    virtual void lockRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
+    virtual void unlockRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
+
+    virtual void dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
+    virtual void restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
 
     virtual void refresh() = 0;
 
     virtual bool setParam(const std::string &name, const std::string &value) = 0;
-    virtual std::string getParam(const std::string &name, bool *ok = NULL ) = 0;
+    virtual std::string getParam(const std::string &name, bool *ok = NULL ) const = 0;
     virtual const ParamNamesType &getParamNames() const = 0;
 
-    FWMEMORY_API static IPolicy::sptr createPolicy(std::string name);
-    FWMEMORY_API static const FactoryMap &getPolicyFactories();
 
-    template< typename POLICY >
-    struct Register
+    template <typename T>
+    class Registrar
     {
-        Register(const std::string &name)
+    public:
+        Registrar()
         {
-            IPolicy::getDefaultPolicyFactories()[name] = &POLICY::New;
+            ::fwMemory::policy::registry::get()->addFactory(T::leafClassname(), &::fwMemory::policy::factory::New<T>);
         }
     };
-
-protected:
-    static FactoryMap &getDefaultPolicyFactories();
 
 };
 

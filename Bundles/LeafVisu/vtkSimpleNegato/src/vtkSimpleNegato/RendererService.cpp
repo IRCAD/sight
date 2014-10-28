@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,13 +21,13 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/IEditionService.hpp>
 
-#include <vtkIO/vtk.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include "vtkSimpleNegato/RendererService.hpp"
 
 //-----------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image) ;
+fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image) ;
 
 //-----------------------------------------------------------------------------
 
@@ -40,8 +40,8 @@ RendererService::RendererService() throw()
     : m_render( 0 ), m_bPipelineIsInit(false)
 {
     SLM_TRACE_FUNC();
-    this->addNewHandledEvent(::fwComEd::ImageMsg::NEW_IMAGE );
-    this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER );
+    //this->addNewHandledEvent(::fwComEd::ImageMsg::NEW_IMAGE );
+    //this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER );
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void RendererService::updating() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
+void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
 {
     // If message is a ImageMsg
     ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg ) ;
@@ -161,7 +161,7 @@ void RendererService::refresh()
 void RendererService::initVTKPipeline()
 {
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
+    ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
 
     m_outline = vtkOutlineFilter::New();
     m_outline->SetInput(vtk_img);
@@ -231,7 +231,7 @@ void RendererService::updateVTKPipeline()
 {
     assert(this->getObject< ::fwData::Image >());
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
-    ::vtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
+    ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
 
     m_outline->SetInput(vtk_img);
     m_negatoSagittal->SetInput(vtk_img);

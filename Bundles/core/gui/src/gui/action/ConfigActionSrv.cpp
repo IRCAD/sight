@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,15 +18,22 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-REGISTER_SERVICE( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrv, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrv, ::fwData::Object );
+const ::fwCom::Signals::SignalKeyType  ConfigActionSrv::s_LAUNCHED_SIG = "launched";
 
 //------------------------------------------------------------------------------
 
 ConfigActionSrv::ConfigActionSrv() throw() :
     m_viewConfigId(""),
-    m_configIsRunning(false)
+    m_configIsRunning(false),
+    m_sigLaunched(LaunchedSignalType::New())
 {
-    addNewHandledEvent("WINDOW_CLOSED");
+    //addNewHandledEvent("WINDOW_CLOSED");
+    ::fwCom::HasSignals::m_signals( s_LAUNCHED_SIG, m_sigLaunched );
+
+#ifdef COM_LOG
+    m_sigLaunched->setID( s_LAUNCHED_SIG );
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -39,7 +46,7 @@ ConfigActionSrv::~ConfigActionSrv() throw()
 void ConfigActionSrv::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
@@ -56,6 +63,7 @@ void ConfigActionSrv::stopping() throw(::fwTools::Failed)
         this->stopConfig();
     }
 
+    m_connections.reset();
     this->::fwGui::IActionSrv::actionServiceStopping();
 }
 
@@ -112,7 +120,7 @@ void ConfigActionSrv::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ConfigActionSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ConfigActionSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     if ( _msg->hasEvent("WINDOW_CLOSED") )
     {
@@ -150,10 +158,11 @@ void ConfigActionSrv::startConfig()
     // Launch config
     m_configTemplateManager->launch();
 
-    // Add com channel
-    ::fwServices::registerCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() )->start();
+    // Add connection
+    this->connectToConfigRoot();
 
     m_configIsRunning = true;
+    fwServicesNotifyMacro(this->getLightID(), m_sigLaunched, ());
 }
 
 //------------------------------------------------------------------------------
@@ -162,14 +171,29 @@ void ConfigActionSrv::stopConfig()
 {
     if( m_configIsRunning )
     {
-        // Remove com channel
-        ::fwServices::unregisterCommunicationChannel( m_configTemplateManager->getConfigRoot(), this->getSptr() );
+        // Remove connection
+        this->disconnectToConfigRoot();
 
         // Delete manager
         m_configTemplateManager->stopAndDestroy();
         m_configTemplateManager.reset();
     }
     m_configIsRunning = false;
+}
+
+//------------------------------------------------------------------------------
+
+void ConfigActionSrv::connectToConfigRoot()
+{
+    ::fwData::Object::sptr root = m_configTemplateManager->getConfigRoot();
+    m_connections->connect( root, this->getSptr(), this->getObjSrvConnections() );
+}
+
+//------------------------------------------------------------------------------
+
+void ConfigActionSrv::disconnectToConfigRoot()
+{
+    m_connections->disconnect();
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,9 +10,9 @@
 #include <string>
 #include <boost/function.hpp>
 
-#include <fwCore/base.hpp>
 #include <fwData/location/ILocation.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -22,17 +22,17 @@ namespace dialog
 /**
  * @brief   Defines the generic Progress dialog for IHM.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
- * @class   IPulseProgressDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   IPulseProgressDialog
+ * 
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IPulseProgressDialog : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IPulseProgressDialog : public ::fwGui::GuiBaseObject
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IPulseProgressDialog)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IPulseProgressDialog)(::fwGui::GuiBaseObject) )
 
     typedef std::string FactoryRegistryKeyType;
 

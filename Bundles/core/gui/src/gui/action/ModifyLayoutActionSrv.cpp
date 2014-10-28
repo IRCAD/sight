@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/ClassFactoryRegistry.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <fwRuntime/helper.hpp>
@@ -28,7 +27,7 @@ namespace gui
 namespace action
 {
 
-REGISTER_SERVICE( ::fwGui::IActionSrv , ::gui::action::ModifyLayoutActionSrv , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv , ::gui::action::ModifyLayoutActionSrv , ::fwData::Object ) ;
 
 //-----------------------------------------------------------------------------
 
@@ -130,7 +129,7 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ModifyLayoutActionSrv::updating( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
+void ModifyLayoutActionSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

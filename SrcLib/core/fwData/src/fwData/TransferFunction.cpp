@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,7 @@
 #include <fwTools/Type.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/TransferFunction.hpp"
 
 
@@ -24,9 +25,8 @@ const std::string TransferFunction::s_DEFAULT_TF_NAME = "CT-GreyLevel";
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction()
+TransferFunction::TransferFunction(::fwData::Object::Key key)
 {
-    SLM_TRACE_FUNC();
     this->initTF();
 }
 
@@ -49,7 +49,7 @@ void TransferFunction::initTF()
 
 fwData::TransferFunction::sptr TransferFunction::createDefaultTF()
 {
-    TransferFunction::NewSptr tf;
+    TransferFunction::sptr tf = TransferFunction::New();
 
     tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
     tf->addTFColor(0.0, TFColor());
@@ -374,30 +374,38 @@ const TransferFunction::TFColor& TransferFunction::getTFColor( TFValueType value
 }
 //------------------------------------------------------------------------------
 
-void TransferFunction::shallowCopy( TransferFunction::csptr _source )
+void TransferFunction::shallowCopy(const Object::csptr &_source )
 {
+    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    this->m_attrLevel = _source->m_attrLevel;
-    this->m_attrWindow = _source->m_attrWindow;
-    this->m_attrName =_source->m_attrName;
-    this->m_attrBackgroundColor = _source->m_attrBackgroundColor;
-    this->m_tfData = _source->m_tfData;
-    this->m_attrInterpolationMode = _source->m_attrInterpolationMode;
-    this->m_attrIsClamped = _source->m_attrIsClamped;
+    this->m_attrLevel = other->m_attrLevel;
+    this->m_attrWindow = other->m_attrWindow;
+    this->m_attrName =other->m_attrName;
+    this->m_attrBackgroundColor = other->m_attrBackgroundColor;
+    this->m_tfData = other->m_tfData;
+    this->m_attrInterpolationMode = other->m_attrInterpolationMode;
+    this->m_attrIsClamped = other->m_attrIsClamped;
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::deepCopy( TransferFunction::csptr _source )
+void TransferFunction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
-    this->m_attrLevel = _source->m_attrLevel;
-    this->m_attrWindow = _source->m_attrWindow;
-    this->m_attrName =_source->m_attrName;
-    this->m_attrBackgroundColor = _source->m_attrBackgroundColor;
-    this->m_tfData = _source->m_tfData;
-    this->m_attrInterpolationMode = _source->m_attrInterpolationMode;
-    this->m_attrIsClamped = _source->m_attrIsClamped;
+    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
+    this->m_attrLevel = other->m_attrLevel;
+    this->m_attrWindow = other->m_attrWindow;
+    this->m_attrName =other->m_attrName;
+    this->m_attrBackgroundColor = other->m_attrBackgroundColor;
+    this->m_tfData = other->m_tfData;
+    this->m_attrInterpolationMode = other->m_attrInterpolationMode;
+    this->m_attrIsClamped = other->m_attrIsClamped;
 }
 
 //------------------------------------------------------------------------------

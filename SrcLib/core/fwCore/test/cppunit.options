@@ -1,0 +1,4 @@
+CLASSTEST=['LazyInstantiatorTest','FactoryRegistryTest','SpyLogTest']
+USE = ['boost','boostThread','boostDateTime','boostFilesystem']
+LIB = ['fwCore_0-1', 'fwTest_0-1']
+CONSOLE = 'yes'

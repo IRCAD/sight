@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,16 +15,15 @@
 #include <boost/spirit/home/phoenix/statement/sequence.hpp>
 #include <boost/spirit/home/phoenix/container.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwData/Object.hpp>
 #include <fwData/TriangularMesh.hpp>
 #include <fwData/location/SingleFile.hpp>
 
 #include "fwDataIO/reader/TriangularMeshReader.hpp"
+#include "fwDataIO/reader/registry/macros.hpp"
 
 
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::reader::IObjectReader , ::fwDataIO::reader::TriangularMeshReader, ::fwDataIO::reader::TriangularMeshReader );
+fwDataIOReaderRegisterMacro( ::fwDataIO::reader::TriangularMeshReader );
 
 
 namespace fwDataIO
@@ -88,7 +87,7 @@ bool parseTrian(Iterator first, Iterator last, ::fwData::TriangularMesh::PointCo
 
 //------------------------------------------------------------------------------
 
-TriangularMeshReader::TriangularMeshReader()
+TriangularMeshReader::TriangularMeshReader(::fwDataIO::reader::IObjectReader::Key key)
 : ::fwData::location::enableSingleFile< IObjectReader >(this)
 {}
 

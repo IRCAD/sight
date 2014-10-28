@@ -47,12 +47,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
-        <service>::visuVTKAdaptor::Acquisition</service>
-        <object>::fwData::Acquisition</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ResectionDB</service>
         <object>::fwData::ResectionDB</object>
     </extension>
@@ -218,7 +212,7 @@
         <service>::visuVTKAdaptor::ProbeCursor</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ImagesProbeCursor</service>
@@ -296,7 +290,7 @@
         <service>::visuVTKAdaptor::Image3DCursor</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ImagesBlend</service>
@@ -308,19 +302,37 @@
         <service>::visuVTKAdaptor::Mesh</service>
         <object>::fwData::Mesh</object>
     </extension>
-   
+
    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::MeshNormals</service>
         <object>::fwData::Mesh</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::LabeledPointList</service>
         <object>::fwData::PointList</object>
     </extension>
-     
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::VectorField</service>
+        <object>::fwData::Image</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ModelSeries</service>
+        <object>::fwMedData::ModelSeries</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ImageSeries</service>
+        <object>::fwMedData::ImageSeries</object>
+    </extension>
+
 </plugin>
 
 

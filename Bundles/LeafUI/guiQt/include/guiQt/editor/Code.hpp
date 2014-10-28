@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef _GUIQT_EDITOR_CODE_HPP_
 #define _GUIQT_EDITOR_CODE_HPP_
 
@@ -22,7 +28,7 @@ namespace editor
 /**
  * @class   Code
  * @brief   Code Editor working on a ::fwData::String
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2010.
  */
 class GUIQT_CLASS_API Code : public QObject,public ::gui::editor::IEditor
@@ -48,7 +54,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Management of observations ( overrides ). Update the value from the String object.
-    virtual void updating( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /// Update the value from the String object.
     virtual void updating() throw(::fwTools::Failed);

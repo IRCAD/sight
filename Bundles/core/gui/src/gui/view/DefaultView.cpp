@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@ namespace gui
 namespace view
 {
 
-REGISTER_SERVICE( ::gui::view::IView , ::gui::view::DefaultView , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::gui::view::IView , ::gui::view::DefaultView , ::fwData::Object ) ;
 
 
 DefaultView::DefaultView() throw()
@@ -60,7 +60,7 @@ void DefaultView::info(std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-void DefaultView::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void DefaultView::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

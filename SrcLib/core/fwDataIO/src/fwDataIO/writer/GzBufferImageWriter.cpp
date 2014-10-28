@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,15 +11,13 @@
 #include <fwData/Object.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
 #include <fwComEd/helper/Image.hpp>
 
 #include "fwDataIO/writer/GzBufferImageWriter.hpp"
+#include "fwDataIO/writer/registry/macros.hpp"
 
 
-
-REGISTER_BINDING_BYCLASSNAME( ::fwDataIO::writer::IObjectWriter , ::fwDataIO::writer::GzBufferImageWriter,  ::fwDataIO::writer::GzBufferImageWriter);
+fwDataIOWriterRegisterMacro( ::fwDataIO::writer::GzBufferImageWriter);
 
 
 namespace fwDataIO
@@ -30,7 +28,7 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-GzBufferImageWriter::GzBufferImageWriter()
+GzBufferImageWriter::GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key)
 : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {}
 
@@ -68,7 +66,7 @@ void GzBufferImageWriter::write()
     size_t writtenBytes = 0;
 
     int uncompressedbyteswrited;
-    
+
     while ( writtenBytes < imageSizeInBytes
            && (uncompressedbyteswrited = gzwrite(rawFile, ptr+writtenBytes, imageSizeInBytes-writtenBytes)) > 0 )
     {

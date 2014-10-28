@@ -1,20 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
-#include <fwTools/Factory.hpp>
-
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include "fwComEd/parser/Composite.hpp"
 
-REGISTER_SERVICE( ::fwServices::IXMLParser, ::fwComEd::parser::Composite, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::Composite, ::fwData::Composite );
 
 namespace fwComEd
 {
@@ -87,7 +84,7 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
                 OSLM_ASSERT("Sorry the key "<< key <<" already exists in the composite.", dataComposite->find( key ) == dataComposite->end() );
 
                 // Create and manage object config
-                ::fwServices::AppConfigManager::NewSptr ctm;
+                ::fwServices::AppConfigManager::sptr ctm = ::fwServices::AppConfigManager::New();
                 ctm->setConfig( * ( elem->getElements().begin() ) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();

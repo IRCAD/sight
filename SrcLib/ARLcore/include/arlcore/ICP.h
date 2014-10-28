@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,6 @@ namespace arlCore
 {
     class Point;
     /**
-     * @author  IRCAD (Research and Development Team)
      * @date    04/2009
      * @brief   Iterativ Closest Point registration between two point's clouds
      */
@@ -31,7 +30,7 @@ namespace arlCore
         * @param[in] cloud
         * @param[in] justVisible If true, use only visible points
         */
-        ARLCORE_API ICP( const arlCore::PointList &model, const arlCore::PointList &cloud, bool justVisible=true );
+        ARLCORE_API ICP( CSPTR( PointList ) model, CSPTR( PointList ) cloud, bool justVisible=true );
 
         /**
         * @brief Constructor
@@ -39,10 +38,7 @@ namespace arlCore
         * @param[in] cloud
         * @param[in] justVisible If true, use only visible cloud's points
         */
-        ARLCORE_API ICP( const arlCore::Mesh &model, const arlCore::PointList &cloud, bool justVisible=true );
-
-        //! @brief Copy constructor
-        ARLCORE_API ICP( const ICP& ); // TODO
+        ARLCORE_API ICP( CSPTR( Mesh ) model, CSPTR( PointList ) cloud, bool justVisible=true );
 
         //! @brief Destructor
         ARLCORE_API ~ICP( void );
@@ -87,7 +83,7 @@ namespace arlCore
         ARLCORE_API unsigned int computeDistances( std::vector<double> &distances );
 
         //! @brief Set points with points of cloud and distance to the model in point's error
-        ARLCORE_API unsigned int computeDistances( arlCore::PointList &points );
+        ARLCORE_API unsigned int computeDistances( SPTR( PointList ) points );
 
         //! @brief Compute RMS with M as solution (used by optimizer)
         ARLCORE_API double computeCriterion( const arlCore::vnl_rigid_matrix &M );
@@ -100,10 +96,10 @@ namespace arlCore
     private:
         bool initialization( void );
 
-        // 2 modes : Point to point & Point to Mesh
+        // 2 modes : Point to SPTR( Point )  Point to Mesh
         bool m_point2PointMode;
-        const arlCore::Mesh *m_modelMesh;
-        const arlCore::PointList *m_cloud;
+        CSPTR( arlCore::Mesh ) m_modelMesh;
+        arlCore::PointList::csptr m_cloud;
         bool m_initialization;
         bool m_justVisible;
         unsigned int m_dimension;

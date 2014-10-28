@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,22 +7,31 @@
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
-
-#include "fwData/Factory.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 
-// ACH HACK, Force registration in factory
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwTools::Object, ::fwTools::Object );
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwData::Object, ::fwData::Object);
 
 namespace fwData
 {
 
 //------------------------------------------------------------------------------
 
+const ::fwCom::Signals::SignalKeyType Object::s_OBJECT_MODIFIED_SIG = "objectModified";
+
+//------------------------------------------------------------------------------
+
 Object::Object()
-{}
+{
+    // Init
+    m_sigObjectModified = ObjectModifiedSignalType::New();
+
+    // Register
+    m_signals( s_OBJECT_MODIFIED_SIG,  m_sigObjectModified);
+
+#ifdef COM_LOG
+    ::fwCom::HasSignals::m_signals.setID();
+#endif
+}
 
 //------------------------------------------------------------------------------
 
@@ -107,26 +116,41 @@ void Object::updateFields( const FieldMapType & fieldMap )
 
 //-----------------------------------------------------------------------------
 
-void Object::fieldShallowCopy( ::fwData::Object::csptr source )
+void Object::fieldShallowCopy(const ::fwData::Object::csptr &source)
 {
     this->setFields(source->getFields());
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::fieldDeepCopy( ::fwData::Object::csptr source )
+void Object::deepCopy(const ::fwData::Object::csptr &source)
+{
+    DeepCopyCacheType cache;
+    return this->cachedDeepCopy(source, cache);
+}
+//-----------------------------------------------------------------------------
+
+void Object::fieldDeepCopy(const ::fwData::Object::csptr &source)
+{
+    DeepCopyCacheType cache;
+    return this->fieldDeepCopy(source, cache);
+}
+
+//-----------------------------------------------------------------------------
+
+void Object::fieldDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheType &cache)
 {
     m_fields.clear();
-    ::fwData::Object::FieldMapType sourceFields = source->getFields();
-    BOOST_FOREACH(::fwData::Object::FieldMapType::value_type elt, sourceFields)
+    const ::fwData::Object::FieldMapType &sourceFields = source->getFields();
+    BOOST_FOREACH(const ::fwData::Object::FieldMapType::value_type &elt, sourceFields)
     {
-        this->setField(elt.first, ::fwData::Object::copy(elt.second));
+        this->setField(elt.first, ::fwData::Object::copy(elt.second, cache));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::shallowCopy( ::fwData::Object::csptr source )
+void Object::shallowCopy(const ::fwData::Object::csptr &source )
 {
     FwCoreNotUsedMacro(source);
     OSLM_FATAL("shallowCopy not implemented for : " << this->getClassname() );
@@ -134,23 +158,52 @@ void Object::shallowCopy( ::fwData::Object::csptr source )
 
 //-----------------------------------------------------------------------------
 
-void Object::deepCopy( ::fwData::Object::csptr source )
+::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr &source)
 {
-    FwCoreNotUsedMacro(source);
-    OSLM_FATAL("deepCopy not implemented for : " << this->getClassname() );
+    DeepCopyCacheType cache;
+    return Object::copy(source, cache);
 }
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Object::copy(::fwData::Object::csptr source)
+::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr &source, Object::DeepCopyCacheType &cache)
 {
-    ::fwData::Object::sptr newObj;
+    ::fwData::Object::sptr obj;
+
     if( source )
     {
-        newObj = ::fwData::Factory::New(source->className());
-        newObj->deepCopy(source);
+        DeepCopyCacheType::const_iterator cacheItem = cache.find(source);
+
+        if (cacheItem == cache.end())
+        {
+            obj = ::fwData::factory::New(source->className());
+            cache.insert( DeepCopyCacheType::value_type(source, obj) );
+            obj->cachedDeepCopy(source, cache);
+        }
+        else
+        {
+            obj = cacheItem->second;
+        }
     }
-    return newObj;
+
+    return obj;
 }
+
+//-----------------------------------------------------------------------------
+
+#ifdef COM_LOG
+void Object::setID( ::fwTools::fwID::IDType newID )
+{
+    if( ! this->hasID() ||
+        this->getID( ::fwTools::fwID::MUST_EXIST ) != newID )
+    {
+        this->::fwTools::fwID::setID( newID );
+    }
+
+    std::string lightID = this->getLightID( ::fwTools::fwID::MUST_EXIST );
+
+    ::fwCom::HasSignals::m_signals.setID( lightID + "::" );
+}
+#endif
 
 } // namespace fwData

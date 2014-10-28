@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,8 +20,8 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic message box for IHM.
- * @class   MessageDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   MessageDialog
+ *
  * @date    2009-2010.
  *
  */
@@ -30,11 +30,12 @@ class FWGUIQT_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog),
+                                            (()),
+                                            ::fwGui::factory::New< MessageDialog > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API MessageDialog();
-    /// Destructor. Do nothing.
+    FWGUIQT_API MessageDialog(::fwGui::GuiBaseObject::Key key);
+
     FWGUIQT_API virtual ~MessageDialog();
 
     /// Set the title of the message box
@@ -49,6 +50,9 @@ public:
     /// Add a button (OK, YES_NO, CANCEL)
     FWGUIQT_API virtual void addButton( IMessageDialog::Buttons button );
 
+    /// Set the default buttons
+    FWGUIQT_API virtual void setDefaultButton( IMessageDialog::Buttons button );
+
     /// Show the message box and return the clicked button.
     FWGUIQT_API virtual Buttons show();
 
@@ -59,6 +63,8 @@ protected:
     std::string m_message;
     /// List of the button
     ::fwGui::dialog::IMessageDialog::Buttons m_buttons;
+    /// default buttons
+    ::fwGui::dialog::IMessageDialog::Buttons m_defaultButton;
     /// Icon
     ::fwGui::dialog::IMessageDialog::Icons m_icon;
 };

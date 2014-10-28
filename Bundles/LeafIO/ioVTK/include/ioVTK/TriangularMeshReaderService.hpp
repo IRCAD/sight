@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,19 +25,19 @@ namespace ioVTK
 
 /**
  * @brief   Mesh reader service.
- * @class   TriangularMeshReaderService .
- * @author  IRCAD (Research and Development Team).
- * @date    2009.
+ * @class   TriangularMeshReaderService
  *
- * Service reading a VTK mesh using the vtkIO lib.
+ * Service reading a VTK mesh using the fwVtkIO lib.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::TriangularMeshReaderService , ::fwData::TriangularMesh )
  */
 class IOVTK_CLASS_API TriangularMeshReaderService : public ::io::IReader
 {
 
 public :
+    ~TriangularMeshReaderService() throw() {}
+
     fwCoreServiceClassDefinitionsMacro ( (TriangularMeshReaderService)( ::io::IReader) ) ;
 
     /**
@@ -51,19 +51,7 @@ public :
 
 protected:
 
-    /**
-     * @brief   Constructor
-     *
-     */
-    IOVTK_API TriangularMeshReaderService() throw();
-
-    /**
-     * @brief   Destructor
-     */
-    IOVTK_API virtual ~TriangularMeshReaderService() throw();
-
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
-
 
     /**
     * @brief Starting method.
@@ -90,11 +78,11 @@ protected:
     /**
      * @brief React on modifications : default does nothing.
      *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
+     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
     /**
     * @brief Info method.

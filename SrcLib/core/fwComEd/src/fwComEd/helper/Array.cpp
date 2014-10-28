@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2011.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,8 +52,8 @@ void Array::setBuffer(void *buf, bool takeOwnership)
     }
     else
     {
-        ::fwTools::BufferObject::NewSptr newBufferObject;
-        ::fwTools::BufferObject::sptr oldBufferObject = m_array->getBufferObject();
+        ::fwMemory::BufferObject::sptr newBufferObject = ::fwMemory::BufferObject::New();
+        ::fwMemory::BufferObject::sptr oldBufferObject = m_array->getBufferObject();
         oldBufferObject->swap(newBufferObject);
     }
     m_array->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_array->getSizeInBytes());
@@ -173,7 +173,7 @@ void Array::getItem(const ::fwData::Array::IndexType &id, const size_t component
 
 //------------------------------------------------------------------------------
 
-::fwTools::BufferObject::Lock Array::getLock() const
+::fwMemory::BufferObject::Lock Array::getLock() const
 {
     return m_lock;
 }

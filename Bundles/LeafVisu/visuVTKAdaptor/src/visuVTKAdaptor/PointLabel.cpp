@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 #include <sstream>
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabel, ::fwData::Point ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabel, ::fwData::Point ) ;
 
 namespace visuVTKAdaptor
 {
@@ -33,7 +33,7 @@ PointLabel::PointLabel() : Text()
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToWorld();
-    addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doUpdate( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void PointLabel::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_ASSERT("ACH : recieve a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
 

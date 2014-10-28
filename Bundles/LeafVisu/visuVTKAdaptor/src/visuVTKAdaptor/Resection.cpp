@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,7 @@
 #include <fwData/Reconstruction.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/ResectionMsg.hpp>
@@ -17,7 +17,7 @@
 #include "visuVTKAdaptor/Resection.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection ) ;
 
 namespace visuVTKAdaptor
 {
@@ -28,8 +28,8 @@ Resection::Resection() throw()
     m_clippingPlanes = "";
     m_sharpEdgeAngle = 50;
     m_autoResetCamera = true;
-    addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
-    addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
+    //addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
+    //addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -110,6 +110,7 @@ void Resection::doUpdate() throw(fwTools::Failed)
             service->setRenderId( this->getRenderId() );
             service->setPickerId( this->getPickerId() );
             service->setRenderService(this->getRenderService());
+            service->setAutoRender( this->getAutoRender() );
             ::visuVTKAdaptor::Reconstruction::sptr reconstAdaptor = ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
             if(!resectionIsValid)
             {
@@ -141,7 +142,7 @@ void Resection::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Resection::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Resection::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::ResectionMsg::csptr pResectionMsg = ::fwComEd::ResectionMsg::dynamicConstCast( msg ) ;
     if ( pResectionMsg)

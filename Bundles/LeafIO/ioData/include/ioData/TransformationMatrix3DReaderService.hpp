@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,8 +17,8 @@ namespace ioData
 {
 /**
  * @brief   Transformation matrix 3D reader service.
- * @class   TransformationMatrix3DReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransformationMatrix3DReaderService
+ * 
  * @date    2009.
  *
  * Service reading a TransformationMatrix3D object.
@@ -28,7 +28,7 @@ namespace ioData
  * @li Use stop() to stop service before to destroy it.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D )
  */
 class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::io::IReader
 {
@@ -61,16 +61,6 @@ public:
     IODATA_API virtual ::io::IOPathType getIOPathType() const;
 
 protected:
-
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API TransformationMatrix3DReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~TransformationMatrix3DReaderService() throw() ;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -106,7 +96,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
 
     /**

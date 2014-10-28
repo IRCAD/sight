@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,8 +23,8 @@ namespace action
 
 /**
  * @brief   This action show the acknowlegments frame.
- * @class   ShowAcknowledgments.
- * @author  IRCAD (Research and Development Team).
+ * @class   ShowAcknowledgments
+ * 
  * @date    2010.
  */
 class UIGENERICQT_CLASS_API ShowAcknowledgments : public QObject, public ::fwGui::IActionSrv
@@ -41,7 +41,7 @@ protected:
     /**
      * @brief configure the action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" implementation="::uiGeneric::action::ShowAcknowledgments" autoComChannel="no">
+    <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
         <filename id=".../ack.html" />
     </service>
        @endverbatim
@@ -55,7 +55,7 @@ protected:
     void updating() throw (::fwTools::Failed);
 
     /// Does nothing
-    void updating( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
 
     /// Stops action
     void stopping() throw (::fwTools::Failed);

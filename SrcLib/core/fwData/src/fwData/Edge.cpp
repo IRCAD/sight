@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 
 #include "fwData/Edge.hpp"
 
@@ -15,7 +16,8 @@ std::string Edge::NATURE_DATA = "data";
 
 //------------------------------------------------------------------------------
 
-Edge::Edge() : m_fromPortIdentifier("not defined"), m_toPortIdentifier("not defined"), m_nature("not defined")
+Edge::Edge( ::fwData::Object::Key key ) :
+    m_fromPortIdentifier("not defined"), m_toPortIdentifier("not defined"), m_nature("not defined")
 {
     SLM_TRACE_FUNC();
 }
@@ -79,23 +81,31 @@ const std::string &Edge::getNature() const
 }
 
 //------------------------------------------------------------------------------
-void Edge::shallowCopy( Edge::csptr _source )
+void Edge::shallowCopy(const Object::csptr &_source )
 {
+    Edge::csptr other = Edge::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( _source );
-    m_fromPortIdentifier = _source->m_fromPortIdentifier;
-    m_toPortIdentifier = _source->m_toPortIdentifier;
-    m_nature = _source->m_nature;
+    m_fromPortIdentifier = other->m_fromPortIdentifier;
+    m_toPortIdentifier = other->m_toPortIdentifier;
+    m_nature = other->m_nature;
 }
 
 //------------------------------------------------------------------------------
 
-void Edge::deepCopy( Edge::csptr _source )
+void Edge::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
-    m_fromPortIdentifier = _source->m_fromPortIdentifier;
-    m_toPortIdentifier = _source->m_toPortIdentifier;
-    m_nature = _source->m_nature;
+    Edge::csptr other = Edge::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
+    m_fromPortIdentifier = other->m_fromPortIdentifier;
+    m_toPortIdentifier = other->m_toPortIdentifier;
+    m_nature = other->m_nature;
 
 }
 

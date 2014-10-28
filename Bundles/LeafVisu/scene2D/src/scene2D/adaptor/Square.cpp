@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 
 #include "scene2D/adaptor/Square.hpp"
 
-REGISTER_SERVICE( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Square  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Square  , ::fwData::Composite ) ;
 
 
 namespace scene2D
@@ -80,7 +80,7 @@ void Square::doUpdate() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Square::doUpdate( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
+void Square::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

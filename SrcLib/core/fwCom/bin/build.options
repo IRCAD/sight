@@ -1,0 +1,10 @@
+TYPE = 'shared'
+VERSION = '0.1'
+USE = [
+    'boost',
+    'boostThread',
+    ]
+LIB = [
+    'fwCore_0-1',
+    'fwThread_0-1',
+    ]

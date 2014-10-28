@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,17 +30,19 @@ namespace dialog
 {
 /**
  * @brief   This class allows us to show a pulse progress bar.
- * @class   PulseProgressDialog.
- * @author  IRCAD (Research and Development Team).
+ * @class   PulseProgressDialog
+ * 
  * @date    2009.
  */
 class FWGUIQT_CLASS_API PulseProgressDialog : public ::fwGui::dialog::IPulseProgressDialog
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog), (()), new PulseProgressDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (PulseProgressDialog)(::fwGui::dialog::IPulseProgressDialog),
+                                            (()),
+                                            ::fwGui::factory::New< PulseProgressDialog > );
 
-    FWGUIQT_API PulseProgressDialog();
+    FWGUIQT_API PulseProgressDialog(::fwGui::GuiBaseObject::Key key);
 
     FWGUIQT_API virtual ~PulseProgressDialog();
 

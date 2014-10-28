@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <boost/foreach.hpp>
 #include <boost/python.hpp>
 #include <fwCore/base.hpp>
@@ -116,7 +122,7 @@ int Interpreter::execute(std::string code)
 
 //------------------------------------------------------------------------------
 
-std::string Interpreter::getAttrValue(const std::string moduleName, const std::string attrName)
+std::string Interpreter::getAttrValue(const std::string &moduleName, const std::string &attrName)
 {
     namespace bp = ::boost::python;
 

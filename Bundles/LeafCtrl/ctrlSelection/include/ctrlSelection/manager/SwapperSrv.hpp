@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,10 @@
 #define _CTRLSELECTION_MANAGER_SWAPPER_HPP_
 
 #include <fwRuntime/ConfigurationElement.hpp>
+
 #include <fwServices/IService.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
+
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
 
@@ -18,12 +21,9 @@ namespace manager
 {
 
 /**
- * @class  SwapperSrv.
+ * @class  SwapperSrv
  * @brief  This services is a manager which starts, stops or swaps services on object contained in a composite when
  * it receive specific message (mainly sent by updater).
- * @author IRCAD (Research and Development Team).
-
- * @date   2007-2009.
  */
 class CTRLSELECTION_CLASS_API SwapperSrv : public ::ctrlSelection::IManagerSrv
 {
@@ -53,15 +53,28 @@ protected:
     * Sample of declaration configuration for a simple swapper service
     *
     * @verbatim
-        <service uid="myManager" implementation="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoComChannel="yes" >
+        <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
                 <object id="myImage" type="::fwData::Image" >
-                    <service uid="myMedicalImageConverter" implementation="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoComChannel="no" />
-                    <service uid="myServices" implementation="..." type="..." autoComChannel="yes" />
+                    <service uid="myMedicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="no" />
+                    <service uid="myServices" impl="..." type="..." autoConnect="yes" />
+
+                    <connect>
+                        <signal>key</signal>
+                        <slot>uid/key</slot>
+                    </connect>
+
                 </object>
                 <object id="myAcquisition" type="::fwData::Acquisition" >
-                    <service uid="myServices2" implementation="..." type="..." autoComChannel="yes" />
+                    <service uid="myServices2" impl="..." type="..." autoConnect="yes" />
+
+                    <proxy channel="...">
+                        <signal>...</signal>
+                        <signal>.../...</signal>
+                        <slot>.../...</slot>
+                        <slot>.../...</slot>
+                    </proxy>
                 </object>
             </config>
         </service>
@@ -83,7 +96,7 @@ protected:
 
     /// Reacts on specifics event (ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS) and start, stop or swap the managed services
     /// on the objects defined in the message or dummy objects
-    CTRLSELECTION_API virtual void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -94,38 +107,32 @@ protected:
     {
     public:
 
-        SubService()
-        {
-            m_hasComChannel = false;
-        }
+        SubService() : m_hasAutoConnection(false)
+        {}
 
         ~SubService()
-        { }
+        {}
 
         SPTR (::fwServices::IService) getService()
                     { return m_service.lock(); }
 
-        SPTR (::fwServices::IService) getComChannel()
-                            { return m_comChannel.lock(); }
-
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        WPTR(::fwServices::ComChannelService) m_comChannel;
-        bool m_hasComChannel;
+        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        bool m_hasAutoConnection;
     };
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
     typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
 
-
     void initOnDummyObject( std::string objectId );
     void addObjects( ::fwData::Composite::sptr _composite );
-    void addObject( const std::string objectId, ::fwData::Object::sptr object );
+    void addObject( const std::string &objectId, ::fwData::Object::sptr object );
     void swapObjects( ::fwData::Composite::sptr _composite );
-    void swapObject(const std::string objectId, ::fwData::Object::sptr object);
+    void swapObject(const std::string &objectId, ::fwData::Object::sptr object);
     void removeObjects( ::fwData::Composite::sptr _composite );
-    void removeObject( const std::string objectId );
+    void removeObject( const std::string &objectId );
 
     ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
 

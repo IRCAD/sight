@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,8 @@ namespace ioData
 {
 /**
  * @brief   Mesh reader service.
- * @class   MeshReaderService.
- * @author  IRCAD (Research and Development Team).
+ * @class   MeshReaderService
+ * 
  * @date    2009.
  *
  * Service reading a trian file into a fwData::Mesh object.
@@ -26,7 +26,7 @@ namespace ioData
  * @li Use update() to read the mesh and notify observers.
  *
  * Service registered details : \n
- * REGISTER_SERVICE( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh )
+ * fwServicesRegisterMacro( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh )
  */
 class IODATA_CLASS_API MeshReaderService : public ::io::IReader
 {
@@ -61,17 +61,6 @@ public:
     IODATA_API virtual ::io::IOPathType getIOPathType() const;
 
 protected:
-
-    /**
-     * @brief   Constructor : does nothing
-     */
-    IODATA_API MeshReaderService() ;
-
-    /**
-     * @brief   Destructor
-     */
-    IODATA_API ~MeshReaderService() throw() ;
-
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -108,7 +97,7 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
 
 
     /**

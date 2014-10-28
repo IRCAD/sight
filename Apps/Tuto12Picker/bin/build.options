@@ -8,7 +8,6 @@ BUNDLES = [
     'guiQt_0-1'         ,
     'ioData_0-1'        ,
     'ioVTK_0-1'         ,
-    'ioXML_0-1'         ,
     'io_0-1'            ,
     'servicesReg_0-1'   ,
     'uiVisuQt_0-1'      ,
@@ -21,12 +20,3 @@ BUNDLES = [
     'launcher_0-1'      ,
     'appXml_0-1'        ,
  ]
-
-if not (PLATFORM, ARCH) == ('osx', '64'):
-    BUNDLES += [
-            'guiWx_0-1'         ,
-            'uiVisuWx_0-1'      ,
-            'uiImageWx_0-1'     ,
-            'visuVTKWx_0-1'     ,
-            ]
-

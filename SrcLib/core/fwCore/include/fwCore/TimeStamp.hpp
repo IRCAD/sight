@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,7 +64,7 @@ public:
      *
      * @param ts TimeStamp to compare to
      */
-    FWCORE_API bool operator>(TimeStamp& ts)
+    FWCORE_API bool operator>(const TimeStamp& ts) const
     {
         return ( this->m_modifiedTime > ts.m_modifiedTime );
     };
@@ -74,7 +74,7 @@ public:
      *
      * @param ts TimeStamp to compare to
      */
-    FWCORE_API bool operator<(TimeStamp& ts)
+    FWCORE_API bool operator<(const TimeStamp& ts) const
     {
         return ( this->m_modifiedTime < ts.m_modifiedTime );
     };
@@ -91,7 +91,7 @@ public:
     /**
      * @brief Setter for the life period
      *
-     * @param period Period in miliseconds
+     * @param period Period in milliseconds
      */
     FWCORE_API void setLifePeriod(TimeStampType period)
     {
@@ -103,32 +103,32 @@ public:
      *
      * @return TimeStamp life period
      */
-    FWCORE_API TimeStampType getLifePeriod()
+    FWCORE_API TimeStampType getLifePeriod() const
     {
         return m_lifePeriod;
     };
 
 
-    /** 
+    /**
      * @brief Check TimeStamp expiracy status
-     * 
-     * @return True if more than m_lifePeriod miliseconds are elapsed from
+     *
+     * @return True if more than m_lifePeriod milliseconds are elapsed from
      * TimeStamp value
      */
-    FWCORE_API bool periodExpired()
+    FWCORE_API bool periodExpired() const
     {
         return (::fwCore::HiResClock::getTimeInMilliSec() - this->m_modifiedTime) > m_lifePeriod;
     }
 
 
 private:
-    /** 
-     * @brief TimeStamp value (miliseconds)
+    /**
+     * @brief TimeStamp value (milliseconds)
      */
     TimeStampType m_modifiedTime;
 
-    /** 
-     * @brief life period (miliseconds)
+    /**
+     * @brief life period (milliseconds)
      */
     TimeStampType m_lifePeriod;
 

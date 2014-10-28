@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,7 +42,7 @@ void ObjectMsgTest::testObjectMsg()
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
     // create message with events
-    ::fwServices::ObjectMsg::NewSptr objMsg;
+    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::ObjectMsg::New();
     objMsg->addEvent(EVENT1);
     objMsg->addEvent(EVENT2, image);
 

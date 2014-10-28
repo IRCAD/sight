@@ -1,9 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <map>
 #include <list>
 #include <set>
 #include <boost/foreach.hpp>
@@ -62,7 +63,7 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
 {
     const unsigned int X=0, Y=1, Z=2;
     const size_t ElementNbr  = _vertexIndex.size();
-    if ( ElementNbr <= 0 )
+    if ( ElementNbr == 0 )
         return false;
 
     // on regarde tous les triangles du maillage

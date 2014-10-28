@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,17 +10,14 @@
 #include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
-#include <fwWX/convert.hpp>
+#include <fwGuiWx/convert.hpp>
 
 #include "fwGuiWx/layoutManager/LineLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IViewLayoutManager,
-        ::fwGui::LineLayoutManager,
-         ::fwGui::layoutManager::LineLayoutManagerBase::RegistryKeyType,
-          ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
 
 
 namespace fwGui
@@ -28,7 +25,7 @@ namespace fwGui
 
 //-----------------------------------------------------------------------------
 
-LineLayoutManager::LineLayoutManager()
+LineLayoutManager::LineLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -61,13 +58,13 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
         else
         {
             wxPanel * viewPanel = new wxPanel(  wxContainer, wxNewId() , wxDefaultPosition, wxSize( viewInfo.m_minSize.first, viewInfo.m_minSize.second ), wxNO_BORDER | wxTAB_TRAVERSAL );
-            ::fwGuiWx::container::WxContainer::NewSptr subContainer;
+            ::fwGuiWx::container::WxContainer::sptr subContainer = ::fwGuiWx::container::WxContainer::New();
             subContainer->setWxContainer(viewPanel);
             m_subViews.push_back(subContainer);
 #ifndef __MACOSX__
             if(viewInfo.m_caption.first)
             {
-                wxStaticBoxSizer* sizer = new wxStaticBoxSizer( wxOrientation, wxContainer, ::fwWX::std2wx(viewInfo.m_caption.second));
+                wxStaticBoxSizer* sizer = new wxStaticBoxSizer( wxOrientation, wxContainer, ::fwGuiWx::std2wx(viewInfo.m_caption.second));
                 sizer->Add( viewPanel, 1, wxALL|wxEXPAND, viewInfo.m_border);
                 boxSizer->Add(sizer, viewInfo.m_proportion, wxALL|wxEXPAND);
             }

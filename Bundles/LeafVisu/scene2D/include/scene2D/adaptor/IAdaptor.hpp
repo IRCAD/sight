@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,7 +58,6 @@ public:
     /// Interact with the mouse events catched on the IAdaptor (virtual function, its behavior is only defined in the specific adaptors).
     SCENE2D_API virtual void processInteraction( ::scene2D::data::Event::sptr _event );
 
-
 protected:
 
     /// Constructor, set the zValue to 0.
@@ -66,6 +65,7 @@ protected:
 
     /// Basic destructor, do nothing.
     SCENE2D_API virtual ~IAdaptor() throw();
+
 
     /// ToDo IM
     SCENE2D_API virtual void info(std::ostream &_sstream ) ;
@@ -80,7 +80,7 @@ protected:
     SCENE2D_API void updating() throw ( ::fwTools::Failed );
 
     /// Call DoUpdate(_msg) function.
-    SCENE2D_API void updating( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Start and stop the IAdaptor.
     SCENE2D_API void swapping() throw ( ::fwTools::Failed );
@@ -95,7 +95,7 @@ protected:
     SCENE2D_API virtual void doUpdate() = 0;
 
     /// Pure virtual -> implemented in the subclasses
-    SCENE2D_API virtual void doUpdate( ::fwServices::ObjectMsg::csptr _msg ) = 0;
+    SCENE2D_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) = 0;
 
     /// Pure virtual -> implemented in the subclasses
     SCENE2D_API virtual void doSwap() = 0;
@@ -137,17 +137,32 @@ protected:
     /// Opacity of the adaptor. Default value set to 1 (opaque).
     float m_opacity;
 
-    // Initial size of the widget (view). The goal of keeping a reference on the initial size is to
-    // avoid unwanted scaling onto some objects (such as transfer function points, histogram cursor,
-    // etc) when a resize event is caught.
+    /// Initial size of the widget (view). The goal of keeping a reference on the initial size is to
+    /// avoid unwanted scaling onto some objects (such as transfer function points, histogram cursor,
+    /// etc) when a resize event is caught.
     ViewSizeRatio m_viewInitialSize;
 
-    // Initial size of the viewport. The goal of keeping a reference on the initial size of the
-    // viewport is the same as preceding.
+    /// Initial size of the viewport. The goal of keeping a reference on the initial size of the
+    /// viewport is the same as preceding.
     ViewportSizeRatio m_viewportInitialSize;
 
+    typedef std::vector< ::scene2D::adaptor::IAdaptor::wptr > ManagedAdaptorVector;
 
+    /// Return all managed adaptor
+    SCENE2D_API ManagedAdaptorVector & getRegisteredServices() { return m_managedAdaptors; };
+
+    /// Register new adaptor
+    SCENE2D_API void registerService( ::scene2D::adaptor::IAdaptor::sptr srv );
+
+    /// Unregister all adaptors
+    SCENE2D_API void unregisterServices();
 private:
+
+    /// Register automatic connection on object
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+
+    /// All managed adaptors
+    ManagedAdaptorVector m_managedAdaptors;
 
     /// The render that manage the IAdaptor.
     ::scene2D::Render::wptr m_scene2DRender;

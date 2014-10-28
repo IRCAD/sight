@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,6 @@
 #define _SCENE2D_HISTOGRAMCURSOR_HPP_
 
 #include <scene2D/adaptor/IAdaptor.hpp>
-
-#include <fwData/Point.hpp>
 
 #include <QGraphicsTextItem>
 
@@ -22,7 +20,7 @@ namespace adaptor
 
 
 /**
- * @brief
+ * @brief IAdaptor implementation to show a cursor on histogram pointed by mouse.
  *
  *
  * \b xAxis     : see ::scene2D::adaptor::IAdaptor
@@ -52,7 +50,7 @@ protected:
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
     SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-    SCENE2D_API void doUpdate( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
     SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
 
@@ -86,9 +84,13 @@ protected:
 
 private:
 
-    ::fwServices::ComChannelService::sptr m_comChannel;
-
     ::scene2D::data::Viewport::sptr m_viewport;
+
+    /// fWID of the viewport
+    std::string m_viewportID;
+
+    /// Connection to the viewport
+    ::fwCom::Connection m_connection;
 };
 
 

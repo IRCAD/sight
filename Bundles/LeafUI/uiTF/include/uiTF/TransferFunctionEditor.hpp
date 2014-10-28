@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,8 +25,8 @@ namespace uiTF
 
 /**
  * @brief   TransferFunctionEditor service.
- * @class   TransferFunctionEditor.
- * @author  IRCAD (Research and Development Team).
+ * @class   TransferFunctionEditor
+ * 
  * @date    2011.
  */
 class UITF_CLASS_API TransferFunctionEditor : public QObject, public ::gui::editor::IEditor
@@ -50,11 +50,11 @@ protected:
     *
     * Example of configuration
     * @verbatim
-    <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" implementation="::uiTF::TransferFunctionEditor" autoComChannel="yes" >
+    <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes" >
         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
     </service>
     @endverbatim
-    * - <image id="myImage" /> : Set the link between the service and the associated image.
+    * - \<image id="myImage" /\> : Set the link between the service and the associated image.
     *
     * \b id : mandatory (no default value) : set the id of the associated image.
     */
@@ -67,7 +67,7 @@ protected:
     UITF_API virtual void updating() throw( ::fwTools::Failed );
 
     /// Update the TransferFunctionEditor when message, do nothing.
-    UITF_API virtual void updating(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed );
+    UITF_API virtual void receiving(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed );
 
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
     UITF_API virtual void stopping() throw( ::fwTools::Failed );

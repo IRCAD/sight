@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,6 @@ namespace fwTools {
 
 /**
  * @brief template specialization for defining KeyType mapping ( here std::type_info) with their value
- * @auhtor Vincent Agnus
  */
 template<class T>
 bool isMappingTypeInfoCommon(const std::type_info &key)

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@ namespace fwTools
 /**
  * @brief   Purpose: offer a first-class, comparable wrapper over std::type_info ( but copy construcible )
  * @class   TypeInfo
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  * Code imported from Loki-Library and adapted for FW4SPL
@@ -34,10 +34,10 @@ public:
 
     /**
      * @brief copy method
-     * @param[in] the TypeInfo to copy
+     * @param[in] ti the TypeInfo to copy
      * @return the copied TypeInfo
      */
-    FWTOOLS_API TypeInfo &operator=(const TypeInfo&);
+    FWTOOLS_API TypeInfo &operator=(const TypeInfo &ti);
 
     /**
      * @brief access for the wrapped std::type_info

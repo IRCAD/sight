@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /**
- * @file fwGui/IMenuBarLayoutManager.hpp
+ * @file fwGui/layoutManager/IMenuBarLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a menubar.
  *
- * @author IRCAD (Research and Development Team).
+ * 
  * @date 2009-2010
  */
 
 #ifndef _FWGUI_LAYOUTMANAGER_IMENUBARLAYOUTMANAGER_HPP_
 #define _FWGUI_LAYOUTMANAGER_IMENUBARLAYOUTMANAGER_HPP_
 
-#include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/container/fwMenuBar.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/config.hpp"
@@ -29,15 +29,15 @@ namespace layoutManager
 
 /**
  * @brief   Defines the menu bar layout manager for IHM.
- * @class   IMenuBarLayoutManager.
- * @author  IRCAD (Research and Development Team).
+ * @class   IMenuBarLayoutManager
+ * 
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IMenuBarLayoutManager : public ::fwCore::BaseObject
+class FWGUI_CLASS_API IMenuBarLayoutManager : public ::fwGui::GuiBaseObject
 {
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (IMenuBarLayoutManager)(::fwCore::BaseObject) )
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMenuBarLayoutManager)(::fwGui::GuiBaseObject) )
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
@@ -60,7 +60,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" implementation="::gui::aspect::DefaultMenuBarSrv" autoComChannel="no" >
+      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -74,8 +74,8 @@ public:
       </service>
        @endverbatim
      * This method analyzes the gui section of the configuration.
-     *  - <layout> (mandatory) : give the list of the menu that will appear in the menu bar.
-     *  - <menu name="My Menu"/> :
+     *  - \<layout\> (mandatory) : give the list of the menu that will appear in the menu bar.
+     *  - \<menu name="My Menu"/\> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      */
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,8 +18,8 @@ namespace fwGuiQt
 
 /**
  * @brief   Defines the generic cursor for IHM.
- * @class   Cursor.
- * @author  IRCAD (Research and Development Team).
+ * @class   Cursor
+ * 
  * @date    2009-2010.
  *
  */
@@ -28,11 +28,12 @@ class FWGUIQT_CLASS_API Cursor : public ::fwGui::ICursor
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor), (()), new Cursor );
+    fwCoreClassDefinitionsWithFactoryMacro( (Cursor)(::fwGui::ICursor),
+                                            (()),
+                                            ::fwGui::factory::New< Cursor > );
 
-    /// Constructor. Do nothing.
-    FWGUIQT_API Cursor();
-    /// Destructor. Do nothing.
+    FWGUIQT_API Cursor(::fwGui::GuiBaseObject::Key key);
+
     FWGUIQT_API virtual ~Cursor();
 
     /// Set the cursor

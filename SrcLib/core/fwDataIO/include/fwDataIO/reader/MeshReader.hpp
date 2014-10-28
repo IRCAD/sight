@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,8 +28,8 @@ namespace reader
 
 /**
  * @brief   Mesh reader. Read file format .trian
- * @class   MeshReader.
- * @author  IRCAD (Research and Development Team).
+ * @class   MeshReader
+ * 
  * @date    2011
  *
  * Load trian file into fwData::Mesh
@@ -43,11 +43,11 @@ public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (MeshReader)(GenericObjectReader< ::fwData::Mesh >),
                                             (()),
-                                            new  MeshReader
+                                            ::fwDataIO::reader::factory::New< MeshReader >
                                             );
 
     /// Constructor. Do nothing.
-    FWDATAIO_API MeshReader();
+    FWDATAIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
     FWDATAIO_API virtual ~MeshReader();

@@ -5,11 +5,11 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoScene2DConfig</id>
-        <type>standard</type>
+        <type>parameters</type>
         <config>
             <object type="::fwData::Image">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" implementation="::gui::frame::DefaultFrame" autoComChannel="no">
+                <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>TutoScene132D</name>
@@ -22,7 +22,7 @@
                     </registry>
                 </service>
 
-                <service uid="GENERIC_UID_GlobalView" type="::gui::view::IView" implementation="::gui::view::DefaultView" autoComChannel="no" >
+                <service uid="GENERIC_UID_GlobalView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::LineLayoutManager" >
                             <orientation value="vertical" />
@@ -36,11 +36,11 @@
                     </registry>
                 </service>
                 
-                <item key="myCompositeVisu">
+                <item key="compositeVisu">
 
-                    <object uid="myCompositeVisu" type="::fwData::Composite">
+                    <object uid="compositeVisu" type="::fwData::Composite">
                         
-                        <service uid="GENERIC_UID_Scene2D" implementation="::scene2D::Render" type="::fwRender::IRender" autoComChannel="yes">
+                        <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
 
                             <scene>
 
@@ -72,7 +72,7 @@
                                     <config xMin="-300" xMax="300" yMin="-300" yMax="300" xSpacing="10" ySpacing="10" color="blue" xAxis="axe1" yAxis="axe2" />
                                 </adaptor> -->
                               
-                                <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="myData">
+                                <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="data">
                                     <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
                                 </adaptor>
                               
@@ -96,11 +96,11 @@
 
                         </service>
                       
-                        <item key="myData">
+                        <item key="data">
 
                             <object uid="GENERIC_UID_Float" type="::fwData::Float">
 
-                                <service uid="GENERIC_UID_FloatEditor" implementation="::uiVisu::BasicFloatEditor" type="::gui::editor::IEditor" autoComChannel="yes"/>
+                                <service uid="GENERIC_UID_FloatEditor" impl="::uiVisu::BasicFloatEditor" type="::gui::editor::IEditor" autoConnect="yes"/>
                               
                             </object>
 
@@ -111,7 +111,7 @@
 
                 </item>
 
-                <start uid="myFrame" />
+                <start uid="mainFrame" />
                 <start uid="GENERIC_UID_Scene2D" />
                 <start uid="GENERIC_UID_FloatEditor" />
               

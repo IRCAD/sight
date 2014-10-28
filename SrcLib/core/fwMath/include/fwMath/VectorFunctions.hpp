@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,15 +18,12 @@ namespace fwMath {
 
 /**
  *  @brief Normalize a vector
- *  @param [in]
- *  @param [in]
- *  @return
  */
 FWMATH_API double normalize(fwVec3d & vec);
 
 /**
  *  @brief Retrun a normalized vector
- *  @param [in] vector to normalize
+ *  @param [in] vec vector to normalize
  *  @return normalized vector
  */
 FWMATH_API fwVec3d normalized(fwVec3d & vec);
@@ -70,8 +67,8 @@ FWMATH_API void negate(fwVec3d &_vec);
 
 /**
  *  @brief operator *= for fwVec3d
- *  @param [in]
- *  @param [in]
+ *  @param [in] vec1 vector to multiply
+ *  @param [in] val value to multiply with vector
  *  @return vec1[0]*=vec2[0], vec1[1]*=vec2[1], vec1[2]*=vec2[2]
  */
 FWMATH_API fwVec3d& operator*=(fwVec3d& vec1, double val);

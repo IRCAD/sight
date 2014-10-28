@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/ActionCallback.hpp"
 #include "fwGuiQt/container/QtMenuContainer.hpp"
@@ -22,10 +22,8 @@
 #include "fwGuiQt/layoutManager/MenuLayoutManager.hpp"
 
 
-REGISTER_BINDING( ::fwGui::layoutManager::IMenuLayoutManager,
-        ::fwGui::layoutManager::MenuLayoutManager,
-         ::fwGui::layoutManager::IMenuLayoutManager::RegistryKeyType,
-          ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGui::layoutManager::MenuLayoutManager,
+                    ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
 
 namespace fwGui
 {
@@ -34,7 +32,7 @@ namespace layoutManager
 
 //-----------------------------------------------------------------------------
 
-MenuLayoutManager::MenuLayoutManager()
+MenuLayoutManager::MenuLayoutManager(::fwGui::GuiBaseObject::Key key)
 {}
 
 //-----------------------------------------------------------------------------
@@ -57,7 +55,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
     unsigned int menuItemIndex = 0;
     BOOST_FOREACH ( ::fwGui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo, m_actionInfo)
     {
-        ::fwGuiQt::container::QtMenuItemContainer::NewSptr menuItem;
+        ::fwGuiQt::container::QtMenuItemContainer::sptr menuItem = ::fwGuiQt::container::QtMenuItemContainer::New();
 
         QAction *action = menu->addAction( QString::fromStdString(actionInfo.m_name) );
 
@@ -100,7 +98,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 
         if (actionInfo.m_isMenu)
         {
-            ::fwGuiQt::container::QtMenuContainer::NewSptr menu;
+            ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
             QMenu* qtMenu = new QMenu();
             menu->setQtMenu(qtMenu);
             action->setMenu(qtMenu);

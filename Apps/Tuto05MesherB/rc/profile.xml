@@ -6,10 +6,11 @@
     <activate id="io" version="0-1" />
 
     <activate id="visu" version="0-1" />
-    <activate id="visuVTKWx" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKQt" version="0-1" />
 
     <activate id="gui" version="0-1" />
-    <activate id="guiWx" version="0-1" />
+    <activate id="guiQt" version="0-1" />
 
     <activate id="Tuto05MesherB" version="0-1" />
     <activate id="appXml" version="0-1">
@@ -25,8 +26,8 @@
     <activate id="opVTKMesh" version="0-1" />
 
     <start id="dataReg" />
-    <start id="visuVTKWx" />
-    <start id="guiWx" />
+    <start id="visuVTKQt" />
+    <start id="guiQt" />
     <start id="appXml" />
-    
+
 </profile>

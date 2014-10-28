@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+#ifndef __FWCORE_MACROS_HPP__
+#define __FWCORE_MACROS_HPP__
 
 /**
  * @file fwCore/macros.hpp
  * @brief This file defines fwCore base macros.
- *
- *
- * @author IRCAD (Research and Development Team).
  */
 
 #include <string>
@@ -19,28 +18,21 @@
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
-#include <boost/preprocessor/comparison/greater.hpp>
 #include <boost/preprocessor/control/expr_if.hpp>
 #include <boost/preprocessor/control/if.hpp>
-#include <boost/preprocessor/control/while.hpp>
 #include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
-#include <boost/preprocessor/facilities/identity.hpp>
 #include <boost/preprocessor/logical/and.hpp>
 #include <boost/preprocessor/logical/not.hpp>
-#include <boost/preprocessor/repetition/enum.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/seq/cat.hpp>
-#include <boost/preprocessor/seq/enum.hpp>
-#include <boost/preprocessor/seq/fold_right.hpp>
+#include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/seq/fold_right.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/seq/for_each_i.hpp>
-#include <boost/preprocessor/seq/reverse.hpp>
 #include <boost/preprocessor/seq/seq.hpp>
+#include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/to_tuple.hpp>
 #include <boost/preprocessor/seq/transform.hpp>
-#include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>
 
 #include "fwCore/Demangler.hpp"
@@ -371,7 +363,7 @@
 /**
  * @brief Generate predeclarations
  *
- * @param _cls_ Class to predeclare, in the form (some)(namespace)(class)
+ * @param \_cls_ Class to predeclare, in the form (some)(namespace)(class)
  *
  *   Example :
  *   fwCorePredeclare( (fwData)(Image) ) expands to :
@@ -408,7 +400,7 @@
     { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getLeafClassname<SelfType>());};             \
     /** @brief return object's classname given by ::fwCore::Demangler::getClassname()  */        \
     virtual const std::string& getClassname() const                                              \
-    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::Demangler(*this).getClassname());};          \
+    { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getClassname<SelfType>());};          \
     static  const std::string& classname()                                                       \
     { __FWCORE_STATIC_CACHE(std::string,  ::fwCore::getClassname<SelfType>());};                 \
     /** @brief return object's classname given by ::fwCore::Demangler::getFullClassname()  */    \
@@ -444,7 +436,7 @@
  *
  */
 #define fwCoreIsTypeOfMacro(_classinfo_)                                                                                                   \
-    static bool isTypeOf(const std::string type)                                                                                           \
+    static bool isTypeOf(const std::string &type)                                                                                           \
     {                                                                                                                                      \
         if (__FWCORE_TYPEDEF_SELF_NAME::classname()==type)                                                                                 \
         {                                                                                                                                  \
@@ -452,7 +444,7 @@
         }                                                                                                                                  \
         return BOOST_PP_IF( BOOST_PP_EQUAL( BOOST_PP_SEQ_SIZE(_classinfo_), 2 ), __FWCORE_TYPEDEF_SUPERCLASS_NAME::isTypeOf(type), false); \
     }                                                                                                                                      \
-    virtual bool isA(const std::string type) const                                                                                         \
+    virtual bool isA(const std::string &type) const                                                                                         \
     {                                                                                                                                      \
         return this->__FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                                                                           \
     }
@@ -473,7 +465,7 @@ namespace boost{
 namespace python{
 namespace objects {
 template <class, class>
-class pointer_holder;
+struct pointer_holder;
 }}}
 
 /**
@@ -482,7 +474,7 @@ class pointer_holder;
 #define fwCoreFriendClassFactoryMacro()                                      \
     friend class ::boost::serialization::access;                             \
     template<class, class>                                                   \
-    friend class ::boost::python::objects::pointer_holder;                   \
+    friend struct ::boost::python::objects::pointer_holder;                  \
     template<typename _FWCORE_CHECKED_DELETE_T_ >                            \
     friend void ::boost::checked_delete(_FWCORE_CHECKED_DELETE_T_ *x);       \
     template<class, class, class>                                            \
@@ -493,20 +485,20 @@ class pointer_holder;
  * @brief Generate common construction methods for classes with one factory
  *
  * For this macro parameters, each bracket is significant.
- * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  *
- * @param _parameters_ ( types_param_factory0 ) (...) ( types_param_factoryN )
+ * @param \_parameters_ ( types_param_factory0 ) (...) ( types_param_factoryN )
  *                      - where types_param_factoryX can be :
  *                        - for a 0-arg factory : ()
  *                        - for a 1-arg of T type factory : ((T)) or ((T)(d))
- *                          where d is a defautl value
+ *                          where d is a default value
  *                        - for a N-parameters factory : ((type0)) ((type1)) ... ((typeN)(default_value))
  *                      - Several types_param_factory can be declared if a factory have several signatures
  *                        - Example for several signatures : () ( ((int)) ) ( ((int)) ((std::string)("default")) )
  *
- * @param _factory_ A factory that can take arguments as defined in _parameters_ arguments
+ * @param \_factory_ A factory that can take arguments as defined in _parameters_ arguments
  */
 #define fwCoreClassDefinitionsWithFactoryMacro(_classinfo_, _parameters_, _factory_)                     \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                \
@@ -534,15 +526,15 @@ class pointer_holder;
  * @brief Generate common construction methods for classes with several factories
  *
  * For this macro parameters, each bracket is significant.
- * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  *
- * @param _factories_args_ ((factory0, types_param_factory0)) ((factory1, types_param_factory1) ... ((factoryN, types_param_factoryN))
+ * @param \_factories_args_ ((factory0, types_param_factory0)) ((factory1, types_param_factory1) ... ((factoryN, types_param_factoryN))
  *                          - where types_param_factoryX can be :
  *                            - for a 0-arg factory : ()
  *                            - for a 1-arg of T type factory : ((T)) or ((T)(d))
- *                              where d is a defautl value
+ *                              where d is a default value
  *                            - for a N-parameters factory : ((type0)) ((type1)) ... ((typeN)(default_value))
  *
  */
@@ -573,7 +565,7 @@ class pointer_holder;
 /**
  * @brief Generate common code for services classes
  *
- * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  */
@@ -589,10 +581,10 @@ class pointer_holder;
 
 
 /**
- * @brief Generate common code for Non Instanciable classes (Interfaces, Abstrat classes, ...)
+ * @brief Generate common code for Non Instanciable classes (Interfaces, Abstract classes, ...)
  *
 
- * @param _classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
+ * @param \_classinfo_ Class information in the form : (classname)(baseclassname) or (classname).
  *                  baseclassname is only required for a non-base class, and should not
  *                  be used if baseclassname == classname
  */
@@ -606,4 +598,5 @@ class pointer_holder;
 
 
 /**  @} */
+#endif // __FWCORE_MACROS_HPP__
 

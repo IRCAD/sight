@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,7 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Factory.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
@@ -26,7 +26,7 @@
 #include "visuVTKAdaptor/Medical3DCamera.hpp"
 
 
-REGISTER_SERVICE( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Image ) ;
 
 namespace visuVTKAdaptor
 {
@@ -40,7 +40,7 @@ Medical3DCamera::m_orientationConversion
 
 Medical3DCamera::Medical3DCamera() throw()
 {
-    addNewHandledEvent( "CAMERA_ORIENTATION" );
+    //addNewHandledEvent( "CAMERA_ORIENTATION" );
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ void Medical3DCamera::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doUpdate( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Medical3DCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
 

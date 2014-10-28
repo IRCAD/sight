@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/ClassRegistrar.hpp>
+#include <fwServices/registry/message/macros.hpp>
 
 #include "fwComEd/BooleanMsg.hpp"
 
-REGISTER_BINDING_BYCLASSNAME( ::fwTools::Object, ::fwComEd::BooleanMsg, ::fwComEd::BooleanMsg );
+fwServicesMessageRegisterMacro( ::fwComEd::BooleanMsg );
 
 namespace fwComEd
 {
+
 
 //-----------------------------------------------------------------------------
 
@@ -19,7 +20,7 @@ std::string BooleanMsg::VALUE_IS_MODIFIED = "VALUE_IS_MODIFIED";
 
 //-----------------------------------------------------------------------------
 
-BooleanMsg::BooleanMsg() throw()
+BooleanMsg::BooleanMsg(::fwServices::ObjectMsg::Key key)
 {}
 
 //-----------------------------------------------------------------------------

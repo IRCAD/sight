@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,7 +63,6 @@ bool arlCore::vnl_rotation3d_matrix::is_rotation( void ) const
 {
     vnl_matrix_fixed<double,3,3> test_Identity;
     test_Identity = (*this) * this->transpose(); //on verifie d'abord pour le produit
-    //double det = vnl_det( *this ); //calcul du determinant qui doit etre egal a 1 et pas -1
     if( test_Identity.is_identity(1e-8) || fabs(vnl_det( *this ) -1) < 1e-6  ) return true;
     else return false;
 }

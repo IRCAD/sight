@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ namespace fwTools
 /**
  * @brief   Helper for BinaryCartesianProduct two Set
  * @struct  AppendValueFirst
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @param   TYPE should be a simple type
  * @param   SETOFSET should be a container of type list i.e vector< vector< singleTypes>, vector< singleTypes>, ... >.
@@ -52,7 +52,7 @@ struct AppendValueFirst
 /**
  * @brief   MetaFunction which create an boost::boost::mpl::vector
  * @struct  make_vector
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  */
 struct make_vector
@@ -69,7 +69,7 @@ struct make_vector
  * @brief   MetaFunction ( used for pseudo Curryfication ) which transform a set where new elements are
  * singleton of 1st set elements i.e { a , b , c } --> { {a}, {b}, {c} }
  * @struct  makeSetOfSingletons
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  **/
 struct makeSetOfSingletons
@@ -87,7 +87,7 @@ struct makeSetOfSingletons
 /**
  * @brief   Helper which compute from a set and a multi set
  * @struct  BinaryCartesianProductRecurser
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  * Set1: A = { a_1, a_2, ..., a_N }  \n  MultiSet = {   { ... b_i ...} , { ... c_i ...}, ... { z_i ...}  }\n
@@ -113,7 +113,7 @@ struct BinaryCartesianProductRecurser
 /**
  * @brief   Compute Cartesian Product of two set (type list) to generate all possible combinaison.
  * @struct  BinaryCartesianProduct
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  *
  * From two type list generate a new type list where all elemenent a combinaison of each set. For example :
@@ -165,7 +165,7 @@ struct BinaryCartesianProduct
 /**
  * @brief compute the cartesian product of many set
  * @struct  CartesianProduct
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @param   MultiSet must be of the following form vector<  vector< ElementaryType1, ElementaryType2,... > , vector< ...ElementaryTypes...> ... > where Elementary
  *          types are not boost::mpl::Container : i.e int, classes, std::vector<int> etc...

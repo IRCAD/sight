@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for Spline : store modification information
  * @class   SplineMsg
- * @author  IRCAD (Research and Development Team).
+ * 
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
@@ -27,15 +27,17 @@ class FWCOMED_CLASS_API SplineMsg : public fwServices::ObjectMsg
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((SplineMsg)(::fwServices::ObjectMsg), ( ( ) ), new SplineMsg );
+    fwCoreClassDefinitionsWithFactoryMacro((SplineMsg)(::fwServices::ObjectMsg), ( ( ) ),
+                                           ::fwServices::factory::message::New< SplineMsg > );
 
     /// Event identifier used to inform for modification
     FWCOMED_API static std::string NEW_SPLINE;
 
     /**
-     * @brief   Constructor : do nothing.
+     * @brief Constructor
+     * @param key Private construction key
      */
-    FWCOMED_API SplineMsg() throw();
+    FWCOMED_API SplineMsg(::fwServices::ObjectMsg::Key key);
 
     /**
      * @brief   Destuctor : do nothing.

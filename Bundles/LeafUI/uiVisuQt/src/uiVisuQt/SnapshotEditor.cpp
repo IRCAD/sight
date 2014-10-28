@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,8 +14,6 @@
 #include <boost/filesystem/convenience.hpp>
 
 #include <fwCore/base.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
@@ -44,7 +42,7 @@
 namespace uiVisu
 {
 
-REGISTER_SERVICE( ::gui::editor::IEditor , ::uiVisu::SnapshotEditor , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::SnapshotEditor , ::fwData::Object ) ;
 
 
 SnapshotEditor::SnapshotEditor() throw()
@@ -132,7 +130,7 @@ void SnapshotEditor::swapping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::updating( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void SnapshotEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
 }
 
@@ -158,18 +156,18 @@ void SnapshotEditor::onSnapButton()
             ::fwData::Composite::sptr composite = service->getObject< ::fwData::Composite >();
             SLM_ASSERT("SnapshotEditor sceneUID " << m_scenesUID.at(i) <<" isn't a GenericScene?" , composite);
 
-            ::fwData::Object::NewSptr dataInfo;
+            ::fwData::String::sptr dataInfo = ::fwData::String::New();
 
-            ::fwData::String::NewSptr sceneID;
+            ::fwData::String::sptr sceneID = ::fwData::String::New();
             sceneID->value() = m_scenesUID.at(i);
-            ::fwData::String::NewSptr filename;
+            ::fwData::String::sptr filename = ::fwData::String::New();
 
             filename->value() = this->requestFileName();
             if(!filename->value().empty())
             {
                 dataInfo->setField("sceneID", sceneID);
                 dataInfo->setField("filename", filename);
-                ::fwComEd::CompositeMsg::NewSptr compositeMsg;
+                ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
                 compositeMsg->addEvent( "SNAP", dataInfo );
                 ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
             }

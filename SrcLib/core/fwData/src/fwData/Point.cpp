@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/Point.hpp"
 
 fwDataRegisterMacro( ::fwData::Point );
@@ -16,7 +17,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Point::Point ()
+Point::Point(::fwData::Object::Key key)
 {
     m_vCoord[0] = 0.0;
     m_vCoord[1] = 0.0;
@@ -52,18 +53,26 @@ Point::~Point ()
 
 //------------------------------------------------------------------------------
 
-void Point::shallowCopy( Point::csptr _source )
+void Point::shallowCopy(const Object::csptr &_source )
 {
+    Point::csptr other = Point::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_vCoord = _source->m_vCoord;
+    m_vCoord = other->m_vCoord;
 }
 
 //------------------------------------------------------------------------------
 
-void Point::deepCopy( Point::csptr _source )
+void Point::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
 {
-    this->fieldDeepCopy( _source );
-    m_vCoord = _source->m_vCoord;
+    Point::csptr other = Point::dynamicConstCast(_source);
+    FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
+            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
+            + " to " + this->getClassname()), !bool(other) );
+    this->fieldDeepCopy( _source, cache );
+    m_vCoord = other->m_vCoord;
 }
 
 //------------------------------------------------------------------------------
