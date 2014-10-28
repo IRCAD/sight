@@ -16,17 +16,13 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3D::TransformationMatrix3D(::fwData::Object::Key key) :
-                        m_vCoefficients(16)
+TransformationMatrix3D::TransformationMatrix3D(::fwData::Object::Key key) :  m_vCoefficients(16, 0.)
 {
-    //default init
-    for(int l = 0; l < 4; l++)
-        for(int c = 0; c < 4; c++){
-            if(l==c)
-                setCoefficient(l, c, 1);
-            else
-                setCoefficient(l, c, 0);
-        }
+    //default initialization
+    for(size_t t = 0 ; t < MATRIX_SIZE ; ++t)
+    {
+        m_vCoefficients[t*MATRIX_SIZE + t] = 1.;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -60,18 +56,18 @@ void TransformationMatrix3D::cachedDeepCopy(const Object::csptr &_source, DeepCo
 
 //------------------------------------------------------------------------------
 
-double TransformationMatrix3D::getCoefficient(int l, int c) const
+double TransformationMatrix3D::getCoefficient(size_t l, size_t c) const
 {
-    unsigned int pos = l * MATRIX_SIZE + c;
+    size_t pos = l * MATRIX_SIZE + c;
     assert(pos < m_vCoefficients.size());
     return m_vCoefficients.at(pos);
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3D::setCoefficient(int l, int c, TransformationMatrix3D::TM3DType val)
+void TransformationMatrix3D::setCoefficient(size_t l, size_t c, TransformationMatrix3D::TM3DType val)
 {
-    unsigned int pos = l * MATRIX_SIZE + c;
+    size_t pos = l * MATRIX_SIZE + c;
     assert(pos < m_vCoefficients.size());
     m_vCoefficients.at(pos)= val ;
 }

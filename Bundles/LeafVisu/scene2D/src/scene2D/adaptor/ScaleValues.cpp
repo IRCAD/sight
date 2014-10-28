@@ -192,6 +192,7 @@ void ScaleValues::doStart() throw ( ::fwTools::Failed )
     m_layer = new QGraphicsItemGroup();
 
     m_brush = QBrush( m_pen.color() );
+    m_pen.setCosmetic(true);
 
     m_font.setPointSize( m_fontSize );
     m_font.setLetterSpacing( QFont::AbsoluteSpacing, 0.25 );

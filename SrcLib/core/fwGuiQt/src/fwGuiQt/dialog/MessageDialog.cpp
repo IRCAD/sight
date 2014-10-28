@@ -115,7 +115,7 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
         box.setDefaultButton(QMessageBox::StandardButton(static_cast<int>(iter->second)));
     }
 
-    ::fwGui::dialog::IMessageDialog::Buttons result;
+    ::fwGui::dialog::IMessageDialog::Buttons result = ::fwGui::dialog::IMessageDialog::NOBUTTON;
 
     box.exec();
 

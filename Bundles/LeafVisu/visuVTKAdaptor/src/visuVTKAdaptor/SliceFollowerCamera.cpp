@@ -173,7 +173,7 @@ void SliceFollowerCamera::initializeCamera()
         double size = imageSize[ orientation ];
 
         double distance = (1.1 * size)
-                    / ( std::tan( m_camera->GetViewAngle() * (vtkMath::DoublePi() / 180.0) ) );
+                    / ( std::tan( m_camera->GetViewAngle() * (vtkMath::Pi() / 180.0) ) );
 
         m_camera->ParallelProjectionOn();
         setVtkPipelineModified();

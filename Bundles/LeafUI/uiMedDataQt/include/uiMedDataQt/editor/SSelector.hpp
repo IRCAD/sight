@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,6 +48,7 @@ public :
     /// Key in m_signals map of signal m_sigSeriesDoubleClicked
     UIMEDDATAQT_API static const ::fwCom::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG;
 
+
 protected:
 
     /// Installs GUI : create container and add selector.
@@ -64,12 +65,20 @@ protected:
         <selectionMode>single|extended</selectionMode>
         <allowedRemove>yes|no</allowedRemove>
         <insertMode>yes|no</insertMode>
+        <icons>
+            <icon series="::fwMedData::ImageSeries" icon="Bundles/media_0-1/icons/ImageSeries.svg" />
+            <icon series="::fwMedData::ModelSeries" icon="Bundles/media_0-1/icons/ModelSeries.svg" />
+        </icons>
      </service>
      @endverbatim
      * - \b selectionId : defines the fwId of the ::fwData::Vector where the selection will be put or get.
      * - \b selectionMode : defines the selection mode for the series
      * - \b allowedRemove : allows user to remove series
      * - \b insertMode : only allows selection of uiMedData::InsertSeries
+     * - \b icons : defines the icon to associate for a series
+     *    - \b series : the series classname
+     *    - \b icon : the icon path
+
      */
     virtual void configuring() throw (::fwTools::Failed);
 
@@ -123,6 +132,9 @@ private :
 
     /// Signal emitted when there is a double click on a series
     SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked;
+    
+    /// Map containing the specified icons for a series (map\<series classname, icon path\>)
+    ::uiMedData::widget::Selector::SeriesIconType m_seriesIcons;
 
     /// Permits the user to remove series. Default is yes
     bool m_allowedRemove;

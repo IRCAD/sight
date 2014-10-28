@@ -151,7 +151,7 @@ void MeshNormals::updateMeshNormals()
             algo = ptMask;
         }
 
-        algo->SetInput(m_polyData);
+        algo->SetInputData(m_polyData);
 
         //vtkSmartPointer<vtkArrowSource> arrow = vtkSmartPointer<vtkArrowSource>::New();
         vtkSmartPointer<vtkGlyphSource2D> arrow = vtkSmartPointer<vtkGlyphSource2D>::New();
@@ -173,7 +173,7 @@ void MeshNormals::updateMeshNormals()
 
         vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
         glyph->SetInputConnection(algo->GetOutputPort());
-        glyph->SetSource(arrow->GetOutput());
+        glyph->SetSourceConnection(arrow->GetOutputPort());
         glyph->SetVectorModeToUseNormal();
         glyph->SetScaleModeToScaleByVector();
         glyph->SetScaleFactor(10.0);

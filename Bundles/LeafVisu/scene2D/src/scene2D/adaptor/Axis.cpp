@@ -24,7 +24,7 @@ namespace scene2D
 namespace adaptor
 {
 
-Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02), m_color("white")
+Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02), m_color(Qt::white)
 {
 //    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
@@ -126,6 +126,7 @@ void Axis::configuring() throw( ::fwTools::Failed)
 
 void Axis::buildAxis()
 {
+    m_color.setCosmetic(true);
     const int nbValues = (m_max - m_min) / m_interval + 1;
     m_layer = new QGraphicsItemGroup();
 

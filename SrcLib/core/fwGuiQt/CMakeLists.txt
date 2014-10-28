@@ -16,8 +16,9 @@ add_definitions("-DQT_NO_KEYWORDS")
 
 
 find_package(Boost REQUIRED)
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
+find_package(Qt5 COMPONENTS Core Gui REQUIRED)
+
+QT5_USE_MODULES(fwGuiQt Core Gui Widgets Concurrent)
 
 
 fwForwardInclude(${Boost_INCLUDE_DIRS} ${QT_INCLUDE_DIR})

@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 USE = [
     'boost',
-    'vtkWidgets'
+    'vtk6InteractionWidgets',
+    'vtk6InteractionStyle',
+    'vtk6RenderingFreeTypeOpenGL',
+    'vtk6RenderingVolumeOpenGL',
     ]
 LIB = [
     'fwComEd_0-1',

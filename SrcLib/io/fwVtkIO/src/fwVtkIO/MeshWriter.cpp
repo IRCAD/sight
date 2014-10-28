@@ -48,7 +48,7 @@ void MeshWriter::write()
     vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
     vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
-    writer->SetInput( vtkMesh );
+    writer->SetInputData( vtkMesh );
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary();
 

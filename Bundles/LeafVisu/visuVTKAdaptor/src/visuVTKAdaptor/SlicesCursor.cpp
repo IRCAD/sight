@@ -105,7 +105,7 @@ void SlicesCursor::doStart() throw(fwTools::Failed)
     this->buildColorAttribute();
     this->updateImageInfos(image);
     this->updateColors();
-    m_cursorMapper->SetInput( m_cursorPolyData );
+    m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     if(!this->getTransformId().empty())
     {

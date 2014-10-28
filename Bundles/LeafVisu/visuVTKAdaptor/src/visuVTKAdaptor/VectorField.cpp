@@ -159,7 +159,7 @@ void VectorField::buildPipeline( )
 
     vtkSmartPointer<vtkMaskPoints> ptMask = vtkSmartPointer<vtkMaskPoints>::New();
 
-    ptMask->SetInput(m_imageData);
+    ptMask->SetInputData(m_imageData);
     ptMask->SetOnRatio(1);
     ptMask->RandomModeOn();
 

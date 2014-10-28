@@ -23,17 +23,8 @@ fwInclude(
     ${VNL_INCLUDE_PATH}
     )
 fwLink(
-    ITKCommon
-    ITKDICOMParser
-    ITKEXPAT
-    ITKIO
-    ITKMetaIO
-    ITKNrrdIO
-    ITKSpatialObject
-    ITKniftiio
-    ITKznz
-    itkjpeg8
-    itksys
+    ITKIOImageBase
+    ITKIOJPEG
 
     ${VNL_ALGO_LIBRARY}
     ${VNL_LIBRARY}

@@ -10,7 +10,14 @@
 #include <set>
 #include <string>
 
+#include <fwCore/base.hpp>
+
 #include "fwTest/config.hpp"
+
+namespace fwData
+{
+class Object;
+}
 
 namespace fwTest
 {
@@ -18,8 +25,8 @@ namespace helper
 {
 typedef std::set<std::string> ExcludeSetType;
 
-FWTEST_API bool compare(::fwData::Object::sptr objRef,
-                        ::fwData::Object::sptr objComp,
+FWTEST_API bool compare(SPTR(::fwData::Object) objRef,
+                        SPTR(::fwData::Object) objComp,
                          ExcludeSetType exclude = ExcludeSetType());
 
 } // namespace helper

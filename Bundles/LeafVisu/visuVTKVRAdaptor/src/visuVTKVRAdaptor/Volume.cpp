@@ -28,6 +28,9 @@
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
+//Required for proper object factory initialization
+#include <vtkAutoInit.h>
+VTK_MODULE_INIT(vtkRenderingVolumeOpenGL);
 
 
 #include "visuVTKVRAdaptor/Volume.hpp"

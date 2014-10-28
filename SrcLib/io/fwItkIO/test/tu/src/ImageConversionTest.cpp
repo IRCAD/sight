@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwCore/base.hpp>
 #include <fwData/Object.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
@@ -59,6 +60,8 @@ void ImageConversionTest::testConversion()
 
     ::fwTest::helper::ExcludeSetType exclude;
     exclude.insert("array.isOwner");
+    exclude.insert("window_center");
+    exclude.insert("window_width");
 
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
@@ -122,6 +125,8 @@ void ImageConversionTest::testConversion2D()
 
     ::fwTest::helper::ExcludeSetType exclude;
     exclude.insert("array.isOwner");
+    exclude.insert("window_center");
+    exclude.insert("window_width");
 
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 

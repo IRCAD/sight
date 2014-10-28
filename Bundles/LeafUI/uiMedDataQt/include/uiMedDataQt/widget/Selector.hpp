@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,6 +41,9 @@ public:
 
     typedef QVector< ::fwMedData::Series::sptr > SeriesVectorType;
 
+    /// Map associating icons to series (map\<series classname, icon path\>)
+    typedef SelectorModel::SeriesIconType SeriesIconType;
+
     /// Constructor. Init tree view.
     UIMEDDATAQT_API Selector(QWidget *parent = 0);
 
@@ -68,6 +71,12 @@ public:
 
     /// Catch the delete key event and remove the selected items.
     UIMEDDATAQT_API void keyPressEvent(QKeyEvent * event);
+
+    /**
+     * @brief Sets the specific icons for series in selector.
+     * @param[in]  seriesIcons map\<series classname, icon path\>
+     */
+    UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType &seriesIcons);
 
     /// Allows removing items or not.
     UIMEDDATAQT_API void setAllowedRemove(bool allowed);

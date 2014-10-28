@@ -84,6 +84,7 @@ void SSelector::starting() throw(::fwTools::Failed)
     SLM_ASSERT("container not instanced", container);
 
     m_selectorWidget = new ::uiMedData::widget::Selector();
+    m_selectorWidget->setSeriesIcons(m_seriesIcons);
     m_selectorWidget->setSelectionMode(m_selectionMode);
     m_selectorWidget->setAllowedRemove(m_allowedRemove);
     m_selectorWidget->setInsertMode(m_insertMode);
@@ -239,6 +240,24 @@ void SSelector::configuring() throw(::fwTools::Failed)
         }
     }
 
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > iconsCfg = m_configuration->find("icons");
+    if (!iconsCfg.empty())
+    {
+        SLM_ASSERT("Only one 'config' tag is allowed for SSelector configuration", iconsCfg.size() == 1);
+
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find("icon");
+
+        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, cfg)
+        {
+            std::string series = elt->getAttributeValue("series");
+            SLM_ASSERT("'series' attribute is missing", !series.empty());
+
+            std::string icon = elt->getAttributeValue("icon");
+            SLM_ASSERT("'icon' attribute is missing", !icon.empty());
+
+            m_seriesIcons[series] = icon;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

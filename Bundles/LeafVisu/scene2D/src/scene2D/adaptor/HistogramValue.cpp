@@ -28,7 +28,7 @@ namespace adaptor
 {
 
 HistogramValue::HistogramValue() throw()
-: m_color("white"), m_isInteracting(false), m_fontSize(8)
+: m_color(Qt::white), m_isInteracting(false), m_fontSize(8)
 {
 //    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
@@ -80,7 +80,8 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
     m_font.setKerning( true );
     m_font.setFixedPitch( true );
 
-    m_text = new QGraphicsSimpleTextItem(0, this->getScene2DRender()->getScene());
+
+    m_text = new QGraphicsSimpleTextItem();
     m_text->setBrush( QBrush(m_color.color()) );
     m_text->setFont( m_font );
     m_text->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
@@ -88,7 +89,6 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
 
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
-
     m_layer->addToGroup( m_text );
 
     // Set the layer position (according to the related axis) and zValue

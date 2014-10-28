@@ -13,6 +13,18 @@ set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
+# Set warning level on Unix
+if(UNIX)
+    set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers ")
+
+    # Color for ninja and Clang on Linux and OSX
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_GENERATOR STREQUAL "Ninja")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
+    endif()
+endif()
+
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
@@ -83,9 +95,11 @@ macro(initProject PRJNAME )
     endforeach(SUBDIR)
 
     set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE) 
-
+    set (${FWPROJECT_NAME}_DIR     ${CMAKE_CURRENT_SOURCE_DIR}  PARENT_SCOPE)
+    
     set (${FWPROJECT_NAME}_HEADERS ${${FWPROJECT_NAME}_HEADERS} PARENT_SCOPE) 
-    set (${FWPROJECT_NAME}_SOURCES ${${FWPROJECT_NAME}_SOURCES} PARENT_SCOPE) 
+    set (${FWPROJECT_NAME}_SOURCES ${${FWPROJECT_NAME}_SOURCES} PARENT_SCOPE)
+    
 endmacro(initProject)
 
 
@@ -110,7 +124,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
 
     if (NOT ${TARGET_TYPE} MATCHES "EXECUTABLE")
-        get_target_property(${FWPROJECT_NAME}_LIBRARY ${FWPROJECT_NAME} LOCATION)
+        set(${FWPROJECT_NAME}_LIBRARY "$<TARGET_FILE:${FWPROJECT_NAME}>")
         set(${FWPROJECT_NAME}_LIBRARY ${${FWPROJECT_NAME}_LIBRARY} PARENT_SCOPE)
     endif()
 
@@ -260,8 +274,8 @@ macro(fwCppunitTest FWPROJECT_NAME)
         set(fwCppunitTest_WORKING_DIRECTORY WORKING_DIRECTORY ${fwCppunitTest_WORKING_DIRECTORY})
     endif()
 
-    get_target_property(${FWPROJECT_NAME}_EXECUTABLE ${FWPROJECT_NAME} LOCATION)
-    add_test( NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE}  )
+    set(${FWPROJECT_NAME}_EXECUTABLE "$<TARGET_FILE:${FWPROJECT_NAME}>")
+    add_test(NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE} )
 
 endmacro(fwCppunitTest)
 
@@ -364,7 +378,7 @@ endmacro(fwUseForward)
 
 
 macro(fwForwardInclude)
-    target_include_directories(${FWPROJECT_NAME} PUBLIC ${ARGV})
+    target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${ARGV})
 endmacro(fwForwardInclude)
 
 macro(fwForwardLink)
@@ -373,7 +387,7 @@ macro(fwForwardLink)
 endmacro(fwForwardLink)
 
 macro(fwInclude)
-    target_include_directories(${FWPROJECT_NAME} PRIVATE ${ARGV})
+    target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${ARGV})
 endmacro(fwInclude)
 
 macro(fwLink)
@@ -587,6 +601,18 @@ set(PROJECTS_TO_INSTALL CACHE STRING
 
 file(GLOB_RECURSE PROJECTS_PROPERTIES */Properties.cmake)
 
+set(ADDITIONAL_PROJECTS CACHE PATH 
+        "Paths to the additional projects"
+    )
+set(ADDITIONAL_PROJECTS_SOURCE_DIR "")
+if(ADDITIONAL_PROJECTS)
+    foreach(ADDITIONAL_PROJECT ${ADDITIONAL_PROJECTS})
+        file(GLOB_RECURSE ADDITIONAL_PROJECTS_PROPERTIES ${ADDITIONAL_PROJECT}/*/Properties.cmake)
+        list(APPEND PROJECTS_PROPERTIES ${ADDITIONAL_PROJECTS_PROPERTIES})
+        set(ADDITIONAL_PROJECTS_SOURCE_DIR "${ADDITIONAL_PROJECTS_SOURCE_DIR} ${ADDITIONAL_PROJECT}")
+    endforeach()
+endif(ADDITIONAL_PROJECTS)
+
 foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     get_filename_component(PROJECT_DIR ${PROPERTIES_FILE} PATH)
 
@@ -668,3 +694,9 @@ foreach(PROJECT ${PROJECT_LIST})
     addProject(${PROJECT})
 endforeach()
 
+# Eclipse project
+option(ECLIPSE_PROJECT "Generate eclipse project" OFF)
+if(ECLIPSE_PROJECT)
+    include(${FWCMAKE_RESOURCE_PATH}eclipse/eclipse_generator.cmake)
+    eclipseGenerator(${PROJECT_LIST})
+endif(ECLIPSE_PROJECT)

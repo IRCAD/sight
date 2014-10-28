@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _ITKIO_PROGESSITKTOFW_HPP_
-#define _ITKIO_PROGESSITKTOFW_HPP_
+#ifndef __FWITKIO_HELPER_PROGESSITKTOFW_HPP__
+#define __FWITKIO_HELPER_PROGESSITKTOFW_HPP__
 
 #include <itkCommand.h>
 #include <itkProcessObject.h>
@@ -62,7 +62,6 @@ class Progressor
 
 }
 
-
 #include "fwItkIO/helper/ProgressItkToFw.hxx"
 
-#endif /* _ITKIO_PROGESSITKTOFW_HPP_ */
+#endif /* __FWITKIO_HELPER_PROGESSITKTOFW_HPP__ */

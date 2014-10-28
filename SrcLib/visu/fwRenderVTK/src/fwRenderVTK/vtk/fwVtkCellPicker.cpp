@@ -178,20 +178,6 @@ void fwVtkCellPicker::PrintSelf(ostream& os, vtkIndent indent)
 
 //------------------------------------------------------------------------------
 
-fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3], double p2[3], ::fwData::TriangularMesh::sptr mesh)
-{
-    PickedCellType res;
-
-    vtkPolyData *polydata = fwVtkIO::toVTKMesh(mesh);
-
-    res = this->GetPickedCellIds(p1, p2, polydata);
-
-    polydata->Delete();
-
-    return res;
-}
-
-
 fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3], double p2[3], vtkPolyData *polydata)
 {
     PickedCellType res;

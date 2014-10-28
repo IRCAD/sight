@@ -53,6 +53,7 @@ ActivityRequirementKey::ActivityRequirementKey(const ConfigType &config) :
 ActivityRequirement::ActivityRequirement(const ConfigType &config) :
     name(config.get<std::string>("<xmlattr>.name")),
     type(config.get<std::string>("<xmlattr>.type")),
+    container(config.get_optional<std::string>("<xmlattr>.container").get_value_or("")),
     minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
     maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
 {

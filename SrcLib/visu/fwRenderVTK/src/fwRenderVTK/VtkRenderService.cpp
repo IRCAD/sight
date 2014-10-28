@@ -23,6 +23,10 @@
 #include <vtkInstantiator.h>
 #include <vtkTransform.h>
 #include <vtkCamera.h>
+//Required for proper object factory initialization
+#include <vtkAutoInit.h>
+VTK_MODULE_INIT(vtkInteractionStyle);
+VTK_MODULE_INIT(vtkRenderingFreeTypeOpenGL);
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>

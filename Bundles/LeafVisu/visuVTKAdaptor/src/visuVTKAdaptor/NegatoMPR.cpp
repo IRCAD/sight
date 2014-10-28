@@ -40,6 +40,7 @@ NegatoMPR::NegatoMPR() throw() :
 {
     m_allowAlphaInTF = false;
     m_interpolation  = true;
+    m_actorOpacity = 1.0;
 
     //addNewHandledEvent("SLICE_MODE");
     //addNewHandledEvent("SCAN_SHOW");
@@ -282,6 +283,10 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     {
         this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
     }
+    if(m_configuration->hasAttribute("actorOpacity") )
+    {
+        m_actorOpacity = ::boost::lexical_cast<double>(m_configuration->getAttributeValue("actorOpacity"));
+    }
     this->parseTFConfig( m_configuration );
 }
 
@@ -355,6 +360,7 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
         }
         negatoAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
         negatoAdaptor->setTFSelectionFwID( this->getTFSelectionFwID() );
+        negatoAdaptor->setActorOpacity(m_actorOpacity);
     }
     else if (negatoWindowingAdaptor)
     {

@@ -9,10 +9,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/TriangularMesh.hpp>
-#include <fwData/Array.hpp>
-
 namespace guiQt
 {
 namespace ut

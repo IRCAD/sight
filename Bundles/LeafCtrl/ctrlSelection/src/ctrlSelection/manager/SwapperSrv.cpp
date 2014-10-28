@@ -14,6 +14,7 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
@@ -261,10 +262,7 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
             subSrv->m_service = srv;
 
             // Standard communication management
-            SLM_ASSERT("autoConnect attribute missing in service "<< srv->getClassname(),
-                       cfg->hasAttribute("autoConnect"));
-
-            if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
+            if ( cfg->getAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
                 if (!subSrv->m_connections)
@@ -272,6 +270,21 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
                     subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
                 }
                 subSrv->m_connections->connect( object, srv, srv->getObjSrvConnections() );
+            }
+
+            std::string workerKey = cfg->getAttributeValue("worker");
+
+            if (!workerKey.empty())
+            {
+                ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
+                ::fwThread::Worker::sptr worker;
+                worker = activeWorkers->getWorker(workerKey);
+                if (!worker)
+                {
+                    worker = ::fwThread::Worker::New();
+                    activeWorkers->addWorker(workerKey, worker);
+                }
+                srv->setWorker(worker);
             }
 
             subVecSrv.push_back(subSrv);
@@ -439,7 +452,7 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
             subSrv->m_service = srv;
             subSrv->m_dummy = dummyObj;
 
-            if ( cfg->getExistingAttributeValue("autoConnect") == "yes" )
+            if ( cfg->getAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
                 subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();

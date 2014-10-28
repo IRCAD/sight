@@ -253,7 +253,7 @@ void ImagesProbeCursor::doStart() throw(fwTools::Failed)
     this->addToRenderer(m_textActor );
 
     buildPolyData();
-    m_cursorMapper->SetInput( m_cursorPolyData );
+    m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1,0,0);
     if(!this->getTransformId().empty())

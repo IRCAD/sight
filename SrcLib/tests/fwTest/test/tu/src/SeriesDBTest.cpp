@@ -60,9 +60,9 @@ void SeriesDBTest::generationTest()
     CPPUNIT_ASSERT(::fwMedData::ImageSeries::dynamicCast(seriesContainer[0]));
 
     ::fwMedData::DicomValuesType performingPhysiciansName;
-    performingPhysiciansName.push_back("Dr Jekyl");
-    performingPhysiciansName.push_back("Dr House");
-    performingPhysiciansName.push_back("Dr Einstein ");
+    performingPhysiciansName.push_back("Dr^Jekyl");
+    performingPhysiciansName.push_back("Dr^House");
+    performingPhysiciansName.push_back("Dr^Einstein ");
 
     unsigned char nbIS = 0;
     unsigned char nbMS = 0;
@@ -87,7 +87,7 @@ void SeriesDBTest::generationTest()
         ::fwMedData::Patient::sptr patient = series->getPatient();
         CPPUNIT_ASSERT_EQUAL(std::string("NomSeriesDB1^PrenomSeriesDB1") , patient->getName());
         CPPUNIT_ASSERT_EQUAL(std::string("4564383757") , patient->getPatientId());
-        CPPUNIT_ASSERT_EQUAL(std::string("19710418 095318.185236") , patient->getBirthdate());
+        CPPUNIT_ASSERT_EQUAL(std::string("19710418") , patient->getBirthdate());
         CPPUNIT_ASSERT_EQUAL(std::string("O ") , patient->getSex());
 
         ::fwMedData::Study::sptr study = series->getStudy();
@@ -95,7 +95,7 @@ void SeriesDBTest::generationTest()
                              study->getInstanceUID());
         CPPUNIT_ASSERT_EQUAL(std::string("20130418") , study->getDate());
         CPPUNIT_ASSERT_EQUAL(std::string("095948.689872 ") , study->getTime());
-        CPPUNIT_ASSERT_EQUAL(std::string("Dr Jekyl") , study->getReferringPhysicianName());
+        CPPUNIT_ASSERT_EQUAL(std::string("Dr^Jekyl") , study->getReferringPhysicianName());
         CPPUNIT_ASSERT_EQUAL(std::string("Say 33. ") , study->getDescription());
         CPPUNIT_ASSERT_EQUAL(std::string("042Y") , study->getPatientAge());
 

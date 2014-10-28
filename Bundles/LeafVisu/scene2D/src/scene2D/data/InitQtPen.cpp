@@ -27,6 +27,7 @@ void InitQtPen::setPenColor(QPen & _pen, std::string _color)
         // Default value: black (if the color id cannot be parsed)
         _pen.setColor(Qt::GlobalColor(Qt::black));
     }
+    _pen.setCosmetic(true);
 }
 
 //---------------------------------------------------------------------------------------

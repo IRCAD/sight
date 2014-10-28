@@ -234,7 +234,7 @@ void RendererService::createAndAddActorToRender()
             vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
 
             m_normals = vtkPolyDataNormals::New();
-            m_normals->SetInput(vtk_polyData);
+            m_normals->SetInputData(vtk_polyData);
             mapper->SetInputConnection(m_normals->GetOutputPort());
 
             vtkActor* actor =  vtkActor::New();

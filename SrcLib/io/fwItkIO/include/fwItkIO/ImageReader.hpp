@@ -7,8 +7,6 @@
 #ifndef _FWITKIO_IMAGEREADER_HPP_
 #define _FWITKIO_IMAGEREADER_HPP_
 
-#include <boost/filesystem/path.hpp>
-
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/Image.hpp>

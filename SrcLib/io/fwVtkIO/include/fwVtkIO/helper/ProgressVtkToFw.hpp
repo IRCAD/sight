@@ -8,7 +8,6 @@
 #define _VTKIO_PROGESSVTKTOFW_HPP_
 
 #include <vtkCommand.h>
-#include <vtkProcessObject.h>
 
 #include <fwTools/ProgressAdviser.hpp>
 

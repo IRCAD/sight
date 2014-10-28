@@ -28,7 +28,7 @@ namespace adaptor
 {
 
 HistogramCursor::HistogramCursor() throw()
-: m_color("red"), m_borderColor("gray"), m_opacity(0.8), m_pointSize(6)
+: m_color("red"), m_borderColor(Qt::gray), m_opacity(0.8), m_pointSize(6)
 {
 //    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
@@ -90,6 +90,7 @@ void HistogramCursor::doStart() throw( ::fwTools::Failed)
     m_index->setPen( m_borderColor );
     m_index->setZValue(m_zValue);
     m_index->setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    m_color.setCosmetic(true);
 
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();

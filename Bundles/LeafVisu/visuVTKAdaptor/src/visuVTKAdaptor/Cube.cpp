@@ -25,7 +25,7 @@ void Cube::doStart() throw(fwTools::Failed)
 {
     vtkCubeSource *cube = vtkCubeSource::New();
     vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
-    mapper->SetInput(cube->GetOutput());
+    mapper->SetInputConnection(cube->GetOutputPort());
     vtkActor *actor = vtkActor::New();
     actor->SetMapper(mapper);
     this->addToRenderer(actor);

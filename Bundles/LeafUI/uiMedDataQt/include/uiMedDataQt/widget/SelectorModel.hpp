@@ -50,6 +50,9 @@ public:
         SERIES      ///< Type to represent Series
     }ItemType;
 
+    /// Map associating icons to series (map\<series classname, icon path\>)
+    typedef std::map<std::string, std::string> SeriesIconType;
+
     /// Constructor. Inits the model.
     UIMEDDATAQT_API SelectorModel(QWidget *parent = 0);
 
@@ -72,7 +75,7 @@ public:
     UIMEDDATAQT_API void clear();
 
     /// Returns item flags with non editable flag
-    UIMEDDATAQT_API Qt::ItemFlags flags(const QModelIndex& index) const
+    Qt::ItemFlags flags(const QModelIndex& index) const
     {
         return (QStandardItemModel::flags(index) & ~Qt::ItemIsEditable);
     }
@@ -96,8 +99,15 @@ public:
     /// Returns the item representing the study.
     UIMEDDATAQT_API QStandardItem* findStudyItem(::fwMedData::Study::sptr study);
 
+    /**
+     * @brief Sets the specific icons for series in selector.
+     * @param[in]  seriesIcons map\<series classname, icon path\>
+     */
+    UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType &seriesIcons);
+    
     /// Sets if the selector must be in insert mode.
     UIMEDDATAQT_API void setInsertMode(bool insert);
+
 
 private:
 
@@ -133,6 +143,9 @@ private:
 
     /// Sets if the selector is in insert mode (adding new series, forbid selection of existing series).
     bool m_insert;
+    
+    /// Map containing the specified icons for a series (map\<series classname, icon path\>)
+    SeriesIconType m_seriesIcons;
 };
 
 

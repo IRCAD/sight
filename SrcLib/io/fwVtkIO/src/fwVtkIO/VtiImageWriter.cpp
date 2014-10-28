@@ -49,7 +49,7 @@ void VtiImageWriter::write()
     vtkSmartPointer< vtkXMLImageDataWriter > writer = vtkSmartPointer< vtkXMLImageDataWriter >::New();
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage( pImage, vtkImage );
-    writer->SetInput( vtkImage );
+    writer->SetInputData( vtkImage );
     writer->SetFileName( this->getFile().string().c_str() );
     writer->SetDataModeToAppended();
 

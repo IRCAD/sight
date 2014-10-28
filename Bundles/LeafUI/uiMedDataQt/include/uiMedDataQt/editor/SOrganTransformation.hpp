@@ -24,13 +24,18 @@ class QListWidget;
 class QPushButton;
 class QListWidgetItem;
 class QComboBox;
+class QCheckBox;
 
 namespace uiMedData
 {
 namespace editor
 {
 
-// SOrganTransformation
+
+/**
+ * @class SOrganTransformation
+ * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
+ */
 class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject, public ::gui::editor::IEditor
 {
     Q_OBJECT
@@ -38,11 +43,22 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SOrganTransformation)(::gui::editor::IEditor) );
 
+    /// constructor
     UIMEDDATAQT_API              SOrganTransformation() throw();
+    /// destructor
     UIMEDDATAQT_API virtual     ~SOrganTransformation() throw();
 
 protected:
 
+    /**
+     * @brief configures the service
+     * @verbatim
+       <service impl="::uiMedData::editor::SOrganTransformation" type="::gui::editor::IEditor" autoConnect="yes">
+           <TMSUid>MESHDB_UID</TMSUid>
+       </service>
+       @endverbatim
+     * - \b TMSUid = composite uid
+     */
     UIMEDDATAQT_API virtual void configuring() throw( ::fwTools::Failed );
     UIMEDDATAQT_API virtual void starting()    throw( ::fwTools::Failed );
     UIMEDDATAQT_API virtual void stopping()    throw( ::fwTools::Failed );
@@ -57,8 +73,8 @@ private Q_SLOTS:
     void onSaveClick();
     void onLoadClick();
 
-    //test
-    void onTestClick();
+    /// Slot to check all the organs of the list
+    void onSelectAllChanged(int state);
 
 private:
 
@@ -77,9 +93,7 @@ private:
     QPointer< QPushButton > m_resetButton;
     QPointer< QListWidget > m_reconstructionListBox;
     QPointer< QComboBox > m_saveSelectionComboBox;
-
-    //for testing
-    QPointer< QPushButton > m_testButton;
+    QPointer< QCheckBox > m_selectAllCheckBox;
 
     //variables for the functionalities of saving & loading
     SaveMappingType m_saveListing;

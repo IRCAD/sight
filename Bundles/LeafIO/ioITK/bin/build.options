@@ -1,6 +1,6 @@
 TYPE = 'bundle'
 VERSION  = '0-1'
-USE = ['boost','itkCommon']
+USE = ['boost','itk4Common']
 LIB = [
     'fwTools_0-1',
     'fwRuntime_0-3',

@@ -103,7 +103,7 @@ void Image3DCursor::doStart() throw(fwTools::Failed)
         m_cursorActor->GetProperty()->SetColor(1,1,1);
     }
 
-    m_cursorMapper->SetInput( m_cursorPolyData );
+    m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
 
     if(!this->getTransformId().empty())
@@ -177,7 +177,7 @@ void Image3DCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools
         m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
         buildPolyData(radius->value());
 
-        m_cursorMapper->SetInput( m_cursorPolyData );
+        m_cursorMapper->SetInputData( m_cursorPolyData );
         this->setVtkPipelineModified();
     }
 }

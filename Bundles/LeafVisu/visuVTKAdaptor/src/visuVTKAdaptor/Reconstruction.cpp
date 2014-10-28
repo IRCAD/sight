@@ -179,7 +179,6 @@ void Reconstruction::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fw
 
         if (msg && msg->hasEvent(::fwComEd::ReconstructionMsg::MESH))
         {
-            //updateTriangulaMesh( reconstruction->getMesh() );
             this->doUpdate();
         }
         else if (msg && msg->hasEvent(::fwComEd::ReconstructionMsg::VISIBILITY))

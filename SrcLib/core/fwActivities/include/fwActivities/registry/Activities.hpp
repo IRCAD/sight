@@ -77,6 +77,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
 
     std::string name;
     std::string type;
+    std::string container;
     unsigned int minOccurs;
     unsigned int maxOccurs;
     KeyType keys;
@@ -85,7 +86,31 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
 /**
  * @brief Holds Activities configuration.
  *
- * Example :
+ * Activity parameters are (in this order) :
+ * - <id>...</id> : activity id
+ * - <title>...</title> : activity title (displayed in tab if tabinfo isn't specified)
+ * - <tabinfo>...</tabinfo> : activity title (displayed in tab)
+ * - <desc>...</desc> : activity description
+ * - <icon>...</icon> : path to the icon activity
+ * - <requirements> : required elements to launch specified activity (must be present in vector selection)
+ *   - <requirement> : a required element
+ *     - name : element key in ActivitySeries composite
+ *     - type : object type
+ *     - minOccurs (optional, default value = 1) : minimal number of object (with specified type) in vector
+ *     - maxOccurs (optional, default value = 1) : maximal number of object (with specified type) in vector
+ *       - key : if maxOccurs > 1, then you must defined keys for each objects
+ *     - container (optional, default value = composite) : container type (vector or composite) to store required parameters
+ * - <builder>...</builder> : implementation of builder associate to the activity, the builder creates ActivitySeries.
+ *   - default builder is ::fwActivities::builder::ActivitySeries
+ * - <validator> : check if specified activity can be launched with selected objects
+ * - <appConfig> : defined AppConfig launched by this activity
+ *   - id : AppConfig id
+ *   - <parameters> : parameters required by the AppConfig
+ *     - <parameter> : defined an AppConfig parameter
+ *       - replace : parameter name to replace in AppConfig
+ *       - by : value to use for replacement (can be a string or sesh@ path)
+ *
+ * Example of activity configuration:
  * @verbatim
     <extension implements="::fwActivities::registry::Activities">
         <id>3DVisualization</id>
@@ -100,7 +125,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
                 <key>Item2</key>
                 <key>Item3</key>
             </requirement>
-            <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" />
+            <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" container="vector" />
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
             <!--# ...-->

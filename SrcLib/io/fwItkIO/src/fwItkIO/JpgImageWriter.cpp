@@ -11,6 +11,7 @@
 #include <itkImageSeriesWriter.h>
 #include <itkNumericSeriesFileNames.h>
 #include <itkIntensityWindowingImageFilter.h>
+#include <itkJPEGImageIOFactory.h>
 
 #include <fwTools/IntrinsicTypes.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
@@ -26,10 +27,9 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwItkIO/itk.hpp>
-
 #include <fwDataIO/writer/registry/macros.hpp>
 
+#include "fwItkIO/itk.hpp"
 #include "fwItkIO/helper/ProgressItkToFw.hpp"
 #include "fwItkIO/JpgImageWriter.hpp"
 
@@ -59,6 +59,11 @@ JpgImageWriter::~JpgImageWriter()
 
 struct JpgITKSaverFunctor
 {
+    JpgITKSaverFunctor()
+    {
+        // force register/link_with JPEGImageIOFactory
+        ::itk::JPEGImageIOFactory::RegisterOneFactory();
+    }
     struct Parameter
     {
         std::string                   m_filename;

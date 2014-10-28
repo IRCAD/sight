@@ -20,7 +20,6 @@
 #include <boost/spirit/home/phoenix/operator/bitwise.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwData/TriangularMesh.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -211,8 +210,8 @@ void MeshReader::read()
     assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
     ::boost::filesystem::path path = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
-    OSLM_TRACE( "Trian file: " << path.string());
-    SLM_ASSERT("Empty path for TriangularMesh file", !path.empty() );
+    SLM_TRACE( "Trian file: " + path.string());
+    SLM_ASSERT("Empty path for Trian file", !path.empty() );
 
 
     size_t length;
@@ -223,7 +222,7 @@ void MeshReader::read()
 
     if (!file.is_open())
     {
-        OSLM_ERROR( "Trian file loading error for " << path.string());
+        SLM_ERROR( "Trian file loading error for " + path.string());
         throw std::ios_base::failure("Unable to open " + path.string());
     }
 
