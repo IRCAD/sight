@@ -1,0 +1,78 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>organManagerConfig</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="MODEL_SERIES_UID" />
+    </parameters>
+    <config>
+
+
+        <object type="::fwData::Composite">
+
+            <!-- MAIN FRAME -->
+            <service uid="organManagerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Organs Manager</name>
+                        <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
+                        <minSize width="400" height="600" />
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="multiViewOrgans" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiViewOrgans" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view minHeight="80" proportion="0" />
+                        <view minHeight="220" proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="listOrganEditor" start="yes" />
+                    <view sid="organMaterialEditor" />
+                    <view sid="representationEditor" />
+                </registry>
+            </service>
+
+            <service uid="updaterReconst" impl="::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                <update compositeKey="reconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
+            </service>
+                        
+            <service uid="managerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                <mode type="dummy" />
+                <config>
+                    <object id="reconstruction" type="::fwData::Reconstruction">
+                        <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                        <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                    </object>
+                </config>
+            </service>
+            
+            <item key="modelSeries">
+                <object uid="${MODEL_SERIES_UID}" src="ref" type="::fwMedData::ModelSeries">
+                    <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" />
+                </object>
+            </item>
+            
+            <connect>
+                <signal>${MODEL_SERIES_UID}/objectModified</signal>
+                <slot>updaterReconst/receive</slot>
+            </connect>
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="organManagerFrame" />
+            <start uid="updaterReconst" />
+            <start uid="managerForOrgansFrame" />
+
+        </object>
+
+
+    </config>
+</extension>

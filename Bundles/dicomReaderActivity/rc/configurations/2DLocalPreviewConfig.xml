@@ -1,0 +1,64 @@
+<extension implements="::fwServices::registry::AppConfig">
+        <id>2DLocalPreviewConfig</id>
+        <type>parameters</type>
+        <parameters>
+            <param name="GENERIC_UID" />
+            <param name="WID_PARENT" />
+            <param name="objectID" />
+        </parameters>
+        <config>
+            <object type="::fwData::Composite" uid="${GENERIC_UID}_previewComposite">
+
+                <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::CardinalLayoutManager">
+                            <view align="center" />
+                            <view align="bottom" minWidth="200" minHeight="40" resizable="no" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <parent wid="${WID_PARENT}" />
+                        <view sid="${GENERIC_UID}_gs" start="yes" />
+                        <view sid="${GENERIC_UID}_sliderIndexDicomPullerEditor" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <scene>
+                        <picker id="picker" vtkclass="fwVtkCellPicker" />
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                            <config renderer="default" style="InteractorStyle2DForNegato" />
+                        </adaptor>
+                        <adaptor id="imageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                            <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+                        </adaptor>
+                        <adaptor id="seriesAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                            <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
+                        </adaptor>
+                    </scene>
+                </service>
+
+                <service uid="${GENERIC_UID}_manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+                    <mode type="stop" />
+                    <config>
+                        <object id="image" type="::fwData::Image">
+                            <service uid="${GENERIC_UID}_imageDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+                            <service uid="${GENERIC_UID}_medicalImgConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+                        </object>
+                    </config>
+                </service>
+
+                <item key="dicomSeries">
+                    <object uid="${objectID}" src="ref">
+                        <service uid="${GENERIC_UID}_sliderIndexDicomPullerEditor" type="::gui::editor::IEditor" impl="::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor" autoConnect="yes">
+                            <config compositeUID="${GENERIC_UID}_previewComposite" imageKey="image" dicomReader="::ioVtkGdcm::SSeriesDBReader" delay="200" />
+                        </service>
+                    </object>
+                </item>
+
+                <start uid="${GENERIC_UID}_manager" />
+                <start uid="${GENERIC_UID}_mainview" />
+            </object>
+        </config>
+    </extension>

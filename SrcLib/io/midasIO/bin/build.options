@@ -1,0 +1,10 @@
+TYPE='shared'
+LIB = [
+       'fwCore_0-1',
+       'fwTools_0-1',
+       'fwNetwork_0-1',
+       'fwVtkIO_0-1',
+       ]
+VERSION = '0-1'
+USE = ['boost', 'boostFilesystem', 'json-spirit', 'libxml2']
+

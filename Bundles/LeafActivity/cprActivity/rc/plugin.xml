@@ -1,0 +1,43 @@
+<plugin id="cprActivity">
+
+    <requirement id="servicesReg" />
+    <requirement id="2DVisualizationActivity" />
+    <requirement id="3DVisualizationActivity" />
+    <requirement id="visuVTKVRAdaptor" />
+    <requirement id="scene2D" />
+    <requirement id="mediaExt" />
+    <requirement id="uiTF" />
+    <requirement id="uiIO" />
+
+    <xi:include href="configurations/curvedPlanarReformation.xml" xmlns:xi="http://www.w3.org/2003/XInclude" /> 
+    <xi:include href="configurations/cprViewDebug.xml" xmlns:xi="http://www.w3.org/2003/XInclude" /> 
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>curvedPlanarReformationActivity</id>
+        <title>Curved Planar Reformation</title>
+        <desc>Curved planar reformation activity</desc>
+        <icon>Bundles/mediaExt_0-1/icons/cpr.png</icon>
+        <requirements>
+
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+
+            <requirement name="MSComposite" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
+                <key>OptionalModelSeriesKey</key>
+            </requirement>
+
+            <requirement name="curvedPlanarReformation" type="::fwData::PointList" minOccurs="0" maxOccurs="0" >
+                <key>cprPointsKey</key>
+            </requirement>
+
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
+        <appConfig id="curvedPlanarReformation">
+            <parameters>
+                <parameter replace="imageUid" by="@values.imageSeries.image" />
+                <parameter replace="ModelSeriesCompositeUid" by="@values.MSComposite" />
+                <parameter replace="SplinePointListUid" by="@values.curvedPlanarReformation" />
+                <parameter replace="orientation" by="axial" />
+            </parameters>
+        </appConfig> 
+    </extension>
+</plugin>
