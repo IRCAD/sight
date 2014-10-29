@@ -39,10 +39,6 @@
                             <config renderer="default" picker="" transform="camPosMatrixTransform" />
                         </adaptor>
 
-                        <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                            <config renderer="default" picker="" />
-                        </adaptor>
-
                         <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                             <config renderer="default" picker="" />
                         </adaptor>

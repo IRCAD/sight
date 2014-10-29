@@ -17,9 +17,6 @@
                         <!--<picker id="myPicker" vtkclass="fwVtkCellPicker" />-->
 
                         <renderer id="default" background="0.0" />
-                        <adaptor id="myRenderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                            <config renderer="default" picker="" />
-                        </adaptor>
 
                         <adaptor id="MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="TrianMesh">
                             <config renderer="default" picker="" />

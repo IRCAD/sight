@@ -178,10 +178,6 @@
                                 <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="renderAdaptor" class="::visuVTKAdaptor::Render" objectId="self">
-                                    <config renderer="default" picker="" />
-                                </adaptor>
-
                                 <adaptor id="imageAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                                     <config renderer="default" picker="defaultPicker" />
                                 </adaptor>

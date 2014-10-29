@@ -1,0 +1,14 @@
+CLASSTEST=[
+           'RawBufferTLTest',
+           'FrameTLTest',
+           'GenericTLTest',
+          ]
+
+USE = ['boost', 'cppunit']
+LIB = [
+      'extData_0-1',
+      'fwData_0-1',
+      'fwTools_0-1',
+      'fwTest_0-1',
+      ]
+CONSOLE = 'yes'

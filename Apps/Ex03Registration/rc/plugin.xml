@@ -217,10 +217,6 @@ Detail of the ToolBar
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="renderNegato1" class="::visuVTKAdaptor::Render" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
-
                             <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
@@ -255,10 +251,6 @@ Detail of the ToolBar
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="renderNegato2" class="::visuVTKAdaptor::Render" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
-
                             <adaptor id="Interactor2" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle3DForNegato" />
                             </adaptor>
@@ -283,10 +275,6 @@ Detail of the ToolBar
                             <renderer id="default" background="0.0" />
 
                             <vtkObject id="vtkRegisterMatrix" class="vtkTransform" />
-
-                            <adaptor id="renderNegato3" class="::visuVTKAdaptor::Render" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle3DForNegato" />

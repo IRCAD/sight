@@ -1,0 +1,19 @@
+TYPE    = 'bundle'
+VERSION = '0-1'
+
+LIB = [
+        'fwRuntime_0-3',
+        'fwServices_0-1',
+        'fwTools_0-1',
+        'fwCore_0-1',
+        'fwData_0-1',
+        'fwComEd_0-1',
+        'extData_0-1',
+]
+BUNDLES = [
+    'appXml_0-1'        ,
+    'dataReg_0-1'       ,
+    'extDataReg_0-1'    ,
+    'servicesReg_0-1'   ,
+    'launcher_0-1'      ,
+ ]

@@ -1,0 +1,7 @@
+<plugin id="extDataReg" class="::extDataReg::Plugin" >
+    
+    <library name="extDataReg" />
+    <requirement id="dataReg" />
+
+</plugin>
+

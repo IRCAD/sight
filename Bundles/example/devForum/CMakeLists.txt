@@ -1,10 +1,13 @@
 fwLoadProperties()
 fwUseForwardInclude(
-    fwGui
+    fwData
     fwRender
+    fwVtkIO
+    fwDataIO
+    fwComEd
     fwRenderVTK
-    fwRuntime
     io
+    gui
 )
 
 
