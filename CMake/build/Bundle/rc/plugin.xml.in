@@ -1,0 +1,8 @@
+<plugin id="@BUNDLE_NAME@" class="::@BUNDLE_NAME@::Plugin" >
+    
+    <library name="@BUNDLE_NAME@" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+
+</plugin>
