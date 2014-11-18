@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -145,9 +145,13 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
     if( this->hasLocationDefined() )
     {
         ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB( this->getFolder() );
-
-        if( seriesDB->size() > 0 )
+        if( seriesDB->size() > 0  )
         {
+            if(this->isStopped()) // FIXME service might be stopped while updating in a worker
+            {
+                return;
+            }
+
             // Retrieve dataStruct associated with this service
             ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
