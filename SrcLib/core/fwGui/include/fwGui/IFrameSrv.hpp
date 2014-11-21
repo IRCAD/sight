@@ -56,6 +56,7 @@ protected :
                     <name>My App</name>
                     <icon>Bundles/myApp_1-0/icon.ico</icon>
                     <minSize width="800" height="600" />
+                    <style mode="MODAL" />
                 </frame>
                 <toolBar />
                 <menuBar />
@@ -70,7 +71,9 @@ protected :
      * - \<window onclose="notify" /\> : defines what to do when the frame is closed
      *   - \b exit (by default) : the application is closed. Use it for the main frame.
      *   - \b notify : notifies service's object with WINDOW_CLOSED event.
-     * - \<frame\> : defines the frame name, icon, size.
+     * - \<frame\> : defines the frame name, icon, size and style.
+     *   - \b style : defines frame style (modal, always on top, etc.), not mandatory.
+     *     Allowed values are MODAL, STAY_ON_TOP and DEFAULT (default value).
      * - The toolBar section isn't mandatory.
      * - The menuBar section isn't mandatory.
      *
