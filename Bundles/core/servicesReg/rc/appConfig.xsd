@@ -49,6 +49,7 @@
             <xs:element name="item"  type="ItemType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="node"  type="NodeType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="edge"  type="EdgeType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="connect"  type="ConnectionType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="proxy"  type="ProxyType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
@@ -80,7 +81,7 @@
         <xs:attribute name='autoConnect' type='AutoConnectType' />
         <xs:attribute name='worker' type='xs:string' />
     </xs:complexType>
-
+   
     <!-- Connection Type -->
     <xs:complexType name="ConnectionType">
         <xs:sequence>
