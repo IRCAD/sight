@@ -9,8 +9,8 @@
 
 #include <deque>
 
-#include <boost/signal.hpp>
-#include <boost/signals/connection.hpp>
+#include <boost/signals2/signal.hpp>
+#include <boost/signals2/connection.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/cstdint.hpp>
 
@@ -33,8 +33,8 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API UndoRedoManager : public ::fwTools::Object
 {
 public:
-    typedef ::boost::signal<void (std::string)>  SignalType;
-    typedef ::boost::signals::connection         ConnectionType;
+    typedef ::boost::signals2::signal<void (std::string)>  SignalType;
+    typedef ::boost::signals2::connection                  ConnectionType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (UndoRedoManager)(::fwTools::Object), (( )), ::boost::make_shared< UndoRedoManager > );
 
