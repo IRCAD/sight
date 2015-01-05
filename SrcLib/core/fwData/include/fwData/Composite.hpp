@@ -44,14 +44,14 @@ namespace fwData
  *
  * Composite contains a map of ::fwData::Object.
  *
- * 
+ *
  * @date    2007-2009.
  */
 
 class FWDATA_CLASS_API Composite : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::factory::New< Composite >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Composite)(::fwData::Object), (()), ::fwData::factory::New< Composite >);
     fwCampMakeFriendDataMacro((fwData)(Composite));
 
     typedef std::map< std::string, ::fwData::Object::sptr > ContainerType;
@@ -101,7 +101,7 @@ public:
     SizeType size() const { return m_attrContainer.size(); }
 
     mapped_type& operator[] ( KeyType n )
-    {return this->m_attrContainer[n];}
+    {return this->m_attrContainer[n]; }
 
     IteratorType find ( const KeyType& x ) { return m_attrContainer.find(x); }
     ConstIteratorType find ( const KeyType& x ) const { return m_attrContainer.find(x); }
@@ -113,7 +113,7 @@ public:
 
     /// @brief get/set the map of std::string/::fwData::Object
     /// @{
-    ContainerType &getContainer(){ return m_attrContainer; };
+    ContainerType &getContainer(){ return m_attrContainer; }
     fwDataGetSetCRefMacro(Container, ContainerType);
     /// @}
 
@@ -137,17 +137,66 @@ public:
     std::map< std::string, SPTR(DATATYPE) > getDataContainer() const
     {
         std::map< std::string, SPTR(DATATYPE) > map;
-        SPTR(DATATYPE) castedData;
+        SPTR(DATATYPE) castData;
         BOOST_FOREACH( ::fwData::Composite::value_type elem, *this )
         {
-            castedData = ::boost::dynamic_pointer_cast<DATATYPE>( elem.second );
-            OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
-            map[elem.first] = castedData;
+            castData = ::boost::dynamic_pointer_cast<DATATYPE>( elem.second );
+            OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castData);
+            map[elem.first] = castData;
         }
 
         return map;
     }
 
+    /**
+     * @brief Returns object in composite associated with the key.
+     *  If no such object exists, a null object is returned.
+     *
+     *  @param key the key of the object to find
+     *
+     *  @return requested object in composite associated with the key
+     */
+    template< class DATATYPE >
+    SPTR(DATATYPE) at(const std::string& key)
+    {
+        SPTR(DATATYPE) castData;
+        ::fwData::Composite::iterator iter = this->find(key);
+        if(iter != this->end())
+        {
+            castData = ::boost::dynamic_pointer_cast<DATATYPE>(iter->second);
+            SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
+        }
+        else
+        {
+            SLM_TRACE( "Object '" + key + "' not found.");
+        }
+        return castData;
+    }
+
+    /**
+     * @brief Returns object in composite associated with the key.
+     *  If no such object exists, a null object is returned.
+     *
+     *  @param key the key of the object to find
+     *
+     *  @return requested object in composite associated with the key
+     */
+    template< class DATATYPE >
+    CSPTR(DATATYPE) at(const std::string& key) const
+    {
+        CSPTR(DATATYPE) castData;
+        ::fwData::Composite::const_iterator iter = this->find(key);
+        if(iter != this->end())
+        {
+            castData = ::boost::dynamic_pointer_cast<DATATYPE>(iter->second);
+            SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
+        }
+        else
+        {
+            SLM_TRACE( "Object '" + key + "' not found.");
+        }
+        return castData;
+    }
 protected:
     ContainerType m_attrContainer;
 };
