@@ -9,7 +9,7 @@
 
 #include <string>
 #include <boost/function.hpp>
-#include <boost/signals.hpp>
+#include <boost/signals2.hpp>
 
 #include <fwData/location/ILocation.hpp>
 
@@ -28,7 +28,7 @@ namespace dialog
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IProgressDialog : public ::fwGui::GuiBaseObject, public ::boost::signals::trackable // to autoDisconnect if handler is destroyed before the notifier
+class FWGUI_CLASS_API IProgressDialog : public ::fwGui::GuiBaseObject, public ::boost::signals2::trackable // to autoDisconnect if handler is destroyed before the notifier
 {
 
 public:
