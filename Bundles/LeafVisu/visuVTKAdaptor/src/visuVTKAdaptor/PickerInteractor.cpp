@@ -15,6 +15,8 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindowInteractor.h>
 
+#include <fwCore/HiResClock.hpp>
+
 #include <fwComEd/InteractionMsg.hpp>
 
 #include <fwData/Material.hpp>
@@ -146,6 +148,8 @@ public:
 
         msg->setModifiersStatus( ::fwComEd::InteractionMsg::CTRL,  m_caller->GetControlKey());
         msg->setModifiersStatus( ::fwComEd::InteractionMsg::SHIFT, m_caller->GetShiftKey());
+
+        msg->setEventTimestamp(::fwCore::HiResClock::getTimeInMilliSec());
 
         m_adaptor->notifyEvent( msg );
     }
