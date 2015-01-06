@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Mesh.hpp"
 
-#include <fwTools/fwID.hpp>
-
+#include <fwCom/Signal.hxx>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
@@ -19,6 +18,14 @@
 
 #include <fwVtkIO/vtk.hpp>
 #include <fwVtkIO/helper/Mesh.hpp>
+
+#include "visuVTKAdaptor/Material.hpp"
+#include "visuVTKAdaptor/MeshNormals.hpp"
+
+#include "visuVTKAdaptor/Texture.hpp"
+#include "visuVTKAdaptor/Transform.hpp"
+
+#include <boost/foreach.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -34,12 +41,9 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
-
-#include "visuVTKAdaptor/Material.hpp"
-#include "visuVTKAdaptor/MeshNormals.hpp"
-
-#include "visuVTKAdaptor/Transform.hpp"
-#include "visuVTKAdaptor/Mesh.hpp"
+#include <vtkTextureMapToSphere.h>
+#include <vtkTextureMapToCylinder.h>
+#include <vtkTextureMapToPlane.h>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh ) ;
@@ -54,6 +58,7 @@ public:
     virtual void Stop() = 0;
 };
 
+const ::fwCom::Signals::SignalKeyType Mesh::s_TEXTURE_APPLIED_SIG = "textureApplied";
 
 //------------------------------------------------------------------------------
 
@@ -367,16 +372,14 @@ Mesh::Mesh() throw()
 
     m_transform = vtkTransform::New();
 
-    //addNewHandledEvent (::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    //addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
-    //addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
-    //addNewHandledEvent (::fwComEd::MeshMsg::POINT_COLORS_MODIFIED );
-    //addNewHandledEvent (::fwComEd::MeshMsg::CELL_COLORS_MODIFIED );
-    //addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
-    //addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
-    //addNewHandledEvent ("SHOW_POINT_COLORS");
-    //addNewHandledEvent ("SHOW_CELL_COLORS");
-    //addNewHandledEvent ("HIDE_COLORS");
+    m_uvgen = NONE;
+
+    m_sigTextureApplied = TextureAppliedSignalType::New();
+    ::fwCom::HasSignals::m_signals(s_TEXTURE_APPLIED_SIG, m_sigTextureApplied);
+
+#ifdef COM_LOG
+    ::fwCom::HasSignals::m_signals.setID();
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -426,6 +429,28 @@ void Mesh::configuring() throw(fwTools::Failed)
     this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
     this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
     this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
+
+    if(m_configuration->hasAttribute("uvgen"))
+    {
+        std::string uvGen = m_configuration->getAttributeValue ("uvgen");
+        if(uvGen == "sphere")
+        {
+            m_uvgen = SPHERE;
+        }
+        else if(uvGen == "cylinder")
+        {
+            m_uvgen = CYLINDER;
+        }
+        else if(uvGen == "plane")
+        {
+            m_uvgen = PLANE;
+        }
+    }
+
+    if ( m_configuration->hasAttribute("texture") )
+    {
+        m_textureAdaptorUID = m_configuration->getAttributeValue("texture");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -491,6 +516,18 @@ void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Fail
         ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
         this->setVtkPipelineModified();
     }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_TEXCOORDS_MODIFIED))
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        ::fwVtkIO::helper::Mesh::updatePolyDataPointTexCoords(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
+    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_TEXCOORDS_MODIFIED))
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        ::fwVtkIO::helper::Mesh::updatePolyDataCellTexCoords(m_polyData, mesh);
+        this->setVtkPipelineModified();
+    }
     if (meshMsg && meshMsg->hasEvent("SHOW_POINT_COLORS"))
     {
         m_mapper->ScalarVisibilityOn();
@@ -514,6 +551,17 @@ void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Fail
 
 void Mesh::doStart() throw(fwTools::Failed)
 {
+    if(!m_textureAdaptorUID.empty())
+    {
+        ::fwRenderVTK::VtkRenderService::sptr renderService = this->getRenderService();
+        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
+        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
+
+        SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
+        m_connections->connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
+                               ::visuVTKAdaptor::Texture::s_APPLY_TEXTURE_SLOT);
+    }
+
     this->buildPipeline();
     m_transformService.lock()->start();
 }
@@ -536,6 +584,8 @@ void Mesh::doStop() throw(fwTools::Failed)
     removeServicesStarterCommand();
 
     this->unregisterServices();
+
+    m_connections->disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -585,7 +635,7 @@ void Mesh::createTransformService()
                 "::visuVTKAdaptor::Transform"
                 )
         );
-    assert(m_transformService.lock());
+    SLM_ASSERT("Transform service NULL", m_transformService.lock());
     ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
 
     transformService->setRenderService ( this->getRenderService()  );
@@ -621,17 +671,13 @@ void Mesh::setActorPropertyToUnclippedMaterial(bool opt)
 
     if (opt)
     {
-        assert(!m_unclippedPartMaterialService.expired());
-        mat = ::visuVTKAdaptor::Material::dynamicCast(
-                m_unclippedPartMaterialService.lock()
-                );
+        SLM_ASSERT("Material service expired", !m_unclippedPartMaterialService.expired());
+        mat = ::visuVTKAdaptor::Material::dynamicCast(m_unclippedPartMaterialService.lock());
     }
     else
     {
-        assert(!m_materialService.expired());
-        mat = ::visuVTKAdaptor::Material::dynamicCast(
-                m_materialService.lock()
-                );
+        SLM_ASSERT("Material service expired", !m_materialService.expired());
+        mat = ::visuVTKAdaptor::Material::dynamicCast(m_materialService.lock());
     }
 
     SLM_ASSERT("Invalid Material Adaptor", mat);
@@ -660,9 +706,7 @@ void Mesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr &srv, ::
 {
     if (! srv)
     {
-        srv = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
-            material, "::visuVTKAdaptor::Material"
-            );
+        srv = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (material, "::visuVTKAdaptor::Material");
         SLM_ASSERT("srv not instanced", srv);
 
         srv->setRenderService(this->getRenderService());
@@ -802,7 +846,37 @@ void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
     }
     m_polyData = vtkPolyData::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
-    m_mapper->SetInputData(m_polyData);
+
+    if(m_uvgen == SPHERE)
+    {
+        vtkSmartPointer<vtkTextureMapToSphere> texCoord = vtkSmartPointer<vtkTextureMapToSphere>::New();
+        texCoord->SetInputData(m_polyData);
+        m_mapper->SetInputConnection(texCoord->GetOutputPort());
+    }
+    else if(m_uvgen == CYLINDER)
+    {
+        vtkSmartPointer<vtkTextureMapToCylinder> texCoord = vtkSmartPointer<vtkTextureMapToCylinder>::New();
+        texCoord->SetInputData(m_polyData);
+        m_mapper->SetInputConnection(texCoord->GetOutputPort());
+    }
+    else if(m_uvgen == PLANE)
+    {
+        vtkSmartPointer<vtkTextureMapToPlane> texCoord = vtkSmartPointer<vtkTextureMapToPlane>::New();
+        texCoord->SetInputData(m_polyData);
+        m_mapper->SetInputConnection(texCoord->GetOutputPort());
+    }
+    else
+    {
+        m_mapper->SetInputData(m_polyData);
+    }
+
+    if(!m_textureAdaptorUID.empty())
+    {
+        ::fwData::Material::sptr material = this->getMaterial();
+        SLM_ASSERT("Missing material", material);
+
+        fwServicesNotifyMacro( this->getLightID(), m_sigTextureApplied, (material));
+    }
 
     if (m_autoResetCamera)
     {
@@ -816,6 +890,7 @@ void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
 vtkActor *Mesh::newActor()
 {
     vtkActor *actor = vtkActor::New();
+
     m_mapper->SetInputData(m_polyData);
 
     if (m_clippingPlanes)

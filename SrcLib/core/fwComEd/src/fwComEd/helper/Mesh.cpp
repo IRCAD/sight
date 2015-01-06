@@ -47,6 +47,8 @@ void Mesh::updateLock()
     ::fwData::Array::sptr cellColors   =  m_mesh->getCellColorsArray();
     ::fwData::Array::sptr pointNormals =  m_mesh->getPointNormalsArray();
     ::fwData::Array::sptr cellNormals  =  m_mesh->getCellNormalsArray();
+    ::fwData::Array::sptr pointTexCoords =  m_mesh->getPointTexCoordsArray();
+    ::fwData::Array::sptr cellTexCoords  =  m_mesh->getCellTexCoordsArray();
 
     if(pointColors)
     {
@@ -63,6 +65,14 @@ void Mesh::updateLock()
     if(cellNormals)
     {
         m_helperCellNormals = ::fwComEd::helper::Array::New(cellNormals);
+    }
+    if(pointTexCoords)
+    {
+        m_helperPointTexCoords = ::fwComEd::helper::Array::New(pointTexCoords);
+    }
+    if(cellTexCoords)
+    {
+        m_helperCellTexCoords = ::fwComEd::helper::Array::New(cellTexCoords);
     }
 }
 
@@ -136,6 +146,20 @@ void Mesh::setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalVal
 void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3])
 {
     m_helperCellNormals->setItem(list_of(id), n);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
+{
+    m_helperPointTexCoords->setItem(list_of(id), t);
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2])
+{
+    m_helperCellTexCoords->setItem(list_of(id), t);
 }
 
 //------------------------------------------------------------------------------
@@ -321,6 +345,28 @@ void Mesh::setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValu
     return ::fwData::Mesh::CellNormalsMultiArrayType(
             static_cast< ::fwData::Mesh::CellNormalsMultiArrayType::element *>(m_helperCellNormals->getBuffer()),
             ::boost::extents[m_mesh->getNumberOfCells()][cellNormals->getNumberOfComponents()]
+            );
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Mesh::PointTexCoordsMultiArrayType Mesh::getPointTexCoords() const
+{
+    ::fwData::Array::sptr pointTexCoords = m_mesh->getPointTexCoordsArray();
+    return ::fwData::Mesh::PointTexCoordsMultiArrayType(
+            static_cast< ::fwData::Mesh::PointTexCoordsMultiArrayType::element *>(m_helperPointTexCoords->getBuffer()),
+            ::boost::extents[m_mesh->getNumberOfPoints()][pointTexCoords->getNumberOfComponents()]
+            );
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Mesh::CellTexCoordsMultiArrayType Mesh::getCellTexCoords() const
+{
+    ::fwData::Array::sptr cellTexCoords = m_mesh->getCellTexCoordsArray();
+    return ::fwData::Mesh::CellTexCoordsMultiArrayType(
+            static_cast< ::fwData::Mesh::CellTexCoordsMultiArrayType::element *>(m_helperCellTexCoords->getBuffer()),
+            ::boost::extents[m_mesh->getNumberOfCells()][cellTexCoords->getNumberOfComponents()]
             );
 }
 

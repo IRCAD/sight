@@ -155,6 +155,44 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             }
         }
 
+        if(polyData->GetPointData()->GetAttribute(vtkDataSetAttributes::TCOORDS))
+        {
+            vtkSmartPointer<vtkFloatArray> texCoords;
+            texCoords = vtkFloatArray::SafeDownCast(polyData->GetPointData()->GetTCoords());
+            FW_RAISE_IF("Only vtkFloatArray is supported to manage texCoords.", !texCoords);
+
+            size_t nbComponents = texCoords->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 2);
+
+            mesh->allocatePointTexCoords();
+            meshHelper.updateLock();
+
+            ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints() ;
+            for (size_t i = 0; i != nbPoints; ++i)
+            {
+                meshHelper.setPointTexCoord(i, texCoords->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(polyData->GetCellData()->GetAttribute(vtkDataSetAttributes::TCOORDS))
+        {
+            vtkSmartPointer<vtkFloatArray> texCoords;
+            texCoords = vtkFloatArray::SafeDownCast(polyData->GetCellData()->GetTCoords());
+            FW_RAISE_IF("Only vtkFloatArray is supported to manage texCoords.", !texCoords);
+
+            size_t nbComponents = texCoords->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 2);
+
+            mesh->allocateCellTexCoords();
+            meshHelper.updateLock();
+
+            ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells() ;
+            for (size_t i = 0; i != nbCells; ++i)
+            {
+                meshHelper.setCellTexCoord(i, texCoords->GetPointer(i*nbComponents));
+            }
+        }
+
         mesh->adjustAllocatedMemory();
     }
 }
@@ -239,6 +277,9 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> po
 
     Mesh::updatePolyDataPointColor(polyData, mesh);
     Mesh::updatePolyDataCellColor(polyData, mesh);
+
+    Mesh::updatePolyDataPointTexCoords(polyData, mesh);
+    Mesh::updatePolyDataCellTexCoords(polyData, mesh);
 }
 
 //------------------------------------------------------------------------------
@@ -417,6 +458,86 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
         if(polyDataDst->GetCellData()->GetAttribute(vtkDataSetAttributes::NORMALS))
         {
             polyDataDst->GetCellData()->RemoveArray(vtkDataSetAttributes::NORMALS);
+        }
+        polyDataDst->Modified();
+    }
+
+    return polyDataDst;
+}
+
+//------------------------------------------------------------------------------
+
+vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                                                ::fwData::Mesh::sptr meshSrc )
+{
+    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+
+    ::fwData::Array::sptr pointTexCoordsArray = meshSrc->getPointTexCoordsArray();
+    if(pointTexCoordsArray)
+    {
+        ::fwComEd::helper::Array arrayHelper(pointTexCoordsArray);
+
+        vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
+        size_t nbComponents = pointTexCoordsArray->getNumberOfComponents();
+        normals->SetNumberOfComponents(nbComponents);
+
+        float *pointTexCoord = arrayHelper.begin< float >();
+        float *pointTexCoordEnd = arrayHelper.end< float >();
+
+        for (; pointTexCoord != pointTexCoordEnd; pointTexCoord+=nbComponents)
+        {
+            normals->InsertNextTupleValue(pointTexCoord);
+        }
+
+
+        polyDataDst->GetPointData()->SetTCoords(normals);
+        polyDataDst->Modified();
+    }
+    else
+    {
+        if(polyDataDst->GetPointData()->GetAttribute(vtkDataSetAttributes::TCOORDS))
+        {
+            polyDataDst->GetPointData()->RemoveArray(vtkDataSetAttributes::TCOORDS);
+        }
+        polyDataDst->Modified();
+    }
+
+    return polyDataDst;
+}
+
+//------------------------------------------------------------------------------
+
+vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                                               ::fwData::Mesh::sptr meshSrc )
+{
+    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+
+    ::fwData::Array::sptr cellTexCoordsArray = meshSrc->getCellTexCoordsArray();
+
+    if(cellTexCoordsArray)
+    {
+        ::fwComEd::helper::Array arrayHelper(cellTexCoordsArray);
+
+        vtkSmartPointer<vtkFloatArray> normals = vtkSmartPointer<vtkFloatArray>::New();
+        size_t nbComponents = cellTexCoordsArray->getNumberOfComponents();
+        normals->SetNumberOfComponents(nbComponents);
+
+        float *cellTexCoord = arrayHelper.begin< float >();
+        float *cellTexCoordEnd = arrayHelper.end< float >();
+
+        for (; cellTexCoord != cellTexCoordEnd; cellTexCoord+=nbComponents)
+        {
+            normals->InsertNextTupleValue(cellTexCoord);
+        }
+
+        polyDataDst->GetCellData()->SetTCoords(normals);
+        polyDataDst->Modified();
+    }
+    else
+    {
+        if(polyDataDst->GetCellData()->GetAttribute(vtkDataSetAttributes::TCOORDS))
+        {
+            polyDataDst->GetCellData()->RemoveArray(vtkDataSetAttributes::TCOORDS);
         }
         polyDataDst->Modified();
     }

@@ -36,6 +36,8 @@ public:
     FWCOMED_API static std::string CELL_COLORS_MODIFIED;
     FWCOMED_API static std::string POINT_NORMALS_MODIFIED;
     FWCOMED_API static std::string CELL_NORMALS_MODIFIED;
+    FWCOMED_API static std::string POINT_TEXCOORDS_MODIFIED;
+    FWCOMED_API static std::string CELL_TEXCOORDS_MODIFIED;
 
     /**
      * @brief Constructor
