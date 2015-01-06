@@ -387,8 +387,6 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
-
     SceneAdaptorsMapType::iterator adaptorIter ;
 
     for ( adaptorIter = m_sceneAdaptors.begin();
@@ -548,6 +546,23 @@ vtkObject * VtkRenderService::getVtkObject(VtkObjectIdType objectId)
         return NULL;
     }
     return m_vtkObjects[objectId];
+}
+
+//-----------------------------------------------------------------------------
+
+SPTR (IVtkAdaptorService) VtkRenderService::getAdaptor(VtkRenderService::AdaptorIdType adaptorId)
+{
+    IVtkAdaptorService::sptr adaptor;
+    SceneAdaptorsMapType::iterator it = m_sceneAdaptors.find(adaptorId);
+
+    OSLM_WARN_IF("adaptor '" << adaptorId << "' not found", it == m_sceneAdaptors.end());
+
+    if ( it != m_sceneAdaptors.end() )
+    {
+        adaptor = it->second.getService();
+    }
+
+    return adaptor;
 }
 
 //-----------------------------------------------------------------------------

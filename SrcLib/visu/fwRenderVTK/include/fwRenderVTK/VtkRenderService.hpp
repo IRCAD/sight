@@ -72,6 +72,9 @@ public :
     /// Returns the vtkObject with the given id
     FWRENDERVTK_API vtkObject * getVtkObject(VtkObjectIdType objectId);
 
+    /// Returns the adaptor with the given id
+    FWRENDERVTK_API SPTR (IVtkAdaptorService) getAdaptor(AdaptorIdType adaptorId);
+
     bool getPendingRenderRequest(){return m_pendingRenderRequest;}
     void setPendingRenderRequest(bool b){m_pendingRenderRequest=b;}
 

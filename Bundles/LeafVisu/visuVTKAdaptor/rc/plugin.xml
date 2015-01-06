@@ -307,6 +307,12 @@
         <object>::fwMedData::ImageSeries</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::Texture</service>
+        <object>::fwData::Image</object>
+    </extension>
+
 </plugin>
 
 
