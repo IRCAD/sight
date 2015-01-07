@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
 
 #include <assert.h>
 #include <iomanip>
@@ -485,4 +485,4 @@ void PosixMemoryMonitorTools::printAllStatus()
 } // namespace tools
 } // namespace fwMemory
 
-#endif
+#endif //defined(linux) || defined(__linux)

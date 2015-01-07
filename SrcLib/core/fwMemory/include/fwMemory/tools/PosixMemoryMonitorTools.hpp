@@ -7,7 +7,7 @@
 #ifndef _FWMEMORY_POSIXMEMORYMONITORTOOLS_HPP_
 #define _FWMEMORY_POSIXMEMORYMONITORTOOLS_HPP_
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
 
 #include <boost/cstdint.hpp>
 #include <string>
@@ -137,6 +137,6 @@ private :
 } // namespace tools
 } // namespace fwMemory
 
-#endif
+#endif //defined(linux) || defined(__linux)
 
 #endif // _FWMEMORY_POSIXMEMORYMONITORTOOLS_HPP_

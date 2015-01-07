@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
 
 
 #include "fwRuntime/Bundle.hpp"
@@ -95,4 +95,4 @@ void Posix::unload() throw(RuntimeException)
 } // namespace fwRuntime
 
 
-#endif // #ifdef linux
+#endif // #if defined(linux) || defined(__linux)
