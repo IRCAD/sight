@@ -19,6 +19,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
+#include <fwGui/backend.hpp>
 
 #include <io/IReader.hpp>
 
@@ -110,16 +111,27 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
 {
     SLM_TRACE_FUNC();
-    ::vtkGdcmIO::SeriesDBReader::sptr myLoader = ::vtkGdcmIO::SeriesDBReader::New();
+    ::vtkGdcmIO::SeriesDBReader::sptr reader = ::vtkGdcmIO::SeriesDBReader::New();
     ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
-    myLoader->setObject(dummy);
-    myLoader->setFolder(dicomDir);
+    reader->setObject(dummy);
+    reader->setFolder(dicomDir);
+
+    fwGui::dialog::ProgressDialog::sptr progressMeterGUI;
+
+    if(::fwGui::isBackendLoaded())
+    {
+         progressMeterGUI = fwGui::dialog::ProgressDialog::New();
+         progressMeterGUI->setTitle("Saving series...");
+    }
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
-        myLoader->addHandler( progressMeterGUI );
-        myLoader->read();
+        if(progressMeterGUI)
+        {
+            reader->addHandler( *progressMeterGUI );
+        }
+
+        reader->read();
     }
     catch (const std::exception & e)
     {
@@ -134,7 +146,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
                 "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
-    return myLoader->getConcreteObject();
+    return reader->getConcreteObject();
 }
 
 //------------------------------------------------------------------------------
