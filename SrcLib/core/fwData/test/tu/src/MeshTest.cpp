@@ -90,19 +90,30 @@ void MeshTest::allocation()
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointNormalsArray()->getSize()[0]);
     mesh->allocatePointColors(::fwData::Mesh::RGB);
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointColorsArray()->getSize()[0]);
+    mesh->allocatePointTexCoords();
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointTexCoordsArray()->getSize()[0]);
 
     CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(4), mesh->getPointNormalsArray()->getType().sizeOf());
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), mesh->getPointNormalsArray()->getNumberOfComponents());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(1), mesh->getPointColorsArray()->getType().sizeOf());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), mesh->getPointColorsArray()->getNumberOfComponents());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(4), mesh->getPointTexCoordsArray()->getType().sizeOf());
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), mesh->getPointTexCoordsArray()->getNumberOfComponents());
+
     size_t pointNormalsAllocatedSize = mesh->getNumberOfPoints() * mesh->getPointNormalsArray()->getNumberOfComponents() * mesh->getPointNormalsArray()->getType().sizeOf();
     CPPUNIT_ASSERT_EQUAL(pointNormalsAllocatedSize, mesh->getPointNormalsArray()->getSizeInBytes());
-
     size_t pointColorsAllocatedSize = mesh->getNumberOfPoints() * mesh->getPointColorsArray()->getNumberOfComponents() * mesh->getPointColorsArray()->getType().sizeOf();
-    CPPUNIT_ASSERT_EQUAL(pointAllocatedSize + cellSize + cellDataOffsetsAllocatedSize + cellDataAllocatedSize + pointNormalsAllocatedSize + pointColorsAllocatedSize, mesh->getAllocatedSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(pointColorsAllocatedSize, mesh->getPointColorsArray()->getSizeInBytes());
+    size_t pointTexCoordsAllocatedSize = mesh->getNumberOfPoints() * mesh->getPointTexCoordsArray()->getNumberOfComponents() * mesh->getPointTexCoordsArray()->getType().sizeOf();
+    CPPUNIT_ASSERT_EQUAL(pointTexCoordsAllocatedSize, mesh->getPointTexCoordsArray()->getSizeInBytes());
+    CPPUNIT_ASSERT_EQUAL(pointAllocatedSize + cellSize + cellDataOffsetsAllocatedSize + cellDataAllocatedSize + pointNormalsAllocatedSize + pointColorsAllocatedSize + pointTexCoordsAllocatedSize, mesh->getAllocatedSizeInBytes());
 
     mesh->allocateCellNormals();
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfCells()), mesh->getCellNormalsArray()->getSize()[0]);
     mesh->allocateCellColors(::fwData::Mesh::RGBA);
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfCells()), mesh->getCellColorsArray()->getSize()[0]);
+    mesh->allocateCellTexCoords();
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfCells()), mesh->getCellTexCoordsArray()->getSize()[0]);
 
     size_t oldsize = mesh->getAllocatedSizeInBytes();
     bool adjusted = mesh->adjustAllocatedMemory();
@@ -111,9 +122,8 @@ void MeshTest::allocation()
     CPPUNIT_ASSERT(oldsize > newSize);
 
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointsArray()->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfPoints()), mesh->getPointsArray()->getSize()[0]);
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getNumberOfCells()) , mesh->getCellTypesArray()->getSize()[0]);
-    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getCellDataSize()  ), mesh->getCellDataArray()->getSize()[0]);
+    CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(mesh->getCellDataSize()), mesh->getCellDataArray()->getSize()[0]);
 
     mesh->clear();
     CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id) 0, mesh->getNumberOfPoints());
@@ -286,6 +296,57 @@ void MeshTest::colorsNormals()
 
 //-----------------------------------------------------------------------------
 
+void MeshTest::texCoords()
+{
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwComEd::helper::Mesh helper(mesh);
+    helper.insertNextPoint(10, 20, 30);
+    helper.insertNextPoint(10, 10, 10);
+    helper.insertNextPoint(20, 20, 10);
+    helper.insertNextPoint(30, 30, 10);
+    helper.insertNextPoint(15, 20, 35);
+    helper.insertNextPoint(20, 20, 10);
+    helper.insertNextPoint(20, 63, 17);
+    helper.insertNextPoint(27, 83, 52);
+
+    helper.insertNextCell(1, 2);
+    helper.insertNextCell(1, 3, 4);
+    helper.insertNextCell(1, 2, 5, 4);
+
+    ::fwData::Mesh::CellValueType p[4] = {3, 6, 5, 1};
+    helper.insertNextCell(::fwData::Mesh::QUAD, p, 4);
+
+    ::fwData::Mesh::CellValueType p2[6] = {1, 3, 5, 7, 2, 6};
+    helper.insertNextCell(::fwData::Mesh::POLY, p2, 6);
+
+    ::fwData::Mesh::CellValueType p3[5] = {7, 2, 5, 4, 3};
+    helper.insertNextCell(::fwData::Mesh::POLY, p3, 5);
+
+    mesh->allocateCellTexCoords();
+    helper.updateLock();
+    ::fwData::Mesh::CellTexCoordsMultiArrayType cellTexCoordArray = helper.getCellTexCoords();
+
+    ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells();
+    for (int id=0 ; id< nbCells ; id++)
+    {
+        for (int n=0 ; n < 2 ; n++)
+        {
+            cellTexCoordArray[id][n] = id + n/10.f;
+        }
+    }
+    CPPUNIT_ASSERT_EQUAL(0.0f, cellTexCoordArray[0][0]);
+    CPPUNIT_ASSERT_EQUAL(2.1f, cellTexCoordArray[2][1]);
+    CPPUNIT_ASSERT_EQUAL(4.1f, cellTexCoordArray[4][1]);
+    CPPUNIT_ASSERT_EQUAL(5.0f, cellTexCoordArray[5][0]);
+
+    ::fwData::Mesh::TexCoordValueType TexCoord[3] = {0.9f, 0.4f};
+    helper.setCellTexCoord(4, TexCoord);
+    CPPUNIT_ASSERT_EQUAL(0.9f, cellTexCoordArray[4][0]);
+    CPPUNIT_ASSERT_EQUAL(0.4f, cellTexCoordArray[4][1]);
+}
+
+//-----------------------------------------------------------------------------
+
 void MeshTest::addingArray()
 {
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
@@ -419,8 +480,8 @@ void MeshTest::copy()
     meshHelper.insertNextCell(::fwData::Mesh::POLY, p3, 5);
 
     mesh->allocatePointColors(::fwData::Mesh::RGBA);
+    mesh->allocatePointTexCoords();
     meshHelper.updateLock();
-    ::fwData::Mesh::PointColorsMultiArrayType pointColorArray = meshHelper.getPointColors();
 
     // check deep copy
     ::fwData::Mesh::sptr deepCopyMesh;
@@ -436,6 +497,7 @@ void MeshTest::copy()
     CPPUNIT_ASSERT(mesh->getCellDataOffsetsArray()->getSize() == deepCopyMesh->getCellDataOffsetsArray()->getSize());
     CPPUNIT_ASSERT(mesh->getCellDataArray()->getSize()        == deepCopyMesh->getCellDataArray()->getSize());
     CPPUNIT_ASSERT(mesh->getPointColorsArray()->getSize()     == deepCopyMesh->getPointColorsArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getPointTexCoordsArray()->getSize()  == deepCopyMesh->getPointTexCoordsArray()->getSize());
 
     ::fwData::Mesh::PointsMultiArrayType meshPointArray = meshHelper.getPoints();
     ::fwData::Mesh::PointsMultiArrayType deepCopyMeshPointArray = deepCopyMeshHelper.getPoints();
@@ -460,8 +522,10 @@ void MeshTest::copy()
     CPPUNIT_ASSERT_EQUAL(mesh->getCellDataArray()       , shallowCopyMesh->getCellDataArray());
     CPPUNIT_ASSERT_EQUAL(mesh->getPointColorsArray()    , shallowCopyMesh->getPointColorsArray());
     CPPUNIT_ASSERT_EQUAL(mesh->getPointNormalsArray()   , shallowCopyMesh->getPointNormalsArray());
+    CPPUNIT_ASSERT_EQUAL(mesh->getPointTexCoordsArray() , shallowCopyMesh->getPointTexCoordsArray());
     CPPUNIT_ASSERT_EQUAL(mesh->getCellColorsArray()     , shallowCopyMesh->getCellColorsArray());
     CPPUNIT_ASSERT_EQUAL(mesh->getCellNormalsArray()    , shallowCopyMesh->getCellNormalsArray());
+    CPPUNIT_ASSERT_EQUAL(mesh->getCellTexCoordsArray()  , shallowCopyMesh->getCellTexCoordsArray());
 }
 
 } //namespace ut

@@ -19,5 +19,6 @@ fwLink(
     ${Boost_LIBRARIES} 
     vtkInteractionWidgets
     vtkInteractionStyle
+    vtkFiltersTexture
     )
 

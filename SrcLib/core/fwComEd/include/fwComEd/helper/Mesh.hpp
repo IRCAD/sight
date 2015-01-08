@@ -133,6 +133,30 @@ public :
      FWCOMED_API void setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
 
      /**
+      * @brief Set a point texCoord.
+      *
+      * The texCoord array must be allocated before calling this method.
+      *
+      * @param id point index
+      * @param t texCoord
+      *
+      * @throw ::fwData::Exception
+      */
+     FWCOMED_API void setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
+
+     /**
+      * @brief Set a cell texCoord.
+      *
+      * The texCoord array must be allocated before calling this method.
+      *
+      * @param id cell index
+      * @param t texCoord
+      *
+      * @throw ::fwData::Exception
+      */
+     FWCOMED_API void setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
+
+     /**
       * @brief Insert a cell into the mesh.
       *
       * Reallocates the mesh concerned arrays if needed.
@@ -196,6 +220,10 @@ public :
      FWCOMED_API ::fwData::Mesh::PointNormalsMultiArrayType    getPointNormals() const;
      /// Returns the internal corresponding array as a boost::multi_array_ref
      FWCOMED_API ::fwData::Mesh::CellNormalsMultiArrayType     getCellNormals() const;
+     /// Returns the internal corresponding array as a boost::multi_array_ref
+     FWCOMED_API ::fwData::Mesh::PointTexCoordsMultiArrayType  getPointTexCoords() const;
+     /// Returns the internal corresponding array as a boost::multi_array_ref
+     FWCOMED_API ::fwData::Mesh::CellTexCoordsMultiArrayType   getCellTexCoords() const;
 
      /// Returns the internal ::fwData::Mesh
      FWCOMED_API ::fwData::Mesh::csptr getMesh() const;
@@ -218,6 +246,8 @@ protected:
     ::fwComEd::helper::Array::sptr m_helperCellColors;
     ::fwComEd::helper::Array::sptr m_helperPointNormals;
     ::fwComEd::helper::Array::sptr m_helperCellNormals;
+    ::fwComEd::helper::Array::sptr m_helperPointTexCoords;
+    ::fwComEd::helper::Array::sptr m_helperCellTexCoords;
 
 };
 
