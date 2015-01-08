@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,10 +16,7 @@ fwCampAutoDeclareDataMacro((fwData)(StructureTraitsDictionary), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   StructureTraitsDictionary
- * @brief   This class defines a dictionary of structure traits.
- * 
- * @date    2007-2011.
+ * @brief This class defines a dictionary of structure traits.
  *
  * @note The dictionary cannot contain two structure with the same type.
  * @see StructureTraits
@@ -79,3 +76,4 @@ private:
 } // namespace fwData
 
 #endif // __FWDATA_STRUCTURETRAITSDICTIONARY_HPP__
+

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,6 +20,10 @@ namespace data
 
 //-----------------------------------------------------------------------------
 
+/**
+* @brief This class manage events on the scene 2D (mouse event, keyboard event ,
+* ...).
+*/
 class SCENE2D_CLASS_API Event : public ::fwData::Object
 {
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_TRANSFORMATIONMATRIX3D_HPP_
-#define _FWDATA_TRANSFORMATIONMATRIX3D_HPP_
+#ifndef __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
+#define __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 
 #include <vector>
 #include <iostream>
@@ -20,10 +20,7 @@ namespace fwData
 {
 
 /**
- * @class   TransformationMatrix3D
- * @brief   This class represents a 3D transformation matrix (4x4)
- * 
- * @date    2007-2009.
+ * @brief This class represents a 3D transformation matrix (4x4).
  */
 class FWDATA_CLASS_API TransformationMatrix3D : public Object
 {
@@ -90,4 +87,5 @@ protected :
 
 }; // namespace fwData
 
-#endif // _FWDATA_TRANSFORMATIONMATRIX3D_HPP_
+#endif // __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
+

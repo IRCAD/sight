@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_MESH_HPP_
-#define _FWDATA_MESH_HPP_
+#ifndef __FWDATA_MESH_HPP__
+#define __FWDATA_MESH_HPP__
 
 #include <camp/class.hpp>
 
@@ -25,11 +25,7 @@ namespace fwData
 {
 
 /**
- * @class   Mesh
- * @brief   Data holding a geometric structure composed of points, lines,
- * triangles, quads or polygons
- * 
- * @date    2011.
+ * @brief   Data holding a geometric structure composed of points, lines, triangles, quads or polygons.
  *
  * It is the new structure that represent mesh in fw4spl. For the moment, this new structure is available
  * to register mesh with triangle cells, with quad cells or with triangle and quad cells. Peharps, in future
@@ -39,8 +35,10 @@ namespace fwData
  *
  * An array (m_points) which contains point coord (x,y,z) \n
  * An array (m_cellTypes) which contains cell type (TRIAN or QUAD for the moment) \n
- * An array (m_cellData) which contains point indexes in m_points used to create cells, 3 indexes are necessary to create a triangle cell, 4 for quad cell. \n
- * An array (m_cellDataOffsets) which contains indexes relative to m_cellData, to retrieve the first point necessary to the cell creation. \n
+ * An array (m_cellData) which contains point indexes in m_points used to create cells, 3 indexes are necessary to
+ * create a triangle cell, 4 for quad cell. \n
+ * An array (m_cellDataOffsets) which contains indexes relative to m_cellData, to retrieve the first point necessary
+ * to the cell creation. \n
  *
  * Example : \n
  * m_points.size = number of mesh points  * 3 \n
@@ -48,7 +46,8 @@ namespace fwData
  * m_cellTypes.size = number of mesh cells \n
  * m_cellTypes = [TRIANGLE, TRIANGLE, QUAD, QUAD, TRIANGLE ... ] \n
  * m_cellDataOffsets.size = number of mesh cells \n
- * m_cellDataOffsets = [0, 3, 6, 10, 14, ... ] ( offset shifting in  m_cellData = +3 if triangle cell rr +4 if quad cell ) \n
+ * m_cellDataOffsets = [0, 3, 6, 10, 14, ... ] (offset shifting in  m_cellData = +3 if triangle cell rr +4 if quad cell)
+ * \n
  * number of mesh cells * 3 (if only triangle cell) < m_cellData.size < number of mesh cells * 4 (if only quad cell) \n
  * m_cellData = [0, 1, 2, 0, 1, 3, 0, 1, 3, 5... ] ( correspond to point id ) \n
  *
@@ -365,4 +364,5 @@ protected:
 
 } // namespace fwData
 
-#endif // _FWDATA_MESH_HPP_
+#endif // __FWDATA_MESH_HPP__
+

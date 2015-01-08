@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_MODEL_HPP_
-#define _FWDATA_MODEL_HPP_
+#ifndef __FWDATA_MODEL_HPP__
+#define __FWDATA_MODEL_HPP__
 
 #include <map>
 #include <boost/shared_ptr.hpp>
@@ -22,17 +22,12 @@ fwCampAutoDeclareDataMacro((fwData)(Model), FWDATA_API);
 namespace fwData
 {
 
-
 /**
- * @class   Model
- * @brief   This model class focusses on 3D model such as meshes
+ * @brief   This model class focusses on 3D model such as meshes.
  *
  * A model is represented by a triangular mesh and a material
  *
  * @see     ::fwData::TriangularMesh, ::fwData::Material
- *
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API Model : public Object
 {
@@ -78,4 +73,5 @@ protected:
 
 } // namespace fwData
 
-#endif // _FWDATA_MODEL_HPP_
+#endif // __FWDATA_MODEL_HPP__
+

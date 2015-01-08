@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,13 +12,12 @@
 #include "fwData/factory/new.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(ReconstructionTraits), FWDATA_API);
+
 namespace fwData
 {
+
 /**
- * @class   ReconstructionTraits
- * @brief   This class defines Reconstruction traits.
- * 
- * @date    2007-20011.
+ * @brief This class defines Reconstruction traits.
  *
  * A ReconstructionTraits contains :
  *  - an identifier
@@ -87,3 +86,4 @@ private:
 } // namespace fwData
 
 #endif // __FWDATA_RECONSTRUCTIONTRAITS_HPP__
+
