@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,10 +17,13 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/WorkerQt.hpp>
+
+#include <fwGui/registry/worker.hpp>
 
 #include "guiQt/Plugin.hpp"
 
@@ -48,7 +51,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     char** argv = profile->getRawParams();
 
     m_workerQt = ::fwGuiQt::getQtWorker(argc, argv);
-
+    ::fwGui::registry::worker::init(m_workerQt);
 
     m_workerQt->post( ::boost::bind( &Plugin::loadStyleSheet, this ) );
 

@@ -4,6 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGuiQt/WorkerQt.hpp"
+
+#include "fwGuiQt/App.hpp"
+#include "fwGuiQt/util/FuncSlot.hpp"
+
+#include <fwCore/util/LazyInstantiator.hpp>
+
+#include <fwGui/registry/worker.hpp>
+
+#include <fwThread/Worker.hpp>
+#include <fwThread/Timer.hpp>
+
+#include <fwServices/registry/ActiveWorkers.hpp>
+
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
@@ -15,17 +29,6 @@
 #include <QSharedPointer>
 #include <QFont>
 
-#include <fwCore/util/LazyInstantiator.hpp>
-
-#include <fwThread/Worker.hpp>
-#include <fwThread/Timer.hpp>
-
-#include <fwServices/registry/ActiveWorkers.hpp>
-
-#include "fwGuiQt/App.hpp"
-#include "fwGuiQt/util/FuncSlot.hpp"
-
-#include "fwGuiQt/WorkerQt.hpp"
 
 namespace fwGuiQt
 {
@@ -266,6 +269,7 @@ void WorkerQt::init( int &argc, char **argv )
     }
 
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
+
 
 }
 
