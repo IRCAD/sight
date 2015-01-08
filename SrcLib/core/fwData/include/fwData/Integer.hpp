@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_INTEGER_HPP_
-#define _FWDATA_INTEGER_HPP_
+#ifndef __FWDATA_INTEGER_HPP__
+#define __FWDATA_INTEGER_HPP__
 
 #include "fwData/config.hpp"
 #include "fwData/GenericField.hpp"
@@ -18,13 +18,8 @@ namespace fwData
 {
 
 /**
- * @class   Integer
- * @brief   This class contains an integer value
- *
+ * @brief   This class contains an integer value.
  * Integer object is essentially used as a field in other objects.
- *
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API Integer : public GenericField< int >
 {
@@ -52,6 +47,5 @@ public:
 
 } // namespace fwData
 
+#endif // __FWDATA_INTEGER_HPP__
 
-
-#endif // _FWDATA_INTEGER_HPP_

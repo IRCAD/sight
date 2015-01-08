@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_IMAGE_HPP_
-#define _FWDATA_IMAGE_HPP_
+#ifndef __FWDATA_IMAGE_HPP__
+#define __FWDATA_IMAGE_HPP__
 
 #include <vector>
 
@@ -22,20 +22,13 @@
 
 fwCampAutoDeclareDataMacro((fwData)(Image), FWDATA_API);
 
-
-
-
 namespace fwData
 {
 
 /**
- * @class   Image
- * @brief   This class defines an image
+ * @brief This class defines an image
  *
  * An image contains a buffer and is defined by some parameters (size, spacing, pixel type, ...)
- *
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API Image : public Object
 {
@@ -199,8 +192,7 @@ protected :
     ::fwData::Array::sptr m_dataArray;
 };
 
-
 } // namespace fwData
 
-#endif //_FWDATA_IMAGE_HPP_
+#endif // __FWDATA_IMAGE_HPP__
 

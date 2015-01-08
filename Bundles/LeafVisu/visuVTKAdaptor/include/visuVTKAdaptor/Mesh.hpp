@@ -37,6 +37,9 @@ class Transform;
 
 class VISUVTKADAPTOR_CLASS_API MeshVtkCommand ;
 
+/**
+ * @brief Display a mesh on the generic scene
+ */
 class VISUVTKADAPTOR_CLASS_API Mesh: public ::fwRenderVTK::IVtkAdaptorService
 {
 

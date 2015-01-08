@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_ARRAY_HPP_
-#define _FWDATA_ARRAY_HPP_
+#ifndef __FWDATA_ARRAY_HPP__
+#define __FWDATA_ARRAY_HPP__
 
 #include <fwTools/Type.hpp>
 #include <fwMemory/BufferObject.hpp>
@@ -22,13 +22,12 @@ namespace fwData
 {
 
 /**
- * @class   Array
  * @brief   Provides a way to manage a view on a multidimentionnal array.
+ *
  * If the array own his buffer, it will perform the allocation, reallocation,
- * destruction of the buffer. Else, this class will provide a array "view" of the
+ * destruction of the buffer. Else, this class will provide an array "view" of the
  * buffer
- * 
- * @date    2011.
+ *
  */
 class FWDATA_CLASS_API Array : public ::fwData::Object
 {
@@ -248,4 +247,5 @@ protected:
 
 } // namespace fwData
 
-#endif // _FWDATA_ARRAY_HPP_
+#endif // __FWDATA_ARRAY_HPP__
+

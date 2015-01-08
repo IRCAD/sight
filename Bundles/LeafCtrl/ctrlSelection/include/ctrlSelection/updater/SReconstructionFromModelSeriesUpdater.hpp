@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __CTRLSELECTION_RECONSTRUCTIONFROMMODELSERIESUPDATERSRV_HPP__
-#define __CTRLSELECTION_RECONSTRUCTIONFROMMODELSERIESUPDATERSRV_HPP__
+#ifndef __CTRLSELECTION_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
+#define __CTRLSELECTION_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
@@ -22,9 +22,7 @@ namespace updater
 {
 
 /**
- * @class  SReconstructionFromModelSeriesUpdater
-
- * @date   2013
+ * @brief Update reconstruction in model series according to supported messages.
  */
 class CTRLSELECTION_CLASS_API SReconstructionFromModelSeriesUpdater : public ::ctrlSelection::IUpdaterSrv
 {
@@ -81,7 +79,8 @@ private:
     SPTR(::fwData::Reconstruction) getReconstruction(::fwServices::ObjectMsg::csptr _msg);
 };
 
-} // updater
-} // ctrlSelection
+} // namespace updater
+} // namespace ctrlSelection
 
-#endif // __CTRLSELECTION_RECONSTRUCTIONFROMMODELSERIESUPDATERSRV_HPP__
+#endif // __CTRLSELECTION_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
+

@@ -20,7 +20,7 @@ namespace uiMedData
 
 /**
  * @class InsertSeries
- * Used as a placeholder in ::uiMedData::editor::SSelector UI to insert create and insert new series in a series DB.
+ * @brief Used as a placeholder in ::uiMedData::editor::SSelector UI to insert create and insert new series in a series DB.
  */
 class UIMEDDATAQT_CLASS_API InsertSeries : public ::fwMedData::Series
 {

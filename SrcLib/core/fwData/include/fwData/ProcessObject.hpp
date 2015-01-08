@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_PROCESSOBJECT_HPP_
-#define _FWDATA_PROCESSOBJECT_HPP_
+#ifndef __FWDATA_PROCESSOBJECT_HPP__
+#define __FWDATA_PROCESSOBJECT_HPP__
 
 #include <map>
 #include <vector>
@@ -20,11 +20,9 @@ fwCampAutoDeclareDataMacro((fwData)(ProcessObject), FWDATA_API);
 
 namespace fwData
 {
+
 /**
- * @class   ProcessObject
- * @brief   Provides the notion of Process Object: object having inputs and outputs
- * 
- * @date    2007-2009.
+ * @brief Provides the notion of Process Object: object having inputs and outputs.
  */
 class FWDATA_CLASS_API ProcessObject : public Object
 {
@@ -172,4 +170,5 @@ protected:
 } // namespace fwData
 
 
-#endif //_FWDATA_PROCESSOBJECT_HPP_
+#endif // __FWDATA_PROCESSOBJECT_HPP__
+

@@ -21,6 +21,9 @@ namespace visuVTKAdaptor
 {
 
 
+/**
+* @brief Manage material representation of meshes
+*/
 class VISUVTKADAPTOR_CLASS_API Material: public ::fwRenderVTK::IVtkAdaptorService
 {
 
