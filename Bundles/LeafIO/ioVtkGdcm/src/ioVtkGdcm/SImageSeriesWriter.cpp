@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,6 +17,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
+#include <fwGui/backend.hpp>
 
 #include <io/IWriter.hpp>
 
@@ -139,10 +140,20 @@ void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder
     loc->setFolder(folder);
     writer->setLocation(loc);
 
+    fwGui::dialog::ProgressDialog::sptr progressMeterGUI;
+
+    if(::fwGui::isBackendLoaded())
+    {
+         progressMeterGUI = fwGui::dialog::ProgressDialog::New();
+         progressMeterGUI->setTitle("Saving series...");
+    }
+
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving series ");
-        writer->addHandler( progressMeterGUI );
+        if(progressMeterGUI)
+        {
+            writer->addHandler( *progressMeterGUI );
+        }
         writer->write();
     }
     catch (const std::exception & e)
