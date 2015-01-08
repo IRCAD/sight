@@ -264,7 +264,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Medical3DCamera</service>
-        <object>::fwData::Image</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -320,13 +320,13 @@
         <service>::visuVTKAdaptor::VectorField</service>
         <object>::fwData::Image</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ModelSeries</service>
         <object>::fwMedData::ModelSeries</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::ImageSeries</service>
@@ -334,6 +334,5 @@
     </extension>
 
 </plugin>
-
 
 
