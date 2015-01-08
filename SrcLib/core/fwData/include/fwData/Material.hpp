@@ -10,7 +10,6 @@
 
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
-#include "fwData/Image.hpp"
 #include "fwData/factory/new.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(Material), FWDATA_API);
@@ -22,7 +21,7 @@ namespace fwData
  * @brief   This class defines a material. A material is represented by an ambient color and a diffuse color
  * @see     ::fwData::Color
  *
- *
+ * 
  * @date    2007-2009.
  */
 
@@ -75,18 +74,6 @@ public:
     FWDATA_API void setDiffuse(Color::sptr diffuse);
 
     /**
-    * @brief returns editable diffuse texture
-    */
-    FWDATA_API Image::sptr getDiffuseTexture() const;
-
-    /**
-     * @brief Setter for diffuse texture
-     *
-     * @param diffuseTexture texture
-     */
-    FWDATA_API void setDiffuseTexture(Image::sptr diffuseTexture);
-
-    /**
      * @brief Options
      */
     typedef enum
@@ -117,55 +104,23 @@ public:
     } REPRESENTATION_MODE;
 
 
-    /**
-     * @brief Texture filtering types
-     */
-    typedef enum
-    {
-        NEAREST,
-        LINEAR,
-    } FilteringType;
 
-    /**
-     * @brief Texture wrapping types
-     */
-    typedef enum
-    {
-        CLAMP,
-        REPEAT,
-    } WrappingType;
 
     fwGettersSettersDocMacro(ShadingMode, shadingMode, SHADING_MODE, the shading models(flat, gouraud, phong).);
     fwGettersSettersDocMacro(RepresentationMode, representationMode, REPRESENTATION_MODE, the representation models(edge, point, wireframe, surface).);
     fwGettersSettersDocMacro(OptionsMode, optionsMode, OPTIONS_MODE, the option representation (Standard, normals).);
-    fwGettersSettersDocMacro(DiffuseTextureFiltering, diffuseTextureFiltering, FilteringType, the texture filtering.);
-    fwGettersSettersDocMacro(DiffuseTextureWrapping, diffuseTextureWrapping, WrappingType, the texture wrapping.);
+
+
 
 protected :
 
-    /// Shading mode (flat, Gouraud, Phong)
+
     SHADING_MODE m_shadingMode;
-
-    /// Fill mode (flat, wireframe, point)
     REPRESENTATION_MODE m_representationMode;
-
-    /// Options mode (display normals or not)
     OPTIONS_MODE m_optionsMode;
 
-    /// Ambient color
     Color::sptr m_ambient;
-
-    /// Diffuse color
     Color::sptr m_diffuse;
-
-    /// Diffuse texture
-    Image::sptr m_diffuseTexture;
-
-    /// Filtering for diffuse texture
-    FilteringType m_diffuseTextureFiltering;
-
-    /// Wrapping for diffuse texture
-    WrappingType m_diffuseTextureWrapping;
 };
 
 } //namespace fwData

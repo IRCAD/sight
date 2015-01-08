@@ -12,8 +12,6 @@
 #include "fwStructuralPatch/fwData/Study/V1ToFwMedDataStudyV1.hpp"
 #include "fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
 #include "fwStructuralPatch/fwData/Image/V1ToV2.hpp"
-#include "fwStructuralPatch/fwData/Material/V1ToV2.hpp"
-#include "fwStructuralPatch/fwData/Mesh/V1ToV2.hpp"
 
 
 namespace fwStructuralPatch
@@ -30,8 +28,6 @@ struct runner
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Study::V1ToFwMedDataStudyV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V1ToV2::New());
-        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV2::New());
     }
 
     static runner r;

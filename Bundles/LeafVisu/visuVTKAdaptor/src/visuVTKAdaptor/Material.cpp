@@ -1,29 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2012.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Material.hpp"
 
-#include <fwComEd/MaterialMsg.hpp>
-
+#include <fwTools/fwID.hpp>
 #include <fwData/Material.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-
-#include <fwTools/fwID.hpp>
-
-#include <fwVtkIO/vtk.hpp>
+#include <fwComEd/MaterialMsg.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkProperty.h>
-#include <vtkSmartPointer.h>
-#include <vtkImageData.h>
-#include <vtkTexture.h>
+
+#include "visuVTKAdaptor/Material.hpp"
+
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material ) ;
@@ -45,8 +39,7 @@ Material::Material() throw()
 
 Material::~Material() throw()
 {
-    if (m_manageProperty)
-    {
+    if (m_manageProperty){
         m_property->Delete();
     }
     m_property = NULL;
@@ -136,12 +129,13 @@ void Material::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Material::updateMaterial( SPTR(::fwData::Material) material )
+void Material::updateMaterial( ::fwData::Material::sptr material )
 {
+
     ::fwData::Color::sptr color =  material->ambient();
     m_property->SetColor( color->red(),
-                          color->green(),
-                          color->blue());
+            color->green(),
+            color->blue());
 
     //3DVSP-like rendering
     m_property->SetSpecularColor(1.,1.,1.);
@@ -149,30 +143,8 @@ void Material::updateMaterial( SPTR(::fwData::Material) material )
     m_property->SetAmbient(.05);
     m_property->SetDiffuse(1.);
     m_property->SetSpecular(1.);
+
     m_property->SetOpacity( color->alpha() );
-
-    // set texture
-    ::fwData::Image::sptr diffTex = material->getDiffuseTexture();
-
-    if(diffTex != NULL)
-    {
-        ::fwData::mt::ObjectReadLock lock(diffTex);
-
-        if (diffTex->getSizeInBytes() != 0)
-        {
-            vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
-            ::fwVtkIO::toVTKImage( diffTex, vtkImage );
-
-            vtkSmartPointer<vtkTexture> vtkTex = vtkSmartPointer< vtkTexture >::New();
-            vtkTex->SetInputData(vtkImage);
-
-            ::fwData::Material::WrappingType wrapping = material->getDiffuseTextureWrapping();
-            vtkTex->SetRepeat( wrapping == ::fwData::Material::REPEAT );
-            vtkTex->SetEdgeClamp( wrapping == ::fwData::Material::CLAMP );
-            m_property->RemoveTexture("diffuse");
-            m_property->SetTexture("diffuse", vtkTex);
-        }
-    }
 
     switch(material->getRepresentationMode())
     {
@@ -220,5 +192,8 @@ void Material::updateMaterial( SPTR(::fwData::Material) material )
     m_property->Modified();
     this->setVtkPipelineModified();
 }
+
+
+
 
 } //namespace visuVTKAdaptor

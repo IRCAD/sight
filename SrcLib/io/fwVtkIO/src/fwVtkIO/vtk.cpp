@@ -192,28 +192,6 @@ void fromRGBBuffer( void *input, size_t size, void *&destBuffer)
         (*destBufferTyped++) = valR + valG + valB;
     }
 }
-
-
-//-----------------------------------------------------------------------------
-
-template< typename IMAGETYPE >
-void fromRGBBufferColor( void *input, size_t size, void *&destBuffer)
-{
-    if(destBuffer == NULL)
-    {
-        destBuffer = newBuffer<IMAGETYPE>(size);
-    }
-
-    IMAGETYPE *destBufferTyped = (IMAGETYPE*)destBuffer;
-    IMAGETYPE *inputTyped      = (IMAGETYPE*)input;
-    IMAGETYPE *finalPtr        = ((IMAGETYPE*)destBuffer) + size;
-
-    while (destBufferTyped < finalPtr)
-    {
-        (*destBufferTyped++) = (*(inputTyped++));
-    }
-}
-
 //-----------------------------------------------------------------------------
 
 
@@ -232,36 +210,13 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
 
-    if(dim == 2)
-    {
-        dim = 3;
-        int size[3];
-        size[0] = source->GetDimensions()[0];
-        size[1] = source->GetDimensions()[1];
-        size[2] = 1;
-        destination->setSize( ::fwData::Image::SizeType(size, size+dim) );
 
-        double spacing[3];
-        spacing[0] = source->GetSpacing()[0];
-        spacing[1] = source->GetSpacing()[1];
-        spacing[2] = 0;
-        destination->setSpacing( ::fwData::Image::SpacingType(spacing, spacing+dim) );
-
-        double origin[3];
-        origin[0] = source->GetOrigin()[0];
-        origin[1] = source->GetOrigin()[1];
-        origin[2] = 0;
-        destination->setOrigin( ::fwData::Image::OriginType(origin, origin+dim) );
-    }
-    else
-    {
-        destination->setSize( ::fwData::Image::SizeType(source->GetDimensions(), source->GetDimensions()+dim) );
-        destination->setSpacing( ::fwData::Image::SpacingType(source->GetSpacing(), source->GetSpacing()+dim) );
-        destination->setOrigin( ::fwData::Image::OriginType(source->GetOrigin(), source->GetOrigin()+dim) );
-    }
+    destination->setSize( ::fwData::Image::SizeType(source->GetDimensions(), source->GetDimensions()+dim) );
+    destination->setSpacing( ::fwData::Image::SpacingType(source->GetSpacing(), source->GetSpacing()+dim) );
+    destination->setOrigin( ::fwData::Image::OriginType(source->GetOrigin(), source->GetOrigin()+dim) );
 
 
-    size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 3, std::multiplies<size_t>() );
+    size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 1, std::multiplies<size_t>() );
     void *input = source->GetScalarPointer();
 
     if (size != 0)
@@ -271,7 +226,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         int nbComponents = source->GetNumberOfScalarComponents();
         OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
 
-        destination->setNumberOfComponents(3);
+        destination->setNumberOfComponents(1);
         if (nbComponents == 3 && nbBytePerPixel == 2)
         {
             SLM_TRACE ("RGB 16bits");
@@ -281,7 +236,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
             ::fwData::ObjectLock lock(destination);
             destBuffer = imageHelper.getBuffer();
             SLM_ASSERT("Image allocation error", destBuffer != NULL);
-            fromRGBBufferColor< unsigned short >(input, size, destBuffer);
+            fromRGBBuffer< unsigned short >(input, size, destBuffer);
         }
         else if (nbComponents == 3 && nbBytePerPixel == 1)
         {
@@ -292,7 +247,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
             ::fwData::ObjectLock lock(destination);
             destBuffer = imageHelper.getBuffer();
             SLM_ASSERT("Image allocation error", destBuffer != NULL);
-            fromRGBBufferColor< unsigned char >(input, size, destBuffer);
+            fromRGBBuffer< unsigned char >(input, size, destBuffer);
         }
         else
         {
@@ -318,17 +273,17 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
     _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
                                     _pDataImage->getSpacing().at(1),
                                     _pDataImage->getSpacing().at(2)
-                                    );
+                                );
 
     _pImageImport->SetDataOrigin(   _pDataImage->getOrigin().at(0),
                                     _pDataImage->getOrigin().at(1),
                                     _pDataImage->getOrigin().at(2)
-                                    );
+                                );
 
     _pImageImport->SetWholeExtent(  0, _pDataImage->getSize().at(0) - 1,
                                     0, _pDataImage->getSize().at(1) - 1,
                                     0, _pDataImage->getSize().at(2) - 1
-                                    );
+                                );
 
     _pImageImport->SetNumberOfScalarComponents(static_cast<int>( _pDataImage->getNumberOfComponents() ));
 
