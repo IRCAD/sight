@@ -71,8 +71,6 @@ struct runner
         localDeclarefwDataMaterialOPTIONS_MODE();
         localDeclarefwDataMaterialREPRESENTATION_MODE();
         localDeclarefwDataMaterialSHADING_MODE();
-        localDeclarefwDataMaterialFilteringType();
-        localDeclarefwDataMaterialWrappingType();
         localDeclarefwDataMaterial();
         localDeclarefwDataReconstruction();
         localDeclarefwDataComposite();

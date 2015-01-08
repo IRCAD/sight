@@ -106,7 +106,6 @@ public:
     typedef float          PointValueType;
     typedef boost::uint8_t ColorValueType;
     typedef float          NormalValueType;
-    typedef float          TexCoordValueType;
     typedef Id             CellValueType;
     typedef Id             CellDataOffsetType;
     typedef boost::uint8_t CellTypes;
@@ -119,8 +118,6 @@ public:
     typedef boost::multi_array_ref<ColorValueType    , 2> CellColorsMultiArrayType;
     typedef boost::multi_array_ref<NormalValueType   , 2> PointNormalsMultiArrayType;
     typedef boost::multi_array_ref<NormalValueType   , 2> CellNormalsMultiArrayType;
-    typedef boost::multi_array_ref<TexCoordValueType , 2> PointTexCoordsMultiArrayType;
-    typedef boost::multi_array_ref<TexCoordValueType , 2> CellTexCoordsMultiArrayType;
 
 
     /**
@@ -162,17 +159,11 @@ public:
     /// Allocates colors array according to the number of points of the mesh.
     FWDATA_API size_t allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception);
 
-    /// Allocates texCoords array according to the number of points of the mesh.
-    FWDATA_API size_t allocatePointTexCoords() throw(::fwData::Exception);
-
     /// Allocates normals array according to the number of cells of the mesh.
     FWDATA_API size_t allocateCellNormals() throw(::fwData::Exception);
 
     /// Allocates colors array according to the number of cells of the mesh.
     FWDATA_API size_t allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception);
-
-    /// Allocates texCoords array according to the number of cells of the mesh.
-    FWDATA_API size_t allocateCellTexCoords() throw(::fwData::Exception);
 
 
     /**
@@ -206,10 +197,6 @@ public:
     FWDATA_API void setPointNormalsArray     (::fwData::Array::sptr array);
     /// Sets the internal corresponding array
     FWDATA_API void setCellNormalsArray      (::fwData::Array::sptr array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setPointTexCoordsArray   (::fwData::Array::sptr array);
-    /// Sets the internal corresponding array
-    FWDATA_API void setCellTexCoordsArray    (::fwData::Array::sptr array);
 
     /// Returns the internal corresponding array
     FWDATA_API ::fwData::Array::sptr getPointsArray           () const;
@@ -227,10 +214,6 @@ public:
     FWDATA_API ::fwData::Array::sptr getPointNormalsArray     () const;
     /// Returns the internal corresponding array
     FWDATA_API ::fwData::Array::sptr getCellNormalsArray      () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getPointTexCoordsArray   () const;
-    /// Returns the internal corresponding array
-    FWDATA_API ::fwData::Array::sptr getCellTexCoordsArray    () const;
 
     /**
      * @brief Clear mesh points.
@@ -254,13 +237,10 @@ public:
     /// Remove corresponding array, memory is freed.
     FWDATA_API void clearPointColors();
     /// Remove corresponding array, memory is freed.
-    FWDATA_API void clearPointTexCoords();
-    /// Remove corresponding array, memory is freed.
     FWDATA_API void clearCellNormals();
     /// Remove corresponding array, memory is freed.
     FWDATA_API void clearCellColors();
-    /// Remove corresponding array, memory is freed.
-    FWDATA_API void clearCellTexCoords();
+
 
     /// Set number of points.
     FWDATA_API void setNumberOfPoints(Id nb);
@@ -378,18 +358,6 @@ protected:
      * This array contains cell normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
      */
     ::fwData::Array::sptr m_cellNormals;
-    /**
-     * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbPoints.
-     *
-     * This array contains point texCoords : [ tx1 ty1 tx2 ty2 ... ]
-     */
-    ::fwData::Array::sptr m_pointTexCoords;
-    /**
-     * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbCells.
-     *
-     * This array contains cell texCoords : [ tx1 ty1 tx2 ty2 ... ]
-     */
-    ::fwData::Array::sptr m_cellTexCoords;
 
     /// Array map where you can add few additional arrays registered thanks to a key to perform/conserve some specific analysis.
     ArrayMapType m_arrayMap;

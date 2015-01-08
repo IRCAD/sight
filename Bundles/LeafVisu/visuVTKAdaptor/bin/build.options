@@ -6,7 +6,6 @@ USE = [
     'boost',
     'vtk6InteractionWidgets',
     'vtk6InteractionStyle',
-    'vtk6FiltersTexture',
     ]
 LIB = [
     'fwComEd_0-1',

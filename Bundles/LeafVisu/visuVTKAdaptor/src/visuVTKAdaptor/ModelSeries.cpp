@@ -6,13 +6,9 @@
 
 #include <boost/foreach.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwData/Boolean.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Boolean.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -26,9 +22,7 @@
 #include <vtkPolyDataMapper.h>
 
 #include "visuVTKAdaptor/Reconstruction.hpp"
-#include "visuVTKAdaptor/Mesh.hpp"
 #include "visuVTKAdaptor/ModelSeries.hpp"
-#include "visuVTKAdaptor/Texture.hpp"
 
 
 
@@ -37,19 +31,11 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mo
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Signals::SignalKeyType ModelSeries::s_TEXTURE_APPLIED_SIG = "textureApplied";
 
-ModelSeries::ModelSeries() throw() :
-    m_sigTextureApplied(TextureAppliedSignalType::New())
+ModelSeries::ModelSeries() throw()
 {
     m_clippingPlanes = "";
     m_autoResetCamera = true;
-
-    ::fwCom::HasSignals::m_signals(s_TEXTURE_APPLIED_SIG, m_sigTextureApplied);
-
-#ifdef COM_LOG
-   ::fwCom::HasSignals::m_signals.setID();
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -79,11 +65,6 @@ void ModelSeries::configuring() throw(fwTools::Failed)
         std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
         m_autoResetCamera = (autoresetcamera == "yes");
     }
-
-    if ( m_configuration->hasAttribute("texture") )
-    {
-        m_textureAdaptorUID = m_configuration->getAttributeValue("texture");
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -100,23 +81,8 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
 
     doStop();
-
-    // doStop() disconnects everything, we have to restore connection with the data
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
-
     bool showRec;
     showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
-
-    if(!m_textureAdaptorUID.empty())
-    {
-        ::fwRenderVTK::VtkRenderService::sptr renderService = this->getRenderService();
-        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
-
-        SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
-        m_connections->connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
-                               ::visuVTKAdaptor::Texture::s_APPLY_TEXTURE_SLOT);
-    }
 
     BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, modelSeries->getReconstructionDB() )
     {
@@ -138,23 +104,6 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
         renconstructionAdaptor->setForceHide( !showRec );
 
         this->registerService(service);
-
-
-        if(!m_textureAdaptorUID.empty())
-        {
-            ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
-            SLM_ASSERT("Missing mesh", mesh);
-
-            ::fwServices::registry::ObjectService::ServiceVectorType servicesVector;
-            servicesVector = ::fwServices::OSR::getServices(mesh, "::visuVTKAdaptor::Mesh");
-
-            ::visuVTKAdaptor::Mesh::sptr meshAdaptor = ::visuVTKAdaptor::Mesh::dynamicCast(servicesVector[0]);
-
-            ::fwData::Material::sptr material = meshAdaptor->getMaterial();
-            SLM_ASSERT("Missing material", material);
-
-            fwServicesNotifyMacro( meshAdaptor->getLightID(), m_sigTextureApplied, (material));
-        }
     }
 }
 
@@ -169,7 +118,6 @@ void ModelSeries::doSwap() throw(fwTools::Failed)
 
 void ModelSeries::doStop() throw(fwTools::Failed)
 {
-    m_connections->disconnect();
     this->unregisterServices();
 }
 

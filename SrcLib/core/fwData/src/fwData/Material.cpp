@@ -19,9 +19,7 @@ Material::Material(::fwData::Object::Key key) :
     m_representationMode(MODE_SURFACE),
     m_optionsMode(MODE_STANDARD),
     m_ambient( Color::New() ),
-    m_diffuse( Color::New() ),
-    m_diffuseTextureFiltering(NEAREST),
-    m_diffuseTextureWrapping(REPEAT)
+    m_diffuse( Color::New() )
 {
 }
 
@@ -43,13 +41,10 @@ void Material::shallowCopy(const Object::csptr &_source )
 
     m_ambient = other->m_ambient;
     m_diffuse = other->m_diffuse;
-    m_diffuseTexture = other->m_diffuseTexture;
 
     m_shadingMode = other->m_shadingMode;
     m_representationMode = other->m_representationMode;
     m_optionsMode = other->m_optionsMode;
-    m_diffuseTextureFiltering = other->m_diffuseTextureFiltering;
-    m_diffuseTextureWrapping = other->m_diffuseTextureWrapping;
 }
 
 //------------------------------------------------------------------------------
@@ -64,13 +59,10 @@ void Material::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &c
 
     m_ambient = ::fwData::Object::copy( other->m_ambient, cache );
     m_diffuse = ::fwData::Object::copy( other->m_diffuse, cache );
-    m_diffuseTexture = ::fwData::Object::copy( other->m_diffuseTexture, cache );
 
     m_shadingMode = other->m_shadingMode;
     m_representationMode = other->m_representationMode;
     m_optionsMode = other->m_optionsMode;
-    m_diffuseTextureFiltering = other->m_diffuseTextureFiltering;
-    m_diffuseTextureWrapping = other->m_diffuseTextureWrapping;
 }
 
 //------------------------------------------------------------------------------
@@ -89,13 +81,6 @@ Color::sptr Material::diffuse() const
 
 //------------------------------------------------------------------------------
 
-Image::sptr Material::getDiffuseTexture() const
-{
-    return m_diffuseTexture;
-}
-
-//------------------------------------------------------------------------------
-
 void Material::setAmbient(Color::sptr ambient)
 {
     m_ambient = ambient;
@@ -106,13 +91,6 @@ void Material::setAmbient(Color::sptr ambient)
 void Material::setDiffuse(Color::sptr diffuse)
 {
     m_diffuse = diffuse;
-}
-
-//------------------------------------------------------------------------------
-
-void Material::setDiffuseTexture(Image::sptr diffuseTexture)
-{
-    m_diffuseTexture = diffuseTexture;
 }
 
 //------------------------------------------------------------------------------
