@@ -15,7 +15,10 @@
 fwCampAutoDeclareEnumMacro((fwData)(Material)(SHADING_MODE));
 fwCampAutoDeclareEnumMacro((fwData)(Material)(REPRESENTATION_MODE));
 fwCampAutoDeclareEnumMacro((fwData)(Material)(OPTIONS_MODE));
+fwCampAutoDeclareEnumMacro((fwData)(Material)(FilteringType));
+fwCampAutoDeclareEnumMacro((fwData)(Material)(WrappingType));
 
 fwCampDeclareAccessor((fwData)(Material), (fwData)(Color));
+fwCampDeclareAccessor((fwData)(Material), (fwData)(Image));
 
 #endif /* __FWDATACAMP_MATERIAL_HPP__ */

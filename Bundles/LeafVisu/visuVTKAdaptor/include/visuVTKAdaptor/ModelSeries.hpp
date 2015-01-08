@@ -28,6 +28,14 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ModelSeries)(::fwRenderVTK::IVtkAdaptorService) ) ;
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    typedef ::fwCom::Signal< void ( SPTR(::fwData::Material) ) > TextureAppliedSignalType;
+    VISUVTKADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_TEXTURE_APPLIED_SIG;
+    /** @} */
+
     VISUVTKADAPTOR_API ModelSeries() throw();
 
     VISUVTKADAPTOR_API virtual ~ModelSeries() throw();
@@ -50,6 +58,10 @@ protected:
 
 private:
     bool   m_autoResetCamera;
+    std::string m_textureAdaptorUID;
+
+    /// Signal to emit when a texture must be applied on a material.
+    TextureAppliedSignalType::sptr m_sigTextureApplied;
 };
 
 
