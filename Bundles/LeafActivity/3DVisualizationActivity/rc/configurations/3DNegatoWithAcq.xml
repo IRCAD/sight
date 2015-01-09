@@ -72,12 +72,16 @@
                                 <config renderer="default" />
                             </adaptor>
 
+                            <adaptor  id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
+                                <config renderer="default" hAlign="right" />
+                            </adaptor>
+
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle3DForNegato" />
                             </adaptor>
 
                             <adaptor id="medicalCamera" class="::visuVTKAdaptor::Medical3DCamera" objectId="imageKey">
-                                <config renderer="default" sliceIndex="${orientation}" />
+                                <config renderer="default" sliceIndex="${orientation}" resetAtStart="yes" />
                             </adaptor>
 
                             <adaptor uid="${GENERIC_UID}_MPRNegato" id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
@@ -104,7 +108,6 @@
                                 <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
                             </adaptor>
 
-
                         </scene>
                     </service>
 
@@ -130,8 +133,6 @@
                                             <negatoAdaptor uid="${GENERIC_UID}_MPRNegato" slices="3" />
                                         </service>
 
-
-
                                     </object>
                                 </config>
                             </service>
@@ -156,3 +157,4 @@
         </object>
     </config>
 </extension>
+

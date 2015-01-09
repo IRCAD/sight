@@ -21,6 +21,12 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::OrientationMarker</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Material</service>
         <object>::fwData::Material</object>
     </extension>
@@ -311,6 +317,12 @@
         <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Texture</service>
         <object>::fwData::Image</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::ImageSliceOrientationText</service>
+        <object>::fwData::Object</object>
     </extension>
 
 </plugin>

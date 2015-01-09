@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ namespace helper
 /**
  * @class   MedicalImageAdaptor
  * @brief   Helpers for medical image.
- * 
+ *
  * @date    2010
  */
 class FWCOMED_CLASS_API MedicalImageAdaptor
@@ -53,7 +53,7 @@ public:
     FWCOMED_API virtual ~MedicalImageAdaptor();
 
     /// Set the image orientation.
-    FWCOMED_API void setOrientation( Orientation orientation );
+    FWCOMED_API virtual void setOrientation( Orientation orientation );
 
     /// Return the image orientation.
     Orientation getOrientation(){ return m_orientation; }
