@@ -9,9 +9,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "fwMedData/ImageSeries.hpp"
+#include "fwMedData/ModelSeries.hpp"
+
 namespace fwMedData
 {
-    class Series;
 
 namespace ut
 {

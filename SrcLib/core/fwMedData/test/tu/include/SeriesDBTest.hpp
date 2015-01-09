@@ -8,10 +8,10 @@
 #define __FWMEDDATA_UT_SERIESDBTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
+#include "fwMedData/SeriesDB.hpp"
 
 namespace fwMedData
 {
-    class SeriesDB;
 
 namespace ut
 {
