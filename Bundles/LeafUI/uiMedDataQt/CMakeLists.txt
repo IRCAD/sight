@@ -1,5 +1,7 @@
 fwLoadProperties()
 
+fwEnableCpp11()
+
 fwUseForwardInclude(
     fwData
     fwGui
