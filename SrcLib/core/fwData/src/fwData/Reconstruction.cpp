@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,13 +20,16 @@ fwDataRegisterMacro( ::fwData::Reconstruction );
 namespace fwData
 {
 
+const double Reconstruction::s_NO_COMPUTED_MASK_VOLUME = -1.;
+
 //------------------------------------------------------------------------------
 
 Reconstruction::Reconstruction(::fwData::Object::Key key) :
     m_bIsVisible(false),
     m_sOrganName(""),
     m_sStructureType(""),
-    m_attrMaterial( ::fwData::factory::New< ::fwData::Material>() )
+    m_attrMaterial( ::fwData::factory::New< ::fwData::Material>() ),
+    m_attrComputedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
 {
     SLM_TRACE_FUNC();
 }
@@ -55,6 +58,8 @@ void Reconstruction::shallowCopy(const Object::csptr &_source )
     m_attrMaterial = other->m_attrMaterial;
     m_attrImage    = other->m_attrImage;
     m_attrMesh     = other->m_attrMesh;
+
+    m_attrComputedMaskVolume = other->m_attrComputedMaskVolume;
 }
 
 //------------------------------------------------------------------------------
@@ -74,6 +79,8 @@ void Reconstruction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheT
     m_attrMaterial = ::fwData::Object::copy(other->m_attrMaterial, cache);
     m_attrImage    = ::fwData::Object::copy(other->m_attrImage, cache);
     m_attrMesh     = ::fwData::Object::copy(other->m_attrMesh, cache);
+
+    m_attrComputedMaskVolume = other->m_attrComputedMaskVolume;
 }
 
 //------------------------------------------------------------------------------

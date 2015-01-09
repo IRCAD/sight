@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,7 @@
 fwCampImplementDataMacro((fwData)(Reconstruction))
 {
     builder
-        .tag("object_version", "2")
+        .tag("object_version", "3")
         .tag("lib_name", "fwData")
         .base< ::fwData::Object>()
         .property("is_visible", &::fwData::Reconstruction::m_bIsVisible)
@@ -19,5 +19,6 @@ fwCampImplementDataMacro((fwData)(Reconstruction))
         .property("material", &::fwData::Reconstruction::m_attrMaterial)
         .property("image", &::fwData::Reconstruction::m_attrImage)
         .property("mesh", &::fwData::Reconstruction::m_attrMesh)
+        .property("volume", &::fwData::Reconstruction::m_attrComputedMaskVolume)
         ;
 }
