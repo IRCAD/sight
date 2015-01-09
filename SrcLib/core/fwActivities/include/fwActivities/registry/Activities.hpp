@@ -131,6 +131,9 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
             <!--# ...-->
         </requirements>
         <builder impl="::fwMedData::ActivitySeriesBuilder" />
+        <validators>
+            <validator>::fwActivities::validator::RelatedStudy</validator>
+        </validators>
         <appConfig id="3DVisualization">
             <parameters>
                 <parameter replace="registeredImageUid" by="@values.param1" />
@@ -140,6 +143,9 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
         </appConfig>
     </extension>
  * @endverbatim
+ *
+ * - validators (optional) : defines validators implementations instantiated to validate activity launch
+ *   - validator : implementation name for a validator
  */
 struct FWACTIVITIES_CLASS_API ActivityInfo
 {
@@ -161,7 +167,10 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     std::string tabInfo;
     RequirementsType requirements;
     std::string builderImpl;
-    std::string validatorImpl;
+
+    /// Validator implementations
+    std::vector< std::string > validatorsImpl;
+
     ActivityAppConfig appConfig;
 
 protected:

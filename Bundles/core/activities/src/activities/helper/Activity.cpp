@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/regex.hpp>
-#include <boost/algorithm/string/replace.hpp>
+#include "activities/helper/Activity.hpp"
 
 #include <fwTools/UUID.hpp>
 
@@ -21,7 +20,8 @@
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwActivities/registry/Activities.hpp>
 
-#include "activities/helper/Activity.hpp"
+#include <boost/regex.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 
 namespace activities
