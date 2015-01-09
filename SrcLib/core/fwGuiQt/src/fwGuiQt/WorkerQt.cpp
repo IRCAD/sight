@@ -264,10 +264,8 @@ void WorkerQt::init( int &argc, char **argv )
     {
         QCoreApplication::setLibraryPaths(QStringList(pluginDir.absolutePath()));
     }
-    m_app = QSharedPointer< QApplication > ( new ::fwGuiQt::App(argc, argv) );
-    
-    OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
 
+    OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
 }
 
 WorkerQt::~WorkerQt()
