@@ -8,6 +8,7 @@
 #include <fwAtomsPatch/StructuralPatchDB.hpp>
 
 #include "fwStructuralPatch/fwData/Reconstruction/V1ToV2.hpp"
+#include "fwStructuralPatch/fwData/Reconstruction/V2ToV3.hpp"
 #include "fwStructuralPatch/fwData/Patient/V1ToFwMedDataPatientV1.hpp"
 #include "fwStructuralPatch/fwData/Study/V1ToFwMedDataStudyV1.hpp"
 #include "fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
@@ -24,6 +25,7 @@ struct runner
     {
         ::fwAtomsPatch::StructuralPatchDB::sptr structuralPatches = ::fwAtomsPatch::StructuralPatchDB::getDefault();
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Reconstruction::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Reconstruction::V2ToV3::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Patient::V1ToFwMedDataPatientV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Study::V1ToFwMedDataStudyV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1::New());

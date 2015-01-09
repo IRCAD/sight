@@ -50,6 +50,8 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
+    /// Constant to inform that mask volume has not been computed yet.
+    FWDATA_API static const double s_NO_COMPUTED_MASK_VOLUME;
 
     // Generator result---------------------------------------------------------
     fwGettersSettersDocMacro(IsVisible, bIsVisible, bool, the visibility of the reconstruction (true if visible));
@@ -73,6 +75,11 @@ public:
      */
     fwDataGetSetSptrMacro(Material, SPTR(::fwData::Material));
 
+    /**
+     * @brief Get/Set the volume from mask
+     */
+    fwDataGetSetMacro(ComputedMaskVolume, double);
+
 protected :
 
     //! true if this reconstruction is visible
@@ -95,6 +102,9 @@ protected :
 
     //! Reconstruction's mesh
     SPTR(::fwData::Mesh) m_attrMesh;
+
+    //! Reconstruction's mask volume
+    double m_attrComputedMaskVolume;
 
 };
 
