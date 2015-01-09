@@ -1,7 +1,4 @@
-
-fwLib (fwCore 0.1)
-
-
+fwLoadProperties()
 
 find_package (Boost COMPONENTS regex filesystem date_time chrono log log_setup REQUIRED)
 fwForwardInclude(${Boost_INCLUDE_DIRS})
