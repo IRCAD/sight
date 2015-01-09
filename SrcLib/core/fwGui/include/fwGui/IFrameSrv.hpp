@@ -70,6 +70,7 @@ protected :
      * - \<window onclose="notify" /\> : defines what to do when the frame is closed
      *   - \b exit (by default) : the application is closed. Use it for the main frame.
      *   - \b notify : notifies service's object with WINDOW_CLOSED event.
+     *   - \b message : a confirmation dialog appears asking user to confirm closing application
      * - \<frame\> : defines the frame name, icon, size.
      * - The toolBar section isn't mandatory.
      * - The menuBar section isn't mandatory.
@@ -87,6 +88,7 @@ protected :
 
     FWGUI_API static const std::string CLOSE_POLICY_EXIT;
     FWGUI_API static const std::string CLOSE_POLICY_NOTIFY;
+    FWGUI_API static const std::string CLOSE_POLICY_MESSAGE;
 
     /// Static reference on a widget defined for progress bar installation
     FWGUI_API static ::fwGui::container::fwContainer::wptr m_progressWidget;
@@ -95,6 +97,7 @@ private:
 
     void onCloseExit();
     void onCloseNotify();
+    void onCloseMessage();
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
     void initializeMenuBarBuilder( ::fwRuntime::ConfigurationElement::sptr menuBarConfig );
     void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
