@@ -39,29 +39,28 @@ void RuntimeTest::testRuntime()
     // Bundles location
     ::boost::filesystem::path location = ::boost::filesystem::current_path() / "Bundles/";
 
-    if (::boost::filesystem::exists(location))
-    {
-        ::fwRuntime::Runtime * runtime = ::fwRuntime::Runtime::getDefault();
+    CPPUNIT_ASSERT(::boost::filesystem::exists(location));
 
-        // Read bundles
-        runtime->addBundles(location);
-        CPPUNIT_ASSERT(runtime->bundlesBegin() !=  runtime->bundlesEnd());
+    ::fwRuntime::Runtime * runtime = ::fwRuntime::Runtime::getDefault();
 
-        // Test bundle dataReg
-        CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
-        ::boost::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
-        bundle->setEnable(true);
-        CPPUNIT_ASSERT(bundle->isEnable());
+    // Read bundles
+    runtime->addBundles(location);
+    CPPUNIT_ASSERT(runtime->bundlesBegin() !=  runtime->bundlesEnd());
 
-        // Test bundle servicesReg
-        ::boost::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("servicesReg");
-        bundle2->setEnable(true);
+    // Test bundle dataReg
+    CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
+    ::boost::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
+    bundle->setEnable(true);
+    CPPUNIT_ASSERT(bundle->isEnable());
 
-        // Test runtime extensions
-        CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceFactory"));
-        CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceConfig"));
-        CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::AppConfig"));
-    }
+    // Test bundle servicesReg
+    ::boost::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("servicesReg");
+    bundle2->setEnable(true);
+
+    // Test runtime extensions
+    CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceFactory"));
+    CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceConfig"));
+    CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::AppConfig"));
 }
 
 } // namespace ut
