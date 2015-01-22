@@ -65,7 +65,6 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     m_colourButton = new QPushButton(tr("Color"), container) ;
     m_colourButton->setToolTip(tr("Selected organ's color"));
     m_colourButton->setMinimumSize (m_colourButton->sizeHint());
-//    m_colourButton->setMinimumSize (120,35);
 
     QLabel* transparencyLabel = new QLabel(tr("Transparency : "), container);
     m_opacitySlider = new QSlider( Qt::Horizontal, container) ;
@@ -78,10 +77,10 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     m_transparencyValue = new QLabel("", container);
     m_transparencyValue->setMinimumSize (m_transparencyValue->sizeHint());
 
-    QVBoxLayout* layout = new QVBoxLayout(container);
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget( m_colourButton, 0 ) ;
 
-    QHBoxLayout* transparencyLayout= new QHBoxLayout( container );
+    QHBoxLayout* transparencyLayout= new QHBoxLayout( );
     transparencyLayout->addWidget( transparencyLabel, 0) ;
     transparencyLayout->addWidget( m_opacitySlider, 1 );
     transparencyLayout->addWidget( m_transparencyValue, 0) ;

@@ -121,8 +121,10 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             else
             {
                 // Remove title bar
-                QWidget *widget = new QWidget(dockWidget);
+                QWidget *widget = new QWidget();
+                dockWidget->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
                 dockWidget->setTitleBarWidget(widget);
+
             }
 
             if (viewInfo.m_useScrollBar)

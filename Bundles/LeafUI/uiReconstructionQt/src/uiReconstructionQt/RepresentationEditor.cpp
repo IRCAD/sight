@@ -60,10 +60,10 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    QVBoxLayout * layout = new QVBoxLayout(container);
+    QVBoxLayout * layout = new QVBoxLayout();
 
     QGroupBox *groupBox =new QGroupBox(tr("Representation"), container);
-    QVBoxLayout * layoutGroupBox = new QVBoxLayout(groupBox);
+    QVBoxLayout * layoutGroupBox = new QVBoxLayout();
     groupBox->setLayout(layoutGroupBox);
 
     m_buttonGroup = new QButtonGroup(groupBox);
@@ -91,7 +91,7 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
 
     // Shading group box
     QGroupBox *groupBoxShading =new QGroupBox(tr("Shading"), container);
-    QVBoxLayout * layoutGroupBoxShading = new QVBoxLayout(groupBoxShading);
+    QVBoxLayout * layoutGroupBoxShading = new QVBoxLayout();
     groupBoxShading->setLayout(layoutGroupBoxShading);
     m_buttonGroupShading = new QButtonGroup(groupBoxShading);
 
@@ -151,8 +151,8 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked ( QAbstractButton *)), this, SLOT(onChangeRepresentation(QAbstractButton *)));
-    QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked ( QAbstractButton *)), this, SLOT(onChangeShading(QAbstractButton *)));
+    QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked ( int )), this, SLOT(onChangeRepresentation(int )));
+    QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked ( int )), this, SLOT(onChangeShading(int )));
 
 #ifdef _DEBUG
     QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));

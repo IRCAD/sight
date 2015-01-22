@@ -18,7 +18,6 @@
                     <frame>
                         <name>Organs Manager</name>
                         <icon>${ICON_PATH}</icon>
-                        <!-- <minSize width="400" height="750" /> -->
                         <style mode="STAY_ON_TOP" />
                     </frame>
                 </gui>
