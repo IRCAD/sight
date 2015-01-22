@@ -382,6 +382,58 @@ double arlCore::computeVideo2RobotXZ(
     return Criterion;
 }
 
+void arlCore::convertRotationTranslationToMatrix(
+        const vnl_vector< double >& vec,
+        vnl_matrix_fixed<double, 4, 4>& matrix
+        )
+{
+    // Rotation
+    double c, s, theta, k1, k2, theta2, aux;
+    unsigned int i, j;
+    theta2 = vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2];
+    theta = sqrt(theta2);
+    if(theta > 1e-2 )
+    {
+        c = cos(theta);
+        s = sin(theta);
+        k1 = s / theta;
+        k2 = (1 - c) / theta2;
+    }
+    else
+    {   // Lim. Dev around theta = 0
+        k2 = 1.0/2.0 - theta2/24.0;
+        c = 1.0 - theta2*k2;
+        k1 = 1.0 - theta2/6;
+    }   // I + M*Mt
+    for ( i=0 ; i<3 ; ++i )
+        for ( j=0 ; j<=i ; ++j )
+        {
+            matrix[i][j] = k2 * vec[i] * vec[j];
+            if(i != j) matrix[j][i] = matrix[i][j];
+            else matrix[i][i] += c;
+        }
+    aux = k1 * vec[2];
+    matrix[0][1] -= aux;
+    matrix[1][0] += aux;
+    aux = k1 * vec[1];
+    matrix[0][2] += aux;
+    matrix[2][0] -= aux;
+    aux = k1 * vec[0];
+    matrix[1][2] -= aux;
+    matrix[2][1] += aux;
+
+    // Translation
+    matrix[0][3] = vec[3];
+    matrix[1][3] = vec[4];
+    matrix[2][3] = vec[5];
+
+    // Last Column
+    matrix[3][0] = 0;
+    matrix[3][1] = 0;
+    matrix[3][2] = 0;
+    matrix[3][3] = 1;
+
+}
 
 // arlRandom
 std::vector< double> arlRandom::Random::m_randomTable;

@@ -1107,8 +1107,10 @@ double arlCore::ISPPC_cost_function::f(vnl_vector< double > const &x)
     unsigned int i,j;
     m_error=0.0;
     double errorX, errorY;
-    arlCore::vnl_rigid_vector vec(x);
-    arlCore::vnl_rigid_matrix trsf(vec);
+
+    vnl_matrix_fixed<double, 4, 4> trsf;
+    ::arlCore::convertRotationTranslationToMatrix(x, trsf);
+
     if(!m_noise_feature)
     {
         for(i=0 ; i<m_cameras.size() ; ++i)

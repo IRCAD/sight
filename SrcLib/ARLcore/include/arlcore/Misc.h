@@ -200,6 +200,15 @@ namespace arlCore
         const std::vector< std::vector<arlCore::PointList::csptr > > &models3DList, //[Nbcams][NbPoses]
         const std::vector< std::vector<arlCore::PointList::csptr > > &points2DList, //[Nbcams][NbPoses]
         std::vector< double > &errors);
+    /**
+     * @brief Builds a 4x4 matrix from a rotation and a translation vector
+     * @param[in] vec rotation [0;2] and translation [3;5]
+     * @param[out] matrix 4x4 matrix
+     **/
+    ARLCORE_API void convertRotationTranslationToMatrix(
+            const vnl_vector< double >& vec,
+            vnl_matrix_fixed<double, 4, 4>& matrix
+            );
 
 } // namespace arlCore
 
