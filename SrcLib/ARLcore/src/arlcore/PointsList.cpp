@@ -102,7 +102,6 @@ void arlCore::PointList::copy( const PointList& p )
     for( i=0 ; i<p.size() ; ++i )
         m_pointList.push_back( Point::New(p.m_pointList[i]) );
     unlockWriteMutex();
-    modified();
 }
 
 arlCore::PointList::~PointList( void )
@@ -131,7 +130,6 @@ bool arlCore::PointList::setDimension( unsigned int dim )
     while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
     m_dimension = dim;
     unlockWriteMutex();
-    modified();
     return true;
 }
 
@@ -143,7 +141,6 @@ unsigned int arlCore::PointList::addGaussianNoise( double gaussianNoise )
     for( i=0 ; i<m_pointList.size() ; ++i )
             m_pointList[i]->addGaussianNoise(gaussianNoise);
     unlockWriteMutex();
-    modified();
     return i;
 }
 
@@ -158,7 +155,6 @@ unsigned int arlCore::PointList::fill( const std::vector< arlCore::vnl_rigid_mat
         list[i].trf( pt );
         push_back(pt);
     }
-    modified();
     return i;
 }
 
@@ -673,7 +669,6 @@ unsigned int arlCore::PointList::shapeRandom( unsigned int nbPoints, ARLCORE_SHA
         tmp->shapeRandom(type, size, angle);
         push_back(tmp);
     }
-    modified();
     return nbPoints;
 }
 
@@ -688,7 +683,6 @@ unsigned int arlCore::PointList::randomList( PointList::csptr A, unsigned int n 
     for( i=0 ; i<n ; ++i )
         m_pointList.push_back( Point::New( (*Anc)[i]) ) ;
     unlockWriteMutex();
-    modified();
     return n;
 }
 
@@ -878,7 +872,6 @@ bool arlCore::PointList::load( const std::string &fileName, double step )
     int no;
     std::string token,text;
     double version;
-    modified(); // TODO Optimize its position
     m_pointList.clear();
     if(Trian)
     {
@@ -974,7 +967,6 @@ bool arlCore::PointList::load( const std::string &fileName, double step )
 
 arlCore::Point::sptr arlCore::PointList::operator[]( unsigned int i )
 {   // FIXME Problem de validite de l'objet retourne
-    modified();
     return get(i);
 }
 
@@ -1013,7 +1005,6 @@ unsigned int arlCore::PointList::push_back(PointList::csptr p )
     unsigned int i,n=0;
     for( i=0 ; i< p->size() ; ++i )
         if(push_back(( (*p)[i]))) ++n;
-    modified();
     return n;
 }
 
@@ -1025,7 +1016,6 @@ bool arlCore::PointList::push_back( Point::csptr p )
     while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
     m_pointList.push_back( Point::constCast(p) );
     unlockWriteMutex();
-    modified();
     return true;
 }
 
@@ -1040,7 +1030,6 @@ bool arlCore::PointList::push_back( double x, double y )
     newPt->x(x); newPt->y(y);
     m_pointList.push_back( newPt );
     unlockWriteMutex();
-    modified();
     return true;
 }
 
@@ -1054,7 +1043,6 @@ bool arlCore::PointList::push_back( double x, double y, double z )
     newPt->x(x); newPt->y(y);newPt->z(z);
     m_pointList.push_back( newPt );
     unlockWriteMutex();
-    modified();
     return true;
 }
 
@@ -1064,7 +1052,6 @@ void arlCore::PointList::pop_back( void )
     while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
     m_pointList.pop_back();
     unlockWriteMutex();
-    modified();
 }
 
 void arlCore::PointList::clear( void )
@@ -1072,7 +1059,6 @@ void arlCore::PointList::clear( void )
     while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
     m_pointList.clear();
     unlockWriteMutex();
-    modified();
 }
 
 unsigned int arlCore::PointList::size( void ) const
@@ -1189,7 +1175,6 @@ bool arlCore::PointList::collapse( double g )
 
     }
     unlockWriteMutex();
-    modified();
     return true;
 }
 

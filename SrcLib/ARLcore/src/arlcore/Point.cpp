@@ -91,7 +91,6 @@ m_error(-1.0)
 
 void arlCore::Point::init( unsigned int dim )
 {
-    modified();
     unsigned int i;
     //VAG setTime(date,time);
     m_type=ARLCORE_POINT_TYPE_UNKNOWN;
@@ -184,7 +183,6 @@ void arlCore::Point::copy(arlCore::Point::csptr  p)
     for( i=0 ; i<size() ; ++i)
         for( j=0 ; j<size() ; ++j)
             m_covMatrix.put(i,j,p->m_covMatrix.get(i,j));
-    modified();
     return;
 }
 
@@ -197,7 +195,6 @@ bool arlCore::Point::setOK( bool b )
     if(b!=m_ok)
     {
         m_ok = b;
-        modified();
     }
     return m_ok;
 }
@@ -357,7 +354,6 @@ bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, SPTR(void) tag, 
 
 bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, SPTR(void) tag, int &fringe, int &no, unsigned int dim )
 {
-    modified();
     setOK(false);
     if(!f.is_open()) return false;
     init(dim);
@@ -446,7 +442,6 @@ vnl_vector<double> arlCore::Point::getHCoordinates() const
 
 arlCore::vnl_covariance_matrix& arlCore::Point::getCovMatrix()
 {
-    modified(); //?
     return m_covMatrix;
 }
 
@@ -469,7 +464,6 @@ bool arlCore::Point::setVisible(bool b)
 {
     if(m_visibility!=b)
     {
-        modified();
         m_visibility=b;
     }
     return m_visibility;
@@ -484,7 +478,6 @@ bool arlCore::Point::setStatus(ARLCORE_POINT_STATUS status)
 {
     if(m_status!=status)
     {
-        modified();
         m_status=status;
     }
     return true;
@@ -492,7 +485,6 @@ bool arlCore::Point::setStatus(ARLCORE_POINT_STATUS status)
 
 bool arlCore::Point::setColour(unsigned int R, unsigned int G, unsigned int B)
 {
-    modified();
     m_isColored=true;
     m_colour.setColour(R,G,B);
     return true;
@@ -500,7 +492,6 @@ bool arlCore::Point::setColour(unsigned int R, unsigned int G, unsigned int B)
 
 bool arlCore::Point::setColour(const Colour &c)
 {
-    modified();
     m_isColored=true;
     m_colour.setColour(c);
     return true;
@@ -525,7 +516,6 @@ bool arlCore::Point::isColored() const
 bool arlCore::Point::initUncertainty( void )
 {
     unsigned int dim = size();
-    modified();
     m_covMatrix.set_size(dim,dim);
     m_covMatrix.fill(0.0);
     return true;
@@ -555,7 +545,6 @@ bool arlCore::Point::set( unsigned int i, double a )
 {
     assert(i<size());
     if(i>=size()) return false;
-    modified();
     m_coordinates.put(i,a/m_ponderation); // FIXME
     return true;
 }
@@ -565,7 +554,6 @@ bool arlCore::Point::set( arlCore::Point::csptr  p )
     assert(p->size()==size());
     if(p->size()!=size()) return false;
     unsigned int i;
-    modified();
     m_ponderation=1.0;
     for( i=0 ; i<size() ; ++i )
     {
@@ -578,7 +566,6 @@ bool arlCore::Point::set( arlCore::Point::csptr  p )
 void arlCore::Point::fill( double a )
 {
     unsigned int i;
-    modified();
     m_coordinates.fill(a);
 //  for( i=0 ; i<m_coordinates.size() ; ++i )
 //      m_coordinates.put(i,a);
@@ -591,7 +578,6 @@ bool arlCore::Point::pond( arlCore::Point::csptr  p )
 {
     if(p->size()!=size()) return false;
     unsigned int i;
-    modified();
     for( i=0 ; i<size() ; ++i )
     {
         m_coordinates.put(i,m_coordinates.get(i)+p->get(i));
@@ -611,7 +597,6 @@ bool arlCore::Point::add( arlCore::Point::csptr  p )
     assert(p->size()==size());
     if(p->size()!=size()) return false;
     unsigned int i;
-    modified();
     for( i=0 ; i<size() ; ++i )
     {
         m_coordinates.put(i,get(i)+p->get(i));
@@ -668,7 +653,6 @@ void arlCore::Point::normalize( void )
         m_stat[i].fill(0.0);
     }
     m_ponderation = 1.0;
-    modified();
 }
 
 unsigned int arlCore::Point::size( void ) const
@@ -685,7 +669,6 @@ bool arlCore::Point::setType( ARLCORE_POINT_TYPE type )
 {
     if(type<ARLCORE_POINT_NBTYPES)
     {
-        modified();
         m_type=type;
     }
     return (type<ARLCORE_POINT_NBTYPES);
@@ -698,7 +681,6 @@ double arlCore::Point::getScalar( void ) const
 
 void arlCore::Point::setScalar( double scalar )
 {
-    modified();
     m_scalar=scalar;
 }
 
@@ -880,7 +862,6 @@ double arlCore::Point::distance2(arlCore::Point::csptr pt) const
 
 bool arlCore::Point::mult( double scalaire )
 {
-    modified();
     m_coordinates *= scalaire;
     return true;
 }

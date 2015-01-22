@@ -6,7 +6,8 @@
 
 #ifndef _ARLCORE_OBJECT_H
 #define _ARLCORE_OBJECT_H
-#include <fwTools/Object.hpp>
+
+#include <fwCore/base.hpp>
 
 #include <arlcore/Common.h>
 
@@ -40,7 +41,7 @@ namespace arlCore
      * @brief   Classe de base
      * Contient des informations temporelles, de validit� de l'objet, de Mutex
      */
-    class Object : public ::fwTools::Object
+    class Object : public ::fwCore::BaseObject
     {
     public:
         //! @brief Constructor
@@ -164,6 +165,9 @@ namespace arlCore
 
         ARLCORE_API unsigned int lockReadMutex( void );
         ARLCORE_API unsigned int unlockReadMutex( void );
+
+        void setName ( const std::string _strName ) { m_name = _strName; }
+        const std::string getName() const { return m_name; }
 
     protected:
         ARLCORE_API virtual bool unserialize( std::stringstream &s );
