@@ -61,15 +61,13 @@ set(SPYLOG_LEVEL_MAP_debug 5)
 set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
 
-# Until c++11 beeing globaly enabled ...
-macro(fwEnableCpp11)
-    if(NOT WIN32)
-        add_definitions("--std=c++11")
-        if(APPLE)
-            add_definitions("--stdlib=libc++")
-        endif(APPLE)
-    endif()
-endmacro()
+# Globaly enabled c++11
+if(NOT WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+    if(APPLE)
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --stdlib=libc++")
+    endif(APPLE)
+endif()
 
 macro(initProject PRJNAME )
     if(CREATE_SUBPROJECTS)
