@@ -47,7 +47,7 @@ protected:
     /// Copy constructor forbidden
     HasSignals( const HasSignals& );
 
-    /// Copy operator forbiden
+    /// Copy operator forbidden
     HasSignals& operator=( const HasSignals& );
 
     Signals m_signals;

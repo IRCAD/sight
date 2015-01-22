@@ -39,8 +39,7 @@ struct Connection
     Connection()
     { }
 
-    Connection(const SlotConnectionBase::sptr &connection)
-        :m_connectionBase(connection)
+    Connection(const SlotConnectionBase::sptr &connection) : m_connectionBase(connection)
     {
     }
 

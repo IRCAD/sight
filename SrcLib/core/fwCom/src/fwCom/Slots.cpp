@@ -16,7 +16,10 @@
 namespace fwCom
 {
 
-Slots::Slots(){}
+Slots::Slots()
+{}
+
+//-----------------------------------------------------------------------------
 
 Slots::~Slots()
 {
@@ -28,6 +31,8 @@ Slots::~Slots()
 #endif
 }
 
+//-----------------------------------------------------------------------------
+
 void Slots::setWorker( const ::fwThread::Worker::sptr &worker )
 {
     BOOST_FOREACH( SlotMapType::value_type elem, m_slots )
@@ -36,11 +41,15 @@ void Slots::setWorker( const ::fwThread::Worker::sptr &worker )
     }
 }
 
+//-----------------------------------------------------------------------------
+
 Slots& Slots::operator()( const SlotKeyType &key, const SlotBase::sptr &slot )
 {
     m_slots.insert( SlotMapType::value_type(key, slot) );
     return *this;
 }
+
+//-----------------------------------------------------------------------------
 
 SlotBase::sptr Slots::operator[]( const SlotKeyType &key ) const
 {
@@ -54,6 +63,8 @@ SlotBase::sptr Slots::operator[]( const SlotKeyType &key ) const
     return SlotBase::sptr();
 }
 
+//-----------------------------------------------------------------------------
+
 Slots::SlotKeyContainerType Slots::getSlotKeys() const
 {
     Slots::SlotKeyContainerType slotKeys;
@@ -64,13 +75,19 @@ Slots::SlotKeyContainerType Slots::getSlotKeys() const
     return slotKeys;
 }
 
+//-----------------------------------------------------------------------------
+
 Slots::Slots( const Slots& )
 {}
+
+//-----------------------------------------------------------------------------
 
 Slots& Slots::operator=( const Slots& )
 {
     return *this;
 }
+
+//-----------------------------------------------------------------------------
 
 #ifdef COM_LOG
 void Slots::setID( const std::string prefix )

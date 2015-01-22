@@ -33,6 +33,8 @@ void SlotBase::run() const
     }
 }
 
+//-----------------------------------------------------------------------------
+
 SlotBase::VoidSharedFutureType SlotBase::asyncRun() const
 {
     typedef SlotRun< void() > SlotFuncType;

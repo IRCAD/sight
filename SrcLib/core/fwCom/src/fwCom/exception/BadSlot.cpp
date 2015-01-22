@@ -16,7 +16,7 @@ namespace exception
 {
 
 BadSlot::BadSlot ( const std::string &err ) : ::fwCore::Exception(err)
-{} ;
+{}
 
 } // namespace exception
 

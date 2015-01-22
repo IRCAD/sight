@@ -16,7 +16,7 @@ namespace exception
 {
 
 AlreadyConnected::AlreadyConnected ( const std::string &err ) : ::fwCore::Exception(err)
-{} ;
+{}
 
 } // namespace exception
 

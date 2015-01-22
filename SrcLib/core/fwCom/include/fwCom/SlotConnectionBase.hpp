@@ -44,7 +44,7 @@ protected:
     /// Copy constructor forbidden
     SlotConnectionBase( const SlotConnectionBase& );
 
-    /// Copy operator forbiden
+    /// Copy operator forbidden
     SlotConnectionBase& operator=( const SlotConnectionBase& );
 
     /**

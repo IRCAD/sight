@@ -47,7 +47,7 @@ protected:
     /// Copy constructor forbidden
     HasSlots( const HasSlots& );
 
-    /// Copy operator forbiden
+    /// Copy operator forbidden
     HasSlots& operator=( const HasSlots& );
 
     Slots m_slots;

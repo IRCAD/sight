@@ -42,7 +42,7 @@ struct SignalBase : virtual fwCore::BaseObject
 #endif
     };
 
-    virtual ~SignalBase(){};
+    virtual ~SignalBase(){}
 
     /**
      * @brief Connects the given slot.

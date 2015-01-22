@@ -3,6 +3,7 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
 #ifndef __FWCOM_SLOTBASE_HPP__
 #define __FWCOM_SLOTBASE_HPP__
 
@@ -32,7 +33,7 @@ template< typename F >
 struct SlotRun;
 
 template< typename F >
-struct Slot;
+class Slot;
 
 struct SlotConnectionBase;
 
@@ -93,9 +94,15 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /**
      * @name Run helpers
      * @{ */
-    template< typename A1, typename A2, typename A3 > void run(A1 a1, A2 a2, A3 a3) const;
-    template< typename A1, typename A2 > void run(A1 a1, A2 a2) const;
-    template< typename A1 > void run(A1 a1) const;
+    template< typename A1, typename A2, typename A3 >
+    void run(A1 a1, A2 a2, A3 a3) const;
+
+    template< typename A1, typename A2 >
+    void run(A1 a1, A2 a2) const;
+
+    template< typename A1 >
+    void run(A1 a1) const;
+
     FWCOM_API void run() const;
     /**  @} */
 
@@ -106,10 +113,17 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /**
      * @name Call helpers
      * @{ */
-    template< typename R, typename A1, typename A2, typename A3 > R call(A1 a1, A2 a2, A3 a3) const;
-    template< typename R, typename A1, typename A2 > R call(A1 a1, A2 a2) const;
-    template< typename R, typename A1 > R call(A1 a1) const;
-    template< typename R > R call() const;
+    template< typename R, typename A1, typename A2, typename A3 >
+    R call(A1 a1, A2 a2, A3 a3) const;
+
+    template< typename R, typename A1, typename A2 >
+    R call(A1 a1, A2 a2) const;
+
+    template< typename R, typename A1 >
+    R call(A1 a1) const;
+
+    template< typename R >
+    R call() const;
     /**  @} */
 
     /**
@@ -120,9 +134,15 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /**
      * @name Asynchronous run helpers
      * @{ */
-    template< typename A1, typename A2, typename A3 > VoidSharedFutureType asyncRun(A1 a1, A2 a2, A3 a3) const;
-    template< typename A1, typename A2 > VoidSharedFutureType asyncRun(A1 a1, A2 a2) const;
-    template< typename A1 > VoidSharedFutureType asyncRun(A1 a1) const;
+    template< typename A1, typename A2, typename A3 >
+    VoidSharedFutureType asyncRun(A1 a1, A2 a2, A3 a3) const;
+
+    template< typename A1, typename A2 >
+    VoidSharedFutureType asyncRun(A1 a1, A2 a2) const;
+
+    template< typename A1 >
+    VoidSharedFutureType asyncRun(A1 a1) const;
+
     FWCOM_API VoidSharedFutureType asyncRun() const;
     /**  @} */
 
@@ -134,10 +154,17 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /**
      * @name Asynchronous call helpers
      * @{ */
-    template< typename R, typename A1, typename A2, typename A3 > ::boost::shared_future< R > asyncCall(A1 a1, A2 a2, A3 a3) const;
-    template< typename R, typename A1, typename A2 > ::boost::shared_future< R > asyncCall(A1 a1, A2 a2) const;
-    template< typename R, typename A1 > ::boost::shared_future< R > asyncCall(A1 a1) const;
-    template< typename R > ::boost::shared_future< R > asyncCall() const;
+    template< typename R, typename A1, typename A2, typename A3 >
+    ::boost::shared_future< R > asyncCall(A1 a1, A2 a2, A3 a3) const;
+
+    template< typename R, typename A1, typename A2 >
+    ::boost::shared_future< R > asyncCall(A1 a1, A2 a2) const;
+
+    template< typename R, typename A1 >
+    ::boost::shared_future< R > asyncCall(A1 a1) const;
+
+    template< typename R >
+    ::boost::shared_future< R > asyncCall() const;
     /**  @} */
 
     /// Returns number of connections.
@@ -151,7 +178,7 @@ protected:
     /// Copy constructor forbidden
     SlotBase( const SlotBase& );
 
-    /// Copy operator forbiden
+    /// Copy operator forbidden
     SlotBase& operator=( const SlotBase& );
 
     /**

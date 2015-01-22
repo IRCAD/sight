@@ -22,100 +22,18 @@ template <typename F>
 struct convert_function_type;
 
 /// Convert class member method type to equivalent function type.
-#ifdef BOOST_NO_VARIADIC_TEMPLATES
-//===============================================================================
-//===============================================================================
-//==================================== BEGIN ====================================
-template <typename R, typename C, typename Args1, typename Args2, typename Args3, typename Args4, typename Args5 >
-struct convert_function_type< R (C::*) ( Args1, Args2, Args3, Args4, Args5 )  >
-{
-    typedef R type( Args1, Args2, Args3, Args4, Args5 ) ;
-};
-template <typename R, typename C, typename Args1, typename Args2, typename Args3, typename Args4 >
-struct convert_function_type< R (C::*) ( Args1, Args2, Args3, Args4 )  >
-{
-    typedef R type( Args1, Args2, Args3, Args4 ) ;
-};
-template <typename R, typename C, typename Args1, typename Args2, typename Args3 >
-struct convert_function_type< R (C::*) ( Args1, Args2, Args3 )  >
-{
-    typedef R type( Args1, Args2, Args3 ) ;
-};
-template <typename R, typename C, typename Args1, typename Args2 >
-struct convert_function_type< R (C::*) ( Args1, Args2 )  >
-{
-    typedef R type( Args1, Args2 ) ;
-};
-template <typename R, typename C, typename Args1 >
-struct convert_function_type< R (C::*) ( Args1 )  >
-{
-    typedef R type( Args1 ) ;
-};
-template <typename R, typename C>
-struct convert_function_type< R (C::*) ()  >
-{
-    typedef R type() ;
-};
-//===================================== END =====================================
-//===============================================================================
-//===============================================================================
-
-#else  // BOOST_NO_VARIADIC_TEMPLATES
 template <typename R, typename C, typename ...Args >
 struct convert_function_type< R (C::*) ( Args... )  >
 {
     typedef R type( Args... ) ;
 };
-#endif  // BOOST_NO_VARIADIC_TEMPLATES
-
 
 /// Convert class const member method type to equivalent function type.
-#ifdef BOOST_NO_VARIADIC_TEMPLATES
-//===============================================================================
-//===============================================================================
-//==================================== BEGIN ====================================
-template <typename R, typename C, typename Args1, typename Args2, typename Args3, typename Args4, typename Args5 >
-struct convert_function_type< R (C::*) ( Args1, Args2, Args3, Args4, Args5 ) const  >
-{
-    typedef R type( Args1, Args2, Args3, Args4, Args5 ) ;
-};
-template <typename R, typename C, typename Args1, typename Args2, typename Args3, typename Args4 >
-struct convert_function_type< R (C::*) ( Args1, Args2, Args3, Args4 ) const  >
-{
-    typedef R type( Args1, Args2, Args3, Args4 ) ;
-};
-template <typename R, typename C, typename Args1, typename Args2, typename Args3 >
-struct convert_function_type< R (C::*) ( Args1, Args2, Args3 ) const  >
-{
-    typedef R type( Args1, Args2, Args3 ) ;
-};
-template <typename R, typename C, typename Args1, typename Args2 >
-struct convert_function_type< R (C::*) ( Args1, Args2 ) const  >
-{
-    typedef R type( Args1, Args2 ) ;
-};
-template <typename R, typename C, typename Args1 >
-struct convert_function_type< R (C::*) ( Args1 ) const  >
-{
-    typedef R type( Args1 ) ;
-};
-template <typename R, typename C>
-struct convert_function_type< R (C::*) () const  >
-{
-    typedef R type() ;
-};
-//===================================== END =====================================
-//===============================================================================
-//===============================================================================
-
-#else  // BOOST_NO_VARIADIC_TEMPLATES
 template <typename R, typename C, typename ...Args >
 struct convert_function_type< R (C::*) ( Args... ) const  >
 {
     typedef R type( Args... ) ;
 };
-#endif  // BOOST_NO_VARIADIC_TEMPLATES
-
 
 /// Extract function type from a boost function.
 template <typename F>

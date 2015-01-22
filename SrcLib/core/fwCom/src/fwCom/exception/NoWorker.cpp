@@ -16,7 +16,7 @@ namespace exception
 {
 
 NoWorker::NoWorker ( const std::string &err ) : ::fwCore::Exception(err)
-{} ;
+{}
 
 } // namespace exception
 

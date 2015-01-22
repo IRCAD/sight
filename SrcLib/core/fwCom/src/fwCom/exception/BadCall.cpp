@@ -16,7 +16,7 @@ namespace exception
 {
 
 BadCall::BadCall ( const std::string &err ) : ::fwCore::Exception(err)
-{} ;
+{}
 
 } // namespace exception
 

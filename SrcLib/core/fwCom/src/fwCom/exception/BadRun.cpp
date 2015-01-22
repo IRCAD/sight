@@ -16,7 +16,7 @@ namespace exception
 {
 
 BadRun::BadRun ( const std::string &err ) : ::fwCore::Exception(err)
-{} ;
+{}
 
 } // namespace exception
 

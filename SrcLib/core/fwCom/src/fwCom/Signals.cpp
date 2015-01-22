@@ -16,8 +16,10 @@
 namespace fwCom
 {
 
-Signals::Signals(){}
+Signals::Signals()
+{}
 
+//-----------------------------------------------------------------------------
 
 Signals::~Signals()
 {
@@ -29,11 +31,15 @@ Signals::~Signals()
 #endif
 }
 
+//-----------------------------------------------------------------------------
+
 Signals& Signals::operator()( const SignalKeyType &key, const SignalBase::sptr &Signal )
 {
     m_signals.insert( SignalMapType::value_type(key, Signal) );
     return *this;
 }
+
+//-----------------------------------------------------------------------------
 
 SignalBase::sptr Signals::operator[]( const SignalKeyType &key ) const
 {
@@ -47,6 +53,8 @@ SignalBase::sptr Signals::operator[]( const SignalKeyType &key ) const
     return SignalBase::sptr();
 }
 
+//-----------------------------------------------------------------------------
+
 Signals::SignalKeyContainerType Signals::getSignalKeys() const
 {
     Signals::SignalKeyContainerType SignalKeys;
@@ -57,14 +65,19 @@ Signals::SignalKeyContainerType Signals::getSignalKeys() const
     return SignalKeys;
 }
 
+//-----------------------------------------------------------------------------
+
 Signals::Signals( const Signals& )
 {}
+
+//-----------------------------------------------------------------------------
 
 Signals& Signals::operator=( const Signals& )
 {
     return *this;
 }
 
+//-----------------------------------------------------------------------------
 #ifdef COM_LOG
 void Signals::setID( const std::string prefix )
 {
@@ -74,5 +87,7 @@ void Signals::setID( const std::string prefix )
     }
 }
 #endif
+//-----------------------------------------------------------------------------
+
 } // namespace fwCom
 
