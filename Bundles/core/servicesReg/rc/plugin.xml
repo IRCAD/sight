@@ -65,6 +65,12 @@
         <object>::fwData::String</object>
     </extension>
      
+     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::TransferFunction</service>
+        <object>::fwData::TransferFunction</object>
+    </extension>
+     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::fwServices::SConfigController</service>

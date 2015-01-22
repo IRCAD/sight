@@ -49,6 +49,7 @@
             <xs:element name="item"  type="ItemType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="node"  type="NodeType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="edge"  type="EdgeType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="colors"  type="ColorType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="connect"  type="ConnectionType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="proxy"  type="ProxyType"  minOccurs="0" maxOccurs="unbounded" />
@@ -151,6 +152,17 @@
         <xs:attribute name="weight" type="xs:string" />
         <xs:attribute name="uid" type="xs:string" />
         <xs:attribute name="src" type="xs:string" />
+    </xs:complexType>
+    
+    <xs:complexType name="ColorType">
+        <xs:sequence>
+            <xs:element name="step" type="StepType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="StepType">
+        <xs:attribute name="color" type="xs:string" use="required" />
+        <xs:attribute name="value" type="xs:string" use="required" />
     </xs:complexType>
 
 </xs:schema>        
