@@ -99,7 +99,10 @@ void MedicalImageAdaptor::getCurrentSliceCenter(double center[3])
 
     ::fwData::Integer::sptr sliceIndex[3];
     this->getSliceIndex(sliceIndex);
-    double index[3] = {sliceIndex[0]->value(), sliceIndex[1]->value(), sliceIndex[2]->value()};
+    const double x = static_cast<double>(sliceIndex[0]->value());
+    const double y = static_cast<double>(sliceIndex[1]->value());
+    const double z = static_cast<double>(sliceIndex[2]->value());
+    double index[3] = {x, y, z};
 
     center[0] = origin[0] + (imageSize[0]-1.)/ 2.;
     center[1] = origin[1] + (imageSize[1]-1.)/ 2.;

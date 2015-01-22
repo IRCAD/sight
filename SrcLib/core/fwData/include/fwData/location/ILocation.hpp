@@ -69,7 +69,7 @@ inline typename LOCATION::sptr getLocation(RW *rw)
 template<class LOCATION, class RW >
 inline bool have(RW *rw)
 {
-    return LOCATION::dynamicCast( rw->getLocation() );
+    return (LOCATION::dynamicCast( rw->getLocation() )) ? true : false ;
 }
 
 }

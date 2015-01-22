@@ -158,7 +158,7 @@ void PlaneSelectionNotifier::doReceive( ::fwServices::ObjectMsg::csptr msg) thro
         ::fwData::PlaneList::sptr planeList = ::fwData::PlaneList::dynamicCast(planeListMsg->getSubject().lock());
         SLM_ASSERT("Messsage's subject should be a PlaneList", planeList);
         bool showPlanes;
-        showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true));
+        showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
 
         if(!planeList->getRefPlanes().empty())
         {

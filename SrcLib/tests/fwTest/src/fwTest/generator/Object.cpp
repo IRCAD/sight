@@ -334,7 +334,9 @@ namespace generator
 
 ::fwData::Point::sptr Object::generatePoint()
 {
-    fwVec3d coord = {{rand()%300, rand()%300, rand()%300}};
+    fwVec3d coord = {static_cast<double>(rand()%300),
+                     static_cast<double>(rand()%300),
+                     static_cast<double>(rand()%300)};
     ::fwData::Point::sptr point = ::fwData::Point::New();
     point->setCoord(coord);
     return point;

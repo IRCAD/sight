@@ -76,7 +76,7 @@ void PlaneFunctionsTest::checkIntersect()
 //  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intercestion
     const fwVec3d lineDirection = {{0.0, 0.0, 4.0}};  // ==> intersection en (0.0, 0.0, 0.0)
 
-    line = std::make_pair < fwVec3d, fwVec3d >(linePos, lineDirection);
+    line = std::make_pair(linePos, lineDirection);
 
     const fwVec3d planPt1 = {{0.0,0.0,0.0}};
     const fwVec3d planPt2 = {{2.0,0.0, 0.0}};
@@ -123,7 +123,7 @@ void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( )
 //  const fwVec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> pas d'intercestion
 //  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intercestion
     fwVec3d lineDirection = {{LineP2_X, LineP2_Y, LineP2_Z}};  // ==> intersection en (0.0, 0.0, 0.0)
-    line = std::make_pair < fwVec3d, fwVec3d >(linePos, lineDirection);
+    line = std::make_pair(linePos, lineDirection);
     const fwVec3d planPt1 = {{PlanP1_X, PlanP1_Y, PlanP1_Z}};
     const fwVec3d planPt2 = {{PlanP2_X, PlanP2_Y, PlanP2_Z}};
     const fwVec3d planPt3 = {{PlanP3_X, PlanP3_Y, PlanP3_Z}};
