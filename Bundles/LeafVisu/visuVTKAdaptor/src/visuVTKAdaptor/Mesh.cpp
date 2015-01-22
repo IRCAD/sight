@@ -502,6 +502,11 @@ void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Fail
        SLM_ASSERT("m_polyData not instanced", m_polyData);
 
        ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
+
+       if (m_autoResetCamera)
+       {
+           this->getRenderer()->ResetCamera();
+       }
        this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
