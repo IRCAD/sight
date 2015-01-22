@@ -155,7 +155,7 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
     foreach(RESOURCE_FILE ${RESOURCES_FILES})
         file(RELATIVE_PATH REL_PATH "${RES_DIR}" "${RESOURCE_FILE}")
         if ("${TARGET_DIR}/${REL_PATH}" MATCHES "^.*\\.(txt|xml)$")
-            set(COPY_COMMAND cmake
+            set(COPY_COMMAND ${CMAKE_COMMAND}
             -DIN_FILE="${RES_DIR}/${REL_PATH}" 
             -DOUT_FILE="${TARGET_DIR}/${REL_PATH}" 
             -DFWPROJECT_NAME="${FWPROJECT_NAME}"
@@ -166,7 +166,7 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
             )
             set(COPY_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake" )
         else()
-            set(COPY_COMMAND cmake -E copy "${RES_DIR}/${REL_PATH}" "${TARGET_DIR}/${REL_PATH}")
+            set(COPY_COMMAND ${CMAKE_COMMAND} -E copy "${RES_DIR}/${REL_PATH}" "${TARGET_DIR}/${REL_PATH}")
             set(COPY_DEPENDS )
         endif()
 
