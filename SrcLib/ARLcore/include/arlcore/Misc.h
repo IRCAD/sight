@@ -29,9 +29,6 @@ namespace arlCore
     //! @return if n is even
     template <typename T> inline bool even( const T &n ){long int a=n/2; return (T)(a*2)==n;}
 
-    //! @brief swap 2 variables
-    template <typename T> inline void swap( T &a, T &b ){T c=a;a=b;b=c;}
-
     class PointList;
     /**
      * @brief Fill pointlist with a 3D square grid. The first point to be built has (0,0,0)

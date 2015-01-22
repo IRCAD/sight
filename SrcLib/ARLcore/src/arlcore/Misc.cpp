@@ -668,11 +668,17 @@ void arlString::getTimeString( long int date, std::string &s, char separator )
     s = name;
 }
 
+// Return true if conversion is ok
+// state & std::ios::eofbit : is tested to be sure that the file has been completely parsed.
+//   For example if you want to convert "12,3" to float, the function return is 12 
+// state & std::ios::failbit : is tested to see if conversion is OK.
 template<typename T>
 bool convert(const std::string &s, T &obj)
 {
     std::istringstream is(s);
-    return is >> obj;
+    is >> obj;
+    int state = is.rdstate();
+    return !(state & std::ios::failbit) & (state & std::ios::eofbit);
 }
 
 bool arlString::valueOf(const std::string &s, unsigned int &obj)
