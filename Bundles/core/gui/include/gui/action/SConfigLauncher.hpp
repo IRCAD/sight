@@ -17,7 +17,7 @@
 
 #include <fwServices/helper/ConfigLauncher.hpp>
 
-#include "gui/export.hpp"
+#include "gui/config.hpp"
 
 namespace gui
 {

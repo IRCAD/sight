@@ -9,7 +9,7 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-#include "uiTF/export.hpp"
+#include "uiTF/config.hpp"
 
 namespace uiTF
 {

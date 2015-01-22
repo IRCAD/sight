@@ -4,9 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iosfwd> // #include <strstream>
-#include <iomanip>
-#include <algorithm>
+#include "fwMemory/BufferManager.hpp"
+
+#include <fwCom/Signal.hxx>
+#include <fwCore/util/LazyInstantiator.hpp>
+
+#include <fwTools/System.hpp>
+#include <fwThread/Worker.hpp>
+
+#include "fwMemory/stream/in/Raw.hpp"
+#include "fwMemory/stream/in/Buffer.hpp"
+#include "fwMemory/policy/NeverDump.hpp"
 
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
@@ -14,19 +22,9 @@
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 
-#include <fwCore/util/LazyInstantiator.hpp>
-
-#include <fwTools/System.hpp>
-
-#include <fwThread/Worker.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include "fwMemory/stream/in/Raw.hpp"
-#include "fwMemory/stream/in/Buffer.hpp"
-#include "fwMemory/policy/NeverDump.hpp"
-#include "fwMemory/BufferManager.hpp"
+#include <iosfwd> // #include <strstream>
+#include <iomanip>
+#include <algorithm>
 
 namespace fwMemory
 {

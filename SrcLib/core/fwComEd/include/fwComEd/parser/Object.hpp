@@ -11,7 +11,7 @@
 #include <fwServices/IXMLParser.hpp>
 #include <fwServices/AppConfigManager.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 
 namespace fwComEd
 {

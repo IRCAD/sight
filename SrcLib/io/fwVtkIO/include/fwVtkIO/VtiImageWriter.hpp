@@ -41,16 +41,16 @@ public :
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    VTKIO_API VtiImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API VtiImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     //! @brief Destructor.
-    VTKIO_API ~VtiImageWriter();
+    FWVTKIO_API ~VtiImageWriter();
 
     //! @brief Writing operator.
-    VTKIO_API void write();
+    FWVTKIO_API void write();
 
     /// @return ".vti"
-    VTKIO_API  std::string extension();
+    FWVTKIO_API  std::string extension();
 };
 
 } // namespace fwVtkIO

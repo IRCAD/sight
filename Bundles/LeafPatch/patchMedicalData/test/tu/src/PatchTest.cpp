@@ -12,8 +12,6 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwData/Object.hpp>
 
 #include <fwMedData/SeriesDB.hpp>

@@ -29,7 +29,6 @@
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
 
 #include "fwData/factory/new.hpp"
 #include "fwData/registry/detail.hpp"

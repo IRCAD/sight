@@ -4,18 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <algorithm>
-
-#include <sstream>
-#include <boost/assign/std/vector.hpp>
+#include "visuVTKAdaptor/ImageMultiDistances.hpp"
+#include "visuVTKAdaptor/Distance.hpp"
 
 #include <fwTools/fwID.hpp>
 
 #include <fwData/Boolean.hpp>
-#include <fwData/String.hpp>
+#include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
-#include <fwData/Color.hpp>
+#include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
 #include <fwServices/macros.hpp>
@@ -24,23 +22,26 @@
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
+#include <fwCom/Signal.hxx>
+
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
 #include <vtkAssemblyPath.h>
+#include <vtkCamera.h>
+#include <vtkCellPicker.h>
 #include <vtkCommand.h>
 #include <vtkCubeSource.h>
-#include <vtkCellPicker.h>
+#include <vtkInteractorStyle.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyle.h>
 #include <vtkRenderWindow.h>
-#include <vtkCamera.h>
+#include <vtkRenderWindowInteractor.h>
 
-#include "visuVTKAdaptor/ImageMultiDistances.hpp"
-#include "visuVTKAdaptor/Distance.hpp"
 #include <fwServices/IEditionService.hpp>
 
+#include <boost/assign/std/vector.hpp>
+#include <algorithm>
+#include <sstream>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageMultiDistances, ::fwData::Image ) ;
 

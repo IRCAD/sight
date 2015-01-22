@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "Tuto15MultithreadCtrl/SReadArray.hpp"
+
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -12,7 +14,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
-#include "Tuto15MultithreadCtrl/SReadArray.hpp"
+#include <fwCom/Signal.hxx>
 
 fwServicesRegisterMacro( ::fwServices::IService , ::Tuto15MultithreadCtrl::SReadArray , ::fwData::Array ) ;
 

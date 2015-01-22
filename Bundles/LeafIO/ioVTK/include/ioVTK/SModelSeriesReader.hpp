@@ -14,7 +14,7 @@
 
 #include <io/IReader.hpp>
 
-#include "ioVTK/export.hpp"
+#include "ioVTK/config.hpp"
 
 namespace ioVTK
 {

@@ -6,10 +6,12 @@
 
 #include <boost/regex.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/AppConfig.hpp>
 
 #include "gui/action/ConfigActionSrv.hpp"
+
+#include <fwCom/Signal.hxx>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/AppConfig.hpp>
 
 namespace gui
 {

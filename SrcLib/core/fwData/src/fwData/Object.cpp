@@ -4,12 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
-
+//FIXME :This needs to be include first for GCC
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+//
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 
+#include <boost/foreach.hpp>
+#include <boost/bind.hpp>
 
 namespace fwData
 {

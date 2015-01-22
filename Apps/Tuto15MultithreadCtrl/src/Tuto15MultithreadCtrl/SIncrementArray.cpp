@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/bind.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "Tuto15MultithreadCtrl/SIncrementArray.hpp"
 
 #include <fwComEd/helper/Array.hpp>
 
@@ -17,7 +16,10 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
-#include "Tuto15MultithreadCtrl/SIncrementArray.hpp"
+#include <fwCom/Signal.hxx>
+
+#include <boost/bind.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IService , ::Tuto15MultithreadCtrl::SIncrementArray , ::fwData::Array ) ;
 

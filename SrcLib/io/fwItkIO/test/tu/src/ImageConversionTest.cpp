@@ -7,8 +7,6 @@
 #include <fwCore/base.hpp>
 #include <fwData/Object.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 

@@ -11,7 +11,7 @@
 
 #include <io/IWriter.hpp>
 
-#include "ioData/export.hpp"
+#include "ioData/config.hpp"
 
 namespace ioData
 {

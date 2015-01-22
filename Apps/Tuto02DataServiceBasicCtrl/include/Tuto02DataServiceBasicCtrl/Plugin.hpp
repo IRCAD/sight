@@ -15,9 +15,9 @@
 
 #include <fwServices/IService.hpp>
 
-#include "tuto02DataServiceBasicCtrl/config.hpp"
+#include "Tuto02DataServiceBasicCtrl/config.hpp"
 
-namespace tuto02DataServiceBasicCtrl
+namespace Tuto02DataServiceBasicCtrl
 {
 
 /**
@@ -53,6 +53,6 @@ private:
     ::fwServices::IService::sptr m_readerSrv;
 };
 
-} // namespace tuto02DataServiceBasicCtrl
+} // namespace Tuto02DataServiceBasicCtrl
 
 #endif // _TUTO02DATASERVICEBASICCTRL_PLUGIN_HPP_

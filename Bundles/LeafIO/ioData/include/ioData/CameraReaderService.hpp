@@ -11,7 +11,7 @@
 #include <boost/filesystem/path.hpp>
 #include <fwData/Camera.hpp>
 
-#include "ioData/export.hpp"
+#include "ioData/config.hpp"
 
 
 namespace ioData

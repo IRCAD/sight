@@ -9,7 +9,7 @@
 
 #include <fwServices/IService.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 #include "fwComEd/CompositeMsg.hpp"
 #include "fwData/Composite.hpp"
 

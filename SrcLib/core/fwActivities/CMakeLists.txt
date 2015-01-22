@@ -1,4 +1,3 @@
-
 fwLoadProperties()
 
 fwUseForwardInclude(
@@ -6,10 +5,7 @@ fwUseForwardInclude(
     fwMedData
     fwRuntime
     fwTools
-    )
+)
 
-find_package (Boost COMPONENTS date_time REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES})
-
-
+find_package (Boost COMPONENTS regex REQUIRED)
+fwLink(${Boost_REGEX_LIBRARY})

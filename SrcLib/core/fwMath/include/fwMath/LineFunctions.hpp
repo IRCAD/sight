@@ -10,7 +10,7 @@
 #include <fwCore/base.hpp>
 
 #include "fwMath/IntrasecTypes.hpp"
-#include "fwMath/export.hpp"
+#include "fwMath/config.hpp"
 
 namespace fwMath {
 

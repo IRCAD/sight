@@ -7,7 +7,7 @@
 #ifndef __FWATOMSPATCH_INFOS_LOG_HPP__
 #define __FWATOMSPATCH_INFOS_LOG_HPP__
 
-#include <fwAtomsPatch/infos/Logger.hpp>
+#include "fwAtomsPatch/infos/Logger.hpp"
 
 /** @{ */
 # ifdef _DEBUG

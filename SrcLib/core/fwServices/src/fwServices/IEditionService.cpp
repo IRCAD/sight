@@ -10,6 +10,8 @@
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/op/Get.hpp"
 
+#include <fwCom/Signal.hxx>
+
 namespace fwServices
 {
 

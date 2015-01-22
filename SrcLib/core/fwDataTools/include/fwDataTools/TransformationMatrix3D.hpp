@@ -11,7 +11,7 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Point.hpp>
 
-#include "fwDataTools/export.hpp"
+#include "fwDataTools/config.hpp"
 
 namespace fwDataTools
 {

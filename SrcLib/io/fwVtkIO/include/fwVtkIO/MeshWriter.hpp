@@ -44,16 +44,16 @@ public :
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    VTKIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     //! @brief Destructor.
-    VTKIO_API ~MeshWriter();
+    FWVTKIO_API ~MeshWriter();
 
     //! @brief Reading operator.
-    VTKIO_API void write();
+    FWVTKIO_API void write();
 
     /// @return ".vtk"
-    VTKIO_API  std::string extension();
+    FWVTKIO_API  std::string extension();
 };
 
 } // namespace fwVtkIO

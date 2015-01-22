@@ -4,32 +4,33 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Plane.hpp"
+#include "visuVTKAdaptor/PlaneList.hpp"
 
-#include <fwData/PlaneList.hpp>
-#include <fwData/Plane.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/Plane.hpp>
+#include <fwData/PlaneList.hpp>
 
-
-#include <fwComEd/PlaneMsg.hpp>
 #include <fwComEd/PlaneListMsg.hpp>
+#include <fwComEd/PlaneMsg.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwServices/Base.hpp>
+#include <fwServices/IEditionService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <vtkCommand.h>
-#include <vtkCellPicker.h>
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
 #include <vtkAssemblyPath.h>
+#include <vtkCellPicker.h>
+#include <vtkCommand.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-#include "visuVTKAdaptor/Plane.hpp"
-#include "visuVTKAdaptor/PlaneList.hpp"
-#include <fwServices/IEditionService.hpp>
+#include <boost/foreach.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ) ;
 

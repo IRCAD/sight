@@ -10,7 +10,7 @@
 #include <fwTools/Failed.hpp>
 #include <fwGui/IFrameSrv.hpp>
 
-#include "gui/export.hpp"
+#include "gui/config.hpp"
 
 namespace gui
 {

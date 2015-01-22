@@ -13,6 +13,7 @@
 #include <fwRuntime/Convert.hpp>
 
 #include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 

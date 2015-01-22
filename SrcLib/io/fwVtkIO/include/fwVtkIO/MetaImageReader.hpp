@@ -42,16 +42,16 @@ public :
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    VTKIO_API MetaImageReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWVTKIO_API MetaImageReader(::fwDataIO::reader::IObjectReader::Key key);
 
     //! @brief Destructor.
-    VTKIO_API ~MetaImageReader();
+    FWVTKIO_API ~MetaImageReader();
 
     //! @brief Reading operator.
-    VTKIO_API void read();
+    FWVTKIO_API void read();
 
     /// @return ".mhd"
-    VTKIO_API  std::string extension();
+    FWVTKIO_API  std::string extension();
 };
 
 } // namespace fwVtkIO

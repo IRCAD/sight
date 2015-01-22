@@ -14,7 +14,7 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include "export.hpp"
+#include "uiTF/config.hpp"
 
 class QComboBox;
 class QPushButton;

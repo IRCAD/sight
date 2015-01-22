@@ -13,7 +13,7 @@
 #include <boost/weak_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "ioData/export.hpp"
+#include "ioData/config.hpp"
 
 namespace ioData
 {

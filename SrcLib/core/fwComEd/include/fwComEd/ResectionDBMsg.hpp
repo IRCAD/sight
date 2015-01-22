@@ -12,7 +12,7 @@
 #include <fwData/Resection.hpp>
 #include <fwData/ResectionDB.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 
 
 namespace fwComEd

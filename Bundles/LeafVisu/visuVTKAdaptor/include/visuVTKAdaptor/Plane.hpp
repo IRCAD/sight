@@ -7,15 +7,19 @@
 #ifndef _VISUVTKADAPTOR_PLANE_HPP_
 #define _VISUVTKADAPTOR_PLANE_HPP_
 
+#include "visuVTKAdaptor/config.hpp"
+
+#include <fwData/Plane.hpp>
+
 #include <fwServices/ObjectMsg.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkPlaneSource;
 class vtkPlaneCollection;
 class vtkPlane;
 class vtkObject;
+class vtkActor;
 
 namespace fwData
 {
@@ -55,7 +59,7 @@ private:
 
     vtkPlaneSource* m_vtkPlane;
     vtkActor *m_actorPlan;
-    fwData::Plane::wptr m_pPlane;
+    ::fwData::Plane::wptr m_pPlane;
 
     vtkPlane* m_vtkImplicitPlane;
     vtkPlaneCollection* m_vtkPlaneCollection;

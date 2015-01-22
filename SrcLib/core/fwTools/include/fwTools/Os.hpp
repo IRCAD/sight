@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include "config.hpp"
+#include "fwTools/config.hpp"
 
 
 namespace fwTools {

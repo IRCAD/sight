@@ -50,18 +50,18 @@ public :
     fwCoreAllowSharedFromThis();
 
     //! Constructor.
-    VTKIO_API ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     //! Destructor.
-    VTKIO_API ~ModelSeriesObjWriter();
+    FWVTKIO_API ~ModelSeriesObjWriter();
 
     //! Writing operator.
-    VTKIO_API void write();
+    FWVTKIO_API void write();
 
     /**
      * @return ".obj"
      */
-    VTKIO_API std::string extension();
+    FWVTKIO_API std::string extension();
 
 };
 

@@ -17,6 +17,7 @@
 
 #include <fwThread/Worker.hpp>
 
+#include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/HasSignals.hpp>

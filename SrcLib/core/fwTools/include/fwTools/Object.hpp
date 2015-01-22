@@ -37,12 +37,12 @@ public:
     friend class ::fwTools::UUID;
 
     // expose API for ID management
-    FWTOOLS_API using  ::fwTools::fwID::hasID;
-    FWTOOLS_API using  ::fwTools::fwID::getID;
-    FWTOOLS_API using  ::fwTools::fwID::setID;
-    FWTOOLS_API using  ::fwTools::fwID::resetID;
+    using  ::fwTools::fwID::hasID;
+    using  ::fwTools::fwID::getID;
+    using  ::fwTools::fwID::setID;
+    using  ::fwTools::fwID::resetID;
 #ifdef COM_LOG
-    FWTOOLS_API using  ::fwTools::fwID::getLightID;
+    using  ::fwTools::fwID::getLightID;
 #endif
 
     /// return the sub class classname : an alias of this->getClassname

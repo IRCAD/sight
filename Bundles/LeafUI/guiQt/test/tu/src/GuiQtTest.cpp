@@ -16,9 +16,6 @@
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwGuiQt/App.hpp>
-
-
 #include "GuiQtTest.hpp"
 
 // Registers the fixture into the 'registry'

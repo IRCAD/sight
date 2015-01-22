@@ -3,4 +3,5 @@ fwUseForwardInclude(
     fwAtoms
     fwAtomsPatch
     fwCore
+    fwMedData
 )

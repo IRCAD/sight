@@ -12,7 +12,7 @@
 #include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/VectorFunctions.hpp"
 #include "fwMath/LineFunctions.hpp"
-#include "fwMath/export.hpp"
+#include "fwMath/config.hpp"
 #include "fwMath/MatrixFunctions.hpp"
 
 namespace fwMath {

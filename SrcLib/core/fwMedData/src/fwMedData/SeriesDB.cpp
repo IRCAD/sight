@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwMedData/SeriesDB.hpp"
 
 #include <fwData/registry/macros.hpp>
 #include <fwData/Exception.hpp>
 
 #include "fwMedData/Series.hpp"
-#include "fwMedData/SeriesDB.hpp"
 
 fwDataRegisterMacro( ::fwMedData::SeriesDB );
 

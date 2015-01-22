@@ -1,13 +1,20 @@
+fwLoadProperties()
 
-fwLib (fwCore 0.1)
+find_package (Boost COMPONENTS thread system filesystem date_time log log_setup REQUIRED)
 
-
-
-find_package (Boost COMPONENTS regex filesystem date_time chrono log log_setup REQUIRED)
 fwForwardInclude(${Boost_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES})
 
-unset(Boost_LIBRARIES)
-find_package (Boost COMPONENTS thread system REQUIRED)
-fwForwardLink(${Boost_LIBRARIES})
+fwForwardLink(
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_DATE_TIME_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
+)
+
+fwLink(
+    ${Boost_LOG_LIBRARY}
+    ${Boost_LOG_SETUP_LIBRARY}
+)
+
+
 

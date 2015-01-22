@@ -7,12 +7,15 @@
 #ifndef __VTKSIMPLEMESH_SSIMPLEMESHDEFORMATION_HPP__
 #define __VTKSIMPLEMESH_SSIMPLEMESHDEFORMATION_HPP__
 
+#include "vtkSimpleMesh/config.hpp"
+
+#include <fwData/Mesh.hpp>
+
 #include <fwThread/Timer.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/IController.hpp>
 
-#include "vtkSimpleMesh/config.hpp"
 
 
 namespace vtkSimpleMesh

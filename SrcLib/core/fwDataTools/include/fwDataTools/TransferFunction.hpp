@@ -11,7 +11,7 @@
 
 #include <fwData/TransferFunction.hpp>
 
-#include "fwDataTools/export.hpp"
+#include "fwDataTools/config.hpp"
 
 namespace fwDataTools
 {

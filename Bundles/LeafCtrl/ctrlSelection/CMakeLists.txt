@@ -6,6 +6,5 @@ fwUseForwardInclude(
     fwServices
 )
 
-find_package (Boost REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-
+find_package (Boost COMPONENTS regex REQUIRED)
+fwLink(${Boost_REGEX_LIBRARY})

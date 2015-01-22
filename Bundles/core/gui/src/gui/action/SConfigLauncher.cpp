@@ -3,12 +3,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "gui/action/SConfigLauncher.hpp"
+
+#include <fwCom/Signal.hxx>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
-
 #include <fwTools/fwID.hpp>
-
-#include "gui/action/SConfigLauncher.hpp"
 
 namespace gui
 {

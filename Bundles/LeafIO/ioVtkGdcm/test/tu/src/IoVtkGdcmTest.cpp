@@ -15,8 +15,6 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/registry/AppConfig.hpp>

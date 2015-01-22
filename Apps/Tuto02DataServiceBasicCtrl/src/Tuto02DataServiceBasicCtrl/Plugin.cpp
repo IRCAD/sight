@@ -11,13 +11,13 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include "tuto02DataServiceBasicCtrl/Plugin.hpp"
+#include "Tuto02DataServiceBasicCtrl/Plugin.hpp"
 
 
-namespace tuto02DataServiceBasicCtrl
+namespace Tuto02DataServiceBasicCtrl
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::tuto02DataServiceBasicCtrl::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto02DataServiceBasicCtrl::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -97,4 +97,4 @@ void Plugin::uninitialize() throw()
 
 //------------------------------------------------------------------------------
 
-} // namespace tuto02DataServiceBasicCtrl
+} // namespace Tuto02DataServiceBasicCtrl

@@ -10,9 +10,6 @@ fwUseForwardInclude(
     io
 )
 
-
-find_package (Boost COMPONENTS system regex filesystem date_time chrono thread log log_setup REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES})
-
+find_package (Boost COMPONENTS regex REQUIRED)
+fwLink(${Boost_REGEX_LIBRARY})
 

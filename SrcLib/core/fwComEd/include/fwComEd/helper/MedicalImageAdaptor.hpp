@@ -20,7 +20,7 @@
 
 #include "fwComEd/TransferFunctionMsg.hpp"
 #include "fwComEd/helper/ImageGetter.hpp"
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 
 
 namespace fwComEd

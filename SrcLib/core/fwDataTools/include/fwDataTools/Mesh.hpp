@@ -15,7 +15,7 @@
 #include <fwComEd/helper/Mesh.hpp>
 
 #include "fwDataTools/Vector.hxx"
-#include "fwDataTools/export.hpp"
+#include "fwDataTools/config.hpp"
 
 namespace fwDataTools
 {

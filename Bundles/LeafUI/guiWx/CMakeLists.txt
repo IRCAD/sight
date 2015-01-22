@@ -1,4 +1,4 @@
-find_package(wxWidgets COMPONENTS core)
+find_package(wxWidgets COMPONENTS base core)
 if(wxWidgets_FOUND)
     fwLoadProperties()
     
@@ -10,11 +10,12 @@ if(wxWidgets_FOUND)
           fwTools
           gui
     )
+    
+    foreach(wxDef ${wxWidgets_DEFINITIONS})
+        add_definitions(-D${wxDef})
+    endforeach()
 
-    find_package(Boost REQUIRED)
-    include(${wxWidgets_USE_FILE})
-
-    fwForwardInclude(${Boost_INCLUDE_DIRS} ${wxWidgets_INCLUDE_DIRS})
+    fwForwardInclude(${wxWidgets_INCLUDE_DIRS})
     fwLink(${wxWidgets_LIBRARIES})
 else(wxWidgets_FOUND)
     message(WARNING "Required package wxWidgets not found, bundle 'guiWx' disabled.")

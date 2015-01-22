@@ -13,11 +13,16 @@ set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
-# Set warning level on Unix
+# Set warning level and function export visibility on Unix
 if(UNIX)
-    set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers ")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers ")
-
+    if(APPLE)
+        # actually the flag -fvisibility=hidden makes application crash on OSX
+        set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility-ms-compat")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility-ms-compat")
+    else()
+        set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility=hidden")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility=hidden")
+    endif()
     # Color for ninja and Clang on Linux and OSX
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_GENERATOR STREQUAL "Ninja")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
@@ -310,6 +315,16 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
             )
     endif()
 
+    string(TOUPPER ${FWPROJECT_NAME} PROJECT_NAME_UPCASE)
+
+    # create the config.hpp for the current library
+    configure_file(
+        "${CMAKE_SOURCE_DIR}/CMake/build/config.hpp.in"
+        "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/config.hpp"
+        IMMEDIATE @ONLY)
+
+    target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
+
 endmacro(fwLib)
 
 
@@ -342,6 +357,13 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
                 )
         endif()
 
+        # create the config.hpp for the current library
+        configure_file(
+            "${CMAKE_SOURCE_DIR}/CMake/build/config.hpp.in"
+            "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/config.hpp"
+            IMMEDIATE @ONLY)
+
+        target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
     else()
         add_custom_target(${FWPROJECT_NAME})
     endif()
@@ -355,10 +377,10 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         endif()
     endif()
 
-
 endmacro(fwBundle)
 
-
+# Include the projects in parameter and their public dependencies and export them.
+# Public dependencies of a project are those defined either with fwForwardInclude or fwUseForwardInclude.
 macro(fwUseForwardInclude)
     foreach(PROJECT ${ARGV})
         get_target_property(PROJECT_INCLUDE_DIRECTORIES ${PROJECT} INTERFACE_INCLUDE_DIRECTORIES)
@@ -368,7 +390,7 @@ macro(fwUseForwardInclude)
 endmacro(fwUseForwardInclude)
 
 macro(fwUseForwardLink)
-    target_link_libraries(${FWPROJECT_NAME} LINK_PUBLIC ${ARGV})
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
 endmacro(fwUseForwardLink)
 
 macro(fwUseForward)
@@ -376,23 +398,24 @@ macro(fwUseForward)
     fwUseForwardLink(${ARGV})
 endmacro(fwUseForward)
 
-
+# Include the projects in parameter and export them.
+# Compiling warnings will not be reported (because of SYSTEM).
 macro(fwForwardInclude)
     target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${ARGV})
 endmacro(fwForwardInclude)
 
 macro(fwForwardLink)
-    #target_link_libraries(${FWPROJECT_NAME} LINK_PUBLIC ${ARGV})
-    target_link_libraries(${FWPROJECT_NAME} ${ARGV})
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
 endmacro(fwForwardLink)
 
+# Include the projects in parameter but do not export them.
+# Compiling warnings will not be reported (because of SYSTEM).
 macro(fwInclude)
     target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${ARGV})
 endmacro(fwInclude)
 
 macro(fwLink)
-    #target_link_libraries(${FWPROJECT_NAME} LINK_PRIVATE ${ARGV})
-    target_link_libraries(${FWPROJECT_NAME} ${ARGV})
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE ${ARGV})
 endmacro(fwLink)
 
 
@@ -402,8 +425,7 @@ endmacro(fwLink)
 # WARNING : some part of this cmake file relies on this macro signature
 
 macro(fwUse)
-    #target_link_libraries(${FWPROJECT_NAME} LINK_PRIVATE ${ARGV})
-    target_link_libraries(${FWPROJECT_NAME} ${ARGV})
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE ${ARGV})
 
     set(${FWPROJECT_NAME}_DEPENDENCIES)
     set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES)

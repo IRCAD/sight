@@ -4,13 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-
 
 #include <boost/foreach.hpp>
 
@@ -21,6 +17,8 @@
 #include "fwData/Port.hpp"
 #include "fwData/Node.hpp"
 #include "fwData/Graph.hpp"
+
+#include <utility>
 
 fwDataRegisterMacro( ::fwData::Graph );
 

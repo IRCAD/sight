@@ -21,7 +21,7 @@
 #include <fwTools/NumericRoundCast.hxx>
 #include <fwServices/IService.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 #include "fwComEd/helper/Image.hpp"
 
 namespace fwComEd

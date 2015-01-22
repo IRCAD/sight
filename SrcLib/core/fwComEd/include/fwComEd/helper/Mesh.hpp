@@ -13,7 +13,7 @@
 #include <fwData/Mesh.hpp>
 
 #include "fwComEd/helper/Array.hpp"
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 
 namespace fwComEd
 {

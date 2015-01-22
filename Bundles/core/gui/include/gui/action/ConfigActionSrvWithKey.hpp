@@ -14,7 +14,7 @@
 
 #include <gui/action/ConfigActionSrv.hpp>
 
-#include "gui/export.hpp"
+#include "gui/config.hpp"
 
 namespace gui
 {

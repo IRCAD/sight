@@ -13,7 +13,7 @@
 #include <io/IWriter.hpp>
 
 
-#include "ioVTK/export.hpp"
+#include "ioVTK/config.hpp"
 
 namespace fwData
 {

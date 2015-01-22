@@ -11,7 +11,7 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 #include "fwComEd/SeriesDBMsg.hpp"
 
 

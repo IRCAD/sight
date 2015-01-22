@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <algorithm>
-
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/ImageLandmarks.hpp"
+#include "visuVTKAdaptor/PointLabel.hpp"
+#include "visuVTKAdaptor/PointList.hpp"
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
-#include <fwData/PointList.hpp>
 #include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -21,21 +21,23 @@
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/PointListMsg.hpp>
 
+#include <fwCom/Signal.hxx>
+
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
 #include <vtkAssemblyPath.h>
+#include <vtkCellPicker.h>
 #include <vtkCommand.h>
 #include <vtkCubeSource.h>
-#include <vtkCellPicker.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-#include "visuVTKAdaptor/ImageLandmarks.hpp"
-#include "visuVTKAdaptor/PointList.hpp"
-#include "visuVTKAdaptor/PointLabel.hpp"
 #include <fwServices/IEditionService.hpp>
 
+#include <boost/foreach.hpp>
+
+#include <algorithm>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLandmarks, ::fwData::Image ) ;

@@ -18,7 +18,7 @@
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 
-#include "gui/export.hpp"
+#include "gui/config.hpp"
 
 namespace gui
 {

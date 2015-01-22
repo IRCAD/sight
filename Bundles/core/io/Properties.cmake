@@ -2,6 +2,6 @@
 set( NAME io )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( DEPENDENCIES fwCore fwRuntime fwServices )
+set( DEPENDENCIES fwCore fwTools fwRuntime fwServices )
 set( REQUIREMENTS  )
 

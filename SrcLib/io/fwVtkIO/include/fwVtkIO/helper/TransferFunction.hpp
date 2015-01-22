@@ -27,7 +27,7 @@ namespace helper
  * @date    2012.
  *
  */
-class VTKIO_CLASS_API TransferFunction
+class FWVTKIO_CLASS_API TransferFunction
 {
 
 public :
@@ -40,7 +40,7 @@ public :
      * @param[in] size lookup table size
      * @param[out] lt vtkLookupTable
      */
-    VTKIO_API static void toVtkLookupTable(
+    FWVTKIO_API static void toVtkLookupTable(
             ::fwData::TransferFunction::sptr tf,
              vtkSmartPointer<vtkLookupTable>  lt,
             bool allowTransparency = false,
@@ -55,7 +55,7 @@ public :
      * @param[out] lt vtkLookupTable
      *
      */
-    VTKIO_API static void toBWVtkLookupTable(   double rangeMin, double rangeMax,
+    FWVTKIO_API static void toBWVtkLookupTable(   double rangeMin, double rangeMax,
                                                 vtkSmartPointer<vtkLookupTable> lt,
                                                 unsigned int size = 256 );
 

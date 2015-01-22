@@ -11,7 +11,7 @@
 
 #include <io/IWriter.hpp>
 
-#include "ioITK/export.hpp"
+#include "ioITK/config.hpp"
 
 namespace fwData
 {

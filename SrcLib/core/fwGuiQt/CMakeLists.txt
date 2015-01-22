@@ -14,14 +14,20 @@ endif()
 
 add_definitions("-DQT_NO_KEYWORDS")
 
+find_package(Qt5 COMPONENTS Core Gui Widgets Concurrent REQUIRED)
 
-find_package(Boost REQUIRED)
-find_package(Qt5 COMPONENTS Core Gui REQUIRED)
+fwForwardInclude(
+    ${Qt5Core_INCLUDE_DIRS}
+    ${Qt5Gui_INCLUDE_DIRS}
+    ${Qt5Widgets_INCLUDE_DIRS}
+    ${Qt5Concurrent_INCLUDE_DIRS}
+)
 
-QT5_USE_MODULES(fwGuiQt Core Gui Widgets Concurrent)
-
-
-fwForwardInclude(${Boost_INCLUDE_DIRS} ${QT_INCLUDE_DIR})
-fwLink(${QT_LIBRARIES})
+fwLink(
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Gui_LIBRARIES}
+    ${Qt5Widgets_LIBRARIES}
+    ${Qt5Concurrent_LIBRARIES}
+)
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)

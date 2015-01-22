@@ -26,10 +26,8 @@ if(VRRender_INSTALL)
         set_target_properties( VRRender.app PROPERTIES MACOSX_BUNDLE_COPYRIGHT "Copyright 2012-2014 IRCAD")
         set_target_properties( VRRender.app PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "com.ircad.vrrender")
 
-        find_package (Boost COMPONENTS filesystem program_options REQUIRED)
-
-        target_include_directories(VRRender.app PRIVATE ${Boost_INCLUDE_DIRS})
-        target_link_libraries(VRRender.app fwCore fwRuntime ${Boost_LIBRARIES})
+        find_package (Boost COMPONENTS program_options REQUIRED)
+        target_link_libraries(VRRender.app fwCore fwRuntime ${Boost_PROGRAM_OPTIONS_LIBRARIES})
 
         set(APP_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/VRRender.app")
 

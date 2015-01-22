@@ -3,7 +3,10 @@ fwUseForwardInclude(
     fwRuntime
 )
 
-find_package (Boost REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
+find_package(Boost COMPONENTS system REQUIRED)
 
+fwForwardInclude(${Boost_INCLUDE_DIRS})
+fwLink(
+    ${Boost_SYSTEM_LIBRARY}
+)
 

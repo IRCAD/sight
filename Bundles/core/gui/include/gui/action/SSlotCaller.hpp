@@ -15,7 +15,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "gui/export.hpp"
+#include "gui/config.hpp"
 
 namespace gui
 {

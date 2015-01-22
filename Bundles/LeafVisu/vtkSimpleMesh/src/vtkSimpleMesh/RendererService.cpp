@@ -28,6 +28,7 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 #include <fwCom/Signals.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>

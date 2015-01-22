@@ -3,12 +3,15 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#include <cmath>
+
+#include "Tuto15MultithreadCtrl/Plugin.hpp"
+#include "Tuto15MultithreadCtrl/SReadArray.hpp"
 
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwCore/spyLog.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Array.hpp>
 #include <fwData/Object.hpp>
@@ -19,8 +22,7 @@
 
 #include <fwThread/Worker.hpp>
 
-#include "Tuto15MultithreadCtrl/Plugin.hpp"
-#include "Tuto15MultithreadCtrl/SReadArray.hpp"
+#include <cmath>
 
 namespace Tuto15MultithreadCtrl
 {

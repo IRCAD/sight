@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 

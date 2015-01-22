@@ -12,7 +12,7 @@
 #include <fwGui/IActionSrv.hpp>
 #include <fwDataTools/AlgoMeshDeformation.hpp>
 
-#include "ioData/export.hpp"
+#include "ioData/config.hpp"
 
 namespace ioData
 {

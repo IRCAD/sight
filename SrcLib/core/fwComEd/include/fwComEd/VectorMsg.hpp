@@ -10,7 +10,7 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwData/Vector.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 
 
 namespace fwComEd

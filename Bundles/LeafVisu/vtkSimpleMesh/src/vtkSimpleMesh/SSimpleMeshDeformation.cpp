@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "vtkSimpleMesh/SSimpleMeshDeformation.hpp"
 
-#include <fwCom/Slots.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Object.hpp>
@@ -19,8 +20,6 @@
 #include <fwComEd/MeshMsg.hpp>
 
 #include <fwDataTools/Mesh.hpp>
-
-#include "vtkSimpleMesh/SSimpleMeshDeformation.hpp"
 
 fwServicesRegisterMacro( ::fwServices::IController , ::vtkSimpleMesh::SSimpleMeshDeformation , ::fwData::Mesh );
 

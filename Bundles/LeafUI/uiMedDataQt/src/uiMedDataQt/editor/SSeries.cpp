@@ -1,22 +1,15 @@
-#include <QWidget>
-#include <QLabel>
-#include <QLineEdit>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
+#include "uiMedDataQt/editor/SSeries.hpp"
 
-#include <fwTools/Object.hpp>
-
-#include <fwCom/Slots.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwComEd/VectorMsg.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
 
+#include <fwData/Vector.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwData/Vector.hpp>
 
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
@@ -25,11 +18,19 @@
 
 #include <fwServices/macros.hpp>
 
+#include <fwTools/Object.hpp>
+
 #include "uiMedDataQt/widget/PatientEditor.hpp"
 #include "uiMedDataQt/widget/StudyEditor.hpp"
 #include "uiMedDataQt/widget/EquipmentEditor.hpp"
 #include "uiMedDataQt/widget/SeriesEditor.hpp"
-#include "uiMedDataQt/editor/SSeries.hpp"
+
+#include <QWidget>
+#include <QLabel>
+#include <QLineEdit>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 namespace uiMedData
 {

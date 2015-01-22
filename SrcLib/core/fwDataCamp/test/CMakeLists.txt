@@ -1,10 +1,13 @@
-
 fwLoadProperties()
-
-find_package (Boost COMPONENTS filesystem REQUIRED)
 find_package(CppUnit)
-fwInclude(${Boost_INCLUDE_DIRS} ${CPPUNIT_INCLUDE_DIR})
-fwLink(${Boost_LIBRARIES} ${CPPUNIT_LIBRARY})
+find_package(CAMP REQUIRED)
 
-
+fwInclude(
+    ${CAMP_INCLUDE_DIR}
+    ${CPPUNIT_INCLUDE_DIR}
+)
+fwLink(
+    ${CAMP_LIBRARIES}
+    ${CPPUNIT_LIBRARY}
+)
 

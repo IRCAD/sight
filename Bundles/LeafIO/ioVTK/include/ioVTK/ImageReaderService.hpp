@@ -11,7 +11,7 @@
 
 #include <io/IReader.hpp> // Definition of abstract reader class
 
-#include "ioVTK/export.hpp"  // Declaration of class and function export
+#include "ioVTK/config.hpp"  // Declaration of class and function export
 
 // Pre-definition of ::fwData::Image to avoid inclusion file
 namespace fwData

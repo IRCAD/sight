@@ -12,7 +12,7 @@
 
 #include <fwGui/IGuiContainerSrv.hpp>
 
-#include "gui/export.hpp"
+#include "gui/config.hpp"
 
 namespace gui
 {

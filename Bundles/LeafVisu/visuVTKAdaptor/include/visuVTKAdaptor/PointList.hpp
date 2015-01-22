@@ -7,13 +7,15 @@
 #ifndef _VISUVTKADAPTOR_POINTLIST_HPP_
 #define _VISUVTKADAPTOR_POINTLIST_HPP_
 
-#include <set>
-#include <vector>
+#include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
+#include <fwData/Point.hpp>
+
+#include <set>
+#include <vector>
 
 namespace visuVTKAdaptor
 {

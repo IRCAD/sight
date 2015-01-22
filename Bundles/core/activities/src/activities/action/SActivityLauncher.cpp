@@ -15,6 +15,8 @@
 
 #include <fwRuntime/Convert.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>

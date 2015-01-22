@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,12 +18,12 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include "tutoTrianConverterCtrl/Plugin.hpp"
+#include "TutoTrianConverterCtrl/Plugin.hpp"
 
-namespace tutoTrianConverterCtrl
+namespace TutoTrianConverterCtrl
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::tutoTrianConverterCtrl::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::TutoTrianConverterCtrl::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -127,4 +127,4 @@ void Plugin::uninitialize() throw()
 
 //------------------------------------------------------------------------------
 
-} // namespace tutoTrianConverterCtrl
+} // namespace TutoTrianConverterCtrl

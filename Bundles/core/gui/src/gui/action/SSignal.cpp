@@ -18,7 +18,6 @@
 #include <fwServices/Base.hpp>
 
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>

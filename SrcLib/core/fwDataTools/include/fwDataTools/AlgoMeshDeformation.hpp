@@ -14,7 +14,7 @@
 
 #include <fwComEd/helper/Mesh.hpp>
 
-#include "fwDataTools/export.hpp"
+#include "fwDataTools/config.hpp"
 
 
 namespace fwDataTools

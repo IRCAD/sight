@@ -44,16 +44,16 @@ public :
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    VTKIO_API SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWVTKIO_API SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key);
 
     //! @brief Destructor.
-    VTKIO_API ~SeriesDBReader();
+    FWVTKIO_API ~SeriesDBReader();
 
     //! @brief Reading operator.
-    VTKIO_API void read();
+    FWVTKIO_API void read();
 
     /// @return ".vtk"
-    VTKIO_API  std::string extension();
+    FWVTKIO_API  std::string extension();
 
     void setLazyMode(bool lazyMode) { m_lazyMode = lazyMode; }
 

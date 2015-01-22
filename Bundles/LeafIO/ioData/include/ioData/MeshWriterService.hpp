@@ -10,7 +10,7 @@
 #include <io/IWriter.hpp>
 #include <boost/filesystem/path.hpp>
 
-#include "ioData/export.hpp"
+#include "ioData/config.hpp"
 
 namespace ioData
 {

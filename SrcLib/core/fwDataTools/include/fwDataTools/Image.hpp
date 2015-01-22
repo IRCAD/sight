@@ -17,7 +17,7 @@
 
 #include <fwComEd/helper/Array.hpp>
 
-#include "fwDataTools/export.hpp"
+#include "fwDataTools/config.hpp"
 
 namespace fwDataTools
 {

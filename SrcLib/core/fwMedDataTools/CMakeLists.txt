@@ -1,4 +1,3 @@
-
 fwLoadProperties()
 
 find_package (Boost COMPONENTS date_time REQUIRED)

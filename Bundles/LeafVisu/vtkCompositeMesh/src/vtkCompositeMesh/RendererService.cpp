@@ -4,6 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "vtkCompositeMesh/RendererService.hpp"
+
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/CameraMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/Material.hpp>
+
+#include <fwData/Mesh.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/IEditionService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+
+#include <fwVtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
+
 #include <vtkCommand.h>
 #include <vtkCamera.h>
 #include <vtkPolyData.h>
@@ -16,29 +38,6 @@
 #include <vtkMatrix4x4.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkTransform.h>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-#include <fwCom/Signals.hpp>
-
-#include <fwData/Mesh.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Material.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwComEd/CameraMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
-
-
-#include <fwVtkIO/helper/Mesh.hpp>
-#include <fwVtkIO/vtk.hpp>
-
-#include "vtkCompositeMesh/RendererService.hpp"
 
 
 fwServicesRegisterMacro( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite );

@@ -13,7 +13,7 @@
 
 #include <fwServices/ObjectMsg.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 
 
 namespace fwComEd

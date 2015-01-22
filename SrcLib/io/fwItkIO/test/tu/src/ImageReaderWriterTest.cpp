@@ -12,8 +12,6 @@
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwItkIO/ImageWriter.hpp>
 #include <fwItkIO/ImageReader.hpp>
 

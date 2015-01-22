@@ -8,8 +8,11 @@ fwUseForwardInclude(
     fwTools
 )
 
-Find_package (Boost COMPONENTS filesystem REQUIRED)
+find_package (Boost COMPONENTS regex REQUIRED)
 
 fwForwardInclude(${Boost_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES})
+
+fwLink(
+    ${Boost_REGEX_LIBRARY}
+)
 

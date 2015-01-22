@@ -6,15 +6,22 @@ fwUseForwardInclude(
     fwRuntime
 )
 
-
-find_package(Boost REQUIRED)
-find_package(VTK COMPONENTS  REQUIRED)
+find_package(VTK 
+    COMPONENTS
+    vtkRenderingVolume
+    vtkInteractionWidgets
+    vtkRenderingVolumeOpenGL
+    vtkRenderingCore
+    vtkIOImage
+    vtkCommonDataModel
+    vtkCommonCore
+    REQUIRED
+)
 
 fwForwardInclude(
-    ${Boost_INCLUDE_DIRS} 
     ${VTK_INCLUDE_DIRS}
-    )
+)
+
 fwLink(
-    ${Boost_LIBRARIES}
-    vtkRenderingVolume
-    )
+    ${VTK_LIBRARIES} 
+)
