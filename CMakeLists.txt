@@ -678,7 +678,7 @@ if(BUILD_DOCUMENTATION)
             set(INCLUDE_DIRS "${INCLUDE_DIRS} ${${PROJECT}_DIR}/include")
         endforeach(PROJECT)
         configure_file(${FWCMAKE_RESOURCE_PATH}/doxygen/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Doxygen/Doxyfile @ONLY)
-        add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/documentation/doxygen/doxyfile
+        add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Doxygen/Doxyfile
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMENT
             "Generating API documentation with Doxygen" VERBATIM)
     endif(DOXYGEN_FOUND)
