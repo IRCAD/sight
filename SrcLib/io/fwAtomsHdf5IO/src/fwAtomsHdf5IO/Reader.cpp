@@ -102,11 +102,11 @@ Hdf5Visitor(const ::boost::filesystem::path & path)
         FW_RAISE("Failed to read file '" << path.string() << "' :\nno writer version found.");
     }
 
-    FW_RAISE_IF("Failed to read file '" << path.string() << "':\n" 
+    FW_RAISE_IF("Failed to read file '" << path.string() << "':\n"
             << "Detected file version is '" << strWriterVersion << "'"
             << " whereas current version is '" << Writer::s_VERSION << "'", Writer::s_VERSION != strWriterVersion);
 
-    FW_RAISE_IF("Failed to read file '" << path.string() << "':\n" 
+    FW_RAISE_IF("Failed to read file '" << path.string() << "':\n"
             << "Detected atoms version is '" << strAtomsVersion << "'"
             << " whereas current version is '" << ::fwAtoms::Base::s_VERSION << "'",
             ::fwAtoms::Base::s_VERSION != strAtomsVersion);
@@ -254,6 +254,12 @@ Hdf5Visitor(const ::boost::filesystem::path & path)
         attributes[name] = atom;
     }
     object->setAttributes(attributes);
+
+    // Managing object with no id
+    if(object->getMetaInfo("ID_METAINFO").empty())
+    {
+        object->setMetaInfo("ID_METAINFO", ::fwTools::UUID::generateUUID());
+    }
 
     return object;
 }

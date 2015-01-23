@@ -103,6 +103,10 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
         {
             m_frameInfo.m_style = STAY_ON_TOP;
         }
+        else if (style == "MODAL")
+        {
+            m_frameInfo.m_style = MODAL;
+        }
         else
         {
             OSLM_FATAL("Sorry, style "<<style<< " is unknown.");

@@ -324,7 +324,6 @@
         <service>::visuVTKAdaptor::ImageSliceOrientationText</service>
         <object>::fwData::Object</object>
     </extension>
-
 </plugin>
 
 

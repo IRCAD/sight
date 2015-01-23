@@ -31,9 +31,7 @@ namespace uiMedData
 namespace editor
 {
 
-
 /**
- * @class SOrganTransformation
  * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
  */
 class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject, public ::gui::editor::IEditor

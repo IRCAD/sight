@@ -266,6 +266,7 @@ void WorkerQt::init( int &argc, char **argv )
     }
 
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
+
 }
 
 WorkerQt::~WorkerQt()

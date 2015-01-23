@@ -53,7 +53,8 @@ public:
     typedef enum
     {
         DEFAULT,
-        STAY_ON_TOP
+        STAY_ON_TOP,
+        MODAL
      } Style;
 
      typedef std::string RegistryKeyType;
