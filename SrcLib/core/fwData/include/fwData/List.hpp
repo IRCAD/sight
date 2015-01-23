@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_LIST_HPP_
-#define _FWDATA_LIST_HPP_
+#ifndef __FWDATA_LIST_HPP__
+#define __FWDATA_LIST_HPP__
 
 #include <list>
 #include <boost/shared_ptr.hpp>
@@ -19,18 +19,11 @@ fwCampAutoDeclareDataMacro((fwData)(List), FWDATA_API);
 namespace fwData
 {
 
-
-
 /**
- * @class   List
- * @brief   This class defines a list of objects.
+ * @brief This class defines a list of objects.
  *
  * List contains a list of ::fwData::Object.
- *
- * 
- * @date    2007-2009.
  */
-
 class FWDATA_CLASS_API List : public Object
 {
 
@@ -108,7 +101,8 @@ protected:
 
     ContainerType m_attrContainer;
 };
-}
 
-#endif /* _FWDATA_LIST_HPP_ */
+} // namespace fwData
+
+#endif /* __FWDATA_LIST_HPP__ */
 

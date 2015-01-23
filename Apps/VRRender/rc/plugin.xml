@@ -40,7 +40,7 @@
         <id>MDAtomsConfig</id>
         <desc>reader/writer config to read/write an atom representing a medical data</desc>
         <config>
-            <patcher context="MedicalData" version="V04AGO" />
+            <patcher context="MedicalData" version="V06AGO" />
             <filter>VRRenderMedicalDataV2</filter>
          </config>
      </extension>

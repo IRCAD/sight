@@ -14,6 +14,7 @@ find_package(VTK
     vtkInteractionStyle
     vtkFiltersTexture
     vtkRenderingOpenGL
+    vtkIOLegacy
     REQUIRED
 )
 
@@ -22,5 +23,6 @@ fwForwardInclude(
 )
 fwLink(
     ${VTK_LIBRARIES} 
+    vtkFiltersTexture
 )
 

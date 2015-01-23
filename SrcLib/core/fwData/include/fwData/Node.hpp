@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_NODE_HPP_
-#define _FWDATA_NODE_HPP_
+#ifndef __FWDATA_NODE_HPP__
+#define __FWDATA_NODE_HPP__
 
 #include <vector>
 
@@ -20,16 +20,10 @@ fwCampAutoDeclareDataMacro((fwData)(Node), FWDATA_API);
 
 namespace fwData
 {
+
 /**
- * @class   Node
- * @brief   This class defines a node
- *
+ * @brief This class defines a node.
  * A node is represented by input and output ports.
- *
- * @see     ::fwData::Port
- *
- *
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API Node : public ::fwData::Object
 {
@@ -107,4 +101,5 @@ protected :
 
 } // namespace fwData
 
-#endif // _FWDATA_NODE_HPP_
+#endif // __FWDATA_NODE_HPP__
+

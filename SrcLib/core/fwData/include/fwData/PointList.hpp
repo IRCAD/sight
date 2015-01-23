@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_POINT_LIST_HPP_
-#define _FWDATA_POINT_LIST_HPP_
+#ifndef __FWDATA_POINTLIST_HPP__
+#define __FWDATA_POINTLIST_HPP__
 
 #include <vector>
 
@@ -19,11 +19,8 @@ fwCampAutoDeclareDataMacro((fwData)(PointList), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   PointList
- * @brief   This class defines a list of points
+ * @brief   This class defines a list of points.
  * @see     ::fwData::Point
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API PointList : public Object
 {
@@ -64,4 +61,5 @@ protected :
 
 } // end namespace fwData
 
-#endif // _FWDATA_POINT_LIST_HPP_
+#endif // __FWDATA_POINTLIST_HPP__
+

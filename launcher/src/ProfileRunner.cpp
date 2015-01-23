@@ -149,6 +149,7 @@ int main(int argc, char* argv[])
     hidden.add_options()
 #ifdef __MACOSX__
         ("psn", po::value<std::string>(), "Application PSN number")
+        ("NSDocumentRevisionsDebugMode", po::value<std::string>()->zero_tokens(), "DocumentRevisionsDebugMode")
 #endif
         ("profile", po::value(&profileFile)->default_value(DEFAULT_PROFILE_STRING), "Profile file")
         ("profile-args", po::value(&profileArgs)->multitoken(), "Profile args")

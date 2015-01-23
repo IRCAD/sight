@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,8 @@ namespace fwGui
 
 const std::map< ::fwGui::layoutManager::IFrameLayoutManager::Style, long> FrameLayoutManager::FWSTYLE_TO_WXSTYLE =
         ::boost::assign::map_list_of(::fwGui::layoutManager::IFrameLayoutManager::DEFAULT,wxDEFAULT_FRAME_STYLE)
-                                    (::fwGui::layoutManager::IFrameLayoutManager::STAY_ON_TOP, wxDEFAULT_FRAME_STYLE | wxSTAY_ON_TOP);
+                                    (::fwGui::layoutManager::IFrameLayoutManager::STAY_ON_TOP, wxDEFAULT_FRAME_STYLE | wxSTAY_ON_TOP)
+                                    (::fwGui::layoutManager::IFrameLayoutManager::MODAL, wxDEFAULT_FRAME_STYLE | wxSTAY_ON_TOP);
 
 //-----------------------------------------------------------------------------
 

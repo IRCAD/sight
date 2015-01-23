@@ -20,7 +20,7 @@ namespace fwData
 namespace Mesh
 {
 
-/// Structural patch to convert a fwData::Image from version '1' to version '2'.
+/// Structural patch to convert a fwData::Mesh from version '1' to version '2'.
 class FWSTRUCTURALPATCH_CLASS_API V1ToV2 : public ::fwAtomsPatch::IStructuralPatch
 {
 public:
@@ -39,7 +39,7 @@ public:
     /**
      * @brief Applies patch
      *
-     * Removes attributes from reconstruction.
+     * Added new map of additional array.
      */
     FWSTRUCTURALPATCH_API virtual void apply(
             const ::fwAtoms::Object::sptr& previous,
@@ -56,4 +56,5 @@ public:
 } // namespace fwStructuralPatch
 
 #endif /* __FWSTRUCTURALPATCH_FWDATA_MESH_V1TOV2_HPP__ */
+
 

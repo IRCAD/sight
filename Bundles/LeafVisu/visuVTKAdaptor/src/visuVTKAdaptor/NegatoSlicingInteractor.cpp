@@ -84,65 +84,77 @@ public:
         return false;
     }
 
+    void startSlicing()
+    {
+        SLM_TRACE("vtkEvent: MiddleButtonPressEvent");
+        SLM_ASSERT("m_adaptor not instanced", m_adaptor);
+        SLM_ASSERT("m_picker not instanced", m_picker);
+
+        double pickPoint[3];
+        double pickedPoint[3];
+
+        int x,y;
+        m_adaptor->getInteractor()->GetEventPosition(x, y);
+        pickPoint[0] = x;
+        pickPoint[1] = y;
+        pickPoint[2] = 0;
+
+        OSLM_TRACE("vtkEvent: MiddleButtonPressEvent: picking " << pickPoint[0] << ", " << pickPoint[1] << ", " << pickPoint[2]);
+
+        if ( this->Pick(pickPoint, pickedPoint) )
+        {
+            SLM_TRACE("vtkEvent: MiddleButtonPressEvent:picked point");
+            SLM_ASSERT("Slicing has already begun", !m_mouseMoveObserved);
+            m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, 1.);
+            m_mouseMoveObserved = true;
+            SetAbortFlag(1);
+
+            //m_pickedProp = m_picker->GetProp3D();
+            m_pickedProp = ::fwRenderVTK::vtk::getNearestPickedProp(m_picker, m_adaptor->getRenderer());
+            m_localPicker = fwVtkCellPicker::New();
+            m_localPicker->InitializePickList();
+            m_localPicker->PickFromListOn();
+            m_localPicker->AddPickList(m_pickedProp);
+
+            double localPickedPoint[3];
+            this->localPick(pickPoint, localPickedPoint);
+
+            m_adaptor->startSlicing(localPickedPoint);
+        }
+    }
+
+    void stopSlicing()
+    {
+        SLM_TRACE("vtkEvent: MiddleButtonReleaseEvent");
+        SLM_ASSERT("m_adaptor not instanced", m_adaptor);
+        SLM_ASSERT("m_picker not instanced", m_picker);
+        SLM_ASSERT("Slicing doesn't begun", m_mouseMoveObserved);
+
+        m_adaptor->getInteractor()->RemoveObservers(vtkCommand::MouseMoveEvent, this);
+        m_mouseMoveObserved = false;
+        m_adaptor->stopSlicing();
+        m_localPicker->Delete();
+        m_localPicker = NULL;
+        m_pickedProp = NULL;
+    }
+
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
-        if ( m_mouseMoveObserved || !m_adaptor->getInteractor()->GetShiftKey() )
+        if(m_mouseMoveObserved && eventId == START_SLICING_EVENT)
         {
-            if ( eventId == START_SLICING_EVENT)
+            SetAbortFlag(1); // To handle space bar pressed and middle click slicing at the same time
+        }
+
+        if(m_mouseMoveObserved || !m_adaptor->getInteractor()->GetShiftKey())
+        {
+            if (eventId == START_SLICING_EVENT && !m_mouseMoveObserved)
             {
-                SLM_TRACE("vtkEvent: MiddleButtonPressEvent");
-                SLM_ASSERT("m_adaptor not instanced", m_adaptor);
-                SLM_ASSERT("m_picker not instanced", m_picker);
-
-                double pickPoint[3];
-                double pickedPoint[3];
-
-                int x,y;
-                m_adaptor->getInteractor()->GetEventPosition(x, y);
-                pickPoint[0] = x;
-                pickPoint[1] = y;
-                pickPoint[2] = 0;
-
-                OSLM_TRACE("vtkEvent: MiddleButtonPressEvent: picking " << pickPoint[0] << ", " << pickPoint[1] << ", " << pickPoint[2]);
-
-                if ( this->Pick(pickPoint, pickedPoint) )
-                {
-                    SLM_TRACE("vtkEvent: MiddleButtonPressEvent:picked point");
-                    assert(!m_mouseMoveObserved);
-                    m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, 1.);
-                    m_mouseMoveObserved = true;
-                    SetAbortFlag(1);
-
-                    //m_pickedProp = m_picker->GetProp3D();
-                    m_pickedProp = ::fwRenderVTK::vtk::getNearestPickedProp(m_picker, m_adaptor->getRenderer());
-                    m_localPicker = fwVtkCellPicker::New();
-                    m_localPicker->InitializePickList();
-                    m_localPicker->PickFromListOn();
-                    m_localPicker->AddPickList(m_pickedProp);
-
-                    double localPickedPoint[3];
-                    this->localPick(pickPoint, localPickedPoint);
-
-                    m_adaptor->startSlicing(localPickedPoint);
-                }
+                startSlicing();
             }
 
-            else if ( eventId == STOP_SLICING_EVENT)
+            else if(eventId == STOP_SLICING_EVENT && m_mouseMoveObserved)
             {
-                SLM_TRACE("vtkEvent: MiddleButtonReleaseEvent");
-                SLM_ASSERT("m_adaptor not instanced", m_adaptor);
-                SLM_ASSERT("m_picker not instanced", m_picker);
-
-                if(m_mouseMoveObserved)
-                {
-                    m_adaptor->getInteractor()->RemoveObservers(vtkCommand::MouseMoveEvent, this);
-                    m_mouseMoveObserved = false;
-                    m_adaptor->stopSlicing();
-                    m_localPicker->Delete();
-                    m_localPicker = NULL;
-                    m_pickedProp = NULL;
-                }
-
+                stopSlicing();
             }
             else if (eventId == vtkCommand::MouseMoveEvent)
             {
@@ -167,7 +179,6 @@ public:
             {
                 vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
                 char *keySym = rwi->GetKeySym();
-
 
                 if ( std::string(keySym) == "A" || std::string(keySym) == "a" )
                 {
@@ -200,6 +211,20 @@ public:
                 else if (std::string(keySym) == "N" || std::string(keySym) == "n" )
                 {
                     m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
+                }
+                else if (std::string(keySym) == "space" && !m_mouseMoveObserved)
+                {
+                    this->startSlicing();
+                }
+            }
+            else if(eventId == vtkCommand::KeyReleaseEvent)
+            {
+                vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
+                char *keySym = rwi->GetKeySym();
+
+                if (std::string(keySym) == "space" && m_mouseMoveObserved)
+                {
+                    this->stopSlicing();
                 }
             }
         }
@@ -235,7 +260,6 @@ protected :
 
 
     bool m_mouseMoveObserved;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -278,7 +302,8 @@ void NegatoSlicingInteractor::doStart() throw(fwTools::Failed)
 
     this->getInteractor()->AddObserver(START_SLICING_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_SLICING_EVENT, m_vtkObserver, m_priority);
-    this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent  , m_vtkObserver, m_priority);
+    this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent, m_vtkObserver, m_priority);
+    this->getInteractor()->AddObserver(vtkCommand::KeyReleaseEvent, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(vtkCommand::MouseWheelForwardEvent, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver, m_priority);
 
@@ -304,9 +329,10 @@ void NegatoSlicingInteractor::doSwap() throw(fwTools::Failed)
 
 void NegatoSlicingInteractor::doStop() throw(fwTools::Failed)
 {
-    this->getInteractor()->RemoveObservers(START_SLICING_EVENT  , m_vtkObserver);
+    this->getInteractor()->RemoveObservers(START_SLICING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_SLICING_EVENT, m_vtkObserver);
-    this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
+    this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent, m_vtkObserver);
+    this->getInteractor()->RemoveObservers(vtkCommand::KeyReleaseEvent, m_vtkObserver);
     this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_vtkObserver);
     this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver);
     m_vtkObserver->Delete();

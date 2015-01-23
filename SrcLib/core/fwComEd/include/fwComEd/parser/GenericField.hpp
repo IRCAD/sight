@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,10 +23,6 @@ namespace parser
 {
 /**
  * @brief   Specific service for the construction of a GenericField and its associated services from an XML-based description.
- * @class   TransformationMatrix3D
- * 
-
- * @date    2007-2009
  * @see     ::fwServices::IXMLParser
  */
 class FWCOMED_CLASS_API GenericField  : public ::fwServices::IXMLParser
@@ -55,18 +51,36 @@ protected:
 
 };
 
+/**
+ * @brief Specialisation of GenericField parser for boolean
+ */
 class BooleanParser : public GenericField{
 public:
     fwCoreServiceClassDefinitionsMacro ( (BooleanParser)(::fwServices::IXMLParser) ) ;
 };
+
+
+/**
+ * @brief Specialisation of GenericField parser for integer
+ */
 class IntegerParser : public GenericField{
 public:
     fwCoreServiceClassDefinitionsMacro ( (IntegerParser)(::fwServices::IXMLParser) ) ;
 };
+
+
+/**
+ * @brief Specialisation of GenericField parser for float
+ */
 class FloatParser : public GenericField{
 public:
         fwCoreServiceClassDefinitionsMacro ( (FloatParser)(::fwServices::IXMLParser) ) ;
 };
+
+
+/**
+ * @brief Specialisation of GenericField parser for string
+ */
 class StringParser : public GenericField{
 public:
     fwCoreServiceClassDefinitionsMacro ( (StringParser)(::fwServices::IXMLParser) ) ;

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_SPLINE_HPP_
-#define _FWDATA_SPLINE_HPP_
+#ifndef __FWDATA_SPLINE_HPP__
+#define __FWDATA_SPLINE_HPP__
 
 #include <vector>
 #include <boost/cstdint.hpp>
@@ -16,11 +16,9 @@
 
 namespace fwData
 {
+
 /**
- * @class   Spline
- * @brief   This class defines a spline object.
- * 
- * @date    2007-2009.
+ * @brief This class defines a spline object.
  */
 class FWDATA_CLASS_API Spline : public Object
 {
@@ -94,6 +92,7 @@ protected :
 
 } ;
 
-}
+} // namespace fwData
 
 #endif // _FWDATA_SPLINE_HPP_
+

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_CAMERA_HPP_
-#define _VISUVTKADAPTOR_CAMERA_HPP_
+#ifndef __VISUVTKADAPTOR_CAMERA_HPP__
+#define __VISUVTKADAPTOR_CAMERA_HPP__
 
 #include <vector>
 
@@ -13,11 +13,12 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-
 namespace visuVTKAdaptor
 {
 
-
+/**
+ * @brief Render Camera (video) in the generic scene.
+ */
 class VISUVTKADAPTOR_CLASS_API Camera: public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -47,9 +48,7 @@ private:
     bool bCam_init;
 };
 
-
-
-
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_CAMERA_HPP_
+#endif // __VISUVTKADAPTOR_CAMERA_HPP__
+

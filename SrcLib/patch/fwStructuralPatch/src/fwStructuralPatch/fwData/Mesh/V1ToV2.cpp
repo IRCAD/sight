@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,8 +52,6 @@ void V1ToV2::apply( const ::fwAtoms::Object::sptr& previous,
 
     // Create helper
     ::fwAtomsPatch::helper::Object helper(current);
-    helper.addAttribute("point_tex_coords", ::fwAtoms::Object::sptr() );
-    helper.addAttribute("cell_tex_coords", ::fwAtoms::Object::sptr() );
     helper.addAttribute("array_map", ::fwAtoms::Map::New() );
 }
 

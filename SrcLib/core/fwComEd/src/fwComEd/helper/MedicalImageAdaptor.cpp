@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -99,10 +99,11 @@ void MedicalImageAdaptor::getCurrentSliceCenter(double center[3])
 
     ::fwData::Integer::sptr sliceIndex[3];
     this->getSliceIndex(sliceIndex);
-    const double x = static_cast<double>(sliceIndex[0]->value());
-    const double y = static_cast<double>(sliceIndex[1]->value());
-    const double z = static_cast<double>(sliceIndex[2]->value());
-    double index[3] = {x, y, z};
+    double index[3] = {
+        static_cast<double>(sliceIndex[0]->value()),
+        static_cast<double>(sliceIndex[1]->value()),
+        static_cast<double>(sliceIndex[2]->value())
+    };
 
     center[0] = origin[0] + (imageSize[0]-1.)/ 2.;
     center[1] = origin[1] + (imageSize[1]-1.)/ 2.;
@@ -124,8 +125,9 @@ void MedicalImageAdaptor::setOrientation( MedicalImageAdaptor::Orientation orien
 
 void MedicalImageAdaptor::setOrientation( int orientation )
 {
-    OSLM_FATAL_IF(" orientation value must be  0,1 or 2 (value=" << orientation << ")" , orientation<0 || orientation>3);
-    m_orientation = static_cast< ::fwComEd::helper::MedicalImageAdaptor::Orientation >(orientation);
+    OSLM_ASSERT("orientation value must be  0,1 or 2 (value = " << orientation << ")",
+            orientation == 0 || orientation == 1 || orientation == 2);
+    this->setOrientation(static_cast< ::fwComEd::helper::MedicalImageAdaptor::Orientation >(orientation));
 }
 
 //------------------------------------------------------------------------------

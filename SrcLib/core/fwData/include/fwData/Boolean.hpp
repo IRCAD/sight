@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_BOOLEAN_HPP_
-#define _FWDATA_BOOLEAN_HPP_
+#ifndef __FWDATA_BOOLEAN_HPP__
+#define __FWDATA_BOOLEAN_HPP__
 
 #include "fwData/GenericField.hpp"
 #include "fwData/config.hpp"
@@ -17,13 +17,9 @@ namespace fwData
 {
 
 /**
- * @class   Boolean
- * @brief   This class contains a boolean value
+ * @brief This class contains a boolean value.
  *
  * Boolean object is essentially used as a field in other objects.
- *
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
@@ -54,4 +50,5 @@ protected:
 
 } // namespace fwData
 
-#endif // _FWDATA_BOOLEAN_HPP_
+#endif // __FWDATA_BOOLEAN_HPP__
+

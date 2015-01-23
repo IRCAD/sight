@@ -28,9 +28,10 @@
 
             <service uid="${GENERIC_UID}_multiViewOrgans" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
-                    <layout type="::fwGui::ToolboxLayoutManager" >
-                        <view caption="Organs" expanded="true" />
-                        <view caption="Material" expanded="true" />
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view caption="Organs" />
+                        <view caption="Material" />
                         <view caption="Representation" />
                     </layout>
                 </gui>
@@ -66,7 +67,12 @@
 
             <item key="modelSeries">
                 <object uid="${ORGAN_MANAGER_MODELSERIES}" src="ref" type="::fwMedData::ModelSeries">
-                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" />
+                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" >
+                        <columns>
+                            <organ_name>@organ_name</organ_name>
+                            <volume_cc view="positive" >@volume</volume_cc>
+                        </columns>
+                    </service>
                 </object>
             </item>
 

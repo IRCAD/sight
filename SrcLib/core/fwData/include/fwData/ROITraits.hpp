@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,10 +17,7 @@ fwCampAutoDeclareDataMacro((fwData)(ROITraits), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   ROITraits
  * @brief   This class defines ROI traits.
- * 
- * @date    2007-2011.
  *
  * A ROI traits contains :
  *  - an identifier
@@ -85,3 +82,4 @@ private:
 } // namespace fwData
 
 #endif // __FWDATA_ROITRAITS_HPP__
+

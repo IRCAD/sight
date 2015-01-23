@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_VIDEO_HPP_
-#define _FWDATA_VIDEO_HPP_
+#ifndef __FWDATA_VIDEO_HPP__
+#define __FWDATA_VIDEO_HPP__
 
 #include <boost/cstdint.hpp>
 
@@ -22,12 +22,11 @@ namespace fwData
 {
 
 /**
- * @brief   This class focuses on video
- * @note    This version is done for test purposes (augmented reality and visualization) and will have to be accurately design
- * @note    Information to be stored here does not necessarily concern video buffer.
- * 
- * @date    2007-2009.
- * @todo    implement appropriate API
+ * @brief This class focuses on video.
+ * @note This version is done for test purposes (augmented reality and visualization) and will have to be accurately design
+ * @note Information to be stored here does not necessarily concern video buffer.
+ *
+ * @todo implement appropriate API
  */
 class FWDATA_CLASS_API Video : public Object
 {
@@ -105,4 +104,5 @@ protected :
 } // namespace fwData
 
 
-#endif // _FWDATA_VIDEO_HPP_
+#endif // __FWDATA_VIDEO_HPP__
+

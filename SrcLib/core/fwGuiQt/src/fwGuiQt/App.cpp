@@ -26,8 +26,8 @@ namespace fwGuiQt
 
 //-----------------------------------------------------------------------------
 
-App::App(int & argc, char ** argv)
-    : QApplication (argc, argv)
+App::App(int & argc, char ** argv, bool GUIenabled)
+    : QApplication (argc, argv, GUIenabled)
 {
     SLM_TRACE_FUNC();
 

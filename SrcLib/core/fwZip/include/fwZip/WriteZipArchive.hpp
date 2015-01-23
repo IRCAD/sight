@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ class FWZIP_CLASS_API WriteZipArchive : public IWriteArchive
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((WriteZipArchive)(IWriteArchive),
-                                           ((( const ::boost::filesystem::path& ))),
+                                           ((( const ::boost::filesystem::path& ))((const std::string&)(""))),
                                            ::boost::make_shared<WriteZipArchive> );
 
     /**
@@ -41,6 +41,12 @@ public:
      *
      */
     FWZIP_API WriteZipArchive( const ::boost::filesystem::path &archive );
+
+    /**
+     * @brief Constructors. Initializes archive path and comment.
+     *
+     */
+    FWZIP_API WriteZipArchive( const ::boost::filesystem::path &archive, const std::string& comment );
 
     FWZIP_API ~WriteZipArchive();
 
@@ -61,7 +67,8 @@ public:
      *
      * @throw ::fwZip::exception::Read if source file cannot be opened.
      */
-    FWZIP_API void putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path);
+    FWZIP_API void putFile(const ::boost::filesystem::path &sourceFile,
+                           const ::boost::filesystem::path &path);
 
     /**
      * @brief Creates a folder in archive.
@@ -79,6 +86,8 @@ public:
 protected:
 
     ::boost::filesystem::path m_archive;
+
+    std::string m_comment;
 };
 
 }

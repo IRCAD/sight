@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_COMPOSITE_HPP_
-#define _FWDATA_COMPOSITE_HPP_
+#ifndef __FWDATA_COMPOSITE_HPP__
+#define __FWDATA_COMPOSITE_HPP__
 
 #include <map>
 
@@ -39,13 +39,9 @@ namespace fwData
 {
 
 /**
- * @class   Composite
- * @brief   This class defines a composite object.
+ * @brief This class defines a composite object.
  *
  * Composite contains a map of ::fwData::Object.
- *
- *
- * @date    2007-2009.
  */
 
 class FWDATA_CLASS_API Composite : public Object
@@ -201,10 +197,7 @@ protected:
     ContainerType m_attrContainer;
 };
 
-
 } //namespace fwData
 
-
-
-#endif /* _FWDATA_COMPOSITE_HPP_ */
+#endif /* __FWDATA_COMPOSITE_HPP__ */
 

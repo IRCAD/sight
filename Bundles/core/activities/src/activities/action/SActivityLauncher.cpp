@@ -409,22 +409,29 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 
-    if(!info.validatorImpl.empty())
+    ::fwActivities::IValidator::ValidationType validation;
+    validation.first = true;
+
+    BOOST_FOREACH(auto const &validatorImpl, info.validatorsImpl)
     {
-        ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(info.validatorImpl);
-        OSLM_ASSERT(info.validatorImpl << " instantiation failed", validator);
+        ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
+        OSLM_ASSERT(validatorImpl << " instantiation failed", validator);
 
         ::fwActivities::IValidator::ValidationType valid = validator->validate(info, selection);
+        validation.first &= valid.first;
         if(!valid.first)
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Activity could not be launched",
-                    "The activity " + info.title + " can't be launched.\nReason : " + valid.second,
-                    ::fwGui::dialog::MessageDialog::WARNING);
+            validation.second += "\n" + valid.second;
         }
-        else
-        {
-            this->buildActivity(info, selection);
-        }
+    }
+
+    if(!validation.first)
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Activity can not be launched",
+                    "The activity " + info.title + " can't be launched. Reason : " + validation.second,
+                    ::fwGui::dialog::MessageDialog::WARNING
+                    );
     }
     else
     {

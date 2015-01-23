@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DATA_MATERIAL_HPP_
-#define _DATA_MATERIAL_HPP_
+#ifndef __FWDATA_MATERIAL_HPP__
+#define __FWDATA_MATERIAL_HPP__
 
 
 #include "fwData/Object.hpp"
@@ -17,15 +17,11 @@ fwCampAutoDeclareDataMacro((fwData)(Material), FWDATA_API);
 
 namespace fwData
 {
-/**
- * @class   Material
- * @brief   This class defines a material. A material is represented by an ambient color and a diffuse color
- * @see     ::fwData::Color
- *
- *
- * @date    2007-2009.
- */
 
+/**
+ * @brief This class defines a material. A material is represented by an ambient color and a diffuse color.
+ * @see ::fwData::Color
+ */
 class FWDATA_CLASS_API Material : public Object
 {
 
@@ -170,4 +166,5 @@ protected :
 
 } //namespace fwData
 
-#endif /* _DATA_MATERIAL_HPP_ */
+#endif /* __FWDATA_MATERIAL_HPP__ */
+

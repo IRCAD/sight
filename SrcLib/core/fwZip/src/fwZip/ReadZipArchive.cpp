@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,6 +49,14 @@ public:
     typedef char char_type;
     typedef ::boost::iostreams::source_tag  category;
 
+    ZipSource( const ::boost::filesystem::path &archive) :
+        m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
+        m_archive(archive)
+    {
+
+    }
+
+
     ZipSource( const ::boost::filesystem::path &archive, const ::boost::filesystem::path &path ) :
         m_zipDescriptor( openReadZipArchive(archive), &unzClose ),
         m_archive(archive),
@@ -68,14 +76,42 @@ public:
                               nRet != UNZ_OK);
     }
 
+
     std::streamsize read(char* s, std::streamsize n)
     {
-        int nRet = unzReadCurrentFile(m_zipDescriptor.get(), s, n);
+        std::streamsize nRet = unzReadCurrentFile(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
         FW_RAISE_EXCEPTION_IF(
                             ::fwZip::exception::Read("Error occurred while reading archive '" + m_archive.string()
                                                      + ":" + m_path.string() + "'."),
                             nRet < 0);
         return nRet;
+    }
+
+    std::string getComment()
+    {
+        unz_global_info* info = new unz_global_info;
+
+        std::streamsize nRet = unzGetGlobalInfo(m_zipDescriptor.get(), info);
+
+        FW_RAISE_EXCEPTION_IF(
+                            ::fwZip::exception::Read("Error occurred while reading information archive '" +
+                                                     m_archive.string() + "'."),
+                            nRet < 0);
+
+        char* comment = new char[info->size_comment];
+        nRet = unzGetGlobalComment(m_zipDescriptor.get(), comment, info->size_comment);
+
+        FW_RAISE_EXCEPTION_IF(
+                            ::fwZip::exception::Read("Error occurred while reading archive's global comment '" +
+                                                     m_archive.string() + "'."),
+                            nRet < 0);
+
+        std::string stringComment(comment, info->size_comment);
+
+        delete(info);
+        delete(comment);
+
+        return stringComment;
     }
 
 protected:
@@ -102,6 +138,14 @@ SPTR(std::istream) ReadZipArchive::getFile(const ::boost::filesystem::path &path
     return is;
 }
 
+//-----------------------------------------------------------------------------
+
+std::string ReadZipArchive::getComment()
+{
+    SPTR(ZipSource) zip = ::boost::make_shared<ZipSource>(m_archive);
+
+    return zip->getComment();
+}
 
 //-----------------------------------------------------------------------------
 

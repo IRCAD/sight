@@ -17,7 +17,7 @@
         "::fwData::Line": "1",
         "::fwData::List": "1",
         "::fwData::Material": "2",
-        "::fwData::Mesh": "2",
+        "::fwData::Mesh": "3",
         "::fwData::Node": "1",
         "::fwData::Plane": "1",
         "::fwData::PlaneList": "1",

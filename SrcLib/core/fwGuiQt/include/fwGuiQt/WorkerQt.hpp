@@ -9,6 +9,8 @@
 
 #include "fwGuiQt/config.hpp"
 
+#include <fwCore/base.hpp>
+
 namespace fwThread
 {
     class Worker;

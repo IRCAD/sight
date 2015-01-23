@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_PORT_HPP_
-#define _FWDATA_PORT_HPP_
+#ifndef __FWDATA_PORT_HPP__
+#define __FWDATA_PORT_HPP__
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
@@ -16,10 +16,7 @@ fwCampAutoDeclareDataMacro((fwData)(Port), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   Port
- * @brief   A port is defined by an identifier and a type.
- * 
- * @date    2007-2009.
+ * @brief A port is defined by an identifier and a type.
  */
 class FWDATA_CLASS_API Port : public ::fwData::Object
 {
@@ -55,6 +52,7 @@ protected :
     std::string  m_type ; // example "Image, Mesh" un className de data
 };
 
-}
+} // namespace fwData
 
-#endif // _FWDATA_PORT_HPP_
+#endif // __FWDATA_PORT_HPP__
+
