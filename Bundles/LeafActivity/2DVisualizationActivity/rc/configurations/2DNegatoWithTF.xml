@@ -91,6 +91,12 @@
                                 <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
                             </adaptor>
 
+                            <adaptor id="imageSliceOrientationText" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="imageKey">
+                                <config renderer="default" >
+                                    <locations>default</locations>
+                                    <initialOrientation>${orientation}</initialOrientation>
+                                </config>
+                            </adaptor>
                         </scene>
                     </service>
 

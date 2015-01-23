@@ -20,6 +20,7 @@ class MeshTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST( allocation );
     CPPUNIT_TEST( insertion );
     CPPUNIT_TEST( colorsNormals );
+    CPPUNIT_TEST( texCoords );
     CPPUNIT_TEST( addingArray );
     CPPUNIT_TEST( copy );
     CPPUNIT_TEST_SUITE_END();
@@ -32,6 +33,7 @@ public:
     void allocation();
     void insertion();
     void colorsNormals();
+    void texCoords();
     void addingArray();
     void copy();
 };

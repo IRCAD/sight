@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,9 @@
 
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
+#include <fwGuiQt/config.hpp>
 
+#include "fwGuiQt/App.hpp"
 #include "fwGuiQt/util/FuncSlot.hpp"
 
 #include "WorkerQtTest.hpp"
@@ -33,15 +35,21 @@ namespace fwGuiQt
 
 // Defined in WorkerQt.cpp
 class WorkerQt;
-struct WorkerQtInstanciator
+struct FWGUIQT_CLASS_API WorkerQtInstanciator
 {
-    WorkerQtInstanciator(bool reg);
-    SPTR(::fwThread::Worker) getWorker();
+
+    FWGUIQT_API WorkerQtInstanciator(bool reg = true ) ;
+
+    FWGUIQT_API SPTR(::fwThread::Worker) getWorker();
+
     SPTR(WorkerQt) m_qtWorker;
 
     FWGUIQT_API static int    s_argc;
     FWGUIQT_API static char **s_argv;
+    FWGUIQT_API static bool   s_GUIenabled;
 };
+
+
 
 namespace ut
 {
@@ -76,12 +84,29 @@ struct TestHandler
 
 //-----------------------------------------------------------------------------
 
+
+
 void WorkerQtTest::setUp()
 {
     // Set up context before running a test.
-    static char* arg = "fwGuiQtTest";
+    char arg1[] = "fwGuiQtTest";
+#if defined(__linux)
+    char arg2[] = "-platform";
+    char arg3[] = "offscreen";
+    static char* arg[] = {arg1, arg2, arg3, 0};
+
+    WorkerQtInstanciator::s_argc = 3;
+
+#else
+    static char* arg[] = {arg1, 0};
     WorkerQtInstanciator::s_argc = 1;
-    WorkerQtInstanciator::s_argv = &arg;
+#endif
+
+#if QT_VERSION < 0x050000
+    WorkerQtInstanciator::s_GUIenabled = false;
+#endif
+
+    WorkerQtInstanciator::s_argv = arg;
     CPPUNIT_ASSERT(qApp == NULL);
     WorkerQtInstanciator instanciator(false);
     m_worker = instanciator.getWorker();

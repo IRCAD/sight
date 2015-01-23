@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,6 +23,7 @@ namespace fwGui
 
 const std::string IFrameSrv::CLOSE_POLICY_EXIT   = "exit";
 const std::string IFrameSrv::CLOSE_POLICY_NOTIFY = "notify";
+const std::string IFrameSrv::CLOSE_POLICY_MESSAGE = "message";
 
 ::fwGui::container::fwContainer::wptr  IFrameSrv::m_progressWidget = ::boost::weak_ptr< ::fwGui::container::fwContainer >();
 
@@ -82,7 +83,9 @@ void IFrameSrv::initialize()
         {
             m_closePolicy = onclose;
         }
-        SLM_ASSERT("Invalid onclose value : " << m_closePolicy << ". Should be 'exit' or 'notify'", m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT);
+        SLM_ASSERT("Invalid onclose value : " << m_closePolicy << ". Should be 'exit', 'notify' or 'message'",
+                m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
+                || m_closePolicy == CLOSE_POLICY_MESSAGE);
     }
 
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::New(this->getID());
@@ -121,6 +124,12 @@ void IFrameSrv::create()
     else if (m_closePolicy == CLOSE_POLICY_NOTIFY)
     {
         fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseNotify, this);
+    }
+    else if(m_closePolicy == CLOSE_POLICY_MESSAGE)
+    {
+        fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseMessage, this);
+        auto app = ::fwGui::Application::New();
+        app->setConfirm(true);
     }
 
     m_frameLayoutManager->setCloseCallback(fct);
@@ -225,6 +234,15 @@ void IFrameSrv::onCloseNotify()
     ::fwData::Object::sptr srvObj = this->getObject();
     objectMsg->addEvent( "WINDOW_CLOSED" );
     ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameSrv::onCloseMessage()
+{
+    SLM_TRACE_FUNC();
+    auto app = ::fwGui::Application::New();
+    app->exit(0);
 }
 
 //-----------------------------------------------------------------------------

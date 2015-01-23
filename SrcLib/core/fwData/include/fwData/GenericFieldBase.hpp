@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_GENERICFIELDBASE_HPP_
-#define _FWDATA_GENERICFIELDBASE_HPP_
+#ifndef __FWDATA_GENERICFIELDBASE_HPP__
+#define __FWDATA_GENERICFIELDBASE_HPP__
 
 #include <string>
 #include <ostream>
@@ -20,10 +20,7 @@ namespace fwData
 {
 
 /**
- * @class   GenericFieldBase
- *
- * 
- * @date    2009-2010.
+ * @brief GenericFieldBase define common operation on simple data.
  */
 class FWDATA_CLASS_API GenericFieldBase : public Object
 {
@@ -49,4 +46,4 @@ private :
 
 } // namespace fwData
 
-#endif // _FWDATA_GENERICFIELDBASE_HPP_
+#endif // __FWDATA_GENERICFIELDBASE_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,12 +47,10 @@ namespace fwData
 
 /**
  * @brief   Base class for each data object.
+ *
  * Each object can optionally embed sub-object with string identifier. We name this concept a Field.
  * An Object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific Object. When accessing to this object with getField("dummy") we get the specific Object
- *
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >,
                                  public ::fwCom::HasSignals

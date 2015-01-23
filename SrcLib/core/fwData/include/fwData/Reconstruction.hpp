@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_RECONSTRUCTION_HPP_
-#define _FWDATA_RECONSTRUCTION_HPP_
+#ifndef __FWDATA_RECONSTRUCTION_HPP__
+#define __FWDATA_RECONSTRUCTION_HPP__
 
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
@@ -22,14 +22,10 @@ class Material;
 class Mesh;
 
 /**
- * @class Reconstruction
- * @brief This class defines a reconstruction object
+ * @brief This class defines a reconstruction object.
  *
- * A reconstruction is represented by a triangular mesh, a material and an image.
- *
- * @see ::fwData::Image, ::fwData::Mesh, ::fwData::Material
+ * A reconstruction is represented by a mesh, a material and an image (mask).
  */
-
 class FWDATA_CLASS_API Reconstruction : public Object
 {
 public:
@@ -54,6 +50,8 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
+    /// Constant to inform that mask volume has not been computed yet.
+    FWDATA_API static const double s_NO_COMPUTED_MASK_VOLUME;
 
     // Generator result---------------------------------------------------------
     fwGettersSettersDocMacro(IsVisible, bIsVisible, bool, the visibility of the reconstruction (true if visible));
@@ -76,6 +74,11 @@ public:
      * @brief Get/Set the material associated with the acquisition
      */
     fwDataGetSetSptrMacro(Material, SPTR(::fwData::Material));
+
+    /**
+     * @brief Get/Set the volume from mask
+     */
+    fwDataGetSetMacro(ComputedMaskVolume, double);
 
 protected :
 
@@ -100,8 +103,12 @@ protected :
     //! Reconstruction's mesh
     SPTR(::fwData::Mesh) m_attrMesh;
 
+    //! Reconstruction's mask volume
+    double m_attrComputedMaskVolume;
+
 };
 
 } // namespace fwData
 
-#endif // _FWDATA_RECONSTRUCTION_HPP_
+#endif // __FWDATA_RECONSTRUCTION_HPP__
+

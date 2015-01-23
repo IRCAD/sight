@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_HISTOGRAM_HPP_
-#define _FWDATA_HISTOGRAM_HPP_
+#ifndef __FWDATA_HISTOGRAM_HPP__
+#define __FWDATA_HISTOGRAM_HPP__
 
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
@@ -21,11 +21,7 @@ namespace fwData
 
 
 /**
- * @class   Histogram
- * @brief   This class defines the histogram of an image.
- *
- * 
- * @date    2011.
+ * @brief This class defines the histogram of an image.
  */
 class FWDATA_CLASS_API Histogram : public Object
 {
@@ -119,7 +115,7 @@ protected:
     float m_maxValue;
 };
 
-}
+} // namespace fwData
 
-#endif // _FWDATA_HISTOGRAM_HPP_
+#endif // __FWDATA_HISTOGRAM_HPP__
 

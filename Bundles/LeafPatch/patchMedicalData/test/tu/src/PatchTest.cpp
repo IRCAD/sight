@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -122,7 +122,7 @@ void PatchTest::patchMedicalDataTest()
     //<patcher context="..." version="..." />
     ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
     patcherCfg->setAttributeValue("context","MedicalData");
-    patcherCfg->setAttributeValue("version","V03AGO");
+    patcherCfg->setAttributeValue("version","V06AGO");
     srvCfg->addConfigurationElement(patcherCfg);
 
     ::fwMedData::SeriesDB::sptr sdb = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader" );

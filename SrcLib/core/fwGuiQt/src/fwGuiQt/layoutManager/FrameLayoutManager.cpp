@@ -71,6 +71,10 @@ void FrameLayoutManager::createFrame()
     {
         m_qtWindow->setWindowFlags(Qt::WindowStaysOnTopHint);
     }
+    else if(frameInfo.m_style == ::fwGui::layoutManager::IFrameLayoutManager::MODAL)
+    {
+        m_qtWindow->setWindowModality(Qt::ApplicationModal);
+    }
 
     int sizeX = (frameInfo.m_size.first  > 0)?frameInfo.m_size.first:m_qtWindow->size().width();
     int sizeY = (frameInfo.m_size.second > 0)?frameInfo.m_size.second:m_qtWindow->size().height();
@@ -114,7 +118,7 @@ void FrameLayoutManager::destroyFrame()
     this->getRefFrameInfo().m_position.first = m_qtWindow->geometry().x();
     this->getRefFrameInfo().m_position.second = m_qtWindow->geometry().y();
     this->writeConfig();
-    m_qtWindow->close();
+
     QObject::disconnect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
 
     if (m_qtWindow->layout())

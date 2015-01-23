@@ -1,0 +1,12 @@
+{
+    "context" : "MedicalData",
+    "origin_version" : "V03AGO",
+    "target_version" : "V04AGO",
+    "patcher" : "DefaultPatcher",
+    "links" : [
+        {
+            "::fwData::Mesh" : "1",
+            "::fwData::Mesh" : "3"
+        }
+    ]
+}

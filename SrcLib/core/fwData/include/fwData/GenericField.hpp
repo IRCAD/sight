@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_GENERICFIELD_HPP_
-#define _FWDATA_GENERICFIELD_HPP_
+#ifndef __FWDATA_GENERICFIELD_HPP__
+#define __FWDATA_GENERICFIELD_HPP__
 
 #include <string>
 
@@ -21,15 +21,11 @@ namespace fwData
 {
 
 /**
- * @class   GenericField
  * @brief   Generic "field" object template.
  *
  * A generic object contains a value.
  *
  * @see     ::fwData::Float, ::fwData::Boolean, ::fwData::Integer
- *
- * 
- * @date    2007-2009.
  */
 template< typename T >
 class FWDATA_CLASS_API GenericField : public GenericFieldBase
@@ -160,4 +156,5 @@ typename GenericField<T>::sptr GenericField<T>::GenericFieldFactory(const T valu
 
 } // namespace fwData
 
-#endif // _FWDATA_GENERICFIELD_HPP_
+#endif // __FWDATA_GENERICFIELD_HPP__
+

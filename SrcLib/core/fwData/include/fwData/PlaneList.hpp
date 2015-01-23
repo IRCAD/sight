@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_PLANELIST_HPP_
-#define _FWDATA_PLANELIST_HPP_
+#ifndef __FWDATA_PLANELIST_HPP__
+#define __FWDATA_PLANELIST_HPP__
 
 #include <vector>
 
@@ -18,11 +18,8 @@ fwCampAutoDeclareDataMacro((fwData)(PlaneList), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   PlaneList
- * @brief   This class defines a list of planes
+ * @brief   This class defines a list of planes.
  * @see     ::fwData::Point
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API PlaneList : public Object
 {
@@ -66,4 +63,5 @@ protected :
 
 } // end namespace fwData
 
-#endif // _FWDATA_PLANELIST_HPP_
+#endif // __FWDATA_PLANELIST_HPP__
+

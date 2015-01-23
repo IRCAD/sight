@@ -9,8 +9,6 @@
 
 #include <vector>
 
-#include <boost/signals/connection.hpp>
-
 #include <QPointer>
 #include <QPushButton>
 #include <QSignalMapper>

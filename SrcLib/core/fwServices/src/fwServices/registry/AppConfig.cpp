@@ -37,7 +37,6 @@ AppConfig::sptr AppConfig::getDefault()
 
 AppConfig::~AppConfig()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

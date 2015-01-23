@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_RESECTIONDB_HPP_
-#define _FWDATA_RESECTIONDB_HPP_
+#ifndef __FWDATA_RESECTIONDB_HPP__
+#define __FWDATA_RESECTIONDB_HPP__
 
 #include <boost/cstdint.hpp>
 
@@ -18,12 +18,9 @@ fwCampAutoDeclareDataMacro((fwData)(ResectionDB), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   ResectionDB
  * @brief   This class defines a resection container.
  *
  * @see     ::fwData::Resection
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API ResectionDB : public Object
 {
@@ -71,11 +68,7 @@ protected:
     ResectionContainerType m_attrResections;
 };
 
-}//end namespace fwData
+} // namespace fwData
 
-
-
-
-#endif // _FWDATA_RESECTIONDB_HPP_
-
+#endif // __FWDATA_RESECTIONDB_HPP__
 

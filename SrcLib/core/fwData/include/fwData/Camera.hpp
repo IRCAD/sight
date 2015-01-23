@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_CAMERA_HPP_
-#define _FWDATA_CAMERA_HPP_
+#ifndef __FWDATA_CAMERA_HPP__
+#define __FWDATA_CAMERA_HPP__
 
 #include <utility>
 
@@ -22,10 +22,7 @@ fwCampAutoDeclareDataMacro((fwData)(Camera), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   Camera
- * @brief   This class defines a camera object.
- * 
- * @date    2007-2009.
+ * @brief This class defines a camera object.
  */
 class FWDATA_CLASS_API Camera : public Object
 {
@@ -157,4 +154,5 @@ protected:
 
 } // namespace fwData
 
-#endif // _FWDATA_CAMERA_HPP_
+#endif // __FWDATA_CAMERA_HPP__
+

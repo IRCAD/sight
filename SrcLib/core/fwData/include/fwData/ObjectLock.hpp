@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,10 +21,7 @@ namespace fwData
 
 
 /**
- * @class  ObjectLock
- * @brief  A simple helper to lock specific object, manages : Image, Mesh and Array.
- * 
- * @date   2007-2012.
+ * @brief A simple helper to lock specific object, manages : Image, Mesh and Array.
  */
 class FWDATA_CLASS_API ObjectLock
 {

@@ -43,7 +43,7 @@ IValidator::ValidationType RelatedStudy::validate(
     if(currentSelection->size() > 1)
     {
         validation.first = true;
-        validation.second = "Selected series refer to the same study.";
+        validation.second = "Selected series refers to the same study.";
 
         ::fwMedData::Series::sptr seriesRef = ::fwMedData::Series::dynamicCast((*currentSelection)[0]);
         ::fwMedData::Study::sptr studyRef = seriesRef->getStudy();
@@ -63,7 +63,7 @@ IValidator::ValidationType RelatedStudy::validate(
             if(instanceUIDRef != instanceUID)
             {
                 validation.first = false;
-                validation.second = "Selected series don't refer to the same study.";
+                validation.second = "Selected series do not refer to the same study.";
 
                 break;
             }

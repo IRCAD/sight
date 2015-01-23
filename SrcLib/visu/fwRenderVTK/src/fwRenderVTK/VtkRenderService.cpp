@@ -32,6 +32,7 @@ VTK_MODULE_INIT(vtkRenderingFreeTypeOpenGL);
 #include <fwCom/Slots.hxx>
 
 #include <fwServices/Base.hpp>
+#include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 #include <fwTools/fwID.hpp>
 #include <fwData/Color.hpp>
@@ -63,6 +64,8 @@ VtkRenderService::VtkRenderService() throw() :
 {
     m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
     m_slotRender->setWorker(m_associatedWorker);
+
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
 
     ::fwCom::HasSlots::m_slots(s_RENDER_SLOT, m_slotRender);
 }
@@ -357,6 +360,10 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         {
             this->configureVtkObject(*iter);
         }
+        else if((*iter)->getName() == "connect")
+        {
+            ::fwServices::helper::Config::createConnections(*iter, m_connections);
+        }
         else
         {
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
@@ -387,7 +394,7 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
+    m_connections->disconnect();
 
     SceneAdaptorsMapType::iterator adaptorIter ;
 
@@ -548,6 +555,23 @@ vtkObject * VtkRenderService::getVtkObject(VtkObjectIdType objectId)
         return NULL;
     }
     return m_vtkObjects[objectId];
+}
+
+//-----------------------------------------------------------------------------
+
+SPTR (IVtkAdaptorService) VtkRenderService::getAdaptor(VtkRenderService::AdaptorIdType adaptorId)
+{
+    IVtkAdaptorService::sptr adaptor;
+    SceneAdaptorsMapType::iterator it = m_sceneAdaptors.find(adaptorId);
+
+    OSLM_WARN_IF("adaptor '" << adaptorId << "' not found", it == m_sceneAdaptors.end());
+
+    if ( it != m_sceneAdaptors.end() )
+    {
+        adaptor = it->second.getService();
+    }
+
+    return adaptor;
 }
 
 //-----------------------------------------------------------------------------

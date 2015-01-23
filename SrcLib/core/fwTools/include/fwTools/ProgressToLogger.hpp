@@ -9,7 +9,7 @@
 
 #include <string>
 #include <fwTools/config.hpp>
-#include <boost/signals/trackable.hpp>
+#include <boost/signals2/trackable.hpp>
 
 namespace fwTools
 {
@@ -21,7 +21,7 @@ namespace fwTools
  * 
  * @date    2007-2009.
  */
-class FWTOOLS_CLASS_API ProgressToLogger  : public ::boost::signals::trackable // to autoDisconnect if handler is destroyed before the notifier
+class FWTOOLS_CLASS_API ProgressToLogger  : public ::boost::signals2::trackable // to autoDisconnect if handler is destroyed before the notifier
 {
 public:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -208,6 +208,15 @@ void Reconstruction::doStop() throw(fwTools::Failed)
 
 void Reconstruction::setForceHide(bool hide)
 {
+    ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
+    this->setVisibility((hide ? false : reconstruction->getIsVisible()));
+}
+
+
+//------------------------------------------------------------------------------
+
+void Reconstruction::setVisibility(bool visible)
+{
     SLM_TRACE_FUNC();
     if (!m_meshService.expired())
     {
@@ -217,8 +226,7 @@ void Reconstruction::setForceHide(bool hide)
 
         if (meshAdaptor)
         {
-            ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-            meshAdaptor->updateVisibility( hide ? false : reconstruction->getIsVisible() );
+            meshAdaptor->updateVisibility( visible );
         }
         this->setVtkPipelineModified();
     }

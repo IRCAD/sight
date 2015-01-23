@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,10 +19,7 @@ namespace fwData
 namespace location
 {
 /**
- * @class MultiFiles
  * @brief This class defines a multi files location.
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API MultiFiles  : public ILocation
 {
@@ -56,9 +53,6 @@ protected :
  * @brief This class is derived by reader/writer.
  *
  * Reader/Writer classes should only need to implement get/setLocation
- *
- * 
- * @date 2007-2009.
  */
 template<class RW> // reader or writer class should only need to implement get/setLocation
 struct enableMultiFiles

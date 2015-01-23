@@ -30,8 +30,8 @@ public:
     VISUVTKADAPTOR_API Text();
     VISUVTKADAPTOR_API virtual ~Text() throw();
 
-    VISUVTKADAPTOR_API virtual void setText(std::string str);
-    virtual std::string getText(){return m_text;};
+    VISUVTKADAPTOR_API virtual void setText(const std::string &str);
+    virtual const std::string& getText(){return m_text;};
 
 protected:
 
@@ -47,15 +47,26 @@ protected:
      * Example :
      @verbatim
      <adaptor id="text" class="::visuVTKAdaptor::Text" objectId="imageSeries">
-        <config renderer="default" text="@patient.name" fontSize="16" />
+        <config renderer="default" text="@patient.name" color="#ff0000" fontSize="16" />
+     </adaptor>
+
+     <adaptor id="text2" class="::visuVTKAdaptor::Text" objectId="imageSeries">
+        <config renderer="default" vAlign='top' hAlign='center'>
+        <text>Text to display<text>
+        </config>
      </adaptor>
      @endverbatim
      *
      * - text : text to display. If a valid Seshat object attribute path is detected, the associated
      *   value is used. Otherwise, it uses the given value in XML configuration.
-     * - fontSize : font size in points of displayed text (not mandatory, default value is set to 20)
-     * - hAlign : horizontal alignment ('left' or 'right', not mandatory, default value is set to 'left')
-     * - vAlign : vertical alignment ('top' or 'bottom', not mandatory, default value is set to 'bottom')
+     * - color : text color in hexadecimal format : #rrggbb or #rrggbbaa (optional, default: white)
+     * - fontSize : font size in points of displayed text (optional, default: 20)
+     * - hAlign : horizontal alignment (left, center or right, optional, default: 'left')
+     * - vAlign : vertical alignment (top, center or bottom, optional, default: 'bottom')
+     *
+     *   The configuration accepts also a text tag instead of the text attribute
+     *   (see second example). This is useful for multiline text. The same rules
+     *   that for the attribute are applied.
      */
     VISUVTKADAPTOR_API virtual void configuring() throw(fwTools::Failed);
 

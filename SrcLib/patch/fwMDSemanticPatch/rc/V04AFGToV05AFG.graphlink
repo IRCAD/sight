@@ -1,0 +1,12 @@
+{
+    "context" : "MedicalData",
+    "origin_version" : "V04AFG",
+    "target_version" : "V05AFG",
+    "patcher" : "DefaultPatcher",
+    "links" : [
+        {
+            "::fwData::Reconstruction" : "2",
+            "::fwData::Reconstruction" : "3"
+        }
+    ]
+}

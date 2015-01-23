@@ -1,8 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwZip/exception/Write.hpp"
+
+#include "minizip/zip.h"
+#include "fwZip/WriteDirArchive.hpp"
+
+#include <fwCore/exceptionmacros.hpp>
 
 #include <fstream>
 
@@ -13,11 +20,6 @@
 
 #include <boost/iostreams/stream_buffer.hpp>
 
-#include <fwCore/exceptionmacros.hpp>
-
-#include "minizip/zip.h"
-#include "fwZip/WriteDirArchive.hpp"
-#include "fwZip/exception/Write.hpp"
 
 namespace fwZip
 {
@@ -66,12 +68,20 @@ void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile, const
         {
             ::boost::filesystem::create_directories(parentFile);
         }
-
         ::boost::system::error_code err;
         ::boost::filesystem::create_hard_link( sourceFile, fileDest, err );
         if (err.value() != 0)
         {
-            ::boost::filesystem::copy_file( sourceFile, fileDest );
+            // Use std stream instead of boost:::filesystem::copy_file
+            // because fwZip is build using std=c++11 and using copy_file also requires boost built
+            // with std=c++11 (for now in c++0x).
+            std::string strSource =  sourceFile.string();
+            std::string strDest = fileDest.string();
+            std::ifstream  src(strSource.c_str(), std::ios::binary);
+            std::ofstream  dst(strDest.c_str(),   std::ios::binary);
+
+            dst << src.rdbuf();
+
         }
     }
 }

@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <iosfwd>    // streamsize
 #include <fstream>
+#include <functional>
 
 #include <boost/make_shared.hpp>
 
@@ -50,7 +51,7 @@ zipFile openWriteZipArchive( const ::boost::filesystem::path &archive )
  * @note Z_BEST_SPEED compression level for '.raw' files,
  *       Z_NO_COMPRESSION for 'raw.gz', Z_DEFAULT_COMPRESSION otherwise.
  */
-int openFile(zipFile zipDescriptor, const ::boost::filesystem::path &path)
+std::streamsize openFile(zipFile zipDescriptor, const ::boost::filesystem::path &path)
 {
     const std::string extension = path.extension().string();
     int compressLevel = Z_DEFAULT_COMPRESSION;
@@ -76,7 +77,7 @@ int openFile(zipFile zipDescriptor, const ::boost::filesystem::path &path)
     zfi.tmz_date.tm_min  = ptm.tm_min;
     zfi.tmz_date.tm_sec  = ptm.tm_sec;
 
-    int nRet = zipOpenNewFileInZip(zipDescriptor,
+    std::streamsize nRet = zipOpenNewFileInZip(zipDescriptor,
             path.generic_string().c_str(),
             &zfi,
             NULL,
@@ -92,25 +93,21 @@ int openFile(zipFile zipDescriptor, const ::boost::filesystem::path &path)
 
 //-----------------------------------------------------------------------------
 
-void closeZipArchive(zipFile zipDescriptor)
-{
-    zipClose(zipDescriptor, NULL);
-}
-
-//-----------------------------------------------------------------------------
-
 class ZipSink
 {
 public:
     typedef char char_type;
     typedef ::boost::iostreams::sink_tag  category;
 
-    ZipSink( const ::boost::filesystem::path &archive, const ::boost::filesystem::path &path ) :
-        m_zipDescriptor( openWriteZipArchive(archive), &closeZipArchive ),
+    ZipSink( const ::boost::filesystem::path &archive, const ::boost::filesystem::path &path,
+             const std::string comment ) :
+        m_zipDescriptor(
+                openWriteZipArchive(archive),
+                [comment](zipFile zipDescriptor){ zipClose(zipDescriptor, comment.c_str()); }),
         m_archive(archive),
         m_path(path)
     {
-        int nRet = openFile(m_zipDescriptor.get(), m_path);
+        std::streamsize nRet = openFile(m_zipDescriptor.get(), m_path);
         FW_RAISE_EXCEPTION_IF(
                               ::fwZip::exception::Write("Cannot open file '" + path.string() +
                                                        "' in archive '"+ archive.string() + "'."),
@@ -119,7 +116,7 @@ public:
 
     std::streamsize write(const char* s, std::streamsize n)
     {
-        int nRet = zipWriteInFileInZip(m_zipDescriptor.get(), s, n);
+        std::streamsize nRet = zipWriteInFileInZip(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
         FW_RAISE_EXCEPTION_IF(
                         ::fwZip::exception::Write("Error occurred while writing archive '" + m_archive.string()
                                                      + ":" + m_path.string() + "'."),
@@ -136,7 +133,15 @@ protected:
 //-----------------------------------------------------------------------------
 
 WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive ) :
-    m_archive(archive)
+    m_archive(archive),
+    m_comment("")
+{}
+
+//-----------------------------------------------------------------------------
+
+WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive, const std::string& comment ) :
+    m_archive(archive),
+    m_comment(comment)
 {}
 
 //-----------------------------------------------------------------------------
@@ -149,7 +154,7 @@ WriteZipArchive::~WriteZipArchive()
 SPTR(std::ostream) WriteZipArchive::createFile(const ::boost::filesystem::path &path)
 {
     SPTR(::boost::iostreams::stream<ZipSink>) os
-        = ::boost::make_shared< ::boost::iostreams::stream<ZipSink> >(m_archive, path);
+        = ::boost::make_shared< ::boost::iostreams::stream<ZipSink> >(m_archive, path, m_comment);
     return os;
 }
 
@@ -173,10 +178,10 @@ void WriteZipArchive::putFile(const ::boost::filesystem::path &sourceFile, const
 bool WriteZipArchive::createDir(const ::boost::filesystem::path &path)
 {
     zipFile zipDescriptor = openWriteZipArchive(m_archive);
-    const int nRet = openFile(zipDescriptor, path);
+    const std::streamsize nRet = openFile(zipDescriptor, path);
 
     zipCloseFileInZip(zipDescriptor);
-    zipClose(zipDescriptor, NULL);
+    zipClose(zipDescriptor, m_comment.c_str());
 
     return nRet == ZIP_OK;
 }

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_EDGE_HPP_
-#define _FWDATA_EDGE_HPP_
+#ifndef __FWDATA_EDGE_HPP__
+#define __FWDATA_EDGE_HPP__
 
 #include <utility>
 
@@ -18,13 +18,9 @@ fwCampAutoDeclareDataMacro((fwData)(Edge), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   Edge
- * @brief   This class defines an edge object.
+ * @brief This class defines an edge object.
  *
  * An edge is reprensented by a to identifier ("from" and "to") and a nature.
- *
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API Edge : public ::fwData::Object
 {
@@ -89,4 +85,5 @@ protected :
 
 } // namespace fwData
 
-#endif // _FWDATA_EDGE_HPP_
+#endif // __FWDATA_EDGE_HPP__
+

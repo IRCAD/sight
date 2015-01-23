@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_MESH_HPP_
-#define _FWDATA_MESH_HPP_
+#ifndef __FWDATA_MESH_HPP__
+#define __FWDATA_MESH_HPP__
 
 #include <camp/class.hpp>
 
@@ -25,11 +25,7 @@ namespace fwData
 {
 
 /**
- * @class   Mesh
- * @brief   Data holding a geometric structure composed of points, lines,
- * triangles, quads or polygons
- * 
- * @date    2011.
+ * @brief   Data holding a geometric structure composed of points, lines, triangles, quads or polygons.
  *
  * It is the new structure that represent mesh in fw4spl. For the moment, this new structure is available
  * to register mesh with triangle cells, with quad cells or with triangle and quad cells. Peharps, in future
@@ -39,8 +35,10 @@ namespace fwData
  *
  * An array (m_points) which contains point coord (x,y,z) \n
  * An array (m_cellTypes) which contains cell type (TRIAN or QUAD for the moment) \n
- * An array (m_cellData) which contains point indexes in m_points used to create cells, 3 indexes are necessary to create a triangle cell, 4 for quad cell. \n
- * An array (m_cellDataOffsets) which contains indexes relative to m_cellData, to retrieve the first point necessary to the cell creation. \n
+ * An array (m_cellData) which contains point indexes in m_points used to create cells, 3 indexes are necessary to
+ * create a triangle cell, 4 for quad cell. \n
+ * An array (m_cellDataOffsets) which contains indexes relative to m_cellData, to retrieve the first point necessary
+ * to the cell creation. \n
  *
  * Example : \n
  * m_points.size = number of mesh points  * 3 \n
@@ -48,7 +46,8 @@ namespace fwData
  * m_cellTypes.size = number of mesh cells \n
  * m_cellTypes = [TRIANGLE, TRIANGLE, QUAD, QUAD, TRIANGLE ... ] \n
  * m_cellDataOffsets.size = number of mesh cells \n
- * m_cellDataOffsets = [0, 3, 6, 10, 14, ... ] ( offset shifting in  m_cellData = +3 if triangle cell rr +4 if quad cell ) \n
+ * m_cellDataOffsets = [0, 3, 6, 10, 14, ... ] (offset shifting in  m_cellData = +3 if triangle cell rr +4 if quad cell)
+ * \n
  * number of mesh cells * 3 (if only triangle cell) < m_cellData.size < number of mesh cells * 4 (if only quad cell) \n
  * m_cellData = [0, 1, 2, 0, 1, 3, 0, 1, 3, 5... ] ( correspond to point id ) \n
  *
@@ -106,6 +105,7 @@ public:
     typedef float          PointValueType;
     typedef boost::uint8_t ColorValueType;
     typedef float          NormalValueType;
+    typedef float          TexCoordValueType;
     typedef Id             CellValueType;
     typedef Id             CellDataOffsetType;
     typedef boost::uint8_t CellTypes;
@@ -118,6 +118,8 @@ public:
     typedef boost::multi_array_ref<ColorValueType    , 2> CellColorsMultiArrayType;
     typedef boost::multi_array_ref<NormalValueType   , 2> PointNormalsMultiArrayType;
     typedef boost::multi_array_ref<NormalValueType   , 2> CellNormalsMultiArrayType;
+    typedef boost::multi_array_ref<TexCoordValueType , 2> PointTexCoordsMultiArrayType;
+    typedef boost::multi_array_ref<TexCoordValueType , 2> CellTexCoordsMultiArrayType;
 
 
     /**
@@ -159,11 +161,17 @@ public:
     /// Allocates colors array according to the number of points of the mesh.
     FWDATA_API size_t allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception);
 
+    /// Allocates texCoords array according to the number of points of the mesh.
+    FWDATA_API size_t allocatePointTexCoords() throw(::fwData::Exception);
+
     /// Allocates normals array according to the number of cells of the mesh.
     FWDATA_API size_t allocateCellNormals() throw(::fwData::Exception);
 
     /// Allocates colors array according to the number of cells of the mesh.
     FWDATA_API size_t allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception);
+
+    /// Allocates texCoords array according to the number of cells of the mesh.
+    FWDATA_API size_t allocateCellTexCoords() throw(::fwData::Exception);
 
 
     /**
@@ -197,6 +205,10 @@ public:
     FWDATA_API void setPointNormalsArray     (::fwData::Array::sptr array);
     /// Sets the internal corresponding array
     FWDATA_API void setCellNormalsArray      (::fwData::Array::sptr array);
+    /// Sets the internal corresponding array
+    FWDATA_API void setPointTexCoordsArray   (::fwData::Array::sptr array);
+    /// Sets the internal corresponding array
+    FWDATA_API void setCellTexCoordsArray    (::fwData::Array::sptr array);
 
     /// Returns the internal corresponding array
     FWDATA_API ::fwData::Array::sptr getPointsArray           () const;
@@ -214,6 +226,10 @@ public:
     FWDATA_API ::fwData::Array::sptr getPointNormalsArray     () const;
     /// Returns the internal corresponding array
     FWDATA_API ::fwData::Array::sptr getCellNormalsArray      () const;
+    /// Returns the internal corresponding array
+    FWDATA_API ::fwData::Array::sptr getPointTexCoordsArray   () const;
+    /// Returns the internal corresponding array
+    FWDATA_API ::fwData::Array::sptr getCellTexCoordsArray    () const;
 
     /**
      * @brief Clear mesh points.
@@ -237,10 +253,13 @@ public:
     /// Remove corresponding array, memory is freed.
     FWDATA_API void clearPointColors();
     /// Remove corresponding array, memory is freed.
+    FWDATA_API void clearPointTexCoords();
+    /// Remove corresponding array, memory is freed.
     FWDATA_API void clearCellNormals();
     /// Remove corresponding array, memory is freed.
     FWDATA_API void clearCellColors();
-
+    /// Remove corresponding array, memory is freed.
+    FWDATA_API void clearCellTexCoords();
 
     /// Set number of points.
     FWDATA_API void setNumberOfPoints(Id nb);
@@ -358,6 +377,18 @@ protected:
      * This array contains cell normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
      */
     ::fwData::Array::sptr m_cellNormals;
+    /**
+     * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbPoints.
+     *
+     * This array contains point texCoords : [ tx1 ty1 tx2 ty2 ... ]
+     */
+    ::fwData::Array::sptr m_pointTexCoords;
+    /**
+     * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbCells.
+     *
+     * This array contains cell texCoords : [ tx1 ty1 tx2 ty2 ... ]
+     */
+    ::fwData::Array::sptr m_cellTexCoords;
 
     /// Array map where you can add few additional arrays registered thanks to a key to perform/conserve some specific analysis.
     ArrayMapType m_arrayMap;
@@ -365,4 +396,5 @@ protected:
 
 } // namespace fwData
 
-#endif // _FWDATA_MESH_HPP_
+#endif // __FWDATA_MESH_HPP__
+

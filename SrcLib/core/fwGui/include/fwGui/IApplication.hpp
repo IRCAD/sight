@@ -33,9 +33,15 @@ public:
     /// Tells the application to exit with a returncode
     FWGUI_API virtual void exit( int returncode ) = 0;
 
+    /// Sets if confirmation is required when exiting application
+    void setConfirm(bool confirm) { m_confirm = confirm; }
+
     typedef std::string FactoryRegistryKeyType;
     FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
+protected:
+    /// Asks confirmation before exiting application.
+    bool m_confirm;
 };
 
 } // namespace fwGui
