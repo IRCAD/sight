@@ -34,6 +34,8 @@
 
 #include "uiCPR/SCPREditor.hpp"
 
+#include <fwCom/Signal.hxx>
+
 
 fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCPR::SCPREditor, ::fwData::Object);
 

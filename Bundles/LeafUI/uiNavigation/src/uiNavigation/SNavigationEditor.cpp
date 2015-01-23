@@ -10,6 +10,9 @@
 #include <QSlider>
 #include <QLineEdit>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwTools/fwID.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -26,6 +29,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include "uiNavigation/SNavigationEditor.hpp"
+
 
 fwServicesRegisterMacro(::gui::editor::IEditor, ::uiNavigation::SNavigationEditor, ::fwData::Object);
 

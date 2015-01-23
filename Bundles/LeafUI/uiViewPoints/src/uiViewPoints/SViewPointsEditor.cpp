@@ -28,6 +28,7 @@
 #include <fwServices/IEditionService.hpp>
 
 #include <fwCom/Signals.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGui/dialog/InputDialog.hpp>

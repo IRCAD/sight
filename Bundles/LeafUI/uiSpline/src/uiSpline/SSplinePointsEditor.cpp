@@ -4,23 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QGridLayout>
-#include <QLineEdit>
-#include <QList>
-#include <QSlider>
-#include <QString>
-#include <QWidget>
+#include "uiSpline/SSplinePointsEditor.hpp"
 
-#include <boost/foreach.hpp>
-
-#include <fwTools/fwID.hpp>
-
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 #include <fwComEd/InteractionMsg.hpp>
 #include <fwComEd/PointListMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
+
+#include <fwData/PointList.hpp>
+#include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
@@ -34,7 +27,15 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "uiSpline/SSplinePointsEditor.hpp"
+#include <QGridLayout>
+#include <QLineEdit>
+#include <QList>
+#include <QSlider>
+#include <QString>
+#include <QWidget>
+
+#include <boost/foreach.hpp>
+
 
 
 fwServicesRegisterMacro(::gui::editor::IEditor, ::uiSpline::SSplinePointsEditor, ::fwData::PointList);

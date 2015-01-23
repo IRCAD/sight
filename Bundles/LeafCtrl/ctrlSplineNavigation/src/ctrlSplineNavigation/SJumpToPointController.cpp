@@ -4,6 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
  
+#include "ctrlSplineNavigation/SJumpToPointController.hpp"
+
+#include <fwCom/Slots.hxx>
+#include <fwComEd/TransformationMatrix3DMsg.hpp>
+
  // Services tools
 #include <fwServices/Base.hpp>
 #include <fwServices/op/Get.hpp>
@@ -12,10 +17,6 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/IEditionService.hpp>
-
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-
-#include "ctrlSplineNavigation/SJumpToPointController.hpp"
 
 fwServicesRegisterMacro(
         ::fwServices::IController, ::ctrlSplineNavigation::SJumpToPointController, ::fwData::TransformationMatrix3D);

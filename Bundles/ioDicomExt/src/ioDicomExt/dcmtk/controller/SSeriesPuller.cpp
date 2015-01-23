@@ -8,6 +8,8 @@
 #include <boost/foreach.hpp>
 #include <boost/filesystem/operations.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 

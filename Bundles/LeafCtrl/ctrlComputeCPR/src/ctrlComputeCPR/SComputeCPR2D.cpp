@@ -4,8 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <math.h>
-#include <vector>
+#include "ctrlComputeCPR/SComputeCPR2D.hpp"
+
+#include <fwCom/Slots.hxx>
+#include <fwComEd/PointListMsg.hpp>
+#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/Dictionary.hpp>
+
+#include <fwData/String.hpp>
+#include <fwData/PointList.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/op/Get.hpp>
@@ -14,19 +21,9 @@
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
-
-#include <fwData/String.hpp>
-#include <fwData/PointList.hpp>
-
-#include <fwComEd/PointListMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
-
 #include <cpr/functions.hpp>
-
-#include "ctrlComputeCPR/SComputeCPR2D.hpp"
+#include <math.h>
+#include <vector>
 
 fwServicesRegisterMacro(::fwServices::IController,::ctrlComputeCPR::SComputeCPR2D, ::fwData::Image);
 

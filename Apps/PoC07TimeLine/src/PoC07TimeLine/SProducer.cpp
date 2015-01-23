@@ -5,9 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "PoC07TimeLine/SProducer.hpp"
-
 #include "PoC07TimeLine/MessageTL.hpp"
 
+#include <fwCom/Signal.hxx>
 #include <fwServices/macros.hpp>
 #include <fwThread/Timer.hpp>
 #include <fwTools/Object.hpp>

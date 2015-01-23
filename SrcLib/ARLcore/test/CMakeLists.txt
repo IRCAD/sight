@@ -1,10 +1,28 @@
-
 fwLoadProperties()
-
-find_package (Boost COMPONENTS date_time regex REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
 find_package(CppUnit)
-fwInclude(${Boost_INCLUDE_DIRS} ${CPPUNIT_INCLUDE_DIR})
-fwLink(${Boost_LIBRARIES} ${CPPUNIT_LIBRARY})
 
+find_library(VNL_LIBRARY vnl)
+find_library(VNL_ALGO_LIBRARY vnl_algo)
+find_library(VCL_LIBRARY vcl )
 
+fwUseForwardInclude(
+    ARLcore
+)
 
+fwInclude(
+    ${Boost_INCLUDE_DIRS}
+    ${CPPUNIT_INCLUDE_DIR}
+    ${VNL_INCLUDE_PATH}
+    ${VNL_INCLUDE_PATH}/vxl
+    ${VNL_INCLUDE_PATH}/vxl/core
+    ${VNL_INCLUDE_PATH}/vxl/vcl
+)
+
+fwLink(
+    ${Boost_SYSTEM_LIBRARY}
+    ${CPPUNIT_LIBRARY}
+    ${VNL_ALGO_LIBRARY}
+    ${VNL_LIBRARY}
+    ${VCL_LIBRARY}
+)

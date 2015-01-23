@@ -11,6 +11,7 @@
 #include <boost/cstdint.hpp>
 #include <fwTools/Object.hpp>
 #include <fwCore/macros.hpp>
+#include <ARLcore/config.hpp>
 
 //#include <arlcore/Type.h>
 
@@ -42,31 +43,6 @@
     #endif // _WIN32
     #define GRAPHVIZ_EXE "\"c:/Program Files/ATT/Graphviz/bin/dotty.exe\""
     #define GRAPHVIZ_TMP "tmpGraph.dot"
-
-#ifndef _ARLCORE_CONFIG_HPP_
-#ifdef _WIN32
-        #ifdef ARLCORE_EXPORTS
-        #define ARLCORE_API __declspec(dllexport)
-        #else // ARLCORE_EXPORTS
-        #define ARLCORE_API __declspec(dllimport)
-        #endif // ARLCORE_EXPORTS
-        #define ARLCORE_CLASS_API
-        #pragma warning(disable: 4290)
-    #pragma warning(disable: 4786)
-#elif defined(__GNUC__) && (__GNUC__>=4) && defined(__USE_DYLIB_VISIBILITY__)
-        #ifdef ARLCORE_EXPORTS
-        #define ARLCORE_API __attribute__ ((visibility("default")))
-        #define ARLCORE_CLASS_API __attribute__ ((visibility("default")))
-        #else
-        #define ARLCORE_API __attribute__ ((visibility("hidden")))
-        #define ARLCORE_CLASS_API __attribute__ ((visibility("hidden")))
-        #endif
-#else // _WIN32
-        #define ARLCORE_API
-        #define ARLCORE_CLASS_API
-#endif // _WIN32
-#endif // _ARLCORE_CONFIG_HPP_
-
 
 typedef struct
 {

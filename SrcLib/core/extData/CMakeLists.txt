@@ -4,15 +4,12 @@ fwUseForwardInclude(
     fwCamp
     fwCom
     fwCore
-    fwMath
-    fwMemory
-    fwTools
     fwData
 )
 
-find_package (Boost COMPONENTS date_time REQUIRED)
+find_package (Boost COMPONENTS log REQUIRED)
 
 fwForwardInclude(${Boost_INCLUDE_DIRS})
 
-fwLink(${Boost_LIBRARIES})
+fwLink(${Boost_LOG_LIBRARY})
 

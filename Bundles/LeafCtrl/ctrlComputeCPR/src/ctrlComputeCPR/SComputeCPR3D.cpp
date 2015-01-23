@@ -4,7 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <math.h>
+#include "ctrlComputeCPR/SComputeCPR3D.hpp"
+
+#include <fwCom/Slots.hxx>
+#include <fwComEd/MeshMsg.hpp>
+#include <fwComEd/PointListMsg.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
@@ -16,14 +20,8 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwTools/fwID.hpp>
-
-#include <fwComEd/MeshMsg.hpp>
-#include <fwComEd/PointListMsg.hpp>
-
 #include <cpr/functions.hpp>
-
-#include "ctrlComputeCPR/SComputeCPR3D.hpp"
+#include <math.h>
 
 fwServicesRegisterMacro(::fwServices::IController,::ctrlComputeCPR::SComputeCPR3D, ::fwData::Mesh);
 

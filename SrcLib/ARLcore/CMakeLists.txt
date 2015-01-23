@@ -5,8 +5,6 @@ fwUseForwardInclude(
 )
 
 
-find_package( Boost REQUIRED )
-
 find_library( ANN_LIBRARY ANN )
 find_path( ANN_INCLUDES  ANN/ANN.h)
 
@@ -21,7 +19,6 @@ find_library(NETLIB_LIBRARY     netlib )
 find_path( VNL_INCLUDE_PATH  vxl/core/vnl/vnl_alloc.h)
 
 fwForwardInclude(
-    ${Boost_INCLUDE_DIR}
     ${ANN_INCLUDES}
     ${VNL_INCLUDE_PATH}
     ${VNL_INCLUDE_PATH}/vxl
